@@ -127,13 +127,17 @@ export class SutraDB extends Dexie {
 }
 
 let dbInstance: SutraDB | null = null;
-
 export function getDB(): SutraDB {
+  if (typeof window === "undefined" || typeof indexedDB === "undefined") {
+    throw new Error("[SSR] SutraDB cannot be instantiated outside the browser. This call must be deferred to client-side only.");
+  }
   if (!dbInstance) {
     dbInstance = new SutraDB();
   }
   return dbInstance;
 }
+
+export const isDBAvailable = typeof window !== "undefined" && typeof indexedDB !== "undefined";
 
 export function generateId(prefix: string): string {
   const timestamp = Date.now();

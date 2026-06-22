@@ -47,6 +47,10 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
   lockedUntil: null,
 
   initializeApp: async () => {
+    if (typeof window === "undefined" || typeof indexedDB === "undefined") {
+      console.warn("[SSR] initializeApp() skipped: not a browser environment.");
+      return;
+    }
     try {
       const db = getDB();
       if (!db.isOpen()) {

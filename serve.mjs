@@ -1,7 +1,17 @@
+import { existsSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { join, extname } from 'path';
+
+const __dirname_check = fileURLToPath(new URL('.', import.meta.url));
+const serverBuildPath = join(__dirname_check, 'dist', 'server', 'server.js');
+
+if (!existsSync(serverBuildPath)) {
+  console.error('FATAL: dist/server/server.js not found. Run npm run build before starting.');
+  process.exit(1);
+}
+
 import http from 'http';
 import { readFile, stat } from 'fs/promises';
-import { join, extname } from 'path';
-import { fileURLToPath } from 'url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const PORT = parseInt(process.env.PORT || '3000');
@@ -29,6 +39,11 @@ const ssrHandler = ssrServer.default;
 
 http.createServer(async (req, res) => {
   const urlPath = (req.url || '/').split('?')[0];
+
+  if (urlPath === '/health' || urlPath === '/ping') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    return res.end('OK');
+  }
 
   // 1. Try to serve static files from dist/client
   if (urlPath !== '/' && !urlPath.startsWith('/_server')) {
