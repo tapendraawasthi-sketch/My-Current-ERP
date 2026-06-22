@@ -108,29 +108,40 @@ export const createUiSlice = (set: StoreSet, get: StoreGet): UiSlice => ({
     })),
 
   addNotification: (notif) => {
-    const db = getDB();
-    const cleanId = generateId("notif");
-    const fullNotif = {
-      ...notif,
-      id: cleanId,
-      timestamp: new Date().toISOString(),
-    };
-
-    db.notifications.add(fullNotif);
-    set((prev) => ({ notifications: [...prev.notifications, fullNotif] }));
-  },
+  if (typeof window === "undefined") {
+    // SSR: skip DB operations
+    return;
+  }
+  const db = getDB();
+  const cleanId = generateId("notif");
+  const fullNotif = {
+    ...notif,
+    id: cleanId,
+    timestamp: new Date().toISOString(),
+  };
+  db.notifications.add(fullNotif);
+  set((prev) => ({ notifications: [...prev.notifications, fullNotif] }));
+},
 
   markNotificationRead: (id) => {
-    const db = getDB();
-    db.notifications.update(id, { read: true });
-    set((prev) => ({
-      notifications: prev.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
-    }));
+    if (typeof window === "undefined") {
+    // SSR: no operation
+    return;
+  }
+  const db = getDB();
+  db.notifications.update(id, { read: true });
+  set((prev) => ({
+    notifications: prev.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
+  }));
   },
 
   clearNotifications: () => {
-    const db = getDB();
-    db.notifications.clear();
-    set({ notifications: [] });
-  },
+  if (typeof window === "undefined") {
+    // SSR: no operation
+    return;
+  }
+  const db = getDB();
+  db.notifications.clear();
+  set({ notifications: [] });
+},
 });
