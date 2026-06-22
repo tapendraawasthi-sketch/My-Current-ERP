@@ -46,6 +46,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   } = useStore();
 
   const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
     const cached = localStorage.getItem("sutra_sidebar_collapsed");
     return cached === "true";
   });
