@@ -12,13 +12,12 @@ export default defineConfig({
   vite: {
     resolve: { tsconfigPaths: true },
     css: {
-      // Switch from lightningcss to postcss to eliminate the
-      // "Found 1 warning while optimizing generated CSS" errors.
-      // lightningcss does not fully support all Tailwind v4 syntax.
+      // postcss avoids the "Found 1 warning while optimizing generated CSS"
+      // error that lightningcss emits for Tailwind v4 @import ordering.
       transformer: "postcss",
     },
     build: {
-      // Suppress chunk size warning — our vendor chunks are intentionally large
+      // Raise chunk limit — vendor/pdf chunks are intentionally large
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
