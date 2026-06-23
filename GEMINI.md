@@ -1,4 +1,4 @@
-# Sutra ERP — Cached Design Rules (DO NOT EDIT — used for context caching)
+# Sutra ERP — Cached Design Rules & Architectural Metadata (DO NOT EDIT — used for context caching)
 
 ## Stack
 React 19, Vite, TanStack Router, Tailwind v4, Dexie (IndexedDB), Zustand, Recharts, TypeScript strict.
@@ -57,3 +57,247 @@ tbody tr even: bg-[#f7f9fc]
 tbody tr hover: bg-[#e8eeff]
 td: px-3 py-[7px] text-[12px] text-gray-700
 tfoot: bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold
+
+---
+
+## 1. Core TypeScript Types
+
+```typescript
+export interface Tenant {
+  id: string;
+  name: string;
+  createdAt: Date;
+}
+
+export interface Company {
+  id: string;
+  tenantId: string;
+  name: string;
+  gstin?: string;
+  address?: string;
+  state: string; // Indian State name or code
+  createdAt: Date;
+}
+
+export interface FiscalYear {
+  id: string;
+  companyId: string;
+  tenantId: string;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+}
+
+export interface TaxCategory {
+  id: string;
+  name: string; // e.g., "GST 18%"
+  cgstRate: number; // e.g., 9
+  sgstRate: number; // e.g., 9
+  igstRate: number; // e.g., 18
+  hsnCode?: string;
+}
+
+export interface Account {
+  id: string;
+  companyId: string;
+  tenantId: string;
+  name: string;
+  code?: string;
+  groupName: string; // e.g., "Sundry Debtors", "Bank Accounts"
+  openingBalance: number;
+  balanceType: 'DR' | 'CR';
+}
+
+export interface VoucherLine {
+  accountId: string;
+  amount: number;
+  type: 'DR' | 'CR';
+  narration?: string;
+  billReferences?: BillReference[];
+}
+
+export interface Voucher {
+  id: string;
+  companyId: string;
+  tenantId: string;
+  fiscalYearId: string;
+  voucherType: 'PAYMENT' | 'RECEIPT' | 'JOURNAL' | 'CONTRA' | 'SALES' | 'PURCHASE' | 'SALES_RETURN' | 'PURCHASE_RETURN';
+  voucherNo: string;
+  date: Date;
+  lines: VoucherLine[];
+  narration?: string;
+  isPosted: boolean;
+  metadata?: Record<string, any>;
+}
+
+export interface Ledger {
+  id: string;
+  companyId: string;
+  tenantId: string;
+  voucherId: string;
+  accountId: string;
+  date: Date;
+  debit: number;
+  credit: number;
+  runningBalance: number;
+}
+
+export interface BillReference {
+  refType: 'NEW' | 'AGAINST' | 'ADVANCE' | 'ON_ACCOUNT';
+  refNo: string;
+  amount: number;
+}
+```
+
+## 2. Database Schema Snippets (PostgreSQL DDL)
+
+```sql
+-- Core Tenants & Identity Partitioning
+CREATE TABLE tenants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE companies (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    gstin VARCHAR(15),
+    state VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE fiscal_years (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Master Tables
+CREATE TABLE accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50),
+    group_name VARCHAR(100) NOT NULL,
+    opening_balance NUMERIC(15, 2) DEFAULT 0.00,
+    balance_type VARCHAR(2) CHECK (balance_type IN ('DR', 'CR')) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(company_id, name)
+);
+
+-- Immutable Event-Sourced Ledger Postings
+CREATE TABLE ledger_postings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    fiscal_year_id UUID NOT NULL REFERENCES fiscal_years(id),
+    voucher_id UUID NOT NULL,
+    account_id UUID NOT NULL REFERENCES accounts(id),
+    posting_date DATE NOT NULL,
+    debit NUMERIC(15, 2) DEFAULT 0.00,
+    credit NUMERIC(15, 2) DEFAULT 0.00,
+    narration TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Immutable Event-Sourced Inventory Postings
+CREATE TABLE inventory_postings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    fiscal_year_id UUID NOT NULL REFERENCES fiscal_years(id),
+    voucher_id UUID NOT NULL,
+    item_id UUID NOT NULL,
+    material_centre_id UUID NOT NULL,
+    posting_date DATE NOT NULL,
+    quantity NUMERIC(15, 4) NOT NULL, -- positive for receipts, negative for issues
+    rate NUMERIC(15, 4) NOT NULL,
+    amount NUMERIC(15, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## 3. Standard API Response Envelope Structure
+
+```json
+{
+  "success": true,
+  "data": {},
+  "error": null,
+  "timestamp": "2026-06-23T14:57:54.000Z"
+}
+```
+Or for errors:
+```json
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "code": "INSUFFICIENT_BALANCE",
+    "message": "Insufficient balance in selected account",
+    "details": {}
+  },
+  "timestamp": "2026-06-23T14:57:54.000Z"
+}
+```
+
+## 4. Keyboard Shortcut Mapping
+
+| Key | Action | Context |
+|---|---|---|
+| **F2** | Save/Submit Form | Global Forms |
+| **F4** | Focus/Open Narration Box | Voucher entry |
+| **F6** | Toggle Type (DR/CR) | Voucher line items grid |
+| **F9** | Delete Active Row | Grids / Line items table |
+| **Alt + C** | Add Master Account/Item inline | Select Dropdowns |
+
+## 5. Default Indian CoA Group Hierarchy
+
+- **Income (Revenue)**
+  - Direct Income (Sales)
+  - Indirect Income (Interest, Rent, Discounts Received)
+- **Expenses**
+  - Direct Expenses (Purchases, Carriage Inwards)
+  - Indirect Expenses (Salaries, Rent, Depreciation)
+- **Assets**
+  - Fixed Assets (Plant & Machinery, Computers, Buildings)
+  - Current Assets
+    - Bank Accounts
+    - Cash-in-hand
+    - Sundry Debtors
+    - Stock-in-hand
+- **Liabilities**
+  - Capital Account (Equity, Reserves & Surplus)
+  - Current Liabilities
+    - Sundry Creditors
+    - Duties & Taxes (GST Accounts: CGST, SGST, IGST)
+    - Provisions
+
+## 6. GST Tax Category Structure
+
+| Tax Category | CGST Rate | SGST Rate | IGST Rate | Description |
+|---|---|---|---|---|
+| **GST 0% (Exempt)** | 0% | 0% | 0% | Exempt or Nil rated goods/services |
+| **GST 5%** | 2.5% | 2.5% | 5% | Essential items, basic foods |
+| **GST 12%** | 6% | 6% | 12% | Standard rate lower tier |
+| **GST 18%** | 9% | 9% | 18% | Standard rate default tier (services & main goods) |
+| **GST 28%** | 14% | 14% | 28% | Luxury / Sin goods |
+
+## 7. Error Codes and Messages
+
+| Code | Message |
+|---|---|
+| `UNAUTHORIZED` | Invalid credentials or expired session token. |
+| `FORBIDDEN` | You do not have the required role to perform this action. |
+| `TENANT_NOT_FOUND` | The specified tenant partition does not exist. |
+| `FISCAL_YEAR_CLOSED` | Transactions cannot be entered/modified in a closed fiscal year. |
+| `UNBALANCED_VOUCHER` | Total Debit must equal Total Credit for double-entry validation. |
+| `DUPLICATE_VOUCHER_NO` | The voucher number already exists in this fiscal year. |
+| `INVALID_GSTIN` | The provided GSTIN does not follow the standard Indian format. |
