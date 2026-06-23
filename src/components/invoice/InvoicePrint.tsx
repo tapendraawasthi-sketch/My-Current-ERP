@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { X, Printer, Download } from "lucide-react";
+import QRCode from "qrcode";
+import { amountToNepaliWords } from "../../lib/utils";
 
 interface Invoice {
   id: string;
@@ -14,6 +16,7 @@ interface Invoice {
   total: number;
   paymentMode?: string;
   notes?: string;
+  cbmsSyncId?: string;
 }
 
 interface InvoiceItem {
@@ -67,64 +70,21 @@ export default function InvoicePrint({
   printMode = "A4",
   onClose,
 }: Props) {
+  const [copyType, setCopyType] = useState<"Original" | "Duplicate" | "Triplicate">("Original");
+  const [qrUrl, setQrUrl] = useState("");
+
+  useEffect(() => {
+    if (invoice.cbmsSyncId) {
+      QRCode.toDataURL(invoice.cbmsSyncId, { margin: 1, width: 100 })
+        .then(setQrUrl)
+        .catch(console.error);
+    }
+  }, [invoice.cbmsSyncId]);
+
   const handlePrint = () => {
     window.print();
   };
 
-  const numberToWords = (num: number): string => {
-    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-    const tens = [
-      "",
-      "",
-      "Twenty",
-      "Thirty",
-      "Forty",
-      "Fifty",
-      "Sixty",
-      "Seventy",
-      "Eighty",
-      "Ninety",
-    ];
-    const teens = [
-      "Ten",
-      "Eleven",
-      "Twelve",
-      "Thirteen",
-      "Fourteen",
-      "Fifteen",
-      "Sixteen",
-      "Seventeen",
-      "Eighteen",
-      "Nineteen",
-    ];
-
-    if (num === 0) return "Zero";
-
-    const convertLessThanThousand = (n: number): string => {
-      if (n === 0) return "";
-      if (n < 10) return ones[n];
-      if (n < 20) return teens[n - 10];
-      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
-      return (
-        ones[Math.floor(n / 100)] +
-        " Hundred" +
-        (n % 100 !== 0 ? " " + convertLessThanThousand(n % 100) : "")
-      );
-    };
-
-    const crore = Math.floor(num / 10000000);
-    const lakh = Math.floor((num % 10000000) / 100000);
-    const thousand = Math.floor((num % 100000) / 1000);
-    const remainder = num % 1000;
-
-    let words = "";
-    if (crore > 0) words += convertLessThanThousand(crore) + " Crore ";
-    if (lakh > 0) words += convertLessThanThousand(lakh) + " Lakh ";
-    if (thousand > 0) words += convertLessThanThousand(thousand) + " Thousand ";
-    if (remainder > 0) words += convertLessThanThousand(remainder);
-
-    return words.trim() + " Rupees Only";
-  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4 print:p-0 print:relative print:bg-white print:block">
@@ -134,11 +94,21 @@ export default function InvoicePrint({
           <div>
             <h2 className="text-[13px] font-bold text-gray-800">Print Preview ({printMode})</h2>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handlePrint}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
+          <div className="flex items-center gap-4">
+            <select
+              value={copyType}
+              onChange={(e) => setCopyType(e.target.value as any)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
+              <option value="Original">Original</option>
+              <option value="Duplicate">Duplicate</option>
+              <option value="Triplicate">Triplicate</option>
+            </select>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePrint}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
+              >
               <Printer className="w-3.5 h-3.5" />
               <span>Print Invoice</span>
             </button>
@@ -194,10 +164,21 @@ export default function InvoicePrint({
             </div>
 
             {/* TAX INVOICE Title Strip */}
-            <div className="text-center bg-gray-100 border border-gray-250 py-1.5 mb-5 rounded">
-              <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-gray-800">
-                TAX INVOICE
-              </h2>
+            <div className="flex justify-between items-center mb-5 relative">
+              <div className="w-[100px]"></div>
+              <div className="text-center bg-gray-100 border border-gray-250 py-1.5 px-8 rounded">
+                <h2 className="text-[14px] font-bold tracking-[0.1em] text-gray-800 font-nepali mb-0.5">
+                  कर बिजक
+                </h2>
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-800">
+                  TAX INVOICE
+                </h2>
+              </div>
+              <div className="w-[100px] text-right">
+                <span className="text-[10px] font-bold text-gray-500 uppercase border border-gray-300 px-2 py-0.5 rounded">
+                  {copyType} Copy
+                </span>
+              </div>
             </div>
 
             {/* Two-Column Details Layout */}
@@ -337,7 +318,7 @@ export default function InvoicePrint({
                     Amount in Words:
                   </p>
                   <p className="italic font-semibold text-gray-800">
-                    {numberToWords(Math.floor(invoice.total))}
+                    {amountToNepaliWords(Math.floor(invoice.total))}
                   </p>
                 </div>
 
@@ -367,6 +348,21 @@ export default function InvoicePrint({
                       Terms & Conditions:
                     </p>
                     <p className="whitespace-pre-line leading-relaxed">{company.termsConditions}</p>
+                  </div>
+                )}
+                
+                {/* QR Code */}
+                {qrUrl && (
+                  <div className="mt-4 pt-4 border-t border-gray-200 flex items-center gap-3">
+                    <img src={qrUrl} alt="CBMS QR Code" className="w-20 h-20" />
+                    <div>
+                      <p className="text-[9px] font-bold uppercase text-gray-500 tracking-wider">
+                        CBMS Sync
+                      </p>
+                      <p className="text-[10px] font-mono text-gray-800 mt-0.5 max-w-[150px] truncate">
+                        {invoice.cbmsSyncId}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>

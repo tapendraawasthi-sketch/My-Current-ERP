@@ -90,6 +90,13 @@ const SystemSettings: React.FC = () => {
     companySettings?.printLogoOnInvoice ?? true,
   );
 
+  // Tab "CBMS Integration"
+  const [cbmsClientId, setCbmsClientId] = useState(companySettings?.cbmsConfig?.clientId || "");
+  const [cbmsClientSecret, setCbmsClientSecret] = useState(companySettings?.cbmsConfig?.clientSecret || "");
+  const [cbmsEnvironment, setCbmsEnvironment] = useState(companySettings?.cbmsConfig?.environment || "sandbox");
+  const [cbmsTerminalNo, setCbmsTerminalNo] = useState(companySettings?.cbmsConfig?.terminalNo || "");
+  const [cbmsAutoSubmit, setCbmsAutoSubmit] = useState(!!companySettings?.cbmsConfig?.autoSubmitOnSave);
+
   // Tab "Backup" states
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [backupPreview, setBackupPreview] = useState<any>(null);
@@ -183,6 +190,14 @@ const SystemSettings: React.FC = () => {
         invoicePrintFormat,
         voucherPrintFormat,
         printLogoOnInvoice: showLogoOnPrint,
+        cbmsConfig: {
+          clientId: cbmsClientId.trim(),
+          clientSecret: cbmsClientSecret.trim(),
+          environment: cbmsEnvironment as any,
+          terminalNo: cbmsTerminalNo.trim(),
+          autoSubmitOnSave: cbmsAutoSubmit,
+          isActive: !!(cbmsClientId.trim() && cbmsClientSecret.trim()),
+        },
         smtpConfig: {
           host: smtpHost.trim(),
           port: Number(smtpPort),
@@ -365,6 +380,7 @@ const SystemSettings: React.FC = () => {
                 { id: "invoices", label: "Invoice Settings" },
                 { id: "email_print", label: "Print & Media" },
                 { id: "data_controls", label: "Data Controls" },
+                { id: "cbms", label: "CBMS Integration" },
                 { id: "backup", label: "Backup & Utility" },
               ].map((tab) => (
                 <button
@@ -753,6 +769,69 @@ const SystemSettings: React.FC = () => {
                               onChange={(e) => setShowLogoOnPrint(e.target.checked)}
                               className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                             />
+                          </div>
+                        </div>
+                      </Card>
+                    )}
+
+                    {innerTab === "cbms" && (
+                      <Card
+                        title="Nepal IRD CBMS Integration"
+                        subtitle="Central Billing Management System credentials and API synchronization settings."
+                      >
+                        <div className="flex flex-col gap-4 bg-white form-grid-2">
+                          <div className="grid grid-cols-2 gap-4">
+                            <Input
+                              label="API Client ID"
+                              value={cbmsClientId}
+                              onChange={setCbmsClientId}
+                              type="text"
+                              placeholder="CBMS Client ID"
+                            />
+                            <Input
+                              label="API Client Secret"
+                              value={cbmsClientSecret}
+                              onChange={setCbmsClientSecret}
+                              type="password"
+                              placeholder="CBMS Client Secret"
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+                            <Select
+                              label="API Environment"
+                              value={cbmsEnvironment}
+                              onChange={setCbmsEnvironment}
+                              options={[
+                                { value: "sandbox", label: "Sandbox (Testing)" },
+                                { value: "production", label: "Production (Live)" },
+                              ]}
+                            />
+                            <Input
+                              label="Terminal Number (Optional)"
+                              value={cbmsTerminalNo}
+                              onChange={setCbmsTerminalNo}
+                              type="text"
+                              placeholder="01"
+                            />
+                          </div>
+
+                          <div className="divide-y divide-gray-150 border-t pt-4">
+                            <div className="flex items-center justify-between py-2">
+                              <div>
+                                <span className="block text-[11px] font-medium text-gray-600">
+                                  Auto-Submit Invoices
+                                </span>
+                                <span className="text-[10px] text-gray-400 font-normal">
+                                  Automatically push invoices to IRD servers upon save.
+                                </span>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={cbmsAutoSubmit}
+                                onChange={(e) => setCbmsAutoSubmit(e.target.checked)}
+                                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                              />
+                            </div>
                           </div>
                         </div>
                       </Card>

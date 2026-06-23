@@ -62,6 +62,9 @@ setInterval(
     for (const [key, val] of ipRateLimitStore.entries()) {
       if (val.windowStart + 3600000 < now) ipRateLimitStore.delete(key);
     }
+    for (const [key, val] of nrbCache.entries()) {
+      if (val.expiresAt < now) nrbCache.delete(key);
+    }
   },
   5 * 60 * 1000,
 );
@@ -110,6 +113,8 @@ if (!CLIENT_DIR) {
   console.error("[serve] Checked: .output/public, dist/client, dist");
 }
 
+const nrbCache = new Map(); // Map<dateAD, { rates, expiresAt }>
+
 async function handleApiRoute(req, res) {
   // Shared-secret check for all /api/* requests
   const apiKey = req.headers["x-sutra-api-key"];
@@ -120,16 +125,18 @@ async function handleApiRoute(req, res) {
     return;
   }
 
-  // Parse request body
+  // Parse request body if present
   let body = "";
   for await (const chunk of req) body += chunk;
-  let payload;
-  try {
-    payload = JSON.parse(body);
-  } catch {
-    res.writeHead(400, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ success: false, error: "Invalid JSON body" }));
-    return;
+  let payload = {};
+  if (body) {
+    try {
+      payload = JSON.parse(body);
+    } catch {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ success: false, error: "Invalid JSON body" }));
+      return;
+    }
   }
 
   const url = new URL(req.url, "http://localhost");
@@ -414,6 +421,52 @@ async function handleApiRoute(req, res) {
     return;
   }
 
+  // ─── GET /api/nrb-rates ───────────────────────────────────
+  if (pathname === "/api/nrb-rates" && req.method === "GET") {
+    const dateAD = url.searchParams.get("date");
+    if (!dateAD) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ success: false, error: "Missing date parameter" }));
+    }
+
+    const cached = nrbCache.get(dateAD);
+    if (cached && cached.expiresAt > Date.now()) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ success: true, rates: cached.rates }));
+    }
+
+    try {
+      const fetchUrl = `https://www.nrb.org.np/api/forex/v1/rates?from=${dateAD}&to=${dateAD}&per_page=100`;
+      const response = await fetch(fetchUrl);
+      if (!response.ok) throw new Error("NRB API Failed");
+      const data = await response.json();
+
+      const rates = [];
+      if (data && data.data && data.data.payload && data.data.payload.length > 0) {
+        const payloadDate = data.data.payload[0];
+        payloadDate.rates.forEach(r => {
+          rates.push({
+            currencyCode: r.currency.iso3,
+            date: dateAD,
+            rateToBase: parseFloat(r.buy) / parseInt(r.currency.unit, 10),
+            source: 'auto'
+          });
+        });
+      }
+
+      // Cache for 4 hours
+      nrbCache.set(dateAD, { rates, expiresAt: Date.now() + 4 * 60 * 60 * 1000 });
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ success: true, rates }));
+    } catch (err) {
+      console.error("[NRB] fetch failed:", err);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ success: false, error: err.message }));
+    }
+    return;
+  }
+
   // 404 for unrecognized API routes
   res.writeHead(404, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ success: false, error: "API route not found" }));
@@ -424,7 +477,7 @@ http
     // Handle CORS for API routes
     if (req.url && req.url.startsWith("/api/")) {
       res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
       res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Sutra-Api-Key");
       if (req.method === "OPTIONS") {
         res.writeHead(204);

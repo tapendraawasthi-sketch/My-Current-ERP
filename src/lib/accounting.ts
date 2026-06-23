@@ -1759,3 +1759,28 @@ export function computeDepreciation(
     accumulatedDepreciation: Math.round((asset.accumulatedDepreciation + depForYear) * 100) / 100,
   };
 }
+
+export function computeForexGainLossEntry(
+  gainLossAmount: number,
+  currencyCode: string,
+  partyAccountId: string,
+  forexAccountId: string = "acc-forex-gain-loss"
+): JournalEntryLine[] {
+  const isGain = gainLossAmount > 0;
+  const absAmt = Math.abs(gainLossAmount);
+  
+  return [
+    {
+      accountId: partyAccountId,
+      debit: isGain ? absAmt : 0,
+      credit: isGain ? 0 : absAmt,
+      narration: `Forex ${isGain ? 'Gain' : 'Loss'} Adjustment for ${currencyCode}`
+    },
+    {
+      accountId: forexAccountId,
+      debit: isGain ? 0 : absAmt,
+      credit: isGain ? absAmt : 0,
+      narration: `Forex ${isGain ? 'Gain' : 'Loss'} on ${currencyCode}`
+    }
+  ];
+}

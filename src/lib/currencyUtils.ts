@@ -1,4 +1,4 @@
-﻿import { ExchangeRate, Currency } from "./types";
+import { ExchangeRate, Currency } from "./types";
 
 /**
  * Convert amount from foreign currency to base currency
@@ -94,4 +94,15 @@ export function createForexGainLossEntry(
       },
     ],
   };
+}
+
+export async function fetchNrbRates(dateAD: string): Promise<ExchangeRate[]> {
+  const res = await fetch(`/api/nrb-rates?date=${dateAD}`);
+  if (!res.ok) throw new Error("Failed to fetch NRB rates");
+  const data = await res.json();
+  return data.rates || [];
+}
+
+export function computeForexGainLoss(foreignAmount: number, oldRate: number, newRate: number): number {
+  return calculateForexGainLoss(foreignAmount, oldRate, newRate);
 }

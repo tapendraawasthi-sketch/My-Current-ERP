@@ -92,6 +92,9 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     updateVoucher,
     submitForApproval,
     updateBillWiseEntry,
+    companySettings,
+    currencies,
+    exchangeRates,
   } = useStore();
 
   const isEdit = !!voucherId;
@@ -166,6 +169,25 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       setTdsRate(0);
     }
   }, [partyId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ---- Currency ----
+  const [currencyCode, setCurrencyCode] = useState(existing?.currencyCode || "NPR");
+  const [exchangeRate, setExchangeRate] = useState<number>(existing?.exchangeRate || 1.0);
+
+  useEffect(() => {
+    if (currencyCode === "NPR") {
+      setExchangeRate(1.0);
+      return;
+    }
+    const rateMatch = exchangeRates?.filter(
+      (r) => r.currencyCode === currencyCode && r.date <= date,
+    ).sort((a,b) => b.date.localeCompare(a.date))[0];
+    if (rateMatch) {
+      setExchangeRate(rateMatch.rateToBase);
+    } else {
+      setExchangeRate(1.0);
+    }
+  }, [currencyCode, date, exchangeRates]);
 
   // ---- Bill-by-Bill state ----
   const [modalState, setModalState] = useState<{
@@ -365,10 +387,11 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           accountId: l.accountId,
           accountName: acc?.name || "",
           debit: 0,
-          credit: round2(l.amount),
+          credit: round2(l.amount * exchangeRate),
           narration: l.narration?.trim() || undefined,
           costCenterId: l.costCenterId || undefined,
           billRefNo: l.billRefNo?.trim() || undefined,
+          foreignAmount: currencyCode !== "NPR" ? l.amount : undefined,
         };
       });
 
@@ -376,18 +399,20 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       {
         accountId: debitLedgerId,
         accountName: debitLedgerName,
-        debit: totals.net,
+        debit: round2(totals.net * exchangeRate),
         credit: 0,
         narration: payMode === "cheque" ? `Cheque No. ${chequeNo}` : undefined,
+        foreignAmount: currencyCode !== "NPR" ? totals.net : undefined,
       },
     ];
     if (tdsEnabled && totals.tds > 0) {
       debitLines.push({
         accountId: tdsReceivableId,
         accountName: "TDS Receivable A/C",
-        debit: totals.tds,
+        debit: round2(totals.tds * exchangeRate),
         credit: 0,
         narration: `TDS @ ${tdsRate}% deducted at source`,
+        foreignAmount: currencyCode !== "NPR" ? totals.tds : undefined,
       });
     }
 
@@ -409,6 +434,9 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       chequeNo: payMode === "cheque" ? chequeNo.trim() : undefined,
       chequeDate: payMode === "cheque" ? chequeDate : undefined,
       tdsAmount: tdsEnabled ? totals.tds : undefined,
+      currencyCode,
+      exchangeRate,
+      foreignAmount: totals.gross,
     };
   };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Printer, Download } from "lucide-react";
+import { amountToNepaliWords } from "../../lib/utils";
 
 interface Voucher {
   id: string;
@@ -45,60 +46,6 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
     window.print();
   };
 
-  const numberToWords = (num: number): string => {
-    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-    const tens = [
-      "",
-      "",
-      "Twenty",
-      "Thirty",
-      "Forty",
-      "Fifty",
-      "Sixty",
-      "Seventy",
-      "Eighty",
-      "Ninety",
-    ];
-    const teens = [
-      "Ten",
-      "Eleven",
-      "Twelve",
-      "Thirteen",
-      "Fourteen",
-      "Fifteen",
-      "Sixteen",
-      "Seventeen",
-      "Eighteen",
-      "Nineteen",
-    ];
-
-    if (num === 0) return "Zero";
-
-    const convertLessThanThousand = (n: number): string => {
-      if (n === 0) return "";
-      if (n < 10) return ones[n];
-      if (n < 20) return teens[n - 10];
-      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
-      return (
-        ones[Math.floor(n / 100)] +
-        " Hundred" +
-        (n % 100 !== 0 ? " " + convertLessThanThousand(n % 100) : "")
-      );
-    };
-
-    const crore = Math.floor(num / 10000000);
-    const lakh = Math.floor((num % 10000000) / 100000);
-    const thousand = Math.floor((num % 100000) / 1000);
-    const remainder = num % 1000;
-
-    let words = "";
-    if (crore > 0) words += convertLessThanThousand(crore) + " Crore ";
-    if (lakh > 0) words += convertLessThanThousand(lakh) + " Lakh ";
-    if (thousand > 0) words += convertLessThanThousand(thousand) + " Thousand ";
-    if (remainder > 0) words += convertLessThanThousand(remainder);
-
-    return words.trim() + " Rupees Only";
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 print:relative print:bg-white">
@@ -145,9 +92,10 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
               </p>
             </div>
             <div className="text-right">
-              <div className="border-2 border-gray-800 px-4 py-2">
+              <div className="border-2 border-gray-800 px-4 py-2 text-center">
                 <h3 className="text-lg font-bold">{voucher.voucherType.toUpperCase()}</h3>
-                <p className="text-xs">VOUCHER</p>
+                <p className="text-[11px] font-nepali tracking-widest mt-0.5">भौचर</p>
+                <p className="text-[10px] tracking-widest font-semibold uppercase">Voucher</p>
               </div>
             </div>
           </div>
@@ -230,14 +178,20 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
           <div className="mb-8 p-3 bg-gray-50 border border-gray-300">
             <p className="text-sm">
               <span className="font-semibold">Amount in Words: </span>
-              <span className="italic">{numberToWords(Math.floor(voucher.totalDebit))}</span>
+              <span className="italic">{amountToNepaliWords(Math.floor(voucher.totalDebit))}</span>
             </p>
           </div>
 
           {/* Stamp Box */}
           <div className="mb-8">
-            <div className="border-2 border-dashed border-gray-400 p-6 text-center">
-              <p className="text-xs text-gray-500">STAMP BOX</p>
+            <div className="border-2 border-dashed border-gray-400 p-6 text-center min-h-[80px] flex items-center justify-center">
+              {voucher.voucherType.toUpperCase() === "RECEIPT" ? (
+                <p className="text-lg font-bold tracking-[0.2em] text-gray-800 uppercase">
+                  Received With Thanks
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500">STAMP BOX</p>
+              )}
             </div>
           </div>
 

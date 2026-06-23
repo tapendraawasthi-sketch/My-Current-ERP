@@ -1,6 +1,6 @@
-﻿import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
-import { Plus, Edit, TrendingUp, DollarSign, Calendar } from "lucide-react";
+import { Plus, Edit, TrendingUp, DollarSign, Calendar, Download } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -18,6 +18,7 @@ import Modal from "../components/ui/Modal";
 import Table from "../components/ui/Table";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
+import { fetchNrbRates } from "../lib/currencyUtils";
 import toast from "react-hot-toast";
 
 const CurrencyMaster: React.FC = () => {
@@ -49,6 +50,37 @@ const CurrencyMaster: React.FC = () => {
     rateToBase: 0,
     source: "manual",
   });
+  
+  const [isFetching, setIsFetching] = useState(false);
+
+  const handleFetchNRB = async () => {
+    setIsFetching(true);
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const rates = await fetchNrbRates(today);
+      if (rates.length === 0) {
+        toast.error("No rates returned from NRB for today");
+        setIsFetching(false);
+        return;
+      }
+      for (const r of rates) {
+        const matchingCur = currencies.find(c => c.code === r.currencyCode);
+        if (matchingCur && !matchingCur.isBase) {
+          await addExchangeRate({
+            currencyCode: r.currencyCode,
+            date: r.date,
+            rateToBase: r.rateToBase,
+            source: "auto"
+          });
+        }
+      }
+      toast.success("NRB Rates updated successfully!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to fetch NRB Rates");
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const handleAddCurrency = async () => {
     if (!currencyForm.code || !currencyForm.name || !currencyForm.symbol) {
@@ -222,18 +254,29 @@ const CurrencyMaster: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Currency Master</h1>
           <p className="text-sm text-gray-500 mt-1">Manage currencies and exchange rates</p>
         </div>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => {
-            setEditingCurrency(null);
-            setCurrencyForm({ code: "", name: "", symbol: "", isBase: false, isActive: true });
-            setShowAddModal(true);
-          }}
-          icon={<Plus className="h-4 w-4" />}
-        >
-          Add Currency
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleFetchNRB}
+            disabled={isFetching}
+            icon={<Download className="h-4 w-4" />}
+          >
+            {isFetching ? "Fetching..." : "Fetch NRB Rates Today"}
+          </Button>
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => {
+              setEditingCurrency(null);
+              setCurrencyForm({ code: "", name: "", symbol: "", isBase: false, isActive: true });
+              setShowAddModal(true);
+            }}
+            icon={<Plus className="h-4 w-4" />}
+          >
+            Add Currency
+          </Button>
+        </div>
       </div>
 
       {/* Currencies Table */}

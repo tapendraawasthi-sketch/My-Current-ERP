@@ -54,6 +54,7 @@ import {
   ProductionVoucher,
   PhysicalStockVoucher,
   ApprovalRequest,
+  CbmsLog,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -98,6 +99,7 @@ export class SutraDB extends Dexie {
   public productionVouchers!: Table<ProductionVoucher & { id: string }>;
   public physicalStockVouchers!: Table<PhysicalStockVoucher & { id: string }>;
   public approvalRequests!: Table<ApprovalRequest & { id: string }>;
+  public cbmsLogs!: Table<CbmsLog & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -161,6 +163,10 @@ export class SutraDB extends Dexie {
 
     this.version(8).stores({
       approvalRequests: "++id, voucherId, voucherType, status, submittedBy, submittedAt",
+    });
+
+    this.version(9).stores({
+      cbmsLogs: "++id, invoiceId, cbmsStatus, submittedAt",
     });
   }
 }

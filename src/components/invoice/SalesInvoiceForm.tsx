@@ -654,6 +654,19 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         }
       }
 
+      // CBMS Integration
+      if (status === VoucherStatus.POSTED && companySettings?.cbmsConfig?.isActive) {
+        const { submitInvoiceToCBMS } = await import("../../lib/cbmsApi");
+        const { getDB } = await import("../../lib/db");
+        try {
+          const db = getDB();
+          // We don't await this to avoid blocking the UI, but we could
+          submitInvoiceToCBMS(db, result, companySettings).catch(e => console.error("CBMS Background sync error", e));
+        } catch (e: any) {
+          console.error("CBMS Submit initialization error:", e);
+        }
+      }
+
       setSavedInvoice(result);
     } catch (e: any) {
       toast.error(e?.message || "Failed to save invoice.");

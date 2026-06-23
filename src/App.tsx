@@ -66,6 +66,8 @@ import DepreciationChart from "./pages/DepreciationChart";
 import BillOfMaterialPage from "./pages/BillOfMaterial";
 import ProductionVoucherPage from "./pages/ProductionVoucher";
 import PhysicalStockPage from "./pages/PhysicalStock";
+import CbmsLog from "./pages/CbmsLog";
+import CurrencyMaster from "./pages/CurrencyMaster";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import KeyboardShortcutsHelp from "./components/ui/KeyboardShortcutsHelp";
 
@@ -455,6 +457,18 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <PhysicalStockPage />
+        </ErrorBoundary>
+      );
+    case "cbms-log":
+      return (
+        <ErrorBoundary>
+          <CbmsLog />
+        </ErrorBoundary>
+      );
+    case "currencies":
+      return (
+        <ErrorBoundary>
+          <CurrencyMaster />
         </ErrorBoundary>
       );
     case "salesman-report":

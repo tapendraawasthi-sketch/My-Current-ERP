@@ -656,7 +656,14 @@ export interface CompanySettings {
   termsAndConditions?: string;
   voucherSeries: Record<string, VoucherSeries>;
   tdsEnabled?: boolean;
-  cbmsConfig?: { clientId: string; clientSecret: string; environment: "sandbox" | "production" };
+  cbmsConfig?: {
+    isActive?: boolean;
+    clientId: string;
+    clientSecret: string;
+    environment: "sandbox" | "production";
+    terminalNo?: string;
+    autoSubmitOnSave?: boolean;
+  };
   smtpConfig?: SmtpConfig;
 
   voucherStartingNumber?: number;
@@ -1185,6 +1192,38 @@ export interface FixedAsset {
   disposalValue?: number;
   isActive: boolean;
   createdAt?: string;
+}
+
+export interface CbmsLog {
+  id: string;
+  invoiceId: string;
+  invoiceNo: string;
+  partyName: string;
+  partyPan?: string;
+  amount: number;
+  vatAmount: number;
+  submittedAt: string;
+  cbmsRefNo?: string;
+  cbmsStatus: 'pending' | 'submitted' | 'failed' | 'cancelled';
+  responseCode?: string;
+  responseMessage?: string;
+  retryCount: number;
+  lastRetryAt?: string;
+  isBillCancelled: boolean;
+  cancelReason?: string;
+}
+
+export interface ForexGainLoss {
+  id: string;
+  voucherId: string;
+  currencyCode: string;
+  foreignAmount: number;
+  rateAtTransaction: number;
+  rateAtSettlement: number;
+  gainLossAmount: number;
+  accountId: string;
+  date: string;
+  dateNepali: string;
 }
 
 export interface DepreciationEntry {

@@ -62,6 +62,7 @@ import {
   ChartPie,
   ChartBar,
   FileCheck2,
+  Users,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -122,6 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Bill Sundry", page: "bill-sundry", icon: ReceiptText },
         { label: "Standard Narrations", page: "standard-narrations", icon: FileSignature },
         { label: "Fixed Assets", page: "fixed-assets", icon: Building2 },
+        { label: "Currency Master", page: "currencies", icon: Coins },
       ],
     },
     {
@@ -205,6 +207,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Salesman Report", page: "salesman-report", icon: Users },
         { label: "Overdue Interest", page: "overdue-interest", icon: AlertTriangle },
         { label: "Depreciation Chart", page: "depreciation-chart", icon: BarChart3 },
+        { label: "CBMS Sync Log", page: "cbms-log", icon: FileCheck2 },
       ],
     },
     {
