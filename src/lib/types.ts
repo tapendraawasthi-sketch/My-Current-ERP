@@ -150,6 +150,28 @@ export enum ReportPeriodPreset {
   CUSTOM = "custom",
 }
 
+export enum ApprovalStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
+export interface ApprovalRequest {
+  id: string;
+  voucherId: string;
+  voucherType: VoucherType;
+  voucherNo: string;
+  amount: number;
+  submittedBy: string;
+  submittedByName: string;
+  submittedAt: string;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewedBy?: string;
+  reviewedByName?: string;
+  reviewedAt?: string;
+  reviewComment?: string;
+}
+
 export enum RecurringFrequency {
   DAILY = "daily",
   WEEKLY = "weekly",
@@ -225,6 +247,10 @@ export interface JournalEntry {
   bankLedgerId?: string;
   chequeNo?: string;
   chequeDate?: string;
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  approvalComment?: string;
+  approvedBy?: string;
+  approvedAt?: string;
 }
 
 export interface Party {
@@ -387,6 +413,10 @@ export interface Invoice {
   foreignAmount?: number;
   attachments?: string[];
   customFields?: Record<string, string | number | boolean>;
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  approvalComment?: string;
+  approvedBy?: string;
+  approvedAt?: string;
 }
 
 export interface SalesOrder {
@@ -658,7 +688,17 @@ export interface CompanySettings {
   invoiceFooter?: string;
   printLogo?: boolean;
   printBankDetails?: boolean;
-  exportFormat?: string;
+  bankDetailsId?: string;
+  
+  freezeUpToDate?: string;
+  enableApprovalWorkflow?: boolean;
+  approvalRules?: {
+    voucherType: VoucherType | 'all';
+    minAmountThreshold: number;
+    requiresApproval: boolean;
+    approverRoles: UserRole[];
+    autoApproveForRoles: UserRole[];
+  }[];
 }
 
 export interface VoucherSeries {

@@ -364,6 +364,7 @@ const SystemSettings: React.FC = () => {
                 { id: "vouchers", label: "Voucher Settings" },
                 { id: "invoices", label: "Invoice Settings" },
                 { id: "email_print", label: "Print & Media" },
+                { id: "data_controls", label: "Data Controls" },
                 { id: "backup", label: "Backup & Utility" },
               ].map((tab) => (
                 <button
@@ -642,6 +643,48 @@ const SystemSettings: React.FC = () => {
                               value={invoiceFooter}
                               onChange={setInvoiceFooter}
                             />
+                          </div>
+                        </div>
+                      </Card>
+                    )}
+
+                    {innerTab === "data_controls" && (
+                      <Card
+                        title="Data Controls & Approval Rules"
+                        subtitle="Configure data freezing and voucher approval workflows."
+                      >
+                        <div className="flex flex-col gap-4 bg-white form-grid-2">
+                          <div className="grid grid-cols-2 gap-4">
+                            <Input
+                              label="Freeze Data Up To Date"
+                              type="date"
+                              value={companySettings?.freezeUpToDate || ""}
+                              onChange={(val) => updateCompanySettings({ freezeUpToDate: val || undefined })}
+                            />
+                            <div className="flex flex-col justify-end pb-2">
+                              <span className="block text-[10px] text-gray-500">
+                                Transactions on or before this date cannot be edited by non-admins.
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="divide-y divide-gray-150 border-t pt-4">
+                            <div className="flex items-center justify-between py-2">
+                              <div>
+                                <span className="block text-[11px] font-medium text-gray-600">
+                                  Enable Approval Workflow
+                                </span>
+                                <span className="text-[10px] text-gray-400 font-normal">
+                                  Vouchers matching rules below require approval before posting.
+                                </span>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={!!companySettings?.enableApprovalWorkflow}
+                                onChange={(e) => updateCompanySettings({ enableApprovalWorkflow: e.target.checked })}
+                                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                              />
+                            </div>
                           </div>
                         </div>
                       </Card>

@@ -213,6 +213,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Company Settings", page: "settings", icon: UserCog2 },
         { label: "Fiscal Year", page: "fiscal-year", icon: CalendarRange },
         { label: "Users & Roles", page: "users", icon: ShieldCheck },
+        { label: "Approval Queue", page: "approval-queue", icon: ClipboardCheck },
         { label: "Budget Master", page: "budget", icon: BadgeDollarSign },
         { label: "Recurring Vouchers", page: "recurring-vouchers", icon: RotateCcw },
         { label: "Audit Log", page: "audit-log", icon: FileSignature },

@@ -1,71 +1,42 @@
-import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
-import { Search, Download, ChevronDown, ChevronRight } from "lucide-react";
-
-interface AuditLog {
-  id: string;
-  timestamp: string;
-  user: string;
-  action: string;
-  module: string;
-  recordId: string;
-  description: string;
-  oldValue?: any;
-  newValue?: any;
-}
+import React, { useState, useMemo } from "react";
+import { useStore } from "../store/useStore";
+import { Search, Download, ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { Card, Badge, Input, Select, Button } from "../components/ui";
 
 export default function AuditLog() {
+  const { auditLogs } = useStore();
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     user: "",
     module: "",
     action: "",
+    search: "",
   });
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
-  const logs: AuditLog[] = [
-    {
-      id: "1",
-      timestamp: "2024-01-15 10:30:15",
-      user: "admin",
-      action: "login",
-      module: "Auth",
-      recordId: "-",
-      description: "User logged in successfully",
-    },
-    {
-      id: "2",
-      timestamp: "2024-01-15 11:15:22",
-      user: "admin",
-      action: "create",
-      module: "Voucher",
-      recordId: "JV001",
-      description: "Created new journal voucher",
-      newValue: { voucherNo: "JV001", amount: 50000, date: "2024-01-15" },
-    },
-    {
-      id: "3",
-      timestamp: "2024-01-15 12:00:45",
-      user: "accountant",
-      action: "update",
-      module: "Ledger",
-      recordId: "L001",
-      description: "Updated Cash ledger",
-      oldValue: { name: "Cash", balance: 100000 },
-      newValue: { name: "Cash in Hand", balance: 150000 },
-    },
-    {
-      id: "4",
-      timestamp: "2024-01-15 14:30:10",
-      user: "admin",
-      action: "delete",
-      module: "Customer",
-      recordId: "C015",
-      description: "Deleted customer record",
-      oldValue: { name: "Old Customer Ltd.", pan: "123456789" },
-    },
-  ];
+  const filteredLogs = useMemo(() => {
+    return auditLogs.filter((log) => {
+      const date = log.timestamp.split("T")[0];
+      if (filters.startDate && date < filters.startDate) return false;
+      if (filters.endDate && date > filters.endDate) return false;
+      if (filters.user && log.userName !== filters.user && log.userId !== filters.user) return false;
+      if (filters.module && log.module !== filters.module) return false;
+      if (filters.action && log.action !== filters.action) return false;
+      if (
+        filters.search &&
+        !log.recordId?.toLowerCase().includes(filters.search.toLowerCase()) &&
+        !log.recordType?.toLowerCase().includes(filters.search.toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
+    }).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  }, [auditLogs, filters]);
+
+  const uniqueUsers = useMemo(() => Array.from(new Set(auditLogs.map(l => l.userName))), [auditLogs]);
+  const uniqueModules = useMemo(() => Array.from(new Set(auditLogs.map(l => l.module))), [auditLogs]);
+  const uniqueActions = useMemo(() => Array.from(new Set(auditLogs.map(l => l.action))), [auditLogs]);
 
   const toggleRow = (id: string) => {
     const newExpanded = new Set(expandedRows);
@@ -79,14 +50,16 @@ export default function AuditLog() {
 
   const handleExport = () => {
     const csv = [
-      ["Timestamp", "User", "Action", "Module", "Record ID", "Description"],
-      ...logs.map((log) => [
+      ["Timestamp", "User", "Action", "Module", "Record ID", "Record Type", "Old Value", "New Value"],
+      ...filteredLogs.map((log) => [
         log.timestamp,
-        log.user,
+        log.userName,
         log.action,
         log.module,
-        log.recordId,
-        log.description,
+        log.recordId || "-",
+        log.recordType || "-",
+        log.oldValue ? JSON.stringify(log.oldValue).replace(/,/g, ";") : "",
+        log.newValue ? JSON.stringify(log.newValue).replace(/,/g, ";") : "",
       ]),
     ]
       .map((row) => row.join(","))
@@ -121,22 +94,25 @@ export default function AuditLog() {
 
   const renderDiff = (oldVal: any, newVal: any) => {
     if (!oldVal && !newVal) return null;
+    let oldJson = "", newJson = "";
+    try { oldJson = typeof oldVal === "string" ? oldVal : JSON.stringify(oldVal, null, 2); } catch {}
+    try { newJson = typeof newVal === "string" ? newVal : JSON.stringify(newVal, null, 2); } catch {}
 
     return (
       <div className="grid grid-cols-2 gap-4 font-mono text-xs">
-        {oldVal && (
+        {oldJson && (
           <div>
             <h4 className="font-semibold text-red-600 mb-2">Old Value:</h4>
-            <pre className="bg-red-50 p-3 rounded border border-red-200 overflow-auto">
-              {JSON.stringify(oldVal, null, 2)}
+            <pre className="bg-red-50 p-3 rounded border border-red-200 overflow-auto max-h-[300px]">
+              {oldJson}
             </pre>
           </div>
         )}
-        {newVal && (
+        {newJson && (
           <div>
             <h4 className="font-semibold text-green-600 mb-2">New Value:</h4>
-            <pre className="bg-green-50 p-3 rounded border border-green-200 overflow-auto">
-              {JSON.stringify(newVal, null, 2)}
+            <pre className="bg-green-50 p-3 rounded border border-green-200 overflow-auto max-h-[300px]">
+              {newJson}
             </pre>
           </div>
         )}
@@ -145,148 +121,131 @@ export default function AuditLog() {
   };
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="Audit Log" subtitle="System activity and change history" />
-      <div className="flex justify-end mb-4">
-        <button onClick={handleExport} className="btn-primary flex items-center space-x-2">
-          <Download className="w-4 h-4" />
-          <span>Export CSV</span>
-        </button>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="grid grid-cols-5 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              className="input"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              className="input"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
-            <select
-              value={filters.user}
-              onChange={(e) => setFilters({ ...filters, user: e.target.value })}
-              className="input"
-            >
-              <option value="">All Users</option>
-              <option value="admin">admin</option>
-              <option value="accountant">accountant</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Module</label>
-            <select
-              value={filters.module}
-              onChange={(e) => setFilters({ ...filters, module: e.target.value })}
-              className="input"
-            >
-              <option value="">All Modules</option>
-              <option value="Auth">Auth</option>
-              <option value="Voucher">Voucher</option>
-              <option value="Ledger">Ledger</option>
-              <option value="Customer">Customer</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Action</label>
-            <select
-              value={filters.action}
-              onChange={(e) => setFilters({ ...filters, action: e.target.value })}
-              className="input"
-            >
-              <option value="">All Actions</option>
-              <option value="create">Create</option>
-              <option value="update">Update</option>
-              <option value="delete">Delete</option>
-              <option value="login">Login</option>
-              <option value="logout">Logout</option>
-            </select>
-          </div>
+    <div className="page-wrapper">
+      <div className="page-toolbar">
+        <div className="page-toolbar-left">
+          <div className="page-title">Audit Log</div>
+          <div className="page-subtitle">Immutable system activity and change history</div>
+        </div>
+        <div className="page-toolbar-right">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="w-4 h-4 mr-1" />
+            Export CSV
+          </Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="w-8 px-6 py-3"></th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Timestamp
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                User
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Action
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Module
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Record ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Description
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {logs.map((log) => (
-              <React.Fragment key={log.id}>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    {(log.oldValue || log.newValue) && (
-                      <button
-                        onClick={() => toggleRow(log.id)}
-                        className="text-gray-400 hover:text-gray-600"
-                      >
-                        {expandedRows.has(log.id) ? (
-                          <ChevronDown className="w-4 h-4" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4" />
-                        )}
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {log.timestamp}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {log.user}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{getActionBadge(log.action)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {log.module}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {log.recordId}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{log.description}</td>
+      <div className="page-content-area">
+        <Card className="mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div className="col-span-2">
+              <Input
+                label="Search Records"
+                value={filters.search}
+                onChange={(v) => setFilters({ ...filters, search: v })}
+                placeholder="Search by ID or Type..."
+              />
+            </div>
+            <Input
+              label="Start Date"
+              type="date"
+              value={filters.startDate}
+              onChange={(v) => setFilters({ ...filters, startDate: v })}
+            />
+            <Input
+              label="End Date"
+              type="date"
+              value={filters.endDate}
+              onChange={(v) => setFilters({ ...filters, endDate: v })}
+            />
+            <Select
+              label="User"
+              value={filters.user}
+              onChange={(v) => setFilters({ ...filters, user: v })}
+              options={[
+                { value: "", label: "All Users" },
+                ...uniqueUsers.map(u => ({ value: u, label: u }))
+              ]}
+            />
+            <Select
+              label="Module"
+              value={filters.module}
+              onChange={(v) => setFilters({ ...filters, module: v })}
+              options={[
+                { value: "", label: "All Modules" },
+                ...uniqueModules.map(m => ({ value: m, label: m }))
+              ]}
+            />
+          </div>
+        </Card>
+
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="w-8"></th>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Module</th>
+                  <th>Record Type</th>
+                  <th>Record ID</th>
                 </tr>
-                {expandedRows.has(log.id) && (
+              </thead>
+              <tbody>
+                {filteredLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-4 bg-gray-50">
-                      {renderDiff(log.oldValue, log.newValue)}
+                    <td colSpan={7} className="text-center py-8 text-gray-500 text-[13px]">
+                      No audit logs match the current filters.
                     </td>
                   </tr>
+                ) : (
+                  filteredLogs.map((log) => (
+                    <React.Fragment key={log.id}>
+                      <tr>
+                        <td className="text-center">
+                          {(log.oldValue || log.newValue) && (
+                            <button
+                              onClick={() => toggleRow(log.id)}
+                              className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                              {expandedRows.has(log.id) ? (
+                                <ChevronDown className="w-4 h-4" />
+                              ) : (
+                                <ChevronRight className="w-4 h-4" />
+                              )}
+                            </button>
+                          )}
+                        </td>
+                        <td>
+                          {new Date(log.timestamp).toLocaleDateString()}{" "}
+                          <span className="text-[10px] text-gray-400">
+                            {new Date(log.timestamp).toLocaleTimeString()}
+                          </span>
+                        </td>
+                        <td className="font-medium">{log.userName}</td>
+                        <td>{getActionBadge(log.action)}</td>
+                        <td>{log.module}</td>
+                        <td className="capitalize">{log.recordType?.replace("_", " ") || "-"}</td>
+                        <td className="font-mono text-gray-600">{log.recordId || "-"}</td>
+                      </tr>
+                      {expandedRows.has(log.id) && (
+                        <tr>
+                          <td colSpan={7} className="bg-gray-50 border-b border-gray-200">
+                            <div className="p-4">
+                              {renderDiff(log.oldValue, log.newValue)}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))
                 )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </div>
     </div>
   );

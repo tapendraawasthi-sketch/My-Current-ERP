@@ -41,6 +41,7 @@ import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
 import { generateVoucherNo } from "../../lib/accounting";
 import { generateVoucherPDF } from "../../lib/printUtils";
+import { canEditVoucher, requiresApproval } from "../../lib/permissions";
 import { VoucherType, VoucherStatus, AccountType, PaymentStatus, BillAllocation } from "../../lib/types";
 import toast from "react-hot-toast";
 
@@ -82,11 +83,13 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     invoices,
     bankAccounts,
     costCenters,
+    tdsPayableId,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
-    updateVoucher,
+    submitForApproval,
     updateBillWiseEntry,
   } = useStore();
 
@@ -428,9 +431,28 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       toast.error(err);
       return;
     }
+
+    if (currentUser) {
+      const editCheck = canEditVoucher(date, existing?.status || VoucherStatus.DRAFT, currentUser, companySettings);
+      if (!editCheck.allowed) {
+        toast.error(editCheck.reason);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const payload = buildPayload(status);
+      let payload = buildPayload(status);
+      const totalAmount = payload.lines.reduce((s, l) => s + l.debit, 0);
+
+      let needsApproval = false;
+      if (status === VoucherStatus.POSTED && currentUser) {
+        needsApproval = requiresApproval(VoucherType.PAYMENT, totalAmount, currentUser, companySettings);
+        if (needsApproval) {
+          payload.status = VoucherStatus.DRAFT;
+          (payload as any).approvalStatus = 'pending';
+        }
+      }
       let result;
       if (isEdit) {
         const totalDr = payload.lines.reduce((s, l) => s + l.debit, 0);
@@ -446,7 +468,12 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         );
       } else {
         result = await addVoucher(payload);
-        toast.success(status === VoucherStatus.POSTED ? "Payment voucher posted." : "Draft saved.");
+        if (needsApproval) {
+          await submitForApproval(result.id, VoucherType.PAYMENT, result.voucherNo, totalAmount);
+          toast.success(`Payment voucher submitted for approval. No. ${result.voucherNo}`);
+        } else {
+          toast.success(status === VoucherStatus.POSTED ? "Payment voucher posted." : "Draft saved.");
+        }
       }
       if (status === VoucherStatus.POSTED) {
         await postBillWiseEntries(result.id);

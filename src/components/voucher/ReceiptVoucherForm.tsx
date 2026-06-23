@@ -43,7 +43,8 @@ import {
 } from "lucide-react";
 import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
-import { generateVoucherNo } from "../../lib/accounting";
+import { generateVoucherNo, round2 } from "../../lib/accounting";
+import { canEditVoucher, requiresApproval } from "../../lib/permissions";
 import { generateVoucherPDF } from "../../lib/printUtils";
 import { VoucherType, VoucherStatus, AccountType, PaymentStatus, BillAllocation } from "../../lib/types";
 import toast from "react-hot-toast";
@@ -76,8 +77,6 @@ const emptyLine = () => ({
   amount: 0,
 });
 
-const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
-
 const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSave, onCancel }) => {
   const {
     vouchers,
@@ -85,11 +84,12 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     parties,
     invoices,
     costCenters,
-    companySettings,
+    tdsReceivableId,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
-    updateVoucher,
+    submitForApproval,
     updateBillWiseEntry,
   } = useStore();
 
@@ -434,9 +434,28 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       toast.error(err);
       return;
     }
+
+    if (currentUser) {
+      const editCheck = canEditVoucher(date, existing?.status || VoucherStatus.DRAFT, currentUser, companySettings);
+      if (!editCheck.allowed) {
+        toast.error(editCheck.reason);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const payload = buildPayload(status);
+      let payload = buildPayload(status);
+      const totalAmount = payload.lines.reduce((s, l) => s + l.debit, 0);
+
+      let needsApproval = false;
+      if (status === VoucherStatus.POSTED && currentUser) {
+        needsApproval = requiresApproval(VoucherType.RECEIPT, totalAmount, currentUser, companySettings);
+        if (needsApproval) {
+          payload.status = VoucherStatus.DRAFT;
+          (payload as any).approvalStatus = 'pending';
+        }
+      }
       let result;
       if (isEdit) {
         const totalDr = payload.lines.reduce((s, l) => s + l.debit, 0);
@@ -452,7 +471,12 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         );
       } else {
         result = await addVoucher(payload);
-        toast.success(status === VoucherStatus.POSTED ? "Receipt voucher posted." : "Draft saved.");
+        if (needsApproval) {
+          await submitForApproval(result.id, VoucherType.RECEIPT, result.voucherNo, totalAmount);
+          toast.success(`Receipt voucher submitted for approval. No. ${result.voucherNo}`);
+        } else {
+          toast.success(status === VoucherStatus.POSTED ? "Receipt voucher posted." : "Draft saved.");
+        }
       }
       if (status === VoucherStatus.POSTED) {
         await postBillWiseEntries(result.id);

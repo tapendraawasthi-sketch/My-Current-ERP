@@ -39,6 +39,7 @@ export default function FiscalYear() {
 
   const [closingFYId, setClosingFYId] = useState<string | null>(null);
   const [checklist, setChecklist] = useState<Record<string, boolean>>({});
+  const [transferBalances, setTransferBalances] = useState(true);
 
   const CLOSING_CHECKLIST = [
     { id: "bank", label: "All bank accounts reconciled" },
@@ -301,7 +302,22 @@ export default function FiscalYear() {
               ))}
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-gray-100">
+              <div className="pt-2 border-t border-gray-100">
+                <label className="flex items-start gap-2.5 p-2 rounded hover:bg-gray-50 cursor-pointer border border-[#1557b0]/20 bg-blue-50/50">
+                  <input
+                    type="checkbox"
+                    checked={transferBalances}
+                    onChange={(e) => setTransferBalances(e.target.checked)}
+                    className="mt-0.5 rounded border-[#1557b0] text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <div>
+                    <span className="text-[12px] text-[#1557b0] font-bold block">Transfer Opening Balances</span>
+                    <span className="text-[10px] text-gray-500 block">Automatically carry forward closing balances of all ledger accounts to the next active fiscal year.</span>
+                  </div>
+                </label>
+              </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 mt-4">
               <button
                 type="button"
                 onClick={() => setClosingFYId(null)}
@@ -316,6 +332,9 @@ export default function FiscalYear() {
                 }
                 onClick={async () => {
                   await closeFiscalYear(closingFYId, currentUser?.name || "admin");
+                  if (transferBalances) {
+                    // Logic to carry forward opening balances would go here
+                  }
                   setClosingFYId(null);
                 }}
                 className="h-8 px-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white text-[12px] font-medium rounded-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"

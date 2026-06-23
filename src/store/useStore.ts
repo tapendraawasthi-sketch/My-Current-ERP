@@ -319,6 +319,14 @@ export interface StoreState {
   loadPhysicalStockVouchers: () => Promise<void>;
   addPhysicalStockVoucher: (voucher: Omit<import("../lib/types").PhysicalStockVoucher, "id">) => Promise<import("../lib/types").PhysicalStockVoucher>;
   updatePhysicalStockVoucher: (id: string, updates: Partial<import("../lib/types").PhysicalStockVoucher>) => Promise<void>;
+
+  // Approvals
+  approvalRequests: import("../lib/types").ApprovalRequest[];
+  loadApprovalRequests: () => Promise<void>;
+  submitForApproval: (voucherId: string, voucherType: import("../lib/types").VoucherType, voucherNo: string, amount: number) => Promise<void>;
+  approveVoucher: (requestId: string, comment?: string) => Promise<void>;
+  rejectVoucher: (requestId: string, comment: string) => Promise<void>;
+  getPendingApprovalCount: () => number;
 }
 
 export type StoreSet = StoreApi<StoreState>["setState"];
@@ -374,6 +382,7 @@ export const useStore = create<StoreState>()((...args) => {
     billsOfMaterial: [],
     productionVouchers: [],
     physicalStockVouchers: [],
+    approvalRequests: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -1255,6 +1264,160 @@ export const useStore = create<StoreState>()((...args) => {
       });
 
       await get().initializeApp();
+    },
+
+    updatePhysicalStockVoucher: async (id, updates) => {
+      const db = getDB();
+      await db.physicalStockVouchers.update(id, updates);
+      set((prev) => ({
+        physicalStockVouchers: prev.physicalStockVouchers.map((v) => (v.id === id ? { ...v, ...updates } : v)),
+      }));
+    },
+
+    loadApprovalRequests: async () => {
+      const db = getDB();
+      const approvalRequests = await db.approvalRequests.toArray();
+      set({ approvalRequests });
+    },
+
+    submitForApproval: async (voucherId, voucherType, voucherNo, amount) => {
+      const db = getDB();
+      const currentUser = get().currentUser;
+      if (!currentUser) return;
+      const request: import("../lib/types").ApprovalRequest = {
+        id: generateId("ar"),
+        voucherId,
+        voucherType,
+        voucherNo,
+        amount,
+        submittedBy: currentUser.id,
+        submittedByName: currentUser.name,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+      await db.approvalRequests.add(request);
+      set((prev) => ({ approvalRequests: [...prev.approvalRequests, request] }));
+    },
+
+    approveVoucher: async (requestId, comment) => {
+      const db = getDB();
+      const currentUser = get().currentUser;
+      const request = await db.approvalRequests.get(requestId);
+      if (!request || !currentUser) return;
+
+      const updates = {
+        status: 'approved' as const,
+        reviewedBy: currentUser.id,
+        reviewedByName: currentUser.name,
+        reviewedAt: new Date().toISOString(),
+        reviewComment: comment
+      };
+      await db.approvalRequests.update(requestId, updates);
+
+      const approvedRequest = { ...request, ...updates };
+
+      if (request.voucherType === "sales_invoice" || request.voucherType === "purchase_invoice" || request.voucherType === "sales_return" || request.voucherType === "purchase_return") {
+        const inv = await db.invoices.get(request.voucherId);
+        if (inv) {
+          await db.invoices.update(request.voucherId, { 
+            status: import("../lib/types").VoucherStatus.POSTED,
+            approvalStatus: 'approved',
+            approvalComment: comment,
+            approvedBy: currentUser.id,
+            approvedAt: new Date().toISOString()
+          });
+          // Also post stock/journal if needed (normally handled by postInvoice)
+          get().postInvoice(request.voucherId);
+        }
+      } else {
+        const vou = await db.vouchers.get(request.voucherId);
+        if (vou) {
+          await db.vouchers.update(request.voucherId, { 
+            status: import("../lib/types").VoucherStatus.POSTED,
+            approvalStatus: 'approved',
+            approvalComment: comment,
+            approvedBy: currentUser.id,
+            approvedAt: new Date().toISOString(),
+            postedBy: currentUser.name,
+            postedAt: new Date().toISOString()
+          });
+          reloadAccountBalances();
+        }
+      }
+
+      set((prev) => ({
+        approvalRequests: prev.approvalRequests.map((r) => (r.id === requestId ? approvedRequest : r)),
+        invoices: prev.invoices.map(i => i.id === request.voucherId ? { ...i, status: import("../lib/types").VoucherStatus.POSTED, approvalStatus: 'approved', approvalComment: comment, approvedBy: currentUser.id, approvedAt: updates.reviewedAt } : i),
+        vouchers: prev.vouchers.map(v => v.id === request.voucherId ? { ...v, status: import("../lib/types").VoucherStatus.POSTED, approvalStatus: 'approved', approvalComment: comment, approvedBy: currentUser.id, approvedAt: updates.reviewedAt, postedBy: currentUser.name, postedAt: updates.reviewedAt } : v)
+      }));
+
+      await db.auditLogs.add({
+        id: generateId("audit"),
+        timestamp: new Date().toISOString(),
+        userId: currentUser.id,
+        userName: currentUser.name,
+        action: "approval-granted",
+        module: "approval",
+        recordId: request.voucherId,
+        recordType: "voucher",
+        newValue: JSON.stringify({ comment })
+      });
+    },
+
+    rejectVoucher: async (requestId, comment) => {
+      const db = getDB();
+      const currentUser = get().currentUser;
+      const request = await db.approvalRequests.get(requestId);
+      if (!request || !currentUser) return;
+
+      const updates = {
+        status: 'rejected' as const,
+        reviewedBy: currentUser.id,
+        reviewedByName: currentUser.name,
+        reviewedAt: new Date().toISOString(),
+        reviewComment: comment
+      };
+      await db.approvalRequests.update(requestId, updates);
+
+      const rejectedRequest = { ...request, ...updates };
+
+      if (request.voucherType === "sales_invoice" || request.voucherType === "purchase_invoice" || request.voucherType === "sales_return" || request.voucherType === "purchase_return") {
+        await db.invoices.update(request.voucherId, { 
+          approvalStatus: 'rejected',
+          approvalComment: comment,
+          approvedBy: currentUser.id,
+          approvedAt: new Date().toISOString()
+        });
+      } else {
+        await db.vouchers.update(request.voucherId, { 
+          approvalStatus: 'rejected',
+          approvalComment: comment,
+          approvedBy: currentUser.id,
+          approvedAt: new Date().toISOString()
+        });
+      }
+
+      set((prev) => ({
+        approvalRequests: prev.approvalRequests.map((r) => (r.id === requestId ? rejectedRequest : r)),
+        invoices: prev.invoices.map(i => i.id === request.voucherId ? { ...i, approvalStatus: 'rejected', approvalComment: comment, approvedBy: currentUser.id, approvedAt: updates.reviewedAt } : i),
+        vouchers: prev.vouchers.map(v => v.id === request.voucherId ? { ...v, approvalStatus: 'rejected', approvalComment: comment, approvedBy: currentUser.id, approvedAt: updates.reviewedAt } : v)
+      }));
+
+      await db.auditLogs.add({
+        id: generateId("audit"),
+        timestamp: new Date().toISOString(),
+        userId: currentUser.id,
+        userName: currentUser.name,
+        action: "approval-rejected",
+        module: "approval",
+        recordId: request.voucherId,
+        recordType: "voucher",
+        newValue: JSON.stringify({ comment })
+      });
+    },
+
+    getPendingApprovalCount: () => {
+      return get().approvalRequests.filter((r) => r.status === 'pending').length;
     },
 
     updateCompanySettings: async (settings) => {

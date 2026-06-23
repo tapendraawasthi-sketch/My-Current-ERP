@@ -37,6 +37,7 @@ import CompanySettings from "./pages/CompanySettings";
 import FiscalYear from "./pages/FiscalYear";
 import UsersManagement from "./pages/UsersManagement";
 import AuditLog from "./pages/AuditLog";
+import ApprovalQueue from "./pages/ApprovalQueue";
 import BackupRestore from "./pages/BackupRestore";
 import OpeningBalance from "./pages/OpeningBalance";
 import TdsReport from "./pages/TdsReport";
@@ -369,6 +370,12 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <AuditLog />
+        </ErrorBoundary>
+      );
+    case "approval-queue":
+      return (
+        <ErrorBoundary>
+          <ApprovalQueue />
         </ErrorBoundary>
       );
     case "backup":

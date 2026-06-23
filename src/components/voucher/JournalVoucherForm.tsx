@@ -32,6 +32,7 @@ import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
 import { VoucherType, VoucherStatus } from "../../lib/types";
 import { generateVoucherNo } from "../../lib/accounting";
+import { canEditVoucher, requiresApproval } from "../../lib/permissions";
 import toast from "react-hot-toast";
 
 interface JournalVoucherFormProps {
@@ -73,8 +74,10 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     costCenters,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
+    submitForApproval,
   } = useStore();
 
   const isEdit = !!voucherId;
@@ -266,9 +269,28 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       toast.error(err);
       return;
     }
+
+    if (currentUser) {
+      const editCheck = canEditVoucher(date, existing?.status || VoucherStatus.DRAFT, currentUser, companySettings);
+      if (!editCheck.allowed) {
+        toast.error(editCheck.reason);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const payload = buildPayload(status);
+      let payload = buildPayload(status);
+      const totalAmount = payload.lines.reduce((s, l) => s + l.debit, 0);
+
+      let needsApproval = false;
+      if (status === VoucherStatus.POSTED && currentUser) {
+        needsApproval = requiresApproval(VoucherType.JOURNAL, totalAmount, currentUser, companySettings);
+        if (needsApproval) {
+          payload.status = VoucherStatus.DRAFT;
+          (payload as any).approvalStatus = 'pending';
+        }
+      }
       let result;
       if (isEdit) {
         const totalDr = payload.lines.reduce((s, l) => s + l.debit, 0);
@@ -284,7 +306,12 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
         );
       } else {
         result = await addVoucher(payload);
-        toast.success(status === VoucherStatus.POSTED ? "Journal voucher posted." : "Draft saved.");
+        if (needsApproval) {
+          await submitForApproval(result.id, VoucherType.JOURNAL, result.voucherNo, totalAmount);
+          toast.success(`Voucher submitted for approval. No. ${result.voucherNo}`);
+        } else {
+          toast.success(status === VoucherStatus.POSTED ? "Journal voucher posted." : "Draft saved.");
+        }
       }
       setDirty(false);
       onSave?.(result);

@@ -39,6 +39,7 @@ import { formatNumber, numberToWords } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
 import { generateInvoiceNo, getAccountRunningBalance } from "../../lib/accounting";
 import { computeVAT } from "../../lib/taxUtils";
+import { canEditVoucher, requiresApproval } from "../../lib/permissions";
 import { generateInvoicePDF } from "../../lib/printUtils";
 import {
   VoucherType,
@@ -50,10 +51,12 @@ import {
   AccountType,
 } from "../../lib/types";
 import toast from "react-hot-toast";
+
+const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
+
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
 import AttachmentUploader from "../ui/AttachmentUploader";
 
-const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 const TYPE_MAP: Record<
@@ -137,13 +140,15 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     warehouses,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addInvoice,
     updateInvoice,
+    submitForApproval,
+    addBillWiseEntry,
     items,
     vouchers,
     currencies,
     exchangeRates,
-    addBillWiseEntry,
   } = useStore();
 
   const meta = TYPE_MAP[type];
@@ -527,9 +532,35 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       toast.error(err);
       return;
     }
+
+    if (currentUser) {
+      const editCheck = canEditVoucher(date, existing?.status || VoucherStatus.DRAFT, currentUser, companySettings);
+      if (!editCheck.allowed) {
+        toast.error(editCheck.reason);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const payload = buildPayload(status);
+      let payload = buildPayload(status);
+      
+      let needsApproval = false;
+      if (status === VoucherStatus.POSTED && currentUser) {
+        const vtMapping = {
+          sales: "sales_invoice",
+          purchase: "purchase_invoice",
+          "sales-return": "sales_return",
+          "purchase-return": "purchase_return"
+        };
+        const mappedVt = vtMapping[type as keyof typeof vtMapping] as any;
+        needsApproval = requiresApproval(mappedVt, payload.grandTotal, currentUser, companySettings);
+        if (needsApproval) {
+          payload.status = VoucherStatus.DRAFT;
+          (payload as any).approvalStatus = 'pending';
+        }
+      }
+
       let result: any;
       if (isEdit) {
         await updateInvoice(invoiceId!, payload as any);
@@ -538,6 +569,20 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         result = await addInvoice(payload as any);
       }
       setDirty(false);
+
+      if (needsApproval) {
+        const vtMapping = {
+          sales: "sales_invoice",
+          purchase: "purchase_invoice",
+          "sales-return": "sales_return",
+          "purchase-return": "purchase_return"
+        };
+        const mappedVt = vtMapping[type as keyof typeof vtMapping] as any;
+        await submitForApproval(result.id, mappedVt, result.invoiceNo, payload.grandTotal);
+        toast.success(`Invoice submitted for approval. No. ${result.invoiceNo}`);
+        setSavedInvoice(result);
+        return;
+      }
 
       if (status === VoucherStatus.POSTED) {
         toast.custom(

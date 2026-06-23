@@ -53,6 +53,7 @@ import {
   BillOfMaterial,
   ProductionVoucher,
   PhysicalStockVoucher,
+  ApprovalRequest,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -96,6 +97,7 @@ export class SutraDB extends Dexie {
   public billsOfMaterial!: Table<BillOfMaterial & { id: string }>;
   public productionVouchers!: Table<ProductionVoucher & { id: string }>;
   public physicalStockVouchers!: Table<PhysicalStockVoucher & { id: string }>;
+  public approvalRequests!: Table<ApprovalRequest & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -155,6 +157,10 @@ export class SutraDB extends Dexie {
       billsOfMaterial: "++id, name, finishedItemId, isActive",
       productionVouchers: "++id, voucherNo, date, status",
       physicalStockVouchers: "++id, voucherNo, date, warehouseId, status",
+    });
+
+    this.version(8).stores({
+      approvalRequests: "++id, voucherId, voucherType, status, submittedBy, submittedAt",
     });
   }
 }
