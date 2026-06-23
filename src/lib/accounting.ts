@@ -391,6 +391,44 @@ export function getAccountBalance(account: Account): {
 // 2. TRIAL BALANCE
 // ==========================================
 
+export interface MultiYearTrialBalanceRow extends TrialBalanceRow {
+  prevDebit: number;
+  prevCredit: number;
+  prevClosingDr: number;
+  prevClosingCr: number;
+  varianceDr: number;
+  varianceCr: number;
+}
+
+export function computeMultiYearTrialBalance(
+  accounts: Account[],
+  vouchers: JournalEntry[],
+  currStartDate: string,
+  currEndDate: string,
+  prevStartDate: string,
+  prevEndDate: string
+): MultiYearTrialBalanceRow[] {
+  const currentRows = computeTrialBalance(accounts, vouchers, currStartDate, currEndDate);
+  const prevRows = computeTrialBalance(accounts, vouchers, prevStartDate, prevEndDate);
+
+  const prevMap = new Map<string, TrialBalanceRow>();
+  prevRows.forEach((r) => prevMap.set(r.accountId, r));
+
+  return currentRows.map((curr) => {
+    const prev = prevMap.get(curr.accountId);
+    return {
+      ...curr,
+      prevDebit: prev?.debit || 0,
+      prevCredit: prev?.credit || 0,
+      prevClosingDr: prev?.closingDr || 0,
+      prevClosingCr: prev?.closingCr || 0,
+      varianceDr: round2(curr.closingDr - (prev?.closingDr || 0)),
+      varianceCr: round2(curr.closingCr - (prev?.closingCr || 0)),
+    };
+  });
+}
+
+
 export function computeTrialBalance(
   accounts: Account[],
   vouchers: JournalEntry[],

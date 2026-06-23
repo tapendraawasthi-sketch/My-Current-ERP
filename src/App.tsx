@@ -58,6 +58,8 @@ import POSMode from "./pages/POSMode";
 import EmployeeMaster from "./pages/EmployeeMaster";
 import BankStatementImport from "./pages/BankStatementImport";
 import OverdueBillsInterest from "./pages/OverdueBillsInterest";
+import DataImport from "./pages/DataImport";
+import DataExport from "./pages/DataExport";
 import BillSundryPage from "./pages/BillSundry";
 import StandardNarrationsPage from "./pages/StandardNarrations";
 import InterestSlabConfig from "./pages/InterestSlabConfig";
@@ -409,6 +411,24 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <EmployeeMaster />
+        </ErrorBoundary>
+      );
+    case "bank-statement-import":
+      return (
+        <ErrorBoundary>
+          <BankStatementImport />
+        </ErrorBoundary>
+      );
+    case "data-import":
+      return (
+        <ErrorBoundary>
+          <DataImport />
+        </ErrorBoundary>
+      );
+    case "data-export":
+      return (
+        <ErrorBoundary>
+          <DataExport />
         </ErrorBoundary>
       );
     case "bank-import":

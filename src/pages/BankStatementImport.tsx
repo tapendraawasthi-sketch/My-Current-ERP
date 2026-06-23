@@ -4,6 +4,7 @@ import { useStore } from "../store/useStore";
 import { ArrowLeft, FileText, CheckCircle2, AlertTriangle, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatNumber, parseFlexibleDate } from "../lib/utils";
+import { formatBSToAD } from "../lib/nepaliDate";
 
 interface CSVRow {
   date: string;
@@ -16,12 +17,58 @@ interface CSVRow {
 }
 
 const BANK_PRESETS = [
-  { value: "", label: "Auto-detect (default)" },
-  { value: "nabil", label: "Nabil Bank" },
-  { value: "nic", label: "NIC Asia Bank" },
+  { value: "", label: "Standard Format (Auto-detect)" },
+  { value: "nic-asia", label: "NIC Asia Bank" },
+  { value: "global-ime", label: "Global IME Bank" },
+  { value: "himalayan", label: "Himalayan Bank" },
   { value: "everest", label: "Everest Bank" },
-  { value: "sbi", label: "SBI Nepal" },
+  { value: "nabil", label: "Nabil Bank" },
 ];
+
+function parseNPR(val: string): number {
+  return parseFloat((val || "0").replace(/[^0-9.]/g, "")) || 0;
+}
+
+const BANK_PARSERS: Record<
+  string,
+  (row: Record<string, string>) => { date: string; narration: string; debit: number; credit: number; balance: number }
+> = {
+  "nic-asia": (row) => ({
+    date: row["Date"] || row["date"] || "",
+    narration: row["Description"] || row["description"] || "",
+    debit: parseNPR(row["Dr"] || row["Debit"] || ""),
+    credit: parseNPR(row["Cr"] || row["Credit"] || ""),
+    balance: parseNPR(row["Balance"] || ""),
+  }),
+  "global-ime": (row) => ({
+    date: row["Date"] || "",
+    narration: row["Particulars"] || "",
+    debit: parseNPR(row["Debit"] || ""),
+    credit: parseNPR(row["Credit"] || ""),
+    balance: parseNPR(row["Balance"] || ""),
+  }),
+  "himalayan": (row) => ({
+    date: row["Transaction Date"] || "",
+    narration: row["Description"] || "",
+    debit: parseNPR(row["Debit Amount"] || ""),
+    credit: parseNPR(row["Credit Amount"] || ""),
+    balance: parseNPR(row["Running Balance"] || ""),
+  }),
+  "everest": (row) => ({
+    date: row["Txn Date"] || "",
+    narration: row["Narration"] || "",
+    debit: parseNPR(row["Debit"] || ""),
+    credit: parseNPR(row["Credit"] || ""),
+    balance: parseNPR(row["Closing Balance"] || ""),
+  }),
+  "nabil": (row) => ({
+    date: row["Date"] || "",
+    narration: row["Particulars"] || row["Narration"] || "",
+    debit: parseNPR(row["Debit"] || row["Dr"] || ""),
+    credit: parseNPR(row["Credit"] || row["Cr"] || ""),
+    balance: parseNPR(row["Balance"] || ""),
+  }),
+};
 
 const BankStatementImport: React.FC = () => {
   const { bankAccounts, accounts, bankStatements, setCurrentPage, importBankStatements } =
@@ -33,6 +80,7 @@ const BankStatementImport: React.FC = () => {
   const [fileName, setFileName] = useState("");
   const [csvContent, setCsvContent] = useState("");
   const [bankPreset, setBankPreset] = useState("");
+  const [isBSDate, setIsBSDate] = useState(false);
 
   function detectColumns(headers: string[]): {
     dateIdx: number;
@@ -112,24 +160,55 @@ const BankStatementImport: React.FC = () => {
         return;
       }
 
+      // Build original-case header map for BANK_PARSERS
+      const originalHeaders = lines[0].split(",").map((h) => h.trim());
+
       const rows: CSVRow[] = [];
       const newCheckedIndices = new Set<number>();
 
       for (let i = 1; i < lines.length; i++) {
-        // Simple CSV splitter that ignores commas within quotes if possible, or basic comma split
-        // For standard simple CSV, a regex split works
+        // Simple CSV splitter that handles quotes
         const parts = lines[i]
           .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
           .map((p) => p.replace(/^"|"$/g, "").trim());
 
-        if (parts.length < headers.length) continue;
+        if (parts.length < Math.min(headers.length, 2)) continue;
 
-        const date = parseFlexibleDate(parts[dateIdx]) || "";
-        const narration = parts[narrationIdx] || "";
-        const debit = debitIdx !== -1 ? parseFloat(parts[debitIdx]) || 0 : 0;
-        const credit = creditIdx !== -1 ? parseFloat(parts[creditIdx]) || 0 : 0;
-        const balance = balanceIdx !== -1 ? parseFloat(parts[balanceIdx]) || 0 : 0;
-        const chequeNo = chequeNoIdx !== -1 ? parts[chequeNoIdx] : "";
+        let dateStr = "";
+        let narration = "";
+        let debit = 0;
+        let credit = 0;
+        let balance = 0;
+        let chequeNo = "";
+
+        const bankParser = BANK_PARSERS[bankPreset];
+        if (bankParser) {
+          // Build row object keyed by original header names
+          const rowObj: Record<string, string> = {};
+          originalHeaders.forEach((h, idx) => {
+            rowObj[h] = parts[idx] || "";
+          });
+          const parsed = bankParser(rowObj);
+          dateStr = parsed.date;
+          narration = parsed.narration;
+          debit = parsed.debit;
+          credit = parsed.credit;
+          balance = parsed.balance;
+        } else {
+          // Standard auto-detect
+          dateStr = dateIdx !== -1 ? parts[dateIdx] : parts[0];
+          narration = narrationIdx !== -1 ? parts[narrationIdx] || "" : "";
+          debit = debitIdx !== -1 ? parseNPR(parts[debitIdx]) : 0;
+          credit = creditIdx !== -1 ? parseNPR(parts[creditIdx]) : 0;
+          balance = balanceIdx !== -1 ? parseNPR(parts[balanceIdx]) : 0;
+          chequeNo = chequeNoIdx !== -1 ? parts[chequeNoIdx] : "";
+        }
+
+        let parsedDate = parseFlexibleDate(dateStr) || "";
+        if (parsedDate && isBSDate) {
+          parsedDate = formatBSToAD(parsedDate);
+        }
+        const date = parsedDate;
 
         if (!date || (debit === 0 && credit === 0)) continue;
 
@@ -138,7 +217,8 @@ const BankStatementImport: React.FC = () => {
           (bst) =>
             bst.bankAccountId === selectedBankAccountId &&
             bst.date === date &&
-            ((debit > 0 && bst.debit === debit) || (credit > 0 && bst.credit === credit)),
+            bst.narration === narration &&
+            ((debit > 0 && bst.debit === debit) || (credit > 0 && bst.credit === credit))
         );
 
         rows.push({
@@ -275,6 +355,10 @@ const BankStatementImport: React.FC = () => {
                 Preset active: Column configuration guidelines loaded. Auto-detect parses values.
               </span>
             )}
+            <div className="flex items-center gap-2 mt-2">
+              <input type="checkbox" checked={isBSDate} onChange={e => setIsBSDate(e.target.checked)} />
+              <span className="text-[10px] uppercase font-bold text-slate-400">Statement dates are in BS</span>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">

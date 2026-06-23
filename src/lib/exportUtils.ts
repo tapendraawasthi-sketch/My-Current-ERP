@@ -751,3 +751,54 @@ export function exportVatAnnexCSV(
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// ==========================================
+// 4. CUSTOM/TEMPLATE EXPORTS
+// ==========================================
+
+export function exportAgingReport(agingData: any[], filename: string = "Aging_Report.xlsx"): void {
+  const headers = ['Party Name', 'PAN', 'Current', '31-60 Days', '61-90 Days', '91-180 Days', '>180 Days', 'Total Outstanding'];
+  const rows = agingData.map(d => [
+    d.partyName || d.name,
+    d.pan || "",
+    d.current || 0,
+    d.days31to60 || 0,
+    d.days61to90 || 0,
+    d.days91to180 || 0,
+    d.olderThan180 || 0,
+    d.totalOutstanding || 0
+  ]);
+  const wb = workbookFromArray(headers, rows, "Aging Report");
+  downloadWorkbook(wb, filename);
+}
+
+export function exportPartyImportTemplate(): void {
+  const headers = ['Code', 'Name', 'Nepali Name', 'Type', 'PAN', 'VAT No', 'Phone', 'Email', 'Address', 'City', 'Province', 'Credit Limit', 'Credit Days', 'TDS Subject (Y/N)', 'TDS Rate', 'TDS Type'];
+  const rows = [
+    ['P-001', 'Acme Corp', 'एक्मी कर्प', 'customer', '123456789', '', '9800000000', 'info@acme.com', '123 Main St', 'KTM', 'Bagmati', 500000, 30, 'Y', 1.5, 'service'],
+    ['P-002', 'Global Suppliers', 'ग्लोबल सप्लायर्स', 'supplier', '987654321', '', '9800000001', 'sales@global.com', '456 Side St', 'PKR', 'Gandaki', 0, 0, 'N', 0, '']
+  ];
+  const wb = workbookFromArray(headers, rows, "Party Import Template");
+  downloadWorkbook(wb, "Party_Import_Template.xlsx");
+}
+
+export function exportItemImportTemplate(): void {
+  const headers = ['Code', 'Name', 'Nepali Name', 'Type', 'Unit', 'Purchase Rate', 'Sales Rate', 'MRP', 'Taxable (Y/N)', 'VAT Rate', 'HSN Code', 'Min Stock', 'Max Stock', 'Reorder Level', 'Opening Stock Qty', 'Opening Stock Rate'];
+  const rows = [
+    ['ITM-001', 'Cement 50kg', 'सिमेन्ट', 'inventory', 'BAG', 800, 950, 1000, 'Y', 13, '252329', 50, 500, 100, 200, 800],
+    ['ITM-002', 'Delivery Charge', 'डेलिभरी', 'service', 'PCS', 0, 500, 500, 'Y', 13, '', 0, 0, 0, 0, 0]
+  ];
+  const wb = workbookFromArray(headers, rows, "Item Import Template");
+  downloadWorkbook(wb, "Item_Import_Template.xlsx");
+}
+
+export function exportOpeningBalanceTemplate(): void {
+  const headers = ['Account Code', 'Account Name', 'Opening Balance', 'Dr/Cr'];
+  const rows = [
+    ['1001', 'Cash in Hand', 50000, 'Dr'],
+    ['2001', 'Bank Loan', 1000000, 'Cr']
+  ];
+  const wb = workbookFromArray(headers, rows, "Opening Balance Template");
+  downloadWorkbook(wb, "Opening_Balance_Template.xlsx");
+}
+

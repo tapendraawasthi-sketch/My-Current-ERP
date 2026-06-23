@@ -15,6 +15,8 @@ import {
   Settings,
   TrendingUp,
   TrendingDown,
+  Upload,
+  Download,
   // New icons
   Receipt,
   ReceiptText,
@@ -221,6 +223,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Recurring Vouchers", page: "recurring-vouchers", icon: RotateCcw },
         { label: "Audit Log", page: "audit-log", icon: FileSignature },
         { label: "Backup & Restore", page: "backup", icon: HardDrive },
+        { label: "Data Import", page: "data-import", icon: Upload },
+        { label: "Data Export", page: "data-export", icon: Download },
         { label: "Interest Slabs", page: "interest-slabs", icon: Percent },
       ],
     },
