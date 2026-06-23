@@ -36,6 +36,7 @@ import { formatNumber, dateToAD } from "../lib/utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const VatReports: React.FC = () => {
   const { invoices, vouchers, accounts, companySettings, currentFiscalYear } = useStore();
@@ -379,7 +380,18 @@ const VatReports: React.FC = () => {
   }, [activeTab, activeAnnex]);
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="VAT Report" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">VAT Reports</h1>
@@ -663,6 +675,10 @@ const VatReports: React.FC = () => {
           </div>
         </Card>
       )}
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

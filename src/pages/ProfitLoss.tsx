@@ -24,6 +24,7 @@ import {
   subDays,
 } from "date-fns";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const presetOptions = [
   { value: "current-month", label: "Current Month" },
@@ -584,7 +585,18 @@ const ProfitLoss: React.FC = () => {
     operatingProfitAmount + otherIncomeAmount - financialExpensesAmount - depreciationAmount;
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Profit & Loss Account" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Profit & Loss Statement</h1>
@@ -823,6 +835,10 @@ const ProfitLoss: React.FC = () => {
           </tbody>
         </table>
       </div>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

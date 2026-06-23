@@ -16,6 +16,7 @@ import { generateBalanceSheetPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { subYears } from "date-fns";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 interface BalanceLine {
   id: string;
@@ -471,7 +472,18 @@ const BalanceSheet: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Balance Sheet" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       {companySettings && (
         <ReportHeader
           title="Balance Sheet"
@@ -705,6 +717,10 @@ const BalanceSheet: React.FC = () => {
           )}
         </div>
       </Card>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

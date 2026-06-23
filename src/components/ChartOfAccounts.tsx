@@ -38,6 +38,7 @@ import { AccountType, AccountLevel, Account } from "../lib/types";
 import { isDebitNature } from "../lib/accounting";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 interface TreeNode {
   id: string; // virtual root like "root-asset" or database account ID
@@ -817,7 +818,18 @@ const ChartOfAccounts: React.FC = () => {
   }, [searchTerm, activeTab]);
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none pb-12">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="List of Accounts" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn select-none pb-12">
       <ActionToolbar
         title="Chart of Accounts"
         subtitle="Manage your account hierarchy and ledgers"
@@ -1833,6 +1845,10 @@ const ChartOfAccounts: React.FC = () => {
         cancelText="No, preserve"
         danger={true}
       />
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

@@ -33,6 +33,7 @@ import { ADToBSString } from "../../lib/nepaliDate";
 import { VoucherType, VoucherStatus } from "../../lib/types";
 import { generateVoucherNo } from "../../lib/accounting";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../../components/BusyShell";
 
 interface JournalVoucherFormProps {
   voucherId?: string;
@@ -342,7 +343,18 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   const colCount = 7 + (enableCostCenter ? 1 : 0) + (enableBillWise ? 1 : 0);
 
   return (
-    <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
+
+
+    <div style={{ background: "#fffbe6", padding: 12 }}>
+
+
+      <PillTitle title="Add Journal Voucher" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
       {isCancelled && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
           <span className="text-5xl font-bold text-red-500/30 border-4 border-red-500/30 rounded-xl px-8 py-3 tracking-widest">
@@ -712,6 +724,10 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
         cancelText="Keep editing"
         danger
       />
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

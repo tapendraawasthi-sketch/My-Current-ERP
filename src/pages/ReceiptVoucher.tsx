@@ -14,6 +14,7 @@ import ReceiptVoucherForm from "../components/voucher/ReceiptVoucherForm";
 import { Download, Plus, Eye } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const statusVariant = {
   [VoucherStatus.DRAFT]: "default",
@@ -120,7 +121,18 @@ const ReceiptVoucher: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
+
+
+    <div style={{ background: "#fffbe6", padding: 12 }}>
+
+
+      <PillTitle title="Add Receipt Voucher" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       <ActionToolbar title="Receipt Vouchers" subtitle="Cash and bank receipts" />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-5">
         <div>
@@ -163,6 +175,10 @@ const ReceiptVoucher: React.FC = () => {
         placeholder="Search voucher no, payer or narration…"
         stickyHeader
       />
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

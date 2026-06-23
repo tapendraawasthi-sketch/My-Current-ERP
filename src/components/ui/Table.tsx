@@ -40,6 +40,7 @@ const Table: React.FC<TableProps> = ({
   footer,
   maxHeight,
 }) => {
+  const [selectedRowIdx, setSelectedRowIdx] = useState<number | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(
     null,
   );
@@ -82,92 +83,53 @@ const Table: React.FC<TableProps> = ({
   }, [data, sortConfig]);
 
   return (
-    <div
-      className={`w-full overflow-x-auto border border-gray-200 rounded-lg shadow-sm bg-white ${className}`}
-    >
-      <div className="w-full overflow-y-auto" style={maxHeight ? { maxHeight } : undefined}>
-        <table role="table" className="w-full border-collapse text-sm">
-          <thead
-            className={`${stickyHeader ? "sticky top-0 z-10" : ""} bg-[#f5f6fa] border-b border-gray-200`}
-          >
-            <tr>
-              {columns.map((col) => (
+    <div style={{ display: "flex", flexDirection: "column", border: "1px solid #a0a0a0" }}>
+      {/* Top toolbar strip */}
+      <div style={{ background: "#b8862a", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, padding: "2px 6px", borderBottom: "1px solid #8a6000" }}>
+        {["Email", "Print", "Refresh - [R]", "Export - [E]", "Search - F3", "Filter - F7"].map(label => (
+          <button key={label} className="busy-flat-btn" style={{ fontSize: 11, padding: "1px 7px", height: 20 }}>{label}</button>
+        ))}
+      </div>
+      {/* Grid */}
+      <div style={{ overflowY: "auto", maxHeight: maxHeight || "60vh" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead>
+            <tr style={{ background: "#d0ccc0", position: stickyHeader ? "sticky" : undefined, top: stickyHeader ? 0 : undefined }}>
+              {columns.map(col => (
                 <th
                   key={col.key}
-                  scope="col"
-                  style={{ width: col.width }}
-                  className={`
-                    px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide select-none
-                    ${col.sortable ? "cursor-pointer hover:bg-gray-100/50" : ""}
-                    ${col.className || ""}
-                  `}
-                  onClick={() => col.sortable && handleSort(col.key)}
+                  style={{ color: "#7a2230", borderBottom: "1px solid #a0a0a0", borderRight: "1px solid #c0c0c0", padding: "3px 6px", textAlign: col.align === "right" ? "right" : "left", fontWeight: "bold", cursor: col.sortable ? "pointer" : "default", whiteSpace: "nowrap" }}
+                  onClick={() => { if (col.sortable) { setSortConfig(sc => sc?.key === col.key ? { key: col.key, direction: sc.direction === "asc" ? "desc" : "asc" } : { key: col.key, direction: "asc" }); } }}
                 >
-                  <div
-                    className={`flex items-center gap-1 ${col.align === "right" ? "justify-end" : col.align === "center" ? "justify-center" : "justify-start"}`}
-                  >
-                    <span>{col.header}</span>
-                    {col.sortable &&
-                      sortConfig?.key === col.key &&
-                      (sortConfig.direction === "asc" ? (
-                        <ChevronUp className="h-3 w-3 text-gray-500" />
-                      ) : (
-                        <ChevronDown className="h-3 w-3 text-gray-500" />
-                      ))}
-                  </div>
+                  {col.header}
+                  {sortConfig?.key === col.key ? (sortConfig.direction === "asc" ? " ▲" : " ▼") : ""}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-150">
+          <tbody>
             {loading ? (
-              Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="animate-pulse bg-white">
-                  {columns.map((col) => (
-                    <td key={col.key} className="px-3 py-2.5">
-                      <div className="h-4 bg-gray-200 rounded w-4/5 mx-auto"></div>
-                    </td>
-                  ))}
-                </tr>
-              ))
+              <tr><td colSpan={columns.length} style={{ textAlign: "center", padding: 20, color: "#666" }}>Loading...</td></tr>
             ) : sortedData.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="text-center py-8 text-gray-400 font-medium text-[12px]"
-                >
-                  {emptyMessage}
-                </td>
-              </tr>
+              <tr><td colSpan={columns.length} style={{ textAlign: "center", padding: 20, color: "#666" }}>{emptyMessage}</td></tr>
             ) : (
-              sortedData.map((row, idx) => {
+              sortedData.map((row, ridx) => {
                 const key = getRowKey(row);
+                const isSelected = selectedRowIdx === ridx;
                 return (
                   <tr
                     key={key}
-                    onClick={() => onRowClick && onRowClick(row)}
-                    className={`
-                      border-b border-gray-100 transition-colors
-                      ${onRowClick ? "cursor-pointer hover:bg-[#f0f4ff]" : ""}
-                      ${striped && idx % 2 === 1 ? "bg-gray-50/50" : "bg-white"}
-                    `}
+                    onClick={() => { setSelectedRowIdx(ridx); onRowClick?.(row); }}
+                    style={{ background: isSelected ? "#3b6fb8" : ridx % 2 === 0 ? "#ffffff" : "#f5f5f5", cursor: onRowClick ? "pointer" : "default" }}
                   >
-                    {columns.map((col) => {
-                      const val = row[col.key];
+                    {columns.map(col => {
+                      const val = (row as any)[col.key];
                       return (
                         <td
                           key={col.key}
-                          className={`
-                            px-3 py-2.5 text-[12px] text-gray-700
-                            ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}
-                            ${col.className || ""}
-                          `}
+                          style={{ borderBottom: "1px solid #d0d0d0", borderRight: "1px solid #e0e0e0", padding: compact ? "1px 5px" : "3px 6px", color: isSelected ? "#ffffff" : "#1e50a0", textAlign: col.align === "right" ? "right" : "left" }}
                         >
-                          {col.render
-                            ? col.render(val, row)
-                            : val !== null && val !== undefined
-                              ? String(val)
-                              : "-"}
+                          {col.render ? col.render(val, row) : val}
                         </td>
                       );
                     })}
@@ -177,11 +139,19 @@ const Table: React.FC<TableProps> = ({
             )}
           </tbody>
           {footer && (
-            <tfoot className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe] text-gray-800">
-              {footer}
+            <tfoot>
+              <tr style={{ background: "#d0ccc0", fontWeight: "bold" }}>
+                <td colSpan={columns.length} style={{ padding: "3px 6px" }}>{footer}</td>
+              </tr>
             </tfoot>
           )}
         </table>
+      </div>
+      {/* Hint strip */}
+      <div style={{ background: "#d8d8d8", borderTop: "1px solid #b0b0b0", padding: "2px 8px", fontSize: 11, color: "#444", display: "flex", gap: 12 }}>
+        <span>TimeTaken: 00:00:00</span>
+        <span>Rows: {loading ? "..." : sortedData.length}</span>
+        <span>[ F9 - Hide ] [ F2 - Refresh ] [ F3 - Search ]</span>
       </div>
     </div>
   );

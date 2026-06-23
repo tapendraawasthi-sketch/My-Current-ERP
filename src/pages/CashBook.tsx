@@ -11,6 +11,7 @@ import { Card, Button, Select, NepaliDatePicker, Table } from "../components/ui"
 import { formatNumber, dateToAD } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const CashBook: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear } = useStore();
@@ -137,7 +138,18 @@ const CashBook: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Cash Book" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Cash Book</h1>
@@ -265,6 +277,10 @@ const CashBook: React.FC = () => {
           />
         </Card>
       </div>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

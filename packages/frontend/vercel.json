@@ -1,3 +1,31 @@
 {
-  "version": 2
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "api/**": {
+      "maxDuration": 30
+    }
+  },
+  "env": [
+    "NEXT_PUBLIC_API_URL"
+  ],
+  "envPrefix": "NEXT_PUBLIC_",
+  "headers": [
+    {
+      "source": "/api/(.+)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/dashboard",
+      "permanent": false
+    }
+  ]
 }

@@ -1,12 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { ReactNode, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
-
+ 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,7 +11,7 @@ interface ModalProps {
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
 }
-
+ 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
@@ -28,77 +22,48 @@ const Modal: React.FC<ModalProps> = ({
   closeOnOverlayClick = true,
   showCloseButton = true,
 }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape" && isOpen) onClose(); };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
-
-  const sizeClasses = {
-    sm: "max-w-md",
-    md: "max-w-lg",
-    lg: "max-w-2xl",
-    xl: "max-w-4xl",
-    full: "max-w-6xl",
-  };
-
+ 
+  if (!isOpen) return null;
+ 
+  const maxWidthMap = { sm: 360, md: 520, lg: 680, xl: 880, full: 1100 };
+  const maxW = maxWidthMap[size];
+ 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeOnOverlayClick ? onClose : undefined}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-          />
-
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            ref={modalRef}
-            aria-modal="true"
-            role="dialog"
-            className={`
-              relative flex flex-col w-full max-h-[88vh] bg-white rounded-lg shadow-2xl overflow-hidden z-10 border border-gray-200
-              ${sizeClasses[size]}
-            `}
-          >
-            <div className="px-5 py-3.5 border-b flex items-center justify-between bg-gray-50/80" style={{ borderColor: "var(--border)" }}>
-              <h3 className="font-bold text-[13px] text-gray-900 leading-none">{title}</h3>
-              {showCloseButton && (
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors focus:ring-1 focus:ring-offset-1 focus:ring-[#1557b0] focus:outline-none"
-                  aria-label="Close"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-6 py-5 text-sm text-gray-700">{children}</div>
-
-            {footer && (
-              <div className="flex items-center justify-end gap-3 px-5 py-3 border-t border-gray-200 bg-gray-50/55">
-                {footer}
-              </div>
-            )}
-          </motion.div>
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.35)" }}
+      onClick={closeOnOverlayClick ? onClose : undefined}
+    >
+      <div
+        style={{ maxWidth: maxW, width: "95%", border: "2px outset #ffffff", background: "#fdf3e0", boxShadow: "3px 3px 8px rgba(0,0,0,0.4)" }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Orange header */}
+        <div className="busy-orange-modal-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span>{title} !</span>
+          {showCloseButton && (
+            <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", color: "#fff", padding: 0 }}>
+              <X size={14} />
+            </button>
+          )}
         </div>
-      )}
-    </AnimatePresence>
+        {/* Body */}
+        <div style={{ padding: "12px 16px", maxHeight: "70vh", overflowY: "auto" }}>
+          {children}
+        </div>
+        {/* Footer */}
+        {footer && (
+          <div style={{ borderTop: "1px solid #c0a870", padding: "8px 12px", display: "flex", gap: 8, justifyContent: "center" }}>
+            {footer}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
-
+ 
 export default Modal;

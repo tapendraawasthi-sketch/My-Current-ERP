@@ -14,6 +14,7 @@ import { VoucherStatus, VoucherType } from "../lib/types";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const DAY_BOOK_GROUPS: { type: VoucherType[]; label: string }[] = [
   { type: [VoucherType.PAYMENT], label: "PAYMENT VOUCHERS" },
@@ -210,7 +211,18 @@ const DayBook: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Day Book" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Day Book</h1>
@@ -314,6 +326,10 @@ const DayBook: React.FC = () => {
           </div>
         </div>
       </Card>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

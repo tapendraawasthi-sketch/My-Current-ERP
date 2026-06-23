@@ -8,6 +8,7 @@ import { generateTrialBalancePDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { AccountLevel, ReportPeriodPreset, TrialBalanceRow } from "../lib/types";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const groupByOptions = [
   { value: "all", label: "All Levels" },
@@ -463,7 +464,18 @@ const TrialBalance: React.FC = () => {
   }, [format, compareMode]);
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Trial Balance" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-2">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
@@ -831,6 +843,10 @@ const TrialBalance: React.FC = () => {
           ? `✓ Grand Totals are in balance (Closing Dr: ${formatNumber(totals.closingDr)} | Closing Cr: ${formatNumber(totals.closingCr)})`
           : `⚠ Grand Totals are out of balance! Difference of ${formatNumber(Math.abs(totals.closingDr - totals.closingCr))}`}
       </Card>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

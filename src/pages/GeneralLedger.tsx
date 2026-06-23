@@ -14,6 +14,7 @@ import { exportLedgerToExcel } from "../lib/exportUtils";
 import { generateLedgerPDF } from "../lib/printUtils";
 import { formatNumber } from "../lib/utils";
 import toast from "react-hot-toast";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const GeneralLedger: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, reportFilters } = useStore();
@@ -117,7 +118,18 @@ const GeneralLedger: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="General Ledger" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">General Ledger</h1>
@@ -278,6 +290,10 @@ const GeneralLedger: React.FC = () => {
           Select an account and date range to view ledger movements.
         </Card>
       )}
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 };

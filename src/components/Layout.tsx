@@ -6,7 +6,8 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
+import BusyMenuBar from "./BusyMenuBar";
 import SutraLogo from "./SutraLogo";
 import { Button, Input, Card, Spinner } from "./ui";
 import {
@@ -268,19 +269,35 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden text-gray-900" style={{ background: "var(--background)" }}>
-      {/* 2. Left side: Collapsible static Sidebar */}
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-
-      {/* 3. Right side: Main workspace and breadcrumbs viewports */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        <Header />
-
-        {/* Actionable scroll container */}
-        <main className="flex-1 overflow-y-auto p-4 relative" style={{ background: "var(--background)" }}>
-          <div className="page-content animate-fadeIn">{children}</div>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#dde8f5" }}>
+      {/* 1. Title Bar */}
+      <TitleBar />
+ 
+      {/* 2. Menu Bar */}
+      <BusyMenuBar />
+ 
+      {/* 3. Main area = workspace + right shortcut sidebar */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Central Workspace */}
+        <main
+          className="flex-1 overflow-y-auto p-3 relative"
+          style={{ background: "#dde8f5" }}
+        >
+          <div style={{ fontSize: 11, color: "#555", textAlign: "center", marginBottom: 6 }}>
+            {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+          </div>
+          {children}
         </main>
+ 
+        {/* Right Shortcut Keys Sidebar */}
+        <ShortcutSidebar />
       </div>
+ 
+      {/* 4. Command Hint Bar */}
+      <CommandHintBar />
+ 
+      {/* 5. Status Bar */}
+      <StatusBar />
     </div>
   );
 };

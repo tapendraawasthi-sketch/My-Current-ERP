@@ -20,7 +20,7 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
       <div className="space-y-4">
         <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">
-            PAN Number * (9 digits)
+            PAN / VAT Registration Number
           </label>
           <input
             type="text"
@@ -29,7 +29,7 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
             className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
             maxLength={9}
-            placeholder="123456789"
+            placeholder="e.g. 123456789"
           />
           {data.panNumber && !validatePAN(data.panNumber) && (
             <p className="text-xs text-red-600 mt-1">PAN must be exactly 9 digits</p>

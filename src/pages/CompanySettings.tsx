@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Building2, Settings, FileText, Printer, Plug, Save } from "lucide-react";
 import { useStore } from "../store";
 import { ActionToolbar } from "../components/ui";
+import { PillTitle, FormPanel } from "../components/BusyShell";
 
 export default function CompanySettings() {
   const { companySettings, updateCompanySettings, currentFiscalYear } = useStore();
@@ -25,7 +26,18 @@ export default function CompanySettings() {
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
+
+
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+
+
+      <PillTitle title="Modify Company" />
+
+
+      <FormPanel>
+
+
+        <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Company Settings</h1>
@@ -125,6 +137,23 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Province</label>
+                  <select
+                    value={formData.province || ""}
+                    onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+                    className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  >
+                    <option value="">Select Province</option>
+                    <option value="Koshi">Koshi</option>
+                    <option value="Madhesh">Madhesh</option>
+                    <option value="Bagmati">Bagmati</option>
+                    <option value="Gandaki">Gandaki</option>
+                    <option value="Lumbini">Lumbini</option>
+                    <option value="Karnali">Karnali</option>
+                    <option value="Sudurpashchim">Sudurpashchim</option>
+                  </select>
+                </div>
+                <div>
                   <label className="block text-[11px] font-semibold text-gray-700 mb-1">City</label>
                   <input
                     type="text"
@@ -182,18 +211,18 @@ export default function CompanySettings() {
               </div>
               <div className="p-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">PAN Number * (9 digits)</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">IRD PAN No.</label>
                   <input
                     type="text"
-                    value={formData.panNumber}
-                    onChange={(e) => setFormData({ ...formData, panNumber: e.target.value })}
+                    value={formData.tax_registration_number}
+                    onChange={(e) => setFormData({ ...formData, tax_registration_number: e.target.value })}
                     className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                     maxLength={9}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">VAT Registration No.</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">PAN/VAT No.</label>
                   <input
                     type="text"
                     value={formData.vatNumber}
@@ -356,6 +385,10 @@ export default function CompanySettings() {
           </div>
         )}
       </div>
+    </div>
+
+      </FormPanel>
+
     </div>
   );
 }

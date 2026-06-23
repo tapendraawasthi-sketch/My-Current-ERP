@@ -50,14 +50,8 @@ export function formatCurrency(amount: number, settings?: Partial<CompanySetting
     return "0.00";
   }
 
-  const symbol = settings?.currencySymbol !== undefined ? settings.currencySymbol : "Rs. ";
-  const absoluteValue = Math.abs(amount);
-  const formattedVal = formatIndianNumber(absoluteValue, 2);
-
-  if (amount < 0) {
-    return `(${symbol}${formattedVal})`;
-  }
-  return `${symbol}${formattedVal}`;
+  const formatter = new Intl.NumberFormat("ne-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return "रू " + formatter.format(amount);
 }
 
 export function formatNumber(amount: number, decimals: number = 2): string {
@@ -65,13 +59,8 @@ export function formatNumber(amount: number, decimals: number = 2): string {
     return "0.00";
   }
 
-  const absoluteValue = Math.abs(amount);
-  const formattedVal = formatIndianNumber(absoluteValue, decimals);
-
-  if (amount < 0) {
-    return `-${formattedVal}`;
-  }
-  return formattedVal;
+  const formatter = new Intl.NumberFormat("ne-NP", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return formatter.format(amount);
 }
 
 // ==========================================
