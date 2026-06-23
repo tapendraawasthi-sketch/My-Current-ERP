@@ -22,6 +22,7 @@ import {
   AccountSelect,
   NarrationInput,
 } from "../ui";
+import PartyDashboard from "../ui/PartyDashboard";
 import {
   ArrowLeft,
   Plus,
@@ -203,6 +204,10 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [partyId]);
+
+  // ---- dashboard ----
+  const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [dashboardPartyId, setDashboardPartyId] = useState("");
 
   // ---- payment ----
   const [payMode, setPayMode] = useState<PaymentMode>(existing?.paymentMode || PaymentMode.CREDIT);
@@ -805,17 +810,33 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           </span>
         </div>
         <div className="flex flex-col gap-1">
-          <PartySelect
-            label={meta.isSales ? "Customer" : "Supplier"}
-            partyType={meta.party}
-            value={partyId}
-            onChange={(v) => {
-              setPartyId(v);
-              markDirty();
-            }}
-            required
-            disabled={readOnly}
-          />
+          <div className="flex items-end gap-2">
+            <div className="flex-1">
+              <PartySelect
+                label={meta.isSales ? "Customer" : "Supplier"}
+                partyType={meta.party}
+                value={partyId}
+                onChange={(v) => {
+                  setPartyId(v);
+                  markDirty();
+                }}
+                required
+                disabled={readOnly}
+              />
+            </div>
+            {partyId && (
+              <button
+                type="button"
+                className="h-8 px-2 text-[11px] border border-gray-300 rounded-md hover:bg-gray-50"
+                onClick={() => {
+                  setDashboardPartyId(partyId);
+                  setDashboardOpen(true);
+                }}
+              >
+                Party Info
+              </button>
+            )}
+          </div>
           {partyId && party?.accountId && (
             <div className="mt-1">
               <span
@@ -1703,15 +1724,19 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       <ConfirmDialog
         isOpen={confirmCancel}
         title="Discard changes?"
-        message="You have unsaved changes. Leaving will discard this invoice."
-        confirmText="Discard"
-        cancelText="Stay"
-        danger={true}
+        message="You have unsaved changes. Are you sure you want to discard them?"
         onConfirm={() => {
           setConfirmCancel(false);
           onCancel?.();
         }}
         onClose={() => setConfirmCancel(false)}
+      />
+
+      <PartyDashboard
+        partyId={dashboardPartyId}
+        partyName={parties.find((p) => p.id === dashboardPartyId)?.name || ""}
+        isOpen={dashboardOpen}
+        onClose={() => setDashboardOpen(false)}
       />
     </div>
   );

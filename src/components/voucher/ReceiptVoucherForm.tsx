@@ -25,9 +25,10 @@ import {
   PartySelect,
   NepaliDatePicker,
   ConfirmDialog,
-  NarrationInput,
-  BillByBillModal,
 } from "../ui";
+import NarrationInput from "../ui/NarrationInput";
+import BillByBillModal from "../ui/BillByBillModal";
+import PartyDashboard from "../ui/PartyDashboard";
 import {
   Download,
   Plus,
@@ -147,6 +148,10 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
   // ---- received-from ----
   const [partyId, setPartyId] = useState(existing?.partyId || "");
   const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
+
+  // ---- dashboard ----
+  const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [dashboardPartyId, setDashboardPartyId] = useState("");
 
   // ---- TDS (deducted at source by payer) ----
   const [tdsEnabled, setTdsEnabled] = useState(false);
@@ -757,16 +762,32 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
 
         {/* Received from */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-4 border-t border-gray-200">
-          <PartySelect
-            label="Received From (Party) (Optional)"
-            value={partyId}
-            onChange={(v) => {
-              setPartyId(v);
-              markDirty();
-            }}
-            placeholder="Optional — customer / payer"
-            disabled={readOnly}
-          />
+          <div className="flex items-end gap-2">
+            <div className="flex-1">
+              <PartySelect
+                label="Received From (Party) (Optional)"
+                value={partyId}
+                onChange={(v) => {
+                  setPartyId(v);
+                  markDirty();
+                }}
+                placeholder="Optional — customer / payer"
+                disabled={readOnly}
+              />
+            </div>
+            {partyId && (
+              <button
+                type="button"
+                className="h-8 px-2 text-[11px] border border-gray-300 rounded-md hover:bg-gray-50"
+                onClick={() => {
+                  setDashboardPartyId(partyId);
+                  setDashboardOpen(true);
+                }}
+              >
+                Party Info
+              </button>
+            )}
+          </div>
           {party?.subjectToTds && (
             <div className="flex items-end gap-3">
               <label className="inline-flex items-center gap-2 h-9 text-xs font-semibold text-gray-700">
@@ -845,6 +866,14 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           onConfirm={handleModalConfirm}
         />
       )}
+
+      {/* Party Dashboard */}
+      <PartyDashboard
+        partyId={dashboardPartyId}
+        partyName={parties.find((p) => p.id === dashboardPartyId)?.name || ""}
+        isOpen={dashboardOpen}
+        onClose={() => setDashboardOpen(false)}
+      />
 
       {/* Receipt lines */}
       <Card title="Received Into (Credit Accounts)" padding="none">

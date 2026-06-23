@@ -1,55 +1,109 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useStore } from "../store/useStore";
 
 interface Shortcut {
   key: string;
   description: string;
-  action: string;
+  category: "navigation" | "global" | "voucher";
 }
 
-const shortcuts: Shortcut[] = [
-  { key: "F2", description: "New Sales Invoice", action: "billing" },
-  { key: "F4", description: "New Payment Voucher", action: "payment" },
-  { key: "F5", description: "New Receipt Voucher", action: "receipt" },
-  { key: "F6", description: "New Journal Voucher", action: "journal" },
-  { key: "F7", description: "Open POS Mode", action: "pos" },
-  { key: "F8", description: "Open Day Book", action: "day-book" },
-  { key: "Ctrl+F", description: "Focus Global Search Input", action: "focus-search" },
-  { key: "Ctrl+P", description: "Print Report / Document", action: "print" },
-  { key: "Ctrl+S", description: "Trigger Save on Open Form", action: "save" },
-  { key: "Escape", description: "Close Modal / Popups", action: "escape" },
+const globalShortcuts: Shortcut[] = [
+  { key: "Alt+J", description: "Journal Voucher", category: "navigation" },
+  { key: "Alt+P", description: "Payment Voucher", category: "navigation" },
+  { key: "Alt+R", description: "Receipt Voucher", category: "navigation" },
+  { key: "Alt+C", description: "Contra Voucher", category: "navigation" },
+  { key: "Alt+S", description: "Sales Invoice", category: "navigation" },
+  { key: "Alt+U", description: "Purchase Invoice", category: "navigation" },
+  { key: "Alt+L", description: "Ledger", category: "navigation" },
+  { key: "Alt+T", description: "Trial Balance", category: "navigation" },
+  { key: "Alt+B", description: "Balance Sheet", category: "navigation" },
+  { key: "Alt+D", description: "Dashboard", category: "navigation" },
+  { key: "Ctrl+K", description: "Global Search", category: "global" },
+  { key: "F1", description: "Shortcuts Help", category: "global" },
 ];
+
+const voucherShortcutsList: Shortcut[] = [
+  { key: "F2", description: "Save Voucher", category: "voucher" },
+  { key: "F4", description: "Pick Narration", category: "voucher" },
+  { key: "F9", description: "Delete Row", category: "voucher" },
+  { key: "F11", description: "Pick Item / Party", category: "voucher" },
+  { key: "F12", description: "Copy Voucher", category: "voucher" },
+];
+
+const allShortcuts = [...globalShortcuts, ...voucherShortcutsList];
+
+interface FormHandlers {
+  onSave?: () => void;
+  onNarrationPick?: () => void;
+  onDeleteRow?: () => void;
+  onItemPick?: () => void;
+  onCopyVoucher?: () => void;
+}
+
+// Global active handlers map
+let activeFormHandlers: FormHandlers = {};
 
 export function useKeyboardShortcuts() {
   const { setCurrentPage } = useStore();
   const [showHelp, setShowHelp] = useState(false);
 
+  const registerFormShortcuts = useCallback((handlers: FormHandlers) => {
+    activeFormHandlers = handlers;
+    return () => {
+      activeFormHandlers = {};
+    };
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      const isInput =
-        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
 
-      const ctrl = e.ctrlKey || e.metaKey;
+      // Form shortcuts (work even in inputs if applicable)
+      if (e.key === "F2") {
+        e.preventDefault();
+        activeFormHandlers.onSave?.();
+        return;
+      }
+      if (e.key === "F4") {
+        if (activeFormHandlers.onNarrationPick) {
+          e.preventDefault();
+          activeFormHandlers.onNarrationPick();
+          return;
+        }
+      }
+      if (e.key === "F9") {
+        e.preventDefault();
+        activeFormHandlers.onDeleteRow?.();
+        return;
+      }
+      if (e.key === "F11") {
+        e.preventDefault();
+        activeFormHandlers.onItemPick?.();
+        return;
+      }
+      if (e.key === "F12") {
+        e.preventDefault();
+        activeFormHandlers.onCopyVoucher?.();
+        return;
+      }
 
-      // Allow Escape even if focused on inputs
+      // Help Modal F1
+      if (e.key === "F1") {
+        e.preventDefault();
+        setShowHelp(prev => !prev);
+        return;
+      }
+
+      // Escape to close help
       if (e.key === "Escape") {
-        e.preventDefault();
-        const event = new CustomEvent("erp:escape");
-        window.dispatchEvent(event);
+        setShowHelp(false);
+        // Let it bubble or dispatch generic event if needed
         return;
       }
 
-      // Allow Ctrl+S even if focused on inputs
-      if (ctrl && e.key === "s") {
-        e.preventDefault();
-        const event = new CustomEvent("erp:save");
-        window.dispatchEvent(event);
-        return;
-      }
-
-      // Allow Ctrl+F even if focused on inputs
-      if (ctrl && e.key === "f") {
+      // Ctrl+K for Global Search
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         const input = document.getElementById("global-search-input") as HTMLInputElement;
         if (input) {
@@ -59,57 +113,53 @@ export function useKeyboardShortcuts() {
         return;
       }
 
-      // Don't trigger other shortcuts if user is typing in an input
-      if (isInput) {
-        return;
-      }
+      // If user is typing in an input, don't trigger global navigation shortcuts
+      if (isInput) return;
 
-      // F2 - New Sales Invoice
-      if (e.key === "F2") {
-        e.preventDefault();
-        setCurrentPage("billing");
-      }
-
-      // F4 - Payment
-      if (e.key === "F4") {
-        e.preventDefault();
-        setCurrentPage("payment");
-      }
-
-      // F5 - Receipt
-      if (e.key === "F5") {
-        e.preventDefault();
-        setCurrentPage("receipt");
-      }
-
-      // F6 - Journal
-      if (e.key === "F6") {
-        e.preventDefault();
-        setCurrentPage("journal");
-      }
-
-      // F7 - POS Mode
-      if (e.key === "F7") {
-        e.preventDefault();
-        setCurrentPage("pos");
-      }
-
-      // F8 - Day Book
-      if (e.key === "F8") {
-        e.preventDefault();
-        setCurrentPage("day-book");
-      }
-
-      // Ctrl+P - Print
-      if (ctrl && e.key === "p") {
-        e.preventDefault();
-        window.print();
-      }
-
-      // ? - Show help modal
-      if (e.key === "?" && !ctrl) {
-        e.preventDefault();
-        setShowHelp((prev) => !prev);
+      // Alt+ Navigation Shortcuts
+      if (e.altKey) {
+        switch (e.key.toLowerCase()) {
+          case "j":
+            e.preventDefault();
+            setCurrentPage("journal");
+            break;
+          case "p":
+            e.preventDefault();
+            setCurrentPage("payment");
+            break;
+          case "r":
+            e.preventDefault();
+            setCurrentPage("receipt");
+            break;
+          case "c":
+            e.preventDefault();
+            setCurrentPage("contra");
+            break;
+          case "s":
+            e.preventDefault();
+            setCurrentPage("sales-invoice");
+            break;
+          case "u":
+            e.preventDefault();
+            setCurrentPage("purchase-invoice");
+            break;
+          case "l":
+            e.preventDefault();
+            setCurrentPage("ledger");
+            break;
+          case "t":
+            e.preventDefault();
+            setCurrentPage("trial-balance");
+            break;
+          case "b":
+            e.preventDefault();
+            setCurrentPage("balance-sheet");
+            break;
+          case "d":
+            e.preventDefault();
+            setCurrentPage("dashboard");
+            break;
+        }
       }
     };
 
@@ -119,5 +169,5 @@ export function useKeyboardShortcuts() {
     };
   }, [setCurrentPage]);
 
-  return { shortcuts, showHelp, setShowHelp };
+  return { shortcuts: allShortcuts, showHelp, setShowHelp, registerFormShortcuts };
 }

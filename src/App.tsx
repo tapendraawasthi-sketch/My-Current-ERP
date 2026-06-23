@@ -67,6 +67,7 @@ import BillOfMaterialPage from "./pages/BillOfMaterial";
 import ProductionVoucherPage from "./pages/ProductionVoucher";
 import PhysicalStockPage from "./pages/PhysicalStock";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import KeyboardShortcutsHelp from "./components/ui/KeyboardShortcutsHelp";
 
 function MainRouter() {
   const { currentPage } = useStore();
@@ -482,50 +483,7 @@ function MainRouter() {
   }
 }
 
-function KeyboardShortcutsHelp() {
-  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts();
 
-  return (
-    <>
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="fixed bottom-6 right-6 bg-[#1557b0] text-white rounded-full p-3 shadow-lg hover:bg-[#0f4a96] z-40"
-        title="Keyboard Shortcuts (Press ? to toggle)"
-      >
-        <Keyboard className="w-6 h-6" />
-      </button>
-
-      {showHelp && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-xl max-h-[75vh] overflow-auto border border-gray-200 shadow-xl">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <h2 className="text-[14px] font-semibold text-gray-800">Keyboard Shortcuts</h2>
-              <button
-                onClick={() => setShowHelp(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-5 grid grid-cols-2 gap-3">
-              {shortcuts.map((shortcut) => (
-                <div
-                  key={shortcut.key}
-                  className="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-md border border-gray-100"
-                >
-                  <span className="text-sm text-gray-700">{shortcut.description}</span>
-                  <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">
-                    {shortcut.key}
-                  </kbd>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
 
 export default function App() {
   const { currentUser, initializeApp } = useStore();

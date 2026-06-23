@@ -14,10 +14,12 @@ import {
   Input,
   Select,
   AccountSelect,
+  PartySelect,
   NepaliDatePicker,
   ConfirmDialog,
   NarrationInput,
 } from "../ui";
+import PartyDashboard from "../ui/PartyDashboard";
 import {
   BookOpen,
   Plus,
@@ -71,6 +73,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   const {
     vouchers,
     accounts,
+    parties,
     costCenters,
     companySettings,
     currentFiscalYear,
@@ -131,6 +134,12 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     const nextSeq = String(maxSeq + 1).padStart(4, "0");
     return `${prefix}${nextSeq}`;
   }, [existing, currentFiscalYear, vouchers]);
+
+  // ---- party & dashboard ----
+  const [partyId, setPartyId] = useState(existing?.partyId || "");
+  const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
+  const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [dashboardPartyId, setDashboardPartyId] = useState("");
 
   useEffect(() => {
     if (!overrideVoucherNo && !isEdit) {
@@ -258,6 +267,9 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       voucherNo: activeVoucherNo,
       narration: narration.trim(),
       referenceNo: referenceNo.trim() || undefined,
+      partyId: partyId || undefined,
+      partyName: party?.name || undefined,
+      partyPan: party?.pan || undefined,
       lines: cleanLines,
       status,
     };
@@ -490,6 +502,32 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
               placeholder="Optional reference / document no"
               disabled={readOnly}
             />
+            <div className="flex items-end gap-2">
+              <div className="flex-1">
+                <PartySelect
+                  label="Party (Optional)"
+                  value={partyId}
+                  onChange={(v) => {
+                    setPartyId(v);
+                    markDirty();
+                  }}
+                  placeholder="Link to a party"
+                  disabled={readOnly}
+                />
+              </div>
+              {partyId && (
+                <button
+                  type="button"
+                  className="h-8 px-2 text-[11px] border border-gray-300 rounded-md hover:bg-gray-50"
+                  onClick={() => {
+                    setDashboardPartyId(partyId);
+                    setDashboardOpen(true);
+                  }}
+                >
+                  Party Info
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-3">
             <div>
@@ -788,6 +826,13 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
         confirmText="Discard"
         cancelText="Keep editing"
         danger
+      />
+
+      <PartyDashboard
+        partyId={dashboardPartyId}
+        partyName={parties.find((p) => p.id === dashboardPartyId)?.name || ""}
+        isOpen={dashboardOpen}
+        onClose={() => setDashboardOpen(false)}
       />
     </div>
   );
