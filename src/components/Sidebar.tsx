@@ -85,7 +85,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     currentFiscalYear,
     items,
     stockMovements,
-    companySettings,
   } = useStore();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ Overview: true, Masters: false, Transactions: true, Payroll: true, Inventory: false, "Accounts Books": false, Reports: false, Administration: false });
 
@@ -221,116 +220,85 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
   return (
     <aside
-      className={`flex flex-col h-full overflow-hidden select-none relative shrink-0 ${collapsed ? "w-[56px]" : "w-[224px]"}`}
-      style={{ background: "var(--color-sidebar-bg)", transition: "width 200ms ease" }}
+      className={`flex flex-col h-full overflow-hidden select-none transition-all duration-200 relative shrink-0 ${collapsed ? "w-[48px]" : "w-[216px]"}`}
+      style={{ background: "var(--sidebar)", borderRight: "1px solid var(--sidebar-border)" }}
     >
-      {/* Logo Area */}
-      <div className={`flex items-center ${collapsed ? "justify-center" : ""} h-16 shrink-0`} style={{ padding: collapsed ? "0" : "0 16px" }}>
+      {/* Header */}
+      <div className="h-11 flex items-center justify-between px-2.5 shrink-0" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
         {!collapsed ? (
-          <div className="flex items-center gap-3 mt-2">
-            <div style={{ width: 28, height: 28, background: "var(--color-accent)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 15, flexShrink: 0 }}>S</div>
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded-md bg-[#1557b0] flex items-center justify-center text-white font-bold text-sm shrink-0">S</div>
             <div className="flex flex-col leading-none">
-              <span style={{ color: "white", fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em" }}>Sutra ERP</span>
-              <span style={{ color: "var(--color-sidebar-text)", fontSize: 10, marginTop: 4 }} className="truncate max-w-[130px]">{companySettings?.company_name || "Company"}</span>
+              <span className="text-[13px] font-bold text-white">Sutra</span>
+              <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">ERP Cloud</span>
             </div>
           </div>
         ) : (
-          <div className="mt-2" style={{ width: 28, height: 28, background: "var(--color-accent)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 15 }}>S</div>
+          <div className="mx-auto h-6 w-6 rounded-md bg-[#1557b0] flex items-center justify-center text-white font-bold text-sm">S</div>
+        )}
+        {!collapsed && (
+          <button type="button" onClick={() => setCollapsed(true)} className="p-1 rounded text-slate-500 hover:text-white hover:bg-[#1e3060] transition-colors" title="Collapse">
+            <ChevronLeft className="h-3.5 w-3.5" />
+          </button>
         )}
       </div>
 
+      {/* Fiscal Year tag */}
+      {!collapsed && currentFiscalYear && (
+        <div className="mx-2.5 mt-2 mb-1 px-2 py-1 rounded" style={{ background: "#0f1b35" }}>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Active FY</div>
+          <div className="text-[10px] font-semibold text-slate-300 mt-0.5">{currentFiscalYear.name.includes("BS") ? currentFiscalYear.name : `${currentFiscalYear.name} BS`}</div>
+        </div>
+      )}
+
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto sidebar-scroll py-2 mt-2">
+      <nav className="flex-1 overflow-y-auto sidebar-scroll py-1.5">
         {menuGroups.map((group) => {
           const isExpanded = expandedGroups[group.title] !== false;
           return (
-            <div key={group.title} className="mb-2">
-              {!collapsed && (
-                <button
-                  type="button"
-                  onClick={() => handleGroupToggle(group.title)}
-                  className="w-full flex items-center justify-between text-left"
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.10em",
-                    color: "var(--color-sidebar-group-label)",
-                    padding: "12px 14px 4px",
-                  }}
-                >
+            <div key={group.title} className="mb-1">
+              {!collapsed ? (
+                <button type="button" onClick={() => handleGroupToggle(group.title)}
+                  className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors text-left"
+                  style={{ color: "#475c8a" }}>
                   <span>{group.title}</span>
-                  <ChevronRight style={{ color: "var(--color-sidebar-text)", width: 14, height: 14, transition: "transform 150ms ease", transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }} />
+                  {isExpanded ? <ChevronDown className="h-3 w-3 opacity-60" /> : <ChevronRight className="h-3 w-3 opacity-60" />}
                 </button>
+              ) : (
+                <div className="h-px mx-2 my-1.5" style={{ background: "var(--sidebar-border)" }} />
               )}
               {(isExpanded || collapsed) && (
                 <div className="flex flex-col">
                   {group.items.map((item) => {
                     const active = isItemActive(item);
                     const Icon = item.icon;
-                    
                     const btn = (
-                      <button
-                        type="button"
-                        onClick={() => handleNavigation(item)}
-                        className={`group flex items-center relative text-left ${active ? "" : "hover:bg-[var(--color-sidebar-hover-bg)]"}`}
-                        style={{
-                          height: 36,
-                          padding: collapsed ? "0" : "0 10px 0 12px",
-                          justifyContent: collapsed ? "center" : "flex-start",
-                          gap: collapsed ? 0 : 9,
-                          borderRadius: "var(--radius-md)",
-                          margin: "1px 8px",
-                          cursor: "pointer",
-                          transition: "background-color var(--transition-fast)",
-                          background: active ? "var(--color-sidebar-active-bg)" : "transparent",
-                        }}
-                      >
-                        {active && (
-                          <div style={{ position: "absolute", left: -8, top: "50%", transform: "translateY(-50%)", width: 3, height: 22, background: "var(--color-sidebar-active-indicator)", borderRadius: "0 3px 3px 0" }} />
-                        )}
-                        <Icon
-                          style={{
-                            width: 16, height: 16, flexShrink: 0,
-                            color: active ? "var(--color-sidebar-icon-active)" : "var(--color-sidebar-icon)",
-                          }}
-                          className={!active ? "group-hover:text-[rgba(255,255,255,0.65)] transition-colors" : ""}
-                        />
+                      <button type="button" onClick={() => handleNavigation(item)} title={collapsed ? item.label : undefined}
+                        className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-400"}`}
+                        style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #3b82f6", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
+                        <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#60a5fa]" : "text-slate-500"}`} />
                         {!collapsed && (
-                          <div className="flex flex-col flex-1 min-w-0">
-                            <span
-                              className={`truncate ${!active ? "group-hover:text-[rgba(255,255,255,0.65)] transition-colors" : ""}`}
-                              style={{
-                                fontSize: 13,
-                                fontWeight: active ? 500 : 400,
-                                color: active ? "var(--color-sidebar-text-active)" : "var(--color-sidebar-text)",
-                              }}
-                            >
-                              {item.label}
-                            </span>
+                          <div className="flex flex-col flex-1 leading-tight text-left min-w-0">
+                            <span className="truncate">{item.label}</span>
+                            {item.nepaliLabel && (
+                              <span className="text-[9px] font-normal text-slate-500 truncate">{item.nepaliLabel}</span>
+                            )}
                           </div>
                         )}
                         {!collapsed && item.label === "Stock Items" && reorderAlertCount > 0 && (
-                          <span style={{
-                            background: "var(--color-negative-bg)",
-                            color: "var(--color-negative)",
-                            borderRadius: 3,
-                            padding: "1px 6px",
-                            fontSize: 10,
-                            fontWeight: 700
-                          }}>
+                          <span className="ml-auto bg-amber-500 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
                             {reorderAlertCount}
                           </span>
                         )}
                         {collapsed && item.label === "Stock Items" && reorderAlertCount > 0 && (
-                          <span style={{ position: "absolute", top: 6, right: 6, width: 6, height: 6, background: "var(--color-negative)", borderRadius: "50%" }} />
+                          <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full"></span>
                         )}
                       </button>
                     );
-                    
+                    const tooltipContent = item.nepaliLabel ? `${item.label} (${item.nepaliLabel})` : item.label;
                     return (
                       <React.Fragment key={`${item.label}-${item.page}`}>
-                        {collapsed ? <Tooltip content={item.label} position="right">{btn}</Tooltip> : btn}
+                        {collapsed ? <Tooltip content={tooltipContent} position="right">{btn}</Tooltip> : btn}
                       </React.Fragment>
                     );
                   })}
@@ -341,47 +309,37 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         })}
       </nav>
 
-      {/* Footer / User Info */}
-      <div className="shrink-0 flex flex-col items-center" style={{ borderTop: "1px solid var(--color-sidebar-border)", padding: collapsed ? "12px 0" : "12px 16px" }}>
-        {!collapsed && (
-          <div className="w-full flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.10)", color: "white", fontSize: 11, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="truncate" style={{ color: "var(--color-sidebar-text-active)", fontSize: 12, fontWeight: 500 }}>{currentUser?.name || "User"}</span>
-                <span className="truncate" style={{ color: "var(--color-sidebar-text)", fontSize: 10 }}>{currentUser?.role || "Role"}</span>
-              </div>
+      {/* Footer */}
+      <div className="shrink-0" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
+        {!collapsed && currentUser && (
+          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#0f1b35" }}>
+            <div className="h-7 w-7 rounded-full bg-[#1557b0] flex items-center justify-center text-[11px] font-bold text-white flex-none border border-blue-500">
+              {currentUser.name?.charAt(0).toUpperCase() || "U"}
             </div>
-            <button type="button" onClick={logout} className="flex-shrink-0 group flex items-center justify-center" style={{ width: 28, height: 28, background: "transparent", border: "none", cursor: "pointer" }}>
-              <LogOut className="w-4 h-4 text-[var(--color-sidebar-text)] group-hover:text-[var(--color-negative)] transition-colors" />
-            </button>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-[11px] font-bold text-slate-100 truncate">{currentUser.name}</span>
+              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{currentUser.role}</span>
+            </div>
           </div>
         )}
-        
-        {/* Logout button when collapsed */}
+        <div className="flex flex-col gap-0 py-1 px-1">
+          <button type="button" onClick={() => setCurrentPage("settings")}
+            className={`w-full flex items-center gap-2.5 text-[11px] text-slate-400 hover:bg-[#1e3060] hover:text-slate-100 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
+            <Sliders className="h-3.5 w-3.5 shrink-0" />
+            {!collapsed && <span className="font-medium">Settings</span>}
+          </button>
+          <button type="button" onClick={logout}
+            className={`w-full flex items-center gap-2.5 text-[11px] text-red-400 hover:bg-[#1e3060] hover:text-red-200 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
+            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            {!collapsed && <span className="font-medium">Logout</span>}
+          </button>
+        </div>
         {collapsed && (
-          <button type="button" onClick={logout} className="group flex items-center justify-center mb-2" style={{ width: 32, height: 32, background: "transparent", border: "none", cursor: "pointer" }}>
-            <div className="w-full h-full flex items-center justify-center rounded-md hover:bg-white/[0.06] transition-colors">
-              <LogOut className="w-4 h-4 text-[var(--color-sidebar-text)] group-hover:text-[var(--color-negative)] transition-colors" />
-            </div>
+          <button type="button" onClick={() => setCollapsed(false)} className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-[#1e3060] rounded transition-colors" title="Expand sidebar">
+            <ChevronRight className="h-4 w-4" />
           </button>
         )}
-
-        {/* Toggle Button */}
-        <button
-          type="button"
-          onClick={() => setCollapsed(!collapsed)}
-          className="group flex items-center justify-center"
-          style={{
-            width: 32, height: 32, background: "transparent", border: "none", cursor: "pointer", borderRadius: "var(--radius-md)"
-          }}
-        >
-          <div className="w-full h-full flex items-center justify-center rounded-md hover:bg-white/[0.06] transition-colors">
-            <ChevronRight className={`w-4 h-4 text-[var(--color-sidebar-text)] transition-transform duration-200 ${!collapsed ? "rotate-180" : ""}`} />
-          </div>
-        </button>
+        {!collapsed && <div className="text-[9px] text-center py-1.5 font-medium" style={{ color: "#2d4070" }}>Sutra ERP v2.0 · Nepal Edition</div>}
       </div>
     </aside>
   );

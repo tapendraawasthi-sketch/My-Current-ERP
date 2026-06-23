@@ -1,5 +1,5 @@
 import React from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 
 interface AmountInputProps {
   label?: string;
@@ -30,14 +30,14 @@ const AmountInput: React.FC<AmountInputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-semibold text-[var(--color-text-secondary)] flex items-center gap-0.5"
+          className="text-[11px] font-medium text-gray-600 flex items-center gap-0.5"
         >
           {label}
-          {required && <span className="text-[var(--color-negative)] font-bold">*</span>}
+          {required && <span className="text-red-500 font-bold">*</span>}
         </label>
       )}
-      <div className="relative flex items-center w-full rounded-[var(--radius-md)] shadow-none">
-        <span className="absolute left-2.5 text-[12px] text-[var(--color-text-muted)] font-medium pointer-events-none">
+      <div className="relative flex items-center w-full rounded-md shadow-sm">
+        <span className="absolute left-2.5 text-[12px] text-gray-500 font-medium pointer-events-none">
           {symbol}
         </span>
         <input
@@ -52,22 +52,13 @@ const AmountInput: React.FC<AmountInputProps> = ({
           disabled={disabled}
           required={required}
           className={`
-            block w-full h-[34px] pl-10 pr-[10px] bg-[var(--color-surface)] border text-[var(--color-text-primary)] transition-all focus:outline-none
-            placeholder-[var(--color-text-muted)]
-            focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_var(--color-focus-ring)] focus:bg-[var(--color-surface)]
-            disabled:bg-[var(--color-canvas)] disabled:text-[var(--color-text-disabled)] disabled:cursor-not-allowed disabled:border-[var(--color-border)] disabled:shadow-none
-            rounded-[var(--radius-md)]
-            ${error ? "border-[var(--color-negative)] focus:border-[var(--color-negative)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-negative)_20%,transparent)]" : "border-[var(--color-border-input)]"}
+            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-gray-900 font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300"}
+            ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}
           `}
-          style={{
-            fontFamily: "var(--font-mono)",
-            textAlign: "right",
-            fontVariantNumeric: "tabular-nums",
-            letterSpacing: "-0.01em"
-          }}
         />
       </div>
-      {error && <span className="text-xs text-[var(--color-negative)] font-medium">{error}</span>}
+      {error && <span className="text-xs text-red-650 font-medium">{error}</span>}
     </div>
   );
 };

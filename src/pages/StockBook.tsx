@@ -294,7 +294,7 @@ const StockBook: React.FC = () => {
             <div className="inline-flex items-center justify-end">
               <span className={isLow ? "text-orange-700 font-bold" : ""}>{formatNumber(stock)}</span>
               {(stock <= (it.reorderLevel || 0) && (it.reorderLevel || 0) > 0) && (
-                <span className="badge badge-neutral">LOW</span>
+                <span className="ml-1.5 badge badge-unpaid text-[9px] bg-red-100 text-red-700 border border-red-205">LOW</span>
               )}
             </div>
           ) : (
@@ -406,10 +406,10 @@ const StockBook: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
-          { label: "Total Items", value: items.length, color: "var(--color-accent)" },
-          { label: "Low Stock", value: items.filter(i => (stockByItem.get(i.id)||0) <= (i.reorderLevel||0) && (i.reorderLevel||0) > 0).length, color: "var(--color-negative)" },
+          { label: "Total Items", value: items.length, color: "#1557b0" },
+          { label: "Low Stock", value: items.filter(i => (stockByItem.get(i.id)||0) <= (i.reorderLevel||0) && (i.reorderLevel||0) > 0).length, color: "#dc2626" },
           { label: "Out of Stock", value: items.filter(i => (stockByItem.get(i.id)||0) === 0).length, color: "#b45309" },
-          { label: "Active SKUs", value: items.filter(i => i.isActive !== false).length, color: "var(--color-positive)" },
+          { label: "Active SKUs", value: items.filter(i => i.isActive !== false).length, color: "#15803d" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3 flex items-center gap-3" style={{ borderColor: "var(--border)" }}>
             <div className="w-1 h-8 rounded-full shrink-0" style={{ background: color }} />

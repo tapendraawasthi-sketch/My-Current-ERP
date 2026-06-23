@@ -212,8 +212,8 @@ export default function PayrollRun() {
           <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa]">
             <h2 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
               Payroll Register ({selectedMonth} {selectedYear})
-              {status === "approved" && <span className="badge badge-posted">APPROVED</span>}
-              {status === "posted" && <span className="badge badge-posted">POSTED</span>}
+              {status === "approved" && <span className="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded">APPROVED</span>}
+              {status === "posted" && <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded">POSTED</span>}
             </h2>
             <div className="flex gap-2">
               {status === "draft" && (

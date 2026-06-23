@@ -203,7 +203,7 @@ export default function BackupRestore() {
         <div className="flex items-center space-x-3">
           <Cloud className="w-6 h-6 text-blue-600" />
           <h2 className="text-lg font-semibold">Cloud Backup</h2>
-          <span className="badge badge-neutral">
+          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
             Coming Soon
           </span>
         </div>
@@ -227,7 +227,7 @@ export default function BackupRestore() {
         <div className="flex items-center space-x-3">
           <Database className="w-6 h-6 text-green-600" />
           <h2 className="text-lg font-semibold">Import from Tally</h2>
-          <span className="badge badge-neutral">
+          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
             Coming Soon
           </span>
         </div>
