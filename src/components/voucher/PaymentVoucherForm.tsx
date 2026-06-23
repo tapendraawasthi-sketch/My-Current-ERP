@@ -22,6 +22,7 @@ import {
   NepaliDatePicker,
   ConfirmDialog,
   NarrationInput,
+  BillByBillModal,
 } from "../ui";
 import {
   Wallet,
@@ -40,7 +41,7 @@ import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
 import { generateVoucherNo } from "../../lib/accounting";
 import { generateVoucherPDF } from "../../lib/printUtils";
-import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "../../lib/types";
+import { VoucherType, VoucherStatus, AccountType, PaymentStatus, BillAllocation } from "../../lib/types";
 import toast from "react-hot-toast";
 
 interface PaymentVoucherFormProps {
@@ -85,9 +86,8 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     currentFiscalYear,
     addVoucher,
     updateVoucher,
-    addBillAllocation,
-    updateInvoice,
-    getBillAllocationsForInvoice,
+    updateVoucher,
+    updateBillWiseEntry,
   } = useStore();
 
   const isEdit = !!voucherId;
@@ -156,57 +156,46 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     }
   }, [partyId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ---- outstanding invoices for the selected party ----
-  const outstandingInvoices = useMemo(() => {
-    if (!partyId) return [];
-    return invoices
-      .filter(
-        (inv) =>
-          inv.partyId === partyId &&
-          inv.type === VoucherType.PURCHASE_INVOICE &&
-          inv.status === "posted" &&
-          inv.paymentStatus !== PaymentStatus.PAID,
-      )
-      .map((inv) => {
-        const allocations = getBillAllocationsForInvoice(inv.id);
-        const totalAllocated = allocations.reduce((sum, a) => sum + a.allocatedAmount, 0);
-        const balance = inv.grandTotal - (inv.paidAmount || 0);
-        return { ...inv, balance, totalAllocated };
+  // ---- Bill-by-Bill state ----
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    partyId: string;
+    partyName: string;
+    amount: number;
+    lineIdx: number;
+    side: "Dr" | "Cr";
+  } | null>(null);
+
+  const [billAllocations, setBillAllocations] = useState<Record<number, Partial<BillAllocation>[]>>({});
+  const [onAccountAmounts, setOnAccountAmounts] = useState<Record<number, number>>({});
+
+  const handleLineAmountBlur = (idx: number) => {
+    if (!enableBillWise) return;
+    const line = lines[idx];
+    if (!line.accountId || !(Number(line.amount) > 0)) return;
+
+    // Check if account belongs to a party
+    const linkedParty = parties.find((p) => p.accountId === line.accountId);
+    if (linkedParty && (linkedParty.type === "customer" || linkedParty.type === "supplier")) {
+      setModalState({
+        isOpen: true,
+        partyId: linkedParty.id,
+        partyName: linkedParty.name,
+        amount: Number(line.amount),
+        lineIdx: idx,
+        side: "Dr", // Payments debit the party
       });
-  }, [invoices, partyId, getBillAllocationsForInvoice]);
-
-  const [invoiceAllocations, setInvoiceAllocations] = useState<Record<string, number>>({});
-  const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
-
-  // reset invoice selection and allocations when party changes
-  useEffect(() => {
-    setSelectedInvoiceIds([]);
-    setInvoiceAllocations({});
-  }, [partyId]);
-
-  const updateAllocation = (invId: string, amount: number) => {
-    setInvoiceAllocations((prev) => ({ ...prev, [invId]: amount }));
-    markDirty();
+    }
   };
 
-  const toggleInvoice = (inv: any) => {
-    setSelectedInvoiceIds((prev) => {
-      if (prev.includes(inv.id)) {
-        const { [inv.id]: _, ...rest } = invoiceAllocations;
-        setInvoiceAllocations(rest);
-        return prev.filter((id) => id !== inv.id);
-      } else {
-        setInvoiceAllocations((prev) => ({ ...prev, [inv.id]: inv.balance }));
-        return [...prev, inv.id];
-      }
-    });
-    markDirty();
+  const handleModalConfirm = (allocations: Partial<BillAllocation>[], onAccountAmount: number) => {
+    if (modalState) {
+      setBillAllocations((prev) => ({ ...prev, [modalState.lineIdx]: allocations }));
+      setOnAccountAmounts((prev) => ({ ...prev, [modalState.lineIdx]: onAccountAmount }));
+    }
+    setModalState(null);
   };
 
-  const selectedInvoiceTotal = useMemo(
-    () => round2(Object.values(invoiceAllocations).reduce((s, amt) => s + amt, 0)),
-    [invoiceAllocations],
-  );
 
   // ---- lines ----
   const [lines, setLines] = useState<any[]>(() => {
@@ -312,20 +301,15 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     }
     if (totals.gross <= 0) return "Total payment amount must be greater than zero.";
 
-    // Validate bill allocations if any invoices are selected
-    if (selectedInvoiceIds.length > 0) {
-      const totalAllocated = selectedInvoiceTotal;
-      if (Math.abs(totalAllocated - totals.gross) > 0.01) {
-        return `Bill allocations (${symbol}${formatNumber(totalAllocated)}) must equal total payment amount (${symbol}${formatNumber(totals.gross)})`;
-      }
-      for (const invId of selectedInvoiceIds) {
-        const amount = invoiceAllocations[invId] || 0;
-        if (amount <= 0) {
-          return "All selected invoices must have allocation amount greater than zero.";
-        }
-        const inv = outstandingInvoices.find((i) => i.id === invId);
-        if (inv && amount > inv.balance) {
-          return `Allocation for ${inv.invoiceNo} (${symbol}${formatNumber(amount)}) exceeds balance due (${symbol}${formatNumber(inv.balance)})`;
+    // Validation for allocations
+    for (const [idx, line] of filled.entries()) {
+      const linkedParty = parties.find((p) => p.accountId === line.accountId);
+      if (linkedParty && enableBillWise) {
+        const allocs = billAllocations[idx] || [];
+        const onAcc = onAccountAmounts[idx] || 0;
+        const totalAlloc = allocs.reduce((sum, a) => sum + (a.allocatedAmount || 0), 0) + onAcc;
+        if (Math.abs(totalAlloc - Number(line.amount)) > 0.01) {
+          return `Line ${idx + 1}: Bill allocations must match the row amount exactly.`;
         }
       }
     }
@@ -417,43 +401,24 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     };
   };
 
-  const settleInvoices = async (voucherId: string) => {
-    if (!selectedInvoiceIds.length) return;
-    for (const invId of selectedInvoiceIds) {
-      const inv = outstandingInvoices.find((i) => i.id === invId);
-      if (!inv) continue;
+  const postBillWiseEntries = async (voucherId: string) => {
+    const { getDB } = await import("../../lib/db");
+    const db = getDB();
 
-      const allocatedAmount = invoiceAllocations[invId] || 0;
-      if (allocatedAmount <= 0) continue;
-
-      const newPaidAmount = round2((inv.paidAmount || 0) + allocatedAmount);
-      const balance = round2(inv.grandTotal - newPaidAmount);
-
-      await addBillAllocation({
-        voucherId,
-        invoiceId: inv.id,
-        invoiceNo: inv.invoiceNo,
-        invoiceDate: inv.date,
-        partyId: inv.partyId,
-        originalAmount: inv.grandTotal,
-        allocatedAmount,
-        balanceLeft: balance,
-        allocationDate: date,
-      });
-
-      let newStatus = inv.paymentStatus;
-      if (Math.abs(balance) < 0.01) {
-        newStatus = PaymentStatus.PAID;
-      } else if (newPaidAmount > 0) {
-        newStatus = PaymentStatus.PARTIAL;
-      } else {
-        newStatus = PaymentStatus.UNPAID;
+    for (const allocs of Object.values(billAllocations)) {
+      for (const alloc of allocs) {
+        if (!alloc.invoiceId || !alloc.allocatedAmount) continue;
+        const entry = await db.billWiseEntries.get(alloc.invoiceId);
+        if (entry) {
+          const newAllocated = round2((entry.allocatedAmount || 0) + alloc.allocatedAmount);
+          const newBalance = round2(entry.originalAmount - newAllocated);
+          await updateBillWiseEntry(entry.id, {
+            allocatedAmount: newAllocated,
+            balanceAmount: newBalance,
+            isSettled: newBalance <= 0,
+          });
+        }
       }
-
-      await updateInvoice(inv.id, {
-        paidAmount: newPaidAmount,
-        paymentStatus: newStatus,
-      });
     }
   };
 
@@ -484,7 +449,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         toast.success(status === VoucherStatus.POSTED ? "Payment voucher posted." : "Draft saved.");
       }
       if (status === VoucherStatus.POSTED) {
-        await settleInvoices(result.id);
+        await postBillWiseEntries(result.id);
       }
       setDirty(false);
       setSavedVoucher(result);
@@ -837,99 +802,17 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         </div>
       </Card>
 
-      {/* Outstanding invoice settlement */}
-      {!readOnly && enableBillWise && partyId && outstandingInvoices.length > 0 && (
-        <Card title={`Outstanding Invoices — ${party?.name || ""}`} padding="none">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border-collapse">
-              <thead className="bg-amber-50 border-y border-amber-200 text-amber-700 uppercase tracking-wider font-bold">
-                <tr>
-                  <th className="px-3 py-2.5 w-10 text-center">✓</th>
-                  <th className="px-3 py-2.5">Invoice No</th>
-                  <th className="px-3 py-2.5">Date (BS)</th>
-                  <th className="px-3 py-2.5 text-right">Grand Total</th>
-                  <th className="px-3 py-2.5 text-right">Already Paid</th>
-                  <th className="px-3 py-2.5 text-right">Balance Due</th>
-                  <th className="px-3 py-2.5 text-right w-32">Allocate Now</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-150">
-                {outstandingInvoices.map((inv) => {
-                  const checked = selectedInvoiceIds.includes(inv.id);
-                  return (
-                    <tr
-                      key={inv.id}
-                      className={`cursor-pointer hover:bg-amber-50/40 ${checked ? "bg-amber-50/60" : ""}`}
-                      onClick={() => toggleInvoice(inv)}
-                    >
-                      <td className="px-3 py-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleInvoice(inv)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="h-4 w-4 accent-red-600"
-                        />
-                      </td>
-                      <td className="px-3 py-2 font-mono font-bold text-slate-700">
-                        {inv.invoiceNo}
-                      </td>
-                      <td className="px-3 py-2">{inv.dateNepali || inv.date}</td>
-                      <td className="px-3 py-2 text-right font-mono">
-                        {symbol} {formatNumber(inv.grandTotal || 0)}
-                      </td>
-                      <td className="px-3 py-2 text-right font-mono text-gray-500">
-                        {symbol} {formatNumber(inv.paidAmount || 0)}
-                      </td>
-                      <td className="px-3 py-2 text-right font-mono font-bold text-amber-700">
-                        {symbol} {formatNumber(inv.balance)}
-                      </td>
-                      <td className="px-3 py-2 text-right">
-                        {checked ? (
-                          <input
-                            type="number"
-                            value={invoiceAllocations[inv.id] || 0}
-                            onChange={(e) =>
-                              updateAllocation(inv.id, parseFloat(e.target.value) || 0)
-                            }
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-full h-8 px-2 text-right font-mono border border-amber-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 bg-amber-50"
-                            max={inv.balance}
-                            min={0}
-                            step="0.01"
-                          />
-                        ) : (
-                          <span className="text-gray-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex items-center justify-between p-3 border-t border-gray-200 bg-gray-50/50">
-            <span className="text-[11px] text-gray-500 font-semibold">
-              Tick invoices and enter allocation amount. Total allocations must equal payment
-              amount.
-            </span>
-            <div className="flex items-center gap-4">
-              <span
-                className={`font-mono font-bold ${Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? "text-green-700" : "text-red-600"}`}
-              >
-                Total Allocated: {symbol} {formatNumber(selectedInvoiceTotal)}
-              </span>
-              <span className="font-mono font-bold text-red-700">
-                Payment: {symbol} {formatNumber(totals.gross)}
-              </span>
-              {Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-              ) : (
-                <X className="h-4 w-4 text-red-600" />
-              )}
-            </div>
-          </div>
-        </Card>
+      {/* Bill-by-Bill Modal */}
+      {modalState && (
+        <BillByBillModal
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState(null)}
+          partyId={modalState.partyId}
+          partyName={modalState.partyName}
+          amount={modalState.amount}
+          side={modalState.side}
+          onConfirm={handleModalConfirm}
+        />
       )}
 
       {/* Payment lines */}
@@ -996,10 +879,16 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                       type="number"
                       value={line.amount === 0 ? "" : line.amount}
                       onChange={(e) => updateLine(idx, "amount", parseFloat(e.target.value) || 0)}
+                      onBlur={() => handleLineAmountBlur(idx)}
                       placeholder="0.00"
                       disabled={readOnly}
                       className="w-full h-9 px-2 text-right font-mono border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500 disabled:bg-gray-50"
                     />
+                    {billAllocations[idx] && billAllocations[idx].length > 0 && (
+                      <div className="text-[10px] text-green-600 text-right mt-1 font-semibold">
+                        Allocated
+                      </div>
+                    )}
                   </td>
                   <td className="px-2 py-2 text-center">
                     {!readOnly && (

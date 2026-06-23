@@ -3,7 +3,8 @@ import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
 import { formatNumber } from "../lib/utils";
-import { ArrowLeft, ChevronDown, ChevronRight, Calendar, Percent, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Calendar, Percent, ShieldAlert, Receipt } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface OverdueInvoiceDetail {
   id: string;
@@ -25,11 +26,12 @@ interface PartyOverdueSummary {
 }
 
 const OverdueBillsInterest: React.FC = () => {
-  const { invoices, parties, companySettings, setCurrentPage } = useStore();
+  const { billWiseEntries, parties, companySettings, setCurrentPage, interestSlabs, calculateInterestOnBills, addVoucher } = useStore();
 
   const [asOfDate, setAsOfDate] = useState<string>(new Date().toISOString().split("T")[0]);
   const [interestRate, setInterestRate] = useState<number>(18);
   const [minDays, setMinDays] = useState<number>(0);
+  const [selectedSlabId, setSelectedSlabId] = useState<string>("");
   const [expandedParties, setExpandedParties] = useState<Set<string>>(new Set());
 
   // Toggle expanded card/table per party
@@ -50,43 +52,25 @@ const OverdueBillsInterest: React.FC = () => {
 
     const partyMap: Record<string, OverdueInvoiceDetail[]> = {};
 
-    invoices.forEach((inv) => {
-      // Check if invoice is posted, sales invoice, and unpaid/partially paid
-      if (
-        inv.type === VoucherType.SALES_INVOICE &&
-        inv.status === VoucherStatus.POSTED &&
-        inv.paymentStatus !== PaymentStatus.PAID
-      ) {
-        if (!inv.dueDate) return;
+    // Only process unsettled bills
+    const openEntries = billWiseEntries.filter(e => !e.isSettled);
 
-        const dueMs = new Date(inv.dueDate).getTime();
-        if (isNaN(dueMs)) return;
+    const calcResults = calculateInterestOnBills(openEntries, asOfDate, selectedSlabId || undefined, selectedSlabId ? undefined : interestRate);
 
-        // Calculate days overdue based on asOfDate
-        const diffTime = todayMs - dueMs;
-        const daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (daysOverdue > 0 && daysOverdue >= minDays) {
-          const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
-          if (outstanding <= 0) return;
-
-          // Simple interest calculation: (principal * rate% * days) / 365
-          const interest = (outstanding * (interestRate / 100) * daysOverdue) / 365;
-
-          if (!partyMap[inv.partyId]) {
-            partyMap[inv.partyId] = [];
-          }
-
-          partyMap[inv.partyId].push({
-            id: inv.id,
-            invoiceNo: inv.invoiceNo,
-            date: inv.date,
-            dueDate: inv.dueDate,
-            outstanding,
-            daysOverdue,
-            interest: Math.round(interest * 100) / 100,
-          });
+    calcResults.forEach((res) => {
+      if (res.daysOverdue >= minDays && res.interestAmount > 0) {
+        if (!partyMap[res.entry.partyId]) {
+          partyMap[res.entry.partyId] = [];
         }
+        partyMap[res.entry.partyId].push({
+          id: res.entry.voucherId,
+          invoiceNo: res.entry.voucherNo,
+          date: res.entry.date,
+          dueDate: res.entry.dueDate,
+          outstanding: res.entry.balanceAmount,
+          daysOverdue: res.daysOverdue,
+          interest: Math.round(res.interestAmount * 100) / 100,
+        });
       }
     });
 
@@ -105,7 +89,7 @@ const OverdueBillsInterest: React.FC = () => {
         };
       })
       .sort((a, b) => b.totalInterest - a.totalInterest);
-  }, [invoices, parties, asOfDate, interestRate, minDays]);
+  }, [billWiseEntries, parties, asOfDate, interestRate, minDays, selectedSlabId, calculateInterestOnBills]);
 
   const grandTotals = useMemo(() => {
     return overdueSummary.reduce(
@@ -120,6 +104,47 @@ const OverdueBillsInterest: React.FC = () => {
   }, [overdueSummary]);
 
   const symbol = companySettings?.currencySymbol || "Rs.";
+
+  const handlePostInterest = async (partyData: PartyOverdueSummary) => {
+    const party = parties.find(p => p.id === partyData.partyId);
+    if (!party || !party.accountId) {
+      toast.error("Party account ledger not found.");
+      return;
+    }
+    
+    // We assume there's an Interest Income ledger
+    const { accounts } = useStore.getState();
+    const interestLedger = accounts.find((a) => a.name.toLowerCase().includes("interest income") || a.name.toLowerCase().includes("interest received"));
+    if (!interestLedger) {
+      toast.error("Interest Income ledger not found. Please create one first.");
+      return;
+    }
+
+    try {
+      const payload: any = {
+        type: VoucherType.JOURNAL,
+        status: VoucherStatus.DRAFT,
+        date: asOfDate,
+        dateNepali: "",
+        voucherNo: `JV-INT-${Math.random().toString(36).substring(2,8).toUpperCase()}`,
+        narration: `Interest calculation as of ${asOfDate}`,
+        partyId: party.id,
+        partyName: party.name,
+        lines: [
+          { accountId: party.accountId, debit: partyData.totalInterest, credit: 0 },
+          { accountId: interestLedger.id, debit: 0, credit: partyData.totalInterest }
+        ],
+        totalDebit: partyData.totalInterest,
+        totalCredit: partyData.totalInterest,
+      };
+
+      await addVoucher(payload);
+      toast.success("Draft Journal Voucher created for interest.");
+      setCurrentPage("journal");
+    } catch (e: any) {
+      toast.error("Failed to post interest: " + e.message);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 p-6 select-none animate-fadeIn text-xs max-w-5xl mx-auto pb-16">
@@ -146,7 +171,7 @@ const OverdueBillsInterest: React.FC = () => {
       </div>
 
       {/* Control panel filters */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
             <Calendar className="h-3 w-3" /> As Of Date
@@ -161,7 +186,23 @@ const OverdueBillsInterest: React.FC = () => {
 
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
-            <Percent className="h-3 w-3" /> Interest Rate (% p.a.)
+            Interest Slab
+          </span>
+          <select
+            value={selectedSlabId}
+            onChange={(e) => setSelectedSlabId(e.target.value)}
+            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="">-- Use Fixed Rate --</option>
+            {interestSlabs.filter(s => s.isActive).map(s => (
+              <option key={s.id} value={s.id}>{s.name} ({s.basisType})</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+            <Percent className="h-3 w-3" /> Fixed Rate (% p.a.)
           </span>
           <input
             type="number"
@@ -169,7 +210,8 @@ const OverdueBillsInterest: React.FC = () => {
             max="100"
             value={interestRate}
             onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500"
+            disabled={!!selectedSlabId}
+            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500 disabled:opacity-50"
           />
         </div>
 
@@ -233,6 +275,7 @@ const OverdueBillsInterest: React.FC = () => {
                     <th className="py-2 px-2 text-center w-28">Overdue Invoices</th>
                     <th className="py-2 px-2 text-right w-36">Outstanding Amount</th>
                     <th className="py-2 px-2 text-right w-36">Accumulated Interest</th>
+                    <th className="py-2 px-2 w-28 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -259,15 +302,27 @@ const OverdueBillsInterest: React.FC = () => {
                           <td className="py-3 px-2 text-right font-mono text-red-500">
                             {symbol} {formatNumber(party.totalOutstanding)}
                           </td>
-                          <td className="py-3 px-2 text-right font-mono text-indigo-700">
+                          <td className="py-3 px-2 text-right font-mono font-bold text-indigo-700">
                             {symbol} {formatNumber(party.totalInterest)}
+                          </td>
+                          <td className="py-3 px-2 text-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePostInterest(party);
+                              }}
+                              className="px-2 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-bold hover:bg-indigo-100 uppercase inline-flex items-center gap-1"
+                              title="Post Draft Journal"
+                            >
+                              <Receipt className="h-3 w-3" /> Post
+                            </button>
                           </td>
                         </tr>
 
                         {/* Expanded Invoices list */}
                         {isExpanded && (
                           <tr>
-                            <td colSpan={5} className="bg-slate-50/50 p-4">
+                            <td colSpan={6} className="bg-slate-50/50 p-4">
                               <div className="border border-slate-150 rounded-lg overflow-hidden bg-white">
                                 <table className="w-full text-xs">
                                   <thead className="bg-slate-100/70 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-150">

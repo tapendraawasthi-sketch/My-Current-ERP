@@ -46,6 +46,8 @@ import {
   CustomFieldDef,
   BillSundry,
   StandardNarration,
+  BillWiseEntry,
+  InterestSlab,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -82,6 +84,8 @@ export class SutraDB extends Dexie {
   public customFieldDefs!: Table<CustomFieldDef & { id: string }>;
   public billSundries!: Table<BillSundry & { id: string }>;
   public standardNarrations!: Table<StandardNarration & { id: string }>;
+  public billWiseEntries!: Table<BillWiseEntry & { id: string }>;
+  public interestSlabs!: Table<InterestSlab & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -125,6 +129,11 @@ export class SutraDB extends Dexie {
     this.version(4).stores({
       billSundries: "++id, code, name, isActive",
       standardNarrations: "++id, code, category, isActive",
+    });
+
+    this.version(5).stores({
+      billWiseEntries: "++id, partyId, voucherId, voucherType, date, isSettled, side",
+      interestSlabs: "++id, name, isDefault, isActive",
     });
   }
 }

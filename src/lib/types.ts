@@ -1069,3 +1069,44 @@ export interface StandardNarration {
   isActive: boolean;
   createdAt?: string;
 }
+
+export interface BillWiseEntry {
+  id: string;
+  partyId: string;
+  partyName: string;
+  voucherId: string;
+  voucherNo: string;
+  voucherType: VoucherType;
+  date: string;
+  dateNepali: string;
+  dueDate?: string;
+  originalAmount: number;
+  allocatedAmount: number;
+  balanceAmount: number;
+  side: 'Dr' | 'Cr';
+  isSettled: boolean;
+  referenceNo?: string;
+  onAccount: boolean;
+  createdAt?: string;
+}
+
+export interface InterestSlab {
+  id: string;
+  name: string;
+  basisType: 'day' | 'amount';
+  slabs: {
+    fromDays?: number; toDays?: number;
+    fromAmount?: number; toAmount?: number;
+    ratePercent: number;
+  }[];
+  isDefault: boolean;
+  isActive: boolean;
+}
+
+export interface InterestCalculationResult {
+  entry: BillWiseEntry;
+  daysOverdue: number;
+  ratePercent: number;
+  interestAmount: number;
+  totalWithInterest: number;
+}

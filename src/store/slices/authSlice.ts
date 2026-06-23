@@ -118,6 +118,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         customFieldDefs,
         billSundries,
         standardNarrations,
+        billWiseEntries,
+        interestSlabs,
       ] = await Promise.all([
         db.accounts.toArray(),
         db.vouchers.toArray(),
@@ -150,6 +152,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.customFieldDefs.toArray(),
         db.billSundries.toArray(),
         db.standardNarrations.toArray(),
+        db.billWiseEntries.toArray(),
+        db.interestSlabs.toArray(),
       ]);
 
       const companySettings = companySettingsArr[0] || get().companySettings;
@@ -178,6 +182,26 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
       }
 
       const currentFiscalYear = activeFiscalYears.find((fy) => fy.isCurrent) || null;
+
+      // Seed default Interest Slab if none exists
+      let loadedInterestSlabs = interestSlabs;
+      if (loadedInterestSlabs.length === 0) {
+        const seedSlab = {
+          id: generateId("islab"),
+          name: "Standard Interest",
+          basisType: "day" as const,
+          isDefault: true,
+          isActive: true,
+          slabs: [
+            { fromDays: 0, toDays: 30, ratePercent: 12 },
+            { fromDays: 31, toDays: 60, ratePercent: 15 },
+            { fromDays: 61, toDays: 180, ratePercent: 18 },
+            { fromDays: 181, ratePercent: 24 },
+          ],
+        };
+        await db.interestSlabs.add(seedSlab as any);
+        loadedInterestSlabs = await db.interestSlabs.toArray();
+      }
 
       const accounts = recalculateAccountBalances(accountsRaw, vouchers);
 
@@ -214,6 +238,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         customFieldDefs,
         billSundries,
         standardNarrations,
+        billWiseEntries,
+        interestSlabs: loadedInterestSlabs,
         isDbReady: true,
       });
 

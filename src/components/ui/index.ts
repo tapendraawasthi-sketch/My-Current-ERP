@@ -27,3 +27,4 @@ export type { SelectOption } from "./Select";
 export { CardSection } from "./Card";
 export { ActionToolbar } from "./ActionToolbar";
 export { default as NarrationInput } from './NarrationInput';
+export { BillByBillModal } from './BillByBillModal';

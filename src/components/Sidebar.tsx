@@ -198,6 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "TDS Report", page: "tds-report", icon: BadgeDollarSign },
         { label: "Cost Center Report", page: "cost-center-report", icon: CircleDollarSign },
         { label: "Budget vs Actual", page: "budget-vs-actual", icon: TrendingDown },
+        { label: "Overdue Interest", page: "overdue-interest", icon: AlertTriangle },
       ],
     },
     {
@@ -210,6 +211,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Recurring Vouchers", page: "recurring-vouchers", icon: RotateCcw },
         { label: "Audit Log", page: "audit-log", icon: FileSignature },
         { label: "Backup & Restore", page: "backup", icon: HardDrive },
+        { label: "Interest Slabs", page: "interest-slabs", icon: Percent },
       ],
     },
   ];

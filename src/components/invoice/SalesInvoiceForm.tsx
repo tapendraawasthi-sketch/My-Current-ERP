@@ -143,6 +143,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     vouchers,
     currencies,
     exchangeRates,
+    addBillWiseEntry,
   } = useStore();
 
   const meta = TYPE_MAP[type];
@@ -580,6 +581,27 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         );
       } else {
         toast.success(isEdit ? "Draft updated." : "Draft saved.");
+      }
+
+      // Auto-create BillWiseEntry on POST
+      if (status === VoucherStatus.POSTED && !isEdit && companySettings?.enableBillWiseTracking) {
+        if (party) {
+          const { calculateNextDueDate } = await import("../../lib/accounting");
+          const calcDueDate = dueDate || calculateNextDueDate(date, party.creditDays || 30);
+          await addBillWiseEntry({
+            partyId: result.partyId,
+            voucherId: result.id,
+            voucherNo: result.invoiceNo,
+            referenceNo: result.referenceNo || "",
+            date: result.date,
+            dateNepali: result.dateNepali,
+            dueDate: calcDueDate,
+            originalAmount: result.grandTotal,
+            balanceAmount: result.grandTotal - (result.paidAmount || 0),
+            allocatedAmount: result.paidAmount || 0,
+            isSettled: result.grandTotal <= (result.paidAmount || 0),
+          });
+        }
       }
 
       setSavedInvoice(result);

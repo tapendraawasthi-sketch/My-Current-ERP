@@ -265,6 +265,28 @@ export interface StoreState {
   updateStandardNarration: (id: string, updates: Partial<StandardNarration>) => Promise<void>;
   deleteStandardNarration: (id: string) => Promise<void>;
   incrementNarrationUsage: (id: string) => Promise<void>;
+
+  // Bill-wise
+  billWiseEntries: import("../lib/types").BillWiseEntry[];
+  loadBillWiseEntries: () => Promise<void>;
+  addBillWiseEntry: (entry: Omit<import("../lib/types").BillWiseEntry, "id">) => Promise<import("../lib/types").BillWiseEntry>;
+  updateBillWiseEntry: (id: string, updates: Partial<import("../lib/types").BillWiseEntry>) => Promise<void>;
+  getBillWiseEntriesByParty: (partyId: string) => import("../lib/types").BillWiseEntry[];
+  getOpenBillsByParty: (partyId: string) => import("../lib/types").BillWiseEntry[];
+
+  // Interest Slabs
+  interestSlabs: import("../lib/types").InterestSlab[];
+  loadInterestSlabs: () => Promise<void>;
+  addInterestSlab: (slab: Omit<import("../lib/types").InterestSlab, "id">) => Promise<import("../lib/types").InterestSlab>;
+  updateInterestSlab: (id: string, updates: Partial<import("../lib/types").InterestSlab>) => Promise<void>;
+  deleteInterestSlab: (id: string) => Promise<void>;
+
+  calculateInterestOnBills: (
+    entries: import("../lib/types").BillWiseEntry[],
+    asOnDate: string,
+    slabId: string | null,
+    fixedRate?: number
+  ) => import("../lib/types").InterestCalculationResult[];
 }
 
 export type StoreSet = StoreApi<StoreState>["setState"];
@@ -313,6 +335,8 @@ export const useStore = create<StoreState>()((...args) => {
     customFieldDefs: [],
     billSundries: [],
     standardNarrations: [],
+    billWiseEntries: [],
+    interestSlabs: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -1628,6 +1652,125 @@ export const useStore = create<StoreState>()((...args) => {
           ),
         }));
       }
+    },
+
+    loadBillWiseEntries: async () => {
+      const db = getDB();
+      const billWiseEntries = await db.billWiseEntries.toArray();
+      set({ billWiseEntries });
+    },
+
+    addBillWiseEntry: async (entryData) => {
+      const db = getDB();
+      const cleanId = generateId("bwe");
+      const fullEntry = { ...entryData, id: cleanId };
+      await db.billWiseEntries.add(fullEntry as any);
+      set((prev) => ({ billWiseEntries: [...prev.billWiseEntries, fullEntry as any] }));
+      return fullEntry as any;
+    },
+
+    updateBillWiseEntry: async (id, updates) => {
+      const db = getDB();
+      await db.billWiseEntries.update(id, updates);
+      set((prev) => ({
+        billWiseEntries: prev.billWiseEntries.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+      }));
+    },
+
+    getBillWiseEntriesByParty: (partyId) => {
+      return get().billWiseEntries.filter((e) => e.partyId === partyId);
+    },
+
+    getOpenBillsByParty: (partyId) => {
+      return get().billWiseEntries.filter((e) => e.partyId === partyId && !e.isSettled);
+    },
+
+    loadInterestSlabs: async () => {
+      const db = getDB();
+      const interestSlabs = await db.interestSlabs.toArray();
+      set({ interestSlabs });
+    },
+
+    addInterestSlab: async (slabData) => {
+      const db = getDB();
+      const cleanId = generateId("islab");
+      const fullSlab = { ...slabData, id: cleanId };
+      await db.interestSlabs.add(fullSlab as any);
+      if (slabData.isDefault) {
+        // Unset others if this is default
+        const allSlabs = await db.interestSlabs.toArray();
+        for (const s of allSlabs) {
+          if (s.id !== cleanId && s.isDefault) {
+            await db.interestSlabs.update(s.id, { isDefault: false });
+          }
+        }
+      }
+      const loaded = await db.interestSlabs.toArray();
+      set({ interestSlabs: loaded as any });
+      return fullSlab as any;
+    },
+
+    updateInterestSlab: async (id, updates) => {
+      const db = getDB();
+      if (updates.isDefault) {
+        const allSlabs = await db.interestSlabs.toArray();
+        for (const s of allSlabs) {
+          if (s.id !== id && s.isDefault) {
+            await db.interestSlabs.update(s.id, { isDefault: false });
+          }
+        }
+      }
+      await db.interestSlabs.update(id, updates);
+      const loaded = await db.interestSlabs.toArray();
+      set({ interestSlabs: loaded as any });
+    },
+
+    deleteInterestSlab: async (id) => {
+      const db = getDB();
+      await db.interestSlabs.delete(id);
+      set((prev) => ({
+        interestSlabs: prev.interestSlabs.filter((s) => s.id !== id),
+      }));
+    },
+
+    calculateInterestOnBills: (entries, asOnDate, slabId, fixedRate) => {
+      let slab = null;
+      if (slabId) {
+        slab = get().interestSlabs.find((s) => s.id === slabId);
+      }
+
+      return entries.map((entry) => {
+        const baseDateStr = entry.dueDate || entry.date;
+        const baseDate = new Date(baseDateStr);
+        const asOn = new Date(asOnDate);
+        let daysOverdue = 0;
+        
+        if (asOn > baseDate) {
+           const diffTime = Math.abs(asOn.getTime() - baseDate.getTime());
+           daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        let ratePercent = fixedRate || 0;
+        if (slab && slab.basisType === "day") {
+          const tier = slab.slabs.find((t) => {
+            if (t.fromDays !== undefined && daysOverdue < t.fromDays) return false;
+            if (t.toDays !== undefined && daysOverdue > t.toDays) return false;
+            return true;
+          });
+          if (tier) ratePercent = tier.ratePercent;
+        }
+
+        const balance = entry.balanceAmount || 0;
+        const interestAmount = (balance * ratePercent * daysOverdue) / 36500;
+
+        return {
+          entry,
+          daysOverdue,
+          ratePercent,
+          interestAmount,
+          totalWithInterest: balance + interestAmount,
+        };
+      });
     },
   };
 });

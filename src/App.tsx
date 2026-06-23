@@ -59,6 +59,7 @@ import BankStatementImport from "./pages/BankStatementImport";
 import OverdueBillsInterest from "./pages/OverdueBillsInterest";
 import BillSundryPage from "./pages/BillSundry";
 import StandardNarrationsPage from "./pages/StandardNarrations";
+import InterestSlabConfig from "./pages/InterestSlabConfig";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function MainRouter() {
@@ -405,6 +406,12 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <OverdueBillsInterest />
+        </ErrorBoundary>
+      );
+    case "interest-slabs":
+      return (
+        <ErrorBoundary>
+          <InterestSlabConfig />
         </ErrorBoundary>
       );
     case "salesman-report":

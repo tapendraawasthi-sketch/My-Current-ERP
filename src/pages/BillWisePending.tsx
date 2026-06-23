@@ -23,13 +23,13 @@ interface BillRow {
 }
 
 const BillWisePending: React.FC = () => {
-  const { invoices, parties, companySettings, billAllocations, vouchers } = useStore();
+  const { billWiseEntries, parties, companySettings, vouchers } = useStore();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [partyType, setPartyType] = useState<"customer" | "supplier" | "all">("all");
   const [selectedPartyId, setSelectedPartyId] = useState<string>("");
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
+  const [asOnDate, setAsOnDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [showSettled, setShowSettled] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeReceiptInvoice, setActiveReceiptInvoice] = useState<BillRow | null>(null);
 
@@ -62,56 +62,43 @@ const BillWisePending: React.FC = () => {
 
   // Generate bill rows
   const billRows = useMemo((): BillRow[] => {
-    const filtered = invoices.filter((inv) => {
-      // Filter by invoice type based on party type
-      if (partyType === "customer") {
-        if (inv.type !== VoucherType.SALES_INVOICE) return false;
-      } else if (partyType === "supplier") {
-        if (inv.type !== VoucherType.PURCHASE_INVOICE) return false;
-      } else {
-        if (inv.type !== VoucherType.SALES_INVOICE && inv.type !== VoucherType.PURCHASE_INVOICE)
-          return false;
-      }
-
-      // Filter by status
-      if (inv.status !== VoucherStatus.POSTED) return false;
-      if (inv.paymentStatus === PaymentStatus.PAID) return false;
-
+    const filtered = billWiseEntries.filter((entry) => {
       // Filter by party
-      if (selectedPartyId && inv.partyId !== selectedPartyId) return false;
+      if (selectedPartyId && entry.partyId !== selectedPartyId) return false;
 
-      // Filter by date range
-      if (fromDate && inv.date < fromDate) return false;
-      if (toDate && inv.date > toDate) return false;
+      // Filter by partyType
+      const p = parties.find((pt) => pt.id === entry.partyId);
+      if (partyType === "customer" && p?.type !== PartyType.CUSTOMER && p?.type !== PartyType.BOTH)
+        return false;
+      if (partyType === "supplier" && p?.type !== PartyType.SUPPLIER && p?.type !== PartyType.BOTH)
+        return false;
+
+      // As On Date filter
+      if (asOnDate && entry.date > asOnDate) return false;
+
+      // Show Settled filter
+      if (!showSettled && entry.isSettled) return false;
 
       return true;
     });
 
-    const rows: BillRow[] = filtered.map((inv) => {
-      // Paid amount = sum of all billAllocations for this invoice from store.billAllocations
-      const paidAmount = billAllocations
-        .filter((alloc) => alloc.invoiceId === inv.id)
-        .reduce((sum, alloc) => sum + alloc.allocatedAmount, 0);
-
-      const balance = inv.grandTotal - paidAmount;
-      const dueDate = inv.dueDate || inv.date;
-      const daysOverdue = getDaysOverdue(dueDate);
-      const isOverdue = daysOverdue > 0;
-
-      const party = parties.find((p) => p.id === inv.partyId);
+    const rows: BillRow[] = filtered.map((entry) => {
+      const party = parties.find((p) => p.id === entry.partyId);
+      const daysOverdue = getDaysOverdue(entry.dueDate);
+      const isOverdue = daysOverdue > 0 && !entry.isSettled;
 
       return {
-        invoiceId: inv.id,
-        invoiceNo: inv.invoiceNo,
-        invoiceDate: inv.date,
-        dueDate,
-        partyId: inv.partyId,
-        partyName: inv.partyName,
+        invoiceId: entry.voucherId,
+        invoiceNo: entry.voucherNo,
+        invoiceDate: entry.date,
+        dueDate: entry.dueDate,
+        partyId: entry.partyId,
+        partyName: party?.name || "Unknown Party",
         partyAccountId: party?.accountId || "",
-        originalAmount: inv.grandTotal,
-        paidAmount,
-        balance,
-        daysOverdue: daysOverdue > 0 ? daysOverdue : 0,
+        originalAmount: entry.originalAmount,
+        paidAmount: entry.allocatedAmount || 0,
+        balance: entry.balanceAmount,
+        daysOverdue: isOverdue ? daysOverdue : 0,
         isOverdue,
       };
     });
@@ -126,16 +113,7 @@ const BillWisePending: React.FC = () => {
     }
 
     return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [
-    invoices,
-    partyType,
-    selectedPartyId,
-    fromDate,
-    toDate,
-    searchQuery,
-    billAllocations,
-    parties,
-  ]);
+  }, [billWiseEntries, partyType, selectedPartyId, asOnDate, showSettled, searchQuery, parties]);
 
   // Calculate summary totals
   const summary = useMemo(() => {
@@ -312,9 +290,19 @@ const BillWisePending: React.FC = () => {
             searchable
           />
 
-          <NepaliDatePicker label="From Date" value={fromDate} onChange={setFromDate} />
+          <NepaliDatePicker label="As On Date" value={asOnDate} onChange={setAsOnDate} />
 
-          <NepaliDatePicker label="To Date" value={toDate} onChange={setToDate} />
+          <div className="flex items-end pb-1.5">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showSettled}
+                onChange={(e) => setShowSettled(e.target.checked)}
+                className="h-4 w-4 accent-[#1557b0]"
+              />
+              <span className="text-[12px] font-semibold text-gray-700">Show Settled Bills</span>
+            </label>
+          </div>
         </div>
 
         <div className="mt-4">
