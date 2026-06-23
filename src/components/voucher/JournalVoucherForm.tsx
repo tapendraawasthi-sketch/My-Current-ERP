@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import {
   Card,
   Badge,
@@ -30,12 +30,12 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react";
-import { formatNumber } from "../../lib/utils";
-import { ADToBSString } from "../../lib/nepaliDate";
-import { VoucherType, VoucherStatus } from "../../lib/types";
-import { generateSerialNumber, validateDoubleEntry } from "../../lib/accounting";
+import { formatNumber } from "@/lib/utils";
+import { ADToBSString } from "@/lib/nepaliDate";
+import { VoucherType, VoucherStatus } from "@/lib/types";
+import { generateSerialNumber, validateDoubleEntry } from "@/lib/accounting";
 import toast from "react-hot-toast";
-import { PillTitle, FormPanel } from "../../components/BusyShell";
+import { PillTitle, FormPanel } from "@/components/BusyShell";
 
 interface JournalVoucherFormProps {
   voucherId?: string;

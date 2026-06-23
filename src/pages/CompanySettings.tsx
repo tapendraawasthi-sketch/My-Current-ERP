@@ -230,6 +230,17 @@ export default function CompanySettings() {
                     className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   />
                 </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">VAT Filing Frequency</label>
+                  <select
+                    value={formData.vatFilingFrequency || "monthly"}
+                    onChange={(e) => setFormData({ ...formData, vatFilingFrequency: e.target.value })}
+                    className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="trimestral">Trimestral (Quarterly)</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -368,6 +379,10 @@ export default function CompanySettings() {
                     <div className="mt-0.5">
                       <span className="badge bg-green-50 text-green-700 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase">{currentFiscalYear.status}</span>
                     </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-400 font-bold uppercase">Format</div>
+                    <div className="text-[12px] text-gray-700 font-mono mt-0.5">YYYY/YYYY BS</div>
                   </div>
                   <div>
                     <div className="text-[10px] text-gray-400 font-bold uppercase">Start Date (AD)</div>

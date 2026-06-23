@@ -15,6 +15,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../components/BusyShell";
+import { DualDate } from "../components/ui";
 
 const DAY_BOOK_GROUPS: { type: VoucherType[]; label: string }[] = [
   { type: [VoucherType.PAYMENT], label: "PAYMENT VOUCHERS" },
@@ -53,7 +54,8 @@ const DayBook: React.FC = () => {
         voucher.lines.map((line) => ({
           voucherId: voucher.id,
           voucherNo: voucher.voucherNo,
-          date: voucher.dateNepali || voucher.date,
+          adDate: voucher.date,
+          bsDate: voucher.dateNepali,
           time: voucher.time || "",
           type: voucher.type,
           narration: line.narration || voucher.narration || "",
@@ -299,7 +301,9 @@ const DayBook: React.FC = () => {
                 <tbody>
                   {group.rows.map((row, idx) => (
                     <tr key={idx}>
-                      <td className="whitespace-nowrap">{row.date}</td>
+                      <td className="whitespace-nowrap">
+                        <DualDate date={row.adDate} dateNepali={row.bsDate} />
+                      </td>
                       <td className="font-mono font-bold">{row.voucherNo}</td>
                       <td>{row.time || "—"}</td>
                       <td>

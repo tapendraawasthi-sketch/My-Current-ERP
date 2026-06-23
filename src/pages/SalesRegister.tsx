@@ -124,12 +124,7 @@ const SalesRegister: React.FC = () => {
       header: "Invoice No",
       sortable: true,
     },
-    {
-      key: "date",
-      header: "Date",
-      sortable: true,
-      render: (invoice: Invoice) => new Date(invoice.date).toLocaleDateString(),
-    },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     {
       key: "partyName",
       header: "Customer",

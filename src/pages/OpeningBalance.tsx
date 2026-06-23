@@ -1,441 +1,359 @@
-import React, { useState } from "react";
-import { Save, Download, Upload, AlertCircle } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Save, Upload, AlertCircle, FileSpreadsheet, CheckCircle2, ArrowRight } from "lucide-react";
 import { useStore } from "../store";
-import { PartyType } from "../lib/types";
+import { Account, VoucherType, VoucherStatus, JournalEntry } from "../lib/types";
 import { ActionToolbar } from "../components/ui";
-
-interface Balance {
-  accountId: string;
-  accountName: string;
-  accountCode: string;
-  debit: number;
-  credit: number;
-}
-
-interface PartyBalance {
-  partyId: string;
-  partyName: string;
-  partyType: string;
-  debit: number;
-  credit: number;
-}
-
-interface StockBalance {
-  itemId: string;
-  itemName: string;
-  warehouse: string;
-  quantity: number;
-  rate: number;
-  value: number;
-}
+import { generateId } from "../lib/db";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
+import { ADToBSString } from "../lib/nepaliDate";
 
 export default function OpeningBalance() {
-  const { accounts, parties, items, fiscalYears, currentFiscalYear } = useStore();
-  const [selectedFiscalYear, setSelectedFiscalYear] = useState("2083/84");
-  const [asOfDate, setAsOfDate] = useState<string>(
-    () => currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
-  );
-  const [activeTab, setActiveTab] = useState<"accounts" | "parties" | "stock">("accounts");
+  const { accounts, addVoucher, addAccount } = useStore();
+  const [activeTab, setActiveTab] = useState<"manual" | "excel">("manual");
+  
+  // Manual Entry State
+  const [manualBalances, setManualBalances] = useState<Record<string, { amount: number, nature: "DR"|"CR" }>>({});
+  
+  // Excel Import State
+  const [parsedRows, setParsedRows] = useState<any[]>([]);
+  const [mappedAccounts, setMappedAccounts] = useState<Record<number, string>>({});
+  const [isDragging, setIsDragging] = useState(false);
 
-  const [accountBalances, setAccountBalances] = useState<Balance[]>(
-    accounts.map((l) => ({
-      accountId: l.id,
-      accountName: l.name,
-      accountCode: l.code,
-      debit: 0,
-      credit: 0,
-    })),
-  );
+  // Group Accounts for Manual
+  const groupedAccounts = useMemo(() => {
+    const groups: Record<string, Account[]> = {};
+    accounts.forEach(a => {
+      const g = a.groupName || "Other";
+      if(!groups[g]) groups[g] = [];
+      groups[g].push(a);
+    });
+    return groups;
+  }, [accounts]);
 
-  const [partyBalances, setPartyBalances] = useState<PartyBalance[]>(() => {
-    const customers = parties.filter(
-      (p) => p.type === PartyType.CUSTOMER || p.type === PartyType.BOTH,
-    );
-    const suppliers = parties.filter(
-      (p) => p.type === PartyType.SUPPLIER || p.type === PartyType.BOTH,
-    );
-    return [
-      ...customers.map((c) => ({
-        partyId: c.id,
-        partyName: c.name,
-        partyType: "Customer",
-        debit: 0,
-        credit: 0,
-      })),
-      ...suppliers.map((s) => ({
-        partyId: s.id,
-        partyName: s.name,
-        partyType: "Supplier",
-        debit: 0,
-        credit: 0,
-      })),
-    ];
-  });
-
-  const [stockBalances, setStockBalances] = useState<StockBalance[]>(
-    items.map((p) => ({
-      itemId: p.id,
-      itemName: p.name,
-      warehouse: "Main Warehouse",
-      quantity: 0,
-      rate: 0,
-      value: 0,
-    })),
-  );
-
-  const updateAccountBalance = (accountId: string, field: "debit" | "credit", value: number) => {
-    setAccountBalances(
-      accountBalances.map((b) => (b.accountId === accountId ? { ...b, [field]: value } : b)),
-    );
+  const handleManualChange = (accountId: string, amount: number, nature: "DR"|"CR") => {
+    setManualBalances(prev => ({
+      ...prev,
+      [accountId]: { amount, nature }
+    }));
   };
 
-  const updatePartyBalance = (partyId: string, field: "debit" | "credit", value: number) => {
-    setPartyBalances(
-      partyBalances.map((b) => (b.partyId === partyId ? { ...b, [field]: value } : b)),
-    );
+  const drTotal = Object.values(manualBalances).filter(b => b.nature === "DR").reduce((s, b) => s + (b.amount || 0), 0);
+  const crTotal = Object.values(manualBalances).filter(b => b.nature === "CR").reduce((s, b) => s + (b.amount || 0), 0);
+  const diff = Math.abs(drTotal - crTotal);
+  const isBalanced = diff === 0 && (drTotal > 0 || crTotal > 0);
+
+  const findOrCreateSuspenseAccount = async (): Promise<Account> => {
+    let suspense = accounts.find(a => a.name.toLowerCase().includes("suspense account"));
+    if (!suspense) {
+      suspense = await addAccount({
+        name: "Suspense Account — Opening Difference",
+        code: "SUSP-01",
+        nature: "liabilities",
+        groupName: "Suspense",
+        isGroup: false,
+        isSystem: true
+      });
+    }
+    return suspense;
   };
 
-  const updateStockBalance = (itemId: string, field: "quantity" | "rate", value: number) => {
-    setStockBalances(
-      stockBalances.map((b) => {
-        if (b.itemId === itemId) {
-          const updated = { ...b, [field]: value };
-          updated.value = updated.quantity * updated.rate;
-          return updated;
+  const saveOpeningBalances = async (balances: Record<string, {amount: number, nature: "DR"|"CR"}>) => {
+    const lines = [];
+    let dTotal = 0;
+    let cTotal = 0;
+
+    for (const [accId, data] of Object.entries(balances)) {
+      if (data.amount > 0) {
+        const acc = accounts.find(a => a.id === accId);
+        if (acc) {
+          if (data.nature === "DR") {
+            dTotal += data.amount;
+            lines.push({ id: generateId("line"), accountId: acc.id, accountName: acc.name, debit: data.amount, credit: 0, narration: "Opening Balance" });
+          } else {
+            cTotal += data.amount;
+            lines.push({ id: generateId("line"), accountId: acc.id, accountName: acc.name, debit: 0, credit: data.amount, narration: "Opening Balance" });
+          }
         }
-        return b;
-      }),
-    );
-  };
+      }
+    }
 
-  const totalDebit = accountBalances.reduce((sum, b) => sum + b.debit, 0);
-  const totalCredit = accountBalances.reduce((sum, b) => sum + b.credit, 0);
-  const difference = totalDebit - totalCredit;
-
-  const debitAccounts = accountBalances.filter(
-    (b) =>
-      accounts.find((l) => l.id === b.accountId)?.group?.includes("Asset") ||
-      accounts.find((l) => l.id === b.accountId)?.group?.includes("Expense"),
-  );
-
-  const creditAccounts = accountBalances.filter(
-    (b) =>
-      accounts.find((l) => l.id === b.accountId)?.group?.includes("Liability") ||
-      accounts.find((l) => l.id === b.accountId)?.group?.includes("Income") ||
-      accounts.find((l) => l.id === b.accountId)?.group?.includes("Capital"),
-  );
-
-  const handlePost = () => {
-    if (Math.abs(difference) > 0.01) {
-      alert("Total Debit must equal Total Credit. Please check your entries.");
+    if (lines.length === 0) {
+      toast.error("No balances to save");
       return;
     }
 
-    if (confirm("Post opening balances? This will create journal entries.")) {
-      alert("Opening balances posted successfully!");
+    if (dTotal !== cTotal) {
+      if (!confirm(`Totals do not match (Diff: Rs. ${Math.abs(dTotal - cTotal)}). Post difference to Suspense Account?`)) return;
+      
+      const suspense = await findOrCreateSuspenseAccount();
+      if (dTotal > cTotal) {
+        lines.push({ id: generateId("line"), accountId: suspense.id, accountName: suspense.name, debit: 0, credit: dTotal - cTotal, narration: "Opening Difference" });
+      } else {
+        lines.push({ id: generateId("line"), accountId: suspense.id, accountName: suspense.name, debit: cTotal - dTotal, credit: 0, narration: "Opening Difference" });
+      }
+    }
+
+    const todayAD = new Date().toISOString().split("T")[0];
+    const todayBS = ADToBSString(todayAD);
+
+    const voucher: Omit<JournalEntry, "id" | "voucherNo" | "totalDebit" | "totalCredit" | "createdBy" | "createdAt"> = {
+      type: VoucherType.OPENING_BALANCE,
+      date: todayAD,
+      dateNepali: todayBS,
+      lines,
+      narration: "Imported Opening Balances",
+      status: VoucherStatus.POSTED
+    };
+
+    try {
+      await addVoucher(voucher);
+      toast.success("Opening balances saved successfully!");
+      setManualBalances({});
+      setParsedRows([]);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to save balances");
     }
   };
 
-  const handleCarryForward = () => {
-    if (confirm("Carry forward closing balances from previous fiscal year?")) {
-      alert("Balances carried forward successfully!");
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        const rows = data.map((row: any) => {
+          const ledgerName = row["Ledger Name"] || row["Account Name"] || row["Ledger"];
+          const amount = parseFloat(row["Amount"] || row["Balance"]) || 0;
+          const drCrStr = String(row["Dr/Cr"] || row["Nature"] || row["Type"]).toUpperCase();
+          const nature = (drCrStr === "CR" || drCrStr === "CREDIT") ? "CR" : "DR";
+          
+          return { ledgerName, amount, nature };
+        }).filter(r => r.ledgerName && r.amount > 0);
+
+        setParsedRows(rows);
+        
+        // Auto-map
+        const mapping: Record<number, string> = {};
+        rows.forEach((r, idx) => {
+          const match = accounts.find(a => a.name.toLowerCase() === r.ledgerName.toLowerCase());
+          if (match) mapping[idx] = match.id;
+        });
+        setMappedAccounts(mapping);
+        toast.success(`Loaded ${rows.length} records`);
+
+      } catch (err) {
+        toast.error("Failed to parse Excel file");
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const confirmExcelImport = async () => {
+    const unmapped = parsedRows.some((_, idx) => !mappedAccounts[idx]);
+    if (unmapped) {
+      toast.error("Please map all unmatched accounts before saving.");
+      return;
     }
+
+    const balances: Record<string, {amount: number, nature: "DR"|"CR"}> = {};
+    parsedRows.forEach((r, idx) => {
+      const accId = mappedAccounts[idx];
+      if (accId) {
+        if (!balances[accId]) balances[accId] = { amount: 0, nature: "DR" };
+        balances[accId].amount += r.amount;
+        balances[accId].nature = r.nature;
+      }
+    });
+
+    await saveOpeningBalances(balances);
   };
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar
-        title="Opening Balance"
-        subtitle="Set initial account balances for the fiscal year"
-        primaryAction={{
-          label: "Post Opening Balances",
-          onClick: handlePost,
-          icon: <Save className="w-4 h-4" />,
-        }}
-      />
-
-      <div className="bg-white p-6 rounded-lg shadow space-y-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Fiscal Year</label>
-            <select
-              value={selectedFiscalYear}
-              onChange={(e) => setSelectedFiscalYear(e.target.value)}
-              className="input"
-            >
-              {fiscalYears.map((fy) => (
-                <option key={fy.id} value={fy.name}>
-                  {fy.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">As of Date</label>
-            <input
-              type="date"
-              value={asOfDate}
-              onChange={(e) => setAsOfDate(e.target.value)}
-              className="input"
-            />
-          </div>
-          <div className="flex items-end">
-            <button
-              onClick={handleCarryForward}
-              className="btn-primary flex items-center space-x-2 w-full"
-            >
-              <Download className="w-4 h-4" />
-              <span>Carry Forward from Previous Year</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg mb-3">
-          <div className="text-[12px] text-blue-700"><span className="font-bold">Total Debit: </span>{totalDebit.toFixed(2)}</div>
-          <div className={`text-[12px] font-bold ${Math.abs(totalDebit - totalCredit) < 0.01 ? "text-green-700" : "text-red-600"}`}>{Math.abs(totalDebit - totalCredit) < 0.01 ? "✓ Balanced" : `Diff: ${Math.abs(totalDebit - totalCredit).toFixed(2)}`}</div>
-          <div className="text-[12px] text-blue-700"><span className="font-bold">Total Credit: </span>{totalCredit.toFixed(2)}</div>
+    <div className="flex flex-col gap-4 animate-fadeIn pb-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Opening Balances</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Initialize or import opening balances for ledgers</p>
         </div>
       </div>
 
-      <div className="border-b">
-        <nav className="flex space-x-8">
-          {[
-            { id: "accounts", label: "Account Opening Balances" },
-            { id: "parties", label: "Party Opening Balances" },
-            { id: "stock", label: "Opening Stock" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab.id
-                  ? "border-[#1557b0] text-[#1557b0]"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-140px)]">
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200 bg-gray-50 shrink-0">
+          <button onClick={() => setActiveTab("manual")} className={`px-4 py-2.5 text-[12px] font-semibold tracking-wide border-b-2 transition-colors ${activeTab === "manual" ? "border-[#1557b0] text-[#1557b0] bg-white" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+            Manual Entry
+          </button>
+          <button onClick={() => setActiveTab("excel")} className={`px-4 py-2.5 text-[12px] font-semibold tracking-wide border-b-2 transition-colors ${activeTab === "excel" ? "border-[#1557b0] text-[#1557b0] bg-white" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+            Import from Excel
+          </button>
+        </div>
+
+        {/* Manual Tab Content */}
+        {activeTab === "manual" && (
+          <>
+            <div className="flex-1 overflow-y-auto p-4">
+              {Object.entries(groupedAccounts).map(([group, accs]) => (
+                <div key={group} className="mb-6">
+                  <h3 className="text-[12px] font-bold text-gray-700 uppercase tracking-wide bg-gray-100 px-3 py-1.5 rounded-t border border-gray-200 border-b-0">{group}</h3>
+                  <table className="w-full border border-gray-200">
+                    <thead className="bg-[#f5f6fa] border-b border-gray-200">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Ledger Name</th>
+                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase w-48">Opening Amount</th>
+                        <th className="px-3 py-2 text-center text-[10px] font-semibold text-gray-500 uppercase w-32">Nature</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {accs.map(acc => {
+                        const bal = manualBalances[acc.id] || { amount: 0, nature: "DR" };
+                        return (
+                          <tr key={acc.id} className="border-b border-gray-100 hover:bg-gray-50">
+                            <td className="px-3 py-2 text-[12px] font-medium text-gray-800">{acc.name}</td>
+                            <td className="px-3 py-2 text-right">
+                              <input 
+                                type="number" 
+                                value={bal.amount || ""} 
+                                onChange={e => handleManualChange(acc.id, Number(e.target.value), bal.nature)}
+                                placeholder="0.00"
+                                className="w-full text-right text-[12px] font-mono border border-gray-300 rounded px-2 py-1 focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                              />
+                            </td>
+                            <td className="px-3 py-2 text-center">
+                              <select 
+                                value={bal.nature} 
+                                onChange={e => handleManualChange(acc.id, bal.amount, e.target.value as "DR"|"CR")}
+                                className="text-[11px] font-bold border border-gray-300 rounded px-2 py-1 focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0] bg-white"
+                              >
+                                <option value="DR">Dr</option>
+                                <option value="CR">Cr</option>
+                              </select>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+            
+            {/* Totals & Action */}
+            <div className="p-4 bg-white border-t border-gray-200 shrink-0 flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="text-[12px] text-gray-600">Total Debit: <span className="font-mono font-bold text-gray-900 ml-1">Rs. {drTotal.toLocaleString()}</span></div>
+                <div className="text-[12px] text-gray-600">Total Credit: <span className="font-mono font-bold text-gray-900 ml-1">Rs. {crTotal.toLocaleString()}</span></div>
+                
+                <div className={`px-3 py-1 text-[11px] font-bold rounded-full border ${isBalanced ? "bg-green-50 text-green-700 border-green-200" : diff > 0 ? "bg-red-50 text-red-700 border-red-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}>
+                  {isBalanced ? "Balanced" : diff > 0 ? `Difference: Rs. ${diff.toLocaleString()}` : "No Entries"}
+                </div>
+              </div>
+              <button onClick={() => saveOpeningBalances(manualBalances)} className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
+                <Save className="w-4 h-4" /> Save Opening Balances
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Excel Tab Content */}
+        {activeTab === "excel" && (
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {parsedRows.length === 0 ? (
+              <div className="flex-1 p-8 flex items-center justify-center">
+                <div 
+                  className={`w-full max-w-md border-2 border-dashed rounded-xl p-8 text-center transition-colors ${isDragging ? "border-[#1557b0] bg-blue-50" : "border-gray-300 hover:border-[#1557b0] hover:bg-gray-50"}`}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    const file = e.dataTransfer.files[0];
+                    if(file) {
+                      const evt = { target: { files: [file] } } as any;
+                      handleFileUpload(evt);
+                    }
+                  }}
+                >
+                  <FileSpreadsheet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-[14px] font-semibold text-gray-800 mb-1">Upload Opening Balances</h3>
+                  <p className="text-[11px] text-gray-500 mb-4">Drag and drop your Excel (.xlsx) or CSV file here</p>
+                  
+                  <div className="flex justify-center">
+                    <label className="cursor-pointer h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+                      <Upload className="w-4 h-4" /> Browse File
+                      <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleFileUpload} />
+                    </label>
+                  </div>
+
+                  <div className="mt-6 text-left bg-blue-50 p-3 rounded-lg border border-blue-100 text-[11px] text-blue-800">
+                    <p className="font-bold mb-1">Expected Format:</p>
+                    <p>Columns: <b>Ledger Name</b>, <b>Amount</b>, <b>Dr/Cr</b></p>
+                    <p className="text-blue-600 mt-1">Names must match exactly for auto-mapping. Unmatched accounts can be mapped manually.</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col">
+                <div className="p-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between shrink-0">
+                  <div className="text-[12px] font-medium text-gray-700">Previewing {parsedRows.length} records</div>
+                  <div className="flex gap-2">
+                    <button onClick={() => setParsedRows([])} className="h-7 px-3 bg-white border border-gray-300 text-gray-600 text-[11px] font-medium rounded hover:bg-gray-100">Cancel</button>
+                    <button onClick={confirmExcelImport} className="h-7 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded flex items-center gap-1 shadow-sm">
+                      <Save className="w-3.5 h-3.5" /> Post to System
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4">
+                  <table className="w-full border border-gray-200 bg-white">
+                    <thead className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Excel Ledger Name</th>
+                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">Amount</th>
+                        <th className="px-3 py-2 text-center text-[10px] font-semibold text-gray-500 uppercase">Nature</th>
+                        <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase w-64">System Account Mapping</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {parsedRows.map((r, idx) => {
+                        const isMapped = !!mappedAccounts[idx];
+                        return (
+                          <tr key={idx} className={`border-b border-gray-100 ${!isMapped ? "bg-red-50" : "hover:bg-gray-50"}`}>
+                            <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800 flex items-center gap-2">
+                              {!isMapped ? <AlertCircle className="w-4 h-4 text-red-500" /> : <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                              {r.ledgerName}
+                            </td>
+                            <td className="px-3 py-2.5 text-[12px] font-mono text-right">{r.amount.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-[11px] font-bold text-center text-gray-600">{r.nature}</td>
+                            <td className="px-3 py-2.5">
+                              <select 
+                                value={mappedAccounts[idx] || ""}
+                                onChange={e => setMappedAccounts({...mappedAccounts, [idx]: e.target.value})}
+                                className={`w-full text-[11px] border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#1557b0] ${!isMapped ? "border-red-300 bg-white" : "border-gray-300"}`}
+                              >
+                                <option value="">-- Select Account --</option>
+                                {accounts.map(a => (
+                                  <option key={a.id} value={a.id}>{a.name} ({a.groupName})</option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      {activeTab === "accounts" && (
-        <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow">
-            <div className="bg-green-50 px-6 py-3 border-b">
-              <h3 className="font-semibold text-green-900">Debit Accounts (Assets & Expenses)</h3>
-            </div>
-            <div className="overflow-auto max-h-96">
-              <table className="data-table">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
-                      Account
-                    </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">
-                      Dr Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {debitAccounts.map((acc) => (
-                    <tr key={acc.accountId} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-sm">
-                        <div>{acc.accountName}</div>
-                        <div className="text-xs text-gray-500">{acc.accountCode}</div>
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          type="number"
-                          value={acc.debit || ""}
-                          onChange={(e) =>
-                            updateAccountBalance(
-                              acc.accountId,
-                              "debit",
-                              parseFloat(e.target.value) || 0,
-                            )
-                          }
-                          className="input text-right w-full"
-                          placeholder="0.00"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow">
-            <div className="bg-blue-50 px-6 py-3 border-b">
-              <h3 className="font-semibold text-blue-900">
-                Credit Accounts (Liabilities & Income)
-              </h3>
-            </div>
-            <div className="overflow-auto max-h-96">
-              <table className="data-table">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
-                      Account
-                    </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">
-                      Cr Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {creditAccounts.map((acc) => (
-                    <tr key={acc.accountId} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-sm">
-                        <div>{acc.accountName}</div>
-                        <div className="text-xs text-gray-500">{acc.accountCode}</div>
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          type="number"
-                          value={acc.credit || ""}
-                          onChange={(e) =>
-                            updateAccountBalance(
-                              acc.accountId,
-                              "credit",
-                              parseFloat(e.target.value) || 0,
-                            )
-                          }
-                          className="input text-right w-full"
-                          placeholder="0.00"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "parties" && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="data-table">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Party Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Opening Dr
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Opening Cr
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {partyBalances.map((party) => (
-                <tr key={party.partyId} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">{party.partyName}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        party.partyType === "Customer"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
-                      }`}
-                    >
-                      {party.partyType}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      value={party.debit || ""}
-                      onChange={(e) =>
-                        updatePartyBalance(party.partyId, "debit", parseFloat(e.target.value) || 0)
-                      }
-                      className="input text-right w-32"
-                      placeholder="0.00"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      value={party.credit || ""}
-                      onChange={(e) =>
-                        updatePartyBalance(party.partyId, "credit", parseFloat(e.target.value) || 0)
-                      }
-                      className="input text-right w-32"
-                      placeholder="0.00"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {activeTab === "stock" && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="data-table">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Item
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Warehouse
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Qty
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Rate
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Value
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {stockBalances.map((item) => (
-                <tr key={item.itemId} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">{item.itemName}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{item.warehouse}</td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      value={item.quantity || ""}
-                      onChange={(e) =>
-                        updateStockBalance(item.itemId, "quantity", parseFloat(e.target.value) || 0)
-                      }
-                      className="input text-right w-24"
-                      placeholder="0"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      value={item.rate || ""}
-                      onChange={(e) =>
-                        updateStockBalance(item.itemId, "rate", parseFloat(e.target.value) || 0)
-                      }
-                      className="input text-right w-28"
-                      placeholder="0.00"
-                    />
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 text-right font-medium">
-                    {item.value.toFixed(2)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }

@@ -73,8 +73,7 @@ const JournalEntries: React.FC = () => {
       header: "Voucher No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
-    { key: "date", header: "Date (AD)" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     {
       key: "narration",
       header: "Narration",

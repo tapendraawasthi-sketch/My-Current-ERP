@@ -15,6 +15,7 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes("node_modules")) {
             if (id.includes("react/") || id.includes("react-dom/")) return "vendor";
+            if (id.includes("@radix-ui")) return "ui";
             if (id.includes("recharts")) return "charts";
             if (id.includes("jspdf") || id.includes("jspdf-autotable")) return "pdf";
             if (id.includes("nepali-date-converter")) return "date";

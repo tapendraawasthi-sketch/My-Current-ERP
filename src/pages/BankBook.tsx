@@ -7,7 +7,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Select, NepaliDatePicker, Table } from "../components/ui";
+import { Card, Button, Select, NepaliDatePicker, Table, DualDate } from "../components/ui";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { VoucherStatus, VoucherType } from "../lib/types";
 import toast from "react-hot-toast";
@@ -35,7 +35,8 @@ const BankBook: React.FC = () => {
         voucher.lines
           .filter((line) => line.accountId === bankAccountId)
           .map((line) => ({
-            date: voucher.dateNepali || voucher.date,
+            adDate: voucher.date,
+            bsDate: voucher.dateNepali || voucher.date,
             voucherNo: voucher.voucherNo,
             type: voucher.type,
             party: voucher.partyName || line.accountName || "",
@@ -62,7 +63,7 @@ const BankBook: React.FC = () => {
   const closingBalance = rows.length ? rows[rows.length - 1].balance : 0;
 
   const receiptColumns = [
-    { key: "date", header: "Date (BS)" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.adDate} dateNepali={row.bsDate} /> },
     { key: "voucherNo", header: "Voucher No" },
     { key: "chequeNo", header: "Cheque No" },
     { key: "party", header: "From (Party)" },
@@ -76,7 +77,7 @@ const BankBook: React.FC = () => {
   ];
 
   const paymentColumns = [
-    { key: "date", header: "Date (BS)" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.adDate} dateNepali={row.bsDate} /> },
     { key: "voucherNo", header: "Voucher No" },
     { key: "chequeNo", header: "Cheque No" },
     { key: "party", header: "To (Party)" },

@@ -51,7 +51,8 @@ export function formatCurrency(amount: number, settings?: Partial<CompanySetting
   }
 
   const formatter = new Intl.NumberFormat("ne-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return "रू " + formatter.format(amount);
+  const prefix = settings?.currencySymbol || "Rs.";
+  return `${prefix} ` + formatter.format(amount);
 }
 
 export function formatNumber(amount: number, decimals: number = 2): string {

@@ -26,3 +26,4 @@ export type { Column } from "./Table";
 export type { SelectOption } from "./Select";
 export { CardSection } from "./Card";
 export { ActionToolbar } from "./ActionToolbar";
+export * from "./DualDate";

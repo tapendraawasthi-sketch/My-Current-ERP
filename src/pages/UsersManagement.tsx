@@ -1,64 +1,44 @@
-import React, { useState } from "react";
-import {
-  UserPlus,
-  Edit2,
-  Lock,
-  Trash2,
-  ToggleLeft,
-  ToggleRight,
-  Shield,
-  Activity,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { UserPlus, Edit2, Trash2, Shield, Eye, EyeOff, Save, X } from "lucide-react";
 import { useStore } from "../store/useStore";
-import ChangePasswordModal from "../components/auth/ChangePasswordModal";
 import { User, UserRole } from "../lib/types";
 import toast from "react-hot-toast";
 
-const rolePermissions = {
-  [UserRole.ADMIN]: ["all"],
-  [UserRole.MANAGER]: [
-    "view_reports",
-    "create_voucher",
-    "edit_voucher",
-    "view_ledger",
-    "manage_inventory",
-    "manage_customers",
-  ],
-  [UserRole.ACCOUNTANT]: ["create_voucher", "edit_voucher", "view_ledger", "view_reports"],
-  [UserRole.VIEWER]: ["view_ledger", "view_reports"],
+const permissionGroups = {
+  Accounting: ["vouchers.create", "vouchers.edit", "vouchers.delete", "ledgers.view"],
+  Inventory: ["items.create", "items.edit", "stock.manage"],
+  Reports: ["reports.view", "reports.export"],
+  Settings: ["settings.edit", "settings.reset"],
+  Payroll: ["payroll.run", "payroll.view"],
+  POS: ["pos.access", "pos.void"]
 };
 
-const allPermissions = [
-  "manage_users",
-  "manage_settings",
-  "create_voucher",
-  "edit_voucher",
-  "delete_voucher",
-  "view_ledger",
-  "edit_ledger",
-  "view_reports",
-  "manage_inventory",
-  "manage_customers",
-  "manage_suppliers",
-  "close_fiscal_year",
-  "backup_restore",
-  "view_audit_log",
-];
+const getDefaultPermissions = (role: UserRole): string[] => {
+  switch(role) {
+    case UserRole.ADMIN:
+      return Object.values(permissionGroups).flat();
+    case UserRole.ACCOUNTANT:
+      return [...permissionGroups.Accounting, ...permissionGroups.Reports, ...permissionGroups.Inventory];
+    case UserRole.VIEWER:
+      return [...permissionGroups.Reports];
+    case UserRole.CASHIER:
+      return [...permissionGroups.POS];
+    case UserRole.MANAGER:
+      return [...permissionGroups.Accounting, ...permissionGroups.Reports, ...permissionGroups.Inventory, "payroll.view"];
+    case UserRole.PAYROLL_OFFICER:
+      return [...permissionGroups.Payroll, "reports.view"];
+    default:
+      return [];
+  }
+};
 
 export default function UsersManagement() {
-  const { users, currentUser, addUser, updateUser, deleteUser } = useStore();
+  const { users, currentUser, addUser, updateUser, deleteUser, checkPermission } = useStore();
 
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [showPermissions, setShowPermissions] = useState<string | null>(null);
-  const [showActivityLog, setShowActivityLog] = useState<string | null>(null);
-  const [passwordModal, setPasswordModal] = useState<{ userId: string; isOpen: boolean }>({
-    userId: "",
-    isOpen: false,
-  });
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -67,10 +47,61 @@ export default function UsersManagement() {
     password: "",
     confirmPassword: "",
     isActive: true,
+    permissions: [] as string[]
   });
+
+  const handleRoleChange = (role: UserRole) => {
+    setFormData(prev => ({
+      ...prev,
+      role,
+      permissions: getDefaultPermissions(role)
+    }));
+  };
+
+  const togglePermission = (perm: string) => {
+    setFormData(prev => ({
+      ...prev,
+      permissions: prev.permissions.includes(perm)
+        ? prev.permissions.filter(p => p !== perm)
+        : [...prev.permissions, perm]
+    }));
+  };
+
+  const openModal = (user?: User) => {
+    if (user) {
+      setSelectedUser(user);
+      setFormData({
+        name: user.name,
+        username: user.username,
+        email: user.email || "",
+        role: user.role,
+        password: "",
+        confirmPassword: "",
+        isActive: user.isActive,
+        permissions: user.permissions || getDefaultPermissions(user.role)
+      });
+    } else {
+      setSelectedUser(null);
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+        role: UserRole.ACCOUNTANT,
+        password: "",
+        confirmPassword: "",
+        isActive: true,
+        permissions: getDefaultPermissions(UserRole.ACCOUNTANT)
+      });
+    }
+    setShowModal(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!checkPermission("settings.edit")) {
+      toast.error("Access denied — insufficient permissions");
+      return;
+    }
 
     if (!selectedUser && formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
@@ -90,476 +121,207 @@ export default function UsersManagement() {
           email: formData.email,
           role: formData.role,
           isActive: formData.isActive,
+          permissions: formData.permissions
         });
-        toast.success("User updated successfully");
+        toast.success("User updated");
       } else {
         await addUser({
           name: formData.name,
           username: formData.username,
           email: formData.email,
           role: formData.role,
-          isActive: formData.isActive,
           password: formData.password,
+          isActive: formData.isActive,
+          permissions: formData.permissions,
+          companyId: "company-default"
         });
-        toast.success("User added successfully");
+        toast.success("User created");
       }
-      resetForm();
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to save user");
+      setShowModal(false);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to save user");
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      username: "",
-      email: "",
-      role: UserRole.ACCOUNTANT,
-      password: "",
-      confirmPassword: "",
-      isActive: true,
-    });
-    setSelectedUser(null);
-    setShowForm(false);
-  };
-
-  const handleEdit = (user: User) => {
-    setSelectedUser(user);
-    setFormData({
-      name: user.name,
-      username: user.username,
-      email: user.email || "",
-      role: user.role,
-      password: "",
-      confirmPassword: "",
-      isActive: user.isActive,
-    });
-    setShowForm(true);
-  };
-
-  const handleToggleActive = async (id: string) => {
-    const user = users.find((u) => u.id === id);
-    if (!user) return;
-    try {
-      await updateUser(id, { isActive: !user.isActive });
-      toast.success(`User status updated successfully`);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to update user status");
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (id === currentUser?.id) {
-      toast.error("Cannot delete yourself");
+  const toggleStatus = async (user: User) => {
+    if (!checkPermission("settings.edit")) {
+      toast.error("Access denied — insufficient permissions");
       return;
     }
-    if (confirm("Are you sure you want to delete this user?")) {
-      try {
-        await deleteUser(id);
-        toast.success("User deleted successfully");
-      } catch (error: any) {
-        toast.error(error?.message || "Failed to delete user");
-      }
+    if (user.id === currentUser?.id) {
+      toast.error("Cannot deactivate your own account");
+      return;
     }
+    await updateUser(user.id, { isActive: !user.isActive });
+    toast.success(`User ${!user.isActive ? "activated" : "deactivated"}`);
   };
-
-  const getUserPermissions = (user: User): string[] => {
-    const rolePerms = rolePermissions[user.role as keyof typeof rolePermissions] || [];
-    if (rolePerms.includes("all")) return allPermissions;
-    return user.permissions || rolePerms;
-  };
-
-  const togglePermission = async (userId: string, permission: string) => {
-    const user = users.find((u) => u.id === userId);
-    if (!user) return;
-    const current =
-      user.permissions || rolePermissions[user.role as keyof typeof rolePermissions] || [];
-    const updated = current.includes(permission)
-      ? current.filter((p: string) => p !== permission)
-      : [...current, permission];
-    try {
-      await updateUser(userId, { permissions: updated });
-      toast.success("Permissions updated successfully");
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to update permissions");
-    }
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const activityLogs = [
-    {
-      id: "1",
-      action: "Login",
-      module: "Auth",
-      timestamp: "2024-01-15 10:30",
-      description: "User logged in",
-    },
-    {
-      id: "2",
-      action: "Create",
-      module: "Voucher",
-      timestamp: "2024-01-15 11:15",
-      description: "Created Journal Voucher JV001",
-    },
-    {
-      id: "3",
-      action: "Update",
-      module: "Ledger",
-      timestamp: "2024-01-15 12:00",
-      description: "Updated Cash ledger",
-    },
-  ];
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn pb-4">
-      {/* Standard Page Header */}
+    <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Users & Roles</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Manage system access and permissions</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">Manage access controls and permissions</p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
-          >
+          <button onClick={() => openModal()} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
             <UserPlus className="w-4 h-4" /> Add User
           </button>
         </div>
       </div>
 
-      {showForm && (
-        <div className="form-wrapper bg-white border border-gray-200 rounded-lg p-4 mb-4">
-          <div className="form-header mb-4">
-            <h2 className="text-[13px] font-bold text-gray-800">
-              {selectedUser ? "Edit User" : "New User"}
-            </h2>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-semibold text-gray-700">Full Name *</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-semibold text-gray-700">
-                  Username * (no spaces)
-                </label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value.replace(/\s/g, "") })
-                  }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-semibold text-gray-700">Email *</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-semibold text-gray-700">Role *</label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                >
-                  <option value={UserRole.ADMIN}>Admin</option>
-                  <option value={UserRole.MANAGER}>Manager</option>
-                  <option value={UserRole.ACCOUNTANT}>Accountant</option>
-                  <option value={UserRole.VIEWER}>Viewer</option>
-                </select>
-              </div>
-              {!selectedUser && (
-                <>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-semibold text-gray-700">
-                      Password *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                        required
-                        minLength={6}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="w-3.5 h-3.5" />
-                        ) : (
-                          <Eye className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-semibold text-gray-700">
-                      Confirm Password *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        value={formData.confirmPassword}
-                        onChange={(e) =>
-                          setFormData({ ...formData, confirmPassword: e.target.value })
-                        }
-                        className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="w-3.5 h-3.5" />
-                        ) : (
-                          <Eye className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-              <div className="col-span-1 md:col-span-2 flex items-center gap-2 py-1">
-                <input
-                  type="checkbox"
-                  id="isActiveCheck"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                />
-                <label htmlFor="isActiveCheck" className="text-[12px] font-medium text-gray-700 cursor-pointer">
-                  Is Active User Account
-                </label>
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
-              <button
-                type="button"
-                onClick={resetForm}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
-              >
-                {selectedUser ? "Update User" : "Add User"}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-[#f5f6fa] border-b border-gray-200">
+            <tr>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name / Username</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Role</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Last Login</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <td className="px-3 py-2.5">
+                  <div className="text-[12px] font-medium text-gray-800">{u.name}</div>
+                  <div className="text-[11px] text-gray-500">@{u.username}</div>
+                </td>
+                <td className="px-3 py-2.5 text-[12px] text-gray-600">{u.email || "-"}</td>
+                <td className="px-3 py-2.5">
+                  <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md ${
+                    u.role === UserRole.ADMIN ? "bg-purple-100 text-purple-700" :
+                    u.role === UserRole.MANAGER ? "bg-blue-100 text-blue-700" :
+                    u.role === UserRole.CASHIER ? "bg-green-100 text-green-700" :
+                    "bg-gray-100 text-gray-700"
+                  }`}>
+                    {u.role.replace("_", " ")}
+                  </span>
+                </td>
+                <td className="px-3 py-2.5 text-[11px] text-gray-500">
+                  {u.lastLogin ? new Date(u.lastLogin).toLocaleString() : "Never"}
+                </td>
+                <td className="px-3 py-2.5 text-center">
+                  <button onClick={() => toggleStatus(u)} className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md border ${
+                    u.isActive ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"
+                  }`}>
+                    {u.isActive ? "Active" : "Inactive"}
+                  </button>
+                </td>
+                <td className="px-3 py-2.5 text-right">
+                  <button onClick={() => openModal(u)} className="p-1 text-gray-400 hover:text-[#1557b0]">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  {u.id !== currentUser?.id && (
+                    <button onClick={() => deleteUser(u.id)} className="p-1 text-gray-400 hover:text-red-600 ml-1">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col my-auto">
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa]">
+              <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-[#1557b0]" /> {selectedUser ? "Edit User & Permissions" : "Add New User"}
+              </h2>
+              <button type="button" onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
               </button>
             </div>
-          </form>
-        </div>
-      )}
-
-      {/* Grid Cards for Users */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {users.map((user) => (
-          <div key={user.id} className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-between hover:shadow-sm transition-shadow">
-            <div>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-full bg-[#1557b0]/10 text-[#1557b0] flex items-center justify-center font-bold text-[13px] shrink-0">
-                    {getInitials(user.name)}
-                  </div>
-                  <div>
-                    <h3 className="text-[12px] font-bold text-gray-800">{user.name}</h3>
-                    <p className="text-[11px] text-gray-500">@{user.username}</p>
-                  </div>
+            
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Full Name</label>
+                  <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" />
                 </div>
-                <span className={`badge px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                  user.role === UserRole.ADMIN
-                    ? "bg-[#e8eaff] text-[#1557b0]"
-                    : user.role === UserRole.MANAGER
-                    ? "bg-amber-50 text-amber-700"
-                    : user.role === UserRole.ACCOUNTANT
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}>
-                  {user.role}
-                </span>
-              </div>
-
-              <div className="space-y-1 text-[11px] text-gray-600 mb-3 border-t border-gray-100 pt-2">
-                <div className="flex justify-between">
-                  <span>Email:</span>
-                  <span className="font-medium text-gray-800">{user.email}</span>
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Username</label>
+                  <input type="text" required value={formData.username} onChange={e => setFormData({...formData, username: e.target.value.toLowerCase()})} className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" />
                 </div>
-                <div className="flex justify-between">
-                  <span>Last Login:</span>
-                  <span className="font-medium text-gray-800">
-                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}
-                  </span>
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Email</label>
+                  <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" />
                 </div>
-                <div className="flex justify-between items-center">
-                  <span>Status:</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                    {user.isActive ? "Active" : "Inactive"}
-                  </span>
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Role</label>
+                  <select value={formData.role} onChange={e => handleRoleChange(e.target.value as UserRole)} className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white">
+                    {Object.values(UserRole).map(r => (
+                      <option key={r} value={r}>{r.toUpperCase().replace("_", " ")}</option>
+                    ))}
+                  </select>
                 </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-gray-100 pt-2 mt-1">
-              <div className="flex gap-1.5">
-                <button
-                  onClick={() => setShowPermissions(showPermissions === user.id ? null : user.id)}
-                  title="Permissions"
-                  className={`h-7 px-2 border rounded-md text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-colors ${
-                    showPermissions === user.id
-                      ? "bg-[#1557b0] border-[#1557b0] text-white"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>Permissions</span>
-                </button>
-                <button
-                  onClick={() => setShowActivityLog(showActivityLog === user.id ? null : user.id)}
-                  title="Activity Log"
-                  className={`h-7 px-2 border rounded-md text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-colors ${
-                    showActivityLog === user.id
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <Activity className="w-3.5 h-3.5" />
-                  <span>Logs</span>
-                </button>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => handleEdit(user)}
-                  title="Edit User"
-                  className="h-7 w-7 bg-white border border-gray-300 text-gray-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setPasswordModal({ userId: user.id, isOpen: true })}
-                  title="Change Password"
-                  className="h-7 w-7 bg-white border border-gray-300 text-amber-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => handleToggleActive(user.id)}
-                  title={user.isActive ? "Deactivate" : "Activate"}
-                  className="h-7 w-7 bg-white border border-gray-300 text-blue-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  {user.isActive ? (
-                    <ToggleRight className="w-4 h-4 text-emerald-600" />
-                  ) : (
-                    <ToggleLeft className="w-4 h-4 text-gray-400" />
-                  )}
-                </button>
-                <button
-                  onClick={() => handleDelete(user.id)}
-                  title="Delete User"
-                  className="h-7 w-7 bg-white border border-gray-300 text-red-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Expandable Permissions details on the card */}
-            {showPermissions === user.id && (
-              <div className="col-span-full mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] animate-fadeIn">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-gray-800 uppercase tracking-wider text-[10px]">
-                    Permissions for {user.name}
-                  </h4>
-                  {user.role === UserRole.ADMIN && (
-                    <span className="text-[10px] text-gray-500 italic">Admin has full access</span>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {allPermissions.map((perm) => {
-                    const hasPermission =
-                      getUserPermissions(user).includes(perm) ||
-                      user.role === UserRole.ADMIN;
-                    return (
-                      <label key={perm} className="flex items-center gap-1.5 p-1 rounded hover:bg-white border border-transparent hover:border-gray-200 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={hasPermission}
-                          onChange={() => togglePermission(user.id, perm)}
-                          disabled={user.role === UserRole.ADMIN}
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                        />
-                        <span className="text-gray-700 capitalize">
-                          {perm.replace(/_/g, " ")}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Expandable Activity log details on the card */}
-            {showActivityLog === user.id && (
-              <div className="col-span-full mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] animate-fadeIn">
-                <h4 className="font-bold text-gray-800 uppercase tracking-wider text-[10px] mb-2">
-                  Recent Activity Log
-                </h4>
-                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                  {activityLogs.map((log) => (
-                    <div
-                      key={log.id}
-                      className="border-b border-gray-150 pb-1.5 last:border-0 last:pb-0"
-                    >
-                      <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                        <span className="font-semibold text-emerald-700 uppercase">{log.module}</span>
-                        <span>{log.timestamp}</span>
+                {!selectedUser && (
+                  <>
+                    <div>
+                      <label className="block text-[11px] font-medium text-gray-600 mb-1">Password</label>
+                      <div className="relative">
+                        <input type={showPassword ? "text" : "password"} required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full h-8 px-2.5 pr-8 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-2 text-gray-400">
+                          {showPassword ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
+                        </button>
                       </div>
-                      <p className="font-semibold text-gray-800">{log.action}</p>
-                      <p className="text-gray-500 mt-0.5">{log.description}</p>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-gray-600 mb-1">Confirm Password</label>
+                      <input type="password" required value={formData.confirmPassword} onChange={e => setFormData({...formData, confirmPassword: e.target.value})} className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Permissions Grid */}
+              <div className="border-t border-gray-200 pt-4">
+                <h3 className="text-[13px] font-semibold text-gray-800 mb-3">Module Permissions</h3>
+                {formData.role === UserRole.ADMIN && (
+                  <div className="bg-purple-50 text-purple-700 text-[11px] p-2 rounded mb-3 border border-purple-100">
+                    Admin role automatically inherits all permissions. Modifications here are visual only.
+                  </div>
+                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {Object.entries(permissionGroups).map(([module, perms]) => (
+                    <div key={module} className="bg-gray-50 p-3 rounded border border-gray-200">
+                      <div className="text-[11px] font-bold text-gray-700 uppercase tracking-wide mb-2 border-b border-gray-200 pb-1">{module}</div>
+                      <div className="space-y-1.5">
+                        {perms.map(p => (
+                          <label key={p} className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.includes(p)}
+                              onChange={() => togglePermission(p)}
+                              disabled={formData.role === UserRole.ADMIN}
+                              className="w-3.5 h-3.5 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                            />
+                            <span className="text-[11px] text-gray-600 group-hover:text-gray-900">{p}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
 
-      <ChangePasswordModal
-        userId={passwordModal.userId}
-        isOpen={passwordModal.isOpen}
-        onClose={() => setPasswordModal({ userId: "", isOpen: false })}
-      />
+              <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-100">
+                <button type="button" onClick={() => setShowModal(false)} className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50">
+                  Cancel
+                </button>
+                <button type="submit" className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
+                  <Save className="w-4 h-4" /> Save User
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

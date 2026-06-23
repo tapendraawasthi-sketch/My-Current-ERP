@@ -27,7 +27,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import { Card, Input, NepaliDatePicker } from "../ui";
 import { Truck } from "lucide-react";
 import SalesInvoiceForm from "./SalesInvoiceForm";

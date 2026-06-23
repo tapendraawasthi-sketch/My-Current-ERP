@@ -25,11 +25,11 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import { Card, Input } from "../ui";
 import { Undo2 } from "lucide-react";
 import SalesInvoiceForm from "./SalesInvoiceForm";
-import { VoucherType } from "../../lib/types";
+import { VoucherType } from "@/lib/types";
 import toast from "react-hot-toast";
 
 interface ReturnInvoiceFormProps {

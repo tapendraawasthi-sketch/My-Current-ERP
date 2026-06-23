@@ -17,9 +17,10 @@ import {
   NepaliDatePicker,
   PartySelect,
   ActionToolbar,
+  DualDate,
 } from "../components/ui";
 import SalesInvoiceForm from "../components/invoice/SalesInvoiceForm";
-import { Receipt, Plus, Eye, Printer } from "lucide-react";
+import { Receipt, Plus, Eye, Printer, RefreshCw } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
 import { generateInvoicePDF } from "../lib/printUtils";
@@ -133,8 +134,11 @@ const BillingInvoice: React.FC = () => {
       header: "Invoice No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
-    { key: "date", header: "Date (AD)" },
+    { 
+      key: "date", 
+      header: "Date", 
+      render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> 
+    },
     { key: "partyName", header: "Party", render: (v: string) => v || "—" },
     {
       key: "grandTotal",
@@ -182,6 +186,18 @@ const BillingInvoice: React.FC = () => {
       align: "center",
       render: (_: any, row: any) => (
         <div className="flex items-center justify-center gap-1">
+          {companySettings?.cbmsEnabled && !row.cbmsSubmitted && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                useStore.getState().retryCBMS(row.id);
+              }}
+              className="p-1.5 rounded text-amber-500 hover:text-amber-700 hover:bg-amber-50"
+              title="Retry CBMS Sync"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          )}
           <button
             onClick={(e) => {
               e.stopPropagation();

@@ -1,472 +1,211 @@
 import React, { useState, useMemo } from "react";
-import { useStore } from "../store/useStore";
-import { BudgetPeriod, AccountType, VoucherStatus } from "../lib/types";
-import { TrendingUp, AlertCircle, CheckCircle, Download, FileText } from "lucide-react";
-import { Card, Button, Select, ActionToolbar } from "../components/ui";
-import { formatNumber } from "../lib/utils";
-import { ReportToolbar } from "../components/reports/ReportToolbar";
-import { ReportFooter } from "../components/reports/ReportFooter";
-import { ReportEmptyState } from "../components/ReportEmptyState";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import * as XLSX from "xlsx";
+import { useStore } from "../store";
+import { Download, Filter, Target } from "lucide-react";
+import * as xlsx from "xlsx";
+import { AccountGroup } from "../lib/types";
 
-interface BudgetLine {
-  accountId: string;
-  accountName: string;
-  annualAmount: number;
-  monthlyBreakdown: Record<string, number>;
-}
+const BS_MONTHS = [
+  "Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin",
+  "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"
+];
 
-interface Budget {
-  id: string;
-  name: string;
-  fiscalYearId: string;
-  period: BudgetPeriod;
-  lines: BudgetLine[];
-  createdBy?: string;
-  createdAt?: string;
-}
+export default function BudgetVsActual() {
+  const { budgets, vouchers, accounts, costCenters, currentFiscalYear } = useStore();
+  const [selectedCostCenterId, setSelectedCostCenterId] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
 
-const BudgetVsActual: React.FC = () => {
-  const { accounts, vouchers, companySettings } = useStore();
-  const symbol = companySettings?.currencySymbol || "Rs.";
+  const reportData = useMemo(() => {
+    if (!currentFiscalYear) return [];
 
-  // Mock budgets - in real app this would come from store
-  const [budgets] = useState<Budget[]>([
-    {
-      id: "bdg-1",
-      name: "FY 2083-84 Operating Budget",
-      fiscalYearId: "fy-2083-84",
-      period: "monthly" as BudgetPeriod,
-      lines: [],
-      createdBy: "usr-admin",
-      createdAt: new Date().toISOString(),
-    },
-  ]);
-
-  const [selectedBudgetId, setSelectedBudgetId] = useState("");
-  const [viewMode, setViewMode] = useState<"monthly" | "cumulative">("cumulative");
-  const [selectedMonth, setSelectedMonth] = useState("all");
-
-  const budgetOptions = budgets.map((b) => ({ value: b.id, label: b.name }));
-
-  const selectedBudget = budgets.find((b) => b.id === selectedBudgetId);
-
-  // Calculate actuals from vouchers
-  const calculateActuals = useMemo(() => {
-    const actuals: Record<string, number> = {};
-
-    const postedVouchers = vouchers.filter((v) => v.status === VoucherStatus.POSTED);
-
-    for (const v of postedVouchers) {
-      for (const line of v.lines) {
-        const account = accounts.find((a) => a.id === line.accountId);
-        if (!account || account.isGroup) continue;
-
-        if (account.type === AccountType.INCOME) {
-          actuals[line.accountId] = (actuals[line.accountId] || 0) + line.credit - line.debit;
-        } else if (account.type === AccountType.EXPENSE) {
-          actuals[line.accountId] = (actuals[line.accountId] || 0) + line.debit - line.credit;
-        }
-      }
+    // Filter budgets
+    let relevantBudgets = budgets.filter(b => b.fiscalYearBS === currentFiscalYear.name);
+    if (selectedCostCenterId) {
+      relevantBudgets = relevantBudgets.filter(b => !b.costCenterId || b.costCenterId === selectedCostCenterId);
+    }
+    if (selectedMonth) {
+      relevantBudgets = relevantBudgets.filter(b => b.month === selectedMonth);
     }
 
-    return actuals;
-  }, [vouchers, accounts]);
-
-  // Build comparison data
-  const comparisonData = useMemo(() => {
-    if (!selectedBudget) return [];
-
-    const data: any[] = [];
-
-    for (const line of selectedBudget.lines) {
-      const account = accounts.find((a) => a.id === line.accountId);
-      if (!account) continue;
-
-      const budgetAmount = line.annualAmount;
-      const actualAmount = calculateActuals[line.accountId] || 0;
-      const variance = actualAmount - budgetAmount;
-      const variancePercent = budgetAmount > 0 ? (variance / budgetAmount) * 100 : 0;
-
-      let status: "good" | "warning" | "critical" = "good";
-      if (account.type === AccountType.EXPENSE) {
-        if (Math.abs(variancePercent) > 20) status = "critical";
-        else if (Math.abs(variancePercent) > 10) status = "warning";
-      } else {
-        // For income, under-performance is bad
-        if (variancePercent < -20) status = "critical";
-        else if (variancePercent < -10) status = "warning";
-      }
-
-      data.push({
-        accountId: account.id,
-        accountCode: account.code,
-        accountName: account.name,
-        accountType: account.type,
-        budgetAmount,
-        actualAmount,
-        variance,
-        variancePercent,
-        status,
-      });
+    // Filter vouchers
+    let relevantVouchers = vouchers.filter(v => v.status === "POSTED" && v.dateNepali?.startsWith(currentFiscalYear.name));
+    if (selectedMonth) {
+      relevantVouchers = relevantVouchers.filter(v => v.dateNepali?.substring(5, 7) === selectedMonth);
     }
 
-    return data.sort((a, b) => {
-      if (a.accountType !== b.accountType) {
-        return a.accountType === AccountType.INCOME ? -1 : 1;
+    // Map account -> { budget, actual, costCenterId }
+    const accountTotals: Record<string, { accountId: string, accountName: string, budgeted: number, actual: number }> = {};
+
+    relevantBudgets.forEach(b => {
+      if (!accountTotals[b.accountId]) {
+        accountTotals[b.accountId] = {
+          accountId: b.accountId,
+          accountName: accounts.find(a => a.id === b.accountId)?.name || "Unknown",
+          budgeted: 0,
+          actual: 0
+        };
       }
-      return a.accountCode.localeCompare(b.accountCode);
+      accountTotals[b.accountId].budgeted += b.budgetedAmount;
     });
-  }, [selectedBudget, accounts, calculateActuals]);
 
-  // Group by type
-  const incomeData = comparisonData.filter((d) => d.accountType === AccountType.INCOME);
-  const expenseData = comparisonData.filter((d) => d.accountType === AccountType.EXPENSE);
+    relevantVouchers.forEach(v => {
+      v.lines.forEach(l => {
+        if (!selectedCostCenterId || l.costCenterId === selectedCostCenterId) {
+          const acc = accounts.find(a => a.id === l.accountId);
+          if (!acc) return;
+          // Determine nature
+          const isIncome = ["Direct Incomes", "Indirect Incomes", "Sales Accounts"].includes(acc.group || "");
+          const isExpense = ["Direct Expenses", "Indirect Expenses", "Purchase Accounts"].includes(acc.group || "");
+          
+          let amount = 0;
+          if (isIncome) amount = l.credit - l.debit;
+          else if (isExpense) amount = l.debit - l.credit;
+          else amount = l.debit - l.credit; // Default for others (assets/liabs etc)
 
-  const incomeSummary = {
-    budget: incomeData.reduce((sum, d) => sum + d.budgetAmount, 0),
-    actual: incomeData.reduce((sum, d) => sum + d.actualAmount, 0),
-  };
+          // If an account wasn't budgeted, we still show its actuals if there's an amount
+          if (amount !== 0) {
+            if (!accountTotals[l.accountId]) {
+              accountTotals[l.accountId] = {
+                accountId: l.accountId,
+                accountName: acc.name,
+                budgeted: 0,
+                actual: 0
+              };
+            }
+            accountTotals[l.accountId].actual += amount;
+          }
+        }
+      });
+    });
 
-  const expenseSummary = {
-    budget: expenseData.reduce((sum, d) => sum + d.budgetAmount, 0),
-    actual: expenseData.reduce((sum, d) => sum + d.actualAmount, 0),
-  };
+    return Object.values(accountTotals).map(row => {
+      const varianceRs = row.budgeted - row.actual;
+      const variancePct = row.budgeted > 0 ? (varianceRs / row.budgeted) * 100 : (row.actual > 0 ? -100 : 0);
+      return { ...row, varianceRs, variancePct };
+    }).sort((a, b) => a.accountName.localeCompare(b.accountName));
 
-  // Chart data
-  const chartData = [
-    {
-      category: "Income",
-      Budget: incomeSummary.budget,
-      Actual: incomeSummary.actual,
-    },
-    {
-      category: "Expenses",
-      Budget: expenseSummary.budget,
-      Actual: expenseSummary.actual,
-    },
-  ];
+  }, [budgets, vouchers, accounts, currentFiscalYear, selectedCostCenterId, selectedMonth]);
 
-  const getStatusIcon = (status: "good" | "warning" | "critical") => {
-    switch (status) {
-      case "good":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case "warning":
-        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-      case "critical":
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
-    }
-  };
+  const totals = useMemo(() => {
+    return reportData.reduce((acc, row) => ({
+      budgeted: acc.budgeted + row.budgeted,
+      actual: acc.actual + row.actual,
+      varianceRs: acc.varianceRs + row.varianceRs
+    }), { budgeted: 0, actual: 0, varianceRs: 0 });
+  }, [reportData]);
 
-  const handleExportExcel = () => {
-    const data = comparisonData.map((d) => ({
-      "Account Code": d.accountCode,
-      "Account Name": d.accountName,
-      Type: d.accountType,
-      "Budget Amount": d.budgetAmount,
-      "Actual Amount": d.actualAmount,
-      Variance: d.variance,
-      "Variance %": d.variancePercent.toFixed(2) + "%",
-      Status: d.status.toUpperCase(),
+  const exportExcel = () => {
+    const data = reportData.map(r => ({
+      "Account": r.accountName,
+      "Budget (Rs.)": r.budgeted,
+      "Actual (Rs.)": r.actual,
+      "Variance (Rs.)": r.varianceRs,
+      "Variance %": r.variancePct.toFixed(2) + "%"
     }));
+    
+    data.push({
+      "Account": "TOTAL",
+      "Budget (Rs.)": totals.budgeted,
+      "Actual (Rs.)": totals.actual,
+      "Variance (Rs.)": totals.varianceRs,
+      "Variance %": totals.budgeted > 0 ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(2) + "%" : "0.00%"
+    });
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Budget vs Actual");
-    XLSX.writeFile(wb, `Budget_vs_Actual_${new Date().toISOString().split("T")[0]}.xlsx`);
+    const ws = xlsx.utils.json_to_sheet(data);
+    const wb = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, "BudgetVsActual");
+    xlsx.writeFile(wb, `BudgetVsActual_${currentFiscalYear?.name}.xlsx`);
   };
 
   return (
-    <div className="flex flex-col gap-5 p-6">
-      <ActionToolbar
-        title="Budget vs Actual"
-        subtitle="Compare budgeted amounts with actual spending"
-      />
-
-      {/* Filters */}
-      <Card border padding="md">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Select
-            label="Budget"
-            options={[{ value: "", label: "Select a budget" }, ...budgetOptions]}
-            value={selectedBudgetId}
-            onChange={setSelectedBudgetId}
-            required
-          />
-
-          <Select
-            label="View Mode"
-            options={[
-              { value: "monthly", label: "Monthly View" },
-              { value: "cumulative", label: "Cumulative YTD" },
-            ]}
-            value={viewMode}
-            onChange={(v) => setViewMode(v as any)}
-          />
-
-          {viewMode === "monthly" && (
-            <Select
-              label="Month"
-              options={[
-                { value: "all", label: "All Months" },
-                { value: "04", label: "Baisakh" },
-                { value: "05", label: "Jestha" },
-                { value: "06", label: "Ashadh" },
-                { value: "07", label: "Shrawan" },
-                { value: "08", label: "Bhadra" },
-                { value: "09", label: "Ashwin" },
-                { value: "10", label: "Kartik" },
-                { value: "11", label: "Mangsir" },
-                { value: "12", label: "Poush" },
-                { value: "01", label: "Magh" },
-                { value: "02", label: "Falgun" },
-                { value: "03", label: "Chaitra" },
-              ]}
-              value={selectedMonth}
-              onChange={setSelectedMonth}
-            />
-          )}
+    <div className="flex flex-col gap-4 animate-fadeIn h-[calc(100vh-100px)]">
+      <div className="flex items-center justify-between shrink-0">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Budget vs Actual</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Compare allocated budgets against real-time ledger expenses</p>
         </div>
-      </Card>
+        <button onClick={exportExcel} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 shadow-sm">
+          <Download className="w-4 h-4" /> Export Excel
+        </button>
+      </div>
 
-      {!selectedBudgetId ? (
-        <ReportEmptyState
-          message="Select a budget to view comparison"
-          icon={<TrendingUp className="w-16 h-16" />}
-        />
-      ) : (
-        <>
-          {/* Summary Chart */}
-          <Card border padding="md">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
-              Budget vs Actual Overview
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" />
-                <YAxis />
-                <Tooltip formatter={(value: number) => `${symbol} ${formatNumber(value)}`} />
-                <Legend />
-                <Bar dataKey="Budget" fill="#3b82f6" />
-                <Bar dataKey="Actual" fill="#10b981" />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-gray-200 bg-gray-50 shrink-0 flex gap-4 items-end">
+          <div className="flex-1">
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">Cost Center Filter</label>
+            <div className="relative">
+              <Filter className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+              <select value={selectedCostCenterId} onChange={e => setSelectedCostCenterId(e.target.value)} className="w-full h-8 pl-8 pr-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+                <option value="">-- All Cost Centers --</option>
+                {costCenters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">Month Filter</label>
+            <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+              <option value="">-- All Months (Annual) --</option>
+              {BS_MONTHS.map((m, idx) => {
+                const mm = String(idx + 1).padStart(2, "0");
+                return <option key={mm} value={mm}>{m}</option>;
+              })}
+            </select>
+          </div>
+        </div>
 
-          {/* Toolbar */}
-          <ReportToolbar onExportExcel={handleExportExcel} />
-
-          {/* Income Section */}
-          {incomeData.length > 0 && (
-            <Card border padding="none">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  INCOME ACCOUNTS
-                </h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
-                  <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">
-                        Account
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Budget
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Actual
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Variance
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Variance %
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-center">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-150 dark:divide-gray-700">
-                    {incomeData.map((row) => (
-                      <tr key={row.accountId} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-gray-900 dark:text-white">
-                            {row.accountName}
-                          </div>
-                          <div className="text-gray-500 dark:text-gray-400">{row.accountCode}</div>
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono text-gray-700 dark:text-gray-300">
-                          {symbol} {formatNumber(row.budgetAmount)}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono font-bold text-blue-600 dark:text-blue-400">
-                          {symbol} {formatNumber(row.actualAmount)}
-                        </td>
-                        <td
-                          className={`px-4 py-3 text-right font-mono font-bold ${
-                            row.variance >= 0 ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {row.variance >= 0 ? "+" : ""}
-                          {symbol} {formatNumber(row.variance)}
-                        </td>
-                        <td
-                          className={`px-4 py-3 text-right font-bold ${
-                            row.variance >= 0 ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {row.variance >= 0 ? "+" : ""}
-                          {row.variancePercent.toFixed(1)}%
-                        </td>
-                        <td className="px-4 py-3 text-center">{getStatusIcon(row.status)}</td>
-                      </tr>
-                    ))}
-                    <tr className="bg-blue-50 dark:bg-blue-900/20 font-bold">
-                      <td className="px-4 py-3">TOTAL INCOME</td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(incomeSummary.budget)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(incomeSummary.actual)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(incomeSummary.actual - incomeSummary.budget)}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        {incomeSummary.budget > 0
-                          ? (
-                              ((incomeSummary.actual - incomeSummary.budget) /
-                                incomeSummary.budget) *
-                              100
-                            ).toFixed(1)
-                          : "0.0"}
-                        %
-                      </td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          )}
-
-          {/* Expense Section */}
-          {expenseData.length > 0 && (
-            <Card border padding="none">
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-bold text-red-900 dark:text-red-100 flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  EXPENSE ACCOUNTS
-                </h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
-                  <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">
-                        Account
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Budget
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Actual
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Variance
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        Variance %
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-center">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-150 dark:divide-gray-700">
-                    {expenseData.map((row) => (
-                      <tr key={row.accountId} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-gray-900 dark:text-white">
-                            {row.accountName}
-                          </div>
-                          <div className="text-gray-500 dark:text-gray-400">{row.accountCode}</div>
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono text-gray-700 dark:text-gray-300">
-                          {symbol} {formatNumber(row.budgetAmount)}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono font-bold text-red-600 dark:text-red-400">
-                          {symbol} {formatNumber(row.actualAmount)}
-                        </td>
-                        <td
-                          className={`px-4 py-3 text-right font-mono font-bold ${
-                            row.variance <= 0 ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {row.variance >= 0 ? "+" : ""}
-                          {symbol} {formatNumber(row.variance)}
-                        </td>
-                        <td
-                          className={`px-4 py-3 text-right font-bold ${
-                            row.variance <= 0 ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {row.variance >= 0 ? "+" : ""}
-                          {row.variancePercent.toFixed(1)}%
-                        </td>
-                        <td className="px-4 py-3 text-center">{getStatusIcon(row.status)}</td>
-                      </tr>
-                    ))}
-                    <tr className="bg-red-50 dark:bg-red-900/20 font-bold">
-                      <td className="px-4 py-3">TOTAL EXPENSES</td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(expenseSummary.budget)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(expenseSummary.actual)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {symbol} {formatNumber(expenseSummary.actual - expenseSummary.budget)}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        {expenseSummary.budget > 0
-                          ? (
-                              ((expenseSummary.actual - expenseSummary.budget) /
-                                expenseSummary.budget) *
-                              100
-                            ).toFixed(1)
-                          : "0.0"}
-                        %
-                      </td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          )}
-
-          <ReportFooter
-            generatedAt={new Date().toLocaleString()}
-            note="Status: Green = within 10% of budget | Yellow = 10-20% variance | Red = 20%+ variance"
-          />
-        </>
-      )}
+        <div className="flex-1 overflow-auto">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
+              <tr>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Name</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Budget (Rs.)</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Actual (Rs.)</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Variance (Rs.)</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Variance %</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {reportData.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-12 text-center">
+                    <Target className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-[13px] font-medium text-gray-600">No Data Available</p>
+                    <p className="text-[11px] text-gray-400 mt-1">Adjust filters or configure budgets to see comparison.</p>
+                  </td>
+                </tr>
+              ) : (
+                reportData.map((row, i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-2.5 text-[12px] font-medium text-gray-800">{row.accountName}</td>
+                    <td className="px-4 py-2.5 text-[12px] font-mono text-right text-gray-600">{row.budgeted.toLocaleString()}</td>
+                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-gray-900">{row.actual.toLocaleString()}</td>
+                    <td className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
+                      {row.varianceRs > 0 ? "+" : ""}{row.varianceRs.toLocaleString()}
+                    </td>
+                    <td className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.variancePct < 0 ? "text-red-600" : "text-green-600"}`}>
+                      {row.variancePct > 0 ? "+" : ""}{row.variancePct.toFixed(1)}%
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+            {reportData.length > 0 && (
+              <tfoot className="sticky bottom-0 bg-blue-50 border-t-2 border-blue-200">
+                <tr>
+                  <td className="px-4 py-3 text-[12px] font-bold text-gray-800 uppercase tracking-wide">Grand Total</td>
+                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-gray-900 text-right">{totals.budgeted.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-gray-900 text-right">{totals.actual.toLocaleString()}</td>
+                  <td className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
+                    {totals.varianceRs > 0 ? "+" : ""}{totals.varianceRs.toLocaleString()}
+                  </td>
+                  <td className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
+                    {totals.budgeted > 0 ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(1) + "%" : "0.0%"}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
+          </table>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default BudgetVsActual;
+}

@@ -1,483 +1,313 @@
-import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
-import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
-
-interface CostCenterData {
-  costCenter: string;
-  costCenterCode: string;
-  accounts: AccountData[];
-  totalBudgeted: number;
-  totalActual: number;
-  totalVariance: number;
-  percentAchieved: number;
-}
-
-interface AccountData {
-  accountName: string;
-  accountCode: string;
-  budgeted: number;
-  actual: number;
-  variance: number;
-  percentAchieved: number;
-  transactions?: Transaction[];
-}
-
-interface Transaction {
-  id: string;
-  date: string;
-  voucherNo: string;
-  description: string;
-  amount: number;
-}
+import React, { useState, useMemo } from "react";
+import { useStore } from "../store";
+import { Filter, FileText, ArrowRightLeft, Download } from "lucide-react";
+import { format } from "date-fns";
+import * as xlsx from "xlsx";
 
 export default function CostCenterReport() {
-  const [filters, setFilters] = useState({
-    costCenter: "",
-    startDate: "",
-    endDate: "",
-  });
-  const [expandedCenters, setExpandedCenters] = useState<Set<string>>(new Set());
-  const [expandedAccounts, setExpandedAccounts] = useState<Set<string>>(new Set());
+  const { costCenters, vouchers, accounts } = useStore();
+  const [selectedCenterId, setSelectedCenterId] = useState<string>("");
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+  
+  // For Comparison Mode
+  const [isComparing, setIsComparing] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
 
-  const costCenterData: CostCenterData[] = [
-    {
-      costCenter: "Head Office - Administration",
-      costCenterCode: "HO-ADM",
-      totalBudgeted: 500000,
-      totalActual: 425000,
-      totalVariance: 75000,
-      percentAchieved: 85,
-      accounts: [
-        {
-          accountName: "Salary & Wages",
-          accountCode: "5001",
-          budgeted: 300000,
-          actual: 300000,
-          variance: 0,
-          percentAchieved: 100,
-          transactions: [
-            {
-              id: "T1",
-              date: "2024-01-15",
-              voucherNo: "PAY001",
-              description: "January Salary Payment",
-              amount: 150000,
-            },
-            {
-              id: "T2",
-              date: "2024-02-15",
-              voucherNo: "PAY015",
-              description: "February Salary Payment",
-              amount: 150000,
-            },
-          ],
-        },
-        {
-          accountName: "Office Supplies",
-          accountCode: "5010",
-          budgeted: 50000,
-          actual: 35000,
-          variance: 15000,
-          percentAchieved: 70,
-          transactions: [
-            {
-              id: "T3",
-              date: "2024-01-10",
-              voucherNo: "PAY002",
-              description: "Stationery Purchase",
-              amount: 20000,
-            },
-            {
-              id: "T4",
-              date: "2024-02-05",
-              voucherNo: "PAY016",
-              description: "Office Supplies",
-              amount: 15000,
-            },
-          ],
-        },
-        {
-          accountName: "Utilities",
-          accountCode: "5020",
-          budgeted: 150000,
-          actual: 90000,
-          variance: 60000,
-          percentAchieved: 60,
-          transactions: [
-            {
-              id: "T5",
-              date: "2024-01-20",
-              voucherNo: "PAY005",
-              description: "Electricity Bill",
-              amount: 45000,
-            },
-            {
-              id: "T6",
-              date: "2024-02-20",
-              voucherNo: "PAY020",
-              description: "Water & Electricity",
-              amount: 45000,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      costCenter: "Kathmandu Branch",
-      costCenterCode: "BR-KTM",
-      totalBudgeted: 750000,
-      totalActual: 680000,
-      totalVariance: 70000,
-      percentAchieved: 90.67,
-      accounts: [
-        {
-          accountName: "Staff Salary",
-          accountCode: "5001",
-          budgeted: 500000,
-          actual: 500000,
-          variance: 0,
-          percentAchieved: 100,
-          transactions: [],
-        },
-        {
-          accountName: "Rent",
-          accountCode: "5030",
-          budgeted: 150000,
-          actual: 120000,
-          variance: 30000,
-          percentAchieved: 80,
-          transactions: [],
-        },
-        {
-          accountName: "Marketing",
-          accountCode: "5040",
-          budgeted: 100000,
-          actual: 60000,
-          variance: 40000,
-          percentAchieved: 60,
-          transactions: [],
-        },
-      ],
-    },
-    {
-      costCenter: "Project Alpha",
-      costCenterCode: "PRJ-ALPHA",
-      totalBudgeted: 1000000,
-      totalActual: 1050000,
-      totalVariance: -50000,
-      percentAchieved: 105,
-      accounts: [
-        {
-          accountName: "Project Materials",
-          accountCode: "5050",
-          budgeted: 600000,
-          actual: 650000,
-          variance: -50000,
-          percentAchieved: 108.33,
-          transactions: [],
-        },
-        {
-          accountName: "Contractor Payments",
-          accountCode: "5060",
-          budgeted: 400000,
-          actual: 400000,
-          variance: 0,
-          percentAchieved: 100,
-          transactions: [],
-        },
-      ],
-    },
-  ];
+  // Helpers to check if an account is Income or Expense
+  const getAccountNature = (accountId: string): "INCOME" | "EXPENSE" | "OTHER" => {
+    const acc = accounts.find(a => a.id === accountId);
+    if (!acc) return "OTHER";
+    if (["Direct Incomes", "Indirect Incomes", "Sales Accounts"].includes(acc.group || "")) return "INCOME";
+    if (["Direct Expenses", "Indirect Expenses", "Purchase Accounts"].includes(acc.group || "")) return "EXPENSE";
+    return "OTHER";
+  };
 
-  const toggleCostCenter = (code: string) => {
-    const newExpanded = new Set(expandedCenters);
-    if (newExpanded.has(code)) {
-      newExpanded.delete(code);
+  const getAccountName = (id: string) => accounts.find(a => a.id === id)?.name || "Unknown Account";
+
+  // Single Report Calculation
+  const singleReport = useMemo(() => {
+    if (!selectedCenterId) return null;
+    let filteredVouchers = vouchers.filter(v => v.status === "POSTED");
+    if (fromDate) filteredVouchers = filteredVouchers.filter(v => v.date >= fromDate);
+    if (toDate) filteredVouchers = filteredVouchers.filter(v => v.date <= toDate);
+
+    const incomes: Record<string, number> = {};
+    const expenses: Record<string, number> = {};
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    filteredVouchers.forEach(v => {
+      v.lines.forEach(l => {
+        if (l.costCenterId === selectedCenterId) {
+          const nature = getAccountNature(l.accountId);
+          if (nature === "INCOME") {
+            const amount = l.credit - l.debit;
+            incomes[l.accountId] = (incomes[l.accountId] || 0) + amount;
+            totalIncome += amount;
+          } else if (nature === "EXPENSE") {
+            const amount = l.debit - l.credit;
+            expenses[l.accountId] = (expenses[l.accountId] || 0) + amount;
+            totalExpense += amount;
+          }
+        }
+      });
+    });
+
+    return { incomes, expenses, totalIncome, totalExpense, netProfit: totalIncome - totalExpense };
+  }, [vouchers, accounts, selectedCenterId, fromDate, toDate]);
+
+  // Comparison Calculation
+  const compareReports = useMemo(() => {
+    if (!isComparing || compareIds.length === 0) return [];
+    
+    let filteredVouchers = vouchers.filter(v => v.status === "POSTED");
+    if (fromDate) filteredVouchers = filteredVouchers.filter(v => v.date >= fromDate);
+    if (toDate) filteredVouchers = filteredVouchers.filter(v => v.date <= toDate);
+
+    return compareIds.map(ccId => {
+      const cc = costCenters.find(c => c.id === ccId);
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      filteredVouchers.forEach(v => {
+        v.lines.forEach(l => {
+          if (l.costCenterId === ccId) {
+            const nature = getAccountNature(l.accountId);
+            if (nature === "INCOME") {
+              totalIncome += (l.credit - l.debit);
+            } else if (nature === "EXPENSE") {
+              totalExpense += (l.debit - l.credit);
+            }
+          }
+        });
+      });
+
+      return {
+        id: ccId,
+        name: cc?.name || "Unknown",
+        totalIncome,
+        totalExpense,
+        netProfit: totalIncome - totalExpense
+      };
+    });
+  }, [vouchers, accounts, compareIds, fromDate, toDate, isComparing, costCenters]);
+
+  const toggleCompareId = (id: string) => {
+    if (compareIds.includes(id)) {
+      setCompareIds(compareIds.filter(c => c !== id));
     } else {
-      newExpanded.add(code);
+      if (compareIds.length >= 3) return; // limit to 3
+      setCompareIds([...compareIds, id]);
     }
-    setExpandedCenters(newExpanded);
   };
 
-  const toggleAccount = (key: string) => {
-    const newExpanded = new Set(expandedAccounts);
-    if (newExpanded.has(key)) {
-      newExpanded.delete(key);
-    } else {
-      newExpanded.add(key);
+  const exportExcel = () => {
+    if (isComparing) {
+      const data = compareReports.map(r => ({
+        "Cost Center": r.name,
+        "Total Income (Rs.)": r.totalIncome,
+        "Total Expense (Rs.)": r.totalExpense,
+        "Net Profit/Loss (Rs.)": r.netProfit
+      }));
+      const ws = xlsx.utils.json_to_sheet(data);
+      const wb = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(wb, ws, "Comparison");
+      xlsx.writeFile(wb, "CostCenter_Comparison.xlsx");
+    } else if (singleReport) {
+      const data: any[] = [];
+      data.push({ "Account": "--- INCOMES ---", "Amount (Rs.)": "" });
+      Object.entries(singleReport.incomes).forEach(([accId, amt]) => {
+        if (amt !== 0) data.push({ "Account": getAccountName(accId), "Amount (Rs.)": amt });
+      });
+      data.push({ "Account": "Total Income", "Amount (Rs.)": singleReport.totalIncome });
+      data.push({ "Account": "", "Amount (Rs.)": "" });
+      data.push({ "Account": "--- EXPENSES ---", "Amount (Rs.)": "" });
+      Object.entries(singleReport.expenses).forEach(([accId, amt]) => {
+        if (amt !== 0) data.push({ "Account": getAccountName(accId), "Amount (Rs.)": amt });
+      });
+      data.push({ "Account": "Total Expense", "Amount (Rs.)": singleReport.totalExpense });
+      data.push({ "Account": "", "Amount (Rs.)": "" });
+      data.push({ "Account": "NET PROFIT/LOSS", "Amount (Rs.)": singleReport.netProfit });
+
+      const ws = xlsx.utils.json_to_sheet(data);
+      const wb = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(wb, ws, "Report");
+      xlsx.writeFile(wb, `CostCenter_${selectedCenterId}.xlsx`);
     }
-    setExpandedAccounts(newExpanded);
   };
-
-  const getVarianceColor = (variance: number) => {
-    if (variance > 0) return "text-green-600";
-    if (variance < 0) return "text-red-600";
-    return "text-gray-600";
-  };
-
-  const getPercentageColor = (percent: number) => {
-    if (percent <= 80) return "text-green-600";
-    if (percent <= 100) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const totalBudgeted = costCenterData.reduce((sum, cc) => sum + cc.totalBudgeted, 0);
-  const totalActual = costCenterData.reduce((sum, cc) => sum + cc.totalActual, 0);
-  const totalVariance = totalBudgeted - totalActual;
-  const overallPercent = (totalActual / totalBudgeted) * 100;
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="Cost Center Report" subtitle="Expenses and income by cost center" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Cost Center Report</h1>
-      </div>
-
-      <div className="grid grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Budgeted</p>
-              <p className="text-2xl font-bold text-gray-900">
-                Rs. {totalBudgeted.toLocaleString()}
-              </p>
-            </div>
-            <DollarSign className="w-12 h-12 text-[#1557b0]" />
-          </div>
+    <div className="flex flex-col gap-4 animate-fadeIn">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Cost Center Profit & Loss</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Analyze income and expenses per cost center</p>
         </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Actual</p>
-              <p className="text-2xl font-bold text-gray-900">Rs. {totalActual.toLocaleString()}</p>
-            </div>
-            <TrendingUp className="w-12 h-12 text-blue-600" />
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Variance</p>
-              <p className={`text-2xl font-bold ${getVarianceColor(totalVariance)}`}>
-                Rs. {Math.abs(totalVariance).toLocaleString()}
-              </p>
-            </div>
-            {totalVariance >= 0 ? (
-              <TrendingDown className="w-12 h-12 text-green-600" />
-            ) : (
-              <TrendingUp className="w-12 h-12 text-red-600" />
-            )}
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Overall Utilization</p>
-              <p className={`text-2xl font-bold ${getPercentageColor(overallPercent)}`}>
-                {overallPercent.toFixed(1)}%
-              </p>
-            </div>
-            <div className="w-16 h-16 relative">
-              <svg className="transform -rotate-90 w-16 h-16">
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  className="text-gray-200"
-                />
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  strokeDasharray={`${2 * Math.PI * 28}`}
-                  strokeDashoffset={`${2 * Math.PI * 28 * (1 - overallPercent / 100)}`}
-                  className={getPercentageColor(overallPercent)}
-                />
-              </svg>
-            </div>
-          </div>
+        <div className="flex gap-2">
+          <button onClick={() => { setIsComparing(!isComparing); setCompareIds([]); }} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 shadow-sm">
+            <ArrowRightLeft className="w-4 h-4" /> {isComparing ? "Single Report Mode" : "Compare Cost Centers"}
+          </button>
+          <button onClick={exportExcel} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 shadow-sm">
+            <Download className="w-4 h-4" /> Export Excel
+          </button>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Cost Center</label>
-            <select
-              value={filters.costCenter}
-              onChange={(e) => setFilters({ ...filters, costCenter: e.target.value })}
-              className="input"
-            >
-              <option value="">All Cost Centers</option>
-              {costCenterData.map((cc) => (
-                <option key={cc.costCenterCode} value={cc.costCenterCode}>
-                  {cc.costCenter}
-                </option>
-              ))}
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 no-print flex gap-4 items-end">
+        {!isComparing ? (
+          <div className="flex-1">
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Cost Center</label>
+            <select value={selectedCenterId} onChange={e => setSelectedCenterId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+              <option value="">-- Choose --</option>
+              {costCenters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              className="input"
-            />
+        ) : (
+          <div className="flex-1">
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select up to 3 Cost Centers to compare</label>
+            <div className="flex gap-2 flex-wrap">
+              {costCenters.map(c => (
+                <button
+                  key={c.id}
+                  onClick={() => toggleCompareId(c.id)}
+                  className={`px-3 py-1 text-[11px] rounded-full border transition-colors ${compareIds.includes(c.id) ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              className="input"
-            />
-          </div>
+        )}
+        
+        <div>
+          <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
+          <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]" />
+        </div>
+        <div>
+          <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
+          <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]" />
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Account / Cost Center
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                Budgeted
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                Actual
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                Variance
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                % Achieved
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {costCenterData.map((cc) => (
-              <React.Fragment key={cc.costCenterCode}>
-                <tr className="bg-indigo-50 cursor-pointer hover:bg-indigo-100">
-                  <td
-                    onClick={() => toggleCostCenter(cc.costCenterCode)}
-                    className="px-6 py-4 whitespace-nowrap"
-                  >
-                    <div className="flex items-center space-x-2">
-                      {expandedCenters.has(cc.costCenterCode) ? (
-                        <ChevronDown className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                      <span className="font-semibold text-gray-900">{cc.costCenter}</span>
-                      <span className="text-xs text-gray-500">({cc.costCenterCode})</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
-                    Rs. {cc.totalBudgeted.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
-                    Rs. {cc.totalActual.toLocaleString()}
-                  </td>
-                  <td
-                    className={`px-6 py-4 whitespace-nowrap text-right font-semibold ${getVarianceColor(
-                      cc.totalVariance,
-                    )}`}
-                  >
-                    Rs. {Math.abs(cc.totalVariance).toLocaleString()}
-                    {cc.totalVariance >= 0 ? " (Under)" : " (Over)"}
-                  </td>
-                  <td
-                    className={`px-6 py-4 whitespace-nowrap text-right font-semibold ${getPercentageColor(
-                      cc.percentAchieved,
-                    )}`}
-                  >
-                    {cc.percentAchieved.toFixed(1)}%
-                  </td>
-                </tr>
-
-                {expandedCenters.has(cc.costCenterCode) &&
-                  cc.accounts.map((acc) => {
-                    const accountKey = `${cc.costCenterCode}-${acc.accountCode}`;
-                    return (
-                      <React.Fragment key={accountKey}>
-                        <tr className="bg-gray-50 hover:bg-gray-100">
-                          <td
-                            onClick={() => toggleAccount(accountKey)}
-                            className="px-6 py-3 whitespace-nowrap cursor-pointer"
-                          >
-                            <div className="flex items-center space-x-2 pl-8">
-                              {acc.transactions && acc.transactions.length > 0 ? (
-                                expandedAccounts.has(accountKey) ? (
-                                  <ChevronDown className="w-3 h-3" />
-                                ) : (
-                                  <ChevronRight className="w-3 h-3" />
-                                )
-                              ) : (
-                                <span className="w-3 h-3" />
-                              )}
-                              <span className="text-gray-900">{acc.accountName}</span>
-                              <span className="text-xs text-gray-500">({acc.accountCode})</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-3 whitespace-nowrap text-right text-gray-900">
-                            Rs. {acc.budgeted.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-3 whitespace-nowrap text-right text-gray-900">
-                            Rs. {acc.actual.toLocaleString()}
-                          </td>
-                          <td
-                            className={`px-6 py-3 whitespace-nowrap text-right ${getVarianceColor(
-                              acc.variance,
-                            )}`}
-                          >
-                            Rs. {Math.abs(acc.variance).toLocaleString()}
-                          </td>
-                          <td
-                            className={`px-6 py-3 whitespace-nowrap text-right ${getPercentageColor(
-                              acc.percentAchieved,
-                            )}`}
-                          >
-                            {acc.percentAchieved.toFixed(1)}%
-                          </td>
+      {!isComparing ? (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          {!selectedCenterId || !singleReport ? (
+            <div className="text-center text-gray-500 py-12">
+              <FileText className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-[14px] font-medium text-gray-600">No Cost Center Selected</p>
+              <p className="text-[12px] mt-1">Please select a cost center above to view its P&L.</p>
+            </div>
+          ) : (
+            <div className="p-6">
+              <h2 className="text-[16px] font-bold text-gray-800 text-center mb-6">{costCenters.find(c => c.id === selectedCenterId)?.name} P&L</h2>
+              
+              <div className="grid grid-cols-2 gap-8">
+                {/* Expenses */}
+                <div>
+                  <h3 className="text-[12px] font-bold text-red-700 uppercase tracking-wide border-b-2 border-red-200 pb-2 mb-3">Expenses</h3>
+                  <table className="w-full text-[12px]">
+                    <tbody>
+                      {Object.entries(singleReport.expenses).filter(([_, amt]) => amt !== 0).map(([accId, amt]) => (
+                        <tr key={accId} className="border-b border-gray-100 last:border-0">
+                          <td className="py-2 text-gray-700">{getAccountName(accId)}</td>
+                          <td className="py-2 text-right font-mono text-gray-900">{(amt).toLocaleString()}</td>
                         </tr>
+                      ))}
+                      {Object.keys(singleReport.expenses).length === 0 && (
+                        <tr><td colSpan={2} className="py-2 text-gray-400 italic">No expenses recorded</td></tr>
+                      )}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t-2 border-gray-300">
+                        <td className="py-2 font-bold text-gray-800">Total Expense</td>
+                        <td className="py-2 text-right font-mono font-bold text-red-600">{singleReport.totalExpense.toLocaleString()}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
 
-                        {expandedAccounts.has(accountKey) &&
-                          acc.transactions?.map((txn) => (
-                            <tr key={txn.id} className="bg-white hover:bg-gray-50">
-                              <td className="px-6 py-2 text-sm pl-20">
-                                <div className="text-gray-600">
-                                  {new Date(txn.date).toLocaleDateString()} - {txn.voucherNo}
-                                  <div className="text-xs text-gray-500">{txn.description}</div>
-                                </div>
-                              </td>
-                              <td colSpan={2}></td>
-                              <td className="px-6 py-2 text-sm text-right text-gray-900">
-                                Rs. {txn.amount.toLocaleString()}
-                              </td>
-                              <td></td>
-                            </tr>
-                          ))}
-                      </React.Fragment>
-                    );
-                  })}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                {/* Incomes */}
+                <div>
+                  <h3 className="text-[12px] font-bold text-green-700 uppercase tracking-wide border-b-2 border-green-200 pb-2 mb-3">Incomes</h3>
+                  <table className="w-full text-[12px]">
+                    <tbody>
+                      {Object.entries(singleReport.incomes).filter(([_, amt]) => amt !== 0).map(([accId, amt]) => (
+                        <tr key={accId} className="border-b border-gray-100 last:border-0">
+                          <td className="py-2 text-gray-700">{getAccountName(accId)}</td>
+                          <td className="py-2 text-right font-mono text-gray-900">{(amt).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                      {Object.keys(singleReport.incomes).length === 0 && (
+                        <tr><td colSpan={2} className="py-2 text-gray-400 italic">No incomes recorded</td></tr>
+                      )}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t-2 border-gray-300">
+                        <td className="py-2 font-bold text-gray-800">Total Income</td>
+                        <td className="py-2 text-right font-mono font-bold text-green-600">{singleReport.totalIncome.toLocaleString()}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+              {/* Net Profit/Loss */}
+              <div className={`mt-8 p-4 rounded-lg border-2 flex justify-between items-center ${singleReport.netProfit >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
+                <div className="text-[14px] font-bold uppercase tracking-wider text-gray-800">
+                  {singleReport.netProfit >= 0 ? "Net Profit" : "Net Loss"}
+                </div>
+                <div className={`text-[20px] font-mono font-bold ${singleReport.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}>
+                  Rs. {Math.abs(singleReport.netProfit).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          {compareIds.length === 0 ? (
+            <div className="text-center text-gray-500 py-12">
+              <ArrowRightLeft className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-[14px] font-medium text-gray-600">Select Cost Centers</p>
+              <p className="text-[12px] mt-1">Select up to 3 cost centers above to compare.</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="px-4 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Metric</th>
+                  {compareReports.map(r => (
+                    <th key={r.id} className="px-4 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">{r.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                <tr>
+                  <td className="px-4 py-3 text-[12px] font-medium text-gray-700">Total Income</td>
+                  {compareReports.map(r => (
+                    <td key={r.id} className="px-4 py-3 text-[12px] font-mono text-green-600 text-right">{r.totalIncome.toLocaleString()}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-[12px] font-medium text-gray-700">Total Expense</td>
+                  {compareReports.map(r => (
+                    <td key={r.id} className="px-4 py-3 text-[12px] font-mono text-red-600 text-right">{r.totalExpense.toLocaleString()}</td>
+                  ))}
+                </tr>
+                <tr className="bg-gray-50 font-bold border-t-2 border-gray-200">
+                  <td className="px-4 py-4 text-[12px] text-gray-800">Net Profit / Loss</td>
+                  {compareReports.map(r => (
+                    <td key={r.id} className={`px-4 py-4 text-[13px] font-mono text-right ${r.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}>
+                      {r.netProfit >= 0 ? "+" : ""}{r.netProfit.toLocaleString()}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
     </div>
   );
 }

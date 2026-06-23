@@ -22,7 +22,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import {
   Card,
   Badge,
@@ -46,9 +46,9 @@ import {
   ClipboardList,
   Send,
 } from "lucide-react";
-import { formatNumber } from "../../lib/utils";
-import { computeVAT } from "../../lib/taxUtils";
-import { PartyType } from "../../lib/types";
+import { formatNumber } from "@/lib/utils";
+import { computeVAT } from "@/lib/taxUtils";
+import { PartyType } from "@/lib/types";
 import toast from "react-hot-toast";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;

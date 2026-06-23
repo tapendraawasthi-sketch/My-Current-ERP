@@ -1,9 +1,9 @@
 // @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Input, Select, AmountInput, AccountSelect } from "../ui";
-import { useStore } from "../../store/useStore";
-import { ItemType, AccountType, type Item } from "../../lib/types";
-import { formatNumber } from "../../lib/utils";
+import { useStore } from "@/store/useStore";
+import { ItemType, AccountType, type Item } from "@/lib/types";
+import { formatNumber } from "@/lib/utils";
 
 interface ItemFormProps {
   item?: Item;

@@ -17,7 +17,11 @@ import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const TrialBalance: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear, invoices } = useStore();
+  const accounts = useStore(state => state.accounts);
+  const vouchers = useStore(state => state.vouchers);
+  const companySettings = useStore(state => state.companySettings);
+  const currentFiscalYear = useStore(state => state.currentFiscalYear);
+  const invoices = useStore(state => state.invoices);
 
   const [asOfDate, setAsOfDate] = useState(currentFiscalYear?.endDate || "2027-07-15");
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());

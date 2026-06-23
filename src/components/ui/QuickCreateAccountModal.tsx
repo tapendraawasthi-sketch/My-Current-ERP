@@ -9,8 +9,8 @@ import Modal from "./Modal";
 import Input from "./Input";
 import Select from "./Select";
 import Button from "./Button";
-import { useStore } from "../../store/useStore";
-import { AccountType, AccountLevel } from "../../lib/types";
+import { useStore } from "@/store/useStore";
+import { AccountType, AccountLevel } from "@/lib/types";
 import toast from "react-hot-toast";
 
 interface QuickCreateAccountModalProps {

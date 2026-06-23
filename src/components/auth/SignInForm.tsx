@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, Building2, CheckCircle, Shield, FileText } from "lucide-react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 
 export default function SignInForm() {
   const { login } = useStore();

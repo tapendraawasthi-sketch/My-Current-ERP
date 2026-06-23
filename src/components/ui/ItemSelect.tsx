@@ -4,8 +4,8 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { useStore } from "../../store/useStore";
-import { computeStockPosition } from "../../lib/stockUtils";
+import { useStore } from "@/store/useStore";
+import { computeStockPosition } from "@/lib/stockUtils";
 import { ChevronDown, Search } from "lucide-react";
 
 interface ItemSelectProps {

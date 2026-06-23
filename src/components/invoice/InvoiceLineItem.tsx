@@ -9,9 +9,9 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import { Trash2 } from "lucide-react";
-import { formatNumber } from "../../lib/utils";
+import { formatNumber } from "@/lib/utils";
 
 export interface InvoiceLineState {
   id: string;
@@ -45,7 +45,7 @@ const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const cellInput =
   "w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none";
 
-const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
+const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
   line,
   lineNo,
   onUpdate,
@@ -278,6 +278,6 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
       </td>
     </tr>
   );
-};
+});
 
 export default InvoiceLineItem;

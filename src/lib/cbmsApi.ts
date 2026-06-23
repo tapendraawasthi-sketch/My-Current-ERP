@@ -3,43 +3,52 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface CBMSConfig {
-  clientId: string;
-  clientSecret: string;
-  environment: "sandbox" | "production";
-}
+import { CompanySettings, Invoice, VoucherType } from "./types";
 
 export async function submitToCBMS(
-  invoice: {
-    billNo: string;
-    billDate: string;
-    partyName: string;
-    partyPAN?: string;
-    taxableAmount: number;
-    vatAmount: number;
-    grandTotal: number;
-    items: Array<{ description: string; qty: number; rate: number; amount: number }>;
-  },
-  config: CBMSConfig,
-): Promise<{ success: boolean; referenceNo?: string; error?: string }> {
-  const baseUrl =
-    config.environment === "production"
-      ? "https://cbms.ird.gov.np/api/v1"
-      : "https://sandbox.cbms.ird.gov.np/api/v1";
+  invoice: Invoice,
+  company: CompanySettings,
+): Promise<{ success: boolean; irn: string | null; error: string | null }> {
   try {
-    const res = await fetch(`${baseUrl}/invoice/submit`, {
+    const baseUrl = "https://cbms.ird.gov.np/api/billing/";
+    
+    // Authorization: Basic base64(username:password)
+    const username = company.cbmsUsername || "";
+    const password = company.cbmsPassword || "";
+    const authHeader = "Basic " + btoa(`${username}:${password}`);
+
+    const payload = {
+      BuyerPanNo: invoice.partyPan || "",
+      BuyerName: invoice.partyName || "Cash",
+      Amount: invoice.grandTotal || 0,
+      TaxableAmount: invoice.taxableAmount || 0,
+      TaxAmount: invoice.vatAmount || 0,
+      Discount: invoice.totalDiscount || 0,
+      InvoiceDate: invoice.date.replace(/-/g, "/"),
+      InvoiceNo: invoice.invoiceNo,
+      IsRealTime: true,
+      Miti: invoice.dateNepali,
+      TransactionType: invoice.type === VoucherType.SALES_INVOICE ? "D" : "C",
+    };
+
+    const res = await fetch(baseUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${config.clientSecret}`,
+        Authorization: authHeader,
       },
-      body: JSON.stringify(invoice),
+      body: JSON.stringify(payload),
     });
-    const data = await res.json();
-    return res.ok
-      ? { success: true, referenceNo: data.referenceNo }
-      : { success: false, error: data.message };
-  } catch {
-    return { success: false, error: "Network error" };
+
+    if (res.status === 200) {
+      const data = await res.json();
+      const irn = data.Irn || data.irn || data.InvoiceReferenceNo || null;
+      return { success: true, irn, error: null };
+    } else {
+      const text = await res.text();
+      return { success: false, irn: null, error: `IRD Error (${res.status}): ${text}` };
+    }
+  } catch (error: any) {
+    return { success: false, irn: null, error: error?.message || "Network error while syncing with CBMS" };
   }
 }

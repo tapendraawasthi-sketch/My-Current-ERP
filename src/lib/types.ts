@@ -63,6 +63,8 @@ export enum UserRole {
   ACCOUNTANT = "accountant",
   VIEWER = "viewer",
   MANAGER = "manager",
+  CASHIER = "cashier",
+  PAYROLL_OFFICER = "payroll_officer",
 }
 
 export enum DateFormat {
@@ -206,6 +208,7 @@ export interface JournalEntryLine {
 
 export interface JournalEntry {
   id: string;
+  companyId?: string;
   date: string;
   dateNepali: string;
   voucherNo: string;
@@ -357,6 +360,7 @@ export interface InvoiceLine {
 
 export interface Invoice {
   id: string;
+  companyId?: string;
   invoiceNo: string;
   type: VoucherType;
   partyId: string;
@@ -496,6 +500,7 @@ export interface GoodsReceiptNote {
 
 export interface StockMovement {
   id: string;
+  companyId?: string;
   date: string;
   dateNepali: string;
   type: MovementType;
@@ -548,6 +553,8 @@ export interface CostCenter {
   level: CostCenterLevel;
   isActive: boolean;
   budget?: number;
+  description?: string;
+  responsiblePerson?: string;
 }
 
 export interface BankAccount {
@@ -577,19 +584,11 @@ export interface BankStatement {
 
 export interface Budget {
   id: string;
-  name: string;
-  fiscalYearId: string;
-  period: BudgetPeriod;
-  lines: BudgetLine[];
-  createdBy?: string;
-  createdAt?: string;
-}
-
-export interface BudgetLine {
   accountId: string;
-  accountName: string;
-  annualAmount: number;
-  monthlyBreakdown: Record<string, number>; // "2081-04" -> amount
+  costCenterId?: string;
+  fiscalYearBS: string;
+  month: string;
+  budgetedAmount: number;
 }
 
 export interface TdsEntry {
@@ -636,6 +635,7 @@ export interface CompanySettings {
   cbmsPassword?: string;
   datePreference?: "BS" | "AD";
   defaultVatRate?: number;
+  vatFilingFrequency?: "monthly" | "trimestral";
   website?: string;
   logo?: string;
   defaultCurrency: string;
@@ -706,6 +706,7 @@ export interface User {
   lastLogin?: string;
   createdAt?: string;
   createdBy?: string;
+  companyId?: string;
 }
 
 export interface AuditLog {
@@ -993,36 +994,32 @@ export interface Salesman {
 
 export interface Employee {
   id: string;
-  code: string;
   name: string;
-  nameNepali?: string;
+  nameNe?: string;
   designation: string;
-  department?: string;
-  panNo?: string;
+  department: string;
+  dateOfJoining: string;
+  dateOfJoiningBS: string;
+  pan: string;
+  citizenshipNumber: string;
+  bankAccount: string;
+  bankName: string;
+  ssf: boolean;
+  ssfContributorNumber?: string;
   basicSalary: number;
-  allowances: { name: string; amount: number }[];
-  deductions: { name: string; amount: number }[];
-  pfRate: number;
-  citRate: number;
-  bankAccountNo?: string;
-  bankName?: string;
-  joinDate: string;
-  isActive: boolean;
-  accountId: string;
-  // Nepal Additions:
-  citizenshipNo?: string;
-  socialSecurityNo?: string;      // SSF registration number
-  pfAccountNo?: string;           // PF account number (EPF)
-  citAccountNo?: string;          // CIT account number
-  ssfContributionType: 'basic' | 'premium' | 'none'; // SSF scheme type
-  taxableAllowances?: { name: string; amount: number; isTaxable: boolean }[];
-  pfEnabled: boolean;             // employee enrolled in PF
-  citEnabled: boolean;            // employee enrolled in CIT
-  ssfEnabled: boolean;
-  rentAllowance?: number;         // housing — first NPR 3,000/month tax-exempt
-  medicalAllowance?: number;      // first NPR 750/month tax-exempt
-  transportAllowance?: number;    // first NPR 2,500/month tax-exempt
-  maritalStatus: 'single' | 'married';  // married gets 10% higher tax-free threshold
+  gradePayPercent: number;
+  allowances: {
+    houseRent: number;
+    transport: number;
+    medical: number;
+    dashain: number;
+  };
+  taxDeclarations: {
+    lifeInsurance: number;
+    healthInsurance: number;
+  };
+  employmentType: "permanent" | "contract" | "parttime";
+  status: "active" | "inactive";
 }
 
 export interface PayrollLine {

@@ -9,7 +9,7 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import {
   Card,
   Badge,
@@ -31,12 +31,12 @@ import {
   Landmark,
   CreditCard,
 } from "lucide-react";
-import { formatNumber, numberToWords } from "../../lib/utils";
-import { ADToBSString } from "../../lib/nepaliDate";
-import { generateSerialNumber } from "../../lib/accounting";
-import { computeInvoiceVAT } from "../../lib/taxUtils";
-import { generateInvoicePDF } from "../../lib/printUtils";
-import { submitToCBMS } from "../../lib/cbmsApi";
+import { formatNumber, numberToWords } from "@/lib/utils";
+import { ADToBSString } from "@/lib/nepaliDate";
+import { generateSerialNumber } from "@/lib/accounting";
+import { computeInvoiceVAT } from "@/lib/taxUtils";
+import { generateInvoicePDF } from "@/lib/printUtils";
+import { submitToCBMS } from "@/lib/cbmsApi";
 import {
   VoucherType,
   VoucherStatus,
@@ -44,9 +44,9 @@ import {
   PaymentStatus,
   PartyType,
   TdsType,
-} from "../../lib/types";
+} from "@/lib/types";
 import toast from "react-hot-toast";
-import { PillTitle, FormPanel } from "../../components/BusyShell";
+import { PillTitle, FormPanel } from "@/components/BusyShell";
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
 import AttachmentUploader from "../ui/AttachmentUploader";
 

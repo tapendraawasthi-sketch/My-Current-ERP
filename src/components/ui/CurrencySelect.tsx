@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useMemo } from "react";
 import Select from "./Select";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 
 interface CurrencySelectProps {
   label?: string;

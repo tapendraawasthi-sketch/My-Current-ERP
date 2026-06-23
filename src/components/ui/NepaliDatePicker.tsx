@@ -4,7 +4,7 @@ import {
   getBSToday,
   ADToBSString,
   BSToADString,
-} from "../../lib/nepaliDate";
+} from "@/lib/nepaliDate";
 import { Calendar } from "lucide-react";
 
 interface NepaliDatePickerProps {

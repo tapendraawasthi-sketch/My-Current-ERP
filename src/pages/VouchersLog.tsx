@@ -163,17 +163,7 @@ const VouchersLog: React.FC = () => {
       header: "Voucher No",
       sortable: true,
     },
-    {
-      key: "dateNepali",
-      header: "Date (BS)",
-      sortable: true,
-    },
-    {
-      key: "date",
-      header: "Date (AD)",
-      sortable: true,
-      render: (voucher: JournalEntry) => new Date(voucher.date).toLocaleDateString(),
-    },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     {
       key: "type",
       header: "Type",

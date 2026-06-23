@@ -57,7 +57,7 @@ interface TreeNode {
   children: TreeNode[];
 }
 
-const ChartOfAccounts: React.FC = () => {
+const ChartOfAccounts: React.FC = React.memo(() => {
   const {
     accounts,
     vouchers,
@@ -1851,6 +1851,6 @@ const ChartOfAccounts: React.FC = () => {
 
     </div>
   );
-};
+});
 
 export default ChartOfAccounts;

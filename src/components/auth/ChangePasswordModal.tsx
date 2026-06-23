@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 
 interface Props {
   userId: string;

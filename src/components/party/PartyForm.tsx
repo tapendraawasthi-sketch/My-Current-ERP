@@ -5,9 +5,9 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Party, PartyType, TdsType } from "../../lib/types";
+import { Party, PartyType, TdsType } from "@/lib/types";
 import { Input, Select, Button, Badge } from "../ui";
-import { TDS_RATES, NEPAL_PROVINCES } from "../../lib/constants";
+import { TDS_RATES, NEPAL_PROVINCES } from "@/lib/constants";
 import {
   Info,
   AlertCircle,

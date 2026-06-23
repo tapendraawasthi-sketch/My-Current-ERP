@@ -79,9 +79,13 @@ export function addCompanyHeader(
   doc.setFontSize(FONT_SIZES.body);
   doc.setTextColor(107, 114, 128);
 
-  const taxIdStr = company.vatNumber
+  let taxIdStr = company.vatNumber
     ? `PAN/VAT: ${company.panNumber}`
     : `PAN Number: ${company.panNumber}`;
+    
+  if (company.irdOffice) {
+    taxIdStr += ` | IRD Office: ${company.irdOffice}`;
+  }
 
   doc.text(`${company.address} | Phone: ${company.phone || "N/A"}`, PAGE_WIDTH / 2, y, {
     align: "center",
@@ -388,7 +392,7 @@ export async function generateInvoicePDF(
   doc.setFont("Helvetica", "italic");
   doc.setFontSize(FONT_SIZES.small);
   doc.setTextColor(128, 128, 128);
-  doc.text("This is a computer-generated invoice.", PAGE_WIDTH / 2, PAGE_HEIGHT - 18, {
+  doc.text("This is a computer-generated invoice. / यो कम्प्युटरबाट तयार गरिएको बिजक हो।", PAGE_WIDTH / 2, PAGE_HEIGHT - 18, {
     align: "center",
   });
 

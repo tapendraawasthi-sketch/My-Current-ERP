@@ -53,7 +53,7 @@ const DeliveryChallan: React.FC = () => {
       header: "Challan No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "date", header: "Date" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     { key: "partyName", header: "Customer" },
     { key: "salesOrderId", header: "Sales Order", render: (val: string) => val || "—" },
     { key: "totalQty", header: "Qty", align: "right" },

@@ -679,13 +679,7 @@ const InvoiceHub: React.FC = () => {
               width: "15%",
               render: (no) => <span className="font-mono font-bold text-slate-900">{no}</span>,
             },
-            {
-              key: "dateNepali",
-              header: "Date (BS)",
-              width: "13%",
-              render: (bs, row) => (
-                <div className="flex flex-col">
-                  <span className="font-semibold text-slate-800 leading-tight">{bs}</span>
+            { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> }</span>
                   <span className="text-[10px] font-medium text-slate-400 mt-0.5">
                     {row.date} (AD)
                   </span>

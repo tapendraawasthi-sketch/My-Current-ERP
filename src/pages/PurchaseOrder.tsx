@@ -125,7 +125,7 @@ const PurchaseOrder: React.FC = () => {
       header: "Order No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "date", header: "Date" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     { key: "expectedDate", header: "Expected", render: (v: string) => v || "—" },
     {
       key: "partyId",

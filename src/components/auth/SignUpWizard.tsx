@@ -4,7 +4,7 @@ import Step1CompanyProfile from "./wizard/Step1CompanyProfile";
 import Step2TaxRegistration from "./wizard/Step2TaxRegistration";
 import Step3AccountingSetup from "./wizard/Step3AccountingSetup";
 import Step4AdminAccount from "./wizard/Step4AdminAccount";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 
 export default function SignUpWizard() {
   const { createCompanyAndAdmin } = useStore();

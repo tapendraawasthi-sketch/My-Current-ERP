@@ -14,7 +14,7 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useStore } from "../../store/useStore";
+import { useStore } from "@/store/useStore";
 import {
   Card,
   Badge,
@@ -39,11 +39,11 @@ import {
   Printer,
   FileText,
 } from "lucide-react";
-import { formatNumber } from "../../lib/utils";
-import { ADToBSString } from "../../lib/nepaliDate";
-import { generateSerialNumber } from "../../lib/accounting";
-import { generateVoucherPDF } from "../../lib/printUtils";
-import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "../../lib/types";
+import { formatNumber } from "@/lib/utils";
+import { ADToBSString } from "@/lib/nepaliDate";
+import { generateSerialNumber } from "@/lib/accounting";
+import { generateVoucherPDF } from "@/lib/printUtils";
+import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "@/lib/types";
 import toast from "react-hot-toast";
 
 interface ReceiptVoucherFormProps {

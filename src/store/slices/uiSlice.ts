@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getDB, generateId } from "../../lib/db";
-import { ReportFilters, AppNotification, ReportPeriodPreset } from "../../lib/types";
+import { getDB, generateId } from "@/lib/db";
+import { ReportFilters, AppNotification, ReportPeriodPreset } from "@/lib/types";
 import { StoreState, StoreSet, StoreGet } from "../useStore";
 
 const PAGE_TITLES: Record<string, string> = {

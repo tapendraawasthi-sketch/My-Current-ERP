@@ -114,7 +114,7 @@ const PartyLedgerStatement: React.FC = () => {
   };
 
   const statementColumns = [
-    { key: "dateNepali", header: "Date (BS)" },
+    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     { key: "voucherNo", header: "Voucher No" },
     { key: "voucherType", header: "Type" },
     { key: "narration", header: "Narration", width: "40%" },

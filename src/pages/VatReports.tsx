@@ -40,7 +40,11 @@ import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../components/BusyShell";
 
 const VatReports: React.FC = () => {
-  const { invoices, vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const invoices = useStore(state => state.invoices);
+  const vouchers = useStore(state => state.vouchers);
+  const accounts = useStore(state => state.accounts);
+  const companySettings = useStore(state => state.companySettings);
+  const currentFiscalYear = useStore(state => state.currentFiscalYear);
   const defaultAdStart = currentFiscalYear?.startDate || dateToAD(new Date());
   const defaultAdEnd = currentFiscalYear?.endDate || dateToAD(new Date());
 

@@ -63,6 +63,7 @@ interface SidebarProps {
 
 interface NavItem {
   label: string;
+  nepaliLabel?: string;
   page: string;
   subPage?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -98,31 +99,31 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const menuGroups: MenuGroup[] = [
     {
       title: "Overview",
-      items: [{ label: "Dashboard", page: "dashboard", icon: LayoutDashboard }],
+      items: [{ label: "Dashboard", nepaliLabel: "ड्यासबोर्ड", page: "dashboard", icon: LayoutDashboard }],
     },
     {
       title: "Masters",
       items: [
-        { label: "Chart of Accounts", page: "accounts", icon: FolderOpen },
-        { label: "Parties Directory", page: "parties", icon: Users },
-        { label: "Stock Items", page: "items", icon: Package },
+        { label: "Chart of Accounts", nepaliLabel: "खाताको चार्ट", page: "accounts", icon: FolderOpen },
+        { label: "Parties Directory", nepaliLabel: "ग्राहक/आपूर्तिकर्ता", page: "parties", icon: Users },
+        { label: "Stock Items", nepaliLabel: "सामानहरू", page: "items", icon: Package },
         { label: "Cost Centers", page: "cost-centers", icon: Map },
         { label: "Warehouses", page: "warehouses", icon: Archive },
         { label: "Units of Measure", page: "units", icon: Tags },
-        { label: "Bank Accounts", page: "accounts", icon: Landmark },
+        { label: "Bank Accounts", nepaliLabel: "बैंक खाताहरू", page: "accounts", icon: Landmark },
       ],
     },
     {
       title: "Transactions",
       items: [
-        { label: "Sales Invoice", page: "sales-invoice", icon: FileText },
-        { label: "Purchase Invoice", page: "purchase-invoice", icon: FileText },
-        { label: "Sales Return", page: "sales-return", icon: RefreshCw },
-        { label: "Purchase Return", page: "purchase-return", icon: RefreshCw },
-        { label: "Receipt Voucher", page: "receipt", icon: Download },
-        { label: "Payment Voucher", page: "payment", icon: Wallet },
-        { label: "Journal Voucher", page: "journal", icon: BookOpen },
-        { label: "Contra Voucher", page: "contra", icon: ArrowLeftRight },
+        { label: "Sales Invoice", nepaliLabel: "बिक्री बिजक", page: "sales-invoice", icon: FileText },
+        { label: "Purchase Invoice", nepaliLabel: "खरिद बिजक", page: "purchase-invoice", icon: FileText },
+        { label: "Sales Return", nepaliLabel: "बिक्री फिर्ता", page: "sales-return", icon: RefreshCw },
+        { label: "Purchase Return", nepaliLabel: "खरिद फिर्ता", page: "purchase-return", icon: RefreshCw },
+        { label: "Receipt Voucher", nepaliLabel: "प्राप्ति भौचर", page: "receipt", icon: Download },
+        { label: "Payment Voucher", nepaliLabel: "भुक्तानी भौचर", page: "payment", icon: Wallet },
+        { label: "Journal Voucher", nepaliLabel: "गोश्वारा भौचर", page: "journal", icon: BookOpen },
+        { label: "Contra Voucher", nepaliLabel: "कन्ट्रा भौचर", page: "contra", icon: ArrowLeftRight },
         { label: "Debit Note", page: "debit-note", icon: CreditCard },
         { label: "Credit Note", page: "credit-note", icon: CreditCard },
       ],
@@ -130,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     {
       title: "Payroll",
       items: [
-        { label: "Employees", page: "employees", icon: Users },
+        { label: "Employees", nepaliLabel: "कर्मचारीहरू", page: "employees", icon: Users },
         { label: "Payroll Run", page: "payroll-run", icon: ClipboardList },
         { label: "Payslip", page: "payslip", icon: FileText },
       ],
@@ -149,21 +150,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     {
       title: "Accounts Books",
       items: [
-        { label: "Day Book", page: "day-book", icon: Calendar },
-        { label: "Cash Book", page: "cash-book", icon: Banknote },
-        { label: "Bank Book", page: "bank-book", icon: Landmark },
-        { label: "General Ledger", page: "ledger", icon: BookOpen },
-        { label: "Party Ledger", page: "party-statement", icon: BookMarked },
-        { label: "Vouchers Register", page: "vouchers", icon: ScrollText },
+        { label: "Day Book", nepaliLabel: "दैनिक पुस्तिका", page: "day-book", icon: Calendar },
+        { label: "Cash Book", nepaliLabel: "नगद पुस्तिका", page: "cash-book", icon: Banknote },
+        { label: "Bank Book", nepaliLabel: "बैंक पुस्तिका", page: "bank-book", icon: Landmark },
+        { label: "General Ledger", nepaliLabel: "साधारण खाता", page: "ledger", icon: BookOpen },
+        { label: "Party Ledger", nepaliLabel: "पार्टी खाता", page: "party-statement", icon: BookMarked },
+        { label: "Vouchers Register", nepaliLabel: "भौचर दर्ता", page: "vouchers", icon: ScrollText },
         { label: "Bank Reconciliation", page: "bank-reconciliation", icon: Landmark },
       ],
     },
     {
       title: "Reports",
       items: [
-        { label: "Trial Balance", page: "trial-balance", icon: Scale },
-        { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp },
-        { label: "Balance Sheet", page: "balance-sheet", icon: BarChart2 },
+        { label: "Trial Balance", nepaliLabel: "सन्तुलन परीक्षण", page: "trial-balance", icon: Scale },
+        { label: "Profit & Loss", nepaliLabel: "नाफा नोक्सान", page: "profit-loss", icon: TrendingUp },
+        { label: "Balance Sheet", nepaliLabel: "वासलात", page: "balance-sheet", icon: BarChart2 },
         { label: "Ratio Analysis", page: "ratio-analysis", icon: FileBarChart },
         { label: "Cash Flow", page: "cash-flow", icon: Activity },
         { label: "Sales Register", page: "sales-register", icon: TrendingUp },
@@ -246,7 +247,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       {!collapsed && currentFiscalYear && (
         <div className="mx-2.5 mt-2 mb-1 px-2 py-1 rounded" style={{ background: "#0f1b35" }}>
           <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Active FY</div>
-          <div className="text-[10px] font-semibold text-slate-300 mt-0.5">{currentFiscalYear.name}</div>
+          <div className="text-[10px] font-semibold text-slate-300 mt-0.5">{currentFiscalYear.name.includes("BS") ? currentFiscalYear.name : `${currentFiscalYear.name} BS`}</div>
         </div>
       )}
 
@@ -276,7 +277,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                         className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-400"}`}
                         style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #3b82f6", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
                         <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#60a5fa]" : "text-slate-500"}`} />
-                        {!collapsed && <span className="truncate leading-none flex-1">{item.label}</span>}
+                        {!collapsed && (
+                          <div className="flex flex-col flex-1 leading-tight text-left min-w-0">
+                            <span className="truncate">{item.label}</span>
+                            {item.nepaliLabel && (
+                              <span className="text-[9px] font-normal text-slate-500 truncate">{item.nepaliLabel}</span>
+                            )}
+                          </div>
+                        )}
                         {!collapsed && item.label === "Stock Items" && reorderAlertCount > 0 && (
                           <span className="ml-auto bg-amber-500 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
                             {reorderAlertCount}
@@ -287,9 +295,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                         )}
                       </button>
                     );
+                    const tooltipContent = item.nepaliLabel ? `${item.label} (${item.nepaliLabel})` : item.label;
                     return (
                       <React.Fragment key={`${item.label}-${item.page}`}>
-                        {collapsed ? <Tooltip content={item.label} position="right">{btn}</Tooltip> : btn}
+                        {collapsed ? <Tooltip content={tooltipContent} position="right">{btn}</Tooltip> : btn}
                       </React.Fragment>
                     );
                   })}

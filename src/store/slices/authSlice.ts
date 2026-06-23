@@ -4,7 +4,7 @@
  */
 
 import toast from "react-hot-toast";
-import { getDB, generateId } from "../../lib/db";
+import { getDB, generateId } from "@/lib/db";
 import {
   User,
   CompanySettings,
@@ -12,9 +12,9 @@ import {
   VoucherStatus,
   VoucherType,
   ReportPeriodPreset,
-} from "../../lib/types";
-import { sha256Fallback } from "../../lib/utils";
-import { recalculateAccountBalances } from "../../lib/accounting";
+} from "@/lib/types";
+import { sha256Fallback } from "@/lib/utils";
+import { recalculateAccountBalances } from "@/lib/accounting";
 import { StoreState, StoreSet, StoreGet } from "../useStore";
 
 export type AuthSlice = {
@@ -77,6 +77,7 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         deliveryChallans,
         goodsReceiptNotes,
         costCenters,
+        budgets,
         tdsEntries,
         bankAccounts,
         bankStatements,
@@ -107,6 +108,7 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.deliveryChallans.toArray(),
         db.goodsReceiptNotes.toArray(),
         db.costCenters.toArray(),
+        db.budgets.toArray(),
         db.tdsEntries.toArray(),
         db.bankAccounts.toArray(),
         db.bankStatements.toArray(),
@@ -124,14 +126,16 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.payrollRuns.toArray(),
         db.customFieldDefs.toArray(),
       ]);
-
       const companySettings = companySettingsArr[0] || get().companySettings;
       const currentFiscalYear = fiscalYears.find((fy) => fy.isCurrent) || null;
 
       const accounts = recalculateAccountBalances(accountsRaw, vouchers);
+      const computedBalances: Record<string, number> = {};
+      accounts.forEach(a => computedBalances[a.id] = a.balance);
 
       set({
         accounts,
+        computedBalances,
         vouchers,
         invoices,
         parties,
@@ -144,6 +148,7 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         deliveryChallans,
         goodsReceiptNotes,
         costCenters,
+        budgets,
         tdsEntries,
         bankAccounts,
         bankStatements,

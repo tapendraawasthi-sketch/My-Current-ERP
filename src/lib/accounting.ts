@@ -154,166 +154,118 @@ export function getAccountBalance(account: Account): {
 export function computeProfitLoss(
   accounts: Account[],
   vouchers: JournalEntry[],
-  startDate: string,
-  endDate: string,
+  invoices: Invoice[],
+  fromDate: string,
+  toDate: string
 ): {
-  income: ProfitLossRow[];
-  expenses: ProfitLossRow[];
   grossProfit: number;
+  operatingProfit: number;
   netProfit: number;
-  totalIncome: number;
-  totalExpenses: number;
+  sections: {
+    salesRevenue: number;
+    purchaseReturns: number;
+    costOfGoodsSold: number;
+    grossProfit: number;
+    operatingExpenses: number;
+    adminExpenses: number;
+    financingCosts: number;
+    otherIncome: number;
+    taxProvision: number;
+    netProfit: number;
+  };
+  ledgerBreakdown: Array<{ groupName: string; ledgerName: string; amount: number }>;
 } {
   try {
-    const isolatedAccounts = accounts.map((acc) => ({ ...acc, balance: 0 }));
-    const postedVouchers = vouchers.filter(
-      (v) => v.status === VoucherStatus.POSTED && v.date >= startDate && v.date <= endDate,
-    );
+    let salesRevenue = 0;
+    let purchaseReturns = 0;
+    let costOfGoodsSold = 0;
+    let operatingExpenses = 0;
+    let adminExpenses = 0;
+    let financingCosts = 0;
+    let otherIncome = 0;
+    let taxProvision = 0;
+    
+    const ledgerBreakdown: Array<{ groupName: string; ledgerName: string; amount: number }> = [];
 
-    for (const v of postedVouchers) {
-      for (const line of v.lines) {
-        const match = isolatedAccounts.find((a) => a.id === line.accountId);
-        if (match) {
-          const effect = getAccountEffect(match.type, line.debit, line.credit);
-          match.balance = round2(match.balance + effect);
+    for (const acc of accounts) {
+      if (acc.isGroup) continue;
+
+      if (acc.type !== AccountType.INCOME && acc.type !== AccountType.EXPENSE) continue;
+
+      const baseOp = acc.openingBalanceDr ? acc.openingBalanceDr : (acc.openingBalanceCr || 0);
+      const baseOpSign = acc.openingBalanceDr ? "DR" : "CR";
+      const ledger = computeLedgerBalance(acc.id, vouchers, invoices, fromDate, toDate, baseOp, baseOpSign);
+      
+      let amount = 0;
+      if (acc.type === AccountType.INCOME) {
+        amount = ledger.closingDrCr === "CR" ? ledger.closingBalance : -ledger.closingBalance;
+      } else {
+        amount = ledger.closingDrCr === "DR" ? ledger.closingBalance : -ledger.closingBalance;
+      }
+
+      if (amount === 0) continue;
+
+      const groupLower = (acc.group || "").toLowerCase();
+      const nameLower = acc.name.toLowerCase();
+
+      if (acc.type === AccountType.INCOME) {
+        if (groupLower.includes("sales") || nameLower.includes("sales")) {
+          salesRevenue += amount;
+        } else if (groupLower.includes("purchase return") || nameLower.includes("purchase return")) {
+          purchaseReturns += amount;
+        } else {
+          otherIncome += amount;
+        }
+      } else {
+        if (groupLower.includes("cost of goods") || groupLower.includes("purchase") || nameLower.includes("cogs") || groupLower.includes("direct")) {
+          costOfGoodsSold += amount;
+        } else if (groupLower.includes("admin") || nameLower.includes("admin") || groupLower.includes("office")) {
+          adminExpenses += amount;
+        } else if (groupLower.includes("finance") || groupLower.includes("interest") || nameLower.includes("interest")) {
+          financingCosts += amount;
+        } else if (groupLower.includes("tax") || nameLower.includes("tax provision")) {
+          taxProvision += amount;
+        } else {
+          operatingExpenses += amount;
         }
       }
+
+      ledgerBreakdown.push({
+        groupName: acc.group || "Uncategorized",
+        ledgerName: acc.name,
+        amount
+      });
     }
 
-    const incomeLedgels = isolatedAccounts.filter(
-      (acc) => !acc.isGroup && acc.type === AccountType.INCOME,
-    );
-    const expenseLedgers = isolatedAccounts.filter(
-      (acc) => !acc.isGroup && acc.type === AccountType.EXPENSE,
-    );
-
-    const salesAccounts = incomeLedgels.filter(
-      (acc) =>
-        acc.group?.toLowerCase().includes("sales") || acc.name.toLowerCase().includes("sales"),
-    );
-    const otherIncomes = incomeLedgels.filter((acc) => !salesAccounts.includes(acc));
-
-    const purchaseAccounts = expenseLedgers.filter(
-      (acc) =>
-        acc.group?.toLowerCase().includes("purchase") ||
-        acc.name.toLowerCase().includes("purchase"),
-    );
-
-    const directExpenses = expenseLedgers.filter(
-      (acc) =>
-        acc.group?.toLowerCase().includes("direct") || acc.name.toLowerCase().includes("direct"),
-    );
-
-    const operatingExpenses = expenseLedgers.filter(
-      (acc) => !purchaseAccounts.includes(acc) && !directExpenses.includes(acc),
-    );
-
-    const salesTotal = round2(salesAccounts.reduce((sum, item) => sum + item.balance, 0));
-    const purchasesTotal = round2(purchaseAccounts.reduce((sum, item) => sum + item.balance, 0));
-    const directCostsTotal = round2(directExpenses.reduce((sum, item) => sum + item.balance, 0));
-    const otherIncomeTotal = round2(otherIncomes.reduce((sum, item) => sum + item.balance, 0));
-    const operatingExpensesTotal = round2(
-      operatingExpenses.reduce((sum, item) => sum + item.balance, 0),
-    );
-
-    const grossProfit = round2(salesTotal - purchasesTotal - directCostsTotal);
-    const totalIncome = round2(salesTotal + otherIncomeTotal);
-    const totalExpenses = round2(purchasesTotal + directCostsTotal + operatingExpensesTotal);
-    const netProfit = round2(grossProfit + otherIncomeTotal - operatingExpensesTotal);
-
-    const incomeRows: ProfitLossRow[] = [
-      {
-        accountId: "inc-sales",
-        accountName: "Revenue from Sales Operations",
-        amount: salesTotal,
-        isGroup: true,
-        level: 1,
-        children: salesAccounts.map((a) => ({
-          accountId: a.id,
-          accountName: a.code + " - " + a.name,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "inc-other",
-        accountName: "Other non-operating Income",
-        amount: otherIncomeTotal,
-        isGroup: true,
-        level: 1,
-        children: otherIncomes.map((a) => ({
-          accountId: a.id,
-          accountName: a.code + " - " + a.name,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-    ];
-
-    const expenseRows: ProfitLossRow[] = [
-      {
-        accountId: "exp-purchase-cogs",
-        accountName: "Purchases (COGS Components)",
-        amount: purchasesTotal,
-        isGroup: true,
-        level: 1,
-        children: purchaseAccounts.map((a) => ({
-          accountId: a.id,
-          accountName: a.code + " - " + a.name,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "exp-direct",
-        accountName: "Direct Manufacturing / Sourcing Expenses",
-        amount: directCostsTotal,
-        isGroup: true,
-        level: 1,
-        children: directExpenses.map((a) => ({
-          accountId: a.id,
-          accountName: a.code + " - " + a.name,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "exp-operating",
-        accountName: "Administrative and Operating Expenses",
-        amount: operatingExpensesTotal,
-        isGroup: true,
-        level: 1,
-        children: operatingExpenses.map((a) => ({
-          accountId: a.id,
-          accountName: a.code + " - " + a.name,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-    ];
+    const grossProfit = salesRevenue + purchaseReturns - costOfGoodsSold;
+    const operatingProfit = grossProfit - operatingExpenses - adminExpenses;
+    const profitBeforeTax = operatingProfit + otherIncome - financingCosts;
+    const netProfit = profitBeforeTax - taxProvision;
 
     return {
-      income: incomeRows,
-      expenses: expenseRows,
       grossProfit,
+      operatingProfit,
       netProfit,
-      totalIncome,
-      totalExpenses,
+      sections: {
+        salesRevenue,
+        purchaseReturns,
+        costOfGoodsSold,
+        grossProfit,
+        operatingExpenses,
+        adminExpenses,
+        financingCosts,
+        otherIncome,
+        taxProvision,
+        netProfit
+      },
+      ledgerBreakdown
     };
   } catch (error) {
     console.error("computeProfitLoss error:", error);
     return {
-      income: [],
-      expenses: [],
-      grossProfit: 0,
-      netProfit: 0,
-      totalIncome: 0,
-      totalExpenses: 0,
+      grossProfit: 0, operatingProfit: 0, netProfit: 0,
+      sections: { salesRevenue: 0, purchaseReturns: 0, costOfGoodsSold: 0, grossProfit: 0, operatingExpenses: 0, adminExpenses: 0, financingCosts: 0, otherIncome: 0, taxProvision: 0, netProfit: 0 },
+      ledgerBreakdown: []
     };
   }
 }
@@ -325,215 +277,116 @@ export function computeProfitLoss(
 export function computeBalanceSheet(
   accounts: Account[],
   vouchers: JournalEntry[],
+  invoices: Invoice[],
   asOfDate: string,
+  netProfit: number
 ): {
-  assets: BalanceSheetRow[];
-  liabilities: BalanceSheetRow[];
-  equity: BalanceSheetRow[];
-  totalAssets: number;
-  totalLiabilities: number;
-  totalEquity: number;
+  assets: {
+    fixedAssets: number;
+    currentAssets: number;
+    investments: number;
+    total: number;
+    breakdown: Array<{ groupName: string; amount: number; isGroup: boolean; ledgerName?: string }>;
+  };
+  liabilities: {
+    shareCapital: number;
+    retainedEarnings: number;
+    longTermLoans: number;
+    currentLiabilities: number;
+    total: number;
+    breakdown: Array<{ groupName: string; amount: number; isGroup: boolean; ledgerName?: string }>;
+  };
   isBalanced: boolean;
+  difference: number;
 } {
   try {
-    const staticClones = accounts.map((a) => ({ ...a, balance: 0 }));
-    const cutoffTime = new Date(asOfDate).getTime();
-    const postedVouchers = vouchers.filter(
-      (v) => v.status === VoucherStatus.POSTED && new Date(v.date).getTime() <= cutoffTime,
-    );
+    let fixedAssets = 0;
+    let currentAssets = 0;
+    let investments = 0;
 
-    for (const v of postedVouchers) {
-      for (const line of v.lines) {
-        const live = staticClones.find((a) => a.id === line.accountId);
-        if (live) {
-          const effect = getAccountEffect(live.type, line.debit, line.credit);
-          live.balance = round2(live.balance + effect);
+    let shareCapital = 0;
+    let retainedEarnings = netProfit;
+    let longTermLoans = 0;
+    let currentLiabilities = 0;
+
+    const assetsBreakdown: Array<{ groupName: string; amount: number; isGroup: boolean; ledgerName?: string }> = [];
+    const liabilitiesBreakdown: Array<{ groupName: string; amount: number; isGroup: boolean; ledgerName?: string }> = [];
+
+    // The fiscalStartDate doesn't matter for balance sheet as we compute absolute running balance from opening.
+    // We just pass asOfDate as the upper bound.
+    const earliestDate = "1970-01-01"; 
+
+    for (const acc of accounts) {
+      if (acc.isGroup) continue;
+
+      if (acc.type !== AccountType.ASSET && acc.type !== AccountType.LIABILITY && acc.type !== AccountType.EQUITY) continue;
+
+      const baseOp = acc.openingBalanceDr ? acc.openingBalanceDr : (acc.openingBalanceCr || 0);
+      const baseOpSign = acc.openingBalanceDr ? "DR" : "CR";
+      const ledger = computeLedgerBalance(acc.id, vouchers, invoices, earliestDate, asOfDate, baseOp, baseOpSign);
+      
+      let amount = 0;
+      if (acc.type === AccountType.ASSET) {
+        amount = ledger.closingDrCr === "DR" ? ledger.closingBalance : -ledger.closingBalance;
+      } else {
+        amount = ledger.closingDrCr === "CR" ? ledger.closingBalance : -ledger.closingBalance;
+      }
+
+      if (amount === 0) continue;
+
+      const groupLower = (acc.group || "").toLowerCase();
+
+      if (acc.type === AccountType.ASSET) {
+        if (groupLower.includes("fixed") || groupLower.includes("non-current")) {
+          fixedAssets += amount;
+        } else if (groupLower.includes("investment")) {
+          investments += amount;
+        } else {
+          currentAssets += amount;
         }
+        assetsBreakdown.push({ groupName: acc.group || "Current Assets", ledgerName: acc.name, amount, isGroup: false });
+      } else {
+        if (acc.type === AccountType.EQUITY || groupLower.includes("capital") || groupLower.includes("equity")) {
+          shareCapital += amount;
+        } else if (groupLower.includes("retained") || groupLower.includes("reserve")) {
+          retainedEarnings += amount;
+        } else if (groupLower.includes("long term") || groupLower.includes("secured loan") || groupLower.includes("non-current")) {
+          longTermLoans += amount;
+        } else {
+          currentLiabilities += amount;
+        }
+        liabilitiesBreakdown.push({ groupName: acc.group || "Current Liabilities", ledgerName: acc.name, amount, isGroup: false });
       }
     }
 
-    const groupsAndSubgroups = staticClones.filter((acc) => acc.isGroup);
-    let balanceChanged = true;
-    let iterations = 0;
-    while (balanceChanged && iterations < 10) {
-      balanceChanged = false;
-      iterations++;
-      for (const parent of groupsAndSubgroups) {
-        const children = staticClones.filter((acc) => acc.parentId === parent.id);
-        let calcVal = 0;
-        for (const child of children) {
-          if (child.type === parent.type) {
-            calcVal = round2(calcVal + child.balance);
-          } else {
-            const converted = isDebitNature(parent.type)
-              ? isDebitNature(child.type)
-                ? child.balance
-                : -child.balance
-              : isDebitNature(child.type)
-                ? -child.balance
-                : child.balance;
-            calcVal = round2(calcVal + converted);
-          }
-        }
-        if (parent.balance !== calcVal) {
-          parent.balance = calcVal;
-          balanceChanged = true;
-        }
-      }
-    }
+    liabilitiesBreakdown.push({
+      groupName: "Reserves & Surplus",
+      ledgerName: "Retained Earnings (Current Period Profit)",
+      amount: netProfit,
+      isGroup: false
+    });
 
-    let historicalIncome = 0;
-    let historicalExpense = 0;
-    for (const v of postedVouchers) {
-      for (const line of v.lines) {
-        const act = staticClones.find((a) => a.id === line.accountId);
-        if (act) {
-          if (act.type === AccountType.INCOME) {
-            historicalIncome = round2(
-              historicalIncome + getAccountEffect(AccountType.INCOME, line.debit, line.credit),
-            );
-          } else if (act.type === AccountType.EXPENSE) {
-            historicalExpense = round2(
-              historicalExpense + getAccountEffect(AccountType.EXPENSE, line.debit, line.credit),
-            );
-          }
-        }
-      }
-    }
-
-    const currentPeriodNetProfit = round2(historicalIncome - historicalExpense);
-
-    const assetLedgers = staticClones.filter((a) => !a.isGroup && a.type === AccountType.ASSET);
-    const liabilityLedgers = staticClones.filter(
-      (a) => !a.isGroup && a.type === AccountType.LIABILITY,
-    );
-    const equityLedgers = staticClones.filter((a) => !a.isGroup && a.type === AccountType.EQUITY);
-
-    const fixedAssetSub = assetLedgers.filter((a) => a.group?.toLowerCase().includes("fixed"));
-    const currentAssetSub = assetLedgers.filter((a) => !fixedAssetSub.includes(a));
-
-    const currentLiabilitySub = liabilityLedgers.filter(
-      (a) =>
-        a.group?.toLowerCase().includes("current") || a.group?.toLowerCase().includes("duties"),
-    );
-    const termLiabilitiesSub = liabilityLedgers.filter((a) => !currentLiabilitySub.includes(a));
-
-    const totalAssets = round2(assetLedgers.reduce((sum, item) => sum + item.balance, 0));
-    const totalLiabilities = round2(liabilityLedgers.reduce((sum, item) => sum + item.balance, 0));
-    const baseEquity = round2(equityLedgers.reduce((sum, item) => sum + item.balance, 0));
-    const totalEquity = round2(baseEquity + currentPeriodNetProfit);
-
-    const assetsTree: BalanceSheetRow[] = [
-      {
-        accountId: "bs-fa",
-        accountName: "Non-Current Assets / Fixed Assets",
-        amount: round2(fixedAssetSub.reduce((s, i) => s + i.balance, 0)),
-        isGroup: true,
-        level: 1,
-        children: fixedAssetSub.map((a) => ({
-          accountId: a.id,
-          accountName: `${a.code} - ${a.name}`,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "bs-ca",
-        accountName: "Current Assets",
-        amount: round2(currentAssetSub.reduce((s, i) => s + i.balance, 0)),
-        isGroup: true,
-        level: 1,
-        children: currentAssetSub.map((a) => ({
-          accountId: a.id,
-          accountName: `${a.code} - ${a.name}`,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-    ];
-
-    const liabilitiesTree: BalanceSheetRow[] = [
-      {
-        accountId: "bs-tl",
-        accountName: "Secured/Long-term Loans & Liabilities",
-        amount: round2(termLiabilitiesSub.reduce((s, i) => s + i.balance, 0)),
-        isGroup: true,
-        level: 1,
-        children: termLiabilitiesSub.map((a) => ({
-          accountId: a.id,
-          accountName: `${a.code} - ${a.name}`,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "bs-cl",
-        accountName: "Current Liabilities & Duties",
-        amount: round2(currentLiabilitySub.reduce((s, i) => s + i.balance, 0)),
-        isGroup: true,
-        level: 1,
-        children: currentLiabilitySub.map((a) => ({
-          accountId: a.id,
-          accountName: `${a.code} - ${a.name}`,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-    ];
-
-    const equityTree: BalanceSheetRow[] = [
-      {
-        accountId: "bs-eq-cap",
-        accountName: "Share Capital / Partners Investment",
-        amount: baseEquity,
-        isGroup: true,
-        level: 1,
-        children: equityLedgers.map((a) => ({
-          accountId: a.id,
-          accountName: `${a.code} - ${a.name}`,
-          amount: a.balance,
-          isGroup: false,
-          level: 2,
-        })),
-      },
-      {
-        accountId: "bs-eq-re",
-        accountName: "Retained Earnings (Current Period surplus)",
-        amount: currentPeriodNetProfit,
-        isGroup: false,
-        level: 1,
-        children: [],
-      },
-    ];
-
-    const isBalanced = Math.abs(totalAssets - (totalLiabilities + totalEquity)) <= 0.05;
+    const totalAssets = fixedAssets + currentAssets + investments;
+    const totalLiabilities = shareCapital + retainedEarnings + longTermLoans + currentLiabilities;
+    const difference = Math.abs(totalAssets - totalLiabilities);
 
     return {
-      assets: assetsTree,
-      liabilities: liabilitiesTree,
-      equity: equityTree,
-      totalAssets,
-      totalLiabilities,
-      totalEquity,
-      isBalanced,
+      assets: { fixedAssets, currentAssets, investments, total: totalAssets, breakdown: assetsBreakdown },
+      liabilities: { shareCapital, retainedEarnings, longTermLoans, currentLiabilities, total: totalLiabilities, breakdown: liabilitiesBreakdown },
+      isBalanced: difference < 1,
+      difference
     };
   } catch (error) {
     console.error("computeBalanceSheet error:", error);
     return {
-      assets: [],
-      liabilities: [],
-      equity: [],
-      totalAssets: 0,
-      totalLiabilities: 0,
-      totalEquity: 0,
-      isBalanced: true,
+      assets: { fixedAssets: 0, currentAssets: 0, investments: 0, total: 0, breakdown: [] },
+      liabilities: { shareCapital: 0, retainedEarnings: 0, longTermLoans: 0, currentLiabilities: 0, total: 0, breakdown: [] },
+      isBalanced: false,
+      difference: 0
     };
   }
 }
+
 
 // ==========================================
 // 5. CASH FLOW STATEMENT (Indirect Method)
@@ -1953,4 +1806,110 @@ export function validateDoubleEntry(lines: any[]): { isValid: boolean; differenc
 
 export function resetAllSeriesForNewYear(): void {
   // Stub
+}
+
+export function computeAgingReport(
+  invoices: Invoice[],
+  parties: Party[],
+  asOfDate: string,
+  partyType?: "customer" | "supplier"
+): Array<{
+  partyId: string;
+  partyName: string;
+  partyPAN: string;
+  current: number;
+  days1to30: number;
+  days31to60: number;
+  days61to90: number;
+  days91to180: number;
+  days181to365: number;
+  over365: number;
+  total: number;
+  oldestDueDate: string;
+  contactPhone: string;
+}> {
+  const cutoffTime = new Date(asOfDate).getTime();
+
+  const partyMap: Record<string, {
+    partyId: string;
+    partyName: string;
+    partyPAN: string;
+    current: number;
+    days1to30: number;
+    days31to60: number;
+    days61to90: number;
+    days91to180: number;
+    days181to365: number;
+    over365: number;
+    total: number;
+    oldestDueDate: string;
+    contactPhone: string;
+  }> = {};
+
+  const filteredInvoices = invoices.filter(inv => {
+    if (inv.paymentStatus !== "UNPAID" && inv.paymentStatus !== "PARTIAL") return false;
+    if (new Date(inv.date).getTime() > cutoffTime) return false;
+    if (partyType) {
+      if (partyType === "customer" && inv.type !== VoucherType.SALES_INVOICE) return false;
+      if (partyType === "supplier" && inv.type !== VoucherType.PURCHASE_INVOICE) return false;
+    }
+    return true;
+  });
+
+  for (const inv of filteredInvoices) {
+    const pendingAmount = inv.grandTotal - (inv.paidAmount || 0);
+    if (pendingAmount <= 0.05) continue;
+
+    const refDate = inv.dueDate || inv.date;
+    const refTime = new Date(refDate).getTime();
+    
+    // Difference in days between asOfDate and dueDate
+    const diffTime = cutoffTime - refTime;
+    const overdueDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (!partyMap[inv.partyId]) {
+      const party = parties.find(p => p.id === inv.partyId);
+      partyMap[inv.partyId] = {
+        partyId: inv.partyId,
+        partyName: inv.partyName,
+        partyPAN: party?.pan || party?.panNumber || inv.partyPan || "",
+        current: 0,
+        days1to30: 0,
+        days31to60: 0,
+        days61to90: 0,
+        days91to180: 0,
+        days181to365: 0,
+        over365: 0,
+        total: 0,
+        oldestDueDate: refDate,
+        contactPhone: party?.phone || ""
+      };
+    }
+
+    const pm = partyMap[inv.partyId];
+
+    if (overdueDays < 0) {
+      pm.current += pendingAmount;
+    } else if (overdueDays <= 30) {
+      pm.days1to30 += pendingAmount;
+    } else if (overdueDays <= 60) {
+      pm.days31to60 += pendingAmount;
+    } else if (overdueDays <= 90) {
+      pm.days61to90 += pendingAmount;
+    } else if (overdueDays <= 180) {
+      pm.days91to180 += pendingAmount;
+    } else if (overdueDays <= 365) {
+      pm.days181to365 += pendingAmount;
+    } else {
+      pm.over365 += pendingAmount;
+    }
+
+    pm.total += pendingAmount;
+    
+    if (new Date(refDate).getTime() < new Date(pm.oldestDueDate).getTime()) {
+      pm.oldestDueDate = refDate;
+    }
+  }
+
+  return Object.values(partyMap).filter(p => p.total > 0.05);
 }

@@ -5,16 +5,12 @@
 
 import React, { useState } from "react";
 import { ActionToolbar } from "../components/ui";
-import { Plus, Edit2, Trash2, Users, PlusCircle, MinusCircle } from "lucide-react";
+import { Plus, Edit2, Trash2, Users } from "lucide-react";
 import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
 import {
   Card,
   Button,
-  Input,
-  Select,
-  NepaliDatePicker,
-  AccountSelect,
   ConfirmDialog,
 } from "../components/ui";
 import { Employee } from "../lib/types";
@@ -29,100 +25,67 @@ export default function EmployeeMaster() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const getSuggestedCode = () => {
-    const nextNum = employees.length + 1;
-    return `EMP-${String(nextNum).padStart(3, "0")}`;
-  };
-
-  const initialFormData = {
-    code: "",
+  const initialFormData: Omit<Employee, "id"> = {
     name: "",
-    nameNepali: "",
+    nameNe: "",
     designation: "",
     department: "",
-    panNo: "",
-    basicSalary: 0,
-    allowances: [] as { name: string; amount: number }[],
-    deductions: [] as { name: string; amount: number }[],
-    pfRate: 10,
-    citRate: 10,
-    bankAccountNo: "",
+    dateOfJoining: new Date().toISOString().split("T")[0],
+    dateOfJoiningBS: "",
+    pan: "",
+    citizenshipNumber: "",
+    bankAccount: "",
     bankName: "",
-    joinDate: new Date().toISOString().split("T")[0],
-    accountId: "",
-    isActive: true,
-    citizenshipNo: "",
-    socialSecurityNo: "",
-    pfAccountNo: "",
-    citAccountNo: "",
-    ssfContributionType: "none" as "basic" | "premium" | "none",
-    pfEnabled: false,
-    citEnabled: false,
-    ssfEnabled: false,
-    rentAllowance: 0,
-    medicalAllowance: 0,
-    transportAllowance: 0,
-    maritalStatus: "single" as "single" | "married",
+    ssf: false,
+    ssfContributorNumber: "",
+    basicSalary: 0,
+    gradePayPercent: 0,
+    allowances: {
+      houseRent: 0,
+      transport: 0,
+      medical: 0,
+      dashain: 0,
+    },
+    taxDeclarations: {
+      lifeInsurance: 0,
+      healthInsurance: 0,
+    },
+    employmentType: "permanent",
+    status: "active",
   };
 
   const [formData, setFormData] = useState(initialFormData);
 
   const handleOpenAdd = () => {
-    setFormData({
-      ...initialFormData,
-      code: getSuggestedCode(),
-    });
+    setFormData({ ...initialFormData });
     setSelectedEmp(null);
     setShowForm(true);
   };
 
   const handleEdit = (emp: Employee) => {
     setSelectedEmp(emp);
-    setFormData({
-      code: emp.code,
-      name: emp.name,
-      nameNepali: emp.nameNepali || "",
-      designation: emp.designation,
-      department: emp.department || "",
-      panNo: emp.panNo || "",
-      basicSalary: emp.basicSalary,
-      allowances: emp.allowances || [],
-      deductions: emp.deductions || [],
-      pfRate: emp.pfRate ?? 10,
-      citRate: emp.citRate ?? 10,
-      bankAccountNo: emp.bankAccountNo || "",
-      bankName: emp.bankName || "",
-      joinDate: emp.joinDate || new Date().toISOString().split("T")[0],
-      accountId: emp.accountId || "",
-      isActive: emp.isActive,
-      citizenshipNo: emp.citizenshipNo || "",
-      socialSecurityNo: emp.socialSecurityNo || "",
-      pfAccountNo: emp.pfAccountNo || "",
-      citAccountNo: emp.citAccountNo || "",
-      ssfContributionType: emp.ssfContributionType || "none",
-      pfEnabled: !!emp.pfEnabled,
-      citEnabled: !!emp.citEnabled,
-      ssfEnabled: !!emp.ssfEnabled,
-      rentAllowance: emp.rentAllowance || 0,
-      medicalAllowance: emp.medicalAllowance || 0,
-      transportAllowance: emp.transportAllowance || 0,
-      maritalStatus: emp.maritalStatus || "single",
-    });
+    setFormData({ ...emp });
     setShowForm(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleDeleteClick = (id: string) => {
+    setDeleteId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteId) {
+      await deleteEmployee(deleteId);
+      toast.success("Employee deleted");
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name) {
-      toast.error("Employee Name is required");
-      return;
-    }
-    if (!formData.designation) {
-      toast.error("Designation is required");
-      return;
-    }
-    if (!formData.accountId) {
-      toast.error("Linked Account is required");
+    if (!formData.name || !formData.designation) {
+      toast.error("Name and Designation are required");
       return;
     }
 
@@ -134,611 +97,355 @@ export default function EmployeeMaster() {
         await addEmployee(formData);
         toast.success("Employee added successfully");
       }
-      resetForm();
-    } catch (err: any) {
-      toast.error(err?.message || "Action failed");
+      setShowForm(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to save employee");
     }
-  };
-
-  const resetForm = () => {
-    setFormData(initialFormData);
-    setSelectedEmp(null);
-    setShowForm(false);
-  };
-
-  const confirmDelete = (id: string) => {
-    setDeleteId(id);
-    setShowDeleteConfirm(true);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    try {
-      await deleteEmployee(deleteId);
-      toast.success("Employee deleted successfully");
-      setShowDeleteConfirm(false);
-      setDeleteId(null);
-    } catch (err: any) {
-      toast.error(err?.message || "Delete failed");
-    }
-  };
-
-  const handleAddAllowance = () => {
-    setFormData({
-      ...formData,
-      allowances: [...formData.allowances, { name: "", amount: 0 }],
-    });
-  };
-
-  const handleRemoveAllowance = (index: number) => {
-    setFormData({
-      ...formData,
-      allowances: formData.allowances.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAllowanceChange = (
-    index: number,
-    field: "name" | "amount",
-    value: string | number,
-  ) => {
-    const updated = formData.allowances.map((item, i) => {
-      if (i === index) {
-        return { ...item, [field]: value };
-      }
-      return item;
-    });
-    setFormData({ ...formData, allowances: updated });
-  };
-
-  const handleAddDeduction = () => {
-    setFormData({
-      ...formData,
-      deductions: [...formData.deductions, { name: "", amount: 0 }],
-    });
-  };
-
-  const handleRemoveDeduction = (index: number) => {
-    setFormData({
-      ...formData,
-      deductions: formData.deductions.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleDeductionChange = (
-    index: number,
-    field: "name" | "amount",
-    value: string | number,
-  ) => {
-    const updated = formData.deductions.map((item, i) => {
-      if (i === index) {
-        return { ...item, [field]: value };
-      }
-      return item;
-    });
-    setFormData({ ...formData, deductions: updated });
   };
 
   const filteredEmployees = employees.filter(
-    (emp) =>
-      emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.designation.toLowerCase().includes(searchTerm.toLowerCase()),
+    (e) =>
+      e.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      e.designation.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="Employee Master" subtitle="Staff and salesman records" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employee Directory</h1>
-        <button onClick={handleOpenAdd} className="btn-primary flex items-center space-x-2">
-          <Plus className="w-4 h-4" />
-          <span>Add Employee</span>
-        </button>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+            <Users className="w-5 h-5 text-[#1557b0]" /> Employee Master
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Manage staff, designations, and payroll details</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {!showForm && (
+            <Button onClick={handleOpenAdd} className="bg-[#1557b0] hover:bg-[#0f4a96] text-white h-8 text-[12px]">
+              <Plus className="w-4 h-4 mr-1.5" /> Add Employee
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search employees..."
-          className="input"
-        />
-      </div>
-
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Code
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Designation
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Basic Salary
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                PF Rate %
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Status
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredEmployees.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                  <Users className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p>No employees found</p>
-                </td>
-              </tr>
-            ) : (
-              filteredEmployees.map((emp) => (
-                <tr key={emp.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{emp.code}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    <div>
-                      <div className="font-semibold">{emp.name}</div>
-                      {emp.nameNepali && (
-                        <div className="text-xs text-gray-400">{emp.nameNepali}</div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{emp.designation}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    Rs. {emp.basicSalary.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{emp.pfRate}%</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        emp.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {emp.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
-                    <div className="flex justify-end space-x-2">
-                      <button
-                        onClick={() => handleEdit(emp)}
-                        className="text-[#1557b0] hover:text-indigo-900"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => confirmDelete(emp.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+      {!showForm ? (
+        <Card className="bg-white border border-gray-200">
+          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+            <input
+              type="text"
+              placeholder="Search employees..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="h-8 w-64 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Designation</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Department</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">SSF</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Basic Salary</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl my-8">
-            <h2 className="text-xl font-semibold mb-4">
+              </thead>
+              <tbody>
+                {filteredEmployees.map((emp) => (
+                  <tr key={emp.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                      <div className="font-medium">{emp.name}</div>
+                      {emp.nameNe && <div className="text-[10px] text-gray-500">{emp.nameNe}</div>}
+                    </td>
+                    <td className="px-3 py-2.5 text-[12px] text-gray-600">{emp.designation}</td>
+                    <td className="px-3 py-2.5 text-[12px] text-gray-600">{emp.department}</td>
+                    <td className="px-3 py-2.5">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${emp.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                        {emp.status}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5">
+                      {emp.ssf ? (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">SSF ENROLLED</span>
+                      ) : (
+                        <span className="text-[11px] text-gray-400">N/A</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right">{emp.basicSalary.toLocaleString()}</td>
+                    <td className="px-3 py-2.5 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => handleEdit(emp)} className="text-gray-500 hover:text-[#1557b0]" title="Edit">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDeleteClick(emp.id)} className="text-gray-500 hover:text-red-600" title="Delete">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {filteredEmployees.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-3 py-8 text-center text-[12px] text-gray-500">
+                      No employees found. Click "Add Employee" to create one.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      ) : (
+        <Card className="bg-white border border-gray-200">
+          <div className="p-4 border-b border-gray-100 bg-[#f5f6fa] flex items-center justify-between">
+            <h2 className="text-[13px] font-semibold text-gray-800">
               {selectedEmp ? "Edit Employee" : "Add Employee"}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto px-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
-                  <input
-                    type="text"
-                    value={formData.code}
-                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Name in Nepali
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.nameNepali}
-                    onChange={(e) => setFormData({ ...formData, nameNepali: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Designation *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.designation}
-                    onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <input
-                    type="text"
-                    value={formData.department}
-                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PAN No (9 characters)
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={9}
-                    value={formData.panNo}
-                    onChange={(e) => setFormData({ ...formData, panNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Basic Salary *
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.basicSalary || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, basicSalary: Number(e.target.value) })
-                    }
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Linked Account *
-                  </label>
-                  <AccountSelect
-                    value={formData.accountId}
-                    onChange={(val) => setFormData({ ...formData, accountId: val })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Marital Status</label>
-                  <select
-                    value={formData.maritalStatus}
-                    onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value as "single" | "married" })}
-                    className="input"
-                  >
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Citizenship No</label>
-                  <input
-                    type="text"
-                    value={formData.citizenshipNo}
-                    onChange={(e) => setFormData({ ...formData, citizenshipNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SSF No (Social Security)</label>
-                  <input
-                    type="text"
-                    value={formData.socialSecurityNo}
-                    onChange={(e) => setFormData({ ...formData, socialSecurityNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">EPF Account No</label>
-                  <input
-                    type="text"
-                    value={formData.pfAccountNo}
-                    onChange={(e) => setFormData({ ...formData, pfAccountNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CIT Account No</label>
-                  <input
-                    type="text"
-                    value={formData.citAccountNo}
-                    onChange={(e) => setFormData({ ...formData, citAccountNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="pfEnabled"
-                    checked={formData.pfEnabled}
-                    onChange={(e) => setFormData({ ...formData, pfEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="pfEnabled" className="text-sm font-medium text-gray-700">PF Enrolled</label>
-                </div>
-                {formData.pfEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">PF Rate %</label>
-                    <input
-                      type="number"
-                      value={formData.pfRate}
-                      onChange={(e) => setFormData({ ...formData, pfRate: Number(e.target.value) })}
-                      className="input"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="citEnabled"
-                    checked={formData.citEnabled}
-                    onChange={(e) => setFormData({ ...formData, citEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="citEnabled" className="text-sm font-medium text-gray-700">CIT Enrolled</label>
-                </div>
-                {formData.citEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">CIT Rate %</label>
-                    <input
-                      type="number"
-                      value={formData.citRate}
-                      onChange={(e) => setFormData({ ...formData, citRate: Number(e.target.value) })}
-                      className="input"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="ssfEnabled"
-                    checked={formData.ssfEnabled}
-                    onChange={(e) => setFormData({ ...formData, ssfEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="ssfEnabled" className="text-sm font-medium text-gray-700">SSF Enrolled</label>
-                </div>
-                {formData.ssfEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">SSF Scheme</label>
-                    <select
-                      value={formData.ssfContributionType}
-                      onChange={(e) => setFormData({ ...formData, ssfContributionType: e.target.value as "basic" | "premium" | "none" })}
-                      className="input"
-                    >
-                      <option value="none">None</option>
-                      <option value="basic">Basic (E'ee 11% / E'r 20%)</option>
-                      <option value="premium">Premium (E'ee 1% / E'r 3.33%)</option>
-                    </select>
-                  </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rent Allowance</label>
-                  <input
-                    type="number"
-                    value={formData.rentAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, rentAllowance: Number(e.target.value) })}
-                    className="input"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Medical Allowance</label>
-                  <input
-                    type="number"
-                    value={formData.medicalAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, medicalAllowance: Number(e.target.value) })}
-                    className="input"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Transport Allowance</label>
-                  <input
-                    type="number"
-                    value={formData.transportAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, transportAllowance: Number(e.target.value) })}
-                    className="input"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
-                  <input
-                    type="text"
-                    value={formData.bankName}
-                    onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Account No</label>
-                  <input
-                    type="text"
-                    value={formData.bankAccountNo}
-                    onChange={(e) => setFormData({ ...formData, bankAccountNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Join Date (BS) *
-                  </label>
-                  <NepaliDatePicker
-                    value={formData.joinDate}
-                    onChange={(val) => setFormData({ ...formData, joinDate: val })}
-                  />
-                </div>
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="isActive"
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-                    Is Active
-                  </label>
-                </div>
-              </div>
-
-              {/* Allowances section */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-sm font-bold text-gray-800">Salary Allowances</h3>
-                  <button
-                    type="button"
-                    onClick={handleAddAllowance}
-                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    <span>Add Allowance</span>
-                  </button>
-                </div>
-                {formData.allowances.length === 0 ? (
-                  <p className="text-xs text-gray-400 italic">No allowances configured.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {formData.allowances.map((item, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          placeholder="Allowance Name"
-                          value={item.name}
-                          onChange={(e) => handleAllowanceChange(idx, "name", e.target.value)}
-                          className="input flex-1"
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Amount"
-                          value={item.amount || ""}
-                          onChange={(e) =>
-                            handleAllowanceChange(idx, "amount", Number(e.target.value))
-                          }
-                          className="input w-32"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveAllowance(idx)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <MinusCircle className="w-5 h-5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Deductions section */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-sm font-bold text-gray-800">Salary Deductions</h3>
-                  <button
-                    type="button"
-                    onClick={handleAddDeduction}
-                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    <span>Add Deduction</span>
-                  </button>
-                </div>
-                {formData.deductions.length === 0 ? (
-                  <p className="text-xs text-gray-400 italic">No deductions configured.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {formData.deductions.map((item, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          placeholder="Deduction Name"
-                          value={item.name}
-                          onChange={(e) => handleDeductionChange(idx, "name", e.target.value)}
-                          className="input flex-1"
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Amount"
-                          value={item.amount || ""}
-                          onChange={(e) =>
-                            handleDeductionChange(idx, "amount", Number(e.target.value))
-                          }
-                          className="input w-32"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveDeduction(idx)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <MinusCircle className="w-5 h-5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end space-x-3 pt-4 border-t">
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary text-sm">
-                  {selectedEmp ? "Update" : "Add"} Employee
-                </button>
-              </div>
-            </form>
+            <div className="flex gap-2">
+              <Button variant="outline" className="h-7 text-[11px]" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSave} className="bg-[#1557b0] hover:bg-[#0f4a96] text-white h-7 text-[11px]">
+                Save Employee
+              </Button>
+            </div>
           </div>
-        </div>
+          
+          <div className="p-4 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="col-span-2">
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                  required
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Name (Nepali)</label>
+                <input
+                  type="text"
+                  value={formData.nameNe}
+                  onChange={(e) => setFormData({ ...formData, nameNe: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Designation *</label>
+                <input
+                  type="text"
+                  value={formData.designation}
+                  onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Department</label>
+                <input
+                  type="text"
+                  value={formData.department}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Status</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as "active"|"inactive" })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0] bg-white"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Employment Type</label>
+                <select
+                  value={formData.employmentType}
+                  onChange={(e) => setFormData({ ...formData, employmentType: e.target.value as any })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0] bg-white"
+                >
+                  <option value="permanent">Permanent</option>
+                  <option value="contract">Contract</option>
+                  <option value="parttime">Part Time</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Join Date (AD)</label>
+                <input
+                  type="date"
+                  value={formData.dateOfJoining}
+                  onChange={(e) => setFormData({ ...formData, dateOfJoining: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Join Date (BS)</label>
+                <input
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  value={formData.dateOfJoiningBS}
+                  onChange={(e) => setFormData({ ...formData, dateOfJoiningBS: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+                />
+              </div>
+            </div>
+
+            <hr className="border-gray-100" />
+            <h3 className="text-[12px] font-semibold text-[#1557b0]">Payroll & Allowances</h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Basic Salary</label>
+                <input
+                  type="number"
+                  value={formData.basicSalary}
+                  onChange={(e) => setFormData({ ...formData, basicSalary: Number(e.target.value) })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">House Rent (HRA)</label>
+                <input
+                  type="number"
+                  value={formData.allowances.houseRent}
+                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, houseRent: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Transport Allow.</label>
+                <input
+                  type="number"
+                  value={formData.allowances.transport}
+                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, transport: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Medical Allow.</label>
+                <input
+                  type="number"
+                  value={formData.allowances.medical}
+                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, medical: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Dashain Allow.</label>
+                <input
+                  type="number"
+                  value={formData.allowances.dashain}
+                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, dashain: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+            </div>
+
+            <hr className="border-gray-100" />
+            <h3 className="text-[12px] font-semibold text-[#1557b0]">Compliance & Banking</h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">PAN Number</label>
+                <input
+                  type="text"
+                  maxLength={9}
+                  value={formData.pan}
+                  onChange={(e) => setFormData({ ...formData, pan: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Citizenship No.</label>
+                <input
+                  type="text"
+                  value={formData.citizenshipNumber}
+                  onChange={(e) => setFormData({ ...formData, citizenshipNumber: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Bank Name</label>
+                <input
+                  type="text"
+                  value={formData.bankName}
+                  onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Bank Account No.</label>
+                <input
+                  type="text"
+                  value={formData.bankAccount}
+                  onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 p-4 border border-gray-200 rounded-md">
+              <div className="flex items-center gap-2 col-span-2">
+                <input
+                  type="checkbox"
+                  id="ssf"
+                  checked={formData.ssf}
+                  onChange={(e) => setFormData({ ...formData, ssf: e.target.checked })}
+                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                />
+                <label htmlFor="ssf" className="text-[12px] font-medium text-gray-700">Contributes to Social Security Fund (SSF)</label>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">SSF No.</label>
+                <input
+                  type="text"
+                  disabled={!formData.ssf}
+                  value={formData.ssfContributorNumber}
+                  onChange={(e) => setFormData({ ...formData, ssfContributorNumber: e.target.value })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] disabled:bg-gray-100"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Life Insurance Prem.</label>
+                <input
+                  type="number"
+                  value={formData.taxDeclarations.lifeInsurance}
+                  onChange={(e) => setFormData({ ...formData, taxDeclarations: { ...formData.taxDeclarations, lifeInsurance: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Health Insurance Prem.</label>
+                <input
+                  type="number"
+                  value={formData.taxDeclarations.healthInsurance}
+                  onChange={(e) => setFormData({ ...formData, taxDeclarations: { ...formData.taxDeclarations, healthInsurance: Number(e.target.value) } })}
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
       )}
 
-      <ConfirmDialog
-        isOpen={showDeleteConfirm}
-        title="Delete Employee"
-        message="Are you sure you want to delete this employee? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={handleDelete}
-        onClose={() => {
-          setShowDeleteConfirm(false);
-          setDeleteId(null);
-        }}
-      />
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          title="Delete Employee"
+          message="Are you sure you want to delete this employee? This will not remove their historical payroll records, but they will be removed from active lists."
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowDeleteConfirm(false)}
+          confirmText="Delete Employee"
+          isDestructive={true}
+        />
+      )}
     </div>
   );
 }

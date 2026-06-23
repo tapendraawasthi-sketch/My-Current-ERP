@@ -29,17 +29,14 @@ import { useIsMobile } from "../hooks/use-mobile";
 
 const Dashboard: React.FC = () => {
   const isMobile = useIsMobile();
-  const {
-    accounts,
-    vouchers,
-    invoices,
-    items,
-    parties,
-    warehouses,
-    stockMovements,
-    tdsEntries,
-    isDbReady
-  } = useStore();
+  const isDbReady = useStore(state => state.isDbReady);
+  const accounts = useStore(state => state.accounts);
+  const vouchers = useStore(state => state.vouchers);
+  const invoices = useStore(state => state.invoices);
+  const items = useStore(state => state.items);
+  const parties = useStore(state => state.parties);
+  const warehouses = useStore(state => state.warehouses);
+  const stockMovements = useStore(state => state.stockMovements);
 
   const todayAD = new Date().toISOString().split("T")[0];
   const yesterdayAD = new Date(Date.now() - 86400000).toISOString().split("T")[0];
@@ -213,20 +210,40 @@ const Dashboard: React.FC = () => {
       .slice(0, 10);
   }, [stockMovements, items, warehouses]);
 
-  // 9. TDS REMINDERS
-  const tdsReminders = useMemo(() => {
-    if (!tdsEntries) return [];
-    const pending = tdsEntries.filter(e => e.status === "pending" || !e.status);
-    const groups: Record<string, number> = {};
-    pending.forEach(e => {
-      const sec = e.section || "Other";
-      groups[sec] = (groups[sec] || 0) + e.tdsAmount;
-    });
-    return Object.keys(groups).map(sec => ({
-      section: sec,
-      amount: groups[sec]
-    }));
-  }, [tdsEntries]);
+
+
+  // 10. COMPLIANCE KEY DATES
+  const complianceDates = useMemo(() => {
+    const parts = todayBS.split("-");
+    let year = parseInt(parts[0]);
+    let month = parseInt(parts[1]);
+    
+    // SSF is 15th of next month, VAT/TDS is 25th of next month
+    let nextYear = year;
+    let nextMonth = month + 1;
+    if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear++;
+    }
+    
+    const ssfDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-15`;
+    const vatTdsDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-25`;
+
+    // Advance tax installments (estimated) - Poush 13, Chaitra 13, Ashadh 13
+    const taxDates = [
+      `${year}-09-13`,
+      `${year}-12-13`,
+      `${year + 1}-03-13`
+    ];
+    let nextTaxDate = taxDates.find(d => d >= todayBS) || `${year + 1}-03-13`;
+
+    return [
+      { name: "SSF Contribution", date: ssfDate, passed: false },
+      { name: "VAT Return", date: vatTdsDate, passed: false },
+      { name: "TDS Return", date: vatTdsDate, passed: false },
+      { name: "Advance Tax", date: nextTaxDate, passed: false },
+    ];
+  }, [todayBS]);
 
   if (!isDbReady) {
     return <div className="p-8 flex justify-center"><RefreshCw className="animate-spin text-[#1557b0]" /></div>;
@@ -492,31 +509,29 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* TDS Reminders */}
+        {/* Key Compliance Dates */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
-          <div className="bg-blue-50 px-3 py-2.5 border-b border-blue-100 flex justify-between items-center">
-            <h3 className="text-[13px] font-bold text-[#1557b0] flex items-center gap-1.5">
-              <Receipt className="w-4 h-4" /> Pending TDS
+          <div className="bg-indigo-50 px-3 py-2.5 border-b border-indigo-100 flex justify-between items-center">
+            <h3 className="text-[13px] font-bold text-indigo-800 flex items-center gap-1.5">
+              <Clock className="w-4 h-4" /> Compliance Deadlines
             </h3>
           </div>
           <div className="flex-1 overflow-x-auto p-3">
-             {tdsReminders.length === 0 ? (
-               <div className="text-center text-[12px] text-gray-500 mt-4">No pending TDS deposits</div>
-             ) : (
-               <div className="space-y-3">
-                 {tdsReminders.map(rem => (
-                   <div key={rem.section} className="border border-blue-100 rounded-md p-3 bg-white shadow-sm">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-[12px] font-bold text-gray-700">Section {rem.section}</span>
-                        <span className="text-[13px] font-bold font-mono text-red-600">Rs. {formatNumber(rem.amount)}</span>
-                      </div>
-                      <div className="text-[10px] font-medium text-gray-500 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> Deposit by 7th of next BS month
-                      </div>
-                   </div>
-                 ))}
-               </div>
-             )}
+             <div className="space-y-3">
+               {complianceDates.map(cd => (
+                 <div key={cd.name} className="border border-indigo-100 rounded-md p-3 bg-white shadow-sm">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[12px] font-bold text-gray-700 flex items-center gap-1.5">
+                         <FileCheck className="w-3.5 h-3.5 text-indigo-500" /> {cd.name}
+                      </span>
+                      <span className={`text-[13px] font-bold font-mono ${cd.date < todayBS ? 'text-red-600' : 'text-indigo-700'}`}>{cd.date}</span>
+                    </div>
+                    <div className="text-[10px] font-medium text-gray-500 ml-5">
+                      Deadline in BS Date
+                    </div>
+                 </div>
+               ))}
+             </div>
           </div>
         </div>
 

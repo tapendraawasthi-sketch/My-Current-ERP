@@ -9,12 +9,24 @@ import { Card, Badge, Button, Input, Modal } from "./ui";
 import Pagination from "./ui/Pagination";
 import { Search, Plus, Phone, Mail, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
+import { validatePAN } from "../lib/taxUtils";
 
-const PartiesDirectory: React.FC = () => {
+const PROVINCES = [
+  "Koshi",
+  "Madhesh",
+  "Bagmati",
+  "Gandaki",
+  "Lumbini",
+  "Karnali",
+  "Sudurpashchim",
+];
+
+const PartiesDirectory: React.FC = React.memo(() => {
   const { parties, addParty, updateParty } = useStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("ALL");
+  const [provinceFilter, setProvinceFilter] = useState("ALL");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
 
@@ -31,6 +43,10 @@ const PartiesDirectory: React.FC = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [municipality, setMunicipality] = useState("");
+  const [wardNo, setWardNo] = useState("");
   const [openingBalance, setOpeningBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
@@ -41,9 +57,10 @@ const PartiesDirectory: React.FC = () => {
         (p.code && p.code.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (p.pan && p.pan.toLowerCase().includes(searchTerm.toLowerCase()));
       if (typeFilter !== "ALL" && p.type !== typeFilter) return false;
+      if (provinceFilter !== "ALL" && p.province !== provinceFilter) return false;
       return matchesSearch;
     });
-  }, [parties, searchTerm, typeFilter]);
+  }, [parties, searchTerm, typeFilter, provinceFilter]);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -54,7 +71,7 @@ const PartiesDirectory: React.FC = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, typeFilter]);
+  }, [searchTerm, typeFilter, provinceFilter]);
 
   const resetForm = () => {
     setCode("");
@@ -64,6 +81,10 @@ const PartiesDirectory: React.FC = () => {
     setPhone("");
     setEmail("");
     setAddress("");
+    setProvince("");
+    setDistrict("");
+    setMunicipality("");
+    setWardNo("");
     setOpeningBalance(0);
     setIsActive(true);
   };
@@ -82,6 +103,10 @@ const PartiesDirectory: React.FC = () => {
     setPhone(party.phone || "");
     setEmail(party.email || "");
     setAddress(party.address || "");
+    setProvince(party.province || "");
+    setDistrict(party.district || "");
+    setMunicipality(party.city || "");
+    setWardNo(party.wardNo || "");
     setOpeningBalance(party.openingBalance || 0);
     setIsActive(party.isActive !== false);
     setShowEditModal(true);
@@ -93,6 +118,14 @@ const PartiesDirectory: React.FC = () => {
       toast.error("Party name is required");
       return;
     }
+    if (pan && !validatePAN(pan)) {
+      toast.error("Invalid PAN format. Must be 9 digits.");
+      return;
+    }
+    if (phone && !/^(97|98)\d{8}$/.test(phone)) {
+      toast.error("Invalid mobile format. Must start with 97 or 98 and be 10 digits.");
+      return;
+    }
     try {
       const payload = {
         code: code.trim() || undefined,
@@ -102,6 +135,10 @@ const PartiesDirectory: React.FC = () => {
         phone: phone.trim() || undefined,
         email: email.trim() || undefined,
         address: address.trim() || undefined,
+        province: province || undefined,
+        district: district.trim() || undefined,
+        city: municipality.trim() || undefined,
+        wardNo: wardNo.trim() || undefined,
         openingBalance: Number(openingBalance) || 0,
         isActive,
       };
@@ -170,6 +207,18 @@ const PartiesDirectory: React.FC = () => {
               </button>
             ))}
           </div>
+          <div className="ml-4">
+            <select
+              value={provinceFilter}
+              onChange={(e) => setProvinceFilter(e.target.value)}
+              className="h-7 px-2 text-[11px] border border-gray-300 rounded focus:outline-none"
+            >
+              <option value="ALL">All Provinces</option>
+              {PROVINCES.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -197,6 +246,7 @@ const PartiesDirectory: React.FC = () => {
                 <th>Name</th>
                 <th>Type</th>
                 <th>PAN/VAT</th>
+                <th>Province</th>
                 <th>Phone</th>
                 <th>Address</th>
                 <th>Status</th>
@@ -205,7 +255,7 @@ const PartiesDirectory: React.FC = () => {
             <tbody>
               {paginatedData.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-500">
+                  <td colSpan={8} className="text-center py-8 text-gray-500">
                     No parties found matching the search criteria.
                   </td>
                 </tr>
@@ -222,6 +272,7 @@ const PartiesDirectory: React.FC = () => {
                       <span className={`badge badge-${party.type}`}>{party.type}</span>
                     </td>
                     <td className="font-mono">{party.pan || "-"}</td>
+                    <td>{party.province || "-"}</td>
                     <td>{party.phone || "-"}</td>
                     <td>{party.address || "-"}</td>
                     <td>
@@ -339,8 +390,61 @@ const PartiesDirectory: React.FC = () => {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-700 font-semibold">Province</label>
+                <select
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                >
+                  <option value="">Select Province</option>
+                  {PROVINCES.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-700 font-semibold">District</label>
+                <input
+                  type="text"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  placeholder="e.g. Kathmandu"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-700 font-semibold">Municipality / VDC</label>
+                <input
+                  type="text"
+                  value={municipality}
+                  onChange={(e) => setMunicipality(e.target.value)}
+                  placeholder="e.g. KMC"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-700 font-semibold">Ward No.</label>
+                <input
+                  type="text"
+                  value={wardNo}
+                  onChange={(e) => setWardNo(e.target.value)}
+                  placeholder="e.g. 1"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1">
-              <label className="text-gray-700 font-semibold">Billing Address</label>
+              <label className="text-gray-700 font-semibold">Street / Local Address</label>
               <input
                 type="text"
                 value={address}
@@ -397,6 +501,6 @@ const PartiesDirectory: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default PartiesDirectory;

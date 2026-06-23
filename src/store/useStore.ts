@@ -88,6 +88,7 @@ export interface StoreState {
   deliveryChallans: DeliveryChallan[];
   goodsReceiptNotes: GoodsReceiptNote[];
   costCenters: CostCenter[];
+  budgets: Budget[];
   tdsEntries: TdsEntry[];
   bankAccounts: BankAccount[];
   bankStatements: BankStatement[];
@@ -102,6 +103,9 @@ export interface StoreState {
   recurringVouchers: RecurringVoucher[];
   employees: Employee[];
   payrollRuns: PayrollRun[];
+
+  // Computed Balances Cache
+  computedBalances: Record<string, number>;
 
   // Security & Authentication
   users: User[];
@@ -126,6 +130,10 @@ export interface StoreState {
     company: Partial<CompanySettings>;
     adminUser: Omit<User, "id">;
   }) => Promise<boolean>;
+
+  // RBAC checks
+  checkPermission: (permission: string) => boolean;
+  hasRole: (role: UserRole) => boolean;
 
   // Masters CRUD actions
   addAccount: (account: Omit<Account, "id" | "balance">) => Promise<Account>;
@@ -152,6 +160,8 @@ export interface StoreState {
   updateCostCenter: (cc: CostCenter) => Promise<void>;
   deleteCostCenter: (id: string) => Promise<void>;
 
+  setBudgetEntries: (entries: Omit<Budget, "id">[]) => Promise<void>;
+
   addBankAccount: (ba: Omit<BankAccount, "id">) => Promise<BankAccount>;
   updateBankAccount: (ba: BankAccount) => Promise<void>;
   deleteBankAccount: (id: string) => Promise<void>;
@@ -169,6 +179,7 @@ export interface StoreState {
   updateInvoice: (id: string, updates: Partial<Invoice>) => Promise<void>;
   cancelInvoice: (id: string, reason: string) => Promise<void>;
   postInvoice: (id: string) => Promise<void>;
+  retryCBMS: (invoiceId: string) => Promise<void>;
 
   // Order workflow operations
   addSalesOrder: (order: Omit<SalesOrder, "id" | "orderNo">) => Promise<SalesOrder>;
@@ -281,6 +292,7 @@ export const useStore = create<StoreState>()((...args) => {
     deliveryChallans: [],
     goodsReceiptNotes: [],
     costCenters: [],
+    budgets: [],
     tdsEntries: [],
     bankAccounts: [],
     bankStatements: [],
@@ -293,6 +305,21 @@ export const useStore = create<StoreState>()((...args) => {
     employees: [],
     payrollRuns: [],
     customFieldDefs: [],
+
+    checkPermission: (permission: string) => {
+      const user = get().currentUser;
+      if (!user) return false;
+      if (user.role === UserRole.ADMIN) return true;
+      return user.permissions?.includes(permission) || false;
+    },
+
+    hasRole: (role: UserRole) => {
+      const user = get().currentUser;
+      if (!user) return false;
+      if (user.role === UserRole.ADMIN) return true;
+      return user.role === role;
+    },
+
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -510,7 +537,31 @@ export const useStore = create<StoreState>()((...args) => {
     deleteCostCenter: async (id) => {
       const db = getDB();
       await db.costCenters.delete(id);
-      set((prev) => ({ costCenters: prev.costCenters.filter((c) => c.id !== id) }));
+      await get().initializeApp();
+    },
+
+    setBudgetEntries: async (entries) => {
+      const db = getDB();
+      // Use transaction for bulk add
+      await db.transaction("rw", db.budgets, async () => {
+        // Find all affected accounts/costCenters and periods to remove old budgets if we want,
+        // but simpler to just push new entries and deduplicate or override if necessary.
+        // Usually, we'd clear previous entries for the same account/costcenter/fiscalYear, but for simplicity we can just add/update.
+        for (const entry of entries) {
+          // delete existing for the same account, costcenter, fiscalyearBS and month
+          await db.budgets.where({
+            accountId: entry.accountId,
+            fiscalYearBS: entry.fiscalYearBS,
+            month: entry.month,
+          }).filter(b => b.costCenterId === entry.costCenterId).delete();
+          
+          await db.budgets.add({
+            id: generateId("budg"),
+            ...entry,
+          } as any);
+        }
+      });
+      await get().initializeApp();
     },
 
     addBankAccount: async (baData) => {
@@ -590,6 +641,16 @@ export const useStore = create<StoreState>()((...args) => {
         [db.vouchers, db.accounts, db.auditLogs, db.fiscalYears],
         async () => {
           await db.vouchers.add(finalVoucher);
+          await db.auditLogs.add({
+            id: generateId("audit"),
+            timestamp: new Date().toISOString(),
+            userId: state.currentUser?.id || "system",
+            userName: state.currentUser?.name || "System",
+            action: "create",
+            module: "Vouchers",
+            recordId: finalVoucher.id,
+            recordType: "Voucher",
+          });
         },
       );
 
@@ -612,8 +673,23 @@ export const useStore = create<StoreState>()((...args) => {
     },
 
     deleteVoucher: async (id) => {
+      const state = get();
+      if (!state.checkPermission("vouchers.delete")) {
+        toast.error("Access denied — insufficient permissions");
+        return false;
+      }
       const db = getDB();
       await db.vouchers.delete(id);
+      await db.auditLogs.add({
+        id: generateId("audit"),
+        timestamp: new Date().toISOString(),
+        userId: state.currentUser?.id || "system",
+        userName: state.currentUser?.name || "System",
+        action: "delete",
+        module: "Vouchers",
+        recordId: id,
+        recordType: "Voucher",
+      });
       await reloadAccountBalances();
       return true;
     },
@@ -855,37 +931,30 @@ export const useStore = create<StoreState>()((...args) => {
 
       await get().initializeApp();
 
-      if (finalInvoice.type === VoucherType.SALES_INVOICE && state.companySettings.cbmsConfig) {
-        const cbmsPayload = {
-          billNo: finalInvoice.invoiceNo,
-          billDate: finalInvoice.date,
-          partyName: finalInvoice.partyName,
-          partyPAN: finalInvoice.partyPan,
-          taxableAmount: finalInvoice.taxableAmount || 0,
-          vatAmount: finalInvoice.vatAmount || 0,
-          grandTotal: finalInvoice.grandTotal,
-          items: finalInvoice.lines.map((l) => ({
-            description: l.itemName,
-            qty: l.qty,
-            rate: l.rate,
-            amount: l.totalAmount || 0,
-          })),
-        };
-
-        const cbmsResult = await submitToCBMS(cbmsPayload, state.companySettings.cbmsConfig);
-        if (cbmsResult.success) {
-          toast.success("Invoice submitted to IRD CBMS");
-          await db.invoices.update(finalInvoice.id, {
-            cbmsRefNo: cbmsResult.referenceNo,
-            cbmsStatus: "submitted",
-          });
-        } else {
-          toast.error("CBMS submission failed — retry from Invoice Hub");
-          await db.invoices.update(finalInvoice.id, {
-            cbmsStatus: "failed",
-          });
-        }
-        await get().initializeApp();
+      if (
+        (finalInvoice.type === VoucherType.SALES_INVOICE || finalInvoice.type === VoucherType.PURCHASE_INVOICE) &&
+        state.companySettings.cbmsEnabled
+      ) {
+        // Run sync asynchronously so it doesn't block
+        submitToCBMS(finalInvoice, state.companySettings).then(async (cbmsResult) => {
+          if (cbmsResult.success) {
+            toast.success("Invoice successfully synced with IRD CBMS");
+            await getDB().invoices.update(finalInvoice.id, {
+              cbmsSubmitted: true,
+              cbmsIrn: cbmsResult.irn || undefined,
+              cbmsSubmittedAt: new Date().toISOString(),
+            });
+            await get().initializeApp(); // reload state
+          } else {
+            toast.error(cbmsResult.error || "CBMS submission failed", {
+              action: {
+                label: "Retry",
+                onClick: () => get().retryCBMS(finalInvoice.id),
+              },
+              duration: 8000,
+            });
+          }
+        });
       }
 
       return finalInvoice;
@@ -940,6 +1009,37 @@ export const useStore = create<StoreState>()((...args) => {
       });
 
       await get().initializeApp();
+    },
+
+    retryCBMS: async (invoiceId) => {
+      const state = get();
+      const db = getDB();
+      const invoice = state.invoices.find((i) => i.id === invoiceId);
+      
+      if (!invoice) {
+        toast.error("Invoice not found");
+        return;
+      }
+      if (!state.companySettings.cbmsEnabled) {
+        toast.error("CBMS sync is currently disabled in settings");
+        return;
+      }
+
+      toast.loading("Retrying CBMS sync...");
+      const result = await submitToCBMS(invoice, state.companySettings);
+      toast.dismiss();
+
+      if (result.success) {
+        toast.success("Invoice successfully synced with IRD CBMS");
+        await db.invoices.update(invoice.id, {
+          cbmsSubmitted: true,
+          cbmsIrn: result.irn || undefined,
+          cbmsSubmittedAt: new Date().toISOString(),
+        });
+        await get().initializeApp();
+      } else {
+        toast.error(result.error || "CBMS submission failed");
+      }
     },
 
     addSalesOrder: async (order) => {
@@ -1092,10 +1192,20 @@ export const useStore = create<StoreState>()((...args) => {
     },
 
     updateCompanySettings: async (settings) => {
+      const state = get();
       const db = getDB();
-      const companyId = get().companySettings.id || "company-default";
-      await db.companySettings.update(companyId, settings);
-      await get().initializeApp();
+      await db.companySettings.update("company-default", settings);
+      set({ companySettings: { ...state.companySettings, ...settings } as CompanySettings });
+      await db.auditLogs.add({
+        id: generateId("audit"),
+        timestamp: new Date().toISOString(),
+        userId: state.currentUser?.id || "system",
+        userName: state.currentUser?.name || "System",
+        action: "update",
+        module: "Settings",
+        recordId: "company-default",
+        recordType: "CompanySettings",
+      });
     },
 
     addFiscalYear: async (fy) => {
@@ -1458,5 +1568,12 @@ export const useStore = create<StoreState>()((...args) => {
     },
   };
 });
+
+// Granular Selectors
+export const selectInvoicesByType = (state: StoreState, type: VoucherType) => state.invoices.filter(i => i.type === type);
+export const selectActiveAccounts = (state: StoreState) => state.accounts.filter(a => a.isActive !== false);
+export const selectCurrentFY = (state: StoreState) => state.currentFiscalYear;
+export const selectOpenInvoices = (state: StoreState) => state.invoices.filter(i => i.paymentStatus === PaymentStatus.UNPAID || i.paymentStatus === PaymentStatus.PARTIAL);
+export const selectComputedBalances = (state: StoreState) => state.computedBalances;
 
 export const useAccountingStore = useStore;
