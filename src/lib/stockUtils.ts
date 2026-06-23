@@ -785,3 +785,194 @@ export async function postPhysicalStockAdjustment(
     timestamp: new Date().getTime()
   });
 }
+
+// ==========================================
+// BATCH I: DAILY BALANCES
+// ==========================================
+import { DailyStockBalance, UnmovedItemRow, CriticalStockRow } from "./types";
+import { formatADToBS } from "./nepaliDate";
+
+export function computeDailyBalances(
+  movements: StockMovement[],
+  itemId: string,
+  warehouseId: string | null,
+  startDate: string,
+  endDate: string,
+): DailyStockBalance[] {
+  // Get all movements for this item up to endDate to compute opening for startDate
+  const allMovements = movements
+    .filter(m => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Compute opening qty before startDate
+  let openingQty = 0;
+  let avgRate = 0;
+  let runningValue = 0;
+
+  for (const m of allMovements) {
+    if (m.date >= startDate) break;
+    const isIn = m.qty > 0 || [
+      MovementType.PURCHASE, MovementType.OPENING, MovementType.PRODUCTION,
+      MovementType.TRANSFER_IN, MovementType.GOODS_RECEIPT, MovementType.SALES_RETURN,
+      MovementType.PURCHASE_RETURN_REVERSE, MovementType.PHYSICAL_ADJUSTMENT,
+    ].includes(m.type as MovementType);
+    if (isIn && m.qty > 0) {
+      runningValue += m.amount || 0;
+      openingQty += m.qty;
+    } else {
+      openingQty += m.qty; // negative qty for outflows
+    }
+  }
+  if (openingQty > 0) {
+    avgRate = runningValue / openingQty;
+  }
+
+  // Generate all dates in range
+  const result: DailyStockBalance[] = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  let runningQty = openingQty;
+
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split('T')[0];
+    const dayMvts = allMovements.filter(m => m.date === dateStr);
+
+    let inQty = 0;
+    let outQty = 0;
+    let inValue = 0;
+
+    for (const m of dayMvts) {
+      if (m.qty > 0) {
+        inQty += m.qty;
+        inValue += m.amount || 0;
+      } else {
+        outQty += Math.abs(m.qty);
+      }
+    }
+
+    const closing = runningQty + inQty - outQty;
+    // Update avg rate with new in
+    if (inQty > 0) {
+      const prevValue = runningQty * avgRate;
+      avgRate = (prevValue + inValue) / (runningQty + inQty);
+    }
+    runningQty = closing;
+
+    let dateNepali = dateStr;
+    try { dateNepali = formatADToBS(dateStr); } catch { /* skip */ }
+
+    result.push({
+      date: dateStr,
+      dateNepali,
+      openingQty: round2(runningQty - inQty + outQty),
+      inQty: round2(inQty),
+      outQty: round2(outQty),
+      closingQty: round2(closing),
+      rate: round2(avgRate),
+      closingValue: round2(closing * avgRate),
+    });
+  }
+
+  return result;
+}
+
+// ==========================================
+// BATCH I: UNMOVED ITEMS
+// ==========================================
+export function computeUnmovedItems(
+  movements: StockMovement[],
+  items: Item[],
+  today: string,
+  unmoveDays: number,
+): UnmovedItemRow[] {
+  const todayDate = new Date(today);
+  const result: UnmovedItemRow[] = [];
+
+  for (const item of items) {
+    if (!item.isActive) continue;
+
+    const itemMovements = movements
+      .filter(m => m.itemId === item.id)
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    const lastMovement = itemMovements[0];
+    if (!lastMovement) continue; // Never had movement
+
+    const lastDate = new Date(lastMovement.date);
+    const diffMs = todayDate.getTime() - lastDate.getTime();
+    const daysUnmoved = Math.floor(diffMs / (1000 * 3600 * 24));
+
+    if (daysUnmoved < unmoveDays) continue;
+
+    // Current stock
+    let currentStock = 0;
+    let currentValue = 0;
+    let runningValue = 0;
+    for (const m of [...itemMovements].reverse()) {
+      currentStock += m.qty;
+      if (m.qty > 0) runningValue += m.amount || 0;
+    }
+    if (currentStock > 0) currentValue = runningValue;
+
+    let lastDateNepali = lastMovement.date;
+    try { lastDateNepali = formatADToBS(lastMovement.date); } catch { /* skip */ }
+
+    result.push({
+      itemId: item.id,
+      itemName: item.name,
+      itemCode: item.code,
+      unit: item.unit,
+      lastMovementDate: lastDateNepali,
+      lastMovementType: lastMovement.type as MovementType,
+      daysUnmoved,
+      currentStock: round2(currentStock),
+      currentValue: round2(currentValue),
+    });
+  }
+
+  return result.sort((a, b) => b.daysUnmoved - a.daysUnmoved);
+}
+
+// ==========================================
+// BATCH I: CRITICAL STOCK
+// ==========================================
+export function computeCriticalStock(
+  items: Item[],
+  movements: StockMovement[],
+): CriticalStockRow[] {
+  const result: CriticalStockRow[] = [];
+
+  for (const item of items) {
+    if (!item.isActive) continue;
+    const minStock = item.minimumStock ?? 0;
+    const reorder = item.reorderLevel ?? 0;
+    const maxStock = item.maximumStock ?? 0;
+    if (minStock === 0 && reorder === 0 && maxStock === 0) continue;
+
+    let currentStock = 0;
+    for (const m of movements.filter(mv => mv.itemId === item.id)) {
+      currentStock += m.qty;
+    }
+    currentStock = round2(currentStock);
+
+    let status: CriticalStockRow['status'] | null = null;
+    if (currentStock < minStock) status = 'critical';
+    else if (reorder > 0 && currentStock < reorder) status = 'reorder';
+    else if (maxStock > 0 && currentStock > maxStock) status = 'overstocked';
+
+    if (!status) continue;
+
+    result.push({
+      itemId: item.id,
+      itemName: item.name,
+      itemCode: item.code,
+      currentStock,
+      minimumStock: minStock,
+      reorderLevel: reorder,
+      maximumStock: maxStock,
+      status,
+    });
+  }
+
+  return result;
+}

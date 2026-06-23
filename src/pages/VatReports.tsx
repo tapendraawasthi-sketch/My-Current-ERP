@@ -8,7 +8,7 @@ import {
   computeVatAnnexC,
   computeVAT3Return,
 } from "../lib/taxUtils";
-import { exportVatAnnexToExcel, workbookFromArray, downloadWorkbook } from "../lib/exportUtils";
+import { exportVatAnnexToExcel, workbookFromArray, downloadWorkbook, exportVatAnnexCSV } from "../lib/exportUtils";
 import {
   getBSMonthRange,
   getQuarterRange,
@@ -51,7 +51,7 @@ const VatReports: React.FC = () => {
   const [customEndDate, setCustomEndDate] = useState<string>(defaultAdEnd);
 
   // Tabs map directly to Annex 18 (Purchases), Annex 19 (Sales)
-  const [annexTab, setAnnexTab] = useState<"summary" | "annex18" | "annex19" | "annexC">("summary");
+  const [annexTab, setAnnexTab] = useState<"summary" | "annex18" | "annex19" | "annexC" | "deposit">("summary");
 
   // Auto select filing mode on mount/turnover change
   useEffect(() => {
@@ -367,6 +367,23 @@ const VatReports: React.FC = () => {
     }
   };
 
+  const handleExportAnnexCsvNepali = (type: 'annex1' | 'annex2') => {
+    const sourceData = type === 'annex1' ? annexA : annexB;
+    const rows = (sourceData?.rows || []).map((r: any) => ({
+      dateNepali: formatADToBS(r.date),
+      invoiceNo: r.billNo || '',
+      partyName: r.partyName || '',
+      partyPan: r.partyPan || '',
+      taxableAmount: r.taxableAmt || 0,
+      vatAmount: r.vatAmt || 0,
+      exemptAmount: r.exemptAmt || 0,
+      grandTotal: r.totalAmt || 0,
+    }));
+    const periodStr = periodLabel.replace(/\s+/g, '_');
+    exportVatAnnexCSV(type, rows, periodStr);
+    toast.success(`Nepali Unicode ${type === 'annex1' ? 'Annex 1 (Purchase)' : 'Annex 2 (Sales)'} CSV exported.`);
+  };
+
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none page-wrapper">
       <div className="flex items-center justify-between mb-4">
@@ -542,6 +559,7 @@ const VatReports: React.FC = () => {
           { key: "annex18", label: "VAT Purchase Register (Annex-18)" },
           { key: "annex19", label: "VAT Sales Register (Annex-19)" },
           { key: "annexC", label: "Annex-C (Imports)" },
+          { key: "deposit", label: "VAT Deposit Status" },
         ].map(({ key, label }) => (
           <button
             key={key}
@@ -593,6 +611,86 @@ const VatReports: React.FC = () => {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-3">{renderVat3Card()}</div>
+        </Card>
+      ) : annexTab === 'deposit' ? (
+        <Card border padding="md" className="grid gap-5">
+          <div>
+            <h3 className="text-[12px] font-bold text-gray-700 mb-1">VAT Deposit Status</h3>
+            <p className="text-[11px] text-gray-500 mb-4">Nepal IRD deadline: 25th of the following BS month. Sourced from payment vouchers matched to VAT Payable account.</p>
+            <div className="flex gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => handleExportAnnexCsvNepali('annex1')}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-semibold rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" /> Export Annex 1 CSV (Nepali)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleExportAnnexCsvNepali('annex2')}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-semibold rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" /> Export Annex 2 CSV (Nepali)
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="data-table w-full text-left">
+                <thead>
+                  <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">Month (BS)</th>
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">VAT Collected (Output)</th>
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">VAT Paid (Input)</th>
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Net Payable</th>
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">Deadline</th>
+                    <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {((): React.ReactNode[] => {
+                    // Generate last 12 months summary from vat3Return logic
+                    const rows: React.ReactNode[] = [];
+                    const today = new Date();
+                    for (let i = 11; i >= 0; i--) {
+                      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                      const prefix = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                      const mSalesVat = invoices
+                        .filter(inv => inv.type === 'sales-invoice' && inv.status === 'posted' && inv.date.startsWith(prefix))
+                        .reduce((s, inv) => s + ((inv as any).vatAmount || 0), 0);
+                      const mPurchaseVat = invoices
+                        .filter(inv => inv.type === 'purchase-invoice' && inv.status === 'posted' && inv.date.startsWith(prefix))
+                        .reduce((s, inv) => s + ((inv as any).vatAmount || 0), 0);
+                      const net = mSalesVat - mPurchaseVat;
+                      let bsLabel = prefix;
+                      try { bsLabel = formatADToBS(`${prefix}-15`).split('/').slice(0, 2).join('/'); } catch { /**/ }
+                      // Deadline = 25th of following month
+                      const deadline = new Date(d.getFullYear(), d.getMonth() + 1, 25);
+                      const isLate = today > deadline;
+                      const onTime = net <= 0 || !isLate;
+                      rows.push(
+                        <tr key={prefix} className="border-b border-gray-100 hover:bg-[#e8eeff]">
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{bsLabel}</td>
+                          <td className="px-3 py-[7px] text-[12px] font-mono text-right">{formatNumber(mSalesVat)}</td>
+                          <td className="px-3 py-[7px] text-[12px] font-mono text-right">{formatNumber(mPurchaseVat)}</td>
+                          <td className={`px-3 py-[7px] text-[12px] font-mono text-right font-bold ${net > 0 ? 'text-red-600' : 'text-green-600'}`}>{formatNumber(net)}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-500">{deadline.toLocaleDateString()}</td>
+                          <td className="px-3 py-[7px]">
+                            {net <= 0
+                              ? <span className="badge badge-active">No Tax Due</span>
+                              : onTime
+                              ? <span className="badge badge-posted">On Time</span>
+                              : <span className="badge badge-cancelled">Late</span>
+                            }
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return rows;
+                  })()}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[10px] text-gray-400 mt-2">Note: Nepal VAT deadline is 25th of the following BS month (Ashadh Month extended). Deposit status is estimated from invoice data only.</p>
+          </div>
         </Card>
       ) : (
         <Card border padding="md" className="grid gap-5">

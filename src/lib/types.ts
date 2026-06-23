@@ -1342,3 +1342,98 @@ export interface RecentlyOpenedItem {
   subtitle: string;
   page: string;
 }
+
+// ==========================================
+// BATCH I — INVENTORY / REMINDERS / TDS
+// ==========================================
+
+export interface DailyStockBalance {
+  date: string;
+  dateNepali: string;
+  openingQty: number;
+  inQty: number;
+  outQty: number;
+  closingQty: number;
+  rate: number;
+  closingValue: number;
+}
+
+export interface UnmovedItemRow {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  unit?: string;
+  lastMovementDate: string;
+  lastMovementType: MovementType;
+  daysUnmoved: number;
+  currentStock: number;
+  currentValue: number;
+}
+
+export interface CriticalStockRow {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  currentStock: number;
+  minimumStock: number;
+  reorderLevel: number;
+  maximumStock: number;
+  status: 'critical' | 'reorder' | 'overstocked';
+}
+
+export interface ReminderRule {
+  id: string;
+  name: string;
+  triggerDays: number;
+  reminderType: 'before_due' | 'on_due' | 'after_due';
+  channel: 'email';
+  subjectTemplate: string;
+  bodyTemplate: string;
+  applicablePartyTypes: ('customer' | 'supplier')[];
+  minAmount: number;
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface ReminderLog {
+  id: string;
+  ruleId: string;
+  ruleName: string;
+  partyId: string;
+  partyName: string;
+  partyEmail?: string;
+  billWiseEntryId: string;
+  billNo: string;
+  amount: number;
+  daysOverdue: number;
+  sentAt?: string;
+  status: 'queued' | 'sent' | 'failed';
+  failReason?: string;
+}
+
+export interface TdsSection {
+  id: string;
+  section: string;
+  description: string;
+  descriptionNepali: string;
+  defaultRate: number;
+  thresholdAmount?: number;
+  annualThreshold?: number;
+  applicableTo: 'individual' | 'entity' | 'both';
+  isActive: boolean;
+}
+
+export interface TdsDepositEntry {
+  id: string;
+  period: string;         // "YYYY-MM" or BS month string
+  periodNepali: string;
+  section: string;
+  grossAmount: number;
+  tdsAmount: number;
+  depositedAmount: number;
+  balance: number;
+  challanNo?: string;
+  depositDate?: string;
+  status: 'pending' | 'partial' | 'deposited';
+  remarks?: string;
+}

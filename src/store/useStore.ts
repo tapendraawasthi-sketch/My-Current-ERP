@@ -24,6 +24,8 @@ import {
   GoodsReceiptNote,
   CostCenter,
   RecentlyOpenedItem,
+  ReminderRule,
+  ReminderLog,
   TdsEntry,
   Employee,
   PayrollRun,
@@ -123,6 +125,8 @@ export interface StoreState {
   reportFilters: ReportFilters;
   notifications: AppNotification[];
   recentlyOpened: RecentlyOpenedItem[];
+  reminderRules: ReminderRule[];
+  reminderLogs: ReminderLog[];
 
   // App initialization
   initializeApp: () => Promise<void>;
@@ -133,6 +137,11 @@ export interface StoreState {
     adminUser: Omit<User, "id">;
   }) => Promise<boolean>;
   addRecentlyOpened: (item: RecentlyOpenedItem) => void;
+  addReminderRule: (rule: Omit<ReminderRule, 'id'>) => Promise<ReminderRule>;
+  updateReminderRule: (rule: ReminderRule) => Promise<void>;
+  deleteReminderRule: (id: string) => Promise<void>;
+  addReminderLog: (log: Omit<ReminderLog, 'id'>) => Promise<ReminderLog>;
+  updateReminderLog: (id: string, updates: Partial<ReminderLog>) => Promise<void>;
 
   // Masters CRUD actions
   addAccount: (account: Omit<Account, "id" | "balance">) => Promise<Account>;
@@ -395,6 +404,8 @@ export const useStore = create<StoreState>()((...args) => {
     },
     notifications: [],
     recentlyOpened: [],
+    reminderRules: [],
+    reminderLogs: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -2133,6 +2144,40 @@ export const useStore = create<StoreState>()((...args) => {
           recentlyOpened: [item, ...filtered].slice(0, 20),
         };
       });
+    },
+
+    addReminderRule: async (ruleData) => {
+      const db = getDB();
+      const full: ReminderRule = { ...ruleData as any, id: generateId('rr'), createdAt: new Date().toISOString() };
+      await db.reminderRules.add(full);
+      set(prev => ({ reminderRules: [...prev.reminderRules, full] }));
+      return full;
+    },
+
+    updateReminderRule: async (rule) => {
+      const db = getDB();
+      await db.reminderRules.update(rule.id, rule);
+      set(prev => ({ reminderRules: prev.reminderRules.map(r => r.id === rule.id ? rule : r) }));
+    },
+
+    deleteReminderRule: async (id) => {
+      const db = getDB();
+      await db.reminderRules.delete(id);
+      set(prev => ({ reminderRules: prev.reminderRules.filter(r => r.id !== id) }));
+    },
+
+    addReminderLog: async (logData) => {
+      const db = getDB();
+      const full: ReminderLog = { ...logData as any, id: generateId('rl') };
+      await db.reminderLogs.add(full);
+      set(prev => ({ reminderLogs: [...prev.reminderLogs, full] }));
+      return full;
+    },
+
+    updateReminderLog: async (id, updates) => {
+      const db = getDB();
+      await db.reminderLogs.update(id, updates);
+      set(prev => ({ reminderLogs: prev.reminderLogs.map(l => l.id === id ? { ...l, ...updates } : l) }));
     },
   };
 });

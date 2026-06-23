@@ -55,6 +55,8 @@ import {
   PhysicalStockVoucher,
   ApprovalRequest,
   CbmsLog,
+  ReminderRule,
+  ReminderLog,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -100,6 +102,8 @@ export class SutraDB extends Dexie {
   public physicalStockVouchers!: Table<PhysicalStockVoucher & { id: string }>;
   public approvalRequests!: Table<ApprovalRequest & { id: string }>;
   public cbmsLogs!: Table<CbmsLog & { id: string }>;
+  public reminderRules!: Table<ReminderRule & { id: string }>;
+  public reminderLogs!: Table<ReminderLog & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -167,6 +171,11 @@ export class SutraDB extends Dexie {
 
     this.version(9).stores({
       cbmsLogs: "++id, invoiceId, cbmsStatus, submittedAt",
+    });
+
+    this.version(10).stores({
+      reminderRules: "++id, name, reminderType, isActive",
+      reminderLogs: "++id, ruleId, partyId, billWiseEntryId, status, sentAt",
     });
   }
 }

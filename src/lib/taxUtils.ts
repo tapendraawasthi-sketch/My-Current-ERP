@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -620,4 +620,43 @@ export function computeCITContribution(basicSalary: number): {
   employer: number;
 } {
   return { employee: basicSalary * 0.01, employer: basicSalary * 0.01 };
+}
+
+// ==========================================
+// BATCH I — Section 88K Threshold Check
+// ==========================================
+import { TdsEntry } from "./types";
+
+/**
+ * Check if Section 88K TDS should apply based on cumulative payments in current FY.
+ * Threshold: Single payment ≥ NPR 50,000 OR cumulative in FY ≥ NPR 50,000.
+ */
+export function section88KThresholdCheck(
+  partyId: string,
+  currentPayment: number,
+  allTdsEntries: TdsEntry[],
+  currentFYStartDate: string,
+): { applyTDS: boolean; cumulativeAmount: number; reason: string } {
+  const currentFYEntries = allTdsEntries.filter(
+    (e) =>
+      e.partyId === partyId &&
+      (e.tdsType === 'contractor' || (e as any).section === '88K') &&
+      e.date >= currentFYStartDate,
+  );
+  const cumulative = currentFYEntries.reduce((sum, e) => sum + (e.grossAmount || 0), 0);
+  const projectedCumulative = cumulative + currentPayment;
+
+  if (currentPayment >= 50000 || projectedCumulative >= 50000) {
+    return {
+      applyTDS: true,
+      cumulativeAmount: projectedCumulative,
+      reason: `Threshold exceeded — Cumulative: रू ${projectedCumulative.toLocaleString()}`,
+    };
+  }
+
+  return {
+    applyTDS: false,
+    cumulativeAmount: projectedCumulative,
+    reason: `Below NPR 50,000 threshold (Cumulative: रू ${projectedCumulative.toLocaleString()})`,
+  };
 }

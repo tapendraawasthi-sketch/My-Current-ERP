@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -702,4 +702,52 @@ export function exportBalanceSheetToExcel(
 
   const wb = workbookFromArray(headers, rows, "Balance Sheet");
   downloadWorkbook(wb, filename);
+}
+
+// ==========================================
+// BATCH I — VAT Annex CSV with Nepali Unicode
+// ==========================================
+export function exportVatAnnexCSV(
+  type: 'annex1' | 'annex2',
+  rows: Array<{
+    dateNepali: string;
+    invoiceNo: string;
+    partyName: string;
+    partyPan?: string;
+    taxableAmount: number;
+    vatAmount: number;
+    exemptAmount: number;
+    grandTotal: number;
+  }>,
+  period: string,
+): void {
+  const BOM = '\uFEFF'; // UTF-8 BOM for Nepali Unicode in Excel
+  const annex1Headers =
+    'क्र.सं.,बिल मिति,बिल नं.,आपूर्तिकर्ता नाम,स्थायी लेखा नं.,कर योग्य रकम,मूअकर रकम,करमुक्त रकम,जम्मा रकम';
+  const annex2Headers =
+    'क्र.सं.,बिल मिति,बिल नं.,ग्राहक नाम,स्थायी लेखा नं.,कर योग्य रकम,मूअकर रकम,करमुक्त रकम,जम्मा रकम';
+  const headers = type === 'annex1' ? annex1Headers : annex2Headers;
+
+  const csvRows = rows.map((r, i) =>
+    [
+      i + 1,
+      r.dateNepali,
+      `"${r.invoiceNo}"`,
+      `"${r.partyName}"`,
+      r.partyPan || '',
+      r.taxableAmount.toFixed(2),
+      r.vatAmount.toFixed(2),
+      r.exemptAmount.toFixed(2),
+      r.grandTotal.toFixed(2),
+    ].join(','),
+  );
+
+  const csv = BOM + headers + '\n' + csvRows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${type}_${period}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }

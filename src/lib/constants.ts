@@ -1,9 +1,9 @@
-﻿/**
+/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TdsType, CompanySettings, VoucherType, DateFormat, StockValuationMethod } from "./types";
+import { TdsType, CompanySettings, VoucherType, DateFormat, StockValuationMethod, TdsSection } from "./types";
 
 export const VAT_RATE = 13;
 
@@ -142,3 +142,119 @@ export const DEFAULT_COMPANY_SETTINGS: Partial<CompanySettings> = {
   printTermsOnInvoice: true,
   tdsEnabled: true,
 };
+
+// ==========================================
+// FULL ITA 2058 TDS SECTIONS (Batch I)
+// ==========================================
+export const TDS_SECTIONS_FULL: TdsSection[] = [
+  {
+    id: "tds-87-1a",
+    section: "87(1)(a)",
+    description: "Employment income (salary)",
+    descriptionNepali: "रोजगारीबाट आय (तलब)",
+    defaultRate: 1, // slab-based; rate here is minimum
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-87-1b",
+    section: "87(1)(b)",
+    description: "Dividends – public company",
+    descriptionNepali: "लाभांश – सार्वजनिक कम्पनी",
+    defaultRate: 5,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-87-1c",
+    section: "87(1)(c)",
+    description: "Dividends – private company",
+    descriptionNepali: "लाभांश – निजी कम्पनी",
+    defaultRate: 5,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-87-1d",
+    section: "87(1)(d)",
+    description: "Interest – resident bank",
+    descriptionNepali: "ब्याज – आवासीय बैंक",
+    defaultRate: 6,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-87-1e",
+    section: "87(1)(e)",
+    description: "Interest – other sources",
+    descriptionNepali: "ब्याज – अन्य स्रोत",
+    defaultRate: 15,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-87-2a",
+    section: "87(2)(a)",
+    description: "Rent – land/building",
+    descriptionNepali: "भाडा – जग्गा/भवन",
+    defaultRate: 10,
+    applicableTo: "entity",
+    isActive: true,
+  },
+  {
+    id: "tds-87-2b",
+    section: "87(2)(b)",
+    description: "Royalty",
+    descriptionNepali: "रोयल्टी",
+    defaultRate: 15,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-88",
+    section: "88",
+    description: "Services / Consultancy / Commission",
+    descriptionNepali: "सेवा / परामर्श / कमिसन",
+    defaultRate: 15,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-88k",
+    section: "88K",
+    description: "Contract work",
+    descriptionNepali: "ठेक्का काम",
+    defaultRate: 1.5,
+    thresholdAmount: 50000,
+    annualThreshold: 150000,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-89",
+    section: "89",
+    description: "Lottery / games winnings",
+    descriptionNepali: "लटरी / खेल जितेको रकम",
+    defaultRate: 25,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-90",
+    section: "90",
+    description: "Payment to non-resident",
+    descriptionNepali: "अनिवासीलाई भुक्तानी",
+    defaultRate: 25,
+    applicableTo: "both",
+    isActive: true,
+  },
+  {
+    id: "tds-95ka",
+    section: "95Ka",
+    description: "Advance income tax – land/property sale",
+    descriptionNepali: "अग्रिम आयकर – जग्गा/सम्पत्ति बिक्री",
+    defaultRate: 2.5,
+    applicableTo: "both",
+    isActive: true,
+  },
+];

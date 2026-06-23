@@ -126,6 +126,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         productionVouchers,
         physicalStockVouchers,
         approvalRequests,
+        reminderRules,
+        reminderLogs,
       ] = await Promise.all([
         db.accounts.toArray(),
         db.vouchers.toArray(),
@@ -166,6 +168,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.productionVouchers.toArray(),
         db.physicalStockVouchers.toArray(),
         db.approvalRequests.toArray(),
+        db.reminderRules.toArray(),
+        db.reminderLogs.toArray(),
       ]);
 
       const companySettings = companySettingsArr[0] || get().companySettings;
@@ -258,6 +262,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         productionVouchers,
         physicalStockVouchers,
         approvalRequests,
+        reminderRules,
+        reminderLogs,
         isDbReady: true,
       });
 
