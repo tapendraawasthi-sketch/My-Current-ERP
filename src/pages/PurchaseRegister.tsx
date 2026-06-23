@@ -252,10 +252,10 @@ const PurchaseRegister: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
-          { label: "Total Purchases", value: formatCurrency(filteredInvoices.reduce((s,r)=>s+(r.grandTotal||0),0)), color: "#1557b0" },
-          { label: "Invoice Count", value: filteredInvoices.length, color: "#1557b0" },
+          { label: "Total Purchases", value: formatCurrency(filteredInvoices.reduce((s,r)=>s+(r.grandTotal||0),0)), color: "var(--color-accent)" },
+          { label: "Invoice Count", value: filteredInvoices.length, color: "var(--color-accent)" },
           { label: "Total VAT", value: formatCurrency(filteredInvoices.reduce((s,r)=>s+(r.vatAmount||0),0)), color: "#b45309" },
-          { label: "Posted", value: filteredInvoices.filter(r=>r.status==="posted").length, color: "#15803d" },
+          { label: "Posted", value: filteredInvoices.filter(r=>r.status==="posted").length, color: "var(--color-positive)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3" style={{ borderColor: "var(--border)" }}>
             <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>

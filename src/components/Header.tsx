@@ -12,24 +12,18 @@ import { GlobalSearch } from "./GlobalSearch";
 import { useTheme } from "../context/ThemeContext";
 import {
   Bell,
-  User,
   LogOut,
-  Key,
   Settings,
-  Heart,
-  ShieldAlert,
   HelpCircle,
   Search,
   Sun,
   Moon,
 } from "lucide-react";
-import toast from "react-hot-toast";
 
 const Header: React.FC = () => {
-  const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } = useStore();
+  const { currentUser, logout, notifications, setCurrentPage } = useStore();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
-  const toggleDark = toggleTheme;
 
   const [dateStrBS, setDateStrBS] = useState("");
   const [dateStrAD, setDateStrAD] = useState("");
@@ -41,14 +35,12 @@ const Header: React.FC = () => {
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Current BS Date
     try {
       setDateStrBS(getBSTodayLong());
     } catch (e) {
       setDateStrBS(getBSToday());
     }
 
-    // Current AD Date
     const today = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "short",
@@ -58,7 +50,6 @@ const Header: React.FC = () => {
     };
     setDateStrAD(today.toLocaleDateString("en-US", options));
 
-    // Outside clicks handlers
     const handleOutsideClick = (e: MouseEvent) => {
       const target = e.target as Node;
       if (alertsRef.current && !alertsRef.current.contains(target)) {
@@ -95,154 +86,217 @@ const Header: React.FC = () => {
   const unreadAlerts = notifications.filter((n) => !n.read).length;
 
   return (
-    <header className="h-10 bg-white border-b px-3 flex items-center justify-between sticky top-0 z-40 select-none relative" style={{ borderColor: "var(--border)" }}>
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#1557b0]" />
-      {/* 1. Left Section: Breadcrumb Path Tracking */}
-      <div className="flex items-center gap-1.5 font-medium shrink-0">
+    <header
+      className="flex items-center justify-between sticky top-0 z-40 select-none"
+      style={{
+        height: "var(--header-height)",
+        background: "var(--color-surface)",
+        borderBottom: "1px solid var(--color-border)",
+        padding: "0 20px",
+        boxShadow: "0 1px 0 var(--color-border)",
+      }}
+    >
+      {/* Left Section: Breadcrumb */}
+      <div className="flex items-center shrink-0">
         <Breadcrumb />
       </div>
 
-      {/* Global Search trigger */}
-      <div className="hidden md:block mx-4 flex-1 max-w-xs relative">
+      {/* Middle Section: Global Search trigger */}
+      <div className="hidden md:block mx-4 flex-1 max-w-sm relative absolute left-1/2 -translate-x-1/2">
         <button
           type="button"
           onClick={() => setSearchOpen(true)}
-          className="w-full flex items-center justify-between h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 text-gray-400 hover:bg-white transition-colors"
+          className="w-full flex items-center justify-between transition-colors"
+          style={{
+            height: 34,
+            padding: "0 10px",
+            fontSize: "var(--font-size-base)",
+            border: "1px solid var(--color-border-input)",
+            borderRadius: "var(--radius-md)",
+            background: "var(--color-surface-sunken)",
+            color: "var(--color-text-muted)"
+          }}
         >
           <span className="flex items-center gap-1.5">
-            <Search className="h-3.5 w-3.5 text-gray-400" />
+            <Search style={{ width: 14, height: 14, color: "var(--color-text-muted)" }} />
             <span>Search anything...</span>
           </span>
-          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-gray-200 rounded font-mono text-gray-500">
+          <kbd
+            className="hidden lg:flex items-center justify-center font-mono"
+            style={{
+              padding: "2px 6px",
+              fontSize: "10px",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-sm)",
+              color: "var(--color-text-muted)"
+            }}
+          >
             /
           </kbd>
         </button>
         <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
 
-      {/* 2. Middle Section: Company Header Entity Info */}
-      <div className="hidden lg:flex flex-col items-center gap-0 absolute left-1/2 -translate-x-1/2">
-        <span className="text-[12px] font-bold text-gray-800 truncate max-w-xs leading-none">
-          {companySettings?.logo ? <img src={companySettings.logo} className="h-6 w-auto" alt={companySettings.name} /> : (companySettings?.name || "Sutra ERP")}
-        </span>
-        <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-widest leading-none mt-0.5">{currentFiscalYear?.name || "FY 2083/84"}</span>
-      </div>
-
-      {/* 3. Right Section: Live Calendars, Notifiers, User Session Dropdown */}
-      <div className="flex items-center gap-4">
-        {/* Date visual display widget */}
-        <div className="hidden md:flex flex-col text-right pr-4 border-r border-gray-200 gap-0.5">
-          <span
-            className="text-[11px] font-semibold text-gray-700 leading-none"
-            title="Bikram Sambat Nepali calendar"
-          >
+      {/* Right Section: Dates, Actions, Profile */}
+      <div className="flex items-center gap-4 shrink-0">
+        {/* Date Display */}
+        <div className="hidden md:flex flex-col text-right">
+          <span style={{ color: "var(--color-text-primary)", fontSize: 12, fontWeight: 500, lineHeight: 1.2 }}>
             {dateStrBS} (B.S.)
           </span>
-          <span className="text-[10px] text-gray-400 leading-none">{dateStrAD} (A.D.)</span>
+          <span style={{ color: "var(--color-text-muted)", fontSize: 10, lineHeight: 1.2 }}>
+            {dateStrAD} (A.D.)
+          </span>
         </div>
 
-        {/* Help docs and Notification alerts bell */}
-        <div className="flex items-center gap-1.5" ref={alertsRef}>
-          <a
-            href="https://docs.sutraerp.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
-            title="Help Documentation"
-          >
-            <HelpCircle className="h-4 w-4" />
-          </a>
+        {/* Separator */}
+        <div style={{ width: 1, height: 24, background: "var(--color-border)" }} />
 
-          <button type="button" onClick={toggleDark} title="Toggle dark mode" className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
-
-          <div className="relative shrink-0">
+        {/* Action Icons */}
+        <div className="flex items-center gap-2">
+          {/* Notifications */}
+          <div className="relative" ref={alertsRef}>
             <button
               type="button"
               onClick={() => setAlertsOpen(!alertsOpen)}
-              className="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors relative"
+              className="flex items-center justify-center transition-colors"
+              style={{ width: 32, height: 32, borderRadius: "var(--radius-md)", background: "transparent", border: "none", cursor: "pointer" }}
               title="Notification Center"
+              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-surface-sunken)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
             >
-              <Bell className="h-4 w-4" />
+              <Bell style={{ width: 18, height: 18, color: "var(--color-text-muted)" }} />
               {unreadAlerts > 0 && (
-                <span className="absolute top-1 right-1 h-3.5 min-w-[14px] text-[8px] font-bold text-white bg-red-600 rounded-full flex items-center justify-center px-0.5 border border-white">
+                <span
+                  className="absolute flex items-center justify-center"
+                  style={{
+                    top: -4,
+                    right: -4,
+                    width: 16,
+                    height: 16,
+                    background: "var(--color-accent)",
+                    color: "white",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: "50%",
+                  }}
+                >
                   {unreadAlerts}
                 </span>
               )}
             </button>
-
             {alertsOpen && <NotificationPanel onClose={() => setAlertsOpen(false)} />}
           </div>
+
+          {/* Theme Toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex items-center justify-center transition-colors"
+            style={{ width: 32, height: 32, borderRadius: "var(--radius-md)", background: "transparent", border: "none", cursor: "pointer" }}
+            title="Toggle Theme"
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-surface-sunken)")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            {isDark ? (
+              <Sun style={{ width: 18, height: 18, color: "var(--color-text-muted)" }} />
+            ) : (
+              <Moon style={{ width: 18, height: 18, color: "var(--color-text-muted)" }} />
+            )}
+          </button>
         </div>
 
-        {/* Logged in User visual profile controls */}
-        <div className="relative shrink-0" ref={profileRef}>
+        {/* User Profile */}
+        <div className="relative" ref={profileRef}>
           <button
             type="button"
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 group p-1 rounded-lg hover:bg-gray-100/70 transition-colors focus:outline-none"
-            title="User Settings Context"
+            className="flex items-center justify-center focus:outline-none"
+            style={{ width: 30, height: 30, borderRadius: "50%", background: "var(--color-accent-subtle)", color: "var(--color-accent)", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}
+            title="User Settings"
           >
-            <div className="h-8 w-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-xs shadow-inner">
-              {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-            </div>
-            <div className="hidden sm:flex flex-col text-left mr-1 shrink-0">
-              <span className="text-xs font-bold text-gray-800 leading-none">
-                {currentUser?.name}
-              </span>
-              <span className="text-[10px] font-bold text-blue-600 tracking-wider uppercase leading-none mt-1">
-                {currentUser?.role || "User"}
-              </span>
-            </div>
+            {currentUser?.name?.charAt(0).toUpperCase() || "U"}
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 mt-1.5 w-52 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
-              <div className="px-4 py-2.5 border-b border-gray-200 bg-gray-50/50">
-                <p className="text-xs font-bold text-gray-800 truncate">{currentUser?.name}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5 truncate">
+            <div
+              className="absolute right-0 mt-2 py-1 z-50 flex flex-col"
+              style={{
+                width: 200,
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                boxShadow: "var(--shadow-dropdown)",
+              }}
+            >
+              <div
+                className="px-4 py-3"
+                style={{ borderBottom: "1px solid var(--color-border)", background: "var(--color-surface-raised)" }}
+              >
+                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)" }} className="truncate">
+                  {currentUser?.name}
+                </p>
+                <p style={{ fontSize: 11, color: "var(--color-text-muted)", marginTop: 2 }} className="truncate">
                   {currentUser?.email || "No email associated"}
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentPage("settings");
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4 text-gray-500" />
-                <span>Control Panel Settings</span>
-              </button>
+              <div className="py-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentPage("settings");
+                    setProfileOpen(false);
+                  }}
+                  className="w-full text-left flex items-center transition-colors group"
+                  style={{
+                    height: 36,
+                    padding: "0 14px",
+                    gap: 10,
+                    fontSize: 13,
+                    color: "var(--color-text-primary)",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-accent-subtle)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <Settings style={{ width: 14, height: 14, color: "var(--color-text-muted)" }} />
+                  <span>Settings</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentPage("audit-logs");
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-              >
-                <ShieldAlert className="h-4 w-4 text-gray-500" />
-                <span>Security logs audit</span>
-              </button>
-
-              <div className="border-t border-gray-200 my-1" />
-
-              <button
-                type="button"
-                onClick={() => {
-                  logout();
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs text-red-650 hover:bg-red-50 hover:text-red-700 flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4 text-red-500" />
-                <span>Logout Session</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setProfileOpen(false);
+                  }}
+                  className="w-full text-left flex items-center transition-colors group"
+                  style={{
+                    height: 36,
+                    padding: "0 14px",
+                    gap: 10,
+                    fontSize: 13,
+                    color: "var(--color-text-primary)",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "var(--color-negative-bg)";
+                    e.currentTarget.style.color = "var(--color-negative)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "var(--color-text-primary)";
+                  }}
+                >
+                  <LogOut style={{ width: 14, height: 14, color: "inherit" }} />
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
           )}
         </div>

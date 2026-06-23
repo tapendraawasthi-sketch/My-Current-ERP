@@ -324,7 +324,7 @@ export default function POSMode() {
                     </div>
                     {outOfStock && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-red-200 -rotate-12">OUT OF STOCK</span>
+                        <span className="badge badge-neutral">OUT OF STOCK</span>
                       </div>
                     )}
                   </div>

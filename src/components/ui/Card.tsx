@@ -21,9 +21,23 @@ export const CardSection: React.FC<{ title?: string; children: React.ReactNode }
   title,
   children,
 }) => (
-  <div className="border-t border-gray-100 px-4 py-3">
+  <div
+    style={{
+      borderTop: "1px solid var(--color-border)",
+      padding: "12px 16px",
+    }}
+  >
     {title && (
-      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">
+      <div
+        style={{
+          fontSize: "10px",
+          fontWeight: 600,
+          color: "var(--color-text-muted)",
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          marginBottom: "8px",
+        }}
+      >
         {title}
       </div>
     )}
@@ -49,23 +63,65 @@ const Card: React.FC<CardProps> = ({
     lg: "p-8",
   };
 
+  const cardStyle: React.CSSProperties = {
+    background: "var(--color-surface)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: shadow ? "var(--shadow-card)" : "none",
+    border: border ? "1px solid var(--color-border)" : "none",
+    position: "relative",
+    overflow: "hidden",
+  };
+
   return (
-    <div
-      className={`
-        bg-white rounded-lg overflow-hidden relative transition-shadow
-        ${border ? "border border-gray-200" : ""}
-        ${shadow ? "shadow-sm" : ""}
-        ${className}
-      `}
-    >
-      {accent && <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: accent }} />}
+    <div className={className} style={cardStyle}>
+      {accent && (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: "3px",
+            background: accent,
+          }}
+        />
+      )}
       {(title || subtitle || action) && (
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-          <div className="flex flex-col gap-0.5">
-            {title && <h4 className="text-[12px] font-bold leading-none text-gray-800">{title}</h4>}
-            {subtitle && <p className="text-[10px] mt-0.5 text-gray-400">{subtitle}</p>}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 16px",
+            borderBottom: "1px solid var(--color-border)",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+            {title && (
+              <h4
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  color: "var(--color-text-primary)",
+                }}
+              >
+                {title}
+              </h4>
+            )}
+            {subtitle && (
+              <p
+                style={{
+                  fontSize: "10px",
+                  marginTop: "2px",
+                  color: "var(--color-text-muted)",
+                }}
+              >
+                {subtitle}
+              </p>
+            )}
           </div>
-          {action && <div className="flex items-center">{action}</div>}
+          {action && <div style={{ display: "flex", alignItems: "center" }}>{action}</div>}
         </div>
       )}
 

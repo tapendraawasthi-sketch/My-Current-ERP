@@ -35,29 +35,53 @@ const Modal: React.FC<ModalProps> = ({
  
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.35)" }}
+      className="fixed inset-0 z-[500] flex items-center justify-center"
+      style={{ background: "rgba(15,23,41,0.55)", backdropFilter: "blur(2px)" }}
       onClick={closeOnOverlayClick ? onClose : undefined}
     >
       <div
-        style={{ maxWidth: maxW, width: "95%", border: "2px outset #ffffff", background: "#fdf3e0", boxShadow: "3px 3px 8px rgba(0,0,0,0.4)" }}
+        className="relative flex flex-col"
+        style={{
+          width: "95%",
+          maxWidth: maxW,
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-xl)",
+          boxShadow: "var(--shadow-modal)",
+          border: "1px solid var(--color-border)",
+        }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Orange header */}
-        <div className="busy-orange-modal-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span>{title} !</span>
+        {/* Header */}
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--color-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: "var(--font-size-md)", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.01em" }}>
+            {title}
+          </span>
           {showCloseButton && (
-            <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", color: "#fff", padding: 0 }}>
-              <X size={14} />
+            <button
+              onClick={onClose}
+              className="flex items-center justify-center transition-colors focus:outline-none"
+              style={{ width: 28, height: 28, borderRadius: "var(--radius-md)", color: "var(--color-text-muted)", background: "transparent", border: "none", cursor: "pointer" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--color-surface-raised)";
+                e.currentTarget.style.color = "var(--color-text-primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--color-text-muted)";
+              }}
+              title="Close modal"
+            >
+              <X size={16} />
             </button>
           )}
         </div>
         {/* Body */}
-        <div style={{ padding: "12px 16px", maxHeight: "70vh", overflowY: "auto" }}>
+        <div style={{ padding: "20px", maxHeight: "70vh", overflowY: "auto" }}>
           {children}
         </div>
         {/* Footer */}
         {footer && (
-          <div style={{ borderTop: "1px solid #c0a870", padding: "8px 12px", display: "flex", gap: 8, justifyContent: "center" }}>
+          <div style={{ padding: "12px 20px", borderTop: "1px solid var(--color-border)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
             {footer}
           </div>
         )}

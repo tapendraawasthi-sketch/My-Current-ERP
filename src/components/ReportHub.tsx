@@ -11,14 +11,14 @@ const ReportHub: React.FC = () => {
   const { setCurrentPage } = useStore();
 
   const reportCategories = [
-    { title: "Account Books", icon: BookOpen, color: "#1557b0", reports: [
+    { title: "Account Books", icon: BookOpen, color: "var(--color-accent)", reports: [
       { label: "Day Book", page: "day-book", desc: "All transactions by date" },
       { label: "Cash Book", page: "cash-book", desc: "Cash receipts and payments" },
       { label: "Bank Book", page: "bank-book", desc: "Bank transactions" },
       { label: "General Ledger", page: "ledger", desc: "Account-wise ledger" },
       { label: "Party Ledger", page: "party-statement", desc: "Customer/Supplier statement" },
     ]},
-    { title: "Financial Statements", icon: BarChart2, color: "#15803d", reports: [
+    { title: "Financial Statements", icon: BarChart2, color: "var(--color-positive)", reports: [
       { label: "Trial Balance", page: "trial-balance", desc: "Debit/Credit balance summary" },
       { label: "Profit & Loss", page: "profit-loss", desc: "Income and expense statement" },
       { label: "Balance Sheet", page: "balance-sheet", desc: "Assets, liabilities & equity" },
@@ -34,7 +34,7 @@ const ReportHub: React.FC = () => {
       { label: "Stock Summary", page: "stock-summary", desc: "Item-wise stock position" },
       { label: "Stock Book", page: "items", desc: "Detailed stock ledger" },
     ]},
-    { title: "Tax Reports", icon: FileBarChart, color: "#dc2626", reports: [
+    { title: "Tax Reports", icon: FileBarChart, color: "var(--color-negative)", reports: [
       { label: "VAT Report", page: "vat-reports", desc: "Annex-A, B, C and VAT summary" },
       { label: "TDS Report", page: "tds-report", desc: "TDS deducted and payable" },
     ]},

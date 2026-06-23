@@ -74,16 +74,16 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-semibold text-gray-700 flex items-center gap-0.5"
+          className="text-[11px] font-semibold text-[var(--color-text-secondary)] flex items-center gap-0.5"
         >
           {label}
-          {required && <span className="text-red-500 font-bold">*</span>}
+          {required && <span className="text-[var(--color-negative)] font-bold">*</span>}
         </label>
       )}
 
-      <div className="relative flex items-center w-full rounded-md shadow-sm">
+      <div className="relative flex items-center w-full rounded-[var(--radius-md)] shadow-none">
         {prefix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-gray-600 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-[34px] text-[12px] font-medium text-[var(--color-text-muted)] bg-[var(--color-surface-sunken)] border border-r-0 border-[var(--color-border-input)] rounded-l-[var(--radius-md)] whitespace-nowrap">
             {prefix}
           </span>
         )}
@@ -108,27 +108,31 @@ const Input: React.FC<InputProps> = ({
           tabIndex={tabIndex}
           readOnly={readOnly}
           className={`
-            block w-full h-8 px-2.5 text-[12px] bg-white border text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300"}
-            ${prefix ? "rounded-r-md" : suffix ? "rounded-l-md" : "rounded-md"}
+            block w-full h-[34px] px-[10px] bg-[var(--color-surface)] border text-[var(--color-text-primary)] transition-all focus:outline-none
+            font-[var(--font-sans)] text-[var(--font-size-base)]
+            placeholder-[var(--color-text-muted)]
+            focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_var(--color-focus-ring)] focus:bg-[var(--color-surface)]
+            disabled:bg-[var(--color-canvas)] disabled:text-[var(--color-text-disabled)] disabled:cursor-not-allowed disabled:border-[var(--color-border)] disabled:shadow-none
+            ${error ? "border-[var(--color-negative)] focus:border-[var(--color-negative)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-negative)_20%,transparent)]" : "border-[var(--color-border-input)]"}
+            ${prefix ? "rounded-r-[var(--radius-md)]" : suffix ? "rounded-l-[var(--radius-md)]" : "rounded-[var(--radius-md)]"}
             ${prefix && suffix ? "rounded-none" : ""}
-            ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}
             ${alignClass}
             ${inputClassName}
           `}
+          style={{ fontFamily: "var(--font-sans)" }}
         />
 
         {suffix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-gray-500 bg-gray-50 border border-l-0 border-gray-300 rounded-r-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-[34px] text-[12px] text-[var(--color-text-muted)] bg-[var(--color-surface-sunken)] border border-l-0 border-[var(--color-border-input)] rounded-r-[var(--radius-md)] whitespace-nowrap">
             {suffix}
           </span>
         )}
       </div>
 
       {error ? (
-        <span className="text-xs text-red-600 font-medium">{error}</span>
+        <span className="text-xs text-[var(--color-negative)] font-medium">{error}</span>
       ) : hint ? (
-        <span className="text-xs text-gray-455">{hint}</span>
+        <span className="text-xs text-[var(--color-text-muted)]">{hint}</span>
       ) : null}
     </div>
   );

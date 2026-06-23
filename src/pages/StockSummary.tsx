@@ -190,10 +190,10 @@ const StockSummary: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
-          { label: "Total Items", value: totals.items, color: "#1557b0" },
-          { label: "Total Stock Value", value: `Rs. ${formatNumber(totals.value)}`, color: "#15803d" },
+          { label: "Total Items", value: totals.items, color: "var(--color-accent)" },
+          { label: "Total Stock Value", value: `Rs. ${formatNumber(totals.value)}`, color: "var(--color-positive)" },
           { label: "Low Stock Items", value: totals.low, color: "#b45309" },
-          { label: "Out of Stock", value: totals.out, color: "#dc2626" },
+          { label: "Out of Stock", value: totals.out, color: "var(--color-negative)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3" style={{ borderColor: "var(--border)" }}>
             <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
@@ -242,9 +242,9 @@ const StockSummary: React.FC = () => {
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">
                       <div className="flex items-center justify-end gap-1.5">
                         {isOut ? (
-                          <span className="badge bg-red-100 text-red-700 rounded px-1.5 py-0.5 text-[10px] font-bold">OUT</span>
+                          <span className="badge badge-neutral">OUT</span>
                         ) : isLow ? (
-                          <span className="badge bg-amber-100 text-amber-700 rounded px-1.5 py-0.5 text-[10px] font-bold">LOW</span>
+                          <span className="badge badge-neutral">LOW</span>
                         ) : null}
                         <span>{formatNumber(row.closingQty)}</span>
                       </div>

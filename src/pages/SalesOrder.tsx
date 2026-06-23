@@ -24,31 +24,31 @@ const getStatusBadge = (status: string) => {
       );
     case "approved":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-blue-100 text-blue-700">
+        <span className="badge badge-posted">
           Approved
         </span>
       );
     case "fulfilled":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-green-100 text-green-700">
+        <span className="badge badge-neutral">
           Fulfilled
         </span>
       );
     case "partial":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-amber-100 text-amber-700">
+        <span className="badge badge-partial">
           Partial
         </span>
       );
     case "cancelled":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-red-100 text-red-700">
+        <span className="badge badge-cancelled">
           Cancelled
         </span>
       );
     default:
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
+        <span className="badge badge-neutral">
           {status}
         </span>
       );

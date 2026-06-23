@@ -1,37 +1,61 @@
 import React, { ReactNode } from "react";
 
 interface BadgeProps {
-  variant?: "default" | "success" | "warning" | "danger" | "info" | "primary";
+  variant?: "positive" | "warning" | "negative" | "neutral" | "info" | "success" | "danger" | "primary" | "default" | string;
   size?: "sm" | "md";
   children: ReactNode;
   dot?: boolean;
+  className?: string;
 }
 
 const Badge: React.FC<BadgeProps> = ({
-  variant = "default",
+  variant = "neutral",
   size = "md",
   children,
   dot = false,
+  className = "",
 }) => {
-  const baseStyles = "inline-flex items-center font-semibold uppercase rounded shrink-0";
-
-  const variants = {
-    default: "bg-gray-100 text-gray-700",
-    success: "bg-green-100 text-green-700",
-    warning: "bg-amber-100 text-amber-700",
-    danger: "bg-red-100 text-red-700",
-    info: "bg-blue-100 text-blue-700",
-    primary: "bg-[#dbeafe] text-[#1557b0]",
+  const getBadgeClass = (v: string) => {
+    switch (v) {
+      case "positive":
+      case "success":
+        return "badge-posted";
+      case "warning":
+        return "badge-draft";
+      case "negative":
+      case "danger":
+        return "badge-cancelled";
+      case "info":
+      case "primary":
+        return "badge-info";
+      case "neutral":
+      case "default":
+      default:
+        return "badge-inactive";
+    }
   };
 
-  const dotColors = {
-    default: "bg-gray-450",
-    success: "bg-green-500",
-    warning: "bg-amber-500",
-    danger: "bg-red-500",
-    info: "bg-blue-500",
-    primary: "bg-[#1557b0]",
+  const getDotColorClass = (v: string) => {
+    switch (v) {
+      case "positive":
+      case "success":
+        return "bg-[var(--color-positive)]";
+      case "warning":
+        return "bg-[var(--color-warning)]";
+      case "negative":
+      case "danger":
+        return "bg-[var(--color-negative)]";
+      case "info":
+      case "primary":
+        return "bg-[var(--color-accent)]";
+      case "neutral":
+      case "default":
+      default:
+        return "bg-[var(--color-text-muted)]";
+    }
   };
+
+  const badgeClass = getBadgeClass(variant);
 
   const sizes = {
     sm: "px-2 py-0.5 text-[10px]",
@@ -39,10 +63,10 @@ const Badge: React.FC<BadgeProps> = ({
   };
 
   return (
-    <span className={`${baseStyles} ${variants[variant]} ${sizes[size]}`}>
+    <span className={`inline-flex items-center font-semibold uppercase rounded shrink-0 ${badgeClass} ${sizes[size as keyof typeof sizes] || sizes.md} ${className}`}>
       {dot && (
         <span
-          className={`h-1.5 w-1.5 rounded-full mr-1.5 shrink-0 ${dotColors[variant]}`}
+          className={`h-1.5 w-1.5 rounded-full mr-1.5 shrink-0 ${getDotColorClass(variant)}`}
           aria-hidden="true"
         />
       )}

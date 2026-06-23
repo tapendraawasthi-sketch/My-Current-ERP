@@ -175,7 +175,7 @@ export default function Warehouses() {
                   <td className="px-6 py-4 text-sm text-gray-500">{warehouse.address}</td>
                   <td className="px-6 py-4 text-sm">
                     {warehouse.isDefault ? (
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                      <span className="badge badge-neutral">
                         Default
                       </span>
                     ) : (

@@ -6,8 +6,8 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import Sidebar from "./Sidebar";
-import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
-import BusyMenuBar from "./BusyMenuBar";
+import Header from "./Header";
+import { TitleBar, StatusBar } from "./BusyShell";
 import SutraLogo from "./SutraLogo";
 import { Button, Input, Card, Spinner } from "./ui";
 import {
@@ -111,51 +111,53 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Visual gateway for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex bg-[#f0f4ff]">
+      <div className="min-h-screen flex bg-[var(--color-canvas)]">
         {/* LEFT PANEL */}
-        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#16213e] flex-col justify-between p-10 shrink-0">
+        <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-10 shrink-0" style={{ background: "var(--color-sidebar-bg)" }}>
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <div className="h-10 w-10 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">S</div>
+              <div style={{ width: 40, height: 40, background: "var(--color-accent)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: 20 }}>S</div>
               <div>
-                <div className="text-white font-bold text-xl tracking-tight">Sutra ERP</div>
-                <div className="text-blue-400 text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
+                <div style={{ color: "white", fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em" }}>Sutra ERP</div>
+                <div style={{ color: "var(--color-accent-border)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>Nepal's Cloud Accounting</div>
               </div>
             </div>
-            <h2 className="text-white text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
-            <p className="text-slate-400 text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
-            <div className="space-y-4">
+            <h2 style={{ color: "white", fontSize: 32, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Powerful accounting<br/>built for Nepal</h2>
+            <p style={{ color: "var(--color-sidebar-text)", fontSize: 14, lineHeight: 1.6, marginBottom: 40 }}>Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
+            <div className="space-y-6">
               {[
                 { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
                 { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
                 { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
-                { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click" },
               ].map(f => (
-                <div key={f.title} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#1557b0] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
+                <div key={f.title} className="flex items-start gap-4">
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "rgba(255,255,255,0.1)", color: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>✓</div>
                   <div>
-                    <div className="text-white text-sm font-semibold leading-none mb-1">{f.title}</div>
-                    <div className="text-slate-400 text-xs">{f.desc}</div>
+                    <div style={{ color: "white", fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{f.title}</div>
+                    <div style={{ color: "var(--color-sidebar-text)", fontSize: 12, fontWeight: 400 }}>{f.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="text-slate-600 text-[10px] font-medium">© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
+          <div style={{ color: "var(--color-sidebar-text)", fontSize: 11, fontWeight: 500 }}>© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
         </div>
+        
         {/* RIGHT PANEL */}
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-sm">
+        <div className="flex-1 flex items-center justify-center p-8 bg-[var(--color-canvas)]">
+          <div style={{ width: "100%", maxWidth: 380 }}>
             <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-              <div className="h-9 w-9 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
-              <div className="text-gray-800 font-bold text-xl">Sutra ERP</div>
+              <div style={{ width: 36, height: 36, background: "var(--color-accent)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: 18 }}>S</div>
+              <div style={{ color: "var(--color-text-primary)", fontWeight: 700, fontSize: 20 }}>Sutra ERP</div>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
-              <h3 className="text-lg font-bold text-gray-900 mb-1">Sign In</h3>
-              <p className="text-xs text-gray-500 mb-6">Enter your credentials to access the system</p>
+            
+            <div style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-xl)", padding: 36, boxShadow: "var(--shadow-modal)" }}>
+              <h3 style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.03em", marginBottom: 4 }}>Sign In</h3>
+              <p style={{ color: "var(--color-text-muted)", fontSize: 13, marginBottom: 24 }}>Enter your credentials to access the system</p>
+              
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 6 }}>
                     System Operator ID
                   </label>
                   <input
@@ -164,12 +166,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="e.g. admin"
-                    className="block w-full h-9 px-3 bg-white border border-gray-300 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 6 }}>
                     Access Code / Code word
                   </label>
                   <input
@@ -178,7 +179,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="block w-full h-9 px-3 bg-white border border-gray-300 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
                   />
                 </div>
 
@@ -186,7 +186,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-9 bg-[#1557b0] hover:bg-[#0f4a96] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                    className="w-full flex items-center justify-center gap-2"
+                    style={{
+                      height: 36, background: "var(--color-accent)", color: "white", fontWeight: 600, borderRadius: "var(--radius-md)", fontSize: 13, border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1
+                    }}
                   >
                     {loading && <Spinner size="sm" className="text-white" />}
                     <span>Authorize Entry</span>
@@ -194,7 +197,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
               </form>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+            
+            <div className="mt-6 flex items-center justify-center gap-1.5" style={{ fontSize: 11, color: "var(--color-text-muted)" }}>
               <span>All activities are logged for compliance.</span>
             </div>
           </div>
@@ -210,9 +214,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         {/* Mobile top bar */}
-        <header className="h-12 bg-[#1e2433] flex items-center justify-between px-4 shrink-0">
+        <header className="h-12 bg-[var(--color-sidebar-bg)] flex items-center justify-between px-4 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 bg-[#1557b0] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            <div className="h-7 w-7 bg-[var(--color-accent)] rounded-lg flex items-center justify-center text-white font-bold text-sm">
               S
             </div>
             <span className="font-semibold text-white text-sm">
@@ -225,10 +229,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto p-4 pb-20">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 pb-20 bg-[var(--color-canvas)]">{children}</main>
 
         {/* Bottom nav */}
-        <nav className="fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-200 flex items-center justify-around z-40 shadow-lg">
+        <nav className="fixed bottom-0 left-0 right-0 h-14 bg-[var(--color-surface)] border-t border-[var(--color-border)] flex items-center justify-around z-40 shadow-lg">
           {[
             { page: "dashboard", icon: LayoutDashboard, label: "Home" },
             { page: "billing", icon: FileText, label: "Invoices" },
@@ -239,7 +243,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`flex flex-col items-center gap-0.5 ${currentPage === page ? "text-[#1557b0]" : "text-gray-400"}`}
+              className={`flex flex-col items-center gap-0.5 ${currentPage === page ? "text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`}
             >
               <Icon className="h-5 w-5" /> <span className="text-[10px]">{label}</span>
             </button>
@@ -254,7 +258,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               onClick={() => setDrawerOpen(false)}
             />
             <div className="relative w-72 h-full overflow-y-auto shadow-xl">
-              <div className="p-4 border-b border-[#2d3748] flex items-center justify-between text-slate-300 bg-[#1e2433]">
+              <div className="p-4 border-b border-[var(--color-sidebar-border)] flex items-center justify-between text-slate-300 bg-[var(--color-sidebar-bg)]">
                 <span className="font-semibold text-slate-200">Menu</span>
                 <button onClick={() => setDrawerOpen(false)}>
                   <X className="h-5 w-5 text-slate-400" />
@@ -269,35 +273,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#dde8f5" }}>
-      {/* 1. Title Bar */}
+    <div className="flex flex-col h-screen overflow-hidden bg-[var(--color-canvas)]">
       <TitleBar />
- 
-      {/* 2. Menu Bar */}
-      <BusyMenuBar />
- 
-      {/* 3. Main area = workspace + right shortcut sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Central Workspace */}
-        <main
-          className="flex-1 overflow-y-auto p-3 relative"
-          style={{ background: "#dde8f5" }}
-        >
-          <div style={{ fontSize: 11, color: "#555", textAlign: "center", marginBottom: 6 }}>
-            {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-          </div>
-          {children}
-        </main>
- 
-        {/* Right Shortcut Keys Sidebar */}
-        <ShortcutSidebar />
+      <div className="flex flex-row flex-1 overflow-hidden" style={{ height: "calc(100vh - 36px)" }}>
+        <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <Header />
+          <main className="flex-1 overflow-y-auto p-5 bg-[var(--color-canvas)] relative">
+            {children}
+          </main>
+          <StatusBar />
+        </div>
       </div>
- 
-      {/* 4. Command Hint Bar */}
-      <CommandHintBar />
- 
-      {/* 5. Status Bar */}
-      <StatusBar />
     </div>
   );
 };

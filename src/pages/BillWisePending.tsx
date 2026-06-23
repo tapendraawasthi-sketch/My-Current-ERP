@@ -173,7 +173,7 @@ export default function BillWisePending() {
                     {bill.overdueDays > 0 ? <span className="text-red-600 font-bold">{bill.overdueDays}</span> : "-"}
                   </td>
                   <td className="px-3 py-2.5 text-center">
-                    {bill.status === "severely overdue" && <span className="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Severely Overdue</span>}
+                    {bill.status === "severely overdue" && <span className="badge badge-neutral">Severely Overdue</span>}
                     {bill.status === "overdue" && <span className="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Overdue</span>}
                     {bill.status === "current" && <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Current</span>}
                   </td>
