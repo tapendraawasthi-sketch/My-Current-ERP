@@ -29,15 +29,34 @@ export class ErrorBoundary extends Component<Props, State> {
               <AlertTriangle className="h-8 w-8 text-red-500" />
             </div>
             <h2 className="text-[18px] font-bold text-gray-900 mb-2">Something went wrong</h2>
-            <p className="text-[12px] text-gray-500 mb-6">An unexpected error occurred. Please refresh the page to continue.</p>
+            <p className="text-[12px] text-gray-500 mb-6">
+              An unexpected error occurred. Please refresh the page to continue.
+            </p>
             <div className="flex gap-3 justify-center">
-              <button onClick={() => window.location.reload()} className="h-9 px-5 font-semibold text-[12px] bg-[#1557b0] text-white rounded-lg hover:bg-[#0f4a96]">Refresh Page</button>
-              <button onClick={() => this.setState({ hasError: false })} className="h-9 px-5 font-semibold text-[12px] border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">Try Again</button>
+              <button
+                onClick={() => window.location.reload()}
+                className="h-9 px-5 font-semibold text-[12px] bg-[#1557b0] text-white rounded-lg hover:bg-[#0f4a96]"
+              >
+                Refresh Page
+              </button>
+              <button
+                onClick={() => this.setState({ hasError: false })}
+                className="h-9 px-5 font-semibold text-[12px] border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50"
+              >
+                Try Again
+              </button>
             </div>
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {this.state.error && (
               <details className="mt-4 text-left">
-                <summary className="text-[11px] text-gray-400 cursor-pointer">Error Details</summary>
-                <pre className="text-[10px] bg-gray-50 p-3 rounded mt-2 overflow-auto text-red-600">{this.state.error.toString()}</pre>
+                <summary className="text-[11px] text-gray-400 cursor-pointer">
+                  Error Details
+                </summary>
+                <pre className="text-[10px] bg-gray-50 p-3 rounded mt-2 overflow-auto text-red-600">
+                  {this.state.error.toString()}
+                </pre>
+                <pre className="text-[10px] bg-gray-50 p-3 rounded mt-2 overflow-auto text-gray-600">
+                  {this.state.error.stack}
+                </pre>
               </details>
             )}
           </div>

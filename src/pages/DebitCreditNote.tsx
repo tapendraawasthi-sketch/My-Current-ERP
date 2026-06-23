@@ -1,19 +1,18 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Debit / Credit Note — non-inventory price adjustments.
+ * Debit / Credit Note â€” non-inventory price adjustments.
  *
- *   DEBIT NOTE  (buyer → seller, reduces our payable / our cost)
+ *   DEBIT NOTE  (buyer â†’ seller, reduces our payable / our cost)
  *     Dr  Supplier A/C
  *     Cr  Purchase Adjustment / Discount Received A/C
  *
- *   CREDIT NOTE (seller → buyer, reduces our receivable / our revenue)
+ *   CREDIT NOTE (seller â†’ buyer, reduces our receivable / our revenue)
  *     Dr  Sales Adjustment / Discount Allowed A/C
  *     Cr  Customer A/C
  *
- * No items table — just narration + amount. The selected adjustment ledger
+ * No items table â€” just narration + amount. The selected adjustment ledger
  * is user-picked from a filtered list of Indirect Income / Indirect Expense
  * accounts. Journal is posted via useStore.addVoucher.
  */
@@ -206,7 +205,7 @@ const DebitCreditNote: React.FC = () => {
               label={kind === "debit" ? "Supplier" : "Customer"}
               value={partyId}
               onChange={setPartyId}
-              partyTypeFilter={partyTypeFilter}
+              partyType={partyTypeFilter}
               required
             />
             <Select
@@ -215,7 +214,7 @@ const DebitCreditNote: React.FC = () => {
               onChange={setAdjAccountId}
               required
               options={[
-                { value: "", label: "Select adjustment ledger…" },
+                { value: "", label: "Select adjustment ledgerâ€¦" },
                 ...adjustmentAccounts.map((a: any) => ({
                   value: a.id,
                   label: `${a.name} (${a.group || ""})`,
@@ -274,10 +273,10 @@ const DebitCreditNote: React.FC = () => {
                   <React.Fragment key={i}>
                     <div className="text-slate-700">{row.acc}</div>
                     <div className="text-right font-mono">
-                      {row.dr ? `${symbol} ${formatNumber(row.dr)}` : "—"}
+                      {row.dr ? `${symbol} ${formatNumber(row.dr)}` : "â€”"}
                     </div>
                     <div className="text-right font-mono">
-                      {row.cr ? `${symbol} ${formatNumber(row.cr)}` : "—"}
+                      {row.cr ? `${symbol} ${formatNumber(row.cr)}` : "â€”"}
                     </div>
                   </React.Fragment>
                 ))}
@@ -311,12 +310,12 @@ const DebitCreditNote: React.FC = () => {
       header: "Note No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
+    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "â€”" },
     { key: "date", header: "Date (AD)" },
     {
       key: "partyId",
       header: "Party",
-      render: (v: string) => parties.find((p: any) => p.id === v)?.name || "—",
+      render: (v: string) => parties.find((p: any) => p.id === v)?.name || "â€”",
     },
     {
       key: "totalDebit",
@@ -384,7 +383,7 @@ const DebitCreditNote: React.FC = () => {
         <SearchableTable
           columns={columns as any}
           data={list}
-          searchableKeys={["voucherNo", "narration"]}
+          searchFields={["voucherNo", "narration"]}
           emptyMessage={`No ${kind === "debit" ? "debit" : "credit"} notes yet.`}
         />
       </Card>

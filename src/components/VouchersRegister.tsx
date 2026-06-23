@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
+import { useActiveVouchers } from "../hooks/useActiveData";
 import {
   Card,
   Badge,
@@ -36,15 +37,9 @@ import { exportVouchersToExcel } from "../lib/exportUtils";
 import toast from "react-hot-toast";
 
 const VouchersRegister: React.FC = () => {
-  const {
-    vouchers,
-    accounts,
-    addVoucher,
-    cancelVoucher,
-    companySettings,
-    currentPage,
-    setCurrentPage,
-  } = useStore();
+  const { accounts, addVoucher, cancelVoucher, companySettings, currentPage, setCurrentPage } =
+    useStore();
+  const vouchers = useActiveVouchers();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"ALL" | VoucherType>("ALL");
@@ -495,7 +490,15 @@ const VouchersRegister: React.FC = () => {
           </div>
         </div>
 
-        <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(1); }} className="h-8 px-2 border rounded-md text-[12px] font-semibold text-gray-700 bg-white" style={{ borderColor: "var(--border)" }}>
+        <select
+          value={typeFilter}
+          onChange={(e) => {
+            setTypeFilter(e.target.value);
+            setPage(1);
+          }}
+          className="h-8 px-2 border rounded-md text-[12px] font-semibold text-gray-700 bg-white"
+          style={{ borderColor: "var(--border)" }}
+        >
           <option value="">All Types</option>
           <option value="journal">Journal</option>
           <option value="payment">Payment</option>
@@ -548,25 +551,42 @@ const VouchersRegister: React.FC = () => {
                     </td>
                     <td>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-slate-800 leading-tight">{v.dateNepali}</span>
+                        <span className="font-semibold text-slate-800 leading-tight">
+                          {v.dateNepali}
+                        </span>
                         <span className="text-[10px] font-medium text-slate-400 mt-0.5">
                           {v.date} (AD)
                         </span>
                       </div>
                     </td>
                     <td>
-                      <span className={`badge badge-${v.type?.replace(/-/g,'')}`}>{v.type?.replace(/-/g,' ').toUpperCase()}</span>
+                      <span className={`badge badge-${v.type?.replace(/-/g, "")}`}>
+                        {v.type?.replace(/-/g, " ").toUpperCase()}
+                      </span>
                     </td>
                     <td>
-                      <p className="text-gray-650 line-clamp-2 max-w-sm font-medium leading-relaxed" title={v.narration}>
+                      <p
+                        className="text-gray-650 line-clamp-2 max-w-sm font-medium leading-relaxed"
+                        title={v.narration}
+                      >
                         {v.narration}
                       </p>
                     </td>
                     <td className="amt amt-dr">
-                      {v.type === 'payment' || v.type === 'journal' || v.type === 'sales_invoice' || v.type === 'sales_return' ? formatCurrency(v.totalDebit) : "-"}
+                      {v.type === "payment" ||
+                      v.type === "journal" ||
+                      v.type === "sales_invoice" ||
+                      v.type === "sales_return"
+                        ? formatCurrency(v.totalDebit)
+                        : "-"}
                     </td>
                     <td className="amt amt-cr">
-                      {v.type === 'receipt' || v.type === 'contra' || v.type === 'purchase_invoice' || v.type === 'purchase_return' ? formatCurrency(v.totalDebit) : "-"}
+                      {v.type === "receipt" ||
+                      v.type === "contra" ||
+                      v.type === "purchase_invoice" ||
+                      v.type === "purchase_return"
+                        ? formatCurrency(v.totalDebit)
+                        : "-"}
                     </td>
                     <td>
                       <Badge

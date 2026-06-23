@@ -19,6 +19,8 @@ import {
   PartySelect,
   NepaliDatePicker,
   ConfirmDialog,
+  AccountSelect,
+  NarrationInput,
 } from "../ui";
 import {
   ArrowLeft,
@@ -30,10 +32,12 @@ import {
   Banknote,
   Landmark,
   CreditCard,
+  X,
+  Trash2,
 } from "lucide-react";
 import { formatNumber, numberToWords } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
-import { generateInvoiceNo } from "../../lib/accounting";
+import { generateInvoiceNo, getAccountRunningBalance } from "../../lib/accounting";
 import { computeVAT } from "../../lib/taxUtils";
 import { generateInvoicePDF } from "../../lib/printUtils";
 import {
@@ -43,6 +47,7 @@ import {
   PaymentStatus,
   PartyType,
   TdsType,
+  AccountType,
 } from "../../lib/types";
 import toast from "react-hot-toast";
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
@@ -135,6 +140,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     addInvoice,
     updateInvoice,
     items,
+    vouchers,
+    currencies,
+    exchangeRates,
   } = useStore();
 
   const meta = TYPE_MAP[type];
@@ -199,6 +207,58 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [chequeDate, setChequeDate] = useState(existing?.chequeDate || date);
   const [paidAmount, setPaidAmount] = useState<number>(Number(existing?.paidAmount) || 0);
 
+  // ---- Additional state for features ----
+  const [additionalCharges, setAdditionalCharges] = useState<any[]>(() => {
+    if (existing?.additionalCharges) return existing.additionalCharges;
+    return [];
+  });
+  const [enableRoundOff, setEnableRoundOff] = useState(
+    existing?.roundOff !== undefined ? existing.roundOff !== 0 : true,
+  );
+  const [currencyCode, setCurrencyCode] = useState(existing?.currencyCode || "NPR");
+  const [exchangeRate, setExchangeRate] = useState<number>(existing?.exchangeRate || 1.0);
+
+  const activeCurrencies = useMemo(() => currencies?.filter((c) => c.isActive) || [], [currencies]);
+
+  useEffect(() => {
+    if (currencyCode === "NPR") {
+      setExchangeRate(1.0);
+      return;
+    }
+    const todayStr = date;
+    const rateMatch = exchangeRates?.find(
+      (r) => r.currencyCode === currencyCode && r.date <= todayStr,
+    );
+    if (rateMatch) {
+      setExchangeRate(rateMatch.rateToBase);
+    } else {
+      setExchangeRate(1.0);
+    }
+  }, [currencyCode, date, exchangeRates]);
+
+  const partyOutstanding = useMemo(() => {
+    if (!partyId || !party?.accountId) return 0;
+    return getAccountRunningBalance(party.accountId, vouchers);
+  }, [partyId, party, vouchers]);
+
+  const addAdditionalCharge = () => {
+    setAdditionalCharges((prev) => [
+      ...prev,
+      { id: uid(), description: "", amount: 0, taxApplicable: false, accountId: "" },
+    ]);
+    markDirty();
+  };
+
+  const updateAdditionalCharge = (id: string, field: string, value: any) => {
+    setAdditionalCharges((prev) => prev.map((c) => (c.id === id ? { ...c, [field]: value } : c)));
+    markDirty();
+  };
+
+  const removeAdditionalCharge = (id: string) => {
+    setAdditionalCharges((prev) => prev.filter((c) => c.id !== id));
+    markDirty();
+  };
+
   // ---- lines ----
   const [lines, setLines] = useState<InvoiceLineState[]>(() => {
     if (existing?.lines?.length) {
@@ -213,12 +273,15 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         unit: l.unit || "",
         rate: Number(l.rate) || 0,
         discountPercent: Number(l.discountPercent ?? l.discount) || 0,
+        discountAmount: Number(l.discountAmount) || 0,
         isTaxable: l.isTaxable ?? true,
         vatRate: Number(l.vatRate ?? 13),
         warehouseId: l.warehouseId || "",
       }));
     }
-    return [emptyLine()];
+    const blank = emptyLine();
+    blank.discountAmount = 0;
+    return [blank];
   });
 
   const [dirty, setDirty] = useState(false);
@@ -230,29 +293,76 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
   // ---- totals via taxUtils.computeVAT ----
   const computation = useMemo(() => {
-    const filtered = lines
-      .filter((l) => l.itemId && Number(l.qty) > 0)
-      .map((l) => ({
-        itemName: l.itemName,
-        qty: Number(l.qty) || 0,
-        rate: Number(l.rate) || 0,
-        discount: Number(l.discountPercent) || 0,
-        isTaxable: !!l.isTaxable,
-        vatRate: Number(l.vatRate) || 0,
-      }));
-    return computeVAT(filtered);
-  }, [lines]);
+    let subTotal = 0;
+    let taxableTotal = 0;
+    let exemptTotal = 0;
+    let vatAmountTotal = 0;
+    const computedLines = [];
+
+    const activeLines = lines.filter((l) => l.itemId && Number(l.qty) > 0);
+    for (const l of activeLines) {
+      const grossVal = round2((Number(l.qty) || 0) * (Number(l.rate) || 0));
+      const discAmt = Number(l.discountAmount) || 0;
+      const netAmt = round2(grossVal - discAmt);
+
+      subTotal = round2(subTotal + grossVal);
+
+      if (l.isTaxable) {
+        const vatVal = round2(netAmt * ((Number(l.vatRate) || 0) / 100));
+        taxableTotal = round2(taxableTotal + netAmt);
+        vatAmountTotal = round2(vatAmountTotal + vatVal);
+        computedLines.push({
+          ...l,
+          taxableAmount: netAmt,
+          exemptAmount: 0,
+          vatAmount: vatVal,
+          netAmount: round2(netAmt + vatVal),
+        });
+      } else {
+        exemptTotal = round2(exemptTotal + netAmt);
+        computedLines.push({
+          ...l,
+          taxableAmount: 0,
+          exemptAmount: netAmt,
+          vatAmount: 0,
+          netAmount: netAmt,
+        });
+      }
+    }
+
+    const chargesTaxable = additionalCharges
+      .filter((c) => c.taxApplicable)
+      .reduce((s, c) => s + (Number(c.amount) || 0), 0);
+    const chargesExempt = additionalCharges
+      .filter((c) => !c.taxApplicable)
+      .reduce((s, c) => s + (Number(c.amount) || 0), 0);
+    const chargesVat = round2(chargesTaxable * 0.13);
+
+    const totalTaxableIncludingCharges = round2(taxableTotal + chargesTaxable);
+    const totalExemptIncludingCharges = round2(exemptTotal + chargesExempt);
+    const totalVatIncludingCharges = round2(vatAmountTotal + chargesVat);
+
+    const grandTotalBeforeRoundOff = round2(
+      totalTaxableIncludingCharges + totalVatIncludingCharges + totalExemptIncludingCharges,
+    );
+    const roundedGrandTotal = enableRoundOff
+      ? Math.round(grandTotalBeforeRoundOff)
+      : grandTotalBeforeRoundOff;
+    const roundOff = enableRoundOff ? round2(roundedGrandTotal - grandTotalBeforeRoundOff) : 0;
+
+    return {
+      lines: computedLines,
+      subTotal,
+      taxableTotal: totalTaxableIncludingCharges,
+      exemptTotal: totalExemptIncludingCharges,
+      vatAmount: totalVatIncludingCharges,
+      grandTotal: roundedGrandTotal,
+      roundOff,
+    };
+  }, [lines, additionalCharges, enableRoundOff]);
 
   const discountAmount = useMemo(
-    () =>
-      round2(
-        lines.reduce(
-          (s, l) =>
-            s +
-            (Number(l.qty) || 0) * (Number(l.rate) || 0) * ((Number(l.discountPercent) || 0) / 100),
-          0,
-        ),
-      ),
+    () => round2(lines.reduce((s, l) => s + (Number(l.discountAmount) || 0), 0)),
     [lines],
   );
 
@@ -360,6 +470,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             ? PaymentStatus.UNPAID
             : PaymentStatus.PAID;
 
+    const baseGrandTotal = round2(grandTotal * exchangeRate);
+
     return {
       type: meta.vt,
       date,
@@ -379,11 +491,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       tdsRate: tdsEnabled ? tdsRate : undefined,
       tdsType: tdsEnabled ? tdsType : undefined,
       roundOff: computation.roundOff,
-      grandTotal,
+      grandTotal: baseGrandTotal,
       lines: payloadLines,
       paymentMode: payMode,
       paymentStatus: ps,
-      paidAmount: payMode === PaymentMode.CREDIT ? paidAmount || 0 : grandTotal,
+      paidAmount:
+        payMode === PaymentMode.CREDIT ? round2((paidAmount || 0) * exchangeRate) : baseGrandTotal,
       bankAccountId: payMode === PaymentMode.BANK_TRANSFER ? bankAccountId : undefined,
       chequeNo: chequeNo || undefined,
       chequeDate: chequeNo ? chequeDate : undefined,
@@ -394,6 +507,16 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       billTo: billTo || undefined,
       attachments,
       status,
+      // multi-currency and additional charges
+      currencyCode,
+      exchangeRate,
+      foreignAmount: grandTotal,
+      additionalCharges: additionalCharges.map((c) => ({
+        description: c.description,
+        amount: c.amount,
+        taxApplicable: c.taxApplicable,
+        accountId: c.accountId,
+      })),
     };
   };
 
@@ -506,7 +629,22 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines, dirty, readOnly, date, partyId, payMode, paidAmount, narration, tdsEnabled, tdsRate]);
+  }, [
+    lines,
+    dirty,
+    readOnly,
+    date,
+    partyId,
+    payMode,
+    paidAmount,
+    narration,
+    tdsEnabled,
+    tdsRate,
+    additionalCharges,
+    enableRoundOff,
+    currencyCode,
+    exchangeRate,
+  ]);
 
   // ---- success screen ----
   if (savedInvoice) {
@@ -518,7 +656,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         <div>
           <h2 className="text-lg font-bold text-slate-800">{meta.label} Saved</h2>
           <p className="text-xs text-gray-500 mt-1">
-            {savedInvoice.invoiceNo} · {symbol} {formatNumber(grandTotal)} · {party?.name}
+            {savedInvoice.invoiceNo} · {currencyCode === "NPR" ? symbol : currencyCode}{" "}
+            {formatNumber(grandTotal)} · {party?.name}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -541,7 +680,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const showWarehouse =
     warehouses.filter((w) => w.isActive).length > 0 && (type === "sales" || type === "purchase");
 
-  const colspan = 13 + (showWarehouse ? 1 : 0);
+  const colspan = 15 + (showWarehouse ? 1 : 0);
+
+  const itemList = items.filter((i) => i.isActive);
 
   return (
     <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
@@ -596,17 +737,33 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             {invoiceNoPreview}
           </span>
         </div>
-        <PartySelect
-          label={meta.isSales ? "Customer" : "Supplier"}
-          partyType={meta.party}
-          value={partyId}
-          onChange={(v) => {
-            setPartyId(v);
-            markDirty();
-          }}
-          required
-          disabled={readOnly}
-        />
+        <div className="flex flex-col gap-1">
+          <PartySelect
+            label={meta.isSales ? "Customer" : "Supplier"}
+            partyType={meta.party}
+            value={partyId}
+            onChange={(v) => {
+              setPartyId(v);
+              markDirty();
+            }}
+            required
+            disabled={readOnly}
+          />
+          {partyId && party?.accountId && (
+            <div className="mt-1">
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ${
+                  partyOutstanding > 0
+                    ? "bg-red-50 text-red-700 border border-red-200"
+                    : "bg-green-50 text-green-700 border border-green-200"
+                }`}
+              >
+                Outstanding: {symbol} {formatNumber(Math.abs(partyOutstanding))}
+                {partyOutstanding > 0 ? " Dr" : " Cr"}
+              </span>
+            </div>
+          )}
+        </div>
         <NepaliDatePicker
           label="Invoice Date"
           value={date}
@@ -681,6 +838,43 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             disabled={readOnly}
           />
         </div>
+
+        {/* FEATURE-4: Multi-currency section */}
+        {activeCurrencies.length > 1 && (
+          <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-dashed border-gray-200 pt-3 mt-1">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-semibold text-gray-700">Currency</label>
+              <select
+                value={currencyCode}
+                onChange={(e) => {
+                  setCurrencyCode(e.target.value);
+                  markDirty();
+                }}
+                disabled={readOnly}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              >
+                {activeCurrencies.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} - {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {currencyCode !== "NPR" && (
+              <Input
+                type="number"
+                label={`Exchange Rate (1 ${currencyCode} = NPR)`}
+                value={exchangeRate || ""}
+                onChange={(v) => {
+                  setExchangeRate(Number(v) || 1.0);
+                  markDirty();
+                }}
+                disabled={readOnly}
+                step={0.0001}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Line items */}
@@ -700,42 +894,316 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           </Button>
         </div>
         <div className="overflow-x-auto rounded-md border border-slate-200">
-          <table className="w-full text-xs">
-            <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-gray-600 uppercase tracking-wide">
+          <table className="w-full text-xs data-table">
+            <thead className="bg-[#eef1f8] border-b border-gray-200">
               <tr>
-                <th className="px-2 py-2 text-center">#</th>
-                <th className="px-2 py-2 text-left">Item</th>
-                <th className="px-2 py-2 text-left">HSN</th>
-                <th className="px-2 py-2 text-left">Description</th>
-                <th className="px-2 py-2 text-right">Qty</th>
-                <th className="px-2 py-2 text-left">Unit</th>
-                <th className="px-2 py-2 text-right">Rate</th>
-                <th className="px-2 py-2 text-right">Disc%</th>
-                <th className="px-2 py-2 text-right">Taxable</th>
-                <th className="px-2 py-2 text-center">Tax?</th>
-                <th className="px-2 py-2 text-right">VAT%</th>
-                <th className="px-2 py-2 text-right">VAT Amt</th>
-                <th className="px-2 py-2 text-right">Total</th>
-                {showWarehouse && <th className="px-2 py-2 text-left">Warehouse</th>}
+                <th className="px-2 py-2 text-center text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  #
+                </th>
+                <th className="px-2 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  Item
+                </th>
+                <th className="px-2 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  HSN
+                </th>
+                <th className="px-2 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  Description
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Qty
+                </th>
+                <th className="px-2 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  Unit
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Rate
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Disc%
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Disc Amt
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Taxable
+                </th>
+                <th className="px-2 py-2 text-center text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                  Tax?
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  VAT%
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  VAT Amt
+                </th>
+                <th className="px-2 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide th-right">
+                  Total
+                </th>
+                {showWarehouse && (
+                  <th className="px-2 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                    Warehouse
+                  </th>
+                )}
                 <th className="px-2 py-2"></th>
               </tr>
             </thead>
             <tbody>
-              {lines.map((l, idx) => (
-                <InvoiceLineItem
-                  key={l.id}
-                  line={l}
-                  lineNo={idx + 1}
-                  onUpdate={(u) => updateLine(l.id, u)}
-                  onDelete={() => removeLine(l.id)}
-                  onTabNext={() => {
-                    if (idx === lines.length - 1) addLine();
-                  }}
-                  showWarehouse={showWarehouse}
-                  type={meta.isSales ? "sales" : "purchase"}
-                  readOnly={readOnly}
-                />
-              ))}
+              {lines.map((l, idx) => {
+                const handleItemChange = (itemId: string) => {
+                  const it = items.find((x) => x.id === itemId);
+                  if (!it) {
+                    updateLine(l.id, {
+                      itemId: "",
+                      itemName: "",
+                      itemCode: "",
+                      unit: "",
+                      hsnCode: "",
+                    });
+                    return;
+                  }
+                  const itemRate =
+                    type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
+                  updateLine(l.id, {
+                    itemId: it.id,
+                    itemName: it.name,
+                    itemCode: it.code,
+                    unit: it.unit || "",
+                    hsnCode: it.hsnCode || "",
+                    rate: itemRate,
+                    isTaxable: !!it.isTaxable,
+                    vatRate: it.vatRate ?? (it.isTaxable ? 13 : 0),
+                    discountPercent: 0,
+                    discountAmount: 0,
+                  });
+                };
+
+                const handleDiscPercent = (pctVal: number) => {
+                  const pct = Math.min(100, Math.max(0, pctVal));
+                  const gross = (Number(l.qty) || 0) * (Number(l.rate) || 0);
+                  const amt = round2((gross * pct) / 100);
+                  updateLine(l.id, { discountPercent: pct, discountAmount: amt });
+                };
+
+                const handleDiscAmt = (amtVal: number) => {
+                  const gross = (Number(l.qty) || 0) * (Number(l.rate) || 0);
+                  const amt = Math.min(gross, Math.max(0, amtVal));
+                  const pct = gross > 0 ? round2((amt / gross) * 100) : 0;
+                  updateLine(l.id, { discountPercent: pct, discountAmount: amt });
+                };
+
+                const gross = (Number(l.qty) || 0) * (Number(l.rate) || 0);
+                const taxableLineVal = round2(gross - (Number(l.discountAmount) || 0));
+                const vatLineVal = l.isTaxable
+                  ? round2(taxableLineVal * ((Number(l.vatRate) || 0) / 100))
+                  : 0;
+                const totalLineVal = round2(taxableLineVal + vatLineVal);
+
+                const cellInputClass =
+                  "w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-[#1557b0] focus:bg-white rounded-sm outline-none";
+
+                return (
+                  <tr key={l.id} className="border-b border-gray-100 hover:bg-[#e8eeff]">
+                    <td className="px-2 py-1 text-center text-[11px] font-bold text-slate-400 w-8">
+                      {idx + 1}
+                    </td>
+
+                    {/* Item Select */}
+                    <td className="px-1 py-1 min-w-[180px]">
+                      <select
+                        className={cellInputClass}
+                        value={l.itemId}
+                        onChange={(e) => handleItemChange(e.target.value)}
+                        disabled={readOnly}
+                      >
+                        <option value="">— select item —</option>
+                        {itemList.map((it) => (
+                          <option key={it.id} value={it.id}>
+                            {it.code} · {it.name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    {/* HSN */}
+                    <td className="px-1 py-1 w-20">
+                      <input
+                        className={cellInputClass}
+                        value={l.hsnCode || ""}
+                        onChange={(e) => updateLine(l.id, { hsnCode: e.target.value })}
+                        disabled={readOnly}
+                        placeholder="—"
+                      />
+                    </td>
+
+                    {/* Description */}
+                    <td className="px-1 py-1 min-w-[140px]">
+                      <input
+                        className={cellInputClass}
+                        value={l.description || ""}
+                        onChange={(e) => updateLine(l.id, { description: e.target.value })}
+                        disabled={readOnly}
+                        placeholder="—"
+                      />
+                    </td>
+
+                    {/* Qty */}
+                    <td className="px-1 py-1 w-20">
+                      <input
+                        type="number"
+                        className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0] font-mono"
+                        value={l.qty || ""}
+                        onChange={(e) => {
+                          const newQty = Number(e.target.value) || 0;
+                          const newGross = newQty * (Number(l.rate) || 0);
+                          const newAmt = round2(
+                            (newGross * (Number(l.discountPercent) || 0)) / 100,
+                          );
+                          updateLine(l.id, { qty: newQty, discountAmount: newAmt });
+                        }}
+                        disabled={readOnly}
+                        placeholder="0"
+                        min={0}
+                      />
+                    </td>
+
+                    {/* Unit */}
+                    <td className="px-1 py-1 w-16">
+                      <input
+                        className={cellInputClass}
+                        value={l.unit || ""}
+                        onChange={(e) => updateLine(l.id, { unit: e.target.value })}
+                        disabled={readOnly}
+                        placeholder="pcs"
+                      />
+                    </td>
+
+                    {/* Rate */}
+                    <td className="px-1 py-1 w-24">
+                      <input
+                        type="number"
+                        className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0] font-mono"
+                        value={l.rate || ""}
+                        onChange={(e) => {
+                          const newRate = Number(e.target.value) || 0;
+                          const newGross = (Number(l.qty) || 0) * newRate;
+                          const newAmt = round2(
+                            (newGross * (Number(l.discountPercent) || 0)) / 100,
+                          );
+                          updateLine(l.id, { rate: newRate, discountAmount: newAmt });
+                        }}
+                        disabled={readOnly}
+                        placeholder="0.00"
+                        min={0}
+                        step="0.01"
+                      />
+                    </td>
+
+                    {/* FEATURE-1: Disc% */}
+                    <td className="px-1 py-1 w-20">
+                      <input
+                        type="number"
+                        className={`${cellInputClass} text-right`}
+                        value={l.discountPercent || ""}
+                        onChange={(e) => handleDiscPercent(Number(e.target.value) || 0)}
+                        disabled={readOnly}
+                        placeholder="0.00"
+                        min={0}
+                        max={100}
+                        step="0.01"
+                      />
+                    </td>
+
+                    {/* FEATURE-1: Disc Amt */}
+                    <td className="px-1 py-1 w-24">
+                      <input
+                        type="number"
+                        className={`${cellInputClass} text-right`}
+                        value={l.discountAmount || ""}
+                        onChange={(e) => handleDiscAmt(Number(e.target.value) || 0)}
+                        disabled={readOnly}
+                        placeholder="0.00"
+                        min={0}
+                        step="0.01"
+                      />
+                    </td>
+
+                    {/* Taxable Amount */}
+                    <td className="px-2 py-1 text-right w-24 font-mono text-[12px]">
+                      {formatNumber(taxableLineVal)}
+                    </td>
+
+                    {/* Is Taxable */}
+                    <td className="px-1 py-1 text-center w-14">
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 accent-[#1557b0]"
+                        checked={!!l.isTaxable}
+                        onChange={(e) => updateLine(l.id, { isTaxable: e.target.checked })}
+                        disabled={readOnly}
+                      />
+                    </td>
+
+                    {/* VAT % */}
+                    <td className="px-1 py-1 w-16">
+                      <input
+                        type="number"
+                        className={`${cellInputClass} text-right`}
+                        value={l.vatRate || ""}
+                        onChange={(e) => updateLine(l.id, { vatRate: Number(e.target.value) || 0 })}
+                        disabled={readOnly || !l.isTaxable}
+                        placeholder="13"
+                        min={0}
+                        max={100}
+                        step="0.01"
+                      />
+                    </td>
+
+                    {/* VAT Amount */}
+                    <td className="px-2 py-1 text-right w-24 font-mono text-[12px] text-blue-700">
+                      {formatNumber(vatLineVal)}
+                    </td>
+
+                    {/* Total */}
+                    <td className="text-right text-[12px] font-medium text-gray-800 font-mono px-3 w-24 bg-slate-50/80">
+                      {formatNumber(totalLineVal)}
+                    </td>
+
+                    {/* Warehouse */}
+                    {showWarehouse && (
+                      <td className="px-1 py-1 w-32">
+                        <select
+                          className={cellInputClass}
+                          value={l.warehouseId || ""}
+                          onChange={(e) => updateLine(l.id, { warehouseId: e.target.value })}
+                          disabled={readOnly}
+                        >
+                          <option value="">—</option>
+                          {warehouses
+                            .filter((w) => w.isActive)
+                            .map((w) => (
+                              <option key={w.id} value={w.id}>
+                                {w.name}
+                              </option>
+                            ))}
+                        </select>
+                      </td>
+                    )}
+
+                    {/* Delete */}
+                    <td className="px-1 py-1 w-10 text-center">
+                      <button
+                        type="button"
+                        onClick={() => removeLine(l.id)}
+                        disabled={readOnly}
+                        className="p-1 text-gray-300 hover:text-red-500 rounded transition-colors disabled:opacity-40"
+                        title="Remove line"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
               {lines.length === 0 && (
                 <tr>
                   <td colSpan={colspan} className="text-center py-6 text-gray-400">
@@ -746,6 +1214,114 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </tbody>
           </table>
         </div>
+      </Card>
+
+      {/* FEATURE-2: Invoice-level additional charges */}
+      <Card border padding="md">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+            Additional Charges
+          </h3>
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={addAdditionalCharge}
+            disabled={readOnly}
+            icon={<Plus className="h-3 w-3" />}
+          >
+            Add Charge
+          </Button>
+        </div>
+        {additionalCharges.length > 0 ? (
+          <div className="overflow-x-auto rounded-md border border-slate-200">
+            <table className="w-full text-xs">
+              <thead className="bg-[#eef1f8] border-b border-gray-200">
+                <tr>
+                  <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                    Description
+                  </th>
+                  <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                    Ledger Account
+                  </th>
+                  <th className="px-3 py-2 text-center text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                    Taxable (13% VAT)?
+                  </th>
+                  <th className="px-3 py-2 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                    Amount
+                  </th>
+                  <th className="px-3 py-2 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {additionalCharges.map((charge) => (
+                  <tr key={charge.id} className="border-b border-gray-100 hover:bg-[#e8eeff]">
+                    <td className="p-1">
+                      <input
+                        type="text"
+                        className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        value={charge.description}
+                        onChange={(e) =>
+                          updateAdditionalCharge(charge.id, "description", e.target.value)
+                        }
+                        placeholder="e.g. Shipping / Delivery / Packing"
+                        disabled={readOnly}
+                        required
+                      />
+                    </td>
+                    <td className="p-1 min-w-[200px]">
+                      <AccountSelect
+                        value={charge.accountId}
+                        onChange={(val) => updateAdditionalCharge(charge.id, "accountId", val)}
+                        disabled={readOnly}
+                        placeholder="Select income/expense ledger"
+                        filterTypes={[AccountType.INCOME, AccountType.EXPENSE]}
+                        required
+                      />
+                    </td>
+                    <td className="p-1 text-center">
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 accent-[#1557b0]"
+                        checked={!!charge.taxApplicable}
+                        onChange={(e) =>
+                          updateAdditionalCharge(charge.id, "taxApplicable", e.target.checked)
+                        }
+                        disabled={readOnly}
+                      />
+                    </td>
+                    <td className="p-1 w-32">
+                      <input
+                        type="number"
+                        className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right font-mono"
+                        value={charge.amount || ""}
+                        onChange={(e) =>
+                          updateAdditionalCharge(charge.id, "amount", Number(e.target.value) || 0)
+                        }
+                        disabled={readOnly}
+                        placeholder="0.00"
+                        step="0.01"
+                      />
+                    </td>
+                    <td className="p-1 text-center w-10">
+                      <button
+                        type="button"
+                        onClick={() => removeAdditionalCharge(charge.id)}
+                        disabled={readOnly}
+                        className="p-1 text-gray-300 hover:text-red-500 rounded transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-4 border border-dashed border-gray-200 rounded-md text-gray-400">
+            No additional charges added.
+          </div>
+        )}
       </Card>
 
       {/* Payment + Totals */}
@@ -825,7 +1401,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Input
                 type="number"
-                label="Amount Paid Now"
+                label={`Amount Paid Now (${currencyCode === "NPR" ? "NPR" : currencyCode})`}
                 value={paidAmount || ""}
                 onChange={(v) => {
                   setPaidAmount(Number(v) || 0);
@@ -836,11 +1412,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 disabled={readOnly}
               />
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500">Balance Due</span>
+                <span className="text-xs font-semibold text-gray-500 font-medium">Balance Due</span>
                 <span
-                  className={`font-mono font-bold text-base ${balance > 0 ? "text-red-600" : "text-green-600"}`}
+                  className={`font-mono font-bold text-base ${balance > 0 ? "text-[#dc2626]" : "text-[#15803d]"}`}
                 >
-                  {symbol} {formatNumber(balance)}
+                  {currencyCode === "NPR" ? symbol : currencyCode} {formatNumber(balance)}
                 </span>
               </div>
             </div>
@@ -852,7 +1428,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 <input
                   id="tds-enabled"
                   type="checkbox"
-                  className="h-3.5 w-3.5 accent-indigo-600"
+                  className="h-3.5 w-3.5 accent-[#1557b0]"
                   checked={tdsEnabled}
                   onChange={(e) => {
                     setTdsEnabled(e.target.checked);
@@ -889,9 +1465,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     disabled={readOnly}
                   />
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-gray-500">TDS Amount</span>
+                    <span className="text-xs font-semibold text-gray-500 font-medium">
+                      TDS Amount
+                    </span>
                     <span className="font-mono font-bold text-orange-600 text-base">
-                      {symbol} {formatNumber(tdsAmount)}
+                      {currencyCode === "NPR" ? symbol : currencyCode} {formatNumber(tdsAmount)}
                     </span>
                   </div>
                 </div>
@@ -900,15 +1478,18 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           )}
 
           <div className="mt-4 pt-4 border-t border-slate-200">
-            <Input
-              label="Narration"
+            <div className="mb-1 block">
+              <label className="text-xs font-semibold text-gray-700">Narration</label>
+            </div>
+            <NarrationInput
               value={narration}
               onChange={(v) => {
                 setNarration(v);
                 markDirty();
               }}
-              placeholder="Optional notes / description"
               disabled={readOnly}
+              voucherType="sales"
+              rows={2}
             />
           </div>
 
@@ -929,54 +1510,83 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         </Card>
 
         {/* Totals Box, right-aligned in a w-64 card */}
-        <div className="flex justify-end">
-          <div className="w-64 p-3 bg-white border border-gray-200 rounded-md flex flex-col gap-1.5 shadow-sm">
-            <div className="flex justify-between items-baseline text-[12px]">
+        <div className="flex flex-col gap-3 justify-end items-end">
+          {/* FEATURE-3: Round-off toggle UI */}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-md shadow-sm w-64 justify-between">
+            <label htmlFor="roundoff-toggle" className="text-[11px] font-medium text-gray-600">
+              Enable Round-off
+            </label>
+            <input
+              id="roundoff-toggle"
+              type="checkbox"
+              className="h-3.5 w-3.5 accent-[#1557b0]"
+              checked={enableRoundOff}
+              onChange={(e) => {
+                setEnableRoundOff(e.target.checked);
+                markDirty();
+              }}
+              disabled={readOnly}
+            />
+          </div>
+
+          <div className="w-64 p-3 bg-white border border-gray-200 rounded-md flex flex-col gap-1.5 shadow-sm totals-panel">
+            <div className="flex justify-between items-baseline text-[12px] totals-row">
               <span className="text-gray-500 font-medium">Subtotal</span>
               <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.subTotal)}
+                {currencyCode === "NPR" ? symbol : currencyCode}{" "}
+                {formatNumber(computation.subTotal)}
               </span>
             </div>
-            <div className="flex justify-between items-baseline text-[12px] text-red-600">
+            <div className="flex justify-between items-baseline text-[12px] text-red-600 totals-row">
               <span className="font-medium">Discount</span>
               <span className="font-mono">
-                - {symbol} {formatNumber(discountAmount)}
+                - {currencyCode === "NPR" ? symbol : currencyCode} {formatNumber(discountAmount)}
               </span>
             </div>
-            <div className="flex justify-between items-baseline text-[12px]">
+            <div className="flex justify-between items-baseline text-[12px] totals-row">
               <span className="text-gray-600 font-medium">Taxable Amount</span>
               <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.taxableTotal)}
+                {currencyCode === "NPR" ? symbol : currencyCode}{" "}
+                {formatNumber(computation.taxableTotal)}
               </span>
             </div>
-            <div className="flex justify-between items-baseline text-[12px]">
+            <div className="flex justify-between items-baseline text-[12px] totals-row">
               <span className="text-gray-600 font-medium">VAT (13%)</span>
               <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.vatAmount)}
+                {currencyCode === "NPR" ? symbol : currencyCode}{" "}
+                {formatNumber(computation.vatAmount)}
               </span>
             </div>
             {tdsEnabled && (
-              <div className="flex justify-between items-baseline text-[12px] text-orange-600">
+              <div className="flex justify-between items-baseline text-[12px] text-orange-600 totals-row">
                 <span className="font-medium">TDS Deducted</span>
                 <span className="font-mono">
-                  - {symbol} {formatNumber(tdsAmount)}
+                  - {currencyCode === "NPR" ? symbol : currencyCode} {formatNumber(tdsAmount)}
                 </span>
               </div>
             )}
-            {computation.roundOff !== 0 && (
-              <div className="flex justify-between items-baseline text-[12px] text-gray-500">
+            {enableRoundOff && computation.roundOff !== 0 && (
+              <div className="flex justify-between items-baseline text-[12px] text-gray-500 totals-row">
                 <span className="font-medium">Round Off</span>
                 <span className="font-mono">
-                  {symbol} {formatNumber(computation.roundOff)}
+                  {computation.roundOff > 0 ? "+" : ""}
+                  {currencyCode === "NPR" ? symbol : currencyCode}{" "}
+                  {formatNumber(computation.roundOff)}
                 </span>
               </div>
             )}
-            <div className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] p-2 mt-1 flex justify-between items-baseline rounded-sm">
+            <div className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] p-2 mt-1 flex justify-between items-baseline rounded-sm totals-row total-final">
               <span className="text-[12px] font-bold text-[#1557b0] uppercase">Grand Total</span>
               <span className="font-mono font-bold text-[12px] text-[#1557b0] text-right">
-                {symbol} {formatNumber(grandTotal)}
+                {currencyCode === "NPR" ? symbol : currencyCode} {formatNumber(grandTotal)}
               </span>
             </div>
+            {/* Display Base NPR total if in foreign currency */}
+            {currencyCode !== "NPR" && (
+              <div className="text-[10px] text-right text-gray-500 font-mono mt-0.5 uppercase tracking-wide">
+                Equiv. Base: {symbol} {formatNumber(round2(grandTotal * exchangeRate))}
+              </div>
+            )}
           </div>
         </div>
       </div>

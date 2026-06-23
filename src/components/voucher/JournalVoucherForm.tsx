@@ -1,9 +1,8 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Journal Voucher Form — the core double-entry data entry screen.
+ * Journal Voucher Form â€” the core double-entry data entry screen.
  */
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
@@ -17,6 +16,7 @@ import {
   AccountSelect,
   NepaliDatePicker,
   ConfirmDialog,
+  NarrationInput,
 } from "../ui";
 import {
   BookOpen,
@@ -105,19 +105,43 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   const markDirty = () => setDirty(true);
 
   // Auto-generated voucher number preview
-  const voucherNoPreview = useMemo(() => {
+  const [overrideVoucherNo, setOverrideVoucherNo] = useState(false);
+  const [customVoucherNo, setCustomVoucherNo] = useState("");
+
+  const autoVoucherNo = useMemo(() => {
     if (existing?.voucherNo) return existing.voucherNo;
-    try {
-      const { voucherNo } = generateVoucherNo(
-        VoucherType.JOURNAL,
-        companySettings?.voucherSeries || {},
-        vouchers,
-      );
-      return voucherNo;
-    } catch {
-      return "JV-XXXX";
+    const fyShort = currentFiscalYear?.name
+      ? currentFiscalYear.name.split("/").pop()?.slice(-2) || "81"
+      : "81";
+    const prefix = `JV-${fyShort}-`;
+    const matchingVouchers = vouchers.filter(
+      (v) => v.type === VoucherType.JOURNAL && v.voucherNo.startsWith(prefix),
+    );
+    let maxSeq = 0;
+    for (const v of matchingVouchers) {
+      const seqStr = v.voucherNo.slice(prefix.length);
+      const seqNum = parseInt(seqStr, 10);
+      if (!isNaN(seqNum) && seqNum > maxSeq) {
+        maxSeq = seqNum;
+      }
     }
-  }, [existing, companySettings, vouchers]);
+    const nextSeq = String(maxSeq + 1).padStart(4, "0");
+    return `${prefix}${nextSeq}`;
+  }, [existing, currentFiscalYear, vouchers]);
+
+  useEffect(() => {
+    if (!overrideVoucherNo && !isEdit) {
+      setCustomVoucherNo(autoVoucherNo);
+    }
+  }, [autoVoucherNo, overrideVoucherNo, isEdit]);
+
+  useEffect(() => {
+    if (existing?.voucherNo) {
+      setCustomVoucherNo(existing.voucherNo);
+    }
+  }, [existing]);
+
+  const activeVoucherNo = overrideVoucherNo ? customVoucherNo : autoVoucherNo;
 
   const totals = useMemo(() => {
     const debit = lines.reduce((s, l) => s + (Number(l.debit) || 0), 0);
@@ -228,6 +252,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       date,
       dateNepali: ADToBSString(date) || "",
       type: VoucherType.JOURNAL,
+      voucherNo: activeVoucherNo,
       narration: narration.trim(),
       referenceNo: referenceNo.trim() || undefined,
       lines: cleanLines,
@@ -363,7 +388,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
           </button>
           <div>
             <h1 className="text-[13px] font-semibold text-gray-800">Journal Voucher</h1>
-            {isEdit && <p className="text-[11px] text-gray-500 mt-0.5">{voucherNoPreview}</p>}
+            {isEdit && <p className="text-[11px] text-gray-500 mt-0.5">{activeVoucherNo}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -397,11 +422,36 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                 Journal Voucher
               </Badge>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-gray-500 w-32 shrink-0">Voucher No</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700">
-                {voucherNoPreview}
-              </span>
+              <input
+                type="text"
+                value={activeVoucherNo}
+                onChange={(e) => setCustomVoucherNo(e.target.value)}
+                disabled={!overrideVoucherNo || readOnly}
+                className={`h-8 px-2.5 text-[12px] border font-mono font-bold rounded-md w-48 ${
+                  overrideVoucherNo
+                    ? "border-yellow-450 bg-yellow-50 text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 focus:border-yellow-500"
+                    : "border-gray-300 bg-gray-100 text-gray-700 cursor-not-allowed"
+                }`}
+              />
+              {!readOnly && !isEdit && (
+                <label className="inline-flex items-center gap-1.5 text-xs text-gray-600 font-semibold cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={overrideVoucherNo}
+                    onChange={(e) => {
+                      setOverrideVoucherNo(e.target.checked);
+                      if (!e.target.checked) {
+                        setCustomVoucherNo(autoVoucherNo);
+                      }
+                      markDirty();
+                    }}
+                    className="h-3.5 w-3.5 accent-[#1557b0]"
+                  />
+                  Override
+                </label>
+              )}
             </div>
             <Input
               label="Reference No"
@@ -444,22 +494,21 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     setNarration(v);
                     markDirty();
                   }}
-                  placeholder="Insert template…"
+                  placeholder="Insert templateâ€¦"
                   searchable
                 />
               </div>
             )}
           </div>
-          <textarea
-            rows={2}
+          <NarrationInput
             value={narration}
-            onChange={(e) => {
-              setNarration(e.target.value);
+            onChange={(v) => {
+              setNarration(v);
               markDirty();
             }}
             disabled={readOnly}
-            placeholder="Describe this transaction…"
-            className="w-full text-xs font-medium p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-50"
+            voucherType="journal"
+            rows={2}
           />
         </div>
       </Card>
@@ -493,7 +542,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     <AccountSelect
                       value={line.accountId}
                       onChange={(v) => updateLine(idx, "accountId", v)}
-                      placeholder="Select account…"
+                      placeholder="Select accountâ€¦"
                       disabled={readOnly}
                     />
                   </td>
@@ -528,11 +577,12 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     </td>
                   )}
                   <td className="px-2 py-2">
-                    <Input
+                    <NarrationInput
                       value={line.narration}
                       onChange={(v) => updateLine(idx, "narration", v)}
-                      placeholder="Line memo"
                       disabled={readOnly}
+                      voucherType="journal"
+                      rows={1}
                     />
                   </td>
                   <td className="px-2 py-2">
@@ -620,8 +670,8 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
               <Plus className="h-3 w-3" /> Add Line
             </button>
             <span className="text-[11px] text-gray-400 font-semibold">
-              {lines.length} rows · Shortcuts: Enter/Tab navigate · Ctrl+D duplicate · F12 save ·
-              Esc cancel
+              {lines.length} rows Â· Shortcuts: Enter/Tab navigate Â· Ctrl+D duplicate Â· F12 save
+              Â· Esc cancel
             </span>
           </div>
         )}
@@ -661,11 +711,11 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
           <div className="flex items-center">
             {totals.balanced ? (
               <div className="px-3 py-1.5 text-[12px] font-semibold rounded bg-green-50 text-green-700 border border-green-200 flex items-center gap-1.5">
-                ✓ Balanced
+                âœ“ Balanced
               </div>
             ) : (
               <div className="px-3 py-1.5 text-[12px] font-semibold rounded bg-red-50 text-red-700 border border-red-200 flex items-center gap-1.5">
-                ⚠ Difference: {symbol} {formatNumber(Math.abs(totals.diff))}
+                âš  Difference: {symbol} {formatNumber(Math.abs(totals.diff))}
               </div>
             )}
           </div>

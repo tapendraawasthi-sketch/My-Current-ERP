@@ -9,9 +9,10 @@ import { Card, Badge, Button, Input, Modal } from "./ui";
 import Pagination from "./ui/Pagination";
 import { Search, Plus, Phone, Mail, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
+import { AccountType, AccountLevel, PartyType } from "../lib/types";
 
 const PartiesDirectory: React.FC = () => {
-  const { parties, addParty, updateParty } = useStore();
+  const { parties, addParty, updateParty, addAccount } = useStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("ALL");
@@ -26,7 +27,7 @@ const PartiesDirectory: React.FC = () => {
   // Form states
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [type, setType] = useState<"customer" | "supplier" | "both">("customer");
+  const [type, setType] = useState<PartyType>(PartyType.CUSTOMER);
   const [pan, setPan] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -59,7 +60,7 @@ const PartiesDirectory: React.FC = () => {
   const resetForm = () => {
     setCode("");
     setName("");
-    setType("customer");
+    setType(PartyType.CUSTOMER);
     setPan("");
     setPhone("");
     setEmail("");
@@ -77,7 +78,7 @@ const PartiesDirectory: React.FC = () => {
     setSelectedParty(party);
     setCode(party.code || "");
     setName(party.name || "");
-    setType(party.type || "customer");
+    setType(party.type || PartyType.CUSTOMER);
     setPan(party.pan || "");
     setPhone(party.phone || "");
     setEmail(party.email || "");
@@ -94,16 +95,41 @@ const PartiesDirectory: React.FC = () => {
       return;
     }
     try {
+      let backingAccountId = selectedParty?.accountId;
+
+      if (showAddModal) {
+        const parentId =
+          type === PartyType.SUPPLIER ? "grp-sundry-creditors" : "grp-sundry-debtors";
+        const accountType = type === PartyType.SUPPLIER ? AccountType.LIABILITY : AccountType.ASSET;
+        const groupName = type === PartyType.SUPPLIER ? "Liabilities" : "Assets";
+
+        const newAcc = await addAccount({
+          code: `ACC-P-${Date.now()}`,
+          name: name.trim(),
+          type: accountType,
+          level: AccountLevel.LEDGER,
+          parentId: parentId,
+          group: groupName,
+          isActive: true,
+          isGroup: false,
+          openingBalance: Number(openingBalance) || 0,
+          openingBalanceDr: type === PartyType.SUPPLIER ? 0 : Number(openingBalance) || 0,
+          openingBalanceCr: type === PartyType.SUPPLIER ? Number(openingBalance) || 0 : 0,
+        });
+        backingAccountId = newAcc.id;
+      }
+
       const payload = {
-        code: code.trim() || undefined,
+        code: code.trim() || `P-${Date.now()}`,
         name: name.trim(),
         type,
         pan: pan.trim() || undefined,
-        phone: phone.trim() || undefined,
+        phone: phone.trim(),
         email: email.trim() || undefined,
         address: address.trim() || undefined,
         openingBalance: Number(openingBalance) || 0,
         isActive,
+        accountId: (backingAccountId as string) || "",
       };
 
       if (showAddModal) {
@@ -111,7 +137,7 @@ const PartiesDirectory: React.FC = () => {
         toast.success("Party added successfully");
         setShowAddModal(false);
       } else if (showEditModal && selectedParty) {
-        await updateParty(selectedParty.id, payload);
+        await updateParty({ ...selectedParty, ...payload });
         toast.success("Party updated successfully");
         setShowEditModal(false);
       }
@@ -127,7 +153,9 @@ const PartiesDirectory: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Parties Directory</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Manage customers and suppliers accounts</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Manage customers and suppliers accounts
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -265,7 +293,10 @@ const PartiesDirectory: React.FC = () => {
           title={showAddModal ? "Add New Party" : "Edit Party Details"}
           size="md"
         >
-          <form onSubmit={handleSave} className="flex flex-col gap-4 text-xs font-semibold select-none">
+          <form
+            onSubmit={handleSave}
+            className="flex flex-col gap-4 text-xs font-semibold select-none"
+          >
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-gray-700 font-semibold">Party Code</label>

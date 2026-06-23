@@ -62,7 +62,14 @@ export default function SignUpWizard() {
           /[a-zA-Z]/.test(formData.password) &&
           /\d/.test(formData.password);
         const passwordMatch = formData.password === formData.confirmPassword;
-        return !!(formData.fullName && validUsername && validPassword && passwordMatch);
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+        return !!(
+          formData.fullName &&
+          validUsername &&
+          validPassword &&
+          passwordMatch &&
+          validEmail
+        );
       default:
         return false;
     }
@@ -80,13 +87,13 @@ export default function SignUpWizard() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (!validateStep(4)) {
       alert("Please complete all required fields");
       return;
     }
 
-    createCompanyAndAdmin({
+    const success = await createCompanyAndAdmin({
       company: {
         name: formData.companyNameEn,
         nameNepali: formData.companyNameNe,
@@ -115,12 +122,17 @@ export default function SignUpWizard() {
       adminUser: {
         name: formData.fullName,
         username: formData.username,
+        email: formData.email,
         password: formData.password,
         role: "admin" as any,
         isActive: true,
       },
     });
-    alert("Welcome to Sutra ERP! Your company is now set up.");
+    if (success) {
+      alert("Welcome to Sutra ERP! Your company is now set up.");
+    } else {
+      alert("Workspace provision failed. Please try again.");
+    }
   };
 
   const CurrentStepComponent = steps[currentStep - 1].component;

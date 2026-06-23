@@ -7,6 +7,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
+import { useActiveVouchers } from "../hooks/useActiveData";
 import { Card, Button, Select, NepaliDatePicker } from "../components/ui";
 import { computeDayBook } from "../lib/accounting";
 import { formatNumber, dateToAD } from "../lib/utils";
@@ -26,7 +27,8 @@ const DAY_BOOK_GROUPS: { type: VoucherType[]; label: string }[] = [
 ];
 
 const DayBook: React.FC = () => {
-  const { vouchers, accounts, currentFiscalYear } = useStore();
+  const { accounts, currentFiscalYear } = useStore();
+  const vouchers = useActiveVouchers();
   const [isRange, setIsRange] = useState(false);
   const [date, setDate] = useState(currentFiscalYear?.startDate || dateToAD(new Date()));
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || dateToAD(new Date()));
@@ -237,23 +239,63 @@ const DayBook: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex items-center gap-1 border-l pl-3 shrink-0" style={{ borderColor: "var(--border)" }}>
-            <button type="button" onClick={() => applyQuickFilter("today")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">Today</button>
-            <button type="button" onClick={() => applyQuickFilter("week")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This Week</button>
-            <button type="button" onClick={() => applyQuickFilter("month")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This Month</button>
-            <button type="button" onClick={() => applyQuickFilter("fy")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This FY</button>
+          <div
+            className="flex items-center gap-1 border-l pl-3 shrink-0"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <button
+              type="button"
+              onClick={() => applyQuickFilter("today")}
+              className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              onClick={() => applyQuickFilter("week")}
+              className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
+              This Week
+            </button>
+            <button
+              type="button"
+              onClick={() => applyQuickFilter("month")}
+              className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
+              This Month
+            </button>
+            <button
+              type="button"
+              onClick={() => applyQuickFilter("fy")}
+              className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
+              This FY
+            </button>
           </div>
 
-          <div className="flex items-center gap-2 border-l pl-3 shrink-0" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="flex items-center gap-2 border-l pl-3 shrink-0"
+            style={{ borderColor: "var(--border)" }}
+          >
             <NepaliDatePicker label="From Date" value={date} onChange={setDate} />
             {isRange && <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />}
           </div>
         </div>
         <div className="page-toolbar-right flex items-center gap-2 shrink-0">
-          <button type="button" onClick={handleExportExcel} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
+          <button
+            type="button"
+            onClick={handleExportExcel}
+            className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5"
+            style={{ borderColor: "var(--border)" }}
+          >
             Export Excel
           </button>
-          <button type="button" onClick={handleExportPDF} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
+          <button
+            type="button"
+            onClick={handleExportPDF}
+            className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5"
+            style={{ borderColor: "var(--border)" }}
+          >
             Print PDF
           </button>
         </div>
@@ -265,10 +307,22 @@ const DayBook: React.FC = () => {
         </Card>
       ) : (
         groupedEntries.map((group) => (
-          <div key={group.label} className="bg-white border rounded-lg overflow-hidden" style={{ borderColor: "var(--border)" }}>
-            <div className="flex items-center justify-between px-3 py-1.5 bg-blue-50 border-y" style={{ borderColor: "var(--border)" }}>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-700">{group.label}</span>
-              <span className="text-[10px] font-bold text-blue-600">Dr: {formatNumber(group.subtotal?.debit||0)} | Cr: {formatNumber(group.subtotal?.credit||0)}</span>
+          <div
+            key={group.label}
+            className="bg-white border rounded-lg overflow-hidden"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <div
+              className="flex items-center justify-between px-3 py-1.5 bg-blue-50 border-y"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-700">
+                {group.label}
+              </span>
+              <span className="text-[10px] font-bold text-blue-600">
+                Dr: {formatNumber(group.subtotal?.debit || 0)} | Cr:{" "}
+                {formatNumber(group.subtotal?.credit || 0)}
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="data-table">
@@ -291,12 +345,18 @@ const DayBook: React.FC = () => {
                       <td className="font-mono font-bold">{row.voucherNo}</td>
                       <td>{row.time || "—"}</td>
                       <td>
-                        <span className={`badge badge-${row.type?.replace(/-/g,'')}`}>{row.type?.replace(/-/g,' ').toUpperCase()}</span>
+                        <span className={`badge badge-${row.type?.replace(/-/g, "")}`}>
+                          {row.type?.replace(/-/g, " ").toUpperCase()}
+                        </span>
                       </td>
                       <td className="font-semibold text-gray-800">{row.partyAccount}</td>
                       <td className="text-gray-605">{row.narration}</td>
-                      <td className="amt amt-dr">{row.debit > 0 ? formatNumber(row.debit) : "—"}</td>
-                      <td className="amt amt-cr">{row.credit > 0 ? formatNumber(row.credit) : "—"}</td>
+                      <td className="amt amt-dr">
+                        {row.debit > 0 ? formatNumber(row.debit) : "—"}
+                      </td>
+                      <td className="amt amt-cr">
+                        {row.credit > 0 ? formatNumber(row.credit) : "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

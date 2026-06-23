@@ -27,7 +27,6 @@ import CashFlowStatement from "./pages/CashFlowStatement";
 import VatReports from "./pages/VatReports";
 import AgingReport from "./pages/AgingReport";
 import PartyLedgerStatement from "./pages/PartyLedgerStatement";
-import RatioAnalysis from "./pages/RatioAnalysis";
 import DayBook from "./pages/DayBook";
 import CashBook from "./pages/CashBook";
 import BankBook from "./pages/BankBook";
@@ -56,9 +55,10 @@ import BankAccountsPage from "./pages/BankAccountsPage";
 import RecurringVouchers from "./pages/RecurringVouchers";
 import POSMode from "./pages/POSMode";
 import EmployeeMaster from "./pages/EmployeeMaster";
-import PayrollRun from "./pages/PayrollRun";
 import BankStatementImport from "./pages/BankStatementImport";
 import OverdueBillsInterest from "./pages/OverdueBillsInterest";
+import BillSundryPage from "./pages/BillSundry";
+import StandardNarrationsPage from "./pages/StandardNarrations";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function MainRouter() {
@@ -251,6 +251,18 @@ function MainRouter() {
           <CostCenters />
         </ErrorBoundary>
       );
+    case "bill-sundry":
+      return (
+        <ErrorBoundary>
+          <BillSundryPage />
+        </ErrorBoundary>
+      );
+    case "standard-narrations":
+      return (
+        <ErrorBoundary>
+          <StandardNarrationsPage />
+        </ErrorBoundary>
+      );
     case "cost-center-report":
       return (
         <ErrorBoundary>
@@ -291,12 +303,6 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <AgingReport />
-        </ErrorBoundary>
-      );
-    case "ratio-analysis":
-      return (
-        <ErrorBoundary>
-          <RatioAnalysis />
         </ErrorBoundary>
       );
     case "party-statement":
@@ -383,18 +389,10 @@ function MainRouter() {
           <POSMode />
         </ErrorBoundary>
       );
-    case "employees":
     case "salesmen":
       return (
         <ErrorBoundary>
           <EmployeeMaster />
-        </ErrorBoundary>
-      );
-    case "payroll-run":
-    case "payslip":
-      return (
-        <ErrorBoundary>
-          <PayrollRun />
         </ErrorBoundary>
       );
     case "bank-import":
@@ -420,7 +418,9 @@ function MainRouter() {
         <ErrorBoundary>
           <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6">
             <h2 className="text-[15px] font-bold text-gray-800">404 - Page Not Found</h2>
-            <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
+            <p className="text-[11px] text-gray-500 mt-1">
+              The requested page "{currentPage}" could not be found.
+            </p>
             <button
               onClick={() => useStore.getState().setCurrentPage("dashboard")}
               className="mt-4 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-semibold rounded-md cursor-pointer"

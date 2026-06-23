@@ -82,7 +82,13 @@ const Breadcrumb: React.FC = () => {
 
   return (
     <nav className="flex items-center gap-0 select-none" aria-label="Breadcrumb">
-      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-gray-400 hover:text-gray-600 transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
+      <button
+        type="button"
+        onClick={() => setCurrentPage("dashboard")}
+        className="text-gray-400 hover:text-gray-600 transition-colors flex items-center"
+      >
+        <Home className="h-3.5 w-3.5" />
+      </button>
       {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-gray-300 mx-1" />}
 
       {breadcrumbs.map((b, idx) => {

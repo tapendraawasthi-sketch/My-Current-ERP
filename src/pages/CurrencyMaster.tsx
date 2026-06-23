@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useMemo } from "react";
+﻿import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { Plus, Edit, TrendingUp, DollarSign, Calendar } from "lucide-react";
 import {
@@ -267,7 +266,7 @@ const CurrencyMaster: React.FC = () => {
                       <span className="font-mono font-semibold">
                         {formatNumber(latest.rateToBase)} {baseCurrency?.code}
                       </span>
-                      <span className="mx-2">•</span>
+                      <span className="mx-2">â€¢</span>
                       Last Updated: {new Date(latest.date).toLocaleDateString()}
                     </p>
                   )}
@@ -394,7 +393,7 @@ const CurrencyMaster: React.FC = () => {
             label="Symbol"
             value={currencyForm.symbol}
             onChange={(v) => setCurrencyForm((prev) => ({ ...prev, symbol: v }))}
-            placeholder="e.g., $, €, £"
+            placeholder="e.g., $, â‚¬, Â£"
             required
           />
           <div className="flex items-center gap-4">

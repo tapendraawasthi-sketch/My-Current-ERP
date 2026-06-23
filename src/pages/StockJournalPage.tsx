@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,6 +8,7 @@
 import React, { useMemo, useState } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveRecords } from "../hooks/useActiveData";
 import {
   Card,
   Badge,
@@ -31,7 +31,7 @@ type StockJournalLineState = StockJournalLine & { id: string };
 
 const StockJournalPage: React.FC = () => {
   const {
-    stockJournals,
+    stockJournals: rawStockJournals,
     items,
     warehouses,
     companySettings,
@@ -39,6 +39,7 @@ const StockJournalPage: React.FC = () => {
     addStockJournal,
     postStockJournal,
   } = useStore();
+  const stockJournals = useActiveRecords(rawStockJournals);
 
   const symbol = companySettings?.currencySymbol || "Rs.";
   const defaultDate = new Date().toISOString().split("T")[0];
@@ -77,11 +78,11 @@ const StockJournalPage: React.FC = () => {
 
   const warehouseOptions = warehouses
     .filter((w) => w.isActive)
-    .map((w) => ({ value: w.id, label: `${w.code} — ${w.name}` }));
+    .map((w) => ({ value: w.id, label: `${w.code} â€” ${w.name}` }));
 
   const itemOptions = items
     .filter((item) => item.isActive)
-    .map((item) => ({ value: item.id, label: `${item.code} · ${item.name}` }));
+    .map((item) => ({ value: item.id, label: `${item.code} Â· ${item.name}` }));
 
   const totals = useMemo(() => {
     const totalQty = lines.reduce((sum, line) => sum + (line.qty || 0), 0);
@@ -210,12 +211,12 @@ const StockJournalPage: React.FC = () => {
       header: "Journal No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
+    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "â€”" },
     { key: "date", header: "Date (AD)" },
     {
       key: "narration",
       header: "Narration",
-      render: (v: string) => <span className="line-clamp-1 max-w-[220px]">{v || "—"}</span>,
+      render: (v: string) => <span className="line-clamp-1 max-w-[220px]">{v || "â€”"}</span>,
     },
     { key: "totalQty", header: "Qty", align: "right", render: (v: number) => formatNumber(v) },
     {
@@ -255,7 +256,7 @@ const StockJournalPage: React.FC = () => {
             Post
           </Button>
         ) : (
-          <span className="text-xs text-slate-500">—</span>
+          <span className="text-xs text-slate-500">â€”</span>
         ),
     },
   ];
@@ -451,7 +452,7 @@ const StockJournalPage: React.FC = () => {
           rowKey="id"
           searchFields={["journalNo", "narration"]}
           emptyMessage="No stock journals available. Create a new stock transfer."
-          placeholder="Search journal no or narration…"
+          placeholder="Search journal no or narrationâ€¦"
         />
       </Card>
     </div>

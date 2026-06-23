@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -15,7 +14,6 @@ import {
   TdsType,
   VoucherType,
   VoucherStatus,
-  Employee,
 } from "./types";
 import { VAT_RATE, TDS_RATES, TDS_SECTIONS } from "./constants";
 
@@ -582,127 +580,44 @@ export function generateVatAnnex5(invoices: Invoice[]) {
  * @param maritalStatus 'single' | 'married' (married gets higher exemption)
  */
 export function computeSalaryTDS(
-  employee: Employee,
-  grossSalary: number,
-  currentMonth: number,
-  accumulatedTDS: number,
-): {
-  grossSalary: number;
-  totalDeductions: number;
-  taxableIncome: number;
-  annualTax: number;
-  monthlyTDS: number;
-  netSalary: number;
-} {
-  const remainingMonths = 12 - currentMonth + 1;
+  annualGross: number,
+  maritalStatus: "single" | "married" = "single",
+): number {
+  // Nepal FY 2081-82 tax slabs
+  const exemptionLimit = maritalStatus === "married" ? 600000 : 500000; // Rs 5L single, 6L married
+  const socialSecurityTax = annualGross * 0.01; // 1% SST on gross
 
-  // 1. Annualize gross salary
-  const annualSalary = grossSalary * 12;
+  const taxableIncome = Math.max(0, annualGross - exemptionLimit);
 
-  // 2. Compute deductions
-  // PF deduction
-  const pfEmployee = employee.pfEnabled ? employee.basicSalary * (employee.pfRate / 100) : 0;
-  // CIT deduction
-  const citEmployee = employee.citEnabled ? employee.basicSalary * (employee.citRate / 100) : 0;
-  // SSF deduction
-  let ssfEmployee = 0;
-  if (employee.ssfEnabled) {
-    if (employee.ssfContributionType === "basic") {
-      ssfEmployee = employee.basicSalary * 0.11;
-    } else if (employee.ssfContributionType === "premium") {
-      ssfEmployee = grossSalary * 0.01;
-    }
-  }
+  let tax = 0;
+  // Slab 1: First Rs 200,000 @ 1%
+  if (taxableIncome > 0) tax += Math.min(taxableIncome, 200000) * 0.01;
+  // Slab 2: Next Rs 300,000 @ 10%
+  if (taxableIncome > 200000) tax += Math.min(taxableIncome - 200000, 300000) * 0.1;
+  // Slab 3: Next Rs 500,000 @ 20%
+  if (taxableIncome > 500000) tax += Math.min(taxableIncome - 500000, 500000) * 0.2;
+  // Slab 4: Next Rs 1,000,000 @ 30%
+  if (taxableIncome > 1000000) tax += Math.min(taxableIncome - 1000000, 1000000) * 0.3;
+  // Slab 5: Above Rs 2,000,000 @ 36%
+  if (taxableIncome > 2000000) tax += (taxableIncome - 2000000) * 0.36;
 
-  const monthlyDeductions = pfEmployee + citEmployee + ssfEmployee;
-  const annualDeductions = monthlyDeductions * 12;
-
-  // 3. Compute exemptions
-  const rentExemption = Math.min(employee.rentAllowance || 0, 3000);
-  const medicalExemption = Math.min(employee.medicalAllowance || 0, 750);
-  const transportExemption = Math.min(employee.transportAllowance || 0, 2500);
-
-  const monthlyExemptions = rentExemption + medicalExemption + transportExemption;
-  const annualExemptions = monthlyExemptions * 12;
-
-  // 4. Calculate Taxable Income
-  const taxableAnnualIncome = Math.max(0, annualSalary - annualDeductions - annualExemptions);
-
-  // 5. Calculate progressive tax
-  const slabs = employee.maritalStatus === "married" ? [
-    { limit: 550000, rate: 0.01 },
-    { limit: 220000, rate: 0.10 }, // 770,000 - 550,000 = 220,000
-    { limit: 330000, rate: 0.20 }, // 1,100,000 - 770,000 = 330,000
-    { limit: 1100000, rate: 0.30 }, // 2,200,000 - 1,100,000 = 1,100,000
-    { limit: Infinity, rate: 0.36 },
-  ] : [
-    { limit: 500000, rate: 0.01 },
-    { limit: 200000, rate: 0.10 }, // 700,000 - 500,000 = 200,000
-    { limit: 300000, rate: 0.20 }, // 1,000,000 - 700,000 = 300,000
-    { limit: 1000000, rate: 0.30 }, // 2,000,000 - 1,000,000 = 1,000,000
-    { limit: Infinity, rate: 0.36 },
-  ];
-
-  let tempIncome = taxableAnnualIncome;
-  let annualTax = 0;
-  for (const slab of slabs) {
-    if (tempIncome <= 0) break;
-    const taxableInSlab = Math.min(tempIncome, slab.limit);
-    annualTax += taxableInSlab * slab.rate;
-    tempIncome -= taxableInSlab;
-  }
-
-  // Round tax to 2 decimal places
-  annualTax = Math.round(annualTax * 100) / 100;
-
-  // 6. Calculate monthly TDS
-  const remainingTax = Math.max(0, annualTax - accumulatedTDS);
-  const monthlyTDS = Math.round((remainingTax / remainingMonths) * 100) / 100;
-
-  // Calculate Net Salary
-  // Other deductions (from employee profile deductions list)
-  const otherDeductions = (employee.deductions || []).reduce((sum, d) => sum + d.amount, 0);
-
-  const netSalary = Math.round((grossSalary - monthlyDeductions - monthlyTDS - otherDeductions) * 100) / 100;
-
-  return {
-    grossSalary,
-    totalDeductions: monthlyDeductions,
-    taxableIncome: Math.round((taxableAnnualIncome / 12) * 100) / 100,
-    annualTax,
-    monthlyTDS,
-    netSalary,
-  };
+  // Total annual TDS = income tax + SST
+  return Math.round((tax + socialSecurityTax) / 12); // Return monthly TDS
 }
 
-export function computePFContribution(basicSalary: number, pfEnabled: boolean): { employee: number; employer: number } {
-  if (!pfEnabled) return { employee: 0, employer: 0 };
+/**
+ * Compute PF contribution (employee 10%, employer 10% of basic)
+ */
+export function computePFContribution(basicSalary: number): { employee: number; employer: number } {
   return { employee: basicSalary * 0.1, employer: basicSalary * 0.1 };
 }
 
-export function computeCITContribution(basicSalary: number, citRate: number, citEnabled: boolean): {
+/**
+ * Compute CIT contribution (employee 1%, employer 1% of basic)
+ */
+export function computeCITContribution(basicSalary: number): {
   employee: number;
   employer: number;
 } {
-  if (!citEnabled) return { employee: 0, employer: 0 };
-  return { employee: basicSalary * (citRate / 100), employer: 0 };
-}
-
-export function computeSSFContribution(employee: Employee, grossSalary: number): {
-  employee: number;
-  employer: number;
-} {
-  if (!employee.ssfEnabled) return { employee: 0, employer: 0 };
-  if (employee.ssfContributionType === "basic") {
-    return {
-      employee: employee.basicSalary * 0.11,
-      employer: employee.basicSalary * 0.20,
-    };
-  } else if (employee.ssfContributionType === "premium") {
-    return {
-      employee: grossSalary * 0.01,
-      employer: grossSalary * 0.0333,
-    };
-  }
-  return { employee: 0, employer: 0 };
+  return { employee: basicSalary * 0.01, employer: basicSalary * 0.01 };
 }

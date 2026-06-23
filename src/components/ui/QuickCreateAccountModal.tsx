@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -116,7 +115,7 @@ const QuickCreateAccountModal: React.FC<QuickCreateAccountModalProps> = ({
 
         <Input
           label="Ledger Particulars Name (NP/Devanagari)"
-          placeholder="वैकल्पिक नेपाली नाम"
+          placeholder="à¤µà¥ˆà¤•à¤²à¥à¤ªà¤¿à¤• à¤¨à¥‡à¤ªà¤¾à¤²à¥€ à¤¨à¤¾à¤®"
           value={nameNp}
           onChange={setNameNp}
         />

@@ -1,13 +1,13 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Sales Order register — list + new + edit.
+ * Sales Order register â€” list + new + edit.
  */
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
+import { useActiveSalesOrders } from "../hooks/useActiveData";
 import { Card, Badge, Button, Select, SearchableTable, ActionToolbar } from "../components/ui";
 import { Plus, ClipboardList } from "lucide-react";
 import { formatNumber } from "../lib/utils";
@@ -65,6 +65,7 @@ const STATUS_VARIANT: Record<string, string> = {
 
 const SalesOrder: React.FC = () => {
   const { parties, companySettings, invoices } = useStore();
+  const salesOrders = useActiveSalesOrders();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
@@ -128,11 +129,11 @@ const SalesOrder: React.FC = () => {
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
     { key: "date", header: "Date" },
-    { key: "expectedDate", header: "Expected", render: (v: string) => v || "—" },
+    { key: "expectedDate", header: "Expected", render: (v: string) => v || "â€”" },
     {
       key: "partyId",
       header: "Customer",
-      render: (v: string) => parties.find((p: any) => p.id === v)?.name || "—",
+      render: (v: string) => parties.find((p: any) => p.id === v)?.name || "â€”",
     },
     {
       key: "grandTotal",
@@ -184,7 +185,7 @@ const SalesOrder: React.FC = () => {
         <SearchableTable
           columns={columns as any}
           data={enriched}
-          searchableKeys={["orderNo", "reference"]}
+          searchFields={["orderNo", "reference"]}
           emptyMessage="No sales orders yet."
           onRowClick={(row: any) => {
             setActiveId(row.id);

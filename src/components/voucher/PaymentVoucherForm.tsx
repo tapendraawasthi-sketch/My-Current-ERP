@@ -21,6 +21,7 @@ import {
   PartySelect,
   NepaliDatePicker,
   ConfirmDialog,
+  NarrationInput,
 } from "../ui";
 import {
   Wallet,
@@ -233,19 +234,43 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
 
   const markDirty = () => setDirty(true);
 
-  const voucherNoPreview = useMemo(() => {
+  const [overrideVoucherNo, setOverrideVoucherNo] = useState(false);
+  const [customVoucherNo, setCustomVoucherNo] = useState("");
+
+  const autoVoucherNo = useMemo(() => {
     if (existing?.voucherNo) return existing.voucherNo;
-    try {
-      const { voucherNo } = generateVoucherNo(
-        VoucherType.PAYMENT,
-        companySettings?.voucherSeries || {},
-        vouchers,
-      );
-      return voucherNo;
-    } catch {
-      return "PV-XXXX";
+    const fyShort = currentFiscalYear?.name
+      ? currentFiscalYear.name.split("/").pop()?.slice(-2) || "81"
+      : "81";
+    const prefix = `PV-${fyShort}-`;
+    const matchingVouchers = vouchers.filter(
+      (v) => v.type === VoucherType.PAYMENT && v.voucherNo.startsWith(prefix),
+    );
+    let maxSeq = 0;
+    for (const v of matchingVouchers) {
+      const seqStr = v.voucherNo.slice(prefix.length);
+      const seqNum = parseInt(seqStr, 10);
+      if (!isNaN(seqNum) && seqNum > maxSeq) {
+        maxSeq = seqNum;
+      }
     }
-  }, [existing, companySettings, vouchers]);
+    const nextSeq = String(maxSeq + 1).padStart(4, "0");
+    return `${prefix}${nextSeq}`;
+  }, [existing, currentFiscalYear, vouchers]);
+
+  useEffect(() => {
+    if (!overrideVoucherNo && !isEdit) {
+      setCustomVoucherNo(autoVoucherNo);
+    }
+  }, [autoVoucherNo, overrideVoucherNo, isEdit]);
+
+  useEffect(() => {
+    if (existing?.voucherNo) {
+      setCustomVoucherNo(existing.voucherNo);
+    }
+  }, [existing]);
+
+  const activeVoucherNo = overrideVoucherNo ? customVoucherNo : autoVoucherNo;
 
   // ---- totals ----
   const totals = useMemo(() => {
@@ -374,7 +399,8 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       date,
       dateNepali: ADToBSString(date) || "",
       type: VoucherType.PAYMENT,
-      narration: narration.trim() || `Payment ${voucherNoPreview}`,
+      voucherNo: activeVoucherNo,
+      narration: narration.trim() || `Payment ${activeVoucherNo}`,
       referenceNo: referenceNo.trim() || undefined,
       partyId: partyId || undefined,
       partyName: party?.name || undefined,
@@ -574,7 +600,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
           </button>
           <div>
             <h1 className="text-[13px] font-semibold text-gray-800">Payment Voucher</h1>
-            {isEdit && <p className="text-[11px] text-gray-500 mt-0.5">{voucherNoPreview}</p>}
+            {isEdit && <p className="text-[11px] text-gray-500 mt-0.5">{activeVoucherNo}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -600,11 +626,36 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       <Card border padding="md">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-gray-500 w-32 shrink-0">Voucher No</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700">
-                {voucherNoPreview}
-              </span>
+              <input
+                type="text"
+                value={activeVoucherNo}
+                onChange={(e) => setCustomVoucherNo(e.target.value)}
+                disabled={!overrideVoucherNo || readOnly}
+                className={`h-8 px-2.5 text-[12px] border font-mono font-bold rounded-md w-48 ${
+                  overrideVoucherNo
+                    ? "border-yellow-450 bg-yellow-50 text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 focus:border-yellow-500"
+                    : "border-gray-300 bg-gray-100 text-gray-700 cursor-not-allowed"
+                }`}
+              />
+              {!readOnly && !isEdit && (
+                <label className="inline-flex items-center gap-1.5 text-xs text-gray-600 font-semibold cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={overrideVoucherNo}
+                    onChange={(e) => {
+                      setOverrideVoucherNo(e.target.checked);
+                      if (!e.target.checked) {
+                        setCustomVoucherNo(autoVoucherNo);
+                      }
+                      markDirty();
+                    }}
+                    className="h-3.5 w-3.5 accent-[#1557b0]"
+                  />
+                  Override
+                </label>
+              )}
             </div>
             <Input
               label="Reference No"
@@ -711,7 +762,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         {/* Paid to */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-4 border-t border-gray-200">
           <PartySelect
-            label="Paid To (Party)"
+            label="Paid To (Party) (Optional)"
             value={partyId}
             onChange={(v) => {
               setPartyId(v);
@@ -773,22 +824,21 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
               </div>
             )}
           </div>
-          <textarea
-            rows={2}
+          <NarrationInput
             value={narration}
-            onChange={(e) => {
-              setNarration(e.target.value);
+            onChange={(v) => {
+              setNarration(v);
               markDirty();
             }}
             disabled={readOnly}
-            placeholder="Describe this payment…"
-            className="w-full text-xs font-medium p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-50"
+            voucherType="payment"
+            rows={2}
           />
         </div>
       </Card>
 
       {/* Outstanding invoice settlement */}
-      {!readOnly && partyId && outstandingInvoices.length > 0 && (
+      {!readOnly && enableBillWise && partyId && outstandingInvoices.length > 0 && (
         <Card title={`Outstanding Invoices — ${party?.name || ""}`} padding="none">
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left border-collapse">
@@ -864,7 +914,9 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
               amount.
             </span>
             <div className="flex items-center gap-4">
-              <span className="font-mono font-bold text-amber-700">
+              <span
+                className={`font-mono font-bold ${Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? "text-green-700" : "text-red-600"}`}
+              >
                 Total Allocated: {symbol} {formatNumber(selectedInvoiceTotal)}
               </span>
               <span className="font-mono font-bold text-red-700">
@@ -931,11 +983,12 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                     </td>
                   )}
                   <td className="px-2 py-2">
-                    <Input
+                    <NarrationInput
                       value={line.narration}
                       onChange={(v) => updateLine(idx, "narration", v)}
-                      placeholder="Line memo"
                       disabled={readOnly}
+                      voucherType="payment"
+                      rows={1}
                     />
                   </td>
                   <td className="px-2 py-2">

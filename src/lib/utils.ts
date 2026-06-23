@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -222,34 +221,37 @@ export function generateId(prefix: string): string {
 
 export function getAccountTypeLabel(type: string, lang: string = "en"): string {
   const maps: Record<string, Record<string, string>> = {
-    asset: { en: "Asset", np: "परिसम्पति" },
-    liability: { en: "Liability", np: "दायित्व" },
-    equity: { en: "Equity", np: "पुँजी" },
-    income: { en: "Income", np: "आय" },
-    expense: { en: "Expense", np: "खर्च" },
+    asset: { en: "Asset", np: "à¤ªà¤°à¤¿à¤¸à¤®à¥à¤ªà¤¤à¤¿" },
+    liability: { en: "Liability", np: "à¤¦à¤¾à¤¯à¤¿à¤¤à¥à¤µ" },
+    equity: { en: "Equity", np: "à¤ªà¥à¤à¤œà¥€" },
+    income: { en: "Income", np: "à¤†à¤¯" },
+    expense: { en: "Expense", np: "à¤–à¤°à¥à¤š" },
   };
   return maps[type]?.[lang] || type;
 }
 
 export function getVoucherTypeLabel(type: string, lang: string = "en"): string {
   const maps: Record<string, Record<string, string>> = {
-    journal: { en: "Journal Voucher", np: "जर्नल भाउचर" },
-    payment: { en: "Payment Voucher", np: "भुक्तानी भाउचर" },
-    receipt: { en: "Receipt Voucher", np: "प्राप्ति भाउचर" },
-    contra: { en: "Contra Voucher", np: "काउन्टर म्याच भाउचर" },
-    "sales-invoice": { en: "Sales Tax Invoice", np: "बिक्री कर विजक" },
-    "purchase-invoice": { en: "Purchase Invoice", np: "खरिद बिल विजक" },
-    "opening-balance": { en: "Opening Balance Voucher", np: "सुरुवाती मौजदात विजक" },
+    journal: { en: "Journal Voucher", np: "à¤œà¤°à¥à¤¨à¤² à¤­à¤¾à¤‰à¤šà¤°" },
+    payment: { en: "Payment Voucher", np: "à¤­à¥à¤•à¥à¤¤à¤¾à¤¨à¥€ à¤­à¤¾à¤‰à¤šà¤°" },
+    receipt: { en: "Receipt Voucher", np: "à¤ªà¥à¤°à¤¾à¤ªà¥à¤¤à¤¿ à¤­à¤¾à¤‰à¤šà¤°" },
+    contra: { en: "Contra Voucher", np: "à¤•à¤¾à¤‰à¤¨à¥à¤Ÿà¤° à¤®à¥à¤¯à¤¾à¤š à¤­à¤¾à¤‰à¤šà¤°" },
+    "sales-invoice": { en: "Sales Tax Invoice", np: "à¤¬à¤¿à¤•à¥à¤°à¥€ à¤•à¤° à¤µà¤¿à¤œà¤•" },
+    "purchase-invoice": { en: "Purchase Invoice", np: "à¤–à¤°à¤¿à¤¦ à¤¬à¤¿à¤² à¤µà¤¿à¤œà¤•" },
+    "opening-balance": {
+      en: "Opening Balance Voucher",
+      np: "à¤¸à¥à¤°à¥à¤µà¤¾à¤¤à¥€ à¤®à¥Œà¤œà¤¦à¤¾à¤¤ à¤µà¤¿à¤œà¤•",
+    },
   };
   return maps[type]?.[lang] || type;
 }
 
 export function getLevelLabel(level: string, lang: string = "en"): string {
   const maps: Record<string, Record<string, string>> = {
-    group: { en: "Main Class Group", np: "मुख्य सुची समूह" },
-    subgroup: { en: "Sub Class Group", np: "उप-सूची समूह" },
-    ledger: { en: "Ledger Account", np: "खाता पाना" },
-    subledger: { en: "Sub-Ledger", np: "सहायक खाता पाना" },
+    group: { en: "Main Class Group", np: "à¤®à¥à¤–à¥à¤¯ à¤¸à¥à¤šà¥€ à¤¸à¤®à¥‚à¤¹" },
+    subgroup: { en: "Sub Class Group", np: "à¤‰à¤ª-à¤¸à¥‚à¤šà¥€ à¤¸à¤®à¥‚à¤¹" },
+    ledger: { en: "Ledger Account", np: "à¤–à¤¾à¤¤à¤¾ à¤ªà¤¾à¤¨à¤¾" },
+    subledger: { en: "Sub-Ledger", np: "à¤¸à¤¹à¤¾à¤¯à¤• à¤–à¤¾à¤¤à¤¾ à¤ªà¤¾à¤¨à¤¾" },
   };
   return maps[level]?.[lang] || level;
 }
@@ -283,106 +285,106 @@ const ONES = [
 const TENS = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
 const NEPALI_WORDS = [
-  "शून्य",
-  "एक",
-  "दुई",
-  "तीन",
-  "चार",
-  "पाँच",
-  "छ",
-  "सात",
-  "आठ",
-  "नौ",
-  "दश",
-  "एघार",
-  "बाह्र",
-  "तेह्र",
-  "चौध",
-  "पन्ध्र",
-  "सोह्र",
-  "सत्र",
-  "अठार",
-  "उन्नाइस",
-  "बीस",
-  "एकिस",
-  "बाइस",
-  "तेइस",
-  "चौबिस",
-  "पच्चिस",
-  "छब्बिस",
-  "सत्ताइस",
-  "अठ्ठाइस",
-  "उनान्तीस",
-  "तीस",
-  "एकतीस",
-  "बत्तीस",
-  "तेतीस",
-  "चौंतीस",
-  "पैंतील",
-  "छत्तीसर",
-  "सैंतीस",
-  "अठतीस",
-  "उनन्चालीस",
-  "चालीस",
-  "एकचालीस",
-  "बयालीस",
-  "त्रिचालीस",
-  "चौवालिस",
-  "पैंतालिस",
-  "छयालिस",
-  "सरचालीस",
-  "अठकालीस",
-  "उनन्पचास",
-  "पचास",
-  "एकपन्न",
-  "बाउन्न",
-  "त्रिपन्न",
-  "चौपन्न",
-  "पचपन्न",
-  "छपन्न",
-  "सन्ताउन्न",
-  "अठ्याउन्न",
-  "उनन्साठी",
-  "साठी",
-  "एकसाठी",
-  "बासठ्ठी",
-  "त्रिसाठी",
-  "चौंसठ्ठी",
-  "पैंसठ्ठी",
-  "छyasठ्ठी",
-  "सरसाठी",
-  "अठसाठी",
-  "उनन्सत्तरी",
-  "सत्तरी",
-  "एकहत्तर",
-  "बहत्तर",
-  "त्रिहत्तर",
-  "चौहत्तर",
-  "पचहत्तर",
-  "छहत्तर",
-  "सतहत्तर",
-  "अठहत्तर",
-  "उनन्अस्सी",
-  "अस्सी",
-  "एकासी",
-  "बयासी",
-  "त्रियासी",
-  "चौरासी",
-  "पचासी",
-  "छयासी",
-  "सतासी",
-  "अठासी",
-  "उनान्नब्बे",
-  "नब्बे",
-  "एकानब्बे",
-  "बयानब्बे",
-  "त्रियानब्बे",
-  "चौरानब्बे",
-  "पञ्चानब्बे",
-  "छयानब्बे",
-  "सन्तानब्बे",
-  "अन्ठानब्बे",
-  "उनन्सय",
+  "à¤¶à¥‚à¤¨à¥à¤¯",
+  "à¤à¤•",
+  "à¤¦à¥à¤ˆ",
+  "à¤¤à¥€à¤¨",
+  "à¤šà¤¾à¤°",
+  "à¤ªà¤¾à¤à¤š",
+  "à¤›",
+  "à¤¸à¤¾à¤¤",
+  "à¤†à¤ ",
+  "à¤¨à¥Œ",
+  "à¤¦à¤¶",
+  "à¤à¤˜à¤¾à¤°",
+  "à¤¬à¤¾à¤¹à¥à¤°",
+  "à¤¤à¥‡à¤¹à¥à¤°",
+  "à¤šà¥Œà¤§",
+  "à¤ªà¤¨à¥à¤§à¥à¤°",
+  "à¤¸à¥‹à¤¹à¥à¤°",
+  "à¤¸à¤¤à¥à¤°",
+  "à¤…à¤ à¤¾à¤°",
+  "à¤‰à¤¨à¥à¤¨à¤¾à¤‡à¤¸",
+  "à¤¬à¥€à¤¸",
+  "à¤à¤•à¤¿à¤¸",
+  "à¤¬à¤¾à¤‡à¤¸",
+  "à¤¤à¥‡à¤‡à¤¸",
+  "à¤šà¥Œà¤¬à¤¿à¤¸",
+  "à¤ªà¤šà¥à¤šà¤¿à¤¸",
+  "à¤›à¤¬à¥à¤¬à¤¿à¤¸",
+  "à¤¸à¤¤à¥à¤¤à¤¾à¤‡à¤¸",
+  "à¤…à¤ à¥à¤ à¤¾à¤‡à¤¸",
+  "à¤‰à¤¨à¤¾à¤¨à¥à¤¤à¥€à¤¸",
+  "à¤¤à¥€à¤¸",
+  "à¤à¤•à¤¤à¥€à¤¸",
+  "à¤¬à¤¤à¥à¤¤à¥€à¤¸",
+  "à¤¤à¥‡à¤¤à¥€à¤¸",
+  "à¤šà¥Œà¤‚à¤¤à¥€à¤¸",
+  "à¤ªà¥ˆà¤‚à¤¤à¥€à¤²",
+  "à¤›à¤¤à¥à¤¤à¥€à¤¸à¤°",
+  "à¤¸à¥ˆà¤‚à¤¤à¥€à¤¸",
+  "à¤…à¤ à¤¤à¥€à¤¸",
+  "à¤‰à¤¨à¤¨à¥à¤šà¤¾à¤²à¥€à¤¸",
+  "à¤šà¤¾à¤²à¥€à¤¸",
+  "à¤à¤•à¤šà¤¾à¤²à¥€à¤¸",
+  "à¤¬à¤¯à¤¾à¤²à¥€à¤¸",
+  "à¤¤à¥à¤°à¤¿à¤šà¤¾à¤²à¥€à¤¸",
+  "à¤šà¥Œà¤µà¤¾à¤²à¤¿à¤¸",
+  "à¤ªà¥ˆà¤‚à¤¤à¤¾à¤²à¤¿à¤¸",
+  "à¤›à¤¯à¤¾à¤²à¤¿à¤¸",
+  "à¤¸à¤°à¤šà¤¾à¤²à¥€à¤¸",
+  "à¤…à¤ à¤•à¤¾à¤²à¥€à¤¸",
+  "à¤‰à¤¨à¤¨à¥à¤ªà¤šà¤¾à¤¸",
+  "à¤ªà¤šà¤¾à¤¸",
+  "à¤à¤•à¤ªà¤¨à¥à¤¨",
+  "à¤¬à¤¾à¤‰à¤¨à¥à¤¨",
+  "à¤¤à¥à¤°à¤¿à¤ªà¤¨à¥à¤¨",
+  "à¤šà¥Œà¤ªà¤¨à¥à¤¨",
+  "à¤ªà¤šà¤ªà¤¨à¥à¤¨",
+  "à¤›à¤ªà¤¨à¥à¤¨",
+  "à¤¸à¤¨à¥à¤¤à¤¾à¤‰à¤¨à¥à¤¨",
+  "à¤…à¤ à¥à¤¯à¤¾à¤‰à¤¨à¥à¤¨",
+  "à¤‰à¤¨à¤¨à¥à¤¸à¤¾à¤ à¥€",
+  "à¤¸à¤¾à¤ à¥€",
+  "à¤à¤•à¤¸à¤¾à¤ à¥€",
+  "à¤¬à¤¾à¤¸à¤ à¥à¤ à¥€",
+  "à¤¤à¥à¤°à¤¿à¤¸à¤¾à¤ à¥€",
+  "à¤šà¥Œà¤‚à¤¸à¤ à¥à¤ à¥€",
+  "à¤ªà¥ˆà¤‚à¤¸à¤ à¥à¤ à¥€",
+  "à¤›yasà¤ à¥à¤ à¥€",
+  "à¤¸à¤°à¤¸à¤¾à¤ à¥€",
+  "à¤…à¤ à¤¸à¤¾à¤ à¥€",
+  "à¤‰à¤¨à¤¨à¥à¤¸à¤¤à¥à¤¤à¤°à¥€",
+  "à¤¸à¤¤à¥à¤¤à¤°à¥€",
+  "à¤à¤•à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤¬à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤¤à¥à¤°à¤¿à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤šà¥Œà¤¹à¤¤à¥à¤¤à¤°",
+  "à¤ªà¤šà¤¹à¤¤à¥à¤¤à¤°",
+  "à¤›à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤¸à¤¤à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤…à¤ à¤¹à¤¤à¥à¤¤à¤°",
+  "à¤‰à¤¨à¤¨à¥à¤…à¤¸à¥à¤¸à¥€",
+  "à¤…à¤¸à¥à¤¸à¥€",
+  "à¤à¤•à¤¾à¤¸à¥€",
+  "à¤¬à¤¯à¤¾à¤¸à¥€",
+  "à¤¤à¥à¤°à¤¿à¤¯à¤¾à¤¸à¥€",
+  "à¤šà¥Œà¤°à¤¾à¤¸à¥€",
+  "à¤ªà¤šà¤¾à¤¸à¥€",
+  "à¤›à¤¯à¤¾à¤¸à¥€",
+  "à¤¸à¤¤à¤¾à¤¸à¥€",
+  "à¤…à¤ à¤¾à¤¸à¥€",
+  "à¤‰à¤¨à¤¾à¤¨à¥à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤à¤•à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤¬à¤¯à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤¤à¥à¤°à¤¿à¤¯à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤šà¥Œà¤°à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤ªà¤žà¥à¤šà¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤›à¤¯à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤¸à¤¨à¥à¤¤à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤…à¤¨à¥à¤ à¤¾à¤¨à¤¬à¥à¤¬à¥‡",
+  "à¤‰à¤¨à¤¨à¥à¤¸à¤¯",
 ];
 
 /**
@@ -418,12 +420,12 @@ export function numberToWords(
   if (amount === 0) {
     return {
       english: "Zero Rupees Only",
-      nepali: "शून्य रुपैयाँ मात्र",
+      nepali: "à¤¶à¥‚à¤¨à¥à¤¯ à¤°à¥à¤ªà¥ˆà¤¯à¤¾à¤ à¤®à¤¾à¤¤à¥à¤°",
     };
   }
 
   const signStrEn = amount < 0 ? "Negative " : "";
-  const signStrNp = amount < 0 ? "ऋणात्मक " : "";
+  const signStrNp = amount < 0 ? "à¤‹à¤£à¤¾à¤¤à¥à¤®à¤• " : "";
 
   const absAmount = Math.abs(amount);
   const rupeesInteger = Math.floor(absAmount);
@@ -476,25 +478,25 @@ export function numberToWords(
     wordNp +=
       (croreVal >= 100
         ? translateUnderThousand(croreVal) + " "
-        : translateUnderHundredNep(croreVal)) + " करोड ";
+        : translateUnderHundredNep(croreVal)) + " à¤•à¤°à¥‹à¤¡ ";
     tempRupeesNp %= 10000000;
   }
 
   if (tempRupeesNp >= 100000) {
     const lakhVal = Math.floor(tempRupeesNp / 100000);
-    wordNp += translateUnderHundredNep(lakhVal) + " लाख ";
+    wordNp += translateUnderHundredNep(lakhVal) + " à¤²à¤¾à¤– ";
     tempRupeesNp %= 100000;
   }
 
   if (tempRupeesNp >= 1000) {
     const thousandVal = Math.floor(tempRupeesNp / 1000);
-    wordNp += translateUnderHundredNep(thousandVal) + " हजार ";
+    wordNp += translateUnderHundredNep(thousandVal) + " à¤¹à¤œà¤¾à¤° ";
     tempRupeesNp %= 1000;
   }
 
   if (tempRupeesNp >= 100) {
     const hundredVal = Math.floor(tempRupeesNp / 100);
-    wordNp += translateUnderHundredNep(hundredVal) + " सय ";
+    wordNp += translateUnderHundredNep(hundredVal) + " à¤¸à¤¯ ";
     tempRupeesNp %= 100;
   }
 
@@ -504,11 +506,12 @@ export function numberToWords(
 
   wordNp = wordNp.trim();
   if (wordNp === "") {
-    wordNp = "शून्य";
+    wordNp = "à¤¶à¥‚à¤¨à¥à¤¯";
   }
 
-  const paisaWordNp = paisaInteger > 0 ? ` र ${translateUnderHundredNep(paisaInteger)} पैसा` : "";
-  const nepaliFullText = `${signStrNp}${wordNp} रुपैयाँ${paisaWordNp} मात्र`;
+  const paisaWordNp =
+    paisaInteger > 0 ? ` à¤° ${translateUnderHundredNep(paisaInteger)} à¤ªà¥ˆà¤¸à¤¾` : "";
+  const nepaliFullText = `${signStrNp}${wordNp} à¤°à¥à¤ªà¥ˆà¤¯à¤¾à¤${paisaWordNp} à¤®à¤¾à¤¤à¥à¤°`;
 
   return {
     english: englishFullText,

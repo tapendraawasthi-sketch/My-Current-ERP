@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -63,7 +62,7 @@ export function formatBSToAD(bsDateStr: string): string {
 
 /**
  * Renders a human-readable BS date label.
- * e.g., "2083/04/15" -> "15 Shrawan 2083" or "१५ साउन २०८३"
+ * e.g., "2083/04/15" -> "15 Shrawan 2083" or "à¥§à¥« à¤¸à¤¾à¤‰à¤¨ à¥¨à¥¦à¥®à¥©"
  */
 export function formatBSDate(bsDateStr: string, lang: "en" | "np" = "en"): string {
   if (!bsDateStr) return "";

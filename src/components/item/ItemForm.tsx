@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { Button, Input, Select, AmountInput, AccountSelect } from "../ui";
 import { useStore } from "../../store/useStore";
 import { ItemType, AccountType, type Item } from "../../lib/types";
@@ -156,14 +155,17 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
   };
 
   const unitOptions = units.length
-    ? units.map((u) => ({ value: u.code, label: `${u.code} — ${u.name}` }))
+    ? units.map((u) => ({ value: u.code, label: `${u.code} â€” ${u.name}` }))
     : [
-        { value: "PCS", label: "PCS — Pieces" },
-        { value: "BOX", label: "BOX — Box" },
-        { value: "KG", label: "KG — Kilogram" },
+        { value: "PCS", label: "PCS â€” Pieces" },
+        { value: "BOX", label: "BOX â€” Box" },
+        { value: "KG", label: "KG â€” Kilogram" },
       ];
 
-  const warehouseOptions = warehouses.map((w) => ({ value: w.id, label: `${w.code} — ${w.name}` }));
+  const warehouseOptions = warehouses.map((w) => ({
+    value: w.id,
+    label: `${w.code} â€” ${w.name}`,
+  }));
 
   const isEdit = !!item;
 
@@ -275,7 +277,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
               label="Alternate Unit"
               value={alternateUnit}
               onChange={setAlternateUnit}
-              options={[{ value: "", label: "— None —" }, ...unitOptions]}
+              options={[{ value: "", label: "â€” None â€”" }, ...unitOptions]}
             />
             <Input
               label={`Conversion Factor (1 ${unit} = ?)`}

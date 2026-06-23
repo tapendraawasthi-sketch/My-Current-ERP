@@ -191,9 +191,21 @@ export default function OpeningBalance() {
         </div>
 
         <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg mb-3">
-          <div className="text-[12px] text-blue-700"><span className="font-bold">Total Debit: </span>{totalDebit.toFixed(2)}</div>
-          <div className={`text-[12px] font-bold ${Math.abs(totalDebit - totalCredit) < 0.01 ? "text-green-700" : "text-red-600"}`}>{Math.abs(totalDebit - totalCredit) < 0.01 ? "✓ Balanced" : `Diff: ${Math.abs(totalDebit - totalCredit).toFixed(2)}`}</div>
-          <div className="text-[12px] text-blue-700"><span className="font-bold">Total Credit: </span>{totalCredit.toFixed(2)}</div>
+          <div className="text-[12px] text-blue-700">
+            <span className="font-bold">Total Debit: </span>
+            {totalDebit.toFixed(2)}
+          </div>
+          <div
+            className={`text-[12px] font-bold ${Math.abs(totalDebit - totalCredit) < 0.01 ? "text-green-700" : "text-red-600"}`}
+          >
+            {Math.abs(totalDebit - totalCredit) < 0.01
+              ? "✓ Balanced"
+              : `Diff: ${Math.abs(totalDebit - totalCredit).toFixed(2)}`}
+          </div>
+          <div className="text-[12px] text-blue-700">
+            <span className="font-bold">Total Credit: </span>
+            {totalCredit.toFixed(2)}
+          </div>
         </div>
       </div>
 

@@ -1,22 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- *
- * Nepal VAT reporting page with VAT 3 return and Annex A/B/C.
- */
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import {
-  Card,
-  Badge,
-  Button,
-  Table,
-  Select,
-  NepaliDatePicker,
-  ActionToolbar,
-} from "../components/ui";
-import { FileSpreadsheet, Printer, Activity, Layers, BookOpen, Download } from "lucide-react";
+import { Card, Select, NepaliDatePicker } from "../components/ui";
+import { FileSpreadsheet, Printer, Download } from "lucide-react";
 import {
   computeVatAnnexA,
   computeVatAnnexB,
@@ -43,16 +28,41 @@ const VatReports: React.FC = () => {
   const defaultAdEnd = currentFiscalYear?.endDate || dateToAD(new Date());
 
   const defaultBsStart = formatADToBS(defaultAdStart);
-  const [periodType, setPeriodType] = useState<"month" | "quarter" | "custom">("month");
+
+  // Calculate total turnover to auto-select filing mode
+  const totalTurnover = useMemo(() => {
+    return invoices
+      .filter((inv) => inv.type === "sales-invoice" && inv.status === "posted")
+      .reduce((sum, inv) => sum + inv.grandTotal, 0);
+  }, [invoices]);
+
+  const [filingMode, setFilingMode] = useState<"monthly" | "quarterly">("quarterly");
+  const [periodType, setPeriodType] = useState<"month" | "quarter" | "custom">("quarter");
   const [bsYear, setBsYear] = useState<number>(parseInt(defaultBsStart.split("/")[0], 10) || 2083);
   const [bsMonth, setBsMonth] = useState<number>(parseInt(defaultBsStart.split("/")[1], 10) || 4);
   const [bsQuarter, setBsQuarter] = useState<1 | 2 | 3 | 4>(
-    Math.max(1, Math.min(4, Math.floor((parseInt(defaultBsStart.split("/")[1], 10) - 1) / 3) + 1)),
+    Math.max(
+      1,
+      Math.min(4, Math.floor((parseInt(defaultBsStart.split("/")[1], 10) - 1) / 3) + 1),
+    ) as 1 | 2 | 3 | 4,
   );
+
   const [customStartDate, setCustomStartDate] = useState<string>(defaultAdStart);
   const [customEndDate, setCustomEndDate] = useState<string>(defaultAdEnd);
-  const [annexTab, setAnnexTab] = useState<"summary"|"A"|"B"|"C">("summary");
-  const activeTab = annexTab === "summary" ? "vat3" : annexTab === "A" ? "annex-a" : annexTab === "B" ? "annex-b" : "annex-c";
+
+  // Tabs map directly to Annex 18 (Purchases), Annex 19 (Sales)
+  const [annexTab, setAnnexTab] = useState<"summary" | "annex18" | "annex19" | "annexC">("summary");
+
+  // Auto select filing mode on mount/turnover change
+  useEffect(() => {
+    if (totalTurnover > 10000000) {
+      setFilingMode("monthly");
+      setPeriodType("month");
+    } else {
+      setFilingMode("quarterly");
+      setPeriodType("quarter");
+    }
+  }, [totalTurnover]);
 
   useEffect(() => {
     if (currentFiscalYear?.startDate && currentFiscalYear?.endDate) {
@@ -60,11 +70,9 @@ const VatReports: React.FC = () => {
       const [year, month] = startBS.split("/").map((part) => parseInt(part, 10));
       setBsYear(year || bsYear);
       setBsMonth(month || bsMonth);
-      setBsQuarter(Math.max(1, Math.min(4, Math.floor(((month || bsMonth) - 1) / 3) + 1))) as
-        | 1
-        | 2
-        | 3
-        | 4;
+      setBsQuarter(
+        Math.max(1, Math.min(4, Math.floor(((month || bsMonth) - 1) / 3) + 1)) as 1 | 2 | 3 | 4,
+      );
     }
   }, [currentFiscalYear]);
 
@@ -145,57 +153,104 @@ const VatReports: React.FC = () => {
   const selectedStartBS = formatADToBS(dateRange.start);
   const selectedEndBS = formatADToBS(dateRange.end);
 
-  const tableColumns = [
-    { key: "sNo", header: "SN", width: "5%" },
-    {
-      key: "date",
-      header: "Date (BS)",
-      width: "12%",
-      render: (value: string) => {
-        try {
-          return formatADToBS(value);
-        } catch (e) {
-          return value;
-        }
-      },
-    },
-    { key: "billNo", header: "Invoice No", width: "12%" },
-    { key: "partyName", header: "Party Name", width: "25%" },
-    { key: "partyPan", header: "PAN No", width: "12%" },
-    {
-      key: "totalAmt",
-      header: "Total Amount",
-      width: "12%",
-      align: "right",
-      render: (value: number) => formatNumber(value),
-      className: "font-mono",
-    },
-    {
-      key: "taxableAmt",
-      header: "Taxable Amount",
-      width: "12%",
-      align: "right",
-      render: (value: number) => formatNumber(value),
-      className: "font-mono",
-    },
-    {
-      key: "vatAmt",
-      header: "VAT Amount",
-      width: "12%",
-      align: "right",
-      render: (value: number) => formatNumber(value),
-      className: "font-mono",
-    },
-  ];
+  // Map annexTab to activeAnnex data & parameters for existing library functions
+  const activeAnnex = useMemo(() => {
+    switch (annexTab) {
+      case "annex18": // Purchase Register (Annex-18 in Nepal VAT)
+        return { type: "A" as const, data: annexA };
+      case "annex19": // Sales Register (Annex-19 in Nepal VAT)
+        return { type: "B" as const, data: annexB };
+      case "annexC": // Imports
+        return { type: "C" as const, data: annexC };
+      default:
+        return null;
+    }
+  }, [annexTab, annexA, annexB, annexC]);
+
+  // Output VAT - Input VAT = Net VAT
+  const outputVat = vat3Return.salesVat;
+  const inputVat = vat3Return.purchaseVat;
+  const netVat = outputVat - inputVat;
 
   const vat3SummaryRows = [
-    { label: "Sales VAT Collected", value: vat3Return.salesVat },
-    { label: "Purchase VAT Paid", value: vat3Return.purchaseVat },
-    { label: "Net VAT", value: vat3Return.netVat },
+    { label: "Sales VAT Collected (Output VAT)", value: outputVat },
+    { label: "Purchase VAT Paid (Input VAT)", value: inputVat },
+    { label: "Net VAT", value: netVat },
     { label: "VAT Payable", value: vat3Return.vatPayable },
     { label: "VAT Refundable", value: vat3Return.vatRefundable },
     { label: "Previous VAT Balance", value: vat3Return.prevBalance },
   ];
+
+  const handleExportIrdCsv = (type: "18" | "19", data: any) => {
+    let headers: string[] = [];
+    let rows: any[] = [];
+
+    if (type === "19") {
+      // VAT Sales Register Annex-19
+      headers = [
+        "S.No",
+        "Customer Name",
+        "PAN No",
+        "Invoice No",
+        "Invoice Date",
+        "Taxable Sales",
+        "Exempt Sales",
+        "VAT Collected",
+      ];
+      rows = data.rows.map((row: any) => [
+        row.sNo,
+        `"${row.partyName.replace(/"/g, '""')}"`,
+        row.partyPan || "",
+        row.billNo,
+        formatADToBS(row.date),
+        row.taxableAmt.toFixed(2),
+        row.exemptAmt.toFixed(2),
+        row.vatAmt.toFixed(2),
+      ]);
+    } else {
+      // VAT Purchase Register Annex-18
+      headers = [
+        "S.No",
+        "Supplier Name",
+        "PAN No",
+        "Bill No",
+        "Bill Date",
+        "Taxable Amount",
+        "VAT Amount",
+        "Total Amount",
+      ];
+      rows = data.rows.map((row: any) => [
+        row.sNo,
+        `"${row.partyName.replace(/"/g, '""')}"`,
+        row.partyPan || "",
+        row.billNo,
+        formatADToBS(row.date),
+        row.taxableAmt.toFixed(2),
+        row.vatAmt.toFixed(2),
+        row.totalAmt.toFixed(2),
+      ]);
+    }
+
+    const csvContent = [headers.join(";"), ...rows.map((row) => row.join(";"))].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `IRD_Annex_${type === "19" ? "19_Sales" : "18_Purchases"}_${periodLabel.replace(/\s+/g, "_")}.csv`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success(`Exported Annex ${type === "19" ? "19 (Sales)" : "18 (Purchases)"} CSV for IRD.`);
+  };
+
+  const handleFilingModeChange = (mode: "monthly" | "quarterly") => {
+    setFilingMode(mode);
+    setPeriodType(mode === "monthly" ? "month" : "quarter");
+  };
 
   const renderVat3Card = () => (
     <div className="grid gap-3 md:grid-cols-3 w-full">
@@ -231,20 +286,23 @@ const VatReports: React.FC = () => {
       headStyles: { fillColor: [30, 58, 96], textColor: 255 },
     });
 
-    const blob = doc.output("blob");
-    return blob;
+    return doc.output("blob");
   };
 
   const printAnnexPDF = (type: "A" | "B" | "C", data: any) => {
     const doc = new jsPDF({ unit: "pt" });
     doc.setFontSize(14);
-    doc.text(`VAT Annex ${type}`, 40, 40);
+    doc.text(
+      `VAT Annex ${type === "A" ? "18 (Purchases)" : type === "B" ? "19 (Sales)" : "C (Imports)"}`,
+      40,
+      40,
+    );
     doc.setFontSize(10);
     doc.text(`Period: ${periodLabel}`, 40, 58);
 
     const body = data.rows.map((row: any) => [
       row.sNo,
-      row.date,
+      formatADToBS(row.date),
       row.billNo,
       row.partyName,
       row.partyPan || "-",
@@ -277,7 +335,7 @@ const VatReports: React.FC = () => {
       },
     });
 
-    const summaryY = doc.lastAutoTable?.finalY || 80;
+    const summaryY = (doc as any).lastAutoTable?.finalY || 80;
     doc.setFontSize(10);
     doc.text(
       `Totals: Taxable Rs. ${formatNumber(data.totals.taxable)}, VAT Rs. ${formatNumber(data.totals.vat)}, Exempt Rs. ${formatNumber(data.totals.exempt)}, Gross Rs. ${formatNumber(data.totals.total)}`,
@@ -301,89 +359,22 @@ const VatReports: React.FC = () => {
   const handleExportAnnex = (type: "A" | "B" | "C", data: any) => {
     try {
       exportVatAnnexToExcel(type, data, periodLabel);
-      toast.success(`Annex ${type} exported to Excel.`);
+      toast.success(
+        `Annex ${type === "A" ? "18 (Purchases)" : type === "B" ? "19 (Sales)" : "C"} exported to Excel.`,
+      );
     } catch (error: any) {
       toast.error(error?.message || `Could not export Annex ${type}.`);
     }
   };
 
-  const getActiveAnnexData = () => {
-    switch (annexTab) {
-      case "A":
-        return { type: "A" as const, data: annexA };
-      case "B":
-        return { type: "B" as const, data: annexB };
-      case "C":
-        return { type: "C" as const, data: annexC };
-      default:
-        return null;
-    }
-  };
-
-  const activeAnnex = getActiveAnnexData();
-
-  const toolbarPrimaryAction = useMemo(() => {
-    if (activeTab === "vat3") {
-      return {
-        label: "Print PDF",
-        onClick: () => {
-          try {
-            const blob = printVat3ReturnPDF();
-            const url = URL.createObjectURL(blob);
-            const win = window.open(url);
-            if (win) win.focus();
-          } catch (error: any) {
-            toast.error(error?.message || "Could not print VAT 3 return.");
-          }
-        },
-        icon: <Printer className="h-4 w-4" />,
-      };
-    } else if (activeAnnex) {
-      return {
-        label: "Print PDF",
-        onClick: () => {
-          try {
-            const blob = printAnnexPDF(activeAnnex.type, activeAnnex.data);
-            const url = URL.createObjectURL(blob);
-            const win = window.open(url);
-            if (win) win.focus();
-          } catch (error: any) {
-            toast.error(error?.message || "Could not print Annex report.");
-          }
-        },
-        icon: <Printer className="h-4 w-4" />,
-      };
-    }
-    return undefined;
-  }, [activeTab, activeAnnex]);
-
-  const toolbarSecondaryActions = useMemo(() => {
-    if (activeTab === "vat3") {
-      return [
-        {
-          label: "Export Excel",
-          onClick: exportVat3ToExcel,
-          icon: <FileSpreadsheet className="h-4 w-4" />,
-        },
-      ];
-    } else if (activeAnnex) {
-      return [
-        {
-          label: "Export Excel",
-          onClick: () => handleExportAnnex(activeAnnex.type, activeAnnex.data),
-          icon: <FileSpreadsheet className="h-4 w-4" />,
-        },
-      ];
-    }
-    return [];
-  }, [activeTab, activeAnnex]);
-
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none">
+    <div className="flex flex-col gap-6 animate-fadeIn select-none page-wrapper">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">VAT Reports</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">IRD-compliant VAT return reports</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            IRD-compliant VAT return reports (Nepal)
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {annexTab === "summary" ? (
@@ -391,7 +382,7 @@ const VatReports: React.FC = () => {
               <button
                 type="button"
                 onClick={exportVat3ToExcel}
-                className="h-8 px-3 text-[11px] font-bold border rounded-md text-green-700 bg-green-50 border-green-200 hover:bg-green-100 flex items-center gap-1.5 cursor-pointer"
+                className="h-8 px-3 text-[12px] font-semibold border rounded-md text-green-700 bg-green-50 border-green-200 hover:bg-green-100 flex items-center gap-1.5 cursor-pointer"
               >
                 <Download className="h-3.5 w-3.5" /> Export VAT 3 (Excel)
               </button>
@@ -414,6 +405,17 @@ const VatReports: React.FC = () => {
             </>
           ) : (
             <>
+              {(annexTab === "annex18" || annexTab === "annex19") && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleExportIrdCsv(annexTab === "annex18" ? "18" : "19", activeAnnex?.data)
+                  }
+                  className="h-8 px-3 text-[12px] font-bold border rounded-md text-[#1557b0] bg-blue-50 border-blue-200 hover:bg-blue-100 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5" /> Export for IRD (CSV)
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -421,9 +423,9 @@ const VatReports: React.FC = () => {
                     handleExportAnnex(activeAnnex.type, activeAnnex.data);
                   }
                 }}
-                className="h-8 px-3 text-[11px] font-bold border rounded-md text-green-700 bg-green-50 border-green-200 hover:bg-green-100 flex items-center gap-1.5 cursor-pointer"
+                className="h-8 px-3 text-[12px] font-semibold border rounded-md text-green-700 bg-green-50 border-green-200 hover:bg-green-100 flex items-center gap-1.5 cursor-pointer"
               >
-                <Download className="h-3.5 w-3.5" /> Export Annex ({annexTab})
+                <Download className="h-3.5 w-3.5" /> Export Annex (Excel)
               </button>
               <button
                 type="button"
@@ -452,18 +454,36 @@ const VatReports: React.FC = () => {
         <div className="grid gap-4 xl:grid-cols-[1fr_270px]">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="grid gap-2">
-              <label className="text-[11px] font-medium text-gray-600">Reporting Mode</label>
-              <div className="grid gap-2 sm:grid-cols-3">
-                {["month", "quarter", "custom"].map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setPeriodType(mode as typeof periodType)}
-                    className={`h-8 text-[12px] font-medium rounded-md transition-colors cursor-pointer ${periodType === mode ? "bg-[#1557b0] text-white font-semibold" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
-                  >
-                    {mode === "month" ? "Month" : mode === "quarter" ? "Quarter" : "Custom"}
-                  </button>
-                ))}
+              <label className="text-[11px] font-medium text-gray-600">
+                Filing Mode (Nepal VAT)
+              </label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleFilingModeChange("monthly")}
+                  className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors cursor-pointer ${
+                    filingMode === "monthly"
+                      ? "bg-[#1557b0] text-white font-semibold"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFilingModeChange("quarterly")}
+                  className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors cursor-pointer ${
+                    filingMode === "quarterly"
+                      ? "bg-[#1557b0] text-white font-semibold"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  Quarterly
+                </button>
+              </div>
+              <div className="text-[10px] text-gray-500 mt-0.5">
+                Turnover: Rs. {formatNumber(totalTurnover)} (
+                {totalTurnover > 10000000 ? "Monthly > 1 Crore" : "Quarterly <= 1 Crore"})
               </div>
             </div>
 
@@ -485,8 +505,11 @@ const VatReports: React.FC = () => {
                     const monthValue = parseInt(value, 10);
                     setBsMonth(monthValue || bsMonth);
                     setBsQuarter(
-                      Math.max(1, Math.min(4, Math.floor(((monthValue || bsMonth) - 1) / 3) + 1)),
-                    ) as any;
+                      Math.max(
+                        1,
+                        Math.min(4, Math.floor(((monthValue || bsMonth) - 1) / 3) + 1),
+                      ) as any,
+                    );
                   } else {
                     setBsQuarter(Math.max(1, Math.min(4, parseInt(value, 10))) as any);
                   }
@@ -514,9 +537,22 @@ const VatReports: React.FC = () => {
       </Card>
 
       <div className="flex items-center gap-1 mb-3">
-        {[{key:"summary",label:"VAT Summary"},{key:"A",label:"Annex-A (Sales)"},{key:"B",label:"Annex-B (Purchases)"},{key:"C",label:"Annex-C (Imports)"}].map(({key,label}) => (
-          <button key={key} type="button" onClick={() => setAnnexTab(key as any)}
-            className={`h-8 px-3 text-[11px] font-semibold rounded-t transition-colors border-b-2 cursor-pointer ${annexTab === key ? "border-[#1557b0] text-[#1557b0] bg-white" : "border-transparent text-gray-500 hover:text-gray-700 bg-gray-100"}`}>
+        {[
+          { key: "summary", label: "VAT Summary" },
+          { key: "annex18", label: "VAT Purchase Register (Annex-18)" },
+          { key: "annex19", label: "VAT Sales Register (Annex-19)" },
+          { key: "annexC", label: "Annex-C (Imports)" },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setAnnexTab(key as any)}
+            className={`h-8 px-3 text-[11px] font-semibold rounded-t transition-colors border-b-2 cursor-pointer ${
+              annexTab === key
+                ? "border-[#1557b0] text-[#1557b0] bg-white"
+                : "border-transparent text-gray-500 hover:text-gray-700 bg-gray-100"
+            }`}
+          >
             {label}
           </button>
         ))}
@@ -524,22 +560,38 @@ const VatReports: React.FC = () => {
 
       {annexTab === "summary" ? (
         <Card border padding="md" className="grid gap-5">
-          {vat3Return.vatPayable > 0 ? (
-            <div className="bg-[#fff3cd] border border-[#ffc107] font-bold text-[13px] px-4 py-2.5 rounded-md text-amber-900 flex items-center justify-between">
-              <span>Net VAT Position:</span>
-              <span>VAT PAYABLE: Rs. {formatNumber(vat3Return.vatPayable)}</span>
+          {/* VAT Payable summary output - input */}
+          <div className="p-4 border rounded-md bg-white">
+            <h3 className="text-[12px] font-bold text-gray-700 mb-2 uppercase tracking-wide">
+              VAT Payable Summary
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[12px]">
+              <div>
+                <span className="text-gray-500 block">Output VAT (Collected)</span>
+                <span className="font-semibold text-gray-800 font-mono">
+                  Rs. {formatNumber(outputVat)}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Input VAT (Paid)</span>
+                <span className="font-semibold text-gray-800 font-mono">
+                  Rs. {formatNumber(inputVat)}
+                </span>
+              </div>
+              <div className="border-l pl-4">
+                <span className="text-gray-500 block">Net VAT Payable/Refundable</span>
+                <span
+                  className={`font-bold font-mono ${
+                    netVat > 0 ? "text-[#dc2626]" : netVat < 0 ? "text-[#059669]" : "text-gray-600"
+                  }`}
+                >
+                  Rs. {formatNumber(Math.abs(netVat))}{" "}
+                  {netVat > 0 ? "(Payable)" : netVat < 0 ? "(Refundable)" : "(Nil)"}
+                </span>
+              </div>
             </div>
-          ) : vat3Return.vatRefundable > 0 ? (
-            <div className="bg-[#fff3cd] border border-[#ffc107] font-bold text-[13px] px-4 py-2.5 rounded-md text-amber-900 flex items-center justify-between">
-              <span>Net VAT Position:</span>
-              <span>VAT REFUNDABLE: Rs. {formatNumber(vat3Return.vatRefundable)}</span>
-            </div>
-          ) : (
-            <div className="bg-[#fff3cd] border border-[#ffc107] font-bold text-[13px] px-4 py-2.5 rounded-md text-amber-900 flex items-center justify-between">
-              <span>Net VAT Position:</span>
-              <span>Balanced (No VAT Payable/Refundable)</span>
-            </div>
-          )}
+          </div>
+
           <div className="grid gap-4 lg:grid-cols-3">{renderVat3Card()}</div>
         </Card>
       ) : (
@@ -547,10 +599,10 @@ const VatReports: React.FC = () => {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-b pb-4">
             <div>
               <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                {annexTab === "A"
-                  ? "Annex A (Sales)"
-                  : annexTab === "B"
-                    ? "Annex B (Purchases)"
+                {annexTab === "annex18"
+                  ? "VAT Purchase Register (Annex-18)"
+                  : annexTab === "annex19"
+                    ? "VAT Sales Register (Annex-19)"
                     : "Annex C (Imports)"}
               </div>
               <div className="mt-1 text-xs text-gray-500">
@@ -580,68 +632,177 @@ const VatReports: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white border rounded-lg overflow-hidden animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="bg-white border rounded-lg overflow-hidden animate-fadeIn"
+            style={{ borderColor: "var(--border)" }}
+          >
             <table className="data-table">
               <thead>
                 <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-                  {annexTab === "A" ? (
+                  {annexTab === "annex19" ? (
+                    // Sales Register (Annex-19)
                     <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Bill No</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Bill Date</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Customer Name</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">PAN</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Taxable Amount</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">VAT Amount</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Total</th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        S.No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Customer Name
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        PAN No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Invoice No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Invoice Date
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Taxable Sales
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Exempt Sales
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        VAT Collected
+                      </th>
+                    </>
+                  ) : annexTab === "annex18" ? (
+                    // Purchase Register (Annex-18)
+                    <>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        S.No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Supplier Name
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        PAN No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Bill No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Bill Date
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Taxable Amount
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        VAT Amount
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Total Amount
+                      </th>
                     </>
                   ) : (
+                    // Imports (Annex C)
                     <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Bill No</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Supplier Name</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">PAN</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Taxable Amount</th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">VAT Amount</th>
-                      {annexTab === "C" && <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Total</th>}
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Bill No
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        Supplier Name
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                        PAN
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Taxable Amount
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        VAT Amount
+                      </th>
+                      <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                        Total
+                      </th>
                     </>
                   )}
                 </tr>
               </thead>
               <tbody>
-                {(!activeAnnex || activeAnnex.data.rows.length === 0) ? (
+                {!activeAnnex || activeAnnex.data.rows.length === 0 ? (
                   <tr>
-                    <td colSpan={annexTab === "A" ? 7 : (annexTab === "C" ? 6 : 5)} className="text-center py-8 text-gray-500 text-[12px]">
+                    <td
+                      colSpan={annexTab === "annex19" ? 8 : annexTab === "annex18" ? 8 : 6}
+                      className="text-center py-8 text-gray-500 text-[12px]"
+                    >
                       No records found for the selected period.
                     </td>
                   </tr>
                 ) : (
                   activeAnnex.data.rows.map((row: any, idx: number) => (
                     <tr key={idx} className="hover:bg-[#e8eeff]">
-                      {annexTab === "A" ? (
+                      {annexTab === "annex19" ? (
                         <>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{row.billNo}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">
-                            {(() => {
-                              try {
-                                return formatADToBS(row.date);
-                              } catch (e) {
-                                return row.date;
-                              }
-                            })()}
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.sNo}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-semibold">
+                            {row.partyName}
                           </td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.partyName}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{row.partyPan || "-"}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.taxableAmt)}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr">Rs. {formatNumber(row.vatAmt)}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.totalAmt)}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">
+                            {row.partyPan || "-"}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">
+                            {row.billNo}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">
+                            {formatADToBS(row.date)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                            Rs. {formatNumber(row.taxableAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                            Rs. {formatNumber(row.exemptAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr">
+                            Rs. {formatNumber(row.vatAmt)}
+                          </td>
+                        </>
+                      ) : annexTab === "annex18" ? (
+                        <>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.sNo}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-semibold">
+                            {row.partyName}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">
+                            {row.partyPan || "-"}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">
+                            {row.billNo}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">
+                            {formatADToBS(row.date)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                            Rs. {formatNumber(row.taxableAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">
+                            Rs. {formatNumber(row.vatAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-semibold">
+                            Rs. {formatNumber(row.totalAmt)}
+                          </td>
                         </>
                       ) : (
                         <>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{row.billNo}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.partyName}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{row.partyPan || "-"}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.taxableAmt)}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">Rs. {formatNumber(row.vatAmt)}</td>
-                          {annexTab === "C" && <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.totalAmt)}</td>}
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">
+                            {row.billNo}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700">
+                            {row.partyName}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">
+                            {row.partyPan || "-"}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                            Rs. {formatNumber(row.taxableAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">
+                            Rs. {formatNumber(row.vatAmt)}
+                          </td>
+                          <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                            Rs. {formatNumber(row.totalAmt)}
+                          </td>
                         </>
                       )}
                     </tr>
@@ -651,11 +812,45 @@ const VatReports: React.FC = () => {
               {activeAnnex && activeAnnex.data.rows.length > 0 && (
                 <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
                   <tr>
-                    <td colSpan={annexTab === "A" ? 4 : 3} className="px-3 py-2 text-[12px] text-gray-700">Total</td>
-                    <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(activeAnnex.data.totals.taxable)}</td>
-                    <td className={`px-3 py-2 text-[12px] text-right font-mono amt ${annexTab === "A" ? "amt-dr" : "amt-cr"}`}>Rs. {formatNumber(activeAnnex.data.totals.vat)}</td>
-                    {annexTab === "A" && <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(activeAnnex.data.totals.total)}</td>}
-                    {annexTab === "C" && <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(activeAnnex.data.totals.total)}</td>}
+                    <td
+                      colSpan={annexTab === "annexC" ? 3 : 5}
+                      className="px-3 py-2 text-[12px] text-gray-700"
+                    >
+                      Total
+                    </td>
+                    <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                      Rs. {formatNumber(activeAnnex.data.totals.taxable)}
+                    </td>
+                    {annexTab === "annex19" && (
+                      <>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                          Rs. {formatNumber(activeAnnex.data.totals.exempt)}
+                        </td>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-dr">
+                          Rs. {formatNumber(activeAnnex.data.totals.vat)}
+                        </td>
+                      </>
+                    )}
+                    {annexTab === "annex18" && (
+                      <>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-cr">
+                          Rs. {formatNumber(activeAnnex.data.totals.vat)}
+                        </td>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                          Rs. {formatNumber(activeAnnex.data.totals.total)}
+                        </td>
+                      </>
+                    )}
+                    {annexTab === "annexC" && (
+                      <>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-cr">
+                          Rs. {formatNumber(activeAnnex.data.totals.vat)}
+                        </td>
+                        <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                          Rs. {formatNumber(activeAnnex.data.totals.total)}
+                        </td>
+                      </>
+                    )}
                   </tr>
                 </tfoot>
               )}

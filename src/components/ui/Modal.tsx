@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeOnOverlayClick ? onClose : undefined}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
           />
 
           <motion.div
@@ -69,17 +69,19 @@ const Modal: React.FC<ModalProps> = ({
             aria-modal="true"
             role="dialog"
             className={`
-              relative flex flex-col w-full max-h-[88vh] bg-white rounded-lg shadow-2xl overflow-hidden z-10 border border-gray-200
+              relative flex flex-col w-full max-h-[88vh] bg-white rounded-2xl shadow-[0_24px_64px_rgba(15,23,42,0.18),_0_4px_16px_rgba(15,23,42,0.08)] overflow-hidden z-10 border border-slate-200
               ${sizeClasses[size]}
             `}
           >
-            <div className="px-5 py-3.5 border-b flex items-center justify-between bg-gray-50/80" style={{ borderColor: "var(--border)" }}>
-              <h3 className="font-bold text-[13px] text-gray-900 leading-none">{title}</h3>
+            <div
+              className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50 to-white"
+            >
+              <h3 className="text-[14px] font-bold text-slate-800 tracking-tight leading-none">{title}</h3>
               {showCloseButton && (
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors focus:ring-1 focus:ring-offset-1 focus:ring-[#1557b0] focus:outline-none"
+                  className="h-7 w-7 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors focus:outline-none"
                   aria-label="Close"
                 >
                   <X className="h-4 w-4" />
@@ -90,7 +92,7 @@ const Modal: React.FC<ModalProps> = ({
             <div className="flex-1 overflow-y-auto px-6 py-5 text-sm text-gray-700">{children}</div>
 
             {footer && (
-              <div className="flex items-center justify-end gap-3 px-5 py-3 border-t border-gray-200 bg-gray-50/55">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-2.5">
                 {footer}
               </div>
             )}

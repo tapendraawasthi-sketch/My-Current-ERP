@@ -83,12 +83,12 @@ const Table: React.FC<TableProps> = ({
 
   return (
     <div
-      className={`w-full overflow-x-auto border border-gray-200 rounded-lg shadow-sm bg-white ${className}`}
+      className={`w-full overflow-x-auto rounded-xl overflow-hidden border border-slate-200 shadow-[0_2px_8px_rgba(15,23,42,0.04)] bg-white ${className}`}
     >
       <div className="w-full overflow-y-auto" style={maxHeight ? { maxHeight } : undefined}>
-        <table role="table" className="w-full border-collapse text-sm">
+        <table role="table" className="data-table w-full border-collapse text-sm" style={{ borderCollapse: "collapse" }}>
           <thead
-            className={`${stickyHeader ? "sticky top-0 z-10" : ""} bg-[#f5f6fa] border-b border-gray-200`}
+            className={`${stickyHeader ? "sticky top-0 z-10" : ""} bg-slate-50 border-b-2 border-slate-200`}
           >
             <tr>
               {columns.map((col) => (
@@ -97,8 +97,8 @@ const Table: React.FC<TableProps> = ({
                   scope="col"
                   style={{ width: col.width }}
                   className={`
-                    px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide select-none
-                    ${col.sortable ? "cursor-pointer hover:bg-gray-100/50" : ""}
+                    px-3 py-2.5 text-left text-[10.5px] font-bold text-slate-500 uppercase tracking-[0.07em] select-none bg-slate-50 border-b-2 border-slate-200
+                    ${col.sortable ? "cursor-pointer hover:bg-slate-100/50" : ""}
                     ${col.className || ""}
                   `}
                   onClick={() => col.sortable && handleSort(col.key)}
@@ -107,13 +107,17 @@ const Table: React.FC<TableProps> = ({
                     className={`flex items-center gap-1 ${col.align === "right" ? "justify-end" : col.align === "center" ? "justify-center" : "justify-start"}`}
                   >
                     <span>{col.header}</span>
-                    {col.sortable &&
-                      sortConfig?.key === col.key &&
-                      (sortConfig.direction === "asc" ? (
-                        <ChevronUp className="h-3 w-3 text-gray-500" />
+                    {col.sortable && (
+                      sortConfig?.key === col.key ? (
+                        sortConfig.direction === "asc" ? (
+                          <ChevronUp className="h-3 w-3 text-indigo-400" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3 text-indigo-400" />
+                        )
                       ) : (
-                        <ChevronDown className="h-3 w-3 text-gray-500" />
-                      ))}
+                        <ChevronDown className="h-3 w-3 text-slate-300" />
+                      )
+                    )}
                   </div>
                 </th>
               ))}
@@ -121,22 +125,19 @@ const Table: React.FC<TableProps> = ({
           </thead>
           <tbody className="divide-y divide-gray-150">
             {loading ? (
-              Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="animate-pulse bg-white">
-                  {columns.map((col) => (
-                    <td key={col.key} className="px-3 py-2.5">
-                      <div className="h-4 bg-gray-200 rounded w-4/5 mx-auto"></div>
-                    </td>
-                  ))}
-                </tr>
-              ))
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
+                  </div>
+                </td>
+              </tr>
             ) : sortedData.length === 0 ? (
               <tr>
-                <td
-                  colSpan={columns.length}
-                  className="text-center py-8 text-gray-400 font-medium text-[12px]"
-                >
-                  {emptyMessage}
+                <td colSpan={columns.length}>
+                  <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+                    <span className="text-[13px] font-medium">{emptyMessage}</span>
+                  </div>
                 </td>
               </tr>
             ) : (
@@ -147,9 +148,8 @@ const Table: React.FC<TableProps> = ({
                     key={key}
                     onClick={() => onRowClick && onRowClick(row)}
                     className={`
-                      border-b border-gray-100 transition-colors
-                      ${onRowClick ? "cursor-pointer hover:bg-[#f0f4ff]" : ""}
-                      ${striped && idx % 2 === 1 ? "bg-gray-50/50" : "bg-white"}
+                      border-b border-slate-100 transition-colors duration-100 hover:bg-indigo-50/40 cursor-pointer
+                      ${striped && idx % 2 === 1 ? "bg-slate-50/50" : "bg-white"}
                     `}
                   >
                     {columns.map((col) => {
@@ -158,7 +158,7 @@ const Table: React.FC<TableProps> = ({
                         <td
                           key={col.key}
                           className={`
-                            px-3 py-2.5 text-[12px] text-gray-700
+                            px-3 py-2 text-[12.5px] text-slate-700
                             ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}
                             ${col.className || ""}
                           `}
@@ -177,7 +177,7 @@ const Table: React.FC<TableProps> = ({
             )}
           </tbody>
           {footer && (
-            <tfoot className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe] text-gray-800">
+            <tfoot className="bg-indigo-50 font-bold border-t-2 border-indigo-200 text-slate-800 [&_td]:bg-indigo-50 [&_td]:border-t-2 [&_td]:border-indigo-200 [&_td]:font-bold [&_td]:text-slate-800">
               {footer}
             </tfoot>
           )}

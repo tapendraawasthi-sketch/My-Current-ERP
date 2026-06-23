@@ -99,7 +99,9 @@ const AuditLogs: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Secure Audit Monitor Logs</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Sutra Built-in Irreversible Compliance Ledger</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Sutra Built-in Irreversible Compliance Ledger
+          </p>
         </div>
       </div>
 
@@ -134,15 +136,28 @@ const AuditLogs: React.FC = () => {
       </div>
 
       {/* Table register */}
-      <div className="bg-white border rounded-lg overflow-hidden animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="bg-white border rounded-lg overflow-hidden animate-fadeIn"
+        style={{ borderColor: "var(--border)" }}
+      >
         <table className="data-table">
           <thead>
             <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Log Timestamp</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Identity Operator</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Action</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Executed Operational Description</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">Status</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Log Timestamp
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Identity Operator
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Action
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Executed Operational Description
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -167,13 +182,13 @@ const AuditLogs: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-3 py-[7px] text-[12px]">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ACTION_COLORS[log.action] || "bg-gray-100 text-gray-700"}`}>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ACTION_COLORS[log.action] || "bg-gray-100 text-gray-700"}`}
+                    >
                       {log.action}
                     </span>
                   </td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700">
-                    {log.description}
-                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-gray-700">{log.description}</td>
                   <td className="px-3 py-[7px] text-[12px] text-center">
                     <span className="badge bg-green-50 text-green-700 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase">
                       {log.status}

@@ -9,11 +9,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Table, NepaliDatePicker } from "../components/ui";
 import { ReportHeader } from "../components/reports/ReportHeader";
-import { FileSpreadsheet, Printer, Layers, ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { computeBalanceSheet } from "../lib/accounting";
+import { FileSpreadsheet, Printer, ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { computeBalanceSheet, computeProfitLoss } from "../lib/accounting";
 import { exportBalanceSheetToExcel } from "../lib/exportUtils";
 import { generateBalanceSheetPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
+import { VoucherStatus } from "../lib/types";
 import { subYears } from "date-fns";
 import toast from "react-hot-toast";
 
@@ -31,7 +32,7 @@ interface BalanceLine {
 }
 
 const BalanceSheet: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear } = useStore();
+  const { accounts, vouchers: rawVouchers, companySettings, currentFiscalYear } = useStore();
   const [asOfDate, setAsOfDate] = useState<string>(
     currentFiscalYear?.endDate || dateToAD(new Date()),
   );
@@ -43,7 +44,6 @@ const BalanceSheet: React.FC = () => {
       "current-liabilities",
       "fixed-assets",
       "current-assets",
-      "fixed-schedule",
     ]),
   );
 
@@ -53,17 +53,75 @@ const BalanceSheet: React.FC = () => {
     }
   }, [currentFiscalYear]);
 
+  // CRITICAL FILTER: posted vouchers only
+  const postedVouchers = useMemo(() => {
+    return rawVouchers.filter((v) => v.status === VoucherStatus.POSTED);
+  }, [rawVouchers]);
+
   const balanceSheet = useMemo(() => {
-    return computeBalanceSheet(accounts, vouchers, asOfDate);
-  }, [accounts, vouchers, asOfDate]);
+    return computeBalanceSheet(accounts, postedVouchers, asOfDate);
+  }, [accounts, postedVouchers, asOfDate]);
 
   const previousAsOfDate = useMemo(() => {
     return dateToAD(subYears(new Date(asOfDate), 1));
   }, [asOfDate]);
 
   const previousBalanceSheet = useMemo(() => {
-    return computeBalanceSheet(accounts, vouchers, previousAsOfDate);
-  }, [accounts, vouchers, previousAsOfDate]);
+    return computeBalanceSheet(accounts, postedVouchers, previousAsOfDate);
+  }, [accounts, postedVouchers, previousAsOfDate]);
+
+  // Calculate net profit for current year to show as current year profit/loss
+  const currentNetProfit = useMemo(() => {
+    const startOfCurrentPeriod = currentFiscalYear?.startDate || "2026-07-16";
+    const pl = computeProfitLoss(accounts, postedVouchers, startOfCurrentPeriod, asOfDate);
+    const grossProfitVal = round2(
+      pl.income[0]?.amount -
+        sumChildrenMatching(pl.income[0]?.children || [], ["return"]) -
+        (pl.expenses[0]?.amount +
+          pl.expenses[1]?.amount -
+          sumChildrenMatching(pl.expenses[0]?.children || [], ["return"])),
+    );
+    const operatingExpensesVal = round2(
+      (pl.expenses[2]?.children || []).reduce((sum: number, item: any) => sum + item.amount, 0),
+    );
+    const financeExpensesVal = (pl.expenses[2]?.children || [])
+      .filter((r: any) => /bank|interest|finance/i.test(r.accountName))
+      .reduce((sum: number, item: any) => sum + item.amount, 0);
+    const depVal = (pl.expenses[2]?.children || [])
+      .filter((r: any) => /depreciation|depreciate/i.test(r.accountName))
+      .reduce((sum: number, item: any) => sum + item.amount, 0);
+    const otherIncVal = pl.income[1]?.amount || 0;
+    return round2(
+      grossProfitVal + otherIncVal - operatingExpensesVal - financeExpensesVal - depVal,
+    );
+  }, [accounts, postedVouchers, currentFiscalYear, asOfDate]);
+
+  const previousNetProfit = useMemo(() => {
+    const startOfPrevPeriod = dateToAD(
+      subYears(new Date(currentFiscalYear?.startDate || "2026-07-16"), 1),
+    );
+    const pl = computeProfitLoss(accounts, postedVouchers, startOfPrevPeriod, previousAsOfDate);
+    const grossProfitVal = round2(
+      pl.income[0]?.amount -
+        sumChildrenMatching(pl.income[0]?.children || [], ["return"]) -
+        (pl.expenses[0]?.amount +
+          pl.expenses[1]?.amount -
+          sumChildrenMatching(pl.expenses[0]?.children || [], ["return"])),
+    );
+    const operatingExpensesVal = round2(
+      (pl.expenses[2]?.children || []).reduce((sum: number, item: any) => sum + item.amount, 0),
+    );
+    const financeExpensesVal = (pl.expenses[2]?.children || [])
+      .filter((r: any) => /bank|interest|finance/i.test(r.accountName))
+      .reduce((sum: number, item: any) => sum + item.amount, 0);
+    const depVal = (pl.expenses[2]?.children || [])
+      .filter((r: any) => /depreciation|depreciate/i.test(r.accountName))
+      .reduce((sum: number, item: any) => sum + item.amount, 0);
+    const otherIncVal = pl.income[1]?.amount || 0;
+    return round2(
+      grossProfitVal + otherIncVal - operatingExpensesVal - financeExpensesVal - depVal,
+    );
+  }, [accounts, postedVouchers, currentFiscalYear, previousAsOfDate]);
 
   const fixedAssetSchedule = useMemo(() => {
     const fixedAssets =
@@ -111,6 +169,18 @@ const BalanceSheet: React.FC = () => {
     };
   }, [balanceSheet.liabilities]);
 
+  const prevLiabilitiesCategories = useMemo(() => {
+    const longTermRows =
+      previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-tl")?.children || [];
+    const currentRows =
+      previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-cl")?.children || [];
+
+    return {
+      longTerm: categorizeLiabilities(longTermRows),
+      current: categorizeLiabilities(currentRows),
+    };
+  }, [previousBalanceSheet.liabilities]);
+
   const shareholderFunds = useMemo(() => {
     const equityChildren =
       balanceSheet.equity.find((row) => row.accountId === "bs-eq-cap")?.children || [];
@@ -120,16 +190,42 @@ const BalanceSheet: React.FC = () => {
     const retainedEarnings = equityChildren
       .filter((row) => /retained|earnings|reserves|surplus/i.test(row.accountName))
       .reduce((sum, row) => sum + row.amount, 0);
-    const netProfit = balanceSheet.equity.find((row) => row.accountId === "bs-eq-re")?.amount || 0;
+
+    const netProfit = currentNetProfit;
+    const finalRetainedEarnings = round2(retainedEarnings + netProfit);
+
     return {
       shareCapital: shareCapital || balanceSheet.equity[0]?.amount || 0,
-      retainedEarnings,
+      retainedEarnings: finalRetainedEarnings,
       netProfit,
       totalFunds: round2(
-        (shareCapital || balanceSheet.equity[0]?.amount || 0) + retainedEarnings + netProfit,
+        (shareCapital || balanceSheet.equity[0]?.amount || 0) + finalRetainedEarnings,
       ),
     };
-  }, [balanceSheet.equity]);
+  }, [balanceSheet.equity, currentNetProfit]);
+
+  const prevShareholderFunds = useMemo(() => {
+    const equityChildren =
+      previousBalanceSheet.equity.find((row) => row.accountId === "bs-eq-cap")?.children || [];
+    const shareCapital = equityChildren
+      .filter((row) => /share|capital|equity|partners?/i.test(row.accountName))
+      .reduce((sum, row) => sum + row.amount, 0);
+    const retainedEarnings = equityChildren
+      .filter((row) => /retained|earnings|reserves|surplus/i.test(row.accountName))
+      .reduce((sum, row) => sum + row.amount, 0);
+
+    const netProfit = previousNetProfit;
+    const finalRetainedEarnings = round2(retainedEarnings + netProfit);
+
+    return {
+      shareCapital: shareCapital || previousBalanceSheet.equity[0]?.amount || 0,
+      retainedEarnings: finalRetainedEarnings,
+      netProfit,
+      totalFunds: round2(
+        (shareCapital || previousBalanceSheet.equity[0]?.amount || 0) + finalRetainedEarnings,
+      ),
+    };
+  }, [previousBalanceSheet.equity, previousNetProfit]);
 
   const currentAssetCategories = useMemo(() => {
     const currentRows =
@@ -137,24 +233,36 @@ const BalanceSheet: React.FC = () => {
     return categorizeAssets(currentRows);
   }, [balanceSheet.assets]);
 
-  const totalSources = round2(balanceSheet.totalLiabilities + balanceSheet.totalEquity);
+  const prevCurrentAssetCategories = useMemo(() => {
+    const currentRows =
+      previousBalanceSheet.assets.find((row) => row.accountId === "bs-ca")?.children || [];
+    return categorizeAssets(currentRows);
+  }, [previousBalanceSheet.assets]);
+
+  const totalSources = round2(
+    shareholderFunds.totalFunds +
+      (balanceSheet.liabilities.find((row) => row.accountId === "bs-tl")?.amount || 0) +
+      (balanceSheet.liabilities.find((row) => row.accountId === "bs-cl")?.amount || 0),
+  );
+
+  const prevTotalSources = round2(
+    prevShareholderFunds.totalFunds +
+      (previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-tl")?.amount || 0) +
+      (previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-cl")?.amount || 0),
+  );
+
   const totalApplication = balanceSheet.totalAssets;
-  const balanced = balanceSheet.isBalanced;
+  const balanced = Math.abs(totalSources - totalApplication) < 0.01;
 
   const dataRows = useMemo(() => {
     const rows: BalanceLine[] = [
       {
         id: "shareholders-funds",
-        name: "SHAREHOLDER'S FUNDS",
+        name: "SHAREHOLDER'S FUNDS (EQUITY)",
         amount: shareholderFunds.totalFunds,
-        prevAmount: showPreviousYear
-          ? round2(previousBalanceSheet.totalLiabilities + previousBalanceSheet.totalEquity)
-          : undefined,
+        prevAmount: showPreviousYear ? prevShareholderFunds.totalFunds : undefined,
         diffAmount: showPreviousYear
-          ? round2(
-              shareholderFunds.totalFunds -
-                round2(previousBalanceSheet.totalLiabilities + previousBalanceSheet.totalEquity),
-            )
+          ? round2(shareholderFunds.totalFunds - prevShareholderFunds.totalFunds)
           : undefined,
         level: 0,
         isGroup: true,
@@ -164,45 +272,37 @@ const BalanceSheet: React.FC = () => {
             id: "share-capital",
             name: "Share Capital",
             amount: shareholderFunds.shareCapital,
-            prevAmount: showPreviousYear
-              ? round2(previousBalanceSheet.equity[0]?.amount || 0)
+            prevAmount: showPreviousYear ? prevShareholderFunds.shareCapital : undefined,
+            diffAmount: showPreviousYear
+              ? round2(shareholderFunds.shareCapital - prevShareholderFunds.shareCapital)
               : undefined,
             level: 1,
           },
           {
             id: "retained-earnings",
-            name: "Retained Earnings",
+            name: "Retained Earnings (Accumulated)",
             amount: shareholderFunds.retainedEarnings,
-            prevAmount: showPreviousYear
-              ? round2(
-                  previousBalanceSheet.equity
-                    .find((r) => r.accountId === "bs-eq-cap")
-                    ?.children?.filter((row) =>
-                      /retained|earnings|reserves|surplus/i.test(row.accountName),
-                    )
-                    .reduce((sum, row) => sum + row.amount, 0) ?? 0,
-                )
+            prevAmount: showPreviousYear ? prevShareholderFunds.retainedEarnings : undefined,
+            diffAmount: showPreviousYear
+              ? round2(shareholderFunds.retainedEarnings - prevShareholderFunds.retainedEarnings)
               : undefined,
             level: 1,
           },
           {
             id: "net-profit-year",
-            name: "Net Profit for the Year",
+            name: "Current Year Profit/Loss",
             amount: shareholderFunds.netProfit,
-            prevAmount: showPreviousYear
-              ? round2(
-                  previousBalanceSheet.equity.find((r) => r.accountId === "bs-eq-re")?.amount || 0,
-                )
+            prevAmount: showPreviousYear ? prevShareholderFunds.netProfit : undefined,
+            diffAmount: showPreviousYear
+              ? round2(shareholderFunds.netProfit - prevShareholderFunds.netProfit)
               : undefined,
             level: 1,
           },
           {
             id: "total-shareholder-funds",
-            name: "Total Shareholder’s Funds",
+            name: "Subtotal: Shareholders Equity",
             amount: shareholderFunds.totalFunds,
-            prevAmount: showPreviousYear
-              ? round2(previousBalanceSheet.totalLiabilities + previousBalanceSheet.totalEquity)
-              : undefined,
+            prevAmount: showPreviousYear ? prevShareholderFunds.totalFunds : undefined,
             level: 1,
             isSummary: true,
           },
@@ -225,11 +325,23 @@ const BalanceSheet: React.FC = () => {
         level: 0,
         isGroup: true,
         children: [
-          ...liabilitiesCategories.longTerm,
+          ...liabilitiesCategories.longTerm.map((c) => {
+            const prevVal =
+              prevLiabilitiesCategories.longTerm.find((pc) => pc.id === c.id)?.amount || 0;
+            return {
+              ...c,
+              prevAmount: showPreviousYear ? prevVal : undefined,
+              diffAmount: showPreviousYear ? round2(c.amount - prevVal) : undefined,
+            };
+          }),
           {
             id: "total-long-term-liabilities",
-            name: "Total Long-term Liabilities",
+            name: "Subtotal: Long-term Liabilities",
             amount: balanceSheet.liabilities.find((row) => row.accountId === "bs-tl")?.amount || 0,
+            prevAmount: showPreviousYear
+              ? previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-tl")?.amount ||
+                0
+              : undefined,
             level: 1,
             isSummary: true,
           },
@@ -252,11 +364,23 @@ const BalanceSheet: React.FC = () => {
         level: 0,
         isGroup: true,
         children: [
-          ...liabilitiesCategories.current,
+          ...liabilitiesCategories.current.map((c) => {
+            const prevVal =
+              prevLiabilitiesCategories.current.find((pc) => pc.id === c.id)?.amount || 0;
+            return {
+              ...c,
+              prevAmount: showPreviousYear ? prevVal : undefined,
+              diffAmount: showPreviousYear ? round2(c.amount - prevVal) : undefined,
+            };
+          }),
           {
             id: "total-current-liabilities",
-            name: "Total Current Liabilities",
+            name: "Subtotal: Current Liabilities",
             amount: balanceSheet.liabilities.find((row) => row.accountId === "bs-cl")?.amount || 0,
+            prevAmount: showPreviousYear
+              ? previousBalanceSheet.liabilities.find((row) => row.accountId === "bs-cl")?.amount ||
+                0
+              : undefined,
             level: 1,
             isSummary: true,
           },
@@ -264,17 +388,10 @@ const BalanceSheet: React.FC = () => {
       },
       {
         id: "total-sources",
-        name: "TOTAL SOURCES",
+        name: "TOTAL LIABILITIES & EQUITY (SOURCES OF FUNDS)",
         amount: totalSources,
-        prevAmount: showPreviousYear
-          ? round2(previousBalanceSheet.totalLiabilities + previousBalanceSheet.totalEquity)
-          : undefined,
-        diffAmount: showPreviousYear
-          ? round2(
-              totalSources -
-                round2(previousBalanceSheet.totalLiabilities + previousBalanceSheet.totalEquity),
-            )
-          : undefined,
+        prevAmount: showPreviousYear ? prevTotalSources : undefined,
+        diffAmount: showPreviousYear ? round2(totalSources - prevTotalSources) : undefined,
         level: 0,
         isSummary: true,
       },
@@ -304,8 +421,11 @@ const BalanceSheet: React.FC = () => {
           })),
           {
             id: "total-fixed-assets",
-            name: "Total Fixed Assets",
+            name: "Subtotal: Fixed Assets",
             amount: balanceSheet.assets.find((row) => row.accountId === "bs-fa")?.amount || 0,
+            prevAmount: showPreviousYear
+              ? previousBalanceSheet.assets.find((row) => row.accountId === "bs-fa")?.amount || 0
+              : undefined,
             level: 1,
             isSummary: true,
           },
@@ -327,11 +447,21 @@ const BalanceSheet: React.FC = () => {
         level: 0,
         isGroup: true,
         children: [
-          ...currentAssetCategories,
+          ...currentAssetCategories.map((c) => {
+            const prevVal = prevCurrentAssetCategories.find((pc) => pc.id === c.id)?.amount || 0;
+            return {
+              ...c,
+              prevAmount: showPreviousYear ? prevVal : undefined,
+              diffAmount: showPreviousYear ? round2(c.amount - prevVal) : undefined,
+            };
+          }),
           {
             id: "total-current-assets",
-            name: "Total Current Assets",
+            name: "Subtotal: Current Assets",
             amount: balanceSheet.assets.find((row) => row.accountId === "bs-ca")?.amount || 0,
+            prevAmount: showPreviousYear
+              ? previousBalanceSheet.assets.find((row) => row.accountId === "bs-ca")?.amount || 0
+              : undefined,
             level: 1,
             isSummary: true,
           },
@@ -339,7 +469,7 @@ const BalanceSheet: React.FC = () => {
       },
       {
         id: "total-application",
-        name: "TOTAL APPLICATION",
+        name: "TOTAL ASSETS (APPLICATION OF FUNDS)",
         amount: totalApplication,
         prevAmount: showPreviousYear ? previousBalanceSheet.totalAssets : undefined,
         diffAmount: showPreviousYear
@@ -353,13 +483,17 @@ const BalanceSheet: React.FC = () => {
     return flatten(rows, expandedRowIds);
   }, [
     shareholderFunds,
+    prevShareholderFunds,
     balanceSheet,
     previousBalanceSheet,
     showPreviousYear,
     liabilitiesCategories,
+    prevLiabilitiesCategories,
     currentAssetCategories,
+    prevCurrentAssetCategories,
     fixedAssetSchedule,
     totalSources,
+    prevTotalSources,
     totalApplication,
     expandedRowIds,
   ]);
@@ -414,61 +548,6 @@ const BalanceSheet: React.FC = () => {
       return next;
     });
   };
-
-  const columns = [
-    {
-      key: "name",
-      header: "Particulars",
-      width: "40%",
-      render: (_: any, row: BalanceLine) => (
-        <div className="flex items-center gap-2">
-          <span className="inline-flex w-4 justify-center text-slate-400">
-            {row.children && row.children.length > 0 ? (
-              row.isGroup ? (
-                expandedRowIds.has(row.id) ? (
-                  <ArrowDownRight className="h-3 w-3" />
-                ) : (
-                  <ArrowUpRight className="h-3 w-3" />
-                )
-              ) : null
-            ) : null}
-          </span>
-          <span
-            className={`${row.level === 0 ? "font-bold text-slate-900" : row.level === 1 ? "font-semibold text-slate-800" : "text-slate-600"} ${row.isSummary ? "text-slate-900" : ""}`}
-            style={{ paddingLeft: `${row.level * 12}px` }}
-          >
-            {row.name}
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "amount",
-      header: "Amount (Rs.)",
-      align: "right",
-      render: (value: number) => <span className="font-mono">Rs. {formatNumber(value)}</span>,
-    },
-    {
-      key: "prevAmount",
-      header: showPreviousYear ? "Previous Year" : " ",
-      align: "right",
-      render: (value: number) =>
-        showPreviousYear ? <span className="font-mono">Rs. {formatNumber(value || 0)}</span> : null,
-    },
-    {
-      key: "diffAmount",
-      header: showPreviousYear ? "Variance" : " ",
-      align: "right",
-      render: (value: number) =>
-        showPreviousYear ? (
-          <span
-            className={value >= 0 ? "text-emerald-700 font-semibold" : "text-red-600 font-semibold"}
-          >
-            {value !== undefined ? `Rs. ${formatNumber(value)}` : "-"}
-          </span>
-        ) : null,
-    },
-  ];
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
@@ -533,7 +612,7 @@ const BalanceSheet: React.FC = () => {
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-              Total Sources
+              Total Sources (Liabilities + Equity)
             </div>
             <div className="mt-2 text-lg font-bold text-slate-900">
               Rs. {formatNumber(totalSources)}
@@ -541,7 +620,7 @@ const BalanceSheet: React.FC = () => {
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-              Total Application
+              Total Application (Assets)
             </div>
             <div className="mt-2 text-lg font-bold text-slate-900">
               Rs. {formatNumber(totalApplication)}
@@ -797,6 +876,18 @@ function flatten(rows: BalanceLine[], expanded: Set<string>) {
     }
   });
   return result;
+}
+
+function sumChildrenMatching(children: any[], keywords: string[]) {
+  return round2(
+    children.reduce((sum: number, child: any) => {
+      const lower = (child.accountName || child.name || "").toLowerCase();
+      if (keywords.some((keyword) => lower.includes(keyword))) {
+        return sum + child.amount;
+      }
+      return sum;
+    }, 0),
+  );
 }
 
 function round2(value: number) {

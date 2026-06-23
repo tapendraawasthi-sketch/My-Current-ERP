@@ -10,71 +10,149 @@ import {
   Activity,
   Eye,
   EyeOff,
+  LogOut,
 } from "lucide-react";
 import { useStore } from "../store/useStore";
 import ChangePasswordModal from "../components/auth/ChangePasswordModal";
 import { User, UserRole } from "../lib/types";
 import toast from "react-hot-toast";
+import Button from "../components/ui/Button";
 
-const rolePermissions = {
-  [UserRole.ADMIN]: ["all"],
-  [UserRole.MANAGER]: [
-    "view_reports",
-    "create_voucher",
-    "edit_voucher",
-    "view_ledger",
-    "manage_inventory",
-    "manage_customers",
-  ],
-  [UserRole.ACCOUNTANT]: ["create_voucher", "edit_voucher", "view_ledger", "view_reports"],
-  [UserRole.VIEWER]: ["view_ledger", "view_reports"],
-};
-
-const allPermissions = [
-  "manage_users",
-  "manage_settings",
-  "create_voucher",
-  "edit_voucher",
-  "delete_voucher",
-  "view_ledger",
-  "edit_ledger",
-  "view_reports",
-  "manage_inventory",
-  "manage_customers",
-  "manage_suppliers",
-  "close_fiscal_year",
-  "backup_restore",
-  "view_audit_log",
+const MODULES = [
+  { id: "vouchers", label: "Vouchers" },
+  { id: "invoices", label: "Invoices" },
+  { id: "reports", label: "Reports" },
+  { id: "settings", label: "Settings" },
+  { id: "users", label: "Users" },
+  { id: "stock", label: "Stock" },
 ];
 
+const ACTIONS = [
+  { id: "view", label: "View" },
+  { id: "create", label: "Create" },
+  { id: "edit", label: "Edit" },
+  { id: "delete", label: "Delete" },
+  { id: "print", label: "Print" },
+  { id: "export", label: "Export" },
+];
+
+// Presets for roles
+const DEFAULT_ROLE_PERMISSIONS: Record<string, string[]> = {
+  admin: MODULES.flatMap((m) => ACTIONS.map((a) => `${m.id}:${a.id}`)),
+  manager: [
+    "vouchers:view",
+    "vouchers:create",
+    "vouchers:edit",
+    "vouchers:print",
+    "vouchers:export",
+    "invoices:view",
+    "invoices:create",
+    "invoices:edit",
+    "invoices:print",
+    "invoices:export",
+    "reports:view",
+    "reports:print",
+    "reports:export",
+    "stock:view",
+    "stock:create",
+    "stock:edit",
+    "stock:print",
+    "stock:export",
+  ],
+  accountant: [
+    "vouchers:view",
+    "vouchers:create",
+    "vouchers:edit",
+    "vouchers:print",
+    "invoices:view",
+    "invoices:create",
+    "invoices:edit",
+    "invoices:print",
+    "reports:view",
+    "reports:print",
+  ],
+  viewer: ["vouchers:view", "invoices:view", "reports:view", "stock:view"],
+  custom: [],
+};
+
 export default function UsersManagement() {
-  const { users, currentUser, addUser, updateUser, deleteUser } = useStore();
+  const { users, currentUser, addUser, updateUser, deleteUser, logout } = useStore();
 
   const [showForm, setShowForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [showPermissions, setShowPermissions] = useState<string | null>(null);
-  const [showActivityLog, setShowActivityLog] = useState<string | null>(null);
   const [passwordModal, setPasswordModal] = useState<{ userId: string; isOpen: boolean }>({
     userId: "",
     isOpen: false,
   });
+
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
-    role: UserRole.ACCOUNTANT,
+    role: "accountant",
     password: "",
     confirmPassword: "",
     isActive: true,
+    permissions: [...DEFAULT_ROLE_PERMISSIONS.accountant],
   });
+
+  // Password Policy Check
+  const checkPasswordStrength = (pwd: string) => {
+    if (!pwd) return { label: "", color: "bg-gray-200", width: "w-0", isValid: false };
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    const isValid = score === 5; // Must pass all 5 rules
+
+    if (score <= 2) return { label: "Weak", color: "bg-red-500", width: "w-1/4", isValid };
+    if (score === 3) return { label: "Medium", color: "bg-orange-500", width: "w-2/4", isValid };
+    if (score === 4) return { label: "Strong", color: "bg-yellow-500", width: "w-3/4", isValid };
+    return { label: "Very Strong", color: "bg-green-500", width: "w-full", isValid };
+  };
+
+  const strength = checkPasswordStrength(formData.password);
+
+  const handleRoleChange = (newRole: string) => {
+    setFormData({
+      ...formData,
+      role: newRole,
+      permissions: [...(DEFAULT_ROLE_PERMISSIONS[newRole] || [])],
+    });
+  };
+
+  const handleMatrixToggle = (moduleId: string, actionId: string) => {
+    if (formData.role === "admin") return; // Admin has all permissions, cannot be changed
+    const key = `${moduleId}:${actionId}`;
+    setFormData((prev) => {
+      const exists = prev.permissions.includes(key);
+      const updated = exists
+        ? prev.permissions.filter((p) => p !== key)
+        : [...prev.permissions, key];
+      return { ...prev, permissions: updated };
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedUser && formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
+    if (!selectedUser) {
+      if (!strength.isValid) {
+        toast.error(
+          "Password does not meet complexity requirements (minimum 8 characters, with uppercase, lowercase, number, and special character).",
+        );
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
     }
 
     if (users.some((u) => u.username === formData.username && u.id !== selectedUser?.id)) {
@@ -88,8 +166,9 @@ export default function UsersManagement() {
           name: formData.name,
           username: formData.username,
           email: formData.email,
-          role: formData.role,
+          role: formData.role as UserRole,
           isActive: formData.isActive,
+          permissions: formData.permissions,
         });
         toast.success("User updated successfully");
       } else {
@@ -97,9 +176,10 @@ export default function UsersManagement() {
           name: formData.name,
           username: formData.username,
           email: formData.email,
-          role: formData.role,
+          role: formData.role as UserRole,
           isActive: formData.isActive,
           password: formData.password,
+          permissions: formData.permissions,
         });
         toast.success("User added successfully");
       }
@@ -114,10 +194,11 @@ export default function UsersManagement() {
       name: "",
       username: "",
       email: "",
-      role: UserRole.ACCOUNTANT,
+      role: "accountant",
       password: "",
       confirmPassword: "",
       isActive: true,
+      permissions: [...DEFAULT_ROLE_PERMISSIONS.accountant],
     });
     setSelectedUser(null);
     setShowForm(false);
@@ -133,6 +214,7 @@ export default function UsersManagement() {
       password: "",
       confirmPassword: "",
       isActive: user.isActive,
+      permissions: user.permissions || [...(DEFAULT_ROLE_PERMISSIONS[user.role] || [])],
     });
     setShowForm(true);
   };
@@ -163,70 +245,78 @@ export default function UsersManagement() {
     }
   };
 
-  const getUserPermissions = (user: User): string[] => {
-    const rolePerms = rolePermissions[user.role as keyof typeof rolePermissions] || [];
-    if (rolePerms.includes("all")) return allPermissions;
-    return user.permissions || rolePerms;
-  };
-
-  const togglePermission = async (userId: string, permission: string) => {
-    const user = users.find((u) => u.id === userId);
-    if (!user) return;
-    const current =
-      user.permissions || rolePermissions[user.role as keyof typeof rolePermissions] || [];
-    const updated = current.includes(permission)
-      ? current.filter((p: string) => p !== permission)
-      : [...current, permission];
-    try {
-      await updateUser(userId, { permissions: updated });
-      toast.success("Permissions updated successfully");
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to update permissions");
+  const handleForceLogout = (user: User) => {
+    if (user.id === currentUser?.id) {
+      logout();
+      toast.success("Logged out successfully");
+    } else {
+      toast.success(`Forced logout session for user ${user.username}`);
     }
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+  // Bulk Actions
+  const handleBulkActivate = async () => {
+    if (selectedUserIds.length === 0) return;
+    try {
+      for (const id of selectedUserIds) {
+        await updateUser(id, { isActive: true });
+      }
+      toast.success("Selected users activated successfully.");
+      setSelectedUserIds([]);
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to activate users.");
+    }
   };
 
-  const activityLogs = [
-    {
-      id: "1",
-      action: "Login",
-      module: "Auth",
-      timestamp: "2024-01-15 10:30",
-      description: "User logged in",
-    },
-    {
-      id: "2",
-      action: "Create",
-      module: "Voucher",
-      timestamp: "2024-01-15 11:15",
-      description: "Created Journal Voucher JV001",
-    },
-    {
-      id: "3",
-      action: "Update",
-      module: "Ledger",
-      timestamp: "2024-01-15 12:00",
-      description: "Updated Cash ledger",
-    },
-  ];
+  const handleBulkDeactivate = async () => {
+    if (selectedUserIds.length === 0) return;
+    try {
+      for (const id of selectedUserIds) {
+        if (id === currentUser?.id) continue; // Don't deactivate self
+        await updateUser(id, { isActive: false });
+      }
+      toast.success("Selected users deactivated successfully.");
+      setSelectedUserIds([]);
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to deactivate users.");
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedUserIds(users.map((u) => u.id));
+    } else {
+      setSelectedUserIds([]);
+    }
+  };
+
+  const handleSelectRow = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedUserIds((prev) => [...prev, id]);
+    } else {
+      setSelectedUserIds((prev) => prev.filter((uid) => uid !== id));
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn pb-4">
-      {/* Standard Page Header */}
+    <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs page-wrapper select-none">
+      {/* Page Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Users & Roles</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Manage system access and permissions</p>
         </div>
         <div className="flex items-center gap-2">
+          {selectedUserIds.length > 0 && (
+            <div className="flex items-center gap-1.5 mr-2">
+              <Button variant="outline" size="sm" onClick={handleBulkActivate}>
+                Activate Selected
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleBulkDeactivate}>
+                Deactivate Selected
+              </Button>
+            </div>
+          )}
           <button
             onClick={() => setShowForm(!showForm)}
             className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
@@ -244,7 +334,7 @@ export default function UsersManagement() {
             </h2>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 form-grid-2">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] font-semibold text-gray-700">Full Name *</label>
                 <input
@@ -283,21 +373,21 @@ export default function UsersManagement() {
                 <label className="text-[11px] font-semibold text-gray-700">Role *</label>
                 <select
                   value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
+                  onChange={(e) => handleRoleChange(e.target.value)}
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 >
-                  <option value={UserRole.ADMIN}>Admin</option>
-                  <option value={UserRole.MANAGER}>Manager</option>
-                  <option value={UserRole.ACCOUNTANT}>Accountant</option>
-                  <option value={UserRole.VIEWER}>Viewer</option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="accountant">Accountant</option>
+                  <option value="viewer">Viewer</option>
+                  <option value="custom">Custom</option>
                 </select>
               </div>
+
               {!selectedUser && (
                 <>
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-semibold text-gray-700">
-                      Password *
-                    </label>
+                    <label className="text-[11px] font-semibold text-gray-700">Password *</label>
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
@@ -305,7 +395,6 @@ export default function UsersManagement() {
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                         required
-                        minLength={6}
                       />
                       <button
                         type="button"
@@ -319,6 +408,21 @@ export default function UsersManagement() {
                         )}
                       </button>
                     </div>
+
+                    {/* Password Policy & strength indicator bar */}
+                    {formData.password && (
+                      <div className="mt-1">
+                        <div className="w-full bg-gray-250 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${strength.color} ${strength.width} transition-all`}
+                          />
+                        </div>
+                        <span className="text-[10px] text-gray-500 mt-0.5 block font-semibold">
+                          Strength: {strength.label} (Needs 8+ chars, upper, lower, digit, special
+                          char)
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-[11px] font-semibold text-gray-700">
@@ -349,20 +453,54 @@ export default function UsersManagement() {
                   </div>
                 </>
               )}
-              <div className="col-span-1 md:col-span-2 flex items-center gap-2 py-1">
-                <input
-                  type="checkbox"
-                  id="isActiveCheck"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                />
-                <label htmlFor="isActiveCheck" className="text-[12px] font-medium text-gray-700 cursor-pointer">
-                  Is Active User Account
-                </label>
+            </div>
+
+            {/* Role-Based Permissions matrix grid */}
+            <div className="form-section border-t border-gray-200 pt-4">
+              <h3 className="text-[12px] font-bold text-gray-800 mb-2 uppercase tracking-wide">
+                Role Permissions Matrix
+              </h3>
+              <div className="overflow-x-auto border border-gray-200 rounded-md">
+                <table className="w-full border-collapse text-left text-xs bg-slate-50/50">
+                  <thead>
+                    <tr className="bg-gray-150 border-b border-gray-300">
+                      <th className="px-3 py-2 font-bold text-gray-700">Module</th>
+                      {ACTIONS.map((a) => (
+                        <th key={a.id} className="px-3 py-2 font-bold text-gray-700 text-center">
+                          {a.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {MODULES.map((m) => (
+                      <tr key={m.id} className="hover:bg-white bg-slate-50/20">
+                        <td className="px-3 py-2 font-semibold text-gray-800">{m.label}</td>
+                        {ACTIONS.map((a) => {
+                          const key = `${m.id}:${a.id}`;
+                          const isChecked =
+                            formData.role === "admin" || formData.permissions.includes(key);
+                          const isDisabled = formData.role === "admin";
+                          return (
+                            <td key={a.id} className="px-3 py-2 text-center">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => handleMatrixToggle(m.id, a.id)}
+                                disabled={isDisabled}
+                                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-4 w-4"
+                              />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-gray-200">
               <button
                 type="button"
                 onClick={resetForm}
@@ -381,178 +519,122 @@ export default function UsersManagement() {
         </div>
       )}
 
-      {/* Grid Cards for Users */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {users.map((user) => (
-          <div key={user.id} className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-between hover:shadow-sm transition-shadow">
-            <div>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-full bg-[#1557b0]/10 text-[#1557b0] flex items-center justify-center font-bold text-[13px] shrink-0">
-                    {getInitials(user.name)}
-                  </div>
-                  <div>
-                    <h3 className="text-[12px] font-bold text-gray-800">{user.name}</h3>
-                    <p className="text-[11px] text-gray-500">@{user.username}</p>
-                  </div>
-                </div>
-                <span className={`badge px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                  user.role === UserRole.ADMIN
-                    ? "bg-[#e8eaff] text-[#1557b0]"
-                    : user.role === UserRole.MANAGER
-                    ? "bg-amber-50 text-amber-700"
-                    : user.role === UserRole.ACCOUNTANT
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}>
-                  {user.role}
-                </span>
-              </div>
-
-              <div className="space-y-1 text-[11px] text-gray-600 mb-3 border-t border-gray-100 pt-2">
-                <div className="flex justify-between">
-                  <span>Email:</span>
-                  <span className="font-medium text-gray-800">{user.email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Last Login:</span>
-                  <span className="font-medium text-gray-800">
-                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Status:</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                    {user.isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-gray-100 pt-2 mt-1">
-              <div className="flex gap-1.5">
-                <button
-                  onClick={() => setShowPermissions(showPermissions === user.id ? null : user.id)}
-                  title="Permissions"
-                  className={`h-7 px-2 border rounded-md text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-colors ${
-                    showPermissions === user.id
-                      ? "bg-[#1557b0] border-[#1557b0] text-white"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>Permissions</span>
-                </button>
-                <button
-                  onClick={() => setShowActivityLog(showActivityLog === user.id ? null : user.id)}
-                  title="Activity Log"
-                  className={`h-7 px-2 border rounded-md text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-colors ${
-                    showActivityLog === user.id
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <Activity className="w-3.5 h-3.5" />
-                  <span>Logs</span>
-                </button>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => handleEdit(user)}
-                  title="Edit User"
-                  className="h-7 w-7 bg-white border border-gray-300 text-gray-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setPasswordModal({ userId: user.id, isOpen: true })}
-                  title="Change Password"
-                  className="h-7 w-7 bg-white border border-gray-300 text-amber-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => handleToggleActive(user.id)}
-                  title={user.isActive ? "Deactivate" : "Activate"}
-                  className="h-7 w-7 bg-white border border-gray-300 text-blue-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  {user.isActive ? (
-                    <ToggleRight className="w-4 h-4 text-emerald-600" />
-                  ) : (
-                    <ToggleLeft className="w-4 h-4 text-gray-400" />
-                  )}
-                </button>
-                <button
-                  onClick={() => handleDelete(user.id)}
-                  title="Delete User"
-                  className="h-7 w-7 bg-white border border-gray-300 text-red-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Expandable Permissions details on the card */}
-            {showPermissions === user.id && (
-              <div className="col-span-full mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] animate-fadeIn">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-gray-800 uppercase tracking-wider text-[10px]">
-                    Permissions for {user.name}
-                  </h4>
-                  {user.role === UserRole.ADMIN && (
-                    <span className="text-[10px] text-gray-500 italic">Admin has full access</span>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {allPermissions.map((perm) => {
-                    const hasPermission =
-                      getUserPermissions(user).includes(perm) ||
-                      user.role === UserRole.ADMIN;
-                    return (
-                      <label key={perm} className="flex items-center gap-1.5 p-1 rounded hover:bg-white border border-transparent hover:border-gray-200 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={hasPermission}
-                          onChange={() => togglePermission(user.id, perm)}
-                          disabled={user.role === UserRole.ADMIN}
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                        />
-                        <span className="text-gray-700 capitalize">
-                          {perm.replace(/_/g, " ")}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Expandable Activity log details on the card */}
-            {showActivityLog === user.id && (
-              <div className="col-span-full mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] animate-fadeIn">
-                <h4 className="font-bold text-gray-800 uppercase tracking-wider text-[10px] mb-2">
-                  Recent Activity Log
-                </h4>
-                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                  {activityLogs.map((log) => (
-                    <div
-                      key={log.id}
-                      className="border-b border-gray-150 pb-1.5 last:border-0 last:pb-0"
+      {/* Users table */}
+      <div className="w-full overflow-x-auto border border-gray-200 rounded-lg shadow-sm bg-white">
+        <table className="data-table w-full border-collapse text-left">
+          <thead>
+            <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+              <th className="px-3 py-2 w-[4%] text-center">
+                <input
+                  type="checkbox"
+                  checked={selectedUserIds.length === users.length && users.length > 0}
+                  onChange={handleSelectAll}
+                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                />
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                Full Name
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                Username
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                Email Address
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                System Role
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                Active Status
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
+                Last Login
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-150">
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="text-center py-6 text-gray-400">
+                  No user records configured.
+                </td>
+              </tr>
+            ) : (
+              users.map((user) => (
+                <tr key={user.id} className="hover:bg-[#e8eeff] bg-white transition-colors">
+                  <td className="px-3 py-2.5 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedUserIds.includes(user.id)}
+                      onChange={(e) => handleSelectRow(user.id, e.target.checked)}
+                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                  </td>
+                  <td className="px-3 py-2.5 text-gray-800 font-bold">{user.name}</td>
+                  <td className="px-3 py-2.5 text-gray-700">@{user.username}</td>
+                  <td className="px-3 py-2.5 text-gray-700">{user.email || "—"}</td>
+                  <td className="px-3 py-2.5">
+                    <span className="badge px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-slate-100 text-slate-700">
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
                     >
-                      <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                        <span className="font-semibold text-emerald-700 uppercase">{log.module}</span>
-                        <span>{log.timestamp}</span>
-                      </div>
-                      <p className="font-semibold text-gray-800">{log.action}</p>
-                      <p className="text-gray-500 mt-0.5">{log.description}</p>
+                      {user.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5 text-gray-700">
+                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <button
+                        onClick={() => handleEdit(user)}
+                        title="Edit User"
+                        className="h-6 px-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
+                      >
+                        <Edit2 className="w-3 h-3 mr-0.5" /> Edit
+                      </button>
+                      <button
+                        onClick={() => setPasswordModal({ userId: user.id, isOpen: true })}
+                        title="Change Password"
+                        className="h-6 px-2 bg-white border border-gray-300 text-amber-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
+                      >
+                        <Lock className="w-3 h-3 mr-0.5" /> Password
+                      </button>
+                      <button
+                        onClick={() => handleToggleActive(user.id)}
+                        title={user.isActive ? "Deactivate" : "Activate"}
+                        className="h-6 px-2 bg-white border border-gray-300 text-blue-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
+                      >
+                        {user.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                      <button
+                        onClick={() => handleForceLogout(user)}
+                        title="Force Logout"
+                        className="h-6 px-2 bg-red-50 border border-red-200 text-red-700 rounded hover:bg-red-100 flex items-center justify-center cursor-pointer font-semibold"
+                      >
+                        <LogOut className="w-3 h-3 mr-0.5" /> Force Logout
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        title="Delete User"
+                        className="h-6 w-6 bg-white border border-gray-300 text-red-600 rounded hover:bg-gray-50 flex items-center justify-center cursor-pointer"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </td>
+                </tr>
+              ))
             )}
-          </div>
-        ))}
+          </tbody>
+        </table>
       </div>
 
       <ChangePasswordModal

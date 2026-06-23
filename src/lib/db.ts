@@ -4,6 +4,7 @@
  */
 
 import Dexie, { type Table } from "dexie";
+import { sha256Fallback } from "./utils";
 import {
   Account,
   JournalEntry,
@@ -43,7 +44,8 @@ import {
   StockValuationMethod,
   FiscalYearStatus,
   CustomFieldDef,
-  SalarySlab,
+  BillSundry,
+  StandardNarration,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -78,7 +80,8 @@ export class SutraDB extends Dexie {
   public employees!: Table<Employee & { id: string }>;
   public payrollRuns!: Table<PayrollRun & { id: string }>;
   public customFieldDefs!: Table<CustomFieldDef & { id: string }>;
-  public salarySlabs!: Table<SalarySlab & { id: string }>;
+  public billSundries!: Table<BillSundry & { id: string }>;
+  public standardNarrations!: Table<StandardNarration & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -120,24 +123,20 @@ export class SutraDB extends Dexie {
     });
 
     this.version(4).stores({
-      customFieldDefs: "++id, entity, isActive",
-      salarySlabs: "++id, maritalStatus",
+      billSundries: "++id, code, name, isActive",
+      standardNarrations: "++id, code, category, isActive",
     });
   }
 }
 
 let dbInstance: SutraDB | null = null;
+
 export function getDB(): SutraDB {
-  if (typeof window === "undefined" || typeof indexedDB === "undefined") {
-    throw new Error("[SSR] SutraDB cannot be instantiated outside the browser. This call must be deferred to client-side only.");
-  }
   if (!dbInstance) {
     dbInstance = new SutraDB();
   }
   return dbInstance;
 }
-
-export const isDBAvailable = typeof window !== "undefined" && typeof indexedDB !== "undefined";
 
 export function generateId(prefix: string): string {
   const timestamp = Date.now();
@@ -209,6 +208,533 @@ export async function getCompanySettings(): Promise<CompanySettings> {
 
 let isSeedingActive = false;
 
+export async function seedAccountingDefaults(): Promise<void> {
+  const db = getDB();
+  const fiscalYearsToSeed: (FiscalYear & { id: string })[] = [];
+  for (let bsYear = 2070; bsYear <= 2090; bsYear++) {
+    const adYear = bsYear - 57;
+    const isCurrent = bsYear === 2083;
+    fiscalYearsToSeed.push({
+      id: `fy-${bsYear}-${(bsYear + 1).toString().slice(-2)}`,
+      name: `${bsYear}/${(bsYear + 1).toString().slice(-2)}`,
+      startDate: `${adYear}-07-16`,
+      endDate: `${adYear + 1}-07-15`,
+      isCurrent,
+      status: FiscalYearStatus.ACTIVE,
+      closedBy: undefined,
+      closedAt: undefined,
+      openingEntryId: undefined,
+    });
+  }
+  await db.fiscalYears.bulkPut(fiscalYearsToSeed);
+
+  const mainWarehouse: Warehouse & { id: string } = {
+    id: "wh-main",
+    code: "MAIN",
+    name: "Main Store Godown",
+    address: "Kathmandu Warehouse Area",
+    isDefault: true,
+    isActive: true,
+  };
+  await db.warehouses.put(mainWarehouse);
+
+  const defaultUnits: (Unit & { id: string })[] = [
+    { id: "u-pcs", code: "PCS", name: "Pieces", symbol: "Pcs", isActive: true },
+    { id: "u-kg", code: "KG", name: "Kilograms", symbol: "Kg", isActive: true },
+    { id: "u-box", code: "BOX", name: "Boxes", symbol: "Box", isActive: true },
+    { id: "u-mtr", code: "MTR", name: "Meters", symbol: "Mtr", isActive: true },
+  ];
+  for (const unit of defaultUnits) {
+    await db.units.put(unit);
+  }
+
+  const seedAccounts: (Account & { id: string })[] = [
+    {
+      id: "grp-fixed-assets",
+      code: "1000",
+      name: "Fixed Assets",
+      type: AccountType.ASSET,
+      level: AccountLevel.GROUP,
+      group: "Capital",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-current-assets",
+      code: "1100",
+      name: "Current Assets",
+      type: AccountType.ASSET,
+      level: AccountLevel.GROUP,
+      group: "Assets",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-bank-accounts",
+      code: "1110",
+      name: "Bank Accounts",
+      type: AccountType.ASSET,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-assets",
+      group: "Assets",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-cash-in-hand",
+      code: "1120",
+      name: "Cash-in-Hand",
+      type: AccountType.ASSET,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-assets",
+      group: "Assets",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-sundry-debtors",
+      code: "1130",
+      name: "Sundry Debtors",
+      type: AccountType.ASSET,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-assets",
+      group: "Assets",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-stock-in-hand",
+      code: "1140",
+      name: "Stock-in-Hand",
+      type: AccountType.ASSET,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-assets",
+      group: "Assets",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+
+    {
+      id: "grp-capital-account",
+      code: "2000",
+      name: "Capital Account",
+      type: AccountType.EQUITY,
+      level: AccountLevel.GROUP,
+      group: "Capital",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+
+    {
+      id: "grp-current-liabilities",
+      code: "3000",
+      name: "Current Liabilities",
+      type: AccountType.LIABILITY,
+      level: AccountLevel.GROUP,
+      group: "Liabilities",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-sundry-creditors",
+      code: "3100",
+      name: "Sundry Creditors",
+      type: AccountType.LIABILITY,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-liabilities",
+      group: "Liabilities",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-duties-taxes",
+      code: "3200",
+      name: "Duties & Taxes",
+      type: AccountType.LIABILITY,
+      level: AccountLevel.SUBGROUP,
+      parentId: "grp-current-liabilities",
+      group: "Liabilities",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+
+    {
+      id: "grp-sales-accounts",
+      code: "4000",
+      name: "Sales Accounts",
+      type: AccountType.INCOME,
+      level: AccountLevel.GROUP,
+      group: "Sales",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-purchase-accounts",
+      code: "5000",
+      name: "Purchase Accounts",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.GROUP,
+      group: "Purchases",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-direct-expenses",
+      code: "5100",
+      name: "Direct Expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.GROUP,
+      group: "Expenses",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+    {
+      id: "grp-indirect-expenses",
+      code: "5200",
+      name: "Indirect Expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.GROUP,
+      group: "Expenses",
+      isActive: true,
+      isGroup: true,
+      balance: 0,
+    },
+
+    {
+      id: "acc-share-capital",
+      code: "2001",
+      name: "Share Capital",
+      parentId: "grp-capital-account",
+      type: AccountType.EQUITY,
+      level: AccountLevel.LEDGER,
+      group: "Capital Account",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-cash",
+      code: "1121",
+      name: "Cash A/C",
+      nameNepali: "नगद खाता",
+      parentId: "grp-cash-in-hand",
+      type: AccountType.ASSET,
+      level: AccountLevel.LEDGER,
+      group: "Cash-in-Hand",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-vat-13",
+      code: "3201",
+      name: "VAT 13% A/C",
+      nameNepali: "भ्याट १३% खाता",
+      parentId: "grp-duties-taxes",
+      type: AccountType.LIABILITY,
+      level: AccountLevel.LEDGER,
+      group: "Duties & Taxes",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-tds-payable",
+      code: "3202",
+      name: "TDS Payable A/C",
+      nameNepali: "टिडीएस कट्टी खाता",
+      parentId: "grp-duties-taxes",
+      type: AccountType.LIABILITY,
+      level: AccountLevel.LEDGER,
+      group: "Duties & Taxes",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-sales",
+      code: "4001",
+      name: "Sales Ledger",
+      nameNepali: "बिक्री खाता",
+      parentId: "grp-sales-accounts",
+      type: AccountType.INCOME,
+      level: AccountLevel.LEDGER,
+      group: "Sales Accounts",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-purchase",
+      code: "5001",
+      name: "Purchase Ledger",
+      nameNepali: "खरिद खाता",
+      parentId: "grp-purchase-accounts",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Purchase Accounts",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-round-off",
+      code: "5201",
+      name: "Round Off Expenses",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-salary",
+      code: "5202",
+      name: "Salary A/C",
+      nameNepali: "तलब खाता",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-office-rent",
+      code: "5203",
+      name: "Office Rent A/C",
+      nameNepali: "कार्यालय भाडा",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-telecommunications",
+      code: "5204",
+      name: "Internet & Phone",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-electricity",
+      code: "5205",
+      name: "Electricity Expense",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-marketing",
+      code: "5206",
+      name: "Marketing & Advertisement",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-audit-fees",
+      code: "5207",
+      name: "Audit & Professional Fees",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+    {
+      id: "acc-forex-gain-loss",
+      code: "5208",
+      name: "Foreign Exchange Gain/Loss",
+      nameNepali: "विदेशी मुद्रा लाभ/हानि",
+      parentId: "grp-indirect-expenses",
+      type: AccountType.EXPENSE,
+      level: AccountLevel.LEDGER,
+      group: "Indirect Expenses",
+      isSystemAccount: true,
+      isActive: true,
+      isGroup: false,
+      balance: 0,
+    },
+  ];
+
+  for (const acc of seedAccounts) {
+    await db.accounts.put(acc);
+  }
+
+  const defaultBankLedger: Account & { id: string } = {
+    id: "acc-nabil-bank",
+    code: "1111",
+    name: "Nabil Bank Ltd. A/C",
+    nameNepali: "नबिल बैंक खाता",
+    parentId: "grp-bank-accounts",
+    type: AccountType.ASSET,
+    level: AccountLevel.LEDGER,
+    group: "Bank Accounts",
+    isActive: true,
+    isGroup: false,
+    balance: 0,
+  };
+  await db.accounts.put(defaultBankLedger);
+
+  const defaultBank: BankAccount & { id: string } = {
+    id: "bk-nabil",
+    accountId: "acc-nabil-bank",
+    bankName: "Nabil Bank Ltd.",
+    accountNo: "00100987654321",
+    branch: "New Baneshwor, Kathmandu",
+    ifscCode: "NABILNPA",
+    swiftCode: "NABILNPKA",
+    openingBalance: 0,
+    isActive: true,
+  };
+  await db.bankAccounts.put(defaultBank);
+
+  // Seed default currencies
+  const defaultCurrencies: (Currency & { id: string })[] = [
+    {
+      id: "cur-npr",
+      code: "NPR",
+      name: "Nepali Rupee",
+      symbol: "रू.",
+      isBase: true,
+      isActive: true,
+    },
+    {
+      id: "cur-usd",
+      code: "USD",
+      name: "US Dollar",
+      symbol: "$",
+      isBase: false,
+      isActive: true,
+    },
+    { id: "cur-eur", code: "EUR", name: "Euro", symbol: "€", isBase: false, isActive: true },
+    {
+      id: "cur-inr",
+      code: "INR",
+      name: "Indian Rupee",
+      symbol: "₹",
+      isBase: false,
+      isActive: true,
+    },
+    {
+      id: "cur-gbp",
+      code: "GBP",
+      name: "British Pound",
+      symbol: "£",
+      isBase: false,
+      isActive: true,
+    },
+    {
+      id: "cur-cny",
+      code: "CNY",
+      name: "Chinese Yuan",
+      symbol: "¥",
+      isBase: false,
+      isActive: true,
+    },
+  ];
+  for (const currency of defaultCurrencies) {
+    await db.currencies.put(currency);
+  }
+
+  // Seed initial exchange rates
+  const today = new Date().toISOString().split("T")[0];
+  const initialRates: (ExchangeRate & { id: string })[] = [
+    {
+      id: generateId("exr"),
+      currencyCode: "USD",
+      date: today,
+      rateToBase: 133.5,
+      source: "manual",
+    },
+    {
+      id: generateId("exr"),
+      currencyCode: "EUR",
+      date: today,
+      rateToBase: 145.2,
+      source: "manual",
+    },
+    {
+      id: generateId("exr"),
+      currencyCode: "INR",
+      date: today,
+      rateToBase: 1.6,
+      source: "manual",
+    },
+    {
+      id: generateId("exr"),
+      currencyCode: "GBP",
+      date: today,
+      rateToBase: 168.75,
+      source: "manual",
+    },
+    {
+      id: generateId("exr"),
+      currencyCode: "CNY",
+      date: today,
+      rateToBase: 18.45,
+      source: "manual",
+    },
+  ];
+  for (const rate of initialRates) {
+    await db.exchangeRates.put(rate);
+  }
+
+  const initAudit: AuditLog & { id: string } = {
+    id: generateId("audit"),
+    timestamp: new Date().toISOString(),
+    userId: "system",
+    userName: "System",
+    action: "database_initialize",
+    module: "system",
+    recordId: "system",
+    recordType: "metadata",
+    newValue: JSON.stringify({ message: "Seed data populated successfully." }),
+  };
+  await db.auditLogs.put(initAudit);
+}
+
 export async function initializeDB(): Promise<void> {
   if (isSeedingActive) {
     console.log("Sutra ERP: Seeding already in progress, skipping concurrent initializeDB call.");
@@ -238,28 +764,16 @@ export async function initializeDB(): Promise<void> {
         username: "admin",
         role: UserRole.ADMIN,
         isActive: true,
-        password: "admin123",
+        password: sha256Fallback("admin123"),
         permissions: ["*"],
         createdAt: new Date().toISOString(),
       };
       await db.users.put(adminUser);
 
-      const defaultFY: FiscalYear & { id: string } = {
-        id: "fy-2083-84",
-        name: "2083/84",
-        startDate: "2026-07-16",
-        endDate: "2027-07-15",
-        isCurrent: true,
-        status: FiscalYearStatus.ACTIVE,
-        closedBy: undefined,
-        closedAt: undefined,
-        openingEntryId: undefined,
-      };
-      await db.fiscalYears.put(defaultFY);
-
       const defaultSettings: CompanySettings & { id: string } = {
         id: "company-default",
         name: "Sutra ERP Demo Inc.",
+        companyNameEn: "Sutra ERP Demo Inc.",
         nameNepali: "सूत्र इआरपी डेमो सं.",
         panNumber: "609876543",
         vatNumber: "609876543",
@@ -298,530 +812,40 @@ export async function initializeDB(): Promise<void> {
       };
       await db.companySettings.put(defaultSettings);
 
-      const mainWarehouse: Warehouse & { id: string } = {
-        id: "wh-main",
-        code: "MAIN",
-        name: "Main Store Godown",
-        address: "Kathmandu Warehouse Area",
-        isDefault: true,
-        isActive: true,
-      };
-      await db.warehouses.put(mainWarehouse);
-
-      const defaultUnits: (Unit & { id: string })[] = [
-        { id: "u-pcs", code: "PCS", name: "Pieces", symbol: "Pcs", isActive: true },
-        { id: "u-kg", code: "KG", name: "Kilograms", symbol: "Kg", isActive: true },
-        { id: "u-box", code: "BOX", name: "Boxes", symbol: "Box", isActive: true },
-        { id: "u-mtr", code: "MTR", name: "Meters", symbol: "Mtr", isActive: true },
-      ];
-      for (const unit of defaultUnits) {
-        await db.units.put(unit);
-      }
-
-      const seedAccounts: (Account & { id: string })[] = [
-        {
-          id: "grp-fixed-assets",
-          code: "1000",
-          name: "Fixed Assets",
-          type: AccountType.ASSET,
-          level: AccountLevel.GROUP,
-          group: "Capital",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-current-assets",
-          code: "1100",
-          name: "Current Assets",
-          type: AccountType.ASSET,
-          level: AccountLevel.GROUP,
-          group: "Assets",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-bank-accounts",
-          code: "1110",
-          name: "Bank Accounts",
-          type: AccountType.ASSET,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-assets",
-          group: "Assets",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-cash-in-hand",
-          code: "1120",
-          name: "Cash-in-Hand",
-          type: AccountType.ASSET,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-assets",
-          group: "Assets",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-sundry-debtors",
-          code: "1130",
-          name: "Sundry Debtors",
-          type: AccountType.ASSET,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-assets",
-          group: "Assets",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-stock-in-hand",
-          code: "1140",
-          name: "Stock-in-Hand",
-          type: AccountType.ASSET,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-assets",
-          group: "Assets",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-
-        {
-          id: "grp-capital-account",
-          code: "2000",
-          name: "Capital Account",
-          type: AccountType.EQUITY,
-          level: AccountLevel.GROUP,
-          group: "Capital",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-
-        {
-          id: "grp-current-liabilities",
-          code: "3000",
-          name: "Current Liabilities",
-          type: AccountType.LIABILITY,
-          level: AccountLevel.GROUP,
-          group: "Liabilities",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-sundry-creditors",
-          code: "3100",
-          name: "Sundry Creditors",
-          type: AccountType.LIABILITY,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-liabilities",
-          group: "Liabilities",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-duties-taxes",
-          code: "3200",
-          name: "Duties & Taxes",
-          type: AccountType.LIABILITY,
-          level: AccountLevel.SUBGROUP,
-          parentId: "grp-current-liabilities",
-          group: "Liabilities",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-
-        {
-          id: "grp-sales-accounts",
-          code: "4000",
-          name: "Sales Accounts",
-          type: AccountType.INCOME,
-          level: AccountLevel.GROUP,
-          group: "Sales",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-purchase-accounts",
-          code: "5000",
-          name: "Purchase Accounts",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.GROUP,
-          group: "Purchases",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-direct-expenses",
-          code: "5100",
-          name: "Direct Expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.GROUP,
-          group: "Expenses",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-        {
-          id: "grp-indirect-expenses",
-          code: "5200",
-          name: "Indirect Expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.GROUP,
-          group: "Expenses",
-          isActive: true,
-          isGroup: true,
-          balance: 0,
-        },
-
-        {
-          id: "acc-share-capital",
-          code: "2001",
-          name: "Share Capital",
-          parentId: "grp-capital-account",
-          type: AccountType.EQUITY,
-          level: AccountLevel.LEDGER,
-          group: "Capital Account",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-cash",
-          code: "1121",
-          name: "Cash A/C",
-          nameNepali: "नगद खाता",
-          parentId: "grp-cash-in-hand",
-          type: AccountType.ASSET,
-          level: AccountLevel.LEDGER,
-          group: "Cash-in-Hand",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-vat-13",
-          code: "3201",
-          name: "VAT 13% A/C",
-          nameNepali: "भ्याट १३% खाता",
-          parentId: "grp-duties-taxes",
-          type: AccountType.LIABILITY,
-          level: AccountLevel.LEDGER,
-          group: "Duties & Taxes",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-tds-payable",
-          code: "3202",
-          name: "TDS Payable A/C",
-          nameNepali: "टिडीएस कट्टी खाता",
-          parentId: "grp-duties-taxes",
-          type: AccountType.LIABILITY,
-          level: AccountLevel.LEDGER,
-          group: "Duties & Taxes",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-sales",
-          code: "4001",
-          name: "Sales Ledger",
-          nameNepali: "बिक्री खाता",
-          parentId: "grp-sales-accounts",
-          type: AccountType.INCOME,
-          level: AccountLevel.LEDGER,
-          group: "Sales Accounts",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-purchase",
-          code: "5001",
-          name: "Purchase Ledger",
-          nameNepali: "खरिद खाता",
-          parentId: "grp-purchase-accounts",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Purchase Accounts",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-round-off",
-          code: "5201",
-          name: "Round Off Expenses",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-salary",
-          code: "5202",
-          name: "Salary A/C",
-          nameNepali: "तलब खाता",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-office-rent",
-          code: "5203",
-          name: "Office Rent A/C",
-          nameNepali: "कार्यालय भाडा",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-telecommunications",
-          code: "5204",
-          name: "Internet & Phone",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-electricity",
-          code: "5205",
-          name: "Electricity Expense",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-marketing",
-          code: "5206",
-          name: "Marketing & Advertisement",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-audit-fees",
-          code: "5207",
-          name: "Audit & Professional Fees",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-        {
-          id: "acc-forex-gain-loss",
-          code: "5208",
-          name: "Foreign Exchange Gain/Loss",
-          nameNepali: "विदेशी मुद्रा लाभ/हानि",
-          parentId: "grp-indirect-expenses",
-          type: AccountType.EXPENSE,
-          level: AccountLevel.LEDGER,
-          group: "Indirect Expenses",
-          isSystemAccount: true,
-          isActive: true,
-          isGroup: false,
-          balance: 0,
-        },
-      ];
-
-      for (const acc of seedAccounts) {
-        await db.accounts.put(acc);
-      }
-
-      const defaultBankLedger: Account & { id: string } = {
-        id: "acc-nabil-bank",
-        code: "1111",
-        name: "Nabil Bank Ltd. A/C",
-        nameNepali: "नबिल बैंक खाता",
-        parentId: "grp-bank-accounts",
-        type: AccountType.ASSET,
-        level: AccountLevel.LEDGER,
-        group: "Bank Accounts",
-        isActive: true,
-        isGroup: false,
-        balance: 0,
-      };
-      await db.accounts.put(defaultBankLedger);
-
-      const defaultBank: BankAccount & { id: string } = {
-        id: "bk-nabil",
-        accountId: "acc-nabil-bank",
-        bankName: "Nabil Bank Ltd.",
-        accountNo: "00100987654321",
-        branch: "New Baneshwor, Kathmandu",
-        ifscCode: "NABILNPA",
-        swiftCode: "NABILNPKA",
-        openingBalance: 0,
-        isActive: true,
-      };
-      await db.bankAccounts.put(defaultBank);
-
-      // Seed default currencies
-      const defaultCurrencies: (Currency & { id: string })[] = [
-        {
-          id: "cur-npr",
-          code: "NPR",
-          name: "Nepali Rupee",
-          symbol: "रू.",
-          isBase: true,
-          isActive: true,
-        },
-        {
-          id: "cur-usd",
-          code: "USD",
-          name: "US Dollar",
-          symbol: "$",
-          isBase: false,
-          isActive: true,
-        },
-        { id: "cur-eur", code: "EUR", name: "Euro", symbol: "€", isBase: false, isActive: true },
-        {
-          id: "cur-inr",
-          code: "INR",
-          name: "Indian Rupee",
-          symbol: "₹",
-          isBase: false,
-          isActive: true,
-        },
-        {
-          id: "cur-gbp",
-          code: "GBP",
-          name: "British Pound",
-          symbol: "£",
-          isBase: false,
-          isActive: true,
-        },
-        {
-          id: "cur-cny",
-          code: "CNY",
-          name: "Chinese Yuan",
-          symbol: "¥",
-          isBase: false,
-          isActive: true,
-        },
-      ];
-      for (const currency of defaultCurrencies) {
-        await db.currencies.put(currency);
-      }
-
-      // Seed initial exchange rates
-      const today = new Date().toISOString().split("T")[0];
-      const initialRates: (ExchangeRate & { id: string })[] = [
-        {
-          id: generateId("exr"),
-          currencyCode: "USD",
-          date: today,
-          rateToBase: 133.5,
-          source: "manual",
-        },
-        {
-          id: generateId("exr"),
-          currencyCode: "EUR",
-          date: today,
-          rateToBase: 145.2,
-          source: "manual",
-        },
-        {
-          id: generateId("exr"),
-          currencyCode: "INR",
-          date: today,
-          rateToBase: 1.6,
-          source: "manual",
-        },
-        {
-          id: generateId("exr"),
-          currencyCode: "GBP",
-          date: today,
-          rateToBase: 168.75,
-          source: "manual",
-        },
-        {
-          id: generateId("exr"),
-          currencyCode: "CNY",
-          date: today,
-          rateToBase: 18.45,
-          source: "manual",
-        },
-      ];
-      for (const rate of initialRates) {
-        await db.exchangeRates.put(rate);
-      }
-
-      // Seed progressive salary slabs (FY 2081-82 rules)
-      const defaultSlabs: SalarySlab[] = [
-        { id: "slab-s1", maritalStatus: "single", thresholdFrom: 0, thresholdTo: 500000, taxRate: 1 },
-        { id: "slab-s2", maritalStatus: "single", thresholdFrom: 500001, thresholdTo: 700000, taxRate: 10 },
-        { id: "slab-s3", maritalStatus: "single", thresholdFrom: 700001, thresholdTo: 1000000, taxRate: 20 },
-        { id: "slab-s4", maritalStatus: "single", thresholdFrom: 1000001, thresholdTo: 2000000, taxRate: 30 },
-        { id: "slab-s5", maritalStatus: "single", thresholdFrom: 2000001, thresholdTo: 999999999, taxRate: 36 },
-        { id: "slab-m1", maritalStatus: "married", thresholdFrom: 0, thresholdTo: 550000, taxRate: 1 },
-        { id: "slab-m2", maritalStatus: "married", thresholdFrom: 550001, thresholdTo: 770000, taxRate: 10 },
-        { id: "slab-m3", maritalStatus: "married", thresholdFrom: 770001, thresholdTo: 1100000, taxRate: 20 },
-        { id: "slab-m4", maritalStatus: "married", thresholdFrom: 1100001, thresholdTo: 2200000, taxRate: 30 },
-        { id: "slab-m5", maritalStatus: "married", thresholdFrom: 2200001, thresholdTo: 999999999, taxRate: 36 },
-      ];
-      for (const slab of defaultSlabs) {
-        await db.salarySlabs.put(slab);
-      }
-
-      const initAudit: AuditLog & { id: string } = {
-        id: generateId("audit"),
-        timestamp: new Date().toISOString(),
-        userId: adminUser.id,
-        userName: adminUser.name,
-        action: "database_initialize",
-        module: "system",
-        recordId: "system",
-        recordType: "metadata",
-        newValue: JSON.stringify({ message: "Seed data populated successfully." }),
-      };
-      await db.auditLogs.put(initAudit);
+      await seedAccountingDefaults();
 
       console.log("Sutra ERP: Initial DB Seeding completed.");
+    });
+
+    await db.transaction("rw", db.billSundries, db.standardNarrations, async () => {
+      const sundryCount = await db.billSundries.count();
+      if (sundryCount === 0) {
+        await db.billSundries.bulkPut([
+          { id: generateId("bs"), code: "FRT", name: "Freight Charges", type: "additive", nature: "freight", calculationBasis: "fixed", rateType: "percentage", defaultRate: 0, accountId: "acc-forex-gain-loss", affectsCostOfGoods: true, printOnInvoice: true, applyVAT: true, sortOrder: 1, isActive: true },
+          { id: generateId("bs"), code: "PKG", name: "Packing Charge", type: "additive", nature: "other", calculationBasis: "fixed", rateType: "fixed", defaultRate: 0, accountId: "acc-forex-gain-loss", affectsCostOfGoods: false, printOnInvoice: true, applyVAT: true, sortOrder: 2, isActive: true },
+          { id: generateId("bs"), code: "DISC", name: "Discount", type: "subtractive", nature: "discount", calculationBasis: "total", rateType: "percentage", defaultRate: 0, accountId: "acc-forex-gain-loss", affectsCostOfGoods: false, printOnInvoice: true, applyVAT: false, sortOrder: 3, isActive: true },
+          { id: generateId("bs"), code: "RO+", name: "Round Off (+)", type: "additive", nature: "other", calculationBasis: "fixed", rateType: "fixed", defaultRate: 0, accountId: "acc-round-off", affectsCostOfGoods: false, printOnInvoice: false, applyVAT: false, sortOrder: 4, isActive: true },
+          { id: generateId("bs"), code: "RO-", name: "Round Off (-)", type: "subtractive", nature: "other", calculationBasis: "fixed", rateType: "fixed", defaultRate: 0, accountId: "acc-round-off", affectsCostOfGoods: false, printOnInvoice: false, applyVAT: false, sortOrder: 5, isActive: true },
+          { id: generateId("bs"), code: "TDISC", name: "Trade Discount", type: "subtractive", nature: "discount", calculationBasis: "total", rateType: "percentage", defaultRate: 0, accountId: "acc-forex-gain-loss", affectsCostOfGoods: false, printOnInvoice: true, applyVAT: false, sortOrder: 6, isActive: true },
+          { id: generateId("bs"), code: "VAT13", name: "VAT 13%", type: "additive", nature: "tax", calculationBasis: "taxableAmount", rateType: "percentage", defaultRate: 13, accountId: "acc-vat-13", affectsCostOfGoods: false, printOnInvoice: true, applyVAT: false, sortOrder: 7, isActive: true },
+        ]);
+      }
+
+      const narrationCount = await db.standardNarrations.count();
+      if (narrationCount === 0) {
+        await db.standardNarrations.bulkPut([
+          { id: generateId("sn"), code: "RENT", text: "Being payment of rent for {month}", category: "payment", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "RECPT", text: "Being receipt from {party} against Invoice No. {ref}", category: "receipt", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "SALARY", text: "Being salary for the month of {month}", category: "payment", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "VATDEP", text: "Being VAT deposit to IRD for {month}", category: "payment", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "TDSDEP", text: "Being TDS deposited to IRD - {section}", category: "payment", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "PURCH", text: "Being purchase from {party}", category: "purchase", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "SALES", text: "Being sales to {party}", category: "sales", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "DEPRC", text: "Being depreciation for FY {fy}", category: "journal", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "INT", text: "Being interest charged on overdue bill {ref}", category: "journal", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "ADJ", text: "Being adjustment entry", category: "general", usageCount: 0, isActive: true },
+        ]);
+      }
     });
   } catch (error) {
     console.error("Fatal: Failed to initialize and seed local Database:", error);

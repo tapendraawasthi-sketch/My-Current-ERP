@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -188,7 +187,7 @@ export async function generateInvoicePDF(
       doc.addImage(qrDataUrl, "PNG", PAGE_WIDTH - 38, 12, 28, 28);
       doc.setFontSize(6);
       doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
-      doc.text("Fiscal Bill / कर बिजक", PAGE_WIDTH - 38, 42);
+      doc.text("Fiscal Bill / à¤•à¤° à¤¬à¤¿à¤œà¤•", PAGE_WIDTH - 38, 42);
     } catch (e) {
       console.error("Error generating QR code", e);
     }
@@ -716,7 +715,7 @@ export function generateBalanceSheetPDF(
 
   doc.text("SUMMARY VERIFICATION STATUS:", MARGIN, y);
   const statusStr = data.isBalanced
-    ? "BALANCED ✓"
+    ? "BALANCED âœ“"
     : `UNBALANCED (Diff: ${formatNumber(Math.abs(round2(data.totalAssets - totalSources)))})`;
   doc.text(statusStr, PAGE_WIDTH - MARGIN, y, { align: "right" });
 

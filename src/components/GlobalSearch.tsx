@@ -138,7 +138,10 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-20">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[600px] overflow-hidden">
         {/* Search Input Container */}
-        <div className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn"
+          style={{ borderColor: "var(--border)" }}
+        >
           <Search className="h-4 w-4 text-gray-400 shrink-0" />
           <input
             ref={inputRef}
@@ -149,8 +152,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
             autoFocus
             className="flex-1 bg-transparent text-[13px] text-gray-900 placeholder-gray-400 outline-none"
           />
-          <kbd className="text-[10px] bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-gray-500 font-mono">ESC</kbd>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 ml-2 cursor-pointer">
+          <kbd className="text-[10px] bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-gray-500 font-mono">
+            ESC
+          </kbd>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 ml-2 cursor-pointer"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -317,7 +325,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           {/* Items */}
           {results.items.length > 0 && (
             <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">ITEMS</div>
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+                ITEMS
+              </div>
               {results.items.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (
@@ -343,7 +353,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           {/* Pages */}
           {results.pages.length > 0 && (
             <div>
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">PAGES</div>
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+                PAGES
+              </div>
               {results.pages.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (

@@ -74,16 +74,16 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-semibold text-gray-700 flex items-center gap-0.5"
+          className="text-[11px] font-semibold text-slate-600 mb-1 block tracking-wide flex items-center gap-0.5"
         >
           {label}
           {required && <span className="text-red-500 font-bold">*</span>}
         </label>
       )}
 
-      <div className="relative flex items-center w-full rounded-md shadow-sm">
+      <div className="relative flex items-center w-full rounded-lg shadow-sm">
         {prefix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-gray-600 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-slate-600 bg-slate-50 border border-r-0 border-slate-200 rounded-l-lg whitespace-nowrap">
             {prefix}
           </span>
         )}
@@ -108,9 +108,9 @@ const Input: React.FC<InputProps> = ({
           tabIndex={tabIndex}
           readOnly={readOnly}
           className={`
-            block w-full h-8 px-2.5 text-[12px] bg-white border text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300"}
-            ${prefix ? "rounded-r-md" : suffix ? "rounded-l-md" : "rounded-md"}
+            block w-full h-8 px-3 text-[12.5px] bg-slate-50 focus:bg-white border text-slate-800 placeholder:text-slate-400 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/15 focus:border-indigo-500
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-slate-200"}
+            ${prefix ? "rounded-r-lg" : suffix ? "rounded-l-lg" : "rounded-lg"}
             ${prefix && suffix ? "rounded-none" : ""}
             ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}
             ${alignClass}
@@ -119,7 +119,7 @@ const Input: React.FC<InputProps> = ({
         />
 
         {suffix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-gray-500 bg-gray-50 border border-l-0 border-gray-300 rounded-r-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-slate-500 bg-slate-50 border border-l-0 border-slate-200 rounded-r-lg whitespace-nowrap">
             {suffix}
           </span>
         )}

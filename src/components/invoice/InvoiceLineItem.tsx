@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -27,6 +26,7 @@ export interface InvoiceLineState {
   isTaxable: boolean;
   vatRate: number;
   warehouseId?: string;
+  discountAmount?: number;
 }
 
 interface InvoiceLineItemProps {
@@ -117,10 +117,10 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
           onChange={(e) => handleItem(e.target.value)}
           disabled={readOnly}
         >
-          <option value="">— select item —</option>
+          <option value="">â€” select item â€”</option>
           {itemList.map((it) => (
             <option key={it.id} value={it.id}>
-              {it.code} · {it.name}
+              {it.code} Â· {it.name}
             </option>
           ))}
         </select>
@@ -133,7 +133,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
           value={line.hsnCode || ""}
           onChange={(e) => onUpdate({ hsnCode: e.target.value })}
           disabled={readOnly}
-          placeholder="—"
+          placeholder="â€”"
         />
       </td>
 
@@ -144,7 +144,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
           value={line.description || ""}
           onChange={(e) => onUpdate({ description: e.target.value })}
           disabled={readOnly}
-          placeholder="—"
+          placeholder="â€”"
         />
       </td>
 
@@ -249,7 +249,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
             onChange={(e) => onUpdate({ warehouseId: e.target.value })}
             disabled={readOnly}
           >
-            <option value="">—</option>
+            <option value="">â€”</option>
             {warehouses
               .filter((w) => w.isActive)
               .map((w) => (

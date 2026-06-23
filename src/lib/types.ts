@@ -368,6 +368,7 @@ export interface Invoice {
   referenceNo?: string;
   status: VoucherStatus;
   journalEntryId?: string;
+  additionalCharges?: any[];
   orderRef?: string;
   challanRef?: string;
   billTo?: string;
@@ -446,6 +447,7 @@ export interface DeliveryChallan {
   createdBy?: string;
   createdAt?: string;
   invoiceRef?: string;
+  inventoryPosted?: boolean;
 }
 
 export interface GoodsReceiptNote {
@@ -465,6 +467,7 @@ export interface GoodsReceiptNote {
   createdBy?: string;
   createdAt?: string;
   invoiceRef?: string;
+  inventoryPosted?: boolean;
 }
 
 export interface StockMovement {
@@ -545,6 +548,7 @@ export interface BankStatement {
   reconciled: boolean;
   reconciledVoucherId?: string;
   reconciledDate?: string;
+  matchedVoucherId?: string;
 }
 
 export interface Budget {
@@ -583,6 +587,17 @@ export interface TdsEntry {
   section?: string;
 }
 
+export interface SmtpConfig {
+  host: string; // e.g. "smtp.gmail.com"
+  port: number; // 587 for TLS, 465 for SSL, 25 for plain
+  secure: boolean; // true for port 465, false for 587/25
+  authUser: string; // sender email address e.g. "yourcompany@gmail.com"
+  authPass: string; // Gmail App Password (16-char) or SMTP password
+  fromName: string; // Display name e.g. "Sutra ERP"
+  fromEmail: string; // From address, usually same as authUser
+  isConfigured: boolean; // true once admin has saved valid SMTP settings
+}
+
 export interface CompanySettings {
   id?: string;
   name: string;
@@ -609,6 +624,21 @@ export interface CompanySettings {
   voucherSeries: Record<string, VoucherSeries>;
   tdsEnabled?: boolean;
   cbmsConfig?: { clientId: string; clientSecret: string; environment: "sandbox" | "production" };
+  smtpConfig?: SmtpConfig;
+
+  voucherStartingNumber?: number;
+  allowVoucherEditAfterPosting?: boolean;
+  requireVoucherNarration?: boolean;
+  voucherWarningThreshold?: number;
+  defaultPaymentTerms?: number;
+  defaultTaxRate?: number;
+  showHsnSac?: boolean;
+  defaultInvoiceFooter?: string;
+  letterheadBase64?: string;
+  invoicePrintFormat?: string;
+  voucherPrintFormat?: string;
+  allowNegativeStock?: boolean;
+  enableStock?: boolean;
 
   // Compatibility/local settings fields
   companyNameEn?: string;
@@ -964,20 +994,6 @@ export interface Employee {
   joinDate: string;
   isActive: boolean;
   accountId: string;
-  // Nepal Additions:
-  citizenshipNo?: string;
-  socialSecurityNo?: string;      // SSF registration number
-  pfAccountNo?: string;           // PF account number (EPF)
-  citAccountNo?: string;          // CIT account number
-  ssfContributionType: 'basic' | 'premium' | 'none'; // SSF scheme type
-  taxableAllowances?: { name: string; amount: number; isTaxable: boolean }[];
-  pfEnabled: boolean;             // employee enrolled in PF
-  citEnabled: boolean;            // employee enrolled in CIT
-  ssfEnabled: boolean;
-  rentAllowance?: number;         // housing — first NPR 3,000/month tax-exempt
-  medicalAllowance?: number;      // first NPR 750/month tax-exempt
-  transportAllowance?: number;    // first NPR 2,500/month tax-exempt
-  maritalStatus: 'single' | 'married';  // married gets 10% higher tax-free threshold
 }
 
 export interface PayrollLine {
@@ -990,8 +1006,6 @@ export interface PayrollLine {
   pfEmployer: number;
   citEmployee: number;
   citEmployer: number;
-  ssfEmployee: number;
-  ssfEmployer: number;
   tdsOnSalary: number;
   otherDeductions: number;
   netSalary: number;
@@ -1006,20 +1020,8 @@ export interface PayrollRun {
   totalGross: number;
   totalDeductions: number;
   totalNet: number;
-  totalEmployerPf: number;
-  totalEmployerSsf: number;
-  totalTds: number;
-  voucherId?: string;
   createdBy?: string;
   createdAt?: string;
-}
-
-export interface SalarySlab {
-  id: string;
-  maritalStatus: "single" | "married";
-  thresholdFrom: number;
-  thresholdTo: number;
-  taxRate: number;
 }
 
 export type CustomFieldType = "text" | "number" | "date" | "select" | "checkbox";
@@ -1033,4 +1035,37 @@ export interface CustomFieldDef {
   required: boolean;
   isActive: boolean;
   sortOrder: number;
+}
+
+export type BillSundryType = 'additive' | 'subtractive';
+export type BillSundryNature = 'freight' | 'discount' | 'tax' | 'other';
+export type BillSundryCalculationBasis = 'total' | 'taxableAmount' | 'previousAmount' | 'fixed';
+export type BillSundryRateType = 'percentage' | 'fixed';
+
+export interface BillSundry {
+  id: string;
+  code: string;
+  name: string;
+  type: BillSundryType;
+  nature: BillSundryNature;
+  calculationBasis: BillSundryCalculationBasis;
+  rateType: BillSundryRateType;
+  defaultRate: number;
+  accountId: string;
+  affectsCostOfGoods: boolean;
+  printOnInvoice: boolean;
+  applyVAT: boolean;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface StandardNarration {
+  id: string;
+  code: string;       // 3-6 char shortcode e.g. "RENT"
+  text: string;       // up to 500 chars; supports {party}, {amount}, {date} tokens
+  category: 'payment' | 'receipt' | 'journal' | 'sales' | 'purchase' | 'general';
+  usageCount: number;
+  isActive: boolean;
+  createdAt?: string;
 }

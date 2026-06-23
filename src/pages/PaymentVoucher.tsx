@@ -1,14 +1,14 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Payment Vouchers — list & entry page.
+ * Payment Vouchers â€” list & entry page.
  */
 
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveVouchers } from "../hooks/useActiveData";
 import { SearchableTable, Button, Badge, Select, NepaliDatePicker } from "../components/ui";
 import PaymentVoucherForm from "../components/voucher/PaymentVoucherForm";
 import { Wallet, Plus, Eye } from "lucide-react";
@@ -22,7 +22,8 @@ const statusVariant = {
 };
 
 const PaymentVoucher: React.FC = () => {
-  const { vouchers, companySettings } = useStore();
+  const { companySettings } = useStore();
+  const vouchers = useActiveVouchers();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
@@ -74,13 +75,13 @@ const PaymentVoucher: React.FC = () => {
       header: "Voucher No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
+    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "â€”" },
     { key: "date", header: "Date (AD)" },
-    { key: "partyName", header: "Paid To", render: (v: string) => v || "—" },
+    { key: "partyName", header: "Paid To", render: (v: string) => v || "â€”" },
     {
       key: "narration",
       header: "Narration",
-      render: (v: string) => <span className="line-clamp-1 max-w-[220px]">{v || "—"}</span>,
+      render: (v: string) => <span className="line-clamp-1 max-w-[220px]">{v || "â€”"}</span>,
     },
     {
       key: "totalCredit",
@@ -129,7 +130,7 @@ const PaymentVoucher: React.FC = () => {
             <span>PAYMENT VOUCHERS</span>
           </h2>
           <p className="text-xs text-gray-400 mt-1 leading-none font-semibold uppercase tracking-wider">
-            Money paid out — expenses, suppliers & transfers
+            Money paid out â€” expenses, suppliers & transfers
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={openNew} icon={<Plus className="h-4 w-4" />}>
@@ -160,7 +161,7 @@ const PaymentVoucher: React.FC = () => {
         rowKey="id"
         onRowClick={openEdit}
         emptyMessage="No payment vouchers found. Create your first entry."
-        placeholder="Search voucher no, payee or narration…"
+        placeholder="Search voucher no, payee or narrationâ€¦"
         stickyHeader
       />
     </div>

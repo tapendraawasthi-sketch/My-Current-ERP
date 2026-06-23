@@ -45,24 +45,12 @@ export default function EmployeeMaster() {
     allowances: [] as { name: string; amount: number }[],
     deductions: [] as { name: string; amount: number }[],
     pfRate: 10,
-    citRate: 10,
+    citRate: 1,
     bankAccountNo: "",
     bankName: "",
     joinDate: new Date().toISOString().split("T")[0],
     accountId: "",
     isActive: true,
-    citizenshipNo: "",
-    socialSecurityNo: "",
-    pfAccountNo: "",
-    citAccountNo: "",
-    ssfContributionType: "none" as "basic" | "premium" | "none",
-    pfEnabled: false,
-    citEnabled: false,
-    ssfEnabled: false,
-    rentAllowance: 0,
-    medicalAllowance: 0,
-    transportAllowance: 0,
-    maritalStatus: "single" as "single" | "married",
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -89,24 +77,12 @@ export default function EmployeeMaster() {
       allowances: emp.allowances || [],
       deductions: emp.deductions || [],
       pfRate: emp.pfRate ?? 10,
-      citRate: emp.citRate ?? 10,
+      citRate: emp.citRate ?? 1,
       bankAccountNo: emp.bankAccountNo || "",
       bankName: emp.bankName || "",
       joinDate: emp.joinDate || new Date().toISOString().split("T")[0],
       accountId: emp.accountId || "",
       isActive: emp.isActive,
-      citizenshipNo: emp.citizenshipNo || "",
-      socialSecurityNo: emp.socialSecurityNo || "",
-      pfAccountNo: emp.pfAccountNo || "",
-      citAccountNo: emp.citAccountNo || "",
-      ssfContributionType: emp.ssfContributionType || "none",
-      pfEnabled: !!emp.pfEnabled,
-      citEnabled: !!emp.citEnabled,
-      ssfEnabled: !!emp.ssfEnabled,
-      rentAllowance: emp.rentAllowance || 0,
-      medicalAllowance: emp.medicalAllowance || 0,
-      transportAllowance: emp.transportAllowance || 0,
-      maritalStatus: emp.maritalStatus || "single",
     });
     setShowForm(true);
   };
@@ -427,146 +403,21 @@ export default function EmployeeMaster() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Marital Status</label>
-                  <select
-                    value={formData.maritalStatus}
-                    onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value as "single" | "married" })}
-                    className="input"
-                  >
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Citizenship No</label>
-                  <input
-                    type="text"
-                    value={formData.citizenshipNo}
-                    onChange={(e) => setFormData({ ...formData, citizenshipNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SSF No (Social Security)</label>
-                  <input
-                    type="text"
-                    value={formData.socialSecurityNo}
-                    onChange={(e) => setFormData({ ...formData, socialSecurityNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">EPF Account No</label>
-                  <input
-                    type="text"
-                    value={formData.pfAccountNo}
-                    onChange={(e) => setFormData({ ...formData, pfAccountNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CIT Account No</label>
-                  <input
-                    type="text"
-                    value={formData.citAccountNo}
-                    onChange={(e) => setFormData({ ...formData, citAccountNo: e.target.value })}
-                    className="input"
-                  />
-                </div>
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="pfEnabled"
-                    checked={formData.pfEnabled}
-                    onChange={(e) => setFormData({ ...formData, pfEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="pfEnabled" className="text-sm font-medium text-gray-700">PF Enrolled</label>
-                </div>
-                {formData.pfEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">PF Rate %</label>
-                    <input
-                      type="number"
-                      value={formData.pfRate}
-                      onChange={(e) => setFormData({ ...formData, pfRate: Number(e.target.value) })}
-                      className="input"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="citEnabled"
-                    checked={formData.citEnabled}
-                    onChange={(e) => setFormData({ ...formData, citEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="citEnabled" className="text-sm font-medium text-gray-700">CIT Enrolled</label>
-                </div>
-                {formData.citEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">CIT Rate %</label>
-                    <input
-                      type="number"
-                      value={formData.citRate}
-                      onChange={(e) => setFormData({ ...formData, citRate: Number(e.target.value) })}
-                      className="input"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center pt-6">
-                  <input
-                    type="checkbox"
-                    id="ssfEnabled"
-                    checked={formData.ssfEnabled}
-                    onChange={(e) => setFormData({ ...formData, ssfEnabled: e.target.checked })}
-                    className="rounded border-gray-300 mr-2 h-4 w-4"
-                  />
-                  <label htmlFor="ssfEnabled" className="text-sm font-medium text-gray-700">SSF Enrolled</label>
-                </div>
-                {formData.ssfEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">SSF Scheme</label>
-                    <select
-                      value={formData.ssfContributionType}
-                      onChange={(e) => setFormData({ ...formData, ssfContributionType: e.target.value as "basic" | "premium" | "none" })}
-                      className="input"
-                    >
-                      <option value="none">None</option>
-                      <option value="basic">Basic (E'ee 11% / E'r 20%)</option>
-                      <option value="premium">Premium (E'ee 1% / E'r 3.33%)</option>
-                    </select>
-                  </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rent Allowance</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">PF Rate %</label>
                   <input
                     type="number"
-                    value={formData.rentAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, rentAllowance: Number(e.target.value) })}
+                    value={formData.pfRate}
+                    onChange={(e) => setFormData({ ...formData, pfRate: Number(e.target.value) })}
                     className="input"
-                    placeholder="0.00"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Medical Allowance</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">CIT Rate %</label>
                   <input
                     type="number"
-                    value={formData.medicalAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, medicalAllowance: Number(e.target.value) })}
+                    value={formData.citRate}
+                    onChange={(e) => setFormData({ ...formData, citRate: Number(e.target.value) })}
                     className="input"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Transport Allowance</label>
-                  <input
-                    type="number"
-                    value={formData.transportAllowance || ""}
-                    onChange={(e) => setFormData({ ...formData, transportAllowance: Number(e.target.value) })}
-                    className="input"
-                    placeholder="0.00"
                   />
                 </div>
                 <div>
@@ -579,7 +430,9 @@ export default function EmployeeMaster() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Account No</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bank Account No
+                  </label>
                   <input
                     type="text"
                     value={formData.bankAccountNo}

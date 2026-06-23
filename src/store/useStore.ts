@@ -43,6 +43,8 @@ import {
   VoucherType,
   UserRole,
   TdsType,
+  BillSundry,
+  StandardNarration,
   OrderStatus,
   ChallanStatus,
   MovementType,
@@ -63,6 +65,8 @@ import {
   generateVoucherNo,
   generateInvoiceNo,
   calculateNextDueDate,
+  validateDoubleEntry,
+  getStockBalance,
 } from "../lib/accounting";
 import {
   createSaleMovement,
@@ -158,7 +162,7 @@ export interface StoreState {
 
   // Voucher operations
   addVoucher: (
-    data: Omit<JournalEntry, "id" | "voucherNo" | "totalDebit" | "totalCredit">,
+    data: Omit<JournalEntry, "id" | "totalDebit" | "totalCredit"> & { voucherNo?: string },
   ) => Promise<JournalEntry>;
   updateVoucher: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
   deleteVoucher: (id: string) => Promise<boolean>;
@@ -245,6 +249,22 @@ export interface StoreState {
   addCustomFieldDef: (def: Omit<CustomFieldDef, "id">) => Promise<void>;
   updateCustomFieldDef: (id: string, updates: Partial<CustomFieldDef>) => Promise<void>;
   deleteCustomFieldDef: (id: string) => Promise<void>;
+
+  // Bill Sundries
+  billSundries: BillSundry[];
+  loadBillSundries: () => Promise<void>;
+  addBillSundry: (bs: Omit<BillSundry, "id">) => Promise<BillSundry>;
+  updateBillSundry: (id: string, updates: Partial<BillSundry>) => Promise<void>;
+  deleteBillSundry: (id: string) => Promise<void>;
+  getBillSundryById: (id: string) => BillSundry | undefined;
+
+  // Standard Narrations
+  standardNarrations: StandardNarration[];
+  loadStandardNarrations: () => Promise<void>;
+  addStandardNarration: (sn: Omit<StandardNarration, "id">) => Promise<StandardNarration>;
+  updateStandardNarration: (id: string, updates: Partial<StandardNarration>) => Promise<void>;
+  deleteStandardNarration: (id: string) => Promise<void>;
+  incrementNarrationUsage: (id: string) => Promise<void>;
 }
 
 export type StoreSet = StoreApi<StoreState>["setState"];
@@ -291,6 +311,8 @@ export const useStore = create<StoreState>()((...args) => {
     employees: [],
     payrollRuns: [],
     customFieldDefs: [],
+    billSundries: [],
+    standardNarrations: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -308,6 +330,13 @@ export const useStore = create<StoreState>()((...args) => {
       enableBillWiseTracking: true,
       enableBatchTracking: false,
       voucherSeries: {},
+      allowNegativeStock: false,
+      enableStock: true,
+      requireVoucherNarration: false,
+      allowVoucherEditAfterPosting: false,
+      voucherWarningThreshold: 0,
+      defaultTaxRate: 13,
+      showHsnSac: true,
     },
     fiscalYears: [],
     currentFiscalYear: null,
@@ -537,6 +566,12 @@ export const useStore = create<StoreState>()((...args) => {
       const db = getDB();
       const state = get();
 
+      const validationResult = validateDoubleEntry(voucherData.lines);
+      if (!validationResult.isValid) {
+        toast.error(validationResult.message);
+        return undefined as any;
+      }
+
       const targetDate = voucherData.date;
       const entryFY = state.fiscalYears.find(
         (fy) => targetDate >= fy.startDate && targetDate <= fy.endDate,
@@ -577,7 +612,7 @@ export const useStore = create<StoreState>()((...args) => {
       const finalVoucher: JournalEntry = {
         ...voucherData,
         id: cleanVId,
-        voucherNo,
+        voucherNo: voucherData.voucherNo || voucherNo,
         totalDebit: totalDr,
         totalCredit: totalCr,
         createdBy: state.currentUser?.id || "system",
@@ -631,6 +666,13 @@ export const useStore = create<StoreState>()((...args) => {
     },
 
     updateVoucher: async (id, updates) => {
+      if (updates.lines) {
+        const validationResult = validateDoubleEntry(updates.lines);
+        if (!validationResult.isValid) {
+          toast.error(validationResult.message);
+          return;
+        }
+      }
       const db = getDB();
       await db.vouchers.update(id, updates);
       await reloadAccountBalances();
@@ -662,6 +704,28 @@ export const useStore = create<StoreState>()((...args) => {
     addInvoice: async (invoiceData) => {
       const db = getDB();
       const state = get();
+
+      // Negative stock validation
+      const allowNegative = state.companySettings?.allowNegativeStock ?? false;
+      const isOutgoing =
+        invoiceData.type === "sales-invoice" || invoiceData.type === "purchase-return";
+      if (isOutgoing && !allowNegative) {
+        const movements = state.stockMovements;
+        for (const line of invoiceData.lines || []) {
+          if (!line.itemId) continue;
+          const bal = getStockBalance(
+            line.itemId,
+            (invoiceData as any).warehouseId || null,
+            movements,
+          );
+          if (bal.qty - line.qty < 0) {
+            const item = state.items.find((it) => it.id === line.itemId);
+            throw new Error(
+              `Cannot save invoice: Stock for "${item?.name || line.itemId}" would become negative (${bal.qty - line.qty}).`,
+            );
+          }
+        }
+      }
 
       const invoiceNoComp = generateInvoiceNo(
         invoiceData.type as any,
@@ -1084,6 +1148,25 @@ export const useStore = create<StoreState>()((...args) => {
 
     addStockJournal: async (sjData) => {
       const db = getDB();
+      const state = get();
+
+      // Negative stock validation
+      const allowNegative = state.companySettings?.allowNegativeStock ?? false;
+      if (!allowNegative) {
+        const movements = state.stockMovements;
+        for (const line of sjData.lines || []) {
+          if (line.fromWarehouseId && line.itemId) {
+            const bal = getStockBalance(line.itemId, line.fromWarehouseId, movements);
+            if (bal.qty - line.qty < 0) {
+              const item = state.items.find((it) => it.id === line.itemId);
+              throw new Error(
+                `Cannot save stock journal: Stock for "${item?.name || line.itemId}" would become negative (${bal.qty - line.qty}).`,
+              );
+            }
+          }
+        }
+      }
+
       const cleanId = generateId("sj");
       const fullSj = {
         ...sjData,
@@ -1463,6 +1546,88 @@ export const useStore = create<StoreState>()((...args) => {
       const db = getDB();
       await db.customFieldDefs.delete(id);
       await get().initializeApp();
+    },
+
+    loadBillSundries: async () => {
+      const db = getDB();
+      const billSundries = await db.billSundries.toArray();
+      set({ billSundries });
+    },
+
+    addBillSundry: async (bsData) => {
+      const db = getDB();
+      const cleanId = generateId("bs");
+      const fullBS: BillSundry = { ...bsData, id: cleanId };
+      await db.billSundries.add(fullBS);
+      set((prev) => ({ billSundries: [...prev.billSundries, fullBS] }));
+      return fullBS;
+    },
+
+    updateBillSundry: async (id, updates) => {
+      const db = getDB();
+      await db.billSundries.update(id, updates);
+      set((prev) => ({
+        billSundries: prev.billSundries.map((bs) => (bs.id === id ? { ...bs, ...updates } : bs)),
+      }));
+    },
+
+    deleteBillSundry: async (id) => {
+      const db = getDB();
+      await db.billSundries.delete(id);
+      set((prev) => ({
+        billSundries: prev.billSundries.filter((bs) => bs.id !== id),
+      }));
+    },
+
+    getBillSundryById: (id) => {
+      return get().billSundries.find((bs) => bs.id === id);
+    },
+
+    loadStandardNarrations: async () => {
+      const db = getDB();
+      const standardNarrations = await db.standardNarrations.toArray();
+      set({ standardNarrations });
+    },
+
+    addStandardNarration: async (snData) => {
+      const db = getDB();
+      const cleanId = generateId("sn");
+      const fullSN: StandardNarration = { ...snData, id: cleanId };
+      await db.standardNarrations.add(fullSN);
+      set((prev) => ({ standardNarrations: [...prev.standardNarrations, fullSN] }));
+      return fullSN;
+    },
+
+    updateStandardNarration: async (id, updates) => {
+      const db = getDB();
+      await db.standardNarrations.update(id, updates);
+      set((prev) => ({
+        standardNarrations: prev.standardNarrations.map((sn) =>
+          sn.id === id ? { ...sn, ...updates } : sn
+        ),
+      }));
+    },
+
+    deleteStandardNarration: async (id) => {
+      const db = getDB();
+      await db.standardNarrations.delete(id);
+      set((prev) => ({
+        standardNarrations: prev.standardNarrations.filter((sn) => sn.id !== id),
+      }));
+    },
+
+    incrementNarrationUsage: async (id) => {
+      const db = getDB();
+      const narration = await db.standardNarrations.get(id);
+      if (narration) {
+        const newCount = (narration.usageCount || 0) + 1;
+        await db.standardNarrations.update(id, { usageCount: newCount });
+        set((prev) => ({
+          standardNarrations: prev.standardNarrations.map((sn) =>
+            sn.id === id ? { ...sn, usageCount: newCount } : sn
+          ),
+        }));
+      }
     },
   };
 });

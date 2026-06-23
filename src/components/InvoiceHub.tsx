@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -741,10 +740,10 @@ const InvoiceHub: React.FC = () => {
                   }
                 >
                   {val === VoucherStatus.POSTED
-                    ? "POSTED ✓"
+                    ? "POSTED âœ“"
                     : val === VoucherStatus.DRAFT
                       ? "DRAFT"
-                      : "VOIDED Ø"}
+                      : "VOIDED Ã˜"}
                 </Badge>
               ),
             },

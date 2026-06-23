@@ -21,9 +21,9 @@ export const CardSection: React.FC<{ title?: string; children: React.ReactNode }
   title,
   children,
 }) => (
-  <div className="border-t border-gray-100 px-4 py-3">
+  <div className="border-t border-slate-100 px-5 py-3.5">
     {title && (
-      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">
+      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.08em] mb-2.5">
         {title}
       </div>
     )}
@@ -52,18 +52,20 @@ const Card: React.FC<CardProps> = ({
   return (
     <div
       className={`
-        bg-white rounded-lg overflow-hidden relative transition-shadow
-        ${border ? "border border-gray-200" : ""}
-        ${shadow ? "shadow-sm" : ""}
+        bg-white rounded-xl overflow-hidden relative transition-all duration-150
+        ${border ? "border border-slate-200" : ""}
+        ${shadow ? "shadow-[0_2px_8px_rgba(15,23,42,0.06),_0_1px_2px_rgba(15,23,42,0.04)]" : ""}
         ${className}
       `}
     >
-      {accent && <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: accent }} />}
+      {accent && (
+        <div className="absolute left-0 top-0 bottom-0 w-[4px] rounded-r-full" style={{ background: accent }} />
+      )}
       {(title || subtitle || action) && (
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex flex-col gap-0.5">
-            {title && <h4 className="text-[12px] font-bold leading-none text-gray-800">{title}</h4>}
-            {subtitle && <p className="text-[10px] mt-0.5 text-gray-400">{subtitle}</p>}
+            {title && <h4 className="text-[12.5px] font-bold leading-none text-slate-800 tracking-tight">{title}</h4>}
+            {subtitle && <p className="text-[10.5px] mt-0.5 text-slate-400 font-medium">{subtitle}</p>}
           </div>
           {action && <div className="flex items-center">{action}</div>}
         </div>

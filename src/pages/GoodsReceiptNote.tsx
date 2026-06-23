@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,6 +8,7 @@
 import React, { useMemo, useState } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveGoodsReceiptNotes } from "../hooks/useActiveData";
 import { Card, Badge, Button, SearchableTable } from "../components/ui";
 import { Plus, ClipboardList } from "lucide-react";
 import ChallanForm from "../components/delivery/ChallanForm";
@@ -21,7 +21,7 @@ const STATUS_VARIANT: Record<string, string> = {
 };
 
 const GoodsReceiptNote: React.FC = () => {
-  const { goodsReceiptNotes } = useStore();
+  const goodsReceiptNotes = useActiveGoodsReceiptNotes();
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -54,7 +54,7 @@ const GoodsReceiptNote: React.FC = () => {
     },
     { key: "date", header: "Date" },
     { key: "partyName", header: "Supplier" },
-    { key: "purchaseOrderId", header: "Purchase Order", render: (val: string) => val || "—" },
+    { key: "purchaseOrderId", header: "Purchase Order", render: (val: string) => val || "â€”" },
     { key: "totalQty", header: "Qty", align: "right" },
     {
       key: "status",
@@ -100,7 +100,7 @@ const GoodsReceiptNote: React.FC = () => {
             setActiveId(row.id);
             setMode("edit");
           }}
-          placeholder="Search GRN no, supplier or purchase order…"
+          placeholder="Search GRN no, supplier or purchase orderâ€¦"
         />
       </Card>
     </div>

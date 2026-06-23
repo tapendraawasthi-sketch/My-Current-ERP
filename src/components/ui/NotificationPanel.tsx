@@ -20,7 +20,13 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
     if (lower.includes("stock") || lower.includes("item") || lower.includes("qty")) {
       return <Package className="h-[16px] w-[16px] text-amber-650" />;
     }
-    if (lower.includes("payment") || lower.includes("due") || lower.includes("invoice") || lower.includes("bill") || lower.includes("credit")) {
+    if (
+      lower.includes("payment") ||
+      lower.includes("due") ||
+      lower.includes("invoice") ||
+      lower.includes("bill") ||
+      lower.includes("credit")
+    ) {
       return <AlertCircle className="h-[16px] w-[16px] text-red-600" />;
     }
     return <Info className="h-[16px] w-[16px] text-blue-600" />;
@@ -34,7 +40,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const markAllRead = () => {
-    notifications.forEach(n => {
+    notifications.forEach((n) => {
       if (!n.read) {
         markNotificationRead(n.id);
       }
@@ -42,8 +48,14 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn" style={{ borderColor: "var(--border)" }}>
-      <div className="flex items-center justify-between px-4 py-2.5 border-b bg-gray-50/80" style={{ borderColor: "var(--border)" }}>
+    <div
+      className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn"
+      style={{ borderColor: "var(--border)" }}
+    >
+      <div
+        className="flex items-center justify-between px-4 py-2.5 border-b bg-gray-50/80"
+        style={{ borderColor: "var(--border)" }}
+      >
         <div className="flex items-center gap-1.5">
           <span className="text-[12px] font-bold text-gray-800">Notifications</span>
           {unreadCount > 0 && (
@@ -54,7 +66,11 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
         </div>
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
-            <button type="button" onClick={markAllRead} className="text-[10px] font-semibold text-[#1557b0] hover:underline cursor-pointer">
+            <button
+              type="button"
+              onClick={markAllRead}
+              className="text-[10px] font-semibold text-[#1557b0] hover:underline cursor-pointer"
+            >
               Mark all read
             </button>
           )}
@@ -85,7 +101,9 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
             >
               <div className="shrink-0 mt-0.5">{getIcon(n.message)}</div>
               <div className="flex-1 min-w-0">
-                <p className={`text-slate-800 leading-snug ${n.read ? "text-slate-500 font-medium" : "font-semibold"}`}>
+                <p
+                  className={`text-slate-800 leading-snug ${n.read ? "text-slate-500 font-medium" : "font-semibold"}`}
+                >
                   {n.message}
                 </p>
                 <span className="text-[10px] text-gray-400 font-medium block mt-1">
@@ -107,7 +125,10 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
         )}
       </div>
 
-      <div className="border-t border-gray-200 px-4 py-2 bg-gray-50/50 text-center" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="border-t border-gray-200 px-4 py-2 bg-gray-50/50 text-center"
+        style={{ borderColor: "var(--border)" }}
+      >
         <button
           type="button"
           onClick={onClose}

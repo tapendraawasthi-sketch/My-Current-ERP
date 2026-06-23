@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,6 +8,7 @@
 import React, { useMemo, useState } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveDeliveryChallans } from "../hooks/useActiveData";
 import { Card, Badge, Button, SearchableTable } from "../components/ui";
 import { Plus, Truck } from "lucide-react";
 import ChallanForm from "../components/delivery/ChallanForm";
@@ -22,7 +22,8 @@ const STATUS_VARIANT: Record<string, string> = {
 };
 
 const DeliveryChallan: React.FC = () => {
-  const { deliveryChallans, parties, setCurrentPage } = useStore();
+  const { parties, setCurrentPage } = useStore();
+  const deliveryChallans = useActiveDeliveryChallans();
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -55,7 +56,7 @@ const DeliveryChallan: React.FC = () => {
     },
     { key: "date", header: "Date" },
     { key: "partyName", header: "Customer" },
-    { key: "salesOrderId", header: "Sales Order", render: (val: string) => val || "—" },
+    { key: "salesOrderId", header: "Sales Order", render: (val: string) => val || "â€”" },
     { key: "totalQty", header: "Qty", align: "right" },
     {
       key: "status",
@@ -101,7 +102,7 @@ const DeliveryChallan: React.FC = () => {
             setActiveId(row.id);
             setMode("edit");
           }}
-          placeholder="Search challan no, customer or sales order…"
+          placeholder="Search challan no, customer or sales orderâ€¦"
         />
       </Card>
     </div>

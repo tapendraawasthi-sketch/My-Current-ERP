@@ -39,11 +39,28 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    let timeoutId: any;
     try {
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+
+      // Implement a 10-second timeout for server-side rendering/fetching to prevent 502 hangs on Render
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error("stream transform exceeded: SSR timeout (10s)"));
+        }, 10000);
+      });
+
+      const response = await Promise.race([handler.fetch(request, env, ctx), timeoutPromise]);
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       console.error(error);
       return new Response(renderErrorPage(), {
         status: 500,

@@ -1,14 +1,14 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Billing & Invoicing — tabbed register for:
- *   Sales Invoices · Purchase Invoices · Sales Returns · Purchase Returns
+ * Billing & Invoicing â€” tabbed register for:
+ *   Sales Invoices Â· Purchase Invoices Â· Sales Returns Â· Purchase Returns
  */
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
+import { useActiveInvoices } from "../hooks/useActiveData";
 import {
   SearchableTable,
   Button,
@@ -50,7 +50,8 @@ const paymentVariant: Record<string, string> = {
 };
 
 const BillingInvoice: React.FC = () => {
-  const { invoices, accounts, parties, companySettings, currentPage } = useStore();
+  const { accounts, parties, companySettings, currentPage } = useStore();
+  const invoices = useActiveInvoices();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [tab, setTab] = useState<TabKey>("sales");
@@ -133,9 +134,9 @@ const BillingInvoice: React.FC = () => {
       header: "Invoice No",
       render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
     },
-    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "—" },
+    { key: "dateNepali", header: "Date (BS)", render: (v: string) => v || "â€”" },
     { key: "date", header: "Date (AD)" },
-    { key: "partyName", header: "Party", render: (v: string) => v || "—" },
+    { key: "partyName", header: "Party", render: (v: string) => v || "â€”" },
     {
       key: "grandTotal",
       header: "Grand Total",
@@ -283,7 +284,7 @@ const BillingInvoice: React.FC = () => {
         rowKey="id"
         onRowClick={openEdit}
         emptyMessage={`No ${meta.label.toLowerCase()} found.`}
-        placeholder="Search invoice no, party or reference…"
+        placeholder="Search invoice no, party or referenceâ€¦"
         stickyHeader
       />
     </div>

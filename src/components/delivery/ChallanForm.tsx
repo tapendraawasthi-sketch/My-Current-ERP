@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -109,13 +108,16 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
 
   const [date, setDate] = useState(existing?.date || new Date().toISOString().split("T")[0]);
   const [partyId, setPartyId] = useState(existing?.partyId || "");
-  const [orderRef, setOrderRef] = useState(
-    existing?.salesOrderId || existing?.purchaseOrderId || "",
-  );
+  const [orderRef, setOrderRef] = useState(() => {
+    if (!existing) return "";
+    return type === "challan"
+      ? (existing as DeliveryChallan).salesOrderId || ""
+      : (existing as GoodsReceiptNote).purchaseOrderId || "";
+  });
   const [vehicleNo, setVehicleNo] = useState(existing?.vehicleNo || "");
   const [driverName, setDriverName] = useState((existing as any)?.driverName || "");
   const [inspectedBy, setInspectedBy] = useState((existing as any)?.inspectedBy || "");
-  const [status, setStatus] = useState(existing?.status || "draft");
+  const [status, setStatus] = useState<ChallanStatus>(existing?.status || ChallanStatus.DRAFT);
   const partyType = type === "challan" ? PartyType.CUSTOMER : PartyType.SUPPLIER;
   const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
   const [lines, setLines] = useState<LineState[]>(() => {
@@ -162,24 +164,28 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
     if (existing) {
       setDate(existing.date || new Date().toISOString().split("T")[0]);
       setPartyId(existing.partyId || "");
-      setOrderRef(existing.salesOrderId || existing.purchaseOrderId || "");
+      setOrderRef(
+        type === "challan"
+          ? (existing as DeliveryChallan).salesOrderId || ""
+          : (existing as GoodsReceiptNote).purchaseOrderId || "",
+      );
       setVehicleNo(existing.vehicleNo || "");
       setDriverName((existing as any).driverName || "");
       setInspectedBy((existing as any).inspectedBy || "");
-      setStatus(existing.status || "draft");
+      setStatus(existing.status || ChallanStatus.DRAFT);
     }
   }, [existing]);
 
   const orderOptions = useMemo(() => {
     return (type === "challan" ? salesOrders : purchaseOrders).map((order) => ({
       value: order.id,
-      label: `${order.orderNo} · ${order.partyName || ""} · ${order.date}`,
+      label: `${order.orderNo} Â· ${order.partyName || ""} Â· ${order.date}`,
     }));
   }, [type, salesOrders, purchaseOrders]);
 
   const warehouseOptions = warehouses
     .filter((w) => w.isActive)
-    .map((w) => ({ value: w.id, label: `${w.code} — ${w.name}` }));
+    .map((w) => ({ value: w.id, label: `${w.code} â€” ${w.name}` }));
   const itemOptions = items.filter((i) => i.isActive);
 
   const linesWithTotals = useMemo(() => {
@@ -412,22 +418,25 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
         });
 
         if (
-          (nextStatus === "dispatched" && type === "challan") ||
-          (nextStatus === "received" && type === "grn")
+          (nextStatus === ChallanStatus.DISPATCHED && type === "challan") ||
+          (nextStatus === ChallanStatus.RECEIVED && type === "grn")
         ) {
-          await postInventory(id, existing.challanNo || (existing as any).grnNo || "");
+          await postInventory(
+            id,
+            (existing as DeliveryChallan).challanNo || (existing as GoodsReceiptNote).grnNo || "",
+          );
         }
       } else {
         if (type === "challan") {
           const created = await addDeliveryChallan(payload as any);
-          if (nextStatus === "dispatched") {
-            await getDB().deliveryChallans.update(created.id, { status: nextStatus });
+          if (nextStatus === ChallanStatus.DISPATCHED) {
+            await getDB().deliveryChallans.update(created.id, { status: ChallanStatus.DISPATCHED });
             await postInventory(created.id, created.challanNo);
           }
         } else {
           const created = await addGoodsReceiptNote(payload as any);
-          if (nextStatus === "received") {
-            await getDB().goodsReceiptNotes.update(created.id, { status: nextStatus });
+          if (nextStatus === ChallanStatus.RECEIVED) {
+            await getDB().goodsReceiptNotes.update(created.id, { status: ChallanStatus.RECEIVED });
             await postInventory(created.id, created.grnNo);
           }
         }
@@ -586,7 +595,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                         <option value="">Select item</option>
                         {itemOptions.map((item) => (
                           <option key={item.id} value={item.id}>
-                            {item.code} · {item.name}
+                            {item.code} Â· {item.name}
                           </option>
                         ))}
                       </select>
@@ -757,14 +766,14 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
       </div>
 
       <ConfirmDialog
-        open={confirmCancel}
+        isOpen={confirmCancel}
         title="Discard changes?"
-        description="Any unsaved changes will be lost."
+        message="Any unsaved changes will be lost."
         onConfirm={() => {
           setConfirmCancel(false);
           onCancel?.();
         }}
-        onCancel={() => setConfirmCancel(false)}
+        onClose={() => setConfirmCancel(false)}
       />
     </div>
   );

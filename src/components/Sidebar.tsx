@@ -5,54 +5,63 @@
 
 import React, { useState } from "react";
 import { useStore } from "../store/useStore";
-import SutraLogo from "./SutraLogo";
 import Tooltip from "./ui/Tooltip";
 import {
   LayoutDashboard,
-  FolderOpen,
-  Users,
-  Package,
-  Tags,
-  UserCog,
-  BookOpen,
-  Wallet,
-  Download,
-  ArrowLeftRight,
-  ScrollText,
-  FileText,
-  CreditCard,
-  ShoppingCart,
-  ClipboardList,
-  Truck,
-  Archive,
-  RefreshCw,
-  Store,
-  Scale,
-  TrendingUp,
-  TrendingDown,
-  BarChart2,
-  Activity,
-  FileBarChart,
-  DollarSign,
-  AlertCircle,
-  BookMarked,
-  Calendar,
-  Banknote,
-  Landmark,
-  Layers,
-  PieChart,
-  Building,
-  Map,
-  Settings,
-  Shield,
-  Database,
-  FileClock,
   ChevronDown,
   ChevronRight,
   LogOut,
-  Sliders,
-  ShieldCheck,
   ChevronLeft,
+  Settings,
+  TrendingUp,
+  TrendingDown,
+  // New icons
+  Receipt,
+  ReceiptText,
+  ShoppingBag,
+  PackageCheck,
+  PackageMinus,
+  PackagePlus,
+  Undo2,
+  Redo2,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  NotebookPen,
+  GitCompareArrows,
+  MinusCircle,
+  PlusCircle,
+  FileSpreadsheet,
+  CalendarDays,
+  Coins,
+  Building2,
+  BookCheck,
+  FileSearch,
+  FileMinus,
+  FilePlus,
+  BarChart3,
+  CircleDollarSign,
+  AlertTriangle,
+  ClockAlert,
+  Percent,
+  BadgeDollarSign,
+  LayoutGrid,
+  UserRound,
+  Boxes,
+  Ruler,
+  Warehouse,
+  FileSignature,
+  ClipboardCheck,
+  Handshake,
+  ScanBarcode,
+  ShieldCheck,
+  UserCog2,
+  CalendarRange,
+  RotateCcw,
+  HardDrive,
+  ListFilter,
+  ChartPie,
+  ChartBar,
+  FileCheck2,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -65,6 +74,7 @@ interface NavItem {
   page: string;
   subPage?: string;
   icon: React.ComponentType<{ className?: string }>;
+  iconColor?: string;
 }
 
 interface MenuGroup {
@@ -81,102 +91,125 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     reportFilters,
     setReportFilters,
     currentFiscalYear,
+    fiscalYears,
+    setCurrentFiscalYear,
   } = useStore();
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ Overview: true, Masters: false, Transactions: true, Payroll: true, Inventory: false, "Accounts Books": false, Reports: false, Administration: false });
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    Overview: true,
+    Masters: false,
+    Transactions: true,
+    Inventory: false,
+    "Accounts Books": false,
+    Reports: false,
+    Administration: false,
+  });
 
   const menuGroups: MenuGroup[] = [
     {
       title: "Overview",
-      items: [{ label: "Dashboard", page: "dashboard", icon: LayoutDashboard }],
+      items: [{ label: "Dashboard", page: "dashboard", icon: LayoutGrid }],
     },
     {
       title: "Masters",
       items: [
-        { label: "Chart of Accounts", page: "accounts", icon: FolderOpen },
-        { label: "Parties Directory", page: "parties", icon: Users },
-        { label: "Stock Items", page: "items", icon: Package },
-        { label: "Cost Centers", page: "cost-centers", icon: Map },
-        { label: "Warehouses", page: "warehouses", icon: Archive },
-        { label: "Units of Measure", page: "units", icon: Tags },
-        { label: "Bank Accounts", page: "accounts", icon: Landmark },
+        { label: "Chart of Accounts", page: "accounts", icon: BookCheck },
+        { label: "Parties Directory", page: "parties", icon: Handshake },
+        { label: "Stock Items", page: "items", icon: Boxes },
+        { label: "Cost Centers", page: "cost-centers", icon: CircleDollarSign },
+        { label: "Warehouses", page: "warehouses", icon: Warehouse },
+        { label: "Units of Measure", page: "units", icon: Ruler },
+        { label: "Bank Accounts", page: "accounts", icon: Building2 },
+        { label: "Bill Sundry", page: "bill-sundry", icon: ReceiptText },
+        { label: "Standard Narrations", page: "standard-narrations", icon: FileSignature },
       ],
     },
     {
       title: "Transactions",
       items: [
-        { label: "Sales Invoice", page: "sales-invoice", icon: FileText },
-        { label: "Purchase Invoice", page: "purchase-invoice", icon: FileText },
-        { label: "Sales Return", page: "sales-return", icon: RefreshCw },
-        { label: "Purchase Return", page: "purchase-return", icon: RefreshCw },
-        { label: "Receipt Voucher", page: "receipt", icon: Download },
-        { label: "Payment Voucher", page: "payment", icon: Wallet },
-        { label: "Journal Voucher", page: "journal", icon: BookOpen },
-        { label: "Contra Voucher", page: "contra", icon: ArrowLeftRight },
-        { label: "Debit Note", page: "debit-note", icon: CreditCard },
-        { label: "Credit Note", page: "credit-note", icon: CreditCard },
-      ],
-    },
-    {
-      title: "Payroll",
-      items: [
-        { label: "Employees", page: "employees", icon: Users },
-        { label: "Payroll Run", page: "payroll-run", icon: ClipboardList },
-        { label: "Payslip", page: "payslip", icon: FileText },
+        {
+          label: "Sales Invoice",
+          page: "sales-invoice",
+          icon: FilePlus,
+          iconColor: "text-emerald-500",
+        },
+        {
+          label: "Purchase Invoice",
+          page: "purchase-invoice",
+          icon: FileMinus,
+          iconColor: "text-amber-500",
+        },
+        { label: "Sales Return", page: "sales-return", icon: Undo2 },
+        { label: "Purchase Return", page: "purchase-return", icon: Redo2 },
+        { label: "Receipt Voucher", page: "receipt", icon: ArrowDownToLine },
+        { label: "Payment Voucher", page: "payment", icon: ArrowUpFromLine },
+        { label: "Journal Voucher", page: "journal", icon: NotebookPen },
+        { label: "Contra Voucher", page: "contra", icon: GitCompareArrows },
+        { label: "Debit Note", page: "debit-note", icon: MinusCircle },
+        { label: "Credit Note", page: "credit-note", icon: PlusCircle },
       ],
     },
     {
       title: "Inventory",
       items: [
-        { label: "Sales Orders", page: "sales-order", icon: ShoppingCart },
-        { label: "Purchase Orders", page: "purchase-order", icon: ClipboardList },
-        { label: "Delivery Challan", page: "delivery-challan", icon: Truck },
-        { label: "Goods Receipt Note", page: "grn", icon: Archive },
-        { label: "Stock Journal", page: "stock-journal", icon: ArrowLeftRight },
-        { label: "POS/Counter Sale", page: "pos", icon: Store },
+        { label: "Sales Orders", page: "sales-order", icon: ShoppingBag },
+        { label: "Purchase Orders", page: "purchase-order", icon: ClipboardCheck },
+        { label: "Delivery Challan", page: "delivery-challan", icon: PackageCheck },
+        { label: "Goods Receipt Note", page: "grn", icon: PackagePlus },
+        { label: "Stock Journal", page: "stock-journal", icon: ScanBarcode },
+        { label: "POS/Counter Sale", page: "pos", icon: Receipt },
       ],
     },
     {
       title: "Accounts Books",
       items: [
-        { label: "Day Book", page: "day-book", icon: Calendar },
-        { label: "Cash Book", page: "cash-book", icon: Banknote },
-        { label: "Bank Book", page: "bank-book", icon: Landmark },
-        { label: "General Ledger", page: "ledger", icon: BookOpen },
-        { label: "Party Ledger", page: "party-statement", icon: BookMarked },
-        { label: "Vouchers Register", page: "vouchers", icon: ScrollText },
-        { label: "Bank Reconciliation", page: "bank-reconciliation", icon: Landmark },
+        { label: "Day Book", page: "day-book", icon: CalendarDays },
+        { label: "Cash Book", page: "cash-book", icon: Coins },
+        { label: "Bank Book", page: "bank-book", icon: Building2 },
+        { label: "General Ledger", page: "ledger", icon: FileSpreadsheet },
+        { label: "Party Ledger", page: "party-statement", icon: UserRound },
+        { label: "Vouchers Register", page: "vouchers", icon: ListFilter },
+        { label: "Bank Reconciliation", page: "bank-reconciliation", icon: GitCompareArrows },
       ],
     },
     {
       title: "Reports",
       items: [
-        { label: "Trial Balance", page: "trial-balance", icon: Scale },
+        { label: "Trial Balance", page: "trial-balance", icon: FileSearch },
         { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp },
-        { label: "Balance Sheet", page: "balance-sheet", icon: BarChart2 },
-        { label: "Ratio Analysis", page: "ratio-analysis", icon: FileBarChart },
-        { label: "Cash Flow", page: "cash-flow", icon: Activity },
-        { label: "Sales Register", page: "sales-register", icon: TrendingUp },
-        { label: "Purchase Register", page: "purchase-register", icon: TrendingDown },
-        { label: "Stock Summary", page: "stock-summary", icon: PieChart },
-        { label: "Inventory Report", page: "inventory-report", icon: Layers },
-        { label: "Aging Report", page: "aging-report", icon: AlertCircle },
-        { label: "Bill-wise Pending", page: "bill-pending", icon: FileClock },
-        { label: "VAT Report", page: "vat-reports", icon: FileBarChart },
-        { label: "TDS Report", page: "tds-report", icon: DollarSign },
-        { label: "Cost Center Report", page: "cost-center-report", icon: Map },
-        { label: "Budget vs Actual", page: "budget-vs-actual", icon: TrendingUp },
+        { label: "Balance Sheet", page: "balance-sheet", icon: BarChart3 },
+        { label: "Cash Flow", page: "cash-flow", icon: ChartPie },
+        {
+          label: "Sales Register",
+          page: "sales-register",
+          icon: FilePlus,
+          iconColor: "text-emerald-500",
+        },
+        {
+          label: "Purchase Register",
+          page: "purchase-register",
+          icon: FileMinus,
+          iconColor: "text-amber-500",
+        },
+        { label: "Stock Summary", page: "stock-summary", icon: Boxes },
+        { label: "Inventory Report", page: "inventory-report", icon: ChartBar },
+        { label: "Aging Report", page: "aging-report", icon: ClockAlert },
+        { label: "Bill-wise Pending", page: "bill-pending", icon: FileCheck2 },
+        { label: "VAT Report", page: "vat-reports", icon: Percent },
+        { label: "TDS Report", page: "tds-report", icon: BadgeDollarSign },
+        { label: "Cost Center Report", page: "cost-center-report", icon: CircleDollarSign },
+        { label: "Budget vs Actual", page: "budget-vs-actual", icon: TrendingDown },
       ],
     },
     {
       title: "Administration",
       items: [
-        { label: "Company Settings", page: "settings", icon: Settings },
-        { label: "Fiscal Year", page: "fiscal-year", icon: Calendar },
-        { label: "Users & Roles", page: "users", icon: Shield },
-        { label: "Budget Master", page: "budget", icon: ScrollText },
-        { label: "Recurring Vouchers", page: "recurring-vouchers", icon: RefreshCw },
-        { label: "Audit Log", page: "audit-log", icon: FileClock },
-        { label: "Backup & Restore", page: "backup", icon: Database },
+        { label: "Company Settings", page: "settings", icon: UserCog2 },
+        { label: "Fiscal Year", page: "fiscal-year", icon: CalendarRange },
+        { label: "Users & Roles", page: "users", icon: ShieldCheck },
+        { label: "Budget Master", page: "budget", icon: BadgeDollarSign },
+        { label: "Recurring Vouchers", page: "recurring-vouchers", icon: RotateCcw },
+        { label: "Audit Log", page: "audit-log", icon: FileSignature },
+        { label: "Backup & Restore", page: "backup", icon: HardDrive },
       ],
     },
   ];
@@ -206,26 +239,78 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     return true;
   };
 
+  const getGroupDotColor = (groupTitle: string): string => {
+    switch (groupTitle) {
+      case "Overview":
+        return "bg-indigo-500";
+      case "Masters":
+        return "bg-sky-500";
+      case "Transactions":
+        return "bg-emerald-500";
+      case "Inventory":
+        return "bg-amber-500";
+      case "Accounts Books":
+        return "bg-violet-500";
+      case "Reports":
+        return "bg-pink-500";
+      case "Administration":
+        return "bg-slate-500";
+      default:
+        return "bg-slate-500";
+    }
+  };
+
   return (
     <aside
       className={`flex flex-col h-full overflow-hidden select-none transition-all duration-200 relative shrink-0 ${collapsed ? "w-[48px]" : "w-[216px]"}`}
-      style={{ background: "var(--sidebar)", borderRight: "1px solid var(--sidebar-border)" }}
+      style={{
+        background: "linear-gradient(180deg, #0d0f1a 0%, #0a0c15 100%)",
+        borderRight: "1px solid var(--sidebar-border)",
+      }}
     >
       {/* Header */}
-      <div className="h-11 flex items-center justify-between px-2.5 shrink-0" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
+      <div
+        className="h-11 flex items-center justify-between px-2.5 shrink-0"
+        style={{ borderBottom: "1px solid var(--sidebar-border)" }}
+      >
         {!collapsed ? (
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-md bg-[#1557b0] flex items-center justify-center text-white font-bold text-sm shrink-0">S</div>
+            <div
+              className="h-6 w-6 flex items-center justify-center text-white font-bold text-sm shrink-0"
+              style={{
+                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(79,70,229,0.4)",
+              }}
+            >
+              S
+            </div>
             <div className="flex flex-col leading-none">
-              <span className="text-[13px] font-bold text-white">Sutra</span>
-              <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">ERP Cloud</span>
+              <span className="text-[14px] font-black text-white tracking-tight">Sutra</span>
+              <span className="text-[9px] text-indigo-400 font-bold uppercase tracking-[0.15em]">
+                ERP Cloud
+              </span>
             </div>
           </div>
         ) : (
-          <div className="mx-auto h-6 w-6 rounded-md bg-[#1557b0] flex items-center justify-center text-white font-bold text-sm">S</div>
+          <div
+            className="mx-auto h-6 w-6 flex items-center justify-center text-white font-bold text-sm"
+            style={{
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+              borderRadius: "8px",
+              boxShadow: "0 4px 12px rgba(79,70,229,0.4)",
+            }}
+          >
+            S
+          </div>
         )}
         {!collapsed && (
-          <button type="button" onClick={() => setCollapsed(true)} className="p-1 rounded text-slate-500 hover:text-white hover:bg-[#1e3060] transition-colors" title="Collapse">
+          <button
+            type="button"
+            onClick={() => setCollapsed(true)}
+            className="p-1 rounded text-slate-500 hover:text-white hover:bg-[#1e3060] transition-colors"
+            title="Collapse"
+          >
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
         )}
@@ -234,8 +319,24 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       {/* Fiscal Year tag */}
       {!collapsed && currentFiscalYear && (
         <div className="mx-2.5 mt-2 mb-1 px-2 py-1 rounded" style={{ background: "#0f1b35" }}>
-          <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Active FY</div>
-          <div className="text-[10px] font-semibold text-slate-300 mt-0.5">{currentFiscalYear.name}</div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">
+            Active FY
+          </div>
+          <select
+            className="w-full bg-transparent text-[10px] font-semibold text-slate-300 mt-0.5 border-none outline-none focus:ring-0 p-0 cursor-pointer"
+            value={currentFiscalYear.id}
+            onChange={(e) => {
+              if (e.target.value) {
+                setCurrentFiscalYear(e.target.value);
+              }
+            }}
+          >
+            {fiscalYears.map((fy) => (
+              <option key={fy.id} value={fy.id} className="bg-[#0f1b35] text-slate-300">
+                {fy.name}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
@@ -246,11 +347,23 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           return (
             <div key={group.title} className="mb-1">
               {!collapsed ? (
-                <button type="button" onClick={() => handleGroupToggle(group.title)}
+                <button
+                  type="button"
+                  onClick={() => handleGroupToggle(group.title)}
                   className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors text-left"
-                  style={{ color: "#475c8a" }}>
-                  <span>{group.title}</span>
-                  {isExpanded ? <ChevronDown className="h-3 w-3 opacity-60" /> : <ChevronRight className="h-3 w-3 opacity-60" />}
+                  style={{ color: "#4b5563" }}
+                >
+                  <span className="flex items-center">
+                    <span
+                      className={`inline-block h-1.5 w-1.5 rounded-full mr-1.5 shrink-0 ${getGroupDotColor(group.title)}`}
+                    />
+                    {group.title}
+                  </span>
+                  {isExpanded ? (
+                    <ChevronDown className="h-3 w-3 opacity-60" />
+                  ) : (
+                    <ChevronRight className="h-3 w-3 opacity-60" />
+                  )}
                 </button>
               ) : (
                 <div className="h-px mx-2 my-1.5" style={{ background: "var(--sidebar-border)" }} />
@@ -261,16 +374,38 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                     const active = isItemActive(item);
                     const Icon = item.icon;
                     const btn = (
-                      <button type="button" onClick={() => handleNavigation(item)} title={collapsed ? item.label : undefined}
-                        className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-400"}`}
-                        style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #3b82f6", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
-                        <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#60a5fa]" : "text-slate-500"}`} />
+                      <button
+                        type="button"
+                        onClick={() => handleNavigation(item)}
+                        title={collapsed ? item.label : undefined}
+                        className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-500"}`}
+                        style={
+                          active
+                            ? {
+                                background:
+                                  "linear-gradient(90deg, rgba(79,70,229,0.25) 0%, rgba(79,70,229,0.05) 100%)",
+                                borderLeft: "3px solid #6366f1",
+                                paddingLeft: collapsed ? undefined : "9px",
+                                boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.12)",
+                              }
+                            : { borderLeft: "3px solid transparent" }
+                        }
+                      >
+                        <Icon
+                          className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-indigo-400" : item.iconColor || "text-slate-500"}`}
+                        />
                         {!collapsed && <span className="truncate leading-none">{item.label}</span>}
                       </button>
                     );
                     return (
                       <React.Fragment key={`${item.label}-${item.page}`}>
-                        {collapsed ? <Tooltip content={item.label} position="right">{btn}</Tooltip> : btn}
+                        {collapsed ? (
+                          <Tooltip content={item.label} position="right">
+                            {btn}
+                          </Tooltip>
+                        ) : (
+                          btn
+                        )}
                       </React.Fragment>
                     );
                   })}
@@ -284,34 +419,63 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       {/* Footer */}
       <div className="shrink-0" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
         {!collapsed && currentUser && (
-          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#0f1b35" }}>
-            <div className="h-7 w-7 rounded-full bg-[#1557b0] flex items-center justify-center text-[11px] font-bold text-white flex-none border border-blue-500">
+          <div
+            className="flex items-center gap-2 px-3 py-2.5"
+            style={{ background: "linear-gradient(135deg, #0f1528 0%, #0d0f1a 100%)" }}
+          >
+            <div
+              className="h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-none border"
+              style={{
+                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                border: "2px solid rgba(99,102,241,0.5)",
+                boxShadow: "0 2px 8px rgba(79,70,229,0.3)",
+              }}
+            >
               {currentUser.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-[11px] font-bold text-slate-100 truncate">{currentUser.name}</span>
-              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{currentUser.role}</span>
+              <span className="text-[12px] font-bold text-slate-100 truncate">
+                {currentUser.name}
+              </span>
+              <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-[0.12em]">
+                {currentUser.role}
+              </span>
             </div>
           </div>
         )}
         <div className="flex flex-col gap-0 py-1 px-1">
-          <button type="button" onClick={() => setCurrentPage("settings")}
-            className={`w-full flex items-center gap-2.5 text-[11px] text-slate-400 hover:bg-[#1e3060] hover:text-slate-100 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
-            <Sliders className="h-3.5 w-3.5 shrink-0" />
+          <button
+            type="button"
+            onClick={() => setCurrentPage("settings")}
+            className={`w-full flex items-center gap-2.5 text-[11px] text-slate-500 hover:bg-[#1e3060] hover:text-slate-100 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}
+          >
+            <Settings className="h-3.5 w-3.5 shrink-0" />
             {!collapsed && <span className="font-medium">Settings</span>}
           </button>
-          <button type="button" onClick={logout}
-            className={`w-full flex items-center gap-2.5 text-[11px] text-red-400 hover:bg-[#1e3060] hover:text-red-200 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
+          <button
+            type="button"
+            onClick={logout}
+            className={`w-full flex items-center gap-2.5 text-[11px] text-red-400 hover:bg-[#1e3060] hover:text-red-200 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}
+          >
             <LogOut className="h-3.5 w-3.5 shrink-0" />
             {!collapsed && <span className="font-medium">Logout</span>}
           </button>
         </div>
         {collapsed && (
-          <button type="button" onClick={() => setCollapsed(false)} className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-[#1e3060] rounded transition-colors" title="Expand sidebar">
+          <button
+            type="button"
+            onClick={() => setCollapsed(false)}
+            className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-[#1e3060] rounded transition-colors"
+            title="Expand sidebar"
+          >
             <ChevronRight className="h-4 w-4" />
           </button>
         )}
-        {!collapsed && <div className="text-[9px] text-center py-1.5 font-medium" style={{ color: "#2d4070" }}>Sutra ERP v2.0 · Nepal Edition</div>}
+        {!collapsed && (
+          <div className="text-[9px] text-center py-1.5 font-medium" style={{ color: "#1e2545" }}>
+            Sutra ERP v2.0 · Nepal
+          </div>
+        )}
       </div>
     </aside>
   );

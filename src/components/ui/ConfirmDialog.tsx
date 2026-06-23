@@ -91,8 +91,12 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       }
     >
       <div className="flex items-start gap-4 p-5">
-        <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${type === "danger" ? "bg-red-100" : "bg-amber-100"}`}>
-          <AlertTriangle className={`h-5 w-5 ${type === "danger" ? "text-red-600" : "text-amber-600"}`} />
+        <div
+          className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${type === "danger" ? "bg-red-100" : "bg-amber-100"}`}
+        >
+          <AlertTriangle
+            className={`h-5 w-5 ${type === "danger" ? "text-red-600" : "text-amber-600"}`}
+          />
         </div>
         <div className="flex-1 flex flex-col gap-4">
           <p className="text-[12px] text-gray-700 leading-relaxed">{message}</p>

@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Input from "./Input";
-import {
-  getBSToday,
-  ADToBSString,
-  BSToADString,
-} from "../../lib/nepaliDate";
+import { getBSToday, ADToBSString, BSToADString } from "../../lib/nepaliDate";
 import { Calendar } from "lucide-react";
 
 interface NepaliDatePickerProps {
@@ -186,4 +182,3 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 };
 
 export default NepaliDatePicker;
-

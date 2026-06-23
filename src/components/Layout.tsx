@@ -46,7 +46,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   } = useStore();
 
   const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
     const cached = localStorage.getItem("sutra_sidebar_collapsed");
     return cached === "true";
   });
@@ -92,15 +91,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#16213e" }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "#16213e" }}
+      >
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="h-16 w-16 bg-[#1557b0] rounded-2xl flex items-center justify-center text-white font-bold text-3xl border-2 border-blue-400 shadow-2xl">S</div>
+          <div className="h-16 w-16 bg-[#1557b0] rounded-2xl flex items-center justify-center text-white font-bold text-3xl border-2 border-blue-400 shadow-2xl">
+            S
+          </div>
           <div>
-            <div className="text-white font-bold text-xl tracking-widest uppercase mb-1">Sutra ERP</div>
+            <div className="text-white font-bold text-xl tracking-widest uppercase mb-1">
+              Sutra ERP
+            </div>
             <div className="text-blue-300 text-xs font-medium">Initializing database...</div>
           </div>
           <div className="flex gap-1.5">
-            {[0,1,2].map(i => <div key={i} className="h-2 w-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: `${i*0.15}s` }} />)}
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-2 w-2 bg-blue-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -115,43 +127,75 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#16213e] flex-col justify-between p-10 shrink-0">
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <div className="h-10 w-10 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">S</div>
+              <div className="h-10 w-10 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">
+                S
+              </div>
               <div>
                 <div className="text-white font-bold text-xl tracking-tight">Sutra ERP</div>
-                <div className="text-blue-400 text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
+                <div className="text-blue-400 text-xs font-semibold tracking-widest uppercase">
+                  Nepal's Cloud Accounting
+                </div>
               </div>
             </div>
-            <h2 className="text-white text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
-            <p className="text-slate-400 text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
+            <h2 className="text-white text-2xl font-bold mb-2 leading-tight">
+              Powerful accounting
+              <br />
+              built for Nepal
+            </h2>
+            <p className="text-slate-400 text-sm leading-relaxed mb-10">
+              Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.
+            </p>
             <div className="space-y-4">
               {[
-                { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
-                { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
-                { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
-                { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click" },
-              ].map(f => (
+                {
+                  title: "BS Calendar & VAT Ready",
+                  desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in",
+                },
+                {
+                  title: "Multi-Company & Users",
+                  desc: "Role-based access with complete audit trail",
+                },
+                {
+                  title: "Inventory + Accounting",
+                  desc: "Integrated stock, invoicing and double-entry ledger",
+                },
+                {
+                  title: "Reports & Export",
+                  desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click",
+                },
+              ].map((f) => (
                 <div key={f.title} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#1557b0] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
+                  <span className="h-5 w-5 rounded-full bg-[#1557b0] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    ✓
+                  </span>
                   <div>
-                    <div className="text-white text-sm font-semibold leading-none mb-1">{f.title}</div>
+                    <div className="text-white text-sm font-semibold leading-none mb-1">
+                      {f.title}
+                    </div>
                     <div className="text-slate-400 text-xs">{f.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="text-slate-600 text-[10px] font-medium">© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
+          <div className="text-slate-600 text-[10px] font-medium">
+            © 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal
+          </div>
         </div>
         {/* RIGHT PANEL */}
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-sm">
             <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-              <div className="h-9 w-9 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
+              <div className="h-9 w-9 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                S
+              </div>
               <div className="text-gray-800 font-bold text-xl">Sutra ERP</div>
             </div>
             <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
               <h3 className="text-lg font-bold text-gray-900 mb-1">Sign In</h3>
-              <p className="text-xs text-gray-500 mb-6">Enter your credentials to access the system</p>
+              <p className="text-xs text-gray-500 mb-6">
+                Enter your credentials to access the system
+              </p>
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -268,7 +312,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden text-gray-900" style={{ background: "var(--background)" }}>
+    <div
+      className="flex h-screen overflow-hidden text-gray-900"
+      style={{ background: "var(--background)" }}
+    >
       {/* 2. Left side: Collapsible static Sidebar */}
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
@@ -277,7 +324,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Header />
 
         {/* Actionable scroll container */}
-        <main className="flex-1 overflow-y-auto p-4 relative" style={{ background: "var(--background)" }}>
+        <main
+          className="flex-1 overflow-y-auto p-4 relative"
+          style={{ background: "var(--background)" }}
+        >
           <div className="page-content animate-fadeIn">{children}</div>
         </main>
       </div>

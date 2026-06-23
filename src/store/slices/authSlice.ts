@@ -4,7 +4,7 @@
  */
 
 import toast from "react-hot-toast";
-import { getDB, generateId } from "../../lib/db";
+import { getDB, generateId, seedAccountingDefaults } from "../../lib/db";
 import {
   User,
   CompanySettings,
@@ -16,6 +16,16 @@ import {
 import { sha256Fallback } from "../../lib/utils";
 import { recalculateAccountBalances } from "../../lib/accounting";
 import { StoreState, StoreSet, StoreGet } from "../useStore";
+
+interface UserWithSalt extends User {
+  passwordSalt?: string;
+}
+
+const generateSalt = (): string => {
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
+};
 
 export type AuthSlice = {
   users: User[];
@@ -47,10 +57,6 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
   lockedUntil: null,
 
   initializeApp: async () => {
-    if (typeof window === "undefined" || typeof indexedDB === "undefined") {
-      console.warn("[SSR] initializeApp() skipped: not a browser environment.");
-      return;
-    }
     try {
       const db = getDB();
       if (!db.isOpen()) {
@@ -61,6 +67,23 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
       if (userCount === 0) {
         const { initializeDB } = await import("../../lib/db");
         await initializeDB();
+      }
+
+      // One-time password migration: plaintext to salted SHA-256
+      const allDbUsersForMigration = await db.users.toArray();
+      const isSha256 = (str: string) => /^[a-fA-F0-9]{32}$/.test(str);
+      for (const u of allDbUsersForMigration) {
+        const userWithSalt = u as UserWithSalt;
+        const currentPass = userWithSalt.password || "";
+        if (!isSha256(currentPass)) {
+          const salt = generateSalt();
+          const hashed = await sha256Fallback(currentPass + salt);
+          await db.users.update(userWithSalt.id, {
+            password: hashed,
+            passwordSalt: salt,
+          } as any);
+          console.log(`Migrated user ${userWithSalt.username} to salted password`);
+        }
       }
 
       const [
@@ -93,6 +116,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         employees,
         payrollRuns,
         customFieldDefs,
+        billSundries,
+        standardNarrations,
       ] = await Promise.all([
         db.accounts.toArray(),
         db.vouchers.toArray(),
@@ -123,10 +148,36 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.employees.toArray(),
         db.payrollRuns.toArray(),
         db.customFieldDefs.toArray(),
+        db.billSundries.toArray(),
+        db.standardNarrations.toArray(),
       ]);
 
       const companySettings = companySettingsArr[0] || get().companySettings;
-      const currentFiscalYear = fiscalYears.find((fy) => fy.isCurrent) || null;
+      let activeFiscalYears = fiscalYears;
+      if (activeFiscalYears.length < 20) {
+        const fiscalYearsToSeed: any[] = [];
+        for (let bsYear = 2070; bsYear <= 2090; bsYear++) {
+          const adYear = bsYear - 57;
+          const fyId = `fy-${bsYear}-${(bsYear + 1).toString().slice(-2)}`;
+          const existing = activeFiscalYears.find((f) => f.id === fyId);
+          if (!existing) {
+            fiscalYearsToSeed.push({
+              id: fyId,
+              name: `${bsYear}/${(bsYear + 1).toString().slice(-2)}`,
+              startDate: `${adYear}-07-16`,
+              endDate: `${adYear + 1}-07-15`,
+              isCurrent: false,
+              status: "ACTIVE",
+            });
+          }
+        }
+        if (fiscalYearsToSeed.length > 0) {
+          await db.fiscalYears.bulkPut(fiscalYearsToSeed);
+          activeFiscalYears = await db.fiscalYears.toArray();
+        }
+      }
+
+      const currentFiscalYear = activeFiscalYears.find((fy) => fy.isCurrent) || null;
 
       const accounts = recalculateAccountBalances(accountsRaw, vouchers);
 
@@ -149,7 +200,7 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         bankStatements,
         auditLogs,
         companySettings,
-        fiscalYears,
+        fiscalYears: activeFiscalYears,
         currentFiscalYear,
         users,
         notifications,
@@ -161,10 +212,12 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         employees,
         payrollRuns,
         customFieldDefs,
+        billSundries,
+        standardNarrations,
         isDbReady: true,
       });
 
-      const activeFY = fiscalYears.find((fy) => fy.isCurrent) || null;
+      const activeFY = activeFiscalYears.find((fy) => fy.isCurrent) || null;
       if (activeFY) {
         set({
           reportFilters: {
@@ -212,9 +265,85 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
       }
 
       console.log("Sutra ERP Store State successfully synchronized with IndexedDB local storage.");
+
+      // Check backup frequency for reminder
+      const frequency = localStorage.getItem("sutra_auto_backup_frequency") || "never";
+      if (frequency !== "never") {
+        const lastBackupStr = localStorage.getItem("sutra_last_backup_date");
+        const lastBackup = lastBackupStr ? new Date(lastBackupStr).getTime() : 0;
+        const now = Date.now();
+        const diffMs = now - lastBackup;
+        const oneDay = 24 * 60 * 60 * 1000;
+        let isOverdue = false;
+        let periodName = "day";
+        if (frequency === "daily" && diffMs > oneDay) {
+          isOverdue = true;
+          periodName = "day";
+        } else if (frequency === "weekly" && diffMs > 7 * oneDay) {
+          isOverdue = true;
+          periodName = "week";
+        }
+
+        if (isOverdue) {
+          const sessionKey = "sutra_backup_reminder_shown";
+          if (!sessionStorage.getItem(sessionKey)) {
+            sessionStorage.setItem(sessionKey, "true");
+            setTimeout(async () => {
+              try {
+                const React = (await import("react")).default;
+                toast(
+                  (t) =>
+                    React.createElement(
+                      "div",
+                      { className: "flex flex-col gap-2 p-1" },
+                      React.createElement(
+                        "p",
+                        { className: "text-xs font-medium" },
+                        `It's been over a ${periodName === "day" ? "day" : "week"} since your last backup — consider downloading one now.`,
+                      ),
+                      React.createElement(
+                        "button",
+                        {
+                          className:
+                            "self-end px-2 py-1 bg-[#1557b0] text-white rounded text-[11px] font-semibold hover:bg-[#0f4a96]",
+                          onClick: async () => {
+                            toast.dismiss(t.id);
+                            try {
+                              const { ADToBSString } = await import("../../lib/nepaliDate");
+                              const dataStr = await get().exportBackup();
+                              const blob = new Blob([dataStr], { type: "application/json" });
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              const today = new Date().toISOString().split("T")[0];
+                              const nepaliDateStr = ADToBSString(today);
+                              a.download = `sutra_backup_${nepaliDateStr}.json`;
+                              a.click();
+                              window.URL.revokeObjectURL(url);
+                              const nowStr = new Date().toISOString();
+                              localStorage.setItem("sutra_last_backup_date", nowStr);
+                              toast.success("Backup downloaded successfully");
+                            } catch (err: any) {
+                              toast.error("Failed to create backup");
+                            }
+                          },
+                        },
+                        "Backup Now",
+                      ),
+                    ),
+                  { duration: 15000 },
+                );
+              } catch (err) {
+                console.error("Failed to show backup reminder toast:", err);
+              }
+            }, 3000);
+          }
+        }
+      }
     } catch (error) {
       console.error("Fatal: Failed to initialize ERP Store:", error);
       toast.error("Fatal initialization database error.");
+      set({ isDbReady: false });
     }
   },
 
@@ -230,7 +359,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
     try {
       const db = getDB();
       const cleanUsername = username.trim().toLowerCase();
-      const matchedUser = await db.users.where("username").equals(cleanUsername).first();
+      const allUsers = await db.users.toArray();
+      const matchedUser = allUsers.find((u) => u.username.toLowerCase() === cleanUsername);
 
       if (!matchedUser || !matchedUser.isActive) {
         toast.error("Invalid username or account is deactivated.");
@@ -239,8 +369,14 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
 
       let passwordMatch = false;
       if (password) {
-        const hashedInput = await sha256Fallback(password);
-        passwordMatch = matchedUser.password === hashedInput || matchedUser.password === password;
+        const u = matchedUser as UserWithSalt;
+        if (u.passwordSalt) {
+          const hashedInput = await sha256Fallback(password + u.passwordSalt);
+          passwordMatch = u.password === hashedInput;
+        } else {
+          const hashedInput = await sha256Fallback(password);
+          passwordMatch = u.password === hashedInput;
+        }
       }
 
       if (!passwordMatch) {
@@ -307,31 +443,55 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
       } as any;
 
       const adminId = generateId("usr");
-      const hashedPass = await sha256Fallback(payload.adminUser.password || "admin123");
+      const salt = generateSalt();
+      const hashedPass = await sha256Fallback((payload.adminUser.password || "admin123") + salt);
       const finalAdmin: User & { id: string } = {
         ...payload.adminUser,
+        username: payload.adminUser.username.trim().toLowerCase(),
         id: adminId,
         password: hashedPass,
+        passwordSalt: salt,
         role: UserRole.ADMIN,
         isActive: true,
         createdAt: new Date().toISOString(),
-      };
+      } as any;
 
-      await db.transaction("rw", [db.companySettings, db.users], async () => {
-        await db.companySettings.clear();
-        await db.companySettings.add(finalCompany);
-        await db.users.add(finalAdmin);
-      });
+      await db.transaction(
+        "rw",
+        [
+          db.companySettings,
+          db.users,
+          db.accounts,
+          db.fiscalYears,
+          db.warehouses,
+          db.units,
+          db.bankAccounts,
+          db.currencies,
+          db.exchangeRates,
+          db.auditLogs,
+        ],
+        async () => {
+          await db.companySettings.clear();
+          await db.companySettings.add(finalCompany);
+          await db.users.add(finalAdmin);
+          await seedAccountingDefaults();
+        },
+      );
 
       await get().initializeApp();
 
-      set({
-        currentUser: finalAdmin,
-        isAuthenticated: true,
-      });
-
-      toast.success("Sutra ERP Initial Setup Complete!");
-      return true;
+      if (get().accounts && get().accounts.length > 0) {
+        set({
+          currentUser: finalAdmin,
+          isAuthenticated: true,
+        });
+        toast.success("Sutra ERP Initial Setup Complete!");
+        return true;
+      } else {
+        console.error("Initialization failed: No accounts loaded.");
+        toast.error("Database initialization failed. Please try again.");
+        return false;
+      }
     } catch (error) {
       console.error("Error creating company & Admin:", error);
       toast.error("Failed to provision initial workspace setup.");
@@ -342,13 +502,16 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
   addUser: async (userData) => {
     const db = getDB();
     const cleanId = generateId("usr");
-    const hashed = await sha256Fallback(userData.password || "admin123");
+    const salt = generateSalt();
+    const hashed = await sha256Fallback((userData.password || "admin123") + salt);
     const fullUser: User = {
       ...userData,
+      username: userData.username.trim().toLowerCase(),
       id: cleanId,
       password: hashed,
+      passwordSalt: salt,
       createdAt: new Date().toISOString(),
-    };
+    } as any;
 
     await db.users.add(fullUser);
     await get().initializeApp();
@@ -357,7 +520,9 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
   updateUser: async (id, updates) => {
     const db = getDB();
     if (updates.password) {
-      updates.password = await sha256Fallback(updates.password);
+      const salt = generateSalt();
+      updates.password = await sha256Fallback(updates.password + salt);
+      (updates as any).passwordSalt = salt;
     }
     await db.users.update(id, updates);
     await get().initializeApp();
@@ -375,8 +540,9 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
 
   changePassword: async (userId, newPassword) => {
     const db = getDB();
-    const hashed = await sha256Fallback(newPassword);
-    await db.users.update(userId, { password: hashed });
+    const salt = generateSalt();
+    const hashed = await sha256Fallback(newPassword + salt);
+    await db.users.update(userId, { password: hashed, passwordSalt: salt } as any);
     toast.success("Password update applied successfully.");
   },
 });

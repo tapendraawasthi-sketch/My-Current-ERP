@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useStore } from "../store";
+import { useStore } from "../store/useStore";
 
 interface Shortcut {
   key: string;
@@ -8,21 +8,16 @@ interface Shortcut {
 }
 
 const shortcuts: Shortcut[] = [
-  { key: "Ctrl+D", description: "Dashboard", action: "dashboard" },
-  { key: "F2", description: "New Sales Invoice", action: "sales-invoice" },
-  { key: "F3", description: "New Purchase Invoice", action: "purchase-invoice" },
+  { key: "F2", description: "New Sales Invoice", action: "billing" },
   { key: "F4", description: "New Payment Voucher", action: "payment" },
   { key: "F5", description: "New Receipt Voucher", action: "receipt" },
   { key: "F6", description: "New Journal Voucher", action: "journal" },
-  { key: "F7", description: "New Contra Voucher", action: "contra" },
-  { key: "Ctrl+L", description: "General Ledger", action: "ledger" },
-  { key: "Ctrl+T", description: "Trial Balance", action: "trial-balance" },
-  { key: "Ctrl+U", description: "Users", action: "users" },
-  { key: "Ctrl+S", description: "Settings", action: "settings" },
-  { key: "Ctrl+B", description: "Balance Sheet", action: "balance-sheet" },
-  { key: "Ctrl+P", description: "Print", action: "print" },
-  { key: "Ctrl+E", description: "Export", action: "export" },
-  { key: "Escape", description: "Go Back / Close Modal", action: "escape" },
+  { key: "F7", description: "Open POS Mode", action: "pos" },
+  { key: "F8", description: "Open Day Book", action: "day-book" },
+  { key: "Ctrl+F", description: "Focus Global Search Input", action: "focus-search" },
+  { key: "Ctrl+P", description: "Print Report / Document", action: "print" },
+  { key: "Ctrl+S", description: "Trigger Save on Open Form", action: "save" },
+  { key: "Escape", description: "Close Modal / Popups", action: "escape" },
 ];
 
 export function useKeyboardShortcuts() {
@@ -31,30 +26,48 @@ export function useKeyboardShortcuts() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts if user is typing in an input
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
-        return;
-      }
+      const isInput =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
 
       const ctrl = e.ctrlKey || e.metaKey;
 
-      // Ctrl+D - Dashboard
-      if (ctrl && e.key === "d") {
+      // Allow Escape even if focused on inputs
+      if (e.key === "Escape") {
         e.preventDefault();
-        setCurrentPage("dashboard");
+        const event = new CustomEvent("erp:escape");
+        window.dispatchEvent(event);
+        return;
       }
 
-      // F2 - Sales Invoice
+      // Allow Ctrl+S even if focused on inputs
+      if (ctrl && e.key === "s") {
+        e.preventDefault();
+        const event = new CustomEvent("erp:save");
+        window.dispatchEvent(event);
+        return;
+      }
+
+      // Allow Ctrl+F even if focused on inputs
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        const input = document.getElementById("global-search-input") as HTMLInputElement;
+        if (input) {
+          input.focus();
+          input.select();
+        }
+        return;
+      }
+
+      // Don't trigger other shortcuts if user is typing in an input
+      if (isInput) {
+        return;
+      }
+
+      // F2 - New Sales Invoice
       if (e.key === "F2") {
         e.preventDefault();
-        setCurrentPage("sales-invoice");
-      }
-
-      // F3 - Purchase Invoice
-      if (e.key === "F3") {
-        e.preventDefault();
-        setCurrentPage("purchase-invoice");
+        setCurrentPage("billing");
       }
 
       // F4 - Payment
@@ -75,40 +88,16 @@ export function useKeyboardShortcuts() {
         setCurrentPage("journal");
       }
 
-      // F7 - Contra
+      // F7 - POS Mode
       if (e.key === "F7") {
         e.preventDefault();
-        setCurrentPage("contra");
+        setCurrentPage("pos");
       }
 
-      // Ctrl+L - Ledger
-      if (ctrl && e.key === "l") {
+      // F8 - Day Book
+      if (e.key === "F8") {
         e.preventDefault();
-        setCurrentPage("ledger");
-      }
-
-      // Ctrl+T - Trial Balance
-      if (ctrl && e.key === "t") {
-        e.preventDefault();
-        setCurrentPage("trial-balance");
-      }
-
-      // Ctrl+U - Users
-      if (ctrl && e.key === "u") {
-        e.preventDefault();
-        setCurrentPage("users");
-      }
-
-      // Ctrl+S - Settings
-      if (ctrl && e.key === "s") {
-        e.preventDefault();
-        setCurrentPage("settings");
-      }
-
-      // Ctrl+B - Balance Sheet
-      if (ctrl && e.key === "b") {
-        e.preventDefault();
-        setCurrentPage("balance-sheet");
+        setCurrentPage("day-book");
       }
 
       // Ctrl+P - Print
@@ -117,22 +106,7 @@ export function useKeyboardShortcuts() {
         window.print();
       }
 
-      // Ctrl+E - Export (placeholder)
-      if (ctrl && e.key === "e") {
-        e.preventDefault();
-        console.log("Export triggered");
-      }
-
-      // Escape - Go back
-      if (e.key === "Escape") {
-        // Check if any modals are open, close them
-        const modals = document.querySelectorAll('[role="dialog"]');
-        if (modals.length > 0) {
-          e.preventDefault();
-        }
-      }
-
-      // ? - Show help
+      // ? - Show help modal
       if (e.key === "?" && !ctrl) {
         e.preventDefault();
         setShowHelp((prev) => !prev);
@@ -140,7 +114,6 @@ export function useKeyboardShortcuts() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };

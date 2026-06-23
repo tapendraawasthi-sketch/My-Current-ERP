@@ -1,14 +1,13 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Contra Voucher — records transfers between Cash and Bank accounts ONLY.
+ * Contra Voucher â€” records transfers between Cash and Bank accounts ONLY.
  *
  * Common use cases:
- *   a) Cash deposit to bank      → FROM Cash (Cr), TO Bank (Dr)
- *   b) Cash withdrawal from bank → FROM Bank (Cr), TO Cash (Dr)
- *   c) Bank to bank transfer     → FROM Bank A (Cr), TO Bank B (Dr)
+ *   a) Cash deposit to bank      â†’ FROM Cash (Cr), TO Bank (Dr)
+ *   b) Cash withdrawal from bank â†’ FROM Bank (Cr), TO Cash (Dr)
+ *   c) Bank to bank transfer     â†’ FROM Bank A (Cr), TO Bank B (Dr)
  *
  * Auto-built journal:
  *   FROM A/C ............ Cr (amount)
@@ -18,6 +17,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveVouchers } from "../hooks/useActiveData";
 import {
   Card,
   Badge,
@@ -61,7 +61,8 @@ const acctKind = (a: any): "Cash" | "Bank" | "" => {
 };
 
 const ContraVoucher: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
+  const { accounts, companySettings, currentFiscalYear, addVoucher } = useStore();
+  const vouchers = useActiveVouchers();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
 
@@ -75,7 +76,7 @@ const ContraVoucher: React.FC = () => {
     () =>
       cashBankAccounts.map((a) => ({
         value: a.id,
-        label: `${a.code} · ${a.name} (${acctKind(a)})`,
+        label: `${a.code} Â· ${a.name} (${acctKind(a)})`,
       })),
     [cashBankAccounts],
   );
@@ -194,7 +195,7 @@ const ContraVoucher: React.FC = () => {
       date,
       dateNepali: ADToBSString(date) || "",
       type: VoucherType.CONTRA,
-      narration: narration.trim() || `Contra: ${fromAcct?.name} → ${toAcct?.name}`,
+      narration: narration.trim() || `Contra: ${fromAcct?.name} â†’ ${toAcct?.name}`,
       lines,
       status,
       totalDebit: amt,
@@ -265,10 +266,10 @@ const ContraVoucher: React.FC = () => {
         <div>
           <h2 className="text-lg font-black text-slate-800">Contra Voucher Saved</h2>
           <p className="text-xs text-gray-500 mt-1">
-            {savedVoucher.voucherNo} · {symbol} {formatNumber(amt)} transferred
+            {savedVoucher.voucherNo} Â· {symbol} {formatNumber(amt)} transferred
           </p>
           <p className="text-[11px] text-gray-400 mt-1 font-semibold">
-            {fromAcct?.name} → {toAcct?.name}
+            {fromAcct?.name} â†’ {toAcct?.name}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -324,7 +325,7 @@ const ContraVoucher: React.FC = () => {
       );
     return (
       <Badge variant="default" size="sm">
-        —
+        â€”
       </Badge>
     );
   };
@@ -387,7 +388,7 @@ const ContraVoucher: React.FC = () => {
         </div>
       </Card>
 
-      {/* FROM → TO */}
+      {/* FROM â†’ TO */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
         {/* FROM */}
         <Card border padding="md" className="border-l-4 border-l-red-500">
@@ -542,13 +543,13 @@ const ContraVoucher: React.FC = () => {
                   <td className="px-3 py-2 text-right text-green-700 font-bold">
                     {symbol} {formatNumber(amount)}
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-300">—</td>
+                  <td className="px-3 py-2 text-right text-gray-300">â€”</td>
                 </tr>
                 <tr className="border-t border-slate-100">
                   <td className="px-3 py-2 pl-8 text-slate-700">
                     To {fromAcct.name} <span className="text-[10px] text-gray-400">Cr</span>
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-300">—</td>
+                  <td className="px-3 py-2 text-right text-gray-300">â€”</td>
                   <td className="px-3 py-2 text-right text-red-600 font-bold">
                     {symbol} {formatNumber(amount)}
                   </td>
@@ -561,7 +562,7 @@ const ContraVoucher: React.FC = () => {
 
       {/* Footer actions */}
       <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-        <p className="text-[11px] text-gray-400 font-semibold">ESC to cancel · F12 to post</p>
+        <p className="text-[11px] text-gray-400 font-semibold">ESC to cancel Â· F12 to post</p>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleBack}>
             Cancel
@@ -593,12 +594,12 @@ const ContraVoucher: React.FC = () => {
         message="You have unsaved changes. Leaving will discard this contra voucher."
         confirmText="Discard"
         cancelText="Stay"
-        variant="danger"
+        danger={true}
         onConfirm={() => {
           setConfirmCancel(false);
           useStore.getState().setCurrentPage?.("dashboard");
         }}
-        onCancel={() => setConfirmCancel(false)}
+        onClose={() => setConfirmCancel(false)}
       />
     </div>
   );

@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -66,7 +65,7 @@ export const INITIAL_ITEMS: Item[] = [
     id: "itm-tea",
     code: "CTC-01",
     name: "Ilam Organic CTC Tea (First Flush)",
-    nameNepali: "इलाम प्राङ्गारिक चिया",
+    nameNepali: "à¤‡à¤²à¤¾à¤® à¤ªà¥à¤°à¤¾à¤™à¥à¤—à¤¾à¤°à¤¿à¤• à¤šà¤¿à¤¯à¤¾",
     type: ItemType.PRODUCT,
     unit: "KG",
     purchaseRate: 350.0,
@@ -87,7 +86,7 @@ export const INITIAL_ITEMS: Item[] = [
     id: "itm-rice",
     code: "BAS-02",
     name: "Pokhreli Premium Basmati Rice (25kg Bag)",
-    nameNepali: "पोख्रेली बासमती चामल",
+    nameNepali: "à¤ªà¥‹à¤–à¥à¤°à¥‡à¤²à¥€ à¤¬à¤¾à¤¸à¤®à¤¤à¥€ à¤šà¤¾à¤®à¤²",
     type: ItemType.PRODUCT,
     unit: "BAG",
     purchaseRate: 2400.0,
@@ -108,7 +107,7 @@ export const INITIAL_ITEMS: Item[] = [
     id: "itm-mac",
     code: "LAP-03",
     name: 'Dell Vostro Business Laptop 15.6"',
-    nameNepali: "डेल भोस्ट्रो ल्यापटप",
+    nameNepali: "à¤¡à¥‡à¤² à¤­à¥‹à¤¸à¥à¤Ÿà¥à¤°à¥‹ à¤²à¥à¤¯à¤¾à¤ªà¤Ÿà¤ª",
     type: ItemType.PRODUCT,
     unit: "PCS",
     purchaseRate: 75000.0,

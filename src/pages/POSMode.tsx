@@ -21,11 +21,20 @@ import {
   DollarSign,
   CreditCard,
   QrCode,
+  FolderOpen,
+  Pause,
 } from "lucide-react";
 
 interface CartItem {
   item: Item;
   qty: number;
+}
+
+interface HeldCart {
+  key: string;
+  timestamp: number;
+  customerName: string;
+  cart: CartItem[];
 }
 
 const POSMode: React.FC = () => {
@@ -40,71 +49,87 @@ const POSMode: React.FC = () => {
   const [showReceipt, setShowReceipt] = useState(false);
   const [savedInvoice, setSavedInvoice] = useState<any>(null);
 
-  const scanBuffer = useRef<string>("");
-  const lastKeyTime = useRef<number>(0);
-  const [lastScannedCode, setLastScannedCode] = useState<string>("");
-
+  const barcodeInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const [scannedBarcode, setScannedBarcode] = useState("");
+  const [heldCarts, setHeldCarts] = useState<HeldCart[]>([]);
+  const [showResumeModal, setShowResumeModal] = useState(false);
+
+  const symbol = companySettings?.currencySymbol || "Rs.";
+
+  // Load held carts on mount
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      const activeTag = document.activeElement?.tagName.toLowerCase();
-      if (activeTag === "input" || activeTag === "textarea") return;
-
-      const now = Date.now();
-      const gap = now - lastKeyTime.current;
-      lastKeyTime.current = now;
-
-      if (e.key === "Enter" && scanBuffer.current.length >= 4) {
-        const code = scanBuffer.current;
-        scanBuffer.current = "";
-        setLastScannedCode(code);
-
-        const found = items.find((i) => i.barcode === code) || items.find((i) => i.code === code);
-        if (found) {
-          addToCart(found);
-          toast.success(`${found.name} added via scan`);
-        } else {
-          toast.error(`No item found: ${code}`);
-        }
-      } else if (e.key !== "Enter" && e.key.length === 1) {
-        if (gap < 80) {
-          scanBuffer.current += e.key;
-        } else {
-          scanBuffer.current = e.key;
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [items]);
-
-  // Focus search input on load
-  useEffect(() => {
-    searchInputRef.current?.focus();
+    loadHeldCarts();
   }, []);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "F2") {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      } else if (e.key === "F10") {
-        e.preventDefault();
-        handleSave();
-      } else if (e.key === "Escape") {
-        if (cart.length > 0) {
-          if (window.confirm("Clear cart?")) {
-            setCart([]);
+  const loadHeldCarts = () => {
+    const carts: HeldCart[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("pos_hold_")) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const data = JSON.parse(raw);
+            carts.push({
+              key,
+              timestamp: parseInt(key.replace("pos_hold_", ""), 10),
+              customerName: data.customerName || "Walk-in Customer",
+              cart: data.cart || [],
+            });
           }
+        } catch (e) {
+          console.error("Failed to parse held cart", e);
         }
       }
+    }
+    setHeldCarts(carts.sort((a, b) => b.timestamp - a.timestamp));
+  };
+
+  // Focus barcode scanner input on page load and keep focus
+  useEffect(() => {
+    barcodeInputRef.current?.focus();
+
+    const handleFocusBack = () => {
+      // Avoid stealing focus if we are actively editing inputs
+      const activeTag = document.activeElement?.tagName.toLowerCase();
+      if (activeTag !== "input" && activeTag !== "textarea") {
+        barcodeInputRef.current?.focus();
+      }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [cart, selectedPayment, cashTendered, customerName]);
+
+    document.addEventListener("click", handleFocusBack);
+    return () => document.removeEventListener("click", handleFocusBack);
+  }, []);
+
+  // Handle scanned value
+  const handleBarcodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!scannedBarcode.trim()) return;
+
+    const value = scannedBarcode.trim();
+    setScannedBarcode("");
+
+    const found = items.find((item) => item.barcode === value || item.code === value);
+
+    if (found) {
+      addToCart(found);
+      toast.success(`${found.name} added to cart`);
+    } else {
+      toast.error(`Item not found: ${value}`);
+    }
+  };
+
+  // Quick product grid - Favorite items or fallback to first 12 products
+  const quickItems = useMemo(() => {
+    const favorites = items.filter((item) => item.isActive && (item as any).isFavorite);
+    if (favorites.length > 0) {
+      return favorites.slice(0, 12);
+    }
+    // Fallback to first 12 active products
+    return items.filter((item) => item.isActive && item.type === ItemType.PRODUCT).slice(0, 12);
+  }, [items]);
 
   // Catalog items filtering
   const filteredItems = useMemo(() => {
@@ -139,13 +164,22 @@ const POSMode: React.FC = () => {
   }, [cart]);
 
   const grandTotal = useMemo(() => {
-    return subtotal + vatAmount;
+    return Math.round((subtotal + vatAmount) * 100) / 100;
   }, [subtotal, vatAmount]);
 
   const changeDue = useMemo(() => {
     const change = cashTendered - grandTotal;
-    return change > 0 ? change : 0;
+    return change > 0 ? Math.round(change * 100) / 100 : 0;
   }, [cashTendered, grandTotal]);
+
+  // Disable save if cash tendered is less than grand total in cash mode
+  const canCompleteSale = useMemo(() => {
+    if (cart.length === 0) return false;
+    if (selectedPayment === "cash") {
+      return cashTendered >= grandTotal;
+    }
+    return true;
+  }, [cart, selectedPayment, cashTendered, grandTotal]);
 
   // Add item to cart
   const addToCart = (item: Item) => {
@@ -178,10 +212,39 @@ const POSMode: React.FC = () => {
     setCart((prev) => prev.filter((c) => c.item.id !== itemId));
   };
 
+  // Hold current cart
+  const handleHoldCart = () => {
+    if (cart.length === 0) {
+      toast.error("Cart is empty");
+      return;
+    }
+    const key = `pos_hold_${Date.now()}`;
+    const payload = {
+      customerName: customerName || "Walk-in Customer",
+      cart,
+    };
+    localStorage.setItem(key, JSON.stringify(payload));
+    toast.success("Cart held successfully");
+    setCart([]);
+    setCustomerName("");
+    setCashTendered(0);
+    loadHeldCarts();
+  };
+
+  // Resume held cart
+  const handleResumeCart = (held: HeldCart) => {
+    setCart(held.cart);
+    setCustomerName(held.customerName);
+    localStorage.removeItem(held.key);
+    loadHeldCarts();
+    setShowResumeModal(false);
+    toast.success("Cart resumed");
+  };
+
   // Save POS sales invoice
   const handleSave = async () => {
-    if (cart.length === 0) {
-      toast.error("Add items to cart first");
+    if (!canCompleteSale) {
+      toast.error("Insufficient Cash Tendered.");
       return;
     }
 
@@ -189,7 +252,6 @@ const POSMode: React.FC = () => {
       const today = new Date().toISOString().split("T")[0];
       const dateNepali = ADToBSString(today);
 
-      // Find first active customer for fallback party ID
       const customerParty = parties.find((p) => p.isActive && p.type === PartyType.CUSTOMER);
 
       const invoiceLines = cart.map((c) => {
@@ -248,11 +310,20 @@ const POSMode: React.FC = () => {
     }
   };
 
-  const symbol = companySettings?.currencySymbol || "Rs.";
-
   return (
     <div className="flex h-screen w-full bg-slate-900 overflow-hidden font-sans text-xs select-none">
-      {/* Left Panel: Catalog */}
+      {/* Hidden input to capture barcode scanner input */}
+      <form onSubmit={handleBarcodeSubmit} className="absolute opacity-0 pointer-events-none">
+        <input
+          ref={barcodeInputRef}
+          type="text"
+          value={scannedBarcode}
+          onChange={(e) => setScannedBarcode(e.target.value)}
+          autoFocus
+        />
+      </form>
+
+      {/* Left Panel: Catalog & Quick Favorites */}
       <div className="w-[60%] flex flex-col h-full bg-slate-950">
         {/* Header bar */}
         <div className="bg-indigo-950 border-b border-indigo-900 px-4 py-3 flex items-center justify-between">
@@ -260,16 +331,45 @@ const POSMode: React.FC = () => {
             <span className="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-1.5">
               ⚡ POS MODE
             </span>
-            <span className="text-[10px] bg-indigo-800 text-indigo-200 font-extrabold px-1.5 py-0.5 rounded uppercase">
-              Live
-            </span>
           </div>
-          <button
-            onClick={() => setCurrentPage("dashboard")}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold transition-all text-[11px]"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Exit
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowResumeModal(true)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold transition-all text-[11px]"
+            >
+              <FolderOpen className="h-3.5 w-3.5 text-amber-500" /> Resume ({heldCarts.length})
+            </button>
+            <button
+              onClick={() => setCurrentPage("dashboard")}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold transition-all text-[11px]"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Exit
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Product Grid (Favorites) */}
+        <div className="p-3 bg-slate-900 border-b border-slate-850">
+          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+            Quick Favorites Grid
+          </span>
+          <div className="grid grid-cols-4 gap-2">
+            {quickItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => addToCart(item)}
+                className="bg-[#1a202c] border border-slate-800 p-2 rounded-lg text-left hover:border-indigo-500 hover:bg-slate-800 transition-colors"
+              >
+                <div className="font-bold text-slate-100 truncate text-[11px]">{item.name}</div>
+                <div className="flex justify-between items-center mt-1 text-[10px]">
+                  <span className="text-indigo-300 font-mono">
+                    {symbol} {formatNumber(item.salesRate)}
+                  </span>
+                  <span className="text-slate-400 font-bold">Qty: {item.currentStock || 0}</span>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Search & Filters */}
@@ -281,14 +381,11 @@ const POSMode: React.FC = () => {
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search Items... (F2)"
+              placeholder="Search Items... (Type here or Scan)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
-            <p className="text-[10px] text-slate-400 mt-1">
-              Scan barcode or search by name/code. Scanner auto-adds items.
-            </p>
           </div>
           <div className="flex items-center bg-[#1a202c] p-1 rounded-lg border border-slate-800 gap-0.5 shrink-0 self-stretch sm:self-auto justify-center">
             {(["all", "product", "service"] as const).map((f) => (
@@ -307,122 +404,90 @@ const POSMode: React.FC = () => {
           </div>
         </div>
 
-        {/* Items Grid */}
+        {/* Catalog List */}
         <div className="flex-1 overflow-y-auto p-4 content-start">
-          {filteredItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-slate-500 py-10">
-              <span className="text-sm font-semibold mb-1">No items found</span>
-              <p className="text-slate-600">Try adjusting your search filters</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {filteredItems.map((item) => {
-                const isOutOfStock =
-                  item.type === ItemType.PRODUCT && (item.currentStock ?? 0) <= 0;
-                return (
-                  <button
-                    key={item.id}
-                    disabled={isOutOfStock}
-                    onClick={() => addToCart(item)}
-                    className={`flex flex-col text-left p-3.5 rounded-xl border transition-all ${
-                      isOutOfStock
-                        ? "bg-slate-900 border-slate-800 opacity-50 cursor-not-allowed"
-                        : "bg-[#1a202c] border-slate-800 hover:border-indigo-500 hover:bg-slate-800 hover:shadow-lg active:scale-[0.98]"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start gap-1 w-full">
-                      <span className="font-extrabold text-slate-100 text-sm tracking-tight line-clamp-2 leading-tight">
-                        {item.name}
-                      </span>
-                      {item.type === ItemType.PRODUCT && (
-                        <span
-                          className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase shrink-0 ${
-                            isOutOfStock
-                              ? "bg-red-950 text-red-400 border border-red-900"
-                              : "bg-indigo-950 text-indigo-300 border border-indigo-900"
-                          }`}
-                        >
-                          {isOutOfStock ? "Out" : `${item.currentStock || 0} ${item.unit || "pcs"}`}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[10px] text-slate-400 mt-1 font-mono">{item.code}</span>
-                    <div className="mt-4 flex items-baseline justify-between w-full border-t border-slate-800/60 pt-2.5">
-                      <span className="text-indigo-400 text-[10px] uppercase font-bold tracking-wider">
-                        Sales Rate
-                      </span>
-                      <span className="text-indigo-300 font-extrabold text-sm font-mono">
-                        {symbol} {formatNumber(item.salesRate)}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {filteredItems.map((item) => {
+              const isOutOfStock = item.type === ItemType.PRODUCT && (item.currentStock ?? 0) <= 0;
+              return (
+                <button
+                  key={item.id}
+                  disabled={isOutOfStock}
+                  onClick={() => addToCart(item)}
+                  className={`flex flex-col text-left p-3 rounded-xl border transition-all ${
+                    isOutOfStock
+                      ? "bg-slate-900 border-slate-800 opacity-50 cursor-not-allowed"
+                      : "bg-[#1a202c] border-slate-800 hover:border-indigo-500 hover:bg-slate-800 transition-all hover:shadow-lg"
+                  }`}
+                >
+                  <div className="flex justify-between items-start gap-1 w-full">
+                    <span className="font-extrabold text-slate-100 text-[11px] leading-tight truncate max-w-[120px]">
+                      {item.name}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">{item.code}</span>
+                  </div>
+                  <div className="mt-3 flex items-baseline justify-between w-full border-t border-slate-800 pt-2">
+                    <span className="text-indigo-400 text-[10px] font-bold">
+                      {symbol} {formatNumber(item.salesRate)}
+                    </span>
+                    <span className="text-slate-400 text-[10px]">
+                      Stock: {item.currentStock || 0}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Right Panel: Cart */}
+      {/* Right Panel: Cart & Payment details */}
       <div className="w-[40%] flex flex-col h-full bg-white text-slate-900 shadow-2xl relative">
-        {/* Cart Header */}
-        <div className="px-4 py-3 bg-slate-50 border-b border-slate-150 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="h-[18px] w-[18px] text-[#1557b0]" />
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Cart List</h2>
-          </div>
-          <span className="bg-indigo-100 text-indigo-800 font-extrabold text-[10px] px-2 py-0.5 rounded-full">
-            {cart.reduce((sum, c) => sum + c.qty, 0)} items
-          </span>
+        <div className="px-4 py-3 bg-slate-50 border-b border-slate-150 flex items-center justify-between shrink-0 font-bold uppercase">
+          <span>Cart List</span>
+          <button
+            onClick={handleHoldCart}
+            disabled={cart.length === 0}
+            className="flex items-center gap-1 px-2.5 py-1 text-[10px] text-amber-800 bg-amber-50 border border-amber-200 rounded hover:bg-amber-100"
+          >
+            <Pause className="w-3 h-3" /> Hold Cart
+          </button>
         </div>
 
-        {/* Cart items list */}
+        {/* Cart rows */}
         <div className="flex-1 overflow-y-auto">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-slate-400 py-10">
-              <ShoppingBag className="h-10 w-10 text-slate-200 mb-2 stroke-[1.5]" />
-              <p className="font-semibold text-xs">Cart is empty. Click items to add.</p>
+              <p className="font-semibold text-xs">Cart is empty.</p>
             </div>
           ) : (
             <table className="w-full text-xs">
-              <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider sticky top-0 border-b border-slate-100">
+              <thead className="bg-slate-50 text-[10px] text-slate-400 uppercase tracking-wider sticky top-0 border-b">
                 <tr>
-                  <th className="py-2 px-3 text-center">#</th>
-                  <th className="py-2 px-2 text-left">Item</th>
+                  <th className="py-2 px-3 text-left">Item</th>
                   <th className="py-2 px-2 text-center w-16">Qty</th>
-                  <th className="py-2 px-2 text-right">Price</th>
                   <th className="py-2 px-2 text-right">Amt</th>
                   <th className="py-2 px-3 text-center"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
-                {cart.map((c, idx) => (
+              <tbody className="divide-y divide-slate-150">
+                {cart.map((c) => (
                   <tr key={c.item.id} className="hover:bg-slate-50/50">
-                    <td className="py-2 px-3 text-center text-slate-400 font-bold">{idx + 1}</td>
-                    <td className="py-2 px-2">
-                      <p className="font-bold text-slate-800 leading-tight">{c.item.name}</p>
-                      <span className="text-[10px] text-slate-400 font-mono">{c.item.code}</span>
-                    </td>
+                    <td className="py-2 px-3 font-semibold text-gray-800">{c.item.name}</td>
                     <td className="py-2 px-2 text-center">
                       <input
                         type="number"
                         min="1"
                         value={c.qty}
                         onChange={(e) => updateQty(c.item.id, parseInt(e.target.value) || 1)}
-                        className="w-12 text-center border border-slate-200 rounded p-1 font-bold text-slate-800"
+                        className="w-12 text-center border rounded p-1 font-bold text-slate-800"
                       />
                     </td>
-                    <td className="py-2 px-2 text-right font-semibold text-slate-700 font-mono">
-                      {formatNumber(c.item.salesRate)}
-                    </td>
-                    <td className="py-2 px-2 text-right font-bold text-slate-900 font-mono">
+                    <td className="py-2 px-2 text-right font-bold font-mono">
                       {formatNumber(c.qty * c.item.salesRate)}
                     </td>
                     <td className="py-2 px-3 text-center">
-                      <button
-                        onClick={() => removeFromCart(c.item.id)}
-                        className="text-red-500 hover:text-red-700 p-1"
-                      >
+                      <button onClick={() => removeFromCart(c.item.id)} className="text-red-500">
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </td>
@@ -433,34 +498,18 @@ const POSMode: React.FC = () => {
           )}
         </div>
 
-        {/* Footer controls & totals */}
+        {/* Totals & Tendered inputs */}
         <div className="bg-slate-50 border-t border-slate-200 p-4 shrink-0 flex flex-col gap-3">
-          {/* Summary values */}
-          <div className="flex flex-col gap-1.5 border-b border-slate-200/85 pb-3">
-            <div className="flex justify-between items-center text-slate-500 font-semibold">
-              <span>Subtotal</span>
-              <span className="font-mono">
-                {symbol} {formatNumber(subtotal)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-slate-500 font-semibold">
-              <span>VAT (13% on Taxable Items)</span>
-              <span className="font-mono">
-                {symbol} {formatNumber(vatAmount)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center mt-1">
-              <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
-                Grand Total
-              </span>
-              <span className="text-lg font-bold text-indigo-700 font-mono">
-                {symbol} {formatNumber(grandTotal)}
-              </span>
-            </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+              Grand Total
+            </span>
+            <span className="text-lg font-bold text-indigo-700 font-mono">
+              {symbol} {formatNumber(grandTotal)}
+            </span>
           </div>
 
-          {/* Customer input */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 border-t pt-3">
             <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase font-bold text-slate-500">
                 Customer Name
@@ -470,12 +519,11 @@ const POSMode: React.FC = () => {
                 placeholder="Walk-in Customer"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+                className="border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-850"
               />
             </div>
 
-            {/* Payment options */}
-            <div className="flex flex-col gap-1 mt-1">
+            <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase font-bold text-slate-500">Payment Mode</label>
               <div className="grid grid-cols-3 gap-1">
                 {[
@@ -487,10 +535,10 @@ const POSMode: React.FC = () => {
                     key={id}
                     type="button"
                     onClick={() => setSelectedPayment(id)}
-                    className={`flex items-center justify-center gap-1 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${
+                    className={`flex items-center justify-center gap-1 py-1.5 rounded border text-[10px] font-bold ${
                       selectedPayment === id
                         ? "bg-[#1557b0] text-white border-indigo-600 shadow-sm"
-                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                        : "bg-white text-slate-600 border-slate-200"
                     }`}
                   >
                     <Icon className="h-3 w-3" /> {label}
@@ -499,25 +547,23 @@ const POSMode: React.FC = () => {
               </div>
             </div>
 
-            {/* Cash tendered section */}
             {selectedPayment === "cash" && (
-              <div className="grid grid-cols-2 gap-2 mt-1 bg-slate-100 p-2 rounded-lg border border-slate-150 items-center">
+              <div className="grid grid-cols-2 gap-2 bg-slate-100 p-3 rounded-lg border border-slate-200">
                 <div className="flex flex-col gap-0.5">
                   <label className="text-[10px] uppercase font-bold text-slate-500">
-                    Cash Received
+                    Cash Tendered
                   </label>
                   <input
                     type="number"
                     min="0"
-                    placeholder="0.00"
                     value={cashTendered || ""}
                     onChange={(e) => setCashTendered(parseFloat(e.target.value) || 0)}
-                    className="w-full border border-slate-250 rounded p-1 text-xs font-bold text-slate-800 font-mono"
+                    className="w-full border rounded p-1 text-xs font-bold font-mono text-slate-800"
                   />
                 </div>
                 <div className="flex flex-col text-right justify-center">
                   <span className="text-[10px] uppercase font-bold text-slate-500">Change Due</span>
-                  <span className="text-xs font-bold text-emerald-600 font-mono">
+                  <span className="text-sm font-bold text-emerald-600 font-mono">
                     {symbol} {formatNumber(changeDue)}
                   </span>
                 </div>
@@ -525,26 +571,64 @@ const POSMode: React.FC = () => {
             )}
           </div>
 
-          {/* Action button */}
           <button
             onClick={handleSave}
-            disabled={cart.length === 0}
-            className={`w-full py-2.5 rounded-xl text-white font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-md text-xs uppercase tracking-wide ${
-              cart.length === 0
-                ? "bg-slate-300 cursor-not-allowed shadow-none"
-                : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-lg active:scale-[0.99]"
+            disabled={!canCompleteSale}
+            className={`w-full py-2.5 rounded-lg text-white font-extrabold flex items-center justify-center gap-1.5 uppercase ${
+              !canCompleteSale
+                ? "bg-slate-350 cursor-not-allowed shadow-none"
+                : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-lg cursor-pointer"
             }`}
           >
-            <Printer className="h-4 w-4" /> Print & Save (F10)
+            <Printer className="h-4 w-4" /> Print & Save
           </button>
         </div>
       </div>
+
+      {/* Resume Held Carts Modal */}
+      {showResumeModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-5 text-slate-900 border">
+            <div className="flex justify-between items-center border-b pb-3 mb-4">
+              <h2 className="text-sm font-bold uppercase">Resume Held Carts</h2>
+              <button
+                onClick={() => setShowResumeModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {heldCarts.length === 0 ? (
+                <p className="text-center py-6 text-gray-400">No held carts available.</p>
+              ) : (
+                heldCarts.map((held) => (
+                  <div
+                    key={held.key}
+                    onClick={() => handleResumeCart(held)}
+                    className="p-3 bg-slate-50 border rounded-lg hover:bg-slate-100 cursor-pointer flex justify-between items-center transition-colors"
+                  >
+                    <div>
+                      <p className="font-bold text-slate-800">{held.customerName}</p>
+                      <p className="text-[10px] text-gray-400">
+                        {new Date(held.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                    <span className="font-bold text-indigo-700 bg-indigo-50 border border-indigo-150 px-2 py-0.5 rounded text-[10px]">
+                      {held.cart.length} lines
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Receipt Modal Overlay */}
       {showReceipt && savedInvoice && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-5 text-slate-900 border border-slate-100 animate-fadeIn text-[11px]">
-            {/* Business info */}
             <div className="text-center border-b border-dashed border-slate-200 pb-4">
               <h1 className="text-sm font-bold uppercase text-slate-800">
                 {companySettings?.name || "Sutra ERP Pvt. Ltd."}
@@ -560,7 +644,6 @@ const POSMode: React.FC = () => {
               </h2>
             </div>
 
-            {/* Invoice meta */}
             <div className="grid grid-cols-2 gap-y-1.5 py-3 border-b border-dashed border-slate-200">
               <div>
                 <p className="text-slate-400 font-medium">Invoice No:</p>
@@ -578,14 +661,12 @@ const POSMode: React.FC = () => {
               </div>
             </div>
 
-            {/* Line items list */}
             <div className="py-3 border-b border-dashed border-slate-200">
               <table className="w-full">
                 <thead>
                   <tr className="text-left font-bold text-slate-500 uppercase text-[10px] border-b border-slate-100">
                     <th className="pb-1 text-left">Item Name</th>
                     <th className="pb-1 text-center w-10">Qty</th>
-                    <th className="pb-1 text-right">Rate</th>
                     <th className="pb-1 text-right">Amt</th>
                   </tr>
                 </thead>
@@ -598,9 +679,6 @@ const POSMode: React.FC = () => {
                       <td className="py-1.5 text-center font-semibold text-slate-600">
                         {line.qty}
                       </td>
-                      <td className="py-1.5 text-right font-mono text-slate-600">
-                        {formatNumber(line.rate)}
-                      </td>
                       <td className="py-1.5 text-right font-mono font-bold text-slate-800">
                         {formatNumber(line.netAmount)}
                       </td>
@@ -610,7 +688,6 @@ const POSMode: React.FC = () => {
               </table>
             </div>
 
-            {/* Totals */}
             <div className="py-3 border-b border-dashed border-slate-200 flex flex-col gap-1.5 text-right font-mono">
               <div className="flex justify-between items-center text-slate-500">
                 <span>Sub Total:</span>
@@ -618,13 +695,7 @@ const POSMode: React.FC = () => {
                   {symbol} {formatNumber(savedInvoice.subTotal)}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-slate-500">
-                <span>VAT (13%):</span>
-                <span>
-                  {symbol} {formatNumber(savedInvoice.vatAmount)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-slate-800 font-extrabold text-xs">
+              <div className="flex justify-between items-center text-slate-850 font-extrabold text-xs">
                 <span>Grand Total:</span>
                 <span>
                   {symbol} {formatNumber(savedInvoice.grandTotal)}
@@ -632,7 +703,6 @@ const POSMode: React.FC = () => {
               </div>
             </div>
 
-            {/* Payment verification */}
             <div className="py-3 text-slate-600 flex flex-col gap-1">
               <div className="flex justify-between items-center">
                 <span>Payment Mode:</span>
@@ -658,7 +728,6 @@ const POSMode: React.FC = () => {
               )}
             </div>
 
-            {/* Disclaimer & Actions */}
             <div className="text-center mt-3 border-t border-slate-200/80 pt-4 flex flex-col gap-2">
               <p className="text-[10px] italic text-slate-400">Thank you for your business!</p>
               <div className="grid grid-cols-2 gap-2 mt-2">
@@ -672,7 +741,6 @@ const POSMode: React.FC = () => {
                   onClick={() => {
                     setShowReceipt(false);
                     setSavedInvoice(null);
-                    searchInputRef.current?.focus();
                   }}
                   className="bg-[#1557b0] text-white font-bold py-1.5 rounded-lg hover:bg-indigo-500 transition-colors"
                 >

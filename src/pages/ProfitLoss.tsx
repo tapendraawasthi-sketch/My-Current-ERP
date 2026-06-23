@@ -8,12 +8,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Select, Table, NepaliDatePicker } from "../components/ui";
-import { FileSpreadsheet, Printer, Activity, ChevronRight, ChevronDown } from "lucide-react";
+import { FileSpreadsheet, Printer, ChevronRight, ChevronDown } from "lucide-react";
 import { computeProfitLoss } from "../lib/accounting";
 import { exportPLStatementToExcel } from "../lib/exportUtils";
 import { generatePLPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
-import { ReportPeriodPreset } from "../lib/types";
+import { ReportPeriodPreset, VoucherStatus } from "../lib/types";
 import {
   format,
   startOfMonth,
@@ -64,26 +64,22 @@ const initialData = {
 };
 
 const ProfitLoss: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear, setCurrentPage } = useStore();
+  const {
+    accounts,
+    vouchers: rawVouchers,
+    companySettings,
+    currentFiscalYear,
+    fiscalYears,
+  } = useStore();
   const [preset, setPreset] = useState<string>("fy");
   const [startDate, setStartDate] = useState<string>(
     currentFiscalYear?.startDate || initialData.startDate,
   );
   const [endDate, setEndDate] = useState<string>(currentFiscalYear?.endDate || initialData.endDate);
   const [showComparison, setShowComparison] = useState<boolean>(true);
-  const [expandedRowIds, setExpandedRowIds] = useState<Set<string>>(
-    new Set([
-      "operating-expenses",
-      "financial-expenses",
-      "other-income",
-      "category-personnel",
-      "category-rentUtilities",
-      "category-communication",
-      "category-travel",
-      "category-office",
-      "category-marketing",
-    ]),
-  );
+
+  // Collapse everything by default
+  const [expandedRowIds, setExpandedRowIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (currentFiscalYear) {
@@ -102,9 +98,14 @@ const ProfitLoss: React.FC = () => {
     }
   }, [preset, currentFiscalYear]);
 
+  // CRITICAL FILTER: posted vouchers only
+  const postedVouchers = useMemo(() => {
+    return rawVouchers.filter((v) => v.status === VoucherStatus.POSTED);
+  }, [rawVouchers]);
+
   const profitLoss = useMemo(() => {
-    return computeProfitLoss(accounts, vouchers, startDate, endDate);
-  }, [accounts, vouchers, startDate, endDate]);
+    return computeProfitLoss(accounts, postedVouchers, startDate, endDate);
+  }, [accounts, postedVouchers, startDate, endDate]);
 
   const previousPeriod = useMemo(() => {
     const currentStart = new Date(startDate);
@@ -119,8 +120,19 @@ const ProfitLoss: React.FC = () => {
   }, [startDate, endDate]);
 
   const previousProfitLoss = useMemo(() => {
-    return computeProfitLoss(accounts, vouchers, previousPeriod.startDate, previousPeriod.endDate);
-  }, [accounts, vouchers, previousPeriod.startDate, previousPeriod.endDate]);
+    return computeProfitLoss(
+      accounts,
+      postedVouchers,
+      previousPeriod.startDate,
+      previousPeriod.endDate,
+    );
+  }, [accounts, postedVouchers, previousPeriod.startDate, previousPeriod.endDate]);
+
+  // Determine if a prior fiscal year exists in store.fiscalYears
+  const hasPriorFiscalYear = useMemo(() => {
+    if (!currentFiscalYear || !fiscalYears || fiscalYears.length <= 1) return false;
+    return fiscalYears.some((fy) => fy.startDate < currentFiscalYear.startDate);
+  }, [currentFiscalYear, fiscalYears]);
 
   const operatingExpensesChildren = profitLoss.expenses[2]?.children || [];
   const allExpenseChildren = operatingExpensesChildren;
@@ -136,6 +148,7 @@ const ProfitLoss: React.FC = () => {
   };
   const salesReturnAmount = sumChildrenMatching(salesRow.children || [], ["return"]);
   const netSalesAmount = round2(salesRow.amount - salesReturnAmount);
+
   const purchaseRow = profitLoss.expenses[0] || {
     accountId: "purchases",
     accountName: "Purchases",
@@ -158,7 +171,9 @@ const ProfitLoss: React.FC = () => {
   const cogsAmount = round2(
     purchaseRow.amount + directExpenseRow.amount - purchaseReturnAmount - closingStockAmount,
   );
+
   const grossProfitAmount = round2(netSalesAmount - cogsAmount);
+
   const financialExpensesChildren = allExpenseChildren.filter((row) =>
     matchesAnyKeyword(row.accountName, ["bank", "interest", "finance"]),
   );
@@ -176,6 +191,7 @@ const ProfitLoss: React.FC = () => {
   const operatingExpensesAmount = round2(
     operatingCategoryRows.reduce((sum, row) => sum + row.amount, 0),
   );
+
   const operatingProfitAmount = round2(
     grossProfitAmount +
       otherIncomeAmount -
@@ -184,12 +200,16 @@ const ProfitLoss: React.FC = () => {
       depreciationAmount,
   );
 
+  const totalRevenue = netSalesAmount || 1; // Prevent division by zero
+
   const dataRows: PLRow[] = useMemo(() => {
     const previousMap = buildPreviousMap(previousProfitLoss);
-    const baseRows: PLRow[] = [
+
+    // Group into GROSS PROFIT SECTION
+    const grossProfitSection: PLRow[] = [
       {
-        id: "trading-header",
-        name: "TRADING ACCOUNT",
+        id: "gross-profit-header",
+        name: "GROSS PROFIT SECTION",
         amount: 0,
         level: 0,
         isGroup: false,
@@ -200,16 +220,23 @@ const ProfitLoss: React.FC = () => {
         name: "Sales / Turnover",
         amount: salesRow.amount,
         prevAmount: previousMap.salesAmount,
-        pctOfSales: netSalesAmount ? round2((salesRow.amount / netSalesAmount) * 100) : 0,
+        pctOfSales: round2((salesRow.amount / totalRevenue) * 100),
         level: 1,
-        isGroup: false,
+        isGroup: true,
+        children: salesRow.children?.map((c) => ({
+          id: `sales-${c.accountId}`,
+          name: c.accountName,
+          amount: c.amount,
+          level: 2,
+          isGroup: false,
+        })),
       },
       {
         id: "sales-return",
         name: "Less: Sales Return",
         amount: -salesReturnAmount,
         prevAmount: -previousMap.salesReturnAmount,
-        pctOfSales: netSalesAmount ? round2((-salesReturnAmount / netSalesAmount) * 100) : 0,
+        pctOfSales: round2((-salesReturnAmount / totalRevenue) * 100),
         level: 1,
         isGroup: false,
       },
@@ -218,7 +245,7 @@ const ProfitLoss: React.FC = () => {
         name: "Net Sales",
         amount: netSalesAmount,
         prevAmount: previousMap.netSalesAmount,
-        pctOfSales: 100,
+        pctOfSales: round2((netSalesAmount / totalRevenue) * 100),
         level: 1,
         isGroup: false,
         isSummary: true,
@@ -226,8 +253,10 @@ const ProfitLoss: React.FC = () => {
       {
         id: "cogs-header",
         name: "COST OF GOODS SOLD",
-        amount: 0,
-        level: 0,
+        amount: cogsAmount,
+        prevAmount: previousMap.cogsAmount,
+        pctOfSales: round2((cogsAmount / totalRevenue) * 100),
+        level: 1,
         isGroup: false,
         isSummary: true,
       },
@@ -236,8 +265,8 @@ const ProfitLoss: React.FC = () => {
         name: "Opening Stock",
         amount: openingStockAmount,
         prevAmount: previousMap.openingStockAmount,
-        pctOfSales: netSalesAmount ? round2((openingStockAmount / netSalesAmount) * 100) : 0,
-        level: 1,
+        pctOfSales: round2((openingStockAmount / totalRevenue) * 100),
+        level: 2,
         isGroup: false,
       },
       {
@@ -245,17 +274,24 @@ const ProfitLoss: React.FC = () => {
         name: "Add: Purchases",
         amount: purchaseRow.amount,
         prevAmount: previousMap.purchaseAmount,
-        pctOfSales: netSalesAmount ? round2((purchaseRow.amount / netSalesAmount) * 100) : 0,
-        level: 1,
-        isGroup: false,
+        pctOfSales: round2((purchaseRow.amount / totalRevenue) * 100),
+        level: 2,
+        isGroup: true,
+        children: purchaseRow.children?.map((c) => ({
+          id: `purchases-${c.accountId}`,
+          name: c.accountName,
+          amount: c.amount,
+          level: 3,
+          isGroup: false,
+        })),
       },
       {
         id: "purchase-return",
         name: "Less: Purchase Return",
         amount: -purchaseReturnAmount,
         prevAmount: -previousMap.purchaseReturnAmount,
-        pctOfSales: netSalesAmount ? round2((-purchaseReturnAmount / netSalesAmount) * 100) : 0,
-        level: 1,
+        pctOfSales: round2((-purchaseReturnAmount / totalRevenue) * 100),
+        level: 2,
         isGroup: false,
       },
       {
@@ -263,35 +299,44 @@ const ProfitLoss: React.FC = () => {
         name: "Add: Direct Expenses",
         amount: directExpenseRow.amount,
         prevAmount: previousMap.directExpenseAmount,
-        pctOfSales: netSalesAmount ? round2((directExpenseRow.amount / netSalesAmount) * 100) : 0,
-        level: 1,
-        isGroup: false,
+        pctOfSales: round2((directExpenseRow.amount / totalRevenue) * 100),
+        level: 2,
+        isGroup: true,
+        children: directExpenseRow.children?.map((c) => ({
+          id: `direct-${c.accountId}`,
+          name: c.accountName,
+          amount: c.amount,
+          level: 3,
+          isGroup: false,
+        })),
       },
       {
         id: "closing-stock",
         name: "Less: Closing Stock",
         amount: -closingStockAmount,
         prevAmount: -previousMap.closingStockAmount,
-        pctOfSales: netSalesAmount ? round2((-closingStockAmount / netSalesAmount) * 100) : 0,
-        level: 1,
+        pctOfSales: round2((-closingStockAmount / totalRevenue) * 100),
+        level: 2,
         isGroup: false,
-      },
-      {
-        id: "cogs",
-        name: "Cost of Goods Sold",
-        amount: cogsAmount,
-        prevAmount: previousMap.cogsAmount,
-        pctOfSales: netSalesAmount ? round2((cogsAmount / netSalesAmount) * 100) : 0,
-        level: 1,
-        isGroup: false,
-        isSummary: true,
       },
       {
         id: "gross-profit",
         name: "GROSS PROFIT / (LOSS)",
         amount: grossProfitAmount,
         prevAmount: previousMap.grossProfitAmount,
-        pctOfSales: netSalesAmount ? round2((grossProfitAmount / netSalesAmount) * 100) : 0,
+        pctOfSales: round2((grossProfitAmount / totalRevenue) * 100),
+        level: 0,
+        isGroup: false,
+        isSummary: true,
+      },
+    ];
+
+    // NET PROFIT SECTION
+    const netProfitSection: PLRow[] = [
+      {
+        id: "net-profit-header",
+        name: "NET PROFIT SECTION",
+        amount: 0,
         level: 0,
         isGroup: false,
         isSummary: true,
@@ -301,78 +346,79 @@ const ProfitLoss: React.FC = () => {
         name: "OPERATING EXPENSES",
         amount: operatingExpensesAmount,
         prevAmount: previousMap.operatingExpensesAmount,
-        pctOfSales: netSalesAmount ? round2((operatingExpensesAmount / netSalesAmount) * 100) : 0,
-        level: 0,
+        pctOfSales: round2((operatingExpensesAmount / totalRevenue) * 100),
+        level: 1,
         isGroup: true,
         children: operatingCategoryRows.map((category) => ({
           ...category,
           parentId: "operating-expenses",
+          pctOfSales: round2((category.amount / totalRevenue) * 100),
           children: category.children?.map((child) => ({
             ...child,
             parentId: category.id,
+            pctOfSales: round2((child.amount / totalRevenue) * 100),
           })),
         })),
-      },
-      {
-        id: "operating-profit",
-        name: "OPERATING PROFIT / (LOSS)",
-        amount: operatingProfitAmount,
-        prevAmount: previousMap.operatingProfitAmount,
-        pctOfSales: netSalesAmount ? round2((operatingProfitAmount / netSalesAmount) * 100) : 0,
-        level: 0,
-        isGroup: false,
-        isSummary: true,
       },
       {
         id: "financial-expenses",
         name: "FINANCIAL EXPENSES",
         amount: financialExpensesAmount,
         prevAmount: previousMap.financialExpensesAmount,
-        pctOfSales: netSalesAmount ? round2((financialExpensesAmount / netSalesAmount) * 100) : 0,
-        level: 0,
+        pctOfSales: round2((financialExpensesAmount / totalRevenue) * 100),
+        level: 1,
         isGroup: true,
-        children: buildCategoryChildren(financialExpensesChildren, "financial-expenses"),
+        children: buildCategoryChildren(
+          financialExpensesChildren,
+          "financial-expenses",
+          totalRevenue,
+        ),
       },
       {
         id: "other-income",
         name: "OTHER INCOME",
         amount: otherIncomeAmount,
         prevAmount: previousMap.otherIncomeAmount,
-        pctOfSales: netSalesAmount ? round2((otherIncomeAmount / netSalesAmount) * 100) : 0,
-        level: 0,
+        pctOfSales: round2((otherIncomeAmount / totalRevenue) * 100),
+        level: 1,
         isGroup: true,
-        children: buildCategoryChildren(otherIncomeChildren, "other-income"),
+        children: buildCategoryChildren(otherIncomeChildren, "other-income", totalRevenue),
       },
       {
         id: "depreciation",
         name: "Depreciation",
         amount: depreciationAmount,
         prevAmount: previousMap.depreciationAmount,
-        pctOfSales: netSalesAmount ? round2((depreciationAmount / netSalesAmount) * 100) : 0,
-        level: 0,
+        pctOfSales: round2((depreciationAmount / totalRevenue) * 100),
+        level: 1,
         isGroup: false,
       },
       {
         id: "net-profit",
         name: "NET PROFIT / (NET LOSS)",
         amount:
-          operatingProfitAmount + otherIncomeAmount - financialExpensesAmount - depreciationAmount,
+          grossProfitAmount +
+          otherIncomeAmount -
+          operatingExpensesAmount -
+          financialExpensesAmount -
+          depreciationAmount,
         prevAmount: previousMap.netProfitAmount,
-        pctOfSales: netSalesAmount
-          ? round2(
-              ((operatingProfitAmount +
-                otherIncomeAmount -
-                financialExpensesAmount -
-                depreciationAmount) /
-                netSalesAmount) *
-                100,
-            )
-          : 0,
+        pctOfSales: round2(
+          ((grossProfitAmount +
+            otherIncomeAmount -
+            operatingExpensesAmount -
+            financialExpensesAmount -
+            depreciationAmount) /
+            totalRevenue) *
+            100,
+        ),
         level: 0,
         isGroup: false,
         isSummary: true,
       },
     ];
+
+    const baseRows = [...grossProfitSection, ...netProfitSection];
 
     const flatten = (rows: PLRow[]): PLRow[] => {
       const result: PLRow[] = [];
@@ -391,7 +437,7 @@ const ProfitLoss: React.FC = () => {
   }, [
     profitLoss,
     previousProfitLoss,
-    netSalesAmount,
+    totalRevenue,
     salesRow.amount,
     salesReturnAmount,
     purchaseRow.amount,
@@ -403,7 +449,6 @@ const ProfitLoss: React.FC = () => {
     grossProfitAmount,
     operatingCategoryRows,
     operatingExpensesAmount,
-    operatingProfitAmount,
     financialExpensesAmount,
     otherIncomeAmount,
     depreciationAmount,
@@ -440,7 +485,11 @@ const ProfitLoss: React.FC = () => {
         ],
         grossProfit: grossProfitAmount,
         netProfit:
-          operatingProfitAmount + otherIncomeAmount - financialExpensesAmount - depreciationAmount,
+          grossProfitAmount +
+          otherIncomeAmount -
+          operatingExpensesAmount -
+          financialExpensesAmount -
+          depreciationAmount,
         totalIncome: salesRow.amount + otherIncomeAmount,
         totalExpenses:
           cogsAmount + operatingExpensesAmount + financialExpensesAmount + depreciationAmount,
@@ -476,7 +525,11 @@ const ProfitLoss: React.FC = () => {
         ],
         grossProfit: grossProfitAmount,
         netProfit:
-          operatingProfitAmount + otherIncomeAmount - financialExpensesAmount - depreciationAmount,
+          grossProfitAmount +
+          otherIncomeAmount -
+          operatingExpensesAmount -
+          financialExpensesAmount -
+          depreciationAmount,
         totalIncome: salesRow.amount + otherIncomeAmount,
         totalExpenses:
           cogsAmount + operatingExpensesAmount + financialExpensesAmount + depreciationAmount,
@@ -518,70 +571,12 @@ const ProfitLoss: React.FC = () => {
     }
   };
 
-  const columns = [
-    {
-      key: "name",
-      header: "Particulars",
-      width: "40%",
-      render: (_: any, row: PLRow) => (
-        <div className="flex items-center gap-2">
-          <span className="inline-flex w-4 justify-center">
-            {row.children && row.children.length > 0 ? (
-              expandedRowIds.has(row.id) ? (
-                <ChevronDown className="h-3 w-3" />
-              ) : (
-                <ChevronRight className="h-3 w-3" />
-              )
-            ) : null}
-          </span>
-          <span
-            className={`${row.level === 0 ? "font-bold text-slate-900" : row.level === 1 ? "font-semibold text-slate-800" : "text-slate-600"} ${row.isSummary ? "text-slate-900" : ""}`}
-            style={{ paddingLeft: `${row.level * 12}px` }}
-          >
-            {row.name}
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "amount",
-      header: "Current Period",
-      align: "right",
-      render: (val: number) => <span className="font-mono">Rs. {formatNumber(val)}</span>,
-    },
-    {
-      key: "prevAmount",
-      header: "Previous Period",
-      align: "right",
-      render: (val: number) => <span className="font-mono">Rs. {formatNumber(val || 0)}</span>,
-    },
-    {
-      key: "pctOfSales",
-      header: "% of Net Sales",
-      align: "right",
-      render: (val: number) => <span>{val ? `${formatNumber(val)}%` : "-"}</span>,
-    },
-    {
-      key: "changePct",
-      header: "Change",
-      align: "right",
-      render: (_: any, row: PLRow) => {
-        if (!showComparison || row.prevAmount === undefined) return "-";
-        const change = computeChangePercent(row.prevAmount, row.amount);
-        const label = change === null ? "-" : `${change > 0 ? "+" : ""}${formatNumber(change)}%`;
-        return (
-          <span
-            className={change === null ? "" : change >= 0 ? "text-[#059669]" : "text-[#dc2626]"}
-          >
-            {label}
-          </span>
-        );
-      },
-    },
-  ];
-
   const summaryProfit =
-    operatingProfitAmount + otherIncomeAmount - financialExpensesAmount - depreciationAmount;
+    grossProfitAmount +
+    otherIncomeAmount -
+    operatingExpensesAmount -
+    financialExpensesAmount -
+    depreciationAmount;
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
@@ -612,13 +607,22 @@ const ProfitLoss: React.FC = () => {
         </div>
       </div>
 
-      {/* Report Header (Similar to TrialBalance) */}
-      <div className="bg-white border rounded-lg mb-3 overflow-hidden" style={{ borderColor: "var(--border)" }}>
+      {/* Report Header */}
+      <div
+        className="bg-white border rounded-lg mb-3 overflow-hidden"
+        style={{ borderColor: "var(--border)" }}
+      >
         <div className="text-center py-4 border-b" style={{ borderColor: "var(--border)" }}>
-          <div className="text-[13px] font-bold text-gray-800 uppercase tracking-wide">{companySettings?.name}</div>
+          <div className="text-[13px] font-bold text-gray-800 uppercase tracking-wide">
+            {companySettings?.name}
+          </div>
           <div className="text-[11px] text-gray-500 mt-0.5">{companySettings?.address}</div>
-          <div className="text-[14px] font-bold text-[#1557b0] mt-1 uppercase">Profit & Loss Statement</div>
-          <div className="text-[11px] text-gray-500">As on {endDate} · FY: {currentFiscalYear?.name}</div>
+          <div className="text-[14px] font-bold text-[#1557b0] mt-1 uppercase">
+            Profit & Loss Statement
+          </div>
+          <div className="text-[11px] text-gray-500">
+            As on {endDate} · FY: {currentFiscalYear?.name}
+          </div>
         </div>
       </div>
 
@@ -699,21 +703,41 @@ const ProfitLoss: React.FC = () => {
         </div>
       </Card>
 
-      <div className="bg-white border rounded-lg overflow-hidden" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="bg-white border rounded-lg overflow-hidden"
+        style={{ borderColor: "var(--border)" }}
+      >
         <table className="data-table">
           <thead>
             <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Particulars</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Current Period</th>
-              {showComparison && <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Previous Period</th>}
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">% of Net Sales</th>
-              {showComparison && <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Change</th>}
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Particulars
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Current Period
+              </th>
+              {showComparison && hasPriorFiscalYear && (
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  Previous Period
+                </th>
+              )}
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                % of Net Sales
+              </th>
+              {showComparison && hasPriorFiscalYear && (
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  Change
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             {dataRows.length === 0 ? (
               <tr>
-                <td colSpan={showComparison ? 5 : 3} className="text-center py-8 text-gray-500">
+                <td
+                  colSpan={showComparison && hasPriorFiscalYear ? 5 : 3}
+                  className="text-center py-8 text-gray-500"
+                >
                   No Profit & Loss detail available for the selected range.
                 </td>
               </tr>
@@ -722,14 +746,23 @@ const ProfitLoss: React.FC = () => {
                 if (row.id === "net-profit") {
                   const netProfitVal = row.amount;
                   return (
-                    <tr key={row.id} style={{ background: netProfitVal >= 0 ? "#f0fdf4" : "#fef2f2" }}>
-                      <td className="px-3 py-3 font-bold text-[13px]" style={{ color: netProfitVal >= 0 ? "#15803d" : "#dc2626" }}>
+                    <tr
+                      key={row.id}
+                      style={{ background: netProfitVal >= 0 ? "#f0fdf4" : "#fef2f2" }}
+                    >
+                      <td
+                        className="px-3 py-3 font-bold text-[13px]"
+                        style={{ color: netProfitVal >= 0 ? "#15803d" : "#dc2626" }}
+                      >
                         {netProfitVal >= 0 ? "NET PROFIT" : "NET LOSS"}
                       </td>
-                      <td className="text-right px-3 font-mono font-bold text-[14px] amt-positive" style={{ color: netProfitVal >= 0 ? "#15803d" : "#dc2626" }}>
+                      <td
+                        className="text-right px-3 font-mono font-bold text-[14px] amt-positive"
+                        style={{ color: netProfitVal >= 0 ? "#15803d" : "#dc2626" }}
+                      >
                         Rs. {formatNumber(Math.abs(netProfitVal))}
                       </td>
-                      {showComparison && (
+                      {showComparison && hasPriorFiscalYear && (
                         <td className="text-right px-3 font-mono text-[12px] text-gray-500">
                           Rs. {formatNumber(Math.abs(row.prevAmount || 0))}
                         </td>
@@ -737,14 +770,25 @@ const ProfitLoss: React.FC = () => {
                       <td className="text-right px-3 font-mono text-[12px] text-gray-500">
                         {row.pctOfSales ? `${formatNumber(row.pctOfSales)}%` : "-"}
                       </td>
-                      {showComparison && (
+                      {showComparison && hasPriorFiscalYear && (
                         <td className="text-right px-3 font-mono text-[12px]">
                           {(() => {
                             if (row.prevAmount === undefined) return "-";
                             const change = computeChangePercent(row.prevAmount, row.amount);
-                            const label = change === null ? "-" : `${change > 0 ? "+" : ""}${formatNumber(change)}%`;
+                            const label =
+                              change === null
+                                ? "-"
+                                : `${change > 0 ? "+" : ""}${formatNumber(change)}%`;
                             return (
-                              <span className={change === null ? "" : change >= 0 ? "text-[#059669]" : "text-[#dc2626]"}>
+                              <span
+                                className={
+                                  change === null
+                                    ? ""
+                                    : change >= 0
+                                      ? "text-[#059669]"
+                                      : "text-[#dc2626]"
+                                }
+                              >
                                 {label}
                               </span>
                             );
@@ -755,11 +799,22 @@ const ProfitLoss: React.FC = () => {
                   );
                 }
 
-                const isSectionHeader = ["cogs-header", "gross-profit", "operating-expenses", "financial-expenses", "other-income"].includes(row.id);
+                const isSectionHeader = [
+                  "gross-profit-header",
+                  "net-profit-header",
+                  "gross-profit",
+                  "operating-expenses",
+                  "financial-expenses",
+                  "other-income",
+                ].includes(row.id);
                 if (isSectionHeader) {
                   return (
                     <tr key={row.id} style={{ background: "#eef1f8" }}>
-                      <td colSpan={showComparison ? 5 : 3} className="px-3 py-2 font-bold text-[11px] uppercase tracking-widest text-gray-600 border-b-2" style={{ borderColor: "var(--border-strong)" }}>
+                      <td
+                        colSpan={showComparison && hasPriorFiscalYear ? 5 : 3}
+                        className="px-3 py-2 font-bold text-[11px] uppercase tracking-widest text-gray-600 border-b-2"
+                        style={{ borderColor: "var(--border-strong)" }}
+                      >
                         {row.name}
                       </td>
                     </tr>
@@ -794,7 +849,7 @@ const ProfitLoss: React.FC = () => {
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
                       Rs. {formatNumber(row.amount)}
                     </td>
-                    {showComparison && (
+                    {showComparison && hasPriorFiscalYear && (
                       <td className="px-3 py-[7px] text-[12px] text-right font-mono text-gray-500 amt">
                         Rs. {formatNumber(row.prevAmount || 0)}
                       </td>
@@ -802,14 +857,25 @@ const ProfitLoss: React.FC = () => {
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono">
                       {row.pctOfSales ? `${formatNumber(row.pctOfSales)}%` : "-"}
                     </td>
-                    {showComparison && (
+                    {showComparison && hasPriorFiscalYear && (
                       <td className="px-3 py-[7px] text-[12px] text-right font-mono">
                         {(() => {
                           if (row.prevAmount === undefined) return "-";
                           const change = computeChangePercent(row.prevAmount, row.amount);
-                          const label = change === null ? "-" : `${change > 0 ? "+" : ""}${formatNumber(change)}%`;
+                          const label =
+                            change === null
+                              ? "-"
+                              : `${change > 0 ? "+" : ""}${formatNumber(change)}%`;
                           return (
-                            <span className={change === null ? "" : change >= 0 ? "text-[#059669]" : "text-[#dc2626]"}>
+                            <span
+                              className={
+                                change === null
+                                  ? ""
+                                  : change >= 0
+                                    ? "text-[#059669]"
+                                    : "text-[#dc2626]"
+                              }
+                            >
                               {label}
                             </span>
                           );
@@ -946,7 +1012,7 @@ function buildOperatingCategories(rows: any[]): PLRow[] {
   });
 
   return Object.values(categories).filter(
-    (category) => category.amount !== 0 || category.children?.length > 0,
+    (category) => category.amount !== 0 || category.children!.length > 0,
   );
 }
 
@@ -1015,13 +1081,13 @@ function classifyExpenseCategory(name: string) {
   return "other";
 }
 
-function buildCategoryChildren(rows: any[], parentId: string): PLRow[] {
+function buildCategoryChildren(rows: any[], parentId: string, totalRevenue: number): PLRow[] {
   return rows.map((row) => ({
     id: `${parentId}-${row.accountId}`,
     name: row.accountName,
     amount: row.amount,
     prevAmount: undefined,
-    pctOfSales: undefined,
+    pctOfSales: round2((row.amount / totalRevenue) * 100),
     changePct: undefined,
     level: 1,
     isGroup: false,

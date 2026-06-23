@@ -9,7 +9,9 @@ export default function BackupRestore() {
   const { exportBackup, importBackup } = useStore();
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [backupPreview, setBackupPreview] = useState<any>(null);
-  const [autoBackup, setAutoBackup] = useState("never");
+  const [autoBackup, setAutoBackup] = useState(() => {
+    return localStorage.getItem("sutra_auto_backup_frequency") || "never";
+  });
   const [lastBackupDate, setLastBackupDate] = useState("Never");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
@@ -52,16 +54,17 @@ export default function BackupRestore() {
         try {
           const data = JSON.parse(event.target?.result as string);
           setBackupPreview({
-            companyName: data.companySettings?.companyNameEn || "Unknown",
-            ledgers: data.ledgers?.length || 0,
+            companyName: data.companySettings?.[0]?.companyNameEn || "Unknown",
+            ledgers: data.accounts?.length || 0,
             vouchers: data.vouchers?.length || 0,
-            customers: data.customers?.length || 0,
-            products: data.products?.length || 0,
+            customers: data.parties?.length || 0,
+            products: data.items?.length || 0,
             date: data.exportDate || "Unknown",
           });
         } catch (error) {
           toast.error("Invalid backup file");
           setBackupFile(null);
+          setBackupPreview(null);
         }
       };
       reader.readAsText(file);
@@ -110,10 +113,16 @@ export default function BackupRestore() {
 
           <div className="border-t pt-4">
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Auto-Backup</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Backup Reminder Frequency
+              </label>
               <select
                 value={autoBackup}
-                onChange={(e) => setAutoBackup(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setAutoBackup(val);
+                  localStorage.setItem("sutra_auto_backup_frequency", val);
+                }}
                 className="input"
               >
                 <option value="never">Never</option>

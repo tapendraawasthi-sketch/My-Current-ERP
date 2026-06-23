@@ -26,6 +26,26 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
 
       <div className="space-y-4">
         <div>
+          <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+            Admin Email Address *
+          </label>
+          <span className="text-[10px] text-amber-600 font-medium block mb-1">
+            ⚠ OTP password recovery will be sent here — use a valid email you can access
+          </span>
+          <input
+            type="email"
+            value={data.email || ""}
+            onChange={(e) => onChange({ ...data, email: e.target.value })}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            required
+            placeholder="admin@yourcompany.com"
+          />
+          {data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) && (
+            <p className="text-[10px] text-red-500 mt-1">Please enter a valid email address</p>
+          )}
+        </div>
+
+        <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">Full Name *</label>
           <input
             type="text"

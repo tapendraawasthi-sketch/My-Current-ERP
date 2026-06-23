@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,7 +7,7 @@
  * Orders are pre-invoice commitments. They do NOT post to ledgers and they
  * do NOT move stock. Their lifecycle is:
  *
- *     DRAFT → APPROVED → FULFILLED / PARTIAL / CANCELLED
+ *     DRAFT â†’ APPROVED â†’ FULFILLED / PARTIAL / CANCELLED
  *
  * APPROVE       : requires admin / manager role.
  * FULFILL       : "Create Invoice from Order" stages the draft into
@@ -346,7 +345,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
     } catch {
       /* ignore */
     }
-    toast.success("Order staged. Opening invoice form…");
+    toast.success("Order staged. Opening invoice formâ€¦");
     setCurrentPage?.("invoices");
     onSave?.();
   };
@@ -386,8 +385,8 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
             </h2>
             <p className="text-[11px] text-slate-400 mt-0.5 uppercase tracking-wider font-bold">
               {type === "sales"
-                ? "Customer commitment — pre-invoice"
-                : "Supplier commitment — pre-invoice"}
+                ? "Customer commitment â€” pre-invoice"
+                : "Supplier commitment â€” pre-invoice"}
             </p>
           </div>
         </div>
@@ -466,7 +465,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
             setPartyId(v);
             markDirty();
           }}
-          partyTypeFilter={partyTypeFilter}
+          partyType={partyTypeFilter}
           required
           disabled={locked}
         />
@@ -685,7 +684,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
         </div>
       </div>
 
-      {/* Confirm — cancel order */}
+      {/* Confirm â€” cancel order */}
       <ConfirmDialog
         open={confirmCancel}
         title={`Cancel ${type === "sales" ? "Sales" : "Purchase"} Order?`}
@@ -707,7 +706,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
         variant="danger"
       />
 
-      {/* Confirm — abandon edits */}
+      {/* Confirm â€” abandon edits */}
       <ConfirmDialog
         open={confirmAbort}
         title="Discard unsaved changes?"

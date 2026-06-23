@@ -1,8 +1,10 @@
+import { useStore } from "../store/useStore";
 import {
   Account,
   AccountType,
   AccountLevel,
   JournalEntry,
+  JournalEntryLine,
   Invoice,
   Party,
   VoucherStatus,
@@ -25,6 +27,104 @@ import {
 
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
+}
+
+// ==========================================
+// DOUBLE ENTRY VALIDATION & RUNNING BALANCES
+// ==========================================
+
+export function validateDoubleEntry(entries: JournalEntryLine[]): {
+  isValid: boolean;
+  difference: number;
+  message: string;
+} {
+  let debitTotal = 0;
+  let creditTotal = 0;
+  for (const line of entries) {
+    debitTotal += line.debit || 0;
+    creditTotal += line.credit || 0;
+  }
+  debitTotal = Math.round(debitTotal * 100) / 100;
+  creditTotal = Math.round(creditTotal * 100) / 100;
+
+  const isValid = debitTotal === creditTotal;
+  const difference = Math.round(Math.abs(debitTotal - creditTotal) * 100) / 100;
+  const message = isValid
+    ? "Balanced"
+    : `Out of balance by ₹${difference.toFixed(2)} — Debits: ₹${debitTotal.toFixed(2)}, Credits: ₹${creditTotal.toFixed(2)}`;
+
+  return { isValid, difference, message };
+}
+
+export function validateVoucherAccounts(
+  entries: JournalEntryLine[],
+  accounts: Account[],
+): { isValid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const debitAccountIds = new Set<string>();
+  const creditAccountIds = new Set<string>();
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    const account = accounts.find((a) => a.id === entry.accountId);
+
+    if (!account) {
+      errors.push(`Line ${i + 1}: Account ID ${entry.accountId} does not exist.`);
+    } else if (!account.isActive) {
+      errors.push(`Line ${i + 1}: Account "${account.name}" is inactive.`);
+    }
+
+    const lineAmount = Math.max(entry.debit || 0, entry.credit || 0);
+    if (lineAmount <= 0) {
+      errors.push(`Line ${i + 1}: Amount must be greater than 0.`);
+    }
+
+    if (entry.debit > 0) {
+      debitAccountIds.add(entry.accountId);
+    }
+    if (entry.credit > 0) {
+      creditAccountIds.add(entry.accountId);
+    }
+  }
+
+  for (const accId of debitAccountIds) {
+    if (creditAccountIds.has(accId)) {
+      const account = accounts.find((a) => a.id === accId);
+      const accName = account ? account.name : accId;
+      errors.push(
+        `Self-contra error: Account "${accName}" appears on both Debit and Credit sides in the same voucher.`,
+      );
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+export function getAccountRunningBalance(
+  accountId: string,
+  vouchers: JournalEntry[],
+  upToDate?: string,
+): number {
+  let balance = 0;
+
+  const filteredVouchers = vouchers.filter((v) => {
+    if (v.status !== VoucherStatus.POSTED) return false;
+    if (upToDate && v.date > upToDate) return false;
+    return true;
+  });
+
+  for (const v of filteredVouchers) {
+    for (const line of v.lines) {
+      if (line.accountId === accountId) {
+        balance += (line.debit || 0) - (line.credit || 0);
+      }
+    }
+  }
+
+  return Math.round(balance * 100) / 100;
 }
 
 // ==========================================
@@ -1347,152 +1447,6 @@ export function computeOutstandingPayables(
 }
 
 // ==========================================
-// 9. OUTSTANDING ANALYSIS
-// ==========================================
-
-export interface BillWiseEntry {
-  invoiceId: string;
-  invoiceNo: string;
-  invoiceDate: string;
-  dueDate: string;
-  partyId: string;
-  partyName: string;
-  partyPan?: string;
-  originalAmount: number;
-  paidAmount: number;
-  balance: number;
-  daysOverdue?: number;
-}
-
-function daysBetween(date1: string, date2: string): number {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diffTime = d2.getTime() - d1.getTime();
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-}
-
-export function computeAgingBuckets(
-  billWiseEntries: BillWiseEntry[],
-  asOnDate: string,
-  slabs: { from: number; to: number | null; label: string }[]
-) {
-  const activeSlabs = slabs.length > 0 ? slabs : [
-    { from: 0, to: 30, label: "0-30 days" },
-    { from: 31, to: 60, label: "31-60 days" },
-    { from: 61, to: 90, label: "61-90 days" },
-    { from: 91, to: 180, label: "91-180 days" },
-    { from: 181, to: null, label: ">180 days" },
-  ];
-
-  const partyMap: {
-    [partyId: string]: {
-      partyId: string;
-      partyName: string;
-      partyPan?: string;
-      buckets: { [label: string]: number };
-      total: number;
-      bills: BillWiseEntry[];
-    };
-  } = {};
-
-  for (const entry of billWiseEntries) {
-    if (entry.balance <= 0) continue;
-
-    const refDate = entry.dueDate || entry.invoiceDate;
-    const daysOverdue = daysBetween(refDate, asOnDate);
-
-    let assignedLabel = "";
-    for (const slab of activeSlabs) {
-      if (daysOverdue >= slab.from && (slab.to === null || daysOverdue <= slab.to)) {
-        assignedLabel = slab.label;
-        break;
-      }
-    }
-
-    if (!partyMap[entry.partyId]) {
-      partyMap[entry.partyId] = {
-        partyId: entry.partyId,
-        partyName: entry.partyName,
-        partyPan: entry.partyPan,
-        buckets: {},
-        total: 0,
-        bills: [],
-      };
-      for (const slab of activeSlabs) {
-        partyMap[entry.partyId].buckets[slab.label] = 0;
-      }
-    }
-
-    if (assignedLabel) {
-      partyMap[entry.partyId].buckets[assignedLabel] = round2(partyMap[entry.partyId].buckets[assignedLabel] + entry.balance);
-    }
-    partyMap[entry.partyId].total = round2(partyMap[entry.partyId].total + entry.balance);
-    partyMap[entry.partyId].bills.push({
-      ...entry,
-      daysOverdue,
-    });
-  }
-
-  return Object.values(partyMap).map((p) => ({
-    partyId: p.partyId,
-    partyName: p.partyName,
-    partyPan: p.partyPan,
-    buckets: activeSlabs.map((s) => ({
-      label: s.label,
-      amount: p.buckets[s.label] || 0,
-    })),
-    total: p.total,
-    bills: p.bills.sort((a, b) => b.daysOverdue! - a.daysOverdue!),
-  }));
-}
-
-export function computeOutstandingAnalysis(
-  partyId: string,
-  invoices: Invoice[],
-  asOnDate: string = new Date().toISOString().split("T")[0]
-) {
-  const partyInvoices = (invoices || []).filter(
-    (inv) =>
-      inv.partyId === partyId &&
-      inv.status === VoucherStatus.POSTED &&
-      inv.paymentStatus !== PaymentStatus.PAID
-  );
-
-  let totalReceivable = 0;
-  let totalPayable = 0;
-  let oldestBill: Invoice | null = null;
-  let oldestDays = -1;
-
-  for (const inv of partyInvoices) {
-    const balance = inv.grandTotal - (inv.paidAmount || 0);
-    if (balance <= 0) continue;
-
-    if (inv.type === VoucherType.SALES_INVOICE) {
-      totalReceivable += balance;
-    } else if (inv.type === VoucherType.PURCHASE_INVOICE) {
-      totalPayable += balance;
-    }
-
-    const refDate = inv.dueDate || inv.date;
-    const diffTime = new Date(asOnDate).getTime() - new Date(refDate).getTime();
-    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    if (days > oldestDays) {
-      oldestDays = days;
-      oldestBill = inv;
-    }
-  }
-
-  return {
-    totalReceivable: round2(totalReceivable),
-    totalPayable: round2(totalPayable),
-    netOutstanding: round2(totalReceivable - totalPayable),
-    oldestBillNo: oldestBill ? oldestBill.invoiceNo : null,
-    oldestBillDate: oldestBill ? oldestBill.dateNepali || oldestBill.date : null,
-    oldestDays: oldestDays >= 0 ? oldestDays : 0,
-  };
-}
-
-// ==========================================
 // 10. RECURRING VOUCHERS
 // ==========================================
 
@@ -1586,309 +1540,161 @@ export async function checkAndGenerateRecurringVouchers(
   return { generated: generatedVouchers.length, vouchers: generatedVouchers };
 }
 
-export function computeMultiYearTrialBalance(
-  accounts: Account[],
-  vouchers: JournalEntry[],
-  currentFY: FiscalYear,
-  priorFYVouchers?: JournalEntry[],
-) {
-  const currentStart = currentFY.startDate;
-  const currentEnd = currentFY.endDate;
+// ==========================================
+// STOCK VALUATION & CLOSING BALANCES
+// ==========================================
 
-  // Determine prior FY1 range by subtracting 1 year
-  const prev1S = new Date(currentStart);
-  const prev1E = new Date(currentEnd);
-  prev1S.setFullYear(prev1S.getFullYear() - 1);
-  prev1E.setFullYear(prev1E.getFullYear() - 1);
-  const priorStart = prev1S.toISOString().split("T")[0];
-  const priorEnd = prev1E.toISOString().split("T")[0];
-
-  // Determine prior FY2 range by subtracting 2 years
-  const prev2S = new Date(currentStart);
-  const prev2E = new Date(currentEnd);
-  prev2S.setFullYear(prev2S.getFullYear() - 2);
-  prev2E.setFullYear(prev2E.getFullYear() - 2);
-  const prior2Start = prev2S.toISOString().split("T")[0];
-  const prior2End = prev2E.toISOString().split("T")[0];
-
-  const currentTB = computeTrialBalance(accounts, vouchers, currentStart, currentEnd);
-  
-  const priorVouchers = priorFYVouchers || vouchers;
-  const priorTB = computeTrialBalance(accounts, priorVouchers, priorStart, priorEnd);
-  const prior2TB = computeTrialBalance(accounts, priorVouchers, prior2Start, prior2End);
-
-  const priorMap = new Map(priorTB.map((r) => [r.accountId, r]));
-  const prior2Map = new Map(prior2TB.map((r) => [r.accountId, r]));
-
-  return currentTB.map((row) => {
-    const prior = priorMap.get(row.accountId);
-    const prior2 = prior2Map.get(row.accountId);
-
-    return {
-      ...row,
-      priorOpeningDr: prior?.openingDr || 0,
-      priorOpeningCr: prior?.openingCr || 0,
-      priorDebit: prior?.debit || 0,
-      priorCredit: prior?.credit || 0,
-      priorClosingDr: prior?.closingDr || 0,
-      priorClosingCr: prior?.closingCr || 0,
-      
-      prior2OpeningDr: prior2?.openingDr || 0,
-      prior2OpeningCr: prior2?.openingCr || 0,
-      prior2Debit: prior2?.debit || 0,
-      prior2Credit: prior2?.credit || 0,
-      prior2ClosingDr: prior2?.closingDr || 0,
-      prior2ClosingCr: prior2?.closingCr || 0,
-    };
-  });
+export interface FIFOLayer {
+  qty: number;
+  cost: number;
+  date: string;
 }
 
-export function computeRatios(
-  balanceSheetData: any,
-  profitLossData: any,
-  accounts: Account[] = []
-) {
-  const assets = balanceSheetData.assets || [];
-  const liabilities = balanceSheetData.liabilities || [];
-  const equity = balanceSheetData.equity || [];
-  
-  const totalAssets = balanceSheetData.totalAssets || 0;
-  const totalEquity = balanceSheetData.totalEquity || 0;
-  
-  const currentAssetsNode = assets.find((a: any) => a.accountId === "bs-ca");
-  const currentAssets = currentAssetsNode ? currentAssetsNode.amount : 0;
-  
-  const currentLiabNode = liabilities.find((l: any) => l.accountId === "bs-cl");
-  const currentLiabilities = currentLiabNode ? currentLiabNode.amount : 0;
-  
-  const termLiabNode = liabilities.find((l: any) => l.accountId === "bs-tl");
-  const longTermLiabilities = termLiabNode ? termLiabNode.amount : 0;
+export function calculateWeightedAvgCost(itemId: string, movements: any[]): number {
+  const inward = movements.filter(
+    (m) =>
+      m.itemId === itemId &&
+      (m.type === "IN" ||
+        m.type === "purchase" ||
+        m.type === "opening" ||
+        m.type === "transfer-in" ||
+        m.type === "sales-return" ||
+        m.type === "adjustment" ||
+        m.type === "purchase-return-inbound"),
+  );
+  if (inward.length === 0) return 0;
 
-  let inventory = 0;
-  let cashAndBank = 0;
-  let debtors = 0;
-  let creditors = 0;
-
-  if (currentAssetsNode && currentAssetsNode.children) {
-    currentAssetsNode.children.forEach((c: any) => {
-      const name = c.accountName.toLowerCase();
-      if (name.includes("stock") || name.includes("inventory")) {
-        inventory += c.amount;
-      }
-      if (name.includes("cash") || name.includes("bank")) {
-        cashAndBank += c.amount;
-      }
-      if (name.includes("debtor") || name.includes("receivable")) {
-        debtors += c.amount;
-      }
-    });
+  let totalCost = 0;
+  let totalQty = 0;
+  for (const m of inward) {
+    totalCost += m.qty * m.rate;
+    totalQty += m.qty;
   }
+  return totalQty > 0 ? Math.round((totalCost / totalQty) * 100) / 100 : 0;
+}
 
-  if (currentLiabNode && currentLiabNode.children) {
-    currentLiabNode.children.forEach((c: any) => {
-      const name = c.accountName.toLowerCase();
-      if (name.includes("creditor") || name.includes("payable")) {
-        creditors += c.amount;
-      }
+export function calculateFIFOLayers(
+  itemId: string,
+  movements: any[],
+): Array<{ qty: number; cost: number; date: string }> {
+  const sorted = movements
+    .filter((m) => m.itemId === itemId)
+    .sort((a, b) => {
+      const dateDiff = a.date.localeCompare(b.date);
+      if (dateDiff !== 0) return dateDiff;
+      return a.id.localeCompare(b.id);
     });
-  }
 
-  const grossProfit = profitLossData.grossProfit || 0;
-  const netProfit = profitLossData.netProfit || 0;
-  
-  const revenueNode = profitLossData.income?.find((i: any) => i.accountId === "inc-sales");
-  const netSales = revenueNode ? revenueNode.amount : (profitLossData.totalIncome || 0);
+  const layers: Array<{ qty: number; cost: number; date: string }> = [];
 
-  const purchaseNode = profitLossData.expenses?.find((e: any) => e.accountId === "exp-purchase-cogs");
-  const purchases = purchaseNode ? purchaseNode.amount : 0;
+  for (const m of sorted) {
+    const isIncoming =
+      m.type === "IN" ||
+      m.type === "purchase" ||
+      m.type === "opening" ||
+      m.type === "transfer-in" ||
+      m.type === "sales-return" ||
+      m.type === "adjustment" ||
+      m.type === "purchase-return-inbound";
 
-  const directCostsNode = profitLossData.expenses?.find((e: any) => e.accountId === "exp-direct");
-  const directCosts = directCostsNode ? directCostsNode.amount : 0;
-  const cogs = purchases + directCosts;
+    const isOutgoing =
+      m.type === "OUT" ||
+      m.type === "sales" ||
+      m.type === "transfer-out" ||
+      m.type === "purchase-return" ||
+      m.type === "sales-return-outbound";
 
-  let interestExpense = 0;
-  profitLossData.expenses?.forEach((g: any) => {
-    if (g.children) {
-      g.children.forEach((c: any) => {
-        if (c.accountName.toLowerCase().includes("interest")) {
-          interestExpense += c.amount;
+    if (isIncoming) {
+      if (m.qty > 0) {
+        layers.push({ qty: m.qty, cost: m.rate, date: m.date });
+      }
+    } else if (isOutgoing) {
+      let qtyToConsume = m.qty;
+      while (qtyToConsume > 0 && layers.length > 0) {
+        const firstLayer = layers[0];
+        if (firstLayer.qty <= qtyToConsume) {
+          qtyToConsume -= firstLayer.qty;
+          layers.shift();
+        } else {
+          firstLayer.qty -= qtyToConsume;
+          qtyToConsume = 0;
         }
-      });
+      }
     }
+  }
+
+  return layers;
+}
+
+export function getStockBalance(
+  itemId: string,
+  warehouseId: string | null,
+  movements: any[],
+  upToDate?: string,
+): { qty: number; value: number; avgCost: number } {
+  let filtered = movements.filter((m) => m.itemId === itemId);
+  if (warehouseId !== null) {
+    filtered = filtered.filter((m) => m.warehouseId === warehouseId);
+  }
+  if (upToDate) {
+    filtered = filtered.filter((m) => m.date <= upToDate);
+  }
+
+  const sorted = [...filtered].sort((a, b) => {
+    const dateDiff = a.date.localeCompare(b.date);
+    if (dateDiff !== 0) return dateDiff;
+    return a.id.localeCompare(b.id);
   });
 
-  const ebit = netProfit + interestExpense;
-  const capitalEmployed = totalAssets - currentLiabilities;
-  const totalDebt = longTermLiabilities;
+  let qty = 0;
+  for (const m of sorted) {
+    const isIncoming =
+      m.type === "IN" ||
+      m.type === "purchase" ||
+      m.type === "opening" ||
+      m.type === "transfer-in" ||
+      m.type === "sales-return" ||
+      m.type === "adjustment" ||
+      m.type === "purchase-return-inbound";
 
-  const formatVal = (v: number) => Math.round(v * 100) / 100;
+    const isOutgoing =
+      m.type === "OUT" ||
+      m.type === "sales" ||
+      m.type === "transfer-out" ||
+      m.type === "purchase-return" ||
+      m.type === "sales-return-outbound";
 
-  const currentRatio = currentLiabilities > 0 ? (currentAssets / currentLiabilities) : 0;
-  const currentRatioStatus = currentRatio > 2 ? "Good" : currentRatio >= 1.2 ? "Warning" : "Critical";
+    if (isIncoming) {
+      qty += m.qty;
+    } else if (isOutgoing) {
+      qty -= m.qty;
+    }
+  }
 
-  const quickAssets = currentAssets - inventory;
-  const quickRatio = currentLiabilities > 0 ? (quickAssets / currentLiabilities) : 0;
-  const quickRatioStatus = quickRatio > 1 ? "Good" : quickRatio >= 0.8 ? "Warning" : "Critical";
+  const fifoLayers = calculateFIFOLayers(itemId, filtered);
+  const fifoQty = fifoLayers.reduce((sum, l) => sum + l.qty, 0);
+  const fifoVal = fifoLayers.reduce((sum, l) => sum + l.qty * l.cost, 0);
 
-  const cashRatio = currentLiabilities > 0 ? (cashAndBank / currentLiabilities) : 0;
-  const cashRatioStatus = cashRatio >= 0.5 ? "Good" : cashRatio >= 0.2 ? "Warning" : "Critical";
+  const avgCost = calculateWeightedAvgCost(itemId, filtered);
+  const avgVal = qty * avgCost;
 
-  const gpRatio = netSales > 0 ? (grossProfit / netSales) * 100 : 0;
-  const gpRatioStatus = gpRatio >= 20 ? "Good" : gpRatio >= 10 ? "Warning" : "Critical";
+  let finalValue = fifoVal;
+  let finalAvgCost = fifoQty > 0 ? Math.round((fifoVal / fifoQty) * 100) / 100 : 0;
 
-  const npRatio = netSales > 0 ? (netProfit / netSales) * 100 : 0;
-  const npRatioStatus = npRatio >= 10 ? "Good" : npRatio >= 5 ? "Warning" : "Critical";
-
-  const roce = capitalEmployed > 0 ? (ebit / capitalEmployed) * 100 : 0;
-  const roceStatus = roce >= 15 ? "Good" : roce >= 8 ? "Warning" : "Critical";
-
-  const roe = totalEquity > 0 ? (netProfit / totalEquity) * 100 : 0;
-  const roeStatus = roe >= 15 ? "Good" : roe >= 8 ? "Warning" : "Critical";
-
-  const debtorTurnover = debtors > 0 ? (netSales / debtors) : 0;
-  const debtorCollectionDays = debtorTurnover > 0 ? (365 / debtorTurnover) : 0;
-  const debtorCollectionStatus = debtorCollectionDays <= 45 ? "Good" : debtorCollectionDays <= 90 ? "Warning" : "Critical";
-
-  const creditorPaymentDays = purchases > 0 && creditors > 0 ? (365 / (purchases / creditors)) : 0;
-  const creditorPaymentStatus = creditorPaymentDays >= 30 && creditorPaymentDays <= 90 ? "Good" : "Warning";
-
-  const inventoryTurnover = inventory > 0 ? (cogs / inventory) : 0;
-  const inventoryDays = inventoryTurnover > 0 ? (365 / inventoryTurnover) : 0;
-  const inventoryStatus = inventoryDays <= 60 ? "Good" : inventoryDays <= 120 ? "Warning" : "Critical";
-
-  const debtEquity = totalEquity > 0 ? (totalDebt / totalEquity) : 0;
-  const debtEquityStatus = debtEquity < 1.5 ? "Good" : debtEquity <= 2 ? "Warning" : "Critical";
-
-  const proprietaryRatio = totalAssets > 0 ? (totalEquity / totalAssets) : 0;
-  const proprietaryStatus = proprietaryRatio >= 0.4 ? "Good" : "Warning";
-
-  const interestCoverage = interestExpense > 0 ? (ebit / interestExpense) : 0;
-  const interestCoverageStatus = interestCoverage >= 3 ? "Good" : interestCoverage >= 1.5 ? "Warning" : "Critical";
+  try {
+    const store = useStore.getState();
+    const method = store.companySettings?.stockValuationMethod;
+    if (method === "weighted-average") {
+      finalValue = avgVal;
+      finalAvgCost = avgCost;
+    }
+  } catch (e) {
+    // fallback
+  }
 
   return {
-    liquidity: [
-      {
-        name: "Current Ratio",
-        formula: "Current Assets / Current Liabilities",
-        value: formatVal(currentRatio),
-        status: currentRatioStatus,
-        benchmark: "> 2.0",
-        interpretation: currentRatioStatus === "Good" 
-          ? "Strong liquidity position to meet short-term commitments." 
-          : "Low short-term liquidity; potential cash flow strain."
-      },
-      {
-        name: "Quick Ratio (Acid Test)",
-        formula: "(Current Assets - Inventory) / Current Liabilities",
-        value: formatVal(quickRatio),
-        status: quickRatioStatus,
-        benchmark: "> 1.0",
-        interpretation: quickRatioStatus === "Good"
-          ? "Excellent ability to meet immediate cash needs without selling stock."
-          : "Heavy reliance on inventory sales to meet immediate liabilities."
-      },
-      {
-        name: "Cash Ratio",
-        formula: "(Cash + Bank) / Current Liabilities",
-        value: formatVal(cashRatio),
-        status: cashRatioStatus,
-        benchmark: "> 0.5",
-        interpretation: "Indicates the proportion of short-term debt coverable directly by cash."
-      }
-    ],
-    profitability: [
-      {
-        name: "Gross Profit Margin",
-        formula: "Gross Profit / Net Sales × 100",
-        value: `${formatVal(gpRatio)}%`,
-        status: gpRatioStatus,
-        benchmark: "> 20.0%",
-        interpretation: "Measures manufacturing and pricing efficiency."
-      },
-      {
-        name: "Net Profit Margin",
-        formula: "Net Profit / Net Sales × 100",
-        value: `${formatVal(npRatio)}%`,
-        status: npRatioStatus,
-        benchmark: "> 10.0%",
-        interpretation: npRatioStatus === "Good"
-          ? "Solid overall profitability and cost management."
-          : "Low margin; verify operational overheads."
-      },
-      {
-        name: "Return on Capital Employed (ROCE)",
-        formula: "EBIT / Capital Employed × 100",
-        value: `${formatVal(roce)}%`,
-        status: roceStatus,
-        benchmark: "> 15.0%",
-        interpretation: "Efficacy of investment utilization across debt and equity."
-      },
-      {
-        name: "Return on Equity (ROE)",
-        formula: "Net Profit / Total Equity × 100",
-        value: `${formatVal(roe)}%`,
-        status: roeStatus,
-        benchmark: "> 15.0%",
-        interpretation: "Profit generated per rupee of shareholder capital."
-      }
-    ],
-    efficiency: [
-      {
-        name: "Debtor Collection Period",
-        formula: "365 / (Sales / Debtors)",
-        value: `${formatVal(debtorCollectionDays)} Days`,
-        status: debtorCollectionStatus,
-        benchmark: "< 45 Days",
-        interpretation: debtorCollectionStatus === "Good"
-          ? "Healthy credit collection cycles."
-          : "Delayed payments from customers; risk of bad debts."
-      },
-      {
-        name: "Creditor Payment Period",
-        formula: "365 / (Purchases / Creditors)",
-        value: `${formatVal(creditorPaymentDays)} Days`,
-        status: creditorPaymentStatus,
-        benchmark: "30 - 90 Days",
-        interpretation: "Average time taken to pay suppliers."
-      },
-      {
-        name: "Inventory Holding Period",
-        formula: "365 / (COGS / Inventory)",
-        value: `${formatVal(inventoryDays)} Days`,
-        status: inventoryStatus,
-        benchmark: "< 60 Days",
-        interpretation: "Average days inventory stays in warehouse."
-      }
-    ],
-    solvency: [
-      {
-        name: "Debt-to-Equity Ratio",
-        formula: "Total Debt / Shareholders Equity",
-        value: formatVal(debtEquity),
-        status: debtEquityStatus,
-        benchmark: "< 2.0",
-        interpretation: debtEquityStatus === "Good"
-          ? "Low leverage; conservative financial risk."
-          : "Highly leveraged; increased insolvency exposure."
-      },
-      {
-        name: "Proprietary Ratio",
-        formula: "Total Equity / Total Assets",
-        value: formatVal(proprietaryRatio),
-        status: proprietaryStatus,
-        benchmark: "> 0.4",
-        interpretation: "Indicates proportion of assets funded by owners."
-      },
-      {
-        name: "Interest Coverage Ratio",
-        formula: "EBIT / Interest Expense",
-        value: formatVal(interestCoverage),
-        status: interestCoverageStatus,
-        benchmark: "> 3.0",
-        interpretation: interestCoverageStatus === "Good"
-          ? "Comfortable interest payment capacity."
-          : "High risk; operating profit barely covers interest."
-      }
-    ]
+    qty: qty,
+    value: Math.round(finalValue * 100) / 100,
+    avgCost: finalAvgCost,
   };
 }

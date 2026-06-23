@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Input, Select, Modal, ConfirmDialog, ActionToolbar } from "./ui";
@@ -32,12 +27,45 @@ import {
   CheckSquare,
   Square,
   Eye,
+  Printer,
 } from "lucide-react";
 import { formatCurrency, formatNumber } from "../lib/utils";
 import { AccountType, AccountLevel, Account } from "../lib/types";
 import { isDebitNature } from "../lib/accounting";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import { getDB } from "../lib/db";
+
+// Monkeypatch useStore to enforce double entry postings to Level 3 accounts only
+const originalAddVoucher = useStore.getState().addVoucher;
+const originalUpdateVoucher = useStore.getState().updateVoucher;
+
+useStore.setState({
+  addVoucher: async (voucherData) => {
+    const accounts = useStore.getState().accounts;
+    for (const line of voucherData.lines) {
+      const acc = accounts.find((a) => a.id === line.accountId);
+      if (acc && acc.level !== AccountLevel.LEDGER) {
+        toast.error("Cannot post to group accounts. Please select a ledger account.");
+        throw new Error("Cannot post to group accounts. Please select a ledger account.");
+      }
+    }
+    return originalAddVoucher(voucherData);
+  },
+  updateVoucher: async (id, updates) => {
+    const accounts = useStore.getState().accounts;
+    if (updates.lines) {
+      for (const line of updates.lines) {
+        const acc = accounts.find((a) => a.id === line.accountId);
+        if (acc && acc.level !== AccountLevel.LEDGER) {
+          toast.error("Cannot post to group accounts. Please select a ledger account.");
+          throw new Error("Cannot post to group accounts. Please select a ledger account.");
+        }
+      }
+    }
+    return originalUpdateVoucher(id, updates);
+  },
+});
 
 interface TreeNode {
   id: string; // virtual root like "root-asset" or database account ID
@@ -54,6 +82,16 @@ interface TreeNode {
   balance: number;
   rowObject?: Account;
   children: TreeNode[];
+}
+
+interface ImportRow {
+  code: string;
+  name: string;
+  type: string;
+  group: string;
+  openingBalance: number;
+  openingBalanceType: string;
+  errors: string[];
 }
 
 const ChartOfAccounts: React.FC = () => {
@@ -76,6 +114,19 @@ const ChartOfAccounts: React.FC = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+
+  // New Filters states
+  const [filterType, setFilterType] = useState<string>("ALL");
+  const [filterGroup, setFilterGroup] = useState<string>("ALL");
+  const [filterActive, setFilterActive] = useState<string>("ALL");
+
+  // Import Preview states
+  const [importPreviewRows, setImportPreviewRows] = useState<ImportRow[]>([]);
+
+  // Merge modal states
+  const [mergeModalOpen, setMergeModalOpen] = useState(false);
+  const [mergeSourceId, setMergeSourceId] = useState("");
+  const [mergeTargetId, setMergeTargetId] = useState("");
 
   // Collapse controller
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
@@ -117,6 +168,76 @@ const ChartOfAccounts: React.FC = () => {
   useEffect(() => {
     if (currentFiscalYear?.startDate) setOpeningBalanceDate(currentFiscalYear.startDate);
   }, [currentFiscalYear?.startDate]);
+
+  // Seed predefined groups on mount if they do not exist
+  useEffect(() => {
+    if (!isDbReady || accounts.length === 0) return;
+
+    const predefinedGroups = [
+      // Assets
+      { name: "Fixed Assets", type: AccountType.ASSET },
+      { name: "Current Assets", type: AccountType.ASSET },
+      { name: "Loans & Advances (Asset)", type: AccountType.ASSET },
+      { name: "Misc. Expenses (Asset)", type: AccountType.ASSET },
+      // Liabilities
+      { name: "Capital Account", type: AccountType.LIABILITY },
+      { name: "Loans (Liability)", type: AccountType.LIABILITY },
+      { name: "Current Liabilities", type: AccountType.LIABILITY },
+      { name: "Provisions", type: AccountType.LIABILITY },
+      // Income
+      { name: "Sales Accounts", type: AccountType.INCOME },
+      { name: "Other Income", type: AccountType.INCOME },
+      // Expenses
+      { name: "Purchase Accounts", type: AccountType.EXPENSE },
+      { name: "Direct Expenses", type: AccountType.EXPENSE },
+      { name: "Indirect Expenses", type: AccountType.EXPENSE },
+    ];
+
+    const checkAndSeed = async () => {
+      let seededAny = false;
+      for (const group of predefinedGroups) {
+        const exists = accounts.some((a) => a.name.toLowerCase() === group.name.toLowerCase());
+        if (!exists) {
+          const baseCodes: Record<AccountType, string> = {
+            [AccountType.ASSET]: "1000",
+            [AccountType.LIABILITY]: "3000",
+            [AccountType.EQUITY]: "2000",
+            [AccountType.INCOME]: "4000",
+            [AccountType.EXPENSE]: "5000",
+          };
+          const base = baseCodes[group.type] || "1000";
+          const typeAccounts = accounts.filter((a) => a.type === group.type && !a.parentId);
+          let codeStr = base;
+          if (typeAccounts.length > 0) {
+            const maxCode = Math.max(...typeAccounts.map((a) => parseInt(a.code) || 0));
+            if (!isNaN(maxCode) && maxCode > 0) {
+              codeStr = String(maxCode + 100);
+            }
+          }
+
+          await addAccount({
+            code: codeStr,
+            name: group.name,
+            type: group.type,
+            level: AccountLevel.GROUP,
+            isGroup: true,
+            isActive: true,
+            openingBalance: 0,
+            openingBalanceDr: 0,
+            openingBalanceCr: 0,
+            openingBalanceDate:
+              currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
+          });
+          seededAny = true;
+        }
+      }
+      if (seededAny) {
+        toast.success("Predefined account groups seeded.");
+      }
+    };
+
+    checkAndSeed();
+  }, [accounts, isDbReady]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -466,9 +587,36 @@ const ChartOfAccounts: React.FC = () => {
       return;
     }
 
-    // Parent validation if level isn't root group
-    if (level !== AccountLevel.GROUP && !parentId) {
-      toast.error("Hierarchical assignment error: Sub-levels require a parent node.");
+    // Tree hierarchy validation
+    if (level === AccountLevel.GROUP) {
+      if (parentId) {
+        toast.error("Level 1 Group cannot have a parent.");
+        return;
+      }
+    } else if (level === AccountLevel.SUBGROUP) {
+      if (!parentId) {
+        toast.error("Level 2 Sub-Group must have a parent.");
+        return;
+      }
+      const parentAcc = accounts.find((a) => a.id === parentId);
+      if (!parentAcc || parentAcc.level !== AccountLevel.GROUP) {
+        toast.error("Level 2 Sub-Group parent must be a Level 1 Group.");
+        return;
+      }
+    } else if (level === AccountLevel.LEDGER) {
+      if (!parentId) {
+        toast.error("Level 3 Ledger must have a parent.");
+        return;
+      }
+      const parentAcc = accounts.find((a) => a.id === parentId);
+      if (!parentAcc || parentAcc.level !== AccountLevel.SUBGROUP) {
+        toast.error("Level 3 Ledger parent must be a Level 2 Sub-Group.");
+        return;
+      }
+    } else {
+      toast.error(
+        "Invalid account level selection. Only Group (Level 1), Sub-Group (Level 2), and Ledger (Level 3) are supported.",
+      );
       return;
     }
 
@@ -516,8 +664,36 @@ const ChartOfAccounts: React.FC = () => {
       return;
     }
 
-    if (level !== AccountLevel.GROUP && !parentId) {
-      toast.error("Hierarchical error: Child level accounts must map to a Parent Account.");
+    // Tree hierarchy validation
+    if (level === AccountLevel.GROUP) {
+      if (parentId) {
+        toast.error("Level 1 Group cannot have a parent.");
+        return;
+      }
+    } else if (level === AccountLevel.SUBGROUP) {
+      if (!parentId) {
+        toast.error("Level 2 Sub-Group must have a parent.");
+        return;
+      }
+      const parentAcc = accounts.find((a) => a.id === parentId);
+      if (!parentAcc || parentAcc.level !== AccountLevel.GROUP) {
+        toast.error("Level 2 Sub-Group parent must be a Level 1 Group.");
+        return;
+      }
+    } else if (level === AccountLevel.LEDGER) {
+      if (!parentId) {
+        toast.error("Level 3 Ledger must have a parent.");
+        return;
+      }
+      const parentAcc = accounts.find((a) => a.id === parentId);
+      if (!parentAcc || parentAcc.level !== AccountLevel.SUBGROUP) {
+        toast.error("Level 3 Ledger parent must be a Level 2 Sub-Group.");
+        return;
+      }
+    } else {
+      toast.error(
+        "Invalid account level selection. Only Group (Level 1), Sub-Group (Level 2), and Ledger (Level 3) are supported.",
+      );
       return;
     }
 
@@ -653,7 +829,7 @@ const ChartOfAccounts: React.FC = () => {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = async (event) => {
+    reader.onload = (event) => {
       try {
         const text = event.target?.result as string;
         if (!text) return;
@@ -667,68 +843,225 @@ const ChartOfAccounts: React.FC = () => {
           return;
         }
 
-        let successCount = 0;
-        let failCount = 0;
+        // Expected columns: Code, Name, Type, Group, OpeningBalance, OpeningBalanceType (Dr/Cr)
+        const headerCells = lines[0]
+          .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+          .map((c) => c.replace(/^"|"$/g, "").trim().toLowerCase());
+        const codeIdx = headerCells.indexOf("code");
+        const nameIdx = headerCells.indexOf("name");
+        const typeIdx = headerCells.indexOf("type");
+        const groupIdx = headerCells.indexOf("group");
+        const balIdx = headerCells.indexOf("openingbalance");
+        const balTypeIdx = headerCells.findIndex(
+          (h) => h.includes("openingbalancetype") || h.includes("dr/cr") || h.includes("type"),
+        );
+
+        const rows: ImportRow[] = [];
+        const existingCodes = new Set(accounts.map((a) => a.code));
+        const seenCodes = new Set<string>();
 
         for (let i = 1; i < lines.length; i++) {
-          // Splitting comma ignoring commas in quotes
-          const rawRow = lines[i];
-          const row = rawRow
+          const rawCells = lines[i]
             .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-            .map((cell) => cell.replace(/^"|"$/g, "").trim());
-          if (row.length === 0 || !row[0]) continue;
+            .map((c) => c.replace(/^"|"$/g, "").trim());
+          if (rawCells.length === 0 || !rawCells.join("")) continue;
 
-          const accCode = row[0];
-          const accName = row[1];
-          const accNepali = row[2] || undefined;
-          const rawType = (row[3] || "asset").toLowerCase() as AccountType;
-          const rawLevel = (row[4] || "ledger").toLowerCase() as AccountLevel;
-          const pCodeOrId = row[5] || undefined;
-          const oBalance = parseFloat(row[6]) || 0;
-          const balDrCr = (row[7] || "Dr").trim();
+          const codeVal = codeIdx !== -1 ? rawCells[codeIdx] || "" : rawCells[0] || "";
+          const nameVal = nameIdx !== -1 ? rawCells[nameIdx] || "" : rawCells[1] || "";
+          const typeVal = typeIdx !== -1 ? rawCells[typeIdx] || "" : rawCells[2] || "";
+          const groupVal = groupIdx !== -1 ? rawCells[groupIdx] || "" : rawCells[3] || "";
+          const balVal = balIdx !== -1 ? rawCells[balIdx] || "0" : rawCells[4] || "0";
+          const balTypeVal = balTypeIdx !== -1 ? rawCells[balTypeIdx] || "Dr" : rawCells[5] || "Dr";
 
-          if (!accCode || !accName) {
-            failCount++;
-            continue;
+          const oBalance = parseFloat(balVal) || 0;
+          const errors: string[] = [];
+
+          if (!codeVal) {
+            errors.push("Code is required.");
+          } else {
+            if (existingCodes.has(codeVal)) {
+              errors.push(`Code "${codeVal}" already exists in the database.`);
+            }
+            if (seenCodes.has(codeVal)) {
+              errors.push(`Duplicate code "${codeVal}" in CSV.`);
+            }
+            seenCodes.add(codeVal);
           }
 
-          // Parent mapping resolver
-          let resolvedParentId: string | undefined = undefined;
-          if (pCodeOrId) {
-            const parentDef = accounts.find((a) => a.id === pCodeOrId || a.code === pCodeOrId);
-            if (parentDef) {
-              resolvedParentId = parentDef.id;
+          if (!nameVal) {
+            errors.push("Name is required.");
+          }
+
+          const lowerType = typeVal.toLowerCase();
+          const validTypes = ["asset", "liability", "equity", "income", "expense"];
+          if (!typeVal) {
+            errors.push("Type is required.");
+          } else if (!validTypes.includes(lowerType)) {
+            errors.push(
+              `Invalid type "${typeVal}". Must be Asset, Liability, Equity, Income, or Expense.`,
+            );
+          }
+
+          if (groupVal) {
+            const parent = accounts.find(
+              (a) => a.name.toLowerCase() === groupVal.toLowerCase() || a.code === groupVal,
+            );
+            if (!parent) {
+              errors.push(`Parent group "${groupVal}" not found.`);
+            } else if (!parent.isGroup) {
+              errors.push(`Parent "${groupVal}" is a ledger, not a group.`);
             }
           }
 
-          await addAccount({
-            code: accCode,
-            name: accName,
-            nameNepali: accNepali,
-            type: rawType,
-            level: rawLevel,
-            parentId: resolvedParentId,
-            isActive: true,
-            isGroup: ["group", "subgroup"].includes(rawLevel),
+          if (isNaN(oBalance) || oBalance < 0) {
+            errors.push("Opening balance must be a non-negative number.");
+          }
+
+          const lowerBalType = balTypeVal.toLowerCase();
+          if (oBalance > 0 && !["dr", "cr"].includes(lowerBalType)) {
+            errors.push("Balance type must be Dr or Cr.");
+          }
+
+          rows.push({
+            code: codeVal,
+            name: nameVal,
+            type: lowerType,
+            group: groupVal,
             openingBalance: oBalance,
-            openingBalanceDr: balDrCr.toLowerCase() === "dr" ? oBalance : 0,
-            openingBalanceCr: balDrCr.toLowerCase() === "cr" ? oBalance : 0,
-            openingBalanceDate: "2026-04-14",
+            openingBalanceType: lowerBalType === "cr" ? "Cr" : "Dr",
+            errors,
           });
-          successCount++;
         }
 
-        toast.success(
-          `Import complete: ${successCount} accounts registered, ${failCount} bypassed due to validation.`,
-        );
-        setImportModalOpen(false);
+        setImportPreviewRows(rows);
       } catch (err: any) {
-        toast.error(`Import failed: ${err.message || "File parsed error."}`);
+        toast.error(`Failed to parse CSV: ${err.message}`);
       }
     };
     reader.readAsText(file);
-    // Reset inputs
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const confirmCSVImport = async () => {
+    if (importPreviewRows.length === 0) return;
+    const hasErrors = importPreviewRows.some((r) => r.errors.length > 0);
+    if (hasErrors) {
+      toast.error("Please fix the errors in your CSV file before importing.");
+      return;
+    }
+
+    try {
+      let importedCount = 0;
+      for (const row of importPreviewRows) {
+        let resolvedParentId: string | undefined = undefined;
+        let resolvedLevel = AccountLevel.GROUP;
+        let isGroupVal = true;
+
+        if (row.group) {
+          const parentDef = accounts.find(
+            (a) => a.name.toLowerCase() === row.group.toLowerCase() || a.code === row.group,
+          );
+          if (parentDef) {
+            resolvedParentId = parentDef.id;
+            if (parentDef.level === AccountLevel.GROUP) {
+              resolvedLevel = AccountLevel.SUBGROUP;
+              isGroupVal = true;
+            } else if (parentDef.level === AccountLevel.SUBGROUP) {
+              resolvedLevel = AccountLevel.LEDGER;
+              isGroupVal = false;
+            }
+          }
+        }
+
+        await addAccount({
+          code: row.code,
+          name: row.name,
+          type: row.type as AccountType,
+          level: resolvedLevel,
+          parentId: resolvedParentId,
+          isActive: true,
+          isGroup: isGroupVal,
+          openingBalance: row.openingBalance,
+          openingBalanceDr: row.openingBalanceType === "Dr" ? row.openingBalance : 0,
+          openingBalanceCr: row.openingBalanceType === "Cr" ? row.openingBalance : 0,
+          openingBalanceDate: currentFiscalYear?.startDate || "2026-04-14",
+        });
+        importedCount++;
+      }
+
+      toast.success(`Successfully imported ${importedCount} accounts.`);
+      setImportModalOpen(false);
+      setImportPreviewRows([]);
+    } catch (err: any) {
+      toast.error(`Import failed: ${err.message || "Unknown error"}`);
+    }
+  };
+
+  const handleMergeAccounts = async () => {
+    if (!mergeSourceId || !mergeTargetId) {
+      toast.error("Please select both source and target accounts.");
+      return;
+    }
+    if (mergeSourceId === mergeTargetId) {
+      toast.error("Source and target accounts cannot be the same.");
+      return;
+    }
+
+    const sourceAcc = accounts.find((a) => a.id === mergeSourceId);
+    const targetAcc = accounts.find((a) => a.id === mergeTargetId);
+
+    if (!sourceAcc || !targetAcc) {
+      toast.error("Selected account(s) not found.");
+      return;
+    }
+
+    if (sourceAcc.type !== targetAcc.type) {
+      toast.error("Both accounts must be of the same type.");
+      return;
+    }
+
+    if (sourceAcc.level !== AccountLevel.LEDGER || targetAcc.level !== AccountLevel.LEDGER) {
+      toast.error("Account merge is only allowed for Level 3 Ledger accounts.");
+      return;
+    }
+
+    try {
+      const db = getDB();
+      const allVouchers = await db.vouchers.toArray();
+      let updateCount = 0;
+
+      await db.transaction("rw", db.vouchers, db.accounts, async () => {
+        for (const voucher of allVouchers) {
+          let lineChanged = false;
+          const updatedLines = voucher.lines.map((line) => {
+            if (line.accountId === mergeSourceId) {
+              lineChanged = true;
+              return { ...line, accountId: mergeTargetId };
+            }
+            return line;
+          });
+
+          if (lineChanged) {
+            await db.vouchers.update(voucher.id, { lines: updatedLines });
+            updateCount++;
+          }
+        }
+
+        // Mark source as inactive
+        await db.accounts.update(mergeSourceId, { isActive: false });
+      });
+
+      // Reload/Sync the store
+      await useStore.getState().initializeApp();
+      toast.success(
+        `Merged successfully. Transferred entries in ${updateCount} vouchers. Source account "${sourceAcc.name}" marked as inactive.`,
+      );
+      setMergeModalOpen(false);
+      setMergeSourceId("");
+      setMergeTargetId("");
+    } catch (err: any) {
+      toast.error(`Merge failed: ${err.message || "Unknown error"}`);
+    }
   };
 
   // 9. BULK ACTIONS ACTIVATE/DEACTIVATE
@@ -798,12 +1131,48 @@ const ChartOfAccounts: React.FC = () => {
     }
   };
 
-  // 10. CONDITIONAL RENDERING ON FLAT SEARCH VS TREE
-  const isSearchActive = useMemo(() => searchTerm.trim().length > 0, [searchTerm]);
+  // 10. CONDITIONAL RENDERING ON FLAT SEARCH VS TREE OR FILTERS
+  const isFilterActive = useMemo(() => {
+    return (
+      searchTerm.trim().length > 0 ||
+      filterType !== "ALL" ||
+      filterGroup !== "ALL" ||
+      filterActive !== "ALL"
+    );
+  }, [searchTerm, filterType, filterGroup, filterActive]);
+
+  const searchAndFilteredResults = useMemo(() => {
+    let result = accounts;
+
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase().trim();
+      result = result.filter(
+        (acc) =>
+          acc.name.toLowerCase().includes(q) ||
+          acc.code.includes(q) ||
+          (acc.nameNepali && acc.nameNepali.includes(q)),
+      );
+    }
+
+    if (filterType !== "ALL") {
+      result = result.filter((acc) => acc.type === filterType);
+    }
+
+    if (filterGroup !== "ALL") {
+      result = result.filter((acc) => acc.parentId === filterGroup);
+    }
+
+    if (filterActive !== "ALL") {
+      const wantActive = filterActive === "ACTIVE";
+      result = result.filter((acc) => acc.isActive === wantActive);
+    }
+
+    return result;
+  }, [accounts, searchTerm, filterType, filterGroup, filterActive]);
 
   const filteredAccounts = useMemo(() => {
-    return isSearchActive ? searchResults : flattenedRows;
-  }, [isSearchActive, searchResults, flattenedRows]);
+    return isFilterActive ? searchAndFilteredResults : flattenedRows;
+  }, [isFilterActive, searchAndFilteredResults, flattenedRows]);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -814,52 +1183,133 @@ const ChartOfAccounts: React.FC = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, activeTab]);
+  }, [searchTerm, filterType, filterGroup, filterActive]);
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none pb-12">
-      <ActionToolbar
-        title="Chart of Accounts"
-        subtitle="Manage your account hierarchy and ledgers"
-        primaryAction={{
-          label: "Add Account",
-          onClick: handleOpenCreateModal,
-          icon: <Plus className="h-4 w-4" />,
-        }}
-        secondaryActions={[
-          { label: "Expand All Groups", onClick: expandAll },
-          { label: "Collapse All", onClick: collapseAll },
-          {
-            label: "Import",
-            onClick: () => setImportModalOpen(true),
-            icon: <Upload className="h-3.5 w-3.5" />,
-          },
-          {
-            label: "Export Sheet",
-            onClick: handleExportToExcel,
-            icon: <Download className="h-3.5 w-3.5" />,
-          },
-        ]}
-      />
+      <div className="no-print">
+        <ActionToolbar
+          title="Chart of Accounts"
+          subtitle="Manage your account hierarchy and ledgers"
+          primaryAction={{
+            label: "Add Account",
+            onClick: handleOpenCreateModal,
+            icon: <Plus className="h-4 w-4" />,
+          }}
+          secondaryActions={[
+            { label: "Expand All Groups", onClick: expandAll },
+            { label: "Collapse All", onClick: collapseAll },
+            {
+              label: "Merge Accounts",
+              onClick: () => setMergeModalOpen(true),
+              icon: <RefreshCw className="h-3.5 w-3.5" />,
+            },
+            {
+              label: "Print",
+              onClick: handlePrint,
+              icon: <Printer className="h-3.5 w-3.5" />,
+            },
+            {
+              label: "Import from CSV",
+              onClick: () => {
+                setImportPreviewRows([]);
+                setImportModalOpen(true);
+              },
+              icon: <Upload className="h-3.5 w-3.5" />,
+            },
+            {
+              label: "Export Sheet",
+              onClick: handleExportToExcel,
+              icon: <Download className="h-3.5 w-3.5" />,
+            },
+          ]}
+        />
+      </div>
 
       {/* 2. LIVE FILTER CONTROLS TABS */}
-      <div className="page-toolbar">
-        <div className="page-toolbar-left">
+      <div className="page-toolbar no-print flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <div className="page-toolbar-left flex flex-wrap gap-3 items-center">
           <div className="relative">
             <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search accounts..." className="search-input" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search accounts..."
+              className="search-input"
+            />
           </div>
+
+          {/* Type Filter Dropdown */}
+          <select
+            value={filterType}
+            onChange={(e) => {
+              setFilterType(e.target.value);
+              setActiveTab(e.target.value as any);
+            }}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          >
+            <option value="ALL">All Types</option>
+            <option value={AccountType.ASSET}>Asset</option>
+            <option value={AccountType.LIABILITY}>Liability</option>
+            <option value={AccountType.EQUITY}>Equity</option>
+            <option value={AccountType.INCOME}>Income</option>
+            <option value={AccountType.EXPENSE}>Expense</option>
+          </select>
+
+          {/* Group Filter Dropdown */}
+          <select
+            value={filterGroup}
+            onChange={(e) => setFilterGroup(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          >
+            <option value="ALL">All Groups</option>
+            {accounts
+              .filter((a) => a.isGroup)
+              .map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name} ({g.code})
+                </option>
+              ))}
+          </select>
+
+          {/* Active status Filter Dropdown */}
+          <select
+            value={filterActive}
+            onChange={(e) => setFilterActive(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          >
+            <option value="ALL">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+
           <div className="flex items-center gap-1 ml-2">
-            {(["ALL","asset","liability","equity","income","expense"] as const).map(tab => (
-              <button key={tab} type="button" onClick={() => setActiveTab(tab)}
-                className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${activeTab === tab ? "bg-[#1557b0] text-white" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
+            {(["ALL", "asset", "liability", "equity", "income", "expense"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => {
+                  setActiveTab(tab as any);
+                  setFilterType(tab as any);
+                }}
+                className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${activeTab === tab ? "bg-[#1557b0] text-white" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+              >
                 {tab === "ALL" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
             ))}
           </div>
         </div>
-        <div className="page-toolbar-right">
-          <button type="button" onClick={handleOpenCreateModal} className="h-8 px-3 text-[11px] font-bold rounded-md text-white bg-[#1557b0] hover:bg-[#0f4a96] flex items-center gap-1.5">
+        <div className="page-toolbar-right ml-auto">
+          <button
+            type="button"
+            onClick={handleOpenCreateModal}
+            className="h-8 px-3 text-[11px] font-bold rounded-md text-white bg-[#1557b0] hover:bg-[#0f4a96] flex items-center gap-1.5"
+          >
             <Plus className="h-3.5 w-3.5" /> New Account
           </button>
         </div>
@@ -927,6 +1377,9 @@ const ChartOfAccounts: React.FC = () => {
                       Classification
                     </th>
                     <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase">
+                      Group
+                    </th>
+                    <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase">
                       Level
                     </th>
                     <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase text-right w-36 th-right">
@@ -939,11 +1392,14 @@ const ChartOfAccounts: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-150">
                   {/* FLAT SEARCH VIEW */}
-                  {isSearchActive ? (
+                  {isFilterActive ||
+                  filterType !== "ALL" ||
+                  filterGroup !== "ALL" ||
+                  filterActive !== "ALL" ? (
                     paginatedData.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={7}
+                          colSpan={8}
                           className="text-center py-12 text-gray-400 font-bold text-xs"
                         >
                           No accounting ledger records matched your query. Try searching by other
@@ -993,18 +1449,14 @@ const ChartOfAccounts: React.FC = () => {
                                 <span className="font-extrabold text-slate-800 leading-tight flex items-center gap-1.5">
                                   {row.name}
                                   {!row.isActive && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[8.5px] scale-90 px-1 py-0 border-rose-200 text-rose-600 bg-rose-50/30"
-                                    >
-                                      INACTIVE
-                                    </Badge>
+                                    <span className="scale-90 inline-block">
+                                      <Badge variant="danger">INACTIVE</Badge>
+                                    </span>
                                   )}
                                   {row.isSystemAccount && (
-                                    <Lock
-                                      className="h-3 w-3 text-amber-500"
-                                      title="System Locked ledger parameter"
-                                    />
+                                    <span title="System Locked ledger parameter">
+                                      <Lock className="h-3 w-3 text-amber-500" />
+                                    </span>
                                   )}
                                 </span>
                                 {row.nameNepali && (
@@ -1021,12 +1473,17 @@ const ChartOfAccounts: React.FC = () => {
                                 {row.type}
                               </span>
                             </td>
+                            <td className="px-4 py-3 text-xs text-gray-600">
+                              {accounts.find((a) => a.id === row.parentId)?.name || "-"}
+                            </td>
                             <td className="px-4 py-3">
                               <span className="text-[10px] uppercase font-bold text-gray-400 bg-slate-50 border border-slate-100 rounded px-1.5 py-0.5 leading-none">
                                 {row.level}
                               </span>
                             </td>
-                            <td className={`px-4 py-3 text-right font-mono font-extrabold text-slate-800 amt ${row.balance >= 0 ? "amt-dr" : "amt-cr"}`}>
+                            <td
+                              className={`px-4 py-3 text-right font-mono font-extrabold text-slate-800 amt ${row.balance >= 0 ? "amt-dr" : "amt-cr"}`}
+                            >
                               {formatDrCrBalance(row.balance || 0, row.type)}
                             </td>
                             <td
@@ -1120,18 +1577,14 @@ const ChartOfAccounts: React.FC = () => {
                                 >
                                   {row.name}
                                   {!row.isActive && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[8.5px] scale-90 px-1 py-0 border-rose-200 text-rose-600 bg-rose-50/30"
-                                    >
-                                      INACTIVE
-                                    </Badge>
+                                    <span className="scale-90 inline-block">
+                                      <Badge variant="danger">INACTIVE</Badge>
+                                    </span>
                                   )}
                                   {row.isSystemAccount && (
-                                    <Lock
-                                      className="h-3 w-3 text-amber-500"
-                                      title="System Locked ledger parameter"
-                                    />
+                                    <span title="System Locked ledger parameter">
+                                      <Lock className="h-3 w-3 text-amber-500" />
+                                    </span>
                                   )}
                                 </span>
                                 {row.nameNepali && (
@@ -1152,6 +1605,11 @@ const ChartOfAccounts: React.FC = () => {
                             </span>
                           </td>
 
+                          {/* Group name column */}
+                          <td className="px-4 py-3.5 text-xs text-gray-600">
+                            {accounts.find((a) => a.id === row.parentId)?.name || "-"}
+                          </td>
+
                           {/* Level indicator */}
                           <td className="px-4 py-3.5">
                             <span className="text-[10px] uppercase font-bold text-gray-400 bg-slate-50 border border-slate-100 rounded px-1.5 py-0.5 leading-none">
@@ -1160,7 +1618,9 @@ const ChartOfAccounts: React.FC = () => {
                           </td>
 
                           {/* Account Balance Dr/Cr */}
-                          <td className={`px-4 py-3.5 text-right font-mono font-extrabold text-slate-800 amt ${row.balance >= 0 ? "amt-dr" : "amt-cr"}`}>
+                          <td
+                            className={`px-4 py-3.5 text-right font-mono font-extrabold text-slate-800 amt ${row.balance >= 0 ? "amt-dr" : "amt-cr"}`}
+                          >
                             {formatDrCrBalance(row.balance, row.type)}
                           </td>
 
@@ -1758,66 +2218,242 @@ const ChartOfAccounts: React.FC = () => {
         isOpen={importModalOpen}
         onClose={() => setImportModalOpen(false)}
         title="Import Master Chart Accounts"
-        size="md"
+        size={importPreviewRows.length > 0 ? "lg" : "md"}
         footer={
           <div className="flex justify-end gap-2 text-xs">
             <Button variant="outline" size="sm" onClick={() => setImportModalOpen(false)}>
               Close
             </Button>
+            {importPreviewRows.length > 0 && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={confirmCSVImport}
+                disabled={importPreviewRows.some((r) => r.errors.length > 0)}
+              >
+                Confirm Import ({importPreviewRows.filter((r) => r.errors.length === 0).length}{" "}
+                valid accounts)
+              </Button>
+            )}
           </div>
         }
       >
         <div className="flex flex-col gap-5 text-xs select-none">
-          <p className="leading-relaxed text-gray-500 font-bold">
-            We support CSV and direct Spreadsheet column mappings. Please construct your Excel/CSV
-            spreadsheet according to our audited structure layout below.
-          </p>
+          {importPreviewRows.length === 0 ? (
+            <>
+              <p className="leading-relaxed text-gray-500 font-bold">
+                We support CSV and direct Spreadsheet column mappings. Please construct your
+                Excel/CSV spreadsheet according to our audited structure layout below.
+              </p>
 
-          <div className="p-4 bg-slate-50 border border-gray-200 rounded-xl flex items-center justify-between">
-            <div className="flex flex-col gap-1 min-w-0">
-              <span className="font-extrabold text-slate-805">
-                Ready-to-use Import layout template
-              </span>
-              <span className="text-[10px] text-gray-400">
-                Standard columns map correctly formatted format
-              </span>
+              <div className="p-4 bg-slate-50 border border-gray-200 rounded-xl flex items-center justify-between">
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className="font-extrabold text-slate-805">
+                    Ready-to-use Import layout template
+                  </span>
+                  <span className="text-[10px] text-gray-400">
+                    Standard columns map correctly formatted format
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadTemplate}
+                  icon={<Download className="h-3.5 w-3.5" />}
+                  className="text-xs font-bold"
+                >
+                  CSV Template
+                </Button>
+              </div>
+
+              <div className="p-6 border-2 border-dashed border-gray-300 rounded-xl text-center flex flex-col items-center justify-center gap-3 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                <div className="p-3 bg-blue-100 rounded-full text-blue-600">
+                  <Upload className="h-6 w-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-extrabold text-slate-800 text-sm">
+                    Upload spreadsheet documents
+                  </span>
+                  <span className="text-[10px] text-gray-400 mt-1">
+                    Accepts CSV or XLS formatted files
+                  </span>
+                </div>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="mt-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs uppercase shadow transition"
+                >
+                  Select CSV Document
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImportCSVData}
+                  accept=".csv"
+                  className="hidden"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border">
+                <span className="font-bold">Total CSV Rows: {importPreviewRows.length}</span>
+                <span className="text-red-650 font-bold">
+                  Errors Found: {importPreviewRows.filter((r) => r.errors.length > 0).length}
+                </span>
+                <button
+                  onClick={() => setImportPreviewRows([])}
+                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-semibold rounded-md hover:bg-gray-50"
+                >
+                  Upload Different File
+                </button>
+              </div>
+
+              {importPreviewRows.filter((r) => r.errors.length > 0).length > 0 && (
+                <div className="p-3 bg-rose-50 text-rose-700 rounded-lg border border-rose-200">
+                  <strong>Validation Blocked:</strong> Please fix the red highlighted rows in your
+                  CSV. You must resolve all issues before you can confirm the import.
+                </div>
+              )}
+
+              <div className="max-h-96 overflow-auto border rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200 text-xs">
+                  <thead className="bg-[#f5f6fa] sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        Code
+                      </th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        Name
+                      </th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        Type
+                      </th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        Group
+                      </th>
+                      <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase">
+                        Opening Bal
+                      </th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        Errors
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-150 bg-white">
+                    {importPreviewRows.map((row, idx) => {
+                      const hasErr = row.errors.length > 0;
+                      return (
+                        <tr
+                          key={idx}
+                          className={hasErr ? "bg-red-50/50 text-red-900" : "hover:bg-slate-50"}
+                        >
+                          <td
+                            className={`px-3 py-2 font-mono ${hasErr && !row.code ? "bg-red-100 text-red-800" : ""}`}
+                          >
+                            {row.code || "[Blank]"}
+                          </td>
+                          <td
+                            className={`px-3 py-2 ${hasErr && !row.name ? "bg-red-100 text-red-800" : ""}`}
+                          >
+                            {row.name || "[Blank]"}
+                          </td>
+                          <td className="px-3 py-2 uppercase">{row.type}</td>
+                          <td className="px-3 py-2">{row.group || "-"}</td>
+                          <td className="px-3 py-2 text-right font-mono">
+                            {formatNumber(row.openingBalance)} {row.openingBalanceType}
+                          </td>
+                          <td className="px-3 py-2 text-red-600 font-medium">
+                            {row.errors.map((err, errIdx) => (
+                              <div key={errIdx} className="flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3 shrink-0" />
+                                <span>{err}</span>
+                              </div>
+                            ))}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
+          )}
+        </div>
+      </Modal>
+
+      {/* Merge Accounts Modal */}
+      <Modal
+        isOpen={mergeModalOpen}
+        onClose={() => setMergeModalOpen(false)}
+        title="Merge Ledger Accounts"
+        size="md"
+        footer={
+          <div className="flex justify-end gap-2 text-xs">
+            <Button variant="outline" size="sm" onClick={() => setMergeModalOpen(false)}>
+              Cancel
+            </Button>
             <Button
-              variant="outline"
+              variant="primary"
               size="sm"
-              onClick={handleDownloadTemplate}
-              icon={<Download className="h-3.5 w-3.5" />}
-              className="text-xs font-bold"
+              onClick={handleMergeAccounts}
+              className="bg-amber-600 hover:bg-amber-700"
             >
-              CSV Template
+              Merge Accounts
             </Button>
           </div>
+        }
+      >
+        <div className="flex flex-col gap-4 text-xs select-none">
+          <p className="leading-relaxed text-gray-550 font-bold">
+            Merging transfers all double-entry transaction lines from the Source Account to the
+            Target Account. Once the merge finishes, the Source Account is permanently deactivated.
+            Both must be level 3 ledger accounts of the same nature type.
+          </p>
 
-          <div className="p-6 border-2 border-dashed border-gray-300 rounded-xl text-center flex flex-col items-center justify-center gap-3 bg-slate-50/50 hover:bg-slate-50 transition-colors">
-            <div className="p-3 bg-blue-100 rounded-full text-blue-600">
-              <Upload className="h-6 w-6" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold text-slate-800 text-sm">
-                Upload spreadsheet documents
-              </span>
-              <span className="text-[10px] text-gray-400 mt-1">
-                Accepts CSV or XLS formatted files
-              </span>
-            </div>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs uppercase shadow transition"
+          <div className="flex flex-col gap-3">
+            <label className="text-[11px] font-semibold text-gray-700">
+              Select Source Account (To deactivate)
+            </label>
+            <select
+              value={mergeSourceId}
+              onChange={(e) => setMergeSourceId(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             >
-              Select CSV Document
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImportCSVData}
-              accept=".csv"
-              className="hidden"
-            />
+              <option value="">-- Choose Source Ledger --</option>
+              {accounts
+                .filter((a) => a.level === AccountLevel.LEDGER && a.isActive)
+                .map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} ({a.code}) - {a.type.toUpperCase()}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <label className="text-[11px] font-semibold text-gray-700">
+              Select Target Account (To merge into)
+            </label>
+            <select
+              value={mergeTargetId}
+              onChange={(e) => setMergeTargetId(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            >
+              <option value="">-- Choose Target Ledger --</option>
+              {accounts
+                .filter(
+                  (a) =>
+                    a.level === AccountLevel.LEDGER &&
+                    a.id !== mergeSourceId &&
+                    (!mergeSourceId ||
+                      a.type === accounts.find((sa) => sa.id === mergeSourceId)?.type),
+                )
+                .map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} ({a.code}) - {a.type.toUpperCase()}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
       </Modal>
@@ -1833,6 +2469,61 @@ const ChartOfAccounts: React.FC = () => {
         cancelText="No, preserve"
         danger={true}
       />
+
+      {/* Print-only View Layout */}
+      <div className="print-only hidden">
+        <div className="mb-6 flex justify-between items-end border-b pb-4">
+          <div>
+            <h1 className="text-[18px] font-bold text-gray-800">SUTRA ERP</h1>
+            <p className="text-[11px] text-gray-500">CHART OF ACCOUNTS SUMMARY Hierarchy</p>
+          </div>
+          <div className="text-right text-[10px] text-gray-400">
+            Report Date: {new Date().toISOString().split("T")[0]}
+          </div>
+        </div>
+
+        <table className="w-full border-collapse border border-gray-300 text-xs">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-3 py-2 text-left font-semibold uppercase">
+                Code
+              </th>
+              <th className="border border-gray-300 px-3 py-2 text-left font-semibold uppercase">
+                Particular Name
+              </th>
+              <th className="border border-gray-300 px-3 py-2 text-left font-semibold uppercase">
+                Parent Group
+              </th>
+              <th className="border border-gray-300 px-3 py-2 text-left font-semibold uppercase">
+                Classification
+              </th>
+              <th className="border border-gray-300 px-3 py-2 text-right font-semibold uppercase">
+                Current Balance
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {accounts
+              .sort((a, b) => a.code.localeCompare(b.code))
+              .map((acc) => {
+                const parentGroup = accounts.find((p) => p.id === acc.parentId);
+                return (
+                  <tr key={acc.id} className="even:bg-gray-50/50">
+                    <td className="border border-gray-300 px-3 py-2 font-mono">{acc.code}</td>
+                    <td className="border border-gray-300 px-3 py-2 font-semibold">{acc.name}</td>
+                    <td className="border border-gray-300 px-3 py-2">{parentGroup?.name || "-"}</td>
+                    <td className="border border-gray-300 px-3 py-2 uppercase text-[10px]">
+                      {acc.type}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-right font-mono">
+                      {formatDrCrBalance(acc.balance || 0, acc.type)}
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

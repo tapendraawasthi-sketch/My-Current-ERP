@@ -1,4 +1,7 @@
 /**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { Filter, Download, Eye, Edit, FileText } from "lucide-react";
@@ -19,8 +22,7 @@ const PurchaseRegister: React.FC = () => {
   const purchaseInvoices = useMemo(() => {
     return invoices.filter(
       (inv) =>
-        inv.type === VoucherType.PURCHASE_INVOICE ||
-        inv.type === VoucherType.PURCHASE_RETURN
+        inv.type === VoucherType.PURCHASE_INVOICE || inv.type === VoucherType.PURCHASE_RETURN,
     );
   }, [invoices]);
 
@@ -254,13 +256,31 @@ const PurchaseRegister: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
-          { label: "Total Purchases", value: formatCurrency(filteredInvoices.reduce((s,r)=>s+(r.grandTotal||0),0)), color: "#1557b0" },
+          {
+            label: "Total Purchases",
+            value: formatCurrency(filteredInvoices.reduce((s, r) => s + (r.grandTotal || 0), 0)),
+            color: "#1557b0",
+          },
           { label: "Invoice Count", value: filteredInvoices.length, color: "#1557b0" },
-          { label: "Total VAT", value: formatCurrency(filteredInvoices.reduce((s,r)=>s+(r.vatAmount||0),0)), color: "#b45309" },
-          { label: "Posted", value: filteredInvoices.filter(r=>r.status==="posted").length, color: "#15803d" },
+          {
+            label: "Total VAT",
+            value: formatCurrency(filteredInvoices.reduce((s, r) => s + (r.vatAmount || 0), 0)),
+            color: "#b45309",
+          },
+          {
+            label: "Posted",
+            value: filteredInvoices.filter((r) => r.status === "posted").length,
+            color: "#15803d",
+          },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-white border rounded-lg p-3" style={{ borderColor: "var(--border)" }}>
-            <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
+          <div
+            key={label}
+            className="bg-white border rounded-lg p-3"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+              {label}
+            </div>
             <div className="text-[16px] font-bold text-gray-800 mt-0.5">{value}</div>
           </div>
         ))}
@@ -311,23 +331,52 @@ const PurchaseRegister: React.FC = () => {
       </Card>
 
       {/* Table */}
-      <div className="bg-white border rounded-lg overflow-hidden animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="bg-white border rounded-lg overflow-hidden animate-fadeIn"
+        style={{ borderColor: "var(--border)" }}
+      >
         <table className="data-table">
           <thead>
             <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Invoice No</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Date</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Supplier</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Supplier PAN</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Sub Total</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Discount</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Taxable</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Exempt</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">VAT</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Grand Total</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">TDS</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Net Amount</th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">Status</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Invoice No
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Date
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Supplier
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                Supplier PAN
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Sub Total
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Discount
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Taxable
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Exempt
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                VAT
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Grand Total
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                TDS
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                Net Amount
+              </th>
+              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -340,34 +389,82 @@ const PurchaseRegister: React.FC = () => {
             ) : (
               paginatedInvoices.map((invoice) => (
                 <tr key={invoice.id} className="hover:bg-[#e8eeff]">
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{invoice.invoiceNo}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700">{new Date(invoice.date).toLocaleDateString()}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">
+                    {invoice.invoiceNo}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-gray-700">
+                    {new Date(invoice.date).toLocaleDateString()}
+                  </td>
                   <td className="px-3 py-[7px] text-[12px] text-gray-700">{invoice.partyName}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{invoice.partyPan || "-"}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.subTotal)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.discountAmount || 0)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.taxableAmount)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.exemptAmount || 0)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">Rs. {formatNumber(invoice.vatAmount)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">Rs. {formatNumber(invoice.grandTotal)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.tdsAmount || 0)}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold" style={{ color: "var(--primary)" }}>Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-center">{getPaymentStatusBadge(invoice.paymentStatus)}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">
+                    {invoice.partyPan || "-"}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                    Rs. {formatNumber(invoice.subTotal)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                    Rs. {formatNumber(invoice.discountAmount || 0)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                    Rs. {formatNumber(invoice.taxableAmount)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                    Rs. {formatNumber(invoice.exemptAmount || 0)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">
+                    Rs. {formatNumber(invoice.vatAmount)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">
+                    Rs. {formatNumber(invoice.grandTotal)}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                    Rs. {formatNumber(invoice.tdsAmount || 0)}
+                  </td>
+                  <td
+                    className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}
+                  </td>
+                  <td className="px-3 py-[7px] text-[12px] text-center">
+                    {getPaymentStatusBadge(invoice.paymentStatus)}
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
           <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
             <tr>
-              <td colSpan={4} className="px-3 py-2 text-[12px] text-gray-700">Total</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.subTotal)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.discount)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.taxable)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.exempt)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-cr">Rs. {formatNumber(totals.vat)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt font-bold">Rs. {formatNumber(totals.grandTotal)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.tds)}</td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt font-bold" style={{ color: "var(--primary)" }}>Rs. {formatNumber(totals.netAmount)}</td>
+              <td colSpan={4} className="px-3 py-2 text-[12px] text-gray-700">
+                Total
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                Rs. {formatNumber(totals.subTotal)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                Rs. {formatNumber(totals.discount)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                Rs. {formatNumber(totals.taxable)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                Rs. {formatNumber(totals.exempt)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-cr">
+                Rs. {formatNumber(totals.vat)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt font-bold">
+                Rs. {formatNumber(totals.grandTotal)}
+              </td>
+              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
+                Rs. {formatNumber(totals.tds)}
+              </td>
+              <td
+                className="px-3 py-2 text-[12px] text-right font-mono amt font-bold"
+                style={{ color: "var(--primary)" }}
+              >
+                Rs. {formatNumber(totals.netAmount)}
+              </td>
               <td />
             </tr>
           </tfoot>

@@ -86,9 +86,7 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
           className="w-full h-8 px-2.5 text-left text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-gray-50 disabled:cursor-not-allowed"
         >
           <span className="truncate">
-            {selectedItem
-              ? `${selectedItem.name} [${selectedItem.code}]`
-              : placeholder}
+            {selectedItem ? `${selectedItem.name} [${selectedItem.code}]` : placeholder}
           </span>
           <ChevronDown className="h-3 w-3 text-gray-400 shrink-0 ml-1" />
         </button>

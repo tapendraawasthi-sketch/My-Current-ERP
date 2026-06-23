@@ -209,11 +209,21 @@ const GeneralLedger: React.FC = () => {
               <tbody className="divide-y divide-gray-150">
                 {ledgerData?.openingBalance !== undefined && (
                   <tr style={{ background: "#f0f7ff" }}>
-                    <td colSpan={3} className="font-bold text-[11px] text-blue-700 pl-3 py-2">Opening Balance</td>
+                    <td colSpan={3} className="font-bold text-[11px] text-blue-700 pl-3 py-2">
+                      Opening Balance
+                    </td>
                     <td />
-                    <td className="amt amt-dr">{ledgerData.openingBalance > 0 ? formatNumber(ledgerData.openingBalance) : ""}</td>
-                    <td className="amt amt-cr">{ledgerData.openingBalance < 0 ? formatNumber(Math.abs(ledgerData.openingBalance)) : ""}</td>
-                    <td className="amt font-bold">{formatNumber(Math.abs(ledgerData.openingBalance))}</td>
+                    <td className="amt amt-dr">
+                      {ledgerData.openingBalance > 0 ? formatNumber(ledgerData.openingBalance) : ""}
+                    </td>
+                    <td className="amt amt-cr">
+                      {ledgerData.openingBalance < 0
+                        ? formatNumber(Math.abs(ledgerData.openingBalance))
+                        : ""}
+                    </td>
+                    <td className="amt font-bold">
+                      {formatNumber(Math.abs(ledgerData.openingBalance))}
+                    </td>
                   </tr>
                 )}
 
@@ -252,11 +262,15 @@ const GeneralLedger: React.FC = () => {
                 )}
 
                 <tr style={{ background: "#eef1f8" }}>
-                  <td colSpan={3} className="font-bold text-[11px] text-gray-700 pl-3 py-2">Closing Balance</td>
+                  <td colSpan={3} className="font-bold text-[11px] text-gray-700 pl-3 py-2">
+                    Closing Balance
+                  </td>
                   <td />
                   <td className="amt font-bold amt-dr">{formatNumber(ledgerData.totalDebit)}</td>
                   <td className="amt font-bold amt-cr">{formatNumber(ledgerData.totalCredit)}</td>
-                  <td className="amt font-bold" style={{ color: "#1557b0" }}>{formatNumber(Math.abs(ledgerData.closingBalance))}</td>
+                  <td className="amt font-bold" style={{ color: "#1557b0" }}>
+                    {formatNumber(Math.abs(ledgerData.closingBalance))}
+                  </td>
                 </tr>
               </tbody>
             </table>

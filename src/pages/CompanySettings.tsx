@@ -5,7 +5,7 @@ import { ActionToolbar } from "../components/ui";
 
 export default function CompanySettings() {
   const { companySettings, updateCompanySettings, currentFiscalYear } = useStore();
-  const [activeTab, setActiveTab] = useState<"general"|"tax"|"print"|"fiscal">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "tax" | "print" | "fiscal">("general");
   const [formData, setFormData] = useState(companySettings);
 
   const handleSave = () => {
@@ -42,10 +42,22 @@ export default function CompanySettings() {
         </div>
       </div>
 
-      <div className="flex items-center gap-0 border-b mb-4" style={{ borderColor: "var(--border)" }}>
-        {[{key:"general",label:"Company Profile"},{key:"tax",label:"Tax & Compliance"},{key:"print",label:"Print Settings"},{key:"fiscal",label:"Fiscal Year"}].map(({key,label}) => (
-          <button key={key} type="button" onClick={() => setActiveTab(key as any)}
-            className={`h-9 px-4 text-[12px] font-semibold transition-colors border-b-2 -mb-px cursor-pointer ${activeTab === key ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+      <div
+        className="flex items-center gap-0 border-b mb-4"
+        style={{ borderColor: "var(--border)" }}
+      >
+        {[
+          { key: "general", label: "Company Profile" },
+          { key: "tax", label: "Tax & Compliance" },
+          { key: "print", label: "Print Settings" },
+          { key: "fiscal", label: "Fiscal Year" },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setActiveTab(key as any)}
+            className={`h-9 px-4 text-[12px] font-semibold transition-colors border-b-2 -mb-px cursor-pointer ${activeTab === key ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+          >
             {label}
           </button>
         ))}
@@ -55,13 +67,20 @@ export default function CompanySettings() {
         {activeTab === "general" && (
           <div className="space-y-4">
             {/* Company Profile section */}
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+            <div
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+              style={{ borderColor: "var(--border)" }}
+            >
               <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Company Profile</h3>
+                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Company Profile
+                </h3>
               </div>
               <div className="p-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Company Name (English) *</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Company Name (English) *
+                  </label>
                   <input
                     type="text"
                     value={formData.companyNameEn}
@@ -71,7 +90,9 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Company Name (Nepali) *</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Company Name (Nepali) *
+                  </label>
                   <input
                     type="text"
                     value={formData.companyNameNe}
@@ -81,7 +102,9 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Business Type</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Business Type
+                  </label>
                   <select
                     value={formData.businessType}
                     onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
@@ -95,7 +118,9 @@ export default function CompanySettings() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Company Logo</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Company Logo
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
@@ -110,13 +135,20 @@ export default function CompanySettings() {
             </div>
 
             {/* Address section */}
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+            <div
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+              style={{ borderColor: "var(--border)" }}
+            >
               <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Address Details</h3>
+                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Address Details
+                </h3>
               </div>
               <div className="p-4 grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Registered Address</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Registered Address
+                  </label>
                   <input
                     type="text"
                     value={formData.address}
@@ -137,13 +169,20 @@ export default function CompanySettings() {
             </div>
 
             {/* Contact section */}
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+            <div
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+              style={{ borderColor: "var(--border)" }}
+            >
               <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Contact Information</h3>
+                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Contact Information
+                </h3>
               </div>
               <div className="p-4 grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Phone</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Phone
+                  </label>
                   <input
                     type="text"
                     value={formData.phone}
@@ -152,7 +191,9 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Email</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     value={formData.email}
@@ -161,7 +202,9 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Website</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Website
+                  </label>
                   <input
                     type="text"
                     value={formData.website}
@@ -176,13 +219,20 @@ export default function CompanySettings() {
 
         {activeTab === "tax" && (
           <div className="space-y-4">
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+            <div
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+              style={{ borderColor: "var(--border)" }}
+            >
               <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Tax Registration</h3>
+                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Tax Registration
+                </h3>
               </div>
               <div className="p-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">PAN Number * (9 digits)</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    PAN Number * (9 digits)
+                  </label>
                   <input
                     type="text"
                     value={formData.panNumber}
@@ -193,7 +243,9 @@ export default function CompanySettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">VAT Registration No.</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    VAT Registration No.
+                  </label>
                   <input
                     type="text"
                     value={formData.vatNumber}
@@ -204,9 +256,14 @@ export default function CompanySettings() {
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+            <div
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+              style={{ borderColor: "var(--border)" }}
+            >
               <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Nepal IRD e-Billing Integration</h3>
+                <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Nepal IRD e-Billing Integration
+                </h3>
               </div>
               <div className="p-4 space-y-4">
                 <div className="border-l-4 border-blue-400 bg-blue-50 p-4">
@@ -216,15 +273,22 @@ export default function CompanySettings() {
                     </div>
                     <div className="ml-3">
                       <div className="text-sm text-blue-700">
-                        <p>Status: <span className="font-semibold">Not Configured</span></p>
-                        <p className="mt-1">Configure your IRD API credentials to enable electronic billing compliance.</p>
+                        <p>
+                          Status: <span className="font-semibold">Not Configured</span>
+                        </p>
+                        <p className="mt-1">
+                          Configure your IRD API credentials to enable electronic billing
+                          compliance.
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">Data Export Format</label>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Data Export Format
+                  </label>
                   <select
                     value={formData.exportFormat}
                     onChange={(e) => setFormData({ ...formData, exportFormat: e.target.value })}
@@ -242,13 +306,20 @@ export default function CompanySettings() {
         )}
 
         {activeTab === "print" && (
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-              <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Invoice Print Preferences</h3>
+              <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                Invoice Print Preferences
+              </h3>
             </div>
             <div className="p-4 grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] font-semibold text-gray-700 mb-1">Paper Size</label>
+                <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                  Paper Size
+                </label>
                 <select
                   value={formData.paperSize}
                   onChange={(e) => setFormData({ ...formData, paperSize: e.target.value })}
@@ -260,7 +331,9 @@ export default function CompanySettings() {
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-gray-700 mb-1">Invoice Template</label>
+                <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                  Invoice Template
+                </label>
                 <select
                   value={formData.invoiceTemplate}
                   onChange={(e) => setFormData({ ...formData, invoiceTemplate: e.target.value })}
@@ -272,7 +345,9 @@ export default function CompanySettings() {
                 </select>
               </div>
               <div className="col-span-2">
-                <label className="block text-[11px] font-semibold text-gray-700 mb-1">Authorized Signatory Name</label>
+                <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                  Authorized Signatory Name
+                </label>
                 <input
                   type="text"
                   value={formData.signatoryName}
@@ -281,7 +356,9 @@ export default function CompanySettings() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-[11px] font-semibold text-gray-700 mb-1">Terms & Conditions</label>
+                <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                  Terms & Conditions
+                </label>
                 <textarea
                   value={formData.termsConditions}
                   onChange={(e) => setFormData({ ...formData, termsConditions: e.target.value })}
@@ -290,7 +367,9 @@ export default function CompanySettings() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-[11px] font-semibold text-gray-700 mb-1">Invoice Footer Text</label>
+                <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                  Invoice Footer Text
+                </label>
                 <textarea
                   value={formData.invoiceFooter}
                   onChange={(e) => setFormData({ ...formData, invoiceFooter: e.target.value })}
@@ -306,16 +385,22 @@ export default function CompanySettings() {
                     onChange={(e) => setFormData({ ...formData, printLogo: e.target.checked })}
                     className="rounded border-gray-300"
                   />
-                  <span className="text-[12px] font-medium text-gray-700">Print Company Logo on Invoice</span>
+                  <span className="text-[12px] font-medium text-gray-700">
+                    Print Company Logo on Invoice
+                  </span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.printBankDetails}
-                    onChange={(e) => setFormData({ ...formData, printBankDetails: e.target.checked })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, printBankDetails: e.target.checked })
+                    }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-[12px] font-medium text-gray-700">Print Bank Details on Invoice</span>
+                  <span className="text-[12px] font-medium text-gray-700">
+                    Print Bank Details on Invoice
+                  </span>
                 </label>
               </div>
             </div>
@@ -323,30 +408,47 @@ export default function CompanySettings() {
         )}
 
         {activeTab === "fiscal" && (
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-              <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Current Fiscal Year</h3>
+              <h3 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                Current Fiscal Year
+              </h3>
             </div>
             <div className="p-4">
               {currentFiscalYear ? (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-[10px] text-gray-400 font-bold uppercase">Name</div>
-                    <div className="font-bold text-[13px] text-gray-800 mt-0.5">{currentFiscalYear.name}</div>
+                    <div className="font-bold text-[13px] text-gray-800 mt-0.5">
+                      {currentFiscalYear.name}
+                    </div>
                   </div>
                   <div>
                     <div className="text-[10px] text-gray-400 font-bold uppercase">Status</div>
                     <div className="mt-0.5">
-                      <span className="badge bg-green-50 text-green-700 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase">{currentFiscalYear.status}</span>
+                      <span className="badge bg-green-50 text-green-700 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase">
+                        {currentFiscalYear.status}
+                      </span>
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-400 font-bold uppercase">Start Date (AD)</div>
-                    <div className="text-[12px] text-gray-700 font-mono mt-0.5">{currentFiscalYear.startDate}</div>
+                    <div className="text-[10px] text-gray-400 font-bold uppercase">
+                      Start Date (AD)
+                    </div>
+                    <div className="text-[12px] text-gray-700 font-mono mt-0.5">
+                      {currentFiscalYear.startDate}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-400 font-bold uppercase">End Date (AD)</div>
-                    <div className="text-[12px] text-gray-700 font-mono mt-0.5">{currentFiscalYear.endDate}</div>
+                    <div className="text-[10px] text-gray-400 font-bold uppercase">
+                      End Date (AD)
+                    </div>
+                    <div className="text-[12px] text-gray-700 font-mono mt-0.5">
+                      {currentFiscalYear.endDate}
+                    </div>
                   </div>
                 </div>
               ) : (

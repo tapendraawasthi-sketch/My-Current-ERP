@@ -8,6 +8,7 @@
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
+import { useActiveVouchers } from "../hooks/useActiveData";
 import { SearchableTable, Button, Badge, Input, Select, NepaliDatePicker } from "../components/ui";
 import JournalVoucherForm from "../components/voucher/JournalVoucherForm";
 import { BookOpen, Plus, Eye } from "lucide-react";
@@ -21,7 +22,8 @@ const statusVariant = {
 };
 
 const JournalEntries: React.FC = () => {
-  const { vouchers, companySettings } = useStore();
+  const { companySettings } = useStore();
+  const vouchers = useActiveVouchers();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");

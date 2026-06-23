@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -328,8 +327,8 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
               error={errors.name}
             />
             <Input
-              label="Partner Trading Name (Nepali / देवनागरी)"
-              placeholder="जस्तै: स्याकार ट्रेडिङ कम्पनी प्रा. लि."
+              label="Partner Trading Name (Nepali / à¤¦à¥‡à¤µà¤¨à¤¾à¤—à¤°à¥€)"
+              placeholder="à¤œà¤¸à¥à¤¤à¥ˆ: à¤¸à¥à¤¯à¤¾à¤•à¤¾à¤° à¤Ÿà¥à¤°à¥‡à¤¡à¤¿à¤™ à¤•à¤®à¥à¤ªà¤¨à¥€ à¤ªà¥à¤°à¤¾. à¤²à¤¿."
               value={nameNepali}
               onChange={setNameNepali}
             />
@@ -379,7 +378,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
             />
             <Input
               label="Street Address (Nepali)"
-              placeholder="जस्तै: कान्तिपथ लिङ्क रोड"
+              placeholder="à¤œà¤¸à¥à¤¤à¥ˆ: à¤•à¤¾à¤¨à¥à¤¤à¤¿à¤ªà¤¥ à¤²à¤¿à¤™à¥à¤• à¤°à¥‹à¤¡"
               value={addressNepali}
               onChange={setAddressNepali}
             />

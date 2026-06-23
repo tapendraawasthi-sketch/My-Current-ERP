@@ -1,5 +1,4 @@
-// @ts-nocheck
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -95,18 +94,18 @@ export const COLOR_PALETTE = {
 };
 
 export const NEPALI_MONTHS_BS: string[] = [
-  "बैशाख",
-  "जेठ",
-  "असार",
-  "साउन",
-  "भदौ",
-  "असोज",
-  "कात्तिक",
-  "मंसिर",
-  "पुस",
-  "माघ",
-  "फागुन",
-  "चैत",
+  "à¤¬à¥ˆà¤¶à¤¾à¤–",
+  "à¤œà¥‡à¤ ",
+  "à¤…à¤¸à¤¾à¤°",
+  "à¤¸à¤¾à¤‰à¤¨",
+  "à¤­à¤¦à¥Œ",
+  "à¤…à¤¸à¥‹à¤œ",
+  "à¤•à¤¾à¤¤à¥à¤¤à¤¿à¤•",
+  "à¤®à¤‚à¤¸à¤¿à¤°",
+  "à¤ªà¥à¤¸",
+  "à¤®à¤¾à¤˜",
+  "à¤«à¤¾à¤—à¥à¤¨",
+  "à¤šà¥ˆà¤¤",
 ];
 
 export const NEPALI_MONTHS_EN: string[] = [
@@ -126,7 +125,7 @@ export const NEPALI_MONTHS_EN: string[] = [
 
 export const DEFAULT_COMPANY_SETTINGS: Partial<CompanySettings> = {
   name: "Sutra ERP Pvt. Ltd.",
-  nameNepali: "सूत्र इआरपी प्रा. लि.",
+  nameNepali: "à¤¸à¥‚à¤¤à¥à¤° à¤‡à¤†à¤°à¤ªà¥€ à¤ªà¥à¤°à¤¾. à¤²à¤¿.",
   panNumber: "",
   address: "",
   phone: "",

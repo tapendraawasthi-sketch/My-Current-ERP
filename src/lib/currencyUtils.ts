@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { ExchangeRate, Currency } from "./types";
+﻿import { ExchangeRate, Currency } from "./types";
 
 /**
  * Convert amount from foreign currency to base currency

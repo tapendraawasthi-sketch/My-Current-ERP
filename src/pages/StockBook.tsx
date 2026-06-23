@@ -21,11 +21,20 @@ import ItemForm from "../components/item/ItemForm";
 import { ItemType, type Item } from "../lib/types";
 import { computeStockPosition, getLowStockItems } from "../lib/stockUtils";
 import { formatCurrency, formatNumber } from "../lib/utils";
+import { getStockBalance, calculateFIFOLayers } from "../lib/accounting";
 
 type TabKey = "PRODUCT" | "SERVICE" | "ALL";
 
 const StockBook: React.FC = () => {
-  const { items, warehouses, stockMovements, addItem, updateItem, setCurrentPage } = useStore();
+  const {
+    items,
+    warehouses,
+    stockMovements,
+    addItem,
+    updateItem,
+    setCurrentPage,
+    companySettings,
+  } = useStore();
 
   const [activeTab, setActiveTab] = useState<TabKey>("PRODUCT");
   const [search, setSearch] = useState("");
@@ -56,6 +65,14 @@ const StockBook: React.FC = () => {
     const rows = getLowStockItems(stockMovements, items, warehouses);
     return new Set(rows.map((r) => r.id));
   }, [items, warehouses, stockMovements]);
+
+  const lowStockItemsList = useMemo(() => {
+    return items.filter((it) => {
+      if (it.type !== ItemType.PRODUCT) return false;
+      const stock = stockByItem.get(it.id) ?? 0;
+      return it.reorderLevel !== undefined && stock <= it.reorderLevel && it.reorderLevel > 0;
+    });
+  }, [items, stockByItem]);
 
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -209,19 +226,69 @@ const StockBook: React.FC = () => {
     }
   };
 
-  // ===== Detail panel data =====
+  // ===== Detail panel calculations =====
   const detailData = useMemo(() => {
     if (!detailItem) return null;
-    const perWarehouse = warehouses.map((w) => ({
-      warehouse: w,
-      position: computeStockPosition(stockMovements, detailItem.id, w.id),
-    }));
-    const movements = stockMovements
-      .filter((m) => m.itemId === detailItem.id)
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 50);
-    return { perWarehouse, movements };
+    const perWarehouse = warehouses.map((w) => {
+      const bal = getStockBalance(detailItem.id, w.id, stockMovements);
+      return {
+        warehouse: w,
+        position: {
+          qty: bal.qty,
+          avgRate: bal.avgCost,
+          value: bal.value,
+        },
+      };
+    });
+    return { perWarehouse };
   }, [detailItem, warehouses, stockMovements]);
+
+  // Chronological stock movements calculation with running balance
+  const chronologicalMovements = useMemo(() => {
+    if (!detailItem) return [];
+
+    const sorted = stockMovements
+      .filter((m) => m.itemId === detailItem.id)
+      .sort((a, b) => {
+        const dateDiff = a.date.localeCompare(b.date);
+        if (dateDiff !== 0) return dateDiff;
+        return a.id.localeCompare(b.id);
+      });
+
+    const openingQty = detailItem.openingStock || 0;
+    let runningQty = openingQty;
+
+    return sorted.map((m) => {
+      const isIncoming =
+        m.type === "IN" ||
+        m.type === "purchase" ||
+        m.type === "opening" ||
+        m.type === "transfer-in" ||
+        m.type === "sales-return" ||
+        m.type === "adjustment" ||
+        (m.type as string) === "purchase-return-inbound";
+
+      const isOutgoing =
+        m.type === "OUT" ||
+        m.type === "sales" ||
+        m.type === "transfer-out" ||
+        m.type === "purchase-return" ||
+        (m.type as string) === "sales-return-outbound";
+
+      if (isIncoming) {
+        runningQty += m.qty;
+      } else if (isOutgoing) {
+        runningQty -= m.qty;
+      }
+
+      return {
+        ...m,
+        isIncoming,
+        isOutgoing,
+        runningQty,
+      };
+    });
+  }, [detailItem, stockMovements]);
 
   // ===== Render row =====
   const renderRow = (it: Item) => {
@@ -241,7 +308,7 @@ const StockBook: React.FC = () => {
           {it.nameNepali && <div className="text-[11px] text-gray-500">{it.nameNepali}</div>}
         </td>
         <td className="px-3 py-2">
-          <Badge variant={it.type === ItemType.PRODUCT ? "info" : "purple"}>
+          <Badge variant={it.type === ItemType.PRODUCT ? "info" : "primary"}>
             {it.type === ItemType.PRODUCT ? "Product" : "Service"}
           </Badge>
         </td>
@@ -254,30 +321,38 @@ const StockBook: React.FC = () => {
         <td className="px-3 py-2 text-right font-mono">
           {it.type === ItemType.PRODUCT ? (
             <div className="inline-flex items-center justify-end">
-              <span className={isLow ? "text-orange-700 font-bold" : ""}>{formatNumber(stock)}</span>
-              {(stock <= (it.reorderLevel || 0) && (it.reorderLevel || 0) > 0) && (
-                <span className="ml-1.5 badge badge-unpaid text-[9px] bg-red-100 text-red-700 border border-red-205">LOW</span>
+              <span className={isLow ? "text-orange-700 font-bold" : ""}>
+                {formatNumber(stock)}
+              </span>
+              {stock <= (it.reorderLevel || 0) && (it.reorderLevel || 0) > 0 && (
+                <span className="ml-1.5 badge badge-unpaid text-[9px] bg-red-100 text-red-700 border border-red-205">
+                  LOW
+                </span>
               )}
             </div>
           ) : (
             "—"
           )}
         </td>
-        <td className="px-3 py-2 text-center">{it.isTaxable ? "Y" : "N"}</td>
-        <td className="px-3 py-2 text-right font-mono text-gray-500">
-          {it.type === ItemType.PRODUCT ? (it.minimumStock ?? 0) : "—"}
+        <td className="px-3 py-2 text-center text-xs text-gray-650">
+          {it.isTaxable ? `${it.vatRate || 13}%` : "Exempt"}
         </td>
-        <td className="px-3 py-2">
-          <Badge variant={it.isActive ? "success" : "default"}>
-            {it.isActive ? "Active" : "Inactive"}
-          </Badge>
+        <td className="px-3 py-2 text-right font-mono text-gray-500">{it.minimumStock ?? "—"}</td>
+        <td className="px-3 py-2 text-left">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${
+              it.isActive ? "bg-green-500" : "bg-gray-300"
+            }`}
+          />
         </td>
-        <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
+        <td className="px-3 py-2 text-right">
           <Button
             size="xs"
-            variant="ghost"
-            icon={<Edit2 className="h-3.5 w-3.5" />}
-            onClick={() => handleEdit(it)}
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(it);
+            }}
           >
             Edit
           </Button>
@@ -286,17 +361,17 @@ const StockBook: React.FC = () => {
     );
   };
 
-  const tableHeader = (
-    <thead>
-      <tr className="border-b-2 border-gray-200 bg-gray-50 text-[11px] font-bold uppercase text-gray-600">
+  const renderHeader = () => (
+    <thead className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+      <tr>
         <th className="px-3 py-2 text-left">Code</th>
-        <th className="px-3 py-2 text-left">Name</th>
+        <th className="px-3 py-2 text-left">Item Name</th>
         <th className="px-3 py-2 text-left">Type</th>
         <th className="px-3 py-2 text-left">Unit</th>
         <th className="px-3 py-2 text-right">Purchase</th>
         <th className="px-3 py-2 text-right">Sales</th>
         <th className="px-3 py-2 text-right">MRP</th>
-        <th className="px-3 py-2 text-right">Stock</th>
+        <th className="px-3 py-2 text-right">Live Stock</th>
         <th className="px-3 py-2 text-center">Tax</th>
         <th className="px-3 py-2 text-right">Min</th>
         <th className="px-3 py-2 text-left">Status</th>
@@ -306,7 +381,7 @@ const StockBook: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col gap-5 animate-fadeIn">
+    <div className="flex flex-col gap-5 animate-fadeIn page-wrapper">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-4">
         <div>
@@ -365,18 +440,59 @@ const StockBook: React.FC = () => {
         </div>
       </div>
 
+      {/* Low Stock Alerts Section */}
+      {lowStockItemsList.length > 0 && (
+        <div className="bg-orange-50 border border-orange-200 text-orange-950 p-4 rounded-md text-[12px]">
+          <div className="font-bold mb-2 flex items-center gap-1.5">
+            <AlertTriangle className="h-4 w-4 text-orange-600 animate-pulse" />
+            <span>Low Stock Alerts</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {lowStockItemsList.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setDetailItem(item)}
+                className="bg-white px-2.5 py-1 border border-orange-100 rounded-md cursor-pointer hover:bg-orange-100/50 flex items-center gap-2"
+              >
+                <span className="font-semibold text-gray-800">{item.name}</span>
+                <span className="font-mono text-gray-500 font-bold">
+                  ({stockByItem.get(item.id)} left)
+                </span>
+                <span className="px-1.5 py-0.5 bg-orange-100 text-orange-800 text-[9px] font-bold uppercase rounded">
+                  LOW STOCK
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
           { label: "Total Items", value: items.length, color: "#1557b0" },
-          { label: "Low Stock", value: items.filter(i => (stockByItem.get(i.id)||0) <= (i.reorderLevel||0) && (i.reorderLevel||0) > 0).length, color: "#dc2626" },
-          { label: "Out of Stock", value: items.filter(i => (stockByItem.get(i.id)||0) === 0).length, color: "#b45309" },
-          { label: "Active SKUs", value: items.filter(i => i.isActive !== false).length, color: "#15803d" },
+          { label: "Low Stock", value: lowStockItemsList.length, color: "#dc2626" },
+          {
+            label: "Out of Stock",
+            value: items.filter((i) => (stockByItem.get(i.id) || 0) === 0).length,
+            color: "#b45309",
+          },
+          {
+            label: "Active SKUs",
+            value: items.filter((i) => i.isActive !== false).length,
+            color: "#15803d",
+          },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-white border rounded-lg p-3 flex items-center gap-3" style={{ borderColor: "var(--border)" }}>
+          <div
+            key={label}
+            className="bg-white border rounded-lg p-3 flex items-center gap-3"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div className="w-1 h-8 rounded-full shrink-0" style={{ background: color }} />
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                {label}
+              </div>
               <div className="text-[18px] font-bold text-gray-800 leading-none mt-0.5">{value}</div>
             </div>
           </div>
@@ -418,7 +534,7 @@ const StockBook: React.FC = () => {
               type="checkbox"
               checked={groupByCategory}
               onChange={(e) => setGroupByCategory(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+              className="rounded border-gray-300"
             />
             Group by Category
           </label>
@@ -427,74 +543,63 @@ const StockBook: React.FC = () => {
               type="checkbox"
               checked={lowStockOnly}
               onChange={(e) => setLowStockOnly(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+              className="rounded border-gray-300"
             />
-            <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-            Low Stock Only
-            {lowStockSet.size > 0 && <Badge variant="warning">{lowStockSet.size}</Badge>}
+            Low Stock Alerts Only
           </label>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table / Grid */}
       <Card border padding="none">
-        <div className="overflow-x-auto">
-          {filteredItems.length === 0 ? (
-            <EmptyState
-              icon={<Package className="h-8 w-8" />}
-              title="No items found"
-              description={
-                search
-                  ? "Try adjusting your search or filters."
-                  : "Create your first item to get started."
-              }
-            />
-          ) : grouped ? (
-            <table className="data-table">
-              {tableHeader}
-              <tbody>
-                {Object.entries(grouped).map(([cat, list]) => (
-                  <React.Fragment key={cat}>
-                    <tr>
-                      <td
-                        colSpan={12}
-                        className="bg-gray-100 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-700"
-                      >
-                        {cat}{" "}
-                        <span className="ml-2 font-normal text-gray-500">({list.length})</span>
-                      </td>
-                    </tr>
-                    {list.map(renderRow)}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <table className="data-table">
-              {tableHeader}
+        {filteredItems.length === 0 ? (
+          <EmptyState
+            title="No Items Found"
+            description="Try widening your search terms or create a new item above."
+          />
+        ) : groupByCategory && grouped ? (
+          <div className="divide-y divide-gray-150">
+            {Object.entries(grouped).map(([category, list]) => (
+              <div key={category} className="p-3">
+                <h4 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  {category}
+                </h4>
+                <div className="overflow-x-auto">
+                  <table className="data-table w-full">
+                    {renderHeader()}
+                    <tbody>{list.map(renderRow)}</tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="data-table w-full">
+              {renderHeader()}
               <tbody>{paginatedItems.map(renderRow)}</tbody>
             </table>
-          )}
-        </div>
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          totalRecords={filteredItems.length}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={(s) => {
-            setPageSize(s);
-            setPage(1);
-          }}
-        />
+            {totalPages > 1 && (
+              <div className="border-t border-gray-200 p-3">
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  totalRecords={filteredItems.length}
+                  pageSize={pageSize}
+                  onPageChange={setPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </Card>
 
-      {/* Item Form Modal */}
+      {/* Create / Edit Modal */}
       <Modal
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}
-        title={editing ? `Edit Item — ${editing.name}` : "New Item"}
-        size="full"
+        title={editing ? "Edit Item" : "Create Item"}
       >
         <ItemForm item={editing} onSave={handleSave} onCancel={() => setFormOpen(false)} />
       </Modal>
@@ -512,7 +617,7 @@ const StockBook: React.FC = () => {
                   <div className="text-xs text-gray-500">{detailItem.nameNepali}</div>
                 )}
                 <div className="mt-1 flex items-center gap-2">
-                  <Badge variant={detailItem.type === ItemType.PRODUCT ? "info" : "purple"}>
+                  <Badge variant={detailItem.type === ItemType.PRODUCT ? "info" : "primary"}>
                     {detailItem.type}
                   </Badge>
                   {detailItem.hsnCode && <Badge variant="default">HSN: {detailItem.hsnCode}</Badge>}
@@ -554,33 +659,37 @@ const StockBook: React.FC = () => {
                 </div>
               </section>
 
-              {detailItem.type === ItemType.PRODUCT && (
+              {/* Warehouse summary breakup */}
+              {detailItem.type === ItemType.PRODUCT && warehouses.length > 1 && (
                 <section>
                   <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                    Stock by Warehouse
+                    Stock Summary by Warehouse
                   </h4>
-                  <div className="overflow-hidden rounded border border-gray-200">
+                  <div className="overflow-hidden rounded border border-gray-200 bg-white">
                     <table className="w-full text-sm">
                       <thead className="bg-gray-50 text-[11px] uppercase text-gray-600">
                         <tr>
                           <th className="px-3 py-2 text-left">Warehouse</th>
-                          <th className="px-3 py-2 text-right">Qty</th>
+                          <th className="px-3 py-2 text-right">Quantity</th>
                           <th className="px-3 py-2 text-right">Avg Rate</th>
-                          <th className="px-3 py-2 text-right">Value</th>
+                          <th className="px-3 py-2 text-right">Valuation</th>
                         </tr>
                       </thead>
                       <tbody>
                         {detailData.perWarehouse.map(({ warehouse, position }) => (
-                          <tr key={warehouse.id} className="border-t border-gray-100">
-                            <td className="px-3 py-2">{warehouse.name}</td>
-                            <td className="px-3 py-2 text-right font-mono">
-                              {formatNumber(position.qty)}
+                          <tr
+                            key={warehouse.id}
+                            className="border-t border-gray-100 font-mono text-xs"
+                          >
+                            <td className="px-3 py-2 text-left font-sans font-semibold">
+                              {warehouse.name}
                             </td>
-                            <td className="px-3 py-2 text-right font-mono">
-                              {formatNumber(position.avgRate)}
+                            <td className="px-3 py-2 text-right">{formatNumber(position.qty)}</td>
+                            <td className="px-3 py-2 text-right">
+                              Rs. {formatNumber(position.avgRate)}
                             </td>
-                            <td className="px-3 py-2 text-right font-mono">
-                              {formatNumber(position.value)}
+                            <td className="px-3 py-2 text-right font-bold">
+                              Rs. {formatNumber(position.value)}
                             </td>
                           </tr>
                         ))}
@@ -590,40 +699,148 @@ const StockBook: React.FC = () => {
                 </section>
               )}
 
+              {/* FIFO Stock Ageing details */}
+              {detailItem.type === ItemType.PRODUCT && (
+                <section>
+                  <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                    FIFO Stock Ageing
+                  </h4>
+                  {(() => {
+                    const layers = calculateFIFOLayers(detailItem.id, stockMovements);
+                    if (layers.length === 0) {
+                      return (
+                        <div className="text-xs text-gray-500 p-2 border border-dashed rounded text-center">
+                          No stock layers currently available.
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="overflow-hidden rounded border border-gray-200 bg-white">
+                        <table className="w-full text-sm">
+                          <thead className="bg-gray-50 text-[11px] uppercase text-gray-600">
+                            <tr>
+                              <th className="px-3 py-2 text-left">In Date</th>
+                              <th className="px-3 py-2 text-right">Layer Qty</th>
+                              <th className="px-3 py-2 text-right">Cost Rate</th>
+                              <th className="px-3 py-2 text-right">Sitting Age</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {layers.map((layer, index) => {
+                              const purchaseDate = new Date(layer.date);
+                              const today = new Date();
+                              const ageDays = Math.max(
+                                0,
+                                Math.floor(
+                                  (today.getTime() - purchaseDate.getTime()) /
+                                    (1000 * 60 * 60 * 24),
+                                ),
+                              );
+                              return (
+                                <tr
+                                  key={index}
+                                  className="border-t border-gray-100 font-mono text-xs"
+                                >
+                                  <td className="px-3 py-2 text-left">{layer.date}</td>
+                                  <td className="px-3 py-2 text-right">
+                                    {formatNumber(layer.qty)}
+                                  </td>
+                                  <td className="px-3 py-2 text-right">
+                                    Rs. {formatNumber(layer.cost)}
+                                  </td>
+                                  <td
+                                    className={`px-3 py-2 text-right font-bold ${ageDays > 90 ? "text-red-600" : ageDays > 30 ? "text-amber-600" : "text-green-600"}`}
+                                  >
+                                    {ageDays} days
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
+                </section>
+              )}
+
+              {/* Movement History with Opening Stock & Running Balance */}
               <section>
                 <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                  Recent Stock Movements
+                  Stock Movements History & Running Balance
                 </h4>
-                {detailData.movements.length === 0 ? (
+                {chronologicalMovements.length === 0 && !detailItem.openingStock ? (
                   <div className="rounded border border-dashed border-gray-200 p-4 text-center text-xs text-gray-500">
                     No stock movements yet.
                   </div>
                 ) : (
-                  <div className="max-h-64 overflow-y-auto rounded border border-gray-200">
+                  <div className="max-h-64 overflow-y-auto rounded border border-gray-200 bg-white">
                     <table className="w-full text-xs">
-                      <thead className="sticky top-0 bg-gray-50 text-[10px] uppercase text-gray-600">
+                      <thead className="sticky top-0 bg-gray-50 text-[10px] uppercase text-gray-650">
                         <tr>
                           <th className="px-2 py-1.5 text-left">Date</th>
                           <th className="px-2 py-1.5 text-left">Type</th>
                           <th className="px-2 py-1.5 text-left">Ref</th>
-                          <th className="px-2 py-1.5 text-right">Qty</th>
+                          <th className="px-2 py-1.5 text-right">In Qty</th>
+                          <th className="px-2 py-1.5 text-right">Out Qty</th>
                           <th className="px-2 py-1.5 text-right">Rate</th>
+                          <th className="px-2 py-1.5 text-right">Running Qty</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {detailData.movements.map((m) => (
-                          <tr key={m.id} className="border-t border-gray-100">
-                            <td className="px-2 py-1.5 font-mono">{m.date}</td>
-                            <td className="px-2 py-1.5">{m.type}</td>
-                            <td className="px-2 py-1.5 text-gray-500">{m.referenceNo ?? "—"}</td>
-                            <td className="px-2 py-1.5 text-right font-mono">
-                              {formatNumber(m.qty)}
-                            </td>
-                            <td className="px-2 py-1.5 text-right font-mono">
-                              {formatNumber(m.rate)}
-                            </td>
-                          </tr>
-                        ))}
+                        {/* 1. Show Opening Stock Row at the top */}
+                        {detailItem.type === ItemType.PRODUCT &&
+                          (detailItem.openingStock || 0) > 0 && (
+                            <tr className="border-t border-gray-100 bg-blue-50/50">
+                              <td className="px-2 py-1.5 font-mono">Opening</td>
+                              <td className="px-2 py-1.5 font-semibold text-blue-700">OPENING</td>
+                              <td className="px-2 py-1.5 text-gray-500">—</td>
+                              <td className="px-2 py-1.5 text-right font-mono">
+                                {formatNumber(detailItem.openingStock || 0)}
+                              </td>
+                              <td className="px-2 py-1.5 text-right font-mono">—</td>
+                              <td className="px-2 py-1.5 text-right font-mono">
+                                Rs. {formatNumber(detailItem.openingStockRate || 0)}
+                              </td>
+                              <td className="px-2 py-1.5 text-right font-mono font-bold text-blue-800">
+                                {formatNumber(detailItem.openingStock || 0)}
+                              </td>
+                            </tr>
+                          )}
+                        {/* 2. Show Subsequent Movements */}
+                        {chronologicalMovements.map((m) => {
+                          const isNegative =
+                            m.runningQty < 0 && !companySettings?.allowNegativeStock;
+                          const rowClass = isNegative
+                            ? "bg-red-50 text-red-900 border-red-200 font-semibold"
+                            : "border-t border-gray-100 hover:bg-gray-50";
+                          return (
+                            <tr key={m.id} className={rowClass}>
+                              <td className="px-2 py-1.5 font-mono">{m.date}</td>
+                              <td className="px-2 py-1.5 font-medium uppercase">{m.type}</td>
+                              <td className="px-2 py-1.5 text-gray-500">{m.referenceNo ?? "—"}</td>
+                              <td className="px-2 py-1.5 text-right font-mono text-green-700">
+                                {m.isIncoming ? formatNumber(m.qty) : "—"}
+                              </td>
+                              <td className="px-2 py-1.5 text-right font-mono text-red-650">
+                                {m.isOutgoing ? formatNumber(m.qty) : "—"}
+                              </td>
+                              <td className="px-2 py-1.5 text-right font-mono">
+                                Rs. {formatNumber(m.rate)}
+                              </td>
+                              <td
+                                className={`px-2 py-1.5 text-right font-mono font-bold ${isNegative ? "text-red-700 font-extrabold" : "text-gray-800"}`}
+                              >
+                                {formatNumber(m.runningQty)}
+                                {isNegative && (
+                                  <span className="ml-1 text-[9px] bg-red-200 text-red-800 px-1 py-0.5 rounded animate-pulse">
+                                    NEG
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

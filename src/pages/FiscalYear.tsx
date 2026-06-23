@@ -71,14 +71,10 @@ export default function FiscalYear() {
       [FiscalYearStatus.CLOSED]: "Closed",
       [FiscalYearStatus.FUTURE]: "Future",
     };
-    return (
-      <span className={classes[status] || "badge"}>
-        {labels[status]}
-      </span>
-    );
+    return <span className={classes[status] || "badge"}>{labels[status]}</span>;
   };
 
-  const hasFutureFY = fiscalYears.some(fy => fy.status === FiscalYearStatus.FUTURE);
+  const hasFutureFY = fiscalYears.some((fy) => fy.status === FiscalYearStatus.FUTURE);
 
   return (
     <div className="flex flex-col gap-4 animate-fadeIn pb-4">
@@ -225,7 +221,11 @@ export default function FiscalYear() {
                       {fy.status === FiscalYearStatus.ACTIVE && (
                         <button
                           onClick={() => {
-                            if (confirm("Closing FY will prevent new entries. P&L will be transferred to retained earnings. This cannot be undone. Proceed?")) {
+                            if (
+                              confirm(
+                                "Closing FY will prevent new entries. P&L will be transferred to retained earnings. This cannot be undone. Proceed?",
+                              )
+                            ) {
                               handleClose(fy.id);
                             }
                           }}
@@ -329,4 +329,3 @@ export default function FiscalYear() {
     </div>
   );
 }
-

@@ -1,5 +1,4 @@
-// @ts-nocheck
-type LovableErrorOptions = {
+﻿type LovableErrorOptions = {
   mechanism?: "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
   handled?: boolean;
   severity?: "error" | "warning" | "info";

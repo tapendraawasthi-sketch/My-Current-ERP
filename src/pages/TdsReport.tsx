@@ -1,38 +1,125 @@
-import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
+import React, { useState, useMemo } from "react";
+import { ActionToolbar, Card, PartySelect, Button } from "../components/ui";
 import { FileText, Download, CheckSquare, FileCheck } from "lucide-react";
 import { useStore } from "../store/useStore";
-import { PartySelect, Button } from "../components/ui";
 import { generateTDSCertificate } from "../lib/tdsCertificate";
+import { formatADToBS } from "../lib/nepaliDate";
 import toast from "react-hot-toast";
+import { Party, TdsEntry } from "../lib/types";
+
+const formatNumber = (num: number) => {
+  return new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num);
+};
 
 export default function TdsReport() {
   const {
     tdsEntries,
     parties,
+    vouchers,
     companySettings,
-    reportFilters: { startDate, endDate },
+    reportFilters: { startDate: storeStartDate, endDate: storeEndDate },
   } = useStore();
 
   const [filters, setFilters] = useState({
-    startDate: startDate || "",
-    endDate: endDate || "",
+    startDate: storeStartDate || "",
+    endDate: storeEndDate || "",
     tdsType: "",
-    party: "",
     status: "All",
   });
+
   const [selectedPartyFilter, setSelectedPartyFilter] = useState("");
   const [selectedEntries, setSelectedEntries] = useState<Set<string>>(new Set());
   const [quarterFilter, setQuarterFilter] = useState("all");
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [depositData, setDepositData] = useState({ challanNo: "", depositDate: "" });
-  const totalDeducted = tdsEntries.reduce((sum, e) => sum + e.tdsAmount, 0);
-  const totalDeposited = tdsEntries
-    .filter((e) => e.deposited)
-    .reduce((sum, e) => sum + e.tdsAmount, 0);
-  const totalPending = tdsEntries
-    .filter((e) => !e.deposited)
-    .reduce((sum, e) => sum + e.tdsAmount, 0);
+
+  // Certificate Modal State
+  const [certModalParty, setCertModalParty] = useState<Party | null>(null);
+  const [certModalEntries, setCertModalEntries] = useState<TdsEntry[]>([]);
+
+  // Filter entries based on selections
+  const filteredEntries = useMemo(() => {
+    return tdsEntries.filter((entry) => {
+      // Date filter
+      if (filters.startDate && entry.date < filters.startDate) return false;
+      if (filters.endDate && entry.date > filters.endDate) return false;
+
+      // TDS Type filter
+      if (filters.tdsType && entry.tdsType !== filters.tdsType) return false;
+
+      // Party filter
+      if (selectedPartyFilter && entry.partyId !== selectedPartyFilter) return false;
+
+      // Status filter
+      if (filters.status !== "All") {
+        const isDep = entry.deposited || false;
+        if (filters.status === "Deposited" && !isDep) return false;
+        if (filters.status === "Pending" && isDep) return false;
+      }
+
+      // Quarter filter
+      if (quarterFilter !== "all") {
+        const dateNepali = entry.dateNepali || "";
+        const parts = dateNepali.split("/");
+        if (parts.length >= 2) {
+          const month = parseInt(parts[1], 10);
+          if (quarterFilter === "q1" && !(month >= 4 && month <= 6)) return false;
+          if (quarterFilter === "q2" && !(month >= 7 && month <= 9)) return false;
+          if (quarterFilter === "q3" && !(month >= 10 && month <= 12)) return false;
+          if (quarterFilter === "q4" && !(month >= 1 && month <= 3)) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [tdsEntries, filters, selectedPartyFilter, quarterFilter]);
+
+  // Overall KPI sums based on filtered entries
+  const totalDeducted = useMemo(
+    () => filteredEntries.reduce((sum, e) => sum + e.tdsAmount, 0),
+    [filteredEntries],
+  );
+  const totalDeposited = useMemo(
+    () => filteredEntries.filter((e) => e.deposited).reduce((sum, e) => sum + e.tdsAmount, 0),
+    [filteredEntries],
+  );
+  const totalPending = useMemo(
+    () => filteredEntries.filter((e) => !e.deposited).reduce((sum, e) => sum + e.tdsAmount, 0),
+    [filteredEntries],
+  );
+
+  // TDS Payable Summary grouped by category (TDS type) - not yet deposited
+  const tdsPayableByCategory = useMemo(() => {
+    const summary: Record<string, { gross: number; tds: number; category: string }> = {};
+    tdsEntries.forEach((entry) => {
+      if (!entry.deposited) {
+        const cat = entry.tdsType || "Other";
+        if (!summary[cat]) {
+          summary[cat] = { gross: 0, tds: 0, category: cat };
+        }
+        summary[cat].gross += entry.grossAmount;
+        summary[cat].tds += entry.tdsAmount;
+      }
+    });
+    return Object.values(summary);
+  }, [tdsEntries]);
+
+  // Non-compliant payments validation warning (payment vouchers > 50,000 without TDS)
+  const nonCompliantPayments = useMemo(() => {
+    return (vouchers || []).filter((v) => {
+      if (v.status !== "posted") return false;
+      if (v.type !== "payment") return false;
+
+      const amt = v.grandTotal || v.totalDebit || 0;
+      if (amt < 50000) return false;
+
+      const hasTds = tdsEntries.some((e) => e.voucherId === v.id && e.tdsAmount > 0);
+      return !hasTds;
+    });
+  }, [vouchers, tdsEntries]);
 
   const toggleSelection = (id: string) => {
     const newSelected = new Set(selectedEntries);
@@ -46,7 +133,7 @@ export default function TdsReport() {
 
   const handleBulkDeposit = () => {
     if (selectedEntries.size === 0) {
-      alert("Please select entries to deposit");
+      toast.error("Please select entries to deposit");
       return;
     }
     setShowDepositModal(true);
@@ -54,167 +141,193 @@ export default function TdsReport() {
 
   const confirmDeposit = () => {
     if (!depositData.challanNo || !depositData.depositDate) {
-      alert("Please enter Challan No and Deposit Date");
+      toast.error("Please enter Challan No and Deposit Date");
       return;
     }
-    alert(`${selectedEntries.size} entries marked as deposited`);
+    toast.success(`${selectedEntries.size} entries marked as deposited`);
     setShowDepositModal(false);
     setSelectedEntries(new Set());
     setDepositData({ challanNo: "", depositDate: "" });
   };
 
-  const exportAnnex = (type: "11A" | "12B") => {
-    alert(`Exporting Annex ${type} in IRD-compatible format`);
+  const openCertModalForParty = (partyId: string) => {
+    const party = parties.find((p) => p.id === partyId);
+    if (!party) {
+      toast.error("Deductee party not found");
+      return;
+    }
+    const partyEntries = tdsEntries.filter(
+      (e) => e.partyId === partyId && e.date >= filters.startDate && e.date <= filters.endDate,
+    );
+    if (!partyEntries.length) {
+      toast.error("No TDS entries for selected party in this period");
+      return;
+    }
+    setCertModalParty(party);
+    setCertModalEntries(partyEntries);
   };
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="TDS Report" subtitle="Tax Deducted at Source register" />
+    <div className="space-y-6 page-wrapper">
+      <ActionToolbar
+        title="TDS Report"
+        subtitle="Nepal IRD Tax Deducted at Source (TDS) registers"
+      />
+
+      {/* Validation Warnings for Service Payments > 50,000 without TDS */}
+      {nonCompliantPayments.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-md text-[12px] animate-fadeIn">
+          <div className="font-bold mb-1">
+            TDS may be applicable for the following payments (exceeds Rs. 50,000 threshold with no
+            TDS applied):
+          </div>
+          <ul className="list-disc list-inside space-y-1 font-mono">
+            {nonCompliantPayments.map((v) => (
+              <li key={v.id}>
+                Voucher {v.voucherNo} for {v.partyName || "Unknown Party"} — Rs.{" "}
+                {formatNumber(v.grandTotal || v.totalDebit || 0)} on {v.date}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">TDS Report</h1>
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">TDS Registers & Summaries</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Generate certificates and track IRD submissions
+          </p>
+        </div>
         <div className="flex space-x-2">
           {selectedPartyFilter && (
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<FileText className="h-4 w-4" />}
-              onClick={() => {
-                const party = parties.find((p) => p.id === selectedPartyFilter);
-                if (!party) {
-                  toast.error("Select a party first");
-                  return;
-                }
-                const partyEntries = tdsEntries.filter(
-                  (e) =>
-                    e.partyId === selectedPartyFilter && e.date >= startDate && e.date <= endDate,
-                );
-                if (!partyEntries.length) {
-                  toast.error("No TDS entries for selected party/period");
-                  return;
-                }
-                generateTDSCertificate({
-                  party,
-                  entries: partyEntries,
-                  period: { startDate, endDate },
-                  settings: companySettings,
-                });
-              }}
+            <button
+              onClick={() => openCertModalForParty(selectedPartyFilter)}
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-semibold rounded-md hover:bg-gray-50 flex items-center gap-1.5 cursor-pointer"
             >
-              Generate TDS Certificate
-            </Button>
+              <FileText className="h-4 w-4 text-[#1557b0]" />
+              <span>Generate TDS Certificate</span>
+            </button>
           )}
-          <button
-            onClick={() => exportAnnex("11A")}
-            className="btn-primary flex items-center space-x-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export Annex 11A</span>
-          </button>
-          <button
-            onClick={() => exportAnnex("12B")}
-            className="btn-primary flex items-center space-x-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export Annex 12B</span>
-          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total TDS Deducted</p>
-              <p className="text-2xl font-bold text-gray-900">
-                Rs. {totalDeducted.toLocaleString()}
-              </p>
-            </div>
-            <FileText className="w-12 h-12 text-[#1557b0]" />
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-4 rounded-md border border-gray-200">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            Total TDS Deducted
+          </p>
+          <p className="text-lg font-bold text-gray-900 font-mono mt-1">
+            Rs. {formatNumber(totalDeducted)}
+          </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Deposited</p>
-              <p className="text-2xl font-bold text-green-600">
-                Rs. {totalDeposited.toLocaleString()}
-              </p>
-            </div>
-            <CheckSquare className="w-12 h-12 text-green-600" />
-          </div>
+        <div className="bg-white p-4 rounded-md border border-gray-200">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            Total Deposited
+          </p>
+          <p className="text-lg font-bold text-green-600 font-mono mt-1">
+            Rs. {formatNumber(totalDeposited)}
+          </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Pending</p>
-              <p className="text-2xl font-bold text-orange-600">
-                Rs. {totalPending.toLocaleString()}
-              </p>
-            </div>
-            <FileCheck className="w-12 h-12 text-orange-600" />
-          </div>
+        <div className="bg-white p-4 rounded-md border border-gray-200">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            Total Pending Deposit
+          </p>
+          <p className="text-lg font-bold text-red-600 font-mono mt-1">
+            Rs. {formatNumber(totalPending)}
+          </p>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="grid grid-cols-5 gap-4">
+      {/* TDS Payable Summary Grouped by Category */}
+      <div className="bg-white p-4 rounded-md border border-gray-200">
+        <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-500 mb-3">
+          TDS Payable Summary (Undeposited totals)
+        </h2>
+        {tdsPayableByCategory.length === 0 ? (
+          <p className="text-[12px] text-gray-500">No pending TDS deposits to display.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="data-table w-full">
+              <thead>
+                <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+                  <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                    TDS Category
+                  </th>
+                  <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                    Gross Amount
+                  </th>
+                  <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                    Pending TDS to Deposit
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tdsPayableByCategory.map((cat, idx) => (
+                  <tr key={idx} className="hover:bg-[#e8eeff]">
+                    <td className="px-3 py-[7px] text-[12px] text-gray-700 font-semibold">
+                      {cat.category}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                      Rs. {formatNumber(cat.gross)}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono text-[#dc2626] font-bold">
+                      Rs. {formatNumber(cat.tds)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white p-4 rounded-md border border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-1">Start Date</label>
             <input
               type="date"
               value={filters.startDate}
               onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              className="input"
+              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-1">End Date</label>
             <input
               type="date"
               value={filters.endDate}
               onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              className="input"
+              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">TDS Type</label>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+              TDS Category
+            </label>
             <select
               value={filters.tdsType}
               onChange={(e) => setFilters({ ...filters, tdsType: e.target.value })}
-              className="input"
+              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
               <option value="">All Types</option>
-              <option value="194C">194C - Contractor</option>
-              <option value="194J">194J - Professional</option>
-              <option value="194H">194H - Commission</option>
-              <option value="194I">194I - Rent</option>
+              <option value="contractor">Contractor (194C)</option>
+              <option value="consultancy">Consultancy (194J)</option>
+              <option value="rent">Rent (194I)</option>
+              <option value="commission">Commission (194H)</option>
+              <option value="salary">Salary (192)</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Party</label>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-1">Party</label>
             <PartySelect
               value={selectedPartyFilter}
-              onChange={(val) => {
-                setSelectedPartyFilter(val);
-                const matched = parties.find((p) => p.id === val);
-                setFilters({ ...filters, party: matched ? matched.name : "" });
-              }}
+              onChange={(val) => setSelectedPartyFilter(val)}
               placeholder="Select party"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              value={filters.status}
-              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-              className="input"
-            >
-              <option value="All">All</option>
-              <option value="Deposited">Deposited</option>
-              <option value="Pending">Pending</option>
-            </select>
           </div>
         </div>
 
@@ -245,142 +358,308 @@ export default function TdsReport() {
       </div>
 
       {selectedEntries.size > 0 && (
-        <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-lg flex items-center justify-between">
-          <span className="text-sm text-indigo-900">{selectedEntries.size} entries selected</span>
-          <button onClick={handleBulkDeposit} className="btn-primary">
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-md flex items-center justify-between">
+          <span className="text-[12px] text-blue-900 font-semibold">
+            {selectedEntries.size} entries selected
+          </span>
+          <button
+            onClick={handleBulkDeposit}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
+          >
             Mark as Deposited
           </button>
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="data-table">
+          <table className="data-table w-full">
             <thead>
-              <tr>
-                <th className="px-2 py-3">
-                  <input type="checkbox" className="rounded border-gray-300" />
+              <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+                <th className="px-3 py-2 text-left">
+                  <input
+                    type="checkbox"
+                    className="rounded border-gray-300 cursor-pointer"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        const pendings = filteredEntries
+                          .filter((en) => !en.deposited)
+                          .map((en) => en.id);
+                        setSelectedEntries(new Set(pendings));
+                      } else {
+                        setSelectedEntries(new Set());
+                      }
+                    }}
+                  />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Date
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                  Date (BS)
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Party Name
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                  Payee Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
                   PAN
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  TDS Type
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                  Nature of Payment
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Section
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  Gross Amount
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Gross Amt
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  TDS Rate%
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Rate %
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  TDS Amount
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  TDS Amt
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
+                  Net Paid
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Net Amt
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Deposit Date
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
+                  Challan / Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Challan
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {tdsEntries.map((entry) => (
-                <tr key={entry.id} className="hover:bg-gray-50">
-                  <td className="px-2 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedEntries.has(entry.id)}
-                      onChange={() => toggleSelection(entry.id)}
-                      className="rounded border-gray-300"
-                      disabled={entry.deposited}
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {new Date(entry.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{entry.partyName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {entry.partyPan || "-"}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{entry.tdsType}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {entry.section || "88"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 amt">
-                    {entry.grossAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500 amt">
-                    {entry.tdsRate}%
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900 amt">
-                    {entry.tdsAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 amt">
-                    {entry.netAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        entry.deposited
-                          ? "bg-green-100 text-green-800"
-                          : "bg-orange-100 text-orange-800"
-                      }`}
-                    >
-                      {entry.deposited ? "Deposited" : "Pending"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {entry.depositDate ? new Date(entry.depositDate).toLocaleDateString() : "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {entry.depositChallanNo || "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => {
-                        const party = parties.find((p) => p.id === entry.partyId);
-                        if (!party) {
-                          toast.error("Deductee party not found");
-                          return;
-                        }
-                        generateTDSCertificate({
-                          party,
-                          entries: [entry],
-                          period: { startDate: entry.date, endDate: entry.date },
-                          settings: companySettings,
-                        });
-                      }}
-                      className="text-[#1557b0] hover:text-indigo-900"
-                    >
-                      Certificate
-                    </button>
+            <tbody>
+              {filteredEntries.length === 0 ? (
+                <tr>
+                  <td colSpan={12} className="text-center py-8 text-gray-500 text-[12px]">
+                    No TDS entries found matching active filters.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredEntries.map((entry) => (
+                  <tr key={entry.id} className="hover:bg-[#e8eeff] border-b border-gray-150">
+                    <td className="px-3 py-[7px]">
+                      <input
+                        type="checkbox"
+                        checked={selectedEntries.has(entry.id)}
+                        onChange={() => toggleSelection(entry.id)}
+                        className="rounded border-gray-300 cursor-pointer"
+                        disabled={entry.deposited}
+                      />
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-gray-700 whitespace-nowrap">
+                      {entry.dateNepali || formatADToBS(entry.date)}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-gray-700 font-semibold">
+                      {entry.partyName}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">
+                      {entry.partyPan || "-"}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-gray-700 uppercase">
+                      {entry.tdsType}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                      Rs. {formatNumber(entry.grossAmount)}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                      {entry.tdsRate}%
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono text-red-600 font-bold">
+                      Rs. {formatNumber(entry.tdsAmount)}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
+                      Rs. {formatNumber(entry.netAmount)}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px]">
+                      <span
+                        className={`badge ${
+                          entry.deposited
+                            ? "bg-green-100 text-green-700 border border-green-200"
+                            : "bg-red-50 text-red-700 border border-red-200"
+                        }`}
+                      >
+                        {entry.deposited ? "Deposited" : "Pending"}
+                      </span>
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-gray-500 font-mono">
+                      {entry.deposited ? (
+                        <>
+                          <div>Ch: {entry.depositChallanNo || "-"}</div>
+                          <div className="text-[10px]">
+                            {entry.depositDate ? formatADToBS(entry.depositDate) : ""}
+                          </div>
+                        </>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                    <td className="px-3 py-[7px] text-[12px] text-right">
+                      <button
+                        onClick={() => {
+                          const party = parties.find((p) => p.id === entry.partyId);
+                          if (!party) {
+                            toast.error("Deductee party not found");
+                            return;
+                          }
+                          setCertModalParty(party);
+                          setCertModalEntries([entry]);
+                        }}
+                        className="text-[#1557b0] hover:text-[#0f4a96] font-semibold cursor-pointer"
+                      >
+                        Certificate
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* TDS Certificate Print Preview Modal */}
+      {certModalParty && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b pb-3 mb-4">
+              <h3 className="text-[14px] font-bold text-gray-900 uppercase">
+                TDS Certificate Preview
+              </h3>
+              <button
+                onClick={() => setCertModalParty(null)}
+                className="text-gray-500 hover:text-gray-700 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Certificate IRD format preview */}
+            <div className="border border-gray-300 p-6 bg-gray-50 rounded-md font-sans text-xs space-y-4">
+              <div className="text-center font-bold text-sm">
+                TDS CERTIFICATE
+                <div className="text-[10px] font-normal text-gray-500 mt-1">
+                  (Under Income Tax Act, 2058)
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border p-3 bg-white rounded">
+                  <div className="font-bold text-[10px] uppercase text-gray-500 mb-1">
+                    Deductor Details
+                  </div>
+                  <div>
+                    <strong>Name:</strong> {companySettings.name}
+                  </div>
+                  <div>
+                    <strong>PAN:</strong> {companySettings.panNumber}
+                  </div>
+                  <div>
+                    <strong>Address:</strong> {companySettings.address || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Period:</strong> {filters.startDate || storeStartDate} to{" "}
+                    {filters.endDate || storeEndDate}
+                  </div>
+                </div>
+                <div className="border p-3 bg-white rounded">
+                  <div className="font-bold text-[10px] uppercase text-gray-500 mb-1">
+                    Deductee Details
+                  </div>
+                  <div>
+                    <strong>Name:</strong> {certModalParty.name}
+                  </div>
+                  <div>
+                    <strong>PAN:</strong> {certModalParty.pan || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Address:</strong> {certModalParty.address || "N/A"}
+                  </div>
+                </div>
+              </div>
+
+              <table className="w-full border-collapse border border-gray-300 text-left bg-white text-[12px]">
+                <thead>
+                  <tr className="bg-gray-100 font-semibold">
+                    <th className="border p-2">S.N.</th>
+                    <th className="border p-2">Date (BS)</th>
+                    <th className="border p-2">Nature</th>
+                    <th className="border p-2">Section</th>
+                    <th className="border p-2 text-right">Gross Amount</th>
+                    <th className="border p-2 text-right">TDS Rate</th>
+                    <th className="border p-2 text-right">TDS Amount</th>
+                    <th className="border p-2 text-right">Net Paid</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {certModalEntries.map((e, idx) => (
+                    <tr key={e.id}>
+                      <td className="border p-2">{idx + 1}</td>
+                      <td className="border p-2">{e.dateNepali || formatADToBS(e.date)}</td>
+                      <td className="border p-2 uppercase">{e.tdsType}</td>
+                      <td className="border p-2">{e.section || "88"}</td>
+                      <td className="border p-2 text-right font-mono">
+                        {formatNumber(e.grossAmount)}
+                      </td>
+                      <td className="border p-2 text-right">{e.tdsRate}%</td>
+                      <td className="border p-2 text-right font-mono font-semibold text-red-600">
+                        Rs. {formatNumber(e.tdsAmount)}
+                      </td>
+                      <td className="border p-2 text-right font-mono">
+                        {formatNumber(e.netAmount)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="font-bold bg-gray-50">
+                    <td colSpan={4} className="border p-2 text-right">
+                      Total
+                    </td>
+                    <td className="border p-2 text-right font-mono">
+                      Rs. {formatNumber(certModalEntries.reduce((s, e) => s + e.grossAmount, 0))}
+                    </td>
+                    <td className="border p-2"></td>
+                    <td className="border p-2 text-right font-mono text-red-600">
+                      Rs. {formatNumber(certModalEntries.reduce((s, e) => s + e.tdsAmount, 0))}
+                    </td>
+                    <td className="border p-2 text-right font-mono">
+                      Rs. {formatNumber(certModalEntries.reduce((s, e) => s + e.netAmount, 0))}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                onClick={() => setCertModalParty(null)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-[12px] font-semibold cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  generateTDSCertificate({
+                    party: certModalParty,
+                    entries: certModalEntries,
+                    period: {
+                      startDate: filters.startDate || storeStartDate,
+                      endDate: filters.endDate || storeEndDate,
+                    },
+                    settings: companySettings,
+                  });
+                  toast.success("TDS Certificate PDF downloaded.");
+                }}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mark Deposit Modal */}
       {showDepositModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -392,7 +671,7 @@ export default function TdsReport() {
                   type="text"
                   value={depositData.challanNo}
                   onChange={(e) => setDepositData({ ...depositData, challanNo: e.target.value })}
-                  className="input"
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   placeholder="Enter challan number"
                 />
               </div>
@@ -404,18 +683,21 @@ export default function TdsReport() {
                   type="date"
                   value={depositData.depositDate}
                   onChange={(e) => setDepositData({ ...depositData, depositDate: e.target.value })}
-                  className="input"
+                  className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 />
               </div>
             </div>
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={() => setShowDepositModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-[12px] cursor-pointer"
               >
                 Cancel
               </button>
-              <button onClick={confirmDeposit} className="btn-primary">
+              <button
+                onClick={confirmDeposit}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
+              >
                 Confirm Deposit
               </button>
             </div>
