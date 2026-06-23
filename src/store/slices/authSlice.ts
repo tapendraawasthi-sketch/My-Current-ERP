@@ -120,6 +120,11 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         standardNarrations,
         billWiseEntries,
         interestSlabs,
+        fixedAssets,
+        depreciationBlocks,
+        billsOfMaterial,
+        productionVouchers,
+        physicalStockVouchers,
       ] = await Promise.all([
         db.accounts.toArray(),
         db.vouchers.toArray(),
@@ -154,6 +159,11 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         db.standardNarrations.toArray(),
         db.billWiseEntries.toArray(),
         db.interestSlabs.toArray(),
+        db.fixedAssets.toArray(),
+        db.depreciationBlocks.toArray(),
+        db.billsOfMaterial.toArray(),
+        db.productionVouchers.toArray(),
+        db.physicalStockVouchers.toArray(),
       ]);
 
       const companySettings = companySettingsArr[0] || get().companySettings;
@@ -240,6 +250,11 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         standardNarrations,
         billWiseEntries,
         interestSlabs: loadedInterestSlabs,
+        fixedAssets,
+        depreciationBlocks,
+        billsOfMaterial,
+        productionVouchers,
+        physicalStockVouchers,
         isDbReady: true,
       });
 

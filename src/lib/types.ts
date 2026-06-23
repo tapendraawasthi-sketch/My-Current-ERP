@@ -136,6 +136,9 @@ export enum MovementType {
   TRANSFER_OUT = "transfer-out",
   OPENING = "opening",
   ADJUSTMENT = "adjustment",
+  PRODUCTION_IN = "production-in",
+  PRODUCTION_OUT = "production-out",
+  PHYSICAL_ADJUSTMENT = "physical-adjustment",
 }
 
 export enum ReportPeriodPreset {
@@ -1109,4 +1112,126 @@ export interface InterestCalculationResult {
   ratePercent: number;
   interestAmount: number;
   totalWithInterest: number;
+}
+
+export interface DepreciationBlock {
+  id: string;
+  code: string;       // A, B, C, D, E, Custom
+  name: string;
+  rate: number;       // WDV % per Nepal ITA 2058
+  method: 'WDV' | 'SLM';
+  isCustom: boolean;
+  isActive: boolean;
+}
+
+export interface FixedAsset {
+  id: string;
+  code: string;
+  name: string;
+  nameNepali?: string;
+  blockId: string;
+  method: 'SLM' | 'WDV';
+  purchaseDate: string;
+  purchaseDateNepali: string;
+  purchaseCost: number;
+  accumulatedDepreciation: number;
+  wdv: number;
+  usefulLifeYears?: number;
+  slmRate?: number;
+  assetAccountId: string;
+  depreciationAccountId: string;
+  accDepAccountId: string;
+  disposalDate?: string;
+  disposalValue?: number;
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface DepreciationEntry {
+  assetId: string;
+  depForYear: number;
+  openingWDV: number;
+  closingWDV: number;
+  accumulatedDepreciation: number;
+}
+
+export interface BillOfMaterialLine {
+  itemId: string;
+  itemName: string;
+  qty: number;
+  unit: string;
+  standardRate: number;
+  amount: number;
+}
+
+export interface BillOfMaterial {
+  id: string;
+  name: string;
+  finishedItemId: string;
+  finishedItemName: string;
+  qtyProduced: number;
+  finishedItemUnit: string;
+  overheadPercent?: number;
+  components: BillOfMaterialLine[];
+  byproducts?: BillOfMaterialLine[];
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface ProductionVoucherLine {
+  itemId: string;
+  itemName: string;
+  qty: number;
+  unit: string;
+  rate: number;
+  amount: number;
+}
+
+export interface ProductionVoucher {
+  id: string;
+  voucherNo: string;
+  date: string;
+  dateNepali: string;
+  bomId?: string;
+  narration: string;
+  itemsGenerated: ProductionVoucherLine[];
+  itemsConsumed: ProductionVoucherLine[];
+  warehouseId?: string;
+  status: VoucherStatus;
+  totalCost: number;
+  variance?: number;
+  createdBy?: string;
+  createdAt?: string;
+  postedBy?: string;
+  postedAt?: string;
+}
+
+export interface PhysicalStockLine {
+  id?: string;
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  unit: string;
+  bookQty: number;
+  physicalQty: number;
+  variance: number;
+  rate: number;
+  varianceValue: number;
+}
+
+export interface PhysicalStockVoucher {
+  id: string;
+  voucherNo: string;
+  date: string;
+  dateNepali: string;
+  warehouseId?: string;
+  warehouseName?: string;
+  lines: PhysicalStockLine[];
+  status: 'draft' | 'counted' | 'adjusted';
+  narration?: string;
+  adjustmentVoucherId?: string;
+  createdBy?: string;
+  createdAt?: string;
+  adjustedBy?: string;
+  adjustedAt?: string;
 }

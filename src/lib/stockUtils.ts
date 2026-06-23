@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -14,7 +14,10 @@ import {
   VoucherType,
   ItemType,
   StockValuationMethod,
+  PhysicalStockLine,
+  ProductionVoucherLine,
 } from "./types";
+import { generateId } from "./db";
 
 // ==========================================
 // PRECISION ROUNDING HELPER
@@ -738,4 +741,47 @@ export function calculateStockSummary(
     { id: "wh-main", name: "Primary Warehouse", code: "WH-01", isDefault: true, isActive: true },
   ];
   return computeAllStockPositions(movements, items, warehouses);
+}
+
+export async function postProductionMovement(
+  line: ProductionVoucherLine,
+  type: MovementType.PRODUCTION_IN | MovementType.PRODUCTION_OUT,
+  date: string,
+  warehouseId: string | null,
+  referenceId: string,
+  addStockMovement: (m: Omit<StockMovement, "id">) => Promise<StockMovement>
+) {
+  const isOut = type === MovementType.PRODUCTION_OUT;
+  await addStockMovement({
+    date,
+    type,
+    itemId: line.itemId,
+    warehouseId,
+    qty: isOut ? -Math.abs(line.qty) : Math.abs(line.qty),
+    rate: line.rate,
+    amount: line.amount,
+    referenceId,
+    timestamp: new Date().getTime()
+  });
+}
+
+export async function postPhysicalStockAdjustment(
+  line: PhysicalStockLine,
+  date: string,
+  warehouseId: string | null,
+  referenceId: string,
+  addStockMovement: (m: Omit<StockMovement, "id">) => Promise<StockMovement>
+) {
+  if (line.variance === 0) return;
+  await addStockMovement({
+    date,
+    type: MovementType.PHYSICAL_ADJUSTMENT,
+    itemId: line.itemId,
+    warehouseId,
+    qty: line.variance,
+    rate: line.rate,
+    amount: line.varianceValue,
+    referenceId,
+    timestamp: new Date().getTime()
+  });
 }

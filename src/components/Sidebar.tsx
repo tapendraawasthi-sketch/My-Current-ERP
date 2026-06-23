@@ -121,6 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Bank Accounts", page: "accounts", icon: Building2 },
         { label: "Bill Sundry", page: "bill-sundry", icon: ReceiptText },
         { label: "Standard Narrations", page: "standard-narrations", icon: FileSignature },
+        { label: "Fixed Assets", page: "fixed-assets", icon: Building2 },
       ],
     },
     {
@@ -157,6 +158,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "Goods Receipt Note", page: "grn", icon: PackagePlus },
         { label: "Stock Journal", page: "stock-journal", icon: ScanBarcode },
         { label: "POS/Counter Sale", page: "pos", icon: Receipt },
+        { label: "Bill of Material", page: "bom", icon: FileSignature },
+        { label: "Production Voucher", page: "production-voucher", icon: PackagePlus },
+        { label: "Physical Stock", page: "physical-stock", icon: ScanBarcode },
       ],
     },
     {
@@ -198,7 +202,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { label: "TDS Report", page: "tds-report", icon: BadgeDollarSign },
         { label: "Cost Center Report", page: "cost-center-report", icon: CircleDollarSign },
         { label: "Budget vs Actual", page: "budget-vs-actual", icon: TrendingDown },
+        { label: "Salesman Report", page: "salesman-report", icon: Users },
         { label: "Overdue Interest", page: "overdue-interest", icon: AlertTriangle },
+        { label: "Depreciation Chart", page: "depreciation-chart", icon: BarChart3 },
       ],
     },
     {

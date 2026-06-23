@@ -817,7 +817,12 @@ const StockBook: React.FC = () => {
                           return (
                             <tr key={m.id} className={rowClass}>
                               <td className="px-2 py-1.5 font-mono">{m.date}</td>
-                              <td className="px-2 py-1.5 font-medium uppercase">{m.type}</td>
+                              <td className="px-2 py-1.5 font-medium uppercase">
+                                {m.type === 'production-in' ? 'Produced' : 
+                                 m.type === 'production-out' ? 'Consumed' : 
+                                 m.type === 'physical-adjustment' ? 'Physical Adjustment' : 
+                                 m.type}
+                              </td>
                               <td className="px-2 py-1.5 text-gray-500">{m.referenceNo ?? "—"}</td>
                               <td className="px-2 py-1.5 text-right font-mono text-green-700">
                                 {m.isIncoming ? formatNumber(m.qty) : "—"}

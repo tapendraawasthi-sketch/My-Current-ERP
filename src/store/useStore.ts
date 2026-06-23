@@ -287,6 +287,38 @@ export interface StoreState {
     slabId: string | null,
     fixedRate?: number
   ) => import("../lib/types").InterestCalculationResult[];
+
+  // Fixed Assets
+  fixedAssets: import("../lib/types").FixedAsset[];
+  loadFixedAssets: () => Promise<void>;
+  addFixedAsset: (asset: Omit<import("../lib/types").FixedAsset, "id">) => Promise<import("../lib/types").FixedAsset>;
+  updateFixedAsset: (id: string, updates: Partial<import("../lib/types").FixedAsset>) => Promise<void>;
+  deleteFixedAsset: (id: string) => Promise<void>;
+  updateAssetDepreciation: (id: string, depAmount: number) => Promise<void>;
+
+  // Depreciation Blocks
+  depreciationBlocks: import("../lib/types").DepreciationBlock[];
+  loadDepreciationBlocks: () => Promise<void>;
+  addDepreciationBlock: (block: Omit<import("../lib/types").DepreciationBlock, "id">) => Promise<import("../lib/types").DepreciationBlock>;
+  updateDepreciationBlock: (id: string, updates: Partial<import("../lib/types").DepreciationBlock>) => Promise<void>;
+  deleteDepreciationBlock: (id: string) => Promise<void>;
+
+  // Manufacturing
+  billsOfMaterial: import("../lib/types").BillOfMaterial[];
+  loadBillsOfMaterial: () => Promise<void>;
+  addBillOfMaterial: (bom: Omit<import("../lib/types").BillOfMaterial, "id">) => Promise<import("../lib/types").BillOfMaterial>;
+  updateBillOfMaterial: (id: string, updates: Partial<import("../lib/types").BillOfMaterial>) => Promise<void>;
+  deleteBillOfMaterial: (id: string) => Promise<void>;
+
+  productionVouchers: import("../lib/types").ProductionVoucher[];
+  loadProductionVouchers: () => Promise<void>;
+  addProductionVoucher: (voucher: Omit<import("../lib/types").ProductionVoucher, "id">) => Promise<import("../lib/types").ProductionVoucher>;
+  updateProductionVoucher: (id: string, updates: Partial<import("../lib/types").ProductionVoucher>) => Promise<void>;
+
+  physicalStockVouchers: import("../lib/types").PhysicalStockVoucher[];
+  loadPhysicalStockVouchers: () => Promise<void>;
+  addPhysicalStockVoucher: (voucher: Omit<import("../lib/types").PhysicalStockVoucher, "id">) => Promise<import("../lib/types").PhysicalStockVoucher>;
+  updatePhysicalStockVoucher: (id: string, updates: Partial<import("../lib/types").PhysicalStockVoucher>) => Promise<void>;
 }
 
 export type StoreSet = StoreApi<StoreState>["setState"];
@@ -337,6 +369,11 @@ export const useStore = create<StoreState>()((...args) => {
     standardNarrations: [],
     billWiseEntries: [],
     interestSlabs: [],
+    fixedAssets: [],
+    depreciationBlocks: [],
+    billsOfMaterial: [],
+    productionVouchers: [],
+    physicalStockVouchers: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -1771,6 +1808,147 @@ export const useStore = create<StoreState>()((...args) => {
           totalWithInterest: balance + interestAmount,
         };
       });
+    },
+
+    // Fixed Assets
+    loadFixedAssets: async () => {
+      const db = getDB();
+      const fixedAssets = await db.fixedAssets.toArray();
+      set({ fixedAssets });
+    },
+    addFixedAsset: async (assetData) => {
+      const db = getDB();
+      const fullAsset = { ...assetData, id: generateId("fa") };
+      await db.fixedAssets.add(fullAsset as any);
+      set((prev) => ({
+        fixedAssets: [...prev.fixedAssets, fullAsset as any],
+      }));
+      return fullAsset as any;
+    },
+    updateFixedAsset: async (id, updates) => {
+      const db = getDB();
+      await db.fixedAssets.update(id, updates);
+      const loaded = await db.fixedAssets.toArray();
+      set({ fixedAssets: loaded as any });
+    },
+    deleteFixedAsset: async (id) => {
+      const db = getDB();
+      await db.fixedAssets.delete(id);
+      set((prev) => ({
+        fixedAssets: prev.fixedAssets.filter((a) => a.id !== id),
+      }));
+    },
+    updateAssetDepreciation: async (id, depAmount) => {
+      const db = getDB();
+      const asset = await db.fixedAssets.get(id);
+      if (!asset) return;
+      const updates = {
+        accumulatedDepreciation: asset.accumulatedDepreciation + depAmount,
+        wdv: asset.wdv - depAmount
+      };
+      await db.fixedAssets.update(id, updates);
+      const loaded = await db.fixedAssets.toArray();
+      set({ fixedAssets: loaded as any });
+    },
+
+    // Depreciation Blocks
+    loadDepreciationBlocks: async () => {
+      const db = getDB();
+      const depreciationBlocks = await db.depreciationBlocks.toArray();
+      set({ depreciationBlocks });
+    },
+    addDepreciationBlock: async (blockData) => {
+      const db = getDB();
+      const fullBlock = { ...blockData, id: generateId("db") };
+      await db.depreciationBlocks.add(fullBlock as any);
+      set((prev) => ({
+        depreciationBlocks: [...prev.depreciationBlocks, fullBlock as any],
+      }));
+      return fullBlock as any;
+    },
+    updateDepreciationBlock: async (id, updates) => {
+      const db = getDB();
+      await db.depreciationBlocks.update(id, updates);
+      const loaded = await db.depreciationBlocks.toArray();
+      set({ depreciationBlocks: loaded as any });
+    },
+    deleteDepreciationBlock: async (id) => {
+      const db = getDB();
+      await db.depreciationBlocks.delete(id);
+      set((prev) => ({
+        depreciationBlocks: prev.depreciationBlocks.filter((b) => b.id !== id),
+      }));
+    },
+
+    // Manufacturing
+    loadBillsOfMaterial: async () => {
+      const db = getDB();
+      const billsOfMaterial = await db.billsOfMaterial.toArray();
+      set({ billsOfMaterial });
+    },
+    addBillOfMaterial: async (bomData) => {
+      const db = getDB();
+      const fullBom = { ...bomData, id: generateId("bom") };
+      await db.billsOfMaterial.add(fullBom as any);
+      set((prev) => ({
+        billsOfMaterial: [...prev.billsOfMaterial, fullBom as any],
+      }));
+      return fullBom as any;
+    },
+    updateBillOfMaterial: async (id, updates) => {
+      const db = getDB();
+      await db.billsOfMaterial.update(id, updates);
+      const loaded = await db.billsOfMaterial.toArray();
+      set({ billsOfMaterial: loaded as any });
+    },
+    deleteBillOfMaterial: async (id) => {
+      const db = getDB();
+      await db.billsOfMaterial.delete(id);
+      set((prev) => ({
+        billsOfMaterial: prev.billsOfMaterial.filter((b) => b.id !== id),
+      }));
+    },
+
+    loadProductionVouchers: async () => {
+      const db = getDB();
+      const productionVouchers = await db.productionVouchers.toArray();
+      set({ productionVouchers });
+    },
+    addProductionVoucher: async (voucherData) => {
+      const db = getDB();
+      const fullVoucher = { ...voucherData, id: generateId("prod") };
+      await db.productionVouchers.add(fullVoucher as any);
+      set((prev) => ({
+        productionVouchers: [...prev.productionVouchers, fullVoucher as any],
+      }));
+      return fullVoucher as any;
+    },
+    updateProductionVoucher: async (id, updates) => {
+      const db = getDB();
+      await db.productionVouchers.update(id, updates);
+      const loaded = await db.productionVouchers.toArray();
+      set({ productionVouchers: loaded as any });
+    },
+
+    loadPhysicalStockVouchers: async () => {
+      const db = getDB();
+      const physicalStockVouchers = await db.physicalStockVouchers.toArray();
+      set({ physicalStockVouchers });
+    },
+    addPhysicalStockVoucher: async (voucherData) => {
+      const db = getDB();
+      const fullVoucher = { ...voucherData, id: generateId("phys") };
+      await db.physicalStockVouchers.add(fullVoucher as any);
+      set((prev) => ({
+        physicalStockVouchers: [...prev.physicalStockVouchers, fullVoucher as any],
+      }));
+      return fullVoucher as any;
+    },
+    updatePhysicalStockVoucher: async (id, updates) => {
+      const db = getDB();
+      await db.physicalStockVouchers.update(id, updates);
+      const loaded = await db.physicalStockVouchers.toArray();
+      set({ physicalStockVouchers: loaded as any });
     },
   };
 });

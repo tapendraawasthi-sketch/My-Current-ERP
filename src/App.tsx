@@ -60,6 +60,11 @@ import OverdueBillsInterest from "./pages/OverdueBillsInterest";
 import BillSundryPage from "./pages/BillSundry";
 import StandardNarrationsPage from "./pages/StandardNarrations";
 import InterestSlabConfig from "./pages/InterestSlabConfig";
+import FixedAssets from "./pages/FixedAssets";
+import DepreciationChart from "./pages/DepreciationChart";
+import BillOfMaterialPage from "./pages/BillOfMaterial";
+import ProductionVoucherPage from "./pages/ProductionVoucher";
+import PhysicalStockPage from "./pages/PhysicalStock";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function MainRouter() {
@@ -412,6 +417,36 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <InterestSlabConfig />
+        </ErrorBoundary>
+      );
+    case "fixed-assets":
+      return (
+        <ErrorBoundary>
+          <FixedAssets />
+        </ErrorBoundary>
+      );
+    case "depreciation-chart":
+      return (
+        <ErrorBoundary>
+          <DepreciationChart />
+        </ErrorBoundary>
+      );
+    case "bom":
+      return (
+        <ErrorBoundary>
+          <BillOfMaterialPage />
+        </ErrorBoundary>
+      );
+    case "production-voucher":
+      return (
+        <ErrorBoundary>
+          <ProductionVoucherPage />
+        </ErrorBoundary>
+      );
+    case "physical-stock":
+      return (
+        <ErrorBoundary>
+          <PhysicalStockPage />
         </ErrorBoundary>
       );
     case "salesman-report":

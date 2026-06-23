@@ -1698,3 +1698,64 @@ export function getStockBalance(
     avgCost: finalAvgCost,
   };
 }
+
+export function computeDepreciation(
+  asset: import("../lib/types").FixedAsset,
+  block: import("../lib/types").DepreciationBlock,
+  fiscalYearStart: string,
+  fiscalYearEnd: string
+): import("../lib/types").DepreciationEntry {
+  let depForYear = 0;
+  
+  const purchaseDate = new Date(asset.purchaseDate);
+  const fyStart = new Date(fiscalYearStart);
+  const fyEnd = new Date(fiscalYearEnd);
+  
+  const fyMid = new Date(fyStart.getTime() + (fyEnd.getTime() - fyStart.getTime()) / 2);
+  const isPurchasedThisYear = purchaseDate >= fyStart && purchaseDate <= fyEnd;
+  const isPurchasedSecondHalf = isPurchasedThisYear && purchaseDate > fyMid;
+
+  if (asset.method === "SLM") {
+    if (asset.usefulLifeYears && asset.usefulLifeYears > 0) {
+      depForYear = asset.purchaseCost / asset.usefulLifeYears;
+      if (isPurchasedSecondHalf) {
+        depForYear = depForYear * 0.5;
+      }
+    } else if (asset.slmRate && asset.slmRate > 0) {
+      depForYear = asset.purchaseCost * (asset.slmRate / 100);
+      if (isPurchasedSecondHalf) {
+        depForYear = depForYear * 0.5;
+      }
+    }
+  } else if (asset.method === "WDV") {
+    let rate = block.rate / 100;
+    depForYear = asset.wdv * rate;
+    
+    // Nepal ITA half-year convention for first year
+    if (isPurchasedSecondHalf) {
+      depForYear = depForYear * 0.5;
+    } else if (isPurchasedThisYear) {
+      // 1/3 and 2/3 rules in Nepal ITA could be applied here depending on exact date.
+      // But standard half-year convention is often simply 0.5
+      // To strictly follow the "half-year convention for first year (if purchaseDate is within the FY, multiply by 0.5)" requested:
+      // Oh wait, the prompt says: "Nepal ITA allows half-year convention for first year (if purchaseDate is within the FY, multiply by 0.5)"
+      // I will just multiply by 0.5 if purchased this year
+      depForYear = depForYear * 0.5;
+    }
+  }
+
+  // Ensure depreciation does not exceed WDV
+  if (depForYear > asset.wdv) {
+    depForYear = asset.wdv;
+  }
+
+  depForYear = Math.round(depForYear * 100) / 100;
+
+  return {
+    assetId: asset.id,
+    depForYear,
+    openingWDV: asset.wdv,
+    closingWDV: Math.round((asset.wdv - depForYear) * 100) / 100,
+    accumulatedDepreciation: Math.round((asset.accumulatedDepreciation + depForYear) * 100) / 100,
+  };
+}

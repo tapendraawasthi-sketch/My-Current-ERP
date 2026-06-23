@@ -48,6 +48,11 @@ import {
   StandardNarration,
   BillWiseEntry,
   InterestSlab,
+  FixedAsset,
+  DepreciationBlock,
+  BillOfMaterial,
+  ProductionVoucher,
+  PhysicalStockVoucher,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -86,6 +91,11 @@ export class SutraDB extends Dexie {
   public standardNarrations!: Table<StandardNarration & { id: string }>;
   public billWiseEntries!: Table<BillWiseEntry & { id: string }>;
   public interestSlabs!: Table<InterestSlab & { id: string }>;
+  public fixedAssets!: Table<FixedAsset & { id: string }>;
+  public depreciationBlocks!: Table<DepreciationBlock & { id: string }>;
+  public billsOfMaterial!: Table<BillOfMaterial & { id: string }>;
+  public productionVouchers!: Table<ProductionVoucher & { id: string }>;
+  public physicalStockVouchers!: Table<PhysicalStockVoucher & { id: string }>;
 
   constructor() {
     super("sutra_erp_db");
@@ -134,6 +144,17 @@ export class SutraDB extends Dexie {
     this.version(5).stores({
       billWiseEntries: "++id, partyId, voucherId, voucherType, date, isSettled, side",
       interestSlabs: "++id, name, isDefault, isActive",
+    });
+
+    this.version(6).stores({
+      fixedAssets: "++id, code, blockId, isActive",
+      depreciationBlocks: "++id, code, isActive",
+    });
+
+    this.version(7).stores({
+      billsOfMaterial: "++id, name, finishedItemId, isActive",
+      productionVouchers: "++id, voucherNo, date, status",
+      physicalStockVouchers: "++id, voucherNo, date, warehouseId, status",
     });
   }
 }
@@ -850,9 +871,21 @@ export async function initializeDB(): Promise<void> {
           { id: generateId("sn"), code: "TDSDEP", text: "Being TDS deposited to IRD - {section}", category: "payment", usageCount: 0, isActive: true },
           { id: generateId("sn"), code: "PURCH", text: "Being purchase from {party}", category: "purchase", usageCount: 0, isActive: true },
           { id: generateId("sn"), code: "SALES", text: "Being sales to {party}", category: "sales", usageCount: 0, isActive: true },
-          { id: generateId("sn"), code: "DEPRC", text: "Being depreciation for FY {fy}", category: "journal", usageCount: 0, isActive: true },
           { id: generateId("sn"), code: "INT", text: "Being interest charged on overdue bill {ref}", category: "journal", usageCount: 0, isActive: true },
           { id: generateId("sn"), code: "ADJ", text: "Being adjustment entry", category: "general", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "CONTRA", text: "Being cash deposited to / withdrawn from bank", category: "journal", usageCount: 0, isActive: true },
+          { id: generateId("sn"), code: "DEPR", text: "Being depreciation charged for FY {year}", category: "journal", usageCount: 0, isActive: true },
+        ]);
+      }
+
+      const depBlockCount = await db.depreciationBlocks.count();
+      if (depBlockCount === 0) {
+        await db.depreciationBlocks.bulkPut([
+          { id: generateId("db"), code: "A", name: "Buildings (permanent)", rate: 5, method: "WDV", isCustom: false, isActive: true },
+          { id: generateId("db"), code: "B", name: "Computers, data processing, software, mobile", rate: 25, method: "WDV", isCustom: false, isActive: true },
+          { id: generateId("db"), code: "C", name: "Vehicles, automobiles, minibuses", rate: 20, method: "WDV", isCustom: false, isActive: true },
+          { id: generateId("db"), code: "D", name: "Construction machinery, equipment, furniture", rate: 15, method: "WDV", isCustom: false, isActive: true },
+          { id: generateId("db"), code: "E", name: "Intangible assets (excluding block B)", rate: 7, method: "WDV", isCustom: false, isActive: true },
         ]);
       }
     });
