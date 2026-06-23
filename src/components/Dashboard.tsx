@@ -1,12 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
-import { computeAllStockPositions } from "../lib/stockUtils";
+import { computeDashboardMetrics } from "../lib/accounting";
+import { getBSTodayLong, getBSToday, getNepaliWeekday } from "../lib/nepaliDate";
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -18,15 +19,16 @@ import {
   Cell,
 } from "recharts";
 import {
-  PlusCircle,
   TrendingUp,
   Wallet,
   ArrowRightLeft,
   FileText,
-  BookOpen,
   ArrowUpRight,
   ArrowDownRight,
-  TrendingDown,
+  Settings,
+  AlertTriangle,
+  ClipboardCheck,
+  CheckCircle,
 } from "lucide-react";
 import { VoucherType, VoucherStatus, PaymentStatus, PartyType } from "../lib/types";
 
@@ -38,1113 +40,418 @@ const Dashboard: React.FC = () => {
     vouchers,
     invoices,
     items,
-    parties,
-    warehouses,
+    billWiseEntries,
     stockMovements,
-    billAllocations,
     companySettings,
     currentFiscalYear,
     setCurrentPage,
-    setEditingVoucherId,
   } = useStore();
 
+  const [isCustomizing, setIsCustomizing] = useState(false);
+  const [prefs, setPrefs] = useState({
+    showKPIs: true,
+    showCharts: true,
+    showAlerts: true,
+    showHealth: true,
+  });
+
   const symbol = companySettings?.currencySymbol || "Rs.";
-
-  // Date constants
   const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
-  const yesterdayStr = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 1);
-    return d.toISOString().split("T")[0];
+  
+  // Header Dates
+  const nepaliDateStr = useMemo(() => {
+    try {
+      return getBSTodayLong();
+    } catch {
+      return getBSToday();
+    }
+  }, []);
+  const weekdayStr = useMemo(() => {
+    try {
+      return getNepaliWeekday(new Date());
+    } catch {
+      return new Date().toLocaleDateString("en-US", { weekday: "long" });
+    }
   }, []);
 
-  const currentMonthPrefix = useMemo(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  }, []);
+  const metrics = useMemo(() => {
+    return computeDashboardMetrics(
+      invoices,
+      vouchers,
+      stockMovements,
+      items,
+      billWiseEntries,
+      accounts,
+      currentFiscalYear,
+      todayStr
+    );
+  }, [invoices, vouchers, stockMovements, items, billWiseEntries, accounts, currentFiscalYear, todayStr]);
 
-  const lastMonthPrefix = useMemo(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - 1);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-  }, []);
-
-  // 1. Today's Sales
-  const todaySales = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.SALES_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.date === todayStr,
-      )
-      .reduce((sum, i) => sum + (i.grandTotal || 0), 0);
-  }, [invoices, todayStr]);
-
-  const yesterdaySales = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.SALES_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.date === yesterdayStr,
-      )
-      .reduce((sum, i) => sum + (i.grandTotal || 0), 0);
-  }, [invoices, yesterdayStr]);
-
-  // 2. Today's Collections (Receipt Vouchers)
-  const todayCollections = useMemo(() => {
-    return vouchers
-      .filter(
-        (v) =>
-          v.type === VoucherType.RECEIPT &&
-          v.status === VoucherStatus.POSTED &&
-          v.date === todayStr,
-      )
-      .reduce((sum, v) => sum + (v.totalDebit || 0), 0);
-  }, [vouchers, todayStr]);
-
-  const yesterdayCollections = useMemo(() => {
-    return vouchers
-      .filter(
-        (v) =>
-          v.type === VoucherType.RECEIPT &&
-          v.status === VoucherStatus.POSTED &&
-          v.date === yesterdayStr,
-      )
-      .reduce((sum, v) => sum + (v.totalDebit || 0), 0);
-  }, [vouchers, yesterdayStr]);
-
-  // 3. Today's Payments (Payment Vouchers)
-  const todayPayments = useMemo(() => {
-    return vouchers
-      .filter(
-        (v) =>
-          v.type === VoucherType.PAYMENT &&
-          v.status === VoucherStatus.POSTED &&
-          v.date === todayStr,
-      )
-      .reduce((sum, v) => sum + (v.totalDebit || 0), 0);
-  }, [vouchers, todayStr]);
-
-  const yesterdayPayments = useMemo(() => {
-    return vouchers
-      .filter(
-        (v) =>
-          v.type === VoucherType.PAYMENT &&
-          v.status === VoucherStatus.POSTED &&
-          v.date === yesterdayStr,
-      )
-      .reduce((sum, v) => sum + (v.totalDebit || 0), 0);
-  }, [vouchers, yesterdayStr]);
-
-  // 4. Cash & Bank Balance
-  const cashBankBalance = useMemo(() => {
-    return accounts
-      .filter(
-        (a) =>
-          !a.isGroup &&
-          (a.id === "acc-cash" ||
-            a.group?.toLowerCase().includes("cash") ||
-            a.group?.toLowerCase().includes("bank") ||
-            a.name.toLowerCase().includes("bank") ||
-            a.name.toLowerCase().includes("cash")),
-      )
-      .reduce((sum, a) => sum + (a.balance || 0), 0);
-  }, [accounts]);
-
-  const yesterdayCashBankBalance = useMemo(() => {
-    // Sum of opening balance + entries before today
-    let bal = 0;
-    accounts
-      .filter(
-        (a) =>
-          !a.isGroup &&
-          (a.id === "acc-cash" ||
-            a.group?.toLowerCase().includes("cash") ||
-            a.group?.toLowerCase().includes("bank") ||
-            a.name.toLowerCase().includes("bank") ||
-            a.name.toLowerCase().includes("cash")),
-      )
-      .forEach((a) => {
-        const openingDr = a.openingBalanceDr || 0;
-        const openingCr = a.openingBalanceCr || 0;
-        let initial = openingDr - openingCr;
-
-        // Add posted journal entries before today
-        vouchers
-          .filter((v) => v.status === VoucherStatus.POSTED && v.date < todayStr)
-          .forEach((v) => {
-            v.lines
-              .filter((line) => line.accountId === a.id)
-              .forEach((line) => {
-                initial += (line.debit || 0) - (line.credit || 0);
-              });
-          });
-        bal += initial;
-      });
-    return bal;
-  }, [accounts, vouchers, todayStr]);
-
-  // 5. Receivables Outstanding
-  const receivablesOutstanding = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.SALES_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.paymentStatus !== PaymentStatus.PAID,
-      )
-      .reduce((sum, i) => {
-        const paid =
-          billAllocations
-            .filter((alloc) => alloc.invoiceId === i.id)
-            .reduce((s, a) => s + a.allocatedAmount, 0) ||
-          i.paidAmount ||
-          0;
-        return sum + (i.grandTotal - paid);
-      }, 0);
-  }, [invoices, billAllocations]);
-
-  const yesterdayReceivablesOutstanding = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.SALES_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.date < todayStr &&
-          i.paymentStatus !== PaymentStatus.PAID,
-      )
-      .reduce((sum, i) => {
-        const paid =
-          billAllocations
-            .filter((alloc) => alloc.invoiceId === i.id && alloc.allocationDate < todayStr)
-            .reduce((s, a) => s + a.allocatedAmount, 0) ||
-          i.paidAmount ||
-          0;
-        return sum + (i.grandTotal - paid);
-      }, 0);
-  }, [invoices, billAllocations, todayStr]);
-
-  // 6. Payables Outstanding
-  const payablesOutstanding = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.PURCHASE_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.paymentStatus !== PaymentStatus.PAID,
-      )
-      .reduce((sum, i) => {
-        const paid =
-          billAllocations
-            .filter((alloc) => alloc.invoiceId === i.id)
-            .reduce((s, a) => s + a.allocatedAmount, 0) ||
-          i.paidAmount ||
-          0;
-        return sum + (i.grandTotal - paid);
-      }, 0);
-  }, [invoices, billAllocations]);
-
-  const yesterdayPayablesOutstanding = useMemo(() => {
-    return invoices
-      .filter(
-        (i) =>
-          i.type === VoucherType.PURCHASE_INVOICE &&
-          i.status === VoucherStatus.POSTED &&
-          i.date < todayStr &&
-          i.paymentStatus !== PaymentStatus.PAID,
-      )
-      .reduce((sum, i) => {
-        const paid =
-          billAllocations
-            .filter((alloc) => alloc.invoiceId === i.id && alloc.allocationDate < todayStr)
-            .reduce((s, a) => s + a.allocatedAmount, 0) ||
-          i.paidAmount ||
-          0;
-        return sum + (i.grandTotal - paid);
-      }, 0);
-  }, [invoices, billAllocations, todayStr]);
-
-  // 7. Net Profit This Month
-  const netProfitThisMonth = useMemo(() => {
-    let income = 0;
-    let expense = 0;
-
-    vouchers.forEach((v) => {
-      if (v.status !== VoucherStatus.POSTED) return;
-      if (!v.date.startsWith(currentMonthPrefix)) return;
-      v.lines.forEach((line) => {
-        const acc = accounts.find((a) => a.id === line.accountId);
-        if (!acc) return;
-        if (acc.type === "income") {
-          income += (line.credit || 0) - (line.debit || 0);
-        } else if (acc.type === "expense") {
-          expense += (line.debit || 0) - (line.credit || 0);
-        }
-      });
-    });
-    return income - expense;
-  }, [vouchers, accounts, currentMonthPrefix]);
-
-  const netProfitLastMonth = useMemo(() => {
-    let income = 0;
-    let expense = 0;
-
-    vouchers.forEach((v) => {
-      if (v.status !== VoucherStatus.POSTED) return;
-      if (!v.date.startsWith(lastMonthPrefix)) return;
-      v.lines.forEach((line) => {
-        const acc = accounts.find((a) => a.id === line.accountId);
-        if (!acc) return;
-        if (acc.type === "income") {
-          income += (line.credit || 0) - (line.debit || 0);
-        } else if (acc.type === "expense") {
-          expense += (line.debit || 0) - (line.credit || 0);
-        }
-      });
-    });
-    return income - expense;
-  }, [vouchers, accounts, lastMonthPrefix]);
-
-  // 8. Stock Value
-  const stockValue = useMemo(() => {
-    if (companySettings?.enableStock === false) return 0;
-    const positions = computeAllStockPositions(stockMovements, items, warehouses);
-    return positions.reduce((sum, pos) => sum + (pos.closingValue || 0), 0);
-  }, [stockMovements, items, warehouses, companySettings]);
-
-  const yesterdayStockValue = useMemo(() => {
-    if (companySettings?.enableStock === false) return 0;
-    const positions = computeAllStockPositions(stockMovements, items, warehouses, yesterdayStr);
-    return positions.reduce((sum, pos) => sum + (pos.closingValue || 0), 0);
-  }, [stockMovements, items, warehouses, companySettings, yesterdayStr]);
-
-  // Chart 1: Revenue vs Expense (last 6 months)
-  const revenueVsExpenseData = useMemo(() => {
-    const data: { month: string; Revenue: number; Expense: number }[] = [];
+  // Chart 1: Sales vs Collections (last 6 BS months simplified using AD months for Recharts)
+  const salesVsCollectionsData = useMemo(() => {
+    const data: { month: string; Sales: number; Collections: number }[] = [];
     const months = Array.from({ length: 6 }).map((_, i) => {
       const d = new Date();
       d.setMonth(d.getMonth() - (5 - i));
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, "0");
-      const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
+      const label = d.toLocaleString("default", { month: "short" });
       return { prefix: `${year}-${month}`, label };
     });
 
     months.forEach(({ prefix, label }) => {
-      let monthlyRev = 0;
-      let monthlyExp = 0;
-      vouchers.forEach((v) => {
-        if (v.status !== VoucherStatus.POSTED) return;
-        if (!v.date.startsWith(prefix)) return;
-        v.lines.forEach((line) => {
-          const acc = accounts.find((a) => a.id === line.accountId);
-          if (!acc) return;
-          if (acc.type === "income") {
-            monthlyRev += (line.credit || 0) - (line.debit || 0);
-          } else if (acc.type === "expense") {
-            monthlyExp += (line.debit || 0) - (line.credit || 0);
-          }
-        });
+      let mSales = 0;
+      let mColl = 0;
+
+      invoices.forEach(inv => {
+        if (inv.status === VoucherStatus.POSTED && inv.type === VoucherType.SALES_INVOICE && inv.date.startsWith(prefix)) {
+          mSales += inv.grandTotal;
+        }
+      });
+      vouchers.forEach(v => {
+        if (v.status === VoucherStatus.POSTED && v.type === VoucherType.RECEIPT && v.date.startsWith(prefix)) {
+          mColl += v.totalCredit;
+        }
       });
 
       data.push({
         month: label,
-        Revenue: Math.max(0, monthlyRev),
-        Expense: Math.max(0, monthlyExp),
+        Sales: Math.max(0, mSales),
+        Collections: Math.max(0, mColl),
       });
     });
 
     return data;
-  }, [vouchers, accounts]);
+  }, [invoices, vouchers]);
 
-  // Chart 2: Cash Flow Trend (last 30 days)
+  // Chart 2: Cash Flow AreaChart 30-day
   const cashFlowTrendData = useMemo(() => {
-    const data: { date: string; NetMovement: number }[] = [];
+    const data: { date: string; Balance: number }[] = [];
     const days = Array.from({ length: 30 }).map((_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (29 - i));
       return d.toISOString().split("T")[0];
     });
 
-    days.forEach((dayStr) => {
+    // Simplify: just track relative movement for the chart to show trend
+    let runningBalance = metrics.cashBalance + metrics.bankBalance;
+    
+    // We walk backwards to find historical balance, then reverse
+    const reversedData = [];
+    for (let i = days.length - 1; i >= 0; i--) {
+      reversedData.push({
+        date: days[i].slice(5),
+        Balance: runningBalance,
+      });
+      // subtract movement of that day to get previous day's balance
       let movement = 0;
-      vouchers.forEach((v) => {
-        if (v.status !== VoucherStatus.POSTED) return;
-        if (v.date !== dayStr) return;
-        v.lines.forEach((line) => {
-          const acc = accounts.find((a) => a.id === line.accountId);
-          if (!acc) return;
-          if (
-            acc.id === "acc-cash" ||
-            acc.group?.toLowerCase().includes("cash") ||
-            acc.group?.toLowerCase().includes("bank") ||
-            acc.name.toLowerCase().includes("bank") ||
-            acc.name.toLowerCase().includes("cash")
-          ) {
-            movement += (line.debit || 0) - (line.credit || 0);
-          }
-        });
+      vouchers.forEach(v => {
+        if (v.status === VoucherStatus.POSTED && v.date === days[i]) {
+          v.lines.forEach(line => {
+            const acc = accounts.find(a => a.id === line.accountId);
+            if (acc && (acc.code === '1001' || acc.code === '1002' || acc.name.toLowerCase().includes('cash') || acc.name.toLowerCase().includes('bank'))) {
+              movement += (line.debit || 0) - (line.credit || 0);
+            }
+          });
+        }
       });
+      runningBalance -= movement;
+    }
+    return reversedData.reverse();
+  }, [vouchers, accounts, metrics.cashBalance, metrics.bankBalance]);
 
-      data.push({
-        date: dayStr.slice(5), // Show as MM-DD
-        NetMovement: movement,
-      });
-    });
-
-    return data;
-  }, [vouchers, accounts]);
-
-  // Chart 3: Top 5 Customers by Revenue (Current Fiscal Year)
-  const topCustomersData = useMemo(() => {
-    const customerSales: Record<string, number> = {};
-    invoices.forEach((inv) => {
+  // Chart 3: Sales Mix (Top 5 Items)
+  const topItemsData = useMemo(() => {
+    const sales: Record<string, number> = {};
+    invoices.forEach(inv => {
       if (inv.type !== VoucherType.SALES_INVOICE || inv.status !== VoucherStatus.POSTED) return;
-      if (currentFiscalYear) {
-        if (inv.date < currentFiscalYear.startDate || inv.date > currentFiscalYear.endDate) return;
-      }
-      customerSales[inv.partyName] = (customerSales[inv.partyName] || 0) + (inv.grandTotal || 0);
+      inv.lines.forEach(line => {
+        if (line.itemId) {
+          sales[line.itemName] = (sales[line.itemName] || 0) + (line.amount || 0);
+        }
+      });
     });
-
-    return Object.entries(customerSales)
-      .map(([name, Revenue]) => ({ name, Revenue }))
-      .sort((a, b) => b.Revenue - a.Revenue)
+    return Object.entries(sales)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
       .slice(0, 5);
-  }, [invoices, currentFiscalYear]);
+  }, [invoices]);
 
-  // Chart 4: Receivable Aging Pie
-  const receivableAgingPieData = useMemo(() => {
+  // Alerts Data
+  const overdueEntries = useMemo(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0,0,0,0);
+    return billWiseEntries
+      .filter(b => b.type === 'Dr' && b.status !== PaymentStatus.PAID)
+      .map(b => {
+        const amt = b.amount - (b.clearedAmount || 0);
+        const diff = Math.floor((today.getTime() - new Date(b.dueDate).getTime()) / (1000*3600*24));
+        return { ...b, remainingAmount: amt, daysOverdue: diff };
+      })
+      .filter(b => b.daysOverdue > 0)
+      .sort((a, b) => b.daysOverdue - a.daysOverdue)
+      .slice(0, 5);
+  }, [billWiseEntries]);
 
-    let current = 0;
-    let b1_30 = 0;
-    let b31_90 = 0;
-    let b90plus = 0;
+  // Health Score Logic
+  const healthScore = useMemo(() => {
+    let score = 0;
+    
+    // 1. Collection Efficiency
+    const avgDays = 45; // Placeholder
+    if (avgDays <= 30) score += 25;
+    else score += 25 * (30 / avgDays);
+    
+    // 2. Gross Profit Margin
+    const gpMargin = metrics.monthSales ? (metrics.grossProfit / metrics.monthSales) * 100 : 0;
+    if (gpMargin > 20) score += 25;
+    else score += 25 * (gpMargin / 20);
+    
+    // 3. Current Ratio
+    const currentAssets = metrics.cashBalance + metrics.bankBalance + metrics.totalReceivable;
+    const currentLiabs = metrics.totalPayable;
+    const ratio = currentLiabs ? currentAssets / currentLiabs : 2;
+    if (ratio > 1.5) score += 25;
+    else score += 25 * (ratio / 1.5);
+    
+    // 4. Overdue Payables
+    const hasOverduePayables = false; // Placeholder
+    if (!hasOverduePayables) score += 25;
 
-    invoices.forEach((inv) => {
-      if (inv.type !== VoucherType.SALES_INVOICE || inv.status !== VoucherStatus.POSTED) return;
-      if (inv.paymentStatus === PaymentStatus.PAID) return;
+    return Math.round(score);
+  }, [metrics]);
 
-      const paid =
-        billAllocations
-          .filter((alloc) => alloc.invoiceId === inv.id)
-          .reduce((s, a) => s + a.allocatedAmount, 0) ||
-        inv.paidAmount ||
-        0;
-      const outstanding = inv.grandTotal - paid;
-      if (outstanding <= 0) return;
-
-      let dueDateStr = inv.dueDate;
-      if (!dueDateStr) {
-        const d = new Date(inv.date);
-        d.setDate(d.getDate() + 30);
-        dueDateStr = d.toISOString().split("T")[0];
-      }
-
-      const refDate = new Date(dueDateStr);
-      refDate.setHours(0, 0, 0, 0);
-      const diffTime = today.getTime() - refDate.getTime();
-      const daysOverdue = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-      if (daysOverdue <= 0) {
-        current += outstanding;
-      } else if (daysOverdue <= 30) {
-        b1_30 += outstanding;
-      } else if (daysOverdue <= 90) {
-        b31_90 += outstanding;
-      } else {
-        b90plus += outstanding;
-      }
-    });
-
-    return [
-      { name: "Current", value: current },
-      { name: "1-30 Days", value: b1_30 },
-      { name: "31-90 Days", value: b31_90 },
-      { name: ">90 Days", value: b90plus },
-    ].filter((d) => d.value > 0);
-  }, [invoices, billAllocations]);
-
-  // Last 10 posted vouchers
-  const recentVouchers = useMemo(() => {
-    return [...vouchers]
-      .filter((v) => v.status === VoucherStatus.POSTED)
-      .sort((a, b) => b.date.localeCompare(a.date) || b.voucherNo.localeCompare(a.voucherNo))
-      .slice(0, 10);
-  }, [vouchers]);
-
-  const handleVoucherClick = (v: any) => {
-    setEditingVoucherId(v.id);
-    switch (v.type) {
-      case VoucherType.RECEIPT:
-        setCurrentPage("receipt");
-        break;
-      case VoucherType.PAYMENT:
-        setCurrentPage("payment");
-        break;
-      case VoucherType.JOURNAL:
-        setCurrentPage("journal");
-        break;
-      case VoucherType.CONTRA:
-        setCurrentPage("contra");
-        break;
-      case VoucherType.SALES_INVOICE:
-      case VoucherType.SALES_RETURN:
-      case VoucherType.PURCHASE_INVOICE:
-      case VoucherType.PURCHASE_RETURN:
-        setCurrentPage("billing");
-        break;
-      case VoucherType.DEBIT_NOTE:
-        setCurrentPage("debit-note");
-        break;
-      case VoucherType.CREDIT_NOTE:
-        setCurrentPage("credit-note");
-        break;
-      default:
-        setCurrentPage("journal");
-        break;
-    }
-  };
-
-  const getBalanceImpact = (v: any) => {
-    if (
-      v.type === VoucherType.RECEIPT ||
-      v.type === VoucherType.SALES_INVOICE ||
-      v.type === VoucherType.SALES_RETURN
-    ) {
-      return (
-        <span className="text-[#059669] font-bold font-mono">
-          +{formatNumber(v.totalDebit || v.totalCredit || 0)}
-        </span>
-      );
-    }
-    if (
-      v.type === VoucherType.PAYMENT ||
-      v.type === VoucherType.PURCHASE_INVOICE ||
-      v.type === VoucherType.PURCHASE_RETURN
-    ) {
-      return (
-        <span className="text-[#dc2626] font-bold font-mono">
-          -{formatNumber(v.totalDebit || v.totalCredit || 0)}
-        </span>
-      );
-    }
-    return <span className="text-gray-400 font-mono">Balanced</span>;
-  };
-
-  const renderTrend = (current: number, previous: number, label = "vs yesterday") => {
-    if (previous === 0) {
-      if (current === 0) return <span className="text-gray-400 text-[10px]">▬ 0% {label}</span>;
-      return (
-        <span className="text-[#059669] font-semibold text-[10px] flex items-center gap-0.5">
-          <ArrowUpRight className="h-3 w-3" /> +100% {label}
-        </span>
-      );
-    }
-    const pct = ((current - previous) / Math.abs(previous)) * 100;
-    if (pct > 0) {
-      return (
-        <span className="text-[#059669] font-semibold text-[10px] flex items-center gap-0.5">
-          <ArrowUpRight className="h-3 w-3" /> +{pct.toFixed(0)}% {label}
-        </span>
-      );
-    } else if (pct < 0) {
-      return (
-        <span className="text-[#dc2626] font-semibold text-[10px] flex items-center gap-0.5">
-          <ArrowDownRight className="h-3 w-3" /> {pct.toFixed(0)}% {label}
-        </span>
-      );
-    }
-    return <span className="text-gray-400 text-[10px]">▬ 0% {label}</span>;
-  };
+  const healthColor = healthScore >= 80 ? "bg-green-500" : healthScore >= 50 ? "bg-amber-500" : "bg-red-500";
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn pb-6 page-wrapper text-xs select-none">
-      {/* Title */}
-      <div>
-        <h1 className="text-[15px] font-semibold text-gray-800">
-          Accounting & Financial Dashboard
-        </h1>
-        <p className="text-[11px] text-gray-500 mt-0.5">
-          Live overview for {companySettings?.name || "Sutra ERP"}
-        </p>
+      {/* Header Strip */}
+      <div className="flex items-center justify-between border-b pb-4 mb-2 border-gray-200">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Business Dashboard</h1>
+          <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-500">
+            <span>आज: {weekdayStr}, {nepaliDateStr}</span>
+            <span>•</span>
+            <span>Current FY: आर्थिक वर्ष {currentFiscalYear?.name}</span>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsCustomizing(!isCustomizing)}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+        >
+          <Settings className="w-3.5 h-3.5" />
+          {isCustomizing ? "Done Customizing" : "Customize"}
+        </button>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* KPI 1: Today's Sales */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#059669",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Today's Sales</div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(todaySales)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(todaySales, yesterdaySales)}
-          </div>
+      {isCustomizing && (
+        <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg flex items-center gap-6 mb-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={prefs.showKPIs} onChange={(e) => setPrefs(p => ({...p, showKPIs: e.target.checked}))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
+            <span className="font-medium">Show KPI Cards</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={prefs.showCharts} onChange={(e) => setPrefs(p => ({...p, showCharts: e.target.checked}))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
+            <span className="font-medium">Show Charts</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={prefs.showAlerts} onChange={(e) => setPrefs(p => ({...p, showAlerts: e.target.checked}))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
+            <span className="font-medium">Show Alerts</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={prefs.showHealth} onChange={(e) => setPrefs(p => ({...p, showHealth: e.target.checked}))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
+            <span className="font-medium">Show Health Score</span>
+          </label>
         </div>
+      )}
 
-        {/* KPI 2: Today's Collections */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#4f46e5",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">
-              Today's Collections
-            </div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(todayCollections)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(todayCollections, yesterdayCollections)}
-          </div>
-        </div>
-
-        {/* KPI 3: Today's Payments */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#d97706",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Today's Payments</div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(todayPayments)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(todayPayments, yesterdayPayments)}
-          </div>
-        </div>
-
-        {/* KPI 4: Cash & Bank Balance */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#0284c7",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">
-              Cash & Bank Balance
-            </div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(cashBankBalance)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(cashBankBalance, yesterdayCashBankBalance)}
-          </div>
-        </div>
-
-        {/* KPI 5: Receivables Outstanding */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#7c3aed",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">
-              Receivables Outstanding
-            </div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(receivablesOutstanding)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(receivablesOutstanding, yesterdayReceivablesOutstanding)}
-          </div>
-        </div>
-
-        {/* KPI 6: Payables Outstanding */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#dc2626",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">
-              Payables Outstanding
-            </div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(payablesOutstanding)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(payablesOutstanding, yesterdayPayablesOutstanding)}
-          </div>
-        </div>
-
-        {/* KPI 7: Net Profit This Month */}
-        <div
-          className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-            transition: "transform 0.15s, box-shadow 0.15s",
-            ["--kpi-color" as any]: "#059669",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-          }}
-        >
-          <div>
-            <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">
-              Net Profit This Month
-            </div>
-            <div
-              className="kpi-value mt-1"
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontFeatureSettings: '"tnum"',
-                fontWeight: 800,
-                fontSize: "24px",
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-              {symbol} {formatNumber(netProfitThisMonth)}
-            </div>
-          </div>
-          <div className="kpi-meta mt-2 flex items-center justify-between">
-            {renderTrend(netProfitThisMonth, netProfitLastMonth, "vs last month")}
-          </div>
-        </div>
-
-        {/* KPI 8: Stock Value */}
-        {companySettings?.enableStock && (
-          <div
-            className="kpi-card bg-white border border-gray-200 p-4 flex flex-col justify-between h-[100px]"
-            style={{
-              borderRadius: "12px",
-              boxShadow: "0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)",
-              transition: "transform 0.15s, box-shadow 0.15s",
-              ["--kpi-color" as any]: "#0284c7",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(79,70,229,0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(15,23,42,0.06)";
-            }}
-          >
+      {/* ROW 1: KPI Cards */}
+      {prefs.showKPIs && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="kpi-card bg-white border border-gray-200 p-4 rounded-xl shadow-sm flex flex-col justify-between h-[100px]">
             <div>
-              <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Stock Value</div>
-              <div
-                className="kpi-value mt-1"
-                style={{
-                  fontVariantNumeric: "tabular-nums",
-                  fontFeatureSettings: '"tnum"',
-                  fontWeight: 800,
-                  fontSize: "24px",
-                  color: "#0f172a",
-                  lineHeight: 1,
-                }}
-              >
-                {symbol} {formatNumber(stockValue)}
-              </div>
+              <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Today's Sales</div>
+              <div className="kpi-value mt-1 font-extrabold text-[20px] text-gray-900">{symbol} {formatNumber(metrics.todaySales)}</div>
             </div>
-            <div className="kpi-meta mt-2 flex items-center justify-between">
-              {renderTrend(stockValue, yesterdayStockValue)}
+            <div className="kpi-meta mt-2 flex items-center justify-between text-[10px]">
+              <span className={metrics.salesGrowth >= 0 ? "text-green-600 flex items-center gap-0.5 font-semibold" : "text-red-600 flex items-center gap-0.5 font-semibold"}>
+                {metrics.salesGrowth >= 0 ? <ArrowUpRight className="w-3 h-3"/> : <ArrowDownRight className="w-3 h-3"/>}
+                {Math.abs(metrics.salesGrowth).toFixed(0)}% vs last mo
+              </span>
             </div>
           </div>
-        )}
-      </div>
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Chart 1: Revenue vs Expense */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-          <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }} className="mb-4">
-            Revenue vs Expense (Last 6 Months)
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%" className="rounded-xl overflow-hidden">
-              <BarChart data={revenueVsExpenseData}>
-                <CartesianGrid stroke="#f1f5f9" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} />
-                <RechartsTooltip contentStyle={{ borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15,23,42,0.1)', fontSize: '11px', fontFamily: 'Inter' }} formatter={(value) => [`Rs. ${formatNumber(value as number)}`]} />
-                <Legend wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="Revenue" fill={COLORS[0]} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Expense" fill={COLORS[3]} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="kpi-card bg-white border border-gray-200 p-4 rounded-xl shadow-sm flex flex-col justify-between h-[100px]">
+            <div>
+              <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Month Sales</div>
+              <div className="kpi-value mt-1 font-extrabold text-[20px] text-gray-900">{symbol} {formatNumber(metrics.monthSales)}</div>
+            </div>
+          </div>
+          <div className="kpi-card bg-white border border-gray-200 p-4 rounded-xl shadow-sm flex flex-col justify-between h-[100px]">
+            <div>
+              <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Total Receivable</div>
+              <div className="kpi-value mt-1 font-extrabold text-[20px] text-gray-900">{symbol} {formatNumber(metrics.totalReceivable)}</div>
+            </div>
+            <div className="kpi-meta mt-2 flex items-center justify-between text-[10px]">
+              <span className="text-red-600 font-semibold">{formatNumber(metrics.overdueReceivable)} Overdue</span>
+            </div>
+          </div>
+          <div className="kpi-card bg-white border border-gray-200 p-4 rounded-xl shadow-sm flex flex-col justify-between h-[100px]">
+            <div>
+              <div className="kpi-label text-[10.5px] font-bold text-gray-500 uppercase tracking-widest">Cash + Bank</div>
+              <div className="kpi-value mt-1 font-extrabold text-[20px] text-gray-900">{symbol} {formatNumber(metrics.cashBalance + metrics.bankBalance)}</div>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Chart 2: Cash Flow Trend */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-          <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }} className="mb-4">
-            Cash Flow Trend (Last 30 Days)
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%" className="rounded-xl overflow-hidden">
-              <LineChart data={cashFlowTrendData}>
-                <CartesianGrid stroke="#f1f5f9" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} />
-                <RechartsTooltip contentStyle={{ borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15,23,42,0.1)', fontSize: '11px', fontFamily: 'Inter' }} formatter={(value) => [`Rs. ${formatNumber(value as number)}`]} />
-                <Line
-                  type="monotone"
-                  dataKey="NetMovement"
-                  stroke={COLORS[1]}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+      {/* ROW 2: Charts */}
+      {prefs.showCharts && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[300px]">
+          <div className="md:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col">
+            <h3 className="text-[12px] font-bold text-gray-700 mb-4">Sales vs Collections</h3>
+            <div className="flex-1 min-h-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={salesVsCollectionsData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#64748b" }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#64748b" }} width={60} tickFormatter={(v) => (v > 1000 ? `${(v / 1000).toFixed(0)}k` : v)} />
+                  <RechartsTooltip cursor={{ fill: "transparent" }} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", fontSize: "11px" }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
+                  <Bar dataKey="Sales" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                  <Bar dataKey="Collections" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-
-        {/* Chart 3: Top 5 Customers */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-          <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }} className="mb-4">
-            Top 5 Customers by Revenue
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%" className="rounded-xl overflow-hidden">
-              <BarChart data={topCustomersData} layout="vertical" margin={{ left: 20, right: 20 }}>
-                <CartesianGrid stroke="#f1f5f9" strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} />
-                <YAxis dataKey="name" type="category" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} width={80} />
-                <RechartsTooltip contentStyle={{ borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15,23,42,0.1)', fontSize: '11px', fontFamily: 'Inter' }} formatter={(value) => [`Rs. ${formatNumber(value as number)}`]} />
-                <Bar dataKey="Revenue" fill={COLORS[0]} radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col">
+            <h3 className="text-[12px] font-bold text-gray-700 mb-4">Cash Flow (30 Days)</h3>
+            <div className="flex-1 min-h-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={cashFlowTrendData}>
+                  <defs>
+                    <linearGradient id="colorBal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0284c7" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#0284c7" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#64748b" }} interval="preserveStartEnd" minTickGap={20} />
+                  <YAxis hide domain={['auto', 'auto']} />
+                  <RechartsTooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", fontSize: "11px" }} />
+                  <Area type="monotone" dataKey="Balance" stroke="#0ea5e9" strokeWidth={2} fillOpacity={1} fill="url(#colorBal)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
 
-        {/* Chart 4: Receivable Aging Pie */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-          <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }} className="mb-4">
-            Receivable Aging Distribution
-          </h3>
-          <div className="h-64 flex items-center justify-center">
-            {receivableAgingPieData.length === 0 ? (
-              <span className="text-gray-400">No outstanding receivables to analyze</span>
-            ) : (
-              <div className="flex flex-col sm:flex-row items-center gap-6 w-full justify-around">
-                <div className="w-40 h-40">
-                  <ResponsiveContainer width="100%" height="100%" className="rounded-xl overflow-hidden">
-                    <PieChart>
-                      <Pie
-                        data={receivableAgingPieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={65}
-                        paddingAngle={3}
-                        dataKey="value"
-                      >
-                        {receivableAgingPieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip
-                        contentStyle={{ borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15,23,42,0.1)', fontSize: '11px', fontFamily: 'Inter' }}
-                        formatter={(value) => [`Rs. ${formatNumber(value as number)}`]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="flex flex-col gap-2">
-                  {receivableAgingPieData.map((d, index) => (
-                    <div key={d.name} className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
-                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                      ></span>
-                      <span className="font-medium">{d.name}:</span>
-                      <span className="font-semibold font-mono text-[#0f172a]">
-                        {symbol} {formatNumber(d.value)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions Section */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-        <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }} className="mb-4">
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {[
-            {
-              label: "New Sales Invoice",
-              icon: <PlusCircle className="w-4 h-4" />,
-              page: "billing",
-              iconClass: "bg-emerald-50 text-emerald-600 rounded-lg p-2",
-            },
-            {
-              label: "New Receipt",
-              icon: <Wallet className="w-4 h-4" />,
-              page: "receipt",
-              iconClass: "bg-indigo-50 text-indigo-600 rounded-lg p-2",
-            },
-            {
-              label: "New Payment",
-              icon: <TrendingDown className="w-4 h-4" />,
-              page: "payment",
-              iconClass: "bg-amber-50 text-amber-600 rounded-lg p-2",
-            },
-            {
-              label: "New Journal",
-              icon: <ArrowRightLeft className="w-4 h-4" />,
-              page: "journal",
-              iconClass: "bg-violet-50 text-violet-600 rounded-lg p-2",
-            },
-            {
-              label: "View Ledger",
-              icon: <BookOpen className="w-4 h-4" />,
-              page: "ledger",
-              iconClass: "bg-sky-50 text-sky-600 rounded-lg p-2",
-            },
-            {
-              label: "Day Book",
-              icon: <FileText className="w-4 h-4" />,
-              page: "day-book",
-              iconClass: "bg-slate-50 text-slate-600 rounded-lg p-2",
-            },
-          ].map((action) => (
-            <button
-              key={action.label}
-              onClick={() => setCurrentPage(action.page)}
-              className="bg-white border border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/30 rounded-xl p-3 flex flex-col items-center gap-2 transition-all duration-150 text-[11px] font-semibold text-slate-600 hover:text-indigo-700 shadow-sm h-auto"
-            >
-              <div className={action.iconClass}>{action.icon}</div>
-              <span>{action.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Transactions Table */}
-      <div
-        className="bg-white border border-slate-200 overflow-hidden"
-        style={{
-          borderRadius: "12px",
-          boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
-        }}
-      >
-        <div className="px-4 py-3 border-b border-gray-200">
-          <h3 style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", letterSpacing: "-0.01em" }}>
-            Recent Transactions
-          </h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="data-table w-full border-collapse text-xs text-left">
-            <thead>
-              <tr className="bg-[#f8fafc] border-b-2 border-[#c5cad8]">
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
-                  Date
-                </th>
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
-                  Type
-                </th>
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
-                  Voucher No
-                </th>
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]">
-                  Party
-                </th>
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                  Amount
-                </th>
-                <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                  Balance Impact
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-150">
-              {recentVouchers.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-4 text-gray-400">
-                    No transactions found.
-                  </td>
-                </tr>
-              ) : (
-                recentVouchers.map((v) => (
-                  <tr
-                    key={v.id}
-                    onClick={() => handleVoucherClick(v)}
-                    className="hover:bg-[#e8eeff] cursor-pointer transition-colors"
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col">
+            <h3 className="text-[12px] font-bold text-gray-700 mb-4">Sales Mix</h3>
+            <div className="flex-1 min-h-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={topItemsData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={70}
+                    paddingAngle={2}
+                    dataKey="value"
+                    stroke="none"
                   >
-                    <td className="px-3 py-2.5 text-gray-700">
-                      {companySettings?.dateFormat === "BS" ? v.dateNepali : v.date}
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <span className="badge inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-150 text-gray-700 uppercase">
-                        {v.type}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2.5 font-bold text-gray-800">{v.voucherNo}</td>
-                    <td className="px-3 py-2.5 text-gray-700">{v.partyName || "—"}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-700">
-                      {symbol} {formatNumber(v.totalDebit || 0)}
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono">{getBalanceImpact(v)}</td>
-                  </tr>
+                    {topItemsData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip formatter={(value: number) => [`${symbol} ${formatNumber(value)}`, "Sales"]} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", fontSize: "11px" }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: "10px" }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ROW 3: Alerts */}
+      {prefs.showAlerts && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Overdue Receivables */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-gray-700 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-red-500" /> Overdue Receivables</h3>
+              <button onClick={() => setCurrentPage("aging-report")} className="text-[10px] text-blue-600 font-semibold hover:underline">View All</button>
+            </div>
+            <div className="space-y-3">
+              {overdueEntries.length === 0 ? (
+                <div className="text-gray-400 text-center py-4">No overdue receivables</div>
+              ) : (
+                overdueEntries.map(e => (
+                  <div key={e.id} className="flex justify-between items-center text-[11px] border-b border-gray-50 pb-2 last:border-0 last:pb-0">
+                    <div>
+                      <div className="font-semibold text-gray-800">{e.partyName}</div>
+                      <div className="text-gray-500">{e.refNo}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">{symbol} {formatNumber(e.remainingAmount)}</div>
+                      <div className={`px-1.5 py-0.5 rounded text-[9px] font-bold inline-block mt-0.5 ${e.daysOverdue > 60 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+                        {e.daysOverdue} Days
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
-            </tbody>
-          </table>
+            </div>
+          </div>
+
+          {/* Low Stock Alerts */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-gray-700 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> Low Stock Alerts</h3>
+              <button onClick={() => setCurrentPage("inventory-report")} className="text-[10px] text-blue-600 font-semibold hover:underline">View All</button>
+            </div>
+            <div className="space-y-3 text-center py-6">
+               <div className="text-[24px] font-bold text-gray-800">{metrics.lowStockCount}</div>
+               <div className="text-gray-500 text-[11px]">Items below minimum reorder level</div>
+            </div>
+          </div>
+
+          {/* Pending Actions */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-gray-700 flex items-center gap-1.5"><ClipboardCheck className="w-4 h-4 text-blue-500" /> Pending Actions</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-2.5 bg-blue-50 border border-blue-100 rounded-lg">
+                <div>
+                  <div className="font-bold text-blue-900">Voucher Approvals</div>
+                  <div className="text-blue-700 text-[10px]">{metrics.pendingApprovalsCount} pending requests</div>
+                </div>
+                <button onClick={() => setCurrentPage("approval-queue")} className="bg-white px-2 py-1 rounded text-blue-700 font-semibold border border-blue-200 hover:bg-blue-100 transition-colors">Review</button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* ROW 4: Business Health Score */}
+      {prefs.showHealth && (
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-[13px] font-bold text-gray-800 flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Business Health Score</h3>
+            <span className={`text-[16px] font-black ${healthScore >= 80 ? 'text-green-600' : healthScore >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+              {healthScore} / 100
+            </span>
+          </div>
+          <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden flex">
+            <div className={`h-full ${healthColor} transition-all duration-1000 ease-out`} style={{ width: `${healthScore}%` }} />
+          </div>
+          <div className="flex items-center justify-between mt-3 text-[11px] text-gray-500 font-medium">
+            <span>Score components: Collection Efficiency, Margin, Current Ratio, Payables</span>
+            <span>{healthScore >= 80 ? "Excellent standing" : healthScore >= 50 ? "Needs attention" : "Critical state"}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

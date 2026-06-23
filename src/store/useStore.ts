@@ -23,6 +23,7 @@ import {
   DeliveryChallan,
   GoodsReceiptNote,
   CostCenter,
+  RecentlyOpenedItem,
   TdsEntry,
   Employee,
   PayrollRun,
@@ -121,6 +122,7 @@ export interface StoreState {
   editingInvoiceId: string | null;
   reportFilters: ReportFilters;
   notifications: AppNotification[];
+  recentlyOpened: RecentlyOpenedItem[];
 
   // App initialization
   initializeApp: () => Promise<void>;
@@ -130,6 +132,7 @@ export interface StoreState {
     company: Partial<CompanySettings>;
     adminUser: Omit<User, "id">;
   }) => Promise<boolean>;
+  addRecentlyOpened: (item: RecentlyOpenedItem) => void;
 
   // Masters CRUD actions
   addAccount: (account: Omit<Account, "id" | "balance">) => Promise<Account>;
@@ -383,6 +386,15 @@ export const useStore = create<StoreState>()((...args) => {
     productionVouchers: [],
     physicalStockVouchers: [],
     approvalRequests: [],
+    reportFilters: {
+      dateRange: "this-month",
+      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+        .toISOString()
+        .split("T")[0],
+      endDate: new Date().toISOString().split("T")[0],
+    },
+    notifications: [],
+    recentlyOpened: [],
     companySettings: {
       id: "company-default",
       name: "Sutra ERP Pvt. Ltd.",
@@ -2112,6 +2124,15 @@ export const useStore = create<StoreState>()((...args) => {
       await db.physicalStockVouchers.update(id, updates);
       const loaded = await db.physicalStockVouchers.toArray();
       set({ physicalStockVouchers: loaded as any });
+    },
+
+    addRecentlyOpened: (item) => {
+      set((state) => {
+        const filtered = state.recentlyOpened.filter((x) => x.id !== item.id);
+        return {
+          recentlyOpened: [item, ...filtered].slice(0, 20),
+        };
+      });
     },
   };
 });

@@ -116,8 +116,10 @@ const Header: React.FC = () => {
             <Search className="h-3.5 w-3.5 text-slate-400" />
             <span>Search anything...</span>
           </span>
-          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-slate-200 rounded-md font-mono text-slate-500">
-            /
+          <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] bg-white border border-slate-200 rounded-md font-mono text-slate-500 font-bold tracking-widest uppercase">
+            <span>Ctrl</span>
+            <span>+</span>
+            <span>K</span>
           </kbd>
         </button>
         <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

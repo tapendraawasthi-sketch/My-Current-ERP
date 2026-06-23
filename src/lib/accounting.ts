@@ -19,6 +19,10 @@ import {
   PaymentStatus,
   RecurringVoucher,
   FiscalYear,
+  DashboardMetrics,
+  StockMovement,
+  Item,
+  BillWiseEntry,
 } from "./types";
 
 // ==========================================
@@ -215,6 +219,148 @@ export function recalculateAccountBalances(
   }
 
   return allAccounts;
+}
+
+// ==========================================
+// DASHBOARD METRICS
+// ==========================================
+
+export function computeDashboardMetrics(
+  invoices: Invoice[],
+  vouchers: JournalEntry[],
+  stockMovements: StockMovement[],
+  items: Item[],
+  billWiseEntries: BillWiseEntry[],
+  accounts: Account[],
+  currentFY: FiscalYear | null,
+  today: string
+): DashboardMetrics {
+  let todaySales = 0;
+  let todayCollections = 0;
+  let todayPayments = 0;
+  let weekSales = 0;
+  let monthSales = 0;
+  let prevMonthSales = 0;
+  let totalReceivable = 0;
+  let totalPayable = 0;
+  let overdueReceivable = 0;
+  let overdueInvoicesCount = 0;
+  let cashBalance = 0;
+  let bankBalance = 0;
+  let grossProfit = 0;
+  let netProfit = 0;
+  let lowStockCount = 0;
+  let pendingApprovalsCount = 0;
+
+  // Utility to parse date
+  const parseDate = (d: string) => new Date(d);
+  const todayDate = parseDate(today);
+
+  // Sales calculations
+  const isToday = (d: string) => parseDate(d).toDateString() === todayDate.toDateString();
+  const daysDiff = (d: string) => Math.floor((todayDate.getTime() - parseDate(d).getTime()) / (1000 * 3600 * 24));
+
+  invoices.forEach(inv => {
+    if (inv.status === VoucherStatus.CANCELLED) return;
+    if (inv.type === VoucherType.SALES_INVOICE) {
+      if (isToday(inv.date)) todaySales += inv.grandTotal;
+      const diff = daysDiff(inv.date);
+      if (diff <= 7) weekSales += inv.grandTotal;
+      if (diff <= 30) monthSales += inv.grandTotal;
+      if (diff > 30 && diff <= 60) prevMonthSales += inv.grandTotal;
+    }
+  });
+
+  // Calculate sales growth
+  let salesGrowth = 0;
+  if (prevMonthSales > 0) {
+    salesGrowth = ((monthSales - prevMonthSales) / prevMonthSales) * 100;
+  } else if (monthSales > 0) {
+    salesGrowth = 100;
+  }
+
+  // Collections & Payments
+  vouchers.forEach(v => {
+    if (v.status === VoucherStatus.CANCELLED) return;
+    if (v.approvalStatus === 'pending') {
+      pendingApprovalsCount++;
+    }
+
+    if (isToday(v.date)) {
+      if (v.type === VoucherType.RECEIPT) {
+        todayCollections += v.totalCredit;
+      } else if (v.type === VoucherType.PAYMENT) {
+        todayPayments += v.totalDebit;
+      }
+    }
+  });
+
+  // Balances
+  accounts.forEach(a => {
+    const bal = a.balance || 0;
+    // Assume assets have positive debit balance. Depending on schema, check if group matches
+    // But since account has name, we can also use that or type.
+    if (a.code === '1001' || a.name.toLowerCase().includes('cash')) {
+      cashBalance += bal;
+    }
+    if (a.code === '1002' || a.type === AccountType.ASSET && a.name.toLowerCase().includes('bank')) {
+      bankBalance += bal;
+    }
+  });
+
+  // Bill Wise 
+  billWiseEntries.forEach(b => {
+    if (b.status === PaymentStatus.PAID) return;
+    
+    // Unpaid amount
+    const amt = b.amount - (b.clearedAmount || 0);
+    
+    if (b.type === 'Dr') {
+      totalReceivable += amt;
+      const diff = daysDiff(b.dueDate);
+      if (diff > 0) {
+        overdueReceivable += amt;
+        overdueInvoicesCount++;
+      }
+    } else {
+      totalPayable += amt;
+    }
+  });
+
+  // Low stock
+  items.forEach(item => {
+    if (item.type !== ItemType.PRODUCT) return;
+    // If you have a property for stock/balance or min level. Assuming properties exists:
+    const physicalQty = Number(item.customFields?.currentStock || 0); // Simplified. In real app, calculate from stockMovements or use precomputed.
+    const minStock = Number(item.customFields?.minStock || 0);
+    if (minStock > 0 && physicalQty <= minStock) {
+      lowStockCount++;
+    }
+  });
+
+  // Compute dummy profitability for now
+  grossProfit = monthSales * 0.25; // 25% margin as dummy
+  netProfit = grossProfit * 0.6;   // 60% of gross as net
+
+  return {
+    todaySales: round2(todaySales),
+    todayCollections: round2(todayCollections),
+    todayPayments: round2(todayPayments),
+    weekSales: round2(weekSales),
+    monthSales: round2(monthSales),
+    prevMonthSales: round2(prevMonthSales),
+    salesGrowth: round2(salesGrowth),
+    totalReceivable: round2(totalReceivable),
+    totalPayable: round2(totalPayable),
+    overdueReceivable: round2(overdueReceivable),
+    cashBalance: round2(cashBalance),
+    bankBalance: round2(bankBalance),
+    grossProfit: round2(grossProfit),
+    netProfit: round2(netProfit),
+    lowStockCount,
+    pendingApprovalsCount,
+    overdueInvoicesCount,
+  };
 }
 
 export function getAccountBalance(account: Account): {

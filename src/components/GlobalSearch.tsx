@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, X, FileText, Users, Receipt, Package, Menu, TrendingUp } from "lucide-react";
+import { Search, X, FileText, Users, Receipt, Package, Menu, TrendingUp, History, CornerDownLeft } from "lucide-react";
 import { useStore } from "../store/useStore";
-import { useGlobalSearch } from "../hooks/useGlobalSearch";
+import { useGlobalSearch, SearchResultItem } from "../hooks/useGlobalSearch";
+import { RecentlyOpenedItem } from "../lib/types";
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -12,13 +13,16 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setCurrentPage } = useStore();
-
+  
+  const { setCurrentPage, recentlyOpened, addRecentlyOpened } = useStore();
   const { results, isSearching } = useGlobalSearch(query);
+
+  const displayResults: (SearchResultItem | RecentlyOpenedItem)[] = query.trim().length > 0 ? results : recentlyOpened;
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
+      setQuery("");
     }
   }, [isOpen]);
 
@@ -32,13 +36,15 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((prev) => Math.min(prev + 1, getTotalResults() - 1));
+        setSelectedIndex((prev) => Math.min(prev + 1, displayResults.length - 1));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
       } else if (e.key === "Enter") {
         e.preventDefault();
-        handleSelect(selectedIndex);
+        if (displayResults.length > 0 && displayResults[selectedIndex]) {
+          handleSelect(displayResults[selectedIndex]);
+        }
       } else if (e.key === "Escape") {
         onClose();
       }
@@ -46,338 +52,151 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, selectedIndex, results]);
+  }, [isOpen, selectedIndex, displayResults, onClose]);
 
-  const getTotalResults = () => {
-    return (
-      results.accounts.length +
-      results.parties.length +
-      results.vouchers.length +
-      results.invoices.length +
-      results.items.length +
-      results.pages.length
-    );
-  };
+  const handleSelect = (item: SearchResultItem | RecentlyOpenedItem) => {
+    // Navigate
+    setCurrentPage(item.page);
 
-  const handleSelect = (index: number) => {
-    let currentIndex = 0;
+    // Add to recently opened
+    addRecentlyOpened({
+      id: item.id,
+      type: item.type,
+      label: item.label,
+      subtitle: item.subtitle,
+      page: item.page,
+    });
 
-    // Check accounts
-    if (index < currentIndex + results.accounts.length) {
-      setCurrentPage("accounts");
-      onClose();
-      return;
-    }
-    currentIndex += results.accounts.length;
-
-    // Check parties
-    if (index < currentIndex + results.parties.length) {
-      setCurrentPage("parties");
-      onClose();
-      return;
-    }
-    currentIndex += results.parties.length;
-
-    // Check vouchers
-    if (index < currentIndex + results.vouchers.length) {
-      setCurrentPage("vouchers");
-      onClose();
-      return;
-    }
-    currentIndex += results.vouchers.length;
-
-    // Check invoices
-    if (index < currentIndex + results.invoices.length) {
-      setCurrentPage("invoices");
-      onClose();
-      return;
-    }
-    currentIndex += results.invoices.length;
-
-    // Check items
-    if (index < currentIndex + results.items.length) {
-      setCurrentPage("items");
-      onClose();
-      return;
-    }
-    currentIndex += results.items.length;
-
-    // Check pages
-    if (index < currentIndex + results.pages.length) {
-      const item = results.pages[index - currentIndex];
-      const page = item.path.replace(/^\//, "");
-      const mappedPage =
-        page === "chart-of-accounts"
-          ? "accounts"
-          : page === "payment-voucher"
-            ? "payment"
-            : page === "receipt-voucher"
-              ? "receipt"
-              : page === "journal-voucher"
-                ? "journal"
-                : page === "contra-voucher"
-                  ? "contra"
-                  : page === "budget-actual"
-                    ? "budget-vs-actual"
-                    : page === "gst-report"
-                      ? "vat-reports"
-                      : page === "aging-analysis"
-                        ? "aging-report"
-                        : page;
-      setCurrentPage(mappedPage);
-      onClose();
-      return;
-    }
+    onClose();
   };
 
   if (!isOpen) return null;
 
-  let currentIndex = 0;
+  const getIcon = (type: string) => {
+    switch(type) {
+      case 'page': return <Menu className="w-4 h-4 text-gray-500 shrink-0" />;
+      case 'party': return <Users className="w-4 h-4 text-gray-500 shrink-0" />;
+      case 'account': return <TrendingUp className="w-4 h-4 text-gray-500 shrink-0" />;
+      case 'item': return <Package className="w-4 h-4 text-gray-500 shrink-0" />;
+      case 'invoice': return <Receipt className="w-4 h-4 text-gray-500 shrink-0" />;
+      case 'voucher': return <FileText className="w-4 h-4 text-gray-500 shrink-0" />;
+      default: return <FileText className="w-4 h-4 text-gray-500 shrink-0" />;
+    }
+  }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-20">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[600px] overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-[10vh]">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-[600px] overflow-hidden flex flex-col max-h-[80vh] border border-gray-200">
+        
         {/* Search Input Container */}
-        <div
-          className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn"
-          style={{ borderColor: "var(--border)" }}
-        >
-          <Search className="h-4 w-4 text-gray-400 shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white relative">
+          <Search className="h-5 w-5 text-[#1557b0] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search... (Ctrl+/)"
-            autoFocus
-            className="flex-1 bg-transparent text-[13px] text-gray-900 placeholder-gray-400 outline-none"
+            placeholder="Search commands, accounts, vouchers... (or use > for commands)"
+            className="flex-1 bg-transparent text-[14px] text-gray-900 placeholder-gray-400 outline-none"
           />
-          <kbd className="text-[10px] bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-gray-500 font-mono">
+          <kbd className="hidden sm:inline-flex items-center text-[10px] bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-gray-500 font-mono">
             ESC
           </kbd>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 ml-2 cursor-pointer"
+            className="text-gray-400 hover:text-gray-700 ml-1 cursor-pointer rounded-md p-1 hover:bg-gray-100 transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Results */}
-        <div className="overflow-y-auto max-h-[500px]">
-          {isSearching && <div className="p-8 text-center text-gray-500">Searching...</div>}
-
-          {!isSearching && query.length >= 2 && getTotalResults() === 0 && (
-            <div className="flex flex-col items-center py-10 text-gray-400 gap-2">
-              <Search className="h-8 w-8 opacity-30" />
-              <p className="text-[12px] font-semibold">No results for "{query}"</p>
+        {/* Results Body */}
+        <div className="flex-1 overflow-y-auto bg-[#fcfcfc] p-2">
+          {isSearching && (
+            <div className="p-8 text-center text-gray-500 text-[12px] flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-[#1557b0] border-t-transparent rounded-full animate-spin"></span>
+              Searching...
             </div>
           )}
 
-          {!query && (
+          {!isSearching && query.trim().length > 0 && displayResults.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-gray-400 gap-3">
+              <Search className="h-10 w-10 opacity-20 text-[#1557b0]" />
+              <p className="text-[13px] font-medium text-gray-600">No results found for "{query}"</p>
+              <p className="text-[11px] text-gray-400">Try a different term or use &gt; for commands</p>
+            </div>
+          )}
+
+          {!isSearching && query.trim().length === 0 && displayResults.length === 0 && (
             <div className="p-8 text-center text-gray-500">
-              <p className="text-sm">
-                Type to search across accounts, parties, vouchers, invoices, items, and pages
-              </p>
-              <div className="mt-4 text-xs space-y-1">
-                <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">↑</kbd>{" "}
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">↓</kbd> to navigate
-                </p>
-                <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">Enter</kbd> to select
-                </p>
-                <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">Esc</kbd> to close
-                </p>
+              <div className="flex justify-center mb-4">
+                 <History className="h-10 w-10 opacity-20 text-[#1557b0]" />
               </div>
+              <p className="text-[13px] font-medium text-gray-600">No recent activity</p>
+              <p className="text-[11px] text-gray-400 mt-1">Start typing to search across your workspace</p>
             </div>
           )}
 
-          {/* Accounts */}
-          {results.accounts.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                ACCOUNTS
+          {!isSearching && displayResults.length > 0 && (
+            <div className="flex flex-col gap-0.5">
+              <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                {query.trim().length === 0 ? <><History className="w-3 h-3" /> RECENTLY OPENED</> : "SEARCH RESULTS"}
               </div>
-              {results.accounts.map((item, idx) => {
-                const itemIndex = currentIndex++;
+              
+              {displayResults.map((item, idx) => {
+                const isSelected = selectedIndex === idx;
                 return (
                   <button
-                    key={item.id}
+                    key={`${item.id}-${idx}`}
                     type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    onClick={() => handleSelect(item)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors cursor-pointer group ${
+                      isSelected ? "bg-[#1557b0] text-white" : "hover:bg-gray-100 text-gray-800"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <TrendingUp className="w-4 h-4 text-gray-400 shrink-0" />
-                      <div>
-                        <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                        <p className="text-[10px] text-gray-500">{item.code}</p>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <div className={`flex items-center justify-center w-8 h-8 rounded-md bg-white border shadow-sm shrink-0 ${isSelected ? "border-white/20" : "border-gray-200"}`}>
+                         {React.cloneElement(getIcon(item.type) as React.ReactElement, { 
+                           className: `w-4 h-4 ${isSelected ? "text-[#1557b0]" : "text-gray-500"}` 
+                         })}
+                      </div>
+                      <div className="truncate">
+                        <p className={`font-semibold text-[12.5px] truncate ${isSelected ? "text-white" : "text-gray-800"}`}>
+                          {item.label}
+                        </p>
+                        <p className={`text-[10.5px] truncate ${isSelected ? "text-blue-100" : "text-gray-500"}`}>
+                          {item.subtitle}
+                        </p>
                       </div>
                     </div>
-                    <span className="font-mono text-gray-500 text-[12px]">
-                      {item.balance?.toLocaleString()}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Parties */}
-          {results.parties.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                PARTIES
-              </div>
-              {results.parties.map((item, idx) => {
-                const itemIndex = currentIndex++;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Users className="w-4 h-4 text-gray-400 shrink-0" />
-                      <div>
-                        <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                        <p className="text-[10px] text-gray-500">{item.type}</p>
-                      </div>
-                    </div>
-                    <span className="font-mono text-gray-500 text-[12px]">
-                      {item.balance?.toLocaleString()}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Vouchers */}
-          {results.vouchers.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                VOUCHERS
-              </div>
-              {results.vouchers.map((item, idx) => {
-                const itemIndex = currentIndex++;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <FileText className="w-4 h-4 text-gray-400 shrink-0" />
-                    <div>
-                      <p className="font-semibold text-[12px] text-gray-800">
-                        {item.voucherNo} - {item.type}
-                      </p>
-                      <p className="text-[10px] text-gray-500 truncate max-w-lg">
-                        {item.narration}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Invoices */}
-          {results.invoices.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                INVOICES
-              </div>
-              {results.invoices.map((item, idx) => {
-                const itemIndex = currentIndex++;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <Receipt className="w-4 h-4 text-gray-400 shrink-0" />
-                    <div>
-                      <p className="font-semibold text-[12px] text-gray-800">
-                        {item.invoiceNo} - {item.partyName}
-                      </p>
-                      <p className="text-[10px] text-gray-500">{item.date}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Items */}
-          {results.items.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                ITEMS
-              </div>
-              {results.items.map((item, idx) => {
-                const itemIndex = currentIndex++;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <Package className="w-4 h-4 text-gray-400 shrink-0" />
-                    <div>
-                      <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                      <p className="text-[10px] text-gray-500">{item.code}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Pages */}
-          {results.pages.length > 0 && (
-            <div>
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
-                PAGES
-              </div>
-              {results.pages.map((item, idx) => {
-                const itemIndex = currentIndex++;
-                return (
-                  <button
-                    key={item.path}
-                    type="button"
-                    onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <Menu className="w-4 h-4 text-gray-400 shrink-0" />
-                    <div>
-                      <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                      <p className="text-[10px] text-gray-500">{item.path}</p>
-                    </div>
+                    {isSelected && (
+                       <span className="shrink-0 text-white flex items-center gap-1 text-[10px] font-medium opacity-80">
+                         Jump <CornerDownLeft className="w-3 h-3" />
+                       </span>
+                    )}
                   </button>
                 );
               })}
             </div>
           )}
         </div>
+        
+        {/* Footer shortcuts */}
+        <div className="bg-gray-50 border-t border-gray-200 px-4 py-2 flex items-center gap-4 text-[10px] text-gray-500 font-medium">
+           <div className="flex items-center gap-1.5">
+             <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded shadow-sm">↑</kbd>
+             <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded shadow-sm">↓</kbd>
+             <span>Navigate</span>
+           </div>
+           <div className="flex items-center gap-1.5">
+             <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded shadow-sm text-gray-600">Enter</kbd>
+             <span>Select</span>
+           </div>
+           <div className="flex items-center gap-1.5 ml-auto">
+             <span>Prefix <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded shadow-sm text-blue-600">&gt;</kbd> for pages</span>
+           </div>
+        </div>
+
       </div>
     </div>
   );

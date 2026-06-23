@@ -1314,3 +1314,31 @@ export interface PhysicalStockVoucher {
   adjustedBy?: string;
   adjustedAt?: string;
 }
+
+export interface DashboardMetrics {
+  todaySales: number;
+  todayCollections: number;
+  todayPayments: number;
+  weekSales: number;
+  monthSales: number;
+  prevMonthSales: number;
+  salesGrowth: number;
+  totalReceivable: number;
+  totalPayable: number;
+  overdueReceivable: number;
+  cashBalance: number;
+  bankBalance: number;
+  grossProfit: number;
+  netProfit: number;
+  lowStockCount: number;
+  pendingApprovalsCount: number;
+  overdueInvoicesCount: number;
+}
+
+export interface RecentlyOpenedItem {
+  id: string;
+  type: string;
+  label: string;
+  subtitle: string;
+  page: string;
+}

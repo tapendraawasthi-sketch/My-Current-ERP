@@ -1,190 +1,170 @@
 import { useState, useEffect, useMemo } from "react";
+import { useStore } from "../store/useStore";
 
-interface SearchResults {
-  accounts: Array<{ id: number; name: string; code: string; balance: number }>;
-  parties: Array<{ id: number; name: string; type: string; balance: number }>;
-  vouchers: Array<{ id: number; voucherNo: string; type: string; narration: string }>;
-  invoices: Array<{ id: number; invoiceNo: string; partyName: string; date: string }>;
-  items: Array<{ id: number; name: string; code: string }>;
-  pages: Array<{ name: string; path: string }>;
+export interface SearchResultItem {
+  id: string;
+  type: 'page' | 'party' | 'account' | 'item' | 'invoice' | 'voucher';
+  label: string;
+  subtitle: string;
+  page: string;
+  metadata?: any;
 }
 
 const PAGES = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Chart of Accounts", path: "/chart-of-accounts" },
-  { name: "Parties", path: "/parties" },
-  { name: "Items", path: "/items" },
-  { name: "Warehouses", path: "/warehouses" },
-  { name: "Units", path: "/units" },
-  { name: "Bank Accounts", path: "/bank-accounts" },
-  { name: "Sales Invoice", path: "/sales-invoice" },
-  { name: "Purchase Invoice", path: "/purchase-invoice" },
-  { name: "Payment Voucher", path: "/payment-voucher" },
-  { name: "Receipt Voucher", path: "/receipt-voucher" },
-  { name: "Journal Voucher", path: "/journal-voucher" },
-  { name: "Contra Voucher", path: "/contra-voucher" },
-  { name: "Trial Balance", path: "/trial-balance" },
-  { name: "Profit & Loss", path: "/profit-loss" },
-  { name: "Balance Sheet", path: "/balance-sheet" },
-  { name: "Ledger Report", path: "/ledger" },
-  { name: "Day Book", path: "/day-book" },
-  { name: "Cash Book", path: "/cash-book" },
-  { name: "Bank Book", path: "/bank-book" },
-  { name: "Sales Register", path: "/sales-register" },
-  { name: "Purchase Register", path: "/purchase-register" },
-  { name: "Stock Summary", path: "/stock-summary" },
-  { name: "Stock Movement", path: "/stock-movement" },
-  { name: "Aging Analysis", path: "/aging-analysis" },
-  { name: "GST/VAT Report", path: "/gst-report" },
-  { name: "TDS Report", path: "/tds-report" },
-  { name: "TDS Payment", path: "/tds-payment" },
-  { name: "Bank Reconciliation", path: "/bank-reconciliation" },
-  { name: "Cost Centers", path: "/cost-centers" },
-  { name: "Cost Center Report", path: "/cost-center-report" },
-  { name: "Budget vs Actual", path: "/budget-actual" },
-  { name: "Opening Balance", path: "/opening-balance" },
-  { name: "Fiscal Year", path: "/fiscal-year" },
-  { name: "Company Settings", path: "/settings" },
+  { name: "Dashboard", path: "dashboard", keywords: "home main kpi" },
+  { name: "Chart of Accounts", path: "accounts", keywords: "ledger coa list" },
+  { name: "Parties Directory", path: "parties", keywords: "customers vendors suppliers" },
+  { name: "Stock Book", path: "items", keywords: "inventory products items list" },
+  { name: "Warehouses", path: "warehouses", keywords: "godowns locations" },
+  { name: "Units of Measure", path: "units", keywords: "uom measurement" },
+  { name: "Bank Accounts", path: "bank-accounts", keywords: "banks details" },
+  { name: "Sales Invoice", path: "billing", keywords: "sales bill new" },
+  { name: "Purchase Invoice", path: "billing", keywords: "purchase bill new" },
+  { name: "Payment Voucher", path: "payment", keywords: "pay supplier" },
+  { name: "Receipt Voucher", path: "receipt", keywords: "receive customer" },
+  { name: "Journal Voucher", path: "journal", keywords: "jv manual entry" },
+  { name: "Contra Voucher", path: "contra", keywords: "bank cash transfer" },
+  { name: "Trial Balance", path: "trial-balance", keywords: "tb report" },
+  { name: "Profit & Loss", path: "profit-loss", keywords: "pl income statement" },
+  { name: "Balance Sheet", path: "balance-sheet", keywords: "bs statement financial" },
+  { name: "Day Book", path: "day-book", keywords: "daily transactions" },
+  { name: "Cash Book", path: "cash-book", keywords: "cash transactions" },
+  { name: "Bank Book", path: "bank-book", keywords: "bank transactions" },
+  { name: "Sales Register", path: "sales-register", keywords: "sales report" },
+  { name: "Purchase Register", path: "purchase-register", keywords: "purchase report" },
+  { name: "Inventory Report", path: "inventory-report", keywords: "stock report" },
+  { name: "Aging Report", path: "aging-report", keywords: "receivables payables age" },
+  { name: "System Settings", path: "settings", keywords: "configuration options" },
+  { name: "CBMS Logs", path: "cbms-log", keywords: "ird sync logs" },
+  { name: "Currency Master", path: "currencies", keywords: "forex rates nrb" },
 ];
 
 export const useGlobalSearch = (query: string) => {
+  const { parties, accounts, items, invoices, vouchers } = useStore();
   const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState<SearchResults>({
-    accounts: [],
-    parties: [],
-    vouchers: [],
-    invoices: [],
-    items: [],
-    pages: [],
-  });
-
-  // Mock data - in real app, this would come from your store/API
-  const mockAccounts = useMemo(
-    () => [
-      { id: 1, name: "Cash in Hand", code: "1001", balance: 50000 },
-      { id: 2, name: "Bank Account - HDFC", code: "1002", balance: 250000 },
-      { id: 3, name: "Sales Account", code: "4001", balance: 500000 },
-      { id: 4, name: "Purchase Account", code: "5001", balance: 300000 },
-      { id: 5, name: "Salary Expenses", code: "6001", balance: 100000 },
-    ],
-    [],
-  );
-
-  const mockParties = useMemo(
-    () => [
-      { id: 1, name: "ABC Suppliers", type: "Vendor", balance: 45000 },
-      { id: 2, name: "XYZ Customers Ltd", type: "Customer", balance: -25000 },
-      { id: 3, name: "Global Traders", type: "Vendor", balance: 80000 },
-      { id: 4, name: "Tech Solutions Inc", type: "Customer", balance: -60000 },
-    ],
-    [],
-  );
-
-  const mockVouchers = useMemo(
-    () => [
-      { id: 1, voucherNo: "PAY/001", type: "Payment", narration: "Paid to supplier for goods" },
-      { id: 2, voucherNo: "REC/001", type: "Receipt", narration: "Received from customer" },
-      { id: 3, voucherNo: "JV/001", type: "Journal", narration: "Salary accrual entry" },
-    ],
-    [],
-  );
-
-  const mockInvoices = useMemo(
-    () => [
-      { id: 1, invoiceNo: "INV-001", partyName: "XYZ Customers Ltd", date: "15 Baisakh 2083" },
-      { id: 2, invoiceNo: "INV-002", partyName: "Tech Solutions Inc", date: "20 Baisakh 2083" },
-    ],
-    [],
-  );
-
-  const mockItems = useMemo(
-    () => [
-      { id: 1, name: "Laptop Dell Inspiron", code: "ITEM001" },
-      { id: 2, name: "Office Chair", code: "ITEM002" },
-      { id: 3, name: "Printer HP LaserJet", code: "ITEM003" },
-    ],
-    [],
-  );
+  const [results, setResults] = useState<SearchResultItem[]>([]);
 
   useEffect(() => {
-    if (!query || query.length < 2) {
-      setResults({
-        accounts: [],
-        parties: [],
-        vouchers: [],
-        invoices: [],
-        items: [],
-        pages: [],
-      });
+    if (!query || query.trim().length < 1) {
+      setResults([]);
       return;
     }
 
     setIsSearching(true);
 
-    // Simulate async search with timeout
     const timer = setTimeout(() => {
-      const lowerQuery = query.toLowerCase();
+      const q = query.toLowerCase().trim();
+      
+      const isCommand = q.startsWith(">");
+      const searchQuery = isCommand ? q.slice(1).trim() : q;
+      
+      let allItems: SearchResultItem[] = [];
 
-      const filteredAccounts = mockAccounts
-        .filter(
-          (acc) =>
-            acc.name.toLowerCase().includes(lowerQuery) ||
-            acc.code.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 5);
-
-      const filteredParties = mockParties
-        .filter(
-          (party) =>
-            party.name.toLowerCase().includes(lowerQuery) ||
-            party.type.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 5);
-
-      const filteredVouchers = mockVouchers
-        .filter(
-          (voucher) =>
-            voucher.voucherNo.toLowerCase().includes(lowerQuery) ||
-            voucher.narration.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 5);
-
-      const filteredInvoices = mockInvoices
-        .filter(
-          (invoice) =>
-            invoice.invoiceNo.toLowerCase().includes(lowerQuery) ||
-            invoice.partyName.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 5);
-
-      const filteredItems = mockItems
-        .filter(
-          (item) =>
-            item.name.toLowerCase().includes(lowerQuery) ||
-            item.code.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 5);
-
-      const filteredPages = PAGES.filter(
-        (page) =>
-          page.name.toLowerCase().includes(lowerQuery) ||
-          page.path.toLowerCase().includes(lowerQuery),
-      ).slice(0, 5);
-
-      setResults({
-        accounts: filteredAccounts,
-        parties: filteredParties,
-        vouchers: filteredVouchers,
-        invoices: filteredInvoices,
-        items: filteredItems,
-        pages: filteredPages,
+      // 1. Pages (Commands or Navigation)
+      PAGES.forEach(p => {
+        if (p.name.toLowerCase().includes(searchQuery) || p.keywords.includes(searchQuery)) {
+          allItems.push({
+            id: `page-${p.path}-${p.name}`,
+            type: 'page',
+            label: p.name,
+            subtitle: `Navigation > ${p.name}`,
+            page: p.path
+          });
+        }
       });
 
+      // If it's explicitly a command mode, we only return pages
+      if (isCommand) {
+        setResults(allItems);
+        setIsSearching(false);
+        return;
+      }
+
+      // 2. Parties
+      parties.forEach(p => {
+        if (p.name.toLowerCase().includes(searchQuery) || (p.phone && p.phone.includes(searchQuery))) {
+          allItems.push({
+            id: `party-${p.id}`,
+            type: 'party',
+            label: p.name,
+            subtitle: `${p.type} • Bal: ${p.balance || 0}`,
+            page: 'parties'
+          });
+        }
+      });
+
+      // 3. Accounts
+      accounts.forEach(a => {
+        if (a.name.toLowerCase().includes(searchQuery) || a.code.toLowerCase().includes(searchQuery)) {
+          allItems.push({
+            id: `account-${a.id}`,
+            type: 'account',
+            label: `${a.name} [${a.code}]`,
+            subtitle: `${a.group || a.type} • Bal: ${a.balance || 0}`,
+            page: 'accounts'
+          });
+        }
+      });
+
+      // 4. Items
+      items.forEach(i => {
+        if (i.name.toLowerCase().includes(searchQuery) || i.code?.toLowerCase().includes(searchQuery)) {
+          allItems.push({
+            id: `item-${i.id}`,
+            type: 'item',
+            label: `${i.name} [${i.code || ''}]`,
+            subtitle: `Category: ${i.category || 'N/A'} • Price: ${i.salesPrice || 0}`,
+            page: 'items'
+          });
+        }
+      });
+
+      // 5. Invoices
+      invoices.forEach(inv => {
+        if (inv.invoiceNo.toLowerCase().includes(searchQuery) || inv.partyName.toLowerCase().includes(searchQuery)) {
+          allItems.push({
+            id: `invoice-${inv.id}`,
+            type: 'invoice',
+            label: `Invoice: ${inv.invoiceNo}`,
+            subtitle: `${inv.partyName} • ${inv.date} • Total: ${inv.grandTotal}`,
+            page: 'billing'
+          });
+        }
+      });
+
+      // 6. Vouchers
+      vouchers.forEach(v => {
+        if (v.voucherNo.toLowerCase().includes(searchQuery) || (v.narration && v.narration.toLowerCase().includes(searchQuery))) {
+          allItems.push({
+            id: `voucher-${v.id}`,
+            type: 'voucher',
+            label: `Voucher: ${v.voucherNo}`,
+            subtitle: `${v.type} • ${v.date} • Amt: ${Math.max(v.totalDebit, v.totalCredit)}`,
+            page: v.type.toLowerCase().includes('receipt') ? 'receipt' : 
+                  v.type.toLowerCase().includes('payment') ? 'payment' : 
+                  v.type.toLowerCase().includes('contra') ? 'contra' : 'journal'
+          });
+        }
+      });
+
+      // Sort logic: Prefix matches go first, then by type
+      allItems.sort((a, b) => {
+        const aLabel = a.label.toLowerCase();
+        const bLabel = b.label.toLowerCase();
+        const aStarts = aLabel.startsWith(searchQuery);
+        const bStarts = bLabel.startsWith(searchQuery);
+
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return 0; // Maintain original order roughly (which is grouped by type implicitly)
+      });
+
+      setResults(allItems.slice(0, 20)); // Limit to top 20 results
       setIsSearching(false);
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [query, mockAccounts, mockParties, mockVouchers, mockInvoices, mockItems]);
+  }, [query, parties, accounts, items, invoices, vouchers]);
 
   return { results, isSearching };
 };
