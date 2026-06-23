@@ -175,6 +175,14 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
         });
       }
 
+      if (accounts.length === 0 && currentFiscalYear) {
+        const { seedNepalChartOfAccounts } = await import("../../lib/accounting");
+        await seedNepalChartOfAccounts(get().addAccount, accounts, () => {
+          const state = get();
+          set({ accounts: recalculateAccountBalances(state.accounts, state.vouchers) });
+        });
+      }
+
       // Auto-process due recurring vouchers
       const today = new Date().toISOString().split("T")[0];
       const loadedRecurring = recurringVouchers;

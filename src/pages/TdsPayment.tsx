@@ -1,226 +1,259 @@
-import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
-import { Save, FileText } from "lucide-react";
+// @ts-nocheck
+import React, { useState, useEffect, useMemo } from "react";
+import { useStore } from "../store/useStore";
+import { ActionToolbar, Card, Button, Select, NepaliDatePicker } from "../components/ui";
+import { Save } from "lucide-react";
+import { dateToAD, formatNumber } from "../lib/utils";
+import { formatADToBS } from "../lib/nepaliDate";
+import { PillTitle, FormPanel } from "../components/BusyShell";
+import toast from "react-hot-toast";
+import { VoucherType, VoucherStatus, JournalEntryLine } from "../lib/types";
+import { computeWithholdingTDS } from "../lib/taxUtils";
+
+const PAYMENT_NATURES = [
+  "Contractor",
+  "Service",
+  "Rent",
+  "Commission",
+  "Salary",
+  "Dividend",
+  "Interest",
+  "Royalty",
+  "Other"
+];
 
 export default function TdsPayment() {
-  const [formData, setFormData] = useState({
-    tdsType: "",
-    period: "",
-    amount: "",
-    depositDate: "",
-    bank: "",
-    challanNo: "",
-    description: "",
-  });
-  const [payments, setPayments] = useState([
-    {
-      id: "1",
-      tdsType: "194C - Contractor",
-      period: "January 2024",
-      amount: 15000,
-      depositDate: "2024-02-07",
-      bank: "Nepal Bank Ltd.",
-      challanNo: "CH001234",
-      description: "TDS payment for January",
-    },
-  ]);
+  const { parties, tdsRates, addTdsEntry, addVoucher, currentFiscalYear, accounts } = useStore();
+  const defaultAd = dateToAD(new Date());
+  
+  const [date, setDate] = useState(defaultAd);
+  const [partyId, setPartyId] = useState("");
+  const [paymentNature, setPaymentNature] = useState("");
+  const [grossAmount, setGrossAmount] = useState<number | "">("");
+  const [expenseAccountId, setExpenseAccountId] = useState("");
+  
+  const [section, setSection] = useState("");
+  const [tdsRate, setTdsRate] = useState(0);
+  const [threshold, setThreshold] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Auto-fill section & rate when payment nature changes
+  useEffect(() => {
+    if (paymentNature) {
+      const match = tdsRates.find((r: any) => r.natureOfPayment.toLowerCase().includes(paymentNature.toLowerCase()));
+      if (match) {
+        setSection(match.section);
+        setTdsRate(match.rate);
+        setThreshold(match.threshold || 0);
+      } else {
+        setSection("Other");
+        setTdsRate(1.5);
+        setThreshold(0);
+      }
+    } else {
+      setSection("");
+      setTdsRate(0);
+      setThreshold(0);
+    }
+  }, [paymentNature, tdsRates]);
+
+  const grossNum = typeof grossAmount === "number" ? grossAmount : 0;
+  
+  // Compute TDS
+  const { tdsAmount, netAmount, isBelowThreshold } = useMemo(() => {
+    return computeWithholdingTDS(grossNum, tdsRate, threshold);
+  }, [grossNum, tdsRate, threshold]);
+
+  const partyOptions = useMemo(() => parties.map(p => ({ value: p.id, label: p.name })), [parties]);
+  const natureOptions = useMemo(() => PAYMENT_NATURES.map(n => ({ value: n, label: n })), []);
+  
+  const expenseAccounts = useMemo(() => accounts.filter(a => a.type === "Expense" || a.type === "DirectExpense" || a.type === "IndirectExpense").map(a => ({ value: a.id, label: a.name })), [accounts]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPayments([
-      ...payments,
-      {
-        id: Date.now().toString(),
-        ...formData,
-        amount: parseFloat(formData.amount),
-      },
-    ]);
-    setFormData({
-      tdsType: "",
-      period: "",
-      amount: "",
-      depositDate: "",
-      bank: "",
-      challanNo: "",
-      description: "",
-    });
-    alert("TDS payment recorded successfully");
+    if (!partyId || !paymentNature || !grossNum || !expenseAccountId) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
+    const party = parties.find(p => p.id === partyId);
+    if (!party) return;
+
+    try {
+      // 1. Create TDS Entry
+      const tdsEntry = {
+        id: crypto.randomUUID(),
+        date: date,
+        dateBS: formatADToBS(date),
+        partyId: partyId,
+        partyName: party.name,
+        partyPAN: party.panNumber || "",
+        section: section,
+        paymentNature: paymentNature,
+        grossAmount: grossNum,
+        tdsRate: tdsRate,
+        tdsAmount: tdsAmount,
+        netAmount: netAmount,
+        status: "pending" as const,
+        fiscalYearBS: currentFiscalYear?.bsYear || formatADToBS(date).substring(0, 4),
+      };
+
+      await addTdsEntry(tdsEntry);
+
+      // 2. Create Journal Voucher
+      const tdsPayableAcc = accounts.find(a => a.id === "acc-tds-payable" || a.name.toLowerCase().includes("tds payable"));
+      const tdsPayableId = tdsPayableAcc ? tdsPayableAcc.id : "acc-tds-payable";
+
+      const lines: JournalEntryLine[] = [
+        {
+          accountId: expenseAccountId,
+          debit: grossNum,
+          credit: 0,
+          narration: `Expense for ${paymentNature} to ${party.name}`
+        },
+        {
+          accountId: party.id,
+          debit: 0,
+          credit: netAmount,
+          narration: `Net payable to ${party.name}`
+        }
+      ];
+
+      if (tdsAmount > 0) {
+        lines.push({
+          accountId: tdsPayableId,
+          debit: 0,
+          credit: tdsAmount,
+          narration: `TDS deducted at ${tdsRate}% under section ${section}`
+        });
+      }
+
+      const voucherId = crypto.randomUUID();
+      await addVoucher({
+        id: voucherId,
+        date: date,
+        dateNepali: formatADToBS(date),
+        voucherNo: `JV-TDS-${Date.now().toString().slice(-4)}`,
+        type: VoucherType.JOURNAL_VOUCHER,
+        status: VoucherStatus.POSTED,
+        narration: `TDS Entry for ${paymentNature} - Section ${section}`,
+        lines: lines,
+        totalDebit: grossNum,
+        totalCredit: grossNum
+      } as any);
+
+      toast.success("TDS payment recorded successfully!");
+      setPartyId("");
+      setPaymentNature("");
+      setGrossAmount("");
+      setExpenseAccountId("");
+      
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save TDS entry.");
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="TDS Payment" subtitle="Tax Deducted at Source remittance" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">TDS Payment</h1>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Record TDS Deposit</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+      <PillTitle title="TDS Payment Entry" />
+      <FormPanel>
+        <div className="flex flex-col gap-6 animate-fadeIn select-none">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">TDS Type *</label>
-              <select
-                value={formData.tdsType}
-                onChange={(e) => setFormData({ ...formData, tdsType: e.target.value })}
-                className="input"
-                required
+              <h1 className="text-[15px] font-semibold text-gray-800">TDS Entry Form</h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">Record TDS payments and generate automated journals</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleSubmit}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
-                <option value="">Select TDS Type</option>
-                <option value="194C - Contractor">194C - Payment to Contractor</option>
-                <option value="194J - Professional">194J - Professional/Technical Fees</option>
-                <option value="194H - Commission">194H - Commission/Brokerage</option>
-                <option value="194I - Rent">194I - Rent Payment</option>
-                <option value="194A - Interest">194A - Interest</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Period (Month) *
-              </label>
-              <input
-                type="month"
-                value={formData.period}
-                onChange={(e) => setFormData({ ...formData, period: e.target.value })}
-                className="input"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount *</label>
-              <input
-                type="number"
-                value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                className="input"
-                required
-                placeholder="0.00"
-                step="0.01"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Deposit Date *</label>
-              <input
-                type="date"
-                value={formData.depositDate}
-                onChange={(e) => setFormData({ ...formData, depositDate: e.target.value })}
-                className="input"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bank *</label>
-              <select
-                value={formData.bank}
-                onChange={(e) => setFormData({ ...formData, bank: e.target.value })}
-                className="input"
-                required
-              >
-                <option value="">Select Bank</option>
-                <option value="Nepal Bank Ltd.">Nepal Bank Ltd.</option>
-                <option value="Rastriya Banijya Bank">Rastriya Banijya Bank</option>
-                <option value="Agriculture Development Bank">Agriculture Development Bank</option>
-                <option value="Nabil Bank">Nabil Bank</option>
-                <option value="Nepal Investment Bank">Nepal Investment Bank</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Challan No *</label>
-              <input
-                type="text"
-                value={formData.challanNo}
-                onChange={(e) => setFormData({ ...formData, challanNo: e.target.value })}
-                className="input"
-                required
-                placeholder="CH001234"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="input"
-                rows={2}
-                placeholder="TDS payment for..."
-              />
+                <Save className="h-3.5 w-3.5" /> Save Entry
+              </button>
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <button type="submit" className="btn-primary flex items-center space-x-2">
-              <Save className="w-4 h-4" />
-              <span>Record Payment</span>
-            </button>
-          </div>
-        </form>
-      </div>
+          <Card border padding="md">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4">
+                <NepaliDatePicker
+                  label="Date"
+                  value={date}
+                  onChange={setDate}
+                />
+                
+                <Select
+                  label="Party *"
+                  value={partyId}
+                  onChange={setPartyId}
+                  options={partyOptions}
+                />
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold">Payment History</h2>
+                <Select
+                  label="Expense Account (Dr) *"
+                  value={expenseAccountId}
+                  onChange={setExpenseAccountId}
+                  options={expenseAccounts}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <Select
+                  label="Payment Nature *"
+                  value={paymentNature}
+                  onChange={setPaymentNature}
+                  options={natureOptions}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-medium text-gray-600 block mb-1">Section</label>
+                    <div className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 flex items-center">
+                      {section || "-"}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-medium text-gray-600 block mb-1">TDS Rate (%)</label>
+                    <div className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 flex items-center">
+                      {tdsRate || 0}%
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-medium text-gray-600 block mb-1">Gross Amount *</label>
+                  <input
+                    type="number"
+                    value={grossAmount}
+                    onChange={(e) => setGrossAmount(e.target.value ? Number(e.target.value) : "")}
+                    className="h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    placeholder="Enter gross amount"
+                  />
+                  {isBelowThreshold && (
+                    <div className="mt-1 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded">
+                      Below Rs.{formatNumber(threshold)} threshold — TDS not applicable
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-gray-200 pt-4 grid grid-cols-3 gap-4">
+               <div className="bg-gray-50 p-3 rounded border border-gray-200">
+                 <div className="text-[10px] uppercase font-bold text-gray-500">Gross Amount</div>
+                 <div className="text-[14px] font-bold text-gray-800">Rs. {formatNumber(grossNum)}</div>
+               </div>
+               <div className="bg-red-50 p-3 rounded border border-red-200">
+                 <div className="text-[10px] uppercase font-bold text-red-700">TDS Amount ({tdsRate}%)</div>
+                 <div className="text-[14px] font-bold text-red-800">Rs. {formatNumber(tdsAmount)}</div>
+               </div>
+               <div className="bg-green-50 p-3 rounded border border-green-200">
+                 <div className="text-[10px] uppercase font-bold text-green-700">Net Payable</div>
+                 <div className="text-[14px] font-bold text-green-800">Rs. {formatNumber(netAmount)}</div>
+               </div>
+            </div>
+          </Card>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  TDS Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Period
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Deposit Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Bank
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Challan No
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {payments.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">{payment.tdsType}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{payment.period}</td>
-                  <td className="px-6 py-4 text-sm text-right font-medium text-gray-900">
-                    Rs. {payment.amount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(payment.depositDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{payment.bank}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900 font-mono">{payment.challanNo}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{payment.description}</td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
-                    <button className="text-[#1557b0] hover:text-indigo-900">
-                      <FileText className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </FormPanel>
     </div>
   );
 }

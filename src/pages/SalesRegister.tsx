@@ -1,4 +1,3 @@
-/**
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { Filter, Download, Eye, Edit, FileText } from "lucide-react";
@@ -9,7 +8,7 @@ import Select from "../components/ui/Select";
 import Input from "../components/ui/Input";
 import Card from "../components/ui/Card";
 import { PaymentStatus, VoucherType, Invoice } from "../lib/types";
-import { formatCurrency } from "../lib/utils";
+import { formatCurrency, formatNumber } from "../lib/utils";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useStore } from "../store/useStore";
 import Pagination from "../components/ui/Pagination";
@@ -203,13 +202,17 @@ const SalesRegister: React.FC = () => {
             variant="ghost"
             onClick={() => handleView(invoice)}
             icon={<Eye className="h-3 w-3" />}
-          />
+          >
+            {null}
+          </Button>
           <Button
             size="xs"
             variant="ghost"
             onClick={() => handleEdit(invoice)}
             icon={<Edit className="h-3 w-3" />}
-          />
+          >
+            {null}
+          </Button>
         </div>
       ),
       width: "100px",

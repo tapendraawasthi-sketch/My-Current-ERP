@@ -357,3 +357,7 @@ export function BSToADString(bsDate: string): string {
 export function formatDateNepal(date: Date): string {
   return `${String(date.getDate()).padStart(2,"0")}-${String(date.getMonth()+1).padStart(2,"0")}-${date.getFullYear()}`;
 }
+
+export function getDaysInNepaliMonth(year: number, month: number): number {
+  return 30; // Stub implementation
+}

@@ -155,6 +155,16 @@ export enum RecurringFrequency {
   YEARLY = "yearly",
 }
 
+export interface VoucherSeries {
+  id?: number;
+  companyId: string;
+  voucherType: string;
+  prefix: string;
+  currentNumber: number;
+  fiscalYearBS: string;
+  resetOnNewYear: boolean;
+}
+
 export interface Account {
   id: string;
   code: string;
@@ -172,6 +182,7 @@ export interface Account {
   openingBalanceDr?: number;
   openingBalanceCr?: number;
   openingBalanceDate?: string;
+  openingBalanceBS?: string;
   balance: number;
   costCenterId?: string;
 }
@@ -200,6 +211,8 @@ export interface JournalEntry {
   voucherNo: string;
   referenceNo?: string;
   narration: string;
+  bsDate?: string;
+  narrationNe?: string;
   lines: JournalEntryLine[];
   totalDebit: number;
   totalCredit: number;
@@ -231,6 +244,11 @@ export interface Party {
   nameNepali?: string;
   type: PartyType;
   pan?: string;
+  panNumber?: string;
+  vatNumber?: string;
+  isVatRegistered?: boolean;
+  district?: string;
+  province?: string;
   vatNo?: string;
   phone: string;
   email?: string;
@@ -273,6 +291,7 @@ export interface Item {
   salesRate: number;
   mrp?: number;
   hsnCode?: string;
+  vatExempt?: boolean;
   isTaxable: boolean;
   vatRate?: number;
   minimumStock?: number;
@@ -375,6 +394,14 @@ export interface Invoice {
   salesmanName?: string;
   createdBy?: string;
   createdAt?: string;
+  cbmsSubmitted?: boolean;
+  cbmsIrn?: string;
+  cbmsSubmittedAt?: string;
+  annexType?: "A" | "B" | "C" | null;
+  billSundries?: Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>;
+  narrationNe?: string;
+  vatApplicable?: boolean;
+  discountBeforeVat?: number;
   cbmsRefNo?: string;
   cbmsStatus?: "pending" | "submitted" | "failed";
   dueDate?: string;
@@ -479,6 +506,7 @@ export interface StockMovement {
   qty: number;
   rate: number;
   amount: number;
+  costCenterId?: string;
   referenceId?: string;
   referenceNo?: string;
   referenceType?: string;
@@ -566,21 +594,30 @@ export interface BudgetLine {
 
 export interface TdsEntry {
   id: string;
-  voucherId: string;
+  date: string;
+  dateBS?: string;
   partyId: string;
   partyName: string;
-  partyPan?: string;
-  tdsType: TdsType;
-  tdsRate: number;
+  partyPAN?: string;
+  section?: string; // "87", "88", "88AA", "89", "90", "95"
+  paymentNature?: string;
   grossAmount: number;
+  tdsRate: number;
   tdsAmount: number;
   netAmount: number;
-  date: string;
-  dateNepali: string;
+  paymentMode?: string;
+  status?: "pending" | "deposited" | "challanGenerated";
+  challanNumber?: string;
+  depositedAt?: string;
+  fiscalYearBS?: string;
+
+  // Legacy fallback properties to prevent breaking old data
+  voucherId?: string;
+  tdsType?: TdsType;
+  dateNepali?: string;
   deposited?: boolean;
   depositDate?: string;
   depositChallanNo?: string;
-  section?: string;
 }
 
 export interface CompanySettings {
@@ -592,6 +629,13 @@ export interface CompanySettings {
   phone: string;
   email?: string;
   vatNumber?: string;
+  irdOffice?: string;
+  fiscalYearBS?: string;
+  cbmsEnabled?: boolean;
+  cbmsUsername?: string;
+  cbmsPassword?: string;
+  datePreference?: "BS" | "AD";
+  defaultVatRate?: number;
   website?: string;
   logo?: string;
   defaultCurrency: string;
@@ -646,6 +690,7 @@ export interface FiscalYear {
   closedAt?: string;
   openingEntryId?: string;
   voucherSeriesState?: Record<string, { prefix: string; nextNumber: number }>;
+  fiscalYearBS?: string;
 }
 
 export interface User {
@@ -1033,4 +1078,14 @@ export interface CustomFieldDef {
   required: boolean;
   isActive: boolean;
   sortOrder: number;
+}
+
+export interface TdsRate {
+  id?: number;
+  section: string;
+  payeeType: string;
+  rate: number;
+  thresholdAmount: number;
+  effectiveFrom: string;
+  effectiveTo?: string;
 }

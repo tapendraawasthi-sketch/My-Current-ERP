@@ -704,3 +704,126 @@ export function exportBalanceSheetToExcel(
   const wb = workbookFromArray(headers, rows, "Balance Sheet");
   downloadWorkbook(wb, filename);
 }
+
+export function exportTdsReturnToExcel(
+  entries: any[],
+  fiscalYear: string,
+  companyName: string
+) {
+  const wb = XLSX.utils.book_new();
+  
+  // Group by section
+  const groups: Record<string, any[]> = {};
+  entries.forEach(e => {
+    const sec = e.section || "Other";
+    if (!groups[sec]) groups[sec] = [];
+    groups[sec].push(e);
+  });
+
+  const headers = [
+    "SN",
+    "Date (BS)",
+    "Party Name",
+    "PAN Number",
+    "Payment Nature",
+    "Gross Amount",
+    "TDS Rate (%)",
+    "TDS Amount",
+    "Net Paid",
+    "Challan No",
+    "Status"
+  ];
+
+  let totalGross = 0;
+  let totalTds = 0;
+  let totalNet = 0;
+
+  // Create sheet for each section
+  Object.keys(groups).forEach(sec => {
+    const rows: any[] = [];
+    rows.push([companyName]);
+    rows.push([`TDS Return - Section ${sec}`]);
+    rows.push([`Fiscal Year: ${fiscalYear}`]);
+    rows.push([]);
+    rows.push(headers);
+
+    let secGross = 0;
+    let secTds = 0;
+    let secNet = 0;
+
+    groups[sec].forEach((e, idx) => {
+      secGross += e.grossAmount;
+      secTds += e.tdsAmount;
+      secNet += e.netAmount;
+
+      rows.push([
+        idx + 1,
+        e.dateBS,
+        e.partyName,
+        e.partyPAN || "-",
+        e.paymentNature,
+        e.grossAmount,
+        e.tdsRate,
+        e.tdsAmount,
+        e.netAmount,
+        e.challanNumber || "-",
+        e.status
+      ]);
+    });
+
+    totalGross += secGross;
+    totalTds += secTds;
+    totalNet += secNet;
+
+    rows.push([]);
+    rows.push(["", "", "", "", "Total", secGross, "", secTds, secNet, "", ""]);
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    applySheetStyling(ws, {
+      headerRowIndex: 4,
+      numericColIndices: [5, 6, 7, 8],
+      colWidths: [5, 12, 25, 15, 15, 15, 10, 15, 15, 15, 15],
+      totalRowIndices: [rows.length - 1]
+    });
+    
+    XLSX.utils.book_append_sheet(wb, ws, `Section ${sec}`);
+  });
+
+  // Create Summary Sheet
+  const summaryRows: any[] = [];
+  summaryRows.push([companyName]);
+  summaryRows.push(["TDS Return Summary"]);
+  summaryRows.push([`Fiscal Year: ${fiscalYear}`]);
+  summaryRows.push([]);
+  summaryRows.push(["Section", "Total Entries", "Gross Amount", "TDS Deducted", "Net Paid"]);
+
+  Object.keys(groups).forEach(sec => {
+    const secEntries = groups[sec];
+    const secGross = secEntries.reduce((a, b) => a + b.grossAmount, 0);
+    const secTds = secEntries.reduce((a, b) => a + b.tdsAmount, 0);
+    const secNet = secEntries.reduce((a, b) => a + b.netAmount, 0);
+
+    summaryRows.push([
+      `Section ${sec}`,
+      secEntries.length,
+      secGross,
+      secTds,
+      secNet
+    ]);
+  });
+
+  summaryRows.push([]);
+  summaryRows.push(["Grand Total", entries.length, totalGross, totalTds, totalNet]);
+
+  const summaryWs = XLSX.utils.aoa_to_sheet(summaryRows);
+  applySheetStyling(summaryWs, {
+    headerRowIndex: 4,
+    numericColIndices: [1, 2, 3, 4],
+    colWidths: [15, 15, 15, 15, 15],
+    totalRowIndices: [summaryRows.length - 1]
+  });
+
+  XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+
+  downloadWorkbook(wb, `TDS_Return_${fiscalYear.replace("/", "_")}.xlsx`);
+}

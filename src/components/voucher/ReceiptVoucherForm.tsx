@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
-import { generateVoucherNo } from "../../lib/accounting";
+import { generateSerialNumber } from "../../lib/accounting";
 import { generateVoucherPDF } from "../../lib/printUtils";
 import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "../../lib/types";
 import toast from "react-hot-toast";
@@ -239,19 +239,25 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
 
   const markDirty = () => setDirty(true);
 
-  const voucherNoPreview = useMemo(() => {
-    if (existing?.voucherNo) return existing.voucherNo;
-    try {
-      const { voucherNo } = generateVoucherNo(
-        VoucherType.RECEIPT,
-        companySettings?.voucherSeries || {},
-        vouchers,
-      );
-      return voucherNo;
-    } catch {
-      return "RV-XXXX";
+  const [voucherNoPreview, setVoucherNoPreview] = useState(existing?.voucherNo || "Loading...");
+
+  useEffect(() => {
+    if (existing?.voucherNo) {
+      setVoucherNoPreview(existing.voucherNo);
+      return;
     }
-  }, [existing, companySettings, vouchers]);
+    let isActive = true;
+    generateSerialNumber(VoucherType.RECEIPT, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+      .then((num) => {
+        if (isActive) setVoucherNoPreview(num);
+      })
+      .catch(() => {
+        if (isActive) setVoucherNoPreview("RV-XXXX");
+      });
+    return () => {
+      isActive = false;
+    };
+  }, [existing, currentFiscalYear]);
 
   // ---- totals ----
   const selectedInvoiceTotal = useMemo(

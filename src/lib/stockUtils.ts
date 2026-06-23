@@ -740,3 +740,102 @@ export function calculateStockSummary(
   ];
   return computeAllStockPositions(movements, items, warehouses);
 }
+
+// ==========================================
+// 8. PRODUCTION-GRADE VALUATION & TRACKING
+// ==========================================
+
+export function computeFIFOCost(
+  itemId: string, 
+  qtyNeeded: number, 
+  stockMovements: StockMovement[]
+): { totalCost: number, costBreakdown: Array<{purchaseDate: string, qty: number, rate: number, cost: number}>, insufficientStock: boolean, availableQty: number } {
+  const INWARD_TYPES = [MovementType.PURCHASE, MovementType.SALES_RETURN, MovementType.TRANSFER_IN, MovementType.OPENING, MovementType.ADJUSTMENT];
+  const OUTWARD_TYPES = [MovementType.SALES, MovementType.PURCHASE_RETURN, MovementType.TRANSFER_OUT];
+
+  // Sort oldest first
+  const itemMovements = stockMovements
+    .filter(m => m.itemId === itemId)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  const layers: FIFOLayer[] = [];
+
+  for (const mov of itemMovements) {
+    if (INWARD_TYPES.includes(mov.type) || (mov.type === MovementType.ADJUSTMENT && mov.qty > 0)) {
+      layers.push({ qty: Math.abs(mov.qty), rate: mov.rate, date: mov.date });
+    } else if (OUTWARD_TYPES.includes(mov.type) || (mov.type === MovementType.ADJUSTMENT && mov.qty < 0)) {
+      let qtyToDeduct = Math.abs(mov.qty);
+      for (let i = 0; i < layers.length && qtyToDeduct > 0; i++) {
+        const layer = layers[i];
+        if (layer.qty > 0) {
+          const deduct = Math.min(layer.qty, qtyToDeduct);
+          layer.qty = round2(layer.qty - deduct);
+          qtyToDeduct = round2(qtyToDeduct - deduct);
+        }
+      }
+    }
+  }
+
+  // Active layers available
+  const activeLayers = layers.filter(l => l.qty > 0);
+  const availableQty = activeLayers.reduce((sum, l) => sum + l.qty, 0);
+
+  let totalCost = 0;
+  const costBreakdown: Array<{purchaseDate: string, qty: number, rate: number, cost: number}> = [];
+  let remainingNeeded = qtyNeeded;
+
+  for (const layer of activeLayers) {
+    if (remainingNeeded <= 0) break;
+    const qtyToTake = Math.min(layer.qty, remainingNeeded);
+    const cost = qtyToTake * layer.rate;
+    totalCost += cost;
+    costBreakdown.push({ purchaseDate: layer.date, qty: qtyToTake, rate: layer.rate, cost });
+    remainingNeeded = round2(remainingNeeded - qtyToTake);
+  }
+
+  return {
+    totalCost: round2(totalCost),
+    costBreakdown,
+    insufficientStock: remainingNeeded > 0,
+    availableQty: round2(availableQty)
+  };
+}
+
+export function computeWeightedAvgCost(itemId: string, stockMovements: StockMovement[]): number {
+  const INWARD_TYPES = [MovementType.PURCHASE, MovementType.SALES_RETURN, MovementType.TRANSFER_IN, MovementType.OPENING];
+  const itemInwards = stockMovements.filter(m => m.itemId === itemId && (INWARD_TYPES.includes(m.type) || (m.type === MovementType.ADJUSTMENT && m.qty > 0)));
+  
+  if (itemInwards.length === 0) return 0;
+
+  let totalQty = 0;
+  let totalValue = 0;
+
+  for (const mov of itemInwards) {
+    const qty = Math.abs(mov.qty);
+    totalQty += qty;
+    totalValue += (qty * mov.rate);
+  }
+
+  return totalQty > 0 ? round2(totalValue / totalQty) : 0;
+}
+
+export function getCurrentStock(itemId: string, warehouseId?: string, stockMovements: StockMovement[]): number {
+  const INWARD_TYPES = [MovementType.PURCHASE, MovementType.SALES_RETURN, MovementType.TRANSFER_IN, MovementType.OPENING];
+  const OUTWARD_TYPES = [MovementType.SALES, MovementType.PURCHASE_RETURN, MovementType.TRANSFER_OUT];
+
+  let stock = 0;
+
+  for (const mov of stockMovements) {
+    if (mov.itemId === itemId) {
+      if (warehouseId && mov.warehouseId !== warehouseId) continue;
+
+      if (INWARD_TYPES.includes(mov.type) || (mov.type === MovementType.ADJUSTMENT && mov.qty > 0)) {
+        stock += Math.abs(mov.qty);
+      } else if (OUTWARD_TYPES.includes(mov.type) || (mov.type === MovementType.ADJUSTMENT && mov.qty < 0)) {
+        stock -= Math.abs(mov.qty);
+      }
+    }
+  }
+
+  return Math.max(0, round2(stock));
+}

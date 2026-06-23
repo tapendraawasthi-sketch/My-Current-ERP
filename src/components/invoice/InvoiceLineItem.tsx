@@ -110,7 +110,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
       <td className="px-2 py-1 text-center text-[11px] font-bold text-slate-400 w-8">{lineNo}</td>
 
       {/* Item */}
-      <td className="px-1 py-1 min-w-[180px]">
+      <td className="px-1 py-1 min-w-[200px]">
         <select
           className={cellInput}
           value={line.itemId}
@@ -118,16 +118,19 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
           disabled={readOnly}
         >
           <option value="">— select item —</option>
-          {itemList.map((it) => (
-            <option key={it.id} value={it.id}>
-              {it.code} · {it.name}
-            </option>
-          ))}
+          {itemList.map((it) => {
+            const rate = type === "sales" ? it.salesRate : it.purchaseRate;
+            return (
+              <option key={it.id} value={it.id}>
+                {it.name} {it.unit ? `(${it.unit})` : ""} - Rs. {rate || 0}
+              </option>
+            );
+          })}
         </select>
       </td>
 
       {/* HSN/SAC */}
-      <td className="px-1 py-1 w-20">
+      <td className="px-1 py-1 w-20 hidden">
         <input
           className={cellInput}
           value={line.hsnCode || ""}
@@ -138,7 +141,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = ({
       </td>
 
       {/* Description */}
-      <td className="px-1 py-1 min-w-[140px]">
+      <td className="px-1 py-1 min-w-[140px] hidden">
         <input
           className={cellInput}
           value={line.description || ""}

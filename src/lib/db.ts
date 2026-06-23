@@ -44,6 +44,8 @@ import {
   FiscalYearStatus,
   CustomFieldDef,
   SalarySlab,
+  TdsRate,
+  VoucherSeries,
 } from "./types";
 
 export class SutraDB extends Dexie {
@@ -79,6 +81,8 @@ export class SutraDB extends Dexie {
   public payrollRuns!: Table<PayrollRun & { id: string }>;
   public customFieldDefs!: Table<CustomFieldDef & { id: string }>;
   public salarySlabs!: Table<SalarySlab & { id: string }>;
+  public tdsRates!: Table<TdsRate, number>;
+  public voucherSeries!: Table<VoucherSeries, number>;
 
   constructor() {
     super("sutra_erp_db");
@@ -122,6 +126,74 @@ export class SutraDB extends Dexie {
     this.version(4).stores({
       customFieldDefs: "++id, entity, isActive",
       salarySlabs: "++id, maritalStatus",
+    });
+
+    this.version(5).stores({
+      tdsRates: "++id, section, payeeType, rate, thresholdAmount, effectiveFrom, effectiveTo"
+    }).upgrade(async (trans) => {
+      await trans.table('companySettings').toCollection().modify((setting) => {
+        if (setting.panNumber === undefined) setting.panNumber = setting.pan || "";
+        if (setting.vatNumber === undefined) setting.vatNumber = setting.vat || "";
+        if (setting.irdOffice === undefined) setting.irdOffice = "";
+        if (setting.fiscalYearBS === undefined) setting.fiscalYearBS = "";
+        if (setting.cbmsEnabled === undefined) setting.cbmsEnabled = false;
+        if (setting.cbmsUsername === undefined) setting.cbmsUsername = "";
+        if (setting.cbmsPassword === undefined) setting.cbmsPassword = "";
+        if (setting.datePreference === undefined) setting.datePreference = "BS";
+        if (setting.defaultVatRate === undefined) setting.defaultVatRate = 13;
+      });
+
+      await trans.table('accounts').toCollection().modify((acc) => {
+        if (acc.openingBalanceBS === undefined) acc.openingBalanceBS = "";
+      });
+
+      await trans.table('invoices').toCollection().modify((inv) => {
+        if (inv.cbmsSubmitted === undefined) inv.cbmsSubmitted = false;
+        if (inv.cbmsIrn === undefined) inv.cbmsIrn = "";
+        if (inv.cbmsSubmittedAt === undefined) inv.cbmsSubmittedAt = "";
+        if (inv.annexType === undefined) inv.annexType = null;
+        if (inv.vatApplicable === undefined) inv.vatApplicable = false;
+        if (inv.discountBeforeVat === undefined) inv.discountBeforeVat = 0;
+      });
+
+      await trans.table('vouchers').toCollection().modify((v) => {
+        if (v.bsDate === undefined) v.bsDate = "";
+        if (v.narrationNe === undefined) v.narrationNe = "";
+      });
+
+      await trans.table('items').toCollection().modify((i) => {
+        if (i.vatExempt === undefined) i.vatExempt = false;
+        if (i.hsnCode === undefined) i.hsnCode = "";
+      });
+
+      await trans.table('parties').toCollection().modify((p) => {
+        if (p.panNumber === undefined) p.panNumber = p.pan || "";
+        if (p.vatNumber === undefined) p.vatNumber = p.vatNo || "";
+        if (p.isVatRegistered === undefined) p.isVatRegistered = false;
+        if (p.district === undefined) p.district = "";
+        if (p.province === undefined) p.province = "";
+      });
+
+      await trans.table('stockMovements').toCollection().modify((sm) => {
+        if (sm.costCenterId === undefined) sm.costCenterId = "";
+      });
+
+      const count = await trans.table('tdsRates').count();
+      if (count === 0) {
+        await trans.table('tdsRates').bulkAdd([
+          { section: "87", payeeType: "contractor", rate: 1.5, thresholdAmount: 50000, effectiveFrom: "2081-04-01" },
+          { section: "88", payeeType: "service", rate: 15, thresholdAmount: 0, effectiveFrom: "2081-04-01" },
+          { section: "88", payeeType: "commission", rate: 15, thresholdAmount: 0, effectiveFrom: "2081-04-01" },
+          { section: "88AA", payeeType: "rent", rate: 10, thresholdAmount: 3000, effectiveFrom: "2081-04-01" },
+          { section: "89", payeeType: "dividend", rate: 5, thresholdAmount: 0, effectiveFrom: "2081-04-01" },
+          { section: "90", payeeType: "interest", rate: 5, thresholdAmount: 0, effectiveFrom: "2081-04-01" },
+          { section: "95", payeeType: "royalty", rate: 15, thresholdAmount: 0, effectiveFrom: "2081-04-01" },
+        ]);
+      }
+    });
+
+    this.version(6).stores({
+      voucherSeries: "++id, companyId, voucherType, prefix, currentNumber, fiscalYearBS, resetOnNewYear"
     });
   }
 }

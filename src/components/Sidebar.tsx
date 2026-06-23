@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import SutraLogo from "./SutraLogo";
 import Tooltip from "./ui/Tooltip";
+import { getCurrentStock } from "../lib/stockUtils";
 import {
   LayoutDashboard,
   FolderOpen,
@@ -81,8 +82,18 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     reportFilters,
     setReportFilters,
     currentFiscalYear,
+    items,
+    stockMovements,
   } = useStore();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ Overview: true, Masters: false, Transactions: true, Payroll: true, Inventory: false, "Accounts Books": false, Reports: false, Administration: false });
+
+  const reorderAlertCount = useMemo(() => {
+    return items.filter(i => {
+      if (!i.reorderLevel) return false;
+      const stock = getCurrentStock(i.id, undefined, stockMovements);
+      return stock <= i.reorderLevel;
+    }).length;
+  }, [items, stockMovements]);
 
   const menuGroups: MenuGroup[] = [
     {
@@ -265,7 +276,15 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                         className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-400"}`}
                         style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #3b82f6", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
                         <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#60a5fa]" : "text-slate-500"}`} />
-                        {!collapsed && <span className="truncate leading-none">{item.label}</span>}
+                        {!collapsed && <span className="truncate leading-none flex-1">{item.label}</span>}
+                        {!collapsed && item.label === "Stock Items" && reorderAlertCount > 0 && (
+                          <span className="ml-auto bg-amber-500 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                            {reorderAlertCount}
+                          </span>
+                        )}
+                        {collapsed && item.label === "Stock Items" && reorderAlertCount > 0 && (
+                          <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full"></span>
+                        )}
                       </button>
                     );
                     return (

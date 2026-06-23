@@ -236,6 +236,10 @@ export async function generateInvoicePDF(
     MARGIN + boxWidth + 14,
     y + 24,
   );
+  if (invoice.cbmsIrn) {
+    doc.setFont("Helvetica", "bold");
+    doc.text(`CBMS IRN: ${invoice.cbmsIrn}`, MARGIN + boxWidth + 14, y + 29);
+  }
 
   y += boxHeight + 6;
 
@@ -323,6 +327,14 @@ export async function generateInvoicePDF(
   });
   totalsY += 5;
 
+  if (invoice.billSundries && invoice.billSundries.length > 0) {
+    invoice.billSundries.forEach(sundry => {
+      doc.text(`${sundry.name} (${sundry.type === 'additive' ? '+' : '-'}):`, totalsX + 4, totalsY);
+      doc.text(formatNumber(excelRound(sundry.amount)), PAGE_WIDTH - MARGIN - 4, totalsY, { align: "right" });
+      totalsY += 5;
+    });
+  }
+
   doc.text("VAT Collected (13%):", totalsX + 4, totalsY);
   doc.text(formatNumber(excelRound(invoice.vatAmount)), PAGE_WIDTH - MARGIN - 4, totalsY, {
     align: "right",
@@ -347,11 +359,13 @@ export async function generateInvoicePDF(
   doc.text(words.nepali, MARGIN, y + 13, { maxWidth: 100 });
 
   // 8. Narration/Notes field
-  if (invoice.narration) {
+  if (invoice.narration || invoice.narrationNe) {
+    y += 20;
     doc.setFont("Helvetica", "bold");
-    doc.text("Narration/Notes:", MARGIN, y + 22);
+    doc.text("Narration / Remarks:", MARGIN, y);
     doc.setFont("Helvetica", "normal");
-    doc.text(invoice.narration, MARGIN, y + 27, { maxWidth: 100 });
+    if (invoice.narration) doc.text(invoice.narration, MARGIN, y + 5, { maxWidth: PAGE_WIDTH - 2 * MARGIN });
+    if (invoice.narrationNe) doc.text(invoice.narrationNe, MARGIN, y + (invoice.narration ? 12 : 5), { maxWidth: PAGE_WIDTH - 2 * MARGIN });
   }
 
   y += Math.max(totalsBoxHeight, 35) + 6;

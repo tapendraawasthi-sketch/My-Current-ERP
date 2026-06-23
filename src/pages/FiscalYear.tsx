@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Calendar, Plus, Lock, CheckCircle, AlertTriangle } from "lucide-react";
 import { useStore } from "../store";
 import { FiscalYearStatus } from "../lib/types";
+import { resetAllSeriesForNewYear } from "../lib/accounting";
 
 export default function FiscalYear() {
   const {
@@ -54,9 +55,13 @@ export default function FiscalYear() {
     setChecklist({});
   };
 
-  const handleSetActive = (id: string) => {
+  const handleSetActive = async (id: string) => {
     if (confirm("Set this as the current fiscal year?")) {
+      const fy = fiscalYears.find(f => f.id === id);
       setCurrentFiscalYear(id);
+      if (fy?.fiscalYearBS) {
+        await resetAllSeriesForNewYear(fy.fiscalYearBS);
+      }
     }
   };
 

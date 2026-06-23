@@ -374,7 +374,7 @@ export default function PayrollRun() {
             voucherId: jv.id,
             partyId: line.employeeId,
             partyName: line.employeeName,
-            partyPan: empObj?.panNo,
+            partyPAN: empObj?.panNo,
             tdsType: "salary" as any, // salary TDS
             tdsRate: 0, // variable based on slab
             grossAmount: line.grossSalary,

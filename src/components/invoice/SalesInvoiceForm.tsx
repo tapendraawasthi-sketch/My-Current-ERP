@@ -33,9 +33,10 @@ import {
 } from "lucide-react";
 import { formatNumber, numberToWords } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
-import { generateInvoiceNo } from "../../lib/accounting";
-import { computeVAT } from "../../lib/taxUtils";
+import { generateSerialNumber } from "../../lib/accounting";
+import { computeInvoiceVAT } from "../../lib/taxUtils";
 import { generateInvoicePDF } from "../../lib/printUtils";
+import { submitToCBMS } from "../../lib/cbmsApi";
 import {
   VoucherType,
   VoucherStatus,
@@ -165,6 +166,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [orderRef, setOrderRef] = useState(existing?.orderRef || "");
   const [challanRef, setChallanRef] = useState(existing?.challanRef || "");
   const [narration, setNarration] = useState(existing?.narration || "");
+  const [narrationNe, setNarrationNe] = useState(existing?.narrationNe || "");
   const [attachments, setAttachments] = useState<string[]>(existing?.attachments || []);
 
   // ---- party ----
@@ -227,57 +229,64 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [saving, setSaving] = useState(false);
   const [savedInvoice, setSavedInvoice] = useState<any>(null);
 
+  const [billSundries, setBillSundries] = useState<Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>>(
+    existing?.billSundries || []
+  );
+
   const markDirty = () => setDirty(true);
 
-  // ---- totals via taxUtils.computeVAT ----
+  // ---- totals via taxUtils.computeInvoiceVAT ----
   const computation = useMemo(() => {
     const filtered = lines
       .filter((l) => l.itemId && Number(l.qty) > 0)
       .map((l) => ({
-        itemName: l.itemName,
         qty: Number(l.qty) || 0,
         rate: Number(l.rate) || 0,
         discount: Number(l.discountPercent) || 0,
-        isTaxable: !!l.isTaxable,
-        vatRate: Number(l.vatRate) || 0,
+        vatExempt: !l.isTaxable,
       }));
-    return computeVAT(filtered);
+    return computeInvoiceVAT(filtered, 13);
   }, [lines]);
 
-  const discountAmount = useMemo(
-    () =>
-      round2(
-        lines.reduce(
-          (s, l) =>
-            s +
-            (Number(l.qty) || 0) * (Number(l.rate) || 0) * ((Number(l.discountPercent) || 0) / 100),
-          0,
-        ),
-      ),
-    [lines],
-  );
+  const discountAmount = computation.totalDiscount;
 
   const tdsAmount = useMemo(
-    () => (tdsEnabled ? round2(computation.taxableTotal * ((Number(tdsRate) || 0) / 100)) : 0),
-    [tdsEnabled, tdsRate, computation.taxableTotal],
+    () => (tdsEnabled ? round2(computation.taxableAmount * ((Number(tdsRate) || 0) / 100)) : 0),
+    [tdsEnabled, tdsRate, computation.taxableAmount],
   );
 
-  const grandTotal = computation.grandTotal;
+  const sundryTotal = useMemo(() => {
+    return billSundries.reduce((acc, sundry) => {
+      return sundry.type === "additive" ? acc + Number(sundry.amount || 0) : acc - Number(sundry.amount || 0);
+    }, 0);
+  }, [billSundries]);
+
+  // Adjust grand total to include sundries
+  const grandTotal = round2(computation.grandTotal + sundryTotal);
   const netPayable = round2(grandTotal - tdsAmount);
   const balance = round2(grandTotal - (Number(paidAmount) || 0));
 
   const words = useMemo(() => numberToWords(grandTotal, "Rupees"), [grandTotal]);
 
-  // ---- voucher no preview ----
-  const invoiceNoPreview = useMemo(() => {
-    if (existing?.invoiceNo) return existing.invoiceNo;
-    try {
-      return generateInvoiceNo(meta.vt as any, companySettings?.voucherSeries || {}, invoices)
-        .invoiceNo;
-    } catch {
-      return "INV-XXXX";
+  const [invoiceNoPreview, setInvoiceNoPreview] = useState(existing?.invoiceNo || "Loading...");
+
+  useEffect(() => {
+    if (existing?.invoiceNo) {
+      setInvoiceNoPreview(existing.invoiceNo);
+      return;
     }
-  }, [existing, meta.vt, companySettings, invoices]);
+    let isActive = true;
+    generateSerialNumber(meta.vt, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+      .then((num) => {
+        if (isActive) setInvoiceNoPreview(num);
+      })
+      .catch(() => {
+        if (isActive) setInvoiceNoPreview("INV-XXXX");
+      });
+    return () => {
+      isActive = false;
+    };
+  }, [existing, meta.vt, currentFiscalYear]);
 
   // ---- line helpers ----
   const updateLine = (id: string, updates: Partial<InvoiceLineState>) => {
@@ -370,16 +379,16 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       partyName: party?.name || "",
       partyPan: party?.pan,
       partyVat: party?.vatNo,
-      subTotal: computation.subTotal,
+      subTotal: computation.subtotal,
       discountAmount,
-      taxableAmount: computation.taxableTotal,
-      exemptAmount: computation.exemptTotal,
+      taxableAmount: computation.taxableAmount,
+      exemptAmount: round2(computation.subtotal - discountAmount - computation.taxableAmount),
       vatAmount: computation.vatAmount,
       taxAmount: computation.vatAmount,
       tdsAmount: tdsEnabled ? tdsAmount : undefined,
       tdsRate: tdsEnabled ? tdsRate : undefined,
       tdsType: tdsEnabled ? tdsType : undefined,
-      roundOff: computation.roundOff,
+      roundOff: 0,
       grandTotal,
       lines: payloadLines,
       paymentMode: payMode,
@@ -389,6 +398,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       chequeNo: chequeNo || undefined,
       chequeDate: chequeNo ? chequeDate : undefined,
       narration: narration.trim() || `${meta.label} ${invoiceNoPreview}`,
+      narrationNe: narrationNe.trim() || undefined,
+      billSundries,
       referenceNo: referenceNo || undefined,
       orderRef: orderRef || undefined,
       challanRef: challanRef || undefined,
@@ -454,8 +465,38 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </div>
             </div>
           ),
-          { duration: 5000 },
+          { duration: 4000 },
         );
+
+        // Run CBMS async
+        if (companySettings?.cbmsEnabled && companySettings?.cbmsConfig) {
+          const itemsForCBMS = payload.lines.map((l: any) => ({
+            description: l.itemName,
+            qty: l.qty,
+            rate: l.rate,
+            amount: l.netAmount
+          }));
+          
+          submitToCBMS({
+            billNo: result.invoiceNo,
+            billDate: result.dateNepali,
+            partyName: result.partyName,
+            partyPAN: result.partyPan,
+            taxableAmount: result.taxableAmount,
+            vatAmount: result.vatAmount,
+            grandTotal: result.grandTotal,
+            items: itemsForCBMS
+          }, companySettings.cbmsConfig)
+          .then(async (cbmsRes) => {
+            if (cbmsRes.success && cbmsRes.referenceNo) {
+              await updateInvoice(result.id, { cbmsSubmitted: true, cbmsIrn: cbmsRes.referenceNo, cbmsSubmittedAt: new Date().toISOString() });
+              toast.success(`CBMS Synced: IRN ${cbmsRes.referenceNo}`);
+            } else {
+              await updateInvoice(result.id, { cbmsSubmitted: false });
+              toast.error(`CBMS Failed: ${cbmsRes.error}`);
+            }
+          });
+        }
       } else {
         toast.success(isEdit ? "Draft updated." : "Draft saved.");
       }
@@ -499,6 +540,15 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       } else if (!readOnly && e.key === "F12") {
         e.preventDefault();
         handleSave(VoucherStatus.POSTED);
+      } else if (!readOnly && e.key === "F9") {
+        e.preventDefault();
+        if (lines.length > 1) {
+          setLines(p => p.slice(0, -1));
+          markDirty();
+        } else if (lines.length === 1) {
+          setLines([emptyLine()]);
+          markDirty();
+        }
       } else if (!readOnly && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
         handleSave(existing?.status || VoucherStatus.DRAFT);
@@ -589,17 +639,29 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               FY {currentFiscalYear.name}
             </Badge>
           )}
+          {companySettings?.cbmsEnabled && (
+            <Badge
+              variant={
+                existing?.cbmsSubmitted === true
+                  ? "success"
+                  : existing?.cbmsSubmitted === false
+                    ? "danger"
+                    : "default"
+              }
+              size="sm"
+            >
+              {existing?.cbmsSubmitted === true
+                ? "CBMS Synced"
+                : existing?.cbmsSubmitted === false
+                  ? "CBMS Failed"
+                  : "CBMS Pending"}
+            </Badge>
+          )}
         </div>
       </div>
 
       {/* Header & Party details (3-column grid card) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 bg-white border border-gray-200 rounded-md mb-3">
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium text-gray-600">Invoice No</span>
-          <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700 text-[12px]">
-            {invoiceNoPreview}
-          </span>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-white border border-gray-200 rounded-md mb-3">
         <PartySelect
           label={meta.isSales ? "Customer" : "Supplier"}
           partyType={meta.party}
@@ -611,6 +673,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           required
           disabled={readOnly}
         />
+        <Input label="PAN" value={party?.pan || ""} onChange={() => {}} disabled placeholder="—" />
         <NepaliDatePicker
           label="Invoice Date"
           value={date}
@@ -621,7 +684,6 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           required
           disabled={readOnly}
         />
-
         <NepaliDatePicker
           label="Due Date"
           value={dueDate}
@@ -630,25 +692,6 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             markDirty();
           }}
           disabled={readOnly}
-        />
-        <Input
-          label="Reference No"
-          value={referenceNo}
-          onChange={(v) => {
-            setReferenceNo(v);
-            markDirty();
-          }}
-          placeholder="Optional"
-          disabled={readOnly}
-        />
-        <Input label="PAN" value={party?.pan || ""} onChange={() => {}} disabled placeholder="—" />
-
-        <Input
-          label="VAT No"
-          value={party?.vatNo || ""}
-          onChange={() => {}}
-          disabled
-          placeholder="—"
         />
         <div className="md:col-span-2">
           <Input
@@ -662,29 +705,22 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             disabled={readOnly}
           />
         </div>
-
+        <div className="flex flex-col gap-1">
+          <span className="text-[11px] font-medium text-gray-600">Invoice No</span>
+          <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700 text-[12px]">
+            {invoiceNoPreview}
+          </span>
+        </div>
         <Input
-          label="Sales Order Ref"
-          value={orderRef}
+          label="Reference No"
+          value={referenceNo}
           onChange={(v) => {
-            setOrderRef(v);
+            setReferenceNo(v);
             markDirty();
           }}
           placeholder="Optional"
           disabled={readOnly}
         />
-        <div className="md:col-span-2">
-          <Input
-            label="Delivery Challan Ref"
-            value={challanRef}
-            onChange={(v) => {
-              setChallanRef(v);
-              markDirty();
-            }}
-            placeholder="Optional"
-            disabled={readOnly}
-          />
-        </div>
       </div>
 
       {/* Line items */}
@@ -709,8 +745,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               <tr>
                 <th className="px-2 py-2 text-center">#</th>
                 <th className="px-2 py-2 text-left">Item</th>
-                <th className="px-2 py-2 text-left">HSN</th>
-                <th className="px-2 py-2 text-left">Description</th>
+                <th className="px-2 py-2 text-left hidden">HSN</th>
+                <th className="px-2 py-2 text-left hidden">Description</th>
                 <th className="px-2 py-2 text-right">Qty</th>
                 <th className="px-2 py-2 text-left">Unit</th>
                 <th className="px-2 py-2 text-right">Rate</th>
@@ -750,6 +786,107 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </tbody>
           </table>
         </div>
+      </Card>
+
+      {/* Bill Sundries */}
+      <Card border padding="md">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+            Bill Sundries
+          </h3>
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              setBillSundries(p => [...p, { id: uid(), name: "", type: "additive", amount: 0 }]);
+              markDirty();
+            }}
+            disabled={readOnly}
+            icon={<Plus className="h-3 w-3" />}
+          >
+            Add Sundry
+          </Button>
+        </div>
+        {billSundries.length > 0 && (
+          <div className="overflow-x-auto rounded-md border border-slate-200">
+            <table className="w-full text-xs">
+              <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-gray-600 uppercase tracking-wide">
+                <tr>
+                  <th className="px-2 py-2 text-left">Sundry Name</th>
+                  <th className="px-2 py-2 text-center w-32">Type</th>
+                  <th className="px-2 py-2 text-right w-32">Amount</th>
+                  <th className="px-2 py-2 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {billSundries.map((sundry, idx) => (
+                  <tr key={sundry.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                    <td className="px-2 py-1">
+                      <input
+                        className="w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none"
+                        value={sundry.name}
+                        onChange={(e) => {
+                          const n = [...billSundries];
+                          n[idx].name = e.target.value;
+                          setBillSundries(n);
+                          markDirty();
+                        }}
+                        disabled={readOnly}
+                        placeholder="e.g. Shipping / Discount"
+                      />
+                    </td>
+                    <td className="px-2 py-1 text-center">
+                      <select
+                        className="w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none"
+                        value={sundry.type}
+                        onChange={(e) => {
+                          const n = [...billSundries];
+                          n[idx].type = e.target.value as any;
+                          setBillSundries(n);
+                          markDirty();
+                        }}
+                        disabled={readOnly}
+                      >
+                        <option value="additive">Additive (+)</option>
+                        <option value="subtractive">Subtractive (-)</option>
+                      </select>
+                    </td>
+                    <td className="px-2 py-1 text-right">
+                      <input
+                        type="number"
+                        className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+                        value={sundry.amount || ""}
+                        onChange={(e) => {
+                          const n = [...billSundries];
+                          n[idx].amount = Number(e.target.value) || 0;
+                          setBillSundries(n);
+                          markDirty();
+                        }}
+                        disabled={readOnly}
+                        placeholder="0.00"
+                        min={0}
+                        step="0.01"
+                      />
+                    </td>
+                    <td className="px-2 py-1 text-center">
+                      {!readOnly && (
+                        <button
+                          onClick={() => {
+                            setBillSundries(p => p.filter(s => s.id !== sundry.id));
+                            markDirty();
+                          }}
+                          className="p-1 text-gray-400 hover:text-red-500 rounded"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
 
       {/* Payment + Totals */}
@@ -904,16 +1041,33 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           )}
 
           <div className="mt-4 pt-4 border-t border-slate-200">
-            <Input
-              label="Narration"
+            <label className="text-[11px] font-semibold text-gray-700 block mb-1">Narration (English)</label>
+            <textarea
+              className="w-full h-16 p-2 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
               value={narration}
-              onChange={(v) => {
-                setNarration(v);
+              onChange={(e) => {
+                setNarration(e.target.value.substring(0, 200));
                 markDirty();
               }}
               placeholder="Optional notes / description"
               disabled={readOnly}
             />
+            <div className="text-right text-[10px] text-gray-400 mt-0.5">{narration.length}/200</div>
+          </div>
+
+          <div className="mt-2">
+            <label className="text-[11px] font-semibold text-gray-700 block mb-1">Narration (Nepali) <span className="text-gray-400 font-normal ml-1">Optional</span></label>
+            <textarea
+              className="w-full h-16 p-2 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+              value={narrationNe}
+              onChange={(e) => {
+                setNarrationNe(e.target.value.substring(0, 200));
+                markDirty();
+              }}
+              placeholder="नेपालीमा कैफियत..."
+              disabled={readOnly}
+            />
+            <div className="text-right text-[10px] text-gray-400 mt-0.5">{narrationNe.length}/200</div>
           </div>
 
           <div className="mt-4 pt-4 border-t border-slate-200">
@@ -934,50 +1088,32 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
         {/* Totals Box, right-aligned in a w-64 card */}
         <div className="flex justify-end">
-          <div className="w-64 p-3 bg-white border border-gray-200 rounded-md flex flex-col gap-1.5 shadow-sm">
+          <div className={`w-64 p-3 rounded-md flex flex-col gap-1.5 shadow-sm border ${computation.vatAmount > 0 ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-50 text-gray-700 border-gray-200"}`}>
             <div className="flex justify-between items-baseline text-[12px]">
-              <span className="text-gray-500 font-medium">Subtotal</span>
-              <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.subTotal)}
-              </span>
+              <span className="font-medium">Subtotal</span>
+              <span className="font-mono">{symbol} {formatNumber(computation.subtotal)}</span>
             </div>
-            <div className="flex justify-between items-baseline text-[12px] text-red-600">
+            <div className="flex justify-between items-baseline text-[12px]">
               <span className="font-medium">Discount</span>
-              <span className="font-mono">
-                - {symbol} {formatNumber(discountAmount)}
-              </span>
+              <span className="font-mono">- {symbol} {formatNumber(discountAmount)}</span>
             </div>
             <div className="flex justify-between items-baseline text-[12px]">
-              <span className="text-gray-600 font-medium">Taxable Amount</span>
-              <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.taxableTotal)}
-              </span>
+              <span className="font-medium">Taxable Amount</span>
+              <span className="font-mono">{symbol} {formatNumber(computation.taxableAmount)}</span>
             </div>
             <div className="flex justify-between items-baseline text-[12px]">
-              <span className="text-gray-600 font-medium">VAT (13%)</span>
-              <span className="font-mono text-gray-800">
-                {symbol} {formatNumber(computation.vatAmount)}
-              </span>
+              <span className="font-medium">VAT 13%</span>
+              <span className="font-mono">{symbol} {formatNumber(computation.vatAmount)}</span>
             </div>
             {tdsEnabled && (
               <div className="flex justify-between items-baseline text-[12px] text-orange-600">
                 <span className="font-medium">TDS Deducted</span>
-                <span className="font-mono">
-                  - {symbol} {formatNumber(tdsAmount)}
-                </span>
+                <span className="font-mono">- {symbol} {formatNumber(tdsAmount)}</span>
               </div>
             )}
-            {computation.roundOff !== 0 && (
-              <div className="flex justify-between items-baseline text-[12px] text-gray-500">
-                <span className="font-medium">Round Off</span>
-                <span className="font-mono">
-                  {symbol} {formatNumber(computation.roundOff)}
-                </span>
-              </div>
-            )}
-            <div className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] p-2 mt-1 flex justify-between items-baseline rounded-sm">
-              <span className="text-[12px] font-bold text-[#1557b0] uppercase">Grand Total</span>
-              <span className="font-mono font-bold text-[12px] text-[#1557b0] text-right">
+            <div className={`border-t-2 mt-1 pt-2 flex justify-between items-baseline rounded-sm ${computation.vatAmount > 0 ? "border-green-200" : "border-gray-200"}`}>
+              <span className="text-[12px] font-bold uppercase">Grand Total</span>
+              <span className="font-mono font-bold text-[12px] text-right">
                 {symbol} {formatNumber(grandTotal)}
               </span>
             </div>

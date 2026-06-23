@@ -27,11 +27,13 @@ import {
   AlertTriangle,
   Copy,
   ArrowLeft,
+  AlertCircle,
+  CheckCircle,
 } from "lucide-react";
 import { formatNumber } from "../../lib/utils";
 import { ADToBSString } from "../../lib/nepaliDate";
 import { VoucherType, VoucherStatus } from "../../lib/types";
-import { generateVoucherNo } from "../../lib/accounting";
+import { generateSerialNumber, validateDoubleEntry } from "../../lib/accounting";
 import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../../components/BusyShell";
 
@@ -105,20 +107,25 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
 
   const markDirty = () => setDirty(true);
 
-  // Auto-generated voucher number preview
-  const voucherNoPreview = useMemo(() => {
-    if (existing?.voucherNo) return existing.voucherNo;
-    try {
-      const { voucherNo } = generateVoucherNo(
-        VoucherType.JOURNAL,
-        companySettings?.voucherSeries || {},
-        vouchers,
-      );
-      return voucherNo;
-    } catch {
-      return "JV-XXXX";
+  const [voucherNoPreview, setVoucherNoPreview] = useState(existing?.voucherNo || "Loading...");
+
+  useEffect(() => {
+    if (existing?.voucherNo) {
+      setVoucherNoPreview(existing.voucherNo);
+      return;
     }
-  }, [existing, companySettings, vouchers]);
+    let isActive = true;
+    generateSerialNumber(VoucherType.JOURNAL, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+      .then((num) => {
+        if (isActive) setVoucherNoPreview(num);
+      })
+      .catch(() => {
+        if (isActive) setVoucherNoPreview("JV-XXXX");
+      });
+    return () => {
+      isActive = false;
+    };
+  }, [existing, currentFiscalYear]);
 
   const totals = useMemo(() => {
     const debit = lines.reduce((s, l) => s + (Number(l.debit) || 0), 0);
@@ -131,6 +138,30 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       balanced: Math.abs(diff) < 0.01,
     };
   }, [lines]);
+
+  const hasValidLines = useMemo(() => {
+    return lines.some(l => l.accountId && (l.debit > 0 || l.credit > 0));
+  }, [lines]);
+
+  const balanceIndicator = useMemo(() => {
+    if (!hasValidLines) return null;
+    const { isValid, difference } = validateDoubleEntry(lines);
+    if (isValid) {
+      return (
+        <div className="bg-green-50 text-green-700 border border-green-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
+          <CheckCircle className="w-4 h-4" />
+          <span>Balanced — Dr {symbol}{formatNumber(totals.debit)} = Cr {symbol}{formatNumber(totals.credit)}</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
+          <AlertCircle className="w-4 h-4" />
+          <span>Difference {symbol}{formatNumber(difference)}</span>
+        </div>
+      );
+    }
+  }, [lines, hasValidLines, symbol, totals.debit, totals.credit]);
 
   const updateLine = (idx: number, field: string, value: any) => {
     setLines((prev) =>
@@ -671,15 +702,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             </div>
           </div>
           <div className="flex items-center">
-            {totals.balanced ? (
-              <div className="px-3 py-1.5 text-[12px] font-semibold rounded bg-green-50 text-green-700 border border-green-200 flex items-center gap-1.5">
-                ✓ Balanced
-              </div>
-            ) : (
-              <div className="px-3 py-1.5 text-[12px] font-semibold rounded bg-red-50 text-red-700 border border-red-200 flex items-center gap-1.5">
-                ⚠ Difference: {symbol} {formatNumber(Math.abs(totals.diff))}
-              </div>
-            )}
+            {balanceIndicator}
           </div>
         </div>
       </Card>

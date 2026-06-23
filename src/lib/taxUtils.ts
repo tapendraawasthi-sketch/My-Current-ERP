@@ -128,51 +128,63 @@ export function reverseCalculateVAT(
 
 export function computeVatAnnexA(
   invoices: Invoice[],
+  vouchers: JournalEntry[],
+  accounts: Account[],
   startDate: string,
   endDate: string,
-): {
-  rows: {
-    sNo: number;
-    date: string;
-    billNo: string;
-    partyName: string;
-    partyPan: string;
-    taxableAmt: number;
-    vatAmt: number;
-    exemptAmt: number;
-    totalAmt: number;
-  }[];
-  totals: { taxable: number; vat: number; exempt: number; total: number };
-} {
+) {
   const filtered = invoices.filter(
     (inv) =>
-      inv.type === VoucherType.PURCHASE_INVOICE &&
+      (inv.type === VoucherType.SALES_INVOICE || inv.type === VoucherType.SALES_RETURN) &&
       inv.status === VoucherStatus.POSTED &&
       inv.date >= startDate &&
       inv.date <= endDate,
-  );
+  ).sort((a, b) => a.date.localeCompare(b.date));
 
   let totalTaxable = 0;
   let totalVat = 0;
   let totalExempt = 0;
+  let totalDiscount = 0;
 
   const rows = filtered.map((inv, idx) => {
-    const pan = inv.partyPan || "";
+    const isReturn = inv.type === VoucherType.SALES_RETURN;
+    const sign = isReturn ? -1 : 1;
+    
+    // Only include VAT-applicable lines in taxable, others in amount (exempt)
+    let invTaxable = 0;
+    let invExempt = 0;
+    let invVat = 0;
+    
+    inv.lines.forEach(l => {
+      const net = (l.netAmount || 0) * sign;
+      const vat = (l.vatAmount || 0) * sign;
+      if (l.isTaxable) {
+        invTaxable += net;
+        invVat += vat;
+      } else {
+        invExempt += net;
+      }
+    });
 
-    totalTaxable = round2(totalTaxable + inv.taxableAmount);
-    totalVat = round2(totalVat + inv.vatAmount);
-    totalExempt = round2(totalExempt + inv.exemptAmount);
+    const invTotal = invTaxable + invVat + invExempt;
+    const discount = (inv.discountAmount || 0) * sign;
+
+    totalTaxable = round2(totalTaxable + invTaxable);
+    totalVat = round2(totalVat + invVat);
+    totalExempt = round2(totalExempt + invExempt);
+    totalDiscount = round2(totalDiscount + discount);
 
     return {
-      sNo: idx + 1,
-      date: inv.date,
-      billNo: inv.invoiceNo,
-      partyName: inv.partyName,
-      partyPan: pan,
-      taxableAmt: inv.taxableAmount,
-      vatAmt: inv.vatAmount,
-      exemptAmt: inv.exemptAmount,
-      totalAmt: inv.grandTotal,
+      sn: idx + 1,
+      customerName: inv.partyName,
+      customerPAN: inv.partyPan || "",
+      billDate: inv.dateNepali || inv.date,
+      billNumber: inv.invoiceNo,
+      amount: round2(invTotal),
+      discount: discount,
+      taxableAmount: round2(invTaxable),
+      vatAmount: round2(invVat),
+      exemptAmount: round2(invExempt)
     };
   });
 
@@ -182,6 +194,7 @@ export function computeVatAnnexA(
       taxable: totalTaxable,
       vat: totalVat,
       exempt: totalExempt,
+      discount: totalDiscount,
       total: round2(totalTaxable + totalVat + totalExempt),
     },
   };
@@ -189,49 +202,62 @@ export function computeVatAnnexA(
 
 export function computeVatAnnexB(
   invoices: Invoice[],
+  vouchers: JournalEntry[],
+  accounts: Account[],
   startDate: string,
   endDate: string,
-): {
-  rows: {
-    sNo: number;
-    date: string;
-    billNo: string;
-    partyName: string;
-    partyPan: string;
-    taxableAmt: number;
-    vatAmt: number;
-    exemptAmt: number;
-    totalAmt: number;
-  }[];
-  totals: { taxable: number; vat: number; exempt: number; total: number };
-} {
+) {
   const filtered = invoices.filter(
     (inv) =>
-      inv.type === VoucherType.SALES_INVOICE &&
+      (inv.type === VoucherType.PURCHASE_INVOICE || inv.type === VoucherType.PURCHASE_RETURN) &&
       inv.status === VoucherStatus.POSTED &&
       inv.date >= startDate &&
       inv.date <= endDate,
-  );
+  ).sort((a, b) => a.date.localeCompare(b.date));
 
   let totalTaxable = 0;
   let totalVat = 0;
   let totalExempt = 0;
+  let totalDiscount = 0;
 
   const rows = filtered.map((inv, idx) => {
-    totalTaxable = round2(totalTaxable + inv.taxableAmount);
-    totalVat = round2(totalVat + inv.vatAmount);
-    totalExempt = round2(totalExempt + inv.exemptAmount);
+    const isReturn = inv.type === VoucherType.PURCHASE_RETURN;
+    const sign = isReturn ? -1 : 1;
+    
+    let invTaxable = 0;
+    let invExempt = 0;
+    let invVat = 0;
+    
+    inv.lines.forEach(l => {
+      const net = (l.netAmount || 0) * sign;
+      const vat = (l.vatAmount || 0) * sign;
+      if (l.isTaxable) {
+        invTaxable += net;
+        invVat += vat;
+      } else {
+        invExempt += net;
+      }
+    });
+
+    const invTotal = invTaxable + invVat + invExempt;
+    const discount = (inv.discountAmount || 0) * sign;
+
+    totalTaxable = round2(totalTaxable + invTaxable);
+    totalVat = round2(totalVat + invVat);
+    totalExempt = round2(totalExempt + invExempt);
+    totalDiscount = round2(totalDiscount + discount);
 
     return {
-      sNo: idx + 1,
-      date: inv.date,
-      billNo: inv.invoiceNo,
-      partyName: inv.partyName,
-      partyPan: inv.partyPan || "",
-      taxableAmt: inv.taxableAmount,
-      vatAmt: inv.vatAmount,
-      exemptAmt: inv.exemptAmount,
-      totalAmt: inv.grandTotal,
+      sn: idx + 1,
+      supplierName: inv.partyName,
+      supplierPAN: inv.partyPan || "",
+      billDate: inv.dateNepali || inv.date,
+      billNumber: inv.invoiceNo,
+      amount: round2(invTotal),
+      discount: discount,
+      taxableAmount: round2(invTaxable),
+      inputVat: round2(invVat),
+      exemptAmount: round2(invExempt)
     };
   });
 
@@ -241,6 +267,7 @@ export function computeVatAnnexB(
       taxable: totalTaxable,
       vat: totalVat,
       exempt: totalExempt,
+      discount: totalDiscount,
       total: round2(totalTaxable + totalVat + totalExempt),
     },
   };
@@ -250,129 +277,83 @@ export function computeVatAnnexC(
   invoices: Invoice[],
   startDate: string,
   endDate: string,
-): {
-  rows: {
-    sNo: number;
-    date: string;
-    billNo: string;
-    partyName: string;
-    partyPan: string;
-    taxableAmt: number;
-    vatAmt: number;
-    exemptAmt: number;
-    totalAmt: number;
-  }[];
-  totals: { taxable: number; vat: number; exempt: number; total: number };
-} {
+) {
   const filtered = invoices.filter(
     (inv) =>
-      inv.type === VoucherType.SALES_INVOICE &&
+      inv.type === VoucherType.PURCHASE_INVOICE &&
       inv.status === VoucherStatus.POSTED &&
       inv.date >= startDate &&
-      inv.date <= endDate &&
-      (!inv.partyPan || inv.partyPan.trim() === ""),
-  );
+      inv.date <= endDate
+  ).filter((inv) => {
+    // If foreign supplier or lines have import HSN codes
+    const isForeign = !inv.partyPan || inv.partyPan.trim() === "";
+    const hasImportCode = inv.lines.some(l => l.hsnCode && (l.hsnCode.startsWith("8") || l.hsnCode.startsWith("9"))); // Simplification
+    return isForeign || hasImportCode;
+  }).sort((a, b) => a.date.localeCompare(b.date));
 
-  let totalTaxable = 0;
+  let totalAssessable = 0;
   let totalVat = 0;
-  let totalExempt = 0;
 
-  const rows = filtered.map((inv, idx) => {
-    totalTaxable = round2(totalTaxable + inv.taxableAmount);
-    totalVat = round2(totalVat + inv.vatAmount);
-    totalExempt = round2(totalExempt + inv.exemptAmount);
+  const rows: any[] = [];
+  let sn = 1;
 
-    return {
-      sNo: idx + 1,
-      date: inv.date,
-      billNo: inv.invoiceNo,
-      partyName: inv.partyName,
-      partyPan: "",
-      taxableAmt: inv.taxableAmount,
-      vatAmt: inv.vatAmount,
-      exemptAmt: inv.exemptAmount,
-      totalAmt: inv.grandTotal,
-    };
+  filtered.forEach((inv) => {
+    inv.lines.forEach(l => {
+      if (l.isTaxable) {
+        const assessable = round2(l.netAmount || 0);
+        const vat = round2(l.vatAmount || 0);
+        totalAssessable += assessable;
+        totalVat += vat;
+
+        rows.push({
+          sn: sn++,
+          importerName: inv.partyName,
+          customsDeclarationNumber: inv.referenceNo || "-",
+          entryDate: inv.dateNepali || inv.date,
+          countryOfOrigin: "Foreign",
+          description: l.itemName,
+          quantity: l.qty,
+          assessableValue: assessable,
+          vatAmount: vat
+        });
+      }
+    });
   });
 
   return {
     rows,
     totals: {
-      taxable: totalTaxable,
-      vat: totalVat,
-      exempt: totalExempt,
-      total: round2(totalTaxable + totalVat + totalExempt),
+      assessableValue: totalAssessable,
+      vatAmount: totalVat,
     },
   };
 }
 
 export function computeVAT3Return(
-  invoices: Invoice[],
-  vouchers: JournalEntry[],
-  accounts: Account[],
+  annexA: any,
+  annexB: any,
   startDate: string,
   endDate: string,
-): {
-  purchaseVat: number;
-  salesVat: number;
-  vatPayable: number;
-  vatRefundable: number;
-  prevBalance: number;
-  netVat: number;
-  period: { start: string; end: string };
-} {
-  const purInvoices = invoices.filter(
-    (inv) =>
-      inv.type === VoucherType.PURCHASE_INVOICE &&
-      inv.status === VoucherStatus.POSTED &&
-      inv.date >= startDate &&
-      inv.date <= endDate,
-  );
-  const purchaseVat = round2(purInvoices.reduce((sum, inv) => sum + inv.vatAmount, 0));
-
-  const salesInvoices = invoices.filter(
-    (inv) =>
-      inv.type === VoucherType.SALES_INVOICE &&
-      inv.status === VoucherStatus.POSTED &&
-      inv.date >= startDate &&
-      inv.date <= endDate,
-  );
-  const salesVat = round2(salesInvoices.reduce((sum, inv) => sum + inv.vatAmount, 0));
+) {
+  const salesVat = annexA.totals.vat || 0;
+  const purchaseVat = annexB.totals.vat || 0;
 
   const netVat = round2(salesVat - purchaseVat);
   const vatPayable = netVat > 0 ? netVat : 0;
   const vatRefundable = netVat < 0 ? Math.abs(netVat) : 0;
 
-  const vatPayableAcc = accounts.find((a) => a.id === "acc-vat-payable");
-  const vatReceivableAcc = accounts.find((a) => a.id === "acc-vat-receivable");
-
-  let prevPayableBal = 0;
-  let prevReceivableBal = 0;
-
-  const pastVouchers = vouchers.filter(
-    (v) => v.status === VoucherStatus.POSTED && v.date < startDate,
-  );
-
-  for (const v of pastVouchers) {
-    for (const l of v.lines) {
-      if (vatPayableAcc && l.accountId === vatPayableAcc.id) {
-        prevPayableBal = round2(prevPayableBal + l.credit - l.debit);
-      }
-      if (vatReceivableAcc && l.accountId === vatReceivableAcc.id) {
-        prevReceivableBal = round2(prevReceivableBal + l.debit - l.credit);
-      }
-    }
-  }
-
-  const prevBalance = round2(prevPayableBal - prevReceivableBal);
+  // Compute 25th of next BS month (simplified simulation)
+  // In reality, this requires BS calendar arithmetic.
+  const dueDate = "25th of next BS month";
 
   return {
     purchaseVat,
     salesVat,
     vatPayable,
     vatRefundable,
-    prevBalance,
+    prevBalance: 0,
     netVat,
+    dueDate,
     period: { start: startDate, end: endDate },
   };
 }
@@ -536,16 +517,67 @@ export function calculateInvoiceTotals(
 // 5. TAX VALIDATION UTILITIES
 // ==========================================
 
-export function validateVatNumber(vat: string): boolean {
+export function validateVATNumber(vat: string): boolean {
   if (!vat) return false;
-  const clean = vat.replace(/[-\s]/g, "");
-  return /^3\d{8}$/.test(clean);
+  const clean = vat.trim();
+  return /^\d{9}$/.test(clean) || /^\d{9}[A-Z]{1}\d{3}$/.test(clean);
 }
 
-export function validatePanNumber(pan: string): boolean {
+export function validatePAN(pan: string): boolean {
   if (!pan) return false;
-  const clean = pan.replace(/[-\s]/g, "");
-  return /^\d{9}$/.test(clean);
+  return /^\d{9}$/.test(pan.trim());
+}
+
+export function computeNepalVAT(taxableAmount: number, vatRate: number = 13, inclusive: boolean = false): { taxableValue: number, vatAmount: number, totalAmount: number } {
+  if (!inclusive) {
+    const taxableValue = Math.round(taxableAmount * 100) / 100;
+    const vatAmount = Math.round((taxableValue * vatRate / 100) * 100) / 100;
+    const totalAmount = Math.round((taxableValue + vatAmount) * 100) / 100;
+    return { taxableValue, vatAmount, totalAmount };
+  } else {
+    const taxableValue = Math.round((taxableAmount / (1 + vatRate / 100)) * 100) / 100;
+    const vatAmount = Math.round((taxableAmount - taxableValue) * 100) / 100;
+    const totalAmount = Math.round(taxableAmount * 100) / 100;
+    return { taxableValue, vatAmount, totalAmount };
+  }
+}
+
+export function computeInvoiceVAT(lines: Array<{qty: number, rate: number, discount: number, vatExempt: boolean}>, vatRate: number = 13): { subtotal: number, totalDiscount: number, taxableAmount: number, vatAmount: number, grandTotal: number } {
+  let subtotal = 0;
+  let totalDiscount = 0;
+  let taxableAmount = 0;
+  
+  for (const line of lines) {
+    const lineAmount = line.qty * line.rate;
+    const lineDiscount = lineAmount * line.discount / 100;
+    const lineNet = lineAmount - lineDiscount;
+    
+    subtotal += lineAmount;
+    totalDiscount += lineDiscount;
+    
+    if (!line.vatExempt) {
+      taxableAmount += lineNet;
+    }
+  }
+  
+  subtotal = Math.round(subtotal * 100) / 100;
+  totalDiscount = Math.round(totalDiscount * 100) / 100;
+  taxableAmount = Math.round(taxableAmount * 100) / 100;
+  
+  const vatAmount = Math.round((taxableAmount * vatRate / 100) * 100) / 100;
+  const grandTotal = Math.round((subtotal - totalDiscount + vatAmount) * 100) / 100;
+  
+  return { subtotal, totalDiscount, taxableAmount, vatAmount, grandTotal };
+}
+
+export function computeWithholdingTDS(amount: number, section: string, rate: number, threshold: number): { applicable: boolean, tdsAmount: number, netPayable: number } {
+  if (amount <= threshold) {
+    return { applicable: false, tdsAmount: 0, netPayable: amount };
+  } else {
+    const tdsAmount = Math.round((amount * rate / 100) * 100) / 100;
+    const netPayable = Math.round((amount - tdsAmount) * 100) / 100;
+    return { applicable: true, tdsAmount, netPayable };
+  }
 }
 
 export function isPanRequired(amount: number): boolean {

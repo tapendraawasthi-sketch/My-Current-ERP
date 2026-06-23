@@ -19,10 +19,10 @@ import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Input, Modal, EmptyState, Pagination } from "../components/ui";
 import ItemForm from "../components/item/ItemForm";
 import { ItemType, type Item } from "../lib/types";
-import { computeStockPosition, getLowStockItems } from "../lib/stockUtils";
+import { computeStockPosition, getLowStockItems, getCurrentStock } from "../lib/stockUtils";
 import { formatCurrency, formatNumber } from "../lib/utils";
 
-type TabKey = "PRODUCT" | "SERVICE" | "ALL";
+type TabKey = "PRODUCT" | "SERVICE" | "ALL" | "REORDER";
 
 const StockBook: React.FC = () => {
   const { items, warehouses, stockMovements, addItem, updateItem, setCurrentPage } = useStore();
@@ -143,6 +143,44 @@ const StockBook: React.FC = () => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Items");
     XLSX.writeFile(wb, `items-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  const handleExportReorder = () => {
+    const alerts = items
+      .filter(i => {
+        if (!i.reorderLevel) return false;
+        const stock = getCurrentStock(i.id, undefined, stockMovements);
+        return stock <= i.reorderLevel;
+      })
+      .map(i => {
+        const stock = getCurrentStock(i.id, undefined, stockMovements);
+        return {
+          id: i.id,
+          name: i.name,
+          category: (i as any).category || "Uncategorized",
+          stock,
+          reorderLevel: i.reorderLevel || 0,
+          shortage: (i.reorderLevel || 0) - stock,
+          unit: i.unit || "PCS",
+          lastPurchaseRate: i.purchaseRate || 0
+        };
+      })
+      .sort((a, b) => b.shortage - a.shortage);
+
+    const rows = alerts.map(a => ({
+      "Item Name": a.name,
+      "Group": a.category,
+      "Current Stock": a.stock,
+      "Reorder Level": a.reorderLevel,
+      "Shortage": a.shortage,
+      "Unit": a.unit,
+      "Last Purchase Rate": a.lastPurchaseRate
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reorder Alerts");
+    XLSX.writeFile(wb, `reorder-alerts-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   const handleDownloadTemplate = () => {
@@ -385,7 +423,7 @@ const StockBook: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex gap-1.5">
-        {(["PRODUCT", "SERVICE", "ALL"] as TabKey[]).map((t) => (
+        {(["PRODUCT", "SERVICE", "ALL", "REORDER"] as TabKey[]).map((t) => (
           <button
             key={t}
             type="button"
@@ -396,48 +434,98 @@ const StockBook: React.FC = () => {
                 : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100"
             }`}
           >
-            {t === "PRODUCT" ? "Products" : t === "SERVICE" ? "Services" : "All Items"}
+            {t === "PRODUCT" ? "Products" : t === "SERVICE" ? "Services" : t === "REORDER" ? "Reorder Alerts" : "All Items"}
           </button>
         ))}
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-3 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:max-w-sm">
-          <Input
-            value={search}
-            onChange={setSearch}
-            placeholder="Search by code, name, HSN, barcode…"
-            inputClassName="pl-9"
-          />
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
-            <input
-              type="checkbox"
-              checked={groupByCategory}
-              onChange={(e) => setGroupByCategory(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+      {activeTab !== "REORDER" && (
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-3 md:flex-row md:items-center md:justify-between">
+          <div className="relative w-full md:max-w-sm">
+            <Input
+              value={search}
+              onChange={setSearch}
+              placeholder="Search by code, name, HSN, barcode…"
+              inputClassName="pl-9"
             />
-            Group by Category
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
-            <input
-              type="checkbox"
-              checked={lowStockOnly}
-              onChange={(e) => setLowStockOnly(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
-            />
-            <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-            Low Stock Only
-            {lowStockSet.size > 0 && <Badge variant="warning">{lowStockSet.size}</Badge>}
-          </label>
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
+              <input
+                type="checkbox"
+                checked={groupByCategory}
+                onChange={(e) => setGroupByCategory(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              Group by Category
+            </label>
+            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
+              <input
+                type="checkbox"
+                checked={lowStockOnly}
+                onChange={(e) => setLowStockOnly(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+              Low Stock Only
+              {lowStockSet.size > 0 && <Badge variant="warning">{lowStockSet.size}</Badge>}
+            </label>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Table */}
-      <Card border padding="none">
+      {/* Reorder Alerts Table */}
+      {activeTab === "REORDER" && (
+        <Card border padding="none">
+          <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
+             <h3 className="text-[14px] font-semibold text-gray-800">Items Below Reorder Level</h3>
+             <Button variant="outline" size="sm" icon={<Download className="w-4 h-4"/>} onClick={handleExportReorder}>
+               Export Alerts
+             </Button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left whitespace-nowrap">
+              <thead className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item Name</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Group</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Current Stock</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Reorder Level</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Shortage</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Unit</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Last Purchase Rate</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {items.filter(i => i.reorderLevel && getCurrentStock(i.id, undefined, stockMovements) <= i.reorderLevel)
+                  .map(i => ({
+                    ...i,
+                    stock: getCurrentStock(i.id, undefined, stockMovements),
+                    shortage: (i.reorderLevel || 0) - getCurrentStock(i.id, undefined, stockMovements)
+                  }))
+                  .sort((a,b) => b.shortage - a.shortage)
+                  .map(alert => (
+                    <tr key={alert.id} className="hover:bg-red-50/50 bg-white">
+                       <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">{alert.name}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-gray-600">{(alert as any).category || "Uncategorized"}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right font-bold text-red-600">{alert.stock}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right text-gray-700">{alert.reorderLevel}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right font-bold text-amber-600">{alert.shortage}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-gray-600">{alert.unit || "PCS"}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-800">Rs. {formatNumber(alert.purchaseRate || 0)}</td>
+                    </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* Main Table */}
+      {activeTab !== "REORDER" && (
+        <Card border padding="none">
         <div className="overflow-x-auto">
           {filteredItems.length === 0 ? (
             <EmptyState
@@ -488,6 +576,7 @@ const StockBook: React.FC = () => {
           }}
         />
       </Card>
+      )}
 
       {/* Item Form Modal */}
       <Modal

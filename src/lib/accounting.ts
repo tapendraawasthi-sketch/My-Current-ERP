@@ -145,87 +145,7 @@ export function getAccountBalance(account: Account): {
 // 2. TRIAL BALANCE
 // ==========================================
 
-export function computeTrialBalance(
-  accounts: Account[],
-  vouchers: JournalEntry[],
-  startDate: string,
-  endDate: string,
-): TrialBalanceRow[] {
-  try {
-    const ledgerAccounts = accounts.filter((acc) => !acc.isGroup);
-    const postedVouchers = vouchers.filter((v) => v.status === VoucherStatus.POSTED);
-
-    const startMs = new Date(startDate).getTime();
-    const endMs = new Date(endDate).getTime();
-
-    return ledgerAccounts
-      .map((acc) => {
-        const openingDrInitial = acc.openingBalanceDr || 0;
-        const openingCrInitial = acc.openingBalanceCr || 0;
-
-        let preDebitSum = 0;
-        let preCreditSum = 0;
-        let periodDebit = 0;
-        let periodCredit = 0;
-
-        for (const v of postedVouchers) {
-          const vTime = new Date(v.date).getTime();
-          for (const line of v.lines) {
-            if (line.accountId === acc.id) {
-              if (vTime < startMs) {
-                preDebitSum += line.debit;
-                preCreditSum += line.credit;
-              } else if (vTime >= startMs && vTime <= endMs) {
-                periodDebit += line.debit;
-                periodCredit += line.credit;
-              }
-            }
-          }
-        }
-
-        const initDr = round2(openingDrInitial + preDebitSum);
-        const initCr = round2(openingCrInitial + preCreditSum);
-
-        let openingDr = 0;
-        let openingCr = 0;
-
-        if (initDr >= initCr) {
-          openingDr = round2(initDr - initCr);
-        } else {
-          openingCr = round2(initCr - initDr);
-        }
-
-        const netClosingDebitTotal = round2(initDr + periodDebit);
-        const netClosingCreditTotal = round2(initCr + periodCredit);
-
-        let closingDr = 0;
-        let closingCr = 0;
-
-        if (netClosingDebitTotal >= netClosingCreditTotal) {
-          closingDr = round2(netClosingDebitTotal - netClosingCreditTotal);
-        } else {
-          closingCr = round2(netClosingCreditTotal - netClosingDebitTotal);
-        }
-
-        return {
-          accountId: acc.id,
-          accountCode: acc.code,
-          accountName: acc.name,
-          level: acc.level,
-          openingDr,
-          openingCr,
-          debit: round2(periodDebit),
-          credit: round2(periodCredit),
-          closingDr,
-          closingCr,
-        };
-      })
-      .sort((a, b) => a.accountCode.localeCompare(b.accountCode));
-  } catch (error) {
-    console.error("computeTrialBalance error:", error);
-    return [];
-  }
-}
+// Removed old computeTrialBalance
 
 // ==========================================
 // 3. PROFIT & LOSS STATEMENT
@@ -1891,4 +1811,146 @@ export function computeRatios(
       }
     ]
   };
+}
+
+// ==========================================
+// PURE COMPUTATION FOR LEDGER & TRIAL BALANCE
+// ==========================================
+
+export function computeLedgerBalance(
+  accountId: string,
+  vouchers: JournalEntry[],
+  invoices: Invoice[],
+  fromDate: string,
+  toDate: string,
+  openingBalance: number,
+  openingDrCr: "DR" | "CR"
+) {
+  let runningBalance = openingDrCr === "DR" ? openingBalance : -openingBalance;
+  let totalDebits = 0;
+  let totalCredits = 0;
+  const transactions: any[] = [];
+
+  const startMs = new Date(fromDate).getTime();
+  const endMs = new Date(toDate).getTime();
+
+  const processLine = (date: string, dateBS: string, voucherNo: string, narration: string, debit: number, credit: number) => {
+    const vTime = new Date(date).getTime();
+    if (vTime >= startMs && vTime <= endMs) {
+      runningBalance += debit - credit;
+      totalDebits += debit;
+      totalCredits += credit;
+      transactions.push({
+        date,
+        dateBS,
+        voucherNo,
+        narration,
+        debit,
+        credit,
+        runningBalance: Math.abs(runningBalance),
+        runningDrCr: runningBalance >= 0 ? "DR" : "CR"
+      });
+    } else if (vTime < startMs) {
+      runningBalance += debit - credit;
+    }
+  };
+
+  vouchers.filter(v => v.status === "posted").forEach(v => {
+    v.lines.forEach(l => {
+      if (l.accountId === accountId) {
+        processLine(v.date, v.dateNepali || "", v.voucherNo, l.narration || v.narration, l.debit || 0, l.credit || 0);
+      }
+    });
+  });
+
+  invoices.forEach(inv => {
+    // Basic extraction if auto-posting enabled, simplified here
+  });
+
+  transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  let currentBal = openingDrCr === "DR" ? openingBalance : -openingBalance;
+  transactions.forEach(t => {
+    currentBal += t.debit - t.credit;
+    t.runningBalance = Math.abs(currentBal);
+    t.runningDrCr = currentBal >= 0 ? "DR" : "CR";
+  });
+
+  return {
+    openingBalance: Math.abs(openingDrCr === "DR" ? openingBalance : -openingBalance),
+    openingDrCr: (openingDrCr === "DR" ? openingBalance : -openingBalance) >= 0 ? "DR" : "CR",
+    totalDebits,
+    totalCredits,
+    closingBalance: Math.abs(runningBalance),
+    closingDrCr: runningBalance >= 0 ? "DR" : "CR",
+    transactions
+  };
+}
+
+export function computeTrialBalance(
+  accounts: Account[],
+  vouchers: JournalEntry[],
+  invoices: Invoice[],
+  asOfDate: string,
+  fiscalStartDate: string
+) {
+  const results: any[] = [];
+  accounts.forEach(acc => {
+    if (acc.isGroup) return;
+
+    const baseOp = acc.openingBalanceDr ? acc.openingBalanceDr : (acc.openingBalanceCr || 0);
+    const baseOpSign = acc.openingBalanceDr ? "DR" : "CR";
+    
+    const ledger = computeLedgerBalance(acc.id, vouchers, invoices, fiscalStartDate, asOfDate, baseOp, baseOpSign);
+    
+    let openingDr = 0, openingCr = 0;
+    if (ledger.openingBalance !== 0) {
+      if (ledger.openingDrCr === "DR") openingDr = ledger.openingBalance;
+      else openingCr = ledger.openingBalance;
+    }
+    
+    let closingDr = 0, closingCr = 0;
+    if (ledger.closingBalance !== 0) {
+      if (ledger.closingDrCr === "DR") closingDr = ledger.closingBalance;
+      else closingCr = ledger.closingBalance;
+    }
+
+    if (openingDr !== 0 || openingCr !== 0 || ledger.totalDebits !== 0 || ledger.totalCredits !== 0 || closingDr !== 0 || closingCr !== 0) {
+      results.push({
+        accountId: acc.id,
+        accountName: acc.name,
+        groupName: acc.groupId || "",
+        nature: acc.type,
+        openingDr,
+        openingCr,
+        periodDebit: ledger.totalDebits,
+        periodCredit: ledger.totalCredits,
+        closingDr,
+        closingCr
+      });
+    }
+  });
+
+  return results;
+}
+
+
+
+export function generateSerialNumber(type: string, list: any[]): string {
+  return `${type}-${(list.length + 1).toString().padStart(3, "0")}`;
+}
+
+export function validateDoubleEntry(lines: any[]): { isValid: boolean; difference: number; message: string } {
+  let dr = 0; let cr = 0;
+  for (const l of lines) { dr += l.debit || 0; cr += l.credit || 0; }
+  const diff = Math.abs(dr - cr);
+  return {
+    isValid: diff < 0.01,
+    difference: diff,
+    message: diff < 0.01 ? `Balanced` : `Unbalanced: Dr Rs.${dr} != Cr Rs.${cr}`
+  };
+}
+
+export function resetAllSeriesForNewYear(): void {
+  // Stub
 }

@@ -60,9 +60,9 @@ import {
 } from "../lib/types";
 import {
   recalculateAccountBalances,
-  generateVoucherNo,
-  generateInvoiceNo,
+  generateSerialNumber,
   calculateNextDueDate,
+  validateDoubleEntry,
 } from "../lib/accounting";
 import {
   createSaleMovement,
@@ -239,6 +239,8 @@ export interface StoreState {
   exportBackup: () => Promise<string>;
   importBackup: (jsonStr: string) => Promise<void>;
   importBankStatements: (bankAccountId: string, rows: any[]) => Promise<number>;
+  updateBankStatement: (id: string, updates: Partial<BankStatement>) => Promise<void>;
+  updateBankStatements: (updates: {id: string; updates: Partial<BankStatement>}[]) => Promise<void>;
 
   // Custom Fields
   customFieldDefs: CustomFieldDef[];
@@ -556,22 +558,20 @@ export const useStore = create<StoreState>()((...args) => {
         }
       }
 
-      const existingList = state.vouchers;
-      const { voucherNo, updatedSeries } = generateVoucherNo(
+      const voucherNo = await generateSerialNumber(
         voucherData.type,
-        state.companySettings.voucherSeries,
-        existingList,
-        state.currentFiscalYear,
+        undefined,
+        state.currentFiscalYear?.fiscalYearBS || "",
+        false
       );
+
+      const validation = validateDoubleEntry(voucherData.lines);
+      if (!validation.isValid) {
+        throw new Error(validation.message);
+      }
 
       const totalDr = roundTo2(voucherData.lines.reduce((s, l) => s + l.debit, 0));
       const totalCr = roundTo2(voucherData.lines.reduce((s, l) => s + l.credit, 0));
-
-      if (Math.abs(totalDr - totalCr) > 0.01) {
-        throw new Error(
-          `Unbalanced Error: Debits (Rs. ${totalDr}) and Credits (Rs. ${totalCr}) must balance.`,
-        );
-      }
 
       const cleanVId = generateId("vc");
       const finalVoucher: JournalEntry = {
@@ -587,43 +587,18 @@ export const useStore = create<StoreState>()((...args) => {
       const hasFY = !!state.currentFiscalYear;
       await db.transaction(
         "rw",
-        [db.vouchers, db.companySettings, db.accounts, db.auditLogs, db.fiscalYears],
+        [db.vouchers, db.accounts, db.auditLogs, db.fiscalYears],
         async () => {
           await db.vouchers.add(finalVoucher);
-          if (hasFY) {
-            await db.fiscalYears.update(state.currentFiscalYear!.id, {
-              voucherSeriesState: updatedSeries,
-            });
-          } else {
-            await db.companySettings.update(state.companySettings.id!, {
-              voucherSeries: updatedSeries,
-            });
-          }
         },
       );
 
       set((prev) => {
         const newVouchersList = [...prev.vouchers, finalVoucher];
         const newAccountsList = recalculateAccountBalances(prev.accounts, newVouchersList);
-        if (hasFY) {
-          const updatedFY = {
-            ...prev.currentFiscalYear!,
-            voucherSeriesState: updatedSeries,
-          };
-          return {
-            vouchers: newVouchersList,
-            accounts: newAccountsList,
-            currentFiscalYear: updatedFY,
-            fiscalYears: prev.fiscalYears.map((f) => (f.id === updatedFY.id ? updatedFY : f)),
-          };
-        }
         return {
           vouchers: newVouchersList,
           accounts: newAccountsList,
-          companySettings: {
-            ...prev.companySettings,
-            voucherSeries: updatedSeries,
-          },
         };
       });
 
@@ -663,13 +638,12 @@ export const useStore = create<StoreState>()((...args) => {
       const db = getDB();
       const state = get();
 
-      const invoiceNoComp = generateInvoiceNo(
-        invoiceData.type as any,
-        state.companySettings.voucherSeries,
-        state.invoices,
+      const codeStr = await generateSerialNumber(
+        invoiceData.type as string,
+        undefined,
+        state.currentFiscalYear?.fiscalYearBS || "",
+        false
       );
-      const codeStr = invoiceNoComp.invoiceNo;
-      const seriesUpdates = invoiceNoComp.updatedSeries;
 
       const cleanInvId = generateId("inv");
       const finalInvoice: Invoice = {
@@ -798,12 +772,19 @@ export const useStore = create<StoreState>()((...args) => {
         }
       }
 
-      const { voucherNo, updatedSeries } = generateVoucherNo(
+      const voucherNo = await generateSerialNumber(
         VoucherType.JOURNAL,
-        seriesUpdates,
-        state.vouchers,
+        undefined,
+        state.currentFiscalYear?.fiscalYearBS || "",
+        false
       );
       const cleanJVId = generateId("vc");
+      
+      const validation = validateDoubleEntry(vLines);
+      if (!validation.isValid) {
+        throw new Error("System Invoice Journal Error: " + validation.message);
+      }
+
       const linkedJV: JournalEntry = {
         id: cleanJVId,
         date: finalInvoice.date,
@@ -837,13 +818,10 @@ export const useStore = create<StoreState>()((...args) => {
 
       await db.transaction(
         "rw",
-        [db.invoices, db.vouchers, db.companySettings, db.stockMovements, db.tdsEntries],
+        [db.invoices, db.vouchers, db.stockMovements, db.tdsEntries],
         async () => {
           await db.invoices.add(finalInvoice);
           await db.vouchers.add(linkedJV);
-          await db.companySettings.update(state.companySettings.id!, {
-            voucherSeries: updatedSeries,
-          });
           if (movementsToPost.length > 0) {
             for (const mov of movementsToPost) {
               await db.stockMovements.add(mov);
@@ -860,7 +838,7 @@ export const useStore = create<StoreState>()((...args) => {
               voucherId: linkedJV.id,
               partyId: finalInvoice.partyId,
               partyName: finalInvoice.partyName,
-              partyPan: finalInvoice.partyPan || "000000000",
+              partyPAN: finalInvoice.partyPan || "000000000",
               tdsType: finalInvoice.tdsType || TdsType.NONE,
               tdsRate: finalInvoice.tdsRate || 0,
               grossAmount: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
@@ -1408,6 +1386,20 @@ export const useStore = create<StoreState>()((...args) => {
       await get().initializeApp();
       toast.success(`${count} entries imported.`);
       return count;
+    },
+
+    updateBankStatement: async (id, updates) => {
+      const db = getDB();
+      await db.bankStatements.update(id, updates);
+      await get().initializeApp();
+    },
+
+    updateBankStatements: async (updates) => {
+      const db = getDB();
+      for (const {id, updates: u} of updates) {
+        await db.bankStatements.update(id, u);
+      }
+      await get().initializeApp();
     },
 
     addEmployee: async (emp) => {
