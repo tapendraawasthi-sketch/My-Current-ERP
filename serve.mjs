@@ -1,3 +1,12 @@
+// Polyfill Workers globals for Node.js compatibility
+globalThis.caches = globalThis.caches || {
+  default: {
+    match: async () => undefined,
+    put: async () => undefined,
+    delete: async () => false,
+  }
+};
+
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join, extname } from 'path';

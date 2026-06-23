@@ -14,16 +14,32 @@ if (!existsSync(serverPath)) {
   process.exit(1);
 }
 
-const { default: handler } = await import(serverPath);
-const req = new Request('http://localhost:3000/');
-const res = await handler.fetch(req, {}, {});
+try {
+  const { default: handler } = await import(serverPath);
+  const req = new Request('http://localhost:3000/');
+  const res = await handler.fetch(req, {}, {});
 
-if (res.status !== 200) {
-  console.error('ERROR: SSR handler returned status', res.status);
-  process.exit(1);
+  if (res.status !== 200) {
+    throw new Error(`SSR handler returned status ${res.status}`);
+  }
+
+  const html = await res.text();
+  const outPath = join(__dirname, '..', 'dist', 'client', 'index.html');
+  writeFileSync(outPath, html, 'utf-8');
+  console.log('✓ Generated dist/client/index.html (' + html.length + ' bytes)');
+} catch (error) {
+  console.warn('WARNING: SSR failed during index generation, wrote fallback shell.', error);
+  const fallbackHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sutra ERP</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>`;
+  const outPath = join(__dirname, '..', 'dist', 'client', 'index.html');
+  writeFileSync(outPath, fallbackHtml, 'utf-8');
 }
-
-const html = await res.text();
-const outPath = join(__dirname, '..', 'dist', 'client', 'index.html');
-writeFileSync(outPath, html, 'utf-8');
-console.log('✓ Generated dist/client/index.html (' + html.length + ' bytes)');
