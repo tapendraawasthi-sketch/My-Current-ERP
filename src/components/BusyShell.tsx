@@ -4,23 +4,93 @@ import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
  
 // ── TITLE BAR ────────────────────────────────────────────────────
-export const TitleBar: React.FC = () => {
+export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) => {
   const { companySettings, currentFiscalYear } = useStore();
   const company = companySettings?.company_name || "Company";
   const fy = currentFiscalYear ? `F.Y. ${currentFiscalYear.name}` : "";
+
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFsChange);
+    return () => document.removeEventListener("fullscreenchange", handleFsChange);
+  }, []);
+
+  const handleMinimize = () => {
+    if (onMinimize) onMinimize();
+  };
+
+  const handleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  const handleClose = () => {
+    const confirmed = window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.");
+    if (confirmed) {
+      try {
+        window.close();
+      } catch {
+        // browser blocked window.close(); no-op
+      }
+    }
+  };
+
   return (
     <div
-      className="flex items-center justify-between px-2 shrink-0"
-      style={{ height: 22, background: "#0d1b2a", color: "#fffffffff", fontSize: 11 }}
+      className="flex items-center justify-between px-2 shrink-0 select-none"
+      style={{ height: 22, background: "#0d1b2a", color: "#ffffff", fontSize: 11 }}
     >
       <div className="flex items-center gap-1">
         <div style={{ width: 18, height: 18, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>S</div>
         <span>Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})</span>
       </div>
-      <div className="flex items-center gap-2" style={{ fontSize: 13 }}>
-        <span style={{ cursor: "pointer" }}>—</span>
-        <span style={{ cursor: "pointer" }}>□</span>
-        <span style={{ cursor: "pointer" }}>✕</span>
+      <div className="flex items-center gap-1" style={{ fontSize: 13 }}>
+        <span
+          onClick={handleMinimize}
+          title="Minimize"
+          style={{
+            cursor: "pointer",
+            padding: "0 6px",
+            lineHeight: "18px",
+            display: "inline-block",
+            borderRadius: 2,
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "#1b3a5c")}
+          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+        >—</span>
+        <span
+          onClick={handleFullscreen}
+          title={isFullscreen ? "Restore" : "Fullscreen"}
+          style={{
+            cursor: "pointer",
+            padding: "0 6px",
+            lineHeight: "18px",
+            display: "inline-block",
+            borderRadius: 2,
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "#1b3a5c")}
+          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+        >{isFullscreen ? "❐" : "□"}</span>
+        <span
+          onClick={handleClose}
+          title="Close"
+          style={{
+            cursor: "pointer",
+            padding: "0 6px",
+            lineHeight: "18px",
+            display: "inline-block",
+            borderRadius: 2,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#c0392b"; e.currentTarget.style.color = "#fff"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#ffffff"; }}
+        >✕</span>
       </div>
     </div>
   );

@@ -83,6 +83,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return cached === "true";
   });
 
+  const [isMinimized, setIsMinimized] = useState(false);
+
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
@@ -301,34 +303,58 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#1a3a5c" }}>
-      {/* 1. Title Bar */}
-      <TitleBar />
- 
-      {/* 2. Menu Bar */}
-      <BusyMenuBar />
- 
-      {/* 3. Main area = workspace + right shortcut sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Central Workspace */}
-        <main
-          className="flex-1 overflow-y-auto p-3 relative"
-          style={{ background: "#1a3a5c" }}
-        >
-          <div style={{ fontSize: 11, color: "#ffffff", textAlign: "center", marginBottom: 6 }}>
-            {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+      {/* 1. Title Bar — always visible */}
+      <TitleBar onMinimize={() => setIsMinimized(prev => !prev)} />
+
+      {!isMinimized && (
+        <>
+          {/* 2. Menu Bar */}
+          <BusyMenuBar />
+
+          {/* 3. Main area = workspace + right shortcut sidebar */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Central Workspace */}
+            <main
+              className="flex-1 overflow-y-auto p-3 relative"
+              style={{ background: "#1a3a5c" }}
+            >
+              <div style={{ fontSize: 11, color: "#ffffff", textAlign: "center", marginBottom: 6 }}>
+                {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+              </div>
+              {children}
+            </main>
+
+            {/* Right Shortcut Keys Sidebar */}
+            <ShortcutSidebar onShortcut={handleSidebarShortcut} />
           </div>
-          {children}
-        </main>
- 
-        {/* Right Shortcut Keys Sidebar */}
-        <ShortcutSidebar onShortcut={handleSidebarShortcut} />
-      </div>
- 
-      {/* 4. Command Hint Bar */}
-      <CommandHintBar />
- 
-      {/* 5. Status Bar */}
-      <StatusBar />
+
+          {/* 4. Command Hint Bar */}
+          <CommandHintBar />
+
+          {/* 5. Status Bar */}
+          <StatusBar />
+        </>
+      )}
+
+      {/* Minimized ribbon — click title bar again to restore */}
+      {isMinimized && (
+        <div
+          style={{
+            flex: 1,
+            background: "#0d1b2a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#94a3b8",
+            fontSize: 13,
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+          onClick={() => setIsMinimized(false)}
+        >
+          Click here or press — again to restore Sutra ERP
+        </div>
+      )}
     </div>
   );
 };
