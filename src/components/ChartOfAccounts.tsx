@@ -836,13 +836,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
   // ─── RENDER ───────────────────────────────────────────────────────────────────
   return (
-    <div style={{ background: "var(--busy-bg)", padding: 8 }}>
-      <div className="busy-card">
-        <div className="busy-card-header">
-          Chart of Accounts
-          <span style={{ fontSize: 10, fontWeight: 400, color: "#c8d8e8" }}>{accounts.length} ledgers</span>
-        </div>
-        <div className="busy-card-body">
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+      <PillTitle title="Chart of Accounts" />
+      <FormPanel>
         <div className="flex flex-col gap-4 animate-fadeIn select-none pb-12">
 
           {/* ── TOP TOOLBAR ─────────────────────────────────────────────────────── */}
@@ -1499,8 +1495,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           cancelText="Cancel"
           danger={true}
         />
-        </div>
-      </div>
+      </FormPanel>
     </div>
   );
 });

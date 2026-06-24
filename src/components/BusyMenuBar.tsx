@@ -1,34 +1,30 @@
-// @ts-nocheck
 import React, { useState, useRef, useEffect } from "react";
 import { useStore } from "../store/useStore";
 
 interface MenuItem {
   label: string;
   page?: string;
+  children?: MenuItem[];
   separator?: boolean;
-  shortcut?: string;
 }
 
 const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Company",
     items: [
-      { label: "Company Settings", page: "settings", shortcut: "F11" },
+      { label: "Company Settings", page: "settings" },
       { label: "Fiscal Year", page: "fiscal-year" },
       { separator: true, label: "" },
-      { label: "Users & Roles", page: "users" },
+      { label: "Backup / Restore", page: "backup" },
       { label: "Audit Log", page: "audit-log" },
-      { separator: true, label: "" },
-      { label: "Backup & Restore", page: "backup" },
     ],
   },
   {
     title: "Masters",
     items: [
-      { label: "Chart of Accounts", page: "accounts", shortcut: "F2" },
+      { label: "Chart of Accounts", page: "accounts" },
       { label: "Parties Directory", page: "parties" },
-      { label: "Stock Items", page: "items", shortcut: "F3" },
-      { separator: true, label: "" },
+      { label: "Stock Items", page: "items" },
       { label: "Warehouses", page: "warehouses" },
       { label: "Units of Measure", page: "units" },
       { label: "Cost Centers", page: "cost-centers" },
@@ -38,14 +34,14 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Transactions",
     items: [
-      { label: "Sales Invoice", page: "sales-invoice", shortcut: "F9" },
-      { label: "Purchase Invoice", page: "purchase-invoice" },
-      { label: "Sales Return", page: "sales-return" },
-      { label: "Purchase Return", page: "purchase-return" },
+      { label: "Sales Invoice", page: "billing" },
+      { label: "Purchase Invoice", page: "purchase-register" },
+      { label: "Sales Return", page: "credit-note" },
+      { label: "Purchase Return", page: "debit-note" },
       { separator: true, label: "" },
-      { label: "Payment Voucher", page: "payment", shortcut: "F6" },
-      { label: "Receipt Voucher", page: "receipt", shortcut: "F7" },
-      { label: "Journal Entry", page: "journal", shortcut: "F8" },
+      { label: "Payment Voucher", page: "payment" },
+      { label: "Receipt Voucher", page: "receipt" },
+      { label: "Journal Entry", page: "journal" },
       { label: "Contra Voucher", page: "contra" },
       { separator: true, label: "" },
       { label: "Sales Order", page: "sales-order" },
@@ -54,7 +50,6 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       { label: "GRN", page: "grn" },
       { separator: true, label: "" },
       { label: "Stock Journal", page: "stock-journal" },
-      { label: "Opening Balance", page: "opening-balance" },
     ],
   },
   {
@@ -62,31 +57,29 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     items: [
       { label: "Dashboard", page: "dashboard" },
       { separator: true, label: "" },
-      { label: "Trial Balance", page: "trial-balance", shortcut: "T" },
-      { label: "Profit & Loss", page: "profit-loss", shortcut: "P" },
-      { label: "Balance Sheet", page: "balance-sheet", shortcut: "B" },
-      { label: "Cash Flow", page: "cash-flow" },
+      { label: "Trial Balance", page: "trial-balance" },
+      { label: "Balance Sheet", page: "balance-sheet" },
+      { label: "Profit & Loss", page: "profit-loss" },
+      { label: "Cash Flow Statement", page: "cash-flow" },
       { separator: true, label: "" },
-      { label: "Day Book", page: "day-book", shortcut: "D" },
+      { label: "Day Book", page: "day-book" },
       { label: "Cash Book", page: "cash-book" },
       { label: "Bank Book", page: "bank-book" },
-      { label: "General Ledger", page: "ledger", shortcut: "L" },
+      { label: "General Ledger", page: "ledger" },
       { label: "Party Ledger", page: "party-statement" },
       { separator: true, label: "" },
-      { label: "Sales Register", page: "sales-register" },
-      { label: "Purchase Register", page: "purchase-register" },
-      { label: "Stock Summary", page: "stock-summary", shortcut: "S" },
+      { label: "Stock Summary", page: "stock-summary" },
       { label: "Inventory Report", page: "inventory-report" },
       { separator: true, label: "" },
       { label: "Aging Report", page: "aging-report" },
-      { label: "Bill-wise Pending", page: "bill-pending", shortcut: "O" },
+      { label: "Bill-wise Pending", page: "bill-pending" },
       { label: "Ratio Analysis", page: "ratio-analysis" },
     ],
   },
   {
-    title: "VAT/TDS",
+    title: "VAT / Tax",
     items: [
-      { label: "VAT Reports", page: "vat-reports", shortcut: "V" },
+      { label: "VAT Reports", page: "vat-reports" },
       { label: "TDS Report", page: "tds-report" },
       { label: "TDS Payment", page: "tds-payment" },
     ],
@@ -99,19 +92,19 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: "Banking",
+    title: "House-Keeping",
     items: [
-      { label: "Bank Accounts", page: "bank-accounts" },
+      { label: "Users & Roles", page: "users" },
       { label: "Bank Reconciliation", page: "bank-reconciliation" },
-      { label: "Bank Statement Import", page: "bank-import" },
+      { label: "Recurring Vouchers", page: "recurring-vouchers" },
+      { label: "Opening Balance", page: "opening-balance" },
     ],
   },
   {
     title: "Help",
     items: [
-      { label: "Keyboard Shortcuts", page: "dashboard" },
-      { label: "IRD Nepal Guidelines", page: "dashboard" },
       { label: "About Sutra ERP", page: "dashboard" },
+      { label: "IRD Nepal Guidelines", page: "dashboard" },
     ],
   },
 ];
@@ -132,56 +125,80 @@ const BusyMenuBar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Alt+key for menu access
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenMenu(null);
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, []);
-
   const navigate = (page?: string) => {
     if (page) setCurrentPage(page);
     setOpenMenu(null);
   };
 
   return (
-    <div ref={barRef} className="busy-menubar">
-      <span style={{ color: "#5a7a9a", marginLeft: 6, marginRight: 6, fontWeight: "bold", fontSize: 12 }}>
-        {">>"}
-      </span>
+    <div
+      ref={barRef}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexShrink: 0,
+        height: 26,
+        background: "#D4EABD",
+        borderBottom: "1px solid #000000",
+        userSelect: "none",
+        zIndex: 100,
+        position: "relative",
+      }}
+    >
+      <span style={{ color: "#000000", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
       {MENU_TREE.map((menu, idx) => (
         <div key={menu.title} style={{ position: "relative" }}>
           <div
             onClick={() => setOpenMenu(openMenu === idx ? null : idx)}
-            className={`busy-menubar-item ${openMenu === idx ? "active" : ""}`}
+            style={{
+              padding: "2px 10px",
+              cursor: "pointer",
+              background: openMenu === idx ? "#C9DEB5" : "transparent",
+              color: "#000000",
+              height: 26,
+              display: "flex",
+              alignItems: "center",
+              fontWeight: openMenu === idx ? "bold" : "normal",
+              border: openMenu === idx ? "1px solid #000000" : "1px solid transparent",
+            }}
           >
-            <u>{menu.title[0]}</u>{menu.title.slice(1)}
+            {menu.title}
           </div>
           {openMenu === idx && (
-            <div className="busy-dropdown">
+            <div
+              style={{
+                position: "absolute",
+                top: 26,
+                left: 0,
+                background: "#EBF5E2",
+                border: "1px solid #000000",
+                minWidth: 200,
+                boxShadow: "2px 2px 8px rgba(0,0,0,0.3)",
+                zIndex: 200,
+              }}
+            >
               {menu.items.map((item, iidx) =>
                 item.separator ? (
-                  <div key={iidx} className="busy-dropdown-separator" />
+                  <div key={iidx} style={{ height: 1, background: "#000000", margin: "2px 0" }} />
                 ) : (
                   <div
                     key={iidx}
                     onClick={() => navigate(item.page)}
-                    className="busy-dropdown-item"
                     style={{
-                      background: hoveredItem === `${idx}-${iidx}` ? "var(--busy-table-row-hover)" : undefined,
+                      padding: "3px 20px 3px 28px",
+                      cursor: "pointer",
+                      color: "#000000",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      position: "relative",
+                      background: hoveredItem === `${idx}-${iidx}` ? "#D4EABD" : "transparent",
                     }}
                     onMouseEnter={() => setHoveredItem(`${idx}-${iidx}`)}
                     onMouseLeave={() => setHoveredItem(null)}
                   >
-                    <span style={{ position: "absolute", left: 8, fontSize: 10, color: "#5a7a9a" }}>●</span>
-                    <span style={{ flex: 1 }}>{item.label}</span>
-                    {item.shortcut && (
-                      <span style={{ marginLeft: 12, fontSize: 10, color: "#8b4513", fontWeight: 700 }}>
-                        {item.shortcut}
-                      </span>
-                    )}
+                    <span style={{ position: "absolute", left: 8, fontSize: 10 }}>•</span>
+                    {item.label}
                   </div>
                 )
               )}

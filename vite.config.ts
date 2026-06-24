@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -19,12 +20,6 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: false,
     rollupOptions: {
-      onwarn(warning, warn) {
-        // Suppress TypeScript declaration warnings on build
-        if (warning.code === "UNUSED_EXTERNAL_IMPORT") return;
-        if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
-        warn(warning);
-      },
       output: {
         manualChunks(id) {
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
@@ -46,9 +41,6 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 1000,
-  },
-  esbuild: {
-    logOverride: { "this-is-undefined-in-esm": "silent" },
   },
   optimizeDeps: {
     include: ["react", "react-dom", "dexie", "zustand"],

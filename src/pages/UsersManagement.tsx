@@ -159,17 +159,17 @@ export default function UsersManagement() {
 
   return (
     <div className="p-6">
-      <div className="page-header">
-  <div>
-    <div className="page-title">Users & Roles</div>
-    <div className="page-subtitle">Manage access controls and permissions</div>
-  </div>
-  <div className="page-actions">
-    <button onClick={() => openModal()} className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Users & Roles</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Manage access controls and permissions</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => openModal()} className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
             <UserPlus className="w-4 h-4" /> Add User
           </button>
-  </div>
-</div>
+        </div>
+      </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] overflow-hidden">
         <table className="w-full">

@@ -152,20 +152,20 @@ const CashBook: React.FC = () => {
 
 
         <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
-      <div className="page-header">
-  <div>
-    <div className="page-title">Cash Book</div>
-    <div className="page-subtitle">Cash receipts and payments</div>
-  </div>
-  <div className="page-actions">
-    <Button variant="outline" size="sm" onClick={handleExport}>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Cash Book</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Cash receipts and payments</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExport}>
             Export Excel
           </Button>
           <Button variant="outline" size="sm" onClick={handlePrint}>
             Print
           </Button>
-  </div>
-</div>
+        </div>
+      </div>
 
       <Card border padding="md" className="no-print">
         <div className="flex items-center gap-2 mb-3">

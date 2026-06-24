@@ -157,20 +157,20 @@ export default function TdsPayment() {
       <PillTitle title="TDS Payment Entry" />
       <FormPanel>
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
-          <div className="page-header">
-  <div>
-    <div className="page-title">TDS Entry Form</div>
-    <div className="page-subtitle">Record TDS payments and generate automated journals</div>
-  </div>
-  <div className="page-actions">
-    <button
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-[15px] font-semibold text-[#000000]">TDS Entry Form</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">Record TDS payments and generate automated journals</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
                 onClick={handleSubmit}
                 className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Save className="h-3.5 w-3.5" /> Save Entry
               </button>
-  </div>
-</div>
+            </div>
+          </div>
 
           <Card border padding="md">
             <div className="grid gap-6 md:grid-cols-2">

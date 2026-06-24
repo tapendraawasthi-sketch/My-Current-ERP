@@ -114,13 +114,13 @@ export default function CompanySettings() {
       <PillTitle title="Modify Company" />
       <FormPanel>
         <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
-          <div className="page-header">
-  <div>
-    <div className="page-title">Company Settings</div>
-    <div className="page-subtitle">Business profile and preferences</div>
-  </div>
-  <div className="page-actions">
-    <button
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-[15px] font-semibold text-[#000000]">Company Settings</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">Business profile and preferences</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
                 type="button"
                 onClick={handleSave}
                 disabled={!isDirty}
@@ -128,8 +128,8 @@ export default function CompanySettings() {
               >
                 <Save className="w-4 h-4" /> Save Settings
               </button>
-  </div>
-</div>
+            </div>
+          </div>
 
           <div className="flex items-center gap-0 border-b border-[#9DC07A] mb-4">
             {[
