@@ -24,6 +24,5 @@ export { default as ConfirmDialog } from "./ConfirmDialog";
 export { default as QuickCreateAccountModal } from "./QuickCreateAccountModal";
 export type { Column } from "./Table";
 export type { SelectOption } from "./Select";
-export { CardSection } from "./Card";
 export { ActionToolbar } from "./ActionToolbar";
 export * from "./DualDate";
