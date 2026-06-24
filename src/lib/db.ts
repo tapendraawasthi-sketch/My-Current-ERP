@@ -339,6 +339,121 @@ export interface DBCurrency {
   [key: string]: any;
 }
 
+// ─── NEW: Administration Module Tables ────────────────────────────────────────
+
+export interface DBUnitConversion {
+  id: string;
+  mainUnit: string;        // Main unit code/name (e.g. "Box")
+  subUnit: string;         // Sub unit code/name  (e.g. "Pcs")
+  conversionFactor: number; // No. of sub units per main unit (e.g. 12)
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBStandardNarration {
+  id: string;
+  voucherType: string;     // "Purchase"|"Sales Return"|"Purchase Return"|"Stock Transfer"|"all"
+  narration: string;       // Pre-defined narration text
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBBillSundryMaster {
+  id: string;
+  name: string;
+  alias?: string;
+  type: "additive" | "subtractive";  // addition charge or deduction
+  nature: "percentage" | "fixed" | "per_unit";
+  accountHeadId?: string;  // Ledger account to post to
+  defaultValue: number;
+  affectsCostInSale: boolean;
+  affectsCostInPurchase: boolean;
+  adjustInPartyAmount: boolean;
+  applicableOn: "nett_bill" | "basic_amount" | "taxable_amount" | "previous_sundry";
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBSaleType {
+  id: string;
+  name: string;            // e.g. "VAT/13%", "VAT/Exempt", "Services"
+  salesAccountId?: string;
+  region: "local" | "export";
+  taxationType: "taxable_voucherwise" | "taxable_itemwise" | "exempt" | "tax_free" | "nil_rated";
+  taxRate: number;         // e.g. 13
+  surcharge: number;
+  addlCess: number;
+  invoiceHeading?: string;
+  invoiceDescription?: string;
+  freezeTax: boolean;
+  skipVatReports: boolean;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBPurchaseType {
+  id: string;
+  name: string;            // e.g. "VAT/13%", "VAT/13% (CP)"
+  purchaseAccountId?: string;
+  region: "local" | "import";
+  taxationType: "taxable_voucherwise" | "taxable_itemwise" | "exempt" | "tax_free" | "nil_rated";
+  taxRate: number;
+  surcharge: number;
+  addlCess: number;
+  isCapitalPurchase: boolean;
+  freezeTax: boolean;
+  skipVatReports: boolean;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBTaxCategory {
+  id: string;
+  name: string;            // e.g. "13%", "Exempt", "Services 14%"
+  localTaxRate: number;    // e.g. 13
+  exportTaxRate: number;
+  taxOnMrp: boolean;
+  stockAccountId?: string;
+  zeroTaxType?: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBDiscountStructure {
+  id: string;
+  name: string;
+  discountType: "simple" | "compound_same" | "compound_different";
+  amountType: "percentage" | "absolute" | "per_main_qty" | "per_pkg_qty";
+  percentageOn: "item_price" | "item_amount" | "item_mrp" | "item_list_price";
+  caption: string;         // Custom label for discount (default "Discount")
+  noOfDiscounts: number;   // For compound: max 5
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBItemGroup {
+  id: string;
+  name: string;
+  alias?: string;
+  isPrimary: boolean;
+  underGroupId?: string;   // parent group id
+  stockAccountId?: string;
+  salesAccountId?: string;
+  purchaseAccountId?: string;
+  hsnCode?: string;
+  taxCategoryId?: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBHoliday {
+  id: string;
+  date: string;            // ISO date string
+  name: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
 class SutraDB extends Dexie {
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
@@ -362,6 +477,16 @@ class SutraDB extends Dexie {
   recurringVouchers!: Table<DBRecurringVoucher>;
   customFieldDefs!: Table<DBCustomFieldDef>;
   currencies!: Table<DBCurrency>;
+  // Administration module tables
+  unitConversions!: Table<DBUnitConversion>;
+  standardNarrations!: Table<DBStandardNarration>;
+  billSundryMasters!: Table<DBBillSundryMaster>;
+  saleTypes!: Table<DBSaleType>;
+  purchaseTypes!: Table<DBPurchaseType>;
+  taxCategories!: Table<DBTaxCategory>;
+  discountStructures!: Table<DBDiscountStructure>;
+  itemGroups!: Table<DBItemGroup>;
+  holidays!: Table<DBHoliday>;
 
   constructor() {
     super("SutraERP");
@@ -389,6 +514,19 @@ class SutraDB extends Dexie {
       recurringVouchers: "id, name, isActive, nextDate",
       customFieldDefs: "id, entity, isActive",
       currencies: "id, code, isBase, isActive",
+    });
+
+    // Version 2 — Administration Module tables
+    this.version(2).stores({
+      unitConversions: "id, mainUnit, subUnit, isActive",
+      standardNarrations: "id, voucherType, isActive",
+      billSundryMasters: "id, name, type, isActive",
+      saleTypes: "id, name, isActive",
+      purchaseTypes: "id, name, isActive",
+      taxCategories: "id, name, isActive",
+      discountStructures: "id, name, discountType, isActive",
+      itemGroups: "id, name, isPrimary, underGroupId, isActive",
+      holidays: "id, date, isActive",
     });
   }
 }

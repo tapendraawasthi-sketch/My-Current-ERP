@@ -380,6 +380,112 @@ export interface Currency {
   isActive: boolean;
 }
 
+// ─── Administration Module Types ───────────────────────────────────────────────
+
+export interface UnitConversion {
+  id: string;
+  mainUnit: string;
+  subUnit: string;
+  conversionFactor: number;
+  isActive: boolean;
+}
+
+export interface StandardNarration {
+  id: string;
+  voucherType: string;
+  narration: string;
+  isActive: boolean;
+}
+
+export interface BillSundryMaster {
+  id: string;
+  name: string;
+  alias?: string;
+  type: "additive" | "subtractive";
+  nature: "percentage" | "fixed" | "per_unit";
+  accountHeadId?: string;
+  defaultValue: number;
+  affectsCostInSale: boolean;
+  affectsCostInPurchase: boolean;
+  adjustInPartyAmount: boolean;
+  applicableOn: "nett_bill" | "basic_amount" | "taxable_amount" | "previous_sundry";
+  isActive: boolean;
+}
+
+export interface SaleType {
+  id: string;
+  name: string;
+  salesAccountId?: string;
+  region: "local" | "export";
+  taxationType: "taxable_voucherwise" | "taxable_itemwise" | "exempt" | "tax_free" | "nil_rated";
+  taxRate: number;
+  surcharge: number;
+  addlCess: number;
+  invoiceHeading?: string;
+  invoiceDescription?: string;
+  freezeTax: boolean;
+  skipVatReports: boolean;
+  isActive: boolean;
+}
+
+export interface PurchaseType {
+  id: string;
+  name: string;
+  purchaseAccountId?: string;
+  region: "local" | "import";
+  taxationType: "taxable_voucherwise" | "taxable_itemwise" | "exempt" | "tax_free" | "nil_rated";
+  taxRate: number;
+  surcharge: number;
+  addlCess: number;
+  isCapitalPurchase: boolean;
+  freezeTax: boolean;
+  skipVatReports: boolean;
+  isActive: boolean;
+}
+
+export interface TaxCategory {
+  id: string;
+  name: string;
+  localTaxRate: number;
+  exportTaxRate: number;
+  taxOnMrp: boolean;
+  stockAccountId?: string;
+  zeroTaxType?: string;
+  isActive: boolean;
+}
+
+export interface DiscountStructure {
+  id: string;
+  name: string;
+  discountType: "simple" | "compound_same" | "compound_different";
+  amountType: "percentage" | "absolute" | "per_main_qty" | "per_pkg_qty";
+  percentageOn: "item_price" | "item_amount" | "item_mrp" | "item_list_price";
+  caption: string;
+  noOfDiscounts: number;
+  isActive: boolean;
+}
+
+export interface ItemGroup {
+  id: string;
+  name: string;
+  alias?: string;
+  isPrimary: boolean;
+  underGroupId?: string;
+  stockAccountId?: string;
+  salesAccountId?: string;
+  purchaseAccountId?: string;
+  hsnCode?: string;
+  taxCategoryId?: string;
+  isActive: boolean;
+}
+
+export interface Holiday {
+  id: string;
+  date: string;
+  name: string;
+  isActive: boolean;
+}
+
 export const RecurringVoucher = {} as any;
 export const RecurringFrequency = {} as any;
 export const User = {} as any;

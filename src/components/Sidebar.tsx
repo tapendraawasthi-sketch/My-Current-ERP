@@ -121,6 +121,40 @@ const menuGroups: MenuGroup[] = [
       { label: "Backup & Restore", page: "backup", icon: Database },
     ],
   },
+  {
+    title: "Admin Masters",
+    items: [
+      { label: "Account Groups", page: "account-groups", icon: FolderOpen },
+      { label: "Item Groups", page: "item-groups", icon: Layers },
+      { label: "Unit Conversions", page: "unit-conversions", icon: ArrowLeftRight },
+      { label: "Std. Narrations", page: "standard-narrations", icon: BookOpen },
+      { label: "Bill Sundries", page: "bill-sundries", icon: FileText },
+      { label: "Sale Types", page: "sale-types", icon: TrendingUp },
+      { label: "Purchase Types", page: "purchase-types", icon: TrendingDown },
+      { label: "Tax Categories", page: "tax-categories", icon: FileBarChart },
+      { label: "Discount Structures", page: "discount-structures", icon: Tags },
+    ],
+  },
+  {
+    title: "Configuration",
+    items: [
+      { label: "System Configuration", page: "configuration", icon: Sliders },
+      { label: "List of Holidays", page: "holidays", icon: Calendar },
+    ],
+  },
+  {
+    title: "Bulk Operations",
+    items: [
+      { label: "Bulk Updations", page: "bulk-updations", icon: RefreshCw },
+      { label: "Data Export/Import", page: "data-export-import", icon: Database },
+    ],
+  },
+  {
+    title: "Misc Entry",
+    items: [
+      { label: "Misc. Data Entry", page: "misc-data-entry", icon: ClipboardList },
+    ],
+  },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
@@ -128,6 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     Overview: true, Masters: false, Transactions: true, Payroll: false,
     Inventory: false, Books: false, Reports: false, Admin: false,
+    "Admin Masters": false, Configuration: false, "Bulk Operations": false, "Misc Entry": false,
   });
 
   const reorderAlertCount = useMemo(() => {

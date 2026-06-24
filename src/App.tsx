@@ -60,6 +60,19 @@ import PayrollRun from "./pages/PayrollRun";
 import BankStatementImport from "./pages/BankStatementImport";
 import OverdueBillsInterest from "./pages/OverdueBillsInterest";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import AccountGroupMaster from "./pages/AccountGroupMaster";
+import ItemGroupMaster from "./pages/ItemGroupMaster";
+import UnitConversionMaster from "./pages/UnitConversionMaster";
+import StandardNarrationMaster from "./pages/StandardNarrationMaster";
+import BillSundryMaster from "./pages/BillSundryMaster";
+import SaleTypeMaster from "./pages/SaleTypeMaster";
+import PurchaseTypeMaster from "./pages/PurchaseTypeMaster";
+import TaxCategoryMaster from "./pages/TaxCategoryMaster";
+import DiscountStructureMaster from "./pages/DiscountStructureMaster";
+import ConfigurationHub from "./pages/ConfigurationHub";
+import BulkUpdations from "./pages/BulkUpdations";
+import DataExportImport from "./pages/DataExportImport";
+import MiscDataEntry from "./pages/MiscDataEntry";
 
 function MainRouter() {
   const { currentPage } = useStore();
@@ -416,6 +429,34 @@ function MainRouter() {
           <Dashboard />
         </ErrorBoundary>
       );
+    case "account-groups":
+      return <ErrorBoundary><AccountGroupMaster /></ErrorBoundary>;
+    case "item-groups":
+      return <ErrorBoundary><ItemGroupMaster /></ErrorBoundary>;
+    case "unit-conversions":
+      return <ErrorBoundary><UnitConversionMaster /></ErrorBoundary>;
+    case "standard-narrations":
+      return <ErrorBoundary><StandardNarrationMaster /></ErrorBoundary>;
+    case "bill-sundries":
+      return <ErrorBoundary><BillSundryMaster /></ErrorBoundary>;
+    case "sale-types":
+      return <ErrorBoundary><SaleTypeMaster /></ErrorBoundary>;
+    case "purchase-types":
+      return <ErrorBoundary><PurchaseTypeMaster /></ErrorBoundary>;
+    case "tax-categories":
+      return <ErrorBoundary><TaxCategoryMaster /></ErrorBoundary>;
+    case "discount-structures":
+      return <ErrorBoundary><DiscountStructureMaster /></ErrorBoundary>;
+    case "configuration":
+      return <ErrorBoundary><ConfigurationHub /></ErrorBoundary>;
+    case "holidays":
+      return <ErrorBoundary><ConfigurationHub /></ErrorBoundary>;
+    case "bulk-updations":
+      return <ErrorBoundary><BulkUpdations /></ErrorBoundary>;
+    case "data-export-import":
+      return <ErrorBoundary><DataExportImport /></ErrorBoundary>;
+    case "misc-data-entry":
+      return <ErrorBoundary><MiscDataEntry /></ErrorBoundary>;
     default:
       return (
         <ErrorBoundary>

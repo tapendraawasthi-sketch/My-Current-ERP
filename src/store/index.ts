@@ -181,6 +181,16 @@ interface AppState {
   recurringVouchers: any[];
   customFieldDefs: any[];
   currencies: any[];
+  // Administration module state
+  unitConversions: any[];
+  standardNarrations: any[];
+  billSundryMasters: any[];
+  saleTypes: any[];
+  purchaseTypes: any[];
+  taxCategories: any[];
+  discountStructures: any[];
+  itemGroups: any[];
+  holidays: any[];
   // Settings
   companySettings: CompanySettings | null;
   // UI
@@ -230,6 +240,34 @@ interface AppState {
   resetAllData: () => Promise<void>;
   // Currency
   getBaseCurrency: () => any;
+  // Administration CRUD actions
+  addUnitConversion: (data: Partial<any>) => Promise<any>;
+  updateUnitConversion: (id: string, data: Partial<any>) => Promise<void>;
+  deleteUnitConversion: (id: string) => Promise<void>;
+  addStandardNarration: (data: Partial<any>) => Promise<any>;
+  updateStandardNarration: (id: string, data: Partial<any>) => Promise<void>;
+  deleteStandardNarration: (id: string) => Promise<void>;
+  addBillSundryMaster: (data: Partial<any>) => Promise<any>;
+  updateBillSundryMaster: (id: string, data: Partial<any>) => Promise<void>;
+  deleteBillSundryMaster: (id: string) => Promise<void>;
+  addSaleType: (data: Partial<any>) => Promise<any>;
+  updateSaleType: (id: string, data: Partial<any>) => Promise<void>;
+  deleteSaleType: (id: string) => Promise<void>;
+  addPurchaseType: (data: Partial<any>) => Promise<any>;
+  updatePurchaseType: (id: string, data: Partial<any>) => Promise<void>;
+  deletePurchaseType: (id: string) => Promise<void>;
+  addTaxCategory: (data: Partial<any>) => Promise<any>;
+  updateTaxCategory: (id: string, data: Partial<any>) => Promise<void>;
+  deleteTaxCategory: (id: string) => Promise<void>;
+  addDiscountStructure: (data: Partial<any>) => Promise<any>;
+  updateDiscountStructure: (id: string, data: Partial<any>) => Promise<void>;
+  deleteDiscountStructure: (id: string) => Promise<void>;
+  addItemGroup: (data: Partial<any>) => Promise<any>;
+  updateItemGroup: (id: string, data: Partial<any>) => Promise<void>;
+  deleteItemGroup: (id: string) => Promise<void>;
+  addHoliday: (data: Partial<any>) => Promise<any>;
+  updateHoliday: (id: string, data: Partial<any>) => Promise<void>;
+  deleteHoliday: (id: string) => Promise<void>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -276,6 +314,15 @@ export const useStore = create<AppState>((set, get) => ({
   recurringVouchers: [],
   customFieldDefs: [],
   currencies: [],
+  unitConversions: [],
+  standardNarrations: [],
+  billSundryMasters: [],
+  saleTypes: [],
+  purchaseTypes: [],
+  taxCategories: [],
+  discountStructures: [],
+  itemGroups: [],
+  holidays: [],
   companySettings: null,
   currentPage: "dashboard",
   reportFilters: {},
@@ -357,6 +404,8 @@ export const useStore = create<AppState>((set, get) => ({
       goodsReceiptNotes, salesOrders, purchaseOrders, users, notifications,
       budgets, recurringVouchers, customFieldDefs, currencies,
       settingsArr,
+      unitConversions, standardNarrations, billSundryMasters,
+      saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -379,6 +428,15 @@ export const useStore = create<AppState>((set, get) => ({
       db.customFieldDefs.toArray(),
       db.currencies.toArray(),
       db.companySettings.toArray(),
+      db.unitConversions.toArray(),
+      db.standardNarrations.toArray(),
+      db.billSundryMasters.toArray(),
+      db.saleTypes.toArray(),
+      db.purchaseTypes.toArray(),
+      db.taxCategories.toArray(),
+      db.discountStructures.toArray(),
+      db.itemGroups.toArray(),
+      db.holidays.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -433,6 +491,15 @@ export const useStore = create<AppState>((set, get) => ({
       companySettings: (settingsArr[0] as CompanySettings) || null,
       isAuthenticated: !!sessionUser,
       currentUser: sessionUser,
+      unitConversions,
+      standardNarrations,
+      billSundryMasters,
+      saleTypes,
+      purchaseTypes,
+      taxCategories,
+      discountStructures,
+      itemGroups,
+      holidays,
     });
 
     // Stock reorder notifications
@@ -584,6 +651,179 @@ export const useStore = create<AppState>((set, get) => ({
     set((s) => ({
       items: s.items.map((i) => (i.id === item.id ? { ...i, ...item } : i)),
     }));
+  },
+
+  // ── Administration Module CRUD ─────────────────────────────────────────────
+
+  // Unit Conversions
+  addUnitConversion: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `uc-${generateId()}`, isActive: true };
+    await db.unitConversions.add(record as any);
+    set((s) => ({ unitConversions: [...s.unitConversions, record] }));
+    return record;
+  },
+  updateUnitConversion: async (id, data) => {
+    const db = getDB();
+    await db.unitConversions.update(id, data);
+    set((s) => ({ unitConversions: s.unitConversions.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteUnitConversion: async (id) => {
+    const db = getDB();
+    await db.unitConversions.delete(id);
+    set((s) => ({ unitConversions: s.unitConversions.filter((r) => r.id !== id) }));
+  },
+
+  // Standard Narrations
+  addStandardNarration: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `sn-${generateId()}`, isActive: true };
+    await db.standardNarrations.add(record as any);
+    set((s) => ({ standardNarrations: [...s.standardNarrations, record] }));
+    return record;
+  },
+  updateStandardNarration: async (id, data) => {
+    const db = getDB();
+    await db.standardNarrations.update(id, data);
+    set((s) => ({ standardNarrations: s.standardNarrations.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteStandardNarration: async (id) => {
+    const db = getDB();
+    await db.standardNarrations.delete(id);
+    set((s) => ({ standardNarrations: s.standardNarrations.filter((r) => r.id !== id) }));
+  },
+
+  // Bill Sundry Masters
+  addBillSundryMaster: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `bsm-${generateId()}`, isActive: true };
+    await db.billSundryMasters.add(record as any);
+    set((s) => ({ billSundryMasters: [...s.billSundryMasters, record] }));
+    return record;
+  },
+  updateBillSundryMaster: async (id, data) => {
+    const db = getDB();
+    await db.billSundryMasters.update(id, data);
+    set((s) => ({ billSundryMasters: s.billSundryMasters.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteBillSundryMaster: async (id) => {
+    const db = getDB();
+    await db.billSundryMasters.delete(id);
+    set((s) => ({ billSundryMasters: s.billSundryMasters.filter((r) => r.id !== id) }));
+  },
+
+  // Sale Types
+  addSaleType: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `st-${generateId()}`, isActive: true };
+    await db.saleTypes.add(record as any);
+    set((s) => ({ saleTypes: [...s.saleTypes, record] }));
+    return record;
+  },
+  updateSaleType: async (id, data) => {
+    const db = getDB();
+    await db.saleTypes.update(id, data);
+    set((s) => ({ saleTypes: s.saleTypes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteSaleType: async (id) => {
+    const db = getDB();
+    await db.saleTypes.delete(id);
+    set((s) => ({ saleTypes: s.saleTypes.filter((r) => r.id !== id) }));
+  },
+
+  // Purchase Types
+  addPurchaseType: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `pt-${generateId()}`, isActive: true };
+    await db.purchaseTypes.add(record as any);
+    set((s) => ({ purchaseTypes: [...s.purchaseTypes, record] }));
+    return record;
+  },
+  updatePurchaseType: async (id, data) => {
+    const db = getDB();
+    await db.purchaseTypes.update(id, data);
+    set((s) => ({ purchaseTypes: s.purchaseTypes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deletePurchaseType: async (id) => {
+    const db = getDB();
+    await db.purchaseTypes.delete(id);
+    set((s) => ({ purchaseTypes: s.purchaseTypes.filter((r) => r.id !== id) }));
+  },
+
+  // Tax Categories
+  addTaxCategory: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `tc-${generateId()}`, isActive: true };
+    await db.taxCategories.add(record as any);
+    set((s) => ({ taxCategories: [...s.taxCategories, record] }));
+    return record;
+  },
+  updateTaxCategory: async (id, data) => {
+    const db = getDB();
+    await db.taxCategories.update(id, data);
+    set((s) => ({ taxCategories: s.taxCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteTaxCategory: async (id) => {
+    const db = getDB();
+    await db.taxCategories.delete(id);
+    set((s) => ({ taxCategories: s.taxCategories.filter((r) => r.id !== id) }));
+  },
+
+  // Discount Structures
+  addDiscountStructure: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `ds-${generateId()}`, isActive: true };
+    await db.discountStructures.add(record as any);
+    set((s) => ({ discountStructures: [...s.discountStructures, record] }));
+    return record;
+  },
+  updateDiscountStructure: async (id, data) => {
+    const db = getDB();
+    await db.discountStructures.update(id, data);
+    set((s) => ({ discountStructures: s.discountStructures.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteDiscountStructure: async (id) => {
+    const db = getDB();
+    await db.discountStructures.delete(id);
+    set((s) => ({ discountStructures: s.discountStructures.filter((r) => r.id !== id) }));
+  },
+
+  // Item Groups
+  addItemGroup: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `ig-${generateId()}`, isActive: true };
+    await db.itemGroups.add(record as any);
+    set((s) => ({ itemGroups: [...s.itemGroups, record] }));
+    return record;
+  },
+  updateItemGroup: async (id, data) => {
+    const db = getDB();
+    await db.itemGroups.update(id, data);
+    set((s) => ({ itemGroups: s.itemGroups.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteItemGroup: async (id) => {
+    const db = getDB();
+    await db.itemGroups.delete(id);
+    set((s) => ({ itemGroups: s.itemGroups.filter((r) => r.id !== id) }));
+  },
+
+  // Holidays
+  addHoliday: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `hol-${generateId()}`, isActive: true };
+    await db.holidays.add(record as any);
+    set((s) => ({ holidays: [...s.holidays, record] }));
+    return record;
+  },
+  updateHoliday: async (id, data) => {
+    const db = getDB();
+    await db.holidays.update(id, data);
+    set((s) => ({ holidays: s.holidays.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteHoliday: async (id) => {
+    const db = getDB();
+    await db.holidays.delete(id);
+    set((s) => ({ holidays: s.holidays.filter((r) => r.id !== id) }));
   },
 
   // ── Vouchers ─────────────────────────────────────────────────────────────
