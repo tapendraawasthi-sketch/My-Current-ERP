@@ -13,6 +13,7 @@ interface LayoutProps { children: React.ReactNode; }
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { isAuthenticated, isDbReady, initializeApp, login, currentUser, currentPage, setCurrentPage } = useStore();
   const { rawShortcuts } = useKeyboardShortcuts();
+  const isMobile = useIsMobile();
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("sutra_sidebar_collapsed") === "true";
@@ -172,8 +173,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
     );
   }
-
-  const isMobile = useIsMobile();
 
   if (isMobile) {
     return (

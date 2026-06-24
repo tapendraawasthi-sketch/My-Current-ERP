@@ -1,4 +1,5 @@
-// @ts-nocheck
+// src/lib/types.ts
+
 export enum AccountType {
   ASSET = "asset",
   LIABILITY = "liability",
@@ -14,12 +15,6 @@ export enum AccountLevel {
   SUBLEDGER = "subledger",
 }
 
-export enum VoucherStatus {
-  DRAFT = "draft",
-  POSTED = "posted",
-  CANCELLED = "cancelled",
-}
-
 export enum VoucherType {
   JOURNAL = "journal",
   PAYMENT = "payment",
@@ -31,8 +26,47 @@ export enum VoucherType {
   PURCHASE_RETURN = "purchase-return",
   DEBIT_NOTE = "debit-note",
   CREDIT_NOTE = "credit-note",
-  STOCK_JOURNAL = "stock-journal",
-  OPENING_BALANCE = "opening-balance",
+}
+
+export enum VoucherStatus {
+  DRAFT = "draft",
+  POSTED = "posted",
+  CANCELLED = "cancelled",
+  HELD = "held",
+}
+
+export enum PaymentMode {
+  CASH = "cash",
+  BANK_TRANSFER = "bank-transfer",
+  CREDIT = "credit",
+  CHEQUE = "cheque",
+  ONLINE = "online",
+}
+
+export enum PaymentStatus {
+  PAID = "paid",
+  UNPAID = "unpaid",
+  PARTIAL = "partial",
+  CANCELLED = "cancelled",
+  OVERDUE = "overdue",
+}
+
+export enum ItemType {
+  PRODUCT = "product",
+  SERVICE = "service",
+}
+
+export enum TdsType {
+  NONE = "none",
+  SERVICE_CONTRACT = "service_contract",
+  HOUSE_RENT = "house_rent",
+  CONSULTANCY = "consultancy",
+  RENT = "rent",
+  SALARY = "salary",
+  DIVIDEND = "dividend",
+  COMMISSION = "commission",
+  CONTRACTOR = "contractor",
+  OTHER = "other",
 }
 
 export enum PartyType {
@@ -41,32 +75,34 @@ export enum PartyType {
   BOTH = "both",
 }
 
-export enum ItemType {
-  PRODUCT = "product",
-  SERVICE = "service",
+export enum MovementType {
+  PURCHASE = "purchase",
+  SALES = "sales",
+  TRANSFER = "transfer",
+  ADJUSTMENT = "adjustment",
+  OPENING = "opening",
+  PRODUCTION = "production",
+  RETURN = "return",
 }
 
-export enum PaymentMode {
-  CASH = "cash",
-  BANK = "bank",
-  BANK_TRANSFER = "bank_transfer",
-  CREDIT = "credit",
-  CARD = "card",
+export enum ChallanStatus {
+  DRAFT = "draft",
+  DISPATCHED = "dispatched",
+  RECEIVED = "received",
+  INVOICED = "invoiced",
+  CANCELLED = "cancelled",
 }
 
-export enum PaymentStatus {
-  PAID = "paid",
-  UNPAID = "unpaid",
-  PARTIAL = "partial",
+export enum InvoiceStatus {
+  DRAFT = "draft",
+  POSTED = "posted",
+  CANCELLED = "cancelled",
 }
 
-export enum UserRole {
-  ADMIN = "admin",
-  ACCOUNTANT = "accountant",
-  VIEWER = "viewer",
-  MANAGER = "manager",
-  CASHIER = "cashier",
-  PAYROLL_OFFICER = "payroll_officer",
+export enum StockValuationMethod {
+  FIFO = "fifo",
+  LIFO = "lifo",
+  WEIGHTED_AVERAGE = "weighted_average",
 }
 
 export enum DateFormat {
@@ -74,100 +110,7 @@ export enum DateFormat {
   AD = "AD",
 }
 
-export enum StockValuationMethod {
-  FIFO = "fifo",
-  WEIGHTED_AVERAGE = "weighted-average",
-  LIFO = "lifo",
-}
-
-export enum TdsType {
-  CONTRACTOR = "contractor",
-  SERVICE_CONTRACT = "contractor",
-  CONSULTANCY = "consultancy",
-  RENT = "rent",
-  HOUSE_RENT = "rent",
-  SALARY = "salary",
-  DIVIDEND = "dividend",
-  COMMISSION = "commission",
-  OTHER = "other",
-  NONE = "none",
-}
-
-export enum OrderStatus {
-  DRAFT = "draft",
-  APPROVED = "approved",
-  FULFILLED = "fulfilled",
-  PARTIAL = "partial",
-  CANCELLED = "cancelled",
-}
-
-export enum ChallanStatus {
-  DRAFT = "draft",
-  DISPATCHED = "dispatched",
-  RECEIVED = "received",
-  CANCELLED = "cancelled",
-}
-
-export enum ReconciliationStatus {
-  UNRECONCILED = "unreconciled",
-  RECONCILED = "reconciled",
-  CLEARED = "cleared",
-}
-
-export enum BudgetPeriod {
-  MONTHLY = "monthly",
-  QUARTERLY = "quarterly",
-  YEARLY = "yearly",
-}
-
-export enum CostCenterLevel {
-  GROUP = "group",
-  CENTER = "center",
-}
-
-export enum FiscalYearStatus {
-  ACTIVE = "active",
-  CLOSED = "closed",
-  FUTURE = "future",
-}
-
-export enum MovementType {
-  PURCHASE = "purchase",
-  SALES = "sales",
-  SALES_RETURN = "sales-return",
-  PURCHASE_RETURN = "purchase-return",
-  TRANSFER_IN = "transfer-in",
-  TRANSFER_OUT = "transfer-out",
-  OPENING = "opening",
-  ADJUSTMENT = "adjustment",
-}
-
-export enum ReportPeriodPreset {
-  TODAY = "today",
-  WEEK = "week",
-  MONTH = "month",
-  QUARTER = "quarter",
-  FY = "fy",
-  CUSTOM = "custom",
-}
-
-export enum RecurringFrequency {
-  DAILY = "daily",
-  WEEKLY = "weekly",
-  MONTHLY = "monthly",
-  QUARTERLY = "quarterly",
-  YEARLY = "yearly",
-}
-
-export interface VoucherSeries {
-  id?: number;
-  companyId: string;
-  voucherType: string;
-  prefix: string;
-  currentNumber: number;
-  fiscalYearBS: string;
-  resetOnNewYear: boolean;
-}
+// Interfaces
 
 export interface Account {
   id: string;
@@ -176,70 +119,18 @@ export interface Account {
   nameNepali?: string;
   type: AccountType;
   level: AccountLevel;
-  group?: string;
   parentId?: string;
-  subLedgerOf?: string;
-  isSystemAccount?: boolean;
-  isActive: boolean;
   isGroup: boolean;
-  openingBalance?: number;
-  openingBalanceDr?: number;
-  openingBalanceCr?: number;
-  openingBalanceDate?: string;
-  openingBalanceBS?: string;
+  isActive: boolean;
+  isSystemAccount?: boolean;
   balance: number;
+  openingBalance: number;
+  openingBalanceDr: number;
+  openingBalanceCr: number;
+  openingBalanceDate?: string;
   costCenterId?: string;
-}
-
-export interface JournalEntryLine {
-  id?: string;
-  accountId: string;
-  accountName?: string;
-  debit: number;
-  credit: number;
-  narration?: string;
-  subledgerId?: string;
-  costCenterId?: string;
-  billRefNo?: string;
-  billDate?: string;
-  isNew?: boolean;
-  currencyCode?: string;
-  exchangeRate?: number;
-  foreignAmount?: number;
-}
-
-export interface JournalEntry {
-  id: string;
-  companyId?: string;
-  date: string;
-  dateNepali: string;
-  voucherNo: string;
-  referenceNo?: string;
-  narration: string;
-  bsDate?: string;
-  narrationNe?: string;
-  lines: JournalEntryLine[];
-  totalDebit: number;
-  totalCredit: number;
-  status: VoucherStatus;
-  type: VoucherType;
-  partyId?: string;
-  partyName?: string;
-  partyPan?: string;
-  grandTotal?: number;
-  createdBy?: string;
-  createdAt?: string;
-  postedBy?: string;
-  postedAt?: string;
-  cancelledBy?: string;
-  cancelledAt?: string;
-  cancellationReason?: string;
-  attachments?: string[];
-  isBillWise?: boolean;
-  paymentModeUI?: "cash" | "bank" | "cheque";
-  bankLedgerId?: string;
-  chequeNo?: string;
-  chequeDate?: string;
+  group?: string;
+  accountId?: string;
 }
 
 export interface Party {
@@ -249,38 +140,34 @@ export interface Party {
   nameNepali?: string;
   type: PartyType;
   pan?: string;
-  panNumber?: string;
-  vatNumber?: string;
-  isVatRegistered?: boolean;
-  district?: string;
-  province?: string;
   vatNo?: string;
-  phone: string;
+  phone?: string;
   email?: string;
+  website?: string;
   contactPerson?: string;
-  accountId: string;
+  address?: string;
+  addressNepali?: string;
+  city?: string;
+  province?: string;
+  district?: string;
+  wardNo?: string;
+  country?: string;
+  bankName?: string;
+  bankAccountNo?: string;
+  bankBranch?: string;
   creditLimit?: number;
   creditDays?: number;
   openingBalance?: number;
   openingBalanceType?: "Dr" | "Cr";
   openingBalanceDate?: string;
-  address?: string;
-  addressNepali?: string;
-  city?: string;
-  province?: string;
-  wardNo?: string;
-  country?: string;
-  isActive: boolean;
-  tdsRate?: number;
-  tdsType?: TdsType;
   subjectToTds?: boolean;
+  tdsType?: TdsType;
+  tdsRate?: number;
+  isActive?: boolean;
   balance?: number;
   status?: string;
-  website?: string;
-  bankName?: string;
-  bankAccountNo?: string;
-  bankBranch?: string;
-  customFields?: Record<string, string | number | boolean>;
+  accountId?: string;
+  isBoth?: boolean;
 }
 
 export interface Item {
@@ -289,89 +176,71 @@ export interface Item {
   name: string;
   nameNepali?: string;
   type: ItemType;
-  unit?: string;
+  unit: string;
   alternateUnit?: string;
   conversionFactor?: number;
+  hsnCode?: string;
+  barcode?: string;
+  description?: string;
+  category?: string;
   purchaseRate: number;
   salesRate: number;
   mrp?: number;
-  hsnCode?: string;
-  vatExempt?: boolean;
   isTaxable: boolean;
   vatRate?: number;
+  openingStock?: number;
+  openingStockRate?: number;
   minimumStock?: number;
   maximumStock?: number;
   reorderLevel?: number;
-  accountId?: string;
   purchaseAccountId?: string;
   salesAccountId?: string;
   stockAccountId?: string;
-  isActive: boolean;
-  openingStock?: number;
-  openingStockRate?: number;
-  currentStock?: number;
-  description?: string;
-  barcode?: string;
-  customFields?: Record<string, string | number | boolean>;
-}
-
-export interface Unit {
-  id: string;
-  code: string;
-  name: string;
-  symbol: string;
-  isActive: boolean;
-}
-
-export interface Warehouse {
-  id: string;
-  code: string;
-  name: string;
-  address?: string;
-  isDefault: boolean;
-  isActive: boolean;
-}
-
-export interface InvoiceLine {
-  hsnCode?: string;
-  id?: string;
-  itemId: string;
-  itemName: string;
-  itemCode?: string;
-  unit?: string;
-  qty: number;
-  rate: number;
-  mrp?: number;
-  discountPercent?: number;
-  discountAmount?: number;
-  isTaxable?: boolean;
-  vatRate?: number;
-  netAmount: number;
-  taxAmount?: number;
-  totalAmount?: number;
-  batchNo?: string;
-  serialNo?: string;
   warehouseId?: string;
-  warehouseFrom?: string;
-  warehouseTo?: string;
-  // Compatibility fields for controllers
-  discount?: number;
-  taxableAmount?: number;
-  exemptAmount?: number;
-  vatAmount?: number;
+  isActive: boolean;
+  baseUnit?: string;
+}
+
+export interface Voucher {
+  id: string;
+  voucherNo: string;
+  date: string;
+  dateNepali: string;
+  type: VoucherType | string;
+  narration: string;
+  referenceNo?: string;
+  lines: VoucherLine[];
+  status: VoucherStatus | string;
+  totalDebit: number;
+  totalCredit: number;
+  grandTotal?: number;
+  cancellationReason?: string;
+}
+
+export interface VoucherLine {
+  accountId: string;
+  accountName?: string;
+  debit: number;
+  credit: number;
+  narration?: string;
+  subledgerId?: string;
+  costCenterId?: string;
+  billRefNo?: string;
 }
 
 export interface Invoice {
   id: string;
-  companyId?: string;
   invoiceNo: string;
-  type: VoucherType;
+  date: string;
+  dateNepali: string;
+  dueDate?: string;
+  type: VoucherType | string;
   partyId: string;
   partyName: string;
   partyPan?: string;
   partyVat?: string;
-  date: string;
-  dateNepali: string;
+  billTo?: string;
+  lines: InvoiceLine[];
   subTotal: number;
   discountAmount: number;
   taxableAmount: number;
@@ -383,130 +252,62 @@ export interface Invoice {
   tdsType?: TdsType;
   roundOff?: number;
   grandTotal: number;
-  lines: InvoiceLine[];
-  paymentMode: PaymentMode;
-  paymentStatus: PaymentStatus;
+  paymentMode: PaymentMode | string;
+  paymentStatus: PaymentStatus | string;
   paidAmount?: number;
   bankAccountId?: string;
   chequeNo?: string;
   chequeDate?: string;
-  narration: string;
+  narration?: string;
+  narrationNe?: string;
   referenceNo?: string;
-  status: VoucherStatus;
-  journalEntryId?: string;
   orderRef?: string;
   challanRef?: string;
-  billTo?: string;
-  salesmanId?: string;
-  salesmanName?: string;
-  createdBy?: string;
-  createdAt?: string;
+  originalInvoiceId?: string;
+  originalInvoiceNo?: string;
+  billSundries?: BillSundry[];
+  attachments?: string[];
+  status: VoucherStatus | string;
+  cancellationReason?: string;
   cbmsSubmitted?: boolean;
   cbmsIrn?: string;
   cbmsSubmittedAt?: string;
-  annexType?: "A" | "B" | "C" | null;
-  billSundries?: Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>;
-  narrationNe?: string;
-  vatApplicable?: boolean;
-  discountBeforeVat?: number;
-  cbmsRefNo?: string;
-  cbmsStatus?: "pending" | "submitted" | "failed";
-  dueDate?: string;
-  currencyCode?: string;
-  exchangeRate?: number;
-  foreignAmount?: number;
-  attachments?: string[];
-  customFields?: Record<string, string | number | boolean>;
 }
 
-export interface SalesOrder {
-  id: string;
-  orderNo: string;
-  date: string;
-  dateNepali: string;
-  partyId: string;
-  partyName: string;
-  expectedDeliveryDate?: string;
-  lines: InvoiceLine[];
-  subTotal: number;
-  taxableAmount: number;
-  vatAmount: number;
-  grandTotal: number;
-  status: OrderStatus;
-  narration?: string;
-  createdBy?: string;
-  createdAt?: string;
-  approvedBy?: string;
-  approvedAt?: string;
-  fulfilledInvoiceIds?: string[];
+export interface InvoiceLine {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  unit?: string;
+  qty: number;
+  rate: number;
+  discountPercent?: number;
+  discount?: number;
+  discountAmount?: number;
+  isTaxable: boolean;
+  vatRate?: number;
+  taxableAmount?: number;
+  exemptAmount?: number;
+  vatAmount?: number;
+  netAmount?: number;
+  totalAmount?: number;
+  warehouseId?: string;
+  hsnCode?: string;
+  description?: string;
 }
 
-export interface PurchaseOrder {
+export interface BillSundry {
   id: string;
-  orderNo: string;
-  date: string;
-  dateNepali: string;
-  partyId: string;
-  partyName: string;
-  expectedDeliveryDate?: string;
-  lines: InvoiceLine[];
-  subTotal: number;
-  taxableAmount: number;
-  vatAmount: number;
-  grandTotal: number;
-  status: OrderStatus;
-  narration?: string;
-  createdBy?: string;
-  createdAt?: string;
-  approvedBy?: string;
-  approvedAt?: string;
-  fulfilledInvoiceIds?: string[];
-}
-
-export interface DeliveryChallan {
-  id: string;
-  challanNo: string;
-  date: string;
-  dateNepali: string;
-  salesOrderId?: string;
-  partyId: string;
-  partyName: string;
-  lines: InvoiceLine[];
-  totalQty: number;
-  narration?: string;
-  vehicleNo?: string;
-  driverName?: string;
-  status: ChallanStatus;
-  createdBy?: string;
-  createdAt?: string;
-  invoiceRef?: string;
-}
-
-export interface GoodsReceiptNote {
-  id: string;
-  grnNo: string;
-  date: string;
-  dateNepali: string;
-  purchaseOrderId?: string;
-  partyId: string;
-  partyName: string;
-  lines: InvoiceLine[];
-  totalQty: number;
-  narration?: string;
-  vehicleNo?: string;
-  inspectedBy?: string;
-  status: ChallanStatus;
-  createdBy?: string;
-  createdAt?: string;
-  invoiceRef?: string;
+  name: string;
+  type: "additive" | "subtractive";
+  amount: number;
 }
 
 export interface StockMovement {
   id: string;
-  companyId?: string;
   date: string;
   dateNepali: string;
-  type: MovementType;
+  type: string;
   itemId: string;
   itemName: string;
   warehouseId: string;
@@ -514,38 +315,29 @@ export interface StockMovement {
   qty: number;
   rate: number;
   amount: number;
-  costCenterId?: string;
   referenceId?: string;
   referenceNo?: string;
   referenceType?: string;
-  batchNo?: string;
   narration?: string;
-  createdBy?: string;
-  createdAt?: string;
 }
 
-export interface StockJournal {
+export interface Warehouse {
   id: string;
-  journalNo: string;
-  date: string;
-  dateNepali: string;
-  narration: string;
-  lines: StockJournalLine[];
-  status: VoucherStatus;
-  createdBy?: string;
-  createdAt?: string;
+  code: string;
+  name: string;
+  address?: string;
+  isDefault?: boolean;
+  isActive: boolean;
 }
 
-export interface StockJournalLine {
-  id?: string;
-  itemId: string;
-  itemName: string;
-  fromWarehouseId?: string;
-  toWarehouseId?: string;
-  qty: number;
-  rate: number;
-  fromWarehouseName?: string;
-  toWarehouseName?: string;
+export interface Unit {
+  id: string;
+  code: string;
+  name: string;
+  symbol?: string;
+  decimalPlaces?: number;
+  UQC_code?: string;
+  isActive: boolean;
 }
 
 export interface CostCenter {
@@ -553,541 +345,37 @@ export interface CostCenter {
   code: string;
   name: string;
   parentId?: string;
-  level: CostCenterLevel;
+  level?: string;
   isActive: boolean;
-  budget?: number;
-  description?: string;
-  responsiblePerson?: string;
-}
-
-export interface BankAccount {
-  id: string;
-  accountId: string;
-  bankName: string;
-  accountNo: string;
-  branch: string;
-  ifscCode?: string;
-  swiftCode?: string;
-  openingBalance: number;
-  isActive: boolean;
-}
-
-export interface BankStatement {
-  id: string;
-  bankAccountId: string;
-  date: string;
-  narration: string;
-  debit: number;
-  credit: number;
-  balance: number;
-  reconciled: boolean;
-  reconciledVoucherId?: string;
-  reconciledDate?: string;
-}
-
-export interface Budget {
-  id: string;
-  accountId: string;
-  costCenterId?: string;
-  fiscalYearBS: string;
-  month: number;
-  budgetedAmount: number;
-  accountName?: string;
-}
-
-export interface TdsEntry {
-  id: string;
-  date: string;
-  dateBS?: string;
-  partyId: string;
-  partyName: string;
-  partyPAN?: string;
-  section?: string; // "87", "88", "88AA", "89", "90", "95"
-  paymentNature?: string;
-  grossAmount: number;
-  tdsRate: number;
-  tdsAmount: number;
-  netAmount: number;
-  paymentMode?: string;
-  status?: "pending" | "deposited" | "challanGenerated";
-  challanNumber?: string;
-  depositedAt?: string;
-  fiscalYearBS?: string;
-
-  // Legacy fallback properties to prevent breaking old data
-  voucherId?: string;
-  tdsType?: TdsType;
-  dateNepali?: string;
-  deposited?: boolean;
-  depositDate?: string;
-  depositChallanNo?: string;
-}
-
-export interface CompanySettings {
-  id?: string;
-  name: string;
-  nameNepali?: string;
-  panNumber: string;
-  address: string;
-  phone: string;
-  email?: string;
-  vatNumber?: string;
-  irdOffice?: string;
-  fiscalYearBS?: string;
-  cbmsEnabled?: boolean;
-  cbmsUsername?: string;
-  cbmsPassword?: string;
-  datePreference?: "BS" | "AD";
-  defaultVatRate?: number;
-  vatFilingFrequency?: "monthly" | "trimestral";
-  website?: string;
-  logo?: string;
-  defaultCurrency: string;
-  currencySymbol: string;
-  defaultDateFormat: DateFormat;
-  fiscalYearStartMonth: number;
-  stockValuationMethod: StockValuationMethod;
-  enableCostCenter: boolean;
-  enableMultiCurrency: boolean;
-  enableBillWiseTracking: boolean;
-  enableBatchTracking: boolean;
-  printLogoOnInvoice?: boolean;
-  printTermsOnInvoice?: boolean;
-  termsAndConditions?: string;
-  voucherSeries: Record<string, VoucherSeries>;
-  tdsEnabled?: boolean;
-  cbmsConfig?: { clientId: string; clientSecret: string; environment: "sandbox" | "production" };
-
-  // Compatibility/local settings fields
-  companyNameEn?: string;
-  companyNameNe?: string;
-  city?: string;
-  businessType?: string;
-  dateFormat?: string;
-  enableBillWise?: boolean;
-  showPaisa?: boolean;
-  paperSize?: string;
-  invoiceTemplate?: string;
-  signatoryName?: string;
-  termsConditions?: string;
-  invoiceFooter?: string;
-  printLogo?: boolean;
-  printBankDetails?: boolean;
-  exportFormat?: string;
-}
-
-export interface VoucherSeries {
-  prefix: string;
-  nextNumber: number;
-  padding: number;
-  start?: number;
 }
 
 export interface FiscalYear {
   id: string;
   name: string;
+  fiscalYearBS?: string;
   startDate: string;
   endDate: string;
   isCurrent: boolean;
-  status: FiscalYearStatus;
-  closedBy?: string;
-  closedAt?: string;
-  openingEntryId?: string;
-  voucherSeriesState?: Record<string, { prefix: string; nextNumber: number }>;
-  fiscalYearBS?: string;
+  isClosed: boolean;
 }
-
-export interface User {
-  id: string;
-  name: string;
-  nameNepali?: string;
-  username: string;
-  email?: string;
-  role: UserRole;
-  isActive: boolean;
-  password?: string;
-  permissions?: string[];
-  lastLogin?: string;
-  createdAt?: string;
-  createdBy?: string;
-  companyId?: string;
-}
-
-export interface AuditLog {
-  id: string;
-  timestamp: string;
-  userId: string;
-  userName: string;
-  action: "create" | "update" | "delete" | string;
-  module: string;
-  recordId: string;
-  recordType: string;
-  oldValue?: string;
-  newValue?: string;
-  ipAddress?: string;
-}
-
-export interface AppNotification {
-  id: string;
-  type: "info" | "warning" | "error" | "success";
-  message: string;
-  timestamp: string;
-  read: boolean;
-  link?: string;
-}
-
-export interface BillAllocation {
-  id: string;
-  voucherId: string; // the payment/receipt voucher id
-  invoiceId: string; // the bill being settled
-  invoiceNo: string;
-  invoiceDate: string;
-  partyId: string;
-  originalAmount: number;
-  allocatedAmount: number;
-  balanceLeft: number;
-  allocationDate: string;
-}
-
-export interface Currency {
-  id: string;
-  code: string; // USD, EUR, INR, GBP, NPR
-  name: string; // US Dollar, Euro etc
-  symbol: string; // $, €, ₹, £, रू
-  isBase: boolean; // only one can be base (NPR)
-  isActive: boolean;
-}
-
-export interface ExchangeRate {
-  id: string;
-  currencyCode: string;
-  date: string;
-  rateToBase: number; // 1 USD = X NPR
-  source: string; // manual or auto
-}
-
-export interface RecurringVoucher {
-  id: string;
-  name: string; // "Monthly Office Rent"
-  templateVoucherId: string; // source voucher to clone
-  voucherType: VoucherType;
-  frequency: RecurringFrequency;
-  startDate: string;
-  endDate?: string; // null = no end
-  dayOfMonth?: number; // for monthly: 1-28
-  nextDueDate: string;
-  lastGeneratedDate?: string;
-  autoPost: boolean; // post directly or save as draft
-  totalOccurrences?: number;
-  completedOccurrences: number;
-  isActive: boolean;
-  generatedVoucherIds: string[]; // history of created voucher IDs
-  createdBy?: string;
-  createdAt?: string;
-}
-
-export interface LedgerEntry {
-  date: string;
-  dateNepali?: string;
-  voucherNo: string;
-  voucherType: VoucherType;
-  narration: string;
-  partyName?: string;
-  debit: number;
-  credit: number;
-  balance: number;
-  balanceType: "Dr" | "Cr";
-  voucherId: string;
-}
-
-export interface TrialBalanceRow {
-  accountId: string;
-  accountCode: string;
-  accountName: string;
-  level: AccountLevel;
-  openingDr: number;
-  openingCr: number;
-  debit: number;
-  credit: number;
-  closingDr: number;
-  closingCr: number;
-  children?: TrialBalanceRow[];
-}
-
-export interface ProfitLossRow {
-  accountId: string;
-  accountName: string;
-  amount: number;
-  isGroup: boolean;
-  level: number;
-  children?: ProfitLossRow[];
-}
-
-export interface BalanceSheetRow {
-  accountId: string;
-  accountName: string;
-  amount: number;
-  isGroup: boolean;
-  level: number;
-  children?: BalanceSheetRow[];
-}
-
-export interface AgingBucket {
-  label: string;
-  days: [number, number | null];
-  amount: number;
-}
-
-export interface PartyAging {
-  partyId: string;
-  partyName: string;
-  partyPan?: string;
-  current: number;
-  bucket30: number;
-  bucket60: number;
-  bucket90: number;
-  bucket90plus: number;
-  total: number;
-}
-
-export interface StockSummaryRow {
-  itemId: string;
-  itemCode?: string;
-  itemName: string;
-  unit?: string;
-  openingQty: number;
-  openingRate: number;
-  openingValue: number;
-  inQty: number;
-  inValue: number;
-  outQty: number;
-  outValue: number;
-  closingQty: number;
-  closingRate: number;
-  closingValue: number;
-}
-
-export interface VatSummary {
-  taxableAmount: number;
-  exemptAmount: number;
-  vatAmount: number;
-  grossAmount: number;
-  type: "sales" | "purchase";
-}
-
-export interface DayBookEntry {
-  date: string;
-  dateNepali?: string;
-  voucherNo: string;
-  voucherType: VoucherType;
-  partyName?: string;
-  narration: string;
-  debit: number;
-  credit: number;
-  voucherId: string;
-}
-
-export interface ReportFilters {
-  startDate: string;
-  endDate: string;
-  accountId?: string;
-  partyId?: string;
-  warehouseId?: string;
-  itemId?: string;
-  costCenterId?: string;
-  preset: ReportPeriodPreset;
-  showZeroBalance?: boolean;
-  selectedReport?: string;
-}
-
-export interface NavigationState {
-  currentPage: Page;
-  editingVoucherId?: string;
-  editingInvoiceId?: string;
-  selectedPartyId?: string;
-  selectedItemId?: string;
-  breadcrumb: string[];
-}
-
-export type Page =
-  | "dashboard"
-  | "accounts"
-  | "journal"
-  | "payment"
-  | "receipt"
-  | "contra"
-  | "sales-invoice"
-  | "purchase-invoice"
-  | "sales-return"
-  | "purchase-return"
-  | "debit-note"
-  | "credit-note"
-  | "sales-order"
-  | "purchase-order"
-  | "delivery-challan"
-  | "grn"
-  | "stock-journal"
-  | "opening-balance"
-  | "ledger"
-  | "trial-balance"
-  | "profit-loss"
-  | "balance-sheet"
-  | "cash-flow"
-  | "day-book"
-  | "cash-book"
-  | "bank-book"
-  | "sales-register"
-  | "purchase-register"
-  | "vouchers"
-  | "parties"
-  | "items"
-  | "warehouses"
-  | "units"
-  | "cost-centers"
-  | "bank-accounts"
-  | "bank-reconciliation"
-  | "vat-reports"
-  | "tds-report"
-  | "aging-report"
-  | "party-statement"
-  | "inventory-report"
-  | "stock-summary"
-  | "budget"
-  | "settings"
-  | "users"
-  | "audit-log"
-  | "backup";
-
-// Price List Feature
-export enum PriceListType {
-  SALES = "sales",
-  PURCHASE = "purchase",
-}
-export interface PriceListLine {
-  itemId: string;
-  itemName: string;
-  rate: number;
-  minQty?: number;
-  discountPercent?: number;
-}
-export interface PriceList {
-  id: string;
-  name: string;
-  type: PriceListType;
-  isDefault: boolean;
-  isActive: boolean;
-  validFrom?: string;
-  validTo?: string;
-  lines: PriceListLine[];
-  applicablePartyIds?: string[];
-  createdBy?: string;
-  createdAt?: string;
-}
-
-// Salesman Feature
-export interface Salesman {
-  id: string;
-  code: string;
-  name: string;
-  phone?: string;
-  email?: string;
-  commissionRate?: number;
-  isActive: boolean;
-  createdAt?: string;
-}
-
-export interface Employee {
-  id: string;
-  name: string;
-  nameNe?: string;
-  designation: string;
-  department: string;
-  dateOfJoining: string;
-  dateOfJoiningBS: string;
-  pan: string;
-  citizenshipNumber: string;
-  bankAccount: string;
-  bankName: string;
-  ssf: boolean;
-  ssfContributorNumber?: string;
-  basicSalary: number;
-  gradePayPercent: number;
-  allowances: {
-    houseRent: number;
-    transport: number;
-    medical: number;
-    dashain: number;
-  };
-  taxDeclarations: {
-    lifeInsurance: number;
-    healthInsurance: number;
-  };
-  employmentType: "permanent" | "contract" | "parttime";
-  status: "active" | "inactive";
-}
-
-export interface PayrollLine {
-  employeeId: string;
-  employeeName: string;
-  basicSalary: number;
-  totalAllowances: number;
-  grossSalary: number;
-  pfEmployee: number;
-  pfEmployer: number;
-  citEmployee: number;
-  citEmployer: number;
-  ssfEmployee: number;
-  ssfEmployer: number;
-  tdsOnSalary: number;
-  otherDeductions: number;
-  netSalary: number;
-}
-
-export interface PayrollRun {
-  id: string;
-  month: string;
-  fiscalYearId: string;
-  employees: PayrollLine[];
-  status: "draft" | "approved" | "paid";
-  totalGross: number;
-  totalDeductions: number;
-  totalNet: number;
-  totalEmployerPf: number;
-  totalEmployerSsf: number;
-  totalTds: number;
-  voucherId?: string;
-  createdBy?: string;
-  createdAt?: string;
-}
-
-export interface SalarySlab {
-  id: string;
-  maritalStatus: "single" | "married";
-  thresholdFrom: number;
-  thresholdTo: number;
-  taxRate: number;
-}
-
-export type CustomFieldType = "text" | "number" | "date" | "select" | "checkbox";
 
 export interface CustomFieldDef {
   id: string;
   entity: "party" | "item" | "invoice" | "voucher";
   label: string;
-  fieldType: CustomFieldType;
-  options?: string[]; // for 'select' type
+  fieldType: "text" | "number" | "date" | "select" | "checkbox";
   required: boolean;
   isActive: boolean;
   sortOrder: number;
+  options?: string[];
 }
 
-export interface TdsRate {
-  id?: number;
-  section: string;
-  payeeType: string;
-  rate: number;
-  thresholdAmount: number;
-  effectiveFrom: string;
-  effectiveTo?: string;
+export interface Currency {
+  id: string;
+  code: string;
+  name: string;
+  symbol: string;
+  exchangeRate: number;
+  isBase: boolean;
+  isActive: boolean;
 }
-

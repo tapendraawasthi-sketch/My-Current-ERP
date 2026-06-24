@@ -1,19 +1,20 @@
+// src/pages/AuthGateway.tsx
 import React from "react";
-import { useStore } from "../store";
+import { useStore } from "../store/useStore";
 import SignInForm from "../components/auth/SignInForm";
-import SignUpWizard from "../components/auth/SignUpWizard";
 
-export default function AuthGateway({ children }: { children: React.ReactNode }) {
-  const { currentUser, companySettings } = useStore();
+interface AuthGatewayProps {
+  children: React.ReactNode;
+}
 
-  if (!companySettings.companyNameEn) {
-    return <SignUpWizard />;
-  }
+const AuthGateway: React.FC<AuthGatewayProps> = ({ children }) => {
+  const { isAuthenticated } = useStore();
 
-  if (!currentUser) {
-    // Render the standard SignInForm directly to ensure single login UI across the app
+  if (!isAuthenticated) {
     return <SignInForm />;
   }
 
   return <>{children}</>;
-}
+};
+
+export default AuthGateway;

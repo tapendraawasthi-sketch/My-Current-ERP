@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Keyboard, Save, X, Edit2, Check } from "lucide-react";
 import toast from "react-hot-toast";
 import { useKeyboardShortcuts, Shortcut } from "../hooks/useKeyboardShortcuts";
+import { getDB } from "../lib/db";
 
 export default function ShortcutPanel() {
   const { rawShortcuts, setShortcuts, showHelp, setShowHelp } = useKeyboardShortcuts();
@@ -19,21 +20,13 @@ export default function ShortcutPanel() {
   const handleSave = async (id: number) => {
     try {
       setSaving(true);
-      const res = await fetch(`/api/shortcuts/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key_combo: editCombo })
-      });
-      const json = await res.json();
-      if (json.success) {
-        setShortcuts(prev => prev.map(s => s.id === id ? { ...s, key_combo: editCombo } : s));
-        setEditingId(null);
-        toast.success("Shortcut updated");
-      } else {
-        toast.error(json.error || "Failed to update shortcut");
-      }
+      const db = getDB();
+      await db.shortcuts.update(id, { key_combo: editCombo });
+      setShortcuts(prev => prev.map(s => s.id === id ? { ...s, key_combo: editCombo } : s));
+      setEditingId(null);
+      toast.success("Shortcut updated");
     } catch (err) {
-      toast.error("Network error");
+      toast.error("Failed to update shortcut");
     } finally {
       setSaving(false);
     }
@@ -41,20 +34,12 @@ export default function ShortcutPanel() {
 
   const handleToggleActive = async (s: Shortcut) => {
     try {
-      const res = await fetch(`/api/shortcuts/${s.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: !s.is_active })
-      });
-      const json = await res.json();
-      if (json.success) {
-        setShortcuts(prev => prev.map(item => item.id === s.id ? { ...item, is_active: !s.is_active } : item));
-        toast.success(`Shortcut ${!s.is_active ? 'enabled' : 'disabled'}`);
-      } else {
-        toast.error(json.error || "Failed to toggle shortcut");
-      }
+      const db = getDB();
+      await db.shortcuts.update(s.id, { is_active: !s.is_active });
+      setShortcuts(prev => prev.map(item => item.id === s.id ? { ...item, is_active: !s.is_active } : item));
+      toast.success(`Shortcut ${!s.is_active ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      toast.error("Network error");
+      toast.error("Failed to toggle shortcut");
     }
   };
 

@@ -1,55 +1,38 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+// src/lib/constants.ts
+import { TdsType } from "./types";
 
-import { TdsType, CompanySettings, VoucherType, DateFormat, StockValuationMethod } from "./types";
-
-export const VAT_RATE = 13;
-
-export const TDS_RATES: Record<TdsType, number> = {
-  contractor: 1.5,
-  consultancy: 15,
-  rent: 10,
-  salary: 15,
-  dividend: 5,
-  commission: 10,
-  other: 5,
-  none: 0,
+export const TDS_RATES: Record<string, number> = {
+  [TdsType.NONE]: 0,
+  [TdsType.SERVICE_CONTRACT]: 1.5,
+  [TdsType.HOUSE_RENT]: 10,
+  [TdsType.CONSULTANCY]: 15,
+  [TdsType.RENT]: 10,
+  [TdsType.SALARY]: 15,
+  [TdsType.DIVIDEND]: 5,
+  [TdsType.COMMISSION]: 10,
+  [TdsType.CONTRACTOR]: 1.5,
+  [TdsType.OTHER]: 5,
 };
 
-export const TDS_SECTIONS: Record<TdsType, string> = {
-  contractor: "Section 89",
-  consultancy: "Section 88(1)",
-  rent: "Section 88(2)",
-  salary: "Section 87",
-  dividend: "Section 88(3)",
-  commission: "Section 88(4)",
-  other: "Section 88(5)",
-  none: "N/A",
-};
-
-export const NEPAL_PROVINCES: string[] = [
-  "Koshi Province",
-  "Madhesh Province",
-  "Bagmati Province",
-  "Gandaki Province",
-  "Lumbini Province",
-  "Karnali Province",
-  "Sudurpashchim Province",
+export const NEPAL_PROVINCES = [
+  "Koshi", "Madhesh", "Bagmati", "Gandaki",
+  "Lumbini", "Karnali", "Sudurpashchim",
 ];
 
-export const NEPAL_VAT_THRESHOLD = 5000000; // 50 Lakhs
+export const NEPAL_DISTRICTS: Record<string, string[]> = {
+  Bagmati: ["Kathmandu", "Lalitpur", "Bhaktapur", "Kavrepalanchok", "Sindhupalchok", "Dolakha", "Ramechhap", "Sindhuli", "Makwanpur", "Chitwan", "Nuwakot", "Rasuwa", "Dhading"],
+  Koshi: ["Jhapa", "Ilam", "Taplejung", "Panchthar", "Terhathum", "Dhankuta", "Sankhuwasabha", "Bhojpur", "Solukhumbu", "Okhaldhunga", "Khotang", "Udayapur", "Sunsari", "Morang"],
+  Gandaki: ["Kaski", "Syangja", "Parbat", "Baglung", "Mustang", "Manang", "Lamjung", "Gorkha", "Tanahu", "Nawalpur", "Nawalparasi"],
+  Lumbini: ["Rupandehi", "Kapilvastu", "Arghakhanchi", "Gulmi", "Palpa", "Nawalparasi", "Pyuthan", "Rolpa", "Rukum East", "Dang", "Banke", "Bardiya"],
+  Karnali: ["Surkhet", "Dailekh", "Jajarkot", "Kalikot", "Jumla", "Mugu", "Humla", "Dolpa", "Rukum West"],
+  Sudurpashchim: ["Kailali", "Kanchanpur", "Dadeldhura", "Doti", "Baitadi", "Darchula", "Bajhang", "Bajura", "Achham"],
+  Madhesh: ["Dhanusha", "Mahottari", "Sarlahi", "Rautahat", "Bara", "Parsa", "Siraha", "Saptari"],
+};
 
-export const MAX_LOGIN_ATTEMPTS = 5;
-export const LOCKOUT_MINUTES = 15;
-export const ITEMS_PER_PAGE = 25;
-export const MAX_INVOICE_LINES = 100;
+export const VAT_RATE = 13;
+export const TDS_THRESHOLD = 10000; // TDS applies above this amount
 
-export const BS_YEAR_START = 2000;
-export const BS_YEAR_END = 2090;
-
-export const VOUCHER_PREFIX_MAP: Record<VoucherType, string> = {
+export const VOUCHER_SERIES_PREFIXES: Record<string, string> = {
   journal: "JV",
   payment: "PV",
   receipt: "RV",
@@ -60,85 +43,11 @@ export const VOUCHER_PREFIX_MAP: Record<VoucherType, string> = {
   "purchase-return": "PR",
   "debit-note": "DN",
   "credit-note": "CN",
-  "stock-journal": "SJ",
-  "opening-balance": "OB",
+  "delivery-challan": "DC",
+  "goods-receipt-note": "GRN",
+  "sales-order": "SO",
+  "purchase-order": "PO",
 };
 
-export const PERMISSION_MODULES: string[] = [
-  "accounts.view",
-  "accounts.create",
-  "accounts.edit",
-  "accounts.delete",
-  "voucher.journal.create",
-  "voucher.payment.create",
-  "voucher.receipt.create",
-  "voucher.contra.create",
-  "reports.view",
-  "reports.export",
-  "settings.view",
-  "settings.edit",
-  "users.manage",
-  "backup.create",
-  "backup.restore",
-];
-
-export const COLOR_PALETTE = {
-  primary: "#1e3a5f",
-  secondary: "#2563eb",
-  accent: "#16a34a",
-  danger: "#dc2626",
-  warning: "#d97706",
-  success: "#22c55e",
-  info: "#3b82f6",
-  neutral: "#64748b",
-};
-
-export const NEPALI_MONTHS_BS: string[] = [
-  "बैशाख",
-  "जेठ",
-  "असार",
-  "साउन",
-  "भदौ",
-  "असोज",
-  "कात्तिक",
-  "मंसिर",
-  "पुस",
-  "माघ",
-  "फागुन",
-  "चैत",
-];
-
-export const NEPALI_MONTHS_EN: string[] = [
-  "Baishakh",
-  "Jestha",
-  "Ashadh",
-  "Shrawan",
-  "Bhadra",
-  "Ashwin",
-  "Kartik",
-  "Mangsir",
-  "Poush",
-  "Magh",
-  "Falgun",
-  "Chaitra",
-];
-
-export const DEFAULT_COMPANY_SETTINGS: Partial<CompanySettings> = {
-  name: "Sutra ERP Pvt. Ltd.",
-  nameNepali: "सूत्र इआरपी प्रा. लि.",
-  panNumber: "",
-  address: "",
-  phone: "",
-  defaultCurrency: "NPR",
-  currencySymbol: "Rs.",
-  defaultDateFormat: DateFormat.BS,
-  fiscalYearStartMonth: 4,
-  stockValuationMethod: StockValuationMethod.WEIGHTED_AVERAGE,
-  enableCostCenter: false,
-  enableMultiCurrency: false,
-  enableBillWiseTracking: true,
-  enableBatchTracking: false,
-  printLogoOnInvoice: false,
-  printTermsOnInvoice: true,
-  tdsEnabled: true,
-};
+export const APP_VERSION = "2.0.0";
+export const APP_NAME = "Sutra ERP";

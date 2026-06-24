@@ -1,38 +1,42 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
 export default defineConfig({
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    }
-  },
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    tsconfigPaths(),
+  ],
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   build: {
-    target: "es2020",
-    chunkSizeWarningLimit: 2000,
+    outDir: "dist",
+    sourcemap: false,
     rollupOptions: {
-      input: "./index.html",
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            if (id.includes("react/") || id.includes("react-dom/")) return "vendor";
-            if (id.includes("@radix-ui")) return "ui";
-            if (id.includes("recharts")) return "charts";
-            if (id.includes("jspdf") || id.includes("jspdf-autotable")) return "pdf";
-            if (id.includes("nepali-date-converter")) return "date";
-            if (id.includes("dexie")) return "db";
-          }
+        manualChunks: {
+          react: ["react", "react-dom"],
+          ui: ["lucide-react", "recharts"],
+          db: ["dexie"],
+          pdf: ["jspdf", "jspdf-autotable"],
+          xlsx: ["xlsx"],
         },
       },
     },
+    chunkSizeWarningLimit: 1000,
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "dexie", "zustand"],
+  },
+  server: {
+    port: 3000,
+    host: true,
   },
 });

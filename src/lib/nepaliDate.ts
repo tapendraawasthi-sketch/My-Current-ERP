@@ -1,362 +1,210 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+// src/lib/nepaliDate.ts
 
-import { useState, useMemo } from "react";
-import NepaliDate from "nepali-date-converter";
-import { ReportPeriodPreset } from "./types";
-import { NEPALI_MONTHS_EN, NEPALI_MONTHS_BS } from "./constants";
+// Nepali calendar data: BS year -> [days in each month]
+const BS_CALENDAR: Record<number, number[]> = {
+  2070: [31,32,31,32,31,30,30,30,29,30,29,31],
+  2071: [31,31,32,31,31,31,30,29,30,29,30,30],
+  2072: [31,31,32,32,31,30,30,29,30,29,30,30],
+  2073: [31,32,31,32,31,30,30,30,29,29,30,31],
+  2074: [30,32,31,32,31,30,30,30,29,30,29,31],
+  2075: [31,31,32,31,31,31,30,29,30,29,30,30],
+  2076: [31,31,32,32,31,30,30,29,30,29,30,30],
+  2077: [31,32,31,32,31,30,30,30,29,30,29,31],
+  2078: [31,31,31,32,31,31,29,30,30,29,29,31],
+  2079: [31,31,32,31,31,31,30,29,30,29,30,30],
+  2080: [31,31,32,32,31,30,30,29,30,29,30,30],
+  2081: [31,32,31,32,31,30,30,30,29,30,29,31],
+  2082: [30,32,31,32,31,30,30,30,29,30,29,31],
+  2083: [31,31,32,31,31,31,30,29,30,29,30,30],
+  2084: [31,31,32,32,31,30,30,29,30,29,30,30],
+  2085: [31,32,31,32,31,30,30,30,29,30,29,31],
+  2086: [31,31,31,32,31,31,30,29,30,29,30,30],
+};
 
-const BS_MONTH_DAYS = [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31];
+// AD date when BS 2070/01/01 starts
+const EPOCH_AD = new Date(2013, 3, 14); // April 14, 2013
+
+function getDaysFromEpoch(date: Date): number {
+  const utc1 = Date.UTC(EPOCH_AD.getFullYear(), EPOCH_AD.getMonth(), EPOCH_AD.getDate());
+  const utc2 = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  return Math.floor((utc2 - utc1) / 86400000);
+}
+
+interface BSDate {
+  year: number;
+  month: number;
+  day: number;
+}
+
+export function adToBS(adDate: Date): BSDate {
+  let days = getDaysFromEpoch(adDate);
+  let year = 2070;
+  let month = 1;
+  let day = 1;
+
+  if (days < 0) {
+    // Return a fallback for dates before epoch
+    return { year: 2070, month: 1, day: 1 };
+  }
+
+  // Walk through BS calendar
+  outer: for (const [y, months] of Object.entries(BS_CALENDAR)) {
+    const yr = Number(y);
+    for (let m = 0; m < 12; m++) {
+      const daysInMonth = months[m];
+      if (days < daysInMonth) {
+        year = yr;
+        month = m + 1;
+        day = days + 1;
+        break outer;
+      }
+      days -= daysInMonth;
+    }
+  }
+
+  return { year, month, day };
+}
+
+export function bsToAD(year: number, month: number, day: number): Date {
+  let days = 0;
+  for (const [y, months] of Object.entries(BS_CALENDAR)) {
+    const yr = Number(y);
+    if (yr > year) break;
+    if (yr === year) {
+      for (let m = 0; m < month - 1; m++) {
+        days += months[m];
+      }
+      days += day - 1;
+      break;
+    }
+    for (const d of months) days += d;
+  }
+  const result = new Date(EPOCH_AD);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function ADToBSString(adDateStr: string): string {
+  if (!adDateStr) return "";
+  try {
+    const d = new Date(adDateStr + "T00:00:00");
+    if (isNaN(d.getTime())) return "";
+    const bs = adToBS(d);
+    return `${bs.year}/${String(bs.month).padStart(2, "0")}/${String(bs.day).padStart(2, "0")}`;
+  } catch {
+    return "";
+  }
+}
+
+export function BSToADString(bsDateStr: string): string {
+  if (!bsDateStr) return "";
+  try {
+    const parts = bsDateStr.split(/[-/]/);
+    if (parts.length !== 3) return "";
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return "";
+    const ad = bsToAD(year, month, day);
+    return ad.toISOString().split("T")[0];
+  } catch {
+    return "";
+  }
+}
+
+export function getBSToday(): string {
+  return ADToBSString(new Date().toISOString().split("T")[0]);
+}
+
+export function getBSTodayLong(): string {
+  const bs = getBSToday();
+  if (!bs) return "";
+  const parts = bs.split("/");
+  if (parts.length !== 3) return bs;
+  const months = [
+    "Baisakh","Jestha","Ashadh","Shrawan","Bhadra","Ashwin",
+    "Kartik","Mangsir","Poush","Magh","Falgun","Chaitra",
+  ];
+  const month = parseInt(parts[1], 10) - 1;
+  return `${parseInt(parts[2], 10)} ${months[month] || ""} ${parts[0]}`;
+}
+
+export function formatADToBS(adDateStr: string): string {
+  return ADToBSString(adDateStr);
+}
+
+export function formatBSDate(adDate: Date): string {
+  try {
+    const bs = adToBS(adDate);
+    return `${bs.year}/${String(bs.month).padStart(2, "0")}/${String(bs.day).padStart(2, "0")}`;
+  } catch {
+    return "";
+  }
+}
 
 export interface BSDay {
   day: number;
   month: number;
   year: number;
-  isCurrentMonth: boolean;
-  bsDateStr: string;
   adDateStr: string;
+  bsDateStr: string;
+  isCurrentMonth: boolean;
 }
 
-/**
- * Standard AD date string (YYYY-MM-DD) to BS date string (YYYY/MM/DD)
- */
-export function formatADToBS(dateStr: string): string {
-  if (!dateStr) return "";
-  try {
-    const jsDate = new Date(dateStr);
-    if (isNaN(jsDate.getTime())) return dateStr;
-    const nepDate = new NepaliDate(jsDate);
-    return nepDate.format("YYYY/MM/DD");
-  } catch (err) {
-    console.error("AD to BS error:", err);
-    return dateStr;
-  }
-}
+export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[] {
+  const calData = BS_CALENDAR[bsYear];
+  if (!calData) return [];
 
-/**
- * Converts BS date string (YYYY/MM/DD) to AD date string (YYYY-MM-DD)
- */
-export function formatBSToAD(bsDateStr: string): string {
-  if (!bsDateStr) return "";
-  try {
-    const clean = bsDateStr.replace(/-/g, "/");
-    const [yStr, mStr, dStr] = clean.split("/");
-    const y = parseInt(yStr, 10);
-    const m = parseInt(mStr, 10) - 1; // nepali-date-converter month is 0-indexed
-    const d = parseInt(dStr, 10);
-
-    const nepDate = new NepaliDate(y, m, d);
-    const jsDate = nepDate.toJsDate();
-
-    const adYear = jsDate.getFullYear();
-    const adMonth = String(jsDate.getMonth() + 1).padStart(2, "0");
-    const adDay = String(jsDate.getDate()).padStart(2, "0");
-    return `${adYear}-${adMonth}-${adDay}`;
-  } catch (err) {
-    console.error("BS to AD error:", err);
-    return bsDateStr;
-  }
-}
-
-/**
- * Renders a human-readable BS date label.
- * e.g., "2083/04/15" -> "15 Shrawan 2083" or "१५ साउन २०८३"
- */
-export function formatBSDate(bsDateStr: string, lang: "en" | "np" = "en"): string {
-  if (!bsDateStr) return "";
-  const clean = bsDateStr.replace(/-/g, "/");
-  const parts = clean.split("/");
-  if (parts.length !== 3) return bsDateStr;
-
-  const y = parts[0];
-  const mIndex = parseInt(parts[1], 10) - 1;
-  const d = parts[2];
-
-  if (mIndex < 0 || mIndex >= 12) return bsDateStr;
-
-  if (lang === "np") {
-    const monthNp = NEPALI_MONTHS_BS[mIndex];
-    return `${parseInt(d, 10)} ${monthNp} ${y}`;
-  } else {
-    const monthEn = NEPALI_MONTHS_EN[mIndex];
-    return `${parseInt(d, 10)} ${monthEn} ${y}`;
-  }
-}
-
-/**
- * Increments or decrements days on a Bikram Sambat date string.
- */
-export function addBSDays(bsDateStr: string, days: number): string {
-  if (!bsDateStr) return "";
-  try {
-    const adDateStr = formatBSToAD(bsDateStr);
-    const adDate = new Date(adDateStr);
-    adDate.setDate(adDate.getDate() + days);
-
-    const newAdStr = adDate.toISOString().split("T")[0];
-    return formatADToBS(newAdStr);
-  } catch (err) {
-    return bsDateStr;
-  }
-}
-
-/**
- * Returns the bounds (start, end) of a specific BS month (standard YYYY/MM/DD).
- */
-export function getBSMonthRange(bsYear: number, bsMonth: number): { start: string; end: string } {
-  const mVal = Math.max(1, Math.min(12, bsMonth));
-  const maxDay = BS_MONTH_DAYS[mVal - 1];
-
-  const mStr = String(mVal).padStart(2, "0");
-  return {
-    start: `${bsYear}/${mStr}/01`,
-    end: `${bsYear}/${mStr}/${String(maxDay).padStart(2, "0")}`,
-  };
-}
-
-/**
- * Splits BS months into quarters (Q1: Baisakh-Ashard, Q2: Shrawan-Ashwin, Q3: Kartik-Poush, Q4: Magh-Chaitra).
- */
-export function getQuarterRange(
-  bsYear: number,
-  quarter: 1 | 2 | 3 | 4,
-): { start: string; end: string } {
-  switch (quarter) {
-    case 1: // Baisakh 1 to Ashar end
-      return {
-        start: `${bsYear}/01/01`,
-        end: `${bsYear}/03/${String(BS_MONTH_DAYS[2]).padStart(2, "0")}`,
-      };
-    case 2: // Shrawan 1 to Ashwin end
-      return {
-        start: `${bsYear}/04/01`,
-        end: `${bsYear}/06/${String(BS_MONTH_DAYS[5]).padStart(2, "0")}`,
-      };
-    case 3: // Kartik 1 to Poush end
-      return {
-        start: `${bsYear}/07/01`,
-        end: `${bsYear}/09/${String(BS_MONTH_DAYS[8]).padStart(2, "0")}`,
-      };
-    case 4: // Magh 1 to Chaitra end
-      return {
-        start: `${bsYear}/10/01`,
-        end: `${bsYear}/12/${String(BS_MONTH_DAYS[11]).padStart(2, "0")}`,
-      };
-    default:
-      return { start: `${bsYear}/01/01`, end: `${bsYear}/12/30` };
-  }
-}
-
-/**
- * Generates active fiscal year label, e.g. "2083/84" based on AD date.
- */
-export function fiscalYearFromAD(adDateStr: string): string {
-  if (!adDateStr) return "2083/84";
-  const bsDate = formatADToBS(adDateStr);
-  const parts = bsDate.split("/");
-  if (parts.length !== 3) return "2083/84";
-
-  const y = parseInt(parts[0], 10);
-  const m = parseInt(parts[1], 10);
-
-  // Fiscal year in Nepal starts Shrawan (Month 4)
-  if (m >= 4) {
-    const nextYShort = String(y + 1).slice(-2);
-    return `${y}/${nextYShort}`;
-  } else {
-    const lastYShort = String(y).slice(-2);
-    return `${y - 1}/${lastYShort}`;
-  }
-}
-
-/**
- * Yields human-friendly labels for dates in filters.
- */
-export function getPeriodLabel(
-  startDate: string,
-  endDate: string,
-  preset: ReportPeriodPreset,
-): string {
-  const bsStart = formatADToBS(startDate);
-  const bsEnd = formatADToBS(endDate);
-
-  const startParts = bsStart.split("/");
-  const endParts = bsEnd.split("/");
-
-  if (preset === ReportPeriodPreset.MONTH && startParts.length === 3 && endParts.length === 3) {
-    const mIndex = parseInt(startParts[1], 10) - 1;
-    const year = startParts[0];
-    const monthEn = NEPALI_MONTHS_EN[mIndex];
-    return `${monthEn} ${year}`;
-  }
-
-  switch (preset) {
-    case ReportPeriodPreset.TODAY:
-      return `Today (${formatBSDate(bsStart)})`;
-    case ReportPeriodPreset.WEEK:
-      return `This Week (${formatBSDate(bsStart)} to ${formatBSDate(bsEnd)})`;
-    case ReportPeriodPreset.MONTH:
-      return `This Month (${formatBSDate(bsStart)} to ${formatBSDate(bsEnd)})`;
-    case ReportPeriodPreset.QUARTER:
-      return `Current Quarter (${formatBSDate(bsStart)} to ${formatBSDate(bsEnd)})`;
-    case ReportPeriodPreset.FY:
-      return `Fiscal Year (FY ${fiscalYearFromAD(startDate)})`;
-    case ReportPeriodPreset.CUSTOM:
-    default:
-      return `${formatBSDate(bsStart)} to ${formatBSDate(bsEnd)}`;
-  }
-}
-
-export function validateTransactionDate(dateStr: string): boolean {
-  if (!dateStr) return false;
-  const d = new Date(dateStr);
-  return !isNaN(d.getTime());
-}
-
-export function formatBSEnglish(date: Date): string {
-  const adStr = date.toISOString().split("T")[0];
-  const bsStr = formatADToBS(adStr);
-  return formatBSDate(bsStr, "en");
-}
-
-export function formatBSNepali(date: Date): string {
-  const adStr = date.toISOString().split("T")[0];
-  const bsStr = formatADToBS(adStr);
-  return formatBSDate(bsStr, "np");
-}
-
-/**
- * Generates active BS calendar grid (typically 42 cells)
- */
-export function getBSMonthCalendarGrid(year: number, month: number): BSDay[] {
-  const range = getBSMonthRange(year, month);
-  const startDayAdStr = formatBSToAD(range.start);
-  const startDayJs = new Date(startDayAdStr);
-  const startDayOfWeek = startDayJs.getDay(); // 0 = Sunday, 1 = Monday...
+  const daysInMonth = calData[bsMonth - 1];
+  const firstDayAD = bsToAD(bsYear, bsMonth, 1);
+  const startDow = firstDayAD.getDay(); // 0=Sun
 
   const days: BSDay[] = [];
 
   // Previous month padding
-  let prevYear = year;
-  let prevMonth = month - 1;
-  if (prevMonth === 0) {
-    prevMonth = 12;
-    prevYear -= 1;
-  }
-  const prevMonthRange = getBSMonthRange(prevYear, prevMonth);
-  const prevMonthMaxDay = parseInt(prevMonthRange.end.split("/")[2], 10);
+  let prevYear = bsYear;
+  let prevMonth = bsMonth - 1;
+  if (prevMonth === 0) { prevMonth = 12; prevYear--; }
+  const prevCalData = BS_CALENDAR[prevYear];
+  const daysInPrevMonth = prevCalData ? prevCalData[prevMonth - 1] : 30;
 
-  for (let i = startDayOfWeek - 1; i >= 0; i--) {
-    const dVal = prevMonthMaxDay - i;
-    const dStr = String(dVal).padStart(2, "0");
-    const mStr = String(prevMonth).padStart(2, "0");
-    const bsDateStr = `${prevYear}/${mStr}/${dStr}`;
+  for (let i = startDow - 1; i >= 0; i--) {
+    const d = daysInPrevMonth - i;
+    const adDate = bsToAD(prevYear, prevMonth, d);
     days.push({
-      day: dVal,
-      month: prevMonth,
-      year: prevYear,
+      day: d, month: prevMonth, year: prevYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${prevYear}/${String(prevMonth).padStart(2,"0")}/${String(d).padStart(2,"0")}`,
       isCurrentMonth: false,
-      bsDateStr,
-      adDateStr: formatBSToAD(bsDateStr),
     });
   }
 
-  // Current month days
-  const currentMonthMaxDay = parseInt(range.end.split("/")[2], 10);
-  for (let d = 1; d <= currentMonthMaxDay; d++) {
-    const dStr = String(d).padStart(2, "0");
-    const mStr = String(month).padStart(2, "0");
-    const bsDateStr = `${year}/${mStr}/${dStr}`;
+  // Current month
+  for (let d = 1; d <= daysInMonth; d++) {
+    const adDate = bsToAD(bsYear, bsMonth, d);
     days.push({
-      day: d,
-      month,
-      year: year,
+      day: d, month: bsMonth, year: bsYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${bsYear}/${String(bsMonth).padStart(2,"0")}/${String(d).padStart(2,"0")}`,
       isCurrentMonth: true,
-      bsDateStr,
-      adDateStr: formatBSToAD(bsDateStr),
     });
   }
 
-  // Next month padding to fill standard 42-cell grid
-  let nextYear = year;
-  let nextMonth = month + 1;
-  if (nextMonth === 13) {
-    nextMonth = 1;
-    nextYear += 1;
-  }
-  const cellsLeft = 42 - days.length;
-  for (let d = 1; d <= cellsLeft; d++) {
-    const dStr = String(d).padStart(2, "0");
-    const mStr = String(nextMonth).padStart(2, "0");
-    const bsDateStr = `${nextYear}/${mStr}/${dStr}`;
+  // Next month padding to fill 6 rows (42 cells)
+  const remaining = 42 - days.length;
+  let nextYear = bsYear;
+  let nextMonth = bsMonth + 1;
+  if (nextMonth > 12) { nextMonth = 1; nextYear++; }
+
+  for (let d = 1; d <= remaining; d++) {
+    const adDate = bsToAD(nextYear, nextMonth, d);
     days.push({
-      day: d,
-      month: nextMonth,
-      year: nextYear,
+      day: d, month: nextMonth, year: nextYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${nextYear}/${String(nextMonth).padStart(2,"0")}/${String(d).padStart(2,"0")}`,
       isCurrentMonth: false,
-      bsDateStr,
-      adDateStr: formatBSToAD(bsDateStr),
     });
   }
 
   return days;
-}
-
-/**
- * State/Binding value helper hook for BS Web Date Pickers
- */
-export function useBSDatePickerValue(initialAdDateStr: string = "") {
-  const [adDate, setAdDate] = useState<string>(
-    initialAdDateStr || new Date().toISOString().split("T")[0],
-  );
-
-  const bsDate = useMemo(() => formatADToBS(adDate), [adDate]);
-
-  const setBSDate = (newBSDateStr: string) => {
-    const newAD = formatBSToAD(newBSDateStr);
-    setAdDate(newAD);
-  };
-
-  return {
-    adDate,
-    bsDate,
-    setAdDate,
-    setBSDate,
-  };
-}
-
-export function getBSToday(): string {
-  const adString = new Date().toISOString().split("T")[0];
-  return formatADToBS(adString);
-}
-
-export function getBSTodayLong(): string {
-  const bsToday = getBSToday();
-  return formatBSDate(bsToday, "en");
-}
-
-export function convertADtoBS(adDate: string): string {
-  return formatADToBS(adDate);
-}
-
-export function convertBStoAD(bsDate: string): string {
-  return formatBSToAD(bsDate);
-}
-
-export function ADToBSString(adDate: string): string {
-  return formatADToBS(adDate);
-}
-
-export function BSToADString(bsDate: string): string {
-  return formatBSToAD(bsDate);
-}
-
-export function formatDateNepal(date: Date): string {
-  return `${String(date.getDate()).padStart(2,"0")}-${String(date.getMonth()+1).padStart(2,"0")}-${date.getFullYear()}`;
-}
-
-export function getDaysInNepaliMonth(year: number, month: number): number {
-  return 30; // Stub implementation
 }

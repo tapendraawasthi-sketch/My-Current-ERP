@@ -1,117 +1,59 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+// src/lib/payrollUtils.ts
 
-import { Employee } from "./types";
-
-/**
- * Computes Nepal specific payroll based on SSF and Income Tax rules.
- */
-export function computeNepalPayroll(
-  employee: Employee,
-  year: number,
-  month: number,
-  paidDays: number,
-  totalWorkingDays: number
-): {
-  grossSalary: number;
+export interface PayrollLine {
+  employeeId: string;
+  employeeName: string;
   basicSalary: number;
-  allowances: Record<string, number>;
-  ssfEmployee: number;
-  ssfEmployer: number;
-  incomeTax: number;
+  allowances: number;
+  grossSalary: number;
+  pfEmployee: number;
+  pfEmployer: number;
+  ssf: number;
+  tds: number;
+  otherDeductions: number;
   netSalary: number;
-  breakdown: Record<string, number>;
-} {
-  const prorateFactor = paidDays / totalWorkingDays;
-  
-  const basicSalary = employee.basicSalary * prorateFactor;
-  
-  const houseRent = (employee.allowances.houseRent || (employee.basicSalary * 0.5)) * prorateFactor;
-  const transport = (employee.allowances.transport || 0) * prorateFactor;
-  const medical = (employee.allowances.medical || 0) * prorateFactor;
-  const dashain = (employee.allowances.dashain || 0);
+}
 
-  const grossSalary = basicSalary + houseRent + transport + medical + dashain;
+export function computePayroll(
+  employees: any[],
+  month: number,
+  year: number
+): PayrollLine[] {
+  return employees.map((emp) => {
+    const basic = emp.basicSalary || 0;
+    const allowances = (emp.allowances || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+    const gross = basic + allowances;
 
-  let ssfEmployee = 0;
-  let ssfEmployer = 0;
+    // Nepal PF: 10% employee, 10% employer on basic
+    const pfEmployee = Math.round(basic * 0.1 * 100) / 100;
+    const pfEmployer = Math.round(basic * 0.1 * 100) / 100;
 
-  if (employee.ssf) {
-    ssfEmployee = grossSalary * 0.11;
-    ssfEmployer = grossSalary * 0.20;
-  }
+    // SSF: 11% employee, 20% employer (simplified)
+    const ssf = Math.round(basic * 0.31 * 100) / 100;
 
-  const annualGross = grossSalary * 12;
-  const annualSSFEmployee = ssfEmployee * 12;
-  
-  const lifeInsuranceLimit = 25000;
-  const healthInsuranceLimit = 20000;
-  
-  const lifeInsuranceDed = Math.min(employee.taxDeclarations.lifeInsurance || 0, lifeInsuranceLimit);
-  const healthInsuranceDed = Math.min(employee.taxDeclarations.healthInsurance || 0, healthInsuranceLimit);
-
-  const annualTaxableIncome = Math.max(0, annualGross - annualSSFEmployee - lifeInsuranceDed - healthInsuranceDed);
-  
-  let remainingTaxable = annualTaxableIncome;
-  let annualTax = 0;
-
-  const slab1Limit = 600000;
-  if (remainingTaxable > 0) {
-    const amount = Math.min(remainingTaxable, slab1Limit);
-    if (!employee.ssf) {
-      annualTax += amount * 0.01;
+    // TDS: simplified slab (15% above 600k annual)
+    const annualGross = gross * 12;
+    let annualTax = 0;
+    if (annualGross > 600000) {
+      annualTax = (annualGross - 600000) * 0.15;
     }
-    remainingTaxable -= amount;
-  }
+    const tds = Math.round((annualTax / 12) * 100) / 100;
 
-  const slab2Limit = 200000;
-  if (remainingTaxable > 0) {
-    const amount = Math.min(remainingTaxable, slab2Limit);
-    annualTax += amount * 0.10;
-    remainingTaxable -= amount;
-  }
+    const otherDeductions = emp.otherDeductions || 0;
+    const net = Math.round((gross - pfEmployee - tds - otherDeductions) * 100) / 100;
 
-  const slab3Limit = 250000;
-  if (remainingTaxable > 0) {
-    const amount = Math.min(remainingTaxable, slab3Limit);
-    annualTax += amount * 0.20;
-    remainingTaxable -= amount;
-  }
-
-  const slab4Limit = 950000;
-  if (remainingTaxable > 0) {
-    const amount = Math.min(remainingTaxable, slab4Limit);
-    annualTax += amount * 0.30;
-    remainingTaxable -= amount;
-  }
-
-  if (remainingTaxable > 0) {
-    annualTax += remainingTaxable * 0.36;
-  }
-
-  const incomeTax = annualTax / 12;
-
-  const netSalary = grossSalary - ssfEmployee - incomeTax;
-
-  return {
-    grossSalary,
-    basicSalary,
-    allowances: {
-      houseRent,
-      transport,
-      medical,
-      dashain
-    },
-    ssfEmployee,
-    ssfEmployer,
-    incomeTax,
-    netSalary,
-    breakdown: {
-      annualGross,
-      annualTaxableIncome,
-      annualTax
-    }
-  };
+    return {
+      employeeId: emp.id,
+      employeeName: emp.name,
+      basicSalary: basic,
+      allowances,
+      grossSalary: gross,
+      pfEmployee,
+      pfEmployer,
+      ssf,
+      tds,
+      otherDeductions,
+      netSalary: net,
+    };
+  });
 }

@@ -277,17 +277,22 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       return;
     }
     let isActive = true;
-    generateSerialNumber(meta.vt, undefined, currentFiscalYear?.fiscalYearBS || "", true)
-      .then((num) => {
+    const getPreview = async () => {
+      try {
+        const num = await generateSerialNumber(
+          meta.vt,
+          undefined,
+          currentFiscalYear?.fiscalYearBS || "",
+          true
+        );
         if (isActive) setInvoiceNoPreview(num);
-      })
-      .catch(() => {
+      } catch {
         if (isActive) setInvoiceNoPreview("INV-XXXX");
-      });
-    return () => {
-      isActive = false;
+      }
     };
-  }, [existing, meta.vt, currentFiscalYear]);
+    getPreview();
+    return () => { isActive = false; };
+  }, [existing?.invoiceNo, meta.vt, currentFiscalYear?.fiscalYearBS]);
 
   // ---- line helpers ----
   const updateLine = (id: string, updates: Partial<InvoiceLineState>) => {

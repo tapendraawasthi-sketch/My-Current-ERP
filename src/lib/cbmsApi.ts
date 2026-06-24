@@ -1,56 +1,66 @@
-// @ts-nocheck
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+// src/lib/cbmsApi.ts
 
-import { CompanySettings, Invoice, VoucherType } from "./types";
+export interface CBMSResponse {
+  success: boolean;
+  irn?: string;
+  qrCode?: string;
+  error?: string;
+}
 
 export async function submitToCBMS(
-  invoice: Invoice,
-  company: CompanySettings,
-): Promise<{ success: boolean; irn: string | null; error: string | null }> {
+  invoice: any,
+  companySettings: any
+): Promise<CBMSResponse> {
   try {
-    const baseUrl = "https://cbms.ird.gov.np/api/billing/";
-    
-    // Authorization: Basic base64(username:password)
-    const username = company.cbmsUsername || "";
-    const password = company.cbmsPassword || "";
-    const authHeader = "Basic " + btoa(`${username}:${password}`);
+    const apiUrl = companySettings?.cbmsApiUrl || "https://cbms.ird.gov.np/api";
+    const apiKey = companySettings?.cbmsApiKey || "";
+
+    if (!apiKey) {
+      return { success: false, error: "CBMS API key not configured" };
+    }
 
     const payload = {
-      BuyerPanNo: invoice.partyPan || "",
-      BuyerName: invoice.partyName || "Cash",
-      Amount: invoice.grandTotal || 0,
-      TaxableAmount: invoice.taxableAmount || 0,
-      TaxAmount: invoice.vatAmount || 0,
-      Discount: invoice.totalDiscount || 0,
-      InvoiceDate: invoice.date.replace(/-/g, "/"),
-      InvoiceNo: invoice.invoiceNo,
-      IsRealTime: true,
-      Miti: invoice.dateNepali,
-      TransactionType: invoice.type === VoucherType.SALES_INVOICE ? "D" : "C",
+      invoiceNo: invoice.invoiceNo,
+      date: invoice.date,
+      panNo: companySettings?.panNumber,
+      buyerPan: invoice.partyPan,
+      buyerName: invoice.partyName,
+      taxableAmount: invoice.taxableAmount,
+      vatAmount: invoice.vatAmount,
+      grandTotal: invoice.grandTotal,
+      items: (invoice.lines || []).map((l: any) => ({
+        name: l.itemName,
+        qty: l.qty,
+        rate: l.rate,
+        amount: l.totalAmount || l.netAmount,
+      })),
     };
 
-    const res = await fetch(baseUrl, {
+    const response = await fetch(`${apiUrl}/invoice/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authHeader,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000),
     });
 
-    if (res.status === 200) {
-      const data = await res.json();
-      const irn = data.Irn || data.irn || data.InvoiceReferenceNo || null;
-      return { success: true, irn, error: null };
-    } else {
-      const text = await res.text();
-      return { success: false, irn: null, error: `IRD Error (${res.status}): ${text}` };
+    if (!response.ok) {
+      const err = await response.text();
+      return { success: false, error: err || "CBMS submission failed" };
     }
-  } catch (error: any) {
-    return { success: false, irn: null, error: error?.message || "Network error while syncing with CBMS" };
+
+    const data = await response.json();
+    return {
+      success: true,
+      irn: data.irn || data.invoiceReferenceNumber,
+      qrCode: data.qrCode,
+    };
+  } catch (err: any) {
+    if (err.name === "TimeoutError") {
+      return { success: false, error: "CBMS request timed out" };
+    }
+    return { success: false, error: err?.message || "CBMS network error" };
   }
 }
-

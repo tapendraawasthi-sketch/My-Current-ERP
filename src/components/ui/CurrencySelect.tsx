@@ -33,13 +33,16 @@ const CurrencySelect: React.FC<CurrencySelectProps> = ({
 
   // Default to base currency if no value
   React.useEffect(() => {
-    if (!value && currencies.length > 0) {
-      const base = getBaseCurrency();
-      if (base) {
-        onChange(base.code);
+    if (!value && currencies && currencies.length > 0) {
+      try {
+        const base = getBaseCurrency?.();
+        if (base) onChange(base.code);
+        else onChange(currencies[0].code);
+      } catch {
+        if (currencies[0]) onChange(currencies[0].code);
       }
     }
-  }, [value, currencies, getBaseCurrency, onChange]);
+  }, [value, currencies]);
 
   return (
     <Select

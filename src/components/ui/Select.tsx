@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-interface SelectOption {
+export interface SelectOption {
   value: string;
   label: string;
 }
@@ -185,3 +185,4 @@ const Select: React.FC<SelectProps> = ({
 };
 
 export default Select;
+export type { SelectOption };
