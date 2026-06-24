@@ -237,7 +237,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           <div className="mx-auto h-6 w-6 rounded-md bg-[#1557b0] flex items-center justify-center text-white font-bold text-sm">S</div>
         )}
         {!collapsed && (
-          <button type="button" onClick={() => setCollapsed(true)} className="p-1 rounded text-slate-500 hover:text-white hover:bg-[#1e3060] transition-colors" title="Collapse">
+          <button type="button" onClick={() => setCollapsed(true)} className="p-1 rounded text-slate-500 hover:text-white hover:bg-[#357ABD] transition-colors" title="Collapse">
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
         )}
@@ -245,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
       {/* Fiscal Year tag */}
       {!collapsed && currentFiscalYear && (
-        <div className="mx-2.5 mt-2 mb-1 px-2 py-1 rounded" style={{ background: "#0f1b35" }}>
+        <div className="mx-2.5 mt-2 mb-1 px-2 py-1 rounded" style={{ background: "#357ABD" }}>
           <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Active FY</div>
           <div className="text-[10px] font-semibold text-slate-300 mt-0.5">{currentFiscalYear.name.includes("BS") ? currentFiscalYear.name : `${currentFiscalYear.name} BS`}</div>
         </div>
@@ -260,7 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
               {!collapsed ? (
                 <button type="button" onClick={() => handleGroupToggle(group.title)}
                   className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors text-left"
-                  style={{ color: "#475c8a" }}>
+                  style={{ color: "#E6F2FF" }}>
                   <span>{group.title}</span>
                   {isExpanded ? <ChevronDown className="h-3 w-3 opacity-60" /> : <ChevronRight className="h-3 w-3 opacity-60" />}
                 </button>
@@ -275,8 +275,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                     const btn = (
                       <button type="button" onClick={() => handleNavigation(item)} title={collapsed ? item.label : undefined}
                         className={`w-full flex items-center gap-2.5 text-[12px] font-medium transition-all relative ${collapsed ? "justify-center py-2 px-0" : "px-3 py-[6px]"} ${active ? "text-white" : "hover:text-slate-100 text-slate-400"}`}
-                        style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #3b82f6", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
-                        <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#60a5fa]" : "text-slate-500"}`} />
+                        style={active ? { background: "var(--sidebar-accent)", borderLeft: "3px solid #F08A2C", paddingLeft: collapsed ? undefined : "9px" } : { borderLeft: "3px solid transparent" }}>
+                        <Icon className={`shrink-0 ${collapsed ? "h-4 w-4" : "h-[14px] w-[14px]"} ${active ? "text-[#F08A2C]" : "text-slate-500"}`} />
                         {!collapsed && (
                           <div className="flex flex-col flex-1 leading-tight text-left min-w-0">
                             <span className="truncate">{item.label}</span>
@@ -312,7 +312,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       {/* Footer */}
       <div className="shrink-0" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
         {!collapsed && currentUser && (
-          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#0f1b35" }}>
+          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#357ABD" }}>
             <div className="h-7 w-7 rounded-full bg-[#1557b0] flex items-center justify-center text-[11px] font-bold text-white flex-none border border-blue-500">
               {currentUser.name?.charAt(0).toUpperCase() || "U"}
             </div>
@@ -324,22 +324,22 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         )}
         <div className="flex flex-col gap-0 py-1 px-1">
           <button type="button" onClick={() => setCurrentPage("settings")}
-            className={`w-full flex items-center gap-2.5 text-[11px] text-slate-400 hover:bg-[#1e3060] hover:text-slate-100 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
+            className={`w-full flex items-center gap-2.5 text-[11px] text-slate-400 hover:bg-[#357ABD] hover:text-slate-100 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
             <Sliders className="h-3.5 w-3.5 shrink-0" />
             {!collapsed && <span className="font-medium">Settings</span>}
           </button>
           <button type="button" onClick={logout}
-            className={`w-full flex items-center gap-2.5 text-[11px] text-red-400 hover:bg-[#1e3060] hover:text-red-200 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
+            className={`w-full flex items-center gap-2.5 text-[11px] text-red-400 hover:bg-[#357ABD] hover:text-red-200 rounded transition-colors ${collapsed ? "justify-center p-2" : "px-2.5 py-1.5"}`}>
             <LogOut className="h-3.5 w-3.5 shrink-0" />
             {!collapsed && <span className="font-medium">Logout</span>}
           </button>
         </div>
         {collapsed && (
-          <button type="button" onClick={() => setCollapsed(false)} className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-[#1e3060] rounded transition-colors" title="Expand sidebar">
+          <button type="button" onClick={() => setCollapsed(false)} className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-[#357ABD] rounded transition-colors" title="Expand sidebar">
             <ChevronRight className="h-4 w-4" />
           </button>
         )}
-        {!collapsed && <div className="text-[9px] text-center py-1.5 font-medium" style={{ color: "#2d4070" }}>Sutra ERP v2.0 · Nepal Edition</div>}
+        {!collapsed && <div className="text-[9px] text-center py-1.5 font-medium" style={{ color: "#E6F2FF" }}>Sutra ERP v2.0 · Nepal Edition</div>}
       </div>
     </aside>
   );

@@ -11,10 +11,10 @@ export const TitleBar: React.FC = () => {
   return (
     <div
       className="flex items-center justify-between px-2 shrink-0"
-      style={{ height: 22, background: "#1f2a44", color: "#ffffff", fontSize: 11 }}
+      style={{ height: 22, background: "#0d1b2a", color: "#fffffffff", fontSize: 11 }}
     >
       <div className="flex items-center gap-1">
-        <div style={{ width: 18, height: 18, background: "#1557b0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>S</div>
+        <div style={{ width: 18, height: 18, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>S</div>
         <span>Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})</span>
       </div>
       <div className="flex items-center gap-2" style={{ fontSize: 13 }}>
@@ -45,25 +45,25 @@ export const StatusBar: React.FC = () => {
   return (
     <div
       className="flex items-center shrink-0"
-      style={{ height: 28, background: "#e0e0e0", borderTop: "1px solid #a0a0a0", fontSize: 11 }}
+      style={{ height: 28, background: "#0d1b2a", borderTop: "1px solid #1b3a5c", fontSize: 11, color: "#fffffffff" }}
     >
-      <div className="flex items-center px-2" style={{ borderRight: "1px solid #a0a0a0", height: "100%", fontWeight: "bold", fontSize: 15, color: "#1557b0" }}>Sutra</div>
-      <div className="flex items-center px-2" style={{ borderRight: "1px solid #a0a0a0", height: "100%", flexDirection: "column", justifyContent: "center" }}>
+      <div className="flex items-center px-2" style={{ borderRight: "1px solid #1b3a5c", height: "100%", fontWeight: "bold", fontSize: 15, color: "#60a5fa" }}>Sutra</div>
+      <div className="flex items-center px-2" style={{ borderRight: "1px solid #1b3a5c", height: "100%", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ fontSize: 11 }}>{company}</div>
-        <div style={{ fontSize: 10, color: "#555" }}>F.Y.: {fy}</div>
+        <div style={{ fontSize: 10, color: "#94a3b8" }}>F.Y.: {fy}</div>
       </div>
-      <div className="flex items-center px-2" style={{ borderRight: "1px solid #a0a0a0", height: "100%", flexDirection: "column", justifyContent: "center" }}>
+      <div className="flex items-center px-2" style={{ borderRight: "1px solid #1b3a5c", height: "100%", flexDirection: "column", justifyContent: "center" }}>
         <div>VAT No.: {vatNo}</div>
-        <div style={{ color: "#555" }}>User : {user}</div>
+        <div style={{ color: "#94a3b8" }}>User : {user}</div>
       </div>
-      <div className="flex items-center px-2" style={{ borderRight: "1px solid #a0a0a0", height: "100%", flexDirection: "column", justifyContent: "center" }}>
+      <div className="flex items-center px-2" style={{ borderRight: "1px solid #1b3a5c", height: "100%", flexDirection: "column", justifyContent: "center" }}>
         <div>State : Nepal</div>
-        <div style={{ color: "#555" }}>Currency : रू</div>
+        <div style={{ color: "#94a3b8" }}>Currency : रू</div>
       </div>
-      <div className="ml-auto flex items-center px-3" style={{ gap: 6, borderLeft: "1px solid #a0a0a0", height: "100%" }}>
-        <div style={{ background: "#cc0000", color: "#fff", padding: "1px 5px", fontSize: 10, fontWeight: "bold" }}>ACCOUNTING SOFTWARE</div>
+      <div className="ml-auto flex items-center px-3" style={{ gap: 6, borderLeft: "1px solid #1b3a5c", height: "100%" }}>
+        <div style={{ background: "#f08a2c", color: "#fffffffff", padding: "1px 5px", fontSize: 10, fontWeight: "bold" }}>ACCOUNTING SOFTWARE</div>
         <span style={{ fontWeight: "bold" }}>{weekday}</span>
-        <div style={{ flexDirection: "column" }}><div>BS Date: {bsDate}</div><div style={{ color: "#555" }}>AD Date: {dateStr}</div></div>
+        <div style={{ flexDirection: "column" }}><div>BS Date: {bsDate}</div><div style={{ color: "#94a3b8" }}>AD Date: {dateStr}</div></div>
       </div>
     </div>
   );
@@ -73,7 +73,7 @@ export const StatusBar: React.FC = () => {
 export const CommandHintBar: React.FC<{ hints?: string[] }> = ({ hints = ["Esc - Quit", "F2 - Save", "F5 - List", "F3 - Add New"] }) => (
   <div
     className="flex items-center gap-4 px-3 shrink-0"
-    style={{ height: 20, background: "#d8d8d8", borderTop: "1px solid #bbb", color: "#444", fontSize: 11 }}
+    style={{ height: 20, background: "#162a46", borderTop: "1px solid #1b3a5c", color: "#94a3b8", fontSize: 11 }}
   >
     {hints.map(h => <span key={h}>[ {h} ]</span>)}
   </div>
@@ -109,9 +109,9 @@ export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> =
   return (
     <div
       className="flex flex-col shrink-0 overflow-y-auto"
-      style={{ width: 148, background: "#f0f0f0", borderLeft: "1px solid #a0a0a0", fontSize: 11 }}
+      style={{ width: 148, background: "#0d1b2a", borderLeft: "1px solid #1b3a5c", fontSize: 11 }}
     >
-      <div style={{ background: "#c8d4e0", textAlign: "center", padding: "3px 0", fontWeight: "bold", borderBottom: "1px solid #a0a0a0" }}>
+      <div style={{ background: "#162a46", textAlign: "center", padding: "3px 0", fontWeight: "bold", borderBottom: "1px solid #1b3a5c", color: "#fffffffff" }}>
         Shortcut Keys
       </div>
       {fKeys.map(({ key, label }) => (
@@ -119,33 +119,33 @@ export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> =
           key={key}
           onClick={() => onShortcut?.(key)}
           className="flex items-center"
-          style={{ height: 22, borderBottom: "1px solid #d0d0d0", cursor: "pointer", background: "#e8e8e8" }}
-          onMouseEnter={e => (e.currentTarget.style.background = "#d0e0f5")}
-          onMouseLeave={e => (e.currentTarget.style.background = "#e8e8e8")}
+          style={{ height: 22, borderBottom: "1px solid #1b3a5c", cursor: "pointer", background: "#0d1b2a" }}
+          onMouseEnter={e => (e.currentTarget.style.background = "#1b3a5c")}
+          onMouseLeave={e => (e.currentTarget.style.background = "#0d1b2a")}
         >
-          <span style={{ width: 32, color: "#8b1a1a", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
-          <span style={{ color: "#000" }}>{label}</span>
+          <span style={{ width: 32, color: "#f08a2c", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
+          <span style={{ color: "#fffffffff" }}>{label}</span>
         </div>
       ))}
-      <div style={{ height: 6, borderBottom: "1px solid #a0a0a0" }} />
+      <div style={{ height: 6, borderBottom: "1px solid #1b3a5c" }} />
       {quickKeys.map(({ key, label }) => (
         <div
           key={key}
           onClick={() => onShortcut?.(key)}
           className="flex items-center"
-          style={{ height: 22, borderBottom: "1px solid #d0d0d0", cursor: "pointer", background: "#e8e8e8" }}
-          onMouseEnter={e => (e.currentTarget.style.background = "#d0e0f5")}
-          onMouseLeave={e => (e.currentTarget.style.background = "#e8e8e8")}
+          style={{ height: 22, borderBottom: "1px solid #1b3a5c", cursor: "pointer", background: "#0d1b2a" }}
+          onMouseEnter={e => (e.currentTarget.style.background = "#1b3a5c")}
+          onMouseLeave={e => (e.currentTarget.style.background = "#0d1b2a")}
         >
-          <span style={{ width: 32, color: "#8b1a1a", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
-          <span style={{ color: "#000" }}>{label}</span>
+          <span style={{ width: 32, color: "#f08a2c", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
+          <span style={{ color: "#fffffffff" }}>{label}</span>
         </div>
       ))}
-      <div style={{ height: 6, borderBottom: "1px solid #a0a0a0" }} />
-      <div style={{ background: "#c8d4e0", textAlign: "center", padding: "2px 0", fontSize: 10 }}>Training Videos</div>
-      <div style={{ color: "#1557b0", textDecoration: "underline", textAlign: "center", padding: "2px 0", cursor: "pointer", fontSize: 11 }}>IRD Portal</div>
-      <div style={{ color: "#1557b0", textDecoration: "underline", textAlign: "center", padding: "2px 0", cursor: "pointer", fontSize: 11 }}>e-TDS Portal</div>
-      <div style={{ textAlign: "center", padding: "2px 0", fontSize: 11 }}>F10 Calculator</div>
+      <div style={{ height: 6, borderBottom: "1px solid #1b3a5c" }} />
+      <div style={{ background: "#162a46", textAlign: "center", padding: "2px 0", fontSize: 10, color: "#fffffffff" }}>Training Videos</div>
+      <div style={{ color: "#60a5fa", textDecoration: "underline", textAlign: "center", padding: "2px 0", cursor: "pointer", fontSize: 11 }}>IRD Portal</div>
+      <div style={{ color: "#60a5fa", textDecoration: "underline", textAlign: "center", padding: "2px 0", cursor: "pointer", fontSize: 11 }}>e-TDS Portal</div>
+      <div style={{ textAlign: "center", padding: "2px 0", fontSize: 11, color: "#fffffffff" }}>F10 Calculator</div>
     </div>
   );
 };
@@ -161,8 +161,8 @@ export const PillTitle: React.FC<{ title: string }> = ({ title }) => (
 export const FormPanel: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
   <div
     style={{
-      background: "#e8e4f0",
-      border: "1px solid #a89cc4",
+      background: "#0d1b2a",
+      border: "1px solid #1b3a5c",
       padding: "10px 14px",
       ...style,
     }}
@@ -173,8 +173,8 @@ export const FormPanel: React.FC<{ children: React.ReactNode; style?: React.CSSP
  
 // ── GROUP BOX ────────────────────────────────────────────────────
 export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-  <div className="busy-groupbox">
-    <span className="busy-groupbox-label">{label}</span>
+  <div className="busy-groupbox" style={{ border: "1px solid #1b3a5c" }}>
+    <span className="busy-groupbox-label" style={{ background: "#0d1b2a", color: "#f08a2c" }}>{label}</span>
     {children}
   </div>
 );
@@ -182,8 +182,8 @@ export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = 
 // ── FIELD ROW ────────────────────────────────────────────────────
 export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div className="busy-field-row">
-    <span className="busy-field-label">{label}</span>
-    <span className="busy-field-value">{children}</span>
+    <span className="busy-field-label" style={{ color: "#94a3b8" }}>{label}</span>
+    <span className="busy-field-value" style={{ color: "#fffffffff" }}>{children}</span>
   </div>
 );
  
@@ -191,7 +191,7 @@ export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = 
 export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
   <input
     {...props}
-    style={{ border: "1px solid #808080", background: "#fff", color: "#000", height: 20, padding: "0 3px", width: props.width || "100%", ...props.style }}
+    style={{ border: "1px solid #1b3a5c", background: "#162a46", color: "#fffffffff", height: 20, padding: "0 3px", width: props.width || "100%", ...props.style }}
   />
 );
  
@@ -199,7 +199,7 @@ export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = 
 export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { label: string; mnemonic?: string }> = ({ label, mnemonic, ...rest }) => {
   const idx = mnemonic ? label.toLowerCase().indexOf(mnemonic.toLowerCase()) : -1;
   return (
-    <button className="busy-flat-btn" {...rest}>
+    <button className="busy-flat-btn" style={{ background: "#1b3a5c", border: "2px outset #2a4a6b", color: "#fffffffff" }} onMouseEnter={e => (e.currentTarget.style.background = "#2a4a6b")} onMouseLeave={e => (e.currentTarget.style.background = "#1b3a5c")} {...rest}>
       {idx >= 0 ? (
         <>
           {label.slice(0, idx)}

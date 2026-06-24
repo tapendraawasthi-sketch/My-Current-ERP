@@ -93,9 +93,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#16213e" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0d1b2a" }}>
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="h-16 w-16 bg-[#1557b0] rounded-2xl flex items-center justify-center text-white font-bold text-3xl border-2 border-blue-400 shadow-2xl">S</div>
+          <div className="h-16 w-16 bg-[#2563eb] rounded-2xl flex items-center justify-center text-white font-bold text-3xl border-2 border-blue-400 shadow-2xl">S</div>
           <div>
             <div className="text-white font-bold text-xl tracking-widest uppercase mb-1">Sutra ERP</div>
             <div className="text-blue-300 text-xs font-medium">Initializing database...</div>
@@ -111,19 +111,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Visual gateway for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex bg-[#f0f4ff]">
+      <div className="min-h-screen flex bg-[#0d1b2a]">
         {/* LEFT PANEL */}
-        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#16213e] flex-col justify-between p-10 shrink-0">
+        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#0d1b2a] flex-col justify-between p-10 shrink-0">
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <div className="h-10 w-10 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">S</div>
+              <div className="h-10 w-10 bg-[#2563eb] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">S</div>
               <div>
                 <div className="text-white font-bold text-xl tracking-tight">Sutra ERP</div>
                 <div className="text-blue-400 text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
               </div>
             </div>
             <h2 className="text-white text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
-            <p className="text-slate-400 text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
+            <p className="text-[#E6F2FF] text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
             <div className="space-y-4">
               {[
                 { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
@@ -132,22 +132,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click" },
               ].map(f => (
                 <div key={f.title} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#1557b0] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
+                  <span className="h-5 w-5 rounded-full bg-[#2563eb] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
                   <div>
                     <div className="text-white text-sm font-semibold leading-none mb-1">{f.title}</div>
-                    <div className="text-slate-400 text-xs">{f.desc}</div>
+                    <div className="text-[#E6F2FF] text-xs">{f.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="text-slate-600 text-[10px] font-medium">© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
+          <div className="text-[#E6F2FF] text-[10px] font-medium">© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
         </div>
         {/* RIGHT PANEL */}
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-sm">
             <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-              <div className="h-9 w-9 bg-[#1557b0] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
+              <div className="h-9 w-9 bg-[#2563eb] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
               <div className="text-gray-800 font-bold text-xl">Sutra ERP</div>
             </div>
             <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
@@ -186,7 +186,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-9 bg-[#1557b0] hover:bg-[#0f4a96] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                    className="w-full h-9 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
                   >
                     {loading && <Spinner size="sm" className="text-white" />}
                     <span>Authorize Entry</span>
@@ -194,7 +194,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
               </form>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+            <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[#E6F2FF]">
               <span>All activities are logged for compliance.</span>
             </div>
           </div>
@@ -210,9 +210,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         {/* Mobile top bar */}
-        <header className="h-12 bg-[#1e2433] flex items-center justify-between px-4 shrink-0">
+        <header className="h-12 bg-[#0d1b2a] flex items-center justify-between px-4 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 bg-[#1557b0] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            <div className="h-7 w-7 bg-[#2563eb] rounded-lg flex items-center justify-center text-white font-bold text-sm">
               S
             </div>
             <span className="font-semibold text-white text-sm">
@@ -228,7 +228,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <main className="flex-1 overflow-y-auto p-4 pb-20">{children}</main>
 
         {/* Bottom nav */}
-        <nav className="fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-200 flex items-center justify-around z-40 shadow-lg">
+        <nav className="fixed bottom-0 left-0 right-0 h-14 bg-[#0d1b2a] border-t border-[#1b3a5c] flex items-center justify-around z-40">
           {[
             { page: "dashboard", icon: LayoutDashboard, label: "Home" },
             { page: "billing", icon: FileText, label: "Invoices" },
@@ -239,7 +239,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`flex flex-col items-center gap-0.5 ${currentPage === page ? "text-[#1557b0]" : "text-gray-400"}`}
+              className={`flex flex-col items-center gap-0.5 ${currentPage === page ? "text-[#2563eb]" : "text-[#94a3b8]"}`}
             >
               <Icon className="h-5 w-5" /> <span className="text-[10px]">{label}</span>
             </button>
@@ -254,10 +254,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               onClick={() => setDrawerOpen(false)}
             />
             <div className="relative w-72 h-full overflow-y-auto shadow-xl">
-              <div className="p-4 border-b border-[#2d3748] flex items-center justify-between text-slate-300 bg-[#1e2433]">
+              <div className="p-4 border-b border-[#1b3a5c] flex items-center justify-between text-slate-300 bg-[#0d1b2a]">
                 <span className="font-semibold text-slate-200">Menu</span>
                 <button onClick={() => setDrawerOpen(false)}>
-                  <X className="h-5 w-5 text-slate-400" />
+                  <X className="h-5 w-5 text-[#E6F2FF]" />
                 </button>
               </div>
               <Sidebar collapsed={false} setCollapsed={() => {}} />
@@ -269,7 +269,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#dde8f5" }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#1a3a5c" }}>
       {/* 1. Title Bar */}
       <TitleBar />
  
@@ -281,9 +281,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Central Workspace */}
         <main
           className="flex-1 overflow-y-auto p-3 relative"
-          style={{ background: "#dde8f5" }}
+          style={{ background: "#1a3a5c" }}
         >
-          <div style={{ fontSize: 11, color: "#555", textAlign: "center", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, color: "#ffffff", textAlign: "center", marginBottom: 6 }}>
             {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
           </div>
           {children}
