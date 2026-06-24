@@ -1,139 +1,126 @@
-// @ts-nocheck
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { KeyboardEvent, RefObject } from "react";
+import React from "react";
 
 interface InputProps {
   label?: string;
-  error?: string;
-  hint?: string;
+  value?: string | number;
+  onChange?: (val: string) => void;
+  placeholder?: string;
+  type?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
   prefix?: string;
   suffix?: string;
-  type?: string;
-  value: string | number;
-  onChange: (val: string) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  autoFocus?: boolean;
-  className?: string;
-  inputClassName?: string;
-  inputRef?: RefObject<HTMLInputElement>;
+  hint?: string;
+  align?: "left" | "center" | "right";
   min?: number;
   max?: number;
   step?: number;
   maxLength?: number;
-  name?: string;
-  id?: string;
-  tabIndex?: number;
-  readOnly?: boolean;
-  align?: "left" | "right" | "center";
+  autoFocus?: boolean;
+  inputClassName?: string;
+  className?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   label,
-  error,
-  hint,
-  prefix,
-  suffix,
-  type = "text",
   value,
   onChange,
-  onBlur,
-  onKeyDown,
   placeholder,
-  disabled = false,
-  required = false,
-  autoFocus = false,
-  className = "",
-  inputClassName = "",
-  inputRef,
+  type = "text",
+  required,
+  disabled,
+  readOnly,
+  prefix,
+  suffix,
+  hint,
+  align = "left",
   min,
   max,
   step,
   maxLength,
-  name,
-  id,
-  tabIndex,
-  readOnly = false,
-  align = "left",
+  autoFocus,
+  inputClassName = "",
+  className = "",
 }) => {
-  const alignClass =
-    align === "right" || type === "number"
-      ? "text-right"
-      : align === "center"
-        ? "text-center"
-        : "text-left";
+  const inputStyle: React.CSSProperties = {
+    background: "#EBF5E2",
+    color: "#000000",
+    border: "1px solid #000000",
+    height: 32,
+    padding: "0 8px",
+    fontSize: 12,
+    borderRadius: 3,
+    width: "100%",
+    textAlign: align,
+    outline: "none",
+  };
 
   return (
-    <div className={`flex flex-col gap-1 w-full ${className}`}>
+    <div className={`flex flex-col gap-0.5 ${className}`}>
       {label && (
         <label
-          htmlFor={id}
-          className="text-[11px] font-semibold text-[#000000] flex items-center gap-0.5"
+          style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}
         >
           {label}
-          {required && <span className="text-red-500 font-bold">*</span>}
+          {required && <span style={{ color: "#000000", marginLeft: 2 }}>*</span>}
         </label>
       )}
-
-      <div className="relative flex items-center w-full rounded-md shadow-sm">
+      <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         {prefix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-[#000000] bg-[#EBF5E2] border border-r-0 border-[#9DC07A] rounded-l-md whitespace-nowrap">
+          <span
+            style={{
+              position: "absolute",
+              left: 8,
+              fontSize: 11,
+              color: "#000000",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
             {prefix}
           </span>
         )}
-
         <input
-          id={id}
-          name={name}
-          ref={inputRef}
           type={type}
-          value={value ?? ""}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onBlur}
-          onKeyDown={(e) => onKeyDown && onKeyDown(e as any as KeyboardEvent)}
+          value={value}
+          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
           placeholder={placeholder}
-          disabled={disabled}
           required={required}
-          autoFocus={autoFocus}
+          disabled={disabled}
+          readOnly={readOnly}
           min={min}
           max={max}
           step={step}
           maxLength={maxLength}
-          tabIndex={tabIndex}
-          readOnly={readOnly}
-          className={`
-            block w-full h-8 px-2.5 text-[12px] bg-white border text-[#000000] transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
-            ${prefix ? "rounded-r-md" : suffix ? "rounded-l-md" : "rounded-md"}
-            ${prefix && suffix ? "rounded-none" : ""}
-            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
-            ${alignClass}
-            ${inputClassName}
-          `}
+          autoFocus={autoFocus}
+          style={{
+            ...inputStyle,
+            paddingLeft: prefix ? 28 : 8,
+            paddingRight: suffix ? 28 : 8,
+          }}
+          className={inputClassName}
         />
-
         {suffix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-[#000000] bg-[#EBF5E2] border border-l-0 border-[#9DC07A] rounded-r-md whitespace-nowrap">
+          <span
+            style={{
+              position: "absolute",
+              right: 8,
+              fontSize: 11,
+              color: "#000000",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
             {suffix}
           </span>
         )}
       </div>
-
-      {error ? (
-        <span className="text-xs text-red-600 font-medium">{error}</span>
-      ) : hint ? (
-        <span className="text-xs text-[#000000]">{hint}</span>
-      ) : null}
+      {hint && (
+        <span style={{ fontSize: 10, color: "#000000", opacity: 0.6 }}>{hint}</span>
+      )}
     </div>
   );
 };
 
 export default Input;
-

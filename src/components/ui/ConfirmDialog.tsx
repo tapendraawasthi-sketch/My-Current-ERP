@@ -1,119 +1,94 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { useState } from "react";
-import { AlertTriangle } from "lucide-react";
-import Modal from "./Modal";
-import Button from "./Button";
-import Input from "./Input";
+import React from "react";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (reason?: string) => void;
-  title: string;
-  message: string;
+  onConfirm: () => void;
+  title?: string;
+  message?: string;
   confirmText?: string;
   cancelText?: string;
   danger?: boolean;
-  requireReason?: boolean;
-  reasonPlaceholder?: string;
-  confirmValidationText?: string;
-  reasonLabel?: string;
-  type?: "danger" | "warning" | "info";
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title,
-  message,
+  title = "Confirm",
+  message = "Are you sure?",
   confirmText = "Confirm",
   cancelText = "Cancel",
-  danger = false,
-  requireReason = false,
-  reasonPlaceholder = "Please enter a reason...",
-  confirmValidationText,
-  reasonLabel,
-  type = danger ? "danger" : "warning",
+  danger,
 }) => {
-  const [reason, setReason] = useState("");
-  const [error, setError] = useState("");
-
-  const isConfirmDisabled = confirmValidationText
-    ? reason !== confirmValidationText
-    : requireReason && !reason.trim();
-
-  const handleConfirm = () => {
-    if (confirmValidationText && reason !== confirmValidationText) {
-      setError(`Please type "${confirmValidationText}" to confirm.`);
-      return;
-    }
-    if (requireReason && !reason.trim()) {
-      setError("A reason details statement is required to proceed.");
-      return;
-    }
-    setError("");
-    onConfirm(requireReason || confirmValidationText ? reason : undefined);
-    setReason("");
-    onClose();
-  };
-
-  const handleClose = () => {
-    setReason("");
-    setError("");
-    onClose();
-  };
+  if (!isOpen) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      title={title}
-      size="sm"
-      footer={
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleClose}>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 99999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#EBF5E2",
+          border: "1px solid #000000",
+          borderRadius: 4,
+          padding: 24,
+          maxWidth: 400,
+          width: "100%",
+        }}
+      >
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#000000", marginBottom: 8 }}>
+          {title}
+        </h3>
+        <p style={{ fontSize: 12, color: "#000000", marginBottom: 20, lineHeight: 1.5 }}>
+          {message}
+        </p>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <button
+            onClick={onClose}
+            style={{
+              height: 32,
+              padding: "0 16px",
+              fontSize: 12,
+              background: "#EBF5E2",
+              border: "1px solid #000000",
+              borderRadius: 4,
+              cursor: "pointer",
+              color: "#000000",
+            }}
+          >
             {cancelText}
-          </Button>
-          <Button
-            variant={type === "danger" ? "danger" : type === "warning" ? "warning" : "primary"}
-            size="sm"
-            onClick={handleConfirm}
-            disabled={isConfirmDisabled}
+          </button>
+          <button
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+            style={{
+              height: 32,
+              padding: "0 16px",
+              fontSize: 12,
+              fontWeight: 700,
+              background: "#C9DEB5",
+              border: "1px solid #000000",
+              borderRadius: 4,
+              cursor: "pointer",
+              color: "#000000",
+            }}
           >
             {confirmText}
-          </Button>
-        </div>
-      }
-    >
-      <div className="flex items-start gap-4 p-5">
-        <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${type === "danger" ? "bg-red-100" : "bg-amber-100"}`}>
-          <AlertTriangle className={`h-5 w-5 ${type === "danger" ? "text-red-600" : "text-amber-600"}`} />
-        </div>
-        <div className="flex-1 flex flex-col gap-4">
-          <p className="text-[12px] text-[#000000] leading-relaxed">{message}</p>
-
-          {(requireReason || confirmValidationText) && (
-            <Input
-              label={reasonLabel || "Cancellation/Modification Reason"}
-              placeholder={reasonPlaceholder}
-              value={reason}
-              onChange={(val) => {
-                setReason(val);
-                if (val.trim()) setError("");
-              }}
-              error={error}
-              required
-              autoFocus
-            />
-          )}
+          </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

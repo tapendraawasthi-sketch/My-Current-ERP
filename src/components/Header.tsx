@@ -1,36 +1,15 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect, useRef } from "react";
 import { useStore } from "../store/useStore";
-import { getBSToday, getBSTodayLong } from "../lib/nepaliDate";
+import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
 import Breadcrumb from "./Breadcrumb";
-import NotificationPanel from "./ui/NotificationPanel";
 import { GlobalSearch } from "./GlobalSearch";
-import { useTheme } from "../context/ThemeContext";
-import {
-  Bell,
-  User,
-  LogOut,
-  Key,
-  Settings,
-  Heart,
-  ShieldAlert,
-  HelpCircle,
-  Search,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Bell, User, LogOut, Settings, HelpCircle, Search, Moon, Sun } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTheme } from "../context/ThemeContext";
 
 const Header: React.FC = () => {
   const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } = useStore();
   const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
-  const toggleDark = toggleTheme;
-
   const [dateStrBS, setDateStrBS] = useState("");
   const [dateStrAD, setDateStrAD] = useState("");
   const [alertsOpen, setAlertsOpen] = useState(false);
@@ -41,52 +20,25 @@ const Header: React.FC = () => {
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Current BS Date
-    try {
-      setDateStrBS(getBSTodayLong());
-    } catch (e) {
-      setDateStrBS(getBSToday());
-    }
-
-    // Current AD Date
+    try { setDateStrBS(getBSTodayLong()); } catch { setDateStrBS(getBSToday()); }
     const today = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    setDateStrAD(today.toLocaleDateString("en-US", options));
+    setDateStrAD(today.toLocaleDateString("en-US", { weekday: "short", year: "numeric", month: "short", day: "numeric" }));
 
-    // Outside clicks handlers
     const handleOutsideClick = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (alertsRef.current && !alertsRef.current.contains(target)) {
-        setAlertsOpen(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(target)) {
-        setProfileOpen(false);
-      }
+      if (alertsRef.current && !alertsRef.current.contains(target)) setAlertsOpen(false);
+      if (profileRef.current && !profileRef.current.contains(target)) setProfileOpen(false);
     };
-
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   useEffect(() => {
     const handleSearchShortcut = (e: KeyboardEvent) => {
-      if (
-        e.key === "/" &&
-        document.activeElement?.tagName !== "INPUT" &&
-        document.activeElement?.tagName !== "TEXTAREA"
-      ) {
-        e.preventDefault();
-        setSearchOpen(true);
+      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault(); setSearchOpen(true);
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        setSearchOpen(true);
-      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); setSearchOpen(true); }
     };
     window.addEventListener("keydown", handleSearchShortcut);
     return () => window.removeEventListener("keydown", handleSearchShortcut);
@@ -94,158 +46,211 @@ const Header: React.FC = () => {
 
   const unreadAlerts = notifications.filter((n) => !n.read).length;
 
+  const hdrStyle: React.CSSProperties = {
+    height: 40,
+    background: "#D4EABD",
+    borderBottom: "1px solid #000000",
+    padding: "0 12px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "sticky",
+    top: 0,
+    zIndex: 40,
+    userSelect: "none",
+    color: "#000000",
+    flexShrink: 0,
+  };
+
+  const iconBtn: React.CSSProperties = {
+    background: "transparent",
+    border: "1px solid transparent",
+    borderRadius: 4,
+    padding: 6,
+    cursor: "pointer",
+    color: "#000000",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
+  const dropdownStyle: React.CSSProperties = {
+    position: "absolute",
+    right: 0,
+    top: "100%",
+    marginTop: 4,
+    background: "#EBF5E2",
+    border: "1px solid #000000",
+    borderRadius: 4,
+    minWidth: 200,
+    zIndex: 1000,
+    boxShadow: "2px 2px 8px rgba(0,0,0,0.2)",
+  };
+
+  const dropdownItem: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "8px 14px",
+    fontSize: 12,
+    cursor: "pointer",
+    color: "#000000",
+    background: "transparent",
+    border: "none",
+    width: "100%",
+    textAlign: "left",
+  };
+
   return (
-    <header className="h-10 bg-[#E4F1D9] border-b border-[#9DC07A] px-3 flex items-center justify-between sticky top-0 z-40 select-none relative" style={{ borderColor: "var(--border)" }}>
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#3D6B25]" />
-      {/* 1. Left Section: Breadcrumb Path Tracking */}
-      <div className="flex items-center gap-1.5 font-medium shrink-0">
+    <header style={hdrStyle}>
+      {/* Left: Breadcrumb */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
         <Breadcrumb />
       </div>
 
-      {/* Global Search trigger */}
-      <div className="hidden md:block mx-4 flex-1 max-w-xs relative">
+      {/* Center: Search */}
+      <div style={{ flex: 1, maxWidth: 280, margin: "0 16px" }} className="hidden md:block">
         <button
-          type="button"
           onClick={() => setSearchOpen(true)}
-          className="w-full flex items-center justify-between h-8 px-2.5 text-[12px] border rounded-md hover:bg-[#D4EABD] transition-colors"
-          style={{ background: "#EBF5E2", color: "#000000", borderColor: "#9DC07A" }}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 28,
+            padding: "0 10px",
+            fontSize: 12,
+            background: "#EBF5E2",
+            border: "1px solid #000000",
+            borderRadius: 3,
+            cursor: "pointer",
+            color: "#000000",
+          }}
         >
-          <span className="flex items-center gap-1.5">
-            <Search className="h-3.5 w-3.5" style={{ color: "#000000" }} />
-            <span style={{ color: "#000000" }}>Search anything...</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <Search style={{ width: 13, height: 13, color: "#000000" }} />
+            <span>Search anything...</span>
           </span>
-          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-[#9DC07A] rounded font-mono text-[#000000]">
-            /
-          </kbd>
+          <kbd style={{ fontSize: 9, background: "#D4EABD", border: "1px solid #000000", borderRadius: 2, padding: "1px 4px", color: "#000000" }}>/</kbd>
         </button>
         <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
 
-      {/* 2. Middle Section: Company Header Entity Info */}
-      <div className="hidden lg:flex flex-col items-center gap-0 absolute left-1/2 -translate-x-1/2">
-        <span className="text-[12px] font-bold truncate max-w-xs leading-none" style={{ color: "#000000" }}>
-          {companySettings?.logo ? <img src={companySettings.logo} className="h-6 w-auto" alt={companySettings.name} /> : (companySettings?.name || "Sutra ERP")}
-        </span>
-        <span className="text-[9px] font-semibold uppercase tracking-widest leading-none mt-0.5" style={{ color: "#000000" }}>{currentFiscalYear?.name || "FY 2083/84"}</span>
+      {/* Company name center */}
+      <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none" }} className="hidden lg:block">
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
+          {companySettings?.name || "Sutra ERP"}
+        </div>
+        <div style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#000000" }}>
+          {currentFiscalYear?.name || "FY 2083/84"}
+        </div>
       </div>
 
-      {/* 3. Right Section: Live Calendars, Notifiers, User Session Dropdown */}
-      <div className="flex items-center gap-4">
-        {/* Date visual display widget */}
-        <div className="hidden md:flex flex-col text-right pr-4 border-r border-[#9DC07A] gap-0.5">
-          <span
-            className="text-[11px] font-semibold leading-none"
-            title="Bikram Sambat Nepali calendar"
-            style={{ color: "#000000" }}
-          >
-            {dateStrBS} (B.S.)
-          </span>
-          <span className="text-[10px] leading-none" style={{ color: "#000000" }}>{dateStrAD} (A.D.)</span>
+      {/* Right: dates + icons */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        {/* Dates */}
+        <div style={{ textAlign: "right", paddingRight: 12, borderRight: "1px solid #000000", flexDirection: "column" }} className="hidden md:flex">
+          <span style={{ fontSize: 11, fontWeight: 600, color: "#000000", display: "block" }}>{dateStrBS} (B.S.)</span>
+          <span style={{ fontSize: 10, color: "#000000", display: "block" }}>{dateStrAD} (A.D.)</span>
         </div>
 
-        {/* Help docs and Notification alerts bell */}
-        <div className="flex items-center gap-1.5" ref={alertsRef}>
-          <a
-            href="https://docs.sutraerp.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors"
-            style={{ color: "#000000" }}
-            title="Help Documentation"
-          >
-            <HelpCircle className="h-4 w-4" />
-          </a>
+        {/* Help */}
+        <a href="https://docs.sutraerp.com" target="_blank" rel="noopener noreferrer" style={iconBtn} title="Help">
+          <HelpCircle style={{ width: 16, height: 16, color: "#000000" }} />
+        </a>
 
-          <button type="button" onClick={toggleDark} title="Toggle dark mode" className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors" style={{ color: "#000000" }}>
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        {/* Dark mode toggle */}
+        <button onClick={toggleTheme} style={iconBtn} title="Toggle theme">
+          {theme === "dark"
+            ? <Sun style={{ width: 16, height: 16, color: "#000000" }} />
+            : <Moon style={{ width: 16, height: 16, color: "#000000" }} />}
+        </button>
+
+        {/* Notifications */}
+        <div ref={alertsRef} style={{ position: "relative" }}>
+          <button onClick={() => setAlertsOpen(!alertsOpen)} style={{ ...iconBtn, position: "relative" }} title="Notifications">
+            <Bell style={{ width: 16, height: 16, color: "#000000" }} />
+            {unreadAlerts > 0 && (
+              <span style={{
+                position: "absolute",
+                top: 3, right: 3,
+                width: 14, height: 14,
+                background: "#C9DEB5",
+                border: "1px solid #000000",
+                borderRadius: "50%",
+                fontSize: 8,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#000000",
+              }}>
+                {unreadAlerts}
+              </span>
+            )}
           </button>
-
-          <div className="relative shrink-0">
-            <button
-              type="button"
-              onClick={() => setAlertsOpen(!alertsOpen)}
-              className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors relative"
-              style={{ color: "#000000" }}
-              title="Notification Center"
-            >
-              <Bell className="h-4 w-4" />
-              {unreadAlerts > 0 && (
-                <span className="absolute top-1 right-1 h-3.5 min-w-[14px] text-[8px] font-bold text-[#000000] bg-red-600 rounded-full flex items-center justify-center px-0.5 border border-white">
-                  {unreadAlerts}
-                </span>
-              )}
-            </button>
-
-            {alertsOpen && <NotificationPanel onClose={() => setAlertsOpen(false)} />}
-          </div>
+          {alertsOpen && (
+            <div style={{ ...dropdownStyle, width: 280 }}>
+              <div style={{ padding: "8px 14px", borderBottom: "1px solid #000000", fontSize: 12, fontWeight: 700, color: "#000000" }}>
+                Notifications
+              </div>
+              <div style={{ padding: "8px 14px", fontSize: 12, color: "#000000" }}>
+                {notifications.length === 0 ? "No notifications." : `${unreadAlerts} unread`}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Logged in User visual profile controls */}
-        <div className="relative shrink-0" ref={profileRef}>
+        {/* Profile */}
+        <div ref={profileRef} style={{ position: "relative" }}>
           <button
-            type="button"
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 group p-1 rounded-lg hover:bg-[#EBF5E2]/70 transition-colors focus:outline-none"
-            title="User Settings Context"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "2px 4px",
+            }}
           >
-            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-inner" style={{ background: "#C9DEB5", border: "1px solid #9DC07A", color: "#000000" }}>
+            <div style={{
+              width: 30, height: 30,
+              background: "#C9DEB5",
+              border: "1px solid #000000",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 700,
+              fontSize: 12,
+              color: "#000000",
+            }}>
               {currentUser?.name?.charAt(0).toUpperCase() || "U"}
             </div>
-            <div className="hidden sm:flex flex-col text-left mr-1 shrink-0">
-              <span className="text-xs font-bold leading-none" style={{ color: "#000000" }}>
-                {currentUser?.name}
-              </span>
-              <span className="text-[10px] font-bold tracking-wider uppercase leading-none mt-1" style={{ color: "#000000" }}>
+            <div className="hidden sm:flex flex-col text-left" style={{ marginRight: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#000000", lineHeight: 1 }}>{currentUser?.name}</span>
+              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#000000", marginTop: 2 }}>
                 {currentUser?.role || "User"}
               </span>
             </div>
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 mt-1.5 w-52 rounded-lg shadow-lg py-1 z-50 border" style={{ background: "#EBF5E2", borderColor: "#9DC07A" }}>
-              <div className="px-4 py-2.5 border-b" style={{ background: "#D4EABD", borderColor: "#9DC07A" }}>
-                <p className="text-xs font-bold truncate" style={{ color: "#000000" }}>{currentUser?.name}</p>
-                <p className="text-[10px] mt-0.5 truncate" style={{ color: "#000000" }}>
-                  {currentUser?.email || "No email associated"}
-                </p>
+            <div style={dropdownStyle}>
+              <div style={{ padding: "8px 14px", background: "#C9DEB5", borderBottom: "1px solid #000000" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>{currentUser?.name}</div>
+                <div style={{ fontSize: 10, color: "#000000", marginTop: 2 }}>{currentUser?.email || "No email"}</div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentPage("settings");
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs hover:bg-[#D4EABD] flex items-center gap-2" style={{ color: "#000000" }}
-              >
-                <Settings className="h-4 w-4 text-[#000000]" />
-                <span>Control Panel Settings</span>
+              <button style={dropdownItem} onClick={() => { setCurrentPage("settings"); setProfileOpen(false); }}>
+                <Settings style={{ width: 14, height: 14, color: "#000000" }} />
+                <span>Settings</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentPage("audit-logs");
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs hover:bg-[#D4EABD] flex items-center gap-2" style={{ color: "#000000" }}
-              >
-                <ShieldAlert className="h-4 w-4 text-[#000000]" />
-                <span>Security logs audit</span>
-              </button>
-
-              <div className="border-t border-[#9DC07A] my-1" />
-
-              <button
-                type="button"
-                onClick={() => {
-                  logout();
-                  setProfileOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-xs text-red-650 hover:bg-red-50 hover:text-red-700 flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4 text-red-500" />
-                <span>Logout Session</span>
+              <div style={{ height: 1, background: "#000000", margin: "2px 0" }} />
+              <button style={{ ...dropdownItem }} onClick={() => { logout(); setProfileOpen(false); }}>
+                <LogOut style={{ width: 14, height: 14, color: "#000000" }} />
+                <span>Logout</span>
               </button>
             </div>
           )}

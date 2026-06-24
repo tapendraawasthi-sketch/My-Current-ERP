@@ -1,63 +1,124 @@
 import React from "react";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface PaginationProps {
   page: number;
   totalPages: number;
   totalRecords: number;
   pageSize: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange?: (size: number) => void;
-  pageSizeOptions?: number[];
+  onPageChange: (p: number) => void;
+  onPageSizeChange?: (s: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ page, totalPages, totalRecords, pageSize, onPageChange, onPageSizeChange, pageSizeOptions = [25, 50, 100, 200] }) => {
-  const from = totalRecords === 0 ? 0 : (page - 1) * pageSize + 1;
-  const to = Math.min(page * pageSize, totalRecords);
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  totalPages,
+  totalRecords,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
+}) => {
+  const start = Math.min((page - 1) * pageSize + 1, totalRecords);
+  const end = Math.min(page * pageSize, totalRecords);
+
+  const btnStyle = (active?: boolean): React.CSSProperties => ({
+    height: 28,
+    minWidth: 28,
+    padding: "0 8px",
+    fontSize: 11,
+    fontWeight: active ? 700 : 500,
+    background: active ? "#C9DEB5" : "#EBF5E2",
+    border: "1px solid #000000",
+    borderRadius: 3,
+    cursor: "pointer",
+    color: "#000000",
+  });
+
   return (
-    <div className="flex items-center justify-between px-3 py-2 border-t bg-white" style={{ borderColor: "var(--border)" }}>
-      <div className="flex items-center gap-2 text-[11px] text-[#000000]">
-        <span>Show</span>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "8px 12px",
+        background: "#D4EABD",
+        borderTop: "1px solid #000000",
+        fontSize: 11,
+        color: "#000000",
+        flexWrap: "wrap",
+        gap: 8,
+      }}
+    >
+      <span style={{ color: "#000000" }}>
+        {totalRecords > 0 ? `${start}–${end} of ${totalRecords}` : "0 records"}
+      </span>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         {onPageSizeChange && (
-          <select value={pageSize} onChange={e => onPageSizeChange(Number(e.target.value))} className="h-6 px-1 border rounded text-[11px] font-semibold text-[#000000]" style={{ borderColor: "var(--border)" }}>
-            {pageSizeOptions.map(s => <option key={s} value={s}>{s}</option>)}
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            style={{
+              height: 28,
+              padding: "0 6px",
+              fontSize: 11,
+              border: "1px solid #000000",
+              background: "#EBF5E2",
+              color: "#000000",
+              borderRadius: 3,
+            }}
+          >
+            {[25, 50, 100, 200].map((s) => (
+              <option key={s} value={s}>
+                {s}/page
+              </option>
+            ))}
           </select>
         )}
-        <span>rows · {from}–{to} of {totalRecords}</span>
-      </div>
-      <div className="flex items-center gap-1">
-        {[
-          { onClick: () => onPageChange(1), disabled: page === 1, Icon: ChevronsLeft },
-          { onClick: () => onPageChange(page - 1), disabled: page === 1, Icon: ChevronLeft },
-        ].map(({ onClick, disabled, Icon }, i) => (
-          <button key={i} type="button" onClick={onClick} disabled={disabled} className="h-7 w-7 flex items-center justify-center rounded border text-[#000000] hover:bg-[#EBF5E2] disabled:opacity-40 disabled:cursor-not-allowed transition-colors" style={{ borderColor: "var(--border)" }}>
-            <Icon className="h-3.5 w-3.5" />
-          </button>
-        ))}
+
+        <button onClick={() => onPageChange(1)} disabled={page === 1} style={btnStyle()}>
+          «
+        </button>
+        <button
+          onClick={() => onPageChange(page - 1)}
+          disabled={page === 1}
+          style={btnStyle()}
+        >
+          ‹
+        </button>
+
         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-          let p = i + 1;
-          if (totalPages > 5) {
-            if (page <= 3) p = i + 1;
-            else if (page >= totalPages - 2) p = totalPages - 4 + i;
-            else p = page - 2 + i;
-          }
+          let p = page - 2 + i;
+          if (p < 1) p = i + 1;
+          if (p > totalPages) p = totalPages - (4 - i);
+          if (p < 1 || p > totalPages) return null;
           return (
-            <button key={p} type="button" onClick={() => onPageChange(p)}
-              className={`h-7 min-w-[28px] px-2 text-[11px] font-semibold rounded border transition-colors ${p === page ? "bg-[#3D6B25] text-white border-[#1557b0]" : "text-[#000000] hover:bg-[#EBF5E2] border-[#9DC07A]"}`}>
+            <button
+              key={p}
+              onClick={() => onPageChange(p)}
+              style={btnStyle(p === page)}
+            >
               {p}
             </button>
           );
         })}
-        {[
-          { onClick: () => onPageChange(page + 1), disabled: page === totalPages, Icon: ChevronRight },
-          { onClick: () => onPageChange(totalPages), disabled: page === totalPages, Icon: ChevronsRight },
-        ].map(({ onClick, disabled, Icon }, i) => (
-          <button key={i} type="button" onClick={onClick} disabled={disabled} className="h-7 w-7 flex items-center justify-center rounded border text-[#000000] hover:bg-[#EBF5E2] disabled:opacity-40 disabled:cursor-not-allowed transition-colors" style={{ borderColor: "var(--border)" }}>
-            <Icon className="h-3.5 w-3.5" />
-          </button>
-        ))}
+
+        <button
+          onClick={() => onPageChange(page + 1)}
+          disabled={page === totalPages}
+          style={btnStyle()}
+        >
+          ›
+        </button>
+        <button
+          onClick={() => onPageChange(totalPages)}
+          disabled={page === totalPages}
+          style={btnStyle()}
+        >
+          »
+        </button>
       </div>
     </div>
   );
 };
+
 export default Pagination;

@@ -1,77 +1,67 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { ReactNode } from "react";
+import React from "react";
 
 interface CardProps {
+  children: React.ReactNode;
   title?: string;
   subtitle?: string;
-  action?: ReactNode;
-  children: ReactNode;
-  padding?: "none" | "sm" | "md" | "lg";
-  shadow?: boolean;
+  action?: React.ReactNode;
   border?: boolean;
+  padding?: "none" | "sm" | "md" | "lg";
   className?: string;
-  accent?: string;
 }
 
-export const CardSection: React.FC<{ title?: string; children: React.ReactNode }> = ({
-  title,
-  children,
-}) => (
-  <div className="border-t border-[#9DC07A] px-4 py-3">
-    {title && (
-      <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-2">
-        {title}
-      </div>
-    )}
-    {children}
-  </div>
-);
+const PADDING: Record<string, string> = {
+  none: "",
+  sm: "p-2",
+  md: "p-4",
+  lg: "p-6",
+};
 
 const Card: React.FC<CardProps> = ({
+  children,
   title,
   subtitle,
   action,
-  children,
+  border,
   padding = "md",
-  shadow = true,
-  border = true,
   className = "",
-  accent,
 }) => {
-  const paddingClasses = {
-    none: "p-0",
-    sm: "p-3",
-    md: "p-5",
-    lg: "p-8",
-  };
-
   return (
     <div
-      className={`
-        bg-white rounded-lg overflow-hidden relative transition-shadow
-        ${border ? "border border-[#9DC07A]" : ""}
-        ${shadow ? "shadow-sm" : ""}
-        ${className}
-      `}
+      style={{
+        background: "#EBF5E2",
+        border: border !== false ? "1px solid #000000" : "none",
+        borderRadius: 4,
+        overflow: "hidden",
+        color: "#000000",
+      }}
+      className={className}
     >
-      {accent && <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: accent }} />}
       {(title || subtitle || action) && (
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#9DC07A]">
-          <div className="flex flex-col gap-0.5">
-            {title && <h4 className="text-[12px] font-bold leading-none text-[#000000]">{title}</h4>}
-            {subtitle && <p className="text-[10px] mt-0.5 text-[#000000]">{subtitle}</p>}
+        <div
+          style={{
+            padding: "10px 16px",
+            background: "#D4EABD",
+            borderBottom: "1px solid #000000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            {title && (
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{title}</span>
+            )}
+            {subtitle && (
+              <p style={{ fontSize: 11, color: "#000000", marginTop: 2 }}>{subtitle}</p>
+            )}
           </div>
-          {action && <div className="flex items-center">{action}</div>}
+          {action && <div>{action}</div>}
         </div>
       )}
-
-      <div className={paddingClasses[padding]}>{children}</div>
+      <div className={PADDING[padding]}>{children}</div>
     </div>
   );
 };
 
-export default React.memo(Card);
+export default Card;

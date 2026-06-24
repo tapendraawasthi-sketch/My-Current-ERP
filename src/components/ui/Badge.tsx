@@ -1,49 +1,31 @@
-import React, { ReactNode } from "react";
+import React from "react";
 
 interface BadgeProps {
-  variant?: "default" | "success" | "warning" | "danger" | "info" | "primary";
+  children: React.ReactNode;
+  variant?: "default" | "success" | "warning" | "danger" | "info" | "primary" | undefined;
   size?: "sm" | "md";
-  children: ReactNode;
   dot?: boolean;
+  className?: string;
 }
 
-const Badge: React.FC<BadgeProps> = ({
-  variant = "default",
-  size = "md",
-  children,
-  dot = false,
-}) => {
-  const baseStyles = "inline-flex items-center font-semibold uppercase rounded shrink-0";
-
-  const variants = {
-    default: "bg-[#EBF5E2] text-[#000000]",
-    success: "bg-green-100 text-green-700",
-    warning: "bg-amber-100 text-amber-700",
-    danger: "bg-red-100 text-red-700",
-    info: "bg-[#D4EABD] text-[#000000]",
-    primary: "bg-[#dbeafe] text-[#1557b0]",
-  };
-
-  const dotColors = {
-    default: "bg-[#EBF5E2]",
-    success: "bg-green-500",
-    warning: "bg-amber-500",
-    danger: "bg-red-500",
-    info: "bg-[#D4EABD]",
-    primary: "bg-[#3D6B25]",
-  };
-
-  const sizes = {
-    sm: "px-2 py-0.5 text-[10px]",
-    md: "px-2 py-0.5 text-[10px]",
-  };
+const Badge: React.FC<BadgeProps> = ({ children, variant, size = "md", dot, className = "" }) => {
+  const base =
+    "inline-flex items-center gap-1 font-bold uppercase tracking-wide border border-black rounded " +
+    (size === "sm" ? "px-1.5 py-0.5 text-[9px]" : "px-2 py-0.5 text-[10px]") +
+    " bg-[#D4EABD] text-black";
 
   return (
-    <span className={`${baseStyles} ${variants[variant]} ${sizes[size]}`}>
+    <span className={`${base} ${className}`} style={{ background: "#D4EABD", color: "#000000", borderColor: "#000000" }}>
       {dot && (
         <span
-          className={`h-1.5 w-1.5 rounded-full mr-1.5 shrink-0 ${dotColors[variant]}`}
-          aria-hidden="true"
+          style={{
+            display: "inline-block",
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: "#000000",
+            flexShrink: 0,
+          }}
         />
       )}
       {children}
@@ -51,4 +33,4 @@ const Badge: React.FC<BadgeProps> = ({
   );
 };
 
-export default React.memo(Badge);
+export default Badge;

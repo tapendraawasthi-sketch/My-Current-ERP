@@ -1,235 +1,172 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
-import SutraLogo from "./SutraLogo";
-import { Button, Input, Card, Spinner } from "./ui";
-import {
-  LogIn,
-  KeyRound,
-  Building,
-  AlertCircle,
-  Database,
-  HelpCircle,
-  Lock,
-  ShieldAlert,
-  LayoutDashboard,
-  FileText,
-  BookOpen,
-  TrendingUp,
-  Settings,
-  Menu,
-  X,
-} from "lucide-react";
-import toast from "react-hot-toast";
 import { useIsMobile } from "../hooks/use-mobile";
+import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
+import toast from "react-hot-toast";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
+interface LayoutProps { children: React.ReactNode; }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const {
-    isAuthenticated,
-    isDbReady,
-    initializeApp,
-    login,
-    currentUser,
-    companySettings,
-    currentPage,
-    setCurrentPage,
-  } = useStore();
-
+  const { isAuthenticated, isDbReady, initializeApp, login, currentUser, currentPage, setCurrentPage } = useStore();
   const { rawShortcuts } = useKeyboardShortcuts();
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sutra_sidebar_collapsed") === "true";
+  });
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("admin123");
+  const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => { initializeApp(); }, [initializeApp]);
+  useEffect(() => { localStorage.setItem("sutra_sidebar_collapsed", String(collapsed)); }, [collapsed]);
 
   const handleSidebarShortcut = (key: string) => {
-    // Find the shortcut from DB config
-    const found = rawShortcuts.find(
-      (s) => s.key_combo.toUpperCase() === key.toUpperCase() && s.is_active
-    );
+    const found = rawShortcuts.find((s) => s.key_combo.toUpperCase() === key.toUpperCase() && s.is_active);
     if (found) {
       if (found.action_type === "navigate") {
         let page = found.action_value.replace(/^\//, "");
         if (page === "company/settings") page = "settings";
-        if (page === "reports/ledger") page = "ledger";
-        if (page === "help") page = "dashboard"; // fallback
         setCurrentPage(page);
       } else if (found.action_type === "report") {
         setCurrentPage(found.action_value.replace(/_/g, "-"));
       }
     } else {
-      // Fallback hardcoded map
       const FALLBACK: Record<string, string> = {
         F1: "dashboard", F2: "accounts", F3: "items", F4: "accounts",
-        F5: "journal", F6: "payment-voucher", F7: "receipt-voucher",
+        F5: "journal", F6: "payment", F7: "receipt",
         F8: "journal", F9: "billing", B: "balance-sheet", T: "trial-balance",
-        S: "stock-summary", A: "general-ledger", L: "general-ledger",
+        S: "stock-summary", A: "ledger", L: "ledger",
         V: "vat-reports", D: "day-book", G: "vat-reports", F: "settings", K: "dashboard",
       };
       if (FALLBACK[key]) setCurrentPage(FALLBACK[key]);
     }
   };
 
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const cached = localStorage.getItem("sutra_sidebar_collapsed");
-    return cached === "true";
-  });
-
-  const [isMinimized, setIsMinimized] = useState(false);
-
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin123");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    initializeApp();
-  }, [initializeApp]);
-
-  useEffect(() => {
-    localStorage.setItem("sutra_sidebar_collapsed", String(collapsed));
-  }, [collapsed]);
-
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      toast.error("Credentials cannot be empty.");
-      return;
-    }
-
+    if (!username.trim() || !password.trim()) { toast.error("Credentials cannot be empty."); return; }
     setLoading(true);
     try {
       const ok = await login(username.trim(), password.trim());
-      if (ok) {
-        toast.success(`Access Granted: Logged in as ${username}.`);
-      }
+      if (ok) toast.success(`Access Granted: Logged in as ${username}.`);
     } catch (err: any) {
       toast.error(err.message || "Error occurred.");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  const selectShortcutUser = (role: string) => {
-    setUsername(role);
-    if (role === "admin") setPassword("admin123");
-    else if (role === "accountant") setPassword("accountant123");
-    else if (role === "operator") setPassword("operator123");
+  const TWO_COLOR = {
+    bg: "#E4F1D9", card: "#EBF5E2", muted: "#D4EABD",
+    hover: "#C9DEB5", border: "#000000", text: "#000000",
   };
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
-        <div className="flex flex-col items-center gap-6 text-center">
-          <div className="h-16 w-16 rounded-2xl flex items-center justify-center font-bold text-3xl" style={{ background: "#3D6B25", color: "#ffffff", border: "2px solid #7BA358" }}>S</div>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: TWO_COLOR.bg }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, textAlign: "center" }}>
+          <div style={{ width: 56, height: 56, background: TWO_COLOR.muted, border: "2px solid #000000", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 28, color: "#000000" }}>S</div>
           <div>
-            <div className="font-bold text-xl tracking-widest uppercase mb-1" style={{ color: "#000000" }}>Sutra ERP</div>
-            <div className="text-xs font-medium" style={{ color: "#000000" }}>Initializing database...</div>
+            <div style={{ fontWeight: 700, fontSize: 18, color: "#000000", letterSpacing: 2, textTransform: "uppercase" }}>Sutra ERP</div>
+            <div style={{ fontSize: 12, color: "#000000", marginTop: 4 }}>Initializing database...</div>
           </div>
-          <div className="flex gap-1.5">
-            {[0,1,2].map(i => <div key={i} className="h-2 w-2 rounded-full animate-bounce" style={{ background: "#3D6B25", animationDelay: `${i*0.15}s` }} />)}
+          <div style={{ display: "flex", gap: 6 }}>
+            {[0,1,2].map((i) => (
+              <div key={i} style={{ width: 8, height: 8, background: "#000000", borderRadius: "50%", animation: "bounce 1.2s infinite", animationDelay: `${i*0.2}s` }} />
+            ))}
           </div>
         </div>
       </div>
     );
   }
 
-  // Visual gateway for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex bg-[#E4F1D9]">
-        {/* LEFT PANEL */}
-        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#E4F1D9] flex-col justify-between p-10 shrink-0">
+      <div style={{ minHeight: "100vh", display: "flex", background: TWO_COLOR.bg }}>
+        {/* Left panel */}
+        <div style={{ width: 420, background: TWO_COLOR.muted, borderRight: "1px solid #000000", padding: 40, display: "flex", flexDirection: "column", justifyContent: "space-between" }} className="hidden lg:flex">
           <div>
-            <div className="flex items-center gap-3 mb-12">
-              <div className="h-10 w-10 bg-[#3D6B25] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-[#9DC07A]">S</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 48 }}>
+              <div style={{ width: 40, height: 40, background: TWO_COLOR.hover, border: "2px solid #000000", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 20, color: "#000000" }}>S</div>
               <div>
-                <div className="text-[#000000] font-bold text-xl tracking-tight">Sutra ERP</div>
-                <div className="text-[#000000] text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
+                <div style={{ fontWeight: 700, fontSize: 20, color: "#000000" }}>Sutra ERP</div>
+                <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#000000" }}>Nepal's Cloud Accounting</div>
               </div>
             </div>
-            <h2 className="text-[#000000] text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
-            <p className="text-[#E6F2FF] text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
-            <div className="space-y-4">
-              {[
-                { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
-                { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
-                { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
-                { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click" },
-              ].map(f => (
-                <div key={f.title} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#3D6B25] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
-                  <div>
-                    <div className="text-[#000000] text-sm font-semibold leading-none mb-1">{f.title}</div>
-                    <div className="text-[#E6F2FF] text-xs">{f.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="text-[#E6F2FF] text-[10px] font-medium">© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
-        </div>
-        {/* RIGHT PANEL */}
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-sm">
-            <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-              <div className="h-9 w-9 bg-[#3D6B25] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
-              <div className="text-[#000000] font-bold text-xl">Sutra ERP</div>
-            </div>
-            <div className="bg-white rounded-2xl border border-[#9DC07A] shadow-xl p-8">
-              <h3 className="text-lg font-bold text-[#000000] mb-1">Sign In</h3>
-              <p className="text-xs text-[#000000] mb-6">Enter your credentials to access the system</p>
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: "#000000", marginBottom: 8 }}>Powerful accounting<br/>built for Nepal</h2>
+            <p style={{ fontSize: 13, color: "#000000", marginBottom: 32, lineHeight: 1.6 }}>Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
+            {[
+              { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
+              { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
+              { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
+              { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports" },
+            ].map((f) => (
+              <div key={f.title} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 14 }}>
+                <span style={{ width: 18, height: 18, background: TWO_COLOR.hover, border: "1px solid #000000", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#000000", flexShrink: 0 }}>✓</span>
                 <div>
-                  <label className="block text-xs font-semibold text-[#000000] mb-1">
-                    System Operator ID
-                  </label>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{f.title}</div>
+                  <div style={{ fontSize: 11, color: "#000000" }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 10, color: "#000000" }}>© 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal</div>
+        </div>
+
+        {/* Right: login form */}
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 32 }}>
+          <div style={{ width: "100%", maxWidth: 380 }}>
+            <div style={{ background: TWO_COLOR.card, border: "1px solid #000000", borderRadius: 4, padding: 32 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#000000", marginBottom: 4 }}>Sign In</h3>
+              <p style={{ fontSize: 12, color: "#000000", marginBottom: 24 }}>Enter your credentials to access the system</p>
+              <form onSubmit={handleLoginSubmit}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 4 }}>System Operator ID</label>
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="e.g. admin"
-                    className="block w-full h-9 px-3 rounded-lg text-sm focus:outline-none transition-colors" style={{ background: "#EBF5E2", border: "1px solid #9DC07A", color: "#000000" }}
+                    style={{ width: "100%", height: 36, padding: "0 10px", fontSize: 13, border: "1px solid #000000", background: TWO_COLOR.card, color: "#000000", borderRadius: 3, outline: "none" }}
                   />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#000000] mb-1">
-                    Access Code / Code word
-                  </label>
+                <div style={{ marginBottom: 24 }}>
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 4 }}>Access Code</label>
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="block w-full h-9 px-3 rounded-lg text-sm focus:outline-none transition-colors" style={{ background: "#EBF5E2", border: "1px solid #9DC07A", color: "#000000" }}
+                    style={{ width: "100%", height: 36, padding: "0 10px", fontSize: 13, border: "1px solid #000000", background: TWO_COLOR.card, color: "#000000", borderRadius: 3, outline: "none" }}
                   />
                 </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full h-9 text-[#000000] font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2" style={{ background: "#3D6B25" }}
-                  >
-                    {loading && <Spinner size="sm" className="text-[#000000]" />}
-                    <span>Authorize Entry</span>
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: "100%",
+                    height: 38,
+                    background: TWO_COLOR.muted,
+                    border: "1px solid #000000",
+                    borderRadius: 4,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "#000000",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.6 : 1,
+                  }}
+                >
+                  {loading ? "Authorizing..." : "Authorize Entry"}
+                </button>
               </form>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[#E6F2FF]">
-              <span>All activities are logged for compliance.</span>
-            </div>
+            <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: "#000000" }}>All activities are logged for compliance.</div>
           </div>
         </div>
       </div>
@@ -237,31 +174,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   const isMobile = useIsMobile();
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-screen overflow-hidden">
-        {/* Mobile top bar */}
-        <header className="h-12 flex items-center justify-between px-4 shrink-0" style={{ background: "#C9DEB5", borderBottom: "1px solid #9DC07A" }}>
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 bg-[#3D6B25] rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              S
-            </div>
-            <span className="font-semibold text-[#000000] text-sm">
+      <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
+        <header style={{ height: 48, background: TWO_COLOR.muted, borderBottom: "1px solid #000000", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 28, height: 28, background: TWO_COLOR.hover, border: "1px solid #000000", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14, color: "#000000" }}>S</div>
+            <span style={{ fontWeight: 600, color: "#000000", fontSize: 14 }}>
               {currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, " ")}
             </span>
           </div>
-          <button onClick={() => setDrawerOpen(true)} className="p-2 text-[#000000]">
-            <Menu className="h-5 w-5" />
+          <button onClick={() => setDrawerOpen(true)} style={{ background: "transparent", border: "1px solid #000000", borderRadius: 4, padding: 6, cursor: "pointer", color: "#000000" }}>
+            <Menu style={{ width: 18, height: 18, color: "#000000" }} />
           </button>
         </header>
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto p-4 pb-20">{children}</main>
+        <main style={{ flex: 1, overflowY: "auto", padding: 16, paddingBottom: 72, background: TWO_COLOR.bg }}>{children}</main>
 
-        {/* Bottom nav */}
-        <nav className="fixed bottom-0 left-0 right-0 h-14 flex items-center justify-around z-40" style={{ background: "#C9DEB5", borderTop: "1px solid #9DC07A" }}>
+        <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 56, background: TWO_COLOR.muted, borderTop: "1px solid #000000", display: "flex", alignItems: "center", justifyContent: "space-around", zIndex: 40 }}>
           {[
             { page: "dashboard", icon: LayoutDashboard, label: "Home" },
             { page: "billing", icon: FileText, label: "Invoices" },
@@ -269,28 +200,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             { page: "profit-loss", icon: TrendingUp, label: "Reports" },
             { page: "settings", icon: Settings, label: "More" },
           ].map(({ page, icon: Icon, label }) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`flex flex-col items-center gap-0.5`} style={{ color: "#000000" }}
-            >
-              <Icon className="h-5 w-5" /> <span className="text-[10px]">{label}</span>
+            <button key={page} onClick={() => setCurrentPage(page)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "transparent", border: "none", cursor: "pointer", color: "#000000", fontWeight: currentPage === page ? 700 : 400 }}>
+              <Icon style={{ width: 20, height: 20, color: "#000000" }} />
+              <span style={{ fontSize: 10, color: "#000000" }}>{label}</span>
             </button>
           ))}
         </nav>
 
-        {/* Drawer overlay */}
         {drawerOpen && (
-          <div className="fixed inset-0 z-50 flex">
-            <div
-              className="fixed inset-0 bg-black bg-opacity-40"
-              onClick={() => setDrawerOpen(false)}
-            />
-            <div className="relative w-72 h-full overflow-y-auto shadow-xl">
-              <div className="p-4 flex items-center justify-between" style={{ borderBottom: "1px solid #9DC07A", background: "#C9DEB5" }}>
-                <span className="font-semibold" style={{ color: "#000000" }}>Menu</span>
-                <button onClick={() => setDrawerOpen(false)}>
-                  <X className="h-5 w-5 text-[#E6F2FF]" />
+          <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex" }}>
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }} onClick={() => setDrawerOpen(false)} />
+            <div style={{ position: "relative", width: 272, height: "100%", overflowY: "auto" }}>
+              <div style={{ padding: "12px 16px", borderBottom: "1px solid #000000", display: "flex", alignItems: "center", justifyContent: "space-between", background: TWO_COLOR.muted, color: "#000000" }}>
+                <span style={{ fontWeight: 600, color: "#000000" }}>Menu</span>
+                <button onClick={() => setDrawerOpen(false)} style={{ background: "transparent", border: "1px solid #000000", borderRadius: 4, padding: 4, cursor: "pointer", color: "#000000" }}>
+                  <X style={{ width: 16, height: 16, color: "#000000" }} />
                 </button>
               </div>
               <Sidebar collapsed={false} setCollapsed={() => {}} />
@@ -302,55 +226,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "#1a3a5c" }}>
-      {/* 1. Title Bar — always visible */}
-      <TitleBar onMinimize={() => setIsMinimized(prev => !prev)} />
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: TWO_COLOR.muted }}>
+      <TitleBar onMinimize={() => setIsMinimized((prev) => !prev)} />
 
       {!isMinimized && (
         <>
-          {/* 2. Menu Bar */}
           <BusyMenuBar />
-
-          {/* 3. Main area = workspace + right shortcut sidebar */}
-          <div className="flex flex-1 overflow-hidden">
-            {/* Central Workspace */}
-            <main
-              className="flex-1 overflow-y-auto p-3 relative"
-              style={{ background: "#1a3a5c" }}
-            >
-              <div style={{ fontSize: 11, color: "#ffffff", textAlign: "center", marginBottom: 6 }}>
-                {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+            <main style={{ flex: 1, overflowY: "auto", padding: 12, background: TWO_COLOR.bg }}>
+              <div style={{ fontSize: 11, color: "#000000", textAlign: "center", marginBottom: 6, fontWeight: 600 }}>
+                {currentPage.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
               </div>
               {children}
             </main>
-
-            {/* Right Shortcut Keys Sidebar */}
             <ShortcutSidebar onShortcut={handleSidebarShortcut} />
           </div>
-
-          {/* 4. Command Hint Bar */}
           <CommandHintBar />
-
-          {/* 5. Status Bar */}
           <StatusBar />
         </>
       )}
 
-      {/* Minimized ribbon — click title bar again to restore */}
       {isMinimized && (
         <div
+          onClick={() => setIsMinimized(false)}
           style={{
             flex: 1,
-            background: "#0d1b2a",
+            background: TWO_COLOR.bg,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#94a3b8",
+            color: "#000000",
             fontSize: 13,
             cursor: "pointer",
             userSelect: "none",
           }}
-          onClick={() => setIsMinimized(false)}
         >
           Click here or press — again to restore Sutra ERP
         </div>

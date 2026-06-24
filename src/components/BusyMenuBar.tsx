@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useStore } from "../store/useStore";
- 
+
 interface MenuItem {
   label: string;
   page?: string;
   children?: MenuItem[];
   separator?: boolean;
 }
- 
+
 const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Company",
@@ -69,12 +69,10 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       { label: "Party Ledger", page: "party-statement" },
       { separator: true, label: "" },
       { label: "Stock Summary", page: "stock-summary" },
-      { label: "Stock Book", page: "items" },
       { label: "Inventory Report", page: "inventory-report" },
       { separator: true, label: "" },
       { label: "Aging Report", page: "aging-report" },
       { label: "Bill-wise Pending", page: "bill-pending" },
-      { label: "Overdue Interest", page: "overdue-interest" },
       { label: "Ratio Analysis", page: "ratio-analysis" },
     ],
   },
@@ -98,7 +96,6 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     items: [
       { label: "Users & Roles", page: "users" },
       { label: "Bank Reconciliation", page: "bank-reconciliation" },
-      { label: "Bank Statement Import", page: "bank-import" },
       { label: "Recurring Vouchers", page: "recurring-vouchers" },
       { label: "Opening Balance", page: "opening-balance" },
     ],
@@ -111,12 +108,13 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     ],
   },
 ];
- 
+
 const BusyMenuBar: React.FC = () => {
   const { setCurrentPage } = useStore();
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
- 
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (barRef.current && !barRef.current.contains(e.target as Node)) {
@@ -126,31 +124,42 @@ const BusyMenuBar: React.FC = () => {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
- 
+
   const navigate = (page?: string) => {
-    if (page) { setCurrentPage(page); }
+    if (page) setCurrentPage(page);
     setOpenMenu(null);
   };
- 
+
   return (
     <div
       ref={barRef}
-      className="flex items-center shrink-0 relative"
-      style={{ height: 26, background: "#D5E9C0", borderBottom: "1px solid #9DC07A", userSelect: "none", zIndex: 100 }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexShrink: 0,
+        height: 26,
+        background: "#D4EABD",
+        borderBottom: "1px solid #000000",
+        userSelect: "none",
+        zIndex: 100,
+        position: "relative",
+      }}
     >
       <span style={{ color: "#000000", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
       {MENU_TREE.map((menu, idx) => (
         <div key={menu.title} style={{ position: "relative" }}>
           <div
             onClick={() => setOpenMenu(openMenu === idx ? null : idx)}
-            className="flex items-center"
             style={{
               padding: "2px 10px",
               cursor: "pointer",
-               background: openMenu === idx ? "#3D6B25" : "transparent",
-               color: openMenu === idx ? "#ffffff" : "#000000",
+              background: openMenu === idx ? "#C9DEB5" : "transparent",
+              color: "#000000",
               height: 26,
+              display: "flex",
+              alignItems: "center",
               fontWeight: openMenu === idx ? "bold" : "normal",
+              border: openMenu === idx ? "1px solid #000000" : "1px solid transparent",
             }}
           >
             {menu.title}
@@ -161,40 +170,38 @@ const BusyMenuBar: React.FC = () => {
                 position: "absolute",
                 top: 26,
                 left: 0,
-                background: "#C9DEB5",
-                border: "1px solid #9DC07A",
+                background: "#EBF5E2",
+                border: "1px solid #000000",
                 minWidth: 200,
-                boxShadow: "2px 2px 8px rgba(0,0,0,0.5)",
+                boxShadow: "2px 2px 8px rgba(0,0,0,0.3)",
                 zIndex: 200,
               }}
             >
               {menu.items.map((item, iidx) =>
                 item.separator ? (
-                  <div key={iidx} style={{ height: 1, background: "#9DC07A", margin: "2px 0" }} />
+                  <div key={iidx} style={{ height: 1, background: "#000000", margin: "2px 0" }} />
                 ) : (
                   <div
                     key={iidx}
                     onClick={() => navigate(item.page)}
-                    style={{ padding: "3px 20px 3px 28px", cursor: "pointer", color: "#000000", display: "flex", alignItems: "center", gap: 6, position: "relative" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "#3D6B25"; (e.currentTarget as HTMLDivElement).style.color = "#ffffff"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; (e.currentTarget as HTMLDivElement).style.color = "#000000"; }}
+                    style={{
+                      padding: "3px 20px 3px 28px",
+                      cursor: "pointer",
+                      color: "#000000",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      position: "relative",
+                      background: hoveredItem === `${idx}-${iidx}` ? "#D4EABD" : "transparent",
+                    }}
+                    onMouseEnter={() => setHoveredItem(`${idx}-${iidx}`)}
+                    onMouseLeave={() => setHoveredItem(null)}
                   >
                     <span style={{ position: "absolute", left: 8, fontSize: 10 }}>•</span>
                     {item.label}
                   </div>
                 )
               )}
-              <div style={{ borderTop: "1px solid #9DC07A", display: "flex", gap: 0 }}>
-                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#000000" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#9DC07A")}
-                  onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
-                >Add To Favourites</div>
-                <div style={{ width: 1, background: "#9DC07A" }} />
-                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#000000" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#9DC07A")}
-                  onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
-                >Create Shortcut</div>
-              </div>
             </div>
           )}
         </div>
@@ -202,5 +209,5 @@ const BusyMenuBar: React.FC = () => {
     </div>
   );
 };
- 
+
 export default BusyMenuBar;

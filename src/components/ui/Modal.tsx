@@ -1,63 +1,114 @@
-import React, { ReactNode, useEffect } from "react";
-import { X } from "lucide-react";
- 
+import React, { useEffect } from "react";
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  size?: "sm" | "md" | "lg" | "xl" | "full";
-  children: ReactNode;
-  footer?: ReactNode;
-  closeOnOverlayClick?: boolean;
-  showCloseButton?: boolean;
+  children: React.ReactNode;
+  size?: "sm" | "md" | "lg" | "xl";
+  footer?: React.ReactNode;
 }
- 
+
+const SIZES: Record<string, string> = {
+  sm: "max-w-sm",
+  md: "max-w-lg",
+  lg: "max-w-3xl",
+  xl: "max-w-5xl",
+};
+
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
-  size = "md",
   children,
+  size = "md",
   footer,
-  closeOnOverlayClick = true,
-  showCloseButton = true,
 }) => {
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape" && isOpen) onClose(); };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
- 
+
   if (!isOpen) return null;
- 
-  const maxWidthMap = { sm: 360, md: 520, lg: 680, xl: 880, full: 1100 };
-  const maxW = maxWidthMap[size];
- 
+
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.35)" }}
-      onClick={closeOnOverlayClick ? onClose : undefined}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div
-        style={{ maxWidth: maxW, width: "95%", border: "2px outset #ffffff", background: "#fdf3e0", boxShadow: "3px 3px 8px rgba(0,0,0,0.4)" }}
-        onClick={e => e.stopPropagation()}
+        style={{
+          background: "#EBF5E2",
+          border: "1px solid #000000",
+          borderRadius: 4,
+          width: "100%",
+          maxHeight: "90vh",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        className={`w-full ${SIZES[size]}`}
       >
-        {/* Orange header */}
-        <div className="busy-orange-modal-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span>{title} !</span>
-          {showCloseButton && (
-            <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", color: "#fff", padding: 0 }}>
-              <X size={14} />
-            </button>
-          )}
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "10px 16px",
+            background: "#C9DEB5",
+            borderBottom: "1px solid #000000",
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{title}</span>
+          <button
+            onClick={onClose}
+            style={{
+              background: "transparent",
+              border: "1px solid #000000",
+              borderRadius: 3,
+              width: 22,
+              height: 22,
+              cursor: "pointer",
+              fontSize: 12,
+              color: "#000000",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            ✕
+          </button>
         </div>
+
         {/* Body */}
-        <div style={{ padding: "12px 16px", maxHeight: "70vh", overflowY: "auto" }}>
-          {children}
-        </div>
+        <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>{children}</div>
+
         {/* Footer */}
         {footer && (
-          <div style={{ borderTop: "1px solid #c0a870", padding: "8px 12px", display: "flex", gap: 8, justifyContent: "center" }}>
+          <div
+            style={{
+              padding: "10px 16px",
+              background: "#D4EABD",
+              borderTop: "1px solid #000000",
+              flexShrink: 0,
+            }}
+          >
             {footer}
           </div>
         )}
@@ -65,5 +116,5 @@ const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
- 
+
 export default Modal;
