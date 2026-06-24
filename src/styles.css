@@ -163,7 +163,7 @@ main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; 
 .animate-fadeIn, .page-content { animation: fadeIn 0.15s ease-out; }
 
 /* -- Focus States -- */
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary) !important; box-shadow: 0 0 0 2px rgba(240, 138, 44, 0.4) !important; color: #ffffff !important; background: var(--input) !important; caret-color: #ffffff !important; }
+/* removed aggressive focus */
 button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 /* -- Misc -- */
@@ -197,5 +197,11 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .busy-orange-modal-header { background: var(--accent-orange); color: #ffffff; font-weight: bold; padding: 6px 10px; font-size: 13px; border-radius: 4px 4px 0 0; }
 
 /* -- Global overrides for text readability -- */
-* { color: inherit; }
-h1, h2, h3, h4, h5, h6, p, span, div, label, td, th, li { color: inherit; }
+
+
+
+
+/* -- Safe Input Styles -- */
+input, select, textarea { color: #1e293b; }
+input.bg-white, select.bg-white, textarea.bg-white { color: #1e293b !important; }
+.bg-white { color: #1e293b; }
