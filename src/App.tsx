@@ -360,6 +360,7 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "backup":
+    case "backup-restore":
       return (
         <ErrorBoundary>
           <BackupRestore />

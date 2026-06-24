@@ -11,26 +11,16 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/logos/')
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, 'logo-' + uniqueSuffix + '.' + file.mimetype.split('/')[1])
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Only images are allowed'));
+      cb(new Error('Only image files are allowed (jpg, png, gif, webp)'));
     }
-  }
+  },
 });
 
 router.get('/settings', getSettings);

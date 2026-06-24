@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Download, Shield } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import { ADToBSString } from "../lib/nepaliDate";
 
 export default function AuditLog() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -53,7 +54,7 @@ export default function AuditLog() {
 
   const handleExport = () => {
     const dataToExport = logs.map(log => {
-      const bsDate = window.ADToBSString ? window.ADToBSString(log.timestamp.split("T")[0]) : log.timestamp.split("T")[0];
+      const bsDate = ADToBSString(log.timestamp.split("T")[0]) || log.timestamp.split("T")[0];
       const time = log.timestamp.split("T")[1]?.substring(0, 8) || "";
       
       return {
@@ -115,7 +116,10 @@ export default function AuditLog() {
           <select value={filters.module} onChange={e => {setFilters({...filters, module: e.target.value}); setPage(1);}} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0] bg-white cursor-pointer">
             <option value="">All Modules</option>
             <option value="FISCAL_YEAR">Fiscal Year</option>
-            <option value="COMPANY_SETTINGS">Settings</option>
+            <option value="COMPANY_SETTINGS">Company Settings</option>
+            <option value="BACKUP">Backup / Restore</option>
+            <option value="SHORTCUTS">Shortcuts</option>
+            <option value="AUDIT">Audit System</option>
           </select>
         </div>
         <div className="flex-1">
@@ -125,7 +129,9 @@ export default function AuditLog() {
             <option value="CREATE">Create</option>
             <option value="UPDATE">Update</option>
             <option value="DELETE">Delete</option>
-            <option value="CLOSE">Close</option>
+            <option value="EXPORT">Export</option>
+            <option value="IMPORT">Import</option>
+            <option value="CLOSE">Close Year</option>
           </select>
         </div>
       </div>
@@ -155,7 +161,7 @@ export default function AuditLog() {
                   </tr>
                 ) : (
                   logs.map(log => {
-                    const bsDate = window.ADToBSString ? window.ADToBSString(log.timestamp.split("T")[0]) : log.timestamp.split("T")[0];
+                    const bsDate = ADToBSString(log.timestamp.split("T")[0]) || log.timestamp.split("T")[0];
                     const time = log.timestamp.split("T")[1]?.substring(0, 8) || "";
                     
                     return (

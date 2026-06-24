@@ -22,7 +22,7 @@ export const updateSettings = async (req, res, next) => {
       date_format, language, decimal_places, enable_vat, vat_rate,
       enable_tds, tds_rate, invoice_prefix, receipt_prefix, voucher_prefix,
       smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from,
-      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month
+      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month, logo_url
     } = req.body;
 
     // Validation
@@ -74,6 +74,7 @@ export const updateSettings = async (req, res, next) => {
         enable_nepali_date = COALESCE($34, enable_nepali_date),
         show_both_dates = COALESCE($35, show_both_dates),
         financial_year_start_month = COALESCE($36, financial_year_start_month),
+        logo_url = COALESCE($37, logo_url),
         updated_at = NOW()
       WHERE id = 1 RETURNING *
     `, [
@@ -83,7 +84,7 @@ export const updateSettings = async (req, res, next) => {
       date_format, language, decimal_places, enable_vat, vat_rate,
       enable_tds, tds_rate, invoice_prefix, receipt_prefix, voucher_prefix,
       smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from,
-      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month
+      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month, logo_url
     ]);
 
     res.json({ success: true, data: rows[0] });
@@ -97,9 +98,13 @@ export const uploadLogo = async (req, res, next) => {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No logo file provided' });
     }
-    const logoUrl = `/uploads/logos/${req.file.filename}`;
-    await pool.query('UPDATE company_settings SET logo_url = $1, updated_at = NOW() WHERE id = 1', [logoUrl]);
-    res.json({ success: true, data: { logoUrl } });
+    // Store as base64 data URL so it persists through Render redeploys
+    const base64 = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype || 'image/png';
+    const dataUrl = `data:${mimeType};base64,${base64}`;
+    
+    await pool.query('UPDATE company_settings SET logo_url = $1, updated_at = NOW() WHERE id = 1', [dataUrl]);
+    res.json({ success: true, data: { logoUrl: dataUrl } });
   } catch (err) {
     next(err);
   }

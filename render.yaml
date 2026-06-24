@@ -1,10 +1,22 @@
 services:
   - type: web
-    name: sutra-erp-api
+    name: sutra-erp
     env: node
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: node src/server.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false   # Set this in Render dashboard → Environment → DATABASE_URL
+      - key: ALLOWED_ORIGINS
+        sync: false   # Set to your Vercel URL if using separate frontend, e.g. https://my-erp.vercel.app
+databases:
+  - name: sutra-erp-db
+    plan: free
+    databaseName: sutra_erp
+    user: sutra_erp_user

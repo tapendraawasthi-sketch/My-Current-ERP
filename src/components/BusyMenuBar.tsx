@@ -15,7 +15,7 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       { label: "Company Settings", page: "settings" },
       { label: "Fiscal Year", page: "fiscal-year" },
       { separator: true, label: "" },
-      { label: "Backup / Restore", page: "backup-restore" },
+      { label: "Backup / Restore", page: "backup" },
       { label: "Audit Log", page: "audit-log" },
     ],
   },

@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
@@ -45,6 +46,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     currentPage,
     setCurrentPage,
   } = useStore();
+
+  const { rawShortcuts } = useKeyboardShortcuts();
+
+  const handleSidebarShortcut = (key: string) => {
+    // Find the shortcut from DB config
+    const found = rawShortcuts.find(
+      (s) => s.key_combo.toUpperCase() === key.toUpperCase() && s.is_active
+    );
+    if (found) {
+      if (found.action_type === "navigate") {
+        let page = found.action_value.replace(/^\//, "");
+        if (page === "company/settings") page = "settings";
+        if (page === "reports/ledger") page = "ledger";
+        if (page === "help") page = "dashboard"; // fallback
+        setCurrentPage(page);
+      } else if (found.action_type === "report") {
+        setCurrentPage(found.action_value.replace(/_/g, "-"));
+      }
+    } else {
+      // Fallback hardcoded map
+      const FALLBACK: Record<string, string> = {
+        F1: "dashboard", F2: "accounts", F3: "items", F4: "accounts",
+        F5: "journal", F6: "payment-voucher", F7: "receipt-voucher",
+        F8: "journal", F9: "billing", B: "balance-sheet", T: "trial-balance",
+        S: "stock-summary", A: "general-ledger", L: "general-ledger",
+        V: "vat-reports", D: "day-book", G: "vat-reports", F: "settings", K: "dashboard",
+      };
+      if (FALLBACK[key]) setCurrentPage(FALLBACK[key]);
+    }
+  };
 
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -290,7 +321,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </main>
  
         {/* Right Shortcut Keys Sidebar */}
-        <ShortcutSidebar />
+        <ShortcutSidebar onShortcut={handleSidebarShortcut} />
       </div>
  
       {/* 4. Command Hint Bar */}
