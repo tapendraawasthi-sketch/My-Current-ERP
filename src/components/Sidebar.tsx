@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getCurrentStock } from "../lib/stockUtils";

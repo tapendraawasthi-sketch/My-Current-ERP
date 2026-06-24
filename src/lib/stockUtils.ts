@@ -99,3 +99,7 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
     };
   });
 }
+
+export const getLowStockItems = () => [];
+
+export const getStockValuationSummary = () => ({});

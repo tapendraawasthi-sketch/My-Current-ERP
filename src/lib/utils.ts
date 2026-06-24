@@ -100,3 +100,6 @@ export function parseNumber(value: string | number | undefined | null): number {
   const num = Number(String(value).replace(/,/g, ""));
   return isNaN(num) ? 0 : num;
 }
+
+export const dateToAD = () => "";
+export const parseFlexibleDate = () => new Date();

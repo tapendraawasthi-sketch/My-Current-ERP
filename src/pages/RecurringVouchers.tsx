@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";

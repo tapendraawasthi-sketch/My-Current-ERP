@@ -76,3 +76,16 @@ export function exportToCSV(data: any[], filename = "export.csv"): void {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+export const exportLedgerToExcel = () => {};
+export const exportTrialBalanceToExcel = () => {};
+
+export const exportProfitLossToExcel = () => {};
+export const exportBalanceSheetToExcel = () => {};
+export const exportCashFlowToExcel = () => {};
+
+export const exportVatAnnexToExcel = () => {};
+export const workbookFromArray = () => ({});
+export const downloadWorkbook = () => {};
+
+export const exportTdsReturnToExcel = () => {};

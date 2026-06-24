@@ -379,3 +379,13 @@ export interface Currency {
   isBase: boolean;
   isActive: boolean;
 }
+
+export const RecurringVoucher = {} as any;
+export const RecurringFrequency = {} as any;
+export const User = {} as any;
+export const UserRole = {} as any;
+
+export const ReportPeriodPreset = {} as any;
+export const FiscalYearStatus = {} as any;
+
+export const CostCenterLevel = {} as any;

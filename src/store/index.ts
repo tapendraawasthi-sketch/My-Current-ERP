@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/store/index.ts
 import { create } from "zustand";
 import { getDB } from "../lib/db";

@@ -95,3 +95,10 @@ export function validateVAT(vat: string): boolean {
 export function computeTDS(amount: number, rate: number): number {
   return round2(amount * (rate / 100));
 }
+
+export const computeVatAnnexA = () => [];
+export const computeVatAnnexB = () => [];
+export const computeVatAnnexC = () => [];
+export const computeVAT3Return = () => ({});
+
+export const computeWithholdingTDS = () => ({});

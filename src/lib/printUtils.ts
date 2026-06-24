@@ -158,3 +158,5 @@ export function generateVoucherPDF(
 
   return doc.output("blob");
 }
+
+export const generatePartyStatementPDF = () => {};

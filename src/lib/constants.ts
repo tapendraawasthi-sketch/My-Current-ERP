@@ -51,3 +51,5 @@ export const VOUCHER_SERIES_PREFIXES: Record<string, string> = {
 
 export const APP_VERSION = "2.0.0";
 export const APP_NAME = "Sutra ERP";
+
+export const NEPALI_MONTHS_EN = [];

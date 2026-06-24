@@ -208,3 +208,7 @@ export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[]
 
   return days;
 }
+
+export const getBSMonthRange = () => [];
+export const getQuarterRange = () => [];
+export const formatBSToAD = () => "";

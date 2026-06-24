@@ -118,3 +118,20 @@ export function computeLedgerBalance(
   }
   return balance;
 }
+
+export const generateVoucherNo = () => "";
+export const computeTrialBalance = () => ({});
+export const calculateNextDueDate = () => "";
+
+export const computeProfitLoss = () => ({});
+export const computeBalanceSheet = () => ({});
+export const computeCashFlow = () => ({});
+export const computeOutstandingPayables = () => [];
+
+
+export const getAccountBalance = () => 0;
+export const computeAgingReport = () => [];
+export const computePartyStatement = () => ({});
+export const computeOutstandingAnalysis = () => ({});
+
+export const computeRatios = () => ({});

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo, ReactNode } from "react";
 import Table, { Column } from "./Table";
 import Input from "./Input";

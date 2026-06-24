@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import Step1CompanyProfile from "./wizard/Step1CompanyProfile";

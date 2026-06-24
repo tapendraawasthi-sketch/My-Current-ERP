@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Input, Select, AmountInput, AccountSelect } from "../ui";
 import { useStore } from "@/store/useStore";

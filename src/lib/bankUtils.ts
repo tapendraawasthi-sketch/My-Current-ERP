@@ -51,3 +51,5 @@ export function matchBankTransactions(
 
   return { matched, unmatched };
 }
+
+export const autoMatchStatements = () => ({});

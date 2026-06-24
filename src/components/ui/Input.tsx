@@ -20,6 +20,8 @@ interface InputProps {
   autoFocus?: boolean;
   inputClassName?: string;
   className?: string;
+  id?: string;
+  error?: string;
 }
 
 const Input: React.FC<InputProps> = ({

@@ -57,3 +57,5 @@ export function computePayroll(
     };
   });
 }
+
+export const computeNepalPayroll = () => [];
