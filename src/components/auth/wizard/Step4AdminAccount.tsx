@@ -20,25 +20,25 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Admin Account</h2>
-        <p className="text-sm text-gray-600 mt-1">Create your administrator account</p>
+        <h2 className="text-2xl font-bold text-[#000000]">Admin Account</h2>
+        <p className="text-sm text-[#000000] mt-1">Create your administrator account</p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Full Name *</label>
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">Full Name *</label>
           <input
             type="text"
             value={data.fullName}
             onChange={(e) => onChange({ ...data, fullName: e.target.value })}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
             placeholder="John Doe"
           />
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">
             Username * (alphanumeric, min 4 characters)
           </label>
           <input
@@ -47,7 +47,7 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
             onChange={(e) =>
               onChange({ ...data, username: e.target.value.replace(/[^a-zA-Z0-9]/g, "") })
             }
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
             minLength={4}
             placeholder="admin"
@@ -60,7 +60,7 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">
             Password * (min 6 chars, must contain letters + numbers)
           </label>
           <div className="relative">
@@ -68,7 +68,7 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
               type={showPassword.password ? "text" : "password"}
               value={data.password}
               onChange={(e) => onChange({ ...data, password: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full pr-10"
+              className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full pr-10"
               required
               minLength={6}
               placeholder="••••••••"
@@ -76,7 +76,7 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
             <button
               type="button"
               onClick={() => setShowPassword({ ...showPassword, password: !showPassword.password })}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000]"
             >
               {showPassword.password ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -89,7 +89,7 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">
             Confirm Password *
           </label>
           <div className="relative">
@@ -97,14 +97,14 @@ export default function Step4AdminAccount({ data, onChange }: Props) {
               type={showPassword.confirm ? "text" : "password"}
               value={data.confirmPassword}
               onChange={(e) => onChange({ ...data, confirmPassword: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full pr-10"
+              className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full pr-10"
               required
               placeholder="••••••••"
             />
             <button
               type="button"
               onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000]"
             >
               {showPassword.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>

@@ -111,26 +111,26 @@ const ProfitLoss: React.FC = () => {
     const isExpanded = expandedGroups.has(title);
 
     return (
-      <div className={`border-b border-gray-100 last:border-0 ${isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""}`}>
+      <div className={`border-b border-[#9DC07A] last:border-0 ${isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""}`}>
         <div 
-          className={`flex items-center justify-between px-3 py-2.5 ${hasChildren ? "cursor-pointer hover:bg-gray-50" : ""} ${isTotal ? "font-bold text-[#1557b0]" : ""}`}
+          className={`flex items-center justify-between px-3 py-2.5 ${hasChildren ? "cursor-pointer hover:bg-[#EBF5E2]" : ""} ${isTotal ? "font-bold text-[#1557b0]" : ""}`}
           onClick={() => hasChildren && toggleGroup(title)}
         >
           <div className="flex items-center gap-2">
             {hasChildren && (
-              isExpanded ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />
+              isExpanded ? <ChevronDown className="w-4 h-4 text-[#000000]" /> : <ChevronRight className="w-4 h-4 text-[#000000]" />
             )}
             {!hasChildren && <span className="w-4" />}
-            <span className={`text-[12px] ${isTotal ? "text-[#1557b0]" : "text-gray-700"}`}>{title}</span>
+            <span className={`text-[12px] ${isTotal ? "text-[#1557b0]" : "text-[#000000]"}`}>{title}</span>
           </div>
           <span className="font-mono text-[12px] text-right">{formatNumber(amount)}</span>
         </div>
         {hasChildren && isExpanded && (
-          <div className="bg-gray-50 border-y border-gray-100 pb-2 pt-1">
+          <div className="bg-[#EBF5E2] border-y border-[#9DC07A] pb-2 pt-1">
             {breakdown.map((item, idx) => (
-              <div key={idx} className="flex justify-between pl-10 pr-3 py-1.5 hover:bg-gray-100">
-                <span className="text-[11px] text-gray-600">{item.ledgerName} <span className="text-gray-400">({item.groupName})</span></span>
-                <span className="text-[11px] font-mono text-gray-600">{formatNumber(item.amount)}</span>
+              <div key={idx} className="flex justify-between pl-10 pr-3 py-1.5 hover:bg-[#EBF5E2]">
+                <span className="text-[11px] text-[#000000]">{item.ledgerName} <span className="text-[#000000]">({item.groupName})</span></span>
+                <span className="text-[11px] font-mono text-[#000000]">{formatNumber(item.amount)}</span>
               </div>
             ))}
           </div>
@@ -146,21 +146,21 @@ const ProfitLoss: React.FC = () => {
       <FormPanel>
         <div className="flex items-end gap-4 mb-4 no-print">
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">From Date</label>
             <input 
               type="date" 
               value={startDate} 
               onChange={e => setStartDate(e.target.value)}
-              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">To Date</label>
             <input 
               type="date" 
               value={endDate} 
               onChange={e => setEndDate(e.target.value)}
-              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>
           <div className="flex gap-2">
@@ -172,17 +172,17 @@ const ProfitLoss: React.FC = () => {
         </div>
 
         <div className="print-only hidden mb-6 text-center">
-          <h2 className="text-[15px] font-bold text-gray-900">{companySettings?.companyName || "Company Name"}</h2>
-          <p className="text-[12px] text-gray-600">PAN: {companySettings?.panNumber || "N/A"}</p>
+          <h2 className="text-[15px] font-bold text-[#000000]">{companySettings?.companyName || "Company Name"}</h2>
+          <p className="text-[12px] text-[#000000]">PAN: {companySettings?.panNumber || "N/A"}</p>
           <h3 className="text-[14px] font-semibold mt-2">Statement of Profit & Loss</h3>
-          <p className="text-[11px] text-gray-500">For the period: {startDate} to {endDate}</p>
+          <p className="text-[11px] text-[#000000]">For the period: {startDate} to {endDate}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+        <div className="grid grid-cols-2 gap-6 border border-[#9DC07A] rounded-lg bg-white overflow-hidden shadow-sm">
           {/* Revenue Side */}
-          <div className="border-r border-gray-200">
-            <div className="bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5">
-              <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Revenue & Direct Incomes</h3>
+          <div className="border-r border-[#9DC07A]">
+            <div className="bg-[#f5f6fa] border-b border-[#9DC07A] px-3 py-2.5">
+              <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Revenue & Direct Incomes</h3>
             </div>
             {renderSection("Sales Revenue", plData.sections.salesRevenue)}
             {renderSection("Less: Purchase Returns", plData.sections.purchaseReturns)}
@@ -190,8 +190,8 @@ const ProfitLoss: React.FC = () => {
             {renderSection("Gross Profit", plData.grossProfit, true)}
             
             <div className="mt-4">
-              <div className="bg-[#f5f6fa] border-y border-gray-200 px-3 py-2.5">
-                <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Other Incomes</h3>
+              <div className="bg-[#f5f6fa] border-y border-[#9DC07A] px-3 py-2.5">
+                <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Other Incomes</h3>
               </div>
               {renderSection("Other Income", plData.sections.otherIncome)}
             </div>
@@ -199,16 +199,16 @@ const ProfitLoss: React.FC = () => {
 
           {/* Expenses Side */}
           <div>
-            <div className="bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5">
-              <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expenses</h3>
+            <div className="bg-[#f5f6fa] border-b border-[#9DC07A] px-3 py-2.5">
+              <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Expenses</h3>
             </div>
             {renderSection("Operating Expenses", plData.sections.operatingExpenses)}
             {renderSection("Administrative Expenses", plData.sections.adminExpenses)}
             {renderSection("Operating Profit", plData.operatingProfit, true)}
             
             <div className="mt-4">
-              <div className="bg-[#f5f6fa] border-y border-gray-200 px-3 py-2.5">
-                <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Finance & Taxes</h3>
+              <div className="bg-[#f5f6fa] border-y border-[#9DC07A] px-3 py-2.5">
+                <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Finance & Taxes</h3>
               </div>
               {renderSection("Financing Costs / Interest", plData.sections.financingCosts)}
               {renderSection("Profit Before Tax", plData.operatingProfit + plData.sections.otherIncome - plData.sections.financingCosts, true)}

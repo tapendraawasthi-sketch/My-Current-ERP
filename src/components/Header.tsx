@@ -114,7 +114,7 @@ const Header: React.FC = () => {
             <Search className="h-3.5 w-3.5" style={{ color: "#000000" }} />
             <span style={{ color: "#000000" }}>Search anything...</span>
           </span>
-          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-gray-200 rounded font-mono text-gray-500">
+          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-[#9DC07A] rounded font-mono text-[#000000]">
             /
           </kbd>
         </button>
@@ -170,7 +170,7 @@ const Header: React.FC = () => {
             >
               <Bell className="h-4 w-4" />
               {unreadAlerts > 0 && (
-                <span className="absolute top-1 right-1 h-3.5 min-w-[14px] text-[8px] font-bold text-white bg-red-600 rounded-full flex items-center justify-center px-0.5 border border-white">
+                <span className="absolute top-1 right-1 h-3.5 min-w-[14px] text-[8px] font-bold text-[#000000] bg-red-600 rounded-full flex items-center justify-center px-0.5 border border-white">
                   {unreadAlerts}
                 </span>
               )}
@@ -185,7 +185,7 @@ const Header: React.FC = () => {
           <button
             type="button"
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 group p-1 rounded-lg hover:bg-gray-100/70 transition-colors focus:outline-none"
+            className="flex items-center gap-2 group p-1 rounded-lg hover:bg-[#EBF5E2]/70 transition-colors focus:outline-none"
             title="User Settings Context"
           >
             <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-inner" style={{ background: "#C9DEB5", border: "1px solid #9DC07A", color: "#000000" }}>
@@ -234,7 +234,7 @@ const Header: React.FC = () => {
                 <span>Security logs audit</span>
               </button>
 
-              <div className="border-t border-gray-200 my-1" />
+              <div className="border-t border-[#9DC07A] my-1" />
 
               <button
                 type="button"

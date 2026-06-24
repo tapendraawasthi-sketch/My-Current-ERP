@@ -155,27 +155,27 @@ export default function BankAccountsPage() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-[#EBF5E2]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Bank Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Account No
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Branch
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Account Ledger
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
                   Opening Balance
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
                   Actions
                 </th>
               </tr>
@@ -183,23 +183,23 @@ export default function BankAccountsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredAccounts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                    <Building className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <td colSpan={7} className="px-6 py-12 text-center text-[#000000]">
+                    <Building className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
                     <p>No bank accounts found</p>
                   </td>
                 </tr>
               ) : (
                 filteredAccounts.map((account) => (
-                  <tr key={account.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  <tr key={account.id} className="hover:bg-[#EBF5E2]">
+                    <td className="px-6 py-4 text-sm font-medium text-[#000000]">
                       {account.bankName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-mono">
+                    <td className="px-6 py-4 text-sm text-[#000000] font-mono">
                       {account.accountNo}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{account.branch}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{account.accountLedger}</td>
-                    <td className="px-6 py-4 text-sm text-right text-gray-900">
+                    <td className="px-6 py-4 text-sm text-[#000000]">{account.branch}</td>
+                    <td className="px-6 py-4 text-sm text-[#000000]">{account.accountLedger}</td>
+                    <td className="px-6 py-4 text-sm text-right text-[#000000]">
                       Rs. {account.openingBalance.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -217,7 +217,7 @@ export default function BankAccountsPage() {
                       <div className="flex justify-end space-x-2">
                         <button
                           onClick={() => handleEdit(account)}
-                          className="text-[#1557b0] hover:text-indigo-900"
+                          className="text-[#1557b0] hover:text-[#000000]"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
@@ -246,7 +246,7 @@ export default function BankAccountsPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#000000] mb-1">
                     Bank Name *
                   </label>
                   <input
@@ -259,7 +259,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#000000] mb-1">
                     Account No *
                   </label>
                   <input
@@ -272,7 +272,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch *</label>
+                  <label className="block text-sm font-medium text-[#000000] mb-1">Branch *</label>
                   <input
                     type="text"
                     value={formData.branch}
@@ -283,7 +283,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#000000] mb-1">
                     SWIFT / IFSC Code
                   </label>
                   <input
@@ -295,7 +295,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#000000] mb-1">
                     Link to Account Ledger *
                   </label>
                   <select
@@ -313,7 +313,7 @@ export default function BankAccountsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#000000] mb-1">
                     Opening Balance
                   </label>
                   <input
@@ -330,16 +330,16 @@ export default function BankAccountsPage() {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded border-gray-300"
+                    className="rounded border-[#9DC07A]"
                   />
-                  <label className="text-sm font-medium text-gray-700">Is Active</label>
+                  <label className="text-sm font-medium text-[#000000]">Is Active</label>
                 </div>
               </div>
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
                 >
                   Cancel
                 </button>

@@ -16,21 +16,21 @@ const Badge: React.FC<BadgeProps> = ({
   const baseStyles = "inline-flex items-center font-semibold uppercase rounded shrink-0";
 
   const variants = {
-    default: "bg-gray-100 text-gray-700",
+    default: "bg-[#EBF5E2] text-[#000000]",
     success: "bg-green-100 text-green-700",
     warning: "bg-amber-100 text-amber-700",
     danger: "bg-red-100 text-red-700",
-    info: "bg-blue-100 text-blue-700",
+    info: "bg-[#D4EABD] text-[#000000]",
     primary: "bg-[#dbeafe] text-[#1557b0]",
   };
 
   const dotColors = {
-    default: "bg-gray-450",
+    default: "bg-[#EBF5E2]",
     success: "bg-green-500",
     warning: "bg-amber-500",
     danger: "bg-red-500",
-    info: "bg-blue-500",
-    primary: "bg-[#1557b0]",
+    info: "bg-[#D4EABD]",
+    primary: "bg-[#3D6B25]",
   };
 
   const sizes = {

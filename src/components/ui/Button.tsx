@@ -57,7 +57,7 @@ const Button: React.FC<ButtonProps> = ({
       onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.borderStyle = "inset"; }}
       onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.borderStyle = "outset"; }}
     >
-      {loading && <Spinner size={size === "xs" ? "xs" : "sm"} className="mr-1" color="text-gray-600" />}
+      {loading && <Spinner size={size === "xs" ? "xs" : "sm"} className="mr-1" color="text-[#000000]" />}
       {!loading && icon && iconPosition === "left" && <span style={{ marginRight: 4 }}>{icon}</span>}
       <span>{children}</span>
       {!loading && icon && iconPosition === "right" && <span style={{ marginLeft: 4 }}>{icon}</span>}

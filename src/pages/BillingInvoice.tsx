@@ -132,7 +132,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "invoiceNo",
       header: "Invoice No",
-      render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
     { 
       key: "date", 
@@ -145,7 +145,7 @@ const BillingInvoice: React.FC = () => {
       header: "Grand Total",
       align: "right",
       render: (v: number) => (
-        <span className="font-mono font-bold text-slate-800">
+        <span className="font-mono font-bold text-[#000000]">
           {symbol} {formatNumber(v || 0)}
         </span>
       ),
@@ -155,7 +155,7 @@ const BillingInvoice: React.FC = () => {
       header: "VAT",
       align: "right",
       render: (v: number) => (
-        <span className="font-mono text-blue-700">
+        <span className="font-mono text-[#000000]">
           {symbol} {formatNumber(v || 0)}
         </span>
       ),
@@ -203,7 +203,7 @@ const BillingInvoice: React.FC = () => {
               e.stopPropagation();
               openEdit(row);
             }}
-            className="p-1.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+            className="p-1.5 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
             title="View / Edit"
           >
             <Eye className="h-4 w-4" />
@@ -213,7 +213,7 @@ const BillingInvoice: React.FC = () => {
               e.stopPropagation();
               handlePrint(row);
             }}
-            className="p-1.5 rounded text-gray-400 hover:text-[#1557b0] hover:bg-indigo-50"
+            className="p-1.5 rounded text-[#000000] hover:text-[#1557b0] hover:bg-indigo-50"
             title="Print"
           >
             <Printer className="h-4 w-4" />
@@ -237,7 +237,7 @@ const BillingInvoice: React.FC = () => {
       />
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-1 border-b border-gray-200">
+      <div className="flex flex-wrap gap-1 border-b border-[#9DC07A]">
         {(Object.keys(TAB_META) as TabKey[]).map((k) => {
           const m = TAB_META[k];
           const count = invoices.filter((i) => i.type === m.vt).length;
@@ -249,12 +249,12 @@ const BillingInvoice: React.FC = () => {
               className={
                 active
                   ? "px-4 py-2 text-[12px] font-medium border-b-2 border-[#1557b0] text-[#1557b0] bg-white -mb-px transition-colors"
-                  : "px-4 py-2 text-[12px] font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 bg-white -mb-px transition-colors"
+                  : "px-4 py-2 text-[12px] font-medium border-b-2 border-transparent text-[#000000] hover:text-[#000000] bg-white -mb-px transition-colors"
               }
             >
               {m.label}
               <span
-                className={`ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-medium ${active ? "bg-[#1557b0]/10 text-[#1557b0]" : "bg-slate-100 text-slate-500"}`}
+                className={`ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-medium ${active ? "bg-[#3D6B25]/10 text-[#1557b0]" : "bg-[#EBF5E2] text-[#000000]"}`}
               >
                 {count}
               </span>
@@ -264,20 +264,20 @@ const BillingInvoice: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 p-3 bg-white border border-gray-200 rounded-md mb-3 no-print">
-        <span className="text-[11px] text-gray-500">From Date</span>
+      <div className="flex flex-wrap items-center gap-2 p-3 bg-white border border-[#9DC07A] rounded-md mb-3 no-print">
+        <span className="text-[11px] text-[#000000]">From Date</span>
         <div className="w-32">
           <NepaliDatePicker value={fromDate} onChange={setFromDate} />
         </div>
-        <span className="text-[11px] text-gray-500">To Date</span>
+        <span className="text-[11px] text-[#000000]">To Date</span>
         <div className="w-32">
           <NepaliDatePicker value={toDate} onChange={setToDate} />
         </div>
-        <span className="text-[11px] text-gray-500">Party</span>
+        <span className="text-[11px] text-[#000000]">Party</span>
         <div className="w-48">
           <PartySelect value={partyId} onChange={setPartyId} placeholder="All parties" />
         </div>
-        <span className="text-[11px] text-gray-500">Payment Status</span>
+        <span className="text-[11px] text-[#000000]">Payment Status</span>
         <div className="w-32">
           <Select
             options={[

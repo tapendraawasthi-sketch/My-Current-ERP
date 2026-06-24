@@ -165,53 +165,53 @@ export default function PayrollRun() {
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-[#000000] flex items-center gap-2">
             <FileText className="w-5 h-5 text-[#1557b0]" /> Payroll Run
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Nepal SSF and Income Tax compliant</p>
+          <p className="text-[11px] text-[#000000] mt-0.5">Nepal SSF and Income Tax compliant</p>
         </div>
       </div>
 
-      <Card className="p-4 bg-white border border-gray-200">
+      <Card className="p-4 bg-white border border-[#9DC07A]">
         <div className="flex items-end gap-4">
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Year (BS)</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Year (BS)</label>
             <input 
               type="number" 
               value={selectedYear} 
               onChange={e => setSelectedYear(Number(e.target.value))}
-              className="h-8 px-2.5 w-24 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-24 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Month</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Month</label>
             <select 
               value={selectedMonth} 
               onChange={e => setSelectedMonth(e.target.value)}
-              className="h-8 px-2.5 w-32 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-32 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             >
               {nepaliMonths.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Working Days</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Working Days</label>
             <input 
               type="number" 
               value={workingDays} 
               onChange={e => setWorkingDays(Number(e.target.value))}
-              className="h-8 px-2.5 w-24 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-24 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             />
           </div>
-          <Button onClick={handleRunPayroll} className="bg-[#1557b0] hover:bg-[#0f4a96] text-white h-8 text-[12px]">
+          <Button onClick={handleRunPayroll} className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-8 text-[12px]">
             Run Payroll
           </Button>
         </div>
       </Card>
 
       {lines.length > 0 && (
-        <Card className="bg-white border border-gray-200">
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa]">
-            <h2 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+        <Card className="bg-white border border-[#9DC07A]">
+          <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#f5f6fa]">
+            <h2 className="text-[13px] font-semibold text-[#000000] flex items-center gap-2">
               Payroll Register ({selectedMonth} {selectedYear})
               {status === "approved" && <span className="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded">APPROVED</span>}
               {status === "posted" && <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded">POSTED</span>}
@@ -228,7 +228,7 @@ export default function PayrollRun() {
                 </Button>
               )}
               {status === "approved" && (
-                <Button onClick={handlePostAccounts} className="bg-[#1557b0] hover:bg-[#0f4a96] text-white h-7 text-[11px]">
+                <Button onClick={handlePostAccounts} className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-7 text-[11px]">
                   <Send className="w-3.5 h-3.5 mr-1" /> Post to Accounts
                 </Button>
               )}
@@ -238,22 +238,22 @@ export default function PayrollRun() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">Employee</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Basic</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Allowances</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Gross</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">SSF (Emp)</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">TDS</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Net Pay</th>
+                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase">Employee</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">Basic</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">Allowances</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">Gross</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">SSF (Emp)</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">TDS</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase">Net Pay</th>
                 </tr>
               </thead>
               <tbody>
                 {lines.map(line => (
-                  <tr key={line.employeeId} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{line.employeeName}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono">{formatNumber(line.basicSalary)}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono">{formatNumber(line.totalAllowances)}</td>
+                  <tr key={line.employeeId} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
+                    <td className="px-3 py-2.5 text-[12px] text-[#000000] font-medium">{line.employeeName}</td>
+                    <td className="px-3 py-2.5 text-[12px] text-[#000000] text-right font-mono">{formatNumber(line.basicSalary)}</td>
+                    <td className="px-3 py-2.5 text-[12px] text-[#000000] text-right font-mono">{formatNumber(line.totalAllowances)}</td>
                     <td className="px-3 py-2.5 text-[12px] text-[#1557b0] font-bold text-right font-mono">{formatNumber(line.grossSalary)}</td>
                     <td className="px-3 py-2.5 text-[12px] text-red-600 text-right font-mono">{formatNumber(line.ssfEmployee)}</td>
                     <td className="px-3 py-2.5 text-[12px] text-red-600 text-right font-mono">{formatNumber(line.incomeTax)}</td>

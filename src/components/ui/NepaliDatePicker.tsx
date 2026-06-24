@@ -155,7 +155,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
     <div
       id="ndp-popup"
       style={dropdownStyle}
-      className="bg-[#1a2744] text-white border border-[#2d4a8a] rounded-md shadow-2xl p-3 select-none"
+      className="bg-[#1a2744] text-[#000000] border border-[#2d4a8a] rounded-md shadow-2xl p-3 select-none"
     >
       {/* BS / AD Tab */}
       <div className="flex bg-[#243057] p-0.5 rounded mb-3">
@@ -165,7 +165,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`flex-1 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer ${
-              activeTab === tab ? "bg-[#3b6fd4] text-white shadow-sm" : "text-gray-300 hover:text-white"
+              activeTab === tab ? "bg-[#3b6fd4] text-white shadow-sm" : "text-[#000000] hover:text-white"
             }`}
           >
             {tab === "BS" ? "Nepali (B.S.)" : "English (A.D.)"}
@@ -191,7 +191,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           {/* Day Headers */}
           <div className="grid grid-cols-7 gap-0.5 text-center mb-1">
             {NEPALI_DAYS.map((d) => (
-              <div key={d} className="text-[9px] text-[#94a3b8] font-semibold py-0.5">{d}</div>
+              <div key={d} className="text-[9px] text-[#000000] font-semibold py-0.5">{d}</div>
             ))}
           </div>
  
@@ -225,12 +225,12 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
  
       {activeTab === "AD" && (
         <div className="py-1">
-          <label className="block text-[10px] text-gray-300 mb-1">Select AD Date</label>
+          <label className="block text-[10px] text-[#000000] mb-1">Select AD Date</label>
           <input
             type="date"
             value={value}
             onChange={(e) => { handleADChange(e.target.value); setIsOpen(false); }}
-            className="w-full h-8 px-2 text-[12px] bg-[#243057] border border-[#3b6fd4] rounded text-white focus:outline-none focus:ring-1 focus:ring-[#3b6fd4]"
+            className="w-full h-8 px-2 text-[12px] bg-[#243057] border border-[#3b6fd4] rounded text-[#000000] focus:outline-none focus:ring-1 focus:ring-[#3b6fd4]"
           />
         </div>
       )}
@@ -247,7 +247,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="flex-1 h-7 bg-transparent text-gray-300 hover:bg-[#243057] border border-[#2d4a8a] text-[11px] font-semibold rounded transition-colors cursor-pointer"
+          className="flex-1 h-7 bg-transparent text-[#000000] hover:bg-[#243057] border border-[#2d4a8a] text-[11px] font-semibold rounded transition-colors cursor-pointer"
         >
           Close
         </button>
@@ -295,8 +295,8 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
             onClick={isOpen ? () => setIsOpen(false) : openDropdown}
             className={`flex items-center justify-center border w-8 h-8 rounded-md shrink-0 transition-all focus:outline-none cursor-pointer ${
               isOpen
-                ? "bg-[#1557b0] border-[#1557b0] text-white"
-                : "border-gray-300 text-gray-700 hover:text-[#1557b0] hover:border-[#1557b0] hover:bg-gray-50"
+                ? "bg-[#3D6B25] border-[#1557b0] text-white"
+                : "border-[#9DC07A] text-[#000000] hover:text-[#1557b0] hover:border-[#1557b0] hover:bg-[#EBF5E2]"
             }`}
           >
             <CalendarIcon className="h-4 w-4" />

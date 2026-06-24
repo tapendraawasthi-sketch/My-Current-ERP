@@ -108,12 +108,12 @@ export default function FiscalYear() {
         </span>
       );
     const classes: Record<string, string> = {
-      active: "bg-blue-100 text-blue-700",
-      closed: "bg-gray-100 text-gray-700",
+      active: "bg-[#D4EABD] text-[#000000]",
+      closed: "bg-[#EBF5E2] text-[#000000]",
       future: "bg-amber-100 text-amber-700",
     };
     return (
-      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded ${classes[status] || "bg-gray-100 text-gray-700"}`}>
+      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded ${classes[status] || "bg-[#EBF5E2] text-[#000000]"}`}>
         {status}
       </span>
     );
@@ -123,44 +123,44 @@ export default function FiscalYear() {
     <div className="flex flex-col gap-4 animate-fadeIn pb-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Fiscal Year Management</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-[#000000]">Fiscal Year Management</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">
             Manage accounting periods and process year-end closings
           </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm"
+          className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm"
         >
           <Plus className="w-4 h-4" /> Create New Year
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] overflow-hidden">
         <table className="w-full">
-          <thead className="bg-[#f5f6fa] border-b border-gray-200">
+          <thead className="bg-[#f5f6fa] border-b border-[#9DC07A]">
             <tr>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Label</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Start Date (AD)</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">End Date (AD)</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">BS Period</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Label</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Start Date (AD)</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">End Date (AD)</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">BS Period</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody>
             {fiscalYears.map((fy) => (
-              <tr key={fy.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{fy.name}</td>
-                <td className="px-3 py-2.5 text-[12px] text-gray-600">{fy.startDate || "—"}</td>
-                <td className="px-3 py-2.5 text-[12px] text-gray-600">{fy.endDate || "—"}</td>
-                <td className="px-3 py-2.5 text-[12px] text-gray-500">{fy.fiscalYearBS || "—"}</td>
+              <tr key={fy.id} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
+                <td className="px-3 py-2.5 text-[12px] font-medium text-[#000000]">{fy.name}</td>
+                <td className="px-3 py-2.5 text-[12px] text-[#000000]">{fy.startDate || "—"}</td>
+                <td className="px-3 py-2.5 text-[12px] text-[#000000]">{fy.endDate || "—"}</td>
+                <td className="px-3 py-2.5 text-[12px] text-[#000000]">{fy.fiscalYearBS || "—"}</td>
                 <td className="px-3 py-2.5">{getStatusBadge(fy.status, fy.isCurrent)}</td>
                 <td className="px-3 py-2.5 text-right flex items-center justify-end gap-2">
                   {!fy.isCurrent && fy.status !== FiscalYearStatus.CLOSED && (
                     <button
                       onClick={() => handleSetActive(fy.id)}
-                      className="px-2 py-1 bg-white border border-[#1557b0] text-[#1557b0] hover:bg-[#1557b0] hover:text-white rounded text-[10px] font-bold uppercase transition-colors"
+                      className="px-2 py-1 bg-white border border-[#1557b0] text-[#1557b0] hover:bg-[#3D6B25] hover:text-white rounded text-[10px] font-bold uppercase transition-colors"
                     >
                       Set Active
                     </button>
@@ -168,7 +168,7 @@ export default function FiscalYear() {
                   {(fy.isCurrent || fy.status === FiscalYearStatus.ACTIVE) && (
                     <button
                       onClick={() => setShowCloseModal(fy.id)}
-                      className="px-2 py-1 bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1"
+                      className="px-2 py-1 bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-[#000000] rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1"
                     >
                       <Lock className="w-3 h-3" /> Close Year
                     </button>
@@ -179,7 +179,7 @@ export default function FiscalYear() {
           </tbody>
         </table>
         {fiscalYears.length === 0 && (
-          <div className="p-8 text-center text-gray-500 text-[12px]">
+          <div className="p-8 text-center text-[#000000] text-[12px]">
             No fiscal years configured. Click "Create New Year" to begin.
           </div>
         )}
@@ -189,14 +189,14 @@ export default function FiscalYear() {
       {showForm && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col" style={{ maxHeight: "90vh" }}>
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa] rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#f5f6fa] rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-[#1557b0]" /> Create Fiscal Year
               </h2>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+                className="text-[#000000] hover:text-[#000000] text-xl leading-none"
               >
                 &times;
               </button>
@@ -206,7 +206,7 @@ export default function FiscalYear() {
               <form onSubmit={handleSubmit}>
                 <div className="space-y-5">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
                       Label (e.g. 2081/2082) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -215,7 +215,7 @@ export default function FiscalYear() {
                       placeholder="2081/82"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                     />
                   </div>
 
@@ -243,24 +243,24 @@ export default function FiscalYear() {
                     )}
                   </div>
 
-                  <div className="bg-blue-50 text-blue-700 text-[11px] p-3 rounded border border-blue-100 flex items-start gap-2">
+                  <div className="bg-[#D4EABD] text-[#000000] text-[11px] p-3 rounded border border-[#9DC07A] flex items-start gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                     <p>Fiscal year dates should not overlap. The new year will be marked as "future" until activated.</p>
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-100">
+                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-[#9DC07A]">
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                    className="h-8 px-4 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] disabled:bg-gray-400 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                    className="h-8 px-4 bg-[#3D6B25] hover:bg-[#2D5A1A] disabled:bg-[#EBF5E2] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                   >
                     {isSubmitting ? (
                       <>
@@ -287,12 +287,12 @@ export default function FiscalYear() {
                 <AlertTriangle className="w-4 h-4" /> Confirm Year-End Closure
               </h2>
             </div>
-            <div className="p-4 text-[12px] text-gray-700 space-y-3">
+            <div className="p-4 text-[12px] text-[#000000] space-y-3">
               <p>
                 You are about to permanently close{" "}
                 <b>{fiscalYears.find((f) => f.id === showCloseModal)?.name}</b>. This will:
               </p>
-              <ul className="space-y-2 list-disc list-inside text-gray-600">
+              <ul className="space-y-2 list-disc list-inside text-[#000000]">
                 <li>Mark the fiscal year as Closed.</li>
                 <li>Record who closed it and when.</li>
                 <li>Lock the year to prevent further changes.</li>
@@ -301,16 +301,16 @@ export default function FiscalYear() {
                 <Lock className="w-4 h-4 shrink-0" /> This action is irreversible. Back up your data first.
               </div>
             </div>
-            <div className="flex justify-end gap-2 p-4 bg-gray-50 border-t border-gray-100">
+            <div className="flex justify-end gap-2 p-4 bg-[#EBF5E2] border-t border-[#9DC07A]">
               <button
                 onClick={() => setShowCloseModal(null)}
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-4 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleCloseYear(showCloseModal)}
-                className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md shadow-sm"
+                className="h-8 px-4 bg-red-600 hover:bg-red-700 text-[#000000] text-[12px] font-medium rounded-md shadow-sm"
               >
                 Proceed & Close Year
               </button>

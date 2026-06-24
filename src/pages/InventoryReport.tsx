@@ -50,7 +50,7 @@ const InventoryReport: React.FC = () => {
     }
     reorderLevel = reorderLevel || 0;
 
-    let className = "text-gray-800";
+    let className = "text-[#000000]";
     if (qty === 0) className = "text-red-600 font-bold";
     else if (qty < reorderLevel) className = "text-amber-600";
 
@@ -99,7 +99,7 @@ const InventoryReport: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
       <ActionToolbar title="Inventory Report" subtitle="Item-wise stock movements" />
-      <div className="flex flex-wrap justify-end gap-2 border-b border-gray-200 pb-5">
+      <div className="flex flex-wrap justify-end gap-2 border-b border-[#9DC07A] pb-5">
         <Button variant="outline" size="sm" onClick={handleExport}>
           Export
         </Button>
@@ -108,21 +108,21 @@ const InventoryReport: React.FC = () => {
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "valuation" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"}`}
+          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "valuation" ? "bg-[#EBF5E2] text-white" : "bg-[#EBF5E2] text-[#000000]"}`}
           onClick={() => setActiveTab("valuation")}
         >
           Stock Valuation
         </button>
         <button
           type="button"
-          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "batch" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"}`}
+          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "batch" ? "bg-[#EBF5E2] text-white" : "bg-[#EBF5E2] text-[#000000]"}`}
           onClick={() => setActiveTab("batch")}
         >
           Batch Tracking
         </button>
         <button
           type="button"
-          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "reorder" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"}`}
+          className={`rounded-lg px-4 py-2 text-xs font-bold ${activeTab === "reorder" ? "bg-[#EBF5E2] text-white" : "bg-[#EBF5E2] text-[#000000]"}`}
           onClick={() => setActiveTab("reorder")}
         >
           Reorder Report
@@ -162,7 +162,7 @@ const InventoryReport: React.FC = () => {
       )}
 
       {activeTab === "batch" && (
-        <Card border padding="md" className="text-center text-slate-500">
+        <Card border padding="md" className="text-center text-[#000000]">
           <div className="py-10">Batch tracking is not enabled or no batch data available.</div>
         </Card>
       )}

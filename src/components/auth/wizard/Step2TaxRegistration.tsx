@@ -13,20 +13,20 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Tax Registration</h2>
-        <p className="text-sm text-gray-600 mt-1">Enter your tax registration details</p>
+        <h2 className="text-2xl font-bold text-[#000000]">Tax Registration</h2>
+        <p className="text-sm text-[#000000] mt-1">Enter your tax registration details</p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">
             PAN / VAT Registration Number
           </label>
           <input
             type="text"
             value={data.panNumber}
             onChange={(e) => onChange({ ...data, panNumber: e.target.value })}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
             maxLength={9}
             placeholder="e.g. 123456789"
@@ -42,21 +42,21 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
               type="checkbox"
               checked={data.hasVAT}
               onChange={(e) => onChange({ ...data, hasVAT: e.target.checked })}
-              className="rounded border-gray-300"
+              className="rounded border-[#9DC07A]"
             />
-            <span className="text-sm font-medium text-gray-700">VAT Registered</span>
+            <span className="text-sm font-medium text-[#000000]">VAT Registered</span>
           </label>
 
           {data.hasVAT && (
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">
                 VAT Registration Number
               </label>
               <input
                 type="text"
                 value={data.vatNumber}
                 onChange={(e) => onChange({ ...data, vatNumber: e.target.value })}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 placeholder="VAT Number"
               />
             </div>
@@ -64,13 +64,13 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">
             IRD Office (Province) *
           </label>
           <select
             value={data.irdProvince}
             onChange={(e) => onChange({ ...data, irdProvince: e.target.value })}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
           >
             <option value="">Select Province</option>
@@ -85,11 +85,11 @@ export default function Step2TaxRegistration({ data, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Fiscal Year *</label>
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">Fiscal Year *</label>
           <select
             value={data.fiscalYear}
             onChange={(e) => onChange({ ...data, fiscalYear: e.target.value })}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             required
           >
             <option value="">Select Fiscal Year</option>

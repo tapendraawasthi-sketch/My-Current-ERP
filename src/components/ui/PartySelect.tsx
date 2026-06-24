@@ -74,28 +74,28 @@ const PartySelect: React.FC<PartySelectProps> = ({
 
   return (
     <div className="flex flex-col gap-1 w-full relative" ref={containerRef} id={id}>
-      {label && <label className="text-[11px] font-semibold text-gray-700">{label}</label>}
+      {label && <label className="text-[11px] font-semibold text-[#000000]">{label}</label>}
 
       <div className="relative w-full">
         <button
           type="button"
           disabled={disabled}
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full h-8 px-2.5 text-left text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-gray-50 disabled:cursor-not-allowed"
+          className="w-full h-8 px-2.5 text-left text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-[#EBF5E2] disabled:cursor-not-allowed"
         >
           <span className="truncate">
             {selectedParty
               ? `${getPrefix(selectedParty.type)} ${selectedParty.name}`
               : placeholder}
           </span>
-          <ChevronDown className="h-3 w-3 text-gray-400 shrink-0 ml-1" />
+          <ChevronDown className="h-3 w-3 text-[#000000] shrink-0 ml-1" />
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
+          <div className="absolute z-50 w-full mt-1 bg-white border border-[#9DC07A] rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
             {/* Search input */}
-            <div className="p-1 border-b border-gray-150 flex items-center gap-1 bg-slate-50 shrink-0">
-              <Search className="h-3 w-3 text-gray-400 ml-1.5" />
+            <div className="p-1 border-b border-[#9DC07A] flex items-center gap-1 bg-[#EBF5E2] shrink-0">
+              <Search className="h-3 w-3 text-[#000000] ml-1.5" />
               <input
                 type="text"
                 value={search}
@@ -109,7 +109,7 @@ const PartySelect: React.FC<PartySelectProps> = ({
             {/* List */}
             <div className="overflow-y-auto max-h-52 py-1">
               {filteredParties.length === 0 ? (
-                <div className="px-3 py-2 text-[11px] text-gray-400 text-center font-bold">
+                <div className="px-3 py-2 text-[11px] text-[#000000] text-center font-bold">
                   No matching parties
                 </div>
               ) : (
@@ -127,8 +127,8 @@ const PartySelect: React.FC<PartySelectProps> = ({
                       }}
                       className={`w-full px-3 py-1.5 text-left text-[12px] transition-colors flex items-center justify-between ${
                         isSelected
-                          ? "bg-blue-50 text-blue-700 font-semibold"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? "bg-[#D4EABD] text-[#000000] font-semibold"
+                          : "text-[#000000] hover:bg-[#EBF5E2]"
                       }`}
                     >
                       <span className="truncate">

@@ -110,33 +110,33 @@ export default function AgingReport() {
       <FormPanel>
         <div className="flex items-end gap-4 mb-6 no-print">
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Party Type</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Party Type</label>
             <select 
               value={partyType} 
               onChange={e => setPartyType(e.target.value as any)}
-              className="h-8 px-2.5 w-40 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] bg-white"
+              className="h-8 px-2.5 w-40 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] bg-white"
             >
               <option value="customer">Receivables (Customers)</option>
               <option value="supplier">Payables (Suppliers)</option>
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">As Of Date</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">As Of Date</label>
             <input 
               type="date" 
               value={asOfDate} 
               onChange={e => setAsOfDate(e.target.value)}
-              className="h-8 px-2.5 w-40 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-40 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             />
           </div>
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Search Party</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Search Party</label>
             <input 
               type="text" 
               placeholder="Search by name..."
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)}
-              className="h-8 px-2.5 w-full max-w-xs text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-full max-w-xs text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             />
           </div>
           <div className="flex gap-2">
@@ -144,7 +144,7 @@ export default function AgingReport() {
               <Printer className="w-3.5 h-3.5 mr-1.5" />
               Print
             </Button>
-            <Button className="h-8 bg-[#1557b0] hover:bg-[#0f4a96] text-white" onClick={handleExportPDF}>
+            <Button className="h-8 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white" onClick={handleExportPDF}>
               <Download className="w-3.5 h-3.5 mr-1.5" />
               Export PDF
             </Button>
@@ -152,45 +152,45 @@ export default function AgingReport() {
         </div>
 
         <div className="print-only hidden mb-6 text-center">
-          <h2 className="text-[15px] font-bold text-gray-900">{companySettings?.companyName || "Company Name"}</h2>
+          <h2 className="text-[15px] font-bold text-[#000000]">{companySettings?.companyName || "Company Name"}</h2>
           <h3 className="text-[14px] font-semibold mt-2">Aging Report - {partyType === "customer" ? "Receivables" : "Payables"}</h3>
-          <p className="text-[11px] text-gray-500">As of Date: {asOfDate}</p>
+          <p className="text-[11px] text-[#000000]">As of Date: {asOfDate}</p>
         </div>
 
-        <div className="border border-gray-200 rounded-lg bg-white overflow-x-auto shadow-sm">
+        <div className="border border-[#9DC07A] rounded-lg bg-white overflow-x-auto shadow-sm">
           <table className="w-full whitespace-nowrap">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party Name</th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Contact</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Current</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">1-30 Days</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">31-60 Days</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">61-90 Days</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">91-180 Days</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">181-365 Days</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">&gt; 365 Days</th>
+              <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Party Name</th>
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Contact</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Current</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">1-30 Days</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">31-60 Days</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">61-90 Days</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">91-180 Days</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">181-365 Days</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">&gt; 365 Days</th>
                 <th className="px-3 py-2.5 text-right text-[10px] font-bold text-[#1557b0] uppercase tracking-wide">Total Balance</th>
               </tr>
             </thead>
             <tbody>
               {agingData.map(row => (
-                <tr key={row.partyId} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-3 py-2.5 text-[12px] text-gray-800 font-medium">{row.partyName}</td>
-                  <td className="px-3 py-2.5 text-[11px] text-gray-500">{row.contactPhone || "-"}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-700">{row.current > 0 ? formatNumber(row.current) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days1to30 > 0 ? "bg-amber-50 text-amber-700" : "text-gray-400"}`}>{row.days1to30 > 0 ? formatNumber(row.days1to30) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days31to60 > 0 ? "bg-orange-50 text-orange-700" : "text-gray-400"}`}>{row.days31to60 > 0 ? formatNumber(row.days31to60) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days61to90 > 0 ? "bg-red-50 text-red-600" : "text-gray-400"}`}>{row.days61to90 > 0 ? formatNumber(row.days61to90) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days91to180 > 0 ? "bg-red-100 text-red-700" : "text-gray-400"}`}>{row.days91to180 > 0 ? formatNumber(row.days91to180) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days181to365 > 0 ? "bg-red-200 text-red-800" : "text-gray-400"}`}>{row.days181to365 > 0 ? formatNumber(row.days181to365) : "-"}</td>
-                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.over365 > 0 ? "bg-red-300 text-red-900 font-bold" : "text-gray-400"}`}>{row.over365 > 0 ? formatNumber(row.over365) : "-"}</td>
+                <tr key={row.partyId} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
+                  <td className="px-3 py-2.5 text-[12px] text-[#000000] font-medium">{row.partyName}</td>
+                  <td className="px-3 py-2.5 text-[11px] text-[#000000]">{row.contactPhone || "-"}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-[#000000]">{row.current > 0 ? formatNumber(row.current) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days1to30 > 0 ? "bg-amber-50 text-amber-700" : "text-[#000000]"}`}>{row.days1to30 > 0 ? formatNumber(row.days1to30) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days31to60 > 0 ? "bg-orange-50 text-orange-700" : "text-[#000000]"}`}>{row.days31to60 > 0 ? formatNumber(row.days31to60) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days61to90 > 0 ? "bg-red-50 text-red-600" : "text-[#000000]"}`}>{row.days61to90 > 0 ? formatNumber(row.days61to90) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days91to180 > 0 ? "bg-red-100 text-red-700" : "text-[#000000]"}`}>{row.days91to180 > 0 ? formatNumber(row.days91to180) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.days181to365 > 0 ? "bg-red-200 text-red-800" : "text-[#000000]"}`}>{row.days181to365 > 0 ? formatNumber(row.days181to365) : "-"}</td>
+                  <td className={`px-3 py-2.5 text-[12px] text-right font-mono ${row.over365 > 0 ? "bg-red-300 text-red-900 font-bold" : "text-[#000000]"}`}>{row.over365 > 0 ? formatNumber(row.over365) : "-"}</td>
                   <td className="px-3 py-2.5 text-[12px] text-right font-mono font-bold text-[#1557b0]">{formatNumber(row.total)}</td>
                 </tr>
               ))}
               {agingData.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-3 py-8 text-center text-[12px] text-gray-500">
+                  <td colSpan={10} className="px-3 py-8 text-center text-[12px] text-[#000000]">
                     No outstanding {partyType === "customer" ? "receivables" : "payables"} found.
                   </td>
                 </tr>

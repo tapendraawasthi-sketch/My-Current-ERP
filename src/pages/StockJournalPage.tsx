@@ -208,7 +208,7 @@ const StockJournalPage: React.FC = () => {
     {
       key: "journalNo",
       header: "Journal No",
-      render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
     { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     {
@@ -254,7 +254,7 @@ const StockJournalPage: React.FC = () => {
             Post
           </Button>
         ) : (
-          <span className="text-xs text-slate-500">—</span>
+          <span className="text-xs text-[#000000]">—</span>
         ),
     },
   ];
@@ -263,23 +263,23 @@ const StockJournalPage: React.FC = () => {
     return (
       <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
         <ActionToolbar title="Stock Journal" subtitle="Stock transfer and adjustment entries" />
-        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
                 setMode("list");
                 resetForm();
               }}
-              className="p-2 rounded-md hover:bg-gray-100 text-gray-500"
+              className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
             >
               <ArrowLeftRight className="h-4 w-4" />
             </button>
             <div>
-              <h2 className="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
                 <Package className="h-5 w-5 text-[#1557b0]" />
                 STOCK JOURNAL TRANSFER
               </h2>
-              <p className="text-[11px] text-slate-400 mt-0.5 uppercase tracking-wider font-bold">
+              <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
                 Transfer inventory between warehouses
               </p>
             </div>
@@ -313,7 +313,7 @@ const StockJournalPage: React.FC = () => {
               return (
                 <div
                   key={line.id}
-                  className="grid gap-3 md:grid-cols-6 items-end border-b border-gray-200 pb-3 last:border-0 last:pb-0"
+                  className="grid gap-3 md:grid-cols-6 items-end border-b border-[#9DC07A] pb-3 last:border-0 last:pb-0"
                 >
                   <div className="md:col-span-2">
                     <ItemSelect
@@ -360,8 +360,8 @@ const StockJournalPage: React.FC = () => {
                     required
                   />
                   <div className="space-y-1">
-                    <div className="text-xs font-semibold text-slate-600">Line Value</div>
-                    <div className="text-right text-slate-800 font-mono">
+                    <div className="text-xs font-semibold text-[#000000]">Line Value</div>
+                    <div className="text-right text-[#000000] font-mono">
                       {symbol} {formatNumber((line.qty || 0) * (line.rate || 0))}
                     </div>
                     <Button size="xs" variant="danger" onClick={() => removeLine(line.id)}>
@@ -381,14 +381,14 @@ const StockJournalPage: React.FC = () => {
               >
                 Add Line
               </Button>
-              <div className="text-right text-[11px] text-slate-500">
+              <div className="text-right text-[11px] text-[#000000]">
                 Total Qty:{" "}
-                <span className="font-semibold text-slate-700">
+                <span className="font-semibold text-[#000000]">
                   {formatNumber(totals.totalQty)}
                 </span>
                 <br />
                 Total Value:{" "}
-                <span className="font-semibold text-slate-700">
+                <span className="font-semibold text-[#000000]">
                   {symbol} {formatNumber(totals.totalValue)}
                 </span>
               </div>
@@ -423,13 +423,13 @@ const StockJournalPage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-            <Transfer className="h-5 w-5 text-blue-700" />
+          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
+            <Transfer className="h-5 w-5 text-[#000000]" />
             STOCK JOURNAL TRANSFERS
           </h2>
-          <p className="text-xs text-gray-400 mt-1 leading-none uppercase tracking-wider font-semibold">
+          <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-semibold">
             Draft and post warehouse transfer journals
           </p>
         </div>

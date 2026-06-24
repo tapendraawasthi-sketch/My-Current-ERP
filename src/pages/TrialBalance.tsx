@@ -121,10 +121,10 @@ const TrialBalance: React.FC = () => {
       <React.Fragment key={nature}>
         {/* Group Header Row */}
         <tr
-          className="bg-[#f8fafc] border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+          className="bg-[#f8fafc] border-b border-[#9DC07A] cursor-pointer hover:bg-[#EBF5E2] transition-colors"
           onClick={() => toggleGroup(nature)}
         >
-          <td className="px-3 py-2 text-[12px] font-semibold text-gray-800 flex items-center gap-1">
+          <td className="px-3 py-2 text-[12px] font-semibold text-[#000000] flex items-center gap-1">
             {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             {label}
           </td>
@@ -139,14 +139,14 @@ const TrialBalance: React.FC = () => {
         {/* Children Rows */}
         {!isCollapsed &&
           rows.map((r) => (
-            <tr key={r.accountId} className="border-b border-gray-100 hover:bg-[#f5f6fa] transition-colors">
-              <td className="px-3 py-2 text-[12px] text-gray-700 pl-8">{r.accountName}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-600">{r.openingDr ? formatNumber(r.openingDr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-600">{r.openingCr ? formatNumber(r.openingCr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-600">{r.periodDebit ? formatNumber(r.periodDebit) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-600">{r.periodCredit ? formatNumber(r.periodCredit) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-800">{r.closingDr ? formatNumber(r.closingDr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-800">{r.closingCr ? formatNumber(r.closingCr) : ""}</td>
+            <tr key={r.accountId} className="border-b border-[#9DC07A] hover:bg-[#f5f6fa] transition-colors">
+              <td className="px-3 py-2 text-[12px] text-[#000000] pl-8">{r.accountName}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.openingDr ? formatNumber(r.openingDr) : ""}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.openingCr ? formatNumber(r.openingCr) : ""}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.periodDebit ? formatNumber(r.periodDebit) : ""}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.periodCredit ? formatNumber(r.periodCredit) : ""}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.closingDr ? formatNumber(r.closingDr) : ""}</td>
+              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.closingCr ? formatNumber(r.closingCr) : ""}</td>
             </tr>
           ))}
       </React.Fragment>
@@ -162,13 +162,13 @@ const TrialBalance: React.FC = () => {
           <div className="print-only hidden mb-6 text-center">
             <h1 className="text-xl font-bold">{companySettings?.companyNameEn || "Sutra ERP"}</h1>
             <h2 className="text-lg font-semibold mt-1">Trial Balance</h2>
-            <p className="text-sm text-gray-600 mt-1">As of: {asOfDate}</p>
+            <p className="text-sm text-[#000000] mt-1">As of: {asOfDate}</p>
           </div>
 
           <div className="flex items-center justify-between mb-4 no-print">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Summary of all ledger balances</p>
+              <h1 className="text-[15px] font-semibold text-[#000000]">Trial Balance</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">Summary of all ledger balances</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -206,22 +206,22 @@ const TrialBalance: React.FC = () => {
             </div>
           )}
 
-          <div className="w-full overflow-x-auto border border-gray-200 rounded-lg shadow-sm bg-white mb-4">
+          <div className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white mb-4">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th rowSpan={2} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide align-middle border-r border-gray-200">Particulars</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-r border-gray-200">Opening Balance</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-r border-gray-200">Transactions</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">Closing Balance</th>
+                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                  <th rowSpan={2} className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide align-middle border-r border-[#9DC07A]">Particulars</th>
+                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-r border-[#9DC07A]">Opening Balance</th>
+                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-r border-[#9DC07A]">Transactions</th>
+                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-[#9DC07A]">Closing Balance</th>
                 </tr>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Credit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Credit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Credit</th>
+                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Credit</th>
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Credit</th>
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
+                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Credit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-150">
@@ -232,7 +232,7 @@ const TrialBalance: React.FC = () => {
 
                 {rawRows.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="text-center py-6 text-gray-400 text-[12px]">
+                    <td colSpan={7} className="text-center py-6 text-[#000000] text-[12px]">
                       No balances to display.
                     </td>
                   </tr>
@@ -242,8 +242,8 @@ const TrialBalance: React.FC = () => {
                 <tfoot>
                   <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
                     <td className="px-3 py-2.5 pl-3">Grand Total</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">{totals.openingDr > 0 ? formatNumber(totals.openingDr) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">{totals.openingCr > 0 ? formatNumber(totals.openingCr) : ""}</td>
+                    <td className="px-3 py-2.5 text-right font-mono text-[#000000]">{totals.openingDr > 0 ? formatNumber(totals.openingDr) : ""}</td>
+                    <td className="px-3 py-2.5 text-right font-mono text-[#000000]">{totals.openingCr > 0 ? formatNumber(totals.openingCr) : ""}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">{totals.periodDebit > 0 ? formatNumber(totals.periodDebit) : ""}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-red-600">{totals.periodCredit > 0 ? formatNumber(totals.periodCredit) : ""}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">{totals.closingDr > 0 ? formatNumber(totals.closingDr) : ""}</td>

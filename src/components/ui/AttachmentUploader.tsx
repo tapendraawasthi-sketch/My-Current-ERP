@@ -40,10 +40,10 @@ const AttachmentUploader: React.FC<Props> = ({ attachments, onAdd, onRemove, max
         {attachments.map((att, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-1 bg-slate-100 rounded-lg px-2 py-1 text-xs"
+            className="flex items-center gap-1 bg-[#EBF5E2] rounded-lg px-2 py-1 text-xs"
           >
             {att.startsWith("data:image") ? (
-              <Image className="h-3 w-3 text-blue-500" />
+              <Image className="h-3 w-3 text-[#000000]" />
             ) : (
               <FileText className="h-3 w-3 text-red-500" />
             )}
@@ -51,14 +51,14 @@ const AttachmentUploader: React.FC<Props> = ({ attachments, onAdd, onRemove, max
               href={att}
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-[#000000] hover:underline"
             >
               {att.startsWith("data:image") ? `Image ${idx + 1}` : `PDF ${idx + 1}`}
             </a>
             <button
               type="button"
               onClick={() => onRemove(idx)}
-              className="text-slate-400 hover:text-red-500 ml-1"
+              className="text-[#000000] hover:text-red-500 ml-1"
             >
               <X className="h-3 w-3" />
             </button>
@@ -66,7 +66,7 @@ const AttachmentUploader: React.FC<Props> = ({ attachments, onAdd, onRemove, max
         ))}
       </div>
       {attachments.length < (maxFiles || 5) && (
-        <label className="flex items-center gap-1.5 cursor-pointer text-xs text-blue-600 hover:text-blue-800 w-fit">
+        <label className="flex items-center gap-1.5 cursor-pointer text-xs text-[#000000] hover:text-[#000000] w-fit">
           <Paperclip className="h-3.5 w-3.5" />
           <span>Attach file (PDF/JPG/PNG, max 5MB)</span>
           <input

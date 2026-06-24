@@ -219,16 +219,16 @@ const BankStatementImport: React.FC = () => {
         subtitle="Import bank statements for reconciliation"
       />
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-slate-150 pb-5">
+      <div className="flex items-center gap-3 border-b border-[#9DC07A] pb-5">
         <button
           onClick={() => setCurrentPage("bank-reconciliation")}
-          className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"
+          className="p-2 rounded-lg hover:bg-[#EBF5E2] text-[#000000] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div>
-          <h2 className="text-lg font-bold text-slate-800 tracking-tight">Import Bank Statement</h2>
-          <p className="text-[11px] text-slate-400 font-extrabold uppercase tracking-wider mt-0.5">
+          <h2 className="text-lg font-bold text-[#000000] tracking-tight">Import Bank Statement</h2>
+          <p className="text-[11px] text-[#000000] font-extrabold uppercase tracking-wider mt-0.5">
             Load transactions from CSV to match with general ledger
           </p>
         </div>
@@ -237,15 +237,15 @@ const BankStatementImport: React.FC = () => {
       {/* Selector & Guide Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {/* Bank select & Upload */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4">
+        <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400">
+            <span className="text-[10px] uppercase font-bold text-[#000000]">
               Target Bank Account
             </span>
             <select
               value={selectedBankAccountId}
               onChange={(e) => setSelectedBankAccountId(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-indigo-500"
+              className="w-full border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] bg-white focus:outline-none focus:border-indigo-500"
             >
               {bankAccounts.map((ba) => (
                 <option key={ba.id} value={ba.id}>
@@ -256,13 +256,13 @@ const BankStatementImport: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400">
+            <span className="text-[10px] uppercase font-bold text-[#000000]">
               Bank Format Preset
             </span>
             <select
               value={bankPreset}
               onChange={(e) => setBankPreset(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-indigo-500"
+              className="w-full border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] bg-white focus:outline-none focus:border-indigo-500"
             >
               {BANK_PRESETS.map((p) => (
                 <option key={p.value} value={p.value}>
@@ -278,16 +278,16 @@ const BankStatementImport: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400">Select CSV file</span>
+            <span className="text-[10px] uppercase font-bold text-[#000000]">Select CSV file</span>
             <div className="flex gap-2">
-              <label className="flex-1 flex items-center justify-between border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 text-slate-500 hover:bg-slate-100 cursor-pointer transition-colors font-medium">
+              <label className="flex-1 flex items-center justify-between border border-[#9DC07A] rounded-lg px-3 py-2 bg-[#EBF5E2] text-[#000000] hover:bg-[#EBF5E2] cursor-pointer transition-colors font-medium">
                 <span className="truncate">{fileName || "Choose File..."}</span>
-                <Upload className="h-3.5 w-3.5 text-slate-400 shrink-0 ml-2" />
+                <Upload className="h-3.5 w-3.5 text-[#000000] shrink-0 ml-2" />
                 <input type="file" accept=".csv" className="hidden" onChange={handleFileChange} />
               </label>
               <button
                 onClick={handleParse}
-                className="bg-[#1557b0] hover:bg-indigo-500 text-white font-extrabold px-4 py-2 rounded-lg transition-colors shrink-0 uppercase tracking-wider"
+                className="bg-[#3D6B25] hover:bg-indigo-500 text-white font-extrabold px-4 py-2 rounded-lg transition-colors shrink-0 uppercase tracking-wider"
               >
                 Parse CSV
               </button>
@@ -296,44 +296,44 @@ const BankStatementImport: React.FC = () => {
         </div>
 
         {/* Guide info */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <FileText className="h-[18px] w-[18px] text-slate-500" />
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            <FileText className="h-[18px] w-[18px] text-[#000000]" />
+            <h3 className="text-xs font-bold text-[#000000] uppercase tracking-wider">
               CSV Format Guide
             </h3>
           </div>
-          <ul className="list-disc pl-4 text-slate-500 space-y-1 font-medium mb-3">
+          <ul className="list-disc pl-4 text-[#000000] space-y-1 font-medium mb-3">
             <li>
               Required columns:{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 date
               </code>{" "}
               (YYYY-MM-DD),{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 narration
               </code>
               ,{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 debit
               </code>
               ,{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 credit
               </code>
             </li>
             <li>
               Optional columns:{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 balance
               </code>
               ,{" "}
-              <code className="bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold text-[10px]">
+              <code className="bg-[#EBF5E2] text-[#000000] px-1 py-0.5 rounded font-mono font-bold text-[10px]">
                 cheque_no
               </code>
             </li>
           </ul>
-          <div className="bg-slate-900 text-slate-300 font-mono p-3 rounded-lg text-[10.5px] overflow-x-auto whitespace-pre leading-relaxed border border-slate-950">
+          <div className="bg-[#EBF5E2] text-[#000000] font-mono p-3 rounded-lg text-[10.5px] overflow-x-auto whitespace-pre leading-relaxed border border-[#9DC07A]">
             {`date,narration,debit,credit,balance,cheque_no\n2026-06-18,Party Payment,0.00,12500.00,12500.00,CHQ8890\n2026-06-19,Bank Charges,350.00,0.00,12150.00,`}
           </div>
         </div>
@@ -341,31 +341,31 @@ const BankStatementImport: React.FC = () => {
 
       {/* Preview Table */}
       {parsedRows.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 animate-fadeIn">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+        <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm flex flex-col gap-4 animate-fadeIn">
+          <div className="flex items-center justify-between border-b border-[#9DC07A] pb-3">
+            <h3 className="text-sm font-bold text-[#000000] uppercase tracking-wider">
               Statement Preview
             </h3>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => toggleSelectAll(true)}
-                className="text-[10px] font-bold text-[#1557b0] hover:text-indigo-800 hover:underline uppercase"
+                className="text-[10px] font-bold text-[#1557b0] hover:text-[#000000] hover:underline uppercase"
               >
                 Select All
               </button>
-              <span className="text-slate-200">|</span>
+              <span className="text-[#000000]">|</span>
               <button
                 onClick={() => toggleSelectAll(false)}
-                className="text-[10px] font-bold text-[#1557b0] hover:text-indigo-800 hover:underline uppercase"
+                className="text-[10px] font-bold text-[#1557b0] hover:text-[#000000] hover:underline uppercase"
               >
                 Deselect All
               </button>
             </div>
           </div>
 
-          <div className="overflow-x-auto border border-slate-100 rounded-lg">
+          <div className="overflow-x-auto border border-[#9DC07A] rounded-lg">
             <table className="w-full text-xs">
-              <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-150">
+              <thead className="bg-[#EBF5E2] text-[10px] font-bold text-[#000000] uppercase tracking-wider border-b border-[#9DC07A]">
                 <tr>
                   <th className="py-2 px-3 text-center w-10"></th>
                   <th className="py-2 px-2 text-left w-24">Date</th>
@@ -380,25 +380,25 @@ const BankStatementImport: React.FC = () => {
                 {parsedRows.map((row, idx) => (
                   <tr
                     key={idx}
-                    className={`hover:bg-slate-50/50 ${checkedIndices.has(idx) ? "" : "opacity-60 bg-slate-50/20"}`}
+                    className={`hover:bg-[#EBF5E2]/50 ${checkedIndices.has(idx) ? "" : "opacity-60 bg-[#EBF5E2]/20"}`}
                   >
                     <td className="py-2.5 px-3 text-center">
                       <input
                         type="checkbox"
                         checked={checkedIndices.has(idx)}
                         onChange={() => handleToggleRow(idx)}
-                        className="h-3.5 w-3.5 rounded border-slate-300 text-[#1557b0] focus:ring-indigo-500"
+                        className="h-3.5 w-3.5 rounded border-[#9DC07A] text-[#1557b0] focus:ring-indigo-500"
                       />
                     </td>
-                    <td className="py-2.5 px-2 font-mono font-bold text-slate-700">{row.date}</td>
-                    <td className="py-2.5 px-2 text-slate-900 font-semibold">{row.narration}</td>
+                    <td className="py-2.5 px-2 font-mono font-bold text-[#000000]">{row.date}</td>
+                    <td className="py-2.5 px-2 text-[#000000] font-semibold">{row.narration}</td>
                     <td className="py-2.5 px-2 text-right text-red-600 font-mono font-bold">
                       {row.debit > 0 ? formatNumber(row.debit) : "—"}
                     </td>
                     <td className="py-2.5 px-2 text-right text-emerald-600 font-mono font-bold">
                       {row.credit > 0 ? formatNumber(row.credit) : "—"}
                     </td>
-                    <td className="py-2.5 px-2 text-right text-slate-500 font-mono font-semibold">
+                    <td className="py-2.5 px-2 text-right text-[#000000] font-mono font-semibold">
                       {row.balance !== 0 ? formatNumber(row.balance) : "—"}
                     </td>
                     <td className="py-2.5 px-3 text-center">
@@ -414,13 +414,13 @@ const BankStatementImport: React.FC = () => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-            <span className="text-slate-500 font-bold">
+          <div className="flex items-center justify-between border-t border-[#9DC07A] pt-3">
+            <span className="text-[#000000] font-bold">
               {checkedIndices.size} of {parsedRows.length} rows selected
             </span>
             <button
               onClick={handleImport}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-md hover:shadow-lg flex items-center gap-1.5 uppercase tracking-wide"
+              className="bg-emerald-600 hover:bg-emerald-500 text-[#000000] font-bold px-5 py-2.5 rounded-xl transition-colors shadow-md hover:shadow-lg flex items-center gap-1.5 uppercase tracking-wide"
             >
               <CheckCircle2 className="h-4 w-4" /> Import Selected ({checkedIndices.size} rows)
             </button>

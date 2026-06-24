@@ -82,24 +82,24 @@ const Breadcrumb: React.FC = () => {
 
   return (
     <nav className="flex items-center gap-0 select-none" aria-label="Breadcrumb">
-      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-gray-400 hover:text-gray-600 transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
-      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-gray-300 mx-1" />}
+      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-[#000000] hover:text-[#000000] transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
+      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-[#000000] mx-1" />}
 
       {breadcrumbs.map((b, idx) => {
         if (idx === 0) return null;
         const isLast = idx === breadcrumbs.length - 1;
         return (
           <React.Fragment key={idx}>
-            {idx > 1 && <ChevronRight className="h-3 w-3 text-gray-300 mx-1" />}
+            {idx > 1 && <ChevronRight className="h-3 w-3 text-[#000000] mx-1" />}
             {isLast ? (
-              <span className="text-[12px] font-medium text-gray-700 truncate max-w-[120px] md:max-w-xs">
+              <span className="text-[12px] font-medium text-[#000000] truncate max-w-[120px] md:max-w-xs">
                 {b.label}
               </span>
             ) : (
               <button
                 type="button"
                 onClick={() => setCurrentPage(b.page)}
-                className="text-[12px] text-gray-400 hover:text-blue-600 cursor-pointer transition-colors"
+                className="text-[12px] text-[#000000] hover:text-[#000000] cursor-pointer transition-colors"
               >
                 {b.label}
               </button>

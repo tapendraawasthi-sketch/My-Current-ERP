@@ -122,65 +122,65 @@ export default function BillWisePending() {
       <FormPanel>
         <div className="flex items-end gap-4 mb-6">
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Party Type</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Party Type</label>
             <select 
               value={partyType} 
               onChange={e => setPartyType(e.target.value as any)}
-              className="h-8 px-2.5 w-40 text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0] bg-white"
+              className="h-8 px-2.5 w-40 text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] bg-white"
             >
               <option value="customer">Receivables</option>
               <option value="supplier">Payables</option>
             </select>
           </div>
           <div className="flex-1 max-w-xs">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Search Party</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Search Party</label>
             <input 
               type="text" 
               placeholder="Filter by name..."
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)}
-              className="h-8 px-2.5 w-full text-[12px] border border-gray-300 rounded-md focus:border-[#1557b0]"
+              className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
             />
           </div>
         </div>
 
-        <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+        <div className="border border-[#9DC07A] rounded-lg bg-white overflow-hidden shadow-sm">
           <table className="w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date (BS)</th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Invoice No</th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Orig. Amt</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Paid</th>
+              <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Date (BS)</th>
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Invoice No</th>
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Party</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Orig. Amt</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Paid</th>
                 <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#1557b0] uppercase tracking-wide">Balance</th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Due Date</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days Overdue</th>
-                <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Due Date</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Days Overdue</th>
+                <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Status</th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Action</th>
               </tr>
             </thead>
             <tbody>
               {pendingBills.map(bill => (
-                <tr key={bill.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{bill.dateNepali || bill.date}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{bill.invoiceNo}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-800 font-medium">{bill.partyName}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-600">{formatNumber(bill.originalAmount)}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-600">{formatNumber(bill.paidAmount)}</td>
+                <tr key={bill.id} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
+                  <td className="px-3 py-2.5 text-[12px] text-[#000000]">{bill.dateNepali || bill.date}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-[#000000] font-mono">{bill.invoiceNo}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-[#000000] font-medium">{bill.partyName}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-[#000000]">{formatNumber(bill.originalAmount)}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-[#000000]">{formatNumber(bill.paidAmount)}</td>
                   <td className="px-3 py-2.5 text-[12px] text-right font-mono font-bold text-[#1557b0]">{formatNumber(bill.balance)}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{bill.dueDate}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-700">
+                  <td className="px-3 py-2.5 text-[12px] text-[#000000]">{bill.dueDate}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-right font-mono text-[#000000]">
                     {bill.overdueDays > 0 ? <span className="text-red-600 font-bold">{bill.overdueDays}</span> : "-"}
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     {bill.status === "severely overdue" && <span className="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Severely Overdue</span>}
                     {bill.status === "overdue" && <span className="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Overdue</span>}
-                    {bill.status === "current" && <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Current</span>}
+                    {bill.status === "current" && <span className="bg-[#EBF5E2] text-[#000000] text-[10px] px-2 py-0.5 rounded font-bold uppercase">Current</span>}
                   </td>
                   <td className="px-3 py-2.5 text-right">
                     {partyType === "customer" && (
-                      <Button onClick={() => handleOpenReminder(bill)} className="h-7 bg-green-600 hover:bg-green-700 text-white text-[11px]">
+                      <Button onClick={() => handleOpenReminder(bill)} className="h-7 bg-green-600 hover:bg-green-700 text-[#000000] text-[11px]">
                         <MessageCircle className="w-3.5 h-3.5 mr-1" /> Reminder
                       </Button>
                     )}
@@ -189,7 +189,7 @@ export default function BillWisePending() {
               ))}
               {pendingBills.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-3 py-8 text-center text-[12px] text-gray-500">
+                  <td colSpan={10} className="px-3 py-8 text-center text-[12px] text-[#000000]">
                     No pending bills found.
                   </td>
                 </tr>
@@ -203,24 +203,24 @@ export default function BillWisePending() {
       {reminderModal && reminderModal.show && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa]">
-              <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#f5f6fa]">
+              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-green-600" /> Send Reminder
               </h2>
-              <button onClick={() => setReminderModal(null)} className="text-gray-400 hover:text-gray-600">&times;</button>
+              <button onClick={() => setReminderModal(null)} className="text-[#000000] hover:text-[#000000]">&times;</button>
             </div>
             <div className="p-4 space-y-4">
-              <div className="bg-blue-50 border border-blue-100 rounded-md p-3 text-[12px] text-blue-800 flex items-start gap-2">
+              <div className="bg-[#D4EABD] border border-[#9DC07A] rounded-md p-3 text-[12px] text-[#000000] flex items-start gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                 <p>This will log an audit entry tracking that you chased this payment.</p>
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">WhatsApp Message Template</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">WhatsApp Message Template</label>
                 <textarea 
                   value={reminderModal.message}
                   onChange={e => setReminderModal({...reminderModal, message: e.target.value})}
-                  className="w-full h-32 p-3 text-[12px] border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  className="w-full h-32 p-3 text-[12px] border border-[#9DC07A] rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 />
               </div>
 
@@ -228,7 +228,7 @@ export default function BillWisePending() {
                 <Button variant="outline" onClick={handleCopyMessage} className="text-[12px] h-8">
                   <Copy className="w-3.5 h-3.5 mr-1.5" /> Copy Text
                 </Button>
-                <Button onClick={handleWhatsApp} className="bg-green-600 hover:bg-green-700 text-white text-[12px] h-8">
+                <Button onClick={handleWhatsApp} className="bg-green-600 hover:bg-green-700 text-[#000000] text-[12px] h-8">
                   <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Send WhatsApp
                 </Button>
               </div>

@@ -440,13 +440,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-[12px] font-semibold text-gray-800">
+                    <p className="text-[12px] font-semibold text-[#000000]">
                       Invoice posted successfully
                     </p>
-                    <p className="text-[11px] text-gray-500 font-mono">{result.invoiceNo}</p>
+                    <p className="text-[11px] text-[#000000] font-mono">{result.invoiceNo}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 border-l border-gray-100 pl-3 ml-3">
+                <div className="flex items-center gap-2 border-l border-[#9DC07A] pl-3 ml-3">
                   <button
                     onClick={() => {
                       toast.dismiss(t.id);
@@ -458,7 +458,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   </button>
                   <button
                     onClick={() => toast.dismiss(t.id)}
-                    className="text-[11px] font-medium text-gray-400 hover:text-gray-600"
+                    className="text-[11px] font-medium text-[#000000] hover:text-[#000000]"
                   >
                     Dismiss
                   </button>
@@ -553,8 +553,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           <CheckCircle2 className="h-8 w-8 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-800">{meta.label} Saved</h2>
-          <p className="text-xs text-gray-500 mt-1">
+          <h2 className="text-lg font-bold text-[#000000]">{meta.label} Saved</h2>
+          <p className="text-xs text-[#000000] mt-1">
             {savedInvoice.invoiceNo} · {symbol} {formatNumber(grandTotal)} · {party?.name}
           </p>
         </div>
@@ -594,14 +594,14 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <button onClick={handleBack} className="p-2 rounded-md hover:bg-gray-100 text-gray-500">
+          <button onClick={handleBack} className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]">
             <ArrowLeft className="h-4 w-4" />
           </button>
           <div>
-            <h1 className="text-[13px] font-semibold text-gray-800">{meta.label}</h1>
-            {isEdit && <p className="text-[11px] text-gray-500 mt-0.5">{invoiceNoPreview}</p>}
+            <h1 className="text-[13px] font-semibold text-[#000000]">{meta.label}</h1>
+            {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{invoiceNoPreview}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -647,7 +647,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       </div>
 
       {/* Header & Party details (3-column grid card) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-white border border-gray-200 rounded-md mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-white border border-[#9DC07A] rounded-md mb-3">
         <PartySelect
           label={meta.isSales ? "Customer" : "Supplier"}
           partyType={meta.party}
@@ -692,8 +692,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium text-gray-600">Invoice No</span>
-          <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700 text-[12px]">
+          <span className="text-[11px] font-medium text-[#000000]">Invoice No</span>
+          <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000] text-[12px]">
             {invoiceNoPreview}
           </span>
         </div>
@@ -712,7 +712,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       {/* Line items */}
       <Card border padding="md">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+          <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider">
             Line Items
           </h3>
           <Button
@@ -725,9 +725,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             Add Line
           </Button>
         </div>
-        <div className="overflow-x-auto rounded-md border border-slate-200">
+        <div className="overflow-x-auto rounded-md border border-[#9DC07A]">
           <table className="w-full text-xs">
-            <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-gray-600 uppercase tracking-wide">
+            <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
               <tr>
                 <th className="px-2 py-2 text-center">#</th>
                 <th className="px-2 py-2 text-left">Item</th>
@@ -764,7 +764,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               ))}
               {lines.length === 0 && (
                 <tr>
-                  <td colSpan={colspan} className="text-center py-6 text-gray-400">
+                  <td colSpan={colspan} className="text-center py-6 text-[#000000]">
                     No lines. Click “Add Line”.
                   </td>
                 </tr>
@@ -777,7 +777,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       {/* Bill Sundries */}
       <Card border padding="md">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+          <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider">
             Bill Sundries
           </h3>
           <Button
@@ -794,9 +794,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           </Button>
         </div>
         {billSundries.length > 0 && (
-          <div className="overflow-x-auto rounded-md border border-slate-200">
+          <div className="overflow-x-auto rounded-md border border-[#9DC07A]">
             <table className="w-full text-xs">
-              <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-gray-600 uppercase tracking-wide">
+              <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                 <tr>
                   <th className="px-2 py-2 text-left">Sundry Name</th>
                   <th className="px-2 py-2 text-center w-32">Type</th>
@@ -806,7 +806,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </thead>
               <tbody>
                 {billSundries.map((sundry, idx) => (
-                  <tr key={sundry.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                  <tr key={sundry.id} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50">
                     <td className="px-2 py-1">
                       <input
                         className="w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none"
@@ -840,7 +840,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     <td className="px-2 py-1 text-right">
                       <input
                         type="number"
-                        className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+                        className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
                         value={sundry.amount || ""}
                         onChange={(e) => {
                           const n = [...billSundries];
@@ -861,7 +861,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                             setBillSundries(p => p.filter(s => s.id !== sundry.id));
                             markDirty();
                           }}
-                          className="p-1 text-gray-400 hover:text-red-500 rounded"
+                          className="p-1 text-[#000000] hover:text-red-500 rounded"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -879,7 +879,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 items-start">
         {/* Payment & TDS & Narration */}
         <Card border padding="md">
-          <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-3">
+          <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider mb-3">
             Payment
           </h3>
           <div className="grid grid-cols-3 gap-2 mb-3">
@@ -896,7 +896,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   setPayMode(id as PaymentMode);
                   markDirty();
                 }}
-                className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-md border text-xs font-bold transition-colors ${payMode === id ? "bg-[#1557b0] text-white border-indigo-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-md border text-xs font-bold transition-colors ${payMode === id ? "bg-[#3D6B25] text-white border-indigo-600" : "bg-white text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
               >
                 <Icon className="h-4 w-4" /> {label}
               </button>
@@ -906,7 +906,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           {payMode === PaymentMode.BANK_TRANSFER && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1 w-full">
-                <label className="text-[11px] text-gray-500 font-medium">Bank Account</label>
+                <label className="text-[11px] text-[#000000] font-medium">Bank Account</label>
                 <select
                   value={bankAccountId}
                   onChange={(e) => {
@@ -914,7 +914,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     markDirty();
                   }}
                   disabled={readOnly}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 >
                   <option value="" disabled>
                     Select bank
@@ -963,7 +963,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 disabled={readOnly}
               />
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500">Balance Due</span>
+                <span className="text-xs font-semibold text-[#000000]">Balance Due</span>
                 <span
                   className={`font-mono font-bold text-base ${balance > 0 ? "text-red-600" : "text-green-600"}`}
                 >
@@ -974,7 +974,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           )}
 
           {party?.subjectToTds && (
-            <div className="mt-4 pt-4 border-t border-slate-200">
+            <div className="mt-4 pt-4 border-t border-[#9DC07A]">
               <div className="flex items-center gap-2 mb-3">
                 <input
                   id="tds-enabled"
@@ -987,7 +987,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   }}
                   disabled={readOnly}
                 />
-                <label htmlFor="tds-enabled" className="text-xs font-bold text-slate-700">
+                <label htmlFor="tds-enabled" className="text-xs font-bold text-[#000000]">
                   Deduct TDS
                 </label>
               </div>
@@ -1016,7 +1016,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     disabled={readOnly}
                   />
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-gray-500">TDS Amount</span>
+                    <span className="text-xs font-semibold text-[#000000]">TDS Amount</span>
                     <span className="font-mono font-bold text-orange-600 text-base">
                       {symbol} {formatNumber(tdsAmount)}
                     </span>
@@ -1026,10 +1026,10 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </div>
           )}
 
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <label className="text-[11px] font-semibold text-gray-700 block mb-1">Narration (English)</label>
+          <div className="mt-4 pt-4 border-t border-[#9DC07A]">
+            <label className="text-[11px] font-semibold text-[#000000] block mb-1">Narration (English)</label>
             <textarea
-              className="w-full h-16 p-2 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+              className="w-full h-16 p-2 text-[12px] border border-[#9DC07A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
               value={narration}
               onChange={(e) => {
                 setNarration(e.target.value.substring(0, 200));
@@ -1038,13 +1038,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               placeholder="Optional notes / description"
               disabled={readOnly}
             />
-            <div className="text-right text-[10px] text-gray-400 mt-0.5">{narration.length}/200</div>
+            <div className="text-right text-[10px] text-[#000000] mt-0.5">{narration.length}/200</div>
           </div>
 
           <div className="mt-2">
-            <label className="text-[11px] font-semibold text-gray-700 block mb-1">Narration (Nepali) <span className="text-gray-400 font-normal ml-1">Optional</span></label>
+            <label className="text-[11px] font-semibold text-[#000000] block mb-1">Narration (Nepali) <span className="text-[#000000] font-normal ml-1">Optional</span></label>
             <textarea
-              className="w-full h-16 p-2 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+              className="w-full h-16 p-2 text-[12px] border border-[#9DC07A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
               value={narrationNe}
               onChange={(e) => {
                 setNarrationNe(e.target.value.substring(0, 200));
@@ -1053,11 +1053,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               placeholder="नेपालीमा कैफियत..."
               disabled={readOnly}
             />
-            <div className="text-right text-[10px] text-gray-400 mt-0.5">{narrationNe.length}/200</div>
+            <div className="text-right text-[10px] text-[#000000] mt-0.5">{narrationNe.length}/200</div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <label className="text-xs font-medium text-slate-700 mb-1 block">Attachments</label>
+          <div className="mt-4 pt-4 border-t border-[#9DC07A]">
+            <label className="text-xs font-medium text-[#000000] mb-1 block">Attachments</label>
             <AttachmentUploader
               attachments={attachments}
               onAdd={(b64) => {
@@ -1074,7 +1074,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
         {/* Totals Box, right-aligned in a w-64 card */}
         <div className="flex justify-end">
-          <div className={`w-64 p-3 rounded-md flex flex-col gap-1.5 shadow-sm border ${computation.vatAmount > 0 ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-50 text-gray-700 border-gray-200"}`}>
+          <div className={`w-64 p-3 rounded-md flex flex-col gap-1.5 shadow-sm border ${computation.vatAmount > 0 ? "bg-green-50 text-green-700 border-green-200" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A]"}`}>
             <div className="flex justify-between items-baseline text-[12px]">
               <span className="font-medium">Subtotal</span>
               <span className="font-mono">{symbol} {formatNumber(computation.subtotal)}</span>
@@ -1097,7 +1097,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 <span className="font-mono">- {symbol} {formatNumber(tdsAmount)}</span>
               </div>
             )}
-            <div className={`border-t-2 mt-1 pt-2 flex justify-between items-baseline rounded-sm ${computation.vatAmount > 0 ? "border-green-200" : "border-gray-200"}`}>
+            <div className={`border-t-2 mt-1 pt-2 flex justify-between items-baseline rounded-sm ${computation.vatAmount > 0 ? "border-green-200" : "border-[#9DC07A]"}`}>
               <span className="text-[12px] font-bold uppercase">Grand Total</span>
               <span className="font-mono font-bold text-[12px] text-right">
                 {symbol} {formatNumber(grandTotal)}
@@ -1108,8 +1108,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       </div>
 
       {/* Footer actions */}
-      <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-        <p className="text-[11px] text-gray-400 font-semibold">
+      <div className="flex items-center justify-between border-t border-[#9DC07A] pt-4">
+        <p className="text-[11px] text-[#000000] font-semibold">
           ESC to cancel · Ctrl+S to save draft · F12 to post
         </p>
         <div className="flex items-center gap-2">

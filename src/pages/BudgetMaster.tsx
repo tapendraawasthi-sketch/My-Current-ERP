@@ -132,57 +132,57 @@ export default function BudgetMaster() {
     <div className="flex flex-col gap-4 animate-fadeIn h-[calc(100vh-100px)]">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Budget Master</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Set monthly or annual limits for income and expense accounts</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Budget Master</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Set monthly or annual limits for income and expense accounts</p>
         </div>
-        <button onClick={handleOpenModal} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
+        <button onClick={handleOpenModal} className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm">
           <Plus className="w-4 h-4" /> Set Budget
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50 shrink-0">
+      <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] flex-1 flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#EBF5E2] shrink-0">
           <div className="relative w-64">
-            <Search className="w-4 h-4 text-gray-400 absolute left-2.5 top-2" />
+            <Search className="w-4 h-4 text-[#000000] absolute left-2.5 top-2" />
             <input 
               type="text" 
               placeholder="Search by account..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+              className="w-full h-8 pl-8 pr-3 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
             />
           </div>
-          <div className="text-[11px] text-gray-500 font-medium">
+          <div className="text-[11px] text-[#000000] font-medium">
             Fiscal Year: <span className="font-bold text-[#1557b0]">{currentFiscalYear?.name || "N/A"}</span>
           </div>
         </div>
 
         <div className="flex-1 overflow-auto">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
+            <thead className="bg-[#f5f6fa] border-b border-[#9DC07A] sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Name</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cost Center</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-center">Period</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Total Budgeted Amount (Rs)</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Account Name</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Cost Center</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-center">Period</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Total Budgeted Amount (Rs)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {budgetList.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-12 text-center">
-                    <FileEdit className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-[13px] font-medium text-gray-600">No Budgets Configured</p>
-                    <p className="text-[11px] text-gray-400 mt-1">Click 'Set Budget' to create limits.</p>
+                    <FileEdit className="w-12 h-12 text-[#000000] mx-auto mb-3" />
+                    <p className="text-[13px] font-medium text-[#000000]">No Budgets Configured</p>
+                    <p className="text-[11px] text-[#000000] mt-1">Click 'Set Budget' to create limits.</p>
                   </td>
                 </tr>
               ) : (
                 budgetList.map((b, i) => (
-                  <tr key={i} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-2.5 text-[12px] font-medium text-gray-800">{b.accountName}</td>
-                    <td className="px-4 py-2.5 text-[12px] text-gray-600">{b.costCenterName}</td>
-                    <td className="px-4 py-2.5 text-[12px] text-gray-600 text-center">{b.months === 12 ? "Annual" : `${b.months} Months`}</td>
-                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-gray-900">{b.total.toLocaleString()}</td>
+                  <tr key={i} className="hover:bg-[#EBF5E2] transition-colors">
+                    <td className="px-4 py-2.5 text-[12px] font-medium text-[#000000]">{b.accountName}</td>
+                    <td className="px-4 py-2.5 text-[12px] text-[#000000]">{b.costCenterName}</td>
+                    <td className="px-4 py-2.5 text-[12px] text-[#000000] text-center">{b.months === 12 ? "Annual" : `${b.months} Months`}</td>
+                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-[#000000]">{b.total.toLocaleString()}</td>
                   </tr>
                 ))
               )}
@@ -194,17 +194,17 @@ export default function BudgetMaster() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center animate-fadeIn">
           <div className="bg-white rounded-lg shadow-xl w-[600px] flex flex-col max-h-[90vh]">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-              <h2 className="text-[15px] font-semibold text-gray-800">Set Budget for FY {currentFiscalYear?.name}</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
+            <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between shrink-0">
+              <h2 className="text-[15px] font-semibold text-[#000000]">Set Budget for FY {currentFiscalYear?.name}</h2>
+              <button onClick={() => setShowModal(false)} className="text-[#000000] hover:text-[#000000]"><X className="w-5 h-5" /></button>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
               <div className="p-5 overflow-y-auto space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Account <span className="text-red-500">*</span></label>
-                    <select required value={accountId} onChange={e => setAccountId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+                    <label className="block text-[11px] font-medium text-[#000000] mb-1">Account <span className="text-red-500">*</span></label>
+                    <select required value={accountId} onChange={e => setAccountId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]">
                       <option value="">-- Select Account --</option>
                       {accounts.filter(a => a.type === "Ledger").map(a => (
                         <option key={a.id} value={a.id}>{a.name} ({a.group})</option>
@@ -212,8 +212,8 @@ export default function BudgetMaster() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Cost Center (Optional)</label>
-                    <select value={costCenterId} onChange={e => setCostCenterId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+                    <label className="block text-[11px] font-medium text-[#000000] mb-1">Cost Center (Optional)</label>
+                    <select value={costCenterId} onChange={e => setCostCenterId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]">
                       <option value="">-- Apply to All / None --</option>
                       {costCenters.map(c => (
                         <option key={c.id} value={c.id}>{c.name}</option>
@@ -223,59 +223,59 @@ export default function BudgetMaster() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-2">Budget Distribution Mode</label>
+                  <label className="block text-[11px] font-medium text-[#000000] mb-2">Budget Distribution Mode</label>
                   <div className="flex gap-4">
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input type="radio" name="mode" checked={budgetMode === "ANNUAL"} onChange={() => { setBudgetMode("ANNUAL"); setMonthlyAmounts({}); }} className="text-[#1557b0] focus:ring-[#1557b0]" />
-                      <span className="text-[12px] text-gray-700">Annual (Equally divided into 12 months)</span>
+                      <span className="text-[12px] text-[#000000]">Annual (Equally divided into 12 months)</span>
                     </label>
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input type="radio" name="mode" checked={budgetMode === "MONTHLY"} onChange={() => { setBudgetMode("MONTHLY"); setAnnualAmount(""); }} className="text-[#1557b0] focus:ring-[#1557b0]" />
-                      <span className="text-[12px] text-gray-700">Monthly (Specify for each month)</span>
+                      <span className="text-[12px] text-[#000000]">Monthly (Specify for each month)</span>
                     </label>
                   </div>
                 </div>
 
                 {budgetMode === "ANNUAL" && (
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Total Annual Amount</label>
+                    <label className="block text-[11px] font-medium text-[#000000] mb-1">Total Annual Amount</label>
                     <input 
                       type="number" min="0" required
                       value={annualAmount} onChange={e => handleAnnualChange(e.target.value)}
-                      className="w-1/2 h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0] font-mono"
+                      className="w-1/2 h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] font-mono"
                     />
                   </div>
                 )}
 
                 {budgetMode === "MONTHLY" && (
-                  <div className="bg-gray-50 border border-gray-200 rounded p-4">
+                  <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded p-4">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3">
                       {BS_MONTHS.map((month, idx) => {
                         const mStr = String(idx + 1).padStart(2, "0");
                         return (
                           <div key={mStr}>
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase">{month}</label>
+                            <label className="block text-[10px] font-medium text-[#000000] mb-1 uppercase">{month}</label>
                             <input 
                               type="number" min="0"
                               value={monthlyAmounts[mStr] || ""}
                               onChange={e => handleMonthlyChange(mStr, e.target.value)}
-                              className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0] font-mono"
+                              className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] font-mono"
                             />
                           </div>
                         );
                       })}
                     </div>
-                    <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
-                      <span className="text-[11px] font-bold text-gray-600 uppercase tracking-wide">Total Calculated Annual:</span>
+                    <div className="mt-4 pt-3 border-t border-[#9DC07A] flex justify-between items-center">
+                      <span className="text-[11px] font-bold text-[#000000] uppercase tracking-wide">Total Calculated Annual:</span>
                       <span className="text-[14px] font-mono font-bold text-[#1557b0]">Rs. {calculateTotalMonthly().toLocaleString()}</span>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="p-4 border-t border-gray-100 flex justify-end gap-2 bg-gray-50 shrink-0">
-                <button type="button" onClick={() => setShowModal(false)} className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded shadow-sm">Save Budget</button>
+              <div className="p-4 border-t border-[#9DC07A] flex justify-end gap-2 bg-[#EBF5E2] shrink-0">
+                <button type="button" onClick={() => setShowModal(false)} className="h-8 px-4 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded hover:bg-[#EBF5E2]">Cancel</button>
+                <button type="submit" className="h-8 px-4 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded shadow-sm">Save Budget</button>
               </div>
             </form>
           </div>

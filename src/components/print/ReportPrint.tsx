@@ -52,7 +52,7 @@ export default function ReportPrint({
               <span>Download PDF</span>
             </button>
             {onClose && (
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+              <button onClick={onClose} className="text-[#000000] hover:text-[#000000]">
                 <X className="w-5 h-5" />
               </button>
             )}
@@ -68,48 +68,48 @@ export default function ReportPrint({
                 <img src={company.logo} alt="Company Logo" className="h-16 w-auto mr-4" />
               )}
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{company.companyNameEn}</h1>
+                <h1 className="text-2xl font-bold text-[#000000]">{company.companyNameEn}</h1>
                 {company.companyNameNe && (
-                  <h2 className="text-lg text-gray-700">{company.companyNameNe}</h2>
+                  <h2 className="text-lg text-[#000000]">{company.companyNameNe}</h2>
                 )}
               </div>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[#000000]">
               {company.address}, {company.city}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[#000000]">
               Phone: {company.phone} | PAN: {company.panNumber}
             </p>
           </div>
 
-          <div className="border-t-2 border-gray-800 mb-6"></div>
+          <div className="border-t-2 border-[#9DC07A] mb-6"></div>
 
           {/* Report Title */}
           <div className="text-center mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-1">{reportTitle}</h3>
-            {reportSubtitle && <p className="text-sm text-gray-600">{reportSubtitle}</p>}
-            {periodInfo && <p className="text-sm text-gray-600 mt-1">{periodInfo}</p>}
+            <h3 className="text-xl font-bold text-[#000000] mb-1">{reportTitle}</h3>
+            {reportSubtitle && <p className="text-sm text-[#000000]">{reportSubtitle}</p>}
+            {periodInfo && <p className="text-sm text-[#000000] mt-1">{periodInfo}</p>}
           </div>
 
           {/* Report Content */}
           <div className="mb-6">{children}</div>
 
           {/* Report Footer */}
-          <div className="border-t-2 border-gray-800 pt-4 mt-8">
+          <div className="border-t-2 border-[#9DC07A] pt-4 mt-8">
             <div className="flex justify-between items-center">
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-[#000000]">
                 <p>
                   Generated on: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
                 </p>
                 <p className="mt-1">Fiscal Year: 2083/84</p>
               </div>
               <div className="text-right">
-                <div className="border-t border-gray-800 pt-2 w-48 ml-auto">
+                <div className="border-t border-[#9DC07A] pt-2 w-48 ml-auto">
                   <p className="text-sm font-semibold">Authorized Signature</p>
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-500 italic text-center mt-4">
+            <p className="text-xs text-[#000000] italic text-center mt-4">
               This is a computer generated report
             </p>
           </div>

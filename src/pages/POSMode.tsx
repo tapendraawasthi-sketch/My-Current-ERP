@@ -245,12 +245,12 @@ export default function POSMode() {
   const tempInvoiceNo = `POS-${Date.now().toString().slice(-6)}`;
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden text-gray-800">
+    <div className="h-screen flex flex-col bg-[#EBF5E2] overflow-hidden text-[#000000]">
       
       {/* App Header (No Print) */}
-      <div className="no-print h-14 bg-[#1e2433] text-white flex items-center justify-between px-4 shrink-0 shadow-md">
+      <div className="no-print h-14 bg-[#1e2433] text-[#000000] flex items-center justify-between px-4 shrink-0 shadow-md">
         <div className="flex items-center gap-3">
-          <button onClick={() => setCurrentPage("dashboard")} className="p-1.5 rounded-md hover:bg-white/10 text-gray-300 hover:text-white transition-colors">
+          <button onClick={() => setCurrentPage("dashboard")} className="p-1.5 rounded-md hover:bg-white/10 text-[#000000] hover:text-[#000000] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="font-bold text-[16px] tracking-wide">POS TERMINAL</div>
@@ -259,7 +259,7 @@ export default function POSMode() {
           <button onClick={() => setShowHeldBills(true)} className="flex items-center gap-1.5 text-[12px] bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded font-medium">
             <PlayCircle className="w-4 h-4" /> RECALL BILL ({heldBills.length})
           </button>
-          <div className="text-[12px] text-gray-300 font-medium">
+          <div className="text-[12px] text-[#000000] font-medium">
             {companySettings?.companyName || "Sutra ERP"} | {dateNow}
           </div>
         </div>
@@ -269,19 +269,19 @@ export default function POSMode() {
       <div className="no-print flex-1 flex flex-row overflow-hidden">
         
         {/* LEFT PANEL (Items) */}
-        <div className="w-[55%] flex flex-col border-r border-gray-300 bg-gray-50">
+        <div className="w-[55%] flex flex-col border-r border-[#9DC07A] bg-[#EBF5E2]">
           
           {/* Search Bar */}
-          <div className="p-3 bg-white border-b border-gray-200 shrink-0">
+          <div className="p-3 bg-white border-b border-[#9DC07A] shrink-0">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#000000]" />
               <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search items by name, code, or scan barcode..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-10 pr-4 text-[15px] border-2 border-[#1557b0]/20 rounded-lg focus:outline-none focus:border-[#1557b0] focus:ring-4 focus:ring-[#1557b0]/10 transition-all bg-gray-50 focus:bg-white"
+                className="w-full h-12 pl-10 pr-4 text-[15px] border-2 border-[#1557b0]/20 rounded-lg focus:outline-none focus:border-[#1557b0] focus:ring-4 focus:ring-[#1557b0]/10 transition-all bg-[#EBF5E2] focus:bg-white"
               />
             </div>
             
@@ -291,7 +291,7 @@ export default function POSMode() {
                 <button
                   key={g}
                   onClick={() => setItemGroupFilter(g)}
-                  className={`px-4 py-1.5 rounded-full text-[12px] font-semibold uppercase tracking-wide whitespace-nowrap transition-colors ${itemGroupFilter === g ? "bg-[#1557b0] text-white shadow-sm" : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-100"}`}
+                  className={`px-4 py-1.5 rounded-full text-[12px] font-semibold uppercase tracking-wide whitespace-nowrap transition-colors ${itemGroupFilter === g ? "bg-[#3D6B25] text-white shadow-sm" : "bg-white border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
                 >
                   {g === "all" ? "All Items" : g}
                 </button>
@@ -308,12 +308,12 @@ export default function POSMode() {
                   <div
                     key={item.id}
                     onClick={() => !outOfStock && addToCart(item)}
-                    className={`relative bg-white border rounded-lg p-3 cursor-pointer shadow-sm transition-all flex flex-col h-28 ${outOfStock ? "opacity-50 border-gray-200 bg-gray-50 cursor-not-allowed" : "border-gray-200 hover:border-[#1557b0] hover:shadow-md active:scale-95"}`}
+                    className={`relative bg-white border rounded-lg p-3 cursor-pointer shadow-sm transition-all flex flex-col h-28 ${outOfStock ? "opacity-50 border-[#9DC07A] bg-[#EBF5E2] cursor-not-allowed" : "border-[#9DC07A] hover:border-[#1557b0] hover:shadow-md active:scale-95"}`}
                   >
-                    <div className="text-[13px] font-semibold text-gray-800 leading-tight line-clamp-2">
+                    <div className="text-[13px] font-semibold text-[#000000] leading-tight line-clamp-2">
                       {item.name}
                     </div>
-                    {item.barcode && <div className="text-[10px] text-gray-400 mt-1">{item.barcode}</div>}
+                    {item.barcode && <div className="text-[10px] text-[#000000] mt-1">{item.barcode}</div>}
                     
                     <div className="mt-auto flex items-end justify-between">
                       <div className="text-[16px] font-bold text-[#1557b0]">
@@ -333,7 +333,7 @@ export default function POSMode() {
               })}
             </div>
             {filteredItems.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <div className="flex flex-col items-center justify-center h-full text-[#000000]">
                 <Search className="w-12 h-12 mb-3 opacity-20" />
                 <p className="text-[14px]">No items found matching your search.</p>
               </div>
@@ -345,15 +345,15 @@ export default function POSMode() {
         <div className="w-[45%] flex flex-col bg-white">
           
           {/* Cart Header */}
-          <div className="p-3 bg-gray-50 border-b border-gray-200 flex items-center gap-3 shrink-0">
+          <div className="p-3 bg-[#EBF5E2] border-b border-[#9DC07A] flex items-center gap-3 shrink-0">
             <input 
               type="text" 
               placeholder="Customer Name (Optional)"
               value={customerName}
               onChange={e => setCustomerName(e.target.value)}
-              className="flex-1 h-9 px-3 text-[13px] border border-gray-300 rounded focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
+              className="flex-1 h-9 px-3 text-[13px] border border-[#9DC07A] rounded focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]"
             />
-            <div className="px-3 py-1.5 bg-white border border-gray-200 rounded text-[12px] font-mono font-bold text-gray-600">
+            <div className="px-3 py-1.5 bg-white border border-[#9DC07A] rounded text-[12px] font-mono font-bold text-[#000000]">
               {tempInvoiceNo}
             </div>
           </div>
@@ -361,37 +361,37 @@ export default function POSMode() {
           {/* Cart Table */}
           <div className="flex-1 overflow-y-auto">
             <table className="w-full">
-              <thead className="sticky top-0 bg-gray-100 border-b border-gray-200 z-10">
+              <thead className="sticky top-0 bg-[#EBF5E2] border-b border-[#9DC07A] z-10">
                 <tr>
-                  <th className="px-3 py-2 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Item</th>
-                  <th className="px-3 py-2 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-wide w-28">Qty</th>
-                  <th className="px-3 py-2 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Rate</th>
-                  <th className="px-3 py-2 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wide w-24">Amount</th>
+                  <th className="px-3 py-2 text-left text-[11px] font-semibold text-[#000000] uppercase tracking-wide">Item</th>
+                  <th className="px-3 py-2 text-center text-[11px] font-semibold text-[#000000] uppercase tracking-wide w-28">Qty</th>
+                  <th className="px-3 py-2 text-right text-[11px] font-semibold text-[#000000] uppercase tracking-wide">Rate</th>
+                  <th className="px-3 py-2 text-right text-[11px] font-semibold text-[#000000] uppercase tracking-wide w-24">Amount</th>
                   <th className="w-10"></th>
                 </tr>
               </thead>
               <tbody>
                 {cart.map((c) => (
-                  <tr key={c.item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr key={c.item.id} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
                     <td className="px-3 py-2">
-                      <div className="text-[12px] font-medium text-gray-800">{c.item.name}</div>
+                      <div className="text-[12px] font-medium text-[#000000]">{c.item.name}</div>
                     </td>
                     <td className="px-3 py-2">
-                      <div className="flex items-center justify-center border border-gray-300 rounded overflow-hidden">
-                        <button onClick={() => updateQty(c.item.id, c.qty - 1)} className="w-7 h-7 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center border-r border-gray-300">-</button>
+                      <div className="flex items-center justify-center border border-[#9DC07A] rounded overflow-hidden">
+                        <button onClick={() => updateQty(c.item.id, c.qty - 1)} className="w-7 h-7 bg-[#EBF5E2] hover:bg-[#EBF5E2] text-[#000000] font-bold flex items-center justify-center border-r border-[#9DC07A]">-</button>
                         <input 
                           type="number" 
                           value={c.qty}
                           onChange={e => updateQty(c.item.id, Number(e.target.value))}
                           className="w-10 h-7 text-center text-[12px] font-semibold focus:outline-none appearance-none"
                         />
-                        <button onClick={() => updateQty(c.item.id, c.qty + 1)} className="w-7 h-7 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center border-l border-gray-300">+</button>
+                        <button onClick={() => updateQty(c.item.id, c.qty + 1)} className="w-7 h-7 bg-[#EBF5E2] hover:bg-[#EBF5E2] text-[#000000] font-bold flex items-center justify-center border-l border-[#9DC07A]">+</button>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-right text-[12px] font-mono text-gray-600">{formatNumber(c.item.salesRate)}</td>
-                    <td className="px-3 py-2 text-right text-[13px] font-mono font-bold text-gray-800">{formatNumber(c.item.salesRate * c.qty)}</td>
+                    <td className="px-3 py-2 text-right text-[12px] font-mono text-[#000000]">{formatNumber(c.item.salesRate)}</td>
+                    <td className="px-3 py-2 text-right text-[13px] font-mono font-bold text-[#000000]">{formatNumber(c.item.salesRate * c.qty)}</td>
                     <td className="px-2 py-2 text-center">
-                      <button onClick={() => removeFromCart(c.item.id)} className="text-gray-400 hover:text-red-500 p-1">
+                      <button onClick={() => removeFromCart(c.item.id)} className="text-[#000000] hover:text-red-500 p-1">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
@@ -400,36 +400,36 @@ export default function POSMode() {
               </tbody>
             </table>
             {cart.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full text-gray-300 pt-10">
+              <div className="flex flex-col items-center justify-center h-full text-[#000000] pt-10">
                 <ShoppingBag className="w-16 h-16 mb-4 opacity-20" />
-                <p className="text-[15px] font-medium text-gray-400">Cart is empty</p>
+                <p className="text-[15px] font-medium text-[#000000]">Cart is empty</p>
                 <p className="text-[12px] mt-1">Scan or click items to add</p>
               </div>
             )}
           </div>
 
           {/* Totals & Payment Area */}
-          <div className="bg-white border-t border-gray-200 shrink-0">
+          <div className="bg-white border-t border-[#9DC07A] shrink-0">
             {/* Totals Block */}
-            <div className="p-3 bg-gray-50 border-b border-gray-200 grid grid-cols-2 gap-x-6 gap-y-1">
-              <div className="flex justify-between text-[12px] text-gray-600">
+            <div className="p-3 bg-[#EBF5E2] border-b border-[#9DC07A] grid grid-cols-2 gap-x-6 gap-y-1">
+              <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Subtotal</span>
                 <span className="font-mono">Rs. {formatNumber(subTotal)}</span>
               </div>
-              <div className="flex justify-between text-[12px] text-gray-600">
+              <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Taxable Amount</span>
                 <span className="font-mono">Rs. {formatNumber(taxableAmount)}</span>
               </div>
-              <div className="flex justify-between text-[12px] text-gray-600">
+              <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Discount</span>
                 <span className="font-mono">Rs. {formatNumber(discountTotal)}</span>
               </div>
-              <div className="flex justify-between text-[12px] text-gray-600">
+              <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>VAT (13%)</span>
                 <span className="font-mono">Rs. {formatNumber(vatAmount)}</span>
               </div>
-              <div className="col-span-2 mt-2 pt-2 border-t border-gray-200 flex justify-between items-end">
-                <span className="text-[14px] font-bold text-gray-800 uppercase tracking-wide">Grand Total</span>
+              <div className="col-span-2 mt-2 pt-2 border-t border-[#9DC07A] flex justify-between items-end">
+                <span className="text-[14px] font-bold text-[#000000] uppercase tracking-wide">Grand Total</span>
                 <span className="text-[28px] font-bold text-[#1557b0] font-mono leading-none">
                   Rs. {formatNumber(grandTotal)}
                 </span>
@@ -437,26 +437,26 @@ export default function POSMode() {
             </div>
 
             {/* Payment Modes */}
-            <div className="p-3 border-b border-gray-200">
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">Payment Method</label>
+            <div className="p-3 border-b border-[#9DC07A]">
+              <label className="block text-[10px] font-bold text-[#000000] uppercase tracking-wide mb-2">Payment Method</label>
               <div className="grid grid-cols-3 gap-2">
                 <button 
                   onClick={() => setSelectedPayment("cash")}
-                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "cash" ? "bg-green-50 border-green-500 text-green-700" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "cash" ? "bg-green-50 border-green-500 text-green-700" : "bg-white border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
                 >
                   <DollarSign className="w-5 h-5 mb-1" />
                   <span className="text-[11px] font-bold">CASH</span>
                 </button>
                 <button 
                   onClick={() => setSelectedPayment("card")}
-                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "card" ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "card" ? "bg-[#D4EABD] border-[#9DC07A] text-[#000000]" : "bg-white border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
                 >
                   <CreditCard className="w-5 h-5 mb-1" />
                   <span className="text-[11px] font-bold">CARD</span>
                 </button>
                 <button 
                   onClick={() => setSelectedPayment("qr")}
-                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "qr" ? "bg-purple-50 border-purple-500 text-purple-700" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+                  className={`flex flex-col items-center justify-center py-2 rounded border ${selectedPayment === "qr" ? "bg-purple-50 border-purple-500 text-purple-700" : "bg-white border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
                 >
                   <QrCode className="w-5 h-5 mb-1" />
                   <span className="text-[11px] font-bold">SCAN QR</span>
@@ -464,21 +464,21 @@ export default function POSMode() {
               </div>
 
               {/* Dynamic Payment Input Area */}
-              <div className="mt-3 min-h-[70px] flex items-center justify-center bg-gray-50 rounded border border-gray-200 p-2">
+              <div className="mt-3 min-h-[70px] flex items-center justify-center bg-[#EBF5E2] rounded border border-[#9DC07A] p-2">
                 {selectedPayment === "cash" && (
                   <div className="w-full flex gap-3 items-center">
                     <div className="flex-1">
-                      <label className="block text-[10px] text-gray-500 uppercase font-semibold mb-0.5">Tendered Amount</label>
+                      <label className="block text-[10px] text-[#000000] uppercase font-semibold mb-0.5">Tendered Amount</label>
                       <input 
                         type="number" 
                         value={cashTendered || ""}
                         onChange={e => setCashTendered(Number(e.target.value))}
-                        className="w-full h-10 px-3 text-[16px] font-mono font-bold border border-gray-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                        className="w-full h-10 px-3 text-[16px] font-mono font-bold border border-[#9DC07A] rounded focus:border-green-500 focus:ring-1 focus:ring-green-500"
                         placeholder="0.00"
                       />
                     </div>
                     <div className="flex-1 text-right">
-                      <label className="block text-[10px] text-gray-500 uppercase font-semibold mb-0.5">Change Due</label>
+                      <label className="block text-[10px] text-[#000000] uppercase font-semibold mb-0.5">Change Due</label>
                       <div className={`text-[20px] font-mono font-bold ${cashTendered - grandTotal >= 0 ? "text-green-600" : "text-red-500"}`}>
                         Rs. {formatNumber(Math.max(0, cashTendered - grandTotal))}
                       </div>
@@ -488,11 +488,11 @@ export default function POSMode() {
                 {selectedPayment === "qr" && qrDataUrl && (
                   <div className="flex items-center gap-4">
                     <img src={qrDataUrl} alt="Payment QR" className="w-16 h-16 border rounded bg-white p-1" />
-                    <div className="text-[11px] text-gray-600 font-medium">Scan to pay<br/><b className="text-[14px] text-gray-900">Rs. {formatNumber(grandTotal)}</b></div>
+                    <div className="text-[11px] text-[#000000] font-medium">Scan to pay<br/><b className="text-[14px] text-[#000000]">Rs. {formatNumber(grandTotal)}</b></div>
                   </div>
                 )}
                 {selectedPayment === "card" && (
-                  <div className="text-[12px] text-gray-500 italic flex items-center gap-2">
+                  <div className="text-[12px] text-[#000000] italic flex items-center gap-2">
                     <CreditCard className="w-4 h-4" /> Swipe card on terminal
                   </div>
                 )}
@@ -509,11 +509,11 @@ export default function POSMode() {
                 <Trash2 className="w-5 h-5 mb-1" />
                 <span className="text-[10px] font-bold uppercase">Clear (Esc)</span>
               </button>
-              <button onClick={handlePrintAndNew} className="col-span-2 bg-[#1557b0] hover:bg-[#0f4a96] text-white rounded py-2.5 flex items-center justify-center gap-2 transition-colors shadow-sm">
+              <button onClick={handlePrintAndNew} className="col-span-2 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white rounded py-2.5 flex items-center justify-center gap-2 transition-colors shadow-sm">
                 <Printer className="w-6 h-6" />
                 <div className="flex flex-col items-start">
                   <span className="text-[14px] font-bold uppercase leading-none">Print & Save</span>
-                  <span className="text-[10px] text-blue-200 leading-none mt-1">Shortcut: F2</span>
+                  <span className="text-[10px] text-[#000000] leading-none mt-1">Shortcut: F2</span>
                 </div>
               </button>
             </div>
@@ -526,23 +526,23 @@ export default function POSMode() {
       {showHeldBills && (
         <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-[#f5f6fa]">
-              <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#f5f6fa]">
+              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
                 <PlayCircle className="w-4 h-4 text-[#1557b0]" /> Held Bills
               </h2>
-              <button onClick={() => setShowHeldBills(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
+              <button onClick={() => setShowHeldBills(false)} className="text-[#000000] hover:text-[#000000]">&times;</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
               {heldBills.length === 0 ? (
-                <p className="text-center text-gray-500 text-[12px] py-8">No held bills found.</p>
+                <p className="text-center text-[#000000] text-[12px] py-8">No held bills found.</p>
               ) : (
                 heldBills.map(b => (
-                  <div key={b.id} className="border border-gray-200 rounded p-3 flex items-center justify-between hover:border-[#1557b0] bg-gray-50 cursor-pointer" onClick={() => handleRecallBill(b.id)}>
+                  <div key={b.id} className="border border-[#9DC07A] rounded p-3 flex items-center justify-between hover:border-[#1557b0] bg-[#EBF5E2] cursor-pointer" onClick={() => handleRecallBill(b.id)}>
                     <div>
-                      <div className="text-[13px] font-bold text-gray-800">{b.name}</div>
-                      <div className="text-[11px] text-gray-500 mt-0.5">{new Date(b.date).toLocaleTimeString()} - {b.cart.length} items</div>
+                      <div className="text-[13px] font-bold text-[#000000]">{b.name}</div>
+                      <div className="text-[11px] text-[#000000] mt-0.5">{new Date(b.date).toLocaleTimeString()} - {b.cart.length} items</div>
                     </div>
-                    <button className="px-3 py-1 bg-white border border-[#1557b0] text-[#1557b0] rounded text-[11px] font-bold hover:bg-[#1557b0] hover:text-white transition-colors">
+                    <button className="px-3 py-1 bg-white border border-[#1557b0] text-[#1557b0] rounded text-[11px] font-bold hover:bg-[#3D6B25] hover:text-white transition-colors">
                       RECALL
                     </button>
                   </div>
@@ -611,8 +611,8 @@ export default function POSMode() {
 
         <div className="text-center mt-6 text-[10px]">
           <div>Thank you for shopping!</div>
-          <div className="mt-2 text-gray-500">This is a computer-generated bill</div>
-          <div className="text-gray-500 font-sans">यो कम्प्युटरद्वारा उत्पादित बिल हो</div>
+          <div className="mt-2 text-[#000000]">This is a computer-generated bill</div>
+          <div className="text-[#000000] font-sans">यो कम्प्युटरद्वारा उत्पादित बिल हो</div>
         </div>
       </div>
 

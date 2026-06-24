@@ -270,24 +270,24 @@ const StockBook: React.FC = () => {
       <tr
         key={it.id}
         onClick={() => setDetailItem(it)}
-        className={`cursor-pointer border-b border-gray-100 text-sm transition-colors ${
-          isLow ? "bg-amber-50 hover:bg-amber-100" : "hover:bg-blue-50/40"
+        className={`cursor-pointer border-b border-[#9DC07A] text-sm transition-colors ${
+          isLow ? "bg-amber-50 hover:bg-amber-100" : "hover:bg-[#D4EABD]/40"
         }`}
       >
-        <td className="px-3 py-2 font-mono text-xs text-gray-700">{it.code}</td>
-        <td className="px-3 py-2 font-semibold text-gray-900">
+        <td className="px-3 py-2 font-mono text-xs text-[#000000]">{it.code}</td>
+        <td className="px-3 py-2 font-semibold text-[#000000]">
           {it.name}
-          {it.nameNepali && <div className="text-[11px] text-gray-500">{it.nameNepali}</div>}
+          {it.nameNepali && <div className="text-[11px] text-[#000000]">{it.nameNepali}</div>}
         </td>
         <td className="px-3 py-2">
           <Badge variant={it.type === ItemType.PRODUCT ? "info" : "default"}>
             {it.type === ItemType.PRODUCT ? "Product" : "Service"}
           </Badge>
         </td>
-        <td className="px-3 py-2 text-xs text-gray-600">{it.unit ?? "—"}</td>
+        <td className="px-3 py-2 text-xs text-[#000000]">{it.unit ?? "—"}</td>
         <td className="px-3 py-2 text-right font-mono">{formatNumber(it.purchaseRate ?? 0)}</td>
         <td className="px-3 py-2 text-right font-mono">{formatNumber(it.salesRate ?? 0)}</td>
-        <td className="px-3 py-2 text-right font-mono text-gray-500">
+        <td className="px-3 py-2 text-right font-mono text-[#000000]">
           {it.mrp ? formatNumber(it.mrp) : "—"}
         </td>
         <td className="px-3 py-2 text-right font-mono">
@@ -303,7 +303,7 @@ const StockBook: React.FC = () => {
           )}
         </td>
         <td className="px-3 py-2 text-center">{it.isTaxable ? "Y" : "N"}</td>
-        <td className="px-3 py-2 text-right font-mono text-gray-500">
+        <td className="px-3 py-2 text-right font-mono text-[#000000]">
           {it.type === ItemType.PRODUCT ? (it.minimumStock ?? 0) : "—"}
         </td>
         <td className="px-3 py-2">
@@ -327,7 +327,7 @@ const StockBook: React.FC = () => {
 
   const tableHeader = (
     <thead>
-      <tr className="border-b-2 border-gray-200 bg-gray-50 text-[11px] font-bold uppercase text-gray-600">
+      <tr className="border-b-2 border-[#9DC07A] bg-[#EBF5E2] text-[11px] font-bold uppercase text-[#000000]">
         <th className="px-3 py-2 text-left">Code</th>
         <th className="px-3 py-2 text-left">Name</th>
         <th className="px-3 py-2 text-left">Type</th>
@@ -347,13 +347,13 @@ const StockBook: React.FC = () => {
   return (
     <div className="flex flex-col gap-5 animate-fadeIn">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-4">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-800">
-            <Package className="h-5 w-5 text-blue-700" />
+          <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#000000]">
+            <Package className="h-5 w-5 text-[#000000]" />
             ITEMS MASTER
           </h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#000000]">
             Products, services and live stock positions
           </p>
         </div>
@@ -415,8 +415,8 @@ const StockBook: React.FC = () => {
           <div key={label} className="bg-white border rounded-lg p-3 flex items-center gap-3" style={{ borderColor: "var(--border)" }}>
             <div className="w-1 h-8 rounded-full shrink-0" style={{ background: color }} />
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
-              <div className="text-[18px] font-bold text-gray-800 leading-none mt-0.5">{value}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-[#000000]">{label}</div>
+              <div className="text-[18px] font-bold text-[#000000] leading-none mt-0.5">{value}</div>
             </div>
           </div>
         ))}
@@ -431,8 +431,8 @@ const StockBook: React.FC = () => {
             onClick={() => setActiveTab(t)}
             className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
               activeTab === t
-                ? "border-blue-600 bg-blue-600 text-white"
-                : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100"
+                ? "border-[#9DC07A] bg-[#D4EABD] text-white"
+                : "border-[#9DC07A] bg-[#EBF5E2] text-[#000000] hover:bg-[#EBF5E2]"
             }`}
           >
             {t === "PRODUCT" ? "Products" : t === "SERVICE" ? "Services" : t === "REORDER" ? "Reorder Alerts" : "All Items"}
@@ -442,7 +442,7 @@ const StockBook: React.FC = () => {
 
       {/* Toolbar */}
       {activeTab !== "REORDER" && (
-        <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 rounded-xl border border-[#9DC07A] bg-white p-3 md:flex-row md:items-center md:justify-between">
           <div className="relative w-full md:max-w-sm">
             <Input
               value={search}
@@ -450,24 +450,24 @@ const StockBook: React.FC = () => {
               placeholder="Search by code, name, HSN, barcode…"
               inputClassName="pl-9"
             />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#000000]" />
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
+            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-[#000000]">
               <input
                 type="checkbox"
                 checked={groupByCategory}
                 onChange={(e) => setGroupByCategory(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300"
+                className="h-4 w-4 rounded border-[#9DC07A]"
               />
               Group by Category
             </label>
-            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-gray-700">
+            <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-[#000000]">
               <input
                 type="checkbox"
                 checked={lowStockOnly}
                 onChange={(e) => setLowStockOnly(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300"
+                className="h-4 w-4 rounded border-[#9DC07A]"
               />
               <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
               Low Stock Only
@@ -480,23 +480,23 @@ const StockBook: React.FC = () => {
       {/* Reorder Alerts Table */}
       {activeTab === "REORDER" && (
         <Card border padding="none">
-          <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
-             <h3 className="text-[14px] font-semibold text-gray-800">Items Below Reorder Level</h3>
+          <div className="p-3 border-b border-[#9DC07A] flex justify-between items-center bg-white">
+             <h3 className="text-[14px] font-semibold text-[#000000]">Items Below Reorder Level</h3>
              <Button variant="outline" size="sm" icon={<Download className="w-4 h-4"/>} onClick={handleExportReorder}>
                Export Alerts
              </Button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left whitespace-nowrap">
-              <thead className="bg-[#f5f6fa] border-b border-gray-200">
+              <thead className="bg-[#f5f6fa] border-b border-[#9DC07A]">
                 <tr>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item Name</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Group</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Current Stock</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Reorder Level</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Shortage</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Unit</th>
-                  <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Last Purchase Rate</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Item Name</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Group</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Current Stock</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Reorder Level</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Shortage</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Unit</th>
+                  <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Last Purchase Rate</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -509,13 +509,13 @@ const StockBook: React.FC = () => {
                   .sort((a,b) => b.shortage - a.shortage)
                   .map(alert => (
                     <tr key={alert.id} className="hover:bg-red-50/50 bg-white">
-                       <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">{alert.name}</td>
-                       <td className="px-3 py-2.5 text-[12px] text-gray-600">{(alert as any).category || "Uncategorized"}</td>
+                       <td className="px-3 py-2.5 text-[12px] font-semibold text-[#000000]">{alert.name}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-[#000000]">{(alert as any).category || "Uncategorized"}</td>
                        <td className="px-3 py-2.5 text-[12px] text-right font-bold text-red-600">{alert.stock}</td>
-                       <td className="px-3 py-2.5 text-[12px] text-right text-gray-700">{alert.reorderLevel}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right text-[#000000]">{alert.reorderLevel}</td>
                        <td className="px-3 py-2.5 text-[12px] text-right font-bold text-amber-600">{alert.shortage}</td>
-                       <td className="px-3 py-2.5 text-[12px] text-gray-600">{alert.unit || "PCS"}</td>
-                       <td className="px-3 py-2.5 text-[12px] text-right font-mono text-gray-800">Rs. {formatNumber(alert.purchaseRate || 0)}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-[#000000]">{alert.unit || "PCS"}</td>
+                       <td className="px-3 py-2.5 text-[12px] text-right font-mono text-[#000000]">Rs. {formatNumber(alert.purchaseRate || 0)}</td>
                     </tr>
                 ))}
               </tbody>
@@ -547,10 +547,10 @@ const StockBook: React.FC = () => {
                     <tr>
                       <td
                         colSpan={12}
-                        className="bg-gray-100 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-700"
+                        className="bg-[#EBF5E2] px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#000000]"
                       >
                         {cat}{" "}
-                        <span className="ml-2 font-normal text-gray-500">({list.length})</span>
+                        <span className="ml-2 font-normal text-[#000000]">({list.length})</span>
                       </td>
                     </tr>
                     {list.map(renderRow)}
@@ -594,12 +594,12 @@ const StockBook: React.FC = () => {
         <div className="fixed inset-0 z-40 flex justify-end">
           <div className="flex-1 bg-black/30" onClick={() => setDetailItem(null)} />
           <div className="flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl">
-            <div className="flex items-start justify-between border-b border-gray-200 p-4">
+            <div className="flex items-start justify-between border-b border-[#9DC07A] p-4">
               <div>
-                <div className="text-xs font-mono text-gray-500">{detailItem.code}</div>
-                <h3 className="text-lg font-bold text-slate-800">{detailItem.name}</h3>
+                <div className="text-xs font-mono text-[#000000]">{detailItem.code}</div>
+                <h3 className="text-lg font-bold text-[#000000]">{detailItem.name}</h3>
                 {detailItem.nameNepali && (
-                  <div className="text-xs text-gray-500">{detailItem.nameNepali}</div>
+                  <div className="text-xs text-[#000000]">{detailItem.nameNepali}</div>
                 )}
                 <div className="mt-1 flex items-center gap-2">
                   <Badge variant={detailItem.type === ItemType.PRODUCT ? "info" : "default"}>
@@ -611,7 +611,7 @@ const StockBook: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDetailItem(null)}
-                className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                className="rounded-md p-1 text-[#000000] hover:bg-[#EBF5E2] hover:text-[#000000]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -619,24 +619,24 @@ const StockBook: React.FC = () => {
 
             <div className="space-y-5 p-4">
               <section>
-                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[#000000]">
                   Pricing
                 </h4>
                 <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div className="rounded border border-gray-200 p-2">
-                    <div className="text-[10px] uppercase text-gray-500">Purchase</div>
+                  <div className="rounded border border-[#9DC07A] p-2">
+                    <div className="text-[10px] uppercase text-[#000000]">Purchase</div>
                     <div className="font-mono font-bold">
                       {formatCurrency(detailItem.purchaseRate ?? 0)}
                     </div>
                   </div>
-                  <div className="rounded border border-gray-200 p-2">
-                    <div className="text-[10px] uppercase text-gray-500">Sales</div>
+                  <div className="rounded border border-[#9DC07A] p-2">
+                    <div className="text-[10px] uppercase text-[#000000]">Sales</div>
                     <div className="font-mono font-bold">
                       {formatCurrency(detailItem.salesRate ?? 0)}
                     </div>
                   </div>
-                  <div className="rounded border border-gray-200 p-2">
-                    <div className="text-[10px] uppercase text-gray-500">MRP</div>
+                  <div className="rounded border border-[#9DC07A] p-2">
+                    <div className="text-[10px] uppercase text-[#000000]">MRP</div>
                     <div className="font-mono font-bold">
                       {detailItem.mrp ? formatCurrency(detailItem.mrp) : "—"}
                     </div>
@@ -646,12 +646,12 @@ const StockBook: React.FC = () => {
 
               {detailItem.type === ItemType.PRODUCT && (
                 <section>
-                  <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                  <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[#000000]">
                     Stock by Warehouse
                   </h4>
-                  <div className="overflow-hidden rounded border border-gray-200">
+                  <div className="overflow-hidden rounded border border-[#9DC07A]">
                     <table className="w-full text-sm">
-                      <thead className="bg-gray-50 text-[11px] uppercase text-gray-600">
+                      <thead className="bg-[#EBF5E2] text-[11px] uppercase text-[#000000]">
                         <tr>
                           <th className="px-3 py-2 text-left">Warehouse</th>
                           <th className="px-3 py-2 text-right">Qty</th>
@@ -661,7 +661,7 @@ const StockBook: React.FC = () => {
                       </thead>
                       <tbody>
                         {detailData.perWarehouse.map(({ warehouse, position }) => (
-                          <tr key={warehouse.id} className="border-t border-gray-100">
+                          <tr key={warehouse.id} className="border-t border-[#9DC07A]">
                             <td className="px-3 py-2">{warehouse.name}</td>
                             <td className="px-3 py-2 text-right font-mono">
                               {formatNumber(position.qty)}
@@ -681,17 +681,17 @@ const StockBook: React.FC = () => {
               )}
 
               <section>
-                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[#000000]">
                   Recent Stock Movements
                 </h4>
                 {detailData.movements.length === 0 ? (
-                  <div className="rounded border border-dashed border-gray-200 p-4 text-center text-xs text-gray-500">
+                  <div className="rounded border border-dashed border-[#9DC07A] p-4 text-center text-xs text-[#000000]">
                     No stock movements yet.
                   </div>
                 ) : (
-                  <div className="max-h-64 overflow-y-auto rounded border border-gray-200">
+                  <div className="max-h-64 overflow-y-auto rounded border border-[#9DC07A]">
                     <table className="w-full text-xs">
-                      <thead className="sticky top-0 bg-gray-50 text-[10px] uppercase text-gray-600">
+                      <thead className="sticky top-0 bg-[#EBF5E2] text-[10px] uppercase text-[#000000]">
                         <tr>
                           <th className="px-2 py-1.5 text-left">Date</th>
                           <th className="px-2 py-1.5 text-left">Type</th>
@@ -702,10 +702,10 @@ const StockBook: React.FC = () => {
                       </thead>
                       <tbody>
                         {detailData.movements.map((m) => (
-                          <tr key={m.id} className="border-t border-gray-100">
+                          <tr key={m.id} className="border-t border-[#9DC07A]">
                             <td className="px-2 py-1.5 font-mono">{m.date}</td>
                             <td className="px-2 py-1.5">{m.type}</td>
-                            <td className="px-2 py-1.5 text-gray-500">{m.referenceNo ?? "—"}</td>
+                            <td className="px-2 py-1.5 text-[#000000]">{m.referenceNo ?? "—"}</td>
                             <td className="px-2 py-1.5 text-right font-mono">
                               {formatNumber(m.qty)}
                             </td>
@@ -721,7 +721,7 @@ const StockBook: React.FC = () => {
               </section>
 
               <section>
-                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[#000000]">
                   Quick Actions
                 </h4>
                 <div className="grid grid-cols-3 gap-2">
@@ -762,7 +762,7 @@ const StockBook: React.FC = () => {
               </section>
             </div>
 
-            <div className="mt-auto flex justify-end gap-2 border-t border-gray-200 p-3">
+            <div className="mt-auto flex justify-end gap-2 border-t border-[#9DC07A] p-3">
               <Button variant="secondary" onClick={() => setDetailItem(null)}>
                 Close
               </Button>

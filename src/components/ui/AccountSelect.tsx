@@ -86,7 +86,7 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
 
   return (
     <div className="flex flex-col gap-1 w-full relative" ref={containerRef} id={id}>
-      {label && <label className="text-[11px] font-semibold text-gray-700">{label}</label>}
+      {label && <label className="text-[11px] font-semibold text-[#000000]">{label}</label>}
 
       <div className="flex items-center gap-1 w-full">
         {/* Custom Dropdown Trigger */}
@@ -95,22 +95,22 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
             type="button"
             disabled={disabled}
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full h-8 px-2.5 text-left text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-gray-50 disabled:cursor-not-allowed"
+            className="w-full h-8 px-2.5 text-left text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-[#EBF5E2] disabled:cursor-not-allowed"
           >
             <span className="truncate">
               {selectedAccount
                 ? `${selectedAccount.code ? selectedAccount.code + " · " : ""}${selectedAccount.name}`
                 : placeholder}
             </span>
-            <ChevronDown className="h-3 w-3 text-gray-400 shrink-0 ml-1" />
+            <ChevronDown className="h-3 w-3 text-[#000000] shrink-0 ml-1" />
           </button>
 
           {/* Custom Dropdown List */}
           {isOpen && (
-            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
+            <div className="absolute z-50 w-full mt-1 bg-white border border-[#9DC07A] rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
               {/* Search Bar */}
-              <div className="p-1 border-b border-gray-150 flex items-center gap-1 bg-slate-50 shrink-0">
-                <Search className="h-3 w-3 text-gray-400 ml-1.5" />
+              <div className="p-1 border-b border-[#9DC07A] flex items-center gap-1 bg-[#EBF5E2] shrink-0">
+                <Search className="h-3 w-3 text-[#000000] ml-1.5" />
                 <input
                   type="text"
                   value={search}
@@ -124,14 +124,14 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
               {/* Options List */}
               <div className="overflow-y-auto max-h-52 py-1">
                 {Object.keys(groupedAccounts).length === 0 ? (
-                  <div className="px-3 py-2 text-[11px] text-gray-400 text-center font-bold">
+                  <div className="px-3 py-2 text-[11px] text-[#000000] text-center font-bold">
                     No matching ledgers
                   </div>
                 ) : (
                   Object.entries(groupedAccounts).map(([groupName, list]) => (
                     <div key={groupName}>
                       {/* Divider Header */}
-                      <div className="px-2.5 py-1 text-[9px] font-bold text-[#1557b0] bg-blue-50/50 tracking-wider uppercase border-y border-gray-100">
+                      <div className="px-2.5 py-1 text-[9px] font-bold text-[#1557b0] bg-[#D4EABD]/50 tracking-wider uppercase border-y border-[#9DC07A]">
                         {groupName}
                       </div>
                       {list.map((acc) => {
@@ -147,8 +147,8 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
                             }}
                             className={`w-full px-3 py-1.5 text-left text-[12px] transition-colors flex items-center justify-between ${
                               isSelected
-                                ? "bg-blue-50 text-blue-700 font-semibold"
-                                : "text-gray-700 hover:bg-gray-50"
+                                ? "bg-[#D4EABD] text-[#000000] font-semibold"
+                                : "text-[#000000] hover:bg-[#EBF5E2]"
                             }`}
                           >
                             <span>
@@ -172,7 +172,7 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
             type="button"
             onClick={() => setModalOpen(true)}
             title="Create new accounting ledger"
-            className="flex items-center justify-center border border-gray-300 w-8 h-8 text-gray-500 hover:text-[#1557b0] hover:border-[#1557b0] hover:bg-blue-50/50 rounded-md shrink-0 transition-all focus:outline-none cursor-pointer"
+            className="flex items-center justify-center border border-[#9DC07A] w-8 h-8 text-[#000000] hover:text-[#1557b0] hover:border-[#1557b0] hover:bg-[#D4EABD]/50 rounded-md shrink-0 transition-all focus:outline-none cursor-pointer"
           >
             <Plus className="h-4 w-4" />
           </button>

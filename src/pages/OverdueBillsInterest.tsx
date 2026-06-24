@@ -128,39 +128,39 @@ const OverdueBillsInterest: React.FC = () => {
         subtitle="Interest calculation on overdue receivables and payables"
       />
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-slate-150 pb-5">
+      <div className="flex items-center gap-3 border-b border-[#9DC07A] pb-5">
         <button
           onClick={() => setCurrentPage("reports")}
-          className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"
+          className="p-2 rounded-lg hover:bg-[#EBF5E2] text-[#000000] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div>
-          <h2 className="text-lg font-bold text-slate-800 tracking-tight">
+          <h2 className="text-lg font-bold text-[#000000] tracking-tight">
             Overdue Bills Interest Calculator
           </h2>
-          <p className="text-[11px] text-slate-400 font-extrabold uppercase tracking-wider mt-0.5">
+          <p className="text-[11px] text-[#000000] font-extrabold uppercase tracking-wider mt-0.5">
             Audit interest accumulated on outstanding customer ledger balances
           </p>
         </div>
       </div>
 
       {/* Control panel filters */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <Calendar className="h-3 w-3" /> As Of Date
           </span>
           <input
             type="date"
             value={asOfDate}
             onChange={(e) => setAsOfDate(e.target.value)}
-            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500"
+            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
           />
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <Percent className="h-3 w-3" /> Interest Rate (% p.a.)
           </span>
           <input
@@ -169,12 +169,12 @@ const OverdueBillsInterest: React.FC = () => {
             max="100"
             value={interestRate}
             onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500"
+            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
           />
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <ShieldAlert className="h-3 w-3" /> Min Days Overdue
           </span>
           <input
@@ -182,51 +182,51 @@ const OverdueBillsInterest: React.FC = () => {
             min="0"
             value={minDays}
             onChange={(e) => setMinDays(parseInt(e.target.value) || 0)}
-            className="border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500"
+            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
           />
         </div>
       </div>
 
       {/* Summary KPI stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400">
+        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Overdue Invoices
           </span>
-          <span className="text-base font-bold text-slate-800">{grandTotals.count} Bills</span>
+          <span className="text-base font-bold text-[#000000]">{grandTotals.count} Bills</span>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400">
+        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Overdue Outstanding
           </span>
           <span className="text-base font-bold text-red-600 font-mono">
             {symbol} {formatNumber(grandTotals.outstanding)}
           </span>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-1 text-right">
-          <span className="text-[10px] uppercase font-bold text-slate-400">
+        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1 text-right">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Accumulated Interest
           </span>
-          <span className="text-base font-bold text-indigo-700 font-mono">
+          <span className="text-base font-bold text-[#000000] font-mono">
             {symbol} {formatNumber(grandTotals.interest)}
           </span>
         </div>
       </div>
 
       {/* Main Aggregated Table */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm">
         {overdueSummary.length === 0 ? (
-          <div className="text-center py-10 text-slate-400 font-medium">
+          <div className="text-center py-10 text-[#000000] font-medium">
             No overdue accounts matching search parameters.
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2">
+            <h3 className="text-sm font-bold text-[#000000] uppercase tracking-wider mb-2">
               Customer Receivables Interest
             </h3>
-            <div className="overflow-x-auto border border-slate-100 rounded-lg">
+            <div className="overflow-x-auto border border-[#9DC07A] rounded-lg">
               <table className="w-full text-xs">
-                <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-150">
+                <thead className="bg-[#EBF5E2] text-[10px] font-bold text-[#000000] uppercase tracking-wider border-b border-[#9DC07A]">
                   <tr>
                     <th className="py-2 px-3 w-10"></th>
                     <th className="py-2 px-2 text-left">Customer / Party Name</th>
@@ -243,23 +243,23 @@ const OverdueBillsInterest: React.FC = () => {
                         {/* Parent Party Row */}
                         <tr
                           onClick={() => toggleExpand(party.partyId)}
-                          className="hover:bg-slate-50/50 cursor-pointer font-bold"
+                          className="hover:bg-[#EBF5E2]/50 cursor-pointer font-bold"
                         >
                           <td className="py-3 px-3 text-center">
                             {isExpanded ? (
-                              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                              <ChevronDown className="h-3.5 w-3.5 text-[#000000]" />
                             ) : (
-                              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                              <ChevronRight className="h-3.5 w-3.5 text-[#000000]" />
                             )}
                           </td>
-                          <td className="py-3 px-2 text-slate-800">{party.partyName}</td>
-                          <td className="py-3 px-2 text-center text-slate-500 font-medium">
+                          <td className="py-3 px-2 text-[#000000]">{party.partyName}</td>
+                          <td className="py-3 px-2 text-center text-[#000000] font-medium">
                             {party.overdueCount} bills
                           </td>
                           <td className="py-3 px-2 text-right font-mono text-red-500">
                             {symbol} {formatNumber(party.totalOutstanding)}
                           </td>
-                          <td className="py-3 px-2 text-right font-mono text-indigo-700">
+                          <td className="py-3 px-2 text-right font-mono text-[#000000]">
                             {symbol} {formatNumber(party.totalInterest)}
                           </td>
                         </tr>
@@ -267,10 +267,10 @@ const OverdueBillsInterest: React.FC = () => {
                         {/* Expanded Invoices list */}
                         {isExpanded && (
                           <tr>
-                            <td colSpan={5} className="bg-slate-50/50 p-4">
-                              <div className="border border-slate-150 rounded-lg overflow-hidden bg-white">
+                            <td colSpan={5} className="bg-[#EBF5E2]/50 p-4">
+                              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white">
                                 <table className="w-full text-xs">
-                                  <thead className="bg-slate-100/70 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-150">
+                                  <thead className="bg-[#EBF5E2]/70 text-[10px] font-bold text-[#000000] uppercase border-b border-[#9DC07A]">
                                     <tr>
                                       <th className="py-1.5 px-3 text-left">Invoice No</th>
                                       <th className="py-1.5 px-2 text-left">Bill Date</th>
@@ -282,16 +282,16 @@ const OverdueBillsInterest: React.FC = () => {
                                   </thead>
                                   <tbody className="divide-y divide-slate-100 text-[11px] font-medium">
                                     {party.invoices.map((inv) => (
-                                      <tr key={inv.id} className="hover:bg-slate-50/40">
-                                        <td className="py-2 px-3 font-semibold text-slate-700">
+                                      <tr key={inv.id} className="hover:bg-[#EBF5E2]/40">
+                                        <td className="py-2 px-3 font-semibold text-[#000000]">
                                           {inv.invoiceNo}
                                         </td>
-                                        <td className="py-2 px-2 text-slate-500">{inv.date}</td>
-                                        <td className="py-2 px-2 text-slate-500">{inv.dueDate}</td>
-                                        <td className="py-2 px-2 text-center text-slate-600 font-bold">
+                                        <td className="py-2 px-2 text-[#000000]">{inv.date}</td>
+                                        <td className="py-2 px-2 text-[#000000]">{inv.dueDate}</td>
+                                        <td className="py-2 px-2 text-center text-[#000000] font-bold">
                                           {inv.daysOverdue} days
                                         </td>
-                                        <td className="py-2 px-2 text-right font-mono text-slate-700">
+                                        <td className="py-2 px-2 text-right font-mono text-[#000000]">
                                           {symbol} {formatNumber(inv.outstanding)}
                                         </td>
                                         <td className="py-2 px-3 text-right font-mono text-[#1557b0] font-bold">

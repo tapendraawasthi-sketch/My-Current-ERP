@@ -196,8 +196,8 @@ const CashFlowStatement: React.FC = () => {
     <div className="flex flex-col gap-6 animate-fadeIn select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Cash Flow Statement</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-[#000000]">Cash Flow Statement</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">
             Operating, investing and financing activities
           </p>
         </div>
@@ -225,11 +225,11 @@ const CashFlowStatement: React.FC = () => {
         <div className="grid gap-4 lg:grid-cols-3">
           <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
           <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+          <div className="rounded-xl border border-[#9DC07A] bg-[#EBF5E2] p-4">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Verification
             </div>
-            <div className="mt-3 text-sm font-bold text-slate-900">
+            <div className="mt-3 text-sm font-bold text-[#000000]">
               {verifiedClosing ? (
                 <Badge variant="success">VERIFIED ✓</Badge>
               ) : (
@@ -245,29 +245,29 @@ const CashFlowStatement: React.FC = () => {
         </div>
       </Card>
 
-      <Card border padding="md" className="bg-slate-50">
+      <Card border padding="md" className="bg-[#EBF5E2]">
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Net Cash from Operations
             </div>
-            <div className="mt-3 text-lg font-bold text-slate-900">
+            <div className="mt-3 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.operating.total)}
             </div>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Net Cash from Investing
             </div>
-            <div className="mt-3 text-lg font-bold text-slate-900">
+            <div className="mt-3 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.investing.total)}
             </div>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Net Cash from Financing
             </div>
-            <div className="mt-3 text-lg font-bold text-slate-900">
+            <div className="mt-3 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.financing.total)}
             </div>
           </div>
@@ -280,18 +280,18 @@ const CashFlowStatement: React.FC = () => {
             A. CASH FLOWS FROM OPERATING ACTIVITIES
           </div>
           <Table columns={columns} data={operatingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-slate-900">
+          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
             Operating Profit Before Working Capital Changes: Rs.{" "}
             {formatNumber(cashFlow.operating.total)}
           </div>
         </div>
 
         <div>
-          <div className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="mb-3 text-xs font-bold uppercase tracking-wider text-[#000000]">
             Working Capital Changes
           </div>
           <Table columns={columns} data={workingCapitalRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-slate-900">
+          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
             Net Cash from Operations: Rs.{" "}
             {formatNumber(
               workingCapitalRows.find((row) => row.id === "net-cash-operations")?.amount || 0,
@@ -304,7 +304,7 @@ const CashFlowStatement: React.FC = () => {
             B. CASH FLOWS FROM INVESTING ACTIVITIES
           </div>
           <Table columns={columns} data={investingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-slate-900">
+          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
             Net Cash from Investing: Rs. {formatNumber(cashFlow.investing.total)}
           </div>
         </div>
@@ -314,33 +314,33 @@ const CashFlowStatement: React.FC = () => {
             C. CASH FLOWS FROM FINANCING ACTIVITIES
           </div>
           <Table columns={columns} data={financingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-slate-900">
+          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
             Net Cash from Financing: Rs. {formatNumber(cashFlow.financing.total)}
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3 bg-slate-100 rounded-xl p-4">
+        <div className="grid gap-3 md:grid-cols-3 bg-[#EBF5E2] rounded-xl p-4">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Net Increase/(Decrease) in Cash
             </div>
-            <div className="mt-2 text-lg font-bold text-slate-900">
+            <div className="mt-2 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.netChange)}
             </div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Opening Cash &amp; Cash Equivalents
             </div>
-            <div className="mt-2 text-lg font-bold text-slate-900">
+            <div className="mt-2 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.openingCash)}
             </div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
               Closing Cash &amp; Cash Equivalents
             </div>
-            <div className="mt-2 text-lg font-bold text-slate-900">
+            <div className="mt-2 text-lg font-bold text-[#000000]">
               Rs. {formatNumber(cashFlow.closingCash)}
             </div>
           </div>

@@ -17,12 +17,12 @@ const CustomFieldRenderer: React.FC<Props> = ({ entityType, values, onChange }) 
   if (fields.length === 0) return null;
 
   return (
-    <div className="mt-4 pt-4 border-t border-slate-100">
-      <p className="text-[10px] uppercase font-bold text-slate-400 mb-3">Custom Fields</p>
+    <div className="mt-4 pt-4 border-t border-[#9DC07A]">
+      <p className="text-[10px] uppercase font-bold text-[#000000] mb-3">Custom Fields</p>
       <div className="grid grid-cols-2 gap-3">
         {fields.map((f) => (
           <div key={f.id}>
-            <label className="text-xs font-medium text-slate-600">
+            <label className="text-xs font-medium text-[#000000]">
               {f.label}
               {f.required && <span className="text-red-500">*</span>}
             </label>

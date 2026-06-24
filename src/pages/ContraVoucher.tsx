@@ -263,11 +263,11 @@ const ContraVoucher: React.FC = () => {
           <CheckCircle2 className="h-8 w-8 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-black text-slate-800">Contra Voucher Saved</h2>
-          <p className="text-xs text-gray-500 mt-1">
+          <h2 className="text-lg font-black text-[#000000]">Contra Voucher Saved</h2>
+          <p className="text-xs text-[#000000] mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(amt)} transferred
           </p>
-          <p className="text-[11px] text-gray-400 mt-1 font-semibold">
+          <p className="text-[11px] text-[#000000] mt-1 font-semibold">
             {fromAcct?.name} → {toAcct?.name}
           </p>
         </div>
@@ -336,21 +336,21 @@ const ContraVoucher: React.FC = () => {
     <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
       <ActionToolbar title="Contra Vouchers" subtitle="Cash/bank transfers" />
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+      <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="p-2 rounded-md hover:bg-gray-100 text-gray-500"
+            className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
             title="Back"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
           <div>
-            <h2 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-              <ArrowRightLeft className="h-5 w-5 text-indigo-600" />
+            <h2 className="text-lg font-black text-[#000000] tracking-tight flex items-center gap-2">
+              <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
               NEW CONTRA VOUCHER
             </h2>
-            <p className="text-[11px] text-slate-400 mt-0.5 uppercase tracking-wider font-bold">
+            <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
               Transfer between cash &amp; bank accounts only
             </p>
           </div>
@@ -367,8 +367,8 @@ const ContraVoucher: React.FC = () => {
       <Card border padding="md">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-gray-500 w-32 shrink-0">Voucher No</span>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700">
+            <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">Voucher No</span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
               {voucherNoPreview}
             </span>
           </div>
@@ -382,7 +382,7 @@ const ContraVoucher: React.FC = () => {
               }}
               required
             />
-            <p className="text-[11px] text-gray-400 mt-1 font-semibold">AD: {date}</p>
+            <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
           </div>
         </div>
       </Card>
@@ -392,7 +392,7 @@ const ContraVoucher: React.FC = () => {
         {/* FROM */}
         <Card border padding="md" className="border-l-4 border-l-red-500">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
+            <h3 className="text-xs font-black text-[#000000] uppercase tracking-wider">
               From (Credit)
             </h3>
             <KindBadge kind={fromKind} />
@@ -423,17 +423,17 @@ const ContraVoucher: React.FC = () => {
               error={insufficient ? "Insufficient balance" : undefined}
             />
             {fromAcct && (
-              <div className="rounded-md bg-slate-50 border border-slate-200 p-2.5 text-[11px] font-semibold flex flex-col gap-1">
-                <div className="flex justify-between text-gray-500">
+              <div className="rounded-md bg-[#EBF5E2] border border-[#9DC07A] p-2.5 text-[11px] font-semibold flex flex-col gap-1">
+                <div className="flex justify-between text-[#000000]">
                   <span>Available now</span>
-                  <span className="font-mono text-slate-700">
+                  <span className="font-mono text-[#000000]">
                     {symbol} {formatNumber(fromAvailable)}
                   </span>
                 </div>
-                <div className="flex justify-between border-t border-slate-200 pt-1">
-                  <span className="text-gray-500">After transfer</span>
+                <div className="flex justify-between border-t border-[#9DC07A] pt-1">
+                  <span className="text-[#000000]">After transfer</span>
                   <span
-                    className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-slate-800"}`}
+                    className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-[#000000]"}`}
                   >
                     {symbol} {formatNumber(fromAfter)}
                   </span>
@@ -445,7 +445,7 @@ const ContraVoucher: React.FC = () => {
 
         {/* Arrow */}
         <div className="flex items-center justify-center">
-          <div className="h-10 w-10 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+          <div className="h-10 w-10 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[#000000]">
             <ArrowRight className="h-5 w-5" />
           </div>
         </div>
@@ -453,7 +453,7 @@ const ContraVoucher: React.FC = () => {
         {/* TO */}
         <Card border padding="md" className="border-l-4 border-l-green-500">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
+            <h3 className="text-xs font-black text-[#000000] uppercase tracking-wider">
               To (Debit)
             </h3>
             <KindBadge kind={toKind} />
@@ -482,15 +482,15 @@ const ContraVoucher: React.FC = () => {
               hint="Auto-matches FROM amount"
             />
             {toAcct && (
-              <div className="rounded-md bg-slate-50 border border-slate-200 p-2.5 text-[11px] font-semibold flex flex-col gap-1">
-                <div className="flex justify-between text-gray-500">
+              <div className="rounded-md bg-[#EBF5E2] border border-[#9DC07A] p-2.5 text-[11px] font-semibold flex flex-col gap-1">
+                <div className="flex justify-between text-[#000000]">
                   <span>Available now</span>
-                  <span className="font-mono text-slate-700">
+                  <span className="font-mono text-[#000000]">
                     {symbol} {formatNumber(toAvailable)}
                   </span>
                 </div>
-                <div className="flex justify-between border-t border-slate-200 pt-1">
-                  <span className="text-gray-500">After transfer</span>
+                <div className="flex justify-between border-t border-[#9DC07A] pt-1">
+                  <span className="text-[#000000]">After transfer</span>
                   <span className="font-mono text-green-700">
                     {symbol} {formatNumber(toAfter)}
                   </span>
@@ -518,16 +518,16 @@ const ContraVoucher: React.FC = () => {
       {fromAcct && toAcct && Number(amount) > 0 && (
         <Card border padding="md">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-wider">
+            <h3 className="text-[11px] font-black text-[#000000] uppercase tracking-wider">
               Journal Preview
             </h3>
             <Badge variant="success" size="sm">
               BALANCED
             </Badge>
           </div>
-          <div className="rounded-md border border-slate-200 overflow-hidden">
+          <div className="rounded-md border border-[#9DC07A] overflow-hidden">
             <table className="w-full text-xs font-mono">
-              <thead className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase">
+              <thead className="bg-[#EBF5E2] text-[11px] font-bold text-[#000000] uppercase">
                 <tr>
                   <th className="px-3 py-2 text-left">Account</th>
                   <th className="px-3 py-2 text-right">Debit</th>
@@ -535,20 +535,20 @@ const ContraVoucher: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t border-slate-100">
-                  <td className="px-3 py-2 text-slate-800 font-semibold">
-                    {toAcct.name} <span className="text-[10px] text-gray-400">Dr</span>
+                <tr className="border-t border-[#9DC07A]">
+                  <td className="px-3 py-2 text-[#000000] font-semibold">
+                    {toAcct.name} <span className="text-[10px] text-[#000000]">Dr</span>
                   </td>
                   <td className="px-3 py-2 text-right text-green-700 font-bold">
                     {symbol} {formatNumber(amount)}
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-300">—</td>
+                  <td className="px-3 py-2 text-right text-[#000000]">—</td>
                 </tr>
-                <tr className="border-t border-slate-100">
-                  <td className="px-3 py-2 pl-8 text-slate-700">
-                    To {fromAcct.name} <span className="text-[10px] text-gray-400">Cr</span>
+                <tr className="border-t border-[#9DC07A]">
+                  <td className="px-3 py-2 pl-8 text-[#000000]">
+                    To {fromAcct.name} <span className="text-[10px] text-[#000000]">Cr</span>
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-300">—</td>
+                  <td className="px-3 py-2 text-right text-[#000000]">—</td>
                   <td className="px-3 py-2 text-right text-red-600 font-bold">
                     {symbol} {formatNumber(amount)}
                   </td>
@@ -560,8 +560,8 @@ const ContraVoucher: React.FC = () => {
       )}
 
       {/* Footer actions */}
-      <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-        <p className="text-[11px] text-gray-400 font-semibold">ESC to cancel · F12 to post</p>
+      <div className="flex items-center justify-between border-t border-[#9DC07A] pt-4">
+        <p className="text-[11px] text-[#000000] font-semibold">ESC to cancel · F12 to post</p>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleBack}>
             Cancel

@@ -228,8 +228,8 @@ const DayBook: React.FC = () => {
         <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Day Book</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">All transactions for the selected date</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Day Book</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">All transactions for the selected date</p>
         </div>
       </div>
 
@@ -238,14 +238,14 @@ const DayBook: React.FC = () => {
           <div className="flex items-center gap-1 shrink-0">
             <button
               type="button"
-              className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${!isRange ? "bg-[#1557b0] text-white" : "border border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+              className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${!isRange ? "bg-[#3D6B25] text-white" : "border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
               onClick={() => setIsRange(false)}
             >
               Single Date
             </button>
             <button
               type="button"
-              className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${isRange ? "bg-[#1557b0] text-white" : "border border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+              className={`h-7 px-2.5 text-[11px] font-semibold rounded transition-colors ${isRange ? "bg-[#3D6B25] text-white" : "border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
               onClick={() => setIsRange(true)}
             >
               Date Range
@@ -253,10 +253,10 @@ const DayBook: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1 border-l pl-3 shrink-0" style={{ borderColor: "var(--border)" }}>
-            <button type="button" onClick={() => applyQuickFilter("today")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">Today</button>
-            <button type="button" onClick={() => applyQuickFilter("week")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This Week</button>
-            <button type="button" onClick={() => applyQuickFilter("month")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This Month</button>
-            <button type="button" onClick={() => applyQuickFilter("fy")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-gray-300 text-gray-600 hover:bg-gray-50">This FY</button>
+            <button type="button" onClick={() => applyQuickFilter("today")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]">Today</button>
+            <button type="button" onClick={() => applyQuickFilter("week")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]">This Week</button>
+            <button type="button" onClick={() => applyQuickFilter("month")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]">This Month</button>
+            <button type="button" onClick={() => applyQuickFilter("fy")} className="h-7 px-2.5 text-[11px] font-semibold rounded border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]">This FY</button>
           </div>
 
           <div className="flex items-center gap-2 border-l pl-3 shrink-0" style={{ borderColor: "var(--border)" }}>
@@ -265,25 +265,25 @@ const DayBook: React.FC = () => {
           </div>
         </div>
         <div className="page-toolbar-right flex items-center gap-2 shrink-0">
-          <button type="button" onClick={handleExportExcel} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
+          <button type="button" onClick={handleExportExcel} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
             Export Excel
           </button>
-          <button type="button" onClick={handleExportPDF} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-gray-600 hover:bg-gray-50 flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
+          <button type="button" onClick={handleExportPDF} className="h-8 px-3 text-[11px] font-semibold border rounded-md text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5" style={{ borderColor: "var(--border)" }}>
             Print PDF
           </button>
         </div>
       </div>
 
       {groupedEntries.length === 0 ? (
-        <Card border padding="md" className="text-center py-8 text-gray-500">
+        <Card border padding="md" className="text-center py-8 text-[#000000]">
           No day book entries for selected date(s).
         </Card>
       ) : (
         groupedEntries.map((group) => (
           <div key={group.label} className="bg-white border rounded-lg overflow-hidden" style={{ borderColor: "var(--border)" }}>
-            <div className="flex items-center justify-between px-3 py-1.5 bg-blue-50 border-y" style={{ borderColor: "var(--border)" }}>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-700">{group.label}</span>
-              <span className="text-[10px] font-bold text-blue-600">Dr: {formatNumber(group.subtotal?.debit||0)} | Cr: {formatNumber(group.subtotal?.credit||0)}</span>
+            <div className="flex items-center justify-between px-3 py-1.5 bg-[#D4EABD] border-y" style={{ borderColor: "var(--border)" }}>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#000000]">{group.label}</span>
+              <span className="text-[10px] font-bold text-[#000000]">Dr: {formatNumber(group.subtotal?.debit||0)} | Cr: {formatNumber(group.subtotal?.credit||0)}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="data-table">
@@ -310,8 +310,8 @@ const DayBook: React.FC = () => {
                       <td>
                         <span className={`badge badge-${row.type?.replace(/-/g,'')}`}>{row.type?.replace(/-/g,' ').toUpperCase()}</span>
                       </td>
-                      <td className="font-semibold text-gray-800">{row.partyAccount}</td>
-                      <td className="text-gray-605">{row.narration}</td>
+                      <td className="font-semibold text-[#000000]">{row.partyAccount}</td>
+                      <td className="text-[#000000]">{row.narration}</td>
                       <td className="amt amt-dr">{row.debit > 0 ? formatNumber(row.debit) : "—"}</td>
                       <td className="amt amt-cr">{row.credit > 0 ? formatNumber(row.credit) : "—"}</td>
                     </tr>
@@ -323,10 +323,10 @@ const DayBook: React.FC = () => {
         ))
       )}
 
-      <Card border padding="sm" className="bg-slate-50">
+      <Card border padding="sm" className="bg-[#EBF5E2]">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-[10px] uppercase tracking-[0.22em] text-slate-505">Grand totals</div>
-          <div className="text-sm font-bold text-slate-900">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-[#000000]">Grand totals</div>
+          <div className="text-sm font-bold text-[#000000]">
             Debit: {formatNumber(totals.debt)} | Credit: {formatNumber(totals.cred)}
           </div>
         </div>

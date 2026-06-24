@@ -139,7 +139,7 @@ const VouchersLog: React.FC = () => {
               setSelectedVouchers([]);
             }
           }}
-          className="rounded border-gray-300"
+          className="rounded border-[#9DC07A]"
         />
       ),
       render: (voucher: JournalEntry) => (
@@ -153,7 +153,7 @@ const VouchersLog: React.FC = () => {
               setSelectedVouchers(selectedVouchers.filter((id) => id !== voucher.id));
             }
           }}
-          className="rounded border-gray-300"
+          className="rounded border-[#9DC07A]"
         />
       ),
       width: "50px",
@@ -262,7 +262,7 @@ const VouchersLog: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Vouchers Log</h1>
+        <h1 className="text-2xl font-bold text-[#000000]">Vouchers Log</h1>
         <div className="flex items-center gap-2">
           {selectedVouchers.length > 0 && (
             <>
@@ -292,7 +292,7 @@ const VouchersLog: React.FC = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Posted</p>
+              <p className="text-sm text-[#000000]">Total Posted</p>
               <p className="text-2xl font-bold text-green-600">{stats.posted}</p>
             </div>
             <Badge variant="success" dot />
@@ -301,7 +301,7 @@ const VouchersLog: React.FC = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Draft</p>
+              <p className="text-sm text-[#000000]">Total Draft</p>
               <p className="text-2xl font-bold text-amber-600">{stats.draft}</p>
             </div>
             <Badge variant="warning" dot />
@@ -310,7 +310,7 @@ const VouchersLog: React.FC = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Cancelled</p>
+              <p className="text-sm text-[#000000]">Total Cancelled</p>
               <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
             </div>
             <Badge variant="danger" dot />
@@ -321,8 +321,8 @@ const VouchersLog: React.FC = () => {
       {/* Filters */}
       <Card className="p-4">
         <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-4 w-4 text-gray-500" />
-          <span className="font-medium text-gray-700">Filters</span>
+          <Filter className="h-4 w-4 text-[#000000]" />
+          <span className="font-medium text-[#000000]">Filters</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Select

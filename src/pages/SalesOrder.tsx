@@ -18,13 +18,13 @@ const getStatusBadge = (status: string) => {
   switch (val) {
     case "draft":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-600">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#EBF5E2] text-[#000000]">
           Draft
         </span>
       );
     case "approved":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-blue-100 text-blue-700">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#D4EABD] text-[#000000]">
           Approved
         </span>
       );
@@ -48,7 +48,7 @@ const getStatusBadge = (status: string) => {
       );
     default:
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#EBF5E2] text-[#000000]">
           {status}
         </span>
       );
@@ -125,7 +125,7 @@ const SalesOrder: React.FC = () => {
     {
       key: "orderNo",
       header: "Order No",
-      render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
     { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     { key: "expectedDate", header: "Expected", render: (v: string) => v || "—" },
@@ -153,7 +153,7 @@ const SalesOrder: React.FC = () => {
     <div className="flex flex-col gap-5 animate-fadeIn text-xs">
       <ActionToolbar title="Sales Orders" subtitle="Customer purchase orders and fulfillment" />
 
-      <div className="flex items-center justify-end gap-2 border-b border-gray-200 pb-4">
+      <div className="flex items-center justify-end gap-2 border-b border-[#9DC07A] pb-4">
         <Select
           value={statusFilter}
           onChange={setStatusFilter}

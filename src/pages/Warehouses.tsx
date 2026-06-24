@@ -137,24 +137,24 @@ export default function Warehouses() {
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-[#EBF5E2]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Code
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Address
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Default
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
                 Actions
               </th>
             </tr>
@@ -162,24 +162,24 @@ export default function Warehouses() {
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredWarehouses.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                  <Package className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <td colSpan={6} className="px-6 py-12 text-center text-[#000000]">
+                  <Package className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
                   <p>No warehouses found</p>
                 </td>
               </tr>
             ) : (
               filteredWarehouses.map((warehouse) => (
-                <tr key={warehouse.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{warehouse.code}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{warehouse.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{warehouse.address}</td>
+                <tr key={warehouse.id} className="hover:bg-[#EBF5E2]">
+                  <td className="px-6 py-4 text-sm font-medium text-[#000000]">{warehouse.code}</td>
+                  <td className="px-6 py-4 text-sm text-[#000000]">{warehouse.name}</td>
+                  <td className="px-6 py-4 text-sm text-[#000000]">{warehouse.address}</td>
                   <td className="px-6 py-4 text-sm">
                     {warehouse.isDefault ? (
                       <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                         Default
                       </span>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-[#000000]">-</span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm">
@@ -197,7 +197,7 @@ export default function Warehouses() {
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(warehouse)}
-                        className="text-[#1557b0] hover:text-indigo-900"
+                        className="text-[#1557b0] hover:text-[#000000]"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -225,7 +225,7 @@ export default function Warehouses() {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Code *</label>
                 <input
                   type="text"
                   value={formData.code}
@@ -236,7 +236,7 @@ export default function Warehouses() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Name *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -247,7 +247,7 @@ export default function Warehouses() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Address</label>
                 <textarea
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -261,24 +261,24 @@ export default function Warehouses() {
                   type="checkbox"
                   checked={formData.isDefault}
                   onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                  className="rounded border-gray-300"
+                  className="rounded border-[#9DC07A]"
                 />
-                <label className="text-sm font-medium text-gray-700">Set as Default</label>
+                <label className="text-sm font-medium text-[#000000]">Set as Default</label>
               </div>
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300"
+                  className="rounded border-[#9DC07A]"
                 />
-                <label className="text-sm font-medium text-gray-700">Is Active</label>
+                <label className="text-sm font-medium text-[#000000]">Is Active</label>
               </div>
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
                 >
                   Cancel
                 </button>

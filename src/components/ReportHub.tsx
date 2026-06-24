@@ -44,8 +44,8 @@ const ReportHub: React.FC = () => {
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 select-none">
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Reports Directory</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Categorized list of accounting reports and registers</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Reports Directory</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Categorized list of accounting reports and registers</p>
         </div>
       </div>
 
@@ -55,14 +55,14 @@ const ReportHub: React.FC = () => {
             <div className="h-6 w-6 rounded flex items-center justify-center" style={{ background: cat.color + "20" }}>
               <cat.icon className="h-3.5 w-3.5" style={{ color: cat.color }} />
             </div>
-            <span className="text-[12px] font-bold text-gray-800">{cat.title}</span>
+            <span className="text-[12px] font-bold text-[#000000]">{cat.title}</span>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0">
             {cat.reports.map(r => (
               <button key={r.page} type="button" onClick={() => setCurrentPage(r.page)}
-                className="flex flex-col items-start gap-0.5 p-3 text-left hover:bg-blue-50 transition-colors border-r border-b cursor-pointer" style={{ borderColor: "var(--border)" }}>
-                <span className="text-[12px] font-semibold text-gray-800">{r.label}</span>
-                <span className="text-[10px] text-gray-400 font-medium">{r.desc}</span>
+                className="flex flex-col items-start gap-0.5 p-3 text-left hover:bg-[#D4EABD] transition-colors border-r border-b cursor-pointer" style={{ borderColor: "var(--border)" }}>
+                <span className="text-[12px] font-semibold text-[#000000]">{r.label}</span>
+                <span className="text-[10px] text-[#000000] font-medium">{r.desc}</span>
               </button>
             ))}
           </div>

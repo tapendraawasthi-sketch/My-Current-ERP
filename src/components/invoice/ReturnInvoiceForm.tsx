@@ -114,7 +114,7 @@ const ReturnInvoiceForm: React.FC<ReturnInvoiceFormProps> = ({
   return (
     <div className="flex flex-col gap-3">
       <Card border padding="md">
-        <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider mb-3 flex items-center gap-2">
           <Undo2 className="h-3.5 w-3.5 text-amber-600" /> Original Invoice Linkage
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -127,11 +127,11 @@ const ReturnInvoiceForm: React.FC<ReturnInvoiceFormProps> = ({
           <button
             type="button"
             onClick={lookupAndLink}
-            className="h-9 px-4 rounded-md bg-[#1557b0] text-white text-xs font-bold hover:bg-[#0f4a96]"
+            className="h-9 px-4 rounded-md bg-[#3D6B25] text-white text-xs font-bold hover:bg-[#2D5A1A]"
           >
             Link & Prefill
           </button>
-          <p className="text-[10px] text-slate-500 leading-relaxed">
+          <p className="text-[10px] text-[#000000] leading-relaxed">
             Lookup loads party and line items from the original invoice. Trim quantities to what is
             actually being returned.
           </p>

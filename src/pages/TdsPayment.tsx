@@ -159,13 +159,13 @@ export default function TdsPayment() {
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">TDS Entry Form</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Record TDS payments and generate automated journals</p>
+              <h1 className="text-[15px] font-semibold text-[#000000]">TDS Entry Form</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">Record TDS payments and generate automated journals</p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleSubmit}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
+                className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Save className="h-3.5 w-3.5" /> Save Entry
               </button>
@@ -206,26 +206,26 @@ export default function TdsPayment() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] font-medium text-gray-600 block mb-1">Section</label>
-                    <div className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 flex items-center">
+                    <label className="text-[11px] font-medium text-[#000000] block mb-1">Section</label>
+                    <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
                       {section || "-"}
                     </div>
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-gray-600 block mb-1">TDS Rate (%)</label>
-                    <div className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 flex items-center">
+                    <label className="text-[11px] font-medium text-[#000000] block mb-1">TDS Rate (%)</label>
+                    <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
                       {tdsRate || 0}%
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-medium text-gray-600 block mb-1">Gross Amount *</label>
+                  <label className="text-[11px] font-medium text-[#000000] block mb-1">Gross Amount *</label>
                   <input
                     type="number"
                     value={grossAmount}
                     onChange={(e) => setGrossAmount(e.target.value ? Number(e.target.value) : "")}
-                    className="h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    className="h-8 w-full px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                     placeholder="Enter gross amount"
                   />
                   {isBelowThreshold && (
@@ -237,10 +237,10 @@ export default function TdsPayment() {
               </div>
             </div>
 
-            <div className="mt-6 border-t border-gray-200 pt-4 grid grid-cols-3 gap-4">
-               <div className="bg-gray-50 p-3 rounded border border-gray-200">
-                 <div className="text-[10px] uppercase font-bold text-gray-500">Gross Amount</div>
-                 <div className="text-[14px] font-bold text-gray-800">Rs. {formatNumber(grossNum)}</div>
+            <div className="mt-6 border-t border-[#9DC07A] pt-4 grid grid-cols-3 gap-4">
+               <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+                 <div className="text-[10px] uppercase font-bold text-[#000000]">Gross Amount</div>
+                 <div className="text-[14px] font-bold text-[#000000]">Rs. {formatNumber(grossNum)}</div>
                </div>
                <div className="bg-red-50 p-3 rounded border border-red-200">
                  <div className="text-[10px] uppercase font-bold text-red-700">TDS Amount ({tdsRate}%)</div>

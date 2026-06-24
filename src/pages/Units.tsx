@@ -121,21 +121,21 @@ export default function Units() {
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-[#EBF5E2]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Code
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Symbol
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
                 Actions
               </th>
             </tr>
@@ -143,17 +143,17 @@ export default function Units() {
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredUnits.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                  <Ruler className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <td colSpan={5} className="px-6 py-12 text-center text-[#000000]">
+                  <Ruler className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
                   <p>No units found</p>
                 </td>
               </tr>
             ) : (
               filteredUnits.map((unit) => (
-                <tr key={unit.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{unit.code}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{unit.symbol}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{unit.name}</td>
+                <tr key={unit.id} className="hover:bg-[#EBF5E2]">
+                  <td className="px-6 py-4 text-sm font-medium text-[#000000]">{unit.code}</td>
+                  <td className="px-6 py-4 text-sm text-[#000000]">{unit.symbol}</td>
+                  <td className="px-6 py-4 text-sm text-[#000000]">{unit.name}</td>
                   <td className="px-6 py-4 text-sm">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -167,7 +167,7 @@ export default function Units() {
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(unit)}
-                        className="text-[#1557b0] hover:text-indigo-900"
+                        className="text-[#1557b0] hover:text-[#000000]"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -194,7 +194,7 @@ export default function Units() {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Code *</label>
                 <input
                   type="text"
                   value={formData.code}
@@ -205,7 +205,7 @@ export default function Units() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Symbol *</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Symbol *</label>
                 <input
                   type="text"
                   value={formData.symbol}
@@ -216,7 +216,7 @@ export default function Units() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-[#000000] mb-1">Name *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -231,15 +231,15 @@ export default function Units() {
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300"
+                  className="rounded border-[#9DC07A]"
                 />
-                <label className="text-sm font-medium text-gray-700">Is Active</label>
+                <label className="text-sm font-medium text-[#000000]">Is Active</label>
               </div>
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
                 >
                   Cancel
                 </button>

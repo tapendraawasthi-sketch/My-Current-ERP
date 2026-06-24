@@ -101,7 +101,7 @@ const SystemSettings: React.FC = () => {
                 title="Legal Identity Taxpayer Profile Settings"
                 subtitle="This information is used to structure legal invoice footers and tax annex books."
               >
-                <div className="flex flex-col gap-4 text-xs font-semibold text-slate-755 leading-relaxed bg-white">
+                <div className="flex flex-col gap-4 text-xs font-semibold text-[#000000] leading-relaxed bg-white">
                   <div className="grid grid-cols-2 gap-4">
                     <Input
                       label="Trading Corporate Name"
@@ -118,7 +118,7 @@ const SystemSettings: React.FC = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 border-t border-gray-200 pt-4">
+                  <div className="grid grid-cols-3 gap-4 border-t border-[#9DC07A] pt-4">
                     <Input label="Corporate Email" value={email} onChange={setEmail} type="email" />
                     <Input label="Office landline / contacts" value={phone} onChange={setPhone} />
                     <Input
@@ -136,7 +136,7 @@ const SystemSettings: React.FC = () => {
                     required
                   />
 
-                  <div className="grid grid-cols-3 gap-4 border-t border-gray-200 pt-4">
+                  <div className="grid grid-cols-3 gap-4 border-t border-[#9DC07A] pt-4">
                     <Input
                       label="Trading Prefix Code"
                       value={salesPrefix}
@@ -163,15 +163,15 @@ const SystemSettings: React.FC = () => {
                 title="Feature Activation & Module Controls"
                 subtitle="Enable or disable advanced ledger modules and tracking engines."
               >
-                <div className="flex flex-col gap-4 text-xs font-semibold text-slate-755 leading-relaxed bg-white">
+                <div className="flex flex-col gap-4 text-xs font-semibold text-[#000000] leading-relaxed bg-white">
                   <div className="divide-y divide-gray-150">
                     {/* Cost Center Toggle */}
                     <div className="flex items-center justify-between py-3">
                       <div className="flex flex-col">
-                        <span className="block text-[11px] font-medium text-gray-600 mb-0.5 font-semibold">
+                        <span className="block text-[11px] font-medium text-[#000000] mb-0.5 font-semibold">
                           Enable Cost Center Module
                         </span>
-                        <span className="text-[11px] text-gray-400 font-normal">
+                        <span className="text-[11px] text-[#000000] font-normal">
                           Track expenses and revenues across departments, projects, or branches.
                         </span>
                       </div>
@@ -179,7 +179,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableCostCenter(!enableCostCenter)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableCostCenter ? "bg-[#1557b0]" : "bg-gray-200"}
+                          ${enableCostCenter ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                         `}
                       >
                         <span
@@ -193,10 +193,10 @@ const SystemSettings: React.FC = () => {
                     {/* Bill-wise Tracking Toggle */}
                     <div className="flex items-center justify-between py-3">
                       <div className="flex flex-col">
-                        <span className="block text-[11px] font-medium text-gray-600 mb-0.5 font-semibold">
+                        <span className="block text-[11px] font-medium text-[#000000] mb-0.5 font-semibold">
                           Enable Bill-Wise Outstanding Tracking
                         </span>
-                        <span className="text-[11px] text-gray-400 font-normal">
+                        <span className="text-[11px] text-[#000000] font-normal">
                           Allocate payments to specific sales and purchase invoices for accurate
                           aging.
                         </span>
@@ -205,7 +205,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableBillWiseTracking(!enableBillWiseTracking)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableBillWiseTracking ? "bg-[#1557b0]" : "bg-gray-200"}
+                          ${enableBillWiseTracking ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                         `}
                       >
                         <span
@@ -219,10 +219,10 @@ const SystemSettings: React.FC = () => {
                     {/* Batch Tracking Toggle */}
                     <div className="flex items-center justify-between py-3">
                       <div className="flex flex-col">
-                        <span className="block text-[11px] font-medium text-gray-600 mb-0.5 font-semibold">
+                        <span className="block text-[11px] font-medium text-[#000000] mb-0.5 font-semibold">
                           Enable Batch & Expiry Tracking
                         </span>
-                        <span className="text-[11px] text-gray-400 font-normal">
+                        <span className="text-[11px] text-[#000000] font-normal">
                           Maintain inventory lot/batch numbers and manufacturing/expiry dates.
                         </span>
                       </div>
@@ -230,7 +230,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableBatchTracking(!enableBatchTracking)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableBatchTracking ? "bg-[#1557b0]" : "bg-gray-200"}
+                          ${enableBatchTracking ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                         `}
                       >
                         <span
@@ -244,10 +244,10 @@ const SystemSettings: React.FC = () => {
                     {/* TDS Enable Toggle */}
                     <div className="flex items-center justify-between py-3">
                       <div className="flex flex-col">
-                        <span className="block text-[11px] font-medium text-gray-600 mb-0.5 font-semibold">
+                        <span className="block text-[11px] font-medium text-[#000000] mb-0.5 font-semibold">
                           Enable Government TDS Withholding
                         </span>
-                        <span className="text-[11px] text-gray-400 font-normal">
+                        <span className="text-[11px] text-[#000000] font-normal">
                           Activate automatic TDS deductions on payment vouchers.
                         </span>
                       </div>
@@ -255,7 +255,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setTdsEnabled(!tdsEnabled)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${tdsEnabled ? "bg-[#1557b0]" : "bg-gray-200"}
+                          ${tdsEnabled ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                         `}
                       >
                         <span
@@ -269,10 +269,10 @@ const SystemSettings: React.FC = () => {
                     {/* Multi-Currency Toggle */}
                     <div className="flex items-center justify-between py-3">
                       <div className="flex flex-col">
-                        <span className="block text-[11px] font-medium text-gray-600 mb-0.5 font-semibold">
+                        <span className="block text-[11px] font-medium text-[#000000] mb-0.5 font-semibold">
                           Enable Multi-Currency Support
                         </span>
-                        <span className="text-[11px] text-gray-400 font-normal">
+                        <span className="text-[11px] text-[#000000] font-normal">
                           Transact in foreign currencies with automatic exchange rate conversion.
                         </span>
                       </div>
@@ -280,7 +280,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableMultiCurrency(!enableMultiCurrency)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableMultiCurrency ? "bg-[#1557b0]" : "bg-gray-200"}
+                          ${enableMultiCurrency ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                         `}
                       >
                         <span
@@ -346,8 +346,8 @@ const SystemSettings: React.FC = () => {
             <div className="flex items-start gap-2.5 text-xs select-none">
               <ShieldCheck className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
               <div className="flex flex-col font-medium leading-relaxed">
-                <span className="font-bold text-gray-800">ISO-9001 Compliant Books</span>
-                <span className="text-[10.5px] text-gray-400 mt-0.5">
+                <span className="font-bold text-[#000000]">ISO-9001 Compliant Books</span>
+                <span className="text-[10.5px] text-[#000000] mt-0.5">
                   Double-entry books and stock cost logs adhere to standard audit laws in Kathmandu,
                   Nepal.
                 </span>
@@ -375,7 +375,7 @@ const SystemSettings: React.FC = () => {
             </div>
           }
         >
-          <div className="text-xs font-semibold select-none text-gray-650 leading-relaxed">
+          <div className="text-xs font-semibold select-none text-[#000000] leading-relaxed">
             Please type <span className="font-mono font-bold text-red-600">CONFIRM RESET</span> if
             you understand this operation will erase all transaction invoices and vouchers ledger
             books.

@@ -169,7 +169,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
   };
 
   return (
-    <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+    <div className="space-y-4 p-4 bg-[#EBF5E2] dark:bg-[#EBF5E2] rounded-lg border border-[#9DC07A] dark:border-[#9DC07A]">
       {/* Period Presets */}
       <div className="flex gap-2 flex-wrap">
         {presets.map((preset) => (
@@ -178,8 +178,8 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
             onClick={() => handlePresetChange(preset.value)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               value.periodType === preset.value
-                ? "bg-blue-600 text-white"
-                : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
+                ? "bg-[#D4EABD] text-white"
+                : "bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000] hover:bg-[#EBF5E2] dark:hover:bg-[#EBF5E2] border border-[#9DC07A] dark:border-[#9DC07A]"
             }`}
           >
             {preset.label}
@@ -191,7 +191,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
       {value.periodType === "custom" && (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
               From Date
             </label>
             <NepaliDatePicker
@@ -200,7 +200,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
               To Date
             </label>
             <NepaliDatePicker
@@ -213,10 +213,10 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
 
       {/* Optional Filters */}
       {(showAccountFilter || showPartyFilter || showWarehouseFilter) && (
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#9DC07A] dark:border-[#9DC07A]">
           {showAccountFilter && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
                 Account
               </label>
               <select
@@ -227,7 +227,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     accountId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Accounts</option>
                 {accounts.map((acc) => (
@@ -241,7 +241,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
 
           {showPartyFilter && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
                 Party
               </label>
               <select
@@ -252,7 +252,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     partyId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Parties</option>
                 {parties.map((party) => (
@@ -266,7 +266,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
 
           {showWarehouseFilter && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
                 Warehouse
               </label>
               <select
@@ -277,7 +277,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     warehouseId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Warehouses</option>
                 {warehouses.map((wh) => (
@@ -292,7 +292,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
       )}
 
       {/* Period Label */}
-      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
+      <div className="flex items-center gap-2 text-sm text-[#000000] dark:text-[#000000] pt-2 border-t border-[#9DC07A] dark:border-[#9DC07A]">
         <Calendar className="w-4 h-4" />
         <span className="font-medium">{getPeriodLabel()}</span>
       </div>

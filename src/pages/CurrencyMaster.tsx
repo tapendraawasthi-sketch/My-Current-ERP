@@ -144,7 +144,7 @@ const CurrencyMaster: React.FC = () => {
       header: "Code",
       render: (currency: any) => (
         <div className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-gray-400" />
+          <DollarSign className="h-4 w-4 text-[#000000]" />
           <span className="font-mono font-bold">{currency.code}</span>
           {currency.isBase && (
             <Badge variant="success" size="sm">
@@ -167,14 +167,14 @@ const CurrencyMaster: React.FC = () => {
       key: "rate",
       header: "Current Rate",
       render: (currency: any) => {
-        if (currency.isBase) return <span className="text-gray-400">1.00</span>;
+        if (currency.isBase) return <span className="text-[#000000]">1.00</span>;
         const latest = getLatestRate(currency.code);
         return latest ? (
           <span className="font-mono font-semibold">
             {formatNumber(latest.rateToBase)} {baseCurrency?.code}
           </span>
         ) : (
-          <span className="text-gray-400">Not set</span>
+          <span className="text-[#000000]">Not set</span>
         );
       },
     },
@@ -220,8 +220,8 @@ const CurrencyMaster: React.FC = () => {
       <ActionToolbar title="Currency Master" subtitle="Multi-currency setup and exchange rates" />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Currency Master</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage currencies and exchange rates</p>
+          <h1 className="text-2xl font-bold text-[#000000]">Currency Master</h1>
+          <p className="text-sm text-[#000000] mt-1">Manage currencies and exchange rates</p>
         </div>
         <Button
           size="sm"
@@ -258,11 +258,11 @@ const CurrencyMaster: React.FC = () => {
             <Card key={currency.id} className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-[#000000]">
                     {currency.code} - {currency.name}
                   </h3>
                   {latest && (
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-[#000000] mt-1">
                       Current Rate:{" "}
                       <span className="font-mono font-semibold">
                         {formatNumber(latest.rateToBase)} {baseCurrency?.code}
@@ -285,7 +285,7 @@ const CurrencyMaster: React.FC = () => {
               {/* Chart */}
               {history.length > 0 ? (
                 <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-600 mb-3">
+                  <h4 className="text-sm font-semibold text-[#000000] mb-3">
                     30-Day Exchange Rate Trend
                   </h4>
                   <ResponsiveContainer width="100%" height={200}>
@@ -313,7 +313,7 @@ const CurrencyMaster: React.FC = () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-8 text-[#000000]">
                   <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No exchange rate history available</p>
                 </div>
@@ -322,10 +322,10 @@ const CurrencyMaster: React.FC = () => {
               {/* Rate History Table */}
               {history.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-600 mb-2">Recent Rate History</h4>
+                  <h4 className="text-sm font-semibold text-[#000000] mb-2">Recent Rate History</h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
-                      <thead className="bg-gray-50 border-y border-gray-200">
+                      <thead className="bg-[#EBF5E2] border-y border-[#9DC07A]">
                         <tr>
                           <th className="px-3 py-2 text-left">Date</th>
                           <th className="px-3 py-2 text-right">Rate to {baseCurrency?.code}</th>
@@ -338,7 +338,7 @@ const CurrencyMaster: React.FC = () => {
                           .sort((a, b) => b.date.localeCompare(a.date))
                           .slice(0, 10)
                           .map((rate, idx) => (
-                            <tr key={idx} className="hover:bg-gray-50">
+                            <tr key={idx} className="hover:bg-[#EBF5E2]">
                               <td className="px-3 py-2">
                                 {new Date(rate.date).toLocaleDateString()}
                               </td>
@@ -406,7 +406,7 @@ const CurrencyMaster: React.FC = () => {
                 className="h-4 w-4 accent-blue-600"
                 disabled={!!editingCurrency && editingCurrency.isBase}
               />
-              <span className="text-sm font-medium text-gray-700">Set as Base Currency</span>
+              <span className="text-sm font-medium text-[#000000]">Set as Base Currency</span>
             </label>
             <label className="inline-flex items-center gap-2">
               <input
@@ -417,7 +417,7 @@ const CurrencyMaster: React.FC = () => {
                 }
                 className="h-4 w-4 accent-blue-600"
               />
-              <span className="text-sm font-medium text-gray-700">Active</span>
+              <span className="text-sm font-medium text-[#000000]">Active</span>
             </label>
           </div>
           <div className="flex items-center justify-end gap-2 pt-4">

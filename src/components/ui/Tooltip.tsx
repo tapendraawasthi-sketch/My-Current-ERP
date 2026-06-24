@@ -32,7 +32,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content, children, position = "top" }
           ${positionStyles[position]}
         `}
       >
-        <div className="relative bg-gray-800 text-white text-[11px] font-medium py-1 px-2.5 rounded-md shadow-md whitespace-nowrap leading-none border border-gray-700">
+        <div className="relative bg-[#EBF5E2] text-[#000000] text-[11px] font-medium py-1 px-2.5 rounded-md shadow-md whitespace-nowrap leading-none border border-[#9DC07A]">
           {content}
           <div className={`absolute border-4 ${arrowStyles[position]}`} />
         </div>

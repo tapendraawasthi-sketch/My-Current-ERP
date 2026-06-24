@@ -167,10 +167,10 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
   const isEdit = !!item;
 
   return (
-    <div className="flex flex-col h-full bg-white text-xs text-gray-700">
+    <div className="flex flex-col h-full bg-white text-xs text-[#000000]">
       {/* Form Header */}
-      <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between shrink-0 select-none">
-        <h3 className="text-[13px] font-semibold text-gray-800">
+      <div className="px-5 py-3 border-b border-[#9DC07A] bg-[#EBF5E2] flex items-center justify-between shrink-0 select-none">
+        <h3 className="text-[13px] font-semibold text-[#000000]">
           {isEdit ? "Edit Item" : "New Item"}
         </h3>
       </div>
@@ -184,7 +184,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
       >
         {/* Section 1: Item Details */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3">
             Item Details
           </div>
 
@@ -237,20 +237,20 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+                  className="rounded text-[#000000] focus:ring-[#3D6B25] h-4 w-4"
                 />
-                <span className="text-[11px] font-medium text-gray-600">Is Active</span>
+                <span className="text-[11px] font-medium text-[#000000]">Is Active</span>
               </label>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-[11px] font-medium text-gray-600 mb-0.5">
+              <label className="block text-[11px] font-medium text-[#000000] mb-0.5">
                 Description
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-gray-300 px-3 py-1.5 text-[12px] text-gray-900 focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+                className="w-full rounded-md border border-[#9DC07A] px-3 py-1.5 text-[12px] text-[#000000] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
 
         {/* Section 2: Unit & Pricing */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3 border-t pt-4">
             Unit & Pricing
           </div>
 
@@ -304,17 +304,17 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
 
         {/* Section 3: Tax & Stock */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3 border-t pt-4">
             Tax & Stock
           </div>
 
-          <div className="mt-2 bg-slate-50 p-4 border rounded-md">
+          <div className="mt-2 bg-[#EBF5E2] p-4 border rounded-md">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="block text-[11px] font-medium text-gray-600 mb-0.5">
+                <span className="block text-[11px] font-medium text-[#000000] mb-0.5">
                   Is Taxable (VAT)
                 </span>
-                <span className="text-[11px] text-gray-400">
+                <span className="text-[11px] text-[#000000]">
                   Enabling this applies VAT on sales and purchases.
                 </span>
               </div>
@@ -322,7 +322,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                 type="button"
                 onClick={() => setIsTaxable(!isTaxable)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                  ${isTaxable ? "bg-[#1557b0]" : "bg-gray-200"}
+                  ${isTaxable ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                 `}
               >
                 <span
@@ -387,10 +387,10 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                 disabled={isEdit}
               />
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-0.5">
+                <label className="block text-[11px] font-medium text-[#000000] mb-0.5">
                   Opening Stock Value
                 </label>
-                <div className="h-8 rounded-md border border-gray-200 bg-gray-50 px-3 flex items-center text-[12px] font-mono text-gray-700">
+                <div className="h-8 rounded-md border border-[#9DC07A] bg-[#EBF5E2] px-3 flex items-center text-[12px] font-mono text-[#000000]">
                   {formatNumber(openingValue)}
                 </div>
               </div>
@@ -398,8 +398,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
           )}
 
           {/* Accounts Integration */}
-          <div className="mt-4 p-4 border border-gray-200 rounded-md bg-slate-50">
-            <label className="block text-[11px] font-medium text-gray-600 mb-2">
+          <div className="mt-4 p-4 border border-[#9DC07A] rounded-md bg-[#EBF5E2]">
+            <label className="block text-[11px] font-medium text-[#000000] mb-2">
               Ledger Accounts Integration
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -429,7 +429,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
       </form>
 
       {/* Form Footer */}
-      <div className="border-t border-gray-200 p-4 flex justify-end gap-2 shrink-0 select-none bg-gray-50">
+      <div className="border-t border-[#9DC07A] p-4 flex justify-end gap-2 shrink-0 select-none bg-[#EBF5E2]">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

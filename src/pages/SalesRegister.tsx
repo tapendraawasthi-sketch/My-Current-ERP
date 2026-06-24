@@ -232,8 +232,8 @@ const SalesRegister: React.FC = () => {
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Sales Register</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">All sales invoices and returns</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Sales Register</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">All sales invoices and returns</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -259,8 +259,8 @@ const SalesRegister: React.FC = () => {
           { label: "Posted", value: filteredInvoices.filter(r=>r.status==="posted").length, color: "#15803d" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3" style={{ borderColor: "var(--border)" }}>
-            <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
-            <div className="text-[16px] font-bold text-gray-800 mt-0.5">{value}</div>
+            <div className="text-[10px] font-bold uppercase tracking-wide text-[#000000]">{label}</div>
+            <div className="text-[16px] font-bold text-[#000000] mt-0.5">{value}</div>
           </div>
         ))}
       </div>
@@ -268,8 +268,8 @@ const SalesRegister: React.FC = () => {
       {/* Filters */}
       <Card border padding="md" className="no-print">
         <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-4 w-4 text-gray-500" />
-          <span className="font-semibold text-gray-700">Filters</span>
+          <Filter className="h-4 w-4 text-[#000000]" />
+          <span className="font-semibold text-[#000000]">Filters</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           <NepaliDatePicker
@@ -332,17 +332,17 @@ const SalesRegister: React.FC = () => {
           <tbody>
             {paginatedInvoices.length === 0 ? (
               <tr>
-                <td colSpan={13} className="text-center py-8 text-gray-500">
+                <td colSpan={13} className="text-center py-8 text-[#000000]">
                   No sales invoices found
                 </td>
               </tr>
             ) : (
               paginatedInvoices.map((invoice) => (
                 <tr key={invoice.id} className="hover:bg-[#e8eeff]">
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{invoice.invoiceNo}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700">{new Date(invoice.date).toLocaleDateString()}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700">{invoice.partyName}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{invoice.partyPan || "-"}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{invoice.invoiceNo}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-[#000000]">{new Date(invoice.date).toLocaleDateString()}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-[#000000]">{invoice.partyName}</td>
+                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">{invoice.partyPan || "-"}</td>
                   <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.subTotal)}</td>
                   <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.discountAmount || 0)}</td>
                   <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.taxableAmount)}</td>
@@ -358,7 +358,7 @@ const SalesRegister: React.FC = () => {
           </tbody>
           <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
             <tr>
-              <td colSpan={4} className="px-3 py-2 text-[12px] text-gray-700">Total</td>
+              <td colSpan={4} className="px-3 py-2 text-[12px] text-[#000000]">Total</td>
               <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.subTotal)}</td>
               <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.discount)}</td>
               <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(totals.taxable)}</td>

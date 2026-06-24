@@ -139,13 +139,13 @@ const StockItems: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none">
       {/* Title Panel */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-            <Package className="h-5 w-5 text-blue-700" />
+          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
+            <Package className="h-5 w-5 text-[#000000]" />
             <span>INVENTORY ITEMS RECORD</span>
           </h2>
-          <p className="text-xs text-gray-400 mt-1 leading-none font-semibold uppercase tracking-wider">
+          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
             Sutra Corporate Warehouse Stock Valuer
           </p>
         </div>
@@ -163,7 +163,7 @@ const StockItems: React.FC = () => {
       </div>
 
       {/* FILTER PANEL */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
         <div className="w-full md:max-w-xs relative bg-white">
           <Input
             value={searchTerm}
@@ -171,7 +171,7 @@ const StockItems: React.FC = () => {
             placeholder="Search items by Name, Code, SKU..."
             inputClassName="pl-9 text-xs"
           />
-          <div className="absolute left-3 top-2.5 text-gray-400">
+          <div className="absolute left-3 top-2.5 text-[#000000]">
             <Search className="h-4 w-4" />
           </div>
         </div>
@@ -180,21 +180,21 @@ const StockItems: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab("ALL")}
-            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === "ALL" ? "bg-blue-600 text-white border-blue-600" : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"}`}
+            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === "ALL" ? "bg-[#D4EABD] text-white border-[#9DC07A]" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
           >
             Show All
           </button>
           <button
             type="button"
             onClick={() => setActiveTab(ItemType.PRODUCT)}
-            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === ItemType.PRODUCT ? "bg-blue-600 text-white border-blue-600" : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"}`}
+            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === ItemType.PRODUCT ? "bg-[#D4EABD] text-white border-[#9DC07A]" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
           >
             Products
           </button>
           <button
             type="button"
             onClick={() => setActiveTab(ItemType.SERVICE)}
-            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === ItemType.SERVICE ? "bg-blue-600 text-white border-blue-600" : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"}`}
+            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none ${activeTab === ItemType.SERVICE ? "bg-[#D4EABD] text-white border-[#9DC07A]" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
           >
             Services
           </button>
@@ -210,7 +210,7 @@ const StockItems: React.FC = () => {
               header: "SKU Code",
               width: "12%",
               render: (code) => (
-                <span className="font-mono font-bold text-slate-400 text-xs">{code}</span>
+                <span className="font-mono font-bold text-[#000000] text-xs">{code}</span>
               ),
             },
             {
@@ -219,13 +219,13 @@ const StockItems: React.FC = () => {
               width: "35%",
               render: (name, row) => (
                 <div className="flex flex-col">
-                  <span className="font-bold text-slate-800 text-xs">{name}</span>
+                  <span className="font-bold text-[#000000] text-xs">{name}</span>
                   {row.nameNepali && (
-                    <span className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                    <span className="text-[10px] font-semibold text-[#000000] mt-0.5">
                       {row.nameNepali}
                     </span>
                   )}
-                  <div className="flex gap-2.5 mt-1 text-[10px] text-gray-400 font-bold tracking-wider leading-none">
+                  <div className="flex gap-2.5 mt-1 text-[10px] text-[#000000] font-bold tracking-wider leading-none">
                     <span className="flex items-center gap-0.5">
                       <Scale className="h-3 w-3" /> Base Unit: {row.unit || "BOX"}
                     </span>
@@ -244,7 +244,7 @@ const StockItems: React.FC = () => {
               align: "right",
               width: "13%",
               render: (rate) => (
-                <span className="font-mono text-slate-600 text-xs">Rs. {formatNumber(rate)}</span>
+                <span className="font-mono text-[#000000] text-xs">Rs. {formatNumber(rate)}</span>
               ),
             },
             {
@@ -253,7 +253,7 @@ const StockItems: React.FC = () => {
               align: "right",
               width: "13%",
               render: (rate) => (
-                <span className="font-mono font-extrabold text-slate-800 text-xs">
+                <span className="font-mono font-extrabold text-[#000000] text-xs">
                   Rs. {formatNumber(rate)}
                 </span>
               ),
@@ -269,7 +269,7 @@ const StockItems: React.FC = () => {
                 const isUnder = qty <= (row.reorderLevel || 10);
                 return (
                   <div className="text-right flex flex-col font-mono text-xs">
-                    <span className={`font-bold ${isUnder ? "text-red-500" : "text-slate-900"}`}>
+                    <span className={`font-bold ${isUnder ? "text-[#6B0000]" : "text-[#000000]"}`}>
                       {qty} {row.unit || "BOX"}
                     </span>
                     {isUnder && (
@@ -295,7 +295,7 @@ const StockItems: React.FC = () => {
                       handleOpenEditModal(row);
                     }}
                     title="Change item metadata details"
-                    className="p-1.5 rounded-lg text-slate-400 hover:bg-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-[#000000] hover:bg-[#EBF5E2] hover:text-[#000000] transition-colors cursor-pointer"
                   >
                     <Edit2 className="h-4 w-4" />
                   </button>
@@ -328,7 +328,7 @@ const StockItems: React.FC = () => {
       >
         <form
           onSubmit={handleSaveSubmit}
-          className="flex flex-col gap-4 text-xs font-semibold text-slate-755 select-none"
+          className="flex flex-col gap-4 text-xs font-semibold text-[#000000] select-none"
         >
           <div className="grid grid-cols-3 gap-4">
             <Input label="SKU Unique Code" value={code} onChange={setCode} required disabled />
@@ -372,7 +372,7 @@ const StockItems: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4 border-t border-gray-200 pt-4">
+          <div className="grid grid-cols-3 gap-4 border-t border-[#9DC07A] pt-4">
             <Input
               label="Purchase Base Rate"
               type="number"
@@ -408,7 +408,7 @@ const StockItems: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4 border-t border-gray-200 pt-4">
+          <div className="grid grid-cols-3 gap-4 border-t border-[#9DC07A] pt-4">
             <Input
               label="Opening Quantity Count"
               type="number"
@@ -445,15 +445,15 @@ const StockItems: React.FC = () => {
             />
           </div>
 
-          <div className="border-t border-gray-200 pt-4 flex items-center gap-2">
+          <div className="border-t border-[#9DC07A] pt-4 flex items-center gap-2">
             <input
               type="checkbox"
               id="taxableCheck"
               checked={isTaxable}
               onChange={(e) => setIsTaxable(e.target.checked)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-[#000000] focus:ring-[#3D6B25] border-[#9DC07A] rounded"
             />
-            <label htmlFor="taxableCheck" className="text-xs font-bold text-gray-700">
+            <label htmlFor="taxableCheck" className="text-xs font-bold text-[#000000]">
               Taxable (Eligible for standard 13% Nepalese VAT collection on sales & inputs)
             </label>
           </div>

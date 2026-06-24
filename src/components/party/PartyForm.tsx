@@ -249,10 +249,10 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
   const isEdit = !!party;
 
   return (
-    <div className="flex flex-col h-full bg-white text-xs text-gray-700">
+    <div className="flex flex-col h-full bg-white text-xs text-[#000000]">
       {/* Form Header */}
-      <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between shrink-0 select-none">
-        <h3 className="text-[13px] font-semibold text-gray-800">
+      <div className="px-5 py-3 border-b border-[#9DC07A] bg-[#EBF5E2] flex items-center justify-between shrink-0 select-none">
+        <h3 className="text-[13px] font-semibold text-[#000000]">
           {isEdit ? "Edit Party" : "New Party"}
         </h3>
       </div>
@@ -263,7 +263,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
       >
         {/* Section 1: Basic Information */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3">
             Basic Information
           </div>
 
@@ -279,11 +279,11 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
             />
 
             <div className="flex flex-col gap-1">
-              <label className="block text-[11px] font-medium text-gray-600 mb-0.5">
+              <label className="block text-[11px] font-medium text-[#000000] mb-0.5">
                 Corporate Role Type <span className="text-red-500">*</span>
               </label>
-              <div className="flex gap-4 items-center bg-white border border-gray-300 rounded-md px-3 h-8 text-[12px]">
-                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-gray-700 select-none">
+              <div className="flex gap-4 items-center bg-white border border-[#9DC07A] rounded-md px-3 h-8 text-[12px]">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-[#000000] select-none">
                   <input
                     type="radio"
                     name="roleType"
@@ -293,7 +293,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
                   />
                   <span>Customer</span>
                 </label>
-                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-gray-700 select-none">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-[#000000] select-none">
                   <input
                     type="radio"
                     name="roleType"
@@ -303,7 +303,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
                   />
                   <span>Supplier</span>
                 </label>
-                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-gray-700 select-none">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-[#000000] select-none">
                   <input
                     type="radio"
                     name="roleType"
@@ -365,7 +365,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
 
         {/* Section 2: Address */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3 border-t pt-4">
             Address
           </div>
 
@@ -399,7 +399,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
 
         {/* Section 3: Tax & Registration */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3 border-t pt-4">
             Tax & Registration
           </div>
 
@@ -420,13 +420,13 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
             />
           </div>
 
-          <div className="mt-4 bg-slate-50 p-4 border rounded-md">
+          <div className="mt-4 bg-[#EBF5E2] p-4 border rounded-md">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="block text-[11px] font-medium text-gray-600 mb-0.5">
+                <span className="block text-[11px] font-medium text-[#000000] mb-0.5">
                   Is partner subject to TDS withholding?
                 </span>
-                <span className="text-[11px] text-gray-400">
+                <span className="text-[11px] text-[#000000]">
                   Enabling this automatically calculates matching TDS on vouchers.
                 </span>
               </div>
@@ -434,7 +434,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
                 type="button"
                 onClick={() => setSubjectToTds(!subjectToTds)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                  ${subjectToTds ? "bg-[#1557b0]" : "bg-gray-200"}
+                  ${subjectToTds ? "bg-[#3D6B25]" : "bg-[#EBF5E2]"}
                 `}
               >
                 <span
@@ -482,7 +482,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
 
         {/* Section 4: Credit Terms */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[#000000] uppercase tracking-wide mb-3 border-t pt-4">
             Credit Terms
           </div>
 
@@ -527,11 +527,11 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
             />
 
             <div className="flex flex-col gap-1">
-              <label className="block text-[11px] font-medium text-gray-600 mb-0.5">
+              <label className="block text-[11px] font-medium text-[#000000] mb-0.5">
                 Balance Type (Dr/Cr)
               </label>
-              <div className="flex gap-4 items-center bg-white border border-gray-300 rounded-md px-3 h-8 text-[12px]">
-                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-gray-700 select-none">
+              <div className="flex gap-4 items-center bg-white border border-[#9DC07A] rounded-md px-3 h-8 text-[12px]">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-[#000000] select-none">
                   <input
                     type="radio"
                     name="openingBalanceType"
@@ -541,7 +541,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
                   />
                   <span>Dr (Receivable)</span>
                 </label>
-                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-gray-700 select-none">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer font-normal text-[#000000] select-none">
                   <input
                     type="radio"
                     name="openingBalanceType"
@@ -563,8 +563,8 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
           </div>
 
           {/* Optional Bank details at the bottom of Credit Terms */}
-          <div className="mt-4 p-4 border border-gray-200 rounded-md bg-slate-50">
-            <label className="block text-[11px] font-medium text-gray-600 mb-2">
+          <div className="mt-4 p-4 border border-[#9DC07A] rounded-md bg-[#EBF5E2]">
+            <label className="block text-[11px] font-medium text-[#000000] mb-2">
               Default Banking Details
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -592,7 +592,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ party, partiesList = [], onSave, 
       </form>
 
       {/* Form Footer */}
-      <div className="border-t border-gray-200 p-4 flex justify-end gap-2 shrink-0 select-none bg-gray-50">
+      <div className="border-t border-[#9DC07A] p-4 flex justify-end gap-2 shrink-0 select-none bg-[#EBF5E2]">
         <Button variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>

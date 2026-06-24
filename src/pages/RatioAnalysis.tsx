@@ -111,7 +111,7 @@ export default function RatioAnalysis() {
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-50 text-gray-700 border border-gray-200 uppercase">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#EBF5E2] text-[#000000] border border-[#9DC07A] uppercase">
             {status}
           </span>
         );
@@ -147,8 +147,8 @@ export default function RatioAnalysis() {
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Ratio Analysis</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-[#000000]">Ratio Analysis</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">
             Key financial health and performance ratios with industry benchmarks.
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function RatioAnalysis() {
             onChange={(v) => setComparePeriod(v as any)}
           />
 
-          <div className="text-[10px] text-gray-400 font-semibold mb-2">
+          <div className="text-[10px] text-[#000000] font-semibold mb-2">
             P&L accumulated from: <span className="font-mono">{startDate}</span>
           </div>
         </div>
@@ -188,11 +188,11 @@ export default function RatioAnalysis() {
         {/* Gauge 1: Current Ratio */}
         <Card border padding="md" className="flex flex-col justify-between h-40">
           <div>
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Current Ratio</div>
-            <div className="text-2xl font-bold text-slate-800 font-mono mt-1">{currentRatioVal} : 1</div>
-            <div className="text-[11px] text-gray-500 mt-1">Benchmark: &gt; 2.0 (Target)</div>
+            <div className="text-[10px] font-bold text-[#000000] uppercase tracking-wider">Current Ratio</div>
+            <div className="text-2xl font-bold text-[#000000] font-mono mt-1">{currentRatioVal} : 1</div>
+            <div className="text-[11px] text-[#000000] mt-1">Benchmark: &gt; 2.0 (Target)</div>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mt-3">
+          <div className="w-full bg-[#EBF5E2] rounded-full h-2 overflow-hidden mt-3">
             <div
               className={`h-2 rounded-full transition-all duration-500 ${
                 currentRatioVal >= 2.0
@@ -204,7 +204,7 @@ export default function RatioAnalysis() {
               style={{ width: `${Math.min(100, (currentRatioVal / 3.0) * 100)}%` }}
             ></div>
           </div>
-          <div className="text-[10px] text-gray-400 mt-1 flex justify-between">
+          <div className="text-[10px] text-[#000000] mt-1 flex justify-between">
             <span>0.0</span>
             <span>1.5</span>
             <span>3.0+</span>
@@ -214,11 +214,11 @@ export default function RatioAnalysis() {
         {/* Gauge 2: Net Profit Margin */}
         <Card border padding="md" className="flex flex-col justify-between h-40">
           <div>
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Net Profit Margin</div>
-            <div className="text-2xl font-bold text-slate-800 font-mono mt-1">{netProfitMarginVal}%</div>
-            <div className="text-[11px] text-gray-500 mt-1">Benchmark: &gt; 10% (Target)</div>
+            <div className="text-[10px] font-bold text-[#000000] uppercase tracking-wider">Net Profit Margin</div>
+            <div className="text-2xl font-bold text-[#000000] font-mono mt-1">{netProfitMarginVal}%</div>
+            <div className="text-[11px] text-[#000000] mt-1">Benchmark: &gt; 10% (Target)</div>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mt-3">
+          <div className="w-full bg-[#EBF5E2] rounded-full h-2 overflow-hidden mt-3">
             <div
               className={`h-2 rounded-full transition-all duration-500 ${
                 netProfitMarginVal >= 10
@@ -230,7 +230,7 @@ export default function RatioAnalysis() {
               style={{ width: `${Math.min(100, (netProfitMarginVal / 30) * 100)}%` }}
             ></div>
           </div>
-          <div className="text-[10px] text-gray-400 mt-1 flex justify-between">
+          <div className="text-[10px] text-[#000000] mt-1 flex justify-between">
             <span>0%</span>
             <span>15%</span>
             <span>30%+</span>
@@ -240,11 +240,11 @@ export default function RatioAnalysis() {
         {/* Gauge 3: Debt-to-Equity */}
         <Card border padding="md" className="flex flex-col justify-between h-40">
           <div>
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Debt to Equity Ratio</div>
-            <div className="text-2xl font-bold text-slate-800 font-mono mt-1">{debtEquityVal} : 1</div>
-            <div className="text-[11px] text-gray-500 mt-1">Benchmark: &lt; 2.0 (Healthy Limit)</div>
+            <div className="text-[10px] font-bold text-[#000000] uppercase tracking-wider">Debt to Equity Ratio</div>
+            <div className="text-2xl font-bold text-[#000000] font-mono mt-1">{debtEquityVal} : 1</div>
+            <div className="text-[11px] text-[#000000] mt-1">Benchmark: &lt; 2.0 (Healthy Limit)</div>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mt-3">
+          <div className="w-full bg-[#EBF5E2] rounded-full h-2 overflow-hidden mt-3">
             <div
               className={`h-2 rounded-full transition-all duration-500 ${
                 debtEquityVal < 1.5
@@ -256,7 +256,7 @@ export default function RatioAnalysis() {
               style={{ width: `${Math.min(100, (debtEquityVal / 3.0) * 100)}%` }}
             ></div>
           </div>
-          <div className="text-[10px] text-gray-400 mt-1 flex justify-between">
+          <div className="text-[10px] text-[#000000] mt-1 flex justify-between">
             <span>0.0</span>
             <span>1.5</span>
             <span>3.0+</span>
@@ -265,7 +265,7 @@ export default function RatioAnalysis() {
       </div>
 
       {/* Ratio Categories Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700 mt-2 no-print">
+      <div className="flex border-b border-[#9DC07A] dark:border-[#9DC07A] mt-2 no-print">
         {([
           { key: "liquidity", label: "Liquidity Ratios" },
           { key: "profitability", label: "Profitability Ratios" },
@@ -277,8 +277,8 @@ export default function RatioAnalysis() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 text-xs font-bold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? "border-blue-600 text-blue-600 dark:text-blue-400 font-bold"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-[#9DC07A] text-[#000000] dark:text-[#000000] font-bold"
+                : "border-transparent text-[#000000] hover:text-[#000000] hover:border-[#9DC07A]"
             }`}
           >
             {tab.label}
@@ -305,16 +305,16 @@ export default function RatioAnalysis() {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {(mergedRatios[activeTab] || []).map((ratio, index) => (
-                <tr key={index} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-bold text-slate-800 text-[12px]">{ratio.name}</td>
-                  <td className="px-4 py-3 text-gray-500 italic">{ratio.formula}</td>
+                <tr key={index} className="hover:bg-[#EBF5E2] transition-colors">
+                  <td className="px-4 py-3 font-bold text-[#000000] text-[12px]">{ratio.name}</td>
+                  <td className="px-4 py-3 text-[#000000] italic">{ratio.formula}</td>
                   <td className="px-4 py-3 text-right font-mono font-bold text-[12px]">{ratio.value}</td>
                   {comparePeriod !== "none" && (
-                    <td className="px-4 py-3 text-right font-mono text-gray-600 text-[12px]">{ratio.priorValue}</td>
+                    <td className="px-4 py-3 text-right font-mono text-[#000000] text-[12px]">{ratio.priorValue}</td>
                   )}
-                  <td className="px-4 py-3 text-center font-mono font-medium text-slate-700">{ratio.benchmark}</td>
+                  <td className="px-4 py-3 text-center font-mono font-medium text-[#000000]">{ratio.benchmark}</td>
                   <td className="px-4 py-3 text-center">{getStatusBadge(ratio.status)}</td>
-                  <td className="px-4 py-3 text-gray-600 leading-relaxed text-[11px]">
+                  <td className="px-4 py-3 text-[#000000] leading-relaxed text-[11px]">
                     {ratio.interpretation || "Analyzes operational thresholds."}
                   </td>
                 </tr>

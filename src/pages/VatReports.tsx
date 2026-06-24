@@ -254,15 +254,15 @@ const VatReports: React.FC = () => {
   const renderVat3Card = () => (
     <div className="grid gap-3 md:grid-cols-3 w-full">
       {vat3SummaryRows.map((row) => (
-        <div key={row.label} className="border border-gray-200 bg-white p-4 rounded-md">
-          <div className="text-[10px] uppercase font-bold text-gray-500">{row.label}</div>
-          <div className="mt-1 text-lg font-bold text-gray-800">Rs. {formatNumber(row.value)}</div>
+        <div key={row.label} className="border border-[#9DC07A] bg-white p-4 rounded-md">
+          <div className="text-[10px] uppercase font-bold text-[#000000]">{row.label}</div>
+          <div className="mt-1 text-lg font-bold text-[#000000]">Rs. {formatNumber(row.value)}</div>
         </div>
       ))}
-      <div className="border border-gray-200 bg-blue-50/50 p-4 rounded-md md:col-span-3">
-        <div className="text-[10px] uppercase font-bold text-blue-700">Period</div>
-        <div className="mt-1 text-sm font-bold text-gray-800">{periodLabel}</div>
-        <div className="text-xs text-gray-500">
+      <div className="border border-[#9DC07A] bg-[#D4EABD]/50 p-4 rounded-md md:col-span-3">
+        <div className="text-[10px] uppercase font-bold text-[#000000]">Period</div>
+        <div className="mt-1 text-sm font-bold text-[#000000]">{periodLabel}</div>
+        <div className="text-xs text-[#000000]">
           From {selectedStartBS} to {selectedEndBS}
         </div>
       </div>
@@ -447,8 +447,8 @@ const VatReports: React.FC = () => {
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">VAT Reports</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">IRD-compliant VAT return reports</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">VAT Reports</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">IRD-compliant VAT return reports</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -465,8 +465,8 @@ const VatReports: React.FC = () => {
             disabled={!companySettings.cbmsEnabled}
             className={`h-8 px-3 text-[11px] font-bold border rounded-md flex items-center gap-1.5 cursor-pointer ${
               companySettings.cbmsEnabled 
-                ? "text-[#1557b0] bg-blue-50 border-blue-200 hover:bg-blue-100" 
-                : "text-gray-400 bg-gray-50 border-gray-200 cursor-not-allowed"
+                ? "text-[#1557b0] bg-[#D4EABD] border-[#9DC07A] hover:bg-[#D4EABD]" 
+                : "text-[#000000] bg-[#EBF5E2] border-[#9DC07A] cursor-not-allowed"
             }`}
             title={!companySettings.cbmsEnabled ? "CBMS not enabled in settings" : ""}
           >
@@ -494,7 +494,7 @@ const VatReports: React.FC = () => {
                     toast.error(error?.message || "Could not print VAT 3 return.");
                   }
                 }}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
+                className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Printer className="h-3.5 w-3.5" /> Print PDF
               </button>
@@ -526,7 +526,7 @@ const VatReports: React.FC = () => {
                     }
                   }
                 }}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
+                className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Printer className="h-3.5 w-3.5" /> Print PDF
               </button>
@@ -550,14 +550,14 @@ const VatReports: React.FC = () => {
         <div className="grid gap-4 xl:grid-cols-[1fr_270px]">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="grid gap-2">
-              <label className="text-[11px] font-medium text-gray-600">Reporting Mode</label>
+              <label className="text-[11px] font-medium text-[#000000]">Reporting Mode</label>
               <div className="grid gap-2 sm:grid-cols-3">
                 {["month", "quarter", "custom"].map((mode) => (
                   <button
                     key={mode}
                     type="button"
                     onClick={() => setPeriodType(mode as typeof periodType)}
-                    className={`h-8 text-[12px] font-medium rounded-md transition-colors cursor-pointer ${periodType === mode ? "bg-[#1557b0] text-white font-semibold" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
+                    className={`h-8 text-[12px] font-medium rounded-md transition-colors cursor-pointer ${periodType === mode ? "bg-[#3D6B25] text-white font-semibold" : "bg-white border border-[#9DC07A] text-[#000000] hover:bg-[#EBF5E2]"}`}
                   >
                     {mode === "month" ? "Month" : mode === "quarter" ? "Quarter" : "Custom"}
                   </button>
@@ -614,7 +614,7 @@ const VatReports: React.FC = () => {
       <div className="flex items-center gap-1 mb-3">
         {[{key:"summary",label:"VAT Summary"},{key:"A",label:"Annex-A (Sales)"},{key:"B",label:"Annex-B (Purchases)"},{key:"C",label:"Annex-C (Imports)"}].map(({key,label}) => (
           <button key={key} type="button" onClick={() => setAnnexTab(key as any)}
-            className={`h-8 px-3 text-[11px] font-semibold rounded-t transition-colors border-b-2 cursor-pointer ${annexTab === key ? "border-[#1557b0] text-[#1557b0] bg-white" : "border-transparent text-gray-500 hover:text-gray-700 bg-gray-100"}`}>
+            className={`h-8 px-3 text-[11px] font-semibold rounded-t transition-colors border-b-2 cursor-pointer ${annexTab === key ? "border-[#1557b0] text-[#1557b0] bg-white" : "border-transparent text-[#000000] hover:text-[#000000] bg-[#EBF5E2]"}`}>
             {label}
           </button>
         ))}
@@ -644,35 +644,35 @@ const VatReports: React.FC = () => {
         <Card border padding="md" className="grid gap-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-b pb-4">
             <div>
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                 {annexTab === "A"
                   ? "Annex A (Sales)"
                   : annexTab === "B"
                     ? "Annex B (Purchases)"
                     : "Annex C (Imports)"}
               </div>
-              <div className="mt-1 text-xs text-gray-500">
+              <div className="mt-1 text-xs text-[#000000]">
                 Invoices and VAT totals for the selected period.
               </div>
             </div>
-            <div className="text-right text-[12px] text-gray-700 bg-gray-50 p-3 border rounded-md">
-              <span className="font-semibold text-gray-600">Total Taxable:</span>{" "}
-              <span className="font-mono font-bold text-gray-800">
+            <div className="text-right text-[12px] text-[#000000] bg-[#EBF5E2] p-3 border rounded-md">
+              <span className="font-semibold text-[#000000]">Total Taxable:</span>{" "}
+              <span className="font-mono font-bold text-[#000000]">
                 Rs. {formatNumber(activeAnnex?.data?.totals.taxable || 0)}
               </span>{" "}
               |&nbsp;
-              <span className="font-semibold text-gray-600">Total VAT:</span>{" "}
+              <span className="font-semibold text-[#000000]">Total VAT:</span>{" "}
               <span className="font-mono font-bold text-[#1557b0]">
                 Rs. {formatNumber(activeAnnex?.data?.totals.vat || 0)}
               </span>{" "}
               |&nbsp;
-              <span className="font-semibold text-gray-600">Total Exempt:</span>{" "}
-              <span className="font-mono font-bold text-gray-800">
+              <span className="font-semibold text-[#000000]">Total Exempt:</span>{" "}
+              <span className="font-mono font-bold text-[#000000]">
                 Rs. {formatNumber(activeAnnex?.data?.totals.exempt || 0)}
               </span>{" "}
               |&nbsp;
-              <span className="font-semibold text-gray-600">Gross Total:</span>{" "}
-              <span className="font-mono font-bold text-gray-800">
+              <span className="font-semibold text-[#000000]">Gross Total:</span>{" "}
+              <span className="font-mono font-bold text-[#000000]">
                 Rs. {formatNumber(activeAnnex?.data?.totals.total || 0)}
               </span>
             </div>
@@ -707,7 +707,7 @@ const VatReports: React.FC = () => {
               <tbody>
                 {(!activeAnnex || activeAnnex.data.rows.length === 0) ? (
                   <tr>
-                    <td colSpan={annexTab === "A" ? 7 : (annexTab === "C" ? 6 : 5)} className="text-center py-8 text-gray-500 text-[12px]">
+                    <td colSpan={annexTab === "A" ? 7 : (annexTab === "C" ? 6 : 5)} className="text-center py-8 text-[#000000] text-[12px]">
                       No records found for the selected period.
                     </td>
                   </tr>
@@ -716,8 +716,8 @@ const VatReports: React.FC = () => {
                     <tr key={idx} className="hover:bg-[#e8eeff]">
                       {annexTab === "A" ? (
                         <>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{row.billNo}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{row.billNo}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000]">
                             {(() => {
                               try {
                                 return formatADToBS(row.date);
@@ -726,17 +726,17 @@ const VatReports: React.FC = () => {
                               }
                             })()}
                           </td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.partyName}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{row.partyPan || "-"}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000]">{row.partyName}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">{row.partyPan || "-"}</td>
                           <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.taxableAmt)}</td>
                           <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr">Rs. {formatNumber(row.vatAmt)}</td>
                           <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.totalAmt)}</td>
                         </>
                       ) : (
                         <>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{row.billNo}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.partyName}</td>
-                          <td className="px-3 py-[7px] text-[12px] text-gray-700 font-mono">{row.partyPan || "-"}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{row.billNo}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000]">{row.partyName}</td>
+                          <td className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">{row.partyPan || "-"}</td>
                           <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.taxableAmt)}</td>
                           <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">Rs. {formatNumber(row.vatAmt)}</td>
                           {annexTab === "C" && <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(row.totalAmt)}</td>}
@@ -749,7 +749,7 @@ const VatReports: React.FC = () => {
               {activeAnnex && activeAnnex.data.rows.length > 0 && (
                 <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
                   <tr>
-                    <td colSpan={annexTab === "A" ? 4 : 3} className="px-3 py-2 text-[12px] text-gray-700">Total</td>
+                    <td colSpan={annexTab === "A" ? 4 : 3} className="px-3 py-2 text-[12px] text-[#000000]">Total</td>
                     <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(activeAnnex.data.totals.taxable)}</td>
                     <td className={`px-3 py-2 text-[12px] text-right font-mono amt ${annexTab === "A" ? "amt-dr" : "amt-cr"}`}>Rs. {formatNumber(activeAnnex.data.totals.vat)}</td>
                     {annexTab === "A" && <td className="px-3 py-2 text-[12px] text-right font-mono amt">Rs. {formatNumber(activeAnnex.data.totals.total)}</td>}
@@ -769,58 +769,58 @@ const VatReports: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-white flex items-center gap-2">
+              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
                 <Activity className="h-4 w-4" />
                 Submit Return to IRD
               </h2>
               <button
                 onClick={() => setShowIrdModal(false)}
-                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="text-[#000000] hover:text-[#000000] transition-colors cursor-pointer"
               >
                 ✕
               </button>
             </div>
             <form onSubmit={handleIrdSubmit} className="p-5">
               <div className="grid gap-4">
-                <div className="text-[12px] text-gray-600 mb-2">
+                <div className="text-[12px] text-[#000000] mb-2">
                   You are about to submit the VAT 3 Return for the period <strong>{periodLabel}</strong> to the IRD portal.
                 </div>
                 
                 <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-gray-700">IRD Username</label>
+                  <label className="text-[11px] font-medium text-[#000000]">IRD Username</label>
                   <input
                     type="text"
                     value={irdUsername}
                     onChange={(e) => setIrdUsername(e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                     placeholder="Enter Username"
                     autoFocus
                   />
                 </div>
                 
                 <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-gray-700">IRD Password</label>
+                  <label className="text-[11px] font-medium text-[#000000]">IRD Password</label>
                   <input
                     type="password"
                     value={irdPassword}
                     onChange={(e) => setIrdPassword(e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                     placeholder="Enter Password"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-[#9DC07A]">
                 <button
                   type="button"
                   onClick={() => setShowIrdModal(false)}
-                  className="h-8 px-4 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
+                  className="h-8 px-4 text-[12px] font-medium text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="h-8 px-4 text-[12px] font-medium text-white bg-[#1557b0] rounded-md hover:bg-[#0f4a96] flex items-center gap-1.5 cursor-pointer"
+                  className="h-8 px-4 text-[12px] font-medium text-white bg-[#3D6B25] rounded-md hover:bg-[#2D5A1A] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Layers className="h-3.5 w-3.5" />
                   Submit Now

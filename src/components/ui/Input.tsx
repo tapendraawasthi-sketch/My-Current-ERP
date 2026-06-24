@@ -75,7 +75,7 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-semibold text-gray-700 flex items-center gap-0.5"
+          className="text-[11px] font-semibold text-[#000000] flex items-center gap-0.5"
         >
           {label}
           {required && <span className="text-red-500 font-bold">*</span>}
@@ -84,7 +84,7 @@ const Input: React.FC<InputProps> = ({
 
       <div className="relative flex items-center w-full rounded-md shadow-sm">
         {prefix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-gray-600 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-8 text-[12px] font-medium text-[#000000] bg-[#EBF5E2] border border-r-0 border-[#9DC07A] rounded-l-md whitespace-nowrap">
             {prefix}
           </span>
         )}
@@ -109,18 +109,18 @@ const Input: React.FC<InputProps> = ({
           tabIndex={tabIndex}
           readOnly={readOnly}
           className={`
-            block w-full h-8 px-2.5 text-[12px] bg-white border text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300"}
+            block w-full h-8 px-2.5 text-[12px] bg-white border text-[#000000] transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
             ${prefix ? "rounded-r-md" : suffix ? "rounded-l-md" : "rounded-md"}
             ${prefix && suffix ? "rounded-none" : ""}
-            ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}
+            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
             ${alignClass}
             ${inputClassName}
           `}
         />
 
         {suffix && (
-          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-gray-500 bg-gray-50 border border-l-0 border-gray-300 rounded-r-md whitespace-nowrap">
+          <span className="flex items-center justify-center px-3 h-8 text-[12px] text-[#000000] bg-[#EBF5E2] border border-l-0 border-[#9DC07A] rounded-r-md whitespace-nowrap">
             {suffix}
           </span>
         )}
@@ -129,7 +129,7 @@ const Input: React.FC<InputProps> = ({
       {error ? (
         <span className="text-xs text-red-600 font-medium">{error}</span>
       ) : hint ? (
-        <span className="text-xs text-gray-455">{hint}</span>
+        <span className="text-xs text-[#000000]">{hint}</span>
       ) : null}
     </div>
   );

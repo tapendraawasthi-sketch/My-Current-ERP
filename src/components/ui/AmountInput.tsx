@@ -30,14 +30,14 @@ const AmountInput: React.FC<AmountInputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-medium text-gray-600 flex items-center gap-0.5"
+          className="text-[11px] font-medium text-[#000000] flex items-center gap-0.5"
         >
           {label}
           {required && <span className="text-red-500 font-bold">*</span>}
         </label>
       )}
       <div className="relative flex items-center w-full rounded-md shadow-sm">
-        <span className="absolute left-2.5 text-[12px] text-gray-500 font-medium pointer-events-none">
+        <span className="absolute left-2.5 text-[12px] text-[#000000] font-medium pointer-events-none">
           {symbol}
         </span>
         <input
@@ -52,9 +52,9 @@ const AmountInput: React.FC<AmountInputProps> = ({
           disabled={disabled}
           required={required}
           className={`
-            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-gray-900 font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300"}
-            ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}
+            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-[#000000] font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
+            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
           `}
         />
       </div>

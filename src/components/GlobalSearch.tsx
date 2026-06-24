@@ -139,7 +139,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[600px] overflow-hidden">
         {/* Search Input Container */}
         <div className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn" style={{ borderColor: "var(--border)" }}>
-          <Search className="h-4 w-4 text-gray-400 shrink-0" />
+          <Search className="h-4 w-4 text-[#000000] shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -147,40 +147,40 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search... (Ctrl+/)"
             autoFocus
-            className="flex-1 bg-transparent text-[13px] text-gray-900 placeholder-gray-400 outline-none"
+            className="flex-1 bg-transparent text-[13px] text-[#000000] placeholder-gray-400 outline-none"
           />
-          <kbd className="text-[10px] bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-gray-500 font-mono">ESC</kbd>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 ml-2 cursor-pointer">
+          <kbd className="text-[10px] bg-[#EBF5E2] border border-[#9DC07A] rounded px-1.5 py-0.5 text-[#000000] font-mono">ESC</kbd>
+          <button onClick={onClose} className="text-[#000000] hover:text-[#000000] ml-2 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Results */}
         <div className="overflow-y-auto max-h-[500px]">
-          {isSearching && <div className="p-8 text-center text-gray-500">Searching...</div>}
+          {isSearching && <div className="p-8 text-center text-[#000000]">Searching...</div>}
 
           {!isSearching && query.length >= 2 && getTotalResults() === 0 && (
-            <div className="flex flex-col items-center py-10 text-gray-400 gap-2">
+            <div className="flex flex-col items-center py-10 text-[#000000] gap-2">
               <Search className="h-8 w-8 opacity-30" />
               <p className="text-[12px] font-semibold">No results for "{query}"</p>
             </div>
           )}
 
           {!query && (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-[#000000]">
               <p className="text-sm">
                 Type to search across accounts, parties, vouchers, invoices, items, and pages
               </p>
               <div className="mt-4 text-xs space-y-1">
                 <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">↑</kbd>{" "}
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">↓</kbd> to navigate
+                  <kbd className="px-2 py-1 bg-[#EBF5E2] rounded">↑</kbd>{" "}
+                  <kbd className="px-2 py-1 bg-[#EBF5E2] rounded">↓</kbd> to navigate
                 </p>
                 <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">Enter</kbd> to select
+                  <kbd className="px-2 py-1 bg-[#EBF5E2] rounded">Enter</kbd> to select
                 </p>
                 <p>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded">Esc</kbd> to close
+                  <kbd className="px-2 py-1 bg-[#EBF5E2] rounded">Esc</kbd> to close
                 </p>
               </div>
             </div>
@@ -188,8 +188,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
           {/* Accounts */}
           {results.accounts.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+            <div className="border-b border-[#9DC07A]">
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">
                 ACCOUNTS
               </div>
               {results.accounts.map((item, idx) => {
@@ -199,18 +199,18 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.id}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <TrendingUp className="w-4 h-4 text-gray-400 shrink-0" />
+                      <TrendingUp className="w-4 h-4 text-[#000000] shrink-0" />
                       <div>
-                        <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                        <p className="text-[10px] text-gray-500">{item.code}</p>
+                        <p className="font-semibold text-[12px] text-[#000000]">{item.name}</p>
+                        <p className="text-[10px] text-[#000000]">{item.code}</p>
                       </div>
                     </div>
-                    <span className="font-mono text-gray-500 text-[12px]">
+                    <span className="font-mono text-[#000000] text-[12px]">
                       {item.balance?.toLocaleString()}
                     </span>
                   </button>
@@ -221,8 +221,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
           {/* Parties */}
           {results.parties.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+            <div className="border-b border-[#9DC07A]">
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">
                 PARTIES
               </div>
               {results.parties.map((item, idx) => {
@@ -232,18 +232,18 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.id}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Users className="w-4 h-4 text-gray-400 shrink-0" />
+                      <Users className="w-4 h-4 text-[#000000] shrink-0" />
                       <div>
-                        <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                        <p className="text-[10px] text-gray-500">{item.type}</p>
+                        <p className="font-semibold text-[12px] text-[#000000]">{item.name}</p>
+                        <p className="text-[10px] text-[#000000]">{item.type}</p>
                       </div>
                     </div>
-                    <span className="font-mono text-gray-500 text-[12px]">
+                    <span className="font-mono text-[#000000] text-[12px]">
                       {item.balance?.toLocaleString()}
                     </span>
                   </button>
@@ -254,8 +254,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
           {/* Vouchers */}
           {results.vouchers.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+            <div className="border-b border-[#9DC07A]">
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">
                 VOUCHERS
               </div>
               {results.vouchers.map((item, idx) => {
@@ -265,16 +265,16 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.id}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
-                    <FileText className="w-4 h-4 text-gray-400 shrink-0" />
+                    <FileText className="w-4 h-4 text-[#000000] shrink-0" />
                     <div>
-                      <p className="font-semibold text-[12px] text-gray-800">
+                      <p className="font-semibold text-[12px] text-[#000000]">
                         {item.voucherNo} - {item.type}
                       </p>
-                      <p className="text-[10px] text-gray-500 truncate max-w-lg">
+                      <p className="text-[10px] text-[#000000] truncate max-w-lg">
                         {item.narration}
                       </p>
                     </div>
@@ -286,8 +286,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
           {/* Invoices */}
           {results.invoices.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">
+            <div className="border-b border-[#9DC07A]">
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">
                 INVOICES
               </div>
               {results.invoices.map((item, idx) => {
@@ -297,16 +297,16 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.id}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
-                    <Receipt className="w-4 h-4 text-gray-400 shrink-0" />
+                    <Receipt className="w-4 h-4 text-[#000000] shrink-0" />
                     <div>
-                      <p className="font-semibold text-[12px] text-gray-800">
+                      <p className="font-semibold text-[12px] text-[#000000]">
                         {item.invoiceNo} - {item.partyName}
                       </p>
-                      <p className="text-[10px] text-gray-500">{item.date}</p>
+                      <p className="text-[10px] text-[#000000]">{item.date}</p>
                     </div>
                   </button>
                 );
@@ -316,8 +316,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
           {/* Items */}
           {results.items.length > 0 && (
-            <div className="border-b border-gray-200">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">ITEMS</div>
+            <div className="border-b border-[#9DC07A]">
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">ITEMS</div>
               {results.items.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (
@@ -325,14 +325,14 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.id}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
-                    <Package className="w-4 h-4 text-gray-400 shrink-0" />
+                    <Package className="w-4 h-4 text-[#000000] shrink-0" />
                     <div>
-                      <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                      <p className="text-[10px] text-gray-500">{item.code}</p>
+                      <p className="font-semibold text-[12px] text-[#000000]">{item.name}</p>
+                      <p className="text-[10px] text-[#000000]">{item.code}</p>
                     </div>
                   </button>
                 );
@@ -343,7 +343,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           {/* Pages */}
           {results.pages.length > 0 && (
             <div>
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-50">PAGES</div>
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#000000] bg-[#EBF5E2]">PAGES</div>
               {results.pages.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (
@@ -351,14 +351,14 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                     key={item.path}
                     type="button"
                     onClick={() => handleSelect(itemIndex)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors border-b border-gray-100 last:border-0 cursor-pointer ${
-                      selectedIndex === itemIndex ? "bg-blue-50" : ""
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#D4EABD] text-left transition-colors border-b border-[#9DC07A] last:border-0 cursor-pointer ${
+                      selectedIndex === itemIndex ? "bg-[#D4EABD]" : ""
                     }`}
                   >
-                    <Menu className="w-4 h-4 text-gray-400 shrink-0" />
+                    <Menu className="w-4 h-4 text-[#000000] shrink-0" />
                     <div>
-                      <p className="font-semibold text-[12px] text-gray-800">{item.name}</p>
-                      <p className="text-[10px] text-gray-500">{item.path}</p>
+                      <p className="font-semibold text-[12px] text-[#000000]">{item.name}</p>
+                      <p className="text-[10px] text-[#000000]">{item.path}</p>
                     </div>
                   </button>
                 );

@@ -73,7 +73,7 @@ const PurchaseInvoiceForm: React.FC<PurchaseInvoiceFormProps> = ({
   return (
     <div className="flex flex-col gap-3">
       <Card border padding="md">
-        <h3 className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider mb-3 flex items-center gap-2">
           <Truck className="h-3.5 w-3.5 text-[#1557b0]" /> Supplier Invoice Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

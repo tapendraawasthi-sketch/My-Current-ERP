@@ -142,37 +142,37 @@ export default function CostCenterReport() {
     <div className="flex flex-col gap-4 animate-fadeIn">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Cost Center Profit & Loss</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Analyze income and expenses per cost center</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Cost Center Profit & Loss</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Analyze income and expenses per cost center</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => { setIsComparing(!isComparing); setCompareIds([]); }} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 shadow-sm">
+          <button onClick={() => { setIsComparing(!isComparing); setCompareIds([]); }} className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-1.5 shadow-sm">
             <ArrowRightLeft className="w-4 h-4" /> {isComparing ? "Single Report Mode" : "Compare Cost Centers"}
           </button>
-          <button onClick={exportExcel} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 shadow-sm">
+          <button onClick={exportExcel} className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-1.5 shadow-sm">
             <Download className="w-4 h-4" /> Export Excel
           </button>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 no-print flex gap-4 items-end">
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-[#9DC07A] no-print flex gap-4 items-end">
         {!isComparing ? (
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Cost Center</label>
-            <select value={selectedCenterId} onChange={e => setSelectedCenterId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]">
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Select Cost Center</label>
+            <select value={selectedCenterId} onChange={e => setSelectedCenterId(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]">
               <option value="">-- Choose --</option>
               {costCenters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
         ) : (
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select up to 3 Cost Centers to compare</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Select up to 3 Cost Centers to compare</label>
             <div className="flex gap-2 flex-wrap">
               {costCenters.map(c => (
                 <button
                   key={c.id}
                   onClick={() => toggleCompareId(c.id)}
-                  className={`px-3 py-1 text-[11px] rounded-full border transition-colors ${compareIds.includes(c.id) ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                  className={`px-3 py-1 text-[11px] rounded-full border transition-colors ${compareIds.includes(c.id) ? "bg-[#3D6B25] text-white border-[#1557b0]" : "bg-white text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
                 >
                   {c.name}
                 </button>
@@ -182,26 +182,26 @@ export default function CostCenterReport() {
         )}
         
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
-          <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]" />
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">From Date</label>
+          <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0]" />
         </div>
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
-          <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="h-8 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]" />
+          <label className="block text-[11px] font-medium text-[#000000] mb-1">To Date</label>
+          <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0]" />
         </div>
       </div>
 
       {!isComparing ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] overflow-hidden">
           {!selectedCenterId || !singleReport ? (
-            <div className="text-center text-gray-500 py-12">
-              <FileText className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <p className="text-[14px] font-medium text-gray-600">No Cost Center Selected</p>
+            <div className="text-center text-[#000000] py-12">
+              <FileText className="w-12 h-12 mx-auto text-[#000000] mb-3" />
+              <p className="text-[14px] font-medium text-[#000000]">No Cost Center Selected</p>
               <p className="text-[12px] mt-1">Please select a cost center above to view its P&L.</p>
             </div>
           ) : (
             <div className="p-6">
-              <h2 className="text-[16px] font-bold text-gray-800 text-center mb-6">{costCenters.find(c => c.id === selectedCenterId)?.name} P&L</h2>
+              <h2 className="text-[16px] font-bold text-[#000000] text-center mb-6">{costCenters.find(c => c.id === selectedCenterId)?.name} P&L</h2>
               
               <div className="grid grid-cols-2 gap-8">
                 {/* Expenses */}
@@ -210,18 +210,18 @@ export default function CostCenterReport() {
                   <table className="w-full text-[12px]">
                     <tbody>
                       {Object.entries(singleReport.expenses).filter(([_, amt]) => amt !== 0).map(([accId, amt]) => (
-                        <tr key={accId} className="border-b border-gray-100 last:border-0">
-                          <td className="py-2 text-gray-700">{getAccountName(accId)}</td>
-                          <td className="py-2 text-right font-mono text-gray-900">{(amt).toLocaleString()}</td>
+                        <tr key={accId} className="border-b border-[#9DC07A] last:border-0">
+                          <td className="py-2 text-[#000000]">{getAccountName(accId)}</td>
+                          <td className="py-2 text-right font-mono text-[#000000]">{(amt).toLocaleString()}</td>
                         </tr>
                       ))}
                       {Object.keys(singleReport.expenses).length === 0 && (
-                        <tr><td colSpan={2} className="py-2 text-gray-400 italic">No expenses recorded</td></tr>
+                        <tr><td colSpan={2} className="py-2 text-[#000000] italic">No expenses recorded</td></tr>
                       )}
                     </tbody>
                     <tfoot>
-                      <tr className="border-t-2 border-gray-300">
-                        <td className="py-2 font-bold text-gray-800">Total Expense</td>
+                      <tr className="border-t-2 border-[#9DC07A]">
+                        <td className="py-2 font-bold text-[#000000]">Total Expense</td>
                         <td className="py-2 text-right font-mono font-bold text-red-600">{singleReport.totalExpense.toLocaleString()}</td>
                       </tr>
                     </tfoot>
@@ -234,18 +234,18 @@ export default function CostCenterReport() {
                   <table className="w-full text-[12px]">
                     <tbody>
                       {Object.entries(singleReport.incomes).filter(([_, amt]) => amt !== 0).map(([accId, amt]) => (
-                        <tr key={accId} className="border-b border-gray-100 last:border-0">
-                          <td className="py-2 text-gray-700">{getAccountName(accId)}</td>
-                          <td className="py-2 text-right font-mono text-gray-900">{(amt).toLocaleString()}</td>
+                        <tr key={accId} className="border-b border-[#9DC07A] last:border-0">
+                          <td className="py-2 text-[#000000]">{getAccountName(accId)}</td>
+                          <td className="py-2 text-right font-mono text-[#000000]">{(amt).toLocaleString()}</td>
                         </tr>
                       ))}
                       {Object.keys(singleReport.incomes).length === 0 && (
-                        <tr><td colSpan={2} className="py-2 text-gray-400 italic">No incomes recorded</td></tr>
+                        <tr><td colSpan={2} className="py-2 text-[#000000] italic">No incomes recorded</td></tr>
                       )}
                     </tbody>
                     <tfoot>
-                      <tr className="border-t-2 border-gray-300">
-                        <td className="py-2 font-bold text-gray-800">Total Income</td>
+                      <tr className="border-t-2 border-[#9DC07A]">
+                        <td className="py-2 font-bold text-[#000000]">Total Income</td>
                         <td className="py-2 text-right font-mono font-bold text-green-600">{singleReport.totalIncome.toLocaleString()}</td>
                       </tr>
                     </tfoot>
@@ -255,7 +255,7 @@ export default function CostCenterReport() {
 
               {/* Net Profit/Loss */}
               <div className={`mt-8 p-4 rounded-lg border-2 flex justify-between items-center ${singleReport.netProfit >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
-                <div className="text-[14px] font-bold uppercase tracking-wider text-gray-800">
+                <div className="text-[14px] font-bold uppercase tracking-wider text-[#000000]">
                   {singleReport.netProfit >= 0 ? "Net Profit" : "Net Loss"}
                 </div>
                 <div className={`text-[20px] font-mono font-bold ${singleReport.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}>
@@ -266,38 +266,38 @@ export default function CostCenterReport() {
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] overflow-hidden">
           {compareIds.length === 0 ? (
-            <div className="text-center text-gray-500 py-12">
-              <ArrowRightLeft className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <p className="text-[14px] font-medium text-gray-600">Select Cost Centers</p>
+            <div className="text-center text-[#000000] py-12">
+              <ArrowRightLeft className="w-12 h-12 mx-auto text-[#000000] mb-3" />
+              <p className="text-[14px] font-medium text-[#000000]">Select Cost Centers</p>
               <p className="text-[12px] mt-1">Select up to 3 cost centers above to compare.</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-4 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Metric</th>
+                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                  <th className="px-4 py-3 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Metric</th>
                   {compareReports.map(r => (
-                    <th key={r.id} className="px-4 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">{r.name}</th>
+                    <th key={r.id} className="px-4 py-3 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">{r.name}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
-                  <td className="px-4 py-3 text-[12px] font-medium text-gray-700">Total Income</td>
+                  <td className="px-4 py-3 text-[12px] font-medium text-[#000000]">Total Income</td>
                   {compareReports.map(r => (
                     <td key={r.id} className="px-4 py-3 text-[12px] font-mono text-green-600 text-right">{r.totalIncome.toLocaleString()}</td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 text-[12px] font-medium text-gray-700">Total Expense</td>
+                  <td className="px-4 py-3 text-[12px] font-medium text-[#000000]">Total Expense</td>
                   {compareReports.map(r => (
                     <td key={r.id} className="px-4 py-3 text-[12px] font-mono text-red-600 text-right">{r.totalExpense.toLocaleString()}</td>
                   ))}
                 </tr>
-                <tr className="bg-gray-50 font-bold border-t-2 border-gray-200">
-                  <td className="px-4 py-4 text-[12px] text-gray-800">Net Profit / Loss</td>
+                <tr className="bg-[#EBF5E2] font-bold border-t-2 border-[#9DC07A]">
+                  <td className="px-4 py-4 text-[12px] text-[#000000]">Net Profit / Loss</td>
                   {compareReports.map(r => (
                     <td key={r.id} className={`px-4 py-4 text-[13px] font-mono text-right ${r.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}>
                       {r.netProfit >= 0 ? "+" : ""}{r.netProfit.toLocaleString()}

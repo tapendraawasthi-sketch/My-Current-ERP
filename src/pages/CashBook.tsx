@@ -154,8 +154,8 @@ const CashBook: React.FC = () => {
         <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Cash Book</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Cash receipts and payments</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Cash Book</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Cash receipts and payments</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleExport}>
@@ -172,28 +172,28 @@ const CashBook: React.FC = () => {
           <button
             type="button"
             onClick={() => applyQuickFilter("today")}
-            className="px-2.5 py-1 text-[11px] text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50"
+            className="px-2.5 py-1 text-[11px] text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
           >
             Today
           </button>
           <button
             type="button"
             onClick={() => applyQuickFilter("week")}
-            className="px-2.5 py-1 text-[11px] text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50"
+            className="px-2.5 py-1 text-[11px] text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
           >
             This Week
           </button>
           <button
             type="button"
             onClick={() => applyQuickFilter("month")}
-            className="px-2.5 py-1 text-[11px] text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50"
+            className="px-2.5 py-1 text-[11px] text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
           >
             This Month
           </button>
           <button
             type="button"
             onClick={() => applyQuickFilter("fy")}
-            className="px-2.5 py-1 text-[11px] text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50"
+            className="px-2.5 py-1 text-[11px] text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
           >
             This FY
           </button>
@@ -214,35 +214,35 @@ const CashBook: React.FC = () => {
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card border padding="sm" className="bg-slate-50">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+        <Card border padding="sm" className="bg-[#EBF5E2]">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[#000000]">
             Opening Balance
           </div>
-          <div className="mt-2 text-lg font-bold text-slate-900">
+          <div className="mt-2 text-lg font-bold text-[#000000]">
             {formatNumber(openingBalance)}
           </div>
         </Card>
-        <Card border padding="sm" className="bg-slate-50">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+        <Card border padding="sm" className="bg-[#EBF5E2]">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[#000000]">
             Closing Balance
           </div>
-          <div className="mt-2 text-lg font-bold text-slate-900">
+          <div className="mt-2 text-lg font-bold text-[#000000]">
             {formatNumber(closingBalance)}
           </div>
         </Card>
-        <Card border padding="sm" className="bg-slate-50">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Transactions</div>
-          <div className="mt-2 text-lg font-bold text-slate-900">{rows.length}</div>
+        <Card border padding="sm" className="bg-[#EBF5E2]">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[#000000]">Transactions</div>
+          <div className="mt-2 text-lg font-bold text-[#000000]">{rows.length}</div>
         </Card>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card border padding="md">
           <div className="mb-4 flex items-center justify-between">
-            <div className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#000000]">
               Receipts / Debit
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-[#000000]">
               Total:{" "}
               {formatNumber(
                 rows.filter((r) => r.isReceipt).reduce((sum, row) => sum + row.amount, 0),
@@ -260,10 +260,10 @@ const CashBook: React.FC = () => {
 
         <Card border padding="md">
           <div className="mb-4 flex items-center justify-between">
-            <div className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#000000]">
               Payments / Credit
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-[#000000]">
               Total:{" "}
               {formatNumber(
                 rows.filter((r) => r.isPayment).reduce((sum, row) => sum + row.amount, 0),

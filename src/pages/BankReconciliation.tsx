@@ -292,7 +292,7 @@ export default function BankReconciliation() {
       />
 
       {/* Top Filters */}
-      <div className="bg-white p-4 border border-gray-200 rounded-md shadow-sm flex items-end gap-4">
+      <div className="bg-white p-4 border border-[#9DC07A] rounded-md shadow-sm flex items-end gap-4">
         <div className="w-64">
           <Select 
             label="Bank Account"
@@ -311,7 +311,7 @@ export default function BankReconciliation() {
           <button 
             onClick={() => setShowImportModal(true)}
             disabled={!selectedAccountId}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50"
+            className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-2 disabled:opacity-50"
           >
             <Upload className="w-3.5 h-3.5" />
             Import CSV
@@ -323,19 +323,19 @@ export default function BankReconciliation() {
       <div className="grid grid-cols-2 gap-6 relative">
         
         {/* LEFT PANEL - BOOK ENTRIES */}
-        <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
-          <div className="bg-[#1e2433] px-3 py-2 border-b border-gray-200">
-            <h3 className="text-[13px] font-bold text-white">Book Entries (Company Ledger)</h3>
+        <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
+          <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
+            <h3 className="text-[13px] font-bold text-[#000000]">Book Entries (Company Ledger)</h3>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
-            {bookEntries.length === 0 && <p className="text-center text-xs text-gray-500 mt-4">No unreconciled book entries found.</p>}
+            {bookEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled book entries found.</p>}
             {bookEntries.map(book => {
               const match = localMatches.find(m => m.bookId === book.id);
               const isSelected = selectedBookId === book.id;
               
-              let borderClass = "border-gray-200";
+              let borderClass = "border-[#9DC07A]";
               if (match) borderClass = "border-green-400 bg-green-50";
-              else if (isSelected) borderClass = "border-blue-400 bg-blue-50 ring-2 ring-blue-200";
+              else if (isSelected) borderClass = "border-[#9DC07A] bg-[#D4EABD] ring-2 ring-blue-200";
               else borderClass = "border-amber-300 bg-white hover:bg-amber-50";
 
               return (
@@ -345,8 +345,8 @@ export default function BankReconciliation() {
                   className={`p-2 rounded border cursor-pointer transition-colors flex justify-between items-center ${borderClass}`}
                 >
                   <div>
-                    <div className="text-[11px] font-semibold text-gray-600">{book.date}</div>
-                    <div className="text-[12px] text-gray-800 line-clamp-1">{book.description || 'No Description'}</div>
+                    <div className="text-[11px] font-semibold text-[#000000]">{book.date}</div>
+                    <div className="text-[12px] text-[#000000] line-clamp-1">{book.description || 'No Description'}</div>
                   </div>
                   <div className="text-right flex items-center gap-2">
                     <div className={`text-[13px] font-bold font-mono ${book.type === 'debit' ? 'text-green-700' : 'text-red-700'}`}>
@@ -355,7 +355,7 @@ export default function BankReconciliation() {
                     {match && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); removeMatch(book.id); }}
-                        className="text-gray-400 hover:text-red-500"
+                        className="text-[#000000] hover:text-red-500"
                         title="Unlink"
                       >
                         <Unlink className="w-3.5 h-3.5" />
@@ -369,20 +369,20 @@ export default function BankReconciliation() {
         </div>
 
         {/* RIGHT PANEL - STATEMENT ENTRIES */}
-        <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
-           <div className="bg-[#1e2433] px-3 py-2 border-b border-gray-200">
-            <h3 className="text-[13px] font-bold text-white">Bank Statement (Imported)</h3>
+        <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
+           <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
+            <h3 className="text-[13px] font-bold text-[#000000]">Bank Statement (Imported)</h3>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
-            {statementEntries.length === 0 && <p className="text-center text-xs text-gray-500 mt-4">No unreconciled statement entries found.</p>}
+            {statementEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled statement entries found.</p>}
             {statementEntries.map(stmt => {
               const match = localMatches.find(m => m.statementId === stmt.id);
               const isMatchable = !!selectedBookId && !match;
 
-              let borderClass = "border-gray-200 bg-white";
+              let borderClass = "border-[#9DC07A] bg-white";
               if (match) borderClass = "border-green-400 bg-green-50 opacity-70";
-              else if (isMatchable) borderClass = "border-blue-300 bg-white hover:bg-blue-100 ring-1 ring-blue-300 border-dashed cursor-pointer";
-              else borderClass = "border-blue-200 bg-white opacity-90";
+              else if (isMatchable) borderClass = "border-[#9DC07A] bg-white hover:bg-[#D4EABD] ring-1 ring-blue-300 border-dashed cursor-pointer";
+              else borderClass = "border-[#9DC07A] bg-white opacity-90";
 
               return (
                 <div 
@@ -391,10 +391,10 @@ export default function BankReconciliation() {
                   className={`p-2 rounded border transition-all flex justify-between items-center ${borderClass}`}
                 >
                   <div className="flex items-center gap-2">
-                    {isMatchable && <LinkIcon className="w-3 h-3 text-blue-500" />}
+                    {isMatchable && <LinkIcon className="w-3 h-3 text-[#000000]" />}
                     <div>
-                      <div className="text-[11px] font-semibold text-gray-600">{stmt.date}</div>
-                      <div className="text-[12px] text-gray-800 line-clamp-1">{stmt.narration}</div>
+                      <div className="text-[11px] font-semibold text-[#000000]">{stmt.date}</div>
+                      <div className="text-[12px] text-[#000000] line-clamp-1">{stmt.narration}</div>
                     </div>
                   </div>
                   <div className="text-right">
@@ -413,24 +413,24 @@ export default function BankReconciliation() {
       </div>
 
       {/* Summary Footer */}
-      <div className="grid grid-cols-4 gap-4 mt-6 border-t border-gray-200 pt-4">
-        <div className="bg-gray-50 p-3 rounded border border-gray-200">
-          <div className="text-[10px] uppercase font-bold text-gray-500">Book Balance</div>
-          <div className="text-[16px] font-bold text-gray-800">Rs. {formatNumber(bookBalance)}</div>
+      <div className="grid grid-cols-4 gap-4 mt-6 border-t border-[#9DC07A] pt-4">
+        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+          <div className="text-[10px] uppercase font-bold text-[#000000]">Book Balance</div>
+          <div className="text-[16px] font-bold text-[#000000]">Rs. {formatNumber(bookBalance)}</div>
         </div>
-        <div className="bg-gray-50 p-3 rounded border border-gray-200">
-          <div className="text-[10px] uppercase font-bold text-gray-500">Statement Balance</div>
-          <div className="text-[16px] font-bold text-gray-800">Rs. {formatNumber(statementBalance)}</div>
+        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+          <div className="text-[10px] uppercase font-bold text-[#000000]">Statement Balance</div>
+          <div className="text-[16px] font-bold text-[#000000]">Rs. {formatNumber(statementBalance)}</div>
         </div>
-        <div className="bg-gray-50 p-3 rounded border border-gray-200">
-          <div className="text-[10px] uppercase font-bold text-gray-500">Unreconciled Difference</div>
+        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+          <div className="text-[10px] uppercase font-bold text-[#000000]">Unreconciled Difference</div>
           <div className={`text-[16px] font-bold ${difference !== 0 ? 'text-red-600' : 'text-green-600'}`}>
             Rs. {formatNumber(difference)}
           </div>
         </div>
-        <div className="bg-gray-50 p-3 rounded border border-gray-200">
-          <div className="text-[10px] uppercase font-bold text-gray-500">Auto-Matched Session</div>
-          <div className="text-[16px] font-bold text-blue-700">{localMatches.length} Pairs</div>
+        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+          <div className="text-[10px] uppercase font-bold text-[#000000]">Auto-Matched Session</div>
+          <div className="text-[16px] font-bold text-[#000000]">{localMatches.length} Pairs</div>
         </div>
       </div>
 
@@ -439,50 +439,50 @@ export default function BankReconciliation() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
             <div className="bg-[#1e2433] px-4 py-3 flex justify-between items-center">
-              <h2 className="text-white text-[14px] font-semibold">Import Bank Statement (CSV)</h2>
-              <button onClick={() => setShowImportModal(false)} className="text-gray-400 hover:text-white">✕</button>
+              <h2 className="text-[#000000] text-[14px] font-semibold">Import Bank Statement (CSV)</h2>
+              <button onClick={() => setShowImportModal(false)} className="text-[#000000] hover:text-[#000000]">✕</button>
             </div>
             <div className="p-4 space-y-4">
               <div>
-                <label className="text-[11px] font-medium text-gray-600 block mb-1">Select CSV File</label>
+                <label className="text-[11px] font-medium text-[#000000] block mb-1">Select CSV File</label>
                 <input 
                   type="file" 
                   accept=".csv"
                   ref={fileInputRef}
-                  className="block w-full text-[12px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[12px] file:font-semibold file:bg-[#1557b0] file:text-white hover:file:bg-[#0f4a96]"
+                  className="block w-full text-[12px] text-[#000000] file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[12px] file:font-semibold file:bg-[#3D6B25] file:text-white hover:file:bg-[#0f4a96]"
                 />
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
-                <h4 className="text-[12px] font-semibold text-gray-800 mb-2">Column Mapping (0-indexed)</h4>
+              <div className="border-t border-[#9DC07A] pt-4">
+                <h4 className="text-[12px] font-semibold text-[#000000] mb-2">Column Mapping (0-indexed)</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.keys(colMapping).map(key => (
                     <div key={key}>
-                      <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">{key}</label>
+                      <label className="text-[10px] font-medium text-[#000000] uppercase tracking-wide">{key}</label>
                       <input 
                         type="number" 
                         value={(colMapping as any)[key]} 
                         onChange={e => setColMapping({...colMapping, [key]: parseInt(e.target.value) || 0})}
-                        className="h-7 w-full px-2 text-[12px] border border-gray-300 rounded-md"
+                        className="h-7 w-full px-2 text-[12px] border border-[#9DC07A] rounded-md"
                       />
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] text-gray-500 mt-2 leading-relaxed">
+                <p className="text-[10px] text-[#000000] mt-2 leading-relaxed">
                   Provide the 0-based index of the columns in your CSV. If debit and credit are in the same column, assign both to that index.
                 </p>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#9DC07A]">
                 <button 
                   onClick={() => setShowImportModal(false)}
-                  className="h-8 px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="h-8 px-3 text-[12px] font-medium text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={() => handleFileUpload({target: {files: fileInputRef.current?.files}} as any)}
-                  className="h-8 px-3 text-[12px] font-medium text-white bg-[#1557b0] rounded-md hover:bg-[#0f4a96]"
+                  className="h-8 px-3 text-[12px] font-medium text-white bg-[#3D6B25] rounded-md hover:bg-[#2D5A1A]"
                 >
                   Import Data
                 </button>

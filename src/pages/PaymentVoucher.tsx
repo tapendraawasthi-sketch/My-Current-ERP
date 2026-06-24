@@ -73,7 +73,7 @@ const PaymentVoucher: React.FC = () => {
     {
       key: "voucherNo",
       header: "Voucher No",
-      render: (v: string) => <span className="font-mono font-bold text-slate-700">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
     { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
     { key: "partyName", header: "Paid To", render: (v: string) => v || "—" },
@@ -110,7 +110,7 @@ const PaymentVoucher: React.FC = () => {
             e.stopPropagation();
             openEdit(row);
           }}
-          className="p-1.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+          className="p-1.5 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
           title="View / Edit"
         >
           <Eye className="h-4 w-4" />
@@ -133,13 +133,13 @@ const PaymentVoucher: React.FC = () => {
 
         <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       <ActionToolbar title="Payment Vouchers" subtitle="Cash and bank payments" />
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
             <Wallet className="h-5 w-5 text-red-600" />
             <span>PAYMENT VOUCHERS</span>
           </h2>
-          <p className="text-xs text-gray-400 mt-1 leading-none font-semibold uppercase tracking-wider">
+          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
             Money paid out — expenses, suppliers & transfers
           </p>
         </div>
@@ -148,7 +148,7 @@ const PaymentVoucher: React.FC = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
         <NepaliDatePicker label="From Date" value={fromDate} onChange={setFromDate} />
         <NepaliDatePicker label="To Date" value={toDate} onChange={setToDate} />
         <Select

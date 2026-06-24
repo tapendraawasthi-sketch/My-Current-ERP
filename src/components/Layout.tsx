@@ -126,15 +126,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0d1b2a" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="h-16 w-16 bg-[#2563eb] rounded-2xl flex items-center justify-center text-white font-bold text-3xl border-2 border-blue-400 shadow-2xl">S</div>
+          <div className="h-16 w-16 rounded-2xl flex items-center justify-center font-bold text-3xl" style={{ background: "#3D6B25", color: "#ffffff", border: "2px solid #7BA358" }}>S</div>
           <div>
-            <div className="text-white font-bold text-xl tracking-widest uppercase mb-1">Sutra ERP</div>
-            <div className="text-blue-300 text-xs font-medium">Initializing database...</div>
+            <div className="font-bold text-xl tracking-widest uppercase mb-1" style={{ color: "#000000" }}>Sutra ERP</div>
+            <div className="text-xs font-medium" style={{ color: "#000000" }}>Initializing database...</div>
           </div>
           <div className="flex gap-1.5">
-            {[0,1,2].map(i => <div key={i} className="h-2 w-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: `${i*0.15}s` }} />)}
+            {[0,1,2].map(i => <div key={i} className="h-2 w-2 rounded-full animate-bounce" style={{ background: "#3D6B25", animationDelay: `${i*0.15}s` }} />)}
           </div>
         </div>
       </div>
@@ -144,18 +144,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Visual gateway for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex bg-[#0d1b2a]">
+      <div className="min-h-screen flex bg-[#E4F1D9]">
         {/* LEFT PANEL */}
-        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#0d1b2a] flex-col justify-between p-10 shrink-0">
+        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] bg-[#E4F1D9] flex-col justify-between p-10 shrink-0">
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <div className="h-10 w-10 bg-[#2563eb] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-blue-500">S</div>
+              <div className="h-10 w-10 bg-[#3D6B25] rounded-xl flex items-center justify-center text-white font-bold text-xl border border-[#9DC07A]">S</div>
               <div>
-                <div className="text-white font-bold text-xl tracking-tight">Sutra ERP</div>
-                <div className="text-blue-400 text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
+                <div className="text-[#000000] font-bold text-xl tracking-tight">Sutra ERP</div>
+                <div className="text-[#000000] text-xs font-semibold tracking-widest uppercase">Nepal's Cloud Accounting</div>
               </div>
             </div>
-            <h2 className="text-white text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
+            <h2 className="text-[#000000] text-2xl font-bold mb-2 leading-tight">Powerful accounting<br/>built for Nepal</h2>
             <p className="text-[#E6F2FF] text-sm leading-relaxed mb-10">Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.</p>
             <div className="space-y-4">
               {[
@@ -165,9 +165,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports in one click" },
               ].map(f => (
                 <div key={f.title} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#2563eb] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
+                  <span className="h-5 w-5 rounded-full bg-[#3D6B25] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">✓</span>
                   <div>
-                    <div className="text-white text-sm font-semibold leading-none mb-1">{f.title}</div>
+                    <div className="text-[#000000] text-sm font-semibold leading-none mb-1">{f.title}</div>
                     <div className="text-[#E6F2FF] text-xs">{f.desc}</div>
                   </div>
                 </div>
@@ -180,15 +180,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-sm">
             <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-              <div className="h-9 w-9 bg-[#2563eb] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
-              <div className="text-gray-800 font-bold text-xl">Sutra ERP</div>
+              <div className="h-9 w-9 bg-[#3D6B25] rounded-xl flex items-center justify-center text-white font-bold text-lg">S</div>
+              <div className="text-[#000000] font-bold text-xl">Sutra ERP</div>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
-              <h3 className="text-lg font-bold text-gray-900 mb-1">Sign In</h3>
-              <p className="text-xs text-gray-500 mb-6">Enter your credentials to access the system</p>
+            <div className="bg-white rounded-2xl border border-[#9DC07A] shadow-xl p-8">
+              <h3 className="text-lg font-bold text-[#000000] mb-1">Sign In</h3>
+              <p className="text-xs text-[#000000] mb-6">Enter your credentials to access the system</p>
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  <label className="block text-xs font-semibold text-[#000000] mb-1">
                     System Operator ID
                   </label>
                   <input
@@ -197,12 +197,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="e.g. admin"
-                    className="block w-full h-9 px-3 bg-white border border-gray-300 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
+                    className="block w-full h-9 px-3 rounded-lg text-sm focus:outline-none transition-colors" style={{ background: "#EBF5E2", border: "1px solid #9DC07A", color: "#000000" }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  <label className="block text-xs font-semibold text-[#000000] mb-1">
                     Access Code / Code word
                   </label>
                   <input
@@ -211,7 +211,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="block w-full h-9 px-3 bg-white border border-gray-300 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
+                    className="block w-full h-9 px-3 rounded-lg text-sm focus:outline-none transition-colors" style={{ background: "#EBF5E2", border: "1px solid #9DC07A", color: "#000000" }}
                   />
                 </div>
 
@@ -219,9 +219,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-9 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                    className="w-full h-9 text-[#000000] font-semibold rounded-lg text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2" style={{ background: "#3D6B25" }}
                   >
-                    {loading && <Spinner size="sm" className="text-white" />}
+                    {loading && <Spinner size="sm" className="text-[#000000]" />}
                     <span>Authorize Entry</span>
                   </button>
                 </div>
@@ -243,16 +243,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         {/* Mobile top bar */}
-        <header className="h-12 bg-[#0d1b2a] flex items-center justify-between px-4 shrink-0">
+        <header className="h-12 flex items-center justify-between px-4 shrink-0" style={{ background: "#C9DEB5", borderBottom: "1px solid #9DC07A" }}>
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 bg-[#2563eb] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            <div className="h-7 w-7 bg-[#3D6B25] rounded-lg flex items-center justify-center text-white font-bold text-sm">
               S
             </div>
-            <span className="font-semibold text-white text-sm">
+            <span className="font-semibold text-[#000000] text-sm">
               {currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, " ")}
             </span>
           </div>
-          <button onClick={() => setDrawerOpen(true)} className="p-2 text-slate-300">
+          <button onClick={() => setDrawerOpen(true)} className="p-2 text-[#000000]">
             <Menu className="h-5 w-5" />
           </button>
         </header>
@@ -261,7 +261,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <main className="flex-1 overflow-y-auto p-4 pb-20">{children}</main>
 
         {/* Bottom nav */}
-        <nav className="fixed bottom-0 left-0 right-0 h-14 bg-[#0d1b2a] border-t border-[#1b3a5c] flex items-center justify-around z-40">
+        <nav className="fixed bottom-0 left-0 right-0 h-14 flex items-center justify-around z-40" style={{ background: "#C9DEB5", borderTop: "1px solid #9DC07A" }}>
           {[
             { page: "dashboard", icon: LayoutDashboard, label: "Home" },
             { page: "billing", icon: FileText, label: "Invoices" },
@@ -272,7 +272,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`flex flex-col items-center gap-0.5 ${currentPage === page ? "text-[#2563eb]" : "text-[#94a3b8]"}`}
+              className={`flex flex-col items-center gap-0.5`} style={{ color: "#000000" }}
             >
               <Icon className="h-5 w-5" /> <span className="text-[10px]">{label}</span>
             </button>
@@ -287,8 +287,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               onClick={() => setDrawerOpen(false)}
             />
             <div className="relative w-72 h-full overflow-y-auto shadow-xl">
-              <div className="p-4 border-b border-[#1b3a5c] flex items-center justify-between text-slate-300 bg-[#0d1b2a]">
-                <span className="font-semibold text-slate-200">Menu</span>
+              <div className="p-4 flex items-center justify-between" style={{ borderBottom: "1px solid #9DC07A", background: "#C9DEB5" }}>
+                <span className="font-semibold" style={{ color: "#000000" }}>Menu</span>
                 <button onClick={() => setDrawerOpen(false)}>
                   <X className="h-5 w-5 text-[#E6F2FF]" />
                 </button>

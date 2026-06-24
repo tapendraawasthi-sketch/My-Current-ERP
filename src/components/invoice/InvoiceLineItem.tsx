@@ -100,13 +100,13 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
     }
   };
 
-  const symbolCell = (n: number, color = "text-slate-700") => (
+  const symbolCell = (n: number, color = "text-[#000000]") => (
     <span className={`font-mono text-xs font-semibold ${color}`}>{formatNumber(n)}</span>
   );
 
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50/50" onKeyDown={onKey}>
-      <td className="px-2 py-1 text-center text-[11px] font-bold text-slate-400 w-8">{lineNo}</td>
+    <tr className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50" onKeyDown={onKey}>
+      <td className="px-2 py-1 text-center text-[11px] font-bold text-[#000000] w-8">{lineNo}</td>
 
       {/* Item */}
       <td className="px-1 py-1 min-w-[200px]">
@@ -154,7 +154,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
       <td className="px-1 py-1 w-20">
         <input
           type="number"
-          className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+          className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
           value={line.qty || ""}
           onChange={(e) => onUpdate({ qty: Number(e.target.value) || 0 })}
           disabled={readOnly}
@@ -178,7 +178,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
       <td className="px-1 py-1 w-24">
         <input
           type="number"
-          className="w-full h-7 px-2 text-[12px] border-0 border-b border-gray-200 bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+          className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
           value={line.rate || ""}
           onChange={(e) => onUpdate({ rate: Number(e.target.value) || 0 })}
           disabled={readOnly}
@@ -235,10 +235,10 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
       </td>
 
       {/* VAT Amount */}
-      <td className="px-2 py-1 text-right w-24">{symbolCell(vatAmt, "text-blue-700")}</td>
+      <td className="px-2 py-1 text-right w-24">{symbolCell(vatAmt, "text-[#000000]")}</td>
 
       {/* Total */}
-      <td className="text-right text-[12px] font-medium text-gray-800 font-mono px-3 w-24 bg-slate-50/80">
+      <td className="text-right text-[12px] font-medium text-[#000000] font-mono px-3 w-24 bg-[#EBF5E2]/80">
         {formatNumber(total)}
       </td>
 
@@ -269,7 +269,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
           type="button"
           onClick={onDelete}
           disabled={readOnly}
-          className="p-1 text-gray-300 hover:text-red-500 rounded transition-colors disabled:opacity-40"
+          className="p-1 text-[#000000] hover:text-red-500 rounded transition-colors disabled:opacity-40"
           title="Remove line"
         >
           <Trash2 className="h-3.5 w-3.5" />

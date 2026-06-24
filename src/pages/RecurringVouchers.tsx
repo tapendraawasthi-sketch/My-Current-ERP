@@ -228,11 +228,11 @@ const RecurringVouchers: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#000000] dark:text-[#000000] flex items-center gap-2">
             <Repeat className="h-6 w-6 text-purple-600" />
             Recurring Vouchers & Standing Instructions
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-[#000000] dark:text-[#000000] mt-1">
             Automate recurring transactions like rent, salary, and subscriptions
           </p>
         </div>
@@ -285,8 +285,8 @@ const RecurringVouchers: React.FC = () => {
       {filteredRecurring.length === 0 ? (
         <Card border padding="lg">
           <div className="text-center py-12">
-            <Repeat className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">
+            <Repeat className="h-16 w-16 text-[#000000] mx-auto mb-4" />
+            <p className="text-[#000000] dark:text-[#000000]">
               {searchQuery
                 ? "No recurring vouchers found matching your search"
                 : "No recurring vouchers created yet"}
@@ -300,42 +300,42 @@ const RecurringVouchers: React.FC = () => {
         <Card border padding="none">
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left border-collapse">
-              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              <thead className="bg-[#EBF5E2] dark:bg-[#EBF5E2] border-b border-[#9DC07A] dark:border-[#9DC07A]">
                 <tr>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Name</th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Type</th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000]">Name</th>
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000]">Type</th>
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000]">
                     Frequency
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000]">
                     Next Due
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000]">
                     Status
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-center">
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000] text-center">
                     Occurrences
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-center">
+                  <th className="px-4 py-3 font-semibold text-[#000000] dark:text-[#000000] text-center">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-150 dark:divide-gray-700">
                 {filteredRecurring.map((recurring) => (
-                  <tr key={recurring.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <tr key={recurring.id} className="hover:bg-[#EBF5E2] dark:hover:bg-[#EBF5E2]">
                     <td className="px-4 py-3">
-                      <div className="font-bold text-gray-900 dark:text-white">
+                      <div className="font-bold text-[#000000] dark:text-[#000000]">
                         {recurring.name}
                       </div>
                       {recurring.autoPost && (
-                        <span className="text-xs text-blue-600">Auto-post enabled</span>
+                        <span className="text-xs text-[#000000]">Auto-post enabled</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant="default">{getVoucherTypeLabel(recurring.voucherType)}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                    <td className="px-4 py-3 text-[#000000] dark:text-[#000000]">
                       {getFrequencyLabel(recurring.frequency)}
                       {recurring.frequency === RecurringFrequency.MONTHLY &&
                         recurring.dayOfMonth && (
@@ -343,12 +343,12 @@ const RecurringVouchers: React.FC = () => {
                         )}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center gap-1 text-[#000000] dark:text-[#000000]">
                         <Calendar className="h-3 w-3" />
                         {recurring.nextDueDate}
                       </div>
                       {recurring.endDate && (
-                        <span className="text-xs text-gray-500">Until {recurring.endDate}</span>
+                        <span className="text-xs text-[#000000]">Until {recurring.endDate}</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -373,7 +373,7 @@ const RecurringVouchers: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleToggleActive(recurring.id, recurring.isActive)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                          className="p-1.5 text-[#000000] hover:bg-[#D4EABD] dark:hover:bg-[#D4EABD]/20 rounded"
                           title={recurring.isActive ? "Pause" : "Activate"}
                         >
                           {recurring.isActive ? (
@@ -391,7 +391,7 @@ const RecurringVouchers: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleEdit(recurring)}
-                          className="p-1.5 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded"
+                          className="p-1.5 text-[#000000] hover:bg-[#EBF5E2] dark:hover:bg-[#EBF5E2] rounded"
                           title="Edit"
                         >
                           <Edit className="h-4 w-4" />
@@ -416,9 +416,9 @@ const RecurringVouchers: React.FC = () => {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#EBF5E2] rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-bold text-[#000000] dark:text-[#000000] mb-4">
                 {editingId ? "Edit Recurring Voucher" : "Create Recurring Voucher"}
               </h2>
 
@@ -500,7 +500,7 @@ const RecurringVouchers: React.FC = () => {
                     onChange={(e) => setFormData({ ...formData, autoPost: e.target.checked })}
                     className="h-4 w-4 accent-blue-600"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <span className="text-sm text-[#000000] dark:text-[#000000]">
                     Auto-post vouchers (directly post instead of saving as draft)
                   </span>
                 </label>
@@ -528,20 +528,20 @@ const RecurringVouchers: React.FC = () => {
       {/* History Modal */}
       {showHistory && historyRecurring && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#EBF5E2] rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-bold text-[#000000] dark:text-[#000000] mb-4">
                 History: {historyRecurring.name}
               </h2>
 
               {historyVouchers.length === 0 ? (
-                <p className="text-gray-600 dark:text-gray-400 text-center py-8">
+                <p className="text-[#000000] dark:text-[#000000] text-center py-8">
                   No vouchers generated yet
                 </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
+                    <thead className="bg-[#EBF5E2] dark:bg-[#EBF5E2]">
                       <tr>
                         <th className="px-3 py-2 text-left">Voucher No</th>
                         <th className="px-3 py-2 text-left">Date</th>

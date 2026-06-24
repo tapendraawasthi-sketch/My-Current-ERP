@@ -113,13 +113,13 @@ const GeneralLedger: React.FC = () => {
           <div className="print-only hidden mb-6 text-center">
             <h1 className="text-xl font-bold">{companySettings?.companyNameEn || "Sutra ERP"}</h1>
             <h2 className="text-lg font-semibold mt-1">General Ledger: {selectedAccount?.name}</h2>
-            <p className="text-sm text-gray-600 mt-1">Period: {startDate} to {endDate}</p>
+            <p className="text-sm text-[#000000] mt-1">Period: {startDate} to {endDate}</p>
           </div>
 
           <div className="flex items-center justify-between mb-4 no-print">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">General Ledger</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Account-wise transaction history</p>
+              <h1 className="text-[15px] font-semibold text-[#000000]">General Ledger</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">Account-wise transaction history</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -158,56 +158,56 @@ const GeneralLedger: React.FC = () => {
           {selectedAccount && ledgerData ? (
             <>
               <div className="grid gap-3 sm:grid-cols-4 mb-4">
-                <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <div className="p-3 bg-white border border-[#9DC07A] rounded-lg shadow-sm">
+                  <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                     Opening Balance
                   </div>
-                  <div className="mt-1 text-[16px] font-bold text-gray-800">
+                  <div className="mt-1 text-[16px] font-bold text-[#000000]">
                     {formatNumber(ledgerData.openingBalance)} {ledgerData.openingBalance > 0 ? "DR" : "CR"}
                   </div>
                 </div>
-                <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <div className="p-3 bg-white border border-[#9DC07A] rounded-lg shadow-sm">
+                  <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                     Total Dr
                   </div>
                   <div className="mt-1 text-[16px] font-bold text-[#1557b0]">
                     {formatNumber(ledgerData.totalDebits)}
                   </div>
                 </div>
-                <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <div className="p-3 bg-white border border-[#9DC07A] rounded-lg shadow-sm">
+                  <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                     Total Cr
                   </div>
                   <div className="mt-1 text-[16px] font-bold text-red-600">
                     {formatNumber(ledgerData.totalCredits)}
                   </div>
                 </div>
-                <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <div className="p-3 bg-white border border-[#9DC07A] rounded-lg shadow-sm">
+                  <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                     Closing Balance
                   </div>
-                  <div className="mt-1 text-[16px] font-bold text-gray-800">
+                  <div className="mt-1 text-[16px] font-bold text-[#000000]">
                     {formatNumber(ledgerData.closingBalance)} {ledgerData.closingDrCr}
                   </div>
                 </div>
               </div>
 
-              <div className="w-full overflow-x-auto border border-gray-200 rounded-lg shadow-sm bg-white mb-4">
+              <div className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white mb-4">
                 <table role="table" className="data-table sticky-thead">
                   <thead>
                     <tr>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date (BS)</th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Voucher No</th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide" style={{ width: "35%" }}>Narration</th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Debit</th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Credit</th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Balance</th>
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Date (BS)</th>
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Voucher No</th>
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide" style={{ width: "35%" }}>Narration</th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Debit</th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Credit</th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Balance</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-150">
                     {ledgerData.openingBalance !== undefined && (
                       <tr style={{ background: "#f0f7ff" }}>
-                        <td colSpan={3} className="font-bold text-[11px] text-blue-700 px-3 py-2.5">Opening Balance</td>
+                        <td colSpan={3} className="font-bold text-[11px] text-[#000000] px-3 py-2.5">Opening Balance</td>
                         <td className="px-3 py-2.5 text-[12px] text-right font-mono amt amt-dr">{ledgerData.openingBalance > 0 ? formatNumber(ledgerData.openingBalance) : ""}</td>
                         <td className="px-3 py-2.5 text-[12px] text-right font-mono amt amt-cr">{ledgerData.openingBalance < 0 ? formatNumber(Math.abs(ledgerData.openingBalance)) : ""}</td>
                         <td className="px-3 py-2.5 text-[12px] text-right font-mono font-bold">{formatNumber(Math.abs(ledgerData.openingBalance))}</td>
@@ -216,7 +216,7 @@ const GeneralLedger: React.FC = () => {
 
                     {paginatedEntries.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="text-center py-4 text-gray-400 text-[12px]">
+                        <td colSpan={6} className="text-center py-4 text-[#000000] text-[12px]">
                           No transactions in this period.
                         </td>
                       </tr>
@@ -224,23 +224,23 @@ const GeneralLedger: React.FC = () => {
                       paginatedEntries.map((row, idx) => (
                         <tr
                           key={row.voucherNo + idx}
-                          className="border-b border-gray-100 bg-white hover:bg-[#f5f6fa] transition-colors"
+                          className="border-b border-[#9DC07A] bg-white hover:bg-[#f5f6fa] transition-colors"
                         >
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.dateBS}</td>
+                          <td className="px-3 py-2.5 text-[12px] text-[#000000]">{row.dateBS}</td>
                           <td className="px-3 py-2.5 text-[12px] text-[#1557b0] cursor-pointer hover:underline">{row.voucherNo}</td>
                           <td
-                            className="px-3 py-2.5 text-[12px] text-gray-700 truncate max-w-xs"
+                            className="px-3 py-2.5 text-[12px] text-[#000000] truncate max-w-xs"
                             title={row.narration}
                           >
                             {row.narration}
                           </td>
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono amt amt-dr">
+                          <td className="px-3 py-2.5 text-[12px] text-[#000000] text-right font-mono amt amt-dr">
                             {row.debit ? formatNumber(row.debit) : ""}
                           </td>
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono amt amt-cr">
+                          <td className="px-3 py-2.5 text-[12px] text-[#000000] text-right font-mono amt amt-cr">
                             {row.credit ? formatNumber(row.credit) : ""}
                           </td>
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono amt">
+                          <td className="px-3 py-2.5 text-[12px] text-[#000000] text-right font-mono amt">
                             {formatNumber(Math.abs(row.runningBalance))} {row.runningBalance >= 0 ? "DR" : "CR"}
                           </td>
                         </tr>
@@ -269,7 +269,7 @@ const GeneralLedger: React.FC = () => {
               />
             </>
           ) : (
-            <Card border padding="lg" className="text-center text-slate-500">
+            <Card border padding="lg" className="text-center text-[#000000]">
               Select an account and date range to view ledger movements.
             </Card>
           )}

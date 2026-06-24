@@ -313,7 +313,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       <div className="shrink-0" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
         {!collapsed && currentUser && (
           <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#B2D494" }}>
-            <div className="h-7 w-7 rounded-full bg-[#4A7A30] flex items-center justify-center text-[11px] font-bold text-[#111111] flex-none border border-blue-500">
+            <div className="h-7 w-7 rounded-full bg-[#4A7A30] flex items-center justify-center text-[11px] font-bold text-[#111111] flex-none border border-[#9DC07A]">
               {currentUser.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="flex flex-col min-w-0 flex-1">

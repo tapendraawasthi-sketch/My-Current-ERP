@@ -419,9 +419,9 @@ function MainRouter() {
     default:
       return (
         <ErrorBoundary>
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-[15px] font-bold text-gray-800">404 - Page Not Found</h2>
-            <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-[#9DC07A] rounded-lg p-6">
+            <h2 className="text-[15px] font-bold text-[#000000]">404 - Page Not Found</h2>
+            <p className="text-[11px] text-[#000000] mt-1">The requested page "{currentPage}" could not be found.</p>
             <button
               onClick={() => useStore.getState().setCurrentPage("dashboard")}
               className="mt-4 h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-semibold rounded-md cursor-pointer"
@@ -458,8 +458,8 @@ export default function App() {
       <div className="min-h-screen flex items-center justify-center bg-[#E4F1D9]">
         <div className="text-center">
           <Loader2 className="w-16 h-16 text-[#3D6B25] animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Sutra ERP...</h2>
-          <p className="text-gray-600">Please wait while we initialize the application</p>
+          <h2 className="text-2xl font-bold text-[#000000] mb-2">Loading Sutra ERP...</h2>
+          <p className="text-[#000000]">Please wait while we initialize the application</p>
         </div>
       </div>
     );

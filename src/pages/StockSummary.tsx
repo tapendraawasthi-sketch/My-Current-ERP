@@ -90,7 +90,7 @@ const StockSummary: React.FC = () => {
       reorderLevel = item?.reorderLevel || 0;
     }
 
-    let className = "text-gray-800";
+    let className = "text-[#000000]";
     if (qty === 0) className = "text-red-600 font-bold";
     else if (qty < reorderLevel) className = "text-amber-600";
 
@@ -147,8 +147,8 @@ const StockSummary: React.FC = () => {
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Current stock positions by warehouse</p>
+          <h1 className="text-[15px] font-semibold text-[#000000]">Stock Summary</h1>
+          <p className="text-[11px] text-[#000000] mt-0.5">Current stock positions by warehouse</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleExport}>
@@ -196,8 +196,8 @@ const StockSummary: React.FC = () => {
           { label: "Out of Stock", value: totals.out, color: "#dc2626" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3" style={{ borderColor: "var(--border)" }}>
-            <div className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{label}</div>
-            <div className="text-[16px] font-bold text-gray-800 mt-0.5" style={{ color }}>{value}</div>
+            <div className="text-[10px] font-bold uppercase tracking-wide text-[#000000]">{label}</div>
+            <div className="text-[16px] font-bold text-[#000000] mt-0.5" style={{ color }}>{value}</div>
           </div>
         ))}
       </div>
@@ -220,7 +220,7 @@ const StockSummary: React.FC = () => {
           <tbody>
             {paginatedRows.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-8 text-gray-500">
+                <td colSpan={9} className="text-center py-8 text-[#000000]">
                   No stock summary records available.
                 </td>
               </tr>
@@ -233,9 +233,9 @@ const StockSummary: React.FC = () => {
                 const bgStyle = isOut ? { background: "#fef2f2" } : isLow ? { background: "#fff7ed" } : undefined;
                 return (
                   <tr key={row.itemId} style={bgStyle} className="hover:bg-[#e8eeff]">
-                    <td className="px-3 py-[7px] text-[12px] text-gray-700 font-bold">{row.itemCode}</td>
-                    <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.itemName}</td>
-                    <td className="px-3 py-[7px] text-[12px] text-gray-700">{row.unit}</td>
+                    <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{row.itemCode}</td>
+                    <td className="px-3 py-[7px] text-[12px] text-[#000000]">{row.itemName}</td>
+                    <td className="px-3 py-[7px] text-[12px] text-[#000000]">{row.unit}</td>
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">{formatNumber(row.openingQty)}</td>
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-positive">{formatNumber(row.inQty)}</td>
                     <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-negative">{formatNumber(row.outQty)}</td>
@@ -258,7 +258,7 @@ const StockSummary: React.FC = () => {
           </tbody>
           <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
             <tr>
-              <td colSpan={3} className="px-3 py-2 text-[12px] text-gray-700">Total</td>
+              <td colSpan={3} className="px-3 py-2 text-[12px] text-[#000000]">Total</td>
               <td colSpan={5} />
               <td className="px-3 py-2 text-[12px] text-right font-mono amt font-bold" style={{ color: "var(--primary)" }}>Rs. {formatNumber(totals.value)}</td>
             </tr>
