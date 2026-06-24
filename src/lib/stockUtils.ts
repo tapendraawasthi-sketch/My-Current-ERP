@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -819,7 +818,7 @@ export function computeWeightedAvgCost(itemId: string, stockMovements: StockMove
   return totalQty > 0 ? round2(totalValue / totalQty) : 0;
 }
 
-export function getCurrentStock(itemId: string, warehouseId?: string, stockMovements: StockMovement[]): number {
+export function getCurrentStock(itemId: string, warehouseId: string | undefined, stockMovements: StockMovement[]): number {
   const INWARD_TYPES = [MovementType.PURCHASE, MovementType.SALES_RETURN, MovementType.TRANSFER_IN, MovementType.OPENING];
   const OUTWARD_TYPES = [MovementType.SALES, MovementType.PURCHASE_RETURN, MovementType.TRANSFER_OUT];
 

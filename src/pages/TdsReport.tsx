@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 export default function TdsReport() {
   const { tdsEntries, updateTdsEntry, currentFiscalYear, companySettings } = useStore();
   
-  const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.bsYear || "2081/2082");
+  const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.fiscalYearBS || "2081/2082");
   const [sectionFilter, setSectionFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
 
@@ -294,3 +294,4 @@ export default function TdsReport() {
     </div>
   );
 }
+

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -405,8 +404,8 @@ export function getTDSSummary(
   let totalNet = 0;
 
   for (const entry of filtered) {
-    const t = entry.tdsType;
-    if (byType[t]) {
+    const t = entry.tdsType as TdsType;
+    if (t && byType[t]) {
       byType[t].grossAmount = round2(byType[t].grossAmount + entry.grossAmount);
       byType[t].tdsAmount = round2(byType[t].tdsAmount + entry.tdsAmount);
       byType[t].netAmount = round2(byType[t].netAmount + entry.netAmount);
@@ -442,7 +441,7 @@ export function getTDSCertificateData(
     partyPan: party.pan || "N/A",
     partyAddress: party.address || "N/A",
     date: tdsEntry.date,
-    dateNepali: tdsEntry.dateNepali,
+    dateNepali: tdsEntry.dateNepali || "",
     grossAmount: tdsEntry.grossAmount,
     tdsRate: tdsEntry.tdsRate,
     tdsAmount: tdsEntry.tdsAmount,
@@ -614,7 +613,7 @@ export function generateVatAnnex5(invoices: Invoice[]) {
  * @param maritalStatus 'single' | 'married' (married gets higher exemption)
  */
 export function computeSalaryTDS(
-  employee: Employee,
+  employee: any,
   grossSalary: number,
   currentMonth: number,
   accumulatedTDS: number,
@@ -693,7 +692,7 @@ export function computeSalaryTDS(
 
   // Calculate Net Salary
   // Other deductions (from employee profile deductions list)
-  const otherDeductions = (employee.deductions || []).reduce((sum, d) => sum + d.amount, 0);
+  const otherDeductions = (employee.deductions || []).reduce((sum: number, d: any) => sum + d.amount, 0);
 
   const netSalary = Math.round((grossSalary - monthlyDeductions - monthlyTDS - otherDeductions) * 100) / 100;
 
@@ -720,7 +719,7 @@ export function computeCITContribution(basicSalary: number, citRate: number, cit
   return { employee: basicSalary * (citRate / 100), employer: 0 };
 }
 
-export function computeSSFContribution(employee: Employee, grossSalary: number): {
+export function computeSSFContribution(employee: any, grossSalary: number): {
   employee: number;
   employer: number;
 } {

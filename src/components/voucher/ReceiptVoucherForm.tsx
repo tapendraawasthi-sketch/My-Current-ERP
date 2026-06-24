@@ -119,10 +119,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     [accounts],
   );
   const tdsReceivableId = useMemo(
-    () =>
-      accounts.find((a) => a.id === "acc-tds-receivable")?.id ||
-      accounts.find((a) => a.id === "acc-tds-payable")?.id ||
-      "",
+    () => accounts.find(a => a.name?.toLowerCase().includes("tds") && a.type === AccountType.LIABILITY)?.id || "acc-tds-payable",
     [accounts],
   );
 
@@ -411,7 +408,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     };
   };
 
-  const settleInvoices = async (voucherId: string) => {
+  const settleInvoices = async (savedVoucherId: string) => {
     if (!selectedInvoiceIds.length) return;
     for (const invId of selectedInvoiceIds) {
       const inv = outstandingInvoices.find((i) => i.id === invId);
@@ -425,7 +422,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
 
       // Create bill allocation record
       await addBillAllocation({
-        voucherId,
+        voucherId: savedVoucherId,
         invoiceId: inv.id,
         invoiceNo: inv.invoiceNo,
         invoiceDate: inv.date,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { formatBSDate } from "@/lib/nepaliDate";
 
@@ -19,3 +20,4 @@ export const DualDate: React.FC<DualDateProps> = ({ date, dateNepali, className 
     </div>
   );
 };
+

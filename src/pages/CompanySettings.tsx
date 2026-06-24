@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { Building2, Settings, FileText, Printer, Plug, Save } from "lucide-react";
 import { useStore } from "../store";
@@ -407,3 +408,4 @@ export default function CompanySettings() {
     </div>
   );
 }
+

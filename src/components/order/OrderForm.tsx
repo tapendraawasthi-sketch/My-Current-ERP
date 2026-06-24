@@ -305,15 +305,16 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
     onSave?.();
   };
 
-  const handleCancelOrder = () => {
+  const handleCancelOrder = (reasonFromDialog?: string) => {
     if (!existing) return;
-    if (!cancelReason.trim()) {
+    const finalReason = reasonFromDialog?.trim() || cancelReason.trim();
+    if (!finalReason) {
       toast.error("Cancellation reason is required.");
       return;
     }
     const next = orders.map((o) =>
       o.id === existing.id
-        ? ({ ...o, status: "cancelled", cancelReason: cancelReason.trim() } as OrderRecord)
+        ? ({ ...o, status: "cancelled", cancelReason: finalReason } as OrderRecord)
         : o,
     );
     persist(next);
@@ -467,7 +468,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
             markDirty();
           }}
           partyTypeFilter={partyTypeFilter}
-          required
           disabled={locked}
         />
       </Card>
@@ -539,7 +539,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                         value={l.qty}
                         onChange={(v) => updateLine(l.id, { qty: v })}
                         disabled={locked}
-                        compact
                       />
                     </td>
                     <td className="p-2">
@@ -547,7 +546,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                         value={l.rate}
                         onChange={(v) => updateLine(l.id, { rate: v })}
                         disabled={locked}
-                        compact
                       />
                     </td>
                     <td className="p-2">
@@ -555,7 +553,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                         value={l.discountPercent}
                         onChange={(v) => updateLine(l.id, { discountPercent: v })}
                         disabled={locked}
-                        compact
                       />
                     </td>
                     <td className="p-2">
@@ -563,7 +560,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                         value={l.vatRate}
                         onChange={(v) => updateLine(l.id, { vatRate: v })}
                         disabled={locked}
-                        compact
                       />
                     </td>
                     <td className="p-2 text-right font-mono">{formatNumber(base + vat)}</td>
@@ -687,42 +683,39 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
 
       {/* Confirm — cancel order */}
       <ConfirmDialog
-        open={confirmCancel}
+        isOpen={confirmCancel}
         title={`Cancel ${type === "sales" ? "Sales" : "Purchase"} Order?`}
-        message={
-          <div className="flex flex-col gap-2">
-            <p>Cancellation freezes this order. Reason is required.</p>
-            <Input
-              label="Reason"
-              value={cancelReason}
-              onChange={setCancelReason}
-              placeholder="e.g. Customer withdrew request"
-            />
-          </div>
-        }
-        confirmLabel="Cancel Order"
-        cancelLabel="Keep Open"
-        onConfirm={handleCancelOrder}
-        onCancel={() => setConfirmCancel(false)}
-        variant="danger"
+        message="Cancellation freezes this order. Reason is required."
+        requireReason={true}
+        reasonLabel="Reason"
+        reasonPlaceholder="e.g. Customer withdrew request"
+        confirmText="Cancel Order"
+        cancelText="Keep Open"
+        onConfirm={(reason) => {
+          setCancelReason(reason || "");
+          handleCancelOrder(reason || "");
+          setConfirmCancel(false);
+        }}
+        onClose={() => setConfirmCancel(false)}
+        danger={true}
       />
 
       {/* Confirm — abandon edits */}
       <ConfirmDialog
-        open={confirmAbort}
+        isOpen={confirmAbort}
         title="Discard unsaved changes?"
         message="You have unsaved edits. Leave without saving?"
-        confirmLabel="Discard"
-        cancelLabel="Keep Editing"
+        confirmText="Discard"
+        cancelText="Keep Editing"
         onConfirm={() => {
           setConfirmAbort(false);
           onCancel?.();
         }}
-        onCancel={() => setConfirmAbort(false)}
-        variant="danger"
+        onClose={() => setConfirmAbort(false)}
       />
     </div>
   );
 };
 
 export default OrderForm;
+

@@ -30,6 +30,7 @@ import {
   Banknote,
   Landmark,
   CreditCard,
+  Trash2,
 } from "lucide-react";
 import { formatNumber, numberToWords } from "@/lib/utils";
 import { ADToBSString } from "@/lib/nepaliDate";
@@ -469,28 +470,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         );
 
         // Run CBMS async
-        if (companySettings?.cbmsEnabled && companySettings?.cbmsConfig) {
-          const itemsForCBMS = payload.lines.map((l: any) => ({
-            description: l.itemName,
-            qty: l.qty,
-            rate: l.rate,
-            amount: l.netAmount
-          }));
+        if (companySettings?.cbmsEnabled) {
           
-          submitToCBMS({
-            billNo: result.invoiceNo,
-            billDate: result.dateNepali,
-            partyName: result.partyName,
-            partyPAN: result.partyPan,
-            taxableAmount: result.taxableAmount,
-            vatAmount: result.vatAmount,
-            grandTotal: result.grandTotal,
-            items: itemsForCBMS
-          }, companySettings.cbmsConfig)
+          submitToCBMS(result, companySettings)
           .then(async (cbmsRes) => {
-            if (cbmsRes.success && cbmsRes.referenceNo) {
-              await updateInvoice(result.id, { cbmsSubmitted: true, cbmsIrn: cbmsRes.referenceNo, cbmsSubmittedAt: new Date().toISOString() });
-              toast.success(`CBMS Synced: IRN ${cbmsRes.referenceNo}`);
+            if (cbmsRes.success && cbmsRes.irn) {
+              await updateInvoice(result.id, { cbmsSubmitted: true, cbmsIrn: cbmsRes.irn, cbmsSubmittedAt: new Date().toISOString() });
+              toast.success(`CBMS Synced: IRN ${cbmsRes.irn}`);
             } else {
               await updateInvoice(result.id, { cbmsSubmitted: false });
               toast.error(`CBMS Failed: ${cbmsRes.error}`);

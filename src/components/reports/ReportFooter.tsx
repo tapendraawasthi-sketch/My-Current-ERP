@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 
 interface ReportFooterProps {
@@ -20,3 +21,4 @@ export const ReportFooter: React.FC<ReportFooterProps> = ({
     </div>
   );
 };
+

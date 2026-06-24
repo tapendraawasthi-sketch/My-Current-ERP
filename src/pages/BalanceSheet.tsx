@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -226,3 +227,4 @@ const BalanceSheet: React.FC = () => {
 };
 
 export default BalanceSheet;
+

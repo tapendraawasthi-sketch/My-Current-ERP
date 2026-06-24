@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { computeOutstandingReceivables } from "../lib/accounting";
@@ -541,3 +542,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

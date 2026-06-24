@@ -108,3 +108,4 @@ const GoodsReceiptNote: React.FC = () => {
 };
 
 export default GoodsReceiptNote;
+

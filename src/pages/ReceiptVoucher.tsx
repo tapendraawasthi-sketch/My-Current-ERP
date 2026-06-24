@@ -183,3 +183,4 @@ const ReceiptVoucher: React.FC = () => {
 };
 
 export default ReceiptVoucher;
+

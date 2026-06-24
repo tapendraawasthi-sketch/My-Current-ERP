@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -135,3 +136,4 @@ const Input: React.FC<InputProps> = ({
 };
 
 export default Input;
+

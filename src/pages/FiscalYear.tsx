@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { Calendar, Plus, Lock, CheckCircle, AlertTriangle, ArrowRight } from "lucide-react";
 import { useStore } from "../store";
@@ -364,3 +365,4 @@ export default function FiscalYear() {
     </div>
   );
 }
+

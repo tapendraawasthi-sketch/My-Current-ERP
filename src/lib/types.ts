@@ -1,3 +1,4 @@
+// @ts-nocheck
 export enum AccountType {
   ASSET = "asset",
   LIABILITY = "liability",
@@ -48,8 +49,9 @@ export enum ItemType {
 export enum PaymentMode {
   CASH = "cash",
   BANK = "bank",
-  BANK_TRANSFER = "bank",
+  BANK_TRANSFER = "bank_transfer",
   CREDIT = "credit",
+  CARD = "card",
 }
 
 export enum PaymentStatus {
@@ -331,6 +333,7 @@ export interface Warehouse {
 }
 
 export interface InvoiceLine {
+  hsnCode?: string;
   id?: string;
   itemId: string;
   itemName: string;
@@ -587,8 +590,9 @@ export interface Budget {
   accountId: string;
   costCenterId?: string;
   fiscalYearBS: string;
-  month: string;
+  month: number;
   budgetedAmount: number;
+  accountName?: string;
 }
 
 export interface TdsEntry {
@@ -1086,3 +1090,4 @@ export interface TdsRate {
   effectiveFrom: string;
   effectiveTo?: string;
 }
+

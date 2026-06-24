@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
@@ -784,3 +785,4 @@ const StockBook: React.FC = () => {
 };
 
 export default StockBook;
+

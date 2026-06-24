@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -376,7 +375,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   return (
 
 
-    <div style={{ background: "#fffbe6", padding: 12 }}>
+    <div>
 
 
       <PillTitle title="Add Journal Voucher" />

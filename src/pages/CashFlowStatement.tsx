@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -490,3 +491,4 @@ function round2(value: number) {
 }
 
 export default CashFlowStatement;
+

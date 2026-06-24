@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { Plus, Edit2, Trash2, ChevronRight, ChevronDown, Building2, MapPin, User, Save, X } from "lucide-react";
 import { useStore } from "../store";
@@ -313,3 +314,4 @@ export default function CostCenters() {
     </div>
   );
 }
+

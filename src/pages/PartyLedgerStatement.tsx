@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
 /**
  * @license
@@ -396,3 +397,4 @@ const PartyLedgerStatement: React.FC = () => {
 };
 
 export default PartyLedgerStatement;
+

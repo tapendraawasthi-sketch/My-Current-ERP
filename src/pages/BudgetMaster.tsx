@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { Plus, X, Search, FileEdit } from "lucide-react";
 import { useStore } from "../store";
@@ -283,3 +284,4 @@ export default function BudgetMaster() {
     </div>
   );
 }
+

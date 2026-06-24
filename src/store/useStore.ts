@@ -57,6 +57,7 @@ import {
   RecurringVoucher,
   RecurringFrequency,
   CustomFieldDef,
+  Budget
 } from "../lib/types";
 import {
   recalculateAccountBalances,
@@ -266,13 +267,26 @@ export type StoreGet = StoreApi<StoreState>["getState"];
 export const useStore = create<StoreState>()((...args) => {
   const [set, get] = args;
   const reloadAccountBalances = async () => {
-    const db = getDB();
-    const [accountsRaw, vouchersRaw] = await Promise.all([
-      db.accounts.toArray(),
-      db.vouchers.toArray(),
-    ]);
-    const recalculated = recalculateAccountBalances(accountsRaw, vouchersRaw);
-    set({ accounts: recalculated });
+      try {
+
+          const db = getDB();
+          const [accountsRaw, vouchersRaw] = await Promise.all([
+            db.accounts.toArray(),
+            db.vouchers.toArray(),
+          ]);
+          const recalculated = recalculateAccountBalances(accountsRaw, vouchersRaw);
+          
+          const computedBalances: Record<string, number> = {};
+          recalculated.forEach(a => {
+            computedBalances[a.id] = a.balance;
+          });
+
+          set({ accounts: recalculated, computedBalances });
+        
+      } catch (error) {
+        console.error("DB Error:", error);
+        throw error;
+      }
   };
 
   return {
@@ -296,6 +310,7 @@ export const useStore = create<StoreState>()((...args) => {
     tdsEntries: [],
     bankAccounts: [],
     bankStatements: [],
+      computedBalances: {},
     auditLogs: [],
     stockJournals: [],
     billAllocations: [],
@@ -342,958 +357,1301 @@ export const useStore = create<StoreState>()((...args) => {
     currentFiscalYear: null,
 
     addAccount: async (accountData) => {
-      const db = getDB();
-      const cleanId = generateId("acc");
-      const fullAccount: Account = {
-        ...accountData,
-        id: cleanId,
-        balance: 0,
-      };
+        try {
 
-      await db.accounts.add(fullAccount);
+              const db = getDB();
+              const cleanId = generateId("acc");
+              const fullAccount: Account = {
+                ...accountData,
+                id: cleanId,
+                balance: 0,
+              };
 
-      set((prev) => {
-        const updatedAccounts = [...prev.accounts, fullAccount];
-        return {
-          accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
-        };
-      });
+              await db.accounts.add(fullAccount);
 
-      await db.auditLogs.add({
-        id: generateId("audit"),
-        timestamp: new Date().toISOString(),
-        userId: get().currentUser?.id || "system",
-        userName: get().currentUser?.name || "System",
-        action: "create",
-        module: "accounts",
-        recordId: cleanId,
-        recordType: "account",
-        newValue: JSON.stringify(fullAccount),
-      });
+              set((prev) => {
+                const updatedAccounts = [...prev.accounts, fullAccount];
+                return {
+                  accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
+                };
+              });
 
-      toast.success("Account Ledger registered successfully.");
-      return fullAccount;
+              await db.auditLogs.add({
+                id: generateId("audit"),
+                timestamp: new Date().toISOString(),
+                userId: get().currentUser?.id || "system",
+                userName: get().currentUser?.name || "System",
+                action: "create",
+                module: "accounts",
+                recordId: cleanId,
+                recordType: "account",
+                newValue: JSON.stringify(fullAccount),
+              });
+
+              toast.success("Account Ledger registered successfully.");
+              return fullAccount;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateAccount: async (id, updates) => {
-      const db = getDB();
-      await db.accounts.update(id, updates);
-      set((prev) => {
-        const updatedAccounts = prev.accounts.map((a) => (a.id === id ? { ...a, ...updates } : a));
-        return {
-          accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
-        };
-      });
-      toast.success("Account Ledger updated.");
+        try {
+
+              const db = getDB();
+              await db.accounts.update(id, updates);
+              set((prev) => {
+                const updatedAccounts = prev.accounts.map((a) => (a.id === id ? { ...a, ...updates } : a));
+                return {
+                  accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
+                };
+              });
+              toast.success("Account Ledger updated.");
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteAccount: async (id) => {
-      const db = getDB();
-      await db.accounts.delete(id);
-      set((prev) => {
-        const updatedAccounts = prev.accounts.filter((a) => a.id !== id);
-        return {
-          accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
-        };
-      });
-      return true;
+        try {
+
+              const db = getDB();
+              await db.accounts.delete(id);
+              set((prev) => {
+                const updatedAccounts = prev.accounts.filter((a) => a.id !== id);
+                return {
+                  accounts: recalculateAccountBalances(updatedAccounts, prev.vouchers),
+                };
+              });
+              return true;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addParty: async (partyDetails) => {
-      const db = getDB();
-      const cleanId = generateId("part");
-      const fullParty: Party = {
-        ...partyDetails,
-        id: cleanId,
-        balance: 0,
-      };
-      await db.parties.add(fullParty);
-      set((prev) => ({ parties: [...prev.parties, fullParty] }));
-      return fullParty;
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("part");
+              const fullParty: Party = {
+                ...partyDetails,
+                id: cleanId,
+                balance: 0,
+              };
+              await db.parties.add(fullParty);
+              set((prev) => ({ parties: [...prev.parties, fullParty] }));
+              return fullParty;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateParty: async (party) => {
-      const db = getDB();
-      await db.parties.update(party.id, party as any);
-      set((prev) => ({ parties: prev.parties.map((p) => (p.id === party.id ? party : p)) }));
+        try {
+
+              const db = getDB();
+              await db.parties.update(party.id, party as any);
+              set((prev) => ({ parties: prev.parties.map((p) => (p.id === party.id ? party : p)) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteParty: async (id) => {
-      const db = getDB();
-      await db.parties.delete(id);
-      set((prev) => ({ parties: prev.parties.filter((p) => p.id !== id) }));
+        try {
+
+              const db = getDB();
+              await db.parties.delete(id);
+              set((prev) => ({ parties: prev.parties.filter((p) => p.id !== id) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addItem: async (itemDetails) => {
-      const db = getDB();
-      const cleanId = generateId("item");
-      const fullItem: Item = {
-        ...itemDetails,
-        id: cleanId,
-        currentStock: itemDetails.openingStock || 0,
-      };
-      await db.items.add(fullItem);
-      set((prev) => ({ items: [...prev.items, fullItem] }));
-      return fullItem;
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("item");
+              const fullItem: Item = {
+                ...itemDetails,
+                id: cleanId,
+                currentStock: itemDetails.openingStock || 0,
+              };
+              await db.items.add(fullItem);
+              set((prev) => ({ items: [...prev.items, fullItem] }));
+              return fullItem;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateItem: async (item) => {
-      const db = getDB();
-      await db.items.update(item.id, item as any);
-      set((prev) => ({ items: prev.items.map((i) => (i.id === item.id ? item : i)) }));
+        try {
+
+              const db = getDB();
+              await db.items.update(item.id, item as any);
+              set((prev) => ({ items: prev.items.map((i) => (i.id === item.id ? item : i)) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteItem: async (id) => {
-      const db = getDB();
-      await db.items.delete(id);
-      set((prev) => ({ items: prev.items.filter((i) => i.id !== id) }));
+        try {
+
+              const db = getDB();
+              await db.items.delete(id);
+              set((prev) => ({ items: prev.items.filter((i) => i.id !== id) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addWarehouse: async (whData) => {
-      const db = getDB();
-      const cleanId = generateId("wh");
-      const fullWh: Warehouse = { ...whData, id: cleanId };
+        try {
 
-      if (whData.isDefault) {
-        const allActive = await db.warehouses.toArray();
-        await db.transaction("rw", db.warehouses, async () => {
-          for (const w of allActive) {
-            await db.warehouses.update(w.id, { isDefault: false });
-          }
-          await db.warehouses.add(fullWh);
-        });
-      } else {
-        await db.warehouses.add(fullWh);
-      }
+              const db = getDB();
+              const cleanId = generateId("wh");
+              const fullWh: Warehouse = { ...whData, id: cleanId };
 
-      const updated = await db.warehouses.toArray();
-      set({ warehouses: updated });
-      return fullWh;
+              if (whData.isDefault) {
+                const allActive = await db.warehouses.toArray();
+                await db.transaction("rw", db.warehouses, async () => {
+                  for (const w of allActive) {
+                    await db.warehouses.update(w.id, { isDefault: false });
+                  }
+                  await db.warehouses.add(fullWh);
+                });
+              } else {
+                await db.warehouses.add(fullWh);
+              }
+
+              const updated = await db.warehouses.toArray();
+              set({ warehouses: updated });
+              return fullWh;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateWarehouse: async (wh) => {
-      const db = getDB();
-      if (wh.isDefault) {
-        const allActive = await db.warehouses.toArray();
-        await db.transaction("rw", db.warehouses, async () => {
-          for (const w of allActive) {
-            await db.warehouses.update(w.id, { isDefault: false });
-          }
-          await db.warehouses.update(wh.id, wh);
-        });
-      } else {
-        await db.warehouses.update(wh.id, wh);
-      }
+        try {
 
-      const updated = await db.warehouses.toArray();
-      set({ warehouses: updated });
+              const db = getDB();
+              if (wh.isDefault) {
+                const allActive = await db.warehouses.toArray();
+                await db.transaction("rw", db.warehouses, async () => {
+                  for (const w of allActive) {
+                    await db.warehouses.update(w.id, { isDefault: false });
+                  }
+                  await db.warehouses.update(wh.id, wh);
+                });
+              } else {
+                await db.warehouses.update(wh.id, wh);
+              }
+
+              const updated = await db.warehouses.toArray();
+              set({ warehouses: updated });
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteWarehouse: async (id) => {
-      const db = getDB();
-      await db.warehouses.delete(id);
-      const updated = await db.warehouses.toArray();
-      set({ warehouses: updated });
+        try {
+
+              const db = getDB();
+              await db.warehouses.delete(id);
+              const updated = await db.warehouses.toArray();
+              set({ warehouses: updated });
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addUnit: async (unitData) => {
-      const db = getDB();
-      const cleanId = generateId("u");
-      const fullUnit: Unit = { ...unitData, id: cleanId };
+        try {
 
-      await db.units.add(fullUnit);
-      set((prev) => ({ units: [...prev.units, fullUnit] }));
-      return fullUnit;
+              const db = getDB();
+              const cleanId = generateId("u");
+              const fullUnit: Unit = { ...unitData, id: cleanId };
+
+              await db.units.add(fullUnit);
+              set((prev) => ({ units: [...prev.units, fullUnit] }));
+              return fullUnit;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateUnit: async (unit) => {
-      const db = getDB();
-      await db.units.update(unit.id, unit);
-      set((prev) => ({ units: prev.units.map((u) => (u.id === unit.id ? unit : u)) }));
+        try {
+
+              const db = getDB();
+              await db.units.update(unit.id, unit);
+              set((prev) => ({ units: prev.units.map((u) => (u.id === unit.id ? unit : u)) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteUnit: async (id) => {
-      const db = getDB();
-      await db.units.delete(id);
-      set((prev) => ({ units: prev.units.filter((u) => u.id !== id) }));
+        try {
+
+              const db = getDB();
+              await db.units.delete(id);
+              set((prev) => ({ units: prev.units.filter((u) => u.id !== id) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addCostCenter: async (ccData) => {
-      const db = getDB();
-      const cleanId = generateId("cc");
-      const fullCC: CostCenter = { ...ccData, id: cleanId };
+        try {
 
-      await db.costCenters.add(fullCC);
-      set((prev) => ({ costCenters: [...prev.costCenters, fullCC] }));
-      return fullCC;
+              const db = getDB();
+              const cleanId = generateId("cc");
+              const fullCC: CostCenter = { ...ccData, id: cleanId };
+
+              await db.costCenters.add(fullCC);
+              set((prev) => ({ costCenters: [...prev.costCenters, fullCC] }));
+              return fullCC;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateCostCenter: async (cc) => {
-      const db = getDB();
-      await db.costCenters.update(cc.id, cc);
-      set((prev) => ({ costCenters: prev.costCenters.map((c) => (c.id === cc.id ? cc : c)) }));
+        try {
+
+              const db = getDB();
+              await db.costCenters.update(cc.id, cc);
+              set((prev) => ({ costCenters: prev.costCenters.map((c) => (c.id === cc.id ? cc : c)) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteCostCenter: async (id) => {
-      const db = getDB();
-      await db.costCenters.delete(id);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.costCenters.delete(id);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     setBudgetEntries: async (entries) => {
-      const db = getDB();
-      // Use transaction for bulk add
-      await db.transaction("rw", db.budgets, async () => {
-        // Find all affected accounts/costCenters and periods to remove old budgets if we want,
-        // but simpler to just push new entries and deduplicate or override if necessary.
-        // Usually, we'd clear previous entries for the same account/costcenter/fiscalYear, but for simplicity we can just add/update.
-        for (const entry of entries) {
-          // delete existing for the same account, costcenter, fiscalyearBS and month
-          await db.budgets.where({
-            accountId: entry.accountId,
-            fiscalYearBS: entry.fiscalYearBS,
-            month: entry.month,
-          }).filter(b => b.costCenterId === entry.costCenterId).delete();
-          
-          await db.budgets.add({
-            id: generateId("budg"),
-            ...entry,
-          } as any);
+        try {
+
+              const db = getDB();
+              // Use transaction for bulk add
+              await db.transaction("rw", db.budgets, async () => {
+                // Find all affected accounts/costCenters and periods to remove old budgets if we want,
+                // but simpler to just push new entries and deduplicate or override if necessary.
+                // Usually, we'd clear previous entries for the same account/costcenter/fiscalYear, but for simplicity we can just add/update.
+                for (const entry of entries) {
+                  // delete existing for the same account, costcenter, fiscalyearBS and month
+                  await db.budgets.where({
+                    accountId: entry.accountId,
+                    fiscalYearBS: entry.fiscalYearBS,
+                    month: entry.month,
+                  }).filter(b => b.costCenterId === entry.costCenterId).delete();
+                  
+                  await db.budgets.add({
+                    id: generateId("budg"),
+                    ...entry,
+                  } as any);
+                }
+              });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-      });
-      await get().initializeApp();
     },
 
     addBankAccount: async (baData) => {
-      const db = getDB();
-      const cleanId = generateId("bk");
-      const fullBA: BankAccount = { ...baData, id: cleanId };
+        try {
 
-      await db.bankAccounts.add(fullBA);
-      set((prev) => ({ bankAccounts: [...prev.bankAccounts, fullBA] }));
-      return fullBA;
+              const db = getDB();
+              const cleanId = generateId("bk");
+              const fullBA: BankAccount = { ...baData, id: cleanId };
+
+              await db.bankAccounts.add(fullBA);
+              set((prev) => ({ bankAccounts: [...prev.bankAccounts, fullBA] }));
+              return fullBA;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateBankAccount: async (ba) => {
-      const db = getDB();
-      await db.bankAccounts.update(ba.id, ba);
-      set((prev) => ({ bankAccounts: prev.bankAccounts.map((b) => (b.id === ba.id ? ba : b)) }));
+        try {
+
+              const db = getDB();
+              await db.bankAccounts.update(ba.id, ba);
+              set((prev) => ({ bankAccounts: prev.bankAccounts.map((b) => (b.id === ba.id ? ba : b)) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteBankAccount: async (id) => {
-      const db = getDB();
-      await db.bankAccounts.delete(id);
-      set((prev) => ({ bankAccounts: prev.bankAccounts.filter((b) => b.id !== id) }));
+        try {
+
+              const db = getDB();
+              await db.bankAccounts.delete(id);
+              set((prev) => ({ bankAccounts: prev.bankAccounts.filter((b) => b.id !== id) }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addVoucher: async (voucherData) => {
-      const db = getDB();
-      const state = get();
+        try {
 
-      const targetDate = voucherData.date;
-      const entryFY = state.fiscalYears.find(
-        (fy) => targetDate >= fy.startDate && targetDate <= fy.endDate,
-      );
-      if (entryFY && entryFY.status === FiscalYearStatus.CLOSED) {
-        throw new Error(`Cannot post entries to closed fiscal year: ${entryFY.name}`);
-      }
+              const db = getDB();
+              const state = get();
 
-      if (state.currentFiscalYear) {
-        if (
-          targetDate < state.currentFiscalYear.startDate ||
-          targetDate > state.currentFiscalYear.endDate
-        ) {
-          throw new Error(
-            `Financial Rule: Date is outside bounds of the active fiscal year (${state.currentFiscalYear.name}).`,
-          );
+              const targetDate = voucherData.date;
+              const entryFY = state.fiscalYears.find(
+                (fy) => targetDate >= fy.startDate && targetDate <= fy.endDate,
+              );
+              if (entryFY && entryFY.status === FiscalYearStatus.CLOSED) {
+                throw new Error(`Cannot post entries to closed fiscal year: ${entryFY.name}`);
+              }
+
+              if (state.currentFiscalYear) {
+                if (
+                  targetDate < state.currentFiscalYear.startDate ||
+                  targetDate > state.currentFiscalYear.endDate
+                ) {
+                  throw new Error(
+                    `Financial Rule: Date is outside bounds of the active fiscal year (${state.currentFiscalYear.name}).`,
+                  );
+                }
+              }
+
+              const voucherNo = await generateSerialNumber(
+                voucherData.type,
+                undefined,
+                state.currentFiscalYear?.fiscalYearBS || "",
+                false
+              );
+
+              const validation = validateDoubleEntry(voucherData.lines);
+              if (!validation.isValid) {
+                throw new Error(validation.message);
+              }
+
+              const totalDr = roundTo2(voucherData.lines.reduce((s, l) => s + l.debit, 0));
+              const totalCr = roundTo2(voucherData.lines.reduce((s, l) => s + l.credit, 0));
+
+              const cleanVId = generateId("vc");
+              const finalVoucher: JournalEntry = {
+                ...voucherData,
+                id: cleanVId,
+                voucherNo,
+                totalDebit: totalDr,
+                totalCredit: totalCr,
+                createdBy: state.currentUser?.id || "system",
+                createdAt: new Date().toISOString(),
+              };
+
+              const hasFY = !!state.currentFiscalYear;
+              await db.transaction(
+                "rw",
+                [db.vouchers, db.accounts, db.auditLogs, db.fiscalYears],
+                async () => {
+                  await db.vouchers.add(finalVoucher);
+                  await db.auditLogs.add({
+                    id: generateId("audit"),
+                    timestamp: new Date().toISOString(),
+                    userId: state.currentUser?.id || "system",
+                    userName: state.currentUser?.name || "System",
+                    action: "create",
+                    module: "Vouchers",
+                    recordId: finalVoucher.id,
+                    recordType: "Voucher",
+                  });
+                },
+              );
+
+              set((prev) => {
+                const newVouchersList = [...prev.vouchers, finalVoucher];
+                const newAccountsList = recalculateAccountBalances(prev.accounts, newVouchersList);
+                return {
+                  vouchers: newVouchersList,
+                  accounts: newAccountsList,
+                };
+              });
+
+              return finalVoucher;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-      }
-
-      const voucherNo = await generateSerialNumber(
-        voucherData.type,
-        undefined,
-        state.currentFiscalYear?.fiscalYearBS || "",
-        false
-      );
-
-      const validation = validateDoubleEntry(voucherData.lines);
-      if (!validation.isValid) {
-        throw new Error(validation.message);
-      }
-
-      const totalDr = roundTo2(voucherData.lines.reduce((s, l) => s + l.debit, 0));
-      const totalCr = roundTo2(voucherData.lines.reduce((s, l) => s + l.credit, 0));
-
-      const cleanVId = generateId("vc");
-      const finalVoucher: JournalEntry = {
-        ...voucherData,
-        id: cleanVId,
-        voucherNo,
-        totalDebit: totalDr,
-        totalCredit: totalCr,
-        createdBy: state.currentUser?.id || "system",
-        createdAt: new Date().toISOString(),
-      };
-
-      const hasFY = !!state.currentFiscalYear;
-      await db.transaction(
-        "rw",
-        [db.vouchers, db.accounts, db.auditLogs, db.fiscalYears],
-        async () => {
-          await db.vouchers.add(finalVoucher);
-          await db.auditLogs.add({
-            id: generateId("audit"),
-            timestamp: new Date().toISOString(),
-            userId: state.currentUser?.id || "system",
-            userName: state.currentUser?.name || "System",
-            action: "create",
-            module: "Vouchers",
-            recordId: finalVoucher.id,
-            recordType: "Voucher",
-          });
-        },
-      );
-
-      set((prev) => {
-        const newVouchersList = [...prev.vouchers, finalVoucher];
-        const newAccountsList = recalculateAccountBalances(prev.accounts, newVouchersList);
-        return {
-          vouchers: newVouchersList,
-          accounts: newAccountsList,
-        };
-      });
-
-      return finalVoucher;
     },
 
     updateVoucher: async (id, updates) => {
-      const db = getDB();
-      await db.vouchers.update(id, updates);
-      await reloadAccountBalances();
+        try {
+
+              const db = getDB();
+              await db.vouchers.update(id, updates);
+              await reloadAccountBalances();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteVoucher: async (id) => {
-      const state = get();
-      if (!state.checkPermission("vouchers.delete")) {
-        toast.error("Access denied — insufficient permissions");
-        return false;
-      }
-      const db = getDB();
-      await db.vouchers.delete(id);
-      await db.auditLogs.add({
-        id: generateId("audit"),
-        timestamp: new Date().toISOString(),
-        userId: state.currentUser?.id || "system",
-        userName: state.currentUser?.name || "System",
-        action: "delete",
-        module: "Vouchers",
-        recordId: id,
-        recordType: "Voucher",
-      });
-      await reloadAccountBalances();
-      return true;
+        try {
+
+              const state = get();
+              if (!state.checkPermission("vouchers.delete")) {
+                toast.error("Access denied — insufficient permissions");
+                return false;
+              }
+              const db = getDB();
+              await db.vouchers.delete(id);
+              await db.auditLogs.add({
+                id: generateId("audit"),
+                timestamp: new Date().toISOString(),
+                userId: state.currentUser?.id || "system",
+                userName: state.currentUser?.name || "System",
+                action: "delete",
+                module: "Vouchers",
+                recordId: id,
+                recordType: "Voucher",
+              });
+              await reloadAccountBalances();
+              return true;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     cancelVoucher: async (id, reason) => {
-      const db = getDB();
-      const oldVal = await db.vouchers.get(id);
-      if (!oldVal) return;
+        try {
 
-      const updates = {
-        status: VoucherStatus.CANCELLED,
-        cancellationReason: reason,
-        cancelledBy: get().currentUser?.id || "system",
-        cancelledAt: new Date().toISOString(),
-      };
+              const db = getDB();
+              const oldVal = await db.vouchers.get(id);
+              if (!oldVal) return;
 
-      await db.vouchers.update(id, updates);
-      await reloadAccountBalances();
+              const updates = {
+                status: VoucherStatus.CANCELLED,
+                cancellationReason: reason,
+                cancelledBy: get().currentUser?.id || "system",
+                cancelledAt: new Date().toISOString(),
+              };
+
+              await db.vouchers.update(id, updates);
+              await reloadAccountBalances();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addInvoice: async (invoiceData) => {
-      const db = getDB();
-      const state = get();
+        try {
 
-      const codeStr = await generateSerialNumber(
-        invoiceData.type as string,
-        undefined,
-        state.currentFiscalYear?.fiscalYearBS || "",
-        false
-      );
+              const db = getDB();
+              const state = get();
 
-      const cleanInvId = generateId("inv");
-      const finalInvoice: Invoice = {
-        ...invoiceData,
-        id: cleanInvId,
-        invoiceNo: codeStr,
-        createdBy: state.currentUser?.id || "system",
-        createdAt: new Date().toISOString(),
-      } as any;
+              const codeStr = await generateSerialNumber(
+                invoiceData.type as string,
+                undefined,
+                state.currentFiscalYear?.fiscalYearBS || "",
+                false
+              );
 
-      const isSales =
-        invoiceData.type === VoucherType.SALES_INVOICE ||
-        invoiceData.type === VoucherType.SALES_RETURN;
-      const isPurchase =
-        invoiceData.type === VoucherType.PURCHASE_INVOICE ||
-        invoiceData.type === VoucherType.PURCHASE_RETURN;
-      const isRet =
-        invoiceData.type === VoucherType.SALES_RETURN ||
-        invoiceData.type === VoucherType.PURCHASE_RETURN;
+              const cleanInvId = generateId("inv");
+              const finalInvoice: Invoice = {
+                ...invoiceData,
+                id: cleanInvId,
+                invoiceNo: codeStr,
+                createdBy: state.currentUser?.id || "system",
+                createdAt: new Date().toISOString(),
+              } as any;
 
-      const partyLedId =
-        state.parties.find((p) => p.id === invoiceData.partyId)?.accountId || "acc-sundry-debtors";
-      const cashBankId =
-        invoiceData.paymentMode === PaymentMode.CASH ? "acc-cash" : "acc-nabil-bank";
-      const finalPartyLedger =
-        invoiceData.paymentMode === PaymentMode.CREDIT ? partyLedId : cashBankId;
+              const isSales =
+                invoiceData.type === VoucherType.SALES_INVOICE ||
+                invoiceData.type === VoucherType.SALES_RETURN;
+              const isPurchase =
+                invoiceData.type === VoucherType.PURCHASE_INVOICE ||
+                invoiceData.type === VoucherType.PURCHASE_RETURN;
+              const isRet =
+                invoiceData.type === VoucherType.SALES_RETURN ||
+                invoiceData.type === VoucherType.PURCHASE_RETURN;
 
-      const vLines: any[] = [];
-      const amountVal = finalInvoice.grandTotal;
+              const partyLedId =
+                state.parties.find((p) => p.id === invoiceData.partyId)?.accountId || "acc-sundry-debtors";
+              const cashBankId =
+                invoiceData.paymentMode === PaymentMode.CASH ? "acc-cash" : "acc-nabil-bank";
+              const finalPartyLedger =
+                invoiceData.paymentMode === PaymentMode.CREDIT ? partyLedId : cashBankId;
 
-      if (isSales) {
-        if (!isRet) {
-          vLines.push({
-            accountId: finalPartyLedger,
-            debit: amountVal,
-            credit: 0,
-            narration: `Invoice Sales out # ${codeStr}`,
-          });
-          vLines.push({
-            accountId: "acc-sales",
-            debit: 0,
-            credit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
-            narration: `Turnover goods sales`,
-          });
-          if (finalInvoice.vatAmount > 0) {
-            vLines.push({
-              accountId: "acc-vat-13",
-              debit: 0,
-              credit: finalInvoice.vatAmount,
-              narration: `VAT Payable Collected`,
-            });
-          }
-        } else {
-          vLines.push({
-            accountId: finalPartyLedger,
-            debit: 0,
-            credit: amountVal,
-            narration: `Sales goods return reverse # ${codeStr}`,
-          });
-          vLines.push({
-            accountId: "acc-sales",
-            debit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
-            credit: 0,
-            narration: `Sales return base re-entry`,
-          });
-          if (finalInvoice.vatAmount > 0) {
-            vLines.push({
-              accountId: "acc-vat-13",
-              debit: finalInvoice.vatAmount,
-              credit: 0,
-              narration: `VAT output reverse`,
-            });
-          }
+              const vLines: any[] = [];
+              const amountVal = finalInvoice.grandTotal;
+
+              if (isSales) {
+                if (!isRet) {
+                  vLines.push({
+                    accountId: finalPartyLedger,
+                    debit: amountVal,
+                    credit: 0,
+                    narration: `Invoice Sales out # ${codeStr}`,
+                  });
+                  vLines.push({
+                    accountId: "acc-sales",
+                    debit: 0,
+                    credit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
+                    narration: `Turnover goods sales`,
+                  });
+                  if (finalInvoice.vatAmount > 0) {
+                    vLines.push({
+                      accountId: "acc-vat-13",
+                      debit: 0,
+                      credit: finalInvoice.vatAmount,
+                      narration: `VAT Payable Collected`,
+                    });
+                  }
+                } else {
+                  vLines.push({
+                    accountId: finalPartyLedger,
+                    debit: 0,
+                    credit: amountVal,
+                    narration: `Sales goods return reverse # ${codeStr}`,
+                  });
+                  vLines.push({
+                    accountId: "acc-sales",
+                    debit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
+                    credit: 0,
+                    narration: `Sales return base re-entry`,
+                  });
+                  if (finalInvoice.vatAmount > 0) {
+                    vLines.push({
+                      accountId: "acc-vat-13",
+                      debit: finalInvoice.vatAmount,
+                      credit: 0,
+                      narration: `VAT output reverse`,
+                    });
+                  }
+                }
+              } else if (isPurchase) {
+                if (!isRet) {
+                  vLines.push({
+                    accountId: "acc-purchase",
+                    debit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
+                    credit: 0,
+                    narration: `Purchasing direct base costs`,
+                  });
+                  if (finalInvoice.vatAmount > 0) {
+                    vLines.push({
+                      accountId: "acc-vat-13",
+                      debit: finalInvoice.vatAmount,
+                      credit: 0,
+                      narration: `VAT Input Receivable`,
+                    });
+                  }
+                  vLines.push({
+                    accountId: finalPartyLedger,
+                    debit: 0,
+                    credit: amountVal,
+                    narration: `Supplier invoices payment # ${codeStr}`,
+                  });
+                  if (finalInvoice.tdsAmount && finalInvoice.tdsAmount > 0) {
+                    vLines.push({
+                      accountId: "acc-tds-payable",
+                      debit: 0,
+                      credit: finalInvoice.tdsAmount,
+                      narration: `withholding TDS tax`,
+                    });
+                  }
+                } else {
+                  vLines.push({
+                    accountId: finalPartyLedger,
+                    debit: amountVal,
+                    credit: 0,
+                    narration: `Purchase return reverse # ${codeStr}`,
+                  });
+                  vLines.push({
+                    accountId: "acc-purchase",
+                    debit: 0,
+                    credit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
+                    narration: `Goods return crediting purchase`,
+                  });
+                  if (finalInvoice.vatAmount > 0) {
+                    vLines.push({
+                      accountId: "acc-vat-13",
+                      debit: 0,
+                      credit: finalInvoice.vatAmount,
+                      narration: `VAT input return reverse`,
+                    });
+                  }
+                }
+              }
+
+              const voucherNo = await generateSerialNumber(
+                VoucherType.JOURNAL,
+                undefined,
+                state.currentFiscalYear?.fiscalYearBS || "",
+                false
+              );
+              const cleanJVId = generateId("vc");
+              
+              const validation = validateDoubleEntry(vLines);
+              if (!validation.isValid) {
+                throw new Error("System Invoice Journal Error: " + validation.message);
+              }
+
+              const linkedJV: JournalEntry = {
+                id: cleanJVId,
+                date: finalInvoice.date,
+                dateNepali: finalInvoice.dateNepali,
+                voucherNo,
+                narration: `System ledger transaction generated for bill ${codeStr}. ${finalInvoice.narration}`,
+                status:
+                  invoiceData.status === VoucherStatus.POSTED ? VoucherStatus.POSTED : VoucherStatus.DRAFT,
+                type: VoucherType.JOURNAL,
+                totalDebit: amountVal,
+                totalCredit: amountVal,
+                lines: vLines,
+                createdBy: state.currentUser?.id || "system",
+                createdAt: new Date().toISOString(),
+              };
+
+              finalInvoice.journalEntryId = linkedJV.id;
+
+              let movementsToPost: StockMovement[] = [];
+              if (finalInvoice.status === VoucherStatus.POSTED) {
+                if (invoiceData.type === VoucherType.SALES_INVOICE) {
+                  movementsToPost = createSaleMovement(finalInvoice, state.warehouses);
+                } else if (invoiceData.type === VoucherType.PURCHASE_INVOICE) {
+                  movementsToPost = createPurchaseMovement(finalInvoice, state.warehouses);
+                } else if (invoiceData.type === VoucherType.SALES_RETURN) {
+                  movementsToPost = createReturnMovement(finalInvoice, "sales");
+                } else if (invoiceData.type === VoucherType.PURCHASE_RETURN) {
+                  movementsToPost = createReturnMovement(finalInvoice, "purchase");
+                }
+              }
+
+              await db.transaction(
+                "rw",
+                [db.invoices, db.vouchers, db.stockMovements, db.tdsEntries],
+                async () => {
+                  await db.invoices.add(finalInvoice);
+                  await db.vouchers.add(linkedJV);
+                  if (movementsToPost.length > 0) {
+                    for (const mov of movementsToPost) {
+                      await db.stockMovements.add(mov);
+                    }
+                  }
+
+                  if (
+                    finalInvoice.tdsAmount &&
+                    finalInvoice.tdsAmount > 0 &&
+                    finalInvoice.status === VoucherStatus.POSTED
+                  ) {
+                    await db.tdsEntries.add({
+                      id: generateId("tds"),
+                      voucherId: linkedJV.id,
+                      partyId: finalInvoice.partyId,
+                      partyName: finalInvoice.partyName,
+                      partyPAN: finalInvoice.partyPan || "000000000",
+                      tdsType: finalInvoice.tdsType || TdsType.NONE,
+                      tdsRate: finalInvoice.tdsRate || 0,
+                      grossAmount: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
+                      tdsAmount: finalInvoice.tdsAmount,
+                      netAmount: finalInvoice.grandTotal,
+                      date: finalInvoice.date,
+                      dateNepali: finalInvoice.dateNepali,
+                      deposited: false,
+                      section: "88",
+                    });
+                  }
+                },
+              );
+
+              await get().initializeApp();
+
+              if (
+                (finalInvoice.type === VoucherType.SALES_INVOICE || finalInvoice.type === VoucherType.PURCHASE_INVOICE) &&
+                state.companySettings.cbmsEnabled
+              ) {
+                // Run sync asynchronously so it doesn't block
+                submitToCBMS(finalInvoice, state.companySettings).then(async (cbmsResult) => {
+                  if (cbmsResult.success) {
+                    toast.success("Invoice successfully synced with IRD CBMS");
+                    await getDB().invoices.update(finalInvoice.id, {
+                      cbmsSubmitted: true,
+                      cbmsIrn: cbmsResult.irn || undefined,
+                      cbmsSubmittedAt: new Date().toISOString(),
+                    });
+                    await get().initializeApp(); // reload state
+                  } else {
+                    toast.error(cbmsResult.error || "CBMS submission failed", {
+                      action: {
+                        label: "Retry",
+                        onClick: () => get().retryCBMS(finalInvoice.id),
+                      },
+                      duration: 8000,
+                    } as any);
+                  }
+                });
+              }
+
+              return finalInvoice;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-      } else if (isPurchase) {
-        if (!isRet) {
-          vLines.push({
-            accountId: "acc-purchase",
-            debit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
-            credit: 0,
-            narration: `Purchasing direct base costs`,
-          });
-          if (finalInvoice.vatAmount > 0) {
-            vLines.push({
-              accountId: "acc-vat-13",
-              debit: finalInvoice.vatAmount,
-              credit: 0,
-              narration: `VAT Input Receivable`,
-            });
-          }
-          vLines.push({
-            accountId: finalPartyLedger,
-            debit: 0,
-            credit: amountVal,
-            narration: `Supplier invoices payment # ${codeStr}`,
-          });
-          if (finalInvoice.tdsAmount && finalInvoice.tdsAmount > 0) {
-            vLines.push({
-              accountId: "acc-tds-payable",
-              debit: 0,
-              credit: finalInvoice.tdsAmount,
-              narration: `withholding TDS tax`,
-            });
-          }
-        } else {
-          vLines.push({
-            accountId: finalPartyLedger,
-            debit: amountVal,
-            credit: 0,
-            narration: `Purchase return reverse # ${codeStr}`,
-          });
-          vLines.push({
-            accountId: "acc-purchase",
-            debit: 0,
-            credit: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
-            narration: `Goods return crediting purchase`,
-          });
-          if (finalInvoice.vatAmount > 0) {
-            vLines.push({
-              accountId: "acc-vat-13",
-              debit: 0,
-              credit: finalInvoice.vatAmount,
-              narration: `VAT input return reverse`,
-            });
-          }
-        }
-      }
-
-      const voucherNo = await generateSerialNumber(
-        VoucherType.JOURNAL,
-        undefined,
-        state.currentFiscalYear?.fiscalYearBS || "",
-        false
-      );
-      const cleanJVId = generateId("vc");
-      
-      const validation = validateDoubleEntry(vLines);
-      if (!validation.isValid) {
-        throw new Error("System Invoice Journal Error: " + validation.message);
-      }
-
-      const linkedJV: JournalEntry = {
-        id: cleanJVId,
-        date: finalInvoice.date,
-        dateNepali: finalInvoice.dateNepali,
-        voucherNo,
-        narration: `System ledger transaction generated for bill ${codeStr}. ${finalInvoice.narration}`,
-        status:
-          invoiceData.status === VoucherStatus.POSTED ? VoucherStatus.POSTED : VoucherStatus.DRAFT,
-        type: VoucherType.JOURNAL,
-        totalDebit: amountVal,
-        totalCredit: amountVal,
-        lines: vLines,
-        createdBy: state.currentUser?.id || "system",
-        createdAt: new Date().toISOString(),
-      };
-
-      finalInvoice.journalEntryId = linkedJV.id;
-
-      let movementsToPost: StockMovement[] = [];
-      if (finalInvoice.status === VoucherStatus.POSTED) {
-        if (invoiceData.type === VoucherType.SALES_INVOICE) {
-          movementsToPost = createSaleMovement(finalInvoice, state.warehouses);
-        } else if (invoiceData.type === VoucherType.PURCHASE_INVOICE) {
-          movementsToPost = createPurchaseMovement(finalInvoice, state.warehouses);
-        } else if (invoiceData.type === VoucherType.SALES_RETURN) {
-          movementsToPost = createReturnMovement(finalInvoice, "sales");
-        } else if (invoiceData.type === VoucherType.PURCHASE_RETURN) {
-          movementsToPost = createReturnMovement(finalInvoice, "purchase");
-        }
-      }
-
-      await db.transaction(
-        "rw",
-        [db.invoices, db.vouchers, db.stockMovements, db.tdsEntries],
-        async () => {
-          await db.invoices.add(finalInvoice);
-          await db.vouchers.add(linkedJV);
-          if (movementsToPost.length > 0) {
-            for (const mov of movementsToPost) {
-              await db.stockMovements.add(mov);
-            }
-          }
-
-          if (
-            finalInvoice.tdsAmount &&
-            finalInvoice.tdsAmount > 0 &&
-            finalInvoice.status === VoucherStatus.POSTED
-          ) {
-            await db.tdsEntries.add({
-              id: generateId("tds"),
-              voucherId: linkedJV.id,
-              partyId: finalInvoice.partyId,
-              partyName: finalInvoice.partyName,
-              partyPAN: finalInvoice.partyPan || "000000000",
-              tdsType: finalInvoice.tdsType || TdsType.NONE,
-              tdsRate: finalInvoice.tdsRate || 0,
-              grossAmount: roundTo2(finalInvoice.taxableAmount + finalInvoice.exemptAmount),
-              tdsAmount: finalInvoice.tdsAmount,
-              netAmount: finalInvoice.grandTotal,
-              date: finalInvoice.date,
-              dateNepali: finalInvoice.dateNepali,
-              deposited: false,
-              section: "88",
-            });
-          }
-        },
-      );
-
-      await get().initializeApp();
-
-      if (
-        (finalInvoice.type === VoucherType.SALES_INVOICE || finalInvoice.type === VoucherType.PURCHASE_INVOICE) &&
-        state.companySettings.cbmsEnabled
-      ) {
-        // Run sync asynchronously so it doesn't block
-        submitToCBMS(finalInvoice, state.companySettings).then(async (cbmsResult) => {
-          if (cbmsResult.success) {
-            toast.success("Invoice successfully synced with IRD CBMS");
-            await getDB().invoices.update(finalInvoice.id, {
-              cbmsSubmitted: true,
-              cbmsIrn: cbmsResult.irn || undefined,
-              cbmsSubmittedAt: new Date().toISOString(),
-            });
-            await get().initializeApp(); // reload state
-          } else {
-            toast.error(cbmsResult.error || "CBMS submission failed", {
-              action: {
-                label: "Retry",
-                onClick: () => get().retryCBMS(finalInvoice.id),
-              },
-              duration: 8000,
-            });
-          }
-        });
-      }
-
-      return finalInvoice;
     },
 
     updateInvoice: async (id, updates) => {
-      const db = getDB();
-      await db.invoices.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.invoices.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     cancelInvoice: async (id, reason) => {
-      const db = getDB();
-      const oldVal = await db.invoices.get(id);
-      if (!oldVal) return;
+        try {
 
-      await db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements], async () => {
-        await db.invoices.update(id, { status: VoucherStatus.CANCELLED });
-        if (oldVal.journalEntryId) {
-          await db.vouchers.update(oldVal.journalEntryId, {
-            status: VoucherStatus.CANCELLED,
-            cancellationReason: reason,
-          });
-        }
-        const stockColl = await db.stockMovements.where("referenceId").equals(id).toArray();
-        for (const item of stockColl) {
-          await db.stockMovements.delete(item.id);
-        }
-      });
+              const db = getDB();
+              const oldVal = await db.invoices.get(id);
+              if (!oldVal) return;
 
-      await get().initializeApp();
+              await db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements], async () => {
+                await db.invoices.update(id, { status: VoucherStatus.CANCELLED });
+                if (oldVal.journalEntryId) {
+                  await db.vouchers.update(oldVal.journalEntryId, {
+                    status: VoucherStatus.CANCELLED,
+                    cancellationReason: reason,
+                  });
+                }
+                const stockColl = await db.stockMovements.where("referenceId").equals(id).toArray();
+                for (const item of stockColl) {
+                  await db.stockMovements.delete(item.id);
+                }
+              });
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     postInvoice: async (id) => {
-      const db = getDB();
-      const oldVal = await db.invoices.get(id);
-      if (!oldVal) return;
+        try {
 
-      const movementsToPost =
-        oldVal.type === VoucherType.SALES_INVOICE
-          ? createSaleMovement(oldVal, get().warehouses)
-          : createPurchaseMovement(oldVal, get().warehouses);
+              const db = getDB();
+              const oldVal = await db.invoices.get(id);
+              if (!oldVal) return;
 
-      await db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements], async () => {
-        await db.invoices.update(id, { status: VoucherStatus.POSTED });
-        if (oldVal.journalEntryId) {
-          await db.vouchers.update(oldVal.journalEntryId, { status: VoucherStatus.POSTED });
+              const movementsToPost =
+                oldVal.type === VoucherType.SALES_INVOICE
+                  ? createSaleMovement(oldVal, get().warehouses)
+                  : createPurchaseMovement(oldVal, get().warehouses);
+
+              await db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements], async () => {
+                await db.invoices.update(id, { status: VoucherStatus.POSTED });
+                if (oldVal.journalEntryId) {
+                  await db.vouchers.update(oldVal.journalEntryId, { status: VoucherStatus.POSTED });
+                }
+                for (const mov of movementsToPost) {
+                  await db.stockMovements.add(mov);
+                }
+              });
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-        for (const mov of movementsToPost) {
-          await db.stockMovements.add(mov);
-        }
-      });
-
-      await get().initializeApp();
     },
 
     retryCBMS: async (invoiceId) => {
-      const state = get();
-      const db = getDB();
-      const invoice = state.invoices.find((i) => i.id === invoiceId);
-      
-      if (!invoice) {
-        toast.error("Invoice not found");
-        return;
-      }
-      if (!state.companySettings.cbmsEnabled) {
-        toast.error("CBMS sync is currently disabled in settings");
-        return;
-      }
+        try {
 
-      toast.loading("Retrying CBMS sync...");
-      const result = await submitToCBMS(invoice, state.companySettings);
-      toast.dismiss();
+              const state = get();
+              const db = getDB();
+              const invoice = state.invoices.find((i) => i.id === invoiceId);
+              
+              if (!invoice) {
+                toast.error("Invoice not found");
+                return;
+              }
+              if (!state.companySettings.cbmsEnabled) {
+                toast.error("CBMS sync is currently disabled in settings");
+                return;
+              }
 
-      if (result.success) {
-        toast.success("Invoice successfully synced with IRD CBMS");
-        await db.invoices.update(invoice.id, {
-          cbmsSubmitted: true,
-          cbmsIrn: result.irn || undefined,
-          cbmsSubmittedAt: new Date().toISOString(),
-        });
-        await get().initializeApp();
-      } else {
-        toast.error(result.error || "CBMS submission failed");
-      }
+              toast.loading("Retrying CBMS sync...");
+              const result = await submitToCBMS(invoice, state.companySettings);
+              toast.dismiss();
+
+              if (result.success) {
+                toast.success("Invoice successfully synced with IRD CBMS");
+                await db.invoices.update(invoice.id, {
+                  cbmsSubmitted: true,
+                  cbmsIrn: result.irn || undefined,
+                  cbmsSubmittedAt: new Date().toISOString(),
+                });
+                await get().initializeApp();
+              } else {
+                toast.error(result.error || "CBMS submission failed");
+              }
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addSalesOrder: async (order) => {
-      const db = getDB();
-      const cleanId = generateId("so");
-      const orderNo = `SO-${Date.now().toString().slice(-6)}`;
-      const fullOrder: SalesOrder = {
-        ...order,
-        id: cleanId,
-        orderNo,
-        status: OrderStatus.DRAFT,
-        fulfilledInvoiceIds: [],
-      };
+        try {
 
-      await db.salesOrders.add(fullOrder);
-      set((prev) => ({ salesOrders: [...prev.salesOrders, fullOrder] }));
-      return fullOrder;
+              const db = getDB();
+              const cleanId = generateId("so");
+              const orderNo = `SO-${Date.now().toString().slice(-6)}`;
+              const fullOrder: SalesOrder = {
+                ...order,
+                id: cleanId,
+                orderNo,
+                status: OrderStatus.DRAFT,
+                fulfilledInvoiceIds: [],
+              };
+
+              await db.salesOrders.add(fullOrder);
+              set((prev) => ({ salesOrders: [...prev.salesOrders, fullOrder] }));
+              return fullOrder;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     approveSalesOrder: async (id) => {
-      const db = getDB();
-      await db.salesOrders.update(id, { status: OrderStatus.APPROVED });
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.salesOrders.update(id, { status: OrderStatus.APPROVED });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     cancelSalesOrder: async (id, reason) => {
-      const db = getDB();
-      await db.salesOrders.update(id, { status: OrderStatus.CANCELLED, narration: reason });
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.salesOrders.update(id, { status: OrderStatus.CANCELLED, narration: reason });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     fulfillSalesOrder: async (orderId, invoiceId) => {
-      const db = getDB();
-      const order = await db.salesOrders.get(orderId);
-      if (!order) return;
+        try {
 
-      const list = [...(order.fulfilledInvoiceIds || []), invoiceId];
-      await db.salesOrders.update(orderId, {
-        fulfilledInvoiceIds: list,
-        status: OrderStatus.FULFILLED,
-      });
-      await get().initializeApp();
+              const db = getDB();
+              const order = await db.salesOrders.get(orderId);
+              if (!order) return;
+
+              const list = [...(order.fulfilledInvoiceIds || []), invoiceId];
+              await db.salesOrders.update(orderId, {
+                fulfilledInvoiceIds: list,
+                status: OrderStatus.FULFILLED,
+              });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addPurchaseOrder: async (order) => {
-      const db = getDB();
-      const cleanId = generateId("po");
-      const orderNo = `PO-${Date.now().toString().slice(-6)}`;
-      const fullOrder: PurchaseOrder = {
-        ...order,
-        id: cleanId,
-        orderNo,
-        status: OrderStatus.DRAFT,
-        fulfilledInvoiceIds: [],
-      };
+        try {
 
-      await db.purchaseOrders.add(fullOrder);
-      set((prev) => ({ purchaseOrders: [...prev.purchaseOrders, fullOrder] }));
-      return fullOrder;
+              const db = getDB();
+              const cleanId = generateId("po");
+              const orderNo = `PO-${Date.now().toString().slice(-6)}`;
+              const fullOrder: PurchaseOrder = {
+                ...order,
+                id: cleanId,
+                orderNo,
+                status: OrderStatus.DRAFT,
+                fulfilledInvoiceIds: [],
+              };
+
+              await db.purchaseOrders.add(fullOrder);
+              set((prev) => ({ purchaseOrders: [...prev.purchaseOrders, fullOrder] }));
+              return fullOrder;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     approvePurchaseOrder: async (id) => {
-      const db = getDB();
-      await db.purchaseOrders.update(id, { status: OrderStatus.APPROVED });
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.purchaseOrders.update(id, { status: OrderStatus.APPROVED });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     cancelPurchaseOrder: async (id, reason) => {
-      const db = getDB();
-      await db.purchaseOrders.update(id, { status: OrderStatus.CANCELLED, narration: reason });
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.purchaseOrders.update(id, { status: OrderStatus.CANCELLED, narration: reason });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     fulfillPurchaseOrder: async (orderId, invoiceId) => {
-      const db = getDB();
-      const order = await db.purchaseOrders.get(orderId);
-      if (!order) return;
+        try {
 
-      const list = [...(order.fulfilledInvoiceIds || []), invoiceId];
-      await db.purchaseOrders.update(orderId, {
-        fulfilledInvoiceIds: list,
-        status: OrderStatus.FULFILLED,
-      });
-      await get().initializeApp();
+              const db = getDB();
+              const order = await db.purchaseOrders.get(orderId);
+              if (!order) return;
+
+              const list = [...(order.fulfilledInvoiceIds || []), invoiceId];
+              await db.purchaseOrders.update(orderId, {
+                fulfilledInvoiceIds: list,
+                status: OrderStatus.FULFILLED,
+              });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addDeliveryChallan: async (dcData) => {
-      const db = getDB();
-      const cleanId = generateId("dc");
-      const challanNo = `DC-${Date.now().toString().slice(-6)}`;
+        try {
 
-      const fullDC: DeliveryChallan = {
-        ...dcData,
-        id: cleanId,
-        challanNo,
-        status: ChallanStatus.DRAFT,
-      } as any;
+              const db = getDB();
+              const cleanId = generateId("dc");
+              const challanNo = `DC-${Date.now().toString().slice(-6)}`;
 
-      await db.deliveryChallans.add(fullDC);
-      await get().initializeApp();
-      return fullDC;
+              const fullDC: DeliveryChallan = {
+                ...dcData,
+                id: cleanId,
+                challanNo,
+                status: ChallanStatus.DRAFT,
+              } as any;
+
+              await db.deliveryChallans.add(fullDC);
+              await get().initializeApp();
+              return fullDC;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addGoodsReceiptNote: async (grnData) => {
-      const db = getDB();
-      const cleanId = generateId("grn");
-      const grnNo = `GRN-${Date.now().toString().slice(-6)}`;
+        try {
 
-      const fullGrn: GoodsReceiptNote = {
-        ...grnData,
-        id: cleanId,
-        grnNo,
-        status: ChallanStatus.DRAFT,
-      } as any;
+              const db = getDB();
+              const cleanId = generateId("grn");
+              const grnNo = `GRN-${Date.now().toString().slice(-6)}`;
 
-      await db.goodsReceiptNotes.add(fullGrn);
-      await get().initializeApp();
-      return fullGrn;
+              const fullGrn: GoodsReceiptNote = {
+                ...grnData,
+                id: cleanId,
+                grnNo,
+                status: ChallanStatus.DRAFT,
+              } as any;
+
+              await db.goodsReceiptNotes.add(fullGrn);
+              await get().initializeApp();
+              return fullGrn;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addStockJournal: async (sjData) => {
-      const db = getDB();
-      const cleanId = generateId("sj");
-      const fullSj = {
-        ...sjData,
-        id: cleanId,
-        status: VoucherStatus.DRAFT,
-      } as any;
+        try {
 
-      await db.stockJournals.add(fullSj);
-      await get().initializeApp();
-      return fullSj;
+              const db = getDB();
+              const cleanId = generateId("sj");
+              const fullSj = {
+                ...sjData,
+                id: cleanId,
+                status: VoucherStatus.DRAFT,
+              } as any;
+
+              await db.stockJournals.add(fullSj);
+              await get().initializeApp();
+              return fullSj;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     postStockJournal: async (id) => {
-      const db = getDB();
-      const sj = await db.stockJournals.get(id);
-      if (!sj) return;
+        try {
 
-      const movements = createTransferMovement(sj, get().warehouses);
+              const db = getDB();
+              const sj = await db.stockJournals.get(id);
+              if (!sj) return;
 
-      await db.transaction("rw", [db.stockJournals, db.stockMovements], async () => {
-        await db.stockJournals.update(id, { status: VoucherStatus.POSTED });
-        for (const m of movements) {
-          await db.stockMovements.add(m);
+              const movements = createTransferMovement(sj, get().warehouses);
+
+              await db.transaction("rw", [db.stockJournals, db.stockMovements], async () => {
+                await db.stockJournals.update(id, { status: VoucherStatus.POSTED });
+                for (const m of movements) {
+                  await db.stockMovements.add(m);
+                }
+              });
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-      });
-
-      await get().initializeApp();
     },
 
     updateCompanySettings: async (settings) => {
-      const state = get();
-      const db = getDB();
-      await db.companySettings.update("company-default", settings);
-      set({ companySettings: { ...state.companySettings, ...settings } as CompanySettings });
-      await db.auditLogs.add({
-        id: generateId("audit"),
-        timestamp: new Date().toISOString(),
-        userId: state.currentUser?.id || "system",
-        userName: state.currentUser?.name || "System",
-        action: "update",
-        module: "Settings",
-        recordId: "company-default",
-        recordType: "CompanySettings",
-      });
+        try {
+
+              const state = get();
+              const db = getDB();
+              await db.companySettings.update("company-default", settings);
+              set({ companySettings: { ...state.companySettings, ...settings } as CompanySettings });
+              await db.auditLogs.add({
+                id: generateId("audit"),
+                timestamp: new Date().toISOString(),
+                userId: state.currentUser?.id || "system",
+                userName: state.currentUser?.name || "System",
+                action: "update",
+                module: "Settings",
+                recordId: "company-default",
+                recordType: "CompanySettings",
+              });
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addFiscalYear: async (fy) => {
-      const db = getDB();
-      const cleanId = generateId("fy");
-      const newFY = { ...fy, id: cleanId };
+        try {
 
-      if (fy.isCurrent) {
-        const allYears = await db.fiscalYears.toArray();
-        await db.transaction("rw", db.fiscalYears, async () => {
-          for (const f of allYears) {
-            await db.fiscalYears.update(f.id, { isCurrent: false });
-          }
-          await db.fiscalYears.add(newFY);
-        });
-      } else {
-        await db.fiscalYears.add(newFY);
-      }
+              const db = getDB();
+              const cleanId = generateId("fy");
+              const newFY = { ...fy, id: cleanId };
 
-      await get().initializeApp();
+              if (fy.isCurrent) {
+                const allYears = await db.fiscalYears.toArray();
+                await db.transaction("rw", db.fiscalYears, async () => {
+                  for (const f of allYears) {
+                    await db.fiscalYears.update(f.id, { isCurrent: false });
+                  }
+                  await db.fiscalYears.add(newFY);
+                });
+              } else {
+                await db.fiscalYears.add(newFY);
+              }
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     setCurrentFiscalYear: async (id) => {
-      const db = getDB();
-      const allYears = await db.fiscalYears.toArray();
-      await db.transaction("rw", db.fiscalYears, async () => {
-        for (const f of allYears) {
-          await db.fiscalYears.update(f.id, { isCurrent: f.id === id });
-        }
-      });
+        try {
 
-      await get().initializeApp();
+              const db = getDB();
+              const allYears = await db.fiscalYears.toArray();
+              await db.transaction("rw", db.fiscalYears, async () => {
+                for (const f of allYears) {
+                  await db.fiscalYears.update(f.id, { isCurrent: f.id === id });
+                }
+              });
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     closeFiscalYear: async (id, closedBy) => {
-      const db = getDB();
-      await db.fiscalYears.update(id, {
-        status: FiscalYearStatus.CLOSED,
-        closedBy,
-        closedAt: new Date().toISOString(),
-      });
+        try {
 
-      await get().initializeApp();
+              const db = getDB();
+              await db.fiscalYears.update(id, {
+                status: FiscalYearStatus.CLOSED,
+                closedBy,
+                closedAt: new Date().toISOString(),
+              });
+
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addBillAllocation: async (allocationData) => {
-      const db = getDB();
-      const cleanId = generateId("balloc");
-      const fullAllocation: BillAllocation = {
-        ...allocationData,
-        id: cleanId,
-      };
+        try {
 
-      await db.billAllocations.add(fullAllocation);
+              const db = getDB();
+              const cleanId = generateId("balloc");
+              const fullAllocation: BillAllocation = {
+                ...allocationData,
+                id: cleanId,
+              };
 
-      // Update invoice paidAmount and paymentStatus
-      const invoice = await db.invoices.get(allocationData.invoiceId);
-      if (invoice) {
-        const newPaidAmount = (invoice.paidAmount || 0) + allocationData.allocatedAmount;
-        const newBalance = invoice.grandTotal - newPaidAmount;
+              await db.billAllocations.add(fullAllocation);
 
-        let newStatus = invoice.paymentStatus;
-        if (Math.abs(newBalance) < 0.01) {
-          newStatus = PaymentStatus.PAID;
-        } else if (newPaidAmount > 0) {
-          newStatus = PaymentStatus.PARTIAL;
-        } else {
-          newStatus = PaymentStatus.UNPAID;
+              // Update invoice paidAmount and paymentStatus
+              const invoice = await db.invoices.get(allocationData.invoiceId);
+              if (invoice) {
+                const newPaidAmount = (invoice.paidAmount || 0) + allocationData.allocatedAmount;
+                const newBalance = invoice.grandTotal - newPaidAmount;
+
+                let newStatus = invoice.paymentStatus;
+                if (Math.abs(newBalance) < 0.01) {
+                  newStatus = PaymentStatus.PAID;
+                } else if (newPaidAmount > 0) {
+                  newStatus = PaymentStatus.PARTIAL;
+                } else {
+                  newStatus = PaymentStatus.UNPAID;
+                }
+
+                await db.invoices.update(allocationData.invoiceId, {
+                  paidAmount: newPaidAmount,
+                  paymentStatus: newStatus,
+                });
+              }
+
+              set((prev) => ({
+                billAllocations: [...prev.billAllocations, fullAllocation],
+              }));
+
+              await get().initializeApp();
+              return fullAllocation;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
         }
-
-        await db.invoices.update(allocationData.invoiceId, {
-          paidAmount: newPaidAmount,
-          paymentStatus: newStatus,
-        });
-      }
-
-      set((prev) => ({
-        billAllocations: [...prev.billAllocations, fullAllocation],
-      }));
-
-      await get().initializeApp();
-      return fullAllocation;
     },
 
     updateBillAllocation: async (id, updates) => {
-      const db = getDB();
-      await db.billAllocations.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.billAllocations.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     getBillAllocationsForParty: (partyId) => {
@@ -1305,69 +1663,90 @@ export const useStore = create<StoreState>()((...args) => {
     },
 
     addCurrency: async (currencyData) => {
-      const db = getDB();
-      const cleanId = generateId("cur");
-      const fullCurrency: Currency = {
-        ...currencyData,
-        id: cleanId,
-      };
+        try {
 
-      // If setting as base, unset all others
-      if (currencyData.isBase) {
-        const allCurrencies = await db.currencies.toArray();
-        await db.transaction("rw", db.currencies, async () => {
-          for (const c of allCurrencies) {
-            await db.currencies.update(c.id, { isBase: false });
-          }
-          await db.currencies.add(fullCurrency);
-        });
-      } else {
-        await db.currencies.add(fullCurrency);
-      }
+              const db = getDB();
+              const cleanId = generateId("cur");
+              const fullCurrency: Currency = {
+                ...currencyData,
+                id: cleanId,
+              };
 
-      await get().initializeApp();
-      toast.success("Currency added successfully.");
-      return fullCurrency;
+              // If setting as base, unset all others
+              if (currencyData.isBase) {
+                const allCurrencies = await db.currencies.toArray();
+                await db.transaction("rw", db.currencies, async () => {
+                  for (const c of allCurrencies) {
+                    await db.currencies.update(c.id, { isBase: false });
+                  }
+                  await db.currencies.add(fullCurrency);
+                });
+              } else {
+                await db.currencies.add(fullCurrency);
+              }
+
+              await get().initializeApp();
+              toast.success("Currency added successfully.");
+              return fullCurrency;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateCurrency: async (id, updates) => {
-      const db = getDB();
+        try {
 
-      // If setting as base, unset all others
-      if (updates.isBase) {
-        const allCurrencies = await db.currencies.toArray();
-        await db.transaction("rw", db.currencies, async () => {
-          for (const c of allCurrencies) {
-            if (c.id !== id) {
-              await db.currencies.update(c.id, { isBase: false });
-            }
-          }
-          await db.currencies.update(id, updates);
-        });
-      } else {
-        await db.currencies.update(id, updates);
-      }
+              const db = getDB();
 
-      await get().initializeApp();
-      toast.success("Currency updated.");
+              // If setting as base, unset all others
+              if (updates.isBase) {
+                const allCurrencies = await db.currencies.toArray();
+                await db.transaction("rw", db.currencies, async () => {
+                  for (const c of allCurrencies) {
+                    if (c.id !== id) {
+                      await db.currencies.update(c.id, { isBase: false });
+                    }
+                  }
+                  await db.currencies.update(id, updates);
+                });
+              } else {
+                await db.currencies.update(id, updates);
+              }
+
+              await get().initializeApp();
+              toast.success("Currency updated.");
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addExchangeRate: async (rateData) => {
-      const db = getDB();
-      const cleanId = generateId("exr");
-      const fullRate: ExchangeRate = {
-        ...rateData,
-        id: cleanId,
-      };
+        try {
 
-      await db.exchangeRates.add(fullRate);
+              const db = getDB();
+              const cleanId = generateId("exr");
+              const fullRate: ExchangeRate = {
+                ...rateData,
+                id: cleanId,
+              };
 
-      set((prev) => ({
-        exchangeRates: [...prev.exchangeRates, fullRate],
-      }));
+              await db.exchangeRates.add(fullRate);
 
-      toast.success("Exchange rate added.");
-      return fullRate;
+              set((prev) => ({
+                exchangeRates: [...prev.exchangeRates, fullRate],
+              }));
+
+              toast.success("Exchange rate added.");
+              return fullRate;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     getLatestExchangeRate: (currencyCode, date) => {
@@ -1404,167 +1783,272 @@ export const useStore = create<StoreState>()((...args) => {
     },
 
     addRecurringVoucher: async (rvData) => {
-      const db = getDB();
-      const cleanId = generateId("rrv");
-      const fullRv = {
-        ...rvData,
-        id: cleanId,
-        completedOccurrences: 0,
-        generatedVoucherIds: [],
-      };
-      await db.recurringVouchers.add(fullRv as any);
-      set((state) => ({
-        recurringVouchers: [...state.recurringVouchers, fullRv as any],
-      }));
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("rrv");
+              const fullRv = {
+                ...rvData,
+                id: cleanId,
+                completedOccurrences: 0,
+                generatedVoucherIds: [],
+              };
+              await db.recurringVouchers.add(fullRv as any);
+              set((state) => ({
+                recurringVouchers: [...state.recurringVouchers, fullRv as any],
+              }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateRecurringVoucher: async (id, updates) => {
-      const db = getDB();
-      await db.recurringVouchers.update(id, updates);
-      set((state) => ({
-        recurringVouchers: state.recurringVouchers.map((r) =>
-          r.id === id ? { ...r, ...updates } : r,
-        ),
-      }));
+        try {
+
+              const db = getDB();
+              await db.recurringVouchers.update(id, updates);
+              set((state) => ({
+                recurringVouchers: state.recurringVouchers.map((r) =>
+                  r.id === id ? { ...r, ...updates } : r,
+                ),
+              }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteRecurringVoucher: async (id) => {
-      const db = getDB();
-      await db.recurringVouchers.delete(id);
-      set((state) => ({
-        recurringVouchers: state.recurringVouchers.filter((r) => r.id !== id),
-      }));
+        try {
+
+              const db = getDB();
+              await db.recurringVouchers.delete(id);
+              set((state) => ({
+                recurringVouchers: state.recurringVouchers.filter((r) => r.id !== id),
+              }));
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     runRecurringVoucher: async (id) => {
-      const db = getDB();
-      const recurring = get().recurringVouchers.find((r) => r.id === id);
-      if (!recurring) {
-        toast.error("Recurring template not found");
-        return;
-      }
+        try {
 
-      const templateVoucher = get().vouchers.find((v) => v.id === recurring.templateVoucherId);
-      if (!templateVoucher) {
-        toast.error("Template voucher not found");
-        return;
-      }
+              const db = getDB();
+              const recurring = get().recurringVouchers.find((r) => r.id === id);
+              if (!recurring) {
+                toast.error("Recurring template not found");
+                return;
+              }
 
-      const newId = generateId("jv");
-      const today = new Date().toISOString().split("T")[0];
+              const templateVoucher = get().vouchers.find((v) => v.id === recurring.templateVoucherId);
+              if (!templateVoucher) {
+                toast.error("Template voucher not found");
+                return;
+              }
 
-      const newVoucher = {
-        ...templateVoucher,
-        id: newId,
-        date: today,
-        status: recurring.autoPost ? VoucherStatus.POSTED : VoucherStatus.DRAFT,
-        narration: "[Auto] " + templateVoucher.narration,
-        createdAt: new Date().toISOString(),
-      };
+              const newId = generateId("jv");
+              const today = new Date().toISOString().split("T")[0];
 
-      await db.vouchers.add(newVoucher);
+              const newVoucher = {
+                ...templateVoucher,
+                id: newId,
+                date: today,
+                status: recurring.autoPost ? VoucherStatus.POSTED : VoucherStatus.DRAFT,
+                narration: "[Auto] " + templateVoucher.narration,
+                createdAt: new Date().toISOString(),
+              };
 
-      const nextDue = calculateNextDueDate(
-        recurring.nextDueDate,
-        recurring.frequency,
-        recurring.dayOfMonth,
-      );
+              await db.vouchers.add(newVoucher);
 
-      await db.recurringVouchers.update(id, {
-        lastGeneratedDate: today,
-        nextDueDate: nextDue,
-        completedOccurrences: recurring.completedOccurrences + 1,
-        generatedVoucherIds: [...recurring.generatedVoucherIds, newId],
-      });
+              const nextDue = calculateNextDueDate(
+                recurring.nextDueDate,
+                recurring.frequency,
+                recurring.dayOfMonth,
+              );
 
-      await get().initializeApp();
-      toast.success(`Generated voucher: ${newVoucher.voucherNo || newId}`);
+              await db.recurringVouchers.update(id, {
+                lastGeneratedDate: today,
+                nextDueDate: nextDue,
+                completedOccurrences: recurring.completedOccurrences + 1,
+                generatedVoucherIds: [...recurring.generatedVoucherIds, newId],
+              });
+
+              await get().initializeApp();
+              toast.success(`Generated voucher: ${newVoucher.voucherNo || newId}`);
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     importBankStatements: async (bankAccountId: string, rows: any[]) => {
-      const db = getDB();
-      let count = 0;
-      for (const row of rows) {
-        await db.bankStatements.add({
-          ...row,
-          id: generateId("bst"),
-          bankAccountId,
-          reconciled: false,
-        });
-        count++;
-      }
-      await get().initializeApp();
-      toast.success(`${count} entries imported.`);
-      return count;
+        try {
+
+              const db = getDB();
+              let count = 0;
+              for (const row of rows) {
+                await db.bankStatements.add({
+                  ...row,
+                  id: generateId("bst"),
+                  bankAccountId,
+                  reconciled: false,
+                });
+                count++;
+              }
+              await get().initializeApp();
+              toast.success(`${count} entries imported.`);
+              return count;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateBankStatement: async (id, updates) => {
-      const db = getDB();
-      await db.bankStatements.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.bankStatements.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateBankStatements: async (updates) => {
-      const db = getDB();
-      for (const {id, updates: u} of updates) {
-        await db.bankStatements.update(id, u);
-      }
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              for (const {id, updates: u} of updates) {
+                await db.bankStatements.update(id, u);
+              }
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addEmployee: async (emp) => {
-      const db = getDB();
-      const cleanId = generateId("emp");
-      const fullEmp = { ...emp, id: cleanId } as Employee;
-      await db.employees.add(fullEmp);
-      await get().initializeApp();
-      return fullEmp;
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("emp");
+              const fullEmp = { ...emp, id: cleanId } as Employee;
+              await db.employees.add(fullEmp);
+              await get().initializeApp();
+              return fullEmp;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateEmployee: async (id, updates) => {
-      const db = getDB();
-      await db.employees.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.employees.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteEmployee: async (id) => {
-      const db = getDB();
-      await db.employees.delete(id);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.employees.delete(id);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addPayrollRun: async (run) => {
-      const db = getDB();
-      const cleanId = generateId("payrun");
-      const fullRun = { ...run, id: cleanId } as PayrollRun;
-      await db.payrollRuns.add(fullRun);
-      await get().initializeApp();
-      return fullRun;
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("payrun");
+              const fullRun = { ...run, id: cleanId } as PayrollRun;
+              await db.payrollRuns.add(fullRun);
+              await get().initializeApp();
+              return fullRun;
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updatePayrollRun: async (id, updates) => {
-      const db = getDB();
-      await db.payrollRuns.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.payrollRuns.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     addCustomFieldDef: async (def) => {
-      const db = getDB();
-      const cleanId = generateId("cfd");
-      await db.customFieldDefs.add({ ...def, id: cleanId });
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              const cleanId = generateId("cfd");
+              await db.customFieldDefs.add({ ...def, id: cleanId });
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     updateCustomFieldDef: async (id, updates) => {
-      const db = getDB();
-      await db.customFieldDefs.update(id, updates);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.customFieldDefs.update(id, updates);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
 
     deleteCustomFieldDef: async (id) => {
-      const db = getDB();
-      await db.customFieldDefs.delete(id);
-      await get().initializeApp();
+        try {
+
+              const db = getDB();
+              await db.customFieldDefs.delete(id);
+              await get().initializeApp();
+            
+        } catch (error) {
+          console.error("DB Error:", error);
+          throw error;
+        }
     },
   };
 });
@@ -1577,3 +2061,6 @@ export const selectOpenInvoices = (state: StoreState) => state.invoices.filter(i
 export const selectComputedBalances = (state: StoreState) => state.computedBalances;
 
 export const useAccountingStore = useStore;
+
+
+

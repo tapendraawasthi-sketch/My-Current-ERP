@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from "react";
 import Select from "./Select";
 import { useStore } from "@/store/useStore";

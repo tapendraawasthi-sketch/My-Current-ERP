@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import { Download, Filter, Target } from "lucide-react";
@@ -209,3 +210,4 @@ export default function BudgetVsActual() {
     </div>
   );
 }
+

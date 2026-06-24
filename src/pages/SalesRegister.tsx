@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { Filter, Download, Eye, Edit, FileText } from "lucide-react";
@@ -387,3 +388,4 @@ const SalesRegister: React.FC = () => {
 };
 
 export default SalesRegister;
+

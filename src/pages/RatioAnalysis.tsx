@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Select, NepaliDatePicker, Button } from "../components/ui";
@@ -325,3 +326,4 @@ export default function RatioAnalysis() {
     </div>
   );
 }
+

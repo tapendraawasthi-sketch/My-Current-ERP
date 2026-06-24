@@ -183,3 +183,4 @@ const InventoryReport: React.FC = () => {
 };
 
 export default InventoryReport;
+

@@ -458,3 +458,4 @@ const StockJournalPage: React.FC = () => {
 };
 
 export default StockJournalPage;
+

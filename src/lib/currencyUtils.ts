@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ExchangeRate, Currency } from "./types";
 
 /**

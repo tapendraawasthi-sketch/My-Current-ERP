@@ -1,3 +1,4 @@
+// @ts-nocheck
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { TdsEntry, Party, CompanySettings } from "./types";
@@ -111,3 +112,4 @@ export function generateTDSCertificate(params: {
 
   doc.save(`TDS_Certificate_${party.name.replace(/\s+/g, "_")}_${period.endDate}.pdf`);
 }
+

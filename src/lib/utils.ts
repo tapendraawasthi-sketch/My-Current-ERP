@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -50,9 +49,10 @@ export function formatCurrency(amount: number, settings?: Partial<CompanySetting
     return "0.00";
   }
 
+  const roundedAmount = Math.round(amount * 100) / 100;
   const formatter = new Intl.NumberFormat("ne-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const prefix = settings?.currencySymbol || "Rs.";
-  return `${prefix} ` + formatter.format(amount);
+  return `${prefix} ` + formatter.format(roundedAmount);
 }
 
 export function formatNumber(amount: number, decimals: number = 2): string {
@@ -60,8 +60,10 @@ export function formatNumber(amount: number, decimals: number = 2): string {
     return "0.00";
   }
 
+  const factor = Math.pow(10, decimals);
+  const roundedAmount = Math.round(amount * factor) / factor;
   const formatter = new Intl.NumberFormat("ne-NP", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  return formatter.format(amount);
+  return formatter.format(roundedAmount);
 }
 
 // ==========================================

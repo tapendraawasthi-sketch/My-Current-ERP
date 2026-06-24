@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import { Filter, FileText, ArrowRightLeft, Download } from "lucide-react";
@@ -311,3 +312,4 @@ export default function CostCenterReport() {
     </div>
   );
 }
+

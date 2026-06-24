@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -278,7 +277,7 @@ export async function generateInvoicePDF(
   autoTable(doc, {
     startY: y,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small, textColor: [31, 41, 55] },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },
@@ -462,7 +461,7 @@ export function generateVoucherPDF(
   autoTable(doc, {
     startY: y,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },
@@ -567,7 +566,7 @@ export function generateTrialBalancePDF(
   autoTable(doc, {
     startY: yStart,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },
@@ -803,7 +802,7 @@ export function generateLedgerPDF(
   autoTable(doc, {
     startY: yStart,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },
@@ -882,7 +881,7 @@ export function generatePartyStatementPDF(
   autoTable(doc, {
     startY: yStart,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },
@@ -959,7 +958,7 @@ export function generateStockSummaryPDF(
   autoTable(doc, {
     startY: yStart,
     head: [tableHeaders],
-    body: tableBody,
+    body: tableBody as any,
     theme: "grid",
     styles: { fontSize: FONT_SIZES.small },
     headStyles: { fillColor: COLORS.primary, textColor: [255, 255, 255] },

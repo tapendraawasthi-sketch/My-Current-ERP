@@ -836,3 +836,4 @@ const VatReports: React.FC = () => {
 };
 
 export default VatReports;
+
