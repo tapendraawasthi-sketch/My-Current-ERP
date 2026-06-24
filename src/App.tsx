@@ -424,7 +424,7 @@ function MainRouter() {
             <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
             <button
               onClick={() => useStore.getState().setCurrentPage("dashboard")}
-              className="mt-4 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-semibold rounded-md cursor-pointer"
+              className="mt-4 h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-semibold rounded-md cursor-pointer"
             >
               Go to Dashboard
             </button>
@@ -455,9 +455,9 @@ export default function App() {
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f0f4ff]">
+      <div className="min-h-screen flex items-center justify-center bg-[#E4F1D9]">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#1557b0] animate-spin mx-auto mb-4" />
+          <Loader2 className="w-16 h-16 text-[#3D6B25] animate-spin mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Sutra ERP...</h2>
           <p className="text-gray-600">Please wait while we initialize the application</p>
         </div>
@@ -483,8 +483,8 @@ export default function App() {
         position="top-right"
         toastOptions={{
           style: {
-            background: "#1e2433",
-            color: "#f0f4ff",
+            background: "#1A2E14",
+            color: "#E4F1D9",
             fontSize: "12px",
             fontWeight: "500",
             borderRadius: "6px",

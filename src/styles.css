@@ -4,48 +4,48 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #C5E1A5;
+  --background: #E4F1D9;
   --foreground: #111111;
-  --card: #D4EBB5;
+  --card: #EBF5E2;
   --card-foreground: #111111;
-  --popover: #D4EBB5;
+  --popover: #EBF5E2;
   --popover-foreground: #111111;
-  --primary: #4A7A30;
+  --primary: #3D6B25;
   --primary-foreground: #ffffff;
-  --secondary: #A8CC88;
+  --secondary: #C9DEB5;
   --secondary-foreground: #111111;
-  --muted: #B2D494;
+  --muted: #D5E9C0;
   --muted-foreground: #111111;
-  --border: #8FB870;
-  --input: #DCF0C4;
-  --ring: #4A7A30;
+  --border: #9DC07A;
+  --input: #E8F3DB;
+  --ring: #3D6B25;
   --radius: 0.25rem;
-  --accent-orange: #4A7A30;
-  --table-header-bg: #A8CC88;
-  --table-border: #8FB870;
+  --accent-orange: #3D6B25;
+  --table-header-bg: #C9DEB5;
+  --table-border: #9DC07A;
   --table-stripe: rgba(0,0,0,0.04);
-  --table-hover: #B2D494;
-  --border-strong: #6FA050;
+  --table-hover: #D5E9C0;
+  --border-strong: #7BA358;
   --amount-debit: #7A0000;
   --amount-credit: #004400;
   --amount-neutral: #111111;
-  --busy-title-bar: #A8CC88;
-  --busy-menu-bar: #A8CC88;
-  --busy-menu-hover: #B2D494;
-  --busy-workspace: #C5E1A5;
-  --busy-form-panel: #D4EBB5;
-  --busy-form-border: #8FB870;
-  --busy-pill-bg: #4A7A30;
+  --busy-title-bar: #C9DEB5;
+  --busy-menu-bar: #C9DEB5;
+  --busy-menu-hover: #D5E9C0;
+  --busy-workspace: #E4F1D9;
+  --busy-form-panel: #EBF5E2;
+  --busy-form-border: #9DC07A;
+  --busy-pill-bg: #3D6B25;
   --busy-field-label: #111111;
-  --busy-voucher-bg: #D4EBB5;
-  --busy-modal-header: #4A7A30;
-  --busy-sidebar-key: #4A7A30;
-  --busy-row-selected: #4A7A30;
-  --busy-status-bar: #A8CC88;
-  --busy-hint-bar: #A8CC88;
-  --busy-grid-header: #A8CC88;
-  --busy-gold-strip: #4A7A30;
-  --sidebar-border: #8FB870;
+  --busy-voucher-bg: #EBF5E2;
+  --busy-modal-header: #3D6B25;
+  --busy-sidebar-key: #3D6B25;
+  --busy-row-selected: #3D6B25;
+  --busy-status-bar: #C9DEB5;
+  --busy-hint-bar: #C9DEB5;
+  --busy-grid-header: #C9DEB5;
+  --busy-gold-strip: #3D6B25;
+  --sidebar-border: #9DC07A;
 }
 
 /* -- Base -- */
@@ -94,13 +94,13 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 /* -- Badges -- */
 .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.4; }
 .status-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
-.badge-posted { background: #4A7A30; color: #ffffff; }
+.badge-posted { background: #3D6B25; color: #ffffff; }
 .badge-draft { background: rgba(0,0,0,0.15); color: #111111; }
 .badge-cancelled { background: rgba(122,0,0,0.15); color: #7A0000; }
-.badge-paid { background: #4A7A30; color: #ffffff; }
+.badge-paid { background: #3D6B25; color: #ffffff; }
 .badge-unpaid { background: rgba(122,0,0,0.15); color: #7A0000; }
 .badge-partial { background: rgba(0,0,0,0.12); color: #111111; }
-.badge-active { background: #4A7A30; color: #ffffff; }
+.badge-active { background: #3D6B25; color: #ffffff; }
 .badge-inactive { background: rgba(0,0,0,0.15); color: #111111; }
 
 /* -- Forms -- */
@@ -127,7 +127,7 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 .totals-panel { background: var(--card); border: 1px solid var(--border); overflow: hidden; min-width: 280px; }
 .totals-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: #111111; }
 .totals-row:last-child { border-bottom: none; }
-.totals-row.total-final { background: #4A7A30; padding: 10px 14px; font-weight: 700; font-size: 14px; color: #ffffff; }
+.totals-row.total-final { background: #3D6B25; padding: 10px 14px; font-weight: 700; font-size: 14px; color: #ffffff; }
 .totals-row.total-vat { background: rgba(255, 255, 255, 0.15); font-weight: 600; color: #111111; }
 
 /* -- KPI Cards -- */
@@ -163,7 +163,7 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 /* -- Misc -- */
 .num { font-variant-numeric: tabular-nums; }
 .sidebar-active-item { position: relative; background-color: rgba(255, 255, 255, 0.1); color: #111111 !important; }
-.sidebar-active-item::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background-color: #4A7A30; border-radius: 0 4px 4px 0; }
+.sidebar-active-item::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background-color: #3D6B25; border-radius: 0 4px 4px 0; }
 
 .table-row-hover:hover { background-color: var(--table-hover); cursor: pointer; }
 .total-row { background: var(--secondary); font-weight: 700; font-size: 12px; border-top: 2px solid var(--border-strong); }
@@ -178,7 +178,7 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 @media print { .no-print { display: none !important; } .print-only { display: block !important; } body { font-size: 11px; background: white; color: black; } }
 
 /* -- Busy legacy component classes -- */
-.busy-pill { display: inline-block; background: #4A7A30; color: #ffffff; font-weight: bold; font-size: 13px; padding: 3px 18px; text-align: center; border-radius: 4px; }
+.busy-pill { display: inline-block; background: #3D6B25; color: #ffffff; font-weight: bold; font-size: 13px; padding: 3px 18px; text-align: center; border-radius: 4px; }
 .busy-groupbox { border: 1px solid var(--border); padding: 12px 10px 8px; position: relative; margin-top: 10px; border-radius: 4px; background: var(--card); }
 .busy-groupbox-label { position: absolute; top: -8px; left: 8px; background: var(--card); padding: 0 4px; color: #111111; font-size: 11px; font-weight: bold; }
 .busy-field-row { display: flex; align-items: flex-start; margin-bottom: 3px; }
@@ -188,7 +188,7 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .busy-flat-btn:active { background: var(--input); }
 .busy-flat-btn:hover { background: var(--border-strong); }
 .busy-grid-row-selected { background: var(--primary) !important; color: #111111 !important; }
-.busy-orange-modal-header { background: #4A7A30; color: #ffffff; font-weight: bold; padding: 6px 10px; font-size: 13px; border-radius: 4px 4px 0 0; }
+.busy-orange-modal-header { background: #3D6B25; color: #ffffff; font-weight: bold; padding: 6px 10px; font-size: 13px; border-radius: 4px 4px 0 0; }
 
 /* -- Global overrides for text readability -- */
 
