@@ -42,7 +42,7 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
-app.options('*', cors());
+app.options(/.*/, cors());
  
 // ── BODY PARSERS ─────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
@@ -86,7 +86,7 @@ if (!isDev) {
     }));
  
     // SPA fallback: ALL non-API routes serve index.html
-    app.get('*', (req, res) => {
+    app.get(/.*/, (req, res) => {
       if (req.path.startsWith('/api/')) return res.status(404).json({ success: false, error: 'API route not found' });
       const indexPath = path.join(DIST_DIR, 'index.html');
       if (existsSync(indexPath)) {
@@ -97,7 +97,7 @@ if (!isDev) {
     });
   } else {
     console.warn('[WARN] dist/ not found — frontend not available. Run npm run build.');
-    app.get('*', (req, res) => {
+    app.get(/.*/, (req, res) => {
       if (!req.path.startsWith('/api/')) {
         res.status(503).send('Frontend not built. Run: npm run build');
       }
@@ -106,7 +106,8 @@ if (!isDev) {
 }
  
 // ── 404 FOR API ──────────────────────────────────────────────────
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res, next) => {
+  if (req.path === '/') return next(); // Let other things handle /api strictly if needed, but we probably just want 404
   res.status(404).json({ success: false, error: `Route ${req.method} ${req.path} not found` });
 });
  
