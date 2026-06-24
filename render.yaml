@@ -1,14 +1,10 @@
 services:
   - type: web
-    name: My-Current-ERP
-    runtime: static
-    buildCommand: npm install --legacy-peer-deps && npm run build
-    staticPublishPath: ./dist
-    pullRequestPreviewsEnabled: false
+    name: sutra-erp-api
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: node src/server.js
+    healthCheckPath: /health
     envVars:
-      - key: NODE_VERSION
-        value: "20"
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+      - key: NODE_ENV
+        value: production

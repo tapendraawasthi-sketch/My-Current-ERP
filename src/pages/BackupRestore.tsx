@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Download, Upload, Cloud, AlertTriangle, Database } from "lucide-react";
-import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
 import { ADToBSString } from "../lib/nepaliDate";
 import { ConfirmDialog, Spinner, ActionToolbar } from "../components/ui";
 
 export default function BackupRestore() {
-  const { exportBackup, importBackup } = useStore();
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [backupPreview, setBackupPreview] = useState<any>(null);
   const [autoBackup, setAutoBackup] = useState("never");
   const [lastBackupDate, setLastBackupDate] = useState("Never");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const rawDate = localStorage.getItem("sutra_last_backup_date");
@@ -23,14 +22,24 @@ export default function BackupRestore() {
 
   const handleCreateBackup = async () => {
     try {
-      const today = new Date().toISOString().split("T")[0];
-      const nepaliDateStr = ADToBSString(today);
-      const dataStr = await exportBackup();
-      const blob = new Blob([dataStr], { type: "application/json" });
+      setIsExporting(true);
+      const res = await fetch('/api/backup/export', {
+        method: 'GET'
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to create backup");
+      }
+      
+      const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
+      
+      const today = new Date().toISOString().split("T")[0];
+      const bsDateStr = window.ADToBSString ? window.ADToBSString(today) : today;
+      
       const a = document.createElement("a");
       a.href = url;
-      a.download = `sutra_backup_${nepaliDateStr}.json`;
+      a.download = `sutra_backup_${bsDateStr}.json`;
       a.click();
       window.URL.revokeObjectURL(url);
 
@@ -40,6 +49,8 @@ export default function BackupRestore() {
       toast.success("Backup downloaded successfully");
     } catch (error: any) {
       toast.error(error?.message || "Failed to create backup");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -52,15 +63,13 @@ export default function BackupRestore() {
         try {
           const data = JSON.parse(event.target?.result as string);
           setBackupPreview({
-            companyName: data.companySettings?.companyNameEn || "Unknown",
-            ledgers: data.ledgers?.length || 0,
-            vouchers: data.vouchers?.length || 0,
-            customers: data.customers?.length || 0,
-            products: data.products?.length || 0,
-            date: data.exportDate || "Unknown",
+            companySettings: Array.isArray(data.company_settings) ? data.company_settings.length : 0,
+            fiscalYears: Array.isArray(data.fiscal_years) ? data.fiscal_years.length : 0,
+            shortcuts: Array.isArray(data.keyboard_shortcuts) ? data.keyboard_shortcuts.length : 0,
+            auditLogs: Array.isArray(data.audit_logs) ? data.audit_logs.length : 0,
           });
         } catch (error) {
-          toast.error("Invalid backup file");
+          toast.error("Invalid backup file. Must be a JSON file.");
           setBackupFile(null);
         }
       };
@@ -75,22 +84,33 @@ export default function BackupRestore() {
 
   const handleRestore = async () => {
     if (!backupFile) return;
-    setIsRestoring(true);
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const jsonStr = event.target?.result as string;
-        await importBackup(jsonStr);
+    
+    try {
+      setIsRestoring(true);
+      
+      const formData = new FormData();
+      formData.append('file', backupFile);
+
+      const res = await fetch('/api/backup/import', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const json = await res.json();
+      
+      if (json.success) {
         toast.success("Restore complete. Reloading in 2 seconds...");
         setBackupFile(null);
         setBackupPreview(null);
         setTimeout(() => window.location.reload(), 2000);
-      } catch (error: any) {
-        toast.error(error?.message || "Error restoring backup");
+      } else {
+        toast.error(json.error || "Error restoring backup");
         setIsRestoring(false);
       }
-    };
-    reader.readAsText(backupFile);
+    } catch (error: any) {
+      toast.error("Network error restoring backup");
+      setIsRestoring(false);
+    }
   };
 
   return (
@@ -124,10 +144,11 @@ export default function BackupRestore() {
 
             <button
               onClick={handleCreateBackup}
-              className="w-full flex items-center justify-center space-x-2 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              disabled={isExporting}
+              className="w-full flex items-center justify-center space-x-2 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
             >
-              <Download className="w-4 h-4" />
-              <span>Create Backup Now</span>
+              {isExporting ? <Spinner size="sm" /> : <Download className="w-4 h-4" />}
+              <span>{isExporting ? "Exporting..." : "Create Backup Now"}</span>
             </button>
             <div className="text-[11px] text-gray-550 mt-1">
               Last backup: {lastBackupDate || "Never"}
@@ -162,27 +183,13 @@ export default function BackupRestore() {
             </div>
 
             {backupPreview && (
-              <div className="bg-gray-50 p-4 rounded space-y-2">
-                <h3 className="font-semibold text-sm">Backup Preview:</h3>
-                <div className="text-xs space-y-1">
-                  <p>
-                    <span className="font-medium">Company:</span> {backupPreview.companyName}
-                  </p>
-                  <p>
-                    <span className="font-medium">Backup Date:</span> {backupPreview.date}
-                  </p>
-                  <p>
-                    <span className="font-medium">Ledgers:</span> {backupPreview.ledgers}
-                  </p>
-                  <p>
-                    <span className="font-medium">Vouchers:</span> {backupPreview.vouchers}
-                  </p>
-                  <p>
-                    <span className="font-medium">Customers:</span> {backupPreview.customers}
-                  </p>
-                  <p>
-                    <span className="font-medium">Products:</span> {backupPreview.products}
-                  </p>
+              <div className="bg-gray-50 p-4 rounded space-y-2 border border-gray-200">
+                <h3 className="font-semibold text-[13px]">Backup Content Preview:</h3>
+                <div className="text-[12px] space-y-1 text-gray-600">
+                  <p><span className="font-medium text-gray-800">Company Settings:</span> {backupPreview.companySettings} records</p>
+                  <p><span className="font-medium text-gray-800">Fiscal Years:</span> {backupPreview.fiscalYears} records</p>
+                  <p><span className="font-medium text-gray-800">Keyboard Shortcuts:</span> {backupPreview.shortcuts} records</p>
+                  <p><span className="font-medium text-gray-800">Audit Logs:</span> {backupPreview.auditLogs} records</p>
                 </div>
               </div>
             )}
@@ -203,7 +210,7 @@ export default function BackupRestore() {
         <div className="flex items-center space-x-3">
           <Cloud className="w-6 h-6 text-blue-600" />
           <h2 className="text-lg font-semibold">Cloud Backup</h2>
-          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+          <span className="px-2 py-1 text-[10px] bg-amber-100 text-amber-800 rounded-full font-semibold uppercase">
             Coming Soon
           </span>
         </div>
@@ -215,7 +222,7 @@ export default function BackupRestore() {
         <div className="border-t pt-4">
           <button
             disabled
-            className="btn-primary flex items-center space-x-2 opacity-50 cursor-not-allowed"
+            className="flex items-center space-x-2 h-8 px-3 bg-white border border-gray-300 text-gray-400 text-[12px] font-medium rounded-md cursor-not-allowed"
           >
             <Cloud className="w-4 h-4" />
             <span>Connect Google Drive</span>
@@ -227,7 +234,7 @@ export default function BackupRestore() {
         <div className="flex items-center space-x-3">
           <Database className="w-6 h-6 text-green-600" />
           <h2 className="text-lg font-semibold">Import from Tally</h2>
-          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+          <span className="px-2 py-1 text-[10px] bg-amber-100 text-amber-800 rounded-full font-semibold uppercase">
             Coming Soon
           </span>
         </div>
@@ -243,13 +250,13 @@ export default function BackupRestore() {
               type="file"
               accept=".xml"
               disabled
-              className="input opacity-50 cursor-not-allowed"
+              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 opacity-50 cursor-not-allowed"
             />
           </div>
 
           <button
             disabled
-            className="btn-primary mt-4 flex items-center space-x-2 opacity-50 cursor-not-allowed"
+            className="mt-4 flex items-center space-x-2 h-8 px-3 bg-white border border-gray-300 text-gray-400 text-[12px] font-medium rounded-md cursor-not-allowed"
           >
             <Upload className="w-4 h-4" />
             <span>Import Tally Data</span>

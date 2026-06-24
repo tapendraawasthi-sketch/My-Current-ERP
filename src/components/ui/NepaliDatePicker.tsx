@@ -1,11 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import Input from "./Input";
 import {
   getBSToday,
   ADToBSString,
   BSToADString,
+  getBSMonthCalendarGrid,
+  BSDay
 } from "@/lib/nepaliDate";
-import { Calendar } from "lucide-react";
+
+const NEPALI_MONTHS = [
+  'Baisakh', 'Jestha', 'Ashadh', 'Shrawan', 'Bhadra', 'Ashwin',
+  'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'
+];
+const NEPALI_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 interface NepaliDatePickerProps {
   label?: string;
@@ -31,15 +39,31 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Calendar State
+  const [viewYear, setViewYear] = useState<number>(2080);
+  const [viewMonth, setViewMonth] = useState<number>(1);
+
   useEffect(() => {
     if (value) {
       try {
         const bsStr = ADToBSString(value);
         if (bsStr) {
           setBsValue(bsStr);
+          const parts = bsStr.split(/[-/]/);
+          if (parts.length === 3) {
+            setViewYear(parseInt(parts[0], 10));
+            setViewMonth(parseInt(parts[1], 10));
+          }
         }
       } catch (err) {
         console.error("Failed to parse AD date formatting:", err);
+      }
+    } else {
+      const todayBS = getBSToday();
+      const parts = todayBS.split(/[-/]/);
+      if (parts.length === 3) {
+        setViewYear(parseInt(parts[0], 10));
+        setViewMonth(parseInt(parts[1], 10));
       }
     }
   }, [value]);
@@ -50,9 +74,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
         setIsOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isOpen]);
 
   const handleADChange = (adStr: string) => {
     onChange(adStr);
@@ -60,8 +86,6 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
   const handleBSChange = (bsStr: string) => {
     setBsValue(bsStr);
-
-    // Regexp format check YYYY-MM-DD or YYYY/MM/DD
     const regex = /^\d{4}[-/]\d{2}[-/]\d{2}$/;
     if (regex.test(bsStr)) {
       try {
@@ -70,7 +94,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           onChange(adFormatted);
         }
       } catch (err) {
-        // Silent validation failure of wrong Nepali dates (e.g. leap year check)
+        // silent
       }
     }
   };
@@ -82,6 +106,43 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
     onChange(todayAD);
     setIsOpen(false);
   };
+
+  const handlePrevMonth = () => {
+    if (viewMonth === 1) {
+      setViewMonth(12);
+      setViewYear(y => y - 1);
+    } else {
+      setViewMonth(m => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (viewMonth === 12) {
+      setViewMonth(1);
+      setViewYear(y => y + 1);
+    } else {
+      setViewMonth(m => m + 1);
+    }
+  };
+
+  const handleDayClick = (day: BSDay) => {
+    const dStr = String(day.day).padStart(2, "0");
+    const mStr = String(day.month).padStart(2, "0");
+    const bsStr = `${day.year}/${mStr}/${dStr}`;
+    setBsValue(bsStr);
+    onChange(day.adDateStr);
+    setIsOpen(false);
+  };
+
+  const days = useMemo(() => {
+    try {
+      return getBSMonthCalendarGrid(viewYear, viewMonth);
+    } catch {
+      return [];
+    }
+  }, [viewYear, viewMonth]);
+
+  const todayBSStr = getBSToday().replace(/-/g, '/');
 
   return (
     <div ref={containerRef} className="flex flex-col gap-1 w-full relative">
@@ -123,57 +184,86 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
             onClick={() => setIsOpen(!isOpen)}
             className="flex items-center justify-center border border-gray-300 w-8 h-8 text-gray-700 hover:text-[#1557b0] hover:border-[#1557b0] hover:bg-gray-50 rounded-md shrink-0 transition-all focus:outline-none cursor-pointer"
           >
-            <Calendar className="h-4 w-4" />
+            <CalendarIcon className="h-4 w-4" />
           </button>
         )}
 
         {isOpen && (
-          <div className="absolute z-50 right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg p-3 min-w-[240px] flex flex-col gap-2.5 animate-fadeIn">
-            <h5 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-              Select Date Type
-            </h5>
-            <div className="flex bg-gray-100 p-0.5 rounded">
+          <div className="absolute z-50 right-0 top-full mt-1 bg-[#1a2744] text-white border border-[#2d4a8a] rounded-md shadow-lg p-3 w-[280px] animate-fadeIn">
+            <div className="flex bg-[#243057] p-0.5 rounded mb-3">
               <button
                 type="button"
                 onClick={() => setActiveTab("BS")}
-                className={`flex-1 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer ${activeTab === "BS" ? "bg-white text-gray-800 shadow-sm" : "text-gray-500"}`}
+                className={`flex-1 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer ${activeTab === "BS" ? "bg-[#3b6fd4] text-white shadow-sm" : "text-gray-400 hover:text-white"}`}
               >
                 Nepali (B.S.)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("AD")}
-                className={`flex-1 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer ${activeTab === "AD" ? "bg-white text-gray-800 shadow-sm" : "text-gray-500"}`}
+                className={`flex-1 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer ${activeTab === "AD" ? "bg-[#3b6fd4] text-white shadow-sm" : "text-gray-400 hover:text-white"}`}
               >
                 English (A.D.)
               </button>
             </div>
 
-            <div className="flex flex-col gap-1 text-[11px] text-gray-600 border border-gray-150 p-2 rounded bg-gray-50/50">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Nepali (B.S.):</span>
-                <span className="font-semibold text-gray-850 font-mono">
-                  {bsValue || "Not Set"}
-                </span>
+            {activeTab === "BS" && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between mb-2">
+                  <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-[#3b6fd4]/20 rounded">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="text-[12px] font-semibold">
+                    {NEPALI_MONTHS[viewMonth - 1]} {viewYear}
+                  </span>
+                  <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-[#3b6fd4]/20 rounded">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-7 gap-1 text-center mb-1">
+                  {NEPALI_DAYS.map((d) => (
+                    <div key={d} className="text-[10px] text-gray-400 font-medium">{d}</div>
+                  ))}
+                </div>
+                
+                <div className="grid grid-cols-7 gap-1">
+                  {days.map((d, i) => {
+                    const isToday = d.bsDateStr.replace(/-/g, '/') === todayBSStr;
+                    const isSelected = d.bsDateStr.replace(/-/g, '/') === bsValue.replace(/-/g, '/');
+                    const isCurrentMonth = d.isCurrentMonth;
+                    
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleDayClick(d)}
+                        className={`h-7 w-7 text-[11px] rounded flex items-center justify-center transition-colors
+                          ${!isCurrentMonth ? 'text-gray-500 hover:text-gray-300' : 'hover:bg-[#3b6fd4]/30'}
+                          ${isSelected ? 'bg-[#3b6fd4] text-white font-bold' : ''}
+                          ${isToday && !isSelected ? 'border border-[#3b6fd4] text-[#3b6fd4] font-bold' : ''}
+                        `}
+                      >
+                        {d.day}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">English (A.D.):</span>
-                <span className="font-semibold text-gray-855 font-mono">{value || "Not Set"}</span>
-              </div>
-            </div>
+            )}
 
-            <div className="flex gap-1.5 pt-1.5 border-t border-gray-100">
+            <div className="flex gap-1.5 pt-3 mt-2 border-t border-[#2d4a8a]">
               <button
                 type="button"
                 onClick={setTodayDate}
-                className="flex-1 h-7 bg-blue-50 text-[#1557b0] hover:bg-blue-100 border border-blue-200 text-[11px] font-semibold rounded transition-colors cursor-pointer"
+                className="flex-1 h-7 bg-[#3b6fd4]/10 text-[#3b6fd4] hover:bg-[#3b6fd4]/20 border border-[#3b6fd4]/30 text-[11px] font-semibold rounded transition-colors cursor-pointer"
               >
                 Today
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="flex-1 h-7 bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-[11px] font-semibold rounded transition-colors cursor-pointer"
+                className="flex-1 h-7 bg-transparent text-gray-300 hover:bg-[#243057] border border-[#2d4a8a] text-[11px] font-semibold rounded transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -186,4 +276,3 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 };
 
 export default NepaliDatePicker;
-

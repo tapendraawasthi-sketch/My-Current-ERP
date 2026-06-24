@@ -1,141 +1,104 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 
-interface Shortcut {
-  key: string;
-  description: string;
-  action: string;
+export interface Shortcut {
+  id: number;
+  key_combo: string;
+  label: string;
+  action_type: string;
+  action_value: string;
+  category: string;
+  icon: string;
+  is_active: boolean;
+  display_order: number;
 }
-
-const shortcuts: Shortcut[] = [
-  { key: "Ctrl+D", description: "Dashboard", action: "dashboard" },
-  { key: "F2", description: "New Sales Invoice", action: "sales-invoice" },
-  { key: "F3", description: "New Purchase Invoice", action: "purchase-invoice" },
-  { key: "F4", description: "New Payment Voucher", action: "payment" },
-  { key: "F5", description: "New Receipt Voucher", action: "receipt" },
-  { key: "F6", description: "New Journal Voucher", action: "journal" },
-  { key: "F7", description: "New Contra Voucher", action: "contra" },
-  { key: "Ctrl+L", description: "General Ledger", action: "ledger" },
-  { key: "Ctrl+T", description: "Trial Balance", action: "trial-balance" },
-  { key: "Ctrl+U", description: "Users", action: "users" },
-  { key: "Ctrl+S", description: "Settings", action: "settings" },
-  { key: "Ctrl+B", description: "Balance Sheet", action: "balance-sheet" },
-  { key: "Ctrl+P", description: "Print", action: "print" },
-  { key: "Ctrl+E", description: "Export", action: "export" },
-  { key: "Escape", description: "Go Back / Close Modal", action: "escape" },
-];
 
 export function useKeyboardShortcuts() {
   const { setCurrentPage } = useStore();
+  const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
   const [showHelp, setShowHelp] = useState(false);
+
+  useEffect(() => {
+    // Fetch shortcuts
+    fetch('/api/shortcuts')
+      .then(res => res.json())
+      .then(json => {
+        if (json.success) {
+          setShortcuts(json.data);
+        }
+      })
+      .catch(err => console.error("Failed to load shortcuts", err));
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger shortcuts if user is typing in an input
       const target = e.target as HTMLElement;
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+        // Only allow Escape to close modals
+        if (e.key === "Escape") {
+          const modals = document.querySelectorAll('[role="dialog"], .fixed');
+          if (modals.length > 0) {
+            // We let the modal handle escape if it wants, or we could force close
+          }
+        }
         return;
       }
 
-      const ctrl = e.ctrlKey || e.metaKey;
-
-      // Ctrl+D - Dashboard
-      if (ctrl && e.key === "d") {
-        e.preventDefault();
-        setCurrentPage("dashboard");
+      // Reconstruct key combo string
+      let pressedCombo = [];
+      if (e.ctrlKey) pressedCombo.push("Ctrl");
+      if (e.altKey) pressedCombo.push("Alt");
+      if (e.shiftKey) pressedCombo.push("Shift");
+      
+      // Handle letters/function keys
+      if (e.key !== "Control" && e.key !== "Alt" && e.key !== "Shift") {
+        pressedCombo.push(e.key.length === 1 ? e.key.toUpperCase() : e.key);
       }
+      
+      const comboStr = pressedCombo.join("+");
 
-      // F2 - Sales Invoice
-      if (e.key === "F2") {
+      // ? - Show help
+      if (comboStr === "?" || comboStr === "Shift+?") {
         e.preventDefault();
-        setCurrentPage("sales-invoice");
-      }
-
-      // F3 - Purchase Invoice
-      if (e.key === "F3") {
-        e.preventDefault();
-        setCurrentPage("purchase-invoice");
-      }
-
-      // F4 - Payment
-      if (e.key === "F4") {
-        e.preventDefault();
-        setCurrentPage("payment");
-      }
-
-      // F5 - Receipt
-      if (e.key === "F5") {
-        e.preventDefault();
-        setCurrentPage("receipt");
-      }
-
-      // F6 - Journal
-      if (e.key === "F6") {
-        e.preventDefault();
-        setCurrentPage("journal");
-      }
-
-      // F7 - Contra
-      if (e.key === "F7") {
-        e.preventDefault();
-        setCurrentPage("contra");
-      }
-
-      // Ctrl+L - Ledger
-      if (ctrl && e.key === "l") {
-        e.preventDefault();
-        setCurrentPage("ledger");
-      }
-
-      // Ctrl+T - Trial Balance
-      if (ctrl && e.key === "t") {
-        e.preventDefault();
-        setCurrentPage("trial-balance");
-      }
-
-      // Ctrl+U - Users
-      if (ctrl && e.key === "u") {
-        e.preventDefault();
-        setCurrentPage("users");
-      }
-
-      // Ctrl+S - Settings
-      if (ctrl && e.key === "s") {
-        e.preventDefault();
-        setCurrentPage("settings");
-      }
-
-      // Ctrl+B - Balance Sheet
-      if (ctrl && e.key === "b") {
-        e.preventDefault();
-        setCurrentPage("balance-sheet");
-      }
-
-      // Ctrl+P - Print
-      if (ctrl && e.key === "p") {
-        e.preventDefault();
-        window.print();
-      }
-
-      // Ctrl+E - Export (placeholder)
-      if (ctrl && e.key === "e") {
-        e.preventDefault();
-        console.log("Export triggered");
+        setShowHelp((prev) => !prev);
+        return;
       }
 
       // Escape - Go back
       if (e.key === "Escape") {
-        // Check if any modals are open, close them
-        const modals = document.querySelectorAll('[role="dialog"]');
-        if (modals.length > 0) {
-          e.preventDefault();
-        }
+        setShowHelp(false);
+        return;
       }
 
-      // ? - Show help
-      if (e.key === "?" && !ctrl) {
+      // Match against API shortcuts
+      const matched = shortcuts.find(s => s.key_combo.toUpperCase() === comboStr.toUpperCase() && s.is_active);
+      
+      if (matched) {
         e.preventDefault();
-        setShowHelp((prev) => !prev);
+        
+        if (matched.action_type === 'navigate') {
+          // the db seeded actions with '/reports/ledger' or 'ledger'
+          // in the existing app, useStore setCurrentPage uses string IDs like "ledger", "dashboard"
+          // We will strip leading slash if present to map to setCurrentPage
+          let targetPage = matched.action_value;
+          if (targetPage.startsWith('/')) {
+            targetPage = targetPage.substring(1);
+          }
+          // specific mapping for paths in seed
+          if (targetPage === 'company/settings') targetPage = 'settings';
+          if (targetPage === 'reports/ledger') targetPage = 'ledger';
+          
+          setCurrentPage(targetPage);
+        } else if (matched.action_type === 'report') {
+          // e.g. balance_sheet -> balance-sheet
+          const pageId = matched.action_value.replace(/_/g, '-');
+          setCurrentPage(pageId);
+        } else if (matched.action_type === 'modal') {
+          // Trigger custom event so modals can listen
+          const event = new CustomEvent('open-modal', { detail: { modalName: matched.action_value } });
+          window.dispatchEvent(event);
+        }
       }
     };
 
@@ -144,7 +107,14 @@ export function useKeyboardShortcuts() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [setCurrentPage]);
+  }, [shortcuts, setCurrentPage]);
 
-  return { shortcuts, showHelp, setShowHelp };
+  // Map backend format to old format for KeyboardShortcutsHelp in App.tsx
+  const formattedShortcuts = shortcuts.map(s => ({
+    key: s.key_combo,
+    description: s.label,
+    action: s.action_value
+  }));
+
+  return { shortcuts: formattedShortcuts, rawShortcuts: shortcuts, setShortcuts, showHelp, setShowHelp };
 }
