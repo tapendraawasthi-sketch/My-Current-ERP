@@ -164,30 +164,30 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div style={{ background: "#C5E1A5", paddingBottom: "2.5rem" }} className="min-h-screen">
+    <div style={{ background: "#E4F1D9", paddingBottom: "2.5rem" }} className="min-h-screen">
       <div className="space-y-6 max-w-[1600px] mx-auto pt-6 px-4">
         
         {/* TOP ROW: KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#111111", marginBottom: 6 }}>Today's Sales (BS {todayBS})</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#111111", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(salesToday.total)}</div>
-            <div style={{ fontSize: 11, color: "#111111", marginTop: 4 }}>vs yesterday: {salesToday.trend > 0 ? "+" : ""}{salesToday.trend.toFixed(1)}%</div>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Today's Sales (BS {todayBS})</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(salesToday.total)}</div>
+            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>vs yesterday: {salesToday.trend > 0 ? "+" : ""}{salesToday.trend.toFixed(1)}%</div>
           </div>
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#111111", marginBottom: 6 }}>Outstanding Receivables</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#111111", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(receivables.total)}</div>
-            <div style={{ fontSize: 11, color: "#111111", marginTop: 4 }}>{receivables.overdueCount} overdue invoice{receivables.overdueCount !== 1 ? "s" : ""}</div>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Outstanding Receivables</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(receivables.total)}</div>
+            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>{receivables.overdueCount} overdue invoice{receivables.overdueCount !== 1 ? "s" : ""}</div>
           </div>
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#111111", marginBottom: 6 }}>Cash & Bank Balance</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#111111", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(cashAndBank.total)}</div>
-            <div style={{ fontSize: 11, color: "#111111", marginTop: 4 }}>{cashAndBank.list.length} account{cashAndBank.list.length !== 1 ? "s" : ""}</div>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Cash & Bank Balance</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(cashAndBank.total)}</div>
+            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>{cashAndBank.list.length} account{cashAndBank.list.length !== 1 ? "s" : ""}</div>
           </div>
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#111111", marginBottom: 6 }}>VAT Liability</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#111111", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(vatLiability.total)}</div>
-            <div style={{ fontSize: 11, color: "#111111", marginTop: 4 }}>Due: {vatLiability.dueDateBS}</div>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>VAT Liability</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(vatLiability.total)}</div>
+            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>Due: {vatLiability.dueDateBS}</div>
           </div>
         </div>
 
@@ -195,31 +195,31 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Recent Vouchers */}
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, color: "#111111", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <div style={{ background: "#A8CC88", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#111111" }}>Recent Vouchers</h3>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>Recent Vouchers</h3>
             </div>
             <div className="flex-1 overflow-x-auto">
               <table className="w-full text-left whitespace-nowrap">
                 <thead style={{ borderBottom: "1px solid #8FB870", background: "rgba(0,0,0,0.02)" }}>
                   <tr>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#111111", textTransform: "uppercase" }}>Date (BS)</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#111111", textTransform: "uppercase" }}>Type / No</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#111111", textTransform: "uppercase", textAlign: "right" }}>Amount</th>
+                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Date (BS)</th>
+                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Type / No</th>
+                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase", textAlign: "right" }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody style={{ divideY: "1px solid #8FB870" }}>
                   {recentVouchers.length === 0 ? (
-                    <tr><td colSpan={3} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#111111" }}>No recent vouchers</td></tr>
+                    <tr><td colSpan={3} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#000000" }}>No recent vouchers</td></tr>
                   ) : (
                     recentVouchers.map(v => (
                       <tr key={v.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                        <td style={{ padding: "8px 12px", fontSize: 11, color: "#111111", fontFamily: "monospace" }}>{v.dateNepali}</td>
+                        <td style={{ padding: "8px 12px", fontSize: 11, color: "#000000", fontFamily: "monospace" }}>{v.dateNepali}</td>
                         <td style={{ padding: "8px 12px" }}>
-                           <div style={{ fontSize: 10, fontWeight: 700, color: "#111111", textTransform: "uppercase" }}>{v.type.replace(/_/g, ' ')}</div>
-                           <div style={{ fontSize: 12, fontFamily: "monospace", color: "#111111" }}>{v.voucherNo}</div>
+                           <div style={{ fontSize: 10, fontWeight: 700, color: "#000000", textTransform: "uppercase" }}>{v.type.replace(/_/g, ' ')}</div>
+                           <div style={{ fontSize: 12, fontFamily: "monospace", color: "#000000" }}>{v.voucherNo}</div>
                         </td>
-                        <td style={{ padding: "8px 12px", textAlign: "right", fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#111111" }}>
+                        <td style={{ padding: "8px 12px", textAlign: "right", fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#000000" }}>
                           Rs. {formatNumber(v.grandTotal || v.totalDebit || 0)}
                         </td>
                       </tr>
@@ -231,9 +231,9 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Stock Alerts */}
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, color: "#111111", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-             <div style={{ background: "#A8CC88", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#111111" }}>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+             <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
                 Stock Alerts
               </h3>
             </div>
@@ -241,22 +241,22 @@ const Dashboard: React.FC = () => {
                <table className="w-full text-left whitespace-nowrap">
                 <thead style={{ borderBottom: "1px solid #8FB870", background: "rgba(0,0,0,0.02)" }}>
                   <tr>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#111111", textTransform: "uppercase" }}>Item Name</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#111111", textTransform: "uppercase", textAlign: "right" }}>Current Qty</th>
+                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Item Name</th>
+                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase", textAlign: "right" }}>Current Qty</th>
                   </tr>
                 </thead>
                 <tbody style={{ divideY: "1px solid #8FB870" }}>
                   {stockAlerts.length === 0 ? (
-                    <tr><td colSpan={2} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#111111" }}>Stock levels healthy</td></tr>
+                    <tr><td colSpan={2} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#000000" }}>Stock levels healthy</td></tr>
                   ) : (
                     stockAlerts.map(alert => (
                       <tr key={alert.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                         <td style={{ padding: "8px 12px" }}>
-                           <div style={{ fontSize: 12, fontWeight: 600, color: "#111111" }}>{alert.name}</div>
-                           <div style={{ fontSize: 10, color: "#111111" }}>Reorder: {alert.reorderLevel} {alert.unit}</div>
+                           <div style={{ fontSize: 12, fontWeight: 600, color: "#000000" }}>{alert.name}</div>
+                           <div style={{ fontSize: 10, color: "#000000" }}>Reorder: {alert.reorderLevel} {alert.unit}</div>
                         </td>
                         <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                           <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 9999, background: "transparent", color: "#111111" }}>
+                           <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 9999, background: "transparent", color: "#000000" }}>
                              {alert.qty} {alert.unit}
                            </span>
                         </td>
@@ -269,9 +269,9 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Key Compliance Dates */}
-          <div style={{ background: "#D4EBB5", border: "1px solid #8FB870", borderRadius: 4, color: "#111111", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <div style={{ background: "#A8CC88", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#111111" }}>
+          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
                 Compliance Deadlines
               </h3>
             </div>
@@ -280,12 +280,12 @@ const Dashboard: React.FC = () => {
                  {complianceDates.map(cd => (
                    <div key={cd.name} style={{ border: "1px solid #8FB870", borderRadius: 4, padding: "12px", background: "rgba(0,0,0,0.02)", boxShadow: "none" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#111111" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
                            {cd.name}
                         </span>
-                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: "#111111" }}>{cd.date}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: "#000000" }}>{cd.date}</span>
                       </div>
-                      <div style={{ fontSize: 10, fontWeight: 500, color: "#111111", opacity: 0.8 }}>
+                      <div style={{ fontSize: 10, fontWeight: 500, color: "#000000", opacity: 0.8 }}>
                         Deadline in BS Date
                       </div>
                    </div>

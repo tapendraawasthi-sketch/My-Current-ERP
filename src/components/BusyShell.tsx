@@ -48,7 +48,7 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
       style={{ height: 22, background: "#C9DEB5", color: "#111111", fontSize: 11 }}
     >
       <div className="flex items-center gap-1">
-        <div style={{ width: 18, height: 18, background: "#3D6B25", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>S</div>
+        <div style={{ width: 18, height: 18, background: "#3D6B25", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>S</div>
         <span>Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})</span>
       </div>
       <div className="flex items-center gap-1" style={{ fontSize: 13 }}>
@@ -89,7 +89,7 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
             borderRadius: 2,
           }}
           onMouseEnter={e => { e.currentTarget.style.background = "#c0392b"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#ffffff"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#111111"; }}
         >✕</span>
       </div>
     </div>
@@ -131,7 +131,7 @@ export const StatusBar: React.FC = () => {
         <div style={{ color: "#111111" }}>Currency : रू</div>
       </div>
       <div className="ml-auto flex items-center px-3" style={{ gap: 6, borderLeft: "1px solid #9DC07A", height: "100%" }}>
-        <div style={{ background: "#3D6B25", color: "#111111", padding: "1px 5px", fontSize: 10, fontWeight: "bold" }}>ACCOUNTING SOFTWARE</div>
+        <div style={{ background: "#3D6B25", color: "#ffffff", padding: "1px 5px", fontSize: 10, fontWeight: "bold" }}>ACCOUNTING SOFTWARE</div>
         <span style={{ fontWeight: "bold" }}>{weekday}</span>
         <div style={{ flexDirection: "column" }}><div>BS Date: {bsDate}</div><div style={{ color: "#111111" }}>AD Date: {dateStr}</div></div>
       </div>
@@ -193,7 +193,7 @@ export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> =
           onMouseEnter={e => (e.currentTarget.style.background = "#9DC07A")}
           onMouseLeave={e => (e.currentTarget.style.background = "#C9DEB5")}
         >
-          <span style={{ width: 32, color: "#3D6B25", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
+          <span style={{ width: 32, color: "#000000", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
           <span style={{ color: "#111111" }}>{label}</span>
         </div>
       ))}
@@ -207,7 +207,7 @@ export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> =
           onMouseEnter={e => (e.currentTarget.style.background = "#9DC07A")}
           onMouseLeave={e => (e.currentTarget.style.background = "#C9DEB5")}
         >
-          <span style={{ width: 32, color: "#3D6B25", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
+          <span style={{ width: 32, color: "#000000", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>{key}</span>
           <span style={{ color: "#111111" }}>{label}</span>
         </div>
       ))}
@@ -246,7 +246,7 @@ export const FormPanel: React.FC<{ children: React.ReactNode; style?: React.CSSP
 // ── GROUP BOX ────────────────────────────────────────────────────
 export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div className="busy-groupbox" style={{ border: "1px solid #9DC07A" }}>
-    <span className="busy-groupbox-label" style={{ background: "#C9DEB5", color: "#3D6B25" }}>{label}</span>
+    <span className="busy-groupbox-label" style={{ background: "#C9DEB5", color: "#000000" }}>{label}</span>
     {children}
   </div>
 );
@@ -271,7 +271,7 @@ export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = 
 export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { label: string; mnemonic?: string }> = ({ label, mnemonic, ...rest }) => {
   const idx = mnemonic ? label.toLowerCase().indexOf(mnemonic.toLowerCase()) : -1;
   return (
-    <button className="busy-flat-btn" style={{ background: "#9DC07A", border: "2px outset #3D6B25", color: "#111111" }} onMouseEnter={e => (e.currentTarget.style.background = "#3D6B25")} onMouseLeave={e => (e.currentTarget.style.background = "#9DC07A")} {...rest}>
+    <button className="busy-flat-btn" style={{ background: "#9DC07A", border: "2px outset #3D6B25", color: "#111111" }} onMouseEnter={e => { e.currentTarget.style.background = "#3D6B25"; e.currentTarget.style.color = "#ffffff"; }} onMouseLeave={e => { e.currentTarget.style.background = "#9DC07A"; e.currentTarget.style.color = "#111111"; }} {...rest}>
       {idx >= 0 ? (
         <>
           {label.slice(0, idx)}
