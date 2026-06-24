@@ -5,30 +5,30 @@
 
 :root {
   /* -- Core palette -- */
-  --background: #5CA3E6;        /* Light blue background */
+  --background: #7BBDF5;        /* Light blue background */
   --foreground: #ffffff;        /* White text everywhere */
-  --card: #6FB0EF;              /* Slightly lighter blue for cards/panels */
+  --card: #90CAF9;              /* Slightly lighter blue for cards/panels */
   --card-foreground: #ffffff;
-  --popover: #6FB0EF;
+  --popover: #90CAF9;
   --popover-foreground: #ffffff;
   --primary: #F08A2C;           /* Orange accent */
   --primary-foreground: #ffffff;
-  --secondary: #4A89DC;         /* Darker blue for headers/menus */
+  --secondary: #64A8EC;         /* Darker blue for headers/menus */
   --secondary-foreground: #ffffff;
-  --muted: #4A89DC;
-  --muted-foreground: #E6F2FF;  /* Very light blue/white for muted text */
-  --border: #4A89DC;            /* Darker blue border */
-  --input: #4A89DC;             /* Darker blue input backgrounds */
+  --muted: #64A8EC;
+  --muted-foreground: #FFFFFF;  /* Very light blue/white for muted text */
+  --border: #64A8EC;            /* Darker blue border */
+  --input: #64A8EC;             /* Darker blue input backgrounds */
   --ring: #F08A2C;
   --radius: 0.25rem;
   --accent-orange: #f08a2c;     /* Orange accent (action bars, pills) */
 
   /* -- Table tokens -- */
-  --table-header-bg: #4A89DC;
-  --table-border: #4A89DC;
+  --table-header-bg: #64A8EC;
+  --table-border: #64A8EC;
   --table-stripe: rgba(255, 255, 255, 0.1);
-  --table-hover: #4A89DC;
-  --border-strong: #357ABD;
+  --table-hover: #64A8EC;
+  --border-strong: #4D94D4;
 
   /* -- Amount colors -- */
   --amount-debit: #ffffff;
@@ -36,21 +36,21 @@
   --amount-neutral: #E6F2FF;
 
   /* -- Legacy Busy vars mapped to new theme -- */
-  --busy-title-bar: #4A89DC;
-  --busy-menu-bar: #4A89DC;
+  --busy-title-bar: #64A8EC;
+  --busy-menu-bar: #64A8EC;
   --busy-menu-hover: #F08A2C;
-  --busy-workspace: #5CA3E6;
-  --busy-form-panel: #6FB0EF;
-  --busy-form-border: #4A89DC;
+  --busy-workspace: #7BBDF5;
+  --busy-form-panel: #90CAF9;
+  --busy-form-border: #64A8EC;
   --busy-pill-bg: #f08a2c;
   --busy-field-label: #ffffff;
-  --busy-voucher-bg: #6FB0EF;
+  --busy-voucher-bg: #90CAF9;
   --busy-modal-header: #f08a2c;
   --busy-sidebar-key: #f08a2c;
   --busy-row-selected: #F08A2C;
-  --busy-status-bar: #4A89DC;
-  --busy-hint-bar: #4A89DC;
-  --busy-grid-header: #4A89DC;
+  --busy-status-bar: #64A8EC;
+  --busy-hint-bar: #64A8EC;
+  --busy-grid-header: #64A8EC;
   --busy-gold-strip: #f08a2c;
 }
 
@@ -94,20 +94,20 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 .amt-neutral { color: var(--amount-neutral); }
 .amt-positive { color: #ffffff; }
 .amt-negative { color: #FFD1D1; }
-.amt-zero { color: #E6F2FF; }
+.amt-zero { color: #ffffff; }
 .amount-cell { font-family: 'Courier New', Courier, monospace; font-weight: 600; text-align: right; font-size: 13px; }
 
 /* -- Badges -- */
 .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.4; }
 .status-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .badge-posted { background: var(--primary); color: #ffffff; }
-.badge-draft { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+.badge-draft { background: rgba(30, 80, 160, 0.55); color: #ffffff; }
 .badge-cancelled { background: rgba(239, 68, 68, 0.8); color: #ffffff; }
 .badge-paid { background: var(--primary); color: #ffffff; }
 .badge-unpaid { background: rgba(239, 68, 68, 0.8); color: #ffffff; }
 .badge-partial { background: rgba(245, 158, 11, 0.8); color: #ffffff; }
 .badge-active { background: var(--primary); color: #ffffff; }
-.badge-inactive { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+.badge-inactive { background: rgba(30, 80, 160, 0.55); color: #ffffff; }
 
 /* -- Forms -- */
 .form-wrapper { background: var(--card); border: 1px solid var(--border); overflow: hidden; }
@@ -198,8 +198,14 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 /* -- Global overrides for text readability -- */
 
+input::placeholder,
+select::placeholder,
+textarea::placeholder { color: rgba(255, 255, 255, 0.72) !important; }
 
+.search-input::placeholder { color: rgba(255, 255, 255, 0.72); }
 
+.line-table input::placeholder,
+.line-table select::placeholder { color: rgba(255, 255, 255, 0.65); }
 
 /* -- Safe Input Styles -- */
 input, select, textarea { color: #1e293b; }
