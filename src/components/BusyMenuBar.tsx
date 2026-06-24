@@ -137,7 +137,7 @@ const BusyMenuBar: React.FC = () => {
     <div
       ref={barRef}
       className="flex items-center shrink-0 relative"
-      style={{ height: 26, background: "#162a46", borderBottom: "1px solid #1b3a5c", userSelect: "none", zIndex: 100 }}
+      style={{ height: 26, background: "#B2D494", borderBottom: "1px solid #8FB870", userSelect: "none", zIndex: 100 }}
     >
       <span style={{ color: "#94a3b8", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
       {MENU_TREE.map((menu, idx) => (
@@ -162,8 +162,8 @@ const BusyMenuBar: React.FC = () => {
                 position: "absolute",
                 top: 26,
                 left: 0,
-                background: "#0d1b2a",
-                border: "1px solid #1b3a5c",
+                background: "#A8CC88",
+                border: "1px solid #8FB870",
                 minWidth: 200,
                 boxShadow: "2px 2px 8px rgba(0,0,0,0.5)",
                 zIndex: 200,
@@ -171,7 +171,7 @@ const BusyMenuBar: React.FC = () => {
             >
               {menu.items.map((item, iidx) =>
                 item.separator ? (
-                  <div key={iidx} style={{ height: 1, background: "#1b3a5c", margin: "2px 0" }} />
+                  <div key={iidx} style={{ height: 1, background: "#8FB870", margin: "2px 0" }} />
                 ) : (
                   <div
                     key={iidx}
@@ -185,14 +185,14 @@ const BusyMenuBar: React.FC = () => {
                   </div>
                 )
               )}
-              <div style={{ borderTop: "1px solid #1b3a5c", display: "flex", gap: 0 }}>
+              <div style={{ borderTop: "1px solid #8FB870", display: "flex", gap: 0 }}>
                 <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#ffffff" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#1b3a5c")}
+                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#8FB870")}
                   onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
                 >Add To Favourites</div>
-                <div style={{ width: 1, background: "#1b3a5c" }} />
+                <div style={{ width: 1, background: "#8FB870" }} />
                 <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#ffffff" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#1b3a5c")}
+                  onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#8FB870")}
                   onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
                 >Create Shortcut</div>
               </div>
