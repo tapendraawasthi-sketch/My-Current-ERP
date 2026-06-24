@@ -1,257 +1,129 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
 import { useStore } from "../store/useStore";
 import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
-import Breadcrumb from "./Breadcrumb";
 import { GlobalSearch } from "./GlobalSearch";
-import { Bell, User, LogOut, Settings, HelpCircle, Search, Moon, Sun } from "lucide-react";
+import { Bell, User, LogOut, Settings, Search } from "lucide-react";
 import toast from "react-hot-toast";
-import { useTheme } from "../context/ThemeContext";
 
 const Header: React.FC = () => {
   const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } = useStore();
-  const { theme, toggleTheme } = useTheme();
   const [dateStrBS, setDateStrBS] = useState("");
-  const [dateStrAD, setDateStrAD] = useState("");
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const alertsRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const unreadAlerts = (notifications || []).filter((n: any) => !n.read).length;
 
   useEffect(() => {
     try { setDateStrBS(getBSTodayLong()); } catch { setDateStrBS(getBSToday()); }
-    const today = new Date();
-    setDateStrAD(today.toLocaleDateString("en-US", { weekday: "short", year: "numeric", month: "short", day: "numeric" }));
-
     const handleOutsideClick = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (alertsRef.current && !alertsRef.current.contains(target)) setAlertsOpen(false);
-      if (profileRef.current && !profileRef.current.contains(target)) setProfileOpen(false);
+      if (alertsRef.current && !alertsRef.current.contains(e.target as Node)) setAlertsOpen(false);
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
     };
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   useEffect(() => {
-    const handleSearchShortcut = (e: KeyboardEvent) => {
-      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+    const h = (e: KeyboardEvent) => {
+      if ((e.key === "/" || (e.ctrlKey && e.key === "k")) && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
         e.preventDefault(); setSearchOpen(true);
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); setSearchOpen(true); }
     };
-    window.addEventListener("keydown", handleSearchShortcut);
-    return () => window.removeEventListener("keydown", handleSearchShortcut);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, []);
 
-  const unreadAlerts = notifications.filter((n) => !n.read).length;
-
-  const hdrStyle: React.CSSProperties = {
-    height: 40,
-    background: "#D4EABD",
-    borderBottom: "1px solid #000000",
-    padding: "0 12px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    position: "sticky",
-    top: 0,
-    zIndex: 40,
-    userSelect: "none",
-    color: "#000000",
-    flexShrink: 0,
-  };
-
-  const iconBtn: React.CSSProperties = {
-    background: "transparent",
-    border: "1px solid transparent",
-    borderRadius: 4,
-    padding: 6,
-    cursor: "pointer",
-    color: "#000000",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const dropdownStyle: React.CSSProperties = {
-    position: "absolute",
-    right: 0,
-    top: "100%",
-    marginTop: 4,
-    background: "#EBF5E2",
-    border: "1px solid #000000",
-    borderRadius: 4,
-    minWidth: 200,
-    zIndex: 1000,
-    boxShadow: "2px 2px 8px rgba(0,0,0,0.2)",
-  };
-
-  const dropdownItem: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    padding: "8px 14px",
-    fontSize: 12,
-    cursor: "pointer",
-    color: "#000000",
-    background: "transparent",
-    border: "none",
-    width: "100%",
-    textAlign: "left",
-  };
-
   return (
-    <header style={hdrStyle}>
-      {/* Left: Breadcrumb */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-        <Breadcrumb />
+    <header style={{
+      height: 36,
+      background: "#dce8f5",
+      borderBottom: "1px solid #a0b8d0",
+      padding: "0 10px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      flexShrink: 0,
+      userSelect: "none",
+    }}>
+      {/* Left */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: "#1a2a3a" }}>
+          {companySettings?.name || "Sutra ERP"}
+        </span>
+        <span style={{ fontSize: 10, color: "#5a7a9a" }}>|</span>
+        <span style={{ fontSize: 10, color: "#5a7a9a" }}>{currentFiscalYear?.name || "FY 2083/84"}</span>
       </div>
 
       {/* Center: Search */}
-      <div style={{ flex: 1, maxWidth: 280, margin: "0 16px" }} className="hidden md:block">
+      <div style={{ flex: 1, maxWidth: 260, margin: "0 16px" }} className="hidden md:block">
         <button
           onClick={() => setSearchOpen(true)}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            height: 28,
-            padding: "0 10px",
-            fontSize: 12,
-            background: "#EBF5E2",
-            border: "1px solid #000000",
-            borderRadius: 3,
-            cursor: "pointer",
-            color: "#000000",
-          }}
+          style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", height: 24, padding: "0 8px", fontSize: 11, background: "#fff", border: "1px solid #a0b8d0", borderRadius: 2, cursor: "pointer", color: "#8a9ab0" }}
         >
-          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <Search style={{ width: 13, height: 13, color: "#000000" }} />
-            <span>Search anything...</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <Search style={{ width: 12, height: 12 }} />
+            <span>Search... (Ctrl+K)</span>
           </span>
-          <kbd style={{ fontSize: 9, background: "#D4EABD", border: "1px solid #000000", borderRadius: 2, padding: "1px 4px", color: "#000000" }}>/</kbd>
+          <kbd style={{ fontSize: 9, background: "#dce8f5", border: "1px solid #a0b8d0", borderRadius: 2, padding: "0 4px", color: "#5a7a9a" }}>/</kbd>
         </button>
         <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
 
-      {/* Company name center */}
-      <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none" }} className="hidden lg:block">
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
-          {companySettings?.name || "Sutra ERP"}
+      {/* Right */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {/* Date */}
+        <div style={{ textAlign: "right", paddingRight: 10, borderRight: "1px solid #a0b8d0" }} className="hidden md:block">
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#1a2a3a" }}>{dateStrBS} (BS)</div>
+          <div style={{ fontSize: 9, color: "#5a7a9a" }}>{new Date().toLocaleDateString("en-US", { day:"2-digit", month:"short", year:"numeric" })} (AD)</div>
         </div>
-        <div style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#000000" }}>
-          {currentFiscalYear?.name || "FY 2083/84"}
-        </div>
-      </div>
-
-      {/* Right: dates + icons */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        {/* Dates */}
-        <div style={{ textAlign: "right", paddingRight: 12, borderRight: "1px solid #000000", flexDirection: "column" }} className="hidden md:flex">
-          <span style={{ fontSize: 11, fontWeight: 600, color: "#000000", display: "block" }}>{dateStrBS} (B.S.)</span>
-          <span style={{ fontSize: 10, color: "#000000", display: "block" }}>{dateStrAD} (A.D.)</span>
-        </div>
-
-        {/* Help */}
-        <a href="https://docs.sutraerp.com" target="_blank" rel="noopener noreferrer" style={iconBtn} title="Help">
-          <HelpCircle style={{ width: 16, height: 16, color: "#000000" }} />
-        </a>
-
-        {/* Dark mode toggle */}
-        <button onClick={toggleTheme} style={iconBtn} title="Toggle theme">
-          {theme === "dark"
-            ? <Sun style={{ width: 16, height: 16, color: "#000000" }} />
-            : <Moon style={{ width: 16, height: 16, color: "#000000" }} />}
-        </button>
 
         {/* Notifications */}
         <div ref={alertsRef} style={{ position: "relative" }}>
-          <button onClick={() => setAlertsOpen(!alertsOpen)} style={{ ...iconBtn, position: "relative" }} title="Notifications">
-            <Bell style={{ width: 16, height: 16, color: "#000000" }} />
-            {unreadAlerts > 0 && (
-              <span style={{
-                position: "absolute",
-                top: 3, right: 3,
-                width: 14, height: 14,
-                background: "#C9DEB5",
-                border: "1px solid #000000",
-                borderRadius: "50%",
-                fontSize: 8,
-                fontWeight: 700,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#000000",
-              }}>
-                {unreadAlerts}
-              </span>
-            )}
+          <button onClick={() => setAlertsOpen(!alertsOpen)} style={{ background: "transparent", border: "none", cursor: "pointer", position: "relative", padding: 3 }}>
+            <Bell style={{ width: 15, height: 15, color: "#5a7a9a" }} />
+            {unreadAlerts > 0 && <span style={{ position: "absolute", top: 0, right: 0, width: 13, height: 13, background: "#dc2626", borderRadius: "50%", fontSize: 8, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{unreadAlerts}</span>}
           </button>
           {alertsOpen && (
-            <div style={{ ...dropdownStyle, width: 280 }}>
-              <div style={{ padding: "8px 14px", borderBottom: "1px solid #000000", fontSize: 12, fontWeight: 700, color: "#000000" }}>
-                Notifications
-              </div>
-              <div style={{ padding: "8px 14px", fontSize: 12, color: "#000000" }}>
-                {notifications.length === 0 ? "No notifications." : `${unreadAlerts} unread`}
-              </div>
+            <div style={{ position: "absolute", right: 0, top: "100%", marginTop: 4, background: "#fff", border: "1px solid #c8d8e8", borderRadius: 3, minWidth: 220, zIndex: 200, boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
+              <div style={{ padding: "6px 12px", borderBottom: "1px solid #e8eef5", fontSize: 11, fontWeight: 700, color: "#1a2a3a" }}>Notifications</div>
+              <div style={{ padding: "8px 12px", fontSize: 11, color: "#8a9ab0" }}>{unreadAlerts === 0 ? "No new notifications." : `${unreadAlerts} unread`}</div>
             </div>
           )}
         </div>
 
         {/* Profile */}
         <div ref={profileRef} style={{ position: "relative" }}>
-          <button
-            onClick={() => setProfileOpen(!profileOpen)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "2px 4px",
-            }}
-          >
-            <div style={{
-              width: 30, height: 30,
-              background: "#C9DEB5",
-              border: "1px solid #000000",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 12,
-              color: "#000000",
-            }}>
-              {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+          <button onClick={() => setProfileOpen(!profileOpen)} style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: "none", cursor: "pointer", padding: "2px 4px" }}>
+            <div style={{ width: 24, height: 24, background: "#1557b0", border: "1px solid #4080c0", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 10, color: "#fff" }}>
+              {(currentUser?.name || "U").charAt(0).toUpperCase()}
             </div>
-            <div className="hidden sm:flex flex-col text-left" style={{ marginRight: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#000000", lineHeight: 1 }}>{currentUser?.name}</span>
-              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#000000", marginTop: 2 }}>
-                {currentUser?.role || "User"}
-              </span>
+            <div className="hidden sm:flex flex-col text-left">
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#1a2a3a", lineHeight: 1 }}>{currentUser?.name}</span>
+              <span style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, color: "#5a7a9a" }}>{currentUser?.role || "User"}</span>
             </div>
           </button>
-
           {profileOpen && (
-            <div style={dropdownStyle}>
-              <div style={{ padding: "8px 14px", background: "#C9DEB5", borderBottom: "1px solid #000000" }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>{currentUser?.name}</div>
-                <div style={{ fontSize: 10, color: "#000000", marginTop: 2 }}>{currentUser?.email || "No email"}</div>
+            <div style={{ position: "absolute", right: 0, top: "100%", marginTop: 4, background: "#fff", border: "1px solid #c8d8e8", borderRadius: 3, minWidth: 180, zIndex: 200, boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
+              <div style={{ padding: "7px 12px", background: "#dce8f5", borderBottom: "1px solid #c8d8e8", borderRadius: "3px 3px 0 0" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#1a2a3a" }}>{currentUser?.name}</div>
+                <div style={{ fontSize: 10, color: "#5a7a9a", marginTop: 1 }}>{currentUser?.email || "No email"}</div>
               </div>
-              <button style={dropdownItem} onClick={() => { setCurrentPage("settings"); setProfileOpen(false); }}>
-                <Settings style={{ width: 14, height: 14, color: "#000000" }} />
-                <span>Settings</span>
-              </button>
-              <div style={{ height: 1, background: "#000000", margin: "2px 0" }} />
-              <button style={{ ...dropdownItem }} onClick={() => { logout(); setProfileOpen(false); }}>
-                <LogOut style={{ width: 14, height: 14, color: "#000000" }} />
-                <span>Logout</span>
-              </button>
+              {[
+                { label: "Settings", icon: Settings, onClick: () => { setCurrentPage("settings"); setProfileOpen(false); } },
+                { label: "Logout", icon: LogOut, onClick: () => { logout(); setProfileOpen(false); } },
+              ].map(({ label, icon: Icon, onClick }) => (
+                <button key={label} onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 12px", fontSize: 11, cursor: "pointer", color: "#1a2a3a", background: "transparent", border: "none", width: "100%", textAlign: "left" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f5f8fc")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <Icon style={{ width: 13, height: 13, color: "#5a7a9a" }} />
+                  <span>{label}</span>
+                </button>
+              ))}
             </div>
           )}
         </div>

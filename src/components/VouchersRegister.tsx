@@ -457,34 +457,24 @@ const VouchersRegister: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       {/* List Page title */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Vouchers Register</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">All posted and draft vouchers</p>
-        </div>
-
-        <div className="shrink-0 flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportExcel}
-            icon={<FileSpreadsheet className="h-4 w-4" />}
-          >
-            Export Register Spreadsheet
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setIsCreating(true)}
-            icon={<Plus className="h-4 w-4" />}
-          >
-            Generate Voucher Book
-          </Button>
-        </div>
-      </div>
+<div className="page-header">
+  <div>
+    <div className="page-title">Vouchers Register</div>
+    <div className="page-subtitle">All posted and draft vouchers &nbsp;|&nbsp; {filteredVouchers.length} records</div>
+  </div>
+  <div className="page-actions">
+    <button className="btn btn-outline btn-sm" onClick={handleExportExcel}>
+      <FileSpreadsheet style={{ width: 13, height: 13 }} /> Export
+    </button>
+    <button className="btn btn-primary btn-sm" onClick={() => setIsCreating(true)}>
+      + New Voucher (F8)
+    </button>
+  </div>
+</div>
 
       {/* FILTER SEARCH PANEL */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm no-print">
+      <div className="page-toolbar no-print">
+        <div className="page-toolbar-left">
         <div className="w-full md:max-w-xs relative bg-white">
           <Input
             value={searchTerm}
@@ -517,6 +507,7 @@ const VouchersRegister: React.FC = () => {
             </button>
           ))}
         </div>
+      </div>
       </div>
 
       {/* Main Grid display table */}

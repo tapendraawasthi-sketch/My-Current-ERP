@@ -445,13 +445,13 @@ const VatReports: React.FC = () => {
 
 
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">VAT Reports</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">IRD-compliant VAT return reports</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
+      <div className="page-header">
+  <div>
+    <div className="page-title">VAT Reports</div>
+    <div className="page-subtitle">IRD-compliant VAT return reports</div>
+  </div>
+  <div className="page-actions">
+    <button
             type="button"
             onClick={validateVAT}
             className="h-8 px-3 text-[11px] font-bold border rounded-md text-amber-700 bg-amber-50 border-amber-200 hover:bg-amber-100 flex items-center gap-1.5 cursor-pointer"
@@ -532,8 +532,8 @@ const VatReports: React.FC = () => {
               </button>
             </>
           )}
-        </div>
-      </div>
+  </div>
+</div>
 
       {validationErrors.length > 0 && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">

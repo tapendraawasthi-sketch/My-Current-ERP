@@ -141,15 +141,15 @@ const PartyLedgerStatement: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Party Ledger</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
+      <div className="page-header">
+  <div>
+    <div className="page-title">Party Ledger</div>
+    <div className="page-subtitle">
             Transaction history for a specific party
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
+          </div>
+  </div>
+  <div className="page-actions">
+    <Button
             variant="outline"
             size="sm"
             onClick={handleExport}
@@ -165,8 +165,8 @@ const PartyLedgerStatement: React.FC = () => {
           >
             Print PDF
           </Button>
-        </div>
-      </div>
+  </div>
+</div>
 
       <Card border padding="md" className="no-print">
         <div className="grid gap-4 lg:grid-cols-4">

@@ -146,17 +146,17 @@ const StockSummary: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Stock Summary</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">Current stock positions by warehouse</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleExport}>
+      <div className="page-header">
+  <div>
+    <div className="page-title">Stock Summary</div>
+    <div className="page-subtitle">Current stock positions by warehouse</div>
+  </div>
+  <div className="page-actions">
+    <Button variant="outline" size="sm" onClick={handleExport}>
             Export Excel
           </Button>
-        </div>
-      </div>
+  </div>
+</div>
 
       <Card border padding="md" className="no-print">
         <div className="grid gap-4 xl:grid-cols-4">

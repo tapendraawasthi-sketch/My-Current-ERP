@@ -142,13 +142,13 @@ const BankBook: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Bank Book</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">Bank receipts and payments</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleImport}>
+      <div className="page-header">
+  <div>
+    <div className="page-title">Bank Book</div>
+    <div className="page-subtitle">Bank receipts and payments</div>
+  </div>
+  <div className="page-actions">
+    <Button variant="outline" size="sm" onClick={handleImport}>
             Import Bank Statement
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
@@ -157,8 +157,8 @@ const BankBook: React.FC = () => {
           <Button variant="outline" size="sm" onClick={handlePrint}>
             Print
           </Button>
-        </div>
-      </div>
+  </div>
+</div>
 
       <Card border padding="md" className="no-print">
         <div className="flex items-center gap-2 mb-3">

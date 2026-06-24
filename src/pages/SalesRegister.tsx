@@ -230,13 +230,13 @@ const SalesRegister: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Sales Register</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">All sales invoices and returns</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
+      <div className="page-header">
+  <div>
+    <div className="page-title">Sales Register</div>
+    <div className="page-subtitle">All sales invoices and returns</div>
+  </div>
+  <div className="page-actions">
+    <Button
             size="sm"
             variant="outline"
             onClick={handleExportIRD}
@@ -247,8 +247,8 @@ const SalesRegister: React.FC = () => {
           <Button size="sm" variant="outline" icon={<Download className="h-4 w-4" />}>
             Export Excel
           </Button>
-        </div>
-      </div>
+  </div>
+</div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">

@@ -87,20 +87,20 @@ export default function TdsReport() {
       <PillTitle title="TDS Report" />
       <FormPanel>
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-[#000000]">TDS Register</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">Section-wise TDS records for Income Tax Act 2058</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
+          <div className="page-header">
+  <div>
+    <div className="page-title">TDS Register</div>
+    <div className="page-subtitle">Section-wise TDS records for Income Tax Act 2058</div>
+  </div>
+  <div className="page-actions">
+    <button
                 onClick={handleExport}
                 className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
               >
                 <FileSpreadsheet className="h-3.5 w-3.5" /> Export TDS Return
               </button>
-            </div>
-          </div>
+  </div>
+</div>
 
           <Card border padding="md">
             <div className="grid gap-4 md:grid-cols-4 mb-4">

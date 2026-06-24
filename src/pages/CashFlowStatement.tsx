@@ -194,15 +194,15 @@ const CashFlowStatement: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 animate-fadeIn select-none">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Cash Flow Statement</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
+      <div className="page-header">
+  <div>
+    <div className="page-title">Cash Flow Statement</div>
+    <div className="page-subtitle">
             Operating, investing and financing activities
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
+          </div>
+  </div>
+  <div className="page-actions">
+    <Button
             variant="outline"
             size="sm"
             icon={<FileSpreadsheet className="h-4 w-4" />}
@@ -218,8 +218,8 @@ const CashFlowStatement: React.FC = () => {
           >
             Print PDF
           </Button>
-        </div>
-      </div>
+  </div>
+</div>
 
       <Card border padding="md" className="no-print">
         <div className="grid gap-4 lg:grid-cols-3">
