@@ -484,8 +484,13 @@ export default function App() {
 
   useEffect(() => {
     const init = async () => {
-      await initializeApp();
-      setIsDbReady(true);
+      try {
+        await initializeApp();
+      } catch (err) {
+        console.error("[Sutra ERP] App init error:", err);
+      } finally {
+        setIsDbReady(true);
+      }
     };
     init();
   }, [initializeApp]);

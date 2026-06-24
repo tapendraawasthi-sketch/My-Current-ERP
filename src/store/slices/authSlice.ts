@@ -222,6 +222,8 @@ export const createAuthSlice = (set: StoreSet, get: StoreGet): AuthSlice => ({
     } catch (error) {
       console.error("Fatal: Failed to initialize ERP Store:", error);
       toast.error("Fatal initialization database error.");
+      console.error("[Sutra ERP] FATAL: initializeApp failed:", error);
+      set({ isDbReady: true });
     }
   },
 

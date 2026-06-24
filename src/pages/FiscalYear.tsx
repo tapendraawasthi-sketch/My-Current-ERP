@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Calendar, Plus, Lock, CheckCircle, AlertTriangle, ArrowRight } from "lucide-react";
 import { useStore } from "../store";
-import { FiscalYearStatus, UserRole, VoucherStatus, JournalEntry, VoucherType } from "../lib/types";
+import { FiscalYearStatus, UserRole, VoucherStatus, JournalEntry, VoucherType, AccountType, AccountLevel } from "../lib/types";
 import { resetAllSeriesForNewYear, computeProfitLoss } from "../lib/accounting";
 import { generateId } from "../lib/db";
 import toast from "react-hot-toast";
@@ -115,10 +115,14 @@ export default function FiscalYear() {
         retainedEarnings = await addAccount({
           name: "Retained Earnings",
           code: "EQ-RET",
-          nature: "equity",
-          groupName: "Reserves & Surplus",
+          type: AccountType.EQUITY,
+          level: AccountLevel.LEDGER,
+          parentId: "grp-capital-account",
+          group: "Capital Account",
           isGroup: false,
-          isSystem: true
+          isActive: true,
+          isSystemAccount: true,
+          balance: 0,
         });
       }
 
@@ -131,12 +135,12 @@ export default function FiscalYear() {
       for (const brk of pl.ledgerBreakdown) {
         const acc = accounts.find(a => a.name === brk.ledgerName);
         if (acc && brk.amount !== 0) {
-          if (acc.nature === "income") {
+          if (acc.type === AccountType.INCOME) {
             // Natural CR, so to close it we DR
             const amt = Math.abs(brk.amount);
             closingLines.push({ id: generateId("l"), accountId: acc.id, accountName: acc.name, debit: amt, credit: 0, narration: "Closing Transfer" });
             totalDr += amt;
-          } else if (acc.nature === "expenses") {
+          } else if (acc.type === AccountType.EXPENSE) {
             // Natural DR, so to close it we CR
             const amt = Math.abs(brk.amount);
             closingLines.push({ id: generateId("l"), accountId: acc.id, accountName: acc.name, debit: 0, credit: amt, narration: "Closing Transfer" });
@@ -167,14 +171,13 @@ export default function FiscalYear() {
 
       // 4. Carry Forward to Next Year (Balance Sheet accounts only)
       // Recalculate balances after the closing journal
-      const allClosingVouchers = [...vouchers, /* assume added above conceptually */]; 
       // Actually we should fetch true balances, but we can compute them directly for the next year
       // For simplicity, we filter only Assets, Liabilities, and Equity
       const carryForwardLines = [];
       let opDr = 0;
       let opCr = 0;
 
-      accounts.filter(a => a.nature !== "income" && a.nature !== "expenses").forEach(acc => {
+      accounts.filter(a => a.type !== AccountType.INCOME && a.type !== AccountType.EXPENSE).forEach(acc => {
         // Sum all transactions for this account up to fy.endDate
         // We simulate the balance
         let balance = 0;
