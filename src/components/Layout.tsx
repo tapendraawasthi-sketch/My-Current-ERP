@@ -280,12 +280,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Central Workspace */}
         <main
-          className="flex-1 overflow-y-auto p-3 relative"
-          style={{ background: "#1a3a5c" }}
+          className="flex-1 overflow-y-auto p-4 relative bg-[#f5f6fa]"
         >
-          <div style={{ fontSize: 11, color: "#ffffff", textAlign: "center", marginBottom: 6 }}>
-            {currentPage.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-          </div>
           {children}
         </main>
  
