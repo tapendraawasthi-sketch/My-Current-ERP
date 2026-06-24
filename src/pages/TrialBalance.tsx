@@ -1,258 +1,228 @@
 // @ts-nocheck
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- *
- * Trial Balance report page.
- */
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { Button, NepaliDatePicker } from "../components/ui";
-import { FileSpreadsheet, Printer, ChevronDown, ChevronRight, AlertTriangle } from "lucide-react";
-import { computeTrialBalance } from "../lib/accounting";
-import { exportTrialBalanceToExcel } from "../lib/exportUtils";
 import { formatNumber } from "../lib/utils";
-import { AccountType } from "../lib/types";
-import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../components/BusyShell";
+import { VoucherStatus } from "../lib/types";
+import { isDebitNature } from "../lib/accounting";
+import { Printer, FileSpreadsheet } from "lucide-react";
+import Pagination from "../components/ui/Pagination";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
 
 const TrialBalance: React.FC = () => {
-  const accounts = useStore(state => state.accounts);
-  const vouchers = useStore(state => state.vouchers);
-  const companySettings = useStore(state => state.companySettings);
-  const currentFiscalYear = useStore(state => state.currentFiscalYear);
-  const invoices = useStore(state => state.invoices);
+  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
 
-  const [asOfDate, setAsOfDate] = useState(currentFiscalYear?.endDate || "2027-07-15");
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const fiscalStart = currentFiscalYear?.startDate || "2026-07-16";
+  const fiscalEnd = currentFiscalYear?.endDate || "2027-07-15";
 
-  useEffect(() => {
-    if (currentFiscalYear) {
-      setAsOfDate(currentFiscalYear.endDate);
-    }
-  }, [currentFiscalYear]);
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(50);
 
-  const rawRows = useMemo(() => {
-    if (!currentFiscalYear) return [];
-    return computeTrialBalance(
-      accounts,
-      vouchers,
-      invoices,
-      asOfDate,
-      currentFiscalYear.startDate
-    );
-  }, [accounts, vouchers, invoices, asOfDate, currentFiscalYear]);
+  const tbData = useMemo(() => {
+    try {
+      const results: any[] = [];
 
-  // Group by Nature
-  const groupedRows = useMemo(() => {
-    const groups: Record<string, typeof rawRows> = {
-      [AccountType.ASSET]: [],
-      [AccountType.LIABILITY]: [],
-      [AccountType.INCOME]: [],
-      [AccountType.EXPENSE]: [],
-    };
+      const postedVouchers = vouchers.filter(
+        (v) => v.status === VoucherStatus.POSTED && v.date >= fiscalStart && v.date <= fiscalEnd
+      );
 
-    rawRows.forEach((row) => {
-      if (groups[row.nature]) {
-        groups[row.nature].push(row);
+      for (const acc of accounts) {
+        if (acc.isGroup) continue;
+
+        const opDr = acc.openingBalanceDr || 0;
+        const opCr = acc.openingBalanceCr || 0;
+
+        let periodDebit = 0;
+        let periodCredit = 0;
+
+        for (const v of postedVouchers) {
+          for (const line of v.lines) {
+            if (line.accountId === acc.id) {
+              periodDebit += line.debit || 0;
+              periodCredit += line.credit || 0;
+            }
+          }
+        }
+
+        // Closing balance
+        const totalDr = opDr + periodDebit;
+        const totalCr = opCr + periodCredit;
+        let closingDr = 0;
+        let closingCr = 0;
+
+        if (totalDr >= totalCr) {
+          closingDr = Math.round((totalDr - totalCr) * 100) / 100;
+        } else {
+          closingCr = Math.round((totalCr - totalDr) * 100) / 100;
+        }
+
+        if (opDr > 0 || opCr > 0 || periodDebit > 0 || periodCredit > 0) {
+          results.push({
+            accountId: acc.id,
+            accountName: acc.name,
+            accountCode: acc.code,
+            groupName: acc.group || "",
+            type: acc.type,
+            openingDr: Math.round(opDr * 100) / 100,
+            openingCr: Math.round(opCr * 100) / 100,
+            periodDebit: Math.round(periodDebit * 100) / 100,
+            periodCredit: Math.round(periodCredit * 100) / 100,
+            closingDr,
+            closingCr,
+          });
+        }
       }
-    });
 
-    return groups;
-  }, [rawRows]);
+      // Totals
+      const totals = results.reduce(
+        (acc, r) => ({
+          openingDr: acc.openingDr + r.openingDr,
+          openingCr: acc.openingCr + r.openingCr,
+          periodDebit: acc.periodDebit + r.periodDebit,
+          periodCredit: acc.periodCredit + r.periodCredit,
+          closingDr: acc.closingDr + r.closingDr,
+          closingCr: acc.closingCr + r.closingCr,
+        }),
+        { openingDr: 0, openingCr: 0, periodDebit: 0, periodCredit: 0, closingDr: 0, closingCr: 0 }
+      );
 
-  const totals = useMemo(() => {
-    let openingDr = 0, openingCr = 0;
-    let periodDebit = 0, periodCredit = 0;
-    let closingDr = 0, closingCr = 0;
-
-    rawRows.forEach((r) => {
-      openingDr += r.openingDr;
-      openingCr += r.openingCr;
-      periodDebit += r.periodDebit;
-      periodCredit += r.periodCredit;
-      closingDr += r.closingDr;
-      closingCr += r.closingCr;
-    });
-
-    return { openingDr, openingCr, periodDebit, periodCredit, closingDr, closingCr };
-  }, [rawRows]);
-
-  const isImbalanced = Math.abs(totals.closingDr - totals.closingCr) > 0.01;
-  const imbalanceAmount = Math.abs(totals.closingDr - totals.closingCr);
-
-  const toggleGroup = (nature: string) => {
-    const next = new Set(collapsedGroups);
-    if (next.has(nature)) {
-      next.delete(nature);
-    } else {
-      next.add(nature);
+      return { rows: results, totals, error: null };
+    } catch (error) {
+      console.error("TrialBalance error:", error);
+      return {
+        rows: [],
+        totals: { openingDr: 0, openingCr: 0, periodDebit: 0, periodCredit: 0, closingDr: 0, closingCr: 0 },
+        error: String(error),
+      };
     }
-    setCollapsedGroups(next);
-  };
+  }, [accounts, vouchers, fiscalStart, fiscalEnd]);
+
+  const paginatedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return tbData.rows.slice(start, start + pageSize);
+  }, [tbData.rows, page, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(tbData.rows.length / pageSize));
+
+  const handlePrint = () => window.print();
 
   const handleExport = () => {
-    if (rawRows.length === 0) {
-      toast.error("No data to export");
-      return;
+    try {
+      const header = ["Code", "Account Name", "Group", "Op Dr", "Op Cr", "Period Dr", "Period Cr", "Cl Dr", "Cl Cr"];
+      const data = tbData.rows.map((r) => [
+        r.accountCode, r.accountName, r.groupName,
+        r.openingDr, r.openingCr, r.periodDebit, r.periodCredit, r.closingDr, r.closingCr,
+      ]);
+      data.push(["", "TOTALS", "",
+        tbData.totals.openingDr, tbData.totals.openingCr,
+        tbData.totals.periodDebit, tbData.totals.periodCredit,
+        tbData.totals.closingDr, tbData.totals.closingCr,
+      ]);
+      const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Trial Balance");
+      XLSX.writeFile(wb, `TrialBalance_${fiscalStart}_${fiscalEnd}.xlsx`);
+      toast.success("Exported to Excel");
+    } catch {
+      toast.error("Export failed");
     }
-    exportTrialBalanceToExcel(rawRows as any, `Trial_Balance_${asOfDate}.xlsx`);
-    toast.success("Trial Balance Exported");
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const renderGroup = (nature: string, label: string) => {
-    const rows = groupedRows[nature];
-    if (!rows || rows.length === 0) return null;
-
-    const isCollapsed = collapsedGroups.has(nature);
-
-    const groupOpeningDr = rows.reduce((s, r) => s + r.openingDr, 0);
-    const groupOpeningCr = rows.reduce((s, r) => s + r.openingCr, 0);
-    const groupPeriodDr = rows.reduce((s, r) => s + r.periodDebit, 0);
-    const groupPeriodCr = rows.reduce((s, r) => s + r.periodCredit, 0);
-    const groupClosingDr = rows.reduce((s, r) => s + r.closingDr, 0);
-    const groupClosingCr = rows.reduce((s, r) => s + r.closingCr, 0);
-
-    return (
-      <React.Fragment key={nature}>
-        {/* Group Header Row */}
-        <tr
-          className="bg-[#f8fafc] border-b border-[#9DC07A] cursor-pointer hover:bg-[#EBF5E2] transition-colors"
-          onClick={() => toggleGroup(nature)}
-        >
-          <td className="px-3 py-2 text-[12px] font-semibold text-[#000000] flex items-center gap-1">
-            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            {label}
-          </td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold">{groupOpeningDr > 0 ? formatNumber(groupOpeningDr) : ""}</td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold">{groupOpeningCr > 0 ? formatNumber(groupOpeningCr) : ""}</td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold">{groupPeriodDr > 0 ? formatNumber(groupPeriodDr) : ""}</td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold">{groupPeriodCr > 0 ? formatNumber(groupPeriodCr) : ""}</td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold text-[#1557b0]">{groupClosingDr > 0 ? formatNumber(groupClosingDr) : ""}</td>
-          <td className="px-3 py-2 text-right font-mono text-[12px] font-semibold text-[#1557b0]">{groupClosingCr > 0 ? formatNumber(groupClosingCr) : ""}</td>
-        </tr>
-
-        {/* Children Rows */}
-        {!isCollapsed &&
-          rows.map((r) => (
-            <tr key={r.accountId} className="border-b border-[#9DC07A] hover:bg-[#f5f6fa] transition-colors">
-              <td className="px-3 py-2 text-[12px] text-[#000000] pl-8">{r.accountName}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.openingDr ? formatNumber(r.openingDr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.openingCr ? formatNumber(r.openingCr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.periodDebit ? formatNumber(r.periodDebit) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.periodCredit ? formatNumber(r.periodCredit) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.closingDr ? formatNumber(r.closingDr) : ""}</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] text-[#000000]">{r.closingCr ? formatNumber(r.closingCr) : ""}</td>
-            </tr>
-          ))}
-      </React.Fragment>
-    );
   };
 
   return (
     <div style={{ background: "#e8e4f0", padding: 12 }}>
       <PillTitle title="Trial Balance" />
       <FormPanel>
-        <div className="flex flex-col gap-6 animate-fadeIn select-none">
-          {/* Print Header */}
-          <div className="print-only hidden mb-6 text-center">
-            <h1 className="text-xl font-bold">{companySettings?.companyNameEn || "Sutra ERP"}</h1>
-            <h2 className="text-lg font-semibold mt-1">Trial Balance</h2>
-            <p className="text-sm text-[#000000] mt-1">As of: {asOfDate}</p>
-          </div>
-
-          <div className="flex items-center justify-between mb-4 no-print">
+        <div className="flex flex-col gap-4 animate-fadeIn select-none">
+          <div className="flex items-center justify-between mb-2">
             <div>
               <h1 className="text-[15px] font-semibold text-[#000000]">Trial Balance</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">Summary of all ledger balances</p>
+              <p className="text-[11px] text-[#000000] mt-0.5">
+                Period: {fiscalStart} to {fiscalEnd} · {tbData.rows.length} ledgers
+              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                icon={<FileSpreadsheet className="h-4 w-4" />}
-                onClick={handleExport}
-              >
-                Export Excel
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                icon={<Printer className="h-4 w-4" />}
-                onClick={handlePrint}
-              >
-                Print
-              </Button>
+            <div className="flex items-center gap-2 no-print">
+              <button onClick={handleExport} className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5">
+                <FileSpreadsheet className="h-3.5 w-3.5" /> Export
+              </button>
+              <button onClick={handlePrint} className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5">
+                <Printer className="h-3.5 w-3.5" /> Print
+              </button>
             </div>
           </div>
 
-          <div className="report-toolbar no-print mb-3">
-            <div className="grid gap-4 lg:grid-cols-4">
-              <NepaliDatePicker label="As of Date" value={asOfDate} onChange={setAsOfDate} />
-            </div>
+          {/* Balance check */}
+          <div className={`px-4 py-2 rounded-md border text-[12px] font-semibold ${Math.abs(tbData.totals.closingDr - tbData.totals.closingCr) < 1 ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+            {Math.abs(tbData.totals.closingDr - tbData.totals.closingCr) < 1
+              ? "✓ Trial Balance is balanced (Total Dr = Total Cr)"
+              : `✗ Unbalanced: Dr Rs. ${formatNumber(tbData.totals.closingDr)} ≠ Cr Rs. ${formatNumber(tbData.totals.closingCr)}`}
           </div>
 
-          {isImbalanced && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded-md flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              <div>
-                <p className="text-[13px] font-bold">Imbalance Detected</p>
-                <p className="text-[11px]">Difference Amount: Rs. {formatNumber(imbalanceAmount)}</p>
-              </div>
+          {tbData.error && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-3 text-red-700 text-[12px]">
+              Error: {tbData.error}
             </div>
           )}
 
-          <div className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white mb-4">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
-                  <th rowSpan={2} className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide align-middle border-r border-[#9DC07A]">Particulars</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-r border-[#9DC07A]">Opening Balance</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-r border-[#9DC07A]">Transactions</th>
-                  <th colSpan={2} className="px-3 py-1.5 text-center text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-b border-[#9DC07A]">Closing Balance</th>
-                </tr>
-                <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Credit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Credit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide border-r border-[#9DC07A]">Debit</th>
-                  <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Credit</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-150">
-                {renderGroup(AccountType.ASSET, "Assets")}
-                {renderGroup(AccountType.LIABILITY, "Liabilities")}
-                {renderGroup(AccountType.INCOME, "Income")}
-                {renderGroup(AccountType.EXPENSE, "Expenses")}
-
-                {rawRows.length === 0 && (
-                  <tr>
-                    <td colSpan={7} className="text-center py-6 text-[#000000] text-[12px]">
-                      No balances to display.
-                    </td>
+          {/* Table */}
+          <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border-collapse">
+                <thead>
+                  <tr className="bg-[#EBF5E2] border-b-2 border-[#9DC07A]">
+                    <th className="px-3 py-2.5 text-left font-bold text-[#000000] text-[10px] uppercase tracking-wide">Code</th>
+                    <th className="px-3 py-2.5 text-left font-bold text-[#000000] text-[10px] uppercase tracking-wide">Account Name</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Opening Dr</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Opening Cr</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Period Dr</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Period Cr</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Closing Dr</th>
+                    <th className="px-3 py-2.5 text-right font-bold text-[#000000] text-[10px] uppercase tracking-wide">Closing Cr</th>
                   </tr>
-                )}
-              </tbody>
-              {rawRows.length > 0 && (
+                </thead>
+                <tbody>
+                  {paginatedRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="text-center py-10 text-[#000000]">
+                        No ledger accounts with transactions in this period.
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedRows.map((row) => (
+                      <tr key={row.accountId} className="border-b border-[#9DC07A]/30 hover:bg-[#EBF5E2]/30">
+                        <td className="px-3 py-2 font-mono text-[#000000]">{row.accountCode}</td>
+                        <td className="px-3 py-2 text-[#000000] font-medium">{row.accountName}</td>
+                        <td className="px-3 py-2 text-right font-mono">{row.openingDr > 0 ? formatNumber(row.openingDr) : "—"}</td>
+                        <td className="px-3 py-2 text-right font-mono">{row.openingCr > 0 ? formatNumber(row.openingCr) : "—"}</td>
+                        <td className="px-3 py-2 text-right font-mono">{row.periodDebit > 0 ? formatNumber(row.periodDebit) : "—"}</td>
+                        <td className="px-3 py-2 text-right font-mono">{row.periodCredit > 0 ? formatNumber(row.periodCredit) : "—"}</td>
+                        <td className="px-3 py-2 text-right font-mono font-bold">{row.closingDr > 0 ? formatNumber(row.closingDr) : "—"}</td>
+                        <td className="px-3 py-2 text-right font-mono font-bold">{row.closingCr > 0 ? formatNumber(row.closingCr) : "—"}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
                 <tfoot>
-                  <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
-                    <td className="px-3 py-2.5 pl-3">Grand Total</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#000000]">{totals.openingDr > 0 ? formatNumber(totals.openingDr) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#000000]">{totals.openingCr > 0 ? formatNumber(totals.openingCr) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">{totals.periodDebit > 0 ? formatNumber(totals.periodDebit) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-red-600">{totals.periodCredit > 0 ? formatNumber(totals.periodCredit) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">{totals.closingDr > 0 ? formatNumber(totals.closingDr) : ""}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-red-600">{totals.closingCr > 0 ? formatNumber(totals.closingCr) : ""}</td>
+                  <tr className="bg-[#D4EABD] border-t-2 border-[#9DC07A] font-bold text-[12px]">
+                    <td colSpan={2} className="px-3 py-2.5 text-right uppercase text-[#000000]">Totals:</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.openingDr)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.openingCr)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.periodDebit)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.periodCredit)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.closingDr)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono">{formatNumber(tbData.totals.closingCr)}</td>
                   </tr>
                 </tfoot>
-              )}
-            </table>
+              </table>
+            </div>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              totalRecords={tbData.rows.length}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+            />
           </div>
         </div>
       </FormPanel>

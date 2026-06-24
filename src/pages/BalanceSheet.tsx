@@ -1,223 +1,279 @@
 // @ts-nocheck
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- *
- * Balance Sheet report page.
- */
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Badge, Button } from "../components/ui";
-import { Printer, Layers, ChevronRight, ChevronDown, CheckCircle, AlertTriangle } from "lucide-react";
-import { computeBalanceSheet, computeProfitLoss } from "../lib/accounting";
 import { formatNumber } from "../lib/utils";
-import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "../components/BusyShell";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { AccountType, VoucherStatus } from "../lib/types";
+import { Printer, FileSpreadsheet } from "lucide-react";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
 
 const BalanceSheet: React.FC = () => {
-  const accounts = useStore(state => state.accounts);
-  const vouchers = useStore(state => state.vouchers);
-  const invoices = useStore(state => state.invoices);
-  const companySettings = useStore(state => state.companySettings);
-  const currentFiscalYear = useStore(state => state.currentFiscalYear);
-  const [asOfDate, setAsOfDate] = useState<string>(
-    currentFiscalYear?.endDate || "2027-07-15"
-  );
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["Fixed Assets", "Current Assets", "Share Capital", "Current Liabilities"]));
+  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
 
-  useEffect(() => {
-    if (currentFiscalYear?.endDate) {
-      setAsOfDate(currentFiscalYear.endDate);
-    }
-  }, [currentFiscalYear]);
+  const fiscalEnd = currentFiscalYear?.endDate || "2027-07-15";
+  const fiscalStart = currentFiscalYear?.startDate || "2026-07-16";
 
   const bsData = useMemo(() => {
-    // We first compute Net Profit from Profit & Loss, passing the full fiscal year range up to asOfDate
-    const fromDate = currentFiscalYear?.startDate || "1970-01-01";
-    const pl = computeProfitLoss(accounts, vouchers, invoices || [], fromDate, asOfDate);
-    return computeBalanceSheet(accounts, vouchers, invoices || [], asOfDate, pl.netProfit);
-  }, [accounts, vouchers, invoices, currentFiscalYear, asOfDate]);
-
-  const toggleGroup = (groupName: string) => {
-    setExpandedGroups(prev => {
-      const next = new Set(prev);
-      if (next.has(groupName)) next.delete(groupName);
-      else next.add(groupName);
-      return next;
-    });
-  };
-
-  const handleExportPDF = () => {
     try {
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text(companySettings?.companyName || "Sutra ERP", 14, 15);
-      doc.setFontSize(12);
-      doc.text("Balance Sheet", 14, 22);
-      doc.setFontSize(10);
-      doc.text(`As at: ${asOfDate}`, 14, 28);
-      
-      const tableData = [
-        ["ASSETS", ""],
-        ["Fixed Assets / Non-Current", formatNumber(bsData.assets.fixedAssets)],
-        ["Investments", formatNumber(bsData.assets.investments)],
-        ["Current Assets", formatNumber(bsData.assets.currentAssets)],
-        ["TOTAL ASSETS", formatNumber(bsData.assets.total)],
-        ["", ""],
-        ["EQUITY & LIABILITIES", ""],
-        ["Share Capital", formatNumber(bsData.liabilities.shareCapital)],
-        ["Reserves & Surplus", formatNumber(bsData.liabilities.retainedEarnings)],
-        ["Long Term Liabilities", formatNumber(bsData.liabilities.longTermLoans)],
-        ["Current Liabilities", formatNumber(bsData.liabilities.currentLiabilities)],
-        ["TOTAL EQUITY & LIABILITIES", formatNumber(bsData.liabilities.total)],
-      ];
+      const postedVouchers = vouchers.filter(
+        (v) => v.status === VoucherStatus.POSTED && v.date <= fiscalEnd
+      );
 
-      (doc as any).autoTable({
-        startY: 35,
-        head: [["Particulars", "Amount (Rs.)"]],
-        body: tableData,
-        theme: "grid",
-        styles: { fontSize: 9 },
-        headStyles: { fillColor: [21, 87, 176] }
-      });
+      // Compute running balances from opening + all posted vouchers up to fiscal end
+      const accountBalances = new Map<string, number>();
 
-      doc.save(`Balance_Sheet_${asOfDate}.pdf`);
-      toast.success("PDF exported successfully");
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to export PDF");
+      // Start with opening balances
+      for (const acc of accounts) {
+        if (acc.isGroup) continue;
+        const opDr = acc.openingBalanceDr || 0;
+        const opCr = acc.openingBalanceCr || 0;
+        accountBalances.set(acc.id, opDr - opCr);
+      }
+
+      // Add voucher effects
+      for (const v of postedVouchers) {
+        for (const line of v.lines) {
+          const current = accountBalances.get(line.accountId) || 0;
+          accountBalances.set(line.accountId, current + (line.debit || 0) - (line.credit || 0));
+        }
+      }
+
+      // Categorize
+      const assetAccounts = accounts.filter((a) => !a.isGroup && a.type === AccountType.ASSET);
+      const liabilityAccounts = accounts.filter((a) => !a.isGroup && a.type === AccountType.LIABILITY);
+      const equityAccounts = accounts.filter((a) => !a.isGroup && a.type === AccountType.EQUITY);
+
+      const assetItems = assetAccounts
+        .map((acc) => ({
+          id: acc.id,
+          name: acc.name,
+          code: acc.code,
+          amount: accountBalances.get(acc.id) || 0,
+        }))
+        .filter((i) => Math.abs(i.amount) > 0.01);
+
+      const liabilityItems = liabilityAccounts
+        .map((acc) => ({
+          id: acc.id,
+          name: acc.name,
+          code: acc.code,
+          amount: -(accountBalances.get(acc.id) || 0), // Liabilities have credit balance
+        }))
+        .filter((i) => Math.abs(i.amount) > 0.01);
+
+      const equityItems = equityAccounts
+        .map((acc) => ({
+          id: acc.id,
+          name: acc.name,
+          code: acc.code,
+          amount: -(accountBalances.get(acc.id) || 0), // Equity has credit balance
+        }))
+        .filter((i) => Math.abs(i.amount) > 0.01);
+
+      // Compute current period net profit for retained earnings
+      const incomeAccounts = accounts.filter((a) => !a.isGroup && a.type === AccountType.INCOME);
+      const expenseAccounts = accounts.filter((a) => !a.isGroup && a.type === AccountType.EXPENSE);
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      for (const acc of incomeAccounts) {
+        totalIncome += -(accountBalances.get(acc.id) || 0);
+      }
+      for (const acc of expenseAccounts) {
+        totalExpense += accountBalances.get(acc.id) || 0;
+      }
+      const netProfit = totalIncome - totalExpense;
+
+      const totalAssets = assetItems.reduce((s, i) => s + i.amount, 0);
+      const totalLiabilities = liabilityItems.reduce((s, i) => s + i.amount, 0);
+      const totalEquity = equityItems.reduce((s, i) => s + i.amount, 0);
+      const totalLiabAndEquity = totalLiabilities + totalEquity + netProfit;
+
+      return {
+        assetItems,
+        liabilityItems,
+        equityItems,
+        totalAssets: Math.round(totalAssets * 100) / 100,
+        totalLiabilities: Math.round(totalLiabilities * 100) / 100,
+        totalEquity: Math.round(totalEquity * 100) / 100,
+        netProfit: Math.round(netProfit * 100) / 100,
+        totalLiabAndEquity: Math.round(totalLiabAndEquity * 100) / 100,
+        isBalanced: Math.abs(totalAssets - totalLiabAndEquity) < 1,
+        difference: Math.round(Math.abs(totalAssets - totalLiabAndEquity) * 100) / 100,
+        error: null,
+      };
+    } catch (error) {
+      console.error("BalanceSheet computation error:", error);
+      return {
+        assetItems: [],
+        liabilityItems: [],
+        equityItems: [],
+        totalAssets: 0,
+        totalLiabilities: 0,
+        totalEquity: 0,
+        netProfit: 0,
+        totalLiabAndEquity: 0,
+        isBalanced: false,
+        difference: 0,
+        error: String(error),
+      };
+    }
+  }, [accounts, vouchers, fiscalEnd]);
+
+  const handlePrint = () => window.print();
+
+  const handleExport = () => {
+    try {
+      const rows: any[] = [];
+      rows.push(["BALANCE SHEET", "", `As on ${fiscalEnd}`]);
+      rows.push([]);
+      rows.push(["ASSETS", "", ""]);
+      rows.push(["Code", "Account", "Amount (Rs.)"]);
+      bsData.assetItems.forEach((i) => rows.push([i.code, i.name, i.amount]));
+      rows.push(["", "TOTAL ASSETS", bsData.totalAssets]);
+      rows.push([]);
+      rows.push(["LIABILITIES", "", ""]);
+      bsData.liabilityItems.forEach((i) => rows.push([i.code, i.name, i.amount]));
+      rows.push(["", "TOTAL LIABILITIES", bsData.totalLiabilities]);
+      rows.push([]);
+      rows.push(["EQUITY", "", ""]);
+      bsData.equityItems.forEach((i) => rows.push([i.code, i.name, i.amount]));
+      rows.push(["", "Current Period Profit", bsData.netProfit]);
+      rows.push(["", "TOTAL EQUITY", bsData.totalEquity + bsData.netProfit]);
+      rows.push([]);
+      rows.push(["", "TOTAL LIABILITIES + EQUITY", bsData.totalLiabAndEquity]);
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Balance Sheet");
+      XLSX.writeFile(wb, `BalanceSheet_${fiscalEnd}.xlsx`);
+      toast.success("Exported to Excel");
+    } catch {
+      toast.error("Export failed");
     }
   };
 
-  const renderSection = (title: string, amount: number, breakdown: Array<{groupName: string, ledgerName?: string, amount: number}>) => {
-    const sectionBreakdown = breakdown.filter(l => {
-      const g = l.groupName.toLowerCase();
-      if (title.toLowerCase().includes("fixed")) return g.includes("fixed") || g.includes("non-current");
-      if (title.toLowerCase().includes("investment")) return g.includes("investment");
-      if (title.toLowerCase().includes("current assets")) return !g.includes("fixed") && !g.includes("non-current") && !g.includes("investment");
-      
-      if (title.toLowerCase().includes("capital")) return g.includes("capital") || g.includes("equity");
-      if (title.toLowerCase().includes("reserve")) return g.includes("retained") || g.includes("reserve");
-      if (title.toLowerCase().includes("long term")) return g.includes("long term") || g.includes("secured");
-      if (title.toLowerCase().includes("current liabilities")) return !g.includes("capital") && !g.includes("equity") && !g.includes("retained") && !g.includes("reserve") && !g.includes("long term") && !g.includes("secured");
-      
-      return false;
-    });
-
-    const hasChildren = sectionBreakdown.length > 0;
-    const isExpanded = expandedGroups.has(title);
-
-    return (
-      <div className="border-b border-[#9DC07A] last:border-0">
-        <div 
-          className={`flex items-center justify-between px-3 py-2.5 ${hasChildren ? "cursor-pointer hover:bg-[#EBF5E2]" : ""}`}
-          onClick={() => hasChildren && toggleGroup(title)}
-        >
-          <div className="flex items-center gap-2">
-            {hasChildren && (
-              isExpanded ? <ChevronDown className="w-4 h-4 text-[#000000]" /> : <ChevronRight className="w-4 h-4 text-[#000000]" />
-            )}
-            {!hasChildren && <span className="w-4" />}
-            <span className="text-[12px] text-[#000000] font-medium">{title}</span>
-          </div>
-          <span className="font-mono text-[12px] text-right">{formatNumber(amount)}</span>
-        </div>
-        {hasChildren && isExpanded && (
-          <div className="bg-[#EBF5E2] border-y border-[#9DC07A] pb-2 pt-1">
-            {sectionBreakdown.map((item, idx) => (
-              <div key={idx} className="flex justify-between pl-10 pr-3 py-1.5 hover:bg-[#EBF5E2]">
-                <span className="text-[11px] text-[#000000]">{item.ledgerName || item.groupName}</span>
-                <span className="text-[11px] font-mono text-[#000000]">{formatNumber(item.amount)}</span>
-              </div>
-            ))}
-          </div>
-        )}
+  const renderSide = (
+    title: string,
+    items: { code: string; name: string; amount: number }[],
+    total: number,
+    totalLabel: string
+  ) => (
+    <div className="flex-1">
+      <div className="bg-[#EBF5E2] border border-[#9DC07A] px-3 py-2 font-bold text-[12px] text-[#000000] uppercase tracking-wide">
+        {title}
       </div>
-    );
-  };
+      <table className="w-full text-[12px]">
+        <tbody>
+          {items.length === 0 ? (
+            <tr>
+              <td colSpan={2} className="px-3 py-2 text-center text-[#000000] italic">
+                No entries
+              </td>
+            </tr>
+          ) : (
+            items.map((item) => (
+              <tr key={item.code + item.name} className="border-b border-[#9DC07A]/30 hover:bg-[#EBF5E2]/30">
+                <td className="px-3 py-1.5 text-[#000000]">
+                  <span className="font-mono text-[10px] text-[#000000] mr-2">{item.code}</span>
+                  {item.name}
+                </td>
+                <td className="px-3 py-1.5 text-right font-mono text-[#000000] w-32">
+                  Rs. {formatNumber(Math.abs(item.amount))}
+                </td>
+              </tr>
+            ))
+          )}
+          <tr className="bg-[#D4EABD] border-t-2 border-[#9DC07A] font-bold">
+            <td className="px-3 py-2 text-right text-[12px] text-[#000000] uppercase">
+              {totalLabel}
+            </td>
+            <td className="px-3 py-2 text-right font-mono text-[#000000] w-32">
+              Rs. {formatNumber(Math.abs(total))}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <PillTitle title="Balance Sheet" icon={Layers} />
-        {bsData.isBalanced ? (
-          <Badge className="bg-green-100 text-green-700 border border-green-200 px-3 py-1">
-            <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Balanced
-          </Badge>
-        ) : (
-          <Badge className="bg-red-100 text-red-700 border border-red-200 px-3 py-1">
-            <AlertTriangle className="w-3.5 h-3.5 mr-1.5" /> Not Balanced (Diff: Rs. {formatNumber(bsData.difference)})
-          </Badge>
-        )}
-      </div>
-      
+    <div style={{ background: "#e8e4f0", padding: 12 }}>
+      <PillTitle title="Balance Sheet" />
       <FormPanel>
-        <div className="flex items-end gap-4 mb-4 no-print">
-          <div className="w-64">
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">As Of Date</label>
-            <input 
-              type="date" 
-              value={asOfDate} 
-              onChange={e => setAsOfDate(e.target.value)}
-              className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" className="h-8" onClick={handleExportPDF}>
-              <Printer className="w-3.5 h-3.5 mr-1.5" />
-              Export PDF
-            </Button>
-          </div>
-        </div>
-
-        <div className="print-only hidden mb-6 text-center">
-          <h2 className="text-[15px] font-bold text-[#000000]">{companySettings?.companyName || "Company Name"}</h2>
-          <p className="text-[12px] text-[#000000]">PAN: {companySettings?.panNumber || "N/A"}</p>
-          <h3 className="text-[14px] font-semibold mt-2">Balance Sheet</h3>
-          <p className="text-[11px] text-[#000000]">As at: {asOfDate} ({currentFiscalYear?.name})</p>
-        </div>
-
-        {!bsData.isBalanced && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-[12px] flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+        <div className="flex flex-col gap-4 animate-fadeIn select-none">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <strong>Difference: Rs. {formatNumber(bsData.difference)}</strong> — check for unposted vouchers or opening balance mismatches.
+              <h1 className="text-[15px] font-semibold text-[#000000]">Balance Sheet</h1>
+              <p className="text-[11px] text-[#000000] mt-0.5">
+                As on {fiscalEnd} (FY {currentFiscalYear?.name || "—"})
+              </p>
+            </div>
+            <div className="flex items-center gap-2 no-print">
+              <button
+                onClick={handleExport}
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" /> Export
+              </button>
+              <button
+                onClick={handlePrint}
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5"
+              >
+                <Printer className="h-3.5 w-3.5" /> Print
+              </button>
             </div>
           </div>
-        )}
 
-        <div className="grid grid-cols-2 gap-6 border border-[#9DC07A] rounded-lg bg-white overflow-hidden shadow-sm">
-          {/* Assets Side */}
-          <div className="border-r border-[#9DC07A]">
-            <div className="bg-[#f5f6fa] border-b border-[#9DC07A] px-3 py-2.5">
-              <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Assets</h3>
-            </div>
-            {renderSection("Fixed Assets / Non-Current", bsData.assets.fixedAssets, bsData.assets.breakdown)}
-            {renderSection("Investments", bsData.assets.investments, bsData.assets.breakdown)}
-            {renderSection("Current Assets", bsData.assets.currentAssets, bsData.assets.breakdown)}
-            
-            <div className="mt-auto border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex items-center justify-between px-3 py-3">
-              <span className="text-[13px] font-bold text-[#1557b0]">Total Assets</span>
-              <span className="font-mono text-[14px] font-bold text-[#1557b0]">{formatNumber(bsData.assets.total)}</span>
-            </div>
+          {/* Balance indicator */}
+          <div className={`px-4 py-2 rounded-md border text-[12px] font-semibold ${bsData.isBalanced ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+            {bsData.isBalanced
+              ? "✓ Balance Sheet is balanced (Assets = Liabilities + Equity)"
+              : `✗ Unbalanced: Difference of Rs. ${formatNumber(bsData.difference)}`}
           </div>
 
-          {/* Liabilities Side */}
-          <div className="flex flex-col">
-            <div className="bg-[#f5f6fa] border-b border-[#9DC07A] px-3 py-2.5">
-              <h3 className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Equity & Liabilities</h3>
+          {bsData.error && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-3 text-red-700 text-[12px]">
+              Error: {bsData.error}
             </div>
-            {renderSection("Share Capital", bsData.liabilities.shareCapital, bsData.liabilities.breakdown)}
-            {renderSection("Reserves & Surplus (inc. Net Profit)", bsData.liabilities.retainedEarnings, bsData.liabilities.breakdown)}
-            {renderSection("Long Term Liabilities", bsData.liabilities.longTermLoans, bsData.liabilities.breakdown)}
-            {renderSection("Current Liabilities & Provisions", bsData.liabilities.currentLiabilities, bsData.liabilities.breakdown)}
-            
-            <div className="mt-auto border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex items-center justify-between px-3 py-3">
-              <span className="text-[13px] font-bold text-[#1557b0]">Total Equity & Liabilities</span>
-              <span className="font-mono text-[14px] font-bold text-[#1557b0]">{formatNumber(bsData.liabilities.total)}</span>
+          )}
+
+          {/* Two-column layout */}
+          <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Assets */}
+              {renderSide("Assets", bsData.assetItems, bsData.totalAssets, "Total Assets")}
+
+              {/* Right: Liabilities & Equity */}
+              <div className="flex-1">
+                {renderSide(
+                  "Liabilities",
+                  bsData.liabilityItems,
+                  bsData.totalLiabilities,
+                  "Total Liabilities"
+                )}
+                <div className="mt-4">
+                  {renderSide(
+                    "Equity & Reserves",
+                    [
+                      ...bsData.equityItems,
+                      { code: "—", name: "Current Period Net Profit", amount: bsData.netProfit },
+                    ],
+                    bsData.totalEquity + bsData.netProfit,
+                    "Total Equity"
+                  )}
+                </div>
+                <div className="bg-[#C9DEB5] border-2 border-[#000000] rounded-md px-4 py-3 mt-4 flex justify-between items-center">
+                  <span className="text-[12px] font-bold text-[#000000] uppercase">
+                    Total Liabilities + Equity
+                  </span>
+                  <span className="text-[15px] font-bold font-mono text-[#000000]">
+                    Rs. {formatNumber(Math.abs(bsData.totalLiabAndEquity))}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -227,4 +283,3 @@ const BalanceSheet: React.FC = () => {
 };
 
 export default BalanceSheet;
-
