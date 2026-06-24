@@ -95,8 +95,8 @@ const Header: React.FC = () => {
   const unreadAlerts = notifications.filter((n) => !n.read).length;
 
   return (
-    <header className="h-10 bg-white border-b px-3 flex items-center justify-between sticky top-0 z-40 select-none relative" style={{ borderColor: "var(--border)" }}>
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#1557b0]" />
+    <header className="h-10 bg-[#E4F1D9] border-b border-[#9DC07A] px-3 flex items-center justify-between sticky top-0 z-40 select-none relative" style={{ borderColor: "var(--border)" }}>
+      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#3D6B25]" />
       {/* 1. Left Section: Breadcrumb Path Tracking */}
       <div className="flex items-center gap-1.5 font-medium shrink-0">
         <Breadcrumb />
@@ -107,11 +107,12 @@ const Header: React.FC = () => {
         <button
           type="button"
           onClick={() => setSearchOpen(true)}
-          className="w-full flex items-center justify-between h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 text-gray-400 hover:bg-white transition-colors"
+          className="w-full flex items-center justify-between h-8 px-2.5 text-[12px] border rounded-md hover:bg-[#D4EABD] transition-colors"
+          style={{ background: "#EBF5E2", color: "#000000", borderColor: "#9DC07A" }}
         >
           <span className="flex items-center gap-1.5">
-            <Search className="h-3.5 w-3.5 text-gray-400" />
-            <span>Search anything...</span>
+            <Search className="h-3.5 w-3.5" style={{ color: "#000000" }} />
+            <span style={{ color: "#000000" }}>Search anything...</span>
           </span>
           <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] bg-white border border-gray-200 rounded font-mono text-gray-500">
             /
@@ -122,23 +123,24 @@ const Header: React.FC = () => {
 
       {/* 2. Middle Section: Company Header Entity Info */}
       <div className="hidden lg:flex flex-col items-center gap-0 absolute left-1/2 -translate-x-1/2">
-        <span className="text-[12px] font-bold text-gray-800 truncate max-w-xs leading-none">
+        <span className="text-[12px] font-bold truncate max-w-xs leading-none" style={{ color: "#000000" }}>
           {companySettings?.logo ? <img src={companySettings.logo} className="h-6 w-auto" alt={companySettings.name} /> : (companySettings?.name || "Sutra ERP")}
         </span>
-        <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-widest leading-none mt-0.5">{currentFiscalYear?.name || "FY 2083/84"}</span>
+        <span className="text-[9px] font-semibold uppercase tracking-widest leading-none mt-0.5" style={{ color: "#000000" }}>{currentFiscalYear?.name || "FY 2083/84"}</span>
       </div>
 
       {/* 3. Right Section: Live Calendars, Notifiers, User Session Dropdown */}
       <div className="flex items-center gap-4">
         {/* Date visual display widget */}
-        <div className="hidden md:flex flex-col text-right pr-4 border-r border-gray-200 gap-0.5">
+        <div className="hidden md:flex flex-col text-right pr-4 border-r border-[#9DC07A] gap-0.5">
           <span
-            className="text-[11px] font-semibold text-gray-700 leading-none"
+            className="text-[11px] font-semibold leading-none"
             title="Bikram Sambat Nepali calendar"
+            style={{ color: "#000000" }}
           >
             {dateStrBS} (B.S.)
           </span>
-          <span className="text-[10px] text-gray-400 leading-none">{dateStrAD} (A.D.)</span>
+          <span className="text-[10px] leading-none" style={{ color: "#000000" }}>{dateStrAD} (A.D.)</span>
         </div>
 
         {/* Help docs and Notification alerts bell */}
@@ -147,13 +149,14 @@ const Header: React.FC = () => {
             href="https://docs.sutraerp.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors"
+            style={{ color: "#000000" }}
             title="Help Documentation"
           >
             <HelpCircle className="h-4 w-4" />
           </a>
 
-          <button type="button" onClick={toggleDark} title="Toggle dark mode" className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+          <button type="button" onClick={toggleDark} title="Toggle dark mode" className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors" style={{ color: "#000000" }}>
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
@@ -161,7 +164,8 @@ const Header: React.FC = () => {
             <button
               type="button"
               onClick={() => setAlertsOpen(!alertsOpen)}
-              className="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors relative"
+              className="p-1.5 hover:bg-[#D4EABD] rounded-md transition-colors relative"
+              style={{ color: "#000000" }}
               title="Notification Center"
             >
               <Bell className="h-4 w-4" />
@@ -184,24 +188,24 @@ const Header: React.FC = () => {
             className="flex items-center gap-2 group p-1 rounded-lg hover:bg-gray-100/70 transition-colors focus:outline-none"
             title="User Settings Context"
           >
-            <div className="h-8 w-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-xs shadow-inner">
+            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-inner" style={{ background: "#C9DEB5", border: "1px solid #9DC07A", color: "#000000" }}>
               {currentUser?.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="hidden sm:flex flex-col text-left mr-1 shrink-0">
-              <span className="text-xs font-bold text-gray-800 leading-none">
+              <span className="text-xs font-bold leading-none" style={{ color: "#000000" }}>
                 {currentUser?.name}
               </span>
-              <span className="text-[10px] font-bold text-blue-600 tracking-wider uppercase leading-none mt-1">
+              <span className="text-[10px] font-bold tracking-wider uppercase leading-none mt-1" style={{ color: "#000000" }}>
                 {currentUser?.role || "User"}
               </span>
             </div>
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 mt-1.5 w-52 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
-              <div className="px-4 py-2.5 border-b border-gray-200 bg-gray-50/50">
-                <p className="text-xs font-bold text-gray-800 truncate">{currentUser?.name}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5 truncate">
+            <div className="absolute right-0 mt-1.5 w-52 rounded-lg shadow-lg py-1 z-50 border" style={{ background: "#EBF5E2", borderColor: "#9DC07A" }}>
+              <div className="px-4 py-2.5 border-b" style={{ background: "#D4EABD", borderColor: "#9DC07A" }}>
+                <p className="text-xs font-bold truncate" style={{ color: "#000000" }}>{currentUser?.name}</p>
+                <p className="text-[10px] mt-0.5 truncate" style={{ color: "#000000" }}>
                   {currentUser?.email || "No email associated"}
                 </p>
               </div>
@@ -212,9 +216,9 @@ const Header: React.FC = () => {
                   setCurrentPage("settings");
                   setProfileOpen(false);
                 }}
-                className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                className="w-full text-left px-4 py-2 text-xs hover:bg-[#D4EABD] flex items-center gap-2" style={{ color: "#000000" }}
               >
-                <Settings className="h-4 w-4 text-gray-500" />
+                <Settings className="h-4 w-4 text-[#000000]" />
                 <span>Control Panel Settings</span>
               </button>
 
@@ -224,9 +228,9 @@ const Header: React.FC = () => {
                   setCurrentPage("audit-logs");
                   setProfileOpen(false);
                 }}
-                className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                className="w-full text-left px-4 py-2 text-xs hover:bg-[#D4EABD] flex items-center gap-2" style={{ color: "#000000" }}
               >
-                <ShieldAlert className="h-4 w-4 text-gray-500" />
+                <ShieldAlert className="h-4 w-4 text-[#000000]" />
                 <span>Security logs audit</span>
               </button>
 

@@ -138,7 +138,7 @@ const BusyMenuBar: React.FC = () => {
       className="flex items-center shrink-0 relative"
       style={{ height: 26, background: "#D5E9C0", borderBottom: "1px solid #9DC07A", userSelect: "none", zIndex: 100 }}
     >
-      <span style={{ color: "#94a3b8", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
+      <span style={{ color: "#000000", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
       {MENU_TREE.map((menu, idx) => (
         <div key={menu.title} style={{ position: "relative" }}>
           <div
@@ -147,8 +147,8 @@ const BusyMenuBar: React.FC = () => {
             style={{
               padding: "2px 10px",
               cursor: "pointer",
-               background: openMenu === idx ? "#2563eb" : "transparent",
-               color: "#ffffff",
+               background: openMenu === idx ? "#3D6B25" : "transparent",
+               color: openMenu === idx ? "#ffffff" : "#000000",
               height: 26,
               fontWeight: openMenu === idx ? "bold" : "normal",
             }}
@@ -175,9 +175,9 @@ const BusyMenuBar: React.FC = () => {
                   <div
                     key={iidx}
                     onClick={() => navigate(item.page)}
-                    style={{ padding: "3px 20px 3px 28px", cursor: "pointer", color: "#ffffff", display: "flex", alignItems: "center", gap: 6, position: "relative" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "#2563eb"; (e.currentTarget as HTMLDivElement).style.color = "#ffffff"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; (e.currentTarget as HTMLDivElement).style.color = "#ffffff"; }}
+                    style={{ padding: "3px 20px 3px 28px", cursor: "pointer", color: "#000000", display: "flex", alignItems: "center", gap: 6, position: "relative" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "#3D6B25"; (e.currentTarget as HTMLDivElement).style.color = "#ffffff"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; (e.currentTarget as HTMLDivElement).style.color = "#000000"; }}
                   >
                     <span style={{ position: "absolute", left: 8, fontSize: 10 }}>•</span>
                     {item.label}
@@ -185,12 +185,12 @@ const BusyMenuBar: React.FC = () => {
                 )
               )}
               <div style={{ borderTop: "1px solid #9DC07A", display: "flex", gap: 0 }}>
-                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#ffffff" }}
+                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#000000" }}
                   onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#9DC07A")}
                   onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
                 >Add To Favourites</div>
                 <div style={{ width: 1, background: "#9DC07A" }} />
-                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#ffffff" }}
+                <div style={{ flex: 1, padding: "2px 8px", fontSize: 11, cursor: "pointer", textAlign: "center", color: "#000000" }}
                   onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = "#9DC07A")}
                   onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
                 >Create Shortcut</div>
