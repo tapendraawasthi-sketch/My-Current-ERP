@@ -280,7 +280,7 @@ const StockBook: React.FC = () => {
           {it.nameNepali && <div className="text-[11px] text-gray-500">{it.nameNepali}</div>}
         </td>
         <td className="px-3 py-2">
-          <Badge variant={it.type === ItemType.PRODUCT ? "info" : "purple"}>
+          <Badge variant={it.type === ItemType.PRODUCT ? "info" : "default"}>
             {it.type === ItemType.PRODUCT ? "Product" : "Service"}
           </Badge>
         </td>
@@ -602,7 +602,7 @@ const StockBook: React.FC = () => {
                   <div className="text-xs text-gray-500">{detailItem.nameNepali}</div>
                 )}
                 <div className="mt-1 flex items-center gap-2">
-                  <Badge variant={detailItem.type === ItemType.PRODUCT ? "info" : "purple"}>
+                  <Badge variant={detailItem.type === ItemType.PRODUCT ? "info" : "default"}>
                     {detailItem.type}
                   </Badge>
                   {detailItem.hsnCode && <Badge variant="default">HSN: {detailItem.hsnCode}</Badge>}
@@ -731,7 +731,7 @@ const StockBook: React.FC = () => {
                     icon={<ShoppingCart className="h-4 w-4" />}
                     onClick={() => {
                       setDetailItem(null);
-                      setCurrentPage("invoices-new");
+                      setCurrentPage("purchase-invoice");
                     }}
                   >
                     New Purchase
@@ -742,7 +742,7 @@ const StockBook: React.FC = () => {
                     icon={<TrendingUp className="h-4 w-4" />}
                     onClick={() => {
                       setDetailItem(null);
-                      setCurrentPage("invoices-new");
+                      setCurrentPage("sales-invoice");
                     }}
                   >
                     New Sales

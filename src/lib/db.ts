@@ -202,11 +202,11 @@ export class SutraDB extends Dexie {
     });
 
     this.version(8).stores({
-      vouchers: "++id, date, voucherNo, type, status, partyId, [companyId+date]",
-      invoices: "++id, date, invoiceNo, type, partyId, status, paymentStatus, [companyId+date], [partyId+paymentStatus]",
+      vouchers: "++id, date, voucherNo, type, status, partyId",
+      invoices: "++id, date, invoiceNo, type, partyId, status, paymentStatus, [partyId+paymentStatus]",
       stockMovements: "++id, date, type, itemId, warehouseId, referenceId, [itemId+date]",
       auditLogs: "++id, timestamp, userId, module, action",
-      tdsEntries: "++id, date, partyId, voucherId, tdsType, deposited, [status+date]"
+      tdsEntries: "++id, date, partyId, voucherId, tdsType, deposited, status"
     });
   }
 }

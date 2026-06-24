@@ -13,8 +13,12 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window === "undefined") return "light";
-    const saved = localStorage.getItem("sutra-theme");
-    return (saved as Theme) || "light";
+    try {
+      const saved = localStorage.getItem("sutra-theme");
+      return (saved as Theme) || "light";
+    } catch {
+      return "light";
+    }
   });
 
   useEffect(() => {
@@ -24,7 +28,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else {
       root.classList.remove("dark");
     }
-    localStorage.setItem("sutra-theme", theme);
+    try { localStorage.setItem("sutra-theme", theme); } catch { /* storage blocked */ }
   }, [theme]);
 
   const toggleTheme = () => {
