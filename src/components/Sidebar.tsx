@@ -58,6 +58,8 @@ const menuGroups: MenuGroup[] = [
       { label: "Contra Voucher", page: "contra", icon: ArrowLeftRight },
       { label: "Debit Note", page: "debit-note", icon: CreditCard },
       { label: "Credit Note", page: "credit-note", icon: CreditCard },
+      { label: "Production", page: "production", icon: Package },
+      { label: "Unassemble", page: "unassemble", icon: Package },
     ],
   },
   {
@@ -75,6 +77,9 @@ const menuGroups: MenuGroup[] = [
       { label: "Delivery Challan", page: "delivery-challan", icon: Truck },
       { label: "Goods Receipt Note", page: "grn", icon: Archive },
       { label: "Stock Journal", page: "stock-journal", icon: ArrowLeftRight },
+      { label: "Material Issued", page: "material-issued", icon: ArrowLeftRight },
+      { label: "Material Received", page: "material-received", icon: ArrowLeftRight },
+      { label: "Physical Stock", page: "physical-stock", icon: ClipboardList },
       { label: "POS/Counter Sale", page: "pos", icon: Store },
     ],
   },

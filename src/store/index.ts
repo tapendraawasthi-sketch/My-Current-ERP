@@ -189,6 +189,19 @@ interface AppState {
   // TDS module state
   tdsEntries: any[];
   tdsRates: any[];
+  // New transaction types
+  stockJournals: any[];
+  productions: any[];
+  unassembles: any[];
+  materialIssued: any[];
+  materialReceived: any[];
+  physicalStocks: any[];
+  addStockJournal: (entry: any) => Promise<void>;
+  addProduction: (entry: any) => Promise<void>;
+  addUnassemble: (entry: any) => Promise<void>;
+  addMaterialIssued: (entry: any) => Promise<void>;
+  addMaterialReceived: (entry: any) => Promise<void>;
+  addPhysicalStock: (entry: any) => Promise<void>;
   addTdsEntry: (entry: Partial<any>) => Promise<any>;
   updateTdsEntry: (id: string, updates: Partial<any>) => Promise<void>;
   // Administration module state
@@ -354,6 +367,12 @@ export const useStore = create<AppState>((set, get) => ({
   employees: [],
   tdsEntries: [],
   tdsRates: DEFAULT_TDS_RATES,
+  stockJournals: [],
+  productions: [],
+  unassembles: [],
+  materialIssued: [],
+  materialReceived: [],
+  physicalStocks: [],
   bankStatements: [],
   journalEntries: [],
   unitConversions: [],
@@ -451,6 +470,12 @@ export const useStore = create<AppState>((set, get) => ({
       employees,
       bankStatements,
       tdsEntries,
+      stockJournals,
+      productions,
+      unassembles,
+      materialIssued,
+      materialReceived,
+      physicalStocks,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -485,6 +510,12 @@ export const useStore = create<AppState>((set, get) => ({
       db.employees.toArray(),
       db.bankStatements.toArray(),
       db.tdsEntries.toArray(),
+      db.stockJournals.toArray(),
+      db.productions.toArray(),
+      db.unassembles.toArray(),
+      db.materialIssued.toArray(),
+      db.materialReceived.toArray(),
+      db.physicalStocks.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -551,6 +582,12 @@ export const useStore = create<AppState>((set, get) => ({
       employees,
       bankStatements,
       tdsEntries: tdsEntries as any[],
+      stockJournals: stockJournals as any[],
+      productions: productions as any[],
+      unassembles: unassembles as any[],
+      materialIssued: materialIssued as any[],
+      materialReceived: materialReceived as any[],
+      physicalStocks: physicalStocks as any[],
       journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
 
@@ -615,6 +652,37 @@ export const useStore = create<AppState>((set, get) => ({
 
   setCurrentPage: (page) => set({ currentPage: page }),
   setReportFilters: (filters) => set({ reportFilters: filters }),
+
+  addStockJournal: async (entry) => {
+    const db = getDB();
+    await db.stockJournals.put(entry);
+    set((state) => ({ stockJournals: [entry, ...state.stockJournals] }));
+  },
+  addProduction: async (entry) => {
+    const db = getDB();
+    await db.productions.put(entry);
+    set((state) => ({ productions: [entry, ...state.productions] }));
+  },
+  addUnassemble: async (entry) => {
+    const db = getDB();
+    await db.unassembles.put(entry);
+    set((state) => ({ unassembles: [entry, ...state.unassembles] }));
+  },
+  addMaterialIssued: async (entry) => {
+    const db = getDB();
+    await db.materialIssued.put(entry);
+    set((state) => ({ materialIssued: [entry, ...state.materialIssued] }));
+  },
+  addMaterialReceived: async (entry) => {
+    const db = getDB();
+    await db.materialReceived.put(entry);
+    set((state) => ({ materialReceived: [entry, ...state.materialReceived] }));
+  },
+  addPhysicalStock: async (entry) => {
+    const db = getDB();
+    await db.physicalStocks.put(entry);
+    set((state) => ({ physicalStocks: [entry, ...state.physicalStocks] }));
+  },
 
   // ── Accounts ──────────────────────────────────────────────────────────────
   addAccount: async (account) => {

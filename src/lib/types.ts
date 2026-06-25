@@ -29,6 +29,11 @@ export enum VoucherType {
   STOCK_JOURNAL = "stock-journal",
   OPENING_BALANCE = "opening-balance",
   JOURNAL_VOUCHER = "journal",
+  PRODUCTION = 'PRODUCTION',
+  UNASSEMBLE = 'UNASSEMBLE',
+  MATERIAL_ISSUED = 'MATERIAL_ISSUED',
+  MATERIAL_RECEIVED = 'MATERIAL_RECEIVED',
+  PHYSICAL_STOCK = 'PHYSICAL_STOCK',
 }
 
 export enum VoucherStatus {
@@ -774,3 +779,79 @@ export interface Order {
   approvedBy?: string;
   approvedAt?: string;
 }
+
+export interface StockJournalItem {
+  id: string;
+  itemId: string;
+  itemName: string;
+  qty: number;
+  rate: number;
+  amount: number;
+  fromGodown?: string;
+  toGodown?: string;
+}
+
+export interface StockJournalEntry {
+  id: string;
+  date: string;
+  refNo?: string;
+  narration?: string;
+  items: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+
+export interface ProductionEntry {
+  id: string;
+  date: string;
+  refNo?: string;
+  narration?: string;
+  finishedGoods: StockJournalItem[];
+  rawMaterials: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+
+export interface UnassembleEntry {
+  id: string;
+  date: string;
+  refNo?: string;
+  narration?: string;
+  finishedGoods: StockJournalItem[];
+  components: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+
+export interface MaterialIssuedEntry {
+  id: string;
+  date: string;
+  partyName: string;
+  refNo?: string;
+  narration?: string;
+  items: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+
+export interface MaterialReceivedEntry {
+  id: string;
+  date: string;
+  partyName: string;
+  refNo?: string;
+  narration?: string;
+  items: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+
+export interface PhysicalStockEntry {
+  id: string;
+  date: string;
+  refNo?: string;
+  narration?: string;
+  items: StockJournalItem[];
+  status: 'DRAFT' | 'POSTED';
+  createdAt: string;
+}
+

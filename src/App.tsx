@@ -19,6 +19,11 @@ import DebitCreditNote from "./pages/DebitCreditNote";
 import SalesOrder from "./pages/SalesOrder";
 import PurchaseOrder from "./pages/PurchaseOrder";
 import StockJournalPage from "./pages/StockJournalPage";
+import ProductionPage from "./pages/ProductionPage";
+import UnassemblePage from "./pages/UnassemblePage";
+import MaterialIssuedPage from "./pages/MaterialIssuedPage";
+import MaterialReceivedPage from "./pages/MaterialReceivedPage";
+import PhysicalStockPage from "./pages/PhysicalStockPage";
 import GeneralLedger from "./pages/GeneralLedger";
 import TrialBalance from "./pages/TrialBalance";
 import ProfitLoss from "./pages/ProfitLoss";
@@ -200,6 +205,36 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <StockJournalPage />
+        </ErrorBoundary>
+      );
+    case "production":
+      return (
+        <ErrorBoundary>
+          <ProductionPage />
+        </ErrorBoundary>
+      );
+    case "unassemble":
+      return (
+        <ErrorBoundary>
+          <UnassemblePage />
+        </ErrorBoundary>
+      );
+    case "material-issued":
+      return (
+        <ErrorBoundary>
+          <MaterialIssuedPage />
+        </ErrorBoundary>
+      );
+    case "material-received":
+      return (
+        <ErrorBoundary>
+          <MaterialReceivedPage />
+        </ErrorBoundary>
+      );
+    case "physical-stock":
+      return (
+        <ErrorBoundary>
+          <PhysicalStockPage />
         </ErrorBoundary>
       );
     case "opening-balance":

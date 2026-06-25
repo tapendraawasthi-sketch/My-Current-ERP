@@ -50,6 +50,12 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       { label: "GRN", page: "grn" },
       { separator: true, label: "" },
       { label: "Stock Journal", page: "stock-journal" },
+      { separator: true, label: "" },
+      { label: "Production", page: "production" },
+      { label: "Unassemble", page: "unassemble" },
+      { label: "Material Issued", page: "material-issued" },
+      { label: "Material Received", page: "material-received" },
+      { label: "Physical Stock", page: "physical-stock" },
     ],
   },
   {

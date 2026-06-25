@@ -290,31 +290,31 @@ const StockJournalPage: React.FC = () => {
           </Badge>
         </div>
 
-        <Card border padding="md">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <NepaliDatePicker label="Date" value={date} onChange={setDate} required />
-            <Input
-              label="Narration"
-              value={narration}
-              onChange={setNarration}
-              placeholder="Purpose of stock transfer"
-            />
-            <div />
+        <div className="card">
+          <h3 className="section-title">Stock Journal Info</h3>
+          <div className="form-grid">
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
+              <NepaliDatePicker value={date} onChange={setDate} required />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
+              <Input
+                value={narration}
+                onChange={setNarration}
+                placeholder="Purpose of stock transfer"
+              />
+            </div>
           </div>
-        </Card>
 
-        <Card
-          title="Transfer Lines"
-          subtitle="Choose item, source and destination warehouses."
-          border
-        >
+          <h4 className="section-title mt-6">Transfer Lines</h4>
           <div className="space-y-3">
             {lines.map((line, index) => {
               const item = items.find((it) => it.id === line.itemId);
               return (
                 <div
                   key={line.id}
-                  className="grid gap-3 md:grid-cols-6 items-end border-b border-[#9DC07A] pb-3 last:border-0 last:pb-0"
+                  className="form-row"
                 >
                   <div className="md:col-span-2">
                     <ItemSelect
@@ -395,28 +395,10 @@ const StockJournalPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </Card>
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setMode("list");
-              resetForm();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            loading={saving}
-            icon={<Save className="h-4 w-4" />}
-            onClick={handleCreate}
-          >
-            Save Stock Journal
-          </Button>
+          <div className="actions pt-4 border-t border-gray-100 mt-4">
+            <button className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md" onClick={handleCreate} disabled={saving}>Save Stock Journal</button>
+            <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50" onClick={() => { setMode('list'); resetForm(); }}>Cancel</button>
+          </div>
         </div>
       </div>
     );
@@ -444,7 +426,7 @@ const StockJournalPage: React.FC = () => {
         </Button>
       </div>
 
-      <Card border padding="none">
+      <div className="table-card">
         <SearchableTable
           columns={columns as any}
           data={journalRows}
@@ -453,10 +435,9 @@ const StockJournalPage: React.FC = () => {
           emptyMessage="No stock journals available. Create a new stock transfer."
           placeholder="Search journal no or narration…"
         />
-      </Card>
+      </div>
     </div>
   );
 };
 
 export default StockJournalPage;
-

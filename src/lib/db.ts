@@ -527,6 +527,12 @@ class SutraDB extends Dexie {
   bankStatements!: Table<DBBankStatement>;
   tdsEntries!: Table<any>;
   auditLogs!: Table<any>;
+  stockJournals!: Table<any>;
+  productions!: Table<any>;
+  unassembles!: Table<any>;
+  materialIssued!: Table<any>;
+  materialReceived!: Table<any>;
+  physicalStocks!: Table<any>;
 
   constructor() {
     super("SutraERP");
@@ -587,6 +593,16 @@ class SutraDB extends Dexie {
     // Version 6 — Audit Logs
     this.version(6).stores({
       auditLogs: "id, timestamp, userId, action, module, recordId, recordType",
+    });
+
+    // Version 7 — New Transaction Modules
+    this.version(7).stores({
+      stockJournals: 'id, date, status',
+      productions: 'id, date, status',
+      unassembles: 'id, date, status',
+      materialIssued: 'id, date, status',
+      materialReceived: 'id, date, status',
+      physicalStocks: 'id, date, status',
     });
   }
 }
