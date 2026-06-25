@@ -561,19 +561,44 @@ export default function App() {
         <MainRouter />
       </Layout>
       <ShortcutPanel />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: "#1A2E14",
-            color: "#E4F1D9",
-            fontSize: "12px",
-            fontWeight: "500",
-            borderRadius: "6px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          },
-        }}
-      />
+<Toaster
+  position="top-right"
+  toastOptions={{
+    duration: 4000,
+    style: {
+      background: "#1F2937",
+      color: "#FFFFFF",
+      fontSize: "12px",
+      fontWeight: "500",
+      borderRadius: "6px",
+      boxShadow: "0 4px 16px rgba(0,0,0,0.35)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      maxWidth: "380px",
+    },
+    success: {
+      style: {
+        background: "#14532D",
+        color: "#FFFFFF",
+        border: "1px solid #22c55e",
+      },
+      iconTheme: {
+        primary: "#4ade80",
+        secondary: "#14532D",
+      },
+    },
+    error: {
+      style: {
+        background: "#7F1D1D",
+        color: "#FFFFFF",
+        border: "1px solid #ef4444",
+      },
+      iconTheme: {
+        primary: "#f87171",
+        secondary: "#7F1D1D",
+      },
+    },
+  }}
+/>
     </>
   );
 }

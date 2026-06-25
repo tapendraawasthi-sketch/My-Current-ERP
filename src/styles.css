@@ -686,11 +686,11 @@ svg, svg * {
 .min-h-screen { background-color: #E4F1D9 !important; }
 
 /* ── TOAST NOTIFICATIONS ── */
-[class*="toast"], [class*="Toaster"] {
-  background: #EBF5E2 !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-}
+/* Styling is handled entirely via toastOptions in src/App.tsx.
+   Do NOT add CSS rules here targeting react-hot-toast elements —
+   the library uses goober CSS-in-JS with auto-generated class names
+   so attribute selectors like [class*="toast"] match wrapper divs
+   but not the toast message itself, causing split background/text conflicts. */
 
 /* ===== SUTRA ERP GLOBAL UTILITY CLASSES ===== */
 
