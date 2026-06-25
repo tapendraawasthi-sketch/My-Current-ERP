@@ -6,33 +6,33 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 
-const InventoryReport: React.FC = () => {
-  const { stockMovements, companySettings } = useStore();
+const VouchersRegister: React.FC = () => {
+  const { vouchers, companySettings } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [options, setOptions] = useState({});
 
-  const data = useMemo(() => stockMovements.map(m => ({
-    date: m.date,
-    item: m.itemName,
-    qty: formatNumber(m.qty || 0),
-    rate: formatNumber(m.rate || 0),
-    amount: formatNumber(m.amount || 0),
-  })), [stockMovements]);
+  const data = useMemo(() => vouchers.map(v => ({
+    date: v.date,
+    voucherNo: v.voucherNo,
+    type: v.type,
+    narration: v.narration || "—",
+    amount: formatNumber(v.totalDebit || v.totalCredit || 0),
+  })), [vouchers]);
 
   const columns = [
     { key: "date", label: "Date" },
-    { key: "item", label: "Item" },
-    { key: "qty", label: "Qty", align: "right" },
-    { key: "rate", label: "Rate", align: "right" },
+    { key: "voucherNo", label: "Voucher No" },
+    { key: "type", label: "Type" },
+    { key: "narration", label: "Narration" },
     { key: "amount", label: "Amount", align: "right" },
   ];
 
   return (
-    <ReportShell title="Inventory Report" subtitle="Movement register" companyName={companySettings?.companyNameEn} onPrint={() => window.print()} onOptions={() => setOptionsOpen(true)}>
+    <ReportShell title="Vouchers Register" subtitle="All vouchers" companyName={companySettings?.companyNameEn} onPrint={() => window.print()} onOptions={() => setOptionsOpen(true)}>
       <ReportGrid columns={columns} data={data} />
       <ReportOptionsModal open={optionsOpen} onClose={() => setOptionsOpen(false)} onApply={setOptions} initial={options} />
     </ReportShell>
   );
 };
 
-export default InventoryReport;
+export default VouchersRegister;
