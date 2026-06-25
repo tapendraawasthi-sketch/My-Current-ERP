@@ -29,7 +29,6 @@ const ProfitLoss: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const [options, setOptions] = useState({ includeZero: true });
   const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
 
   const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
@@ -41,14 +40,25 @@ const ProfitLoss: React.FC = () => {
   const fiscalStart = currentFiscalYear?.startDate || "2026-04-14";
   const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
 
+  const [plOptions, setPlOptions] = useState({
+    startDate: fiscalStart,
+    endDate: fiscalEnd,
+    updateClosingStock: false,
+    showSecondLevel: false,
+    showGroupsSeparate: false,
+    showPreviousYear: false,
+    showRatios: false,
+    scaleFactor: 1,
+  });
+
   const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
   const ledgerTotals = useMemo(
     () =>
       computeLedgerTotals(accounts, vouchers, {
-        startDate: fiscalStart,
-        endDate: fiscalEnd,
+        startDate: plOptions.startDate,
+        endDate: plOptions.endDate,
       }),
-    [accounts, vouchers, fiscalStart, fiscalEnd]
+    [accounts, vouchers, plOptions.startDate, plOptions.endDate]
   );
   const groupTotals = useMemo(
     () => computeGroupTotals(tree, ledgerTotals),
@@ -79,7 +89,7 @@ const ProfitLoss: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, options]);
+  }, [rootGroups, groupTotals]);
 
   const detailedRows = useMemo(() => {
     const left: any[] = [];
@@ -119,7 +129,6 @@ const ProfitLoss: React.FC = () => {
           .map((ledger) => {
             const totals = ledgerTotals.get(ledger.id);
             const showRow =
-              options.includeZero ||
               totals?.hasActivity ||
               (totals && (totals.closingDr > 0 || totals.closingCr > 0));
             if (!showRow) return null;
@@ -145,13 +154,13 @@ const ProfitLoss: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, options]);
+  }, [rootGroups, groupTotals, ledgerTotals]);
 
   const ledgerMonthRows = useMemo(() => {
     if (!activeLedgerId) return [];
     const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      startDate: fiscalStart,
-      endDate: fiscalEnd,
+      startDate: plOptions.startDate,
+      endDate: plOptions.endDate,
     });
     return groupEntriesByMonth(entries).map((m) => ({
       monthKey: m.monthKey,
@@ -162,7 +171,7 @@ const ProfitLoss: React.FC = () => {
         setDrillLevel("entries");
       },
     }));
-  }, [activeLedgerId, vouchers, fiscalStart, fiscalEnd]);
+  }, [activeLedgerId, vouchers, plOptions.startDate, plOptions.endDate]);
 
   const entryRows = useMemo(() => {
     if (!activeLedgerId || !activeMonth) return [];
@@ -182,45 +191,45 @@ const ProfitLoss: React.FC = () => {
   }, [activeLedgerId, activeMonth, vouchers]);
 
   const drillBack = () => {
-    if (drillLevel === "entries") {
-      setDrillLevel("month");
-      return;
-    }
-    if (drillLevel === "month") {
-      setDrillLevel("ledger");
-      return;
-    }
-    if (drillLevel === "ledger") {
-      setDrillLevel("subgroup");
-      return;
-    }
-    if (drillLevel === "subgroup") {
-      setDrillLevel("group");
-      return;
-    }
+    if (drillLevel === "entries") return setDrillLevel("month");
+    if (drillLevel === "month") return setDrillLevel("ledger");
+    if (drillLevel === "ledger") return setDrillLevel("subgroup");
+    if (drillLevel === "subgroup") return setDrillLevel("group");
   };
 
   const openVoucher = (row: any) => {
     if (!row.voucherId) return;
-    navigate(`/vouchers/${row.voucherId}`);
+    navigate({ to: `/vouchers/${row.voucherId}` });
+  };
+
+  const handleExport = () => {
+    const rows = mode === "grouped" ? groupedRows : detailedRows;
+    exportToExcel(
+      "Profit Loss",
+      ["Account", "Amount"],
+      [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
+    );
   };
 
   return (
     <ReportShell
       title="Profit & Loss"
-      subtitle="Income Statement (T-Format)"
+      subtitle="Income Statement"
       companyName={companySettings?.companyNameEn}
-      periodText={`From ${fiscalStart} to ${fiscalEnd}`}
+      periodText={`From ${plOptions.startDate} to ${plOptions.endDate}`}
       onPrint={() => window.print()}
-      onExport={() => {
-        const rows = mode === "grouped" ? groupedRows : detailedRows;
-        exportToExcel(
-          "Profit Loss",
-          ["Account", "Amount"],
-          [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
-        );
-      }}
+      onExport={handleExport}
       onOptions={() => setOptionsOpen(true)}
+      actionBarButtons={[
+        { label: "Email - [M]" },
+        { label: "Print - [P]" },
+        { label: "Refresh - [R]" },
+        { label: "Export - [E]" },
+        { label: "Search - F3" },
+        { label: "Summary - F5" },
+        { label: "Filter - F7" },
+        { label: "Custom Columns" },
+      ]}
       toolbarLeft={
         <div className="report-toggle">
           <button className={mode === "grouped" ? "active" : ""} onClick={() => setMode("grouped")}>
@@ -318,10 +327,19 @@ const ProfitLoss: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
+        title="Profit & Loss A/c"
         onClose={() => setOptionsOpen(false)}
-        onApply={(opts) => setOptions({ ...options, ...opts })}
-        initial={options}
-      />
+        onApply={() => setOptionsOpen(false)}
+      >
+        <div className="report-option-row"><span>Starting Date</span><input type="date" value={plOptions.startDate} onChange={(e) => setPlOptions({ ...plOptions, startDate: e.target.value })} /></div>
+        <div className="report-option-row"><span>Ending Date</span><input type="date" value={plOptions.endDate} onChange={(e) => setPlOptions({ ...plOptions, endDate: e.target.value })} /></div>
+        <div className="report-option-row"><span>Update Closing Stock ?</span><select value={plOptions.updateClosingStock ? "Y" : "N"} onChange={(e) => setPlOptions({ ...plOptions, updateClosingStock: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Second Level Group Details</span><select value={plOptions.showSecondLevel ? "Y" : "N"} onChange={(e) => setPlOptions({ ...plOptions, showSecondLevel: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Groups and Amounts in separate columns</span><select value={plOptions.showGroupsSeparate ? "Y" : "N"} onChange={(e) => setPlOptions({ ...plOptions, showGroupsSeparate: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Previous Year Balances also</span><select value={plOptions.showPreviousYear ? "Y" : "N"} onChange={(e) => setPlOptions({ ...plOptions, showPreviousYear: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Ratio(s)</span><select value={plOptions.showRatios ? "Y" : "N"} onChange={(e) => setPlOptions({ ...plOptions, showRatios: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Specify Scale Factor</span><input type="number" value={plOptions.scaleFactor} onChange={(e) => setPlOptions({ ...plOptions, scaleFactor: Number(e.target.value) })} /></div>
+      </ReportOptionsModal>
     </ReportShell>
   );
 };

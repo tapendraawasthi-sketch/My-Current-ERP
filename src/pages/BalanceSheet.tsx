@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import ReportShell from "../components/reporting/ReportShell";
@@ -29,7 +29,6 @@ const BalanceSheet: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const [options, setOptions] = useState({ includeZero: true });
   const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
 
   const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
@@ -40,13 +39,30 @@ const BalanceSheet: React.FC = () => {
 
   const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
 
+  const [bsOptions, setBsOptions] = useState({
+    startDate: fiscalEnd,
+    endDate: fiscalEnd,
+    updateStock: false,
+    showSecondLevel: true,
+    showGroupsSeparate: true,
+    showPreviousYear: false,
+    showRatios: false,
+    showZeroDuringDrill: false,
+    skipPL: false,
+    scaleFactor: 1,
+  });
+
+  useEffect(() => {
+    if (bsOptions.showSecondLevel) setMode("detailed");
+  }, [bsOptions.showSecondLevel]);
+
   const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
   const ledgerTotals = useMemo(
     () =>
       computeLedgerTotals(accounts, vouchers, {
-        endDate: fiscalEnd,
+        endDate: bsOptions.endDate,
       }),
-    [accounts, vouchers, fiscalEnd]
+    [accounts, vouchers, bsOptions.endDate]
   );
   const groupTotals = useMemo(
     () => computeGroupTotals(tree, ledgerTotals),
@@ -79,7 +95,7 @@ const BalanceSheet: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, options]);
+  }, [rootGroups, groupTotals]);
 
   const detailedRows = useMemo(() => {
     const left: any[] = [];
@@ -119,7 +135,7 @@ const BalanceSheet: React.FC = () => {
           .map((ledger) => {
             const totals = ledgerTotals.get(ledger.id);
             const showRow =
-              options.includeZero ||
+              bsOptions.showZeroDuringDrill ||
               totals?.hasActivity ||
               (totals && (totals.closingDr > 0 || totals.closingCr > 0));
             if (!showRow) return null;
@@ -145,12 +161,12 @@ const BalanceSheet: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, options]);
+  }, [rootGroups, groupTotals, ledgerTotals, bsOptions.showZeroDuringDrill]);
 
   const ledgerMonthRows = useMemo(() => {
     if (!activeLedgerId) return [];
     const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      endDate: fiscalEnd,
+      endDate: bsOptions.endDate,
     });
     return groupEntriesByMonth(entries).map((m) => ({
       monthKey: m.monthKey,
@@ -161,7 +177,7 @@ const BalanceSheet: React.FC = () => {
         setDrillLevel("entries");
       },
     }));
-  }, [activeLedgerId, vouchers, fiscalEnd]);
+  }, [activeLedgerId, vouchers, bsOptions.endDate]);
 
   const entryRows = useMemo(() => {
     if (!activeLedgerId || !activeMonth) return [];
@@ -181,45 +197,45 @@ const BalanceSheet: React.FC = () => {
   }, [activeLedgerId, activeMonth, vouchers]);
 
   const drillBack = () => {
-    if (drillLevel === "entries") {
-      setDrillLevel("month");
-      return;
-    }
-    if (drillLevel === "month") {
-      setDrillLevel("ledger");
-      return;
-    }
-    if (drillLevel === "ledger") {
-      setDrillLevel("subgroup");
-      return;
-    }
-    if (drillLevel === "subgroup") {
-      setDrillLevel("group");
-      return;
-    }
+    if (drillLevel === "entries") return setDrillLevel("month");
+    if (drillLevel === "month") return setDrillLevel("ledger");
+    if (drillLevel === "ledger") return setDrillLevel("subgroup");
+    if (drillLevel === "subgroup") return setDrillLevel("group");
   };
 
   const openVoucher = (row: any) => {
     if (!row.voucherId) return;
-    navigate(`/vouchers/${row.voucherId}`);
+    navigate({ to: `/vouchers/${row.voucherId}` });
+  };
+
+  const handleExport = () => {
+    const rows = mode === "grouped" ? groupedRows : detailedRows;
+    exportToExcel(
+      "Balance Sheet",
+      ["Account", "Amount"],
+      [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
+    );
   };
 
   return (
     <ReportShell
       title="Balance Sheet"
-      subtitle="Statement of Financial Position (T-Format)"
+      subtitle="Statement of Financial Position"
       companyName={companySettings?.companyNameEn}
-      periodText={`As at ${fiscalEnd}`}
+      periodText={`As at ${bsOptions.endDate}`}
       onPrint={() => window.print()}
-      onExport={() => {
-        const rows = mode === "grouped" ? groupedRows : detailedRows;
-        exportToExcel(
-          "Balance Sheet",
-          ["Account", "Amount"],
-          [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
-        );
-      }}
+      onExport={handleExport}
       onOptions={() => setOptionsOpen(true)}
+      actionBarButtons={[
+        { label: "Email - [M]" },
+        { label: "Print - [P]" },
+        { label: "Refresh - [R]" },
+        { label: "Export - [E]" },
+        { label: "Search - F3" },
+        { label: "Summary - F5" },
+        { label: "Filter - F7" },
+        { label: "Custom Columns" },
+      ]}
       toolbarLeft={
         <div className="report-toggle">
           <button className={mode === "grouped" ? "active" : ""} onClick={() => setMode("grouped")}>
@@ -234,10 +250,10 @@ const BalanceSheet: React.FC = () => {
     >
       {drillLevel === "group" && (
         <TFormatReport
-          leftTitle="Assets"
-          rightTitle="Liabilities & Equity"
-          leftRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
-          rightRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
+          leftTitle="Liabilities & Equity"
+          rightTitle="Assets"
+          leftRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
+          rightRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
         />
       )}
 
@@ -317,10 +333,27 @@ const BalanceSheet: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
+        title="Balance Sheet"
         onClose={() => setOptionsOpen(false)}
-        onApply={(opts) => setOptions({ ...options, ...opts })}
-        initial={options}
-      />
+        onApply={() => setOptionsOpen(false)}
+      >
+        <div className="report-option-row">
+          <span>Starting Date</span>
+          <input type="date" value={bsOptions.startDate} onChange={(e) => setBsOptions({ ...bsOptions, startDate: e.target.value })} />
+        </div>
+        <div className="report-option-row">
+          <span>Ending Date</span>
+          <input type="date" value={bsOptions.endDate} onChange={(e) => setBsOptions({ ...bsOptions, endDate: e.target.value })} />
+        </div>
+        <div className="report-option-row"><span>Update Balance Sheet Stock ?</span><select value={bsOptions.updateStock ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, updateStock: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Second Level Group Details</span><select value={bsOptions.showSecondLevel ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showSecondLevel: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Groups and Amounts in separate columns</span><select value={bsOptions.showGroupsSeparate ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showGroupsSeparate: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Previous Year Balances also</span><select value={bsOptions.showPreviousYear ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showPreviousYear: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Ratio(s)</span><select value={bsOptions.showRatios ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showRatios: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Show Zero Balance Masters During Drill Down</span><select value={bsOptions.showZeroDuringDrill ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showZeroDuringDrill: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Skip 'P/L for the period'?</span><select value={bsOptions.skipPL ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, skipPL: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
+        <div className="report-option-row"><span>Specify Scale Factor</span><input type="number" value={bsOptions.scaleFactor} onChange={(e) => setBsOptions({ ...bsOptions, scaleFactor: Number(e.target.value) })} /></div>
+      </ReportOptionsModal>
     </ReportShell>
   );
 };

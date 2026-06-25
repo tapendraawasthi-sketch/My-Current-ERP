@@ -25,11 +25,12 @@ const fmtDrCr = (dr: number, cr: number) => {
 
 type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
 
+const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
+
 const TrialBalance: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const [options, setOptions] = useState({ includeZero: true });
   const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
 
   const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
@@ -41,21 +42,30 @@ const TrialBalance: React.FC = () => {
   const fiscalStart = currentFiscalYear?.startDate || "2026-04-14";
   const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
 
+  const [tbOptions, setTbOptions] = useState({
+    startDate: fiscalStart,
+    endDate: fiscalEnd,
+    showZero: true,
+    showAlphabetical: false,
+  });
+
   const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
   const ledgerTotals = useMemo(
     () =>
       computeLedgerTotals(accounts, vouchers, {
-        startDate: fiscalStart,
-        endDate: fiscalEnd,
+        startDate: tbOptions.startDate,
+        endDate: tbOptions.endDate,
       }),
-    [accounts, vouchers, fiscalStart, fiscalEnd]
+    [accounts, vouchers, tbOptions.startDate, tbOptions.endDate]
   );
   const groupTotals = useMemo(
     () => computeGroupTotals(tree, ledgerTotals),
     [tree, ledgerTotals]
   );
 
-  const rootGroups = tree.roots.filter((r) => r.type === "asset" || r.type === "liability" || r.type === "equity");
+  const rootGroups = tree.roots
+    .filter((r) => r.type === "asset" || r.type === "liability" || r.type === "equity")
+    .sort(tbOptions.showAlphabetical ? sortByName : () => 0);
 
   const groupedRows = useMemo(() => {
     const left: any[] = [];
@@ -79,7 +89,7 @@ const TrialBalance: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, options]);
+  }, [rootGroups, groupTotals, tbOptions]);
 
   const detailedRows = useMemo(() => {
     const left: any[] = [];
@@ -119,7 +129,7 @@ const TrialBalance: React.FC = () => {
           .map((ledger) => {
             const totals = ledgerTotals.get(ledger.id);
             const showRow =
-              options.includeZero ||
+              tbOptions.showZero ||
               totals?.hasActivity ||
               (totals && (totals.closingDr > 0 || totals.closingCr > 0));
             if (!showRow) return null;
@@ -148,13 +158,13 @@ const TrialBalance: React.FC = () => {
     });
 
     return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, options]);
+  }, [rootGroups, groupTotals, ledgerTotals, tbOptions]);
 
   const ledgerMonthRows = useMemo(() => {
     if (!activeLedgerId) return [];
     const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      startDate: fiscalStart,
-      endDate: fiscalEnd,
+      startDate: tbOptions.startDate,
+      endDate: tbOptions.endDate,
     });
     return groupEntriesByMonth(entries).map((m) => ({
       monthKey: m.monthKey,
@@ -165,7 +175,7 @@ const TrialBalance: React.FC = () => {
         setDrillLevel("entries");
       },
     }));
-  }, [activeLedgerId, vouchers, fiscalStart, fiscalEnd]);
+  }, [activeLedgerId, vouchers, tbOptions.startDate, tbOptions.endDate]);
 
   const entryRows = useMemo(() => {
     if (!activeLedgerId || !activeMonth) return [];
@@ -185,62 +195,50 @@ const TrialBalance: React.FC = () => {
   }, [activeLedgerId, activeMonth, vouchers]);
 
   const drillBack = () => {
-    if (drillLevel === "entries") {
-      setDrillLevel("month");
-      return;
-    }
-    if (drillLevel === "month") {
-      setDrillLevel("ledger");
-      return;
-    }
-    if (drillLevel === "ledger") {
-      setDrillLevel("subgroup");
-      return;
-    }
-    if (drillLevel === "subgroup") {
-      setDrillLevel("group");
-      return;
-    }
+    if (drillLevel === "entries") return setDrillLevel("month");
+    if (drillLevel === "month") return setDrillLevel("ledger");
+    if (drillLevel === "ledger") return setDrillLevel("subgroup");
+    if (drillLevel === "subgroup") return setDrillLevel("group");
   };
 
   const openVoucher = (row: any) => {
     if (!row.voucherId) return;
-    navigate(`/vouchers/${row.voucherId}`);
+    navigate({ to: `/vouchers/${row.voucherId}` });
+  };
+
+  const handleExport = () => {
+    const rows = mode === "grouped" ? groupedRows : detailedRows;
+    exportToExcel(
+      "Trial Balance",
+      ["Account", "Amount"],
+      [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
+    );
   };
 
   return (
     <ReportShell
       title="Trial Balance"
-      subtitle="Closing Trial (T-Format)"
+      subtitle="All Groups"
       companyName={companySettings?.companyNameEn}
-      periodText={`From ${fiscalStart} to ${fiscalEnd}`}
+      periodText={`From ${tbOptions.startDate} to ${tbOptions.endDate}`}
       onPrint={() => window.print()}
-      onExport={() => {
-        const rows = mode === "grouped" ? groupedRows : detailedRows;
-        exportToExcel(
-          "Trial Balance",
-          ["Account", "Amount"],
-          [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
-        );
-      }}
+      onExport={handleExport}
       onOptions={() => setOptionsOpen(true)}
+      actionBarButtons={[
+        { label: "Email - [M]" },
+        { label: "Print - [P]" },
+        { label: "Refresh - [R]" },
+        { label: "Export - [E]" },
+        { label: "Search - F3" },
+        { label: "Summary - F5" },
+        { label: "Filter - F7" },
+        { label: "Custom Columns" },
+      ]}
       toolbarLeft={
         <div className="report-toggle">
-          <button
-            className={mode === "grouped" ? "active" : ""}
-            onClick={() => setMode("grouped")}
-          >
-            Grouped
-          </button>
-          <button
-            className={mode === "detailed" ? "active" : ""}
-            onClick={() => setMode("detailed")}
-          >
-            Detailed
-          </button>
-          {drillLevel !== "group" && (
-            <button onClick={drillBack}>Back</button>
-          )}
+          <button className={mode === "grouped" ? "active" : ""} onClick={() => setMode("grouped")}>Grouped</button>
+          <button className={mode === "detailed" ? "active" : ""} onClick={() => setMode("detailed")}>Detailed</button>
+          {drillLevel !== "group" && <button onClick={drillBack}>Back</button>}
         </div>
       }
     >
@@ -329,10 +327,35 @@ const TrialBalance: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
+        title="Trial Balance"
         onClose={() => setOptionsOpen(false)}
-        onApply={(opts) => setOptions({ ...options, ...opts })}
-        initial={options}
-      />
+        onApply={() => {
+          setOptionsOpen(false);
+        }}
+      >
+        <div className="report-option-row">
+          <span>Start Date</span>
+          <input type="date" value={tbOptions.startDate} onChange={(e) => setTbOptions({ ...tbOptions, startDate: e.target.value })} />
+        </div>
+        <div className="report-option-row">
+          <span>End Date</span>
+          <input type="date" value={tbOptions.endDate} onChange={(e) => setTbOptions({ ...tbOptions, endDate: e.target.value })} />
+        </div>
+        <div className="report-option-row">
+          <span>Show Zero Balance Groups ?</span>
+          <select value={tbOptions.showZero ? "Y" : "N"} onChange={(e) => setTbOptions({ ...tbOptions, showZero: e.target.value === "Y" })}>
+            <option>Y</option>
+            <option>N</option>
+          </select>
+        </div>
+        <div className="report-option-row">
+          <span>Show All Groups Alphabetically ?</span>
+          <select value={tbOptions.showAlphabetical ? "Y" : "N"} onChange={(e) => setTbOptions({ ...tbOptions, showAlphabetical: e.target.value === "Y" })}>
+            <option>Y</option>
+            <option>N</option>
+          </select>
+        </div>
+      </ReportOptionsModal>
     </ReportShell>
   );
 };
