@@ -46,31 +46,33 @@ const StockBook: React.FC = () => {
   // Real-time current stock per item (across all warehouses)
   const stockByItem = useMemo(() => {
     const map = new Map<string, number>();
-    items.forEach((it) => {
-      const pos = computeStockPosition(stockMovements, it.id, null);
+    (items || []).forEach((it) => {
+      if (!it) return;
+      const pos = computeStockPosition(stockMovements || [], it.id, null);
       map.set(it.id, pos.qty);
     });
     return map;
   }, [items, stockMovements]);
 
   const lowStockSet = useMemo(() => {
-    const rows = getLowStockItems(stockMovements, items, warehouses);
+    const rows = getLowStockItems(stockMovements || [], items || [], warehouses || []);
     return new Set(rows.map((r) => r.id));
   }, [items, warehouses, stockMovements]);
 
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return items.filter((it) => {
+    return (items || []).filter((it) => {
+      if (!it) return false;
       if (activeTab === "PRODUCT" && it.type !== ItemType.PRODUCT) return false;
       if (activeTab === "SERVICE" && it.type !== ItemType.SERVICE) return false;
       if (lowStockOnly && !lowStockSet.has(it.id)) return false;
       if (!q) return true;
       return (
-        it.name.toLowerCase().includes(q) ||
-        it.code.toLowerCase().includes(q) ||
-        (it.nameNepali ?? "").toLowerCase().includes(q) ||
-        (it.hsnCode ?? "").toLowerCase().includes(q) ||
-        (it.barcode ?? "").toLowerCase().includes(q)
+        (it.name || "").toLowerCase().includes(q) ||
+        (it.code || "").toLowerCase().includes(q) ||
+        (it.nameNepali || "").toLowerCase().includes(q) ||
+        (it.hsnCode || "").toLowerCase().includes(q) ||
+        (it.barcode || "").toLowerCase().includes(q)
       );
     });
   }, [items, search, activeTab, lowStockOnly, lowStockSet]);
@@ -147,17 +149,17 @@ const StockBook: React.FC = () => {
   };
 
   const handleExportReorder = () => {
-    const alerts = items
+    const alerts = (items || [])
       .filter(i => {
-        if (!i.reorderLevel) return false;
-        const stock = getCurrentStock(i.id, undefined, stockMovements);
+        if (!i || !i.reorderLevel) return false;
+        const stock = getCurrentStock(i.id, undefined, stockMovements || []);
         return stock <= i.reorderLevel;
       })
       .map(i => {
-        const stock = getCurrentStock(i.id, undefined, stockMovements);
+        const stock = getCurrentStock(i.id, undefined, stockMovements || []);
         return {
           id: i.id,
-          name: i.name,
+          name: i.name || "Unknown",
           category: (i as any).category || "Uncategorized",
           stock,
           reorderLevel: i.reorderLevel || 0,
@@ -407,10 +409,10 @@ const StockBook: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {[
-          { label: "Total Items", value: items.length, color: "#1557b0" },
-          { label: "Low Stock", value: items.filter(i => (stockByItem.get(i.id)||0) <= (i.reorderLevel||0) && (i.reorderLevel||0) > 0).length, color: "#dc2626" },
-          { label: "Out of Stock", value: items.filter(i => (stockByItem.get(i.id)||0) === 0).length, color: "#b45309" },
-          { label: "Active SKUs", value: items.filter(i => i.isActive !== false).length, color: "#15803d" },
+          { label: "Total Items", value: (items || []).length, color: "#1557b0" },
+          { label: "Low Stock", value: (items || []).filter(i => i && (stockByItem.get(i.id)||0) <= (i.reorderLevel||0) && (i.reorderLevel||0) > 0).length, color: "#dc2626" },
+          { label: "Out of Stock", value: (items || []).filter(i => i && (stockByItem.get(i.id)||0) === 0).length, color: "#b45309" },
+          { label: "Active SKUs", value: (items || []).filter(i => i && i.isActive !== false).length, color: "#15803d" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white border rounded-lg p-3 flex items-center gap-3" style={{ borderColor: "var(--border)" }}>
             <div className="w-1 h-8 rounded-full shrink-0" style={{ background: color }} />
@@ -500,16 +502,16 @@ const StockBook: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.filter(i => i.reorderLevel && getCurrentStock(i.id, undefined, stockMovements) <= i.reorderLevel)
+                {(items || []).filter(i => i && i.reorderLevel && getCurrentStock(i.id, undefined, stockMovements || []) <= i.reorderLevel)
                   .map(i => ({
                     ...i,
-                    stock: getCurrentStock(i.id, undefined, stockMovements),
-                    shortage: (i.reorderLevel || 0) - getCurrentStock(i.id, undefined, stockMovements)
+                    stock: getCurrentStock(i.id, undefined, stockMovements || []),
+                    shortage: (i.reorderLevel || 0) - getCurrentStock(i.id, undefined, stockMovements || [])
                   }))
                   .sort((a,b) => b.shortage - a.shortage)
                   .map(alert => (
                     <tr key={alert.id} className="hover:bg-red-50/50 bg-white">
-                       <td className="px-3 py-2.5 text-[12px] font-semibold text-[#000000]">{alert.name}</td>
+                       <td className="px-3 py-2.5 text-[12px] font-semibold text-[#000000]">{alert.name || "Unknown"}</td>
                        <td className="px-3 py-2.5 text-[12px] text-[#000000]">{(alert as any).category || "Uncategorized"}</td>
                        <td className="px-3 py-2.5 text-[12px] text-right font-bold text-red-600">{alert.stock}</td>
                        <td className="px-3 py-2.5 text-[12px] text-right text-[#000000]">{alert.reorderLevel}</td>

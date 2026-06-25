@@ -28,8 +28,8 @@ export function computeStockPosition(
   let qty = 0;
   let value = 0;
 
-  for (const mov of movements) {
-    if (mov.itemId !== itemId) continue;
+  for (const mov of movements || []) {
+    if (!mov || mov.itemId !== itemId) continue;
     if (warehouseId && mov.warehouseId !== warehouseId) continue;
     qty += Number(mov.qty) || 0;
     value += Number(mov.amount) || 0;
