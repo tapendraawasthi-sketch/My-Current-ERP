@@ -1,23 +1,10 @@
-// src/main.tsx
 import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import { ThemeProvider } from "./context/ThemeContext";
-import { LanguageProvider } from "./context/LanguageContext";
-import { ErrorBoundary } from "./components/ErrorBoundary";
+import ReactDOM from "react-dom/client";
 import "./styles.css";
+import App from "./App";
 
-const container = document.getElementById("root");
-if (!container) throw new Error("Root element not found");
-
-createRoot(container).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <ThemeProvider>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+    <App />
   </React.StrictMode>
 );
