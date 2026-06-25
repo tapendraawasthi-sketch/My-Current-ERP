@@ -84,6 +84,47 @@ function MainRouter() {
           <Dashboard />
         </ErrorBoundary>
       );
+    case "shortcuts":
+      return (
+        <ErrorBoundary>
+          <div style={{ padding: 24, maxWidth: 600, margin: "0 auto" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Keyboard Shortcuts</h2>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: "#D4EABD" }}>
+                  <th style={{ padding: "6px 12px", textAlign: "left", border: "1px solid #000" }}>Key</th>
+                  <th style={{ padding: "6px 12px", textAlign: "left", border: "1px solid #000" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Ctrl+N", "New Voucher"], ["Ctrl+I", "New Invoice"],
+                  ["F2", "Save"], ["F5", "List View"],
+                  ["Ctrl+B", "Balance Sheet"], ["Ctrl+T", "Trial Balance"],
+                  ["Ctrl+P", "Parties Directory"], ["Ctrl+A", "Chart of Accounts"],
+                  ["Ctrl+D", "Dashboard"], ["?", "Toggle Shortcut Panel"],
+                  ["B", "Balance Sheet"], ["T", "Trial Balance"],
+                  ["S", "Stock Status"], ["A", "Account Summary"],
+                  ["L", "Account Ledger"], ["V", "VAT Report"],
+                  ["D", "Day Book"], ["G", "GST/VAT Summary"],
+                  ["F", "Configuration"], ["U", "Switch User"],
+                ].map(([key, label]) => (
+                  <tr key={key}>
+                    <td style={{ padding: "5px 12px", border: "1px solid #000", fontWeight: 700, fontFamily: "monospace" }}>{key}</td>
+                    <td style={{ padding: "5px 12px", border: "1px solid #000" }}>{label}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </ErrorBoundary>
+      );
+    case "ird-portal":
+      window.open("https://ird.gov.np", "_blank", "noopener,noreferrer");
+      return <ErrorBoundary><Dashboard /></ErrorBoundary>;
+    case "etds-portal":
+      window.open("https://etds.ird.gov.np", "_blank", "noopener,noreferrer");
+      return <ErrorBoundary><Dashboard /></ErrorBoundary>;
     case "accounts":
       return (
         <ErrorBoundary>

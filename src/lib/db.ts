@@ -525,6 +525,7 @@ class SutraDB extends Dexie {
   holidays!: Table<DBHoliday>;
   employees!: Table<DBEmployee>;
   bankStatements!: Table<DBBankStatement>;
+  tdsEntries!: Table<any>;
 
   constructor() {
     super("SutraERP");
@@ -575,6 +576,11 @@ class SutraDB extends Dexie {
     // Version 4 — Bank Reconciliation
     this.version(4).stores({
       bankStatements: "id, bankAccountId, date, reconciled",
+    });
+
+    // Version 5 — TDS module
+    this.version(5).stores({
+      tdsEntries: "id, date, partyId, section, status, fiscalYearBS",
     });
   }
 }

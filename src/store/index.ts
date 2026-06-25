@@ -186,6 +186,11 @@ interface AppState {
   // Bank Reconciliation state
   bankStatements: any[];
   journalEntries: any[]; // alias over vouchers for BankReconciliation compatibility
+  // TDS module state
+  tdsEntries: any[];
+  tdsRates: any[];
+  addTdsEntry: (entry: Partial<any>) => Promise<any>;
+  updateTdsEntry: (id: string, updates: Partial<any>) => Promise<void>;
   // Administration module state
   unitConversions: any[];
   standardNarrations: any[];
@@ -307,6 +312,19 @@ async function verifyPassword(password: string, hash: string): Promise<boolean> 
   return computed === hash;
 }
 
+// Nepal TDS rates per Income Tax Act 2058
+const DEFAULT_TDS_RATES = [
+  { id: "tds-1", section: "87", natureOfPayment: "Contractor", rate: 1.5, threshold: 50000 },
+  { id: "tds-2", section: "88", natureOfPayment: "Service", rate: 15, threshold: 0 },
+  { id: "tds-3", section: "88", natureOfPayment: "Rent", rate: 10, threshold: 0 },
+  { id: "tds-4", section: "88", natureOfPayment: "Commission", rate: 10, threshold: 0 },
+  { id: "tds-5", section: "87", natureOfPayment: "Salary", rate: 15, threshold: 0 },
+  { id: "tds-6", section: "88", natureOfPayment: "Dividend", rate: 5, threshold: 0 },
+  { id: "tds-7", section: "88", natureOfPayment: "Interest", rate: 15, threshold: 0 },
+  { id: "tds-8", section: "88", natureOfPayment: "Royalty", rate: 15, threshold: 0 },
+  { id: "tds-9", section: "88", natureOfPayment: "Other", rate: 1.5, threshold: 0 },
+];
+
 // ─── Store ────────────────────────────────────────────────────────────────────
 export const useStore = create<AppState>((set, get) => ({
   isDbReady: false,
@@ -334,6 +352,8 @@ export const useStore = create<AppState>((set, get) => ({
   customFieldDefs: [],
   currencies: [],
   employees: [],
+  tdsEntries: [],
+  tdsRates: DEFAULT_TDS_RATES,
   bankStatements: [],
   journalEntries: [],
   unitConversions: [],
@@ -430,6 +450,7 @@ export const useStore = create<AppState>((set, get) => ({
       saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
       employees,
       bankStatements,
+      tdsEntries,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -463,6 +484,7 @@ export const useStore = create<AppState>((set, get) => ({
       db.holidays.toArray(),
       db.employees.toArray(),
       db.bankStatements.toArray(),
+      db.tdsEntries.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -528,6 +550,7 @@ export const useStore = create<AppState>((set, get) => ({
       holidays,
       employees,
       bankStatements,
+      tdsEntries: tdsEntries as any[],
       journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
 
@@ -879,6 +902,24 @@ export const useStore = create<AppState>((set, get) => ({
     const db = getDB();
     await db.employees.delete(id);
     set((s) => ({ employees: s.employees.filter((r) => r.id !== id) }));
+  },
+
+  // ── TDS ──────────────────────────────────────────────────────────────────────
+  addTdsEntry: async (entry) => {
+    const db = getDB();
+    const id = entry.id || generateId();
+    const record = { ...entry, id };
+    await db.tdsEntries.add(record as any);
+    set((s) => ({ tdsEntries: [record, ...s.tdsEntries] }));
+    return record;
+  },
+
+  updateTdsEntry: async (id, updates) => {
+    const db = getDB();
+    await db.tdsEntries.update(id, updates);
+    set((s) => ({
+      tdsEntries: s.tdsEntries.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+    }));
   },
 
   // ── Vouchers ─────────────────────────────────────────────────────────────

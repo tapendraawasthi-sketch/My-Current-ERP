@@ -84,8 +84,89 @@ export const exportProfitLossToExcel = () => {};
 export const exportBalanceSheetToExcel = () => {};
 export const exportCashFlowToExcel = () => {};
 
-export const exportVatAnnexToExcel = () => {};
-export const workbookFromArray = () => ({});
-export const downloadWorkbook = () => {};
+// ─── VAT Annex Excel export ────────────────────────────────────────────────────
+export function workbookFromArray(
+  headers: string[],
+  rows: (string | number)[][],
+  sheetName = "Sheet1"
+): XLSX.WorkBook {
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws["!cols"] = headers.map((h) => ({ wch: Math.max(String(h).length + 2, 14) }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  return wb;
+}
 
-export const exportTdsReturnToExcel = () => {};
+export function downloadWorkbook(wb: XLSX.WorkBook, filename: string): void {
+  XLSX.writeFile(wb, filename);
+}
+
+export function exportVatAnnexToExcel(
+  type: "A" | "B" | "C",
+  data: { rows: any[]; totals: any },
+  periodLabel: string
+): void {
+  if (!data?.rows?.length) return;
+
+  const isA = type === "A";
+  const headers =
+    isA
+      ? ["SN", "Bill No", "Bill Date", "Customer Name", "PAN", "Taxable Amount", "VAT Amount", "Total"]
+      : ["SN", "Bill No", "Supplier Name", "PAN", "Taxable Amount", "VAT Amount", "Total"];
+
+  const rows = data.rows.map((r: any, idx: number) => {
+    const base = [
+      idx + 1,
+      r.billNo || "",
+      ...(isA ? [r.date || ""] : []),
+      r.partyName || "",
+      r.partyPan || "-",
+      r.taxableAmt || 0,
+      r.vatAmt || 0,
+      r.totalAmt || 0,
+    ];
+    return base;
+  });
+
+  const wb = workbookFromArray(headers, rows, `Annex ${type}`);
+  downloadWorkbook(wb, `VAT_Annex_${type}_${periodLabel.replace(/\s+/g, "_")}.xlsx`);
+}
+
+// ─── TDS Return Excel export ───────────────────────────────────────────────────
+export function exportTdsReturnToExcel(
+  entries: any[],
+  fiscalYear: string,
+  companyName: string
+): void {
+  if (!entries?.length) return;
+
+  const headers = [
+    "SN", "Date", "Party Name", "PAN", "Section",
+    "Nature of Payment", "Gross Amount", "TDS Rate (%)", "TDS Amount", "Net Amount", "Status"
+  ];
+
+  const rows = entries.map((e: any, idx: number) => [
+    idx + 1,
+    e.dateBS || e.date || "",
+    e.partyName || "",
+    e.partyPAN || "",
+    e.section || "",
+    e.paymentNature || "",
+    Number(e.grossAmount) || 0,
+    Number(e.tdsRate) || 0,
+    Number(e.tdsAmount) || 0,
+    Number(e.netAmount) || 0,
+    e.status || "",
+  ]);
+
+  const ws = XLSX.utils.aoa_to_sheet([
+    [`${companyName} — TDS Return (FY ${fiscalYear})`],
+    [],
+    headers,
+    ...rows,
+  ]);
+  ws["!cols"] = headers.map((h) => ({ wch: Math.max(String(h).length + 2, 14) }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "TDS Return");
+  XLSX.writeFile(wb, `TDS_Return_FY${fiscalYear}.xlsx`);
+}

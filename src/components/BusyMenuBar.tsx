@@ -104,9 +104,10 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     title: "Help",
     items: [
       { label: "About Sutra ERP", page: "configuration" },
-      { label: "Keyboard Shortcuts", page: "dashboard" },
+      { label: "Keyboard Shortcuts", page: "shortcuts" },
       { label: "Audit Log", page: "audit-log" },
-      { label: "IRD Nepal Portal", page: "dashboard" },
+      { label: "IRD Nepal Portal", page: "ird-portal" },
+      { label: "e-TDS Portal", page: "etds-portal" },
     ],
   },
 ];
