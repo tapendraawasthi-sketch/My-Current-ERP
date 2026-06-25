@@ -57,7 +57,7 @@ export function computeAllStockPositions(
   items: any[],
   warehouses: any[]
 ): StockPosition[] {
-  return items.map((item) => {
+  return (items || []).filter(Boolean).map((item) => {
     const pos = computeStockPosition(movements, item.id, null);
     return {
       itemId: item.id,
@@ -70,9 +70,9 @@ export function computeAllStockPositions(
 }
 
 export function calculateStockSummary(items: any[], movements: any[]): StockSummaryRow[] {
-  return items.map((item) => {
+  return (items || []).filter(Boolean).map((item) => {
     const opening = item.openingStock || 0;
-    const itemMovs = movements.filter((m) => m.itemId === item.id);
+    const itemMovs = (movements || []).filter((m) => m && m.itemId === item.id);
     const inQty = itemMovs
       .filter((m) => Number(m.qty) > 0)
       .reduce((s, m) => s + Number(m.qty), 0);
@@ -105,10 +105,10 @@ export function getLowStockItems(
   items: any[],
   _warehouses?: any[]
 ): any[] {
-  return items
+  return (items || [])
     .filter((item) => {
-      if (!item.reorderLevel) return false;
-      const pos = computeStockPosition(movements, item.id, null);
+      if (!item || !item.reorderLevel) return false;
+      const pos = computeStockPosition(movements || [], item.id, null);
       const currentQty = (item.openingStock || 0) + pos.qty;
       return currentQty <= item.reorderLevel;
     })
