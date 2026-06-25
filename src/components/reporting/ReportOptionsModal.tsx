@@ -31,7 +31,16 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({ open, onClose, 
           <p className="text-[11px] text-gray-500">Configure report filters.</p>
           <div className="flex flex-col gap-1">
             <label className="text-[11px] font-medium text-gray-600">Include zero balances</label>
-            <select className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]">
+            <select
+              value={options.includeZero ? "yes" : "no"}
+              onChange={(e) =>
+                setOptions({
+                  ...options,
+                  includeZero: e.target.value === "yes",
+                })
+              }
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            >
               <option value="no">No</option>
               <option value="yes">Yes</option>
             </select>

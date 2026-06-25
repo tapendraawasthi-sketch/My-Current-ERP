@@ -878,3 +878,93 @@ input[type="number"]::-webkit-outer-spin-button {
 .actions { @apply flex items-center gap-3 justify-end mt-4 pt-4 border-t border-gray-100; }
 .badge.draft { @apply bg-gray-100 text-gray-700 border-gray-200; }
 .badge.posted { @apply bg-green-50 text-green-700 border-green-200; }
+/* === T-FORMAT REPORTS === */
+.tformat-wrapper {
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #EBF5E2;
+}
+
+.tformat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tformat-table thead th {
+  background: #C9DEB5;
+  border-bottom: 2px solid #000;
+  text-align: center;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tformat-cell {
+  padding: 6px 10px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  background: #EBF5E2;
+  font-size: 12px;
+}
+
+.tformat-cell:last-child {
+  border-right: none;
+}
+
+.tformat-amount {
+  text-align: right;
+  font-family: "Courier New", monospace;
+  font-weight: 600;
+}
+
+.tformat-group {
+  font-weight: 700;
+  background: #D4EABD;
+}
+
+.tformat-subgroup {
+  font-weight: 600;
+}
+
+.tformat-ledger {
+  font-weight: 500;
+}
+
+.tformat-total {
+  font-weight: 700;
+  background: #C9DEB5;
+}
+
+.tformat-link {
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* === REPORT TOOLBAR TOGGLE BUTTONS === */
+.report-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.report-toggle button {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #000;
+  background: #EBF5E2;
+  cursor: pointer;
+}
+
+.report-toggle button.active {
+  background: #C9DEB5;
+}

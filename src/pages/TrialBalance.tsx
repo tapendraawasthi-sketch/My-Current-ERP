@@ -2,87 +2,337 @@
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
-import { VoucherStatus } from "../lib/types";
 import ReportShell from "../components/reporting/ReportShell";
-import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
+import TFormatReport from "../components/reporting/TFormatReport";
+import ReportGrid from "../components/reporting/ReportGrid";
+import {
+  buildAccountTree,
+  computeLedgerTotals,
+  computeGroupTotals,
+  getLedgerEntries,
+  groupEntriesByMonth,
+} from "../lib/reportingHierarchy";
 import { exportToExcel } from "../lib/reporting";
+import { useNavigate } from "@tanstack/react-router";
 
-const fmtNet = (dr: number, cr: number): string => {
-  const net = dr - cr;
-  if (Math.abs(net) < 0.005) return "—";
-  return net > 0 ? formatNumber(Math.abs(net)) + " Dr" : formatNumber(Math.abs(net)) + " Cr";
+const fmtDrCr = (dr: number, cr: number) => {
+  if (Math.abs(dr) < 0.005 && Math.abs(cr) < 0.005) return "—";
+  if (dr > 0) return `${formatNumber(dr)} Dr`;
+  if (cr > 0) return `${formatNumber(cr)} Cr`;
+  return "—";
 };
+
+type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
 
 const TrialBalance: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
+  const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const [options, setOptions] = useState({});
-  const fiscalStart = currentFiscalYear?.startDate || "2026-07-16";
-  const fiscalEnd = currentFiscalYear?.endDate || "2027-07-15";
+  const [options, setOptions] = useState({ includeZero: true });
+  const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
 
-  const tbData = useMemo(() => {
-    const results: any[] = [];
-    const posted = vouchers.filter(
-      (v) => v.status === VoucherStatus.POSTED && v.date >= fiscalStart && v.date <= fiscalEnd
-    );
-    for (const acc of accounts) {
-      if (acc.isGroup) continue;
-      const opDr = acc.openingBalanceDr || 0;
-      const opCr = acc.openingBalanceCr || 0;
-      let periodDebit = 0;
-      let periodCredit = 0;
-      for (const v of posted) {
-        for (const line of v.lines || []) {
-          if (line.accountId === acc.id) {
-            periodDebit += line.debit || 0;
-            periodCredit += line.credit || 0;
-          }
-        }
-      }
-      const totalDr = opDr + periodDebit;
-      const totalCr = opCr + periodCredit;
-      let closingDr = 0, closingCr = 0;
-      if (totalDr >= totalCr) closingDr = totalDr - totalCr;
-      else closingCr = totalCr - totalDr;
+  const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [activeSubgroupId, setActiveSubgroupId] = useState<string | null>(null);
+  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
+  const [activeMonth, setActiveMonth] = useState<string | null>(null);
 
-      if (opDr > 0 || opCr > 0 || periodDebit > 0 || periodCredit > 0) {
-        results.push({
-          accountName: acc.name,
-          opening: fmtNet(opDr, opCr),
-          debit: periodDebit ? formatNumber(periodDebit) : "—",
-          credit: periodCredit ? formatNumber(periodCredit) : "—",
-          closing: fmtNet(closingDr, closingCr),
-        });
+  const fiscalStart = currentFiscalYear?.startDate || "2026-04-14";
+  const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
+
+  const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
+  const ledgerTotals = useMemo(
+    () =>
+      computeLedgerTotals(accounts, vouchers, {
+        startDate: fiscalStart,
+        endDate: fiscalEnd,
+      }),
+    [accounts, vouchers, fiscalStart, fiscalEnd]
+  );
+  const groupTotals = useMemo(
+    () => computeGroupTotals(tree, ledgerTotals),
+    [tree, ledgerTotals]
+  );
+
+  const rootGroups = tree.roots.filter((r) => r.type === "asset" || r.type === "liability" || r.type === "equity");
+
+  const groupedRows = useMemo(() => {
+    const left: any[] = [];
+    const right: any[] = [];
+
+    rootGroups.forEach((grp) => {
+      const totals = groupTotals.get(grp.id);
+      const row = {
+        id: grp.id,
+        label: grp.name,
+        amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
+        level: "group",
+        indent: 0,
+        onClick: () => {
+          setDrillLevel("subgroup");
+          setActiveGroupId(grp.id);
+        },
+      };
+      if (grp.type === "asset") left.push(row);
+      else right.push(row);
+    });
+
+    return { left, right };
+  }, [rootGroups, groupTotals, options]);
+
+  const detailedRows = useMemo(() => {
+    const left: any[] = [];
+    const right: any[] = [];
+
+    rootGroups.forEach((grp) => {
+      const children = grp.children || [];
+      const grpTotals = groupTotals.get(grp.id);
+      const grpRow = {
+        id: grp.id,
+        label: grp.name,
+        amount: fmtDrCr(grpTotals?.closingDr || 0, grpTotals?.closingCr || 0),
+        level: "group",
+        indent: 0,
+        onClick: () => {
+          setDrillLevel("subgroup");
+          setActiveGroupId(grp.id);
+        },
+      };
+
+      const childRows = children.flatMap((sub) => {
+        const subTotals = groupTotals.get(sub.id);
+        const subRow = {
+          id: sub.id,
+          label: sub.name,
+          amount: fmtDrCr(subTotals?.closingDr || 0, subTotals?.closingCr || 0),
+          level: "subgroup",
+          indent: 1,
+          onClick: () => {
+            setDrillLevel("ledger");
+            setActiveSubgroupId(sub.id);
+          },
+        };
+
+        const ledgerRows = (sub.children || [])
+          .filter((c) => !c.isGroup)
+          .map((ledger) => {
+            const totals = ledgerTotals.get(ledger.id);
+            const showRow =
+              options.includeZero ||
+              totals?.hasActivity ||
+              (totals && (totals.closingDr > 0 || totals.closingCr > 0));
+            if (!showRow) return null;
+            return {
+              id: ledger.id,
+              label: ledger.name,
+              amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
+              level: "ledger",
+              indent: 2,
+              onClick: () => {
+                setDrillLevel("month");
+                setActiveLedgerId(ledger.id);
+              },
+            };
+          })
+          .filter(Boolean);
+
+        return [subRow, ...ledgerRows];
+      });
+
+      if (grp.type === "asset") {
+        left.push(grpRow, ...childRows);
+      } else {
+        right.push(grpRow, ...childRows);
       }
+    });
+
+    return { left, right };
+  }, [rootGroups, groupTotals, ledgerTotals, options]);
+
+  const ledgerMonthRows = useMemo(() => {
+    if (!activeLedgerId) return [];
+    const entries = getLedgerEntries(activeLedgerId, vouchers, {
+      startDate: fiscalStart,
+      endDate: fiscalEnd,
+    });
+    return groupEntriesByMonth(entries).map((m) => ({
+      monthKey: m.monthKey,
+      debit: formatNumber(m.debit),
+      credit: formatNumber(m.credit),
+      onClick: () => {
+        setActiveMonth(m.monthKey);
+        setDrillLevel("entries");
+      },
+    }));
+  }, [activeLedgerId, vouchers, fiscalStart, fiscalEnd]);
+
+  const entryRows = useMemo(() => {
+    if (!activeLedgerId || !activeMonth) return [];
+    const entries = getLedgerEntries(activeLedgerId, vouchers, {
+      startDate: `${activeMonth}-01`,
+      endDate: `${activeMonth}-31`,
+    });
+    return entries.map((e) => ({
+      date: e.date,
+      voucherNo: e.voucherNo,
+      narration: e.narration,
+      debit: e.debit ? formatNumber(e.debit) : "—",
+      credit: e.credit ? formatNumber(e.credit) : "—",
+      voucherId: e.voucherId,
+      voucherType: e.voucherType,
+    }));
+  }, [activeLedgerId, activeMonth, vouchers]);
+
+  const drillBack = () => {
+    if (drillLevel === "entries") {
+      setDrillLevel("month");
+      return;
     }
-    return results;
-  }, [accounts, vouchers, fiscalStart, fiscalEnd]);
+    if (drillLevel === "month") {
+      setDrillLevel("ledger");
+      return;
+    }
+    if (drillLevel === "ledger") {
+      setDrillLevel("subgroup");
+      return;
+    }
+    if (drillLevel === "subgroup") {
+      setDrillLevel("group");
+      return;
+    }
+  };
 
-  const columns = [
-    { key: "accountName", label: "Account/Group" },
-    { key: "opening", label: "Opening", align: "right" },
-    { key: "debit", label: "Debit", align: "right" },
-    { key: "credit", label: "Credit", align: "right" },
-    { key: "closing", label: "Closing", align: "right" },
-  ];
-
-  const handleExport = () => {
-    exportToExcel("Trial Balance", columns.map(c => c.label), tbData.map(r => [r.accountName, r.opening, r.debit, r.credit, r.closing]));
+  const openVoucher = (row: any) => {
+    if (!row.voucherId) return;
+    navigate(`/vouchers/${row.voucherId}`);
   };
 
   return (
     <ReportShell
       title="Trial Balance"
-      subtitle="Closing Trial"
+      subtitle="Closing Trial (T-Format)"
       companyName={companySettings?.companyNameEn}
       periodText={`From ${fiscalStart} to ${fiscalEnd}`}
       onPrint={() => window.print()}
-      onExport={handleExport}
+      onExport={() => {
+        const rows = mode === "grouped" ? groupedRows : detailedRows;
+        exportToExcel(
+          "Trial Balance",
+          ["Account", "Amount"],
+          [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
+        );
+      }}
       onOptions={() => setOptionsOpen(true)}
+      toolbarLeft={
+        <div className="report-toggle">
+          <button
+            className={mode === "grouped" ? "active" : ""}
+            onClick={() => setMode("grouped")}
+          >
+            Grouped
+          </button>
+          <button
+            className={mode === "detailed" ? "active" : ""}
+            onClick={() => setMode("detailed")}
+          >
+            Detailed
+          </button>
+          {drillLevel !== "group" && (
+            <button onClick={drillBack}>Back</button>
+          )}
+        </div>
+      }
     >
-      <ReportGrid columns={columns} data={tbData} />
-      <ReportOptionsModal open={optionsOpen} onClose={() => setOptionsOpen(false)} onApply={setOptions} initial={options} />
+      {drillLevel === "group" && (
+        <TFormatReport
+          leftTitle="Assets"
+          rightTitle="Liabilities & Equity"
+          leftRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
+          rightRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
+        />
+      )}
+
+      {drillLevel === "subgroup" && activeGroupId && (
+        <ReportGrid
+          columns={[
+            { key: "label", label: "Subgroup" },
+            { key: "amount", label: "Closing", align: "right" },
+          ]}
+          data={(tree.nodesById.get(activeGroupId)?.children || [])
+            .filter((n) => n.isGroup)
+            .map((sub) => {
+              const totals = groupTotals.get(sub.id);
+              return {
+                id: sub.id,
+                label: sub.name,
+                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
+                onClick: () => {
+                  setDrillLevel("ledger");
+                  setActiveSubgroupId(sub.id);
+                },
+              };
+            })}
+          onRowClick={(row) => row.onClick?.()}
+        />
+      )}
+
+      {drillLevel === "ledger" && activeSubgroupId && (
+        <ReportGrid
+          columns={[
+            { key: "label", label: "Ledger" },
+            { key: "amount", label: "Closing", align: "right" },
+          ]}
+          data={(tree.nodesById.get(activeSubgroupId)?.children || [])
+            .filter((n) => !n.isGroup)
+            .map((ledger) => {
+              const totals = ledgerTotals.get(ledger.id);
+              return {
+                id: ledger.id,
+                label: ledger.name,
+                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
+                onClick: () => {
+                  setActiveLedgerId(ledger.id);
+                  setDrillLevel("month");
+                },
+              };
+            })}
+          onRowClick={(row) => row.onClick?.()}
+        />
+      )}
+
+      {drillLevel === "month" && activeLedgerId && (
+        <ReportGrid
+          columns={[
+            { key: "monthKey", label: "Month" },
+            { key: "debit", label: "Debit", align: "right" },
+            { key: "credit", label: "Credit", align: "right" },
+          ]}
+          data={ledgerMonthRows}
+          onRowClick={(row) => row.onClick?.()}
+        />
+      )}
+
+      {drillLevel === "entries" && activeLedgerId && (
+        <ReportGrid
+          columns={[
+            { key: "date", label: "Date" },
+            { key: "voucherNo", label: "Voucher No" },
+            { key: "narration", label: "Narration" },
+            { key: "debit", label: "Debit", align: "right" },
+            { key: "credit", label: "Credit", align: "right" },
+          ]}
+          data={entryRows}
+          onRowClick={openVoucher}
+        />
+      )}
+
+      <ReportOptionsModal
+        open={optionsOpen}
+        onClose={() => setOptionsOpen(false)}
+        onApply={(opts) => setOptions({ ...options, ...opts })}
+        initial={options}
+      />
     </ReportShell>
   );
 };
