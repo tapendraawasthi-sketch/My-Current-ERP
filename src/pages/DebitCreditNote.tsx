@@ -18,9 +18,8 @@
  * accounts. Journal is posted via useStore.addVoucher.
  */
 
-import React from "react";
 import { DualDate } from "../components/ui/DualDate";
-//import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import {
