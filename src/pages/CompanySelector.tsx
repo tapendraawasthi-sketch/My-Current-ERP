@@ -36,9 +36,9 @@ function CompanySelector() {
           onClick={() => setCurrentPage("dashboard")}
           className="p-4 bg-white border-2 border-[#1557b0] rounded-lg shadow-md cursor-pointer"
         >
-          <h3 className="text-sm font-bold text-[#000000] mb-1 truncate">{companySettings.name}</h3>
+          <h3 className="text-sm font-bold text-[#000000] mb-1 truncate">{companySettings?.name}</h3>
           <p className="text-xs text-[#000000] font-medium">
-            PAN: <span className="font-mono text-[#000000]">{companySettings.panNumber}</span>
+            PAN: <span className="font-mono text-[#000000]">{companySettings?.panNumber}</span>
           </p>
 
           <button

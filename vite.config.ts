@@ -22,21 +22,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
-            return "react";
-          }
-          if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts")) {
-            return "ui";
-          }
-          if (id.includes("node_modules/dexie")) {
-            return "db";
-          }
-          if (id.includes("node_modules/jspdf") || id.includes("node_modules/jspdf-autotable")) {
-            return "pdf";
-          }
-          if (id.includes("node_modules/xlsx")) {
-            return "xlsx";
-          }
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react";
+          if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts")) return "ui";
+          if (id.includes("node_modules/dexie")) return "db";
+          if (id.includes("node_modules/jspdf") || id.includes("node_modules/jspdf-autotable")) return "pdf";
+          if (id.includes("node_modules/xlsx")) return "xlsx";
+          if (id.includes("node_modules/@tanstack")) return "tanstack";
         },
       },
     },

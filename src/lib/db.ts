@@ -526,6 +526,7 @@ class SutraDB extends Dexie {
   employees!: Table<DBEmployee>;
   bankStatements!: Table<DBBankStatement>;
   tdsEntries!: Table<any>;
+  auditLogs!: Table<any>;
 
   constructor() {
     super("SutraERP");
@@ -581,6 +582,11 @@ class SutraDB extends Dexie {
     // Version 5 — TDS module
     this.version(5).stores({
       tdsEntries: "id, date, partyId, section, status, fiscalYearBS",
+    });
+
+    // Version 6 — Audit Logs
+    this.version(6).stores({
+      auditLogs: "id, timestamp, userId, action, module, recordId, recordType",
     });
   }
 }

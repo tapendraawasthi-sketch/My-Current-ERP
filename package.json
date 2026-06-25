@@ -1,7 +1,7 @@
 {
   "name": "sutra-erp",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
