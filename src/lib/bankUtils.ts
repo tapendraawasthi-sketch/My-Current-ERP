@@ -61,67 +61,67 @@ export function parseCSVBankStatement(
  *   2. Exact amount + date within 3 days → medium confidence (0.75)
  *   3. Amount within 1% + exact date → low confidence (0.50)
  */
-export interface BankStmtLine {
-  id: string;
-  date: string;
-  description: string;
-  amount: number; // + deposit, - withdrawal
-}
-
-export interface LedgerLine {
-  id: string;
-  date: string;
-  amount: number;
-  reconciled?: boolean;
-}
-
-export interface MatchSuggestion {
-  bankLineId: string;
-  ledgerLineIds: string[];
-  confidence: "exact" | "many-to-one";
-}
-
-/** Exact auto-match: same date + same amount => single-click confirm. */
 export function autoMatchStatements(
-  bankLines: BankStmtLine[],
-  ledgerLines: LedgerLine[],
-): { suggestions: MatchSuggestion[]; matchedBankIds: Set<string> } {
-  const suggestions: MatchSuggestion[] = [];
-  const matchedBankIds = new Set<string>();
-  const usedLedger = new Set<string>();
+  statementRows: BankTransaction[],
+  bookEntries: BookEntry[]
+): MatchResult[] {
+  const usedBookIds = new Set<string>();
 
-  for (const bank of bankLines) {
-    const exact = ledgerLines.find(
-      (l) =>
-        !usedLedger.has(l.id) &&
-        !l.reconciled &&
-        l.date === bank.date &&
-        Math.abs(l.amount - bank.amount) < 0.01,
-    );
-    if (exact) {
-      suggestions.push({
-        bankLineId: bank.id,
-        ledgerLineIds: [exact.id],
-        confidence: "exact",
-      });
-      matchedBankIds.add(bank.id);
-      usedLedger.add(exact.id);
+  return statementRows.map((stmt) => {
+    const stmtAmount = stmt.credit > 0 ? stmt.credit : stmt.debit;
+    const stmtType: "debit" | "credit" = stmt.credit > 0 ? "credit" : "debit";
+
+    let bestMatch: BookEntry | null = null;
+    let bestConfidence = 0;
+
+    for (const entry of bookEntries) {
+      if (usedBookIds.has(entry.id)) continue;
+      if (entry.type !== stmtType) continue;
+
+      const amountMatch = Math.abs(entry.amount - stmtAmount) < 0.01;
+      const nearAmountMatch = Math.abs(entry.amount - stmtAmount) / Math.max(stmtAmount, 1) < 0.01;
+      const exactDateMatch = entry.date === stmt.date;
+
+      // Parse date difference in days
+      const daysDiff = Math.abs(
+        (new Date(entry.date).getTime() - new Date(stmt.date).getTime()) / 86_400_000
+      );
+
+      let confidence = 0;
+      if (amountMatch && exactDateMatch) confidence = 0.95;
+      else if (amountMatch && daysDiff <= 3) confidence = 0.75;
+      else if (nearAmountMatch && exactDateMatch) confidence = 0.50;
+
+      if (confidence > bestConfidence) {
+        bestConfidence = confidence;
+        bestMatch = entry;
+      }
     }
-  }
-  return { suggestions, matchedBankIds };
-}
 
-/**
- * Many-to-one: validate that a set of selected ledger receipts sums exactly
- * to one consolidated bank deposit line (PDF lump-sum deposit scenario).
- */
-export function validateManyToOne(
-  bankAmount: number,
-  selectedLedgerAmounts: number[],
-): { isValid: boolean; runningTotal: number; difference: number } {
-  const runningTotal = selectedLedgerAmounts.reduce((s, a) => s + a, 0);
-  const difference = Math.round((bankAmount - runningTotal) * 100) / 100;
-  return { isValid: Math.abs(difference) < 0.01, runningTotal, difference };
+    if (bestMatch && bestConfidence >= 0.50) {
+      usedBookIds.add(bestMatch.id);
+      return {
+        statementId: stmt.reference || `${stmt.date}-${stmtAmount}`,
+        bookEntryId: bestMatch.id,
+        date: stmt.date,
+        description: stmt.description,
+        amount: stmtAmount,
+        type: stmtType,
+        matched: true,
+        confidence: bestConfidence,
+      };
+    }
+
+    return {
+      statementId: stmt.reference || `${stmt.date}-${stmtAmount}`,
+      date: stmt.date,
+      description: stmt.description,
+      amount: stmtAmount,
+      type: stmtType,
+      matched: false,
+      confidence: 0,
+    };
+  });
 }
 
 // Legacy helper — kept for backward compatibility

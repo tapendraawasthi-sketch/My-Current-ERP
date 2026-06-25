@@ -1,19 +1,22 @@
 services:
-  # Sutra ERP Frontend — Static Site on Render
   - type: web
-    name: sutra-erp-frontend
-    runtime: static
+    name: sutra-erp
+    env: node
+    plan: free
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    pullRequestPreviewsEnabled: true
-    headers:
-      - path: /assets/*
-        name: Cache-Control
-        value: public, max-age=31536000, immutable
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    startCommand: node src/server.js
+    healthCheckPath: /health
     envVars:
-      - key: NODE_VERSION
-        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false   # Set this in Render dashboard → Environment → DATABASE_URL
+      - key: ALLOWED_ORIGINS
+        sync: false   # Set to your Vercel URL if using separate frontend, e.g. https://my-erp.vercel.app
+databases:
+  - name: sutra-erp-db
+    plan: free
+    databaseName: sutra_erp
+    user: sutra_erp_user
