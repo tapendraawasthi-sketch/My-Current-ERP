@@ -124,6 +124,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
   const [activeTab, setActiveTab] = useState<"ALL" | AccountType>("ALL");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const [viewMode, setViewMode] = useState<"tree" | "groups">("tree");
 
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
     "root-asset": true,
@@ -220,6 +221,12 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       }
     }
   };
+
+  const groupsOnlyList = useMemo(() => {
+    return accounts
+      .filter((a) => a.isGroup)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [accounts]);
 
   // ─── TREE DATA ────────────────────────────────────────────────────────────────
   const treeData = useMemo(() => {
@@ -846,10 +853,29 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             <div>
               <h1 className="text-[15px] font-semibold text-[#000000]">Chart of Accounts</h1>
               <p className="text-[11px] text-[#000000] mt-0.5">
-                {accounts.length} accounts &nbsp;·&nbsp; {accounts.filter((a) => a.isGroup).length} groups &nbsp;·&nbsp; {accounts.filter((a) => !a.isGroup).length} ledgers
+                {viewMode === "groups" 
+                  ? `${groupsOnlyList.length} account groups · ${groupsOnlyList.filter(a=>!a.parentId).length} primary`
+                  : `${accounts.length} accounts · ${accounts.filter((a) => a.isGroup).length} groups · ${accounts.filter((a) => !a.isGroup).length} ledgers`
+                }
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <div className="flex items-center rounded-md border border-[#9DC07A] bg-white overflow-hidden mr-2">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("tree")}
+                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "tree" ? "bg-[#3D6B25] text-white" : "text-[#000000] hover:bg-[#EBF5E2]"}`}
+                >
+                  Tree
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("groups")}
+                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "groups" ? "bg-[#3D6B25] text-white" : "text-[#000000] hover:bg-[#EBF5E2]"}`}
+                >
+                  List of Groups
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={collapseAll}
@@ -944,6 +970,71 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             <div className="flex-1 w-full flex flex-col gap-3">
               <div className="rounded-xl border border-[#9DC07A] bg-white overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
+                  {viewMode === "groups" ? (
+                    <>
+                      <table className="w-full text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
+                            <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px]">
+                              Name
+                            </th>
+                            <th className="px-3 py-2.5 text-center font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-24">
+                              Primary
+                            </th>
+                            <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px]">
+                              Under Group
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {groupsOnlyList.map(account => {
+                            const parent = account.parentId
+                              ? accounts.find(a => a.id === account.parentId)
+                              : null;
+                            const isPrimary = !account.parentId;
+                            return (
+                              <tr
+                                key={account.id}
+                                onClick={() => handleOpenEditModal(account)}
+                                className="cursor-pointer hover:bg-[#D4EABD]/30 transition-colors"
+                              >
+                                <td className="px-3 py-2 text-[12px] font-medium text-[#1557b0] hover:underline">
+                                  {account.name}
+                                  {account.nameNepali && (
+                                    <span className="ml-1.5 text-[10px] text-[#000000]">
+                                      · {account.nameNepali}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="px-3 py-2 text-center text-[12px] font-bold text-[#000000]">
+                                  {isPrimary ? "Y" : "N"}
+                                </td>
+                                <td className="px-3 py-2 text-[12px] text-[#1557b0] hover:underline">
+                                  {parent ? parent.name : "—"}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                          {groupsOnlyList.length === 0 && (
+                            <tr>
+                              <td colSpan={3} className="text-center py-10 text-[11px] text-[#000000]">
+                                No account groups found.
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                      <div className="px-3 py-1.5 border-t border-[#9DC07A] bg-[#EBF5E2] flex items-center gap-4 text-[10px] text-[#000000]">
+                        <span>Entry No : 1 / {groupsOnlyList.length}</span>
+                        <span>|</span>
+                        <span>Total Groups : {groupsOnlyList.length}</span>
+                        <span>|</span>
+                        <span>Primary : {groupsOnlyList.filter(a => !a.parentId).length}</span>
+                        <span>|</span>
+                        <span>Sub-Groups : {groupsOnlyList.filter(a => !!a.parentId).length}</span>
+                      </div>
+                    </>
+                  ) : (
                   <table className="w-full text-xs border-collapse">
                     <thead>
                       <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
@@ -1236,15 +1327,18 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                       )}
                     </tbody>
                   </table>
+                  )}
                 </div>
-                <Pagination
-                  page={page}
-                  totalPages={totalPages}
-                  totalRecords={filteredAccounts.length}
-                  pageSize={pageSize}
-                  onPageChange={setPage}
-                  onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
-                />
+                {viewMode === "tree" && (
+                  <Pagination
+                    page={page}
+                    totalPages={totalPages}
+                    totalRecords={filteredAccounts.length}
+                    pageSize={pageSize}
+                    onPageChange={setPage}
+                    onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+                  />
+                )}
               </div>
 
               {/* ── BULK ACTION BAR ───────────────────────────────────────────── */}
