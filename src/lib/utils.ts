@@ -101,5 +101,15 @@ export function parseNumber(value: string | number | undefined | null): number {
   return isNaN(num) ? 0 : num;
 }
 
-export const dateToAD = () => "";
-export const parseFlexibleDate = () => new Date();
+export function dateToAD(date: Date | string): string {
+  if (!date) return new Date().toISOString().split("T")[0];
+  if (typeof date === "string") return date.split("T")[0];
+  return date.toISOString().split("T")[0];
+}
+
+export function parseFlexibleDate(value: string | Date | undefined | null): Date {
+  if (!value) return new Date();
+  if (value instanceof Date) return value;
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? new Date() : d;
+}

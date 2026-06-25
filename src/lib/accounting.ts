@@ -119,8 +119,41 @@ export function computeLedgerBalance(
   return balance;
 }
 
-export const generateVoucherNo = () => "";
-export const computeTrialBalance = () => ({});
+export const generateVoucherNo = (type = "journal") => generateSerialNumberSync(type);
+
+export function computeTrialBalance(
+  accounts: any[],
+  vouchers: any[]
+): { rows: any[]; totalDebit: number; totalCredit: number } {
+  const balances: Record<string, { debit: number; credit: number }> = {};
+  for (const v of vouchers) {
+    if (v.status !== "posted") continue;
+    for (const line of v.lines || []) {
+      if (!balances[line.accountId]) balances[line.accountId] = { debit: 0, credit: 0 };
+      balances[line.accountId].debit += Number(line.debit) || 0;
+      balances[line.accountId].credit += Number(line.credit) || 0;
+    }
+  }
+  const rows = accounts
+    .filter((a) => !a.isGroup)
+    .map((a) => {
+      const ob = balances[a.id] || { debit: 0, credit: 0 };
+      const obDr = (a.openingBalanceDr || 0) + ob.debit;
+      const obCr = (a.openingBalanceCr || 0) + ob.credit;
+      return {
+        accountId: a.id,
+        accountCode: a.code,
+        accountName: a.name,
+        type: a.type,
+        debit: obDr > obCr ? obDr - obCr : 0,
+        credit: obCr > obDr ? obCr - obDr : 0,
+      };
+    })
+    .filter((r) => r.debit !== 0 || r.credit !== 0);
+  const totalDebit = rows.reduce((s, r) => s + r.debit, 0);
+  const totalCredit = rows.reduce((s, r) => s + r.credit, 0);
+  return { rows, totalDebit, totalCredit };
+}
 /**
  * Given a start date, frequency, and optional day-of-month,
  * returns the next due date as an ISO date string (YYYY-MM-DD).
@@ -168,15 +201,241 @@ function daysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
 
-export const computeProfitLoss = () => ({});
-export const computeBalanceSheet = () => ({});
-export const computeCashFlow = () => ({});
-export const computeOutstandingPayables = () => [];
+export function computeProfitLoss(
+  accounts: any[],
+  vouchers: any[],
+  startDate?: string,
+  endDate?: string
+): { incomeRows: any[]; expenseRows: any[]; totalIncome: number; totalExpense: number; netProfit: number } {
+  const filtered = vouchers.filter(
+    (v) =>
+      v.status === "posted" &&
+      (!startDate || v.date >= startDate) &&
+      (!endDate || v.date <= endDate)
+  );
+  const balances: Record<string, number> = {};
+  for (const v of filtered) {
+    for (const line of v.lines || []) {
+      balances[line.accountId] = (balances[line.accountId] || 0) + (line.credit || 0) - (line.debit || 0);
+    }
+  }
+  const incomeRows = accounts
+    .filter((a) => !a.isGroup && (a.type === "income" || a.type === "revenue"))
+    .map((a) => ({ id: a.id, name: a.name, amount: balances[a.id] || 0 }))
+    .filter((r) => r.amount !== 0);
+  const expenseRows = accounts
+    .filter((a) => !a.isGroup && a.type === "expense")
+    .map((a) => ({ id: a.id, name: a.name, amount: Math.abs(balances[a.id] || 0) }))
+    .filter((r) => r.amount !== 0);
+  const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
+  const totalExpense = expenseRows.reduce((s, r) => s + r.amount, 0);
+  return { incomeRows, expenseRows, totalIncome, totalExpense, netProfit: totalIncome - totalExpense };
+}
 
+export function computeBalanceSheet(
+  accounts: any[],
+  vouchers: any[],
+  asOfDate?: string
+): { assets: any[]; liabilities: any[]; equity: any[]; totalAssets: number; totalLiabEquity: number } {
+  const filtered = vouchers.filter((v) => v.status === "posted" && (!asOfDate || v.date <= asOfDate));
+  const balances: Record<string, number> = {};
+  for (const acc of accounts) {
+    if (!acc.isGroup) balances[acc.id] = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
+  }
+  for (const v of filtered) {
+    for (const line of v.lines || []) {
+      balances[line.accountId] = (balances[line.accountId] || 0) + (line.debit || 0) - (line.credit || 0);
+    }
+  }
+  const pick = (type: string, negate: boolean) =>
+    accounts
+      .filter((a) => !a.isGroup && a.type === type)
+      .map((a) => ({ id: a.id, name: a.name, amount: negate ? -(balances[a.id] || 0) : (balances[a.id] || 0) }))
+      .filter((i) => Math.abs(i.amount) > 0.01);
+  const assets = pick("asset", false);
+  const liabilities = pick("liability", true);
+  const equity = pick("equity", true);
+  const totalAssets = assets.reduce((s, r) => s + r.amount, 0);
+  const totalLiabEquity = liabilities.reduce((s, r) => s + r.amount, 0) + equity.reduce((s, r) => s + r.amount, 0);
+  return { assets, liabilities, equity, totalAssets, totalLiabEquity };
+}
 
-export const getAccountBalance = () => 0;
-export const computeAgingReport = () => [];
-export const computePartyStatement = () => ({});
-export const computeOutstandingAnalysis = () => ({});
+export function computeCashFlow(
+  accounts: any[],
+  vouchers: any[],
+  startDate?: string,
+  endDate?: string
+): { operating: number; investing: number; financing: number; netChange: number; rows: any[] } {
+  const filtered = vouchers.filter(
+    (v) =>
+      v.status === "posted" &&
+      (!startDate || v.date >= startDate) &&
+      (!endDate || v.date <= endDate)
+  );
+  let operating = 0, investing = 0, financing = 0;
+  const rows: any[] = [];
+  for (const v of filtered) {
+    for (const line of v.lines || []) {
+      const acc = accounts.find((a) => a.id === line.accountId);
+      if (!acc) continue;
+      const net = (line.debit || 0) - (line.credit || 0);
+      if (acc.type === "expense" || acc.type === "income") {
+        operating += net;
+        rows.push({ date: v.date, description: line.narration || v.narration || acc.name, amount: net, category: "operating" });
+      } else if (acc.type === "asset") {
+        investing -= net;
+      } else if (acc.type === "liability" || acc.type === "equity") {
+        financing -= net;
+      }
+    }
+  }
+  return { operating, investing, financing, netChange: operating + investing + financing, rows };
+}
 
-export const computeRatios = () => ({});
+export function computeOutstandingPayables(
+  parties: any[],
+  invoices: any[]
+): { totalAmount: number; parties: Array<{ partyId: string; name: string; amount: number }> } {
+  const partyBalances: Record<string, number> = {};
+  for (const inv of invoices) {
+    if (
+      inv.type === "purchase-invoice" &&
+      inv.status === "posted" &&
+      (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial")
+    ) {
+      const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
+      partyBalances[inv.partyId] = (partyBalances[inv.partyId] || 0) + outstanding;
+    }
+  }
+  const result = Object.entries(partyBalances).map(([partyId, amount]) => {
+    const party = parties.find((p) => p.id === partyId);
+    return { partyId, name: party?.name || "Unknown", amount };
+  });
+  return { totalAmount: result.reduce((s, r) => s + r.amount, 0), parties: result };
+}
+
+export function getAccountBalance(accountId: string, vouchers: any[], accounts?: any[]): number {
+  const account = accounts?.find((a) => a.id === accountId);
+  let balance = (account?.openingBalanceDr || 0) - (account?.openingBalanceCr || 0);
+  for (const v of vouchers) {
+    if (v.status !== "posted") continue;
+    for (const line of v.lines || []) {
+      if (line.accountId === accountId) {
+        balance += (line.debit || 0) - (line.credit || 0);
+      }
+    }
+  }
+  return balance;
+}
+
+export function computeAgingReport(
+  invoices: any[],
+  parties: any[],
+  asOfDate?: string,
+  partyType?: string
+): any[] {
+  const today = asOfDate ? new Date(asOfDate) : new Date();
+  return invoices
+    .filter((inv) => {
+      if (inv.status === "cancelled") return false;
+      if (inv.paymentStatus === "paid") return false;
+      if (partyType === "customer" && inv.type !== "sales-invoice") return false;
+      if (partyType === "supplier" && inv.type !== "purchase-invoice") return false;
+      return true;
+    })
+    .map((inv) => {
+      const party = parties.find((p) => p.id === inv.partyId);
+      const due = inv.dueDate ? new Date(inv.dueDate) : new Date(inv.date);
+      const daysOverdue = Math.max(0, Math.floor((today.getTime() - due.getTime()) / 86400000));
+      const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
+      const bucket =
+        daysOverdue === 0 ? "current" :
+        daysOverdue <= 30 ? "0-30" :
+        daysOverdue <= 60 ? "31-60" :
+        daysOverdue <= 90 ? "61-90" : "90+";
+      return {
+        invoiceId: inv.id,
+        invoiceNo: inv.invoiceNo,
+        partyId: inv.partyId,
+        partyName: party?.name || inv.partyName || "Unknown",
+        date: inv.date,
+        dueDate: inv.dueDate,
+        daysOverdue,
+        outstanding,
+        bucket,
+        type: inv.type,
+      };
+    });
+}
+
+export function computePartyStatement(
+  party: any,
+  accounts: any[],
+  vouchers: any[],
+  invoices: any[],
+  startDate?: string,
+  endDate?: string
+): { rows: any[]; openingBalance: number; closingBalance: number } {
+  if (!party) return { rows: [], openingBalance: 0, closingBalance: 0 };
+  const partyAccount = accounts.find((a) => a.partyId === party.id || a.name === party.name);
+  const openingBalance = partyAccount
+    ? (partyAccount.openingBalanceDr || 0) - (partyAccount.openingBalanceCr || 0)
+    : 0;
+  const rows: any[] = [];
+  let runningBalance = openingBalance;
+  const relevantVouchers = vouchers
+    .filter(
+      (v) =>
+        v.status === "posted" &&
+        (!startDate || v.date >= startDate) &&
+        (!endDate || v.date <= endDate) &&
+        v.lines?.some((l: any) => l.accountId === partyAccount?.id)
+    )
+    .sort((a, b) => a.date.localeCompare(b.date));
+  for (const v of relevantVouchers) {
+    for (const line of v.lines || []) {
+      if (line.accountId !== partyAccount?.id) continue;
+      const debit = line.debit || 0;
+      const credit = line.credit || 0;
+      runningBalance += debit - credit;
+      rows.push({
+        date: v.date,
+        voucherNo: v.voucherNo,
+        narration: line.narration || v.narration || "",
+        debit,
+        credit,
+        balance: runningBalance,
+      });
+    }
+  }
+  return { rows, openingBalance, closingBalance: runningBalance };
+}
+
+export function computeOutstandingAnalysis(
+  parties: any[],
+  invoices: any[]
+): { receivables: any; payables: any } {
+  const receivables = computeOutstandingReceivables(parties, invoices, []);
+  const payables = computeOutstandingPayables(parties, invoices);
+  return { receivables, payables };
+}
+
+export function computeRatios(
+  balanceSheet: any,
+  profitLoss: any,
+  _accounts?: any[]
+): Record<string, number> {
+  if (!balanceSheet || !profitLoss) return {};
+  const currentAssets = (balanceSheet.assets || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+  const currentLiab = (balanceSheet.liabilities || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+  const netProfit = profitLoss.netProfit || 0;
+  const totalAssets = balanceSheet.totalAssets || 1;
+  return {
+    currentRatio: currentLiab !== 0 ? Math.round((currentAssets / currentLiab) * 100) / 100 : 0,
+    returnOnAssets: Math.round((netProfit / totalAssets) * 10000) / 100,
+    netProfitMargin:
+      profitLoss.totalIncome !== 0
+        ? Math.round((netProfit / profitLoss.totalIncome) * 10000) / 100
+        : 0,
+  };
+}

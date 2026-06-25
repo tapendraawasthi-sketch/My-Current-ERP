@@ -100,6 +100,35 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
   });
 }
 
-export const getLowStockItems = () => [];
+export function getLowStockItems(
+  movements: any[],
+  items: any[],
+  _warehouses?: any[]
+): any[] {
+  return items
+    .filter((item) => {
+      if (!item.reorderLevel) return false;
+      const pos = computeStockPosition(movements, item.id, null);
+      const currentQty = (item.openingStock || 0) + pos.qty;
+      return currentQty <= item.reorderLevel;
+    })
+    .map((item) => {
+      const pos = computeStockPosition(movements, item.id, null);
+      const currentQty = (item.openingStock || 0) + pos.qty;
+      return { ...item, currentQty, shortage: (item.reorderLevel || 0) - currentQty };
+    });
+}
 
-export const getStockValuationSummary = () => ({});
+export function getStockValuationSummary(
+  movements: any[],
+  items: any[],
+  _warehouses?: any[],
+  _method?: string,
+  _asOfDate?: string
+): any[] {
+  return calculateStockSummary(items, movements).map((row) => ({
+    ...row,
+    avgRate: row.avgRate,
+    closingValue: row.closingValue,
+  }));
+}

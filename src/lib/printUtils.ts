@@ -159,4 +159,54 @@ export function generateVoucherPDF(
   return doc.output("blob");
 }
 
-export const generatePartyStatementPDF = () => {};
+export function generatePartyStatementPDF(
+  party: any,
+  statement: any,
+  companySettings: any,
+  options?: { startDate?: string; endDate?: string; preset?: string }
+): Blob {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const companyName = companySettings?.companyNameEn || companySettings?.name || "Company";
+  const pageW = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text(companyName, pageW / 2, 15, { align: "center" });
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(companySettings?.address || "", pageW / 2, 21, { align: "center" });
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text("PARTY LEDGER STATEMENT", pageW / 2, 30, { align: "center" });
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Party: ${party?.name || ""}`, 14, 40);
+  if (options?.startDate) {
+    doc.text(`Period: ${options.startDate} to ${options.endDate || ""}`, 14, 46);
+  }
+
+  const rows = (statement?.rows || []).map((r: any) => [
+    r.date || "",
+    r.voucherNo || "",
+    r.narration || "",
+    r.debit > 0 ? `Rs. ${formatNumber(r.debit)}` : "-",
+    r.credit > 0 ? `Rs. ${formatNumber(r.credit)}` : "-",
+    `Rs. ${formatNumber(r.balance)}`,
+  ]);
+
+  autoTable(doc, {
+    startY: 52,
+    head: [["Date", "Voucher No", "Narration", "Debit", "Credit", "Balance"]],
+    body: rows,
+    theme: "grid",
+    headStyles: { fillColor: [61, 107, 37], textColor: 255, fontSize: 7 },
+    bodyStyles: { fontSize: 7 },
+  });
+
+  const finalY = (doc as any).lastAutoTable?.finalY || 100;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Closing Balance: Rs. ${formatNumber(statement?.closingBalance || 0)}`, 14, finalY + 8);
+
+  return doc.output("blob");
+}
