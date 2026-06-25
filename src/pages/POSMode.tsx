@@ -248,9 +248,9 @@ export default function POSMode() {
     <div className="h-screen flex flex-col bg-[#EBF5E2] overflow-hidden text-[#000000]">
       
       {/* App Header (No Print) */}
-      <div className="no-print h-14 bg-[#1e2433] text-[#000000] flex items-center justify-between px-4 shrink-0 shadow-md">
+      <div className="no-print h-14 bg-[#1e2433] text-white flex items-center justify-between px-4 shrink-0 shadow-md">
         <div className="flex items-center gap-3">
-          <button onClick={() => setCurrentPage("dashboard")} className="p-1.5 rounded-md hover:bg-white/10 text-[#000000] hover:text-[#000000] transition-colors">
+          <button onClick={() => setCurrentPage("dashboard")} className="p-1.5 rounded-md hover:bg-white/10 text-white hover:text-white/80 transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="font-bold text-[16px] tracking-wide">POS TERMINAL</div>
@@ -259,7 +259,7 @@ export default function POSMode() {
           <button onClick={() => setShowHeldBills(true)} className="flex items-center gap-1.5 text-[12px] bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded font-medium">
             <PlayCircle className="w-4 h-4" /> RECALL BILL ({heldBills.length})
           </button>
-          <div className="text-[12px] text-[#000000] font-medium">
+          <div className="text-[12px] text-white/90 font-medium">
             {companySettings?.companyName || "Sutra ERP"} | {dateNow}
           </div>
         </div>

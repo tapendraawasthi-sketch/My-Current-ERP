@@ -325,7 +325,7 @@ export default function BankReconciliation() {
         {/* LEFT PANEL - BOOK ENTRIES */}
         <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
           <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
-            <h3 className="text-[13px] font-bold text-[#000000]">Book Entries (Company Ledger)</h3>
+            <h3 className="text-[13px] font-bold text-white">Book Entries (Company Ledger)</h3>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
             {bookEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled book entries found.</p>}
@@ -371,7 +371,7 @@ export default function BankReconciliation() {
         {/* RIGHT PANEL - STATEMENT ENTRIES */}
         <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
            <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
-            <h3 className="text-[13px] font-bold text-[#000000]">Bank Statement (Imported)</h3>
+            <h3 className="text-[13px] font-bold text-white">Bank Statement (Imported)</h3>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
             {statementEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled statement entries found.</p>}
@@ -439,8 +439,8 @@ export default function BankReconciliation() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
             <div className="bg-[#1e2433] px-4 py-3 flex justify-between items-center">
-              <h2 className="text-[#000000] text-[14px] font-semibold">Import Bank Statement (CSV)</h2>
-              <button onClick={() => setShowImportModal(false)} className="text-[#000000] hover:text-[#000000]">✕</button>
+              <h2 className="text-white text-[14px] font-semibold">Import Bank Statement (CSV)</h2>
+              <button onClick={() => setShowImportModal(false)} className="text-white hover:text-white/80">✕</button>
             </div>
             <div className="p-4 space-y-4">
               <div>

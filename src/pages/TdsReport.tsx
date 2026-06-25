@@ -150,8 +150,8 @@ export default function TdsReport() {
                 return (
                   <Card key={sec} border padding="none" className="overflow-hidden">
                     <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A] flex justify-between items-center">
-                      <h3 className="text-[13px] font-bold text-[#000000]">Section {sec}</h3>
-                      <div className="text-[11px] font-medium text-[#000000]">
+                      <h3 className="text-[13px] font-bold text-white">Section {sec}</h3>
+                      <div className="text-[11px] font-medium text-white/80">
                         {entries.length} Entries
                       </div>
                     </div>
@@ -246,13 +246,13 @@ export default function TdsReport() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
+              <h2 className="text-[14px] font-semibold text-white flex items-center gap-2">
                 <FileCheck className="h-4 w-4" />
                 Generate Challan
               </h2>
               <button
                 onClick={() => setShowChallanModal(false)}
-                className="text-[#000000] hover:text-[#000000] transition-colors cursor-pointer"
+                className="text-white hover:text-white/80 transition-colors cursor-pointer"
               >
                 ✕
               </button>

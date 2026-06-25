@@ -769,13 +769,13 @@ const VatReports: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
+              <h2 className="text-[14px] font-semibold text-white flex items-center gap-2">
                 <Activity className="h-4 w-4" />
                 Submit Return to IRD
               </h2>
               <button
                 onClick={() => setShowIrdModal(false)}
-                className="text-[#000000] hover:text-[#000000] transition-colors cursor-pointer"
+                className="text-white hover:text-white/80 transition-colors cursor-pointer"
               >
                 ✕
               </button>
