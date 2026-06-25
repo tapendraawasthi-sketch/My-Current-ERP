@@ -67,6 +67,28 @@ export function useKeyboardShortcuts() {
     notifyListeners();
   }, []);
 
+  // Map every known action_value → correct page route
+  const ACTION_VALUE_TO_PAGE: Record<string, string> = {
+    "journal": "journal", "billing": "billing", "vouchers": "vouchers",
+    "/help": "dashboard", "/masters": "accounts",
+    "dashboard": "dashboard", "accounts": "accounts", "parties": "parties",
+    "items": "items", "payment": "payment", "receipt": "receipt",
+    "company/settings": "settings", "/company/settings": "settings",
+    "/reports/ledger": "ledger",
+    "balance_sheet": "balance-sheet", "balance-sheet": "balance-sheet",
+    "trial_balance": "trial-balance", "trial-balance": "trial-balance",
+    "stock_status": "stock-summary", "stock-status": "stock-summary",
+    "acc_summary": "ledger", "acc-summary": "ledger",
+    "vat_report": "vat-reports", "vat-report": "vat-reports",
+    "day_book": "day-book", "day-book": "day-book",
+    "gst_vat_summary": "vat-reports", "gst-vat-summary": "vat-reports",
+    "AddAccountModal": "accounts", "AddItemModal": "items",
+    "AddVoucherModal": "journal", "AddPaymentModal": "payment",
+    "AddReceiptModal": "receipt", "AddJournalModal": "journal",
+    "AddSalesModal": "billing", "SwitchUserModal": "dashboard",
+    "LockProgramModal": "dashboard",
+  };
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       // Show help panel
@@ -98,12 +120,13 @@ export function useKeyboardShortcuts() {
 
         if (pressed === normalizedCombo || e.key.toLowerCase() === combo) {
           e.preventDefault();
-          if (sc.action_type === "navigate") {
-            setCurrentPage(sc.action_value);
-          } else if (sc.action_type === "report") {
-            setCurrentPage(sc.action_value);
-          } else if (sc.action_type === "help") {
+          if (sc.action_type === "save" || sc.action_type === "search") break;
+          if (sc.action_type === "help") {
             setShowHelp((h) => !h);
+          } else if (sc.action_type === "navigate" || sc.action_type === "report" || sc.action_type === "modal") {
+            const av = sc.action_value;
+            const page = ACTION_VALUE_TO_PAGE[av] || ACTION_VALUE_TO_PAGE[av.replace(/^\//, "")];
+            if (page) setCurrentPage(page);
           }
           break;
         }

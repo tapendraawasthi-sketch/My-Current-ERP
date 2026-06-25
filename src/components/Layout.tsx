@@ -28,24 +28,62 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => { localStorage.setItem("sutra_sidebar_collapsed", String(collapsed)); }, [collapsed]);
 
   const handleSidebarShortcut = (key: string) => {
+    // Comprehensive map: every known action_value (from DB or defaults) → correct page route
+    const ACTION_VALUE_TO_PAGE: Record<string, string> = {
+      // navigate action_values
+      "journal": "journal", "billing": "billing", "vouchers": "vouchers",
+      "/help": "dashboard", "/masters": "accounts",
+      "dashboard": "dashboard", "accounts": "accounts", "parties": "parties",
+      "items": "items", "payment": "payment", "receipt": "receipt",
+      "company/settings": "settings", "/company/settings": "settings",
+      "/reports/ledger": "ledger",
+      // report action_values (underscored from DB)
+      "balance_sheet": "balance-sheet", "balance-sheet": "balance-sheet",
+      "trial_balance": "trial-balance", "trial-balance": "trial-balance",
+      "stock_status": "stock-summary", "stock-status": "stock-summary",
+      "acc_summary": "ledger", "acc-summary": "ledger",
+      "vat_report": "vat-reports", "vat-report": "vat-reports",
+      "day_book": "day-book", "day-book": "day-book",
+      "gst_vat_summary": "vat-reports", "gst-vat-summary": "vat-reports",
+      // modal action_values → navigate to the correct page instead
+      "AddAccountModal": "accounts",
+      "AddItemModal": "items",
+      "AddVoucherModal": "journal",
+      "AddPaymentModal": "payment",
+      "AddReceiptModal": "receipt",
+      "AddJournalModal": "journal",
+      "AddSalesModal": "billing",
+      "SwitchUserModal": "dashboard",
+      "LockProgramModal": "dashboard",
+    };
+
+    // Hard fallback by key (always works even if DB shortcuts are missing/corrupted)
+    const KEY_FALLBACK: Record<string, string> = {
+      F1: "dashboard", F2: "accounts", F3: "items", F4: "accounts",
+      F5: "journal", F6: "payment", F7: "receipt",
+      F8: "journal", F9: "billing", F10: "settings",
+      B: "balance-sheet", T: "trial-balance",
+      S: "stock-summary", A: "ledger", L: "ledger",
+      V: "vat-reports", D: "day-book", G: "vat-reports",
+      U: "dashboard", F: "settings", K: "dashboard",
+    };
+
     const found = rawShortcuts.find((s) => s.key_combo.toUpperCase() === key.toUpperCase() && s.is_active);
     if (found) {
-      if (found.action_type === "navigate") {
-        let page = found.action_value.replace(/^\//, "");
-        if (page === "company/settings") page = "settings";
+      const av = found.action_value;
+      // Skip non-navigable actions (save, search, help)
+      if (found.action_type === "save" || found.action_type === "search") return;
+      if (found.action_type === "help") return;
+
+      const page = ACTION_VALUE_TO_PAGE[av] || ACTION_VALUE_TO_PAGE[av.replace(/^\//, "")];
+      if (page) {
         setCurrentPage(page);
-      } else if (found.action_type === "report") {
-        setCurrentPage(found.action_value.replace(/_/g, "-"));
+      } else {
+        // Last resort: try the key-based fallback
+        if (KEY_FALLBACK[key]) setCurrentPage(KEY_FALLBACK[key]);
       }
     } else {
-      const FALLBACK: Record<string, string> = {
-        F1: "dashboard", F2: "accounts", F3: "items", F4: "accounts",
-        F5: "journal", F6: "payment", F7: "receipt",
-        F8: "journal", F9: "billing", B: "balance-sheet", T: "trial-balance",
-        S: "stock-summary", A: "ledger", L: "ledger",
-        V: "vat-reports", D: "day-book", G: "vat-reports", F: "settings", K: "dashboard",
-      };
-      if (FALLBACK[key]) setCurrentPage(FALLBACK[key]);
+      if (KEY_FALLBACK[key]) setCurrentPage(KEY_FALLBACK[key]);
     }
   };
 
