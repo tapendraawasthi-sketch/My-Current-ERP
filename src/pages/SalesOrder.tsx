@@ -6,7 +6,9 @@
  * Sales Order register — list + new + edit.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
+import { DualDate } from "../components/ui/DualDate";
+//import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Select, SearchableTable, ActionToolbar } from "../components/ui";
 import { Plus, ClipboardList } from "lucide-react";
@@ -184,7 +186,7 @@ const SalesOrder: React.FC = () => {
         <SearchableTable
           columns={columns as any}
           data={enriched}
-          searchableKeys={["orderNo", "reference"]}
+          searchFields={["orderNo", "reference"]}
           emptyMessage="No sales orders yet."
           onRowClick={(row: any) => {
             setActiveId(row.id);

@@ -6,7 +6,9 @@
  * Stock Journal / inventory transfer page.
  */
 
-import React, { useMemo, useState } from "react";
+import React from "react";
+import { DualDate } from "../components/ui/DualDate";
+//import React, { useMemo, useState } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import {
@@ -426,7 +428,7 @@ const StockJournalPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-4">
         <div>
           <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <Transfer className="h-5 w-5 text-[#000000]" />
+            <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
             STOCK JOURNAL TRANSFERS
           </h2>
           <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-semibold">

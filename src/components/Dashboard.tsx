@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Outstanding Receivables</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(receivables.total)}</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(receivables.totalAmount)}</div>
             <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>{receivables.overdueCount} overdue invoice{receivables.overdueCount !== 1 ? "s" : ""}</div>
           </div>
           <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>

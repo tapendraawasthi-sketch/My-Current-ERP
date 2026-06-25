@@ -133,7 +133,7 @@ export default function TdsPayment() {
         date: date,
         dateNepali: formatADToBS(date),
         voucherNo: `JV-TDS-${Date.now().toString().slice(-4)}`,
-        type: VoucherType.JOURNAL_VOUCHER,
+        type: VoucherType.JOURNAL,
         status: VoucherStatus.POSTED,
         narration: `TDS Entry for ${paymentNature} - Section ${section}`,
         lines: lines,

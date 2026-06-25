@@ -167,7 +167,7 @@ const CashFlowStatement: React.FC = () => {
     {
       key: "amount",
       header: "Amount (Rs.)",
-      align: "right",
+      align: "right" as const,
       render: (value: number) => <span className="font-mono">{formatNumber(value)}</span>,
     },
   ];

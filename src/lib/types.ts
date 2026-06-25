@@ -26,6 +26,9 @@ export enum VoucherType {
   PURCHASE_RETURN = "purchase-return",
   DEBIT_NOTE = "debit-note",
   CREDIT_NOTE = "credit-note",
+  STOCK_JOURNAL = "stock-journal",
+  OPENING_BALANCE = "opening-balance",
+  JOURNAL_VOUCHER = "journal",
 }
 
 export enum VoucherStatus {
@@ -353,6 +356,7 @@ export interface FiscalYear {
   id: string;
   name: string;
   fiscalYearBS?: string;
+  bsYear?: string;
   startDate: string;
   endDate: string;
   isCurrent: boolean;
@@ -566,8 +570,10 @@ export interface JournalEntry {
   id: string;
   voucherNo: string;
   date: string;
+  dateNepali?: string;
   type: string;
   narration?: string;
+  partyName?: string;
   lines: JournalEntryLine[];
   totalDebit: number;
   totalCredit: number;
@@ -579,7 +585,10 @@ export interface JournalEntry {
 export const ReportPeriodPreset = {} as any;
 export const FiscalYearStatus = {} as any;
 
-export const CostCenterLevel = {} as any;
+export enum CostCenterLevel {
+  PRIMARY = "primary",
+  SECONDARY = "secondary",
+}
 
 // ─── Employee (Payroll Module) ────────────────────────────────────────────────
 export interface Employee {
@@ -595,7 +604,13 @@ export interface Employee {
   bankAccount?: string;
   bankName?: string;
   ssf: boolean;
+  ssfEnabled?: boolean;
   ssfContributorNumber?: string;
+  ssfContributionType?: "employee" | "employer" | "both";
+  pfEnabled?: boolean;
+  pfRate?: number;
+  citEnabled?: boolean;
+  citRate?: number;
   basicSalary: number;
   gradePayPercent?: number;
   allowances: {
@@ -604,10 +619,158 @@ export interface Employee {
     medical: number;
     dashain: number;
   };
+  rentAllowance?: number;
+  medicalAllowance?: number;
+  transportAllowance?: number;
+  maritalStatus?: "single" | "married";
+  deductions?: Array<{ name: string; amount: number }>;
   taxDeclarations?: {
     lifeInsurance?: number;
     healthInsurance?: number;
   };
   employmentType: "permanent" | "contract" | "daily";
   status: "active" | "inactive";
+}
+export interface VoucherSeries {
+  id?: string;
+  companyId: string;
+  voucherType: string;
+  prefix: string;
+  currentNumber: number;
+  nextNumber?: number;
+  padding: number;
+  fiscalYearBS: string;
+  resetOnNewYear: boolean;
+}
+
+export type AccountGroup = string;
+
+export interface StockJournalLine {
+  itemId: string;
+  itemName: string;
+  fromWarehouseId: string;
+  toWarehouseId: string;
+  qty: number;
+  rate: number;
+}
+
+export interface StockJournal {
+  id: string;
+  journalNo: string;
+  date: string;
+  dateNepali: string;
+  narration?: string;
+  lines: StockJournalLine[];
+  status: VoucherStatus | string;
+}
+
+export interface Budget {
+  id: string;
+  accountId: string;
+  costCenterId?: string;
+  fiscalYearBS: string;
+  month: number;
+  budgetedAmount: number;
+}
+
+export interface DeliveryChallanLine {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  description?: string;
+  qty: number;
+  unit?: string;
+  rate?: number;
+  amount?: number;
+  warehouseId?: string;
+  batchNo?: string;
+}
+
+export interface DeliveryChallan {
+  id: string;
+  challanNo: string;
+  date: string;
+  dateNepali: string;
+  partyId: string;
+  partyName: string;
+  salesOrderId?: string;
+  lines: DeliveryChallanLine[];
+  narration?: string;
+  status: ChallanStatus | string;
+  inventoryPosted?: boolean;
+  invoiceId?: string;
+}
+
+export interface GoodsReceiptNoteLine {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  description?: string;
+  qty: number;
+  unit?: string;
+  rate?: number;
+  amount?: number;
+  rejectedQty?: number;
+  warehouseId?: string;
+  batchNo?: string;
+}
+
+export interface GoodsReceiptNote {
+  id: string;
+  grnNo: string;
+  date: string;
+  dateNepali: string;
+  partyId: string;
+  partyName: string;
+  purchaseOrderId?: string;
+  lines: GoodsReceiptNoteLine[];
+  narration?: string;
+  status: ChallanStatus | string;
+  inventoryPosted?: boolean;
+  invoiceId?: string;
+}
+
+export enum OrderStatus {
+  DRAFT = "draft",
+  CONFIRMED = "confirmed",
+  PARTIALLY_FULFILLED = "partially_fulfilled",
+  FULFILLED = "fulfilled",
+  CANCELLED = "cancelled",
+}
+
+export interface OrderLine {
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  qty: number;
+  unit?: string;
+  rate: number;
+  discount?: number;
+  discountAmount?: number;
+  isTaxable?: boolean;
+  vatRate?: number;
+  amount?: number;
+}
+
+export interface Order {
+  id: string;
+  orderNo: string;
+  date: string;
+  dateNepali?: string;
+  expectedDate?: string;
+  type: "sales" | "purchase";
+  partyId: string;
+  partyName: string;
+  lines: OrderLine[];
+  subTotal?: number;
+  discountAmount?: number;
+  taxableAmount?: number;
+  vatAmount?: number;
+  grandTotal?: number;
+  narration?: string;
+  status: OrderStatus | string;
+  fulfilledPercent?: number;
+  fulfilledInvoiceIds?: string[];
+  approvedBy?: string;
+  approvedAt?: string;
 }

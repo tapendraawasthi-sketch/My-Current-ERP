@@ -19,6 +19,7 @@ import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import toast from "react-hot-toast";
 import {
+  ShoppingBag,
   Search,
   Trash2,
   Printer,
@@ -260,7 +261,7 @@ export default function POSMode() {
             <PlayCircle className="w-4 h-4" /> RECALL BILL ({heldBills.length})
           </button>
           <div className="text-[12px] text-white/90 font-medium">
-            {companySettings?.companyName || "Sutra ERP"} | {dateNow}
+            {companySettings?.companyNameEn || "Sutra ERP"} | {dateNow}
           </div>
         </div>
       </div>
@@ -556,7 +557,7 @@ export default function POSMode() {
       {/* PRINT RECEIPT TEMPLATE (Only visible during window.print()) */}
       <div className="print-only hidden w-[80mm] bg-white text-black p-4 font-mono text-[12px] mx-auto">
         <div className="text-center mb-4">
-          <h1 className="text-[16px] font-bold uppercase">{companySettings?.companyName || "Sutra ERP"}</h1>
+          <h1 className="text-[16px] font-bold uppercase">{companySettings?.companyNameEn || "Sutra ERP"}</h1>
           <div className="text-[11px]">{companySettings?.address || "Nepal"}</div>
           <div className="text-[11px]">PAN/VAT: {companySettings?.panNumber || "N/A"}</div>
           <div className="text-[11px]">Ph: {companySettings?.phone || "N/A"}</div>

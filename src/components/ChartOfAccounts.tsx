@@ -1351,11 +1351,11 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={() => setSelectedIds({})}
+                    <Button variant="default" size="sm" onClick={() => setSelectedIds({})}
                       className="bg-transparent text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2] text-xs">
                       Clear
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleBulkDeactivate}
+                    <Button variant="default" size="sm" onClick={handleBulkDeactivate}
                       className="bg-transparent text-red-400 border-red-800/60 hover:bg-red-900/20 text-xs">
                       Deactivate
                     </Button>
@@ -1482,7 +1482,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           size="md"
           footer={
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setAddModalOpen(false)}>Cancel</Button>
+              <Button variant="default" size="sm" onClick={() => setAddModalOpen(false)}>Cancel</Button>
               <Button variant="primary" size="sm" onClick={handleAddSubmit}>Create Account</Button>
             </div>
           }
@@ -1500,7 +1500,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             <div className="flex justify-between items-center w-full">
               {selectedNode?.rowObject && !selectedNode.rowObject.isSystemAccount ? (
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   onClick={() => { setConfirmDeleteAccount(selectedNode.rowObject || null); setEditModalOpen(false); }}
                   className="text-red-600 hover:bg-red-50 border-red-200"
@@ -1510,7 +1510,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 </Button>
               ) : <span />}
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setEditModalOpen(false)}>Cancel</Button>
+                <Button variant="default" size="sm" onClick={() => setEditModalOpen(false)}>Cancel</Button>
                 <Button variant="primary" size="sm" onClick={handleEditSubmit}>Save Changes</Button>
               </div>
             </div>
@@ -1527,7 +1527,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           size="md"
           footer={
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setImportModalOpen(false)}>Close</Button>
+              <Button variant="default" size="sm" onClick={() => setImportModalOpen(false)}>Close</Button>
             </div>
           }
         >
@@ -1541,7 +1541,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 <p className="text-[10px] text-[#000000] mt-0.5">Pre-formatted columns for correct import</p>
               </div>
               <Button
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={handleDownloadTemplate}
                 icon={<Download className="h-3.5 w-3.5" />}

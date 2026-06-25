@@ -6,7 +6,9 @@
  * Journal Vouchers — list & entry page.
  */
 
-import React, { useState, useMemo } from "react";
+import React from "react";
+import { DualDate } from "../components/ui/DualDate";
+//import React, { useState, useMemo } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import { SearchableTable, Button, Badge, Input, Select, NepaliDatePicker } from "../components/ui";
@@ -83,7 +85,7 @@ const JournalEntries: React.FC = () => {
     {
       key: "totalDebit",
       header: "Debit",
-      align: "right",
+      align: "right" as const,
       render: (v: number) => (
         <span className="font-mono">
           {symbol} {formatNumber(v || 0)}
@@ -93,7 +95,7 @@ const JournalEntries: React.FC = () => {
     {
       key: "totalCredit",
       header: "Credit",
-      align: "right",
+      align: "right" as const,
       render: (v: number) => (
         <span className="font-mono">
           {symbol} {formatNumber(v || 0)}
@@ -103,7 +105,7 @@ const JournalEntries: React.FC = () => {
     {
       key: "status",
       header: "Status",
-      align: "center",
+      align: "center" as const,
       render: (v: string) => (
         <Badge variant={statusVariant[v] || "default"}>{(v || "").toUpperCase()}</Badge>
       ),
@@ -111,7 +113,7 @@ const JournalEntries: React.FC = () => {
     {
       key: "actions",
       header: "Actions",
-      align: "center",
+      align: "center" as const,
       render: (_: any, row: any) => (
         <button
           onClick={(e) => {

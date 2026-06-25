@@ -76,7 +76,7 @@ const CashBook: React.FC = () => {
     {
       key: "amount",
       header: "Amount",
-      align: "right",
+      align: "right" as const,
       render: (value: number) => formatNumber(value),
     },
   ];
@@ -89,7 +89,7 @@ const CashBook: React.FC = () => {
     {
       key: "amount",
       header: "Amount",
-      align: "right",
+      align: "right" as const,
       render: (value: number) => formatNumber(value),
     },
   ];

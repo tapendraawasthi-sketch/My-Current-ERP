@@ -70,7 +70,7 @@ export default function BillWisePending() {
       toast.error("No phone number found for this party.");
       return;
     }
-    const msg = `Dear ${bill.partyName}, This is a reminder that invoice ${bill.invoiceNo} of Rs.${formatNumber(bill.balance)} dated ${bill.dateNepali || bill.date} is due. Please arrange payment. - ${companySettings?.companyName || "Sutra ERP"}, ${companySettings?.phone || ""}`;
+    const msg = `Dear ${bill.partyName}, This is a reminder that invoice ${bill.invoiceNo} of Rs.${formatNumber(bill.balance)} dated ${bill.dateNepali || bill.date} is due. Please arrange payment. - ${companySettings?.companyNameEn || "Sutra ERP"}, ${companySettings?.phone || ""}`;
     setReminderModal({
       show: true,
       invoiceNo: bill.invoiceNo,

@@ -143,7 +143,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "grandTotal",
       header: "Grand Total",
-      align: "right",
+      align: "right" as const,
       render: (v: number) => (
         <span className="font-mono font-bold text-[#000000]">
           {symbol} {formatNumber(v || 0)}
@@ -153,7 +153,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "vatAmount",
       header: "VAT",
-      align: "right",
+      align: "right" as const,
       render: (v: number) => (
         <span className="font-mono text-[#000000]">
           {symbol} {formatNumber(v || 0)}
@@ -163,7 +163,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "paymentStatus",
       header: "Payment",
-      align: "center",
+      align: "center" as const,
       render: (v: string) => (
         <Badge variant={paymentVariant[v] || "default"} size="sm">
           {(v || "").toUpperCase()}
@@ -173,7 +173,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "status",
       header: "Status",
-      align: "center",
+      align: "center" as const,
       render: (v: string) => (
         <Badge variant={statusVariant[v] || "default"} size="sm">
           {(v || "").toUpperCase()}
@@ -183,7 +183,7 @@ const BillingInvoice: React.FC = () => {
     {
       key: "actions",
       header: "Actions",
-      align: "center",
+      align: "center" as const,
       render: (_: any, row: any) => (
         <div className="flex items-center justify-center gap-1">
           {companySettings?.cbmsEnabled && !row.cbmsSubmitted && (

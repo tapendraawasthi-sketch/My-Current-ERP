@@ -51,7 +51,7 @@ export default function AgingReport() {
     try {
       const doc = new jsPDF("landscape");
       doc.setFontSize(16);
-      doc.text(companySettings?.companyName || "Sutra ERP", 14, 15);
+      doc.text(companySettings?.companyNameEn || "Sutra ERP", 14, 15);
       doc.setFontSize(12);
       doc.text(`Aging Report (${partyType === "customer" ? "Receivables" : "Payables"})`, 14, 22);
       doc.setFontSize(10);
@@ -152,7 +152,7 @@ export default function AgingReport() {
         </div>
 
         <div className="print-only hidden mb-6 text-center">
-          <h2 className="text-[15px] font-bold text-[#000000]">{companySettings?.companyName || "Company Name"}</h2>
+          <h2 className="text-[15px] font-bold text-[#000000]">{companySettings?.companyNameEn || "Company Name"}</h2>
           <h3 className="text-[14px] font-semibold mt-2">Aging Report - {partyType === "customer" ? "Receivables" : "Payables"}</h3>
           <p className="text-[11px] text-[#000000]">As of Date: {asOfDate}</p>
         </div>

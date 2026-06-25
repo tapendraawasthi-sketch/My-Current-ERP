@@ -62,14 +62,14 @@ const InventoryReport: React.FC = () => {
     {
       key: "qty",
       header: "Qty",
-      align: "right",
+      align: "right" as const,
       render: (value: number, row: any) => getStockQtyElement(value, row.itemId),
     },
-    { key: "rate", header: "Rate", align: "right", render: (value: number) => formatNumber(value) },
+    { key: "rate", header: "Rate", align: "right" as const, render: (value: number) => formatNumber(value) },
     {
       key: "value",
       header: "Value",
-      align: "right",
+      align: "right" as const,
       render: (value: number) => formatNumber(value),
     },
   ];
@@ -81,13 +81,13 @@ const InventoryReport: React.FC = () => {
     {
       key: "currentStock",
       header: "Current Stock",
-      align: "right",
+      align: "right" as const,
       render: (value: number, row: any) => getStockQtyElement(value, undefined, row.reorderLevel),
     },
     {
       key: "reorderLevel",
       header: "Reorder Level",
-      align: "right",
+      align: "right" as const,
       render: (value: number) => formatNumber(value),
     },
   ];

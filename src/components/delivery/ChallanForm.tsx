@@ -380,9 +380,9 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
           await db.stockMovements.add(mov);
         }
         if (type === "challan") {
-          await db.deliveryChallans.update(recordId, { inventoryPosted: true });
+          await db.deliveryChallans.update(recordId, { inventoryPosted: true } as any);
         } else {
-          await db.goodsReceiptNotes.update(recordId, { inventoryPosted: true });
+          await db.goodsReceiptNotes.update(recordId, { inventoryPosted: true } as any);
         }
       },
     );

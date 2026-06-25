@@ -220,7 +220,7 @@ export default function BankReconciliation() {
           date: stmt.date,
           dateNepali: formatADToBS(stmt.date),
           voucherNo: `AUTO-${Date.now().toString().slice(-5)}`,
-          type: VoucherType.JOURNAL_VOUCHER,
+          type: VoucherType.JOURNAL,
           status: VoucherStatus.POSTED,
           narration: `Auto-posted from bank statement: ${stmt.narration}`,
           lines: lines,

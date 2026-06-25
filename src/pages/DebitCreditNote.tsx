@@ -18,7 +18,9 @@
  * accounts. Journal is posted via useStore.addVoucher.
  */
 
-import React, { useMemo, useState, useEffect } from "react";
+import React from "react";
+import { DualDate } from "../components/ui/DualDate";
+//import React, { useMemo, useState, useEffect } from "react";
 import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import {
@@ -383,7 +385,7 @@ const DebitCreditNote: React.FC = () => {
         <SearchableTable
           columns={columns as any}
           data={list}
-          searchableKeys={["voucherNo", "narration"]}
+          searchFields={["voucherNo", "narration"]}
           emptyMessage={`No ${kind === "debit" ? "debit" : "credit"} notes yet.`}
         />
       </Card>

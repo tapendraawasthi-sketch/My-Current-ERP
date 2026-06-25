@@ -70,6 +70,19 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     "settings.voucher-series.view",
     "*.view",
   ],
+  [UserRole.CASHIER]: [
+    "invoices.view",
+    "invoices.create",
+    "vouchers.view",
+    "vouchers.create",
+    "reports.view",
+  ],
+  [UserRole.PAYROLL_OFFICER]: [
+    "masters.view",
+    "reports.view",
+    "vouchers.view",
+    "vouchers.create",
+  ],
 };
 
 /**

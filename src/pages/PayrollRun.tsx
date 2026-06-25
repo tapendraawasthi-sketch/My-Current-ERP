@@ -89,7 +89,7 @@ export default function PayrollRun() {
         if (index > 0) doc.addPage();
         
         doc.setFontSize(18);
-        doc.text(companySettings?.companyName || "Sutra ERP", 105, 20, { align: "center" });
+        doc.text(companySettings?.companyNameEn || "Sutra ERP", 105, 20, { align: "center" });
         doc.setFontSize(12);
         doc.text("Payslip", 105, 28, { align: "center" });
         
