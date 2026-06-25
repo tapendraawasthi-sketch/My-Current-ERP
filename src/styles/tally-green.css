@@ -1,147 +1,177 @@
-@import "tailwindcss";
-
-@theme {
-  --color-tally-50: #f4f9ef;
-  --color-tally-100: #EBF5E2;
-  --color-tally-200: #E4F1D9;
-  --color-tally-300: #D4EABD;
-  --color-tally-400: #C9DEB5;
-  --color-tally-500: #9bc785;
-  --color-tally-600: #3D6B25;
-  --color-tally-700: #2f521c;
-  --color-tally-800: #1f3613;
-}
+/* ============================================================================
+   TALLY PRIME — LITE GREEN THEME
+   Mirrors Tally Prime's voucher entry UI using the app's lite-green palette.
+   Scope everything under .tally-shell so the rest of the app is untouched.
+   ============================================================================ */
 
 .tally-shell {
-  background: #f7faf5;
-  color: #1f3613;
-  font-family: 'Segoe UI', 'Tahoma', sans-serif;
-}
-
-.tally-header {
-  background: linear-gradient(180deg, #C9DEB5 0%, #D4EABD 50%, #C9DEB5 100%);
-  border-bottom: 1px solid #9bc785;
-  box-shadow: 0 1px 2px rgba(61, 107, 37, 0.1);
-}
-
-.tally-title-bar {
-  background: #3D6B25;
-  color: white;
-}
-
-.tally-right-bar {
-  background: #f4f9ef;
-  border-left: 1px solid #C9DEB5;
-}
-
-.tally-bottom-bar {
-  background: #E4F1D9;
-  border-top: 1px solid #C9DEB5;
-}
-
-.tally-grid {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.tally-grid th,
-.tally-grid td {
-  border: 1px solid #C9DEB5;
-  padding: 2px 6px;
+  --t-bg:        #E4F1D9; /* page background        */
+  --t-card:      #EBF5E2; /* panels / inputs        */
+  --t-muted:     #D4EABD; /* header / toolbar bands */
+  --t-hover:     #C9DEB5; /* hover                  */
+  --t-line:      #2E5B1E; /* borders (dark green)   */
+  --t-line-soft: #9DC07A; /* soft grid lines        */
+  --t-ink:       #0B2A00; /* text                   */
+  --t-accent:    #2E7D32; /* primary action         */
+  --t-active:    #FFF6B0; /* active cell (Tally)     */
+  --t-dr:        #1B5E20; /* debit  (green)         */
+  --t-cr:        #8B1E1E; /* credit (red)           */
+  background: var(--t-bg);
+  color: var(--t-ink);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   font-size: 13px;
-  height: 28px;
 }
 
-.tally-grid th {
-  background: #D4EABD;
-  color: #3D6B25;
-  font-weight: 600;
+/* ---- Title bar (top) ---- */
+.tally-shell .tally-titlebar {
+  background: var(--t-accent);
+  color: #fff;
+  border-bottom: 2px solid var(--t-line);
+}
+.tally-shell .tally-titlebar * { color: #fff !important; }
+
+/* ---- Header band (voucher type + hot keys) ---- */
+.tally-shell .tally-header {
+  background: var(--t-muted);
+  border-bottom: 1px solid var(--t-line);
 }
 
-.tally-grid td {
-  background: white;
+/* ---- Meta fields strip ---- */
+.tally-shell .tally-meta {
+  background: var(--t-card);
+  border-bottom: 1px solid var(--t-line-soft);
+}
+.tally-shell label.tally-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--t-ink);
 }
 
-.tally-grid tr.selected td {
-  background: #EBF5E2;
-  outline: 2px solid #3D6B25;
-  outline-offset: -2px;
-}
-
-.tally-input {
+/* ---- Inputs ---- */
+.tally-shell .tally-input {
   width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0 4px;
-  font-size: 13px;
-  color: #1f3613;
-}
-
-.tally-input:focus {
-  background: #fff9c4;
-}
-
-.tally-btn {
-  background: linear-gradient(180deg, #EBF5E2 0%, #D4EABD 100%);
-  border: 1px solid #9bc785;
-  color: #3D6B25;
-  font-weight: 600;
-  padding: 4px 10px;
-  font-size: 12px;
+  background: var(--t-card);
+  color: var(--t-ink);
+  border: 1px solid var(--t-line-soft);
   border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.08s ease;
-}
-
-.tally-btn:hover {
-  background: #C9DEB5;
-}
-
-.tally-btn:active {
-  background: #9bc785;
-}
-
-.tally-btn-primary {
-  background: #3D6B25;
-  color: white;
-  border-color: #2f521c;
-}
-
-.tally-btn-primary:hover {
-  background: #2f521c;
-}
-
-.tally-popup {
-  background: #f4f9ef;
-  border: 2px solid #3D6B25;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.tally-popup-title {
-  background: #3D6B25;
-  color: white;
-  padding: 4px 8px;
-  font-weight: 600;
+  padding: 3px 6px;
   font-size: 13px;
+  outline: none;
+}
+.tally-shell .tally-input:focus {
+  border-color: var(--t-line);
+  box-shadow: 0 0 0 2px rgba(46,125,50,.25);
+  background: #fff;
+}
+.tally-shell .tally-input.text-right { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---- Entry grid ---- */
+.tally-shell .tally-grid {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--t-card);
+}
+.tally-shell .tally-grid th {
+  background: var(--t-muted);
+  border: 1px solid var(--t-line);
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.tally-shell .tally-grid td {
+  border: 1px solid var(--t-line-soft);
+  padding: 0;
+  vertical-align: middle;
+}
+.tally-shell .tally-grid td > .tally-input { border: none; border-radius: 0; background: transparent; }
+.tally-shell .tally-grid tr.selected { background: var(--t-hover); }
+.tally-shell .tally-grid td.active { background: var(--t-active); box-shadow: inset 0 0 0 2px var(--t-accent); }
+.tally-shell .tally-dr { color: var(--t-dr); font-weight: 600; }
+.tally-shell .tally-cr { color: var(--t-cr); font-weight: 600; }
+
+/* ---- Totals & narration footer ---- */
+.tally-shell .tally-footer {
+  background: var(--t-card);
+  border-top: 1px solid var(--t-line);
+}
+.tally-shell .tally-total-box {
+  background: var(--t-muted);
+  border: 1px solid var(--t-line);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
+/* ---- Bottom action bar ---- */
+.tally-shell .tally-bottom-bar {
+  background: var(--t-muted);
+  border-top: 1px solid var(--t-line);
+}
+.tally-shell .tally-hint {
+  background: var(--t-card);
+  border: 1px solid var(--t-line-soft);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* ---- Right button bar ---- */
+.tally-shell .tally-right-bar {
+  background: var(--t-muted);
+  border-left: 1px solid var(--t-line);
+}
+.tally-shell .tally-btn {
+  background: var(--t-card);
+  color: var(--t-ink);
+  border: 1px solid var(--t-line);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+.tally-shell .tally-btn:hover { background: var(--t-hover); }
+.tally-shell .tally-btn-primary { background: var(--t-accent); color: #fff; border-color: var(--t-line); }
+.tally-shell .tally-btn-primary:hover { background: #256628; }
+
+/* ---- Modal (popups: bank / bill-wise / denomination) ---- */
+.tally-modal-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(11,42,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.tally-modal {
+  background: var(--t-card, #EBF5E2);
+  border: 2px solid #2E5B1E;
+  border-radius: 6px;
+  width: 100%; max-width: 560px;
+  max-height: 88vh; overflow: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,.3);
+}
+.tally-modal-head {
+  background: #2E7D32; color: #fff;
+  padding: 8px 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tally-modal-head * { color: #fff !important; }
+.tally-modal-body { padding: 14px; }
+.tally-modal table { width: 100%; border-collapse: collapse; }
+.tally-modal th, .tally-modal td { border: 1px solid #9DC07A; padding: 4px 8px; font-size: 12px; }
+.tally-modal th { background: #D4EABD; text-transform: uppercase; font-size: 11px; }
+
+/* ---- Print ---- */
 @media print {
-  .no-print {
-    display: none !important;
-  }
-
-  .tally-print {
-    background: white;
-    color: black;
-    padding: 0;
-    margin: 0;
-  }
-
-  .tally-print table,
-  .tally-print th,
-  .tally-print td {
-    border: 1px solid #333;
-  }
+  .no-print { display: none !important; }
+  .tally-shell { background: #fff; }
 }

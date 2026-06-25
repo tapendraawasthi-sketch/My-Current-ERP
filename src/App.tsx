@@ -9,10 +9,7 @@ import Dashboard from "./components/Dashboard";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import PartiesDirectory from "./components/PartiesDirectory";
 import StockBook from "./pages/StockBook";
-import JournalEntries from "./pages/JournalEntries";
-import PaymentVoucher from "./pages/PaymentVoucher";
-import ReceiptVoucher from "./pages/ReceiptVoucher";
-import ContraVoucher from "./pages/ContraVoucher";
+import TallyVoucherPage from "./pages/TallyVoucherPage";
 import VouchersRegister from "./components/VouchersRegister";
 import BillingInvoice from "./pages/BillingInvoice";
 import DebitCreditNote from "./pages/DebitCreditNote";
@@ -137,27 +134,12 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "journal":
-      return (
-        <ErrorBoundary>
-          <JournalEntries />
-        </ErrorBoundary>
-      );
     case "payment":
-      return (
-        <ErrorBoundary>
-          <PaymentVoucher />
-        </ErrorBoundary>
-      );
     case "receipt":
-      return (
-        <ErrorBoundary>
-          <ReceiptVoucher />
-        </ErrorBoundary>
-      );
     case "contra":
       return (
         <ErrorBoundary>
-          <ContraVoucher />
+          <TallyVoucherPage type={currentPage as any} />
         </ErrorBoundary>
       );
     case "sales-invoice":
