@@ -476,6 +476,20 @@ export interface DBEmployee {
   status: string;
 }
 
+export interface DBBankStatement {
+  id: string;
+  bankAccountId: string;
+  date: string;
+  description: string;
+  debit: number;
+  credit: number;
+  balance: number;
+  reference?: string;
+  reconciled: boolean;
+  reconciledVoucherId?: string;
+  reconciledAt?: string;
+}
+
 class SutraDB extends Dexie {
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
@@ -510,6 +524,7 @@ class SutraDB extends Dexie {
   itemGroups!: Table<DBItemGroup>;
   holidays!: Table<DBHoliday>;
   employees!: Table<DBEmployee>;
+  bankStatements!: Table<DBBankStatement>;
 
   constructor() {
     super("SutraERP");
@@ -555,6 +570,11 @@ class SutraDB extends Dexie {
     // Version 3 — Payroll Module
     this.version(3).stores({
       employees: "id, name, department, status, employmentType",
+    });
+
+    // Version 4 — Bank Reconciliation
+    this.version(4).stores({
+      bankStatements: "id, bankAccountId, date, reconciled",
     });
   }
 }

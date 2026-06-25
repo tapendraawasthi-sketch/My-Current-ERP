@@ -121,7 +121,52 @@ export function computeLedgerBalance(
 
 export const generateVoucherNo = () => "";
 export const computeTrialBalance = () => ({});
-export const calculateNextDueDate = () => "";
+/**
+ * Given a start date, frequency, and optional day-of-month,
+ * returns the next due date as an ISO date string (YYYY-MM-DD).
+ */
+export function calculateNextDueDate(
+  startDate: string,
+  frequency: string,
+  dayOfMonth?: number
+): string {
+  const base = new Date(startDate);
+  if (isNaN(base.getTime())) return new Date().toISOString().split("T")[0];
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  let next = new Date(base);
+
+  const advance = (d: Date): Date => {
+    const n = new Date(d);
+    switch (frequency) {
+      case "daily":        n.setDate(n.getDate() + 1); break;
+      case "weekly":       n.setDate(n.getDate() + 7); break;
+      case "fortnightly":  n.setDate(n.getDate() + 14); break;
+      case "monthly":
+        n.setMonth(n.getMonth() + 1);
+        if (dayOfMonth) n.setDate(Math.min(dayOfMonth, daysInMonth(n.getFullYear(), n.getMonth())));
+        break;
+      case "quarterly":    n.setMonth(n.getMonth() + 3); break;
+      case "half_yearly":  n.setMonth(n.getMonth() + 6); break;
+      case "yearly":       n.setFullYear(n.getFullYear() + 1); break;
+      default:             n.setMonth(n.getMonth() + 1);
+    }
+    return n;
+  };
+
+  // Advance until next is in the future
+  while (next <= now) {
+    next = advance(next);
+  }
+
+  return next.toISOString().split("T")[0];
+}
+
+function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
 
 export const computeProfitLoss = () => ({});
 export const computeBalanceSheet = () => ({});

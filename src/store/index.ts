@@ -183,6 +183,9 @@ interface AppState {
   currencies: any[];
   // Payroll module state
   employees: any[];
+  // Bank Reconciliation state
+  bankStatements: any[];
+  journalEntries: any[]; // alias over vouchers for BankReconciliation compatibility
   // Administration module state
   unitConversions: any[];
   standardNarrations: any[];
@@ -232,6 +235,16 @@ interface AppState {
   // Users
   addUser: (user: Partial<StoreUser>) => Promise<any>;
   updateUser: (id: string, updates: Partial<StoreUser>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
+  checkPermission: (permission: string) => boolean;
+  // Recurring Vouchers
+  addRecurringVoucher: (data: Partial<any>) => Promise<any>;
+  updateRecurringVoucher: (id: string, data: Partial<any>) => Promise<void>;
+  deleteRecurringVoucher: (id: string) => Promise<void>;
+  runRecurringVoucher: (id: string) => Promise<void>;
+  // Bank Reconciliation
+  importBankStatements: (bankAccountId: string, rows: any[]) => Promise<void>;
+  updateBankStatements: (updates: Partial<any>[]) => Promise<void>;
   // Notifications
   markNotificationRead: (id: string) => void;
   clearNotifications: () => void;
@@ -321,6 +334,8 @@ export const useStore = create<AppState>((set, get) => ({
   customFieldDefs: [],
   currencies: [],
   employees: [],
+  bankStatements: [],
+  journalEntries: [],
   unitConversions: [],
   standardNarrations: [],
   billSundryMasters: [],
@@ -414,6 +429,7 @@ export const useStore = create<AppState>((set, get) => ({
       unitConversions, standardNarrations, billSundryMasters,
       saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
       employees,
+      bankStatements,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -446,6 +462,7 @@ export const useStore = create<AppState>((set, get) => ({
       db.itemGroups.toArray(),
       db.holidays.toArray(),
       db.employees.toArray(),
+      db.bankStatements.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -510,6 +527,8 @@ export const useStore = create<AppState>((set, get) => ({
       itemGroups,
       holidays,
       employees,
+      bankStatements,
+      journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
 
     // Stock reorder notifications
@@ -1026,6 +1045,112 @@ export const useStore = create<AppState>((set, get) => ({
     await db.users.update(id, updates);
     set((s) => ({
       users: s.users.map((u) => (u.id === id ? { ...u, ...updates } : u)),
+    }));
+  },
+
+  deleteUser: async (id) => {
+    const db = getDB();
+    await db.users.delete(id);
+    set((s) => ({ users: s.users.filter((u) => u.id !== id) }));
+  },
+
+  checkPermission: (permission) => {
+    const { currentUser } = get();
+    if (!currentUser) return false;
+    if (currentUser.role === "admin") return true;
+    const perms: string[] = (currentUser as any).permissions || [];
+    return perms.includes(permission);
+  },
+
+  // ── Recurring Vouchers ─────────────────────────────────────────────────────
+  addRecurringVoucher: async (data) => {
+    const db = getDB();
+    const record = {
+      ...data,
+      id: data.id || `rv-${generateId()}`,
+      completedOccurrences: 0,
+      generatedVoucherIds: [],
+      isActive: true,
+    };
+    await db.recurringVouchers.add(record as any);
+    set((s) => ({ recurringVouchers: [...s.recurringVouchers, record] }));
+    return record;
+  },
+
+  updateRecurringVoucher: async (id, data) => {
+    const db = getDB();
+    await db.recurringVouchers.update(id, data);
+    set((s) => ({
+      recurringVouchers: s.recurringVouchers.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
+  },
+
+  deleteRecurringVoucher: async (id) => {
+    const db = getDB();
+    await db.recurringVouchers.delete(id);
+    set((s) => ({ recurringVouchers: s.recurringVouchers.filter((r) => r.id !== id) }));
+  },
+
+  runRecurringVoucher: async (id) => {
+    const { recurringVouchers, addVoucher } = get();
+    const rv = recurringVouchers.find((r) => r.id === id);
+    if (!rv || !rv.isActive) return;
+
+    // Clone the template voucher
+    const db = getDB();
+    const template = await db.vouchers.get(rv.templateVoucherId);
+    if (!template) {
+      console.warn("[RecurringVoucher] Template not found:", rv.templateVoucherId);
+      return;
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+    const newVoucher = await addVoucher({
+      ...template,
+      id: undefined,
+      voucherNo: undefined,
+      date: today,
+      status: rv.autoPost ? "posted" : "draft",
+      narration: `[Auto] ${template.narration || rv.name}`,
+    } as any);
+
+    await get().updateRecurringVoucher(id, {
+      lastGeneratedDate: today,
+      completedOccurrences: (rv.completedOccurrences || 0) + 1,
+      generatedVoucherIds: [...(rv.generatedVoucherIds || []), newVoucher?.id].filter(Boolean),
+    });
+  },
+
+  // ── Bank Reconciliation ────────────────────────────────────────────────────
+  importBankStatements: async (bankAccountId, rows) => {
+    const db = getDB();
+    const records = rows.map((row: any) => ({
+      id: row.id || `bs-${generateId()}`,
+      bankAccountId,
+      date: row.date || "",
+      description: row.description || "",
+      debit: row.debit || 0,
+      credit: row.credit || 0,
+      balance: row.balance || 0,
+      reference: row.reference,
+      reconciled: false,
+    }));
+    await db.bankStatements.bulkAdd(records as any);
+    set((s) => ({ bankStatements: [...s.bankStatements, ...records] }));
+  },
+
+  updateBankStatements: async (updates) => {
+    const db = getDB();
+    for (const upd of updates) {
+      if (upd.id) {
+        await db.bankStatements.update(upd.id, upd);
+      }
+    }
+    set((s) => ({
+      bankStatements: s.bankStatements.map((bs) => {
+        const upd = updates.find((u: any) => u.id === bs.id);
+        return upd ? { ...bs, ...upd } : bs;
+      }),
     }));
   },
 

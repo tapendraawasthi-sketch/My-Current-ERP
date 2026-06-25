@@ -486,10 +486,95 @@ export interface Holiday {
   isActive: boolean;
 }
 
-export const RecurringVoucher = {} as any;
-export const RecurringFrequency = {} as any;
-export const User = {} as any;
-export const UserRole = {} as any;
+// ─── User & Roles ────────────────────────────────────────────────────────────
+export enum UserRole {
+  ADMIN = "admin",
+  MANAGER = "manager",
+  ACCOUNTANT = "accountant",
+  VIEWER = "viewer",
+  CASHIER = "cashier",
+  PAYROLL_OFFICER = "payroll_officer",
+}
+
+export interface User {
+  id: string;
+  username: string;
+  name: string;
+  email?: string;
+  role: UserRole | string;
+  isActive: boolean;
+  passwordHash?: string;
+  permissions?: string[];
+}
+
+// ─── Recurring Vouchers ───────────────────────────────────────────────────────
+export enum RecurringFrequency {
+  DAILY = "daily",
+  WEEKLY = "weekly",
+  FORTNIGHTLY = "fortnightly",
+  MONTHLY = "monthly",
+  QUARTERLY = "quarterly",
+  HALF_YEARLY = "half_yearly",
+  YEARLY = "yearly",
+}
+
+export interface RecurringVoucher {
+  id: string;
+  name: string;
+  templateVoucherId: string;
+  voucherType: string;
+  frequency: RecurringFrequency | string;
+  startDate: string;
+  endDate?: string;
+  dayOfMonth?: number;
+  autoPost: boolean;
+  totalOccurrences?: number;
+  completedOccurrences: number;
+  nextDueDate?: string;
+  lastGeneratedDate?: string;
+  generatedVoucherIds: string[];
+  isActive: boolean;
+  createdBy?: string;
+  createdAt?: string;
+}
+
+// ─── Bank Reconciliation ──────────────────────────────────────────────────────
+export interface BankStatement {
+  id: string;
+  bankAccountId: string;
+  date: string;
+  description: string;
+  debit: number;
+  credit: number;
+  balance: number;
+  reference?: string;
+  reconciled: boolean;
+  reconciledVoucherId?: string;
+  reconciledAt?: string;
+}
+
+export interface JournalEntryLine {
+  id: string;
+  accountId: string;
+  debit: number;
+  credit: number;
+  narration?: string;
+  costCenterId?: string;
+}
+
+export interface JournalEntry {
+  id: string;
+  voucherNo: string;
+  date: string;
+  type: string;
+  narration?: string;
+  lines: JournalEntryLine[];
+  totalDebit: number;
+  totalCredit: number;
+  status: string;
+  createdBy?: string;
+  createdAt?: string;
+}
 
 export const ReportPeriodPreset = {} as any;
 export const FiscalYearStatus = {} as any;
