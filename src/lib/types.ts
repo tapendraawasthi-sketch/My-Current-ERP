@@ -495,3 +495,34 @@ export const ReportPeriodPreset = {} as any;
 export const FiscalYearStatus = {} as any;
 
 export const CostCenterLevel = {} as any;
+
+// ─── Employee (Payroll Module) ────────────────────────────────────────────────
+export interface Employee {
+  id: string;
+  name: string;
+  nameNe?: string;
+  designation?: string;
+  department?: string;
+  dateOfJoining: string;
+  dateOfJoiningBS?: string;
+  pan?: string;
+  citizenshipNumber?: string;
+  bankAccount?: string;
+  bankName?: string;
+  ssf: boolean;
+  ssfContributorNumber?: string;
+  basicSalary: number;
+  gradePayPercent?: number;
+  allowances: {
+    houseRent: number;
+    transport: number;
+    medical: number;
+    dashain: number;
+  };
+  taxDeclarations?: {
+    lifeInsurance?: number;
+    healthInsurance?: number;
+  };
+  employmentType: "permanent" | "contract" | "daily";
+  status: "active" | "inactive";
+}

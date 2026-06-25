@@ -454,6 +454,28 @@ export interface DBHoliday {
   [key: string]: any;
 }
 
+export interface DBEmployee {
+  id: string;
+  name: string;
+  nameNe?: string;
+  designation?: string;
+  department?: string;
+  dateOfJoining: string;
+  dateOfJoiningBS?: string;
+  pan?: string;
+  citizenshipNumber?: string;
+  bankAccount?: string;
+  bankName?: string;
+  ssf: boolean;
+  ssfContributorNumber?: string;
+  basicSalary: number;
+  gradePayPercent?: number;
+  allowances: string; // JSON-stringified { houseRent, transport, medical, dashain }
+  taxDeclarations?: string; // JSON-stringified
+  employmentType: string;
+  status: string;
+}
+
 class SutraDB extends Dexie {
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
@@ -487,6 +509,7 @@ class SutraDB extends Dexie {
   discountStructures!: Table<DBDiscountStructure>;
   itemGroups!: Table<DBItemGroup>;
   holidays!: Table<DBHoliday>;
+  employees!: Table<DBEmployee>;
 
   constructor() {
     super("SutraERP");
@@ -527,6 +550,11 @@ class SutraDB extends Dexie {
       discountStructures: "id, name, discountType, isActive",
       itemGroups: "id, name, isPrimary, underGroupId, isActive",
       holidays: "id, date, isActive",
+    });
+
+    // Version 3 — Payroll Module
+    this.version(3).stores({
+      employees: "id, name, department, status, employmentType",
     });
   }
 }

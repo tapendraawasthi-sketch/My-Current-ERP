@@ -181,6 +181,8 @@ interface AppState {
   recurringVouchers: any[];
   customFieldDefs: any[];
   currencies: any[];
+  // Payroll module state
+  employees: any[];
   // Administration module state
   unitConversions: any[];
   standardNarrations: any[];
@@ -268,6 +270,10 @@ interface AppState {
   addHoliday: (data: Partial<any>) => Promise<any>;
   updateHoliday: (id: string, data: Partial<any>) => Promise<void>;
   deleteHoliday: (id: string) => Promise<void>;
+  // Employees
+  addEmployee: (data: Partial<any>) => Promise<any>;
+  updateEmployee: (id: string, data: Partial<any>) => Promise<void>;
+  deleteEmployee: (id: string) => Promise<void>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -314,6 +320,7 @@ export const useStore = create<AppState>((set, get) => ({
   recurringVouchers: [],
   customFieldDefs: [],
   currencies: [],
+  employees: [],
   unitConversions: [],
   standardNarrations: [],
   billSundryMasters: [],
@@ -406,6 +413,7 @@ export const useStore = create<AppState>((set, get) => ({
       settingsArr,
       unitConversions, standardNarrations, billSundryMasters,
       saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
+      employees,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -437,6 +445,7 @@ export const useStore = create<AppState>((set, get) => ({
       db.discountStructures.toArray(),
       db.itemGroups.toArray(),
       db.holidays.toArray(),
+      db.employees.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -500,6 +509,7 @@ export const useStore = create<AppState>((set, get) => ({
       discountStructures,
       itemGroups,
       holidays,
+      employees,
     });
 
     // Stock reorder notifications
@@ -824,6 +834,32 @@ export const useStore = create<AppState>((set, get) => ({
     const db = getDB();
     await db.holidays.delete(id);
     set((s) => ({ holidays: s.holidays.filter((r) => r.id !== id) }));
+  },
+
+  // ── Employees ─────────────────────────────────────────────────────────────
+  addEmployee: async (data) => {
+    const db = getDB();
+    const record = {
+      ...data,
+      id: data.id || `emp-${generateId()}`,
+      status: data.status || "active",
+      ssf: data.ssf ?? false,
+      basicSalary: data.basicSalary || 0,
+      allowances: data.allowances || { houseRent: 0, transport: 0, medical: 0, dashain: 0 },
+    };
+    await db.employees.add(record as any);
+    set((s) => ({ employees: [...s.employees, record] }));
+    return record;
+  },
+  updateEmployee: async (id, data) => {
+    const db = getDB();
+    await db.employees.update(id, data);
+    set((s) => ({ employees: s.employees.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteEmployee: async (id) => {
+    const db = getDB();
+    await db.employees.delete(id);
+    set((s) => ({ employees: s.employees.filter((r) => r.id !== id) }));
   },
 
   // ── Vouchers ─────────────────────────────────────────────────────────────

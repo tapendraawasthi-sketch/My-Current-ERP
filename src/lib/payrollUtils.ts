@@ -58,4 +58,89 @@ export function computePayroll(
   });
 }
 
-export const computeNepalPayroll = () => [];
+export interface NepalPayrollResult {
+  basicSalary: number;
+  allowances: {
+    houseRent: number;
+    transport: number;
+    medical: number;
+    dashain: number;
+  };
+  grossSalary: number;
+  ssfEmployee: number;
+  ssfEmployer: number;
+  incomeTax: number;
+  netSalary: number;
+}
+
+/**
+ * Computes Nepal payroll for one employee for a given BS month.
+ * SSF rates: Employee 11%, Employer 20% of basic (simplified).
+ * Income tax: Nepal slab FY 2080/81 for individuals.
+ * Dashain bonus: paid only in Asoj (month 6) — 1 month basic.
+ */
+export function computeNepalPayroll(
+  emp: any,
+  bsYear: number,
+  bsMonth: number, // 1–12
+  paidDays: number,
+  workingDays: number
+): NepalPayrollResult {
+  const ratio = workingDays > 0 ? paidDays / workingDays : 1;
+
+  const basicSalary = Math.round((emp.basicSalary || 0) * ratio * 100) / 100;
+  const gradePay = Math.round(basicSalary * ((emp.gradePayPercent || 0) / 100) * 100) / 100;
+  const effectiveBasic = basicSalary + gradePay;
+
+  const empAllowances = emp.allowances || {};
+  const houseRent  = Math.round((empAllowances.houseRent  || 0) * ratio * 100) / 100;
+  const transport  = Math.round((empAllowances.transport  || 0) * ratio * 100) / 100;
+  const medical    = Math.round((empAllowances.medical    || 0) * ratio * 100) / 100;
+  // Dashain bonus (Asoj = month 6 in BS calendar) — one month basic, not pro-rated
+  const dashain    = bsMonth === 6 ? (emp.basicSalary || 0) : 0;
+
+  const grossSalary = Math.round((effectiveBasic + houseRent + transport + medical + dashain) * 100) / 100;
+
+  // SSF (Social Security Fund) — applicable if emp.ssf === true
+  const ssfEmployee = emp.ssf ? Math.round(effectiveBasic * 0.11 * 100) / 100 : 0;
+  const ssfEmployer = emp.ssf ? Math.round(effectiveBasic * 0.20 * 100) / 100 : 0;
+
+  // Taxable income = gross – SSF employee contribution – approved declarations (annual)
+  const taxDecl = emp.taxDeclarations || {};
+  const annualDeclarations = ((taxDecl.lifeInsurance || 0) + (taxDecl.healthInsurance || 0));
+  const annualGross = grossSalary * 12;
+  const annualSSF   = ssfEmployee * 12;
+  const annualTaxable = Math.max(0, annualGross - annualSSF - annualDeclarations);
+
+  // Nepal income tax slabs (Individual, FY 2080/81):
+  // 0 – 600,000  → 1%
+  // 600,001 – 800,000  → 10%
+  // 800,001 – 1,100,000  → 20%
+  // 1,100,001 – 2,000,000  → 30%
+  // Above 2,000,000  → 36%
+  let annualTax = 0;
+  if (annualTaxable > 2_000_000) {
+    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + 300_000 * 0.20 + 900_000 * 0.30 + (annualTaxable - 2_000_000) * 0.36;
+  } else if (annualTaxable > 1_100_000) {
+    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + 300_000 * 0.20 + (annualTaxable - 1_100_000) * 0.30;
+  } else if (annualTaxable > 800_000) {
+    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + (annualTaxable - 800_000) * 0.20;
+  } else if (annualTaxable > 600_000) {
+    annualTax = 600_000 * 0.01 + (annualTaxable - 600_000) * 0.10;
+  } else {
+    annualTax = annualTaxable * 0.01;
+  }
+
+  const incomeTax = Math.round((annualTax / 12) * 100) / 100;
+  const netSalary = Math.round((grossSalary - ssfEmployee - incomeTax) * 100) / 100;
+
+  return {
+    basicSalary: effectiveBasic,
+    allowances: { houseRent, transport, medical, dashain },
+    grossSalary,
+    ssfEmployee,
+    ssfEmployer,
+    incomeTax,
+    netSalary,
+  };
+}
