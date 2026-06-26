@@ -1,30 +1,43 @@
+import { useCallback, useEffect, useState } from "react";
+
 export interface RecentActivityItem {
   label: string;
   page: string;
   timestamp: string;
 }
 
-const KEY = "sutra_recent_activity";
+const STORAGE_KEY = "sutra_recent_activity";
 
-const readRecentActivity = (): RecentActivityItem[] => {
+const safeRead = (): RecentActivityItem[] => {
   try {
     if (typeof window === "undefined" || !window.localStorage) return [];
-    const raw = window.localStorage.getItem(KEY);
+
+    const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
+
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item) => item && typeof item.label === "string" && typeof item.page === "string");
+
+    return parsed
+      .filter(
+        (item) =>
+          item &&
+          typeof item.label === "string" &&
+          typeof item.page === "string" &&
+          typeof item.timestamp === "string",
+      )
+      .slice(0, 20);
   } catch {
     return [];
   }
 };
 
-const writeRecentActivity = (items: RecentActivityItem[]) => {
+const safeWrite = (items: RecentActivityItem[]) => {
   try {
     if (typeof window === "undefined" || !window.localStorage) return;
-    window.localStorage.setItem(KEY, JSON.stringify(items.slice(0, 20)));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, 20)));
   } catch {
-    // localStorage may be unavailable in private/sandboxed contexts.
+    // localStorage can be unavailable in private/sandboxed contexts.
   }
 };
 
@@ -33,11 +46,15 @@ export function useRecentActivity(): {
   pushActivity: (label: string, page: string) => void;
   clearActivity: () => void;
 } {
-  const recentActivity = readRecentActivity();
+  const [recentActivity, setRecentActivity] = useState<RecentActivityItem[]>(() => safeRead());
 
-  const pushActivity = (label: string, page: string) => {
-    try {
-      const existing = readRecentActivity().filter((item) => item.page !== page);
+  useEffect(() => {
+    setRecentActivity(safeRead());
+  }, []);
+
+  const pushActivity = useCallback((label: string, page: string) => {
+    setRecentActivity(() => {
+      const existing = safeRead().filter((item) => item.page !== page);
       const next = [
         {
           label,
@@ -47,20 +64,21 @@ export function useRecentActivity(): {
         ...existing,
       ].slice(0, 20);
 
-      writeRecentActivity(next);
-    } catch {
-      // never crash navigation because recent activity failed
-    }
-  };
+      safeWrite(next);
+      return next;
+    });
+  }, []);
 
-  const clearActivity = () => {
+  const clearActivity = useCallback(() => {
     try {
-      if (typeof window === "undefined" || !window.localStorage) return;
-      window.localStorage.removeItem(KEY);
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.removeItem(STORAGE_KEY);
+      }
     } catch {
       // ignore
     }
-  };
+    setRecentActivity([]);
+  }, []);
 
   return {
     recentActivity,

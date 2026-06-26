@@ -8,17 +8,23 @@ import { formatNumber } from "../lib/utils";
 import { computeOutstandingReceivables } from "../lib/accounting";
 import { computeAllStockPositions } from "../lib/stockUtils";
 import { isAdminOrOwner, isAccountantOrAdmin } from "../lib/permissions";
-import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
+import { PaymentStatus, VoucherStatus, VoucherType } from "../lib/types";
 
-type GatewayMenuItem = {
+type PermissionScope = "all" | "accounting" | "admin";
+
+interface GatewayMenuItem {
   label: string;
   page: string;
-  permission?: "all" | "accounting" | "admin";
-};
+  permission?: PermissionScope;
+}
 
 const todayISO = () => new Date().toISOString().split("T")[0];
 
-const safeDateBS = (date?: string) => {
+const money = (value: number) => `रू ${formatNumber(Number(value) || 0)}`;
+
+const safeLower = (value: unknown) => String(value || "").toLowerCase();
+
+const safeBS = (date?: string) => {
   try {
     if (!date) return "—";
     return formatADToBS(date) || date;
@@ -27,7 +33,14 @@ const safeDateBS = (date?: string) => {
   }
 };
 
-const money = (n: number) => `रू ${formatNumber(Number(n) || 0)}`;
+const safeTimestamp = (timestamp?: string) => {
+  try {
+    if (!timestamp) return "—";
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp || "—";
+  }
+};
 
 const sectionHeaderStyle: React.CSSProperties = {
   background: "#D4EABD",
@@ -49,14 +62,39 @@ const labelStyle: React.CSSProperties = {
   fontSize: 10,
   fontWeight: 700,
   textTransform: "uppercase",
+  lineHeight: 1.2,
 };
 
 const valueStyle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 600,
+  lineHeight: 1.25,
 };
 
-const menuSections: Record<string, GatewayMenuItem[]> = {
+const smallButtonStyle: React.CSSProperties = {
+  height: 26,
+  padding: "0 8px",
+  border: "1px solid #000",
+  background: "#D4EABD",
+  color: "#000",
+  fontSize: 11,
+  fontWeight: 700,
+  borderRadius: 0,
+  cursor: "pointer",
+};
+
+const inputStyle: React.CSSProperties = {
+  height: 28,
+  width: "100%",
+  border: "1px solid #000",
+  background: "#EBF5E2",
+  color: "#000",
+  padding: "0 6px",
+  borderRadius: 0,
+  fontSize: 12,
+};
+
+const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
   MASTERS: [
     { label: "Chart of Accounts", page: "accounts", permission: "accounting" },
     { label: "Account Groups", page: "account-groups", permission: "accounting" },
@@ -132,6 +170,17 @@ const menuSections: Record<string, GatewayMenuItem[]> = {
   ],
 };
 
+const QUICK_ACTIONS: GatewayMenuItem[] = [
+  { label: "New Sales Invoice", page: "billing", permission: "accounting" },
+  { label: "New Purchase Invoice", page: "purchase-register", permission: "accounting" },
+  { label: "New Receipt", page: "receipt", permission: "accounting" },
+  { label: "New Payment", page: "payment", permission: "accounting" },
+  { label: "New Journal", page: "journal", permission: "accounting" },
+  { label: "Bank Reconciliation", page: "bank-reconciliation", permission: "accounting" },
+  { label: "VAT Reports", page: "vat-reports", permission: "accounting" },
+  { label: "Day Book", page: "day-book", permission: "accounting" },
+];
+
 const Gateway: React.FC = () => {
   const {
     currentUser,
@@ -146,8 +195,8 @@ const Gateway: React.FC = () => {
     warehouses,
     stockMovements,
     setCurrentPage,
-    setActiveVoucherDate,
     activeVoucherDate: storeActiveVoucherDate,
+    setActiveVoucherDate,
   } = useStore();
 
   const { recentActivity, pushActivity, clearActivity } = useRecentActivity();
@@ -170,28 +219,37 @@ const Gateway: React.FC = () => {
   const reportsRef = useRef<HTMLDivElement>(null);
   const utilitiesRef = useRef<HTMLDivElement>(null);
 
+  const role = currentUser?.role || currentUser?.userRole || currentUser?.type || "";
+
   useEffect(() => {
-    if (currentFiscalYear?.startDate) setReportPeriodFrom(currentFiscalYear.startDate);
+    if (currentFiscalYear?.startDate) {
+      setReportPeriodFrom(currentFiscalYear.startDate);
+    }
   }, [currentFiscalYear?.startDate]);
 
   useEffect(() => {
     try {
       setActiveVoucherDate?.(activeVoucherDate);
     } catch {
-      // optional store setter; never crash the gateway
+      // store may not be hydrated yet
     }
   }, [activeVoucherDate, setActiveVoucherDate]);
 
+  const isEditableTarget = (target: EventTarget | null) => {
+    const element = target as HTMLElement | null;
+    if (!element) return false;
+
+    const tag = element.tagName?.toLowerCase();
+    return (
+      tag === "input" ||
+      tag === "textarea" ||
+      tag === "select" ||
+      element.getAttribute("contenteditable") === "true"
+    );
+  };
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const tag = target?.tagName?.toLowerCase();
-      const isTyping =
-        tag === "input" ||
-        tag === "textarea" ||
-        tag === "select" ||
-        target?.getAttribute("contenteditable") === "true";
-
       if (event.key === "F2" && event.altKey) {
         event.preventDefault();
         setPeriodPanelOpen(true);
@@ -212,67 +270,84 @@ const Gateway: React.FC = () => {
         return;
       }
 
-      if (isTyping) return;
+      if (isEditableTarget(event.target)) return;
 
-      const k = event.key.toLowerCase();
-      if (k === "m") mastersRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (k === "t")
+      const key = event.key.toLowerCase();
+
+      if (key === "m") mastersRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (key === "t")
         transactionsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (k === "r") reportsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (k === "u") utilitiesRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (key === "r") reportsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (key === "u") utilitiesRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const role = currentUser?.role || currentUser?.userRole || "";
+  const canAdmin = useMemo(() => {
+    try {
+      return isAdminOrOwner(role) || isAdminOrOwner(currentUser);
+    } catch {
+      try {
+        return isAdminOrOwner(currentUser);
+      } catch {
+        return false;
+      }
+    }
+  }, [role, currentUser]);
+
+  const canAccounting = useMemo(() => {
+    try {
+      return isAccountantOrAdmin(role) || isAccountantOrAdmin(currentUser) || canAdmin;
+    } catch {
+      try {
+        return isAccountantOrAdmin(currentUser) || canAdmin;
+      } catch {
+        return canAdmin;
+      }
+    }
+  }, [role, currentUser, canAdmin]);
 
   const canSee = (item: GatewayMenuItem) => {
-    try {
-      if (item.permission === "admin") return isAdminOrOwner(role);
-      if (item.permission === "accounting") return isAccountantOrAdmin(role) || isAdminOrOwner(role);
-      return true;
-    } catch {
-      return item.permission !== "admin";
-    }
+    if (!item.permission || item.permission === "all") return true;
+    if (item.permission === "admin") return canAdmin;
+    if (item.permission === "accounting") return canAccounting;
+    return true;
   };
 
   const navigate = (label: string, page: string) => {
-    try {
-      pushActivity(label, page);
-    } catch {
-      // ignore
-    }
+    pushActivity(label, page);
     setCurrentPage(page);
   };
 
-  const quickActions: GatewayMenuItem[] = [
-    { label: "New Sales Invoice", page: "billing", permission: "accounting" },
-    { label: "New Purchase Invoice", page: "purchase-register", permission: "accounting" },
-    { label: "New Receipt", page: "receipt", permission: "accounting" },
-    { label: "New Payment", page: "payment", permission: "accounting" },
-    { label: "New Journal", page: "journal", permission: "accounting" },
-    { label: "Bank Reconciliation", page: "bank-reconciliation", permission: "accounting" },
-    { label: "VAT Reports", page: "vat-reports", permission: "accounting" },
-    { label: "Day Book", page: "day-book", permission: "accounting" },
-  ];
-
   const unreadNotifications = useMemo(() => {
     try {
-      return (notifications || []).filter((n: any) => !n.read).slice(0, 5);
+      return (notifications || []).filter((notification: any) => !notification.read).slice(0, 5);
     } catch {
       return [];
     }
   }, [notifications]);
+
+  const stockPositions = useMemo(() => {
+    try {
+      return computeAllStockPositions(stockMovements || [], items || [], warehouses || []);
+    } catch {
+      try {
+        return computeAllStockPositions(items || [], stockMovements || [], warehouses || []);
+      } catch {
+        return [];
+      }
+    }
+  }, [stockMovements, items, warehouses]);
 
   const businessAlerts = useMemo(() => {
     const alerts: string[] = [];
 
     try {
       const negativeCash = (accounts || []).some(
-        (a: any) =>
-          String(a.name || "").toLowerCase().includes("cash") && Number(a.balance || 0) < 0,
+        (account: any) =>
+          safeLower(account.name).includes("cash") && Number(account.balance || 0) < 0,
       );
       if (negativeCash) alerts.push("Negative cash balance detected");
     } catch {
@@ -280,104 +355,126 @@ const Gateway: React.FC = () => {
     }
 
     try {
-      const positions = computeAllStockPositions(stockMovements || [], items || [], warehouses || []);
-      const low = (positions || []).some((pos: any) => {
-        const item = (items || []).find((i: any) => i.id === pos.itemId);
-        const reorder = Number(item?.reorderLevel || 0);
-        const qty = Number(pos.qty ?? pos.closingQty ?? pos.quantity ?? 0);
-        return reorder > 0 && qty <= reorder;
+      const lowStock = (stockPositions || []).some((position: any) => {
+        const item = (items || []).find((candidate: any) => candidate.id === position.itemId);
+        const reorderLevel = Number(item?.reorderLevel || 0);
+        const qty = Number(
+          position.qty ??
+            position.closingQty ??
+            position.quantity ??
+            position.currentQty ??
+            position.balanceQty ??
+            0,
+        );
+
+        return reorderLevel > 0 && qty <= reorderLevel;
       });
-      if (low) alerts.push("Low stock alert");
+
+      if (lowStock) alerts.push("Low stock alert");
     } catch {
       // ignore
     }
 
     try {
-      const overdue = (invoices || []).filter((inv: any) => {
-        const status = String(inv.paymentStatus || "").toLowerCase();
+      const overdueCount = (invoices || []).filter((invoice: any) => {
+        const status = safeLower(invoice.paymentStatus);
         return (
-          (status === "unpaid" || inv.paymentStatus === PaymentStatus.UNPAID) &&
-          inv.dueDate &&
-          inv.dueDate < todayISO()
+          (invoice.paymentStatus === PaymentStatus.UNPAID || status === "unpaid") &&
+          invoice.dueDate &&
+          invoice.dueDate < todayISO()
         );
       }).length;
-      if (overdue > 0) alerts.push(`${overdue} overdue receivables`);
+
+      if (overdueCount > 0) alerts.push(`${overdueCount} overdue receivables`);
     } catch {
       // ignore
     }
 
     return alerts;
-  }, [accounts, stockMovements, items, warehouses, invoices]);
+  }, [accounts, stockPositions, items, invoices]);
 
   const snapshot = useMemo(() => {
-    const zero = {
-      cashBalance: 0,
-      bankBalance: 0,
-      receivables: 0,
-      payables: 0,
-      todaysSales: 0,
-      todaysPurchases: 0,
-      vatPayable: 0,
-      stockValue: 0,
-    };
-
     try {
       const today = todayISO();
 
       const cashBalance = (accounts || [])
-        .filter((a: any) => String(a.name || "").toLowerCase().includes("cash"))
-        .reduce((sum: number, a: any) => sum + Number(a.balance || 0), 0);
+        .filter((account: any) => safeLower(account.name).includes("cash"))
+        .reduce((sum: number, account: any) => sum + Number(account.balance || 0), 0);
 
       const bankBalance = (accounts || [])
-        .filter((a: any) => String(a.name || "").toLowerCase().includes("bank"))
-        .reduce((sum: number, a: any) => sum + Number(a.balance || 0), 0);
+        .filter((account: any) => safeLower(account.name).includes("bank"))
+        .reduce((sum: number, account: any) => sum + Number(account.balance || 0), 0);
 
-      const receivables =
-        computeOutstandingReceivables(parties || [], invoices || [], vouchers || [])?.totalAmount || 0;
+      let receivables = 0;
+      try {
+        receivables =
+          computeOutstandingReceivables(parties || [], invoices || [], vouchers || [])
+            ?.totalAmount || 0;
+      } catch {
+        receivables = 0;
+      }
 
       const payables = (accounts || [])
-        .filter((a: any) => {
-          const group = String(a.group || a.groupName || "").toLowerCase();
-          const name = String(a.name || "").toLowerCase();
+        .filter((account: any) => {
+          const group = safeLower(account.group || account.groupName || account.parentName);
+          const name = safeLower(account.name);
           return group.includes("sundry creditors") || name.includes("sundry creditors");
         })
-        .reduce((sum: number, a: any) => sum + Number(a.balance || 0), 0);
+        .reduce((sum: number, account: any) => sum + Number(account.balance || 0), 0);
 
       const todaysSales = (invoices || [])
         .filter(
-          (inv: any) =>
-            inv.type === VoucherType.SALES_INVOICE &&
-            inv.status === VoucherStatus.POSTED &&
-            inv.date === today,
+          (invoice: any) =>
+            invoice.type === VoucherType.SALES_INVOICE &&
+            invoice.status === VoucherStatus.POSTED &&
+            invoice.date === today,
         )
-        .reduce((sum: number, inv: any) => sum + Number(inv.grandTotal || 0), 0);
+        .reduce((sum: number, invoice: any) => sum + Number(invoice.grandTotal || 0), 0);
 
       const todaysPurchases = (invoices || [])
         .filter(
-          (inv: any) =>
-            inv.type === VoucherType.PURCHASE_INVOICE &&
-            inv.status === VoucherStatus.POSTED &&
-            inv.date === today,
+          (invoice: any) =>
+            invoice.type === VoucherType.PURCHASE_INVOICE &&
+            invoice.status === VoucherStatus.POSTED &&
+            invoice.date === today,
         )
-        .reduce((sum: number, inv: any) => sum + Number(inv.grandTotal || 0), 0);
+        .reduce((sum: number, invoice: any) => sum + Number(invoice.grandTotal || 0), 0);
 
       const vatPayable = (accounts || [])
-        .filter((a: any) => String(a.name || "").toLowerCase().includes("vat payable"))
-        .reduce((sum: number, a: any) => sum + Number(a.balance || 0), 0);
+        .filter((account: any) => safeLower(account.name).includes("vat payable"))
+        .reduce((sum: number, account: any) => sum + Number(account.balance || 0), 0);
 
-      let stockValue = 0;
-      try {
-        const positions = computeAllStockPositions(stockMovements || [], items || [], warehouses || []);
-        stockValue = (positions || []).reduce((sum: number, pos: any) => {
-          const item = (items || []).find((i: any) => i.id === pos.itemId);
-          const qty = Number(pos.qty ?? pos.closingQty ?? pos.quantity ?? 0);
-          const rate = Number(pos.avgRate ?? pos.avg_rate ?? item?.purchaseRate ?? item?.openingStockRate ?? 0);
-          const value = Number(pos.value ?? pos.closingValue ?? pos.stockValue ?? qty * rate);
-          return sum + value;
-        }, 0);
-      } catch {
-        stockValue = 0;
-      }
+      const stockValue = (stockPositions || []).reduce((sum: number, position: any) => {
+        const item = (items || []).find((candidate: any) => candidate.id === position.itemId);
+        const qty = Number(
+          position.qty ??
+            position.closingQty ??
+            position.quantity ??
+            position.currentQty ??
+            position.balanceQty ??
+            0,
+        );
+
+        const rate = Number(
+          position.avgRate ??
+            position.avg_rate ??
+            position.rate ??
+            item?.purchaseRate ??
+            item?.openingStockRate ??
+            item?.openingRate ??
+            0,
+        );
+
+        const value = Number(
+          position.value ??
+            position.closingValue ??
+            position.stockValue ??
+            position.amount ??
+            qty * rate,
+        );
+
+        return sum + value;
+      }, 0);
 
       return {
         cashBalance,
@@ -390,9 +487,18 @@ const Gateway: React.FC = () => {
         stockValue,
       };
     } catch {
-      return zero;
+      return {
+        cashBalance: 0,
+        bankBalance: 0,
+        receivables: 0,
+        payables: 0,
+        todaysSales: 0,
+        todaysPurchases: 0,
+        vatPayable: 0,
+        stockValue: 0,
+      };
     }
-  }, [accounts, parties, invoices, vouchers, stockMovements, items, warehouses]);
+  }, [accounts, parties, invoices, vouchers, stockPositions, items]);
 
   const companyName =
     companySettings?.companyNameEn || companySettings?.name || "No company configured";
@@ -413,43 +519,39 @@ const Gateway: React.FC = () => {
     return (
       <div ref={sectionRefs[section]} style={panelStyle}>
         <div style={sectionHeaderStyle}>{section}</div>
+
         <div style={{ padding: 4 }}>
-          {visibleRows.map((item) => (
-            <button
-              key={`${section}-${item.page}-${item.label}`}
-              type="button"
-              onClick={() => navigate(item.label, item.page)}
-              className="w-full text-left hover:bg-[#B8D4A0] transition-colors"
-              style={{
-                display: "block",
-                width: "100%",
-                border: "1px solid transparent",
-                background: "transparent",
-                color: "#000",
-                padding: "4px 6px",
-                borderRadius: 0,
-                cursor: "pointer",
-                fontSize: 12,
-                fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
           {visibleRows.length === 0 ? (
             <div style={{ padding: 8, fontSize: 11 }}>No permitted items.</div>
-          ) : null}
+          ) : (
+            visibleRows.map((item) => (
+              <button
+                key={`${section}-${item.label}-${item.page}`}
+                type="button"
+                onClick={() => navigate(item.label, item.page)}
+                className="hover:bg-[#B8D4A0] transition-colors"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  border: "1px solid transparent",
+                  background: "transparent",
+                  color: "#000",
+                  padding: "4px 6px",
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontFamily:
+                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                }}
+              >
+                {item.label}
+              </button>
+            ))
+          )}
         </div>
       </div>
     );
-  };
-
-  const activityTimestamp = (timestamp: string) => {
-    try {
-      return new Date(timestamp).toLocaleString();
-    } catch {
-      return timestamp;
-    }
   };
 
   return (
@@ -463,6 +565,7 @@ const Gateway: React.FC = () => {
         fontSize: 12,
       }}
     >
+      {/* QUICK ACTIONS */}
       <div style={{ ...panelStyle, marginBottom: 8 }}>
         <div
           style={{
@@ -470,38 +573,23 @@ const Gateway: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderBottom: "1px solid #000",
+            gap: 8,
           }}
         >
           <span>Gateway / Main Home</span>
-          <span style={{ fontWeight: 600, fontSize: 11 }}>
-            Active Date: {safeDateBS(activeVoucherDate)} · {activeVoucherDate}
+          <span style={{ fontSize: 11, fontWeight: 600 }}>
+            Active Date: {safeBS(activeVoucherDate)} · AD {activeVoucherDate}
           </span>
         </div>
 
-        <div
-          className="flex flex-wrap gap-1.5"
-          style={{
-            padding: 6,
-          }}
-        >
-          {quickActions.filter(canSee).map((item) => (
+        <div className="flex flex-wrap gap-1.5" style={{ padding: 6 }}>
+          {QUICK_ACTIONS.filter(canSee).map((item) => (
             <button
               key={item.page}
               type="button"
               onClick={() => navigate(item.label, item.page)}
               className="hover:bg-[#B8D4A0] transition-colors"
-              style={{
-                height: 26,
-                padding: "0 8px",
-                border: "1px solid #000",
-                background: "#D4EABD",
-                color: "#000",
-                fontSize: 11,
-                fontWeight: 700,
-                borderRadius: 0,
-                cursor: "pointer",
-              }}
+              style={smallButtonStyle}
             >
               {item.label}
             </button>
@@ -509,89 +597,90 @@ const Gateway: React.FC = () => {
         </div>
       </div>
 
+      {/* MISSING CONFIG WARNINGS */}
       {!companySettings ? (
         <div style={{ ...panelStyle, padding: 10, marginBottom: 8 }}>
-          <b>No company configured.</b>{" "}
+          <b>No company configured.</b>
           <button
             type="button"
             onClick={() => navigate("Company Settings", "settings")}
-            style={{
-              marginLeft: 8,
-              border: "1px solid #000",
-              background: "#D4EABD",
-              padding: "3px 8px",
-              cursor: "pointer",
-            }}
+            style={{ ...smallButtonStyle, marginLeft: 8 }}
           >
-            Open Settings
+            Configure Company
           </button>
         </div>
       ) : null}
 
       {!currentFiscalYear ? (
         <div style={{ ...panelStyle, padding: 10, marginBottom: 8 }}>
-          <b>No active fiscal year.</b>{" "}
+          <b>No active fiscal year.</b>
           <button
             type="button"
             onClick={() => navigate("Fiscal Year", "fiscal-year")}
-            style={{
-              marginLeft: 8,
-              border: "1px solid #000",
-              background: "#D4EABD",
-              padding: "3px 8px",
-              cursor: "pointer",
-            }}
+            style={{ ...smallButtonStyle, marginLeft: 8 }}
           >
             Open Fiscal Year
           </button>
         </div>
       ) : null}
 
+      {/* MAIN BODY */}
       <div className="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-2">
+        {/* LEFT PANEL */}
         <div className="flex flex-col gap-2">
+          {/* Company Info */}
           <div style={panelStyle}>
-            <div style={sectionHeaderStyle}>Company & Period</div>
+            <div style={sectionHeaderStyle}>Company & Period Info</div>
+
             <div className="grid grid-cols-2 gap-2" style={{ padding: 8 }}>
               <div>
                 <div style={labelStyle}>Company</div>
                 <div style={valueStyle}>{companyName}</div>
               </div>
+
               <div>
                 <div style={labelStyle}>Fiscal Year</div>
                 <div style={valueStyle}>{fiscalYearLabel}</div>
               </div>
+
               <div>
                 <div style={labelStyle}>PAN</div>
                 <div style={valueStyle}>{companySettings?.panNumber || "—"}</div>
               </div>
+
               <div>
                 <div style={labelStyle}>VAT Reg No</div>
                 <div style={valueStyle}>{companySettings?.vatNumber || "—"}</div>
               </div>
+
               <div>
                 <div style={labelStyle}>FY Start</div>
                 <div style={valueStyle}>
-                  {safeDateBS(currentFiscalYear?.startDate)}{" "}
-                  <span style={{ fontSize: 10 }}>({currentFiscalYear?.startDate || "—"})</span>
+                  {safeBS(currentFiscalYear?.startDate)}
+                  <div style={{ fontSize: 10 }}>AD {currentFiscalYear?.startDate || "—"}</div>
                 </div>
               </div>
+
               <div>
                 <div style={labelStyle}>FY End</div>
                 <div style={valueStyle}>
-                  {safeDateBS(currentFiscalYear?.endDate)}{" "}
-                  <span style={{ fontSize: 10 }}>({currentFiscalYear?.endDate || "—"})</span>
+                  {safeBS(currentFiscalYear?.endDate)}
+                  <div style={{ fontSize: 10 }}>AD {currentFiscalYear?.endDate || "—"}</div>
                 </div>
               </div>
+
               <div className="col-span-2">
                 <div style={labelStyle}>Today</div>
                 <div style={valueStyle}>
                   {getBSTodayLong()} · AD {new Date().toLocaleDateString()}
                 </div>
               </div>
+
               <div>
                 <div style={labelStyle}>User</div>
                 <div style={valueStyle}>{currentUser?.name || currentUser?.username || "—"}</div>
               </div>
+
               <div>
                 <div style={labelStyle}>Role</div>
                 <div style={valueStyle}>{role || "—"}</div>
@@ -602,32 +691,21 @@ const Gateway: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setDatePanelOpen((v) => !v);
-                  setTimeout(() => dateInputRef.current?.focus(), 0);
+                  setDatePanelOpen((open) => !open);
+                  window.setTimeout(() => dateInputRef.current?.focus(), 0);
                 }}
-                style={{
-                  border: "1px solid #000",
-                  background: "#C9DEB5",
-                  padding: "4px 8px",
-                  cursor: "pointer",
-                  fontWeight: 700,
-                }}
+                style={{ ...smallButtonStyle, background: "#C9DEB5" }}
               >
                 Change Date [F2]
               </button>
+
               <button
                 type="button"
                 onClick={() => {
-                  setPeriodPanelOpen((v) => !v);
-                  setTimeout(() => periodFromRef.current?.focus(), 0);
+                  setPeriodPanelOpen((open) => !open);
+                  window.setTimeout(() => periodFromRef.current?.focus(), 0);
                 }}
-                style={{
-                  border: "1px solid #000",
-                  background: "#C9DEB5",
-                  padding: "4px 8px",
-                  cursor: "pointer",
-                  fontWeight: 700,
-                }}
+                style={{ ...smallButtonStyle, background: "#C9DEB5" }}
               >
                 Change Period [Alt+F2]
               </button>
@@ -640,58 +718,41 @@ const Gateway: React.FC = () => {
                   ref={dateInputRef}
                   type="date"
                   value={activeVoucherDate}
-                  onChange={(e) => setLocalActiveVoucherDate(e.target.value)}
-                  style={{
-                    height: 28,
-                    width: "100%",
-                    border: "1px solid #000",
-                    background: "#EBF5E2",
-                    color: "#000",
-                    padding: "0 6px",
-                    marginTop: 4,
-                  }}
+                  onChange={(event) => setLocalActiveVoucherDate(event.target.value)}
+                  style={{ ...inputStyle, marginTop: 4 }}
                 />
-                <div style={{ fontSize: 11, marginTop: 4 }}>BS: {safeDateBS(activeVoucherDate)}</div>
+                <div style={{ fontSize: 11, marginTop: 4 }}>BS: {safeBS(activeVoucherDate)}</div>
               </div>
             ) : null}
 
             {periodPanelOpen ? (
               <div style={{ padding: 8, borderTop: "1px solid #000", background: "#C9DEB5" }}>
                 <div style={labelStyle}>Report Period</div>
+
                 <div className="grid grid-cols-2 gap-2" style={{ marginTop: 4 }}>
                   <input
                     ref={periodFromRef}
                     type="date"
                     value={reportPeriodFrom}
-                    onChange={(e) => setReportPeriodFrom(e.target.value)}
-                    style={{
-                      height: 28,
-                      border: "1px solid #000",
-                      background: "#EBF5E2",
-                      color: "#000",
-                      padding: "0 6px",
-                    }}
+                    onChange={(event) => setReportPeriodFrom(event.target.value)}
+                    style={inputStyle}
                   />
                   <input
                     type="date"
                     value={reportPeriodTo}
-                    onChange={(e) => setReportPeriodTo(e.target.value)}
-                    style={{
-                      height: 28,
-                      border: "1px solid #000",
-                      background: "#EBF5E2",
-                      color: "#000",
-                      padding: "0 6px",
-                    }}
+                    onChange={(event) => setReportPeriodTo(event.target.value)}
+                    style={inputStyle}
                   />
                 </div>
+
                 <div style={{ fontSize: 11, marginTop: 4 }}>
-                  BS: {safeDateBS(reportPeriodFrom)} to {safeDateBS(reportPeriodTo)}
+                  BS: {safeBS(reportPeriodFrom)} to {safeBS(reportPeriodTo)}
                 </div>
               </div>
             ) : null}
           </div>
 
+          {/* Recent Activity */}
           <div style={panelStyle}>
             <div
               style={{
@@ -702,6 +763,7 @@ const Gateway: React.FC = () => {
               }}
             >
               <span>Recent Activity</span>
+
               {recentActivity.length ? (
                 <button
                   type="button"
@@ -712,12 +774,14 @@ const Gateway: React.FC = () => {
                     fontSize: 10,
                     padding: "1px 6px",
                     cursor: "pointer",
+                    borderRadius: 0,
                   }}
                 >
                   Clear
                 </button>
               ) : null}
             </div>
+
             <div style={{ padding: 4 }}>
               {recentActivity.length === 0 ? (
                 <div style={{ padding: 8, fontSize: 11 }}>No recent activity</div>
@@ -727,28 +791,30 @@ const Gateway: React.FC = () => {
                     key={`${item.page}-${item.timestamp}`}
                     type="button"
                     onClick={() => navigate(item.label, item.page)}
-                    className="hover:bg-[#B8D4A0]"
+                    className="hover:bg-[#B8D4A0] transition-colors"
                     style={{
                       display: "block",
                       width: "100%",
                       textAlign: "left",
-                      padding: "5px 6px",
                       border: "1px solid transparent",
                       background: "transparent",
+                      padding: "5px 6px",
                       cursor: "pointer",
-                      fontSize: 12,
+                      borderRadius: 0,
                     }}
                   >
-                    <div style={{ fontWeight: 700 }}>{item.label}</div>
-                    <div style={{ fontSize: 10 }}>{activityTimestamp(item.timestamp)}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700 }}>{item.label}</div>
+                    <div style={{ fontSize: 10 }}>{safeTimestamp(item.timestamp)}</div>
                   </button>
                 ))
               )}
             </div>
           </div>
 
+          {/* Alerts */}
           <div style={panelStyle}>
             <div style={sectionHeaderStyle}>Alerts / Notifications</div>
+
             <div style={{ padding: 6 }}>
               {businessAlerts.map((alert) => (
                 <div
@@ -765,16 +831,12 @@ const Gateway: React.FC = () => {
                 </div>
               ))}
 
-              {unreadNotifications.length === 0 && businessAlerts.length === 0 ? (
-                <div style={{ padding: 4, fontSize: 11 }}>No pending alerts.</div>
-              ) : null}
-
-              {unreadNotifications.map((n: any, idx: number) => (
+              {unreadNotifications.map((notification: any, index: number) => (
                 <button
-                  key={n.id || idx}
+                  key={notification.id || index}
                   type="button"
                   onClick={() => navigate("Audit Log", "audit-log")}
-                  className="hover:bg-[#B8D4A0]"
+                  className="hover:bg-[#B8D4A0] transition-colors"
                   style={{
                     display: "block",
                     width: "100%",
@@ -784,14 +846,21 @@ const Gateway: React.FC = () => {
                     padding: "5px 6px",
                     marginTop: 4,
                     cursor: "pointer",
+                    borderRadius: 0,
                   }}
                 >
-                  <div style={{ fontWeight: 700 }}>{n.message || n.title || "Notification"}</div>
+                  <div style={{ fontWeight: 700 }}>
+                    {notification.message || notification.title || "Notification"}
+                  </div>
                   <div style={{ fontSize: 10 }}>
-                    {n.timestamp || n.createdAt ? activityTimestamp(n.timestamp || n.createdAt) : "—"}
+                    {safeTimestamp(notification.timestamp || notification.createdAt)}
                   </div>
                 </button>
               ))}
+
+              {businessAlerts.length === 0 && unreadNotifications.length === 0 ? (
+                <div style={{ padding: 4, fontSize: 11 }}>No pending alerts.</div>
+              ) : null}
 
               <button
                 type="button"
@@ -804,6 +873,7 @@ const Gateway: React.FC = () => {
                   cursor: "pointer",
                   fontSize: 11,
                   fontWeight: 700,
+                  padding: 0,
                 }}
               >
                 View All
@@ -812,15 +882,18 @@ const Gateway: React.FC = () => {
           </div>
         </div>
 
+        {/* RIGHT MENU PANEL */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
-          {Object.entries(menuSections).map(([section, rows]) => (
+          {Object.entries(MENU_SECTIONS).map(([section, rows]) => (
             <React.Fragment key={section}>{renderMenuSection(section, rows)}</React.Fragment>
           ))}
         </div>
       </div>
 
+      {/* SNAPSHOT */}
       <div style={{ ...panelStyle, marginTop: 8 }}>
         <div style={sectionHeaderStyle}>Business Snapshot</div>
+
         <div className="flex flex-wrap gap-1.5" style={{ padding: 6 }}>
           <GatewayTile
             label="Cash Balance"
