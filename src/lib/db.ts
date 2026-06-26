@@ -339,6 +339,63 @@ export interface DBCurrency {
   [key: string]: any;
 }
 
+export interface DBVoucherTypeMaster {
+  id: string;
+  name: string;
+  alias?: string;
+  abbreviation?: string;
+  parentVoucherType: string;
+  voucherGroup: string;
+  isPredefined: boolean;
+  isActive: boolean;
+  numberingMethod: string;
+  prefix?: string;
+  suffix?: string;
+  startingNumber: number;
+  restartPeriod: string;
+  preventDuplicateNumber: boolean;
+  allowManualOverride: boolean;
+  warnOnDuplicate: boolean;
+  useEffectiveDate: boolean;
+  allowZeroValue: boolean;
+  optionalByDefault: boolean;
+  allowCommonNarration: boolean;
+  allowLedgerNarration: boolean;
+  printAfterSaving: boolean;
+  useForPOS: boolean;
+  defaultPrintTitle?: string;
+  defaultBankLedgerId?: string;
+  defaultJurisdiction?: string;
+  declarationText?: string;
+  enableDefaultAllocations: boolean;
+  whatsAppAfterSaving: boolean;
+  createdBy?: string;
+  createdAt?: string;
+  modifiedBy?: string;
+  modifiedAt?: string;
+  [key: string]: any;
+}
+
+export interface DBVoucherAuditLog {
+  id: string;
+  companyId?: string;
+  voucherId: string;
+  voucherTypeId?: string;
+  voucherNumber: string;
+  voucherDate: string;
+  actionName: string;
+  shortcutUsed?: string;
+  userId?: string;
+  userRole?: string;
+  timestamp: string;
+  oldValues?: string;
+  newValues?: string;
+  changedFields?: string;
+  status: string;
+  failureReason?: string;
+  [key: string]: any;
+}
+
 // ─── NEW: Administration Module Tables ────────────────────────────────────────
 
 export interface DBUnitConversion {
@@ -534,7 +591,8 @@ class SutraDB extends Dexie {
   materialReceived!: Table<any>;
   physicalStocks!: Table<any>;
   stockCategories!: Table<any>;
-  voucherTypeMasters!: Table<any>;
+  voucherTypeMasters!: Table<DBVoucherTypeMaster>;
+  voucherAuditLogs!: Table<DBVoucherAuditLog>;
   scenarios!: Table<any>;
   costCategories!: Table<any>;
   costCentreClasses!: Table<any>;
@@ -626,7 +684,8 @@ class SutraDB extends Dexie {
     // Version 8 — New Master Modules
     this.version(8).stores({
       stockCategories: 'id, name, isActive',
-      voucherTypeMasters: 'id, name, type, isActive',
+      voucherTypeMasters: 'id, name, parentVoucherType, isActive',
+      voucherAuditLogs: 'id, voucherId, actionName, timestamp, userId',
       scenarios: 'id, name, isActive',
       costCategories: 'id, name, isActive',
       costCentreClasses: 'id, name, isActive',
@@ -658,6 +717,697 @@ export function getDB(): SutraDB {
 
 export function generateId(): string {
   return crypto.randomUUID();
+}
+
+export async function seedPredefinedVoucherTypes(): Promise<void> {
+  const db = await getDB();
+  
+  // Check if predefined voucher types already exist
+  const existingCount = await db.voucherTypeMasters.where({ isPredefined: true }).count();
+  
+  if (existingCount > 0) {
+    return; // Already seeded
+  }
+
+  const predefinedTypes = [
+    // Accounting group
+    {
+      id: "predefined-contra",
+      name: "Contra",
+      abbreviation: "Contra",
+      parentVoucherType: "contra",
+      voucherGroup: "accounting",
+      prefix: "CV-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-pmnt",
+      name: "Payment",
+      abbreviation: "Pmnt",
+      parentVoucherType: "payment",
+      voucherGroup: "accounting",
+      prefix: "PV-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-rcpt",
+      name: "Receipt",
+      abbreviation: "Rcpt",
+      parentVoucherType: "receipt",
+      voucherGroup: "accounting",
+      prefix: "RV-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-jrnl",
+      name: "Journal",
+      abbreviation: "Jrnl",
+      parentVoucherType: "journal",
+      voucherGroup: "accounting",
+      prefix: "JV-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-sales",
+      name: "Sales",
+      abbreviation: "Sales",
+      parentVoucherType: "sales-invoice",
+      voucherGroup: "accounting",
+      prefix: "SI-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-purch",
+      name: "Purchase",
+      abbreviation: "Purch",
+      parentVoucherType: "purchase-invoice",
+      voucherGroup: "accounting",
+      prefix: "PI-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-crnt",
+      name: "Credit Note",
+      abbreviation: "CrNt",
+      parentVoucherType: "credit-note",
+      voucherGroup: "accounting",
+      prefix: "CN-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-drnt",
+      name: "Debit Note",
+      abbreviation: "DrNt",
+      parentVoucherType: "debit-note",
+      voucherGroup: "accounting",
+      prefix: "DN-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    // Inventory group
+    {
+      id: "predefined-stjn",
+      name: "Stock Journal",
+      abbreviation: "StJn",
+      parentVoucherType: "stock-journal",
+      voucherGroup: "inventory",
+      prefix: "SJ-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-phst",
+      name: "Physical Stock",
+      abbreviation: "PhSt",
+      parentVoucherType: "physical-stock",
+      voucherGroup: "inventory",
+      prefix: "PS-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-dlnt",
+      name: "Delivery Note",
+      abbreviation: "DlNt",
+      parentVoucherType: "delivery-note",
+      voucherGroup: "inventory",
+      prefix: "DN-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-rcnt",
+      name: "Receipt Note",
+      abbreviation: "RcNt",
+      parentVoucherType: "receipt-note",
+      voucherGroup: "inventory",
+      prefix: "RN-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-rjin",
+      name: "Rejection In",
+      abbreviation: "RjIn",
+      parentVoucherType: "rejection-in",
+      voucherGroup: "inventory",
+      prefix: "RI-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-rjot",
+      name: "Rejection Out",
+      abbreviation: "RjOt",
+      parentVoucherType: "rejection-out",
+      voucherGroup: "inventory",
+      prefix: "RO-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-mtin",
+      name: "Material In",
+      abbreviation: "MtIn",
+      parentVoucherType: "material-in",
+      voucherGroup: "inventory",
+      prefix: "MI-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-mtot",
+      name: "Material Out",
+      abbreviation: "MtOt",
+      parentVoucherType: "material-out",
+      voucherGroup: "inventory",
+      prefix: "MO-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    // Order group
+    {
+      id: "predefined-saor",
+      name: "Sales Order",
+      abbreviation: "SaOr",
+      parentVoucherType: "sales-order",
+      voucherGroup: "order",
+      prefix: "SO-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-puor",
+      name: "Purchase Order",
+      abbreviation: "PuOr",
+      parentVoucherType: "purchase-order",
+      voucherGroup: "order",
+      prefix: "PO-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-jwot",
+      name: "Job Work Out Order",
+      abbreviation: "JWOt",
+      parentVoucherType: "job-work-out-order",
+      voucherGroup: "order",
+      prefix: "JO-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-jwin",
+      name: "Job Work In Order",
+      abbreviation: "JWIn",
+      parentVoucherType: "job-work-in-order",
+      voucherGroup: "order",
+      prefix: "JI-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    // Payroll group
+    {
+      id: "predefined-pyrl",
+      name: "Payroll",
+      abbreviation: "Pyrl",
+      parentVoucherType: "payroll",
+      voucherGroup: "payroll",
+      prefix: "PR-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-attn",
+      name: "Attendance",
+      abbreviation: "Attn",
+      parentVoucherType: "attendance",
+      voucherGroup: "payroll",
+      prefix: "AT-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    // Other group
+    {
+      id: "predefined-memo",
+      name: "Memorandum",
+      abbreviation: "Memo",
+      parentVoucherType: "memorandum",
+      voucherGroup: "other",
+      prefix: "MV-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    },
+    {
+      id: "predefined-rvjn",
+      name: "Reversing Journal",
+      abbreviation: "RvJn",
+      parentVoucherType: "reversing-journal",
+      voucherGroup: "other",
+      prefix: "RJ-",
+      startingNumber: 1,
+      isPredefined: true,
+      isActive: true,
+      numberingMethod: "automatic",
+      restartPeriod: "never",
+      preventDuplicateNumber: false,
+      allowManualOverride: false,
+      warnOnDuplicate: true,
+      useEffectiveDate: false,
+      allowZeroValue: false,
+      optionalByDefault: false,
+      allowCommonNarration: true,
+      allowLedgerNarration: false,
+      printAfterSaving: false,
+      useForPOS: false,
+      enableDefaultAllocations: false,
+      whatsAppAfterSaving: false,
+      createdAt: new Date().toISOString(),
+      createdBy: "system"
+    }
+  ];
+
+  await db.voucherTypeMasters.bulkAdd(predefinedTypes);
+}
+
+export async function generateVoucherNumber(voucherTypeId: string): Promise<string> {
+  const db = await getDB();
+  
+  try {
+    const voucherType = await db.voucherTypeMasters.get(voucherTypeId);
+    
+    if (!voucherType) {
+      // Fallback if voucher type not found
+      return `VCH-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+    }
+    
+    const existingVouchersCount = await db.vouchers.where({ voucherTypeId }).count();
+    const nextNumber = voucherType.startingNumber + existingVouchersCount;
+    const paddedNumber = nextNumber.toString().padStart(4, '0');
+    
+    return `${voucherType.prefix}${paddedNumber}`;
+  } catch (error) {
+    // Fallback on error
+    return `VCH-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+  }
 }
 
 export default getDB;

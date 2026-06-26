@@ -95,6 +95,15 @@ import ConfigurationHub from "./pages/ConfigurationHub";
 import BulkUpdations from "./pages/BulkUpdations";
 import DataExportImport from "./pages/DataExportImport";
 import MiscDataEntry from "./pages/MiscDataEntry";
+import VoucherEntryHub from "./pages/VoucherEntryHub";
+import SalesVoucher from "./pages/SalesVoucher";
+import PurchaseVoucher from "./pages/PurchaseVoucher";
+import CreditNoteVoucher from "./pages/CreditNoteVoucher";
+import DebitNoteVoucher from "./pages/DebitNoteVoucher";
+import StockJournalVoucher from "./pages/StockJournalPage";
+import SalesOrderVoucher from "./pages/SalesOrderVoucher";
+import MemorandumVoucher from "./pages/MemorandumVoucher";
+import VouchersRegisterFull from "./pages/VouchersRegisterFull";
 
 function MainRouter() {
   const { currentPage } = useStore();
@@ -128,7 +137,7 @@ function MainRouter() {
     case "vouchers-log":
       return (
         <ErrorBoundary>
-          <VouchersRegister />
+          <VouchersRegisterFull />
         </ErrorBoundary>
       );
     case "bank-statement-import":
@@ -205,8 +214,20 @@ function MainRouter() {
           <TallyVoucherPage type={currentPage as any} />
         </ErrorBoundary>
       );
+    case "sales-voucher":
     case "sales-invoice":
+      return (
+        <ErrorBoundary>
+          <SalesVoucher />
+        </ErrorBoundary>
+      );
+    case "purchase-voucher":
     case "purchase-invoice":
+      return (
+        <ErrorBoundary>
+          <PurchaseVoucher />
+        </ErrorBoundary>
+      );
     case "sales-return":
     case "purchase-return":
     case "billing":
@@ -216,16 +237,22 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "debit-note":
+      return (
+        <ErrorBoundary>
+          <DebitNoteVoucher />
+        </ErrorBoundary>
+      );
     case "credit-note":
       return (
         <ErrorBoundary>
-          <DebitCreditNote />
+          <CreditNoteVoucher />
         </ErrorBoundary>
       );
+    case "sales-order-voucher":
     case "sales-order":
       return (
         <ErrorBoundary>
-          <SalesOrder />
+          <SalesOrderVoucher />
         </ErrorBoundary>
       );
     case "purchase-order":
@@ -246,10 +273,11 @@ function MainRouter() {
           <GoodsReceiptNote />
         </ErrorBoundary>
       );
+    case "stock-journal-voucher":
     case "stock-journal":
       return (
         <ErrorBoundary>
-          <StockJournalPage />
+          <StockJournalVoucher />
         </ErrorBoundary>
       );
     case "production":
@@ -346,13 +374,33 @@ function MainRouter() {
     case "purchase-register":
       return (
         <ErrorBoundary>
-          <VouchersRegister />
+          <VouchersRegisterFull />
         </ErrorBoundary>
       );
     case "vouchers":
       return (
         <ErrorBoundary>
-          <VouchersRegister />
+          <VouchersRegisterFull />
+        </ErrorBoundary>
+      );
+    case "voucher-register-full":
+      return (
+        <ErrorBoundary>
+          <VouchersRegisterFull />
+        </ErrorBoundary>
+      );
+    case "voucher-hub":
+    case "voucher-entry-hub":
+      return (
+        <ErrorBoundary>
+          <VoucherEntryHub />
+        </ErrorBoundary>
+      );
+    case "memorandum-voucher":
+    case "memorandum":
+      return (
+        <ErrorBoundary>
+          <MemorandumVoucher />
         </ErrorBoundary>
       );
     case "parties":

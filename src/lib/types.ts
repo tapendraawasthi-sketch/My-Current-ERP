@@ -34,6 +34,20 @@ export enum VoucherType {
   MATERIAL_ISSUED = "material-issued",
   MATERIAL_RECEIVED = "material-received",
   PHYSICAL_STOCK = "physical-stock",
+  DELIVERY_NOTE = "delivery-note",
+  RECEIPT_NOTE = "receipt-note",
+  REJECTION_IN = "rejection-in",
+  REJECTION_OUT = "rejection-out",
+  MATERIAL_IN = "material-in",
+  MATERIAL_OUT = "material-out",
+  SALES_ORDER = "sales-order",
+  PURCHASE_ORDER = "purchase-order",
+  JOB_WORK_OUT_ORDER = "job-work-out-order",
+  JOB_WORK_IN_ORDER = "job-work-in-order",
+  PAYROLL = "payroll",
+  ATTENDANCE = "attendance",
+  MEMORANDUM = "memorandum",
+  REVERSING_JOURNAL = "reversing-journal",
 }
 
 export enum VoucherStatus {
@@ -41,6 +55,194 @@ export enum VoucherStatus {
   POSTED = "posted",
   CANCELLED = "cancelled",
   HELD = "held",
+}
+
+export enum VoucherMode {
+  SINGLE_ENTRY = "single-entry",
+  DOUBLE_ENTRY = "double-entry",
+  ITEM_INVOICE = "item-invoice",
+  ACCOUNTING_INVOICE = "accounting-invoice",
+  AS_VOUCHER = "as-voucher",
+  POS_INVOICE = "pos-invoice",
+  VOUCHER_CLASS = "voucher-class",
+}
+
+export enum VoucherGroup {
+  ACCOUNTING = "accounting",
+  INVENTORY = "inventory",
+  ORDER = "order",
+  PAYROLL = "payroll",
+  OTHER = "other",
+}
+
+export enum VoucherState {
+  REGULAR = "regular",
+  OPTIONAL = "optional",
+  POST_DATED = "post-dated",
+  CANCELLED = "cancelled",
+  DELETED = "deleted",
+  ALTERED = "altered",
+  LOCKED = "locked",
+  PENDING_APPROVAL = "pending-approval",
+  APPROVED = "approved",
+}
+
+export enum NumberingMethod {
+  AUTOMATIC = "automatic",
+  MANUAL = "manual",
+  MULTI_USER_AUTOMATIC = "multi-user-automatic",
+  NONE = "none",
+}
+
+export enum RestartPeriod {
+  NEVER = "never",
+  DAILY = "daily",
+  MONTHLY = "monthly",
+  YEARLY = "yearly",
+  FINANCIAL_YEAR = "financial-year",
+}
+
+export interface VoucherTypeMasterRecord {
+  id: string;
+  name: string;
+  alias?: string;
+  abbreviation?: string;
+  parentVoucherType: string;
+  voucherGroup: string;
+  isPredefined: boolean;
+  isActive: boolean;
+  numberingMethod: string;
+  prefix?: string;
+  suffix?: string;
+  startingNumber: number;
+  restartPeriod: string;
+  preventDuplicateNumber: boolean;
+  allowManualOverride: boolean;
+  warnOnDuplicate: boolean;
+  useEffectiveDate: boolean;
+  allowZeroValue: boolean;
+  optionalByDefault: boolean;
+  allowCommonNarration: boolean;
+  allowLedgerNarration: boolean;
+  printAfterSaving: boolean;
+  useForPOS: boolean;
+  defaultPrintTitle?: string;
+  defaultBankLedgerId?: string;
+  defaultJurisdiction?: string;
+  declarationText?: string;
+  enableDefaultAllocations: boolean;
+  voucherClassList?: string[];
+  whatsAppAfterSaving: boolean;
+  createdBy?: string;
+  createdAt?: string;
+  modifiedBy?: string;
+  modifiedAt?: string;
+}
+
+export interface VoucherBillAllocation {
+  id: string;
+  billRefNo: string;
+  billRefType: "new-ref" | "against-ref" | "advance" | "on-account";
+  amount: number;
+  dueDate?: string;
+  creditDays?: number;
+}
+
+export interface VoucherBankAllocation {
+  id: string;
+  instrumentType: "cheque" | "dd" | "neft" | "rtgs" | "imps" | "upi" | "card" | "cash-deposit";
+  instrumentNo?: string;
+  instrumentDate?: string;
+  bankName?: string;
+  amount: number;
+}
+
+export interface VoucherCostCentreAllocation {
+  id: string;
+  costCentreId: string;
+  amount: number;
+}
+
+export interface VoucherLineFull {
+  id: string;
+  lineNumber: number;
+  ledgerId?: string;
+  stockItemId?: string;
+  debitAmount: number;
+  creditAmount: number;
+  quantity?: number;
+  unitId?: string;
+  rate?: number;
+  discount?: number;
+  amount: number;
+  taxableAmount?: number;
+  taxRate?: number;
+  taxAmount?: number;
+  godownId?: string;
+  batchId?: string;
+  costCentreAllocations?: VoucherCostCentreAllocation[];
+  billAllocations?: VoucherBillAllocation[];
+  bankAllocations?: VoucherBankAllocation[];
+  orderReferenceId?: string;
+  trackingNumber?: string;
+  narration?: string;
+  hsnSac?: string;
+}
+
+export interface VoucherHeaderFull {
+  id: string;
+  companyId?: string;
+  voucherTypeId?: string;
+  voucherTypeName: string;
+  voucherGroup: string;
+  voucherNumber: string;
+  voucherDate: string;
+  effectiveDate?: string;
+  referenceNumber?: string;
+  referenceDate?: string;
+  partyLedgerId?: string;
+  partyName?: string;
+  status: string;
+  voucherState: string;
+  mode: string;
+  isOptional: boolean;
+  isPostDated: boolean;
+  isCancelled: boolean;
+  isDeleted: boolean;
+  narration?: string;
+  totalDebit: number;
+  totalCredit: number;
+  totalAmount: number;
+  taxAmount?: number;
+  roundOffAmount?: number;
+  lines: VoucherLineFull[];
+  createdBy?: string;
+  createdAt?: string;
+  modifiedBy?: string;
+  modifiedAt?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  cancellationReason?: string;
+  sourceScreen?: string;
+}
+
+export interface VoucherAuditLog {
+  id: string;
+  companyId?: string;
+  voucherId: string;
+  voucherTypeId?: string;
+  voucherNumber: string;
+  voucherDate: string;
+  actionName: string;
+  shortcutUsed?: string;
+  userId?: string;
+  userRole?: string;
+  timestamp: string;
+  oldValues?: Record<string, any>;
+  newValues?: Record<string, any>;
+  changedFields?: string[];
+  status: "success" | "failed" | "cancelled";
+  failureReason?: string;
 }
 
 export enum PaymentMode {

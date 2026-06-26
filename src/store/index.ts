@@ -186,6 +186,7 @@ interface AppState {
   // Masters Module v8
   stockCategories: any[];
   voucherTypeMasters: any[];
+  voucherAuditLogs: any[];
   scenarios: any[];
   costCategories: any[];
   costCentreClasses: any[];
@@ -332,9 +333,12 @@ interface AppState {
   updateStockCategory: (id: string, data: Partial<any>) => Promise<void>;
   deleteStockCategory: (id: string) => Promise<void>;
   // Voucher Type Master
+  loadVoucherTypeMasters: () => Promise<void>;
   addVoucherTypeMaster: (data: Partial<any>) => Promise<any>;
   updateVoucherTypeMaster: (id: string, data: Partial<any>) => Promise<void>;
   deleteVoucherTypeMaster: (id: string) => Promise<void>;
+  addVoucherAuditLog: (log: Omit<any, "id">) => Promise<void>;
+  loadVoucherAuditLogs: (voucherId?: string) => Promise<void>;
   // Scenario
   addScenario: (data: Partial<any>) => Promise<any>;
   updateScenario: (id: string, data: Partial<any>) => Promise<void>;
@@ -460,6 +464,7 @@ export const useStore = create<AppState>((set, get) => ({
   employees: [],
   stockCategories: [],
   voucherTypeMasters: [],
+  voucherAuditLogs: [],
   scenarios: [],
   costCategories: [],
   costCentreClasses: [],
@@ -778,6 +783,8 @@ export const useStore = create<AppState>((set, get) => ({
         }
       }
     }
+
+    await get().loadVoucherTypeMasters();
   },
 
   login: async (username: string, password: string): Promise<boolean> => {
@@ -1166,22 +1173,169 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Voucher Type Master
-  addVoucherTypeMaster: async (data) => {
-    const db = getDB();
-    const record = { ...data, id: data.id || `vtm-${generateId()}`, isActive: true };
-    await db.voucherTypeMasters.add(record as any);
-    set((s) => ({ voucherTypeMasters: [...s.voucherTypeMasters, record] }));
-    return record;
+  loadVoucherTypeMasters: async () => {
+    try {
+      const { seedPredefinedVoucherTypes, getDB } = await import("../lib/db");
+      await seedPredefinedVoucherTypes();
+      
+      const db = await getDB();
+      const records = await db.voucherTypeMasters.toArray();
+      
+      // Sort: predefined types first, then user-defined, both sorted by name
+      const sortedRecords = [...records].sort((a, b) => {
+        if (a.isPredefined && !b.isPredefined) return -1;
+        if (!a.isPredefined && b.isPredefined) return 1;
+        return a.name.localeCompare(b.name);
+      });
+      
+      set({ voucherTypeMasters: sortedRecords });
+    } catch (error) {
+      console.error("Error loading voucher type masters:", error);
+    }
   },
-  updateVoucherTypeMaster: async (id, data) => {
-    const db = getDB();
-    await db.voucherTypeMasters.update(id, data);
-    set((s) => ({ voucherTypeMasters: s.voucherTypeMasters.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  
+  addVoucherTypeMaster: async (data: Partial<any>) => {
+    if (!data.name) {
+      throw new Error("Voucher type name is required");
+    }
+    
+    if (!data.parentVoucherType) {
+      throw new Error("Parent voucher type is required");
+    }
+    
+    const state = get();
+    const existingByName = state.voucherTypeMasters.find(
+      vtm => vtm.name.toLowerCase() === data.name?.toLowerCase()
+    );
+    
+    if (existingByName) {
+      throw new Error(`Voucher type with name "${data.name}" already exists`);
+    }
+    
+    const { getDB } = await import("../lib/db");
+    const db = await getDB();
+    
+    const newRecord: any = {
+      ...data,
+      id: `vtm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      createdAt: new Date().toISOString(),
+    };
+    
+    await db.voucherTypeMasters.add(newRecord);
+    await get().loadVoucherTypeMasters();
+    
+    return newRecord;
   },
-  deleteVoucherTypeMaster: async (id) => {
-    const db = getDB();
+  
+  updateVoucherTypeMaster: async (id: string, data: Partial<any>) => {
+    const state = get();
+    const existing = state.voucherTypeMasters.find(vtm => vtm.id === id);
+    
+    if (!existing) {
+      throw new Error("Voucher type master not found");
+    }
+    
+    const { getDB } = await import("../lib/db");
+    const db = await getDB();
+    
+    let updateData = { ...data };
+    
+    if (existing.isPredefined) {
+      // For predefined types, only allow specific fields to be updated
+      const allowedFields = [
+        "isActive", 
+        "printAfterSaving", 
+        "useForPOS", 
+        "defaultPrintTitle", 
+        "defaultBankLedgerId", 
+        "defaultJurisdiction", 
+        "declarationText", 
+        "allowCommonNarration", 
+        "allowLedgerNarration", 
+        "whatsAppAfterSaving"
+      ];
+      
+      const filteredUpdateData: Partial<any> = {};
+      allowedFields.forEach(field => {
+        if (field in updateData) {
+          filteredUpdateData[field] = updateData[field];
+        }
+      });
+      
+      updateData = filteredUpdateData;
+    }
+    
+    const recordToUpdate = {
+      ...existing,
+      ...updateData,
+      modifiedAt: new Date().toISOString(),
+    };
+    
+    await db.voucherTypeMasters.update(id, recordToUpdate);
+    await get().loadVoucherTypeMasters();
+  },
+  
+  deleteVoucherTypeMaster: async (id: string) => {
+    const state = get();
+    const record = state.voucherTypeMasters.find(vtm => vtm.id === id);
+    
+    if (!record) {
+      throw new Error("Voucher type master not found");
+    }
+    
+    if (record.isPredefined) {
+      throw new Error("Cannot delete predefined voucher types");
+    }
+    
+    const { getDB } = await import("../lib/db");
+    const db = await getDB();
+    
+    // Check if any vouchers use this voucher type
+    const voucherCount = await db.vouchers.where({ voucherTypeId: id }).count();
+    if (voucherCount > 0) {
+      throw new Error("Cannot delete: vouchers exist using this type");
+    }
+    
     await db.voucherTypeMasters.delete(id);
-    set((s) => ({ voucherTypeMasters: s.voucherTypeMasters.filter((r) => r.id !== id) }));
+    await get().loadVoucherTypeMasters();
+  },
+  
+  addVoucherAuditLog: async (log: Omit<any, "id">) => {
+    const { getDB } = await import("../lib/db");
+    const db = await getDB();
+    
+    const newLog: any = {
+      ...log,
+      id: `al-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    };
+    
+    await db.voucherAuditLogs.add(newLog);
+    
+    const currentState = get();
+    const updatedLogs = [...currentState.voucherAuditLogs, newLog];
+    
+    // Keep only the last 1000 logs in memory
+    if (updatedLogs.length > 1000) {
+      updatedLogs.splice(0, updatedLogs.length - 1000);
+    }
+    
+    set({ voucherAuditLogs: updatedLogs });
+  },
+  
+  loadVoucherAuditLogs: async (voucherId?: string) => {
+    const { getDB } = await import("../lib/db");
+    const db = await getDB();
+    
+    let logs: any[];
+    
+    if (voucherId) {
+      logs = await db.voucherAuditLogs.where({ voucherId }).sortBy("timestamp");
+      logs.reverse(); // Sort descending by timestamp
+    } else {
+      logs = await db.voucherAuditLogs.orderBy("timestamp").reverse().limit(200).toArray();
+    }
+    
+    set({ voucherAuditLogs: logs });
   },
 
   // Scenario

@@ -48,6 +48,10 @@ const DEFAULT_SHORTCUTS: Shortcut[] = [
   { id: 14, key_combo: 'F7',      label: 'Journal Voucher',      action_type: 'navigate', action_value: 'journal',        category: 'Vouchers',     is_active: true },
   { id: 15, key_combo: 'F8',      label: 'Sales Voucher',        action_type: 'navigate', action_value: 'sales',          category: 'Vouchers',     is_active: true },
   { id: 16, key_combo: 'F9',      label: 'Purchase Voucher',     action_type: 'navigate', action_value: 'purchase',       category: 'Vouchers',     is_active: true },
+  { id: 17, key_combo: 'Alt+V',   label: 'Voucher Entry Hub',    action_type: 'navigate', action_value: 'voucher-hub',    category: 'Vouchers',     is_active: true },
+  { id: 18, key_combo: 'Alt+F8',  label: 'Sales Voucher (Alt+F8)', action_type: 'navigate', action_value: 'sales-voucher',  category: 'Vouchers',     is_active: true },
+  { id: 19, key_combo: 'Alt+F9',  label: 'Purchase Voucher (Alt+F9)', action_type: 'navigate', action_value: 'purchase-voucher', category: 'Vouchers',  is_active: true },
+  { id: 20, key_combo: 'Ctrl+F10', label: 'Memorandum Voucher',  action_type: 'navigate', action_value: 'memorandum-voucher', category: 'Vouchers',   is_active: true },
 ];
 
 let _shortcuts: Shortcut[] = DEFAULT_SHORTCUTS;
@@ -114,6 +118,10 @@ export function useKeyboardShortcuts() {
     'vat-reports':  'vat-reports',
     'stock-summary':'stock-summary',
     ledger:         'ledger',
+    'voucher-hub':  'voucher-hub',
+    'sales-voucher': 'sales-voucher',
+    'purchase-voucher': 'purchase-voucher',
+    'memorandum-voucher': 'memorandum-voucher',
   };
 
   useEffect(() => {
