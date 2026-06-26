@@ -533,6 +533,24 @@ class SutraDB extends Dexie {
   materialIssued!: Table<any>;
   materialReceived!: Table<any>;
   physicalStocks!: Table<any>;
+  stockCategories!: Table<any>;
+  voucherTypeMasters!: Table<any>;
+  scenarios!: Table<any>;
+  costCategories!: Table<any>;
+  costCentreClasses!: Table<any>;
+  reorderLevels!: Table<any>;
+  priceLevels!: Table<any>;
+  priceLists!: Table<any>;
+  hsCodes!: Table<any>;
+  batches!: Table<any>;
+  vatClassifications!: Table<any>;
+  tdsNatureOfPayment!: Table<any>;
+  employeeGroups!: Table<any>;
+  payHeads!: Table<any>;
+  salaryDetails!: Table<any>;
+  payrollUnits!: Table<any>;
+  attendanceTypes!: Table<any>;
+  ledgerExtensions!: Table<any>;
 
   constructor() {
     super("SutraERP");
@@ -603,6 +621,28 @@ class SutraDB extends Dexie {
       materialIssued: 'id, date, status',
       materialReceived: 'id, date, status',
       physicalStocks: 'id, date, status',
+    });
+
+    // Version 8 — New Master Modules
+    this.version(8).stores({
+      stockCategories: 'id, name, isActive',
+      voucherTypeMasters: 'id, name, type, isActive',
+      scenarios: 'id, name, isActive',
+      costCategories: 'id, name, isActive',
+      costCentreClasses: 'id, name, isActive',
+      reorderLevels: 'id, itemId, isActive',
+      priceLevels: 'id, name, isActive',
+      priceLists: 'id, name, isActive',
+      hsCodes: 'id, code, description, isActive',
+      batches: 'id, batchNo, itemId, isActive',
+      vatClassifications: 'id, name, type, isActive',
+      tdsNatureOfPayment: 'id, name, section, isActive',
+      employeeGroups: 'id, name, isActive',
+      payHeads: 'id, name, type, isActive',
+      salaryDetails: 'id, employeeId, isActive',
+      payrollUnits: 'id, name, symbol, isActive',
+      attendanceTypes: 'id, name, type, isActive',
+      ledgerExtensions: 'id, ledgerId',
     });
   }
 }
