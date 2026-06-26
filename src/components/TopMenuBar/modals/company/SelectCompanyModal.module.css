@@ -1,0 +1,30 @@
+.overlay { position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:3000;display:flex;align-items:center;justify-content:center; }
+.modal { background:#1e2535;border:1px solid #2d3547;border-radius:10px;width:680px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+.header { display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid #2d3547; }
+.title { flex:1;color:#e2e8f0;font-size:16px;font-weight:600;margin:0; }
+.closeBtn { background:transparent;border:none;color:#718096;cursor:pointer;font-size:18px; }
+.closeBtn:hover { color:#e2e8f0; }
+.searchBar { display:flex;gap:10px;padding:14px 24px;border-bottom:1px solid #2d3547; }
+.searchInput { flex:1;display:flex;align-items:center;gap:8px;background:#141824;border:1px solid #2d3547;border-radius:6px;padding:6px 12px;color:#718096; }
+.searchInput input { flex:1;background:transparent;border:none;color:#e2e8f0;font-size:13px;outline:none; }
+.filterSelect { background:#141824;border:1px solid #2d3547;color:#e2e8f0;border-radius:6px;padding:6px 10px;font-size:13px; }
+.list { flex:1;overflow-y:auto;padding:8px 0; }
+.loading, .empty, .errorMsg { padding:20px 24px;color:#718096;font-size:13px;display:flex;align-items:center;gap:8px; }
+.errorMsg { color:#fc8181; }
+.companyRow { padding:12px 24px;cursor:pointer;border-bottom:1px solid #1a1f2e;display:flex;justify-content:space-between;align-items:center; }
+.companyRow:hover { background:#2d3547; }
+.companyRowSelected { background:#1a365d; border-left:3px solid #3182ce; }
+.companyMain { display:flex;flex-direction:column;gap:3px; }
+.companyName { color:#e2e8f0;font-size:14px;font-weight:500; }
+.companyFY { color:#718096;font-size:11px; }
+.companyMeta { display:flex;align-items:center;gap:12px; }
+.companyCountry { color:#718096;font-size:12px; }
+.companyStatus { font-size:12px;font-weight:500; }
+.footer { display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-top:1px solid #2d3547; }
+.hint { color:#4a5568;font-size:11px; }
+.footerBtns { display:flex;gap:10px; }
+.cancelBtn { padding:8px 18px;background:#2d3547;border:1px solid #4a5568;color:#e2e8f0;border-radius:6px;cursor:pointer; }
+.openBtn { padding:8px 18px;background:#3182ce;border:none;color:#fff;border-radius:6px;cursor:pointer; }
+.openBtn:disabled { background:#2d3547;color:#4a5568;cursor:not-allowed; }
+.spin { animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }

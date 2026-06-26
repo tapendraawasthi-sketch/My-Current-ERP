@@ -1,0 +1,58 @@
+.dropdown {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  min-width: 260px;
+  background: #1e2535;
+  border: 1px solid #2d3547;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
+  z-index: 1100;
+  overflow: hidden;
+  animation: slideDown 0.1s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdownHeader {
+  padding: 8px 14px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4a5568;
+  border-bottom: 1px solid #2d3547;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  transition: background 0.12s;
+}
+
+.menuItem:hover:not(.disabled) { background: #2d3547; }
+.menuItem:focus:not(.disabled) { background: #2d3547; outline: none; }
+
+.disabled {
+  color: #4a5568;
+  cursor: not-allowed;
+}
+
+.itemIcon { display: flex; align-items: center; color: #718096; }
+.itemLabel { flex: 1; }
+.itemShortcut { font-size: 11px; color: #4a5568; margin-left: auto; padding-left: 12px; }
+.lockIcon { color: #e53e3e; margin-left: 4px; }
+.divider { height: 1px; background: #2d3547; margin: 4px 0; }
