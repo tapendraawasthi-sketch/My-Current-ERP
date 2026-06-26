@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { Monitor, BookOpen, FileText, BarChart2, Settings, ScrollText } from 'lucide-react';
 import styles from './ExportMenu.module.css';
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 import { usePermissions } from '../hooks/usePermissions';
-import { detectCurrentContext } from '../../utils/contextDetector';
+import { detectCurrentContext } from '@/utils/contextDetector';
 
 export default function ExportMenu() {
   const { openModal, closeMenu } = useMenu();

@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { Printer, Settings, FileBarChart, FileText, SlidersHorizontal, ScrollText, Lock } from 'lucide-react';
 import styles from './PrintMenu.module.css';
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 import { usePermissions } from '../hooks/usePermissions';
-import { detectCurrentContext } from '../../utils/contextDetector';
+import { detectCurrentContext } from '@/utils/contextDetector';
 
 export default function PrintMenu() {
   const { openModal } = useMenu();

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { RefreshCw, Download, Upload, Wifi, Globe, ScrollText, Lock } from 'lucide-react';
 import styles from './ExchangeMenu.module.css';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '@/context/MenuContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 const EXCHANGE_MENU_ITEMS = [

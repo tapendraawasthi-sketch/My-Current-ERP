@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { LayoutGrid, Search } from 'lucide-react';
 import styles from './GoToPanel.module.css'; // reuse same CSS
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 
 // Only navigable screens (not modal-actions) are valid for SwitchTo
 const SWITCHTO_ITEMS = [

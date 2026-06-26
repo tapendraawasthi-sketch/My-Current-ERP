@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { BookOpen, ArrowUp, Wrench, Settings, Puzzle, Headphones, Info, Globe, Lock } from 'lucide-react';
 import styles from './HelpMenu.module.css';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '@/context/MenuContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 const HELP_MENU_ITEMS = [

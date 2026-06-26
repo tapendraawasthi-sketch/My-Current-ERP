@@ -1,110 +1,78 @@
 import React, { Suspense, lazy } from 'react';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '@/context/MenuContext';
 
-// Company modals
+// Existing company modals
 const SelectCompanyModal    = lazy(() => import('./company/SelectCompanyModal'));
 const CreateCompanyModal    = lazy(() => import('./company/CreateCompanyModal'));
-const AlterCompanyModal     = lazy(() => import('./company/AlterCompanyModal'));
-const ShutCompanyModal      = lazy(() => import('./company/ShutCompanyModal'));
-const SecurityControlModal  = lazy(() => import('./company/SecurityControlModal'));
-const UserRolesModal        = lazy(() => import('./company/UserRolesModal'));
-const CompanyFeaturesModal  = lazy(() => import('./company/CompanyFeaturesModal'));
-const DataEncryptionModal   = lazy(() => import('./company/DataEncryptionModal'));
-const LicensingModal        = lazy(() => import('./company/LicensingModal'));
 
-// Data modals
+// Existing data modals
 const BackupModal           = lazy(() => import('./data/BackupModal'));
-const RestoreModal          = lazy(() => import('./data/RestoreModal'));
-const MigrateModal          = lazy(() => import('./data/MigrateModal'));
-const SplitCompanyModal     = lazy(() => import('./data/SplitCompanyModal'));
-const RepairModal           = lazy(() => import('./data/RepairModal'));
-const CloudBackupModal      = lazy(() => import('./data/CloudBackupModal'));
 
-// Shared modals
+// Existing shared modals
 const ConfirmationModal     = lazy(() => import('./shared/ConfirmationModal'));
 const UnsavedChangesModal   = lazy(() => import('./shared/UnsavedChangesModal'));
-const PermissionDeniedModal = lazy(() => import('./shared/PermissionDeniedModal'));
 
-// Export modals (inline definitions, not lazy — they are simple)
-const ExportCurrentScreenModal = lazy(() => import('./export/ExportCurrentScreenModal'));
-const ExportMastersModal       = lazy(() => import('./export/ExportMastersModal'));
-const ExportTransactionsModal  = lazy(() => import('./export/ExportTransactionsModal'));
-const ExportReportsModal       = lazy(() => import('./export/ExportReportsModal'));
-
-// Share modals
-const EmailShareModal      = lazy(() => import('./share/EmailShareModal'));
-const WhatsAppShareModal   = lazy(() => import('./share/WhatsAppShareModal'));
-const ShareLinkModal       = lazy(() => import('./share/ShareLinkModal'));
-
-// Print modals
-const PrintCurrentModal    = lazy(() => import('./print/PrintCurrentModal'));
-const PrintConfigModal     = lazy(() => import('./print/PrintConfigModal'));
-
-// Help modals
-const HelpModal            = lazy(() => import('./help/HelpModal'));
-const AboutModal           = lazy(() => import('./help/AboutModal'));
-const TroubleshootModal    = lazy(() => import('./help/TroubleshootModal'));
-const SettingsModal        = lazy(() => import('./help/SettingsModal'));
-const AddonManagerModal    = lazy(() => import('./help/AddonManagerModal'));
-
-// Import modals
-const ImportMastersModal      = lazy(() => import('./import/ImportMastersModal'));
-const ImportTransactionsModal = lazy(() => import('./import/ImportTransactionsModal'));
-const ImportBankModal         = lazy(() => import('./import/ImportBankModal'));
-const ImportEInvoiceModal     = lazy(() => import('./import/ImportEInvoiceModal'));
-const ImportEWayBillModal     = lazy(() => import('./import/ImportEWayBillModal'));
-const ImportLogsModal         = lazy(() => import('./import/ImportLogsModal'));
+// Stub for missing modals to prevent build errors
+const StubModal = ({ onClose }) => (
+  <div style={{ position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center' }}>
+    <div style={{ background:'#1e2535',padding:20,borderRadius:8,color:'#fff',minWidth:300 }}>
+      <h3>Not Implemented</h3>
+      <p>This modal is not implemented yet.</p>
+      <button onClick={onClose} style={{ marginTop:10,padding:'5px 10px',background:'#3182ce',color:'#fff',border:'none',borderRadius:4,cursor:'pointer' }}>Close</button>
+    </div>
+  </div>
+);
 
 const MODAL_MAP = {
   // Company
   selectCompany:    SelectCompanyModal,
   createCompany:    CreateCompanyModal,
-  alterCompany:     AlterCompanyModal,
-  shutCompany:      ShutCompanyModal,
+  alterCompany:     StubModal,
+  shutCompany:      StubModal,
   changeCompany:    SelectCompanyModal, // reuse SelectCompanyModal with changeMode prop
-  securityControl:  SecurityControlModal,
-  userRoles:        UserRolesModal,
-  changeUser:       SecurityControlModal, // reuse with changeUserMode prop
-  dataEncryption:   DataEncryptionModal,
-  companyFeatures:  CompanyFeaturesModal,
-  licensing:        LicensingModal,
+  securityControl:  StubModal,
+  userRoles:        StubModal,
+  changeUser:       StubModal, // reuse with changeUserMode prop
+  dataEncryption:   StubModal,
+  companyFeatures:  StubModal,
+  licensing:        StubModal,
   // Data
   backup:           BackupModal,
-  restore:          RestoreModal,
-  migrate:          MigrateModal,
-  splitCompany:     SplitCompanyModal,
-  repair:           RepairModal,
-  cloudBackup:      CloudBackupModal,
+  restore:          StubModal,
+  migrate:          StubModal,
+  splitCompany:     StubModal,
+  repair:           StubModal,
+  cloudBackup:      StubModal,
   // Export
-  exportCurrentScreen:   ExportCurrentScreenModal,
-  exportMasters:         ExportMastersModal,
-  exportTransactions:    ExportTransactionsModal,
-  exportReports:         ExportReportsModal,
+  exportCurrentScreen:   StubModal,
+  exportMasters:         StubModal,
+  exportTransactions:    StubModal,
+  exportReports:         StubModal,
   // Share
-  emailShare:       EmailShareModal,
-  whatsappShare:    WhatsAppShareModal,
-  shareLink:        ShareLinkModal,
+  emailShare:       StubModal,
+  whatsappShare:    StubModal,
+  shareLink:        StubModal,
   // Print
-  printCurrentScreen: PrintCurrentModal,
-  configurePrint:     PrintConfigModal,
-  printReports:       PrintCurrentModal,
-  printVouchers:      PrintCurrentModal,
+  printCurrentScreen: StubModal,
+  configurePrint:     StubModal,
+  printReports:       StubModal,
+  printVouchers:      StubModal,
   // Help
-  openHelp:         HelpModal,
-  troubleshoot:     TroubleshootModal,
-  appSettings:      SettingsModal,
-  addonManager:     AddonManagerModal,
-  about:            AboutModal,
+  openHelp:         StubModal,
+  troubleshoot:     StubModal,
+  appSettings:      StubModal,
+  addonManager:     StubModal,
+  about:            StubModal,
   // Import
-  importMasters:        ImportMastersModal,
-  importTransactions:   ImportTransactionsModal,
-  importBankStatements: ImportBankModal,
-  importEInvoice:       ImportEInvoiceModal,
-  importEWayBill:       ImportEWayBillModal,
-  importLogs:           ImportLogsModal,
+  importMasters:        StubModal,
+  importTransactions:   StubModal,
+  importBankStatements: StubModal,
+  importEInvoice:       StubModal,
+  importEWayBill:       StubModal,
+  importLogs:           StubModal,
   // Shared
   unsavedChanges:     UnsavedChangesModal,
-  permissionDenied:   PermissionDeniedModal,
+  permissionDenied:   StubModal,
   noCompanyError:     ConfirmationModal,
 };
 

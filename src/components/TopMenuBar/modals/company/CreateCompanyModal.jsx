@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styles from './CreateCompanyModal.module.css';
-import { useApp } from '../../context/AppContext';
-import { useMenu } from '../../context/MenuContext';
-import companyService from '../../../../services/companyService';
-import { logAuditEvent, AUDIT_ACTIONS } from '../../../../utils/auditLogger';
+import { useApp } from '@/context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import companyService from '@/services/companyService';
+import { logAuditEvent, AUDIT_ACTIONS } from '@/utils/auditLogger';
 
 const STEPS = ['Basic Info', 'Financial & Tax', 'Features'];
 

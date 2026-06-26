@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/context/AppContext';
 
 // Permission matrix by role
 const ROLE_PERMISSIONS = {

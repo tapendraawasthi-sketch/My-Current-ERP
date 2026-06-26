@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Search, Clock, ChevronRight } from 'lucide-react';
 import styles from './GoToPanel.module.css';
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 // Master list of all navigable items

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Users, FileText, Landmark, Package, UserSquare, FileInput, Truck, ScrollText, Lock } from 'lucide-react';
 import styles from './ImportMenu.module.css';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '@/context/MenuContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 const IMPORT_MENU_ITEMS = [

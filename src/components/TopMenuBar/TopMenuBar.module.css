@@ -1,8 +1,6 @@
 .topBar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  width: 100%;
   z-index: 1000;
   background: #1a1f2e;
   color: #e2e8f0;

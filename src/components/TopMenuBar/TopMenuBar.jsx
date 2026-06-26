@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { Building2, Database, ArrowLeftRight, Download, Upload, Share2, Printer, HelpCircle, Search, LayoutGrid } from 'lucide-react';
 import styles from './TopMenuBar.module.css';
 
-import { useMenu } from './context/MenuContext';
-import { useApp } from './context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { usePermissions } from './hooks/usePermissions';
 

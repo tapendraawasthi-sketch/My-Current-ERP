@@ -4,8 +4,8 @@ import {
   UserCheck, Lock, Settings, CreditCard, ChevronRight
 } from 'lucide-react';
 import styles from './CompanyMenu.module.css';
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 const COMPANY_MENU_ITEMS = [

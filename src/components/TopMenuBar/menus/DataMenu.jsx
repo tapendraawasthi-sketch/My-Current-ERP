@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { HardDrive, RotateCcw, GitBranch, Scissors, Wrench, Cloud, Lock } from 'lucide-react';
 import styles from './DataMenu.module.css';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '@/context/MenuContext';
 import { usePermissions } from '../hooks/usePermissions';
 
 const DATA_MENU_ITEMS = [

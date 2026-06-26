@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Building2, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import styles from './SelectCompanyModal.module.css';
-import { useApp } from '../../context/AppContext';
-import { useMenu } from '../../context/MenuContext';
-import companyService from '../../../../services/companyService';
-import { logAuditEvent, AUDIT_ACTIONS } from '../../../../utils/auditLogger';
+import { useApp } from '@/context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import companyService from '@/services/companyService';
+import { logAuditEvent, AUDIT_ACTIONS } from '@/utils/auditLogger';
 
 export default function SelectCompanyModal({ onClose, changeMode = false }) {
   const { setActiveCompany, addOpenedCompany, currentUser } = useApp();

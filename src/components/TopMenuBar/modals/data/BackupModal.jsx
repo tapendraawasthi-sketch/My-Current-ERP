@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styles from './BackupModal.module.css';
 import { HardDrive, CheckCircle, AlertCircle } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
-import dataService from '../../../../services/dataService';
-import { logAuditEvent, AUDIT_ACTIONS } from '../../../../utils/auditLogger';
+import { useApp } from '@/context/AppContext';
+import dataService from '@/services/dataService';
+import { logAuditEvent, AUDIT_ACTIONS } from '@/utils/auditLogger';
 
 export default function BackupModal({ onClose }) {
   const { activeCompany, currentUser } = useApp();

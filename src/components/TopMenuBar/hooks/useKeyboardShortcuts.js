@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import { useMenu } from '../context/MenuContext';
-import { useApp } from '../context/AppContext';
+import { useMenu } from '@/context/MenuContext';
+import { useApp } from '@/context/AppContext';
 
 export function useKeyboardShortcuts(onOpenCompanyModal) {
   const { openMenu, toggleMenu, openGoTo, openSwitchTo, closeAll, openModal, activeMenu } = useMenu();
