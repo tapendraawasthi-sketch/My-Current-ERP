@@ -5,14 +5,16 @@ export function convertCurrency(
   fromRate: number,
   toRate: number
 ): number {
-  if (fromRate === 0) return 0;
-  return Math.round((amount / fromRate) * toRate * 100) / 100;
+  const safeAmount = Number(amount) || 0;
+  if (!fromRate || fromRate <= 0 || !toRate || toRate <= 0) return 0;
+  return Math.round((safeAmount / fromRate) * toRate * 100) / 100;
 }
 
 export function formatWithCurrency(amount: number, currency: any): string {
-  if (!currency) return `Rs. ${amount.toFixed(2)}`;
+  const safeAmount = Number(amount) || 0;
+  if (!currency) return `Rs. ${safeAmount.toFixed(2)}`;
   return `${currency.symbol} ${new Intl.NumberFormat("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(amount)}`;
+  }).format(safeAmount)}`;
 }

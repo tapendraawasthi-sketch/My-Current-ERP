@@ -28,12 +28,12 @@ export enum VoucherType {
   CREDIT_NOTE = "credit-note",
   STOCK_JOURNAL = "stock-journal",
   OPENING_BALANCE = "opening-balance",
-  JOURNAL_VOUCHER = "journal",
-  PRODUCTION = 'PRODUCTION',
-  UNASSEMBLE = 'UNASSEMBLE',
-  MATERIAL_ISSUED = 'MATERIAL_ISSUED',
-  MATERIAL_RECEIVED = 'MATERIAL_RECEIVED',
-  PHYSICAL_STOCK = 'PHYSICAL_STOCK',
+  JOURNAL_VOUCHER = "journal-voucher",
+  PRODUCTION = "production",
+  UNASSEMBLE = "unassemble",
+  MATERIAL_ISSUED = "material-issued",
+  MATERIAL_RECEIVED = "material-received",
+  PHYSICAL_STOCK = "physical-stock",
 }
 
 export enum VoucherStatus {
@@ -587,8 +587,25 @@ export interface JournalEntry {
   createdAt?: string;
 }
 
-export const ReportPeriodPreset = {} as any;
-export const FiscalYearStatus = {} as any;
+export enum ReportPeriodPreset {
+  TODAY = "today",
+  THIS_WEEK = "this-week",
+  THIS_MONTH = "this-month",
+  THIS_QUARTER = "this-quarter",
+  THIS_YEAR = "this-year",
+  LAST_MONTH = "last-month",
+  LAST_QUARTER = "last-quarter",
+  LAST_YEAR = "last-year",
+  CUSTOM = "custom",
+}
+
+export enum FiscalYearStatus {
+  OPEN = "open",
+  ACTIVE = "active",
+  CLOSED = "closed",
+  LOCKED = "locked",
+  FUTURE = "future",
+}
 
 export enum CostCenterLevel {
   PRIMARY = "primary",

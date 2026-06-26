@@ -854,6 +854,12 @@ export const useStore = create<AppState>((set, get) => ({
   // ── Accounts ──────────────────────────────────────────────────────────────
   addAccount: async (account) => {
     const db = getDB();
+    // Bug 29 fix: prevent duplicate account names (case-insensitive)
+    const existingAccounts = get().accounts;
+    const nameLC = (account.name || '').toLowerCase().trim();
+    if (nameLC && existingAccounts.some((a) => a.name?.toLowerCase().trim() === nameLC && !a.isGroup === !account.isGroup)) {
+      throw new Error(`Account with name "${account.name}" already exists.`);
+    }
     const id = account.id || `acc-${generateId()}`;
     const newAcc = { ...account, id, balance: 0, openingBalance: account.openingBalance || 0, openingBalanceDr: account.openingBalanceDr || 0, openingBalanceCr: account.openingBalanceCr || 0 };
     await db.accounts.add(newAcc as any);
@@ -1508,8 +1514,15 @@ export const useStore = create<AppState>((set, get) => ({
     const db = getDB();
     const id = generateId();
     const voucherNo = await generateNextVoucherNo(voucher.type || "journal", db);
-    const totalDebit = (voucher.lines || []).reduce((s: number, l: any) => s + (l.debit || 0), 0);
-    const totalCredit = (voucher.lines || []).reduce((s: number, l: any) => s + (l.credit || 0), 0);
+    const totalDebit = (voucher.lines || []).reduce((s: number, l: any) => s + (Number(l.debit) || 0), 0);
+    const totalCredit = (voucher.lines || []).reduce((s: number, l: any) => s + (Number(l.credit) || 0), 0);
+    // Bug 26 fix: Validate double-entry balance before saving
+    const difference = Math.abs(totalDebit - totalCredit);
+    if (difference > 0.01 && voucher.status === "posted") {
+      throw new Error(
+        `Voucher is unbalanced: Debit (${totalDebit.toFixed(2)}) ≠ Credit (${totalCredit.toFixed(2)}). Difference: ${difference.toFixed(2)}`
+      );
+    }
     const newVoucher = {
       ...voucher,
       id,

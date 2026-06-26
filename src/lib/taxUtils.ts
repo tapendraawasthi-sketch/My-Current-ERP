@@ -36,15 +36,15 @@ export function computeInvoiceVAT(lines: LineForVAT[], vatRate = 13): VATComputa
     const gross = round2((line.qty || 0) * (line.rate || 0));
     const discAmt = round2(gross * ((line.discount || 0) / 100));
     const net = round2(gross - discAmt);
-    subtotal += gross;
-    totalDiscount += discAmt;
+    subtotal = round2(subtotal + gross);
+    totalDiscount = round2(totalDiscount + discAmt);
     const isExempt = line.vatExempt === true || line.isTaxable === false;
     if (isExempt) {
-      exemptAmount += net;
+      exemptAmount = round2(exemptAmount + net);
     } else {
-      taxableAmount += net;
+      taxableAmount = round2(taxableAmount + net);
       const lineVatRate = line.vatRate !== undefined ? line.vatRate : vatRate;
-      vatAmount += round2(net * (lineVatRate / 100));
+      vatAmount = round2(vatAmount + round2(net * (lineVatRate / 100)));
     }
   }
 
@@ -85,10 +85,12 @@ export function computeVAT(lines: Array<{
 }
 
 export function validatePAN(pan: string): boolean {
+  if (!pan) return false;
   return /^\d{9}$/.test(pan.trim());
 }
 
 export function validateVAT(vat: string): boolean {
+  if (!vat) return false;
   return /^\d{9}$/.test(vat.trim());
 }
 

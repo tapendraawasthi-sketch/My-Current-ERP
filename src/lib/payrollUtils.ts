@@ -28,19 +28,26 @@ export function computePayroll(
     const pfEmployee = Math.round(basic * 0.1 * 100) / 100;
     const pfEmployer = Math.round(basic * 0.1 * 100) / 100;
 
-    // SSF: 11% employee, 20% employer (simplified)
-    const ssf = Math.round(basic * 0.31 * 100) / 100;
+    // SSF: 11% employee, 20% employer on basic
+    const ssfEmployee = Math.round(basic * 0.11 * 100) / 100;
+    const ssfEmployer = Math.round(basic * 0.20 * 100) / 100;
+    const ssf = ssfEmployee + ssfEmployer;
 
-    // TDS: simplified slab (15% above 600k annual)
+    // TDS: Nepal simplified slabs
+    // 0–600k → 1%, 600k–800k → 10%, above 800k → 15%
     const annualGross = gross * 12;
     let annualTax = 0;
-    if (annualGross > 600000) {
-      annualTax = (annualGross - 600000) * 0.15;
+    if (annualGross > 800000) {
+      annualTax = 600000 * 0.01 + 200000 * 0.10 + (annualGross - 800000) * 0.15;
+    } else if (annualGross > 600000) {
+      annualTax = 600000 * 0.01 + (annualGross - 600000) * 0.10;
+    } else {
+      annualTax = annualGross * 0.01;
     }
     const tds = Math.round((annualTax / 12) * 100) / 100;
 
     const otherDeductions = emp.otherDeductions || 0;
-    const net = Math.round((gross - pfEmployee - tds - otherDeductions) * 100) / 100;
+    const net = Math.round((gross - pfEmployee - ssfEmployee - tds - otherDeductions) * 100) / 100;
 
     return {
       employeeId: emp.id,
@@ -86,7 +93,9 @@ export function computeNepalPayroll(
   paidDays: number,
   workingDays: number
 ): NepalPayrollResult {
-  const ratio = workingDays > 0 ? paidDays / workingDays : 1;
+  const safePaidDays = Math.max(0, Number(paidDays) || 0);
+  const safeWorkingDays = Math.max(1, Number(workingDays) || 1);
+  const ratio = Math.min(1, safePaidDays / safeWorkingDays);
 
   const basicSalary = Math.round((emp.basicSalary || 0) * ratio * 100) / 100;
   const gradePay = Math.round(basicSalary * ((emp.gradePayPercent || 0) / 100) * 100) / 100;
@@ -108,7 +117,9 @@ export function computeNepalPayroll(
   // Taxable income = gross – SSF employee contribution – approved declarations (annual)
   const taxDecl = emp.taxDeclarations || {};
   const annualDeclarations = ((taxDecl.lifeInsurance || 0) + (taxDecl.healthInsurance || 0));
-  const annualGross = grossSalary * 12;
+  // Compute annual gross from regular salary (without dashain) + add dashain once
+  const regularMonthlyGross = Math.round((effectiveBasic + houseRent + transport + medical) * 100) / 100;
+  const annualGross = regularMonthlyGross * 12 + dashain;
   const annualSSF   = ssfEmployee * 12;
   const annualTaxable = Math.max(0, annualGross - annualSSF - annualDeclarations);
 

@@ -29,8 +29,14 @@ export async function generateSerialNumber(
   const prefix = prefixes[voucherType] || "VCH";
   try {
     const db = getDB();
-    const count = await db.vouchers.where("type").equals(voucherType).count();
-    return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+    // Use max existing number + 1 to avoid race conditions with count-based numbering
+    const allOfType = await db.vouchers.where("type").equals(voucherType).toArray();
+    let maxNum = 0;
+    for (const v of allOfType) {
+      const match = v.voucherNo?.match(/-(\d+)$/);
+      if (match) maxNum = Math.max(maxNum, parseInt(match[1], 10));
+    }
+    return `${prefix}-${String(maxNum + 1).padStart(4, "0")}`;
   } catch {
     return `${prefix}-0001`;
   }
@@ -107,7 +113,10 @@ export function computeLedgerBalance(
   openingBalanceDr = 0,
   openingBalanceCr = 0
 ): number {
-  let balance = openingBalanceDr - openingBalanceCr;
+  // Use Dr/Cr split if provided, otherwise fall back to single openingBalance
+  let balance = (openingBalanceDr || openingBalanceCr)
+    ? openingBalanceDr - openingBalanceCr
+    : openingBalance;
   for (const v of vouchers) {
     if (v.status !== "posted") continue;
     for (const line of v.lines || []) {
@@ -255,6 +264,14 @@ export function computeBalanceSheet(
   const assets = pick("asset", false);
   const liabilities = pick("liability", true);
   const equity = pick("equity", true);
+
+  // Add current period net profit to equity so Balance Sheet balances
+  // (Assets = Liabilities + Equity + Retained Earnings)
+  const pl = computeProfitLoss(accounts, filtered);
+  if (Math.abs(pl.netProfit) > 0.01) {
+    equity.push({ id: '__retained_earnings', name: 'Profit & Loss (Current Period)', amount: pl.netProfit });
+  }
+
   const totalAssets = assets.reduce((s, r) => s + r.amount, 0);
   const totalLiabEquity = liabilities.reduce((s, r) => s + r.amount, 0) + equity.reduce((s, r) => s + r.amount, 0);
   return { assets, liabilities, equity, totalAssets, totalLiabEquity };
@@ -274,19 +291,59 @@ export function computeCashFlow(
   );
   let operating = 0, investing = 0, financing = 0;
   const rows: any[] = [];
+
+  // Helper to classify by account group rather than just type
+  const isCashOrBank = (acc: any) => {
+    const g = (acc.group || acc.accountGroup || '').toLowerCase();
+    return g === 'cash' || g === 'bank' || g === 'cash-in-hand' || g === 'bank accounts' || g === 'bank account';
+  };
+  const isFixedAsset = (acc: any) => {
+    const g = (acc.group || acc.accountGroup || '').toLowerCase();
+    return g === 'fixed assets' || g === 'fixed-assets' || g === 'investments';
+  };
+  const isLongTermLiability = (acc: any) => {
+    const g = (acc.group || acc.accountGroup || '').toLowerCase();
+    return g === 'loans (liability)' || g === 'secured loans' || g === 'unsecured loans' || g === 'share capital' || g === 'capital account';
+  };
+
   for (const v of filtered) {
     for (const line of v.lines || []) {
       const acc = accounts.find((a) => a.id === line.accountId);
       if (!acc) continue;
       const net = (line.debit || 0) - (line.credit || 0);
-      if (acc.type === "expense" || acc.type === "income") {
+
+      // Skip cash/bank accounts — they are the "cash" being measured
+      if (isCashOrBank(acc)) continue;
+
+      let category: 'operating' | 'investing' | 'financing' = 'operating';
+
+      if (acc.type === "expense" || acc.type === "income" || acc.type === "revenue") {
+        // Income & expense are operating activities
         operating += net;
-        rows.push({ date: v.date, description: line.narration || v.narration || acc.name, amount: net, category: "operating" });
+        category = 'operating';
       } else if (acc.type === "asset") {
-        investing -= net;
+        if (isFixedAsset(acc)) {
+          // Fixed assets / investments → Investing
+          investing -= net;
+          category = 'investing';
+        } else {
+          // Current assets (receivables, inventory) → Operating (working capital)
+          operating -= net;
+          category = 'operating';
+        }
       } else if (acc.type === "liability" || acc.type === "equity") {
-        financing -= net;
+        if (isLongTermLiability(acc) || acc.type === "equity") {
+          // Long-term loans, capital → Financing
+          financing += net;
+          category = 'financing';
+        } else {
+          // Current liabilities (payables, duties) → Operating
+          operating += net;
+          category = 'operating';
+        }
       }
+
+      rows.push({ date: v.date, description: line.narration || v.narration || acc.name, amount: net, category });
     }
   }
   return { operating, investing, financing, netChange: operating + investing + financing, rows };
@@ -346,11 +403,11 @@ export function computeAgingReport(
     .map((inv) => {
       const party = parties.find((p) => p.id === inv.partyId);
       const due = inv.dueDate ? new Date(inv.dueDate) : new Date(inv.date);
-      const daysOverdue = Math.max(0, Math.floor((today.getTime() - due.getTime()) / 86400000));
+      const daysOverdue = Math.floor((today.getTime() - due.getTime()) / 86400000);
       const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
       const bucket =
-        daysOverdue === 0 ? "current" :
-        daysOverdue <= 30 ? "0-30" :
+        daysOverdue <= 0 ? "Not Due" :
+        daysOverdue <= 30 ? "1-30" :
         daysOverdue <= 60 ? "31-60" :
         daysOverdue <= 90 ? "61-90" : "90+";
       return {
@@ -378,9 +435,8 @@ export function computePartyStatement(
 ): { rows: any[]; openingBalance: number; closingBalance: number } {
   if (!party) return { rows: [], openingBalance: 0, closingBalance: 0 };
   const partyAccount = accounts.find((a) => a.partyId === party.id || a.name === party.name);
-  const openingBalance = partyAccount
-    ? (partyAccount.openingBalanceDr || 0) - (partyAccount.openingBalanceCr || 0)
-    : 0;
+  if (!partyAccount) return { rows: [], openingBalance: 0, closingBalance: 0 };
+  const openingBalance = (partyAccount.openingBalanceDr || 0) - (partyAccount.openingBalanceCr || 0);
   const rows: any[] = [];
   let runningBalance = openingBalance;
   const relevantVouchers = vouchers
@@ -426,13 +482,15 @@ export function computeRatios(
   _accounts?: any[]
 ): Record<string, number> {
   if (!balanceSheet || !profitLoss) return {};
-  const currentAssets = (balanceSheet.assets || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
-  const currentLiab = (balanceSheet.liabilities || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+  // Note: These sum ALL assets/liabilities. For a true current ratio, the balance sheet
+  // would need to distinguish current vs fixed. Using totals as a working approximation.
+  const totalAssetsVal = (balanceSheet.assets || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+  const totalLiabVal = (balanceSheet.liabilities || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
   const netProfit = profitLoss.netProfit || 0;
-  const totalAssets = balanceSheet.totalAssets || 1;
+  const totalAssets = balanceSheet.totalAssets || 0;
   return {
-    currentRatio: currentLiab !== 0 ? Math.round((currentAssets / currentLiab) * 100) / 100 : 0,
-    returnOnAssets: Math.round((netProfit / totalAssets) * 10000) / 100,
+    currentRatio: totalLiabVal !== 0 ? Math.round((totalAssetsVal / totalLiabVal) * 100) / 100 : 0,
+    returnOnAssets: totalAssets !== 0 ? Math.round((netProfit / totalAssets) * 10000) / 100 : 0,
     netProfitMargin:
       profitLoss.totalIncome !== 0
         ? Math.round((netProfit / profitLoss.totalIncome) * 10000) / 100

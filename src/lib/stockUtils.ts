@@ -59,12 +59,14 @@ export function computeAllStockPositions(
 ): StockPosition[] {
   return (items || []).filter(Boolean).map((item) => {
     const pos = computeStockPosition(movements, item.id, null);
+    const totalQty = (item.openingStock || 0) + pos.qty;
+    const totalValue = pos.value + (item.openingStock || 0) * (item.openingStockRate || 0);
     return {
       itemId: item.id,
       warehouseId: null,
-      qty: (item.openingStock || 0) + pos.qty,
-      value: pos.value + (item.openingStock || 0) * (item.openingStockRate || 0),
-      avgRate: pos.avgRate,
+      qty: totalQty,
+      value: Math.round(totalValue * 100) / 100,
+      avgRate: totalQty !== 0 ? Math.round((totalValue / totalQty) * 100) / 100 : 0,
     };
   });
 }
@@ -82,7 +84,15 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
         .reduce((s, m) => s + Number(m.qty), 0)
     );
     const closing = opening + inQty - outQty;
-    const value = closing * (item.openingStockRate || item.purchaseRate || 0);
+    // Weighted average: combine opening stock value + inward movement values
+    const openingValue = opening * (item.openingStockRate || 0);
+    const inValue = itemMovs
+      .filter((m) => Number(m.qty) > 0)
+      .reduce((s, m) => s + (Number(m.amount) || 0), 0);
+    const totalCostPool = openingValue + inValue;
+    const totalQtyPool = opening + inQty;
+    const weightedAvgRate = totalQtyPool !== 0 ? totalCostPool / totalQtyPool : 0;
+    const value = closing * weightedAvgRate;
 
     return {
       itemId: item.id,
@@ -95,7 +105,7 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
       closingValue: Math.round(value * 100) / 100,
       avgRate: closing !== 0
         ? Math.round((value / closing) * 100) / 100
-        : item.openingStockRate || 0,
+        : Math.round(weightedAvgRate * 100) / 100,
     };
   });
 }

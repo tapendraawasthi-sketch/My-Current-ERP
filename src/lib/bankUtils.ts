@@ -40,9 +40,12 @@ export function parseCSVBankStatement(
   if (lines.length < 2) return [];
 
   const transactions: BankTransaction[] = [];
+  const requiredCols = Math.max(mapping.date, mapping.description, mapping.debit, mapping.credit, mapping.balance) + 1;
   for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(",").map((c) => c.replace(/"/g, "").trim());
-    if (cols.length < 4) continue;
+    // Parse CSV properly: respect quoted fields that may contain commas
+    const cols = (lines[i].match(/("[^"]*"|[^,]+)(?=\s*,|\s*$)/g) || [])
+      .map((c) => c.replace(/^"|"$/g, "").trim());
+    if (cols.length < requiredCols) continue;
     transactions.push({
       date: cols[mapping.date] || "",
       description: cols[mapping.description] || "",
@@ -131,13 +134,18 @@ export function matchBankTransactions(
 ): { matched: any[]; unmatched: any[] } {
   const matched: any[] = [];
   const unmatched: any[] = [];
+  const usedVoucherIds = new Set<string>();
   for (const bt of bankTransactions) {
     const amount = bt.credit || bt.debit;
     const match = voucherLines.find(
-      (vl) => Math.abs((vl.debit || vl.credit) - amount) < 0.01 && vl.date === bt.date
+      (vl) => !usedVoucherIds.has(vl.id) && Math.abs((vl.debit || vl.credit) - amount) < 0.01 && vl.date === bt.date
     );
-    if (match) matched.push({ bankTx: bt, voucher: match });
-    else unmatched.push(bt);
+    if (match) {
+      usedVoucherIds.add(match.id);
+      matched.push({ bankTx: bt, voucher: match });
+    } else {
+      unmatched.push(bt);
+    }
   }
   return { matched, unmatched };
 }
