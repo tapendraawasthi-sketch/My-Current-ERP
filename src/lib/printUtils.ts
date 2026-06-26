@@ -204,9 +204,41 @@ export function generatePartyStatementPDF(
   });
 
   const finalY = (doc as any).lastAutoTable?.finalY || 100;
-  doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.text(`Closing Balance: Rs. ${formatNumber(statement?.closingBalance || 0)}`, 14, finalY + 8);
 
   return doc.output("blob");
+}
+
+export async function logPrint(documentType: string, documentNumber: string, status: string = 'success') {
+  const db = (await import('./db')).getDB();
+  await db.printLogs?.add({
+    printedAt: new Date().toISOString(),
+    printedBy: sessionStorage.getItem('sutra_user_id') || 'unknown',
+    documentType,
+    documentNumber,
+    printerName: 'Default Printer',
+    copies: 1,
+    status: status as any
+  });
+}
+
+export async function printCurrentScreen(pageId: string, dataFn: () => Promise<any>) {
+  const data = await dataFn();
+  if (!data) throw new Error("No data available to print");
+  
+  try {
+    // Basic logic for generic printing (would usually rely on the specific page's print button, but here we can open a new window or trigger browser print)
+    window.print();
+    await logPrint(pageId, 'Generic', 'success');
+  } catch (err) {
+    await logPrint(pageId, 'Generic', 'failed');
+    throw err;
+  }
+}
+
+export async function generatePrintPreview(pageId: string, dataFn: () => Promise<any>): Promise<string> {
+  const data = await dataFn();
+  // Return a dummy object URL or invoke generic print logic for preview
+  return "about:blank"; // To be implemented as needed
 }

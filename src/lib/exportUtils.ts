@@ -167,6 +167,82 @@ export function exportTdsReturnToExcel(
   ]);
   ws["!cols"] = headers.map((h) => ({ wch: Math.max(String(h).length + 2, 14) }));
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "TDS Return");
   XLSX.writeFile(wb, `TDS_Return_FY${fiscalYear}.xlsx`);
+}
+
+export async function logExport(reportType: string, format: string, fileName: string, status: string = 'success') {
+  try {
+    await fetch('/api/export/log', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('sutra_token')
+      },
+      body: JSON.stringify({
+        reportType,
+        format,
+        fileName,
+        exportedBy: sessionStorage.getItem('sutra_user_id'),
+        status
+      })
+    });
+  } catch (err) {
+    console.error('Failed to log export:', err);
+  }
+}
+
+export async function exportCurrentScreen(
+  format: 'excel' | 'pdf' | 'json' | 'csv' | 'xml',
+  pageId: string,
+  dataFn: () => Promise<any>
+) {
+  const data = await dataFn();
+  if (!data) throw new Error("No data available to export");
+  
+  const fileName = `${pageId}_export_${new Date().getTime()}`;
+
+  try {
+    if (format === 'json') {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === 'csv') {
+      exportToCSV(Array.isArray(data) ? data : data.rows || [], fileName + '.csv');
+    } else if (format === 'xml') {
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<data>\n';
+      const arr = Array.isArray(data) ? data : data.rows || [];
+      for (const item of arr) {
+        xml += '  <record>\n';
+        for (const [k, v] of Object.entries(item)) {
+          xml += `    <${k}>${v}</${k}>\n`;
+        }
+        xml += '  </record>\n';
+      }
+      xml += '</data>';
+      const blob = new Blob([xml], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName + '.xml';
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === 'excel') {
+      if (Array.isArray(data)) {
+         exportToCSV(data, fileName + '.csv'); // fallback for generic array
+      } else if (data.rows) {
+         exportToCSV(data.rows, fileName + '.csv'); // fallback
+      }
+    } else if (format === 'pdf') {
+       alert("PDF generic export not implemented. Call specific PDF generator.");
+    }
+
+    await logExport(pageId, format, fileName);
+  } catch (err: any) {
+    await logExport(pageId, format, fileName, 'failed');
+    throw err;
+  }
 }

@@ -490,6 +490,96 @@ export interface DBBankStatement {
   reconciledAt?: string;
 }
 
+export interface DBCompanyFeatures {
+  id?: number;
+  companyId: string;
+  enableInventory: boolean;
+  enableTaxation: boolean;
+  enablePayroll: boolean;
+  enableCostCenters: boolean;
+  enableMultiCurrency: boolean;
+  enableBillWise: boolean;
+  enableBanking: boolean;
+  enableBudgets: boolean;
+  enableBatches: boolean;
+  enableGodowns: boolean;
+  enableEInvoice: boolean;
+  enableEWayBill: boolean;
+  enableTDS: boolean;
+  updatedAt: string;
+}
+
+export interface DBExportLog {
+  id?: number;
+  exportedAt: string;
+  exportedBy: string;
+  reportType: string;
+  format: string;
+  fileName: string;
+  status: "success" | "failed";
+  errorMessage?: string;
+}
+
+export interface DBImportLog {
+  id?: number;
+  importedAt: string;
+  importedBy: string;
+  importType: string;
+  fileName: string;
+  totalRecords: number;
+  successRecords: number;
+  failedRecords: number;
+  status: "success" | "partial" | "failed";
+  errorFile?: string;
+}
+
+export interface DBPrintLog {
+  id?: number;
+  printedAt: string;
+  printedBy: string;
+  documentType: string;
+  documentNumber: string;
+  printerName: string;
+  copies: number;
+  status: "success" | "failed";
+}
+
+export interface DBShareLog {
+  id?: number;
+  sharedAt: string;
+  sharedBy: string;
+  sharedWith: string;
+  method: "email" | "whatsapp" | "link";
+  documentType: string;
+  documentRef: string;
+  status: "sent" | "failed" | "pending";
+  isOpened?: boolean;
+  openedAt?: string;
+  linkToken?: string;
+  linkExpiry?: string;
+}
+
+export interface DBEncryptionSettings {
+  id?: number;
+  companyId: string;
+  isEncrypted: boolean;
+  encryptionMethod: string;
+  encryptedAt?: string;
+  encryptedBy?: string;
+}
+
+export interface DBCloudBackupSettings {
+  id?: number;
+  companyId: string;
+  provider: "google-drive" | "onedrive" | "dropbox" | "s3" | "custom";
+  schedule: "hourly" | "daily" | "weekly" | "monthly" | "on-exit";
+  retentionDays: number;
+  isEncrypted: boolean;
+  lastBackupAt?: string;
+  lastBackupStatus?: string;
+  isActive: boolean;
+}
+
 class SutraDB extends Dexie {
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
@@ -533,6 +623,13 @@ class SutraDB extends Dexie {
   materialIssued!: Table<any>;
   materialReceived!: Table<any>;
   physicalStocks!: Table<any>;
+  companyFeatures!: Table<DBCompanyFeatures>;
+  exportLogs!: Table<DBExportLog>;
+  importLogs!: Table<DBImportLog>;
+  printLogs!: Table<DBPrintLog>;
+  shareLogs!: Table<DBShareLog>;
+  encryptionSettings!: Table<DBEncryptionSettings>;
+  cloudBackupSettings!: Table<DBCloudBackupSettings>;
 
   constructor() {
     super("SutraERP");
@@ -603,6 +700,17 @@ class SutraDB extends Dexie {
       materialIssued: 'id, date, status',
       materialReceived: 'id, date, status',
       physicalStocks: 'id, date, status',
+    });
+
+    // Version 8 - Top Menu Bar Features
+    this.version(8).stores({
+      companyFeatures: "++id, companyId",
+      exportLogs: "++id, exportedAt, exportedBy, reportType",
+      importLogs: "++id, importedAt, importedBy, importType",
+      printLogs: "++id, printedAt, documentType, documentNumber",
+      shareLogs: "++id, sharedAt, sharedBy, method, linkToken",
+      encryptionSettings: "++id, companyId",
+      cloudBackupSettings: "++id, companyId",
     });
   }
 }

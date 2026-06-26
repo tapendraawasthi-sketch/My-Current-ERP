@@ -202,6 +202,78 @@ export async function runMigrations() {
         SELECT setval('keyboard_shortcuts_id_seq', (SELECT MAX(id) FROM keyboard_shortcuts));
     `);
 
+    // 6. Top Menu Bar & Additional Features
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS export_logs (
+        id SERIAL PRIMARY KEY,
+        exported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        exported_by VARCHAR(100),
+        report_type VARCHAR(100),
+        format VARCHAR(20),
+        file_name VARCHAR(255),
+        status VARCHAR(20) DEFAULT 'success',
+        error_message TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS import_logs (
+        id SERIAL PRIMARY KEY,
+        imported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        imported_by VARCHAR(100),
+        import_type VARCHAR(100),
+        file_name VARCHAR(255),
+        total_records INT DEFAULT 0,
+        success_records INT DEFAULT 0,
+        failed_records INT DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'success'
+      );
+
+      CREATE TABLE IF NOT EXISTS print_logs (
+        id SERIAL PRIMARY KEY,
+        printed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        printed_by VARCHAR(100),
+        document_type VARCHAR(100),
+        document_number VARCHAR(100),
+        printer_name VARCHAR(100),
+        copies INT DEFAULT 1,
+        status VARCHAR(20) DEFAULT 'success'
+      );
+
+      CREATE TABLE IF NOT EXISTS share_logs (
+        id SERIAL PRIMARY KEY,
+        shared_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        shared_by VARCHAR(100),
+        shared_with TEXT,
+        method VARCHAR(20),
+        document_type VARCHAR(100),
+        document_ref VARCHAR(255),
+        status VARCHAR(20) DEFAULT 'sent',
+        is_opened BOOLEAN DEFAULT FALSE,
+        link_token VARCHAR(255),
+        link_expiry TIMESTAMPTZ
+      );
+
+      CREATE TABLE IF NOT EXISTS company_features (
+        id SERIAL PRIMARY KEY,
+        company_id VARCHAR(100) NOT NULL,
+        feature_key VARCHAR(100) NOT NULL,
+        is_enabled BOOLEAN DEFAULT FALSE,
+        updated_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE(company_id, feature_key)
+      );
+
+      CREATE TABLE IF NOT EXISTS cloud_backup_settings (
+        id SERIAL PRIMARY KEY,
+        company_id VARCHAR(100),
+        provider VARCHAR(50),
+        schedule VARCHAR(50),
+        retention_days INT DEFAULT 30,
+        is_encrypted BOOLEAN DEFAULT TRUE,
+        last_backup_at TIMESTAMPTZ,
+        last_backup_status VARCHAR(20),
+        is_active BOOLEAN DEFAULT FALSE
+      );
+    `);
+
     await client.query('COMMIT');
     console.log('Database migrations completed successfully.');
   } catch (err) {

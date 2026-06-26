@@ -38,6 +38,44 @@ export const ALL_PERMISSIONS_LIST = [
   "users.manage",
   "backup.create",
   "backup.restore",
+  // Company management
+  "company.select",
+  "company.create",
+  "company.alter",
+  "company.shut",
+  "company.features",
+  "company.security",
+  "company.users",
+  "company.encryption",
+  "company.licensing",
+  // Data management
+  "data.backup",
+  "data.restore",
+  "data.migrate",
+  "data.split",
+  "data.repair",
+  "data.cloud-backup",
+  // Exchange
+  "exchange.sync",
+  "exchange.connect",
+  // Import
+  "import.masters",
+  "import.transactions",
+  "import.bank",
+  "import.einvoice",
+  "import.ewaybill",
+  // Export
+  "export.current",
+  "export.masters",
+  "export.transactions",
+  "export.reports",
+  // Share
+  "share.email",
+  "share.whatsapp",
+  "share.link",
+  // Print
+  "print.current",
+  "print.configure",
 ];
 
 /**
@@ -59,6 +97,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     "reports.view",
     "masters.view",
     "settings.voucher-series.view",
+    "company.select",
+    "data.backup",
+    "export.current",
+    "export.reports",
+    "import.bank",
+    "import.transactions",
+    "share.email",
+    "print.current",
   ],
   [UserRole.VIEWER]: [
     "accounts.view",
@@ -68,6 +114,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     "masters.view",
     "settings.view",
     "settings.voucher-series.view",
+    "company.select",
+    "export.current",
+    "export.reports",
+    "print.current",
     "*.view",
   ],
   [UserRole.CASHIER]: [
