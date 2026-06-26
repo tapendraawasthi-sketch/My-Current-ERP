@@ -183,6 +183,26 @@ interface AppState {
   currencies: any[];
   // Payroll module state
   employees: any[];
+  // Masters Module v8
+  stockCategories: any[];
+  voucherTypeMasters: any[];
+  scenarios: any[];
+  costCategories: any[];
+  costCentreClasses: any[];
+  reorderLevels: any[];
+  priceLevels: any[];
+  priceLists: any[];
+  hsCodes: any[];
+  batches: any[];
+  vatClassifications: any[];
+  tdsNatureOfPayment: any[];
+  employeeGroups: any[];
+  payHeads: any[];
+  salaryDetails: any[];
+  payrollUnits: any[];
+  attendanceTypes: any[];
+  ledgerExtensions: any[];
+
   // Bank Reconciliation state
   bankStatements: any[];
   journalEntries: any[]; // alias over vouchers for BankReconciliation compatibility
@@ -307,6 +327,77 @@ interface AppState {
   addEmployee: (data: Partial<any>) => Promise<any>;
   updateEmployee: (id: string, data: Partial<any>) => Promise<void>;
   deleteEmployee: (id: string) => Promise<void>;
+  // Stock Category
+  addStockCategory: (data: Partial<any>) => Promise<any>;
+  updateStockCategory: (id: string, data: Partial<any>) => Promise<void>;
+  deleteStockCategory: (id: string) => Promise<void>;
+  // Voucher Type Master
+  addVoucherTypeMaster: (data: Partial<any>) => Promise<any>;
+  updateVoucherTypeMaster: (id: string, data: Partial<any>) => Promise<void>;
+  deleteVoucherTypeMaster: (id: string) => Promise<void>;
+  // Scenario
+  addScenario: (data: Partial<any>) => Promise<any>;
+  updateScenario: (id: string, data: Partial<any>) => Promise<void>;
+  deleteScenario: (id: string) => Promise<void>;
+  // Cost Category
+  addCostCategory: (data: Partial<any>) => Promise<any>;
+  updateCostCategory: (id: string, data: Partial<any>) => Promise<void>;
+  deleteCostCategory: (id: string) => Promise<void>;
+  // Cost Centre Class
+  addCostCentreClass: (data: Partial<any>) => Promise<any>;
+  updateCostCentreClass: (id: string, data: Partial<any>) => Promise<void>;
+  deleteCostCentreClass: (id: string) => Promise<void>;
+  // Reorder Level
+  addReorderLevel: (data: Partial<any>) => Promise<any>;
+  updateReorderLevel: (id: string, data: Partial<any>) => Promise<void>;
+  deleteReorderLevel: (id: string) => Promise<void>;
+  // Price Level
+  addPriceLevel: (data: Partial<any>) => Promise<any>;
+  updatePriceLevel: (id: string, data: Partial<any>) => Promise<void>;
+  deletePriceLevel: (id: string) => Promise<void>;
+  // Price List
+  addPriceList: (data: Partial<any>) => Promise<any>;
+  updatePriceList: (id: string, data: Partial<any>) => Promise<void>;
+  deletePriceList: (id: string) => Promise<void>;
+  // HS Code
+  addHSCode: (data: Partial<any>) => Promise<any>;
+  updateHSCode: (id: string, data: Partial<any>) => Promise<void>;
+  deleteHSCode: (id: string) => Promise<void>;
+  // Batch
+  addBatch: (data: Partial<any>) => Promise<any>;
+  updateBatch: (id: string, data: Partial<any>) => Promise<void>;
+  deleteBatch: (id: string) => Promise<void>;
+  // VAT Classification
+  addVATClassification: (data: Partial<any>) => Promise<any>;
+  updateVATClassification: (id: string, data: Partial<any>) => Promise<void>;
+  deleteVATClassification: (id: string) => Promise<void>;
+  // TDS Nature of Payment
+  addTDSNatureOfPayment: (data: Partial<any>) => Promise<any>;
+  updateTDSNatureOfPayment: (id: string, data: Partial<any>) => Promise<void>;
+  deleteTDSNatureOfPayment: (id: string) => Promise<void>;
+  // Employee Group
+  addEmployeeGroup: (data: Partial<any>) => Promise<any>;
+  updateEmployeeGroup: (id: string, data: Partial<any>) => Promise<void>;
+  deleteEmployeeGroup: (id: string) => Promise<void>;
+  // Pay Head
+  addPayHead: (data: Partial<any>) => Promise<any>;
+  updatePayHead: (id: string, data: Partial<any>) => Promise<void>;
+  deletePayHead: (id: string) => Promise<void>;
+  // Salary Detail
+  addSalaryDetail: (data: Partial<any>) => Promise<any>;
+  updateSalaryDetail: (id: string, data: Partial<any>) => Promise<void>;
+  deleteSalaryDetail: (id: string) => Promise<void>;
+  // Payroll Unit
+  addPayrollUnit: (data: Partial<any>) => Promise<any>;
+  updatePayrollUnit: (id: string, data: Partial<any>) => Promise<void>;
+  deletePayrollUnit: (id: string) => Promise<void>;
+  // Attendance Type
+  addAttendanceType: (data: Partial<any>) => Promise<any>;
+  updateAttendanceType: (id: string, data: Partial<any>) => Promise<void>;
+  deleteAttendanceType: (id: string) => Promise<void>;
+  // Ledger Extension
+  upsertLedgerExtension: (id: string, data: Partial<any>) => Promise<void>;
+  getLedgerExtension: (id: string) => Promise<any>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -367,6 +458,24 @@ export const useStore = create<AppState>((set, get) => ({
   customFieldDefs: [],
   currencies: [],
   employees: [],
+  stockCategories: [],
+  voucherTypeMasters: [],
+  scenarios: [],
+  costCategories: [],
+  costCentreClasses: [],
+  reorderLevels: [],
+  priceLevels: [],
+  priceLists: [],
+  hsCodes: [],
+  batches: [],
+  vatClassifications: [],
+  tdsNatureOfPayment: [],
+  employeeGroups: [],
+  payHeads: [],
+  salaryDetails: [],
+  payrollUnits: [],
+  attendanceTypes: [],
+  ledgerExtensions: [],
   tdsEntries: [],
   tdsRates: DEFAULT_TDS_RATES,
   stockJournals: [],
@@ -479,6 +588,24 @@ export const useStore = create<AppState>((set, get) => ({
       materialIssued,
       materialReceived,
       physicalStocks,
+      stockCategories,
+      voucherTypeMasters,
+      scenarios,
+      costCategories,
+      costCentreClasses,
+      reorderLevels,
+      priceLevels,
+      priceLists,
+      hsCodes,
+      batches,
+      vatClassifications,
+      tdsNatureOfPayment,
+      employeeGroups,
+      payHeads,
+      salaryDetails,
+      payrollUnits,
+      attendanceTypes,
+      ledgerExtensions,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -519,6 +646,24 @@ export const useStore = create<AppState>((set, get) => ({
       db.materialIssued.toArray(),
       db.materialReceived.toArray(),
       db.physicalStocks.toArray(),
+      db.stockCategories.toArray(),
+      db.voucherTypeMasters.toArray(),
+      db.scenarios.toArray(),
+      db.costCategories.toArray(),
+      db.costCentreClasses.toArray(),
+      db.reorderLevels.toArray(),
+      db.priceLevels.toArray(),
+      db.priceLists.toArray(),
+      db.hsCodes.toArray(),
+      db.batches.toArray(),
+      db.vatClassifications.toArray(),
+      db.tdsNatureOfPayment.toArray(),
+      db.employeeGroups.toArray(),
+      db.payHeads.toArray(),
+      db.salaryDetails.toArray(),
+      db.payrollUnits.toArray(),
+      db.attendanceTypes.toArray(),
+      db.ledgerExtensions.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -591,6 +736,24 @@ export const useStore = create<AppState>((set, get) => ({
       materialIssued: materialIssued as any[],
       materialReceived: materialReceived as any[],
       physicalStocks: physicalStocks as any[],
+      stockCategories: stockCategories as any[],
+      voucherTypeMasters: voucherTypeMasters as any[],
+      scenarios: scenarios as any[],
+      costCategories: costCategories as any[],
+      costCentreClasses: costCentreClasses as any[],
+      reorderLevels: reorderLevels as any[],
+      priceLevels: priceLevels as any[],
+      priceLists: priceLists as any[],
+      hsCodes: hsCodes as any[],
+      batches: batches as any[],
+      vatClassifications: vatClassifications as any[],
+      tdsNatureOfPayment: tdsNatureOfPayment as any[],
+      employeeGroups: employeeGroups as any[],
+      payHeads: payHeads as any[],
+      salaryDetails: salaryDetails as any[],
+      payrollUnits: payrollUnits as any[],
+      attendanceTypes: attendanceTypes as any[],
+      ledgerExtensions: ledgerExtensions as any[],
       journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
 
@@ -974,6 +1137,352 @@ export const useStore = create<AppState>((set, get) => ({
     const db = getDB();
     await db.employees.delete(id);
     set((s) => ({ employees: s.employees.filter((r) => r.id !== id) }));
+  },
+
+  // ── Masters Module v8 ────────────────────────────────────────────────────────
+  // Stock Category
+  addStockCategory: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `sc-${generateId()}`, isActive: true };
+    await db.stockCategories.add(record as any);
+    set((s) => ({ stockCategories: [...s.stockCategories, record] }));
+    return record;
+  },
+  updateStockCategory: async (id, data) => {
+    const db = getDB();
+    await db.stockCategories.update(id, data);
+    set((s) => ({ stockCategories: s.stockCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteStockCategory: async (id) => {
+    const db = getDB();
+    await db.stockCategories.delete(id);
+    set((s) => ({ stockCategories: s.stockCategories.filter((r) => r.id !== id) }));
+  },
+
+  // Voucher Type Master
+  addVoucherTypeMaster: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `vtm-${generateId()}`, isActive: true };
+    await db.voucherTypeMasters.add(record as any);
+    set((s) => ({ voucherTypeMasters: [...s.voucherTypeMasters, record] }));
+    return record;
+  },
+  updateVoucherTypeMaster: async (id, data) => {
+    const db = getDB();
+    await db.voucherTypeMasters.update(id, data);
+    set((s) => ({ voucherTypeMasters: s.voucherTypeMasters.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteVoucherTypeMaster: async (id) => {
+    const db = getDB();
+    await db.voucherTypeMasters.delete(id);
+    set((s) => ({ voucherTypeMasters: s.voucherTypeMasters.filter((r) => r.id !== id) }));
+  },
+
+  // Scenario
+  addScenario: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `scen-${generateId()}`, isActive: true };
+    await db.scenarios.add(record as any);
+    set((s) => ({ scenarios: [...s.scenarios, record] }));
+    return record;
+  },
+  updateScenario: async (id, data) => {
+    const db = getDB();
+    await db.scenarios.update(id, data);
+    set((s) => ({ scenarios: s.scenarios.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteScenario: async (id) => {
+    const db = getDB();
+    await db.scenarios.delete(id);
+    set((s) => ({ scenarios: s.scenarios.filter((r) => r.id !== id) }));
+  },
+
+  // Cost Category
+  addCostCategory: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `cc-${generateId()}`, isActive: true };
+    await db.costCategories.add(record as any);
+    set((s) => ({ costCategories: [...s.costCategories, record] }));
+    return record;
+  },
+  updateCostCategory: async (id, data) => {
+    const db = getDB();
+    await db.costCategories.update(id, data);
+    set((s) => ({ costCategories: s.costCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteCostCategory: async (id) => {
+    const db = getDB();
+    await db.costCategories.delete(id);
+    set((s) => ({ costCategories: s.costCategories.filter((r) => r.id !== id) }));
+  },
+
+  // Cost Centre Class
+  addCostCentreClass: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `ccc-${generateId()}`, isActive: true };
+    await db.costCentreClasses.add(record as any);
+    set((s) => ({ costCentreClasses: [...s.costCentreClasses, record] }));
+    return record;
+  },
+  updateCostCentreClass: async (id, data) => {
+    const db = getDB();
+    await db.costCentreClasses.update(id, data);
+    set((s) => ({ costCentreClasses: s.costCentreClasses.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteCostCentreClass: async (id) => {
+    const db = getDB();
+    await db.costCentreClasses.delete(id);
+    set((s) => ({ costCentreClasses: s.costCentreClasses.filter((r) => r.id !== id) }));
+  },
+
+  // Reorder Level
+  addReorderLevel: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `rl-${generateId()}`, isActive: true };
+    await db.reorderLevels.add(record as any);
+    set((s) => ({ reorderLevels: [...s.reorderLevels, record] }));
+    return record;
+  },
+  updateReorderLevel: async (id, data) => {
+    const db = getDB();
+    await db.reorderLevels.update(id, data);
+    set((s) => ({ reorderLevels: s.reorderLevels.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteReorderLevel: async (id) => {
+    const db = getDB();
+    await db.reorderLevels.delete(id);
+    set((s) => ({ reorderLevels: s.reorderLevels.filter((r) => r.id !== id) }));
+  },
+
+  // Price Level
+  addPriceLevel: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `pl-${generateId()}`, isActive: true };
+    await db.priceLevels.add(record as any);
+    set((s) => ({ priceLevels: [...s.priceLevels, record] }));
+    return record;
+  },
+  updatePriceLevel: async (id, data) => {
+    const db = getDB();
+    await db.priceLevels.update(id, data);
+    set((s) => ({ priceLevels: s.priceLevels.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deletePriceLevel: async (id) => {
+    const db = getDB();
+    await db.priceLevels.delete(id);
+    set((s) => ({ priceLevels: s.priceLevels.filter((r) => r.id !== id) }));
+  },
+
+  // Price List
+  addPriceList: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `plist-${generateId()}`, isActive: true };
+    await db.priceLists.add(record as any);
+    set((s) => ({ priceLists: [...s.priceLists, record] }));
+    return record;
+  },
+  updatePriceList: async (id, data) => {
+    const db = getDB();
+    await db.priceLists.update(id, data);
+    set((s) => ({ priceLists: s.priceLists.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deletePriceList: async (id) => {
+    const db = getDB();
+    await db.priceLists.delete(id);
+    set((s) => ({ priceLists: s.priceLists.filter((r) => r.id !== id) }));
+  },
+
+  // HS Code
+  addHSCode: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `hsc-${generateId()}`, isActive: true };
+    await db.hsCodes.add(record as any);
+    set((s) => ({ hsCodes: [...s.hsCodes, record] }));
+    return record;
+  },
+  updateHSCode: async (id, data) => {
+    const db = getDB();
+    await db.hsCodes.update(id, data);
+    set((s) => ({ hsCodes: s.hsCodes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteHSCode: async (id) => {
+    const db = getDB();
+    await db.hsCodes.delete(id);
+    set((s) => ({ hsCodes: s.hsCodes.filter((r) => r.id !== id) }));
+  },
+
+  // Batch
+  addBatch: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `bat-${generateId()}`, isActive: true };
+    await db.batches.add(record as any);
+    set((s) => ({ batches: [...s.batches, record] }));
+    return record;
+  },
+  updateBatch: async (id, data) => {
+    const db = getDB();
+    await db.batches.update(id, data);
+    set((s) => ({ batches: s.batches.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteBatch: async (id) => {
+    const db = getDB();
+    await db.batches.delete(id);
+    set((s) => ({ batches: s.batches.filter((r) => r.id !== id) }));
+  },
+
+  // VAT Classification
+  addVATClassification: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `vc-${generateId()}`, isActive: true };
+    await db.vatClassifications.add(record as any);
+    set((s) => ({ vatClassifications: [...s.vatClassifications, record] }));
+    return record;
+  },
+  updateVATClassification: async (id, data) => {
+    const db = getDB();
+    await db.vatClassifications.update(id, data);
+    set((s) => ({ vatClassifications: s.vatClassifications.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteVATClassification: async (id) => {
+    const db = getDB();
+    await db.vatClassifications.delete(id);
+    set((s) => ({ vatClassifications: s.vatClassifications.filter((r) => r.id !== id) }));
+  },
+
+  // TDS Nature of Payment
+  addTDSNatureOfPayment: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `tds-${generateId()}`, isActive: true };
+    await db.tdsNatureOfPayment.add(record as any);
+    set((s) => ({ tdsNatureOfPayment: [...s.tdsNatureOfPayment, record] }));
+    return record;
+  },
+  updateTDSNatureOfPayment: async (id, data) => {
+    const db = getDB();
+    await db.tdsNatureOfPayment.update(id, data);
+    set((s) => ({ tdsNatureOfPayment: s.tdsNatureOfPayment.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteTDSNatureOfPayment: async (id) => {
+    const db = getDB();
+    await db.tdsNatureOfPayment.delete(id);
+    set((s) => ({ tdsNatureOfPayment: s.tdsNatureOfPayment.filter((r) => r.id !== id) }));
+  },
+
+  // Employee Group
+  addEmployeeGroup: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `eg-${generateId()}`, isActive: true };
+    await db.employeeGroups.add(record as any);
+    set((s) => ({ employeeGroups: [...s.employeeGroups, record] }));
+    return record;
+  },
+  updateEmployeeGroup: async (id, data) => {
+    const db = getDB();
+    await db.employeeGroups.update(id, data);
+    set((s) => ({ employeeGroups: s.employeeGroups.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteEmployeeGroup: async (id) => {
+    const db = getDB();
+    await db.employeeGroups.delete(id);
+    set((s) => ({ employeeGroups: s.employeeGroups.filter((r) => r.id !== id) }));
+  },
+
+  // Pay Head
+  addPayHead: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `ph-${generateId()}`, isActive: true };
+    await db.payHeads.add(record as any);
+    set((s) => ({ payHeads: [...s.payHeads, record] }));
+    return record;
+  },
+  updatePayHead: async (id, data) => {
+    const db = getDB();
+    await db.payHeads.update(id, data);
+    set((s) => ({ payHeads: s.payHeads.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deletePayHead: async (id) => {
+    const db = getDB();
+    await db.payHeads.delete(id);
+    set((s) => ({ payHeads: s.payHeads.filter((r) => r.id !== id) }));
+  },
+
+  // Salary Detail
+  addSalaryDetail: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `sd-${generateId()}`, isActive: true };
+    await db.salaryDetails.add(record as any);
+    set((s) => ({ salaryDetails: [...s.salaryDetails, record] }));
+    return record;
+  },
+  updateSalaryDetail: async (id, data) => {
+    const db = getDB();
+    await db.salaryDetails.update(id, data);
+    set((s) => ({ salaryDetails: s.salaryDetails.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteSalaryDetail: async (id) => {
+    const db = getDB();
+    await db.salaryDetails.delete(id);
+    set((s) => ({ salaryDetails: s.salaryDetails.filter((r) => r.id !== id) }));
+  },
+
+  // Payroll Unit
+  addPayrollUnit: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `pu-${generateId()}`, isActive: true };
+    await db.payrollUnits.add(record as any);
+    set((s) => ({ payrollUnits: [...s.payrollUnits, record] }));
+    return record;
+  },
+  updatePayrollUnit: async (id, data) => {
+    const db = getDB();
+    await db.payrollUnits.update(id, data);
+    set((s) => ({ payrollUnits: s.payrollUnits.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deletePayrollUnit: async (id) => {
+    const db = getDB();
+    await db.payrollUnits.delete(id);
+    set((s) => ({ payrollUnits: s.payrollUnits.filter((r) => r.id !== id) }));
+  },
+
+  // Attendance Type
+  addAttendanceType: async (data) => {
+    const db = getDB();
+    const record = { ...data, id: data.id || `at-${generateId()}`, isActive: true };
+    await db.attendanceTypes.add(record as any);
+    set((s) => ({ attendanceTypes: [...s.attendanceTypes, record] }));
+    return record;
+  },
+  updateAttendanceType: async (id, data) => {
+    const db = getDB();
+    await db.attendanceTypes.update(id, data);
+    set((s) => ({ attendanceTypes: s.attendanceTypes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  },
+  deleteAttendanceType: async (id) => {
+    const db = getDB();
+    await db.attendanceTypes.delete(id);
+    set((s) => ({ attendanceTypes: s.attendanceTypes.filter((r) => r.id !== id) }));
+  },
+
+  // Ledger Extension
+  upsertLedgerExtension: async (id, data) => {
+    const db = getDB();
+    const existing = await db.ledgerExtensions.get(id);
+    if (existing) {
+      await db.ledgerExtensions.update(id, data);
+    } else {
+      await db.ledgerExtensions.add({ id, ...data } as any);
+    }
+    set((s) => {
+      const exists = s.ledgerExtensions.find((e: any) => e.id === id);
+      if (exists) {
+        return { ledgerExtensions: s.ledgerExtensions.map((e: any) => e.id === id ? { ...e, ...data } : e) };
+      }
+      return { ledgerExtensions: [...s.ledgerExtensions, { id, ...data }] };
+    });
+  },
+  getLedgerExtension: async (id) => {
+    const db = getDB();
+    return await db.ledgerExtensions.get(id);
   },
 
   // ── TDS ──────────────────────────────────────────────────────────────────────

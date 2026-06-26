@@ -65,6 +65,25 @@ import OverdueBillsInterest from "./pages/OverdueBillsInterest";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import AccountGroupMaster from "./pages/AccountGroupMaster";
 import ItemGroupMaster from "./pages/ItemGroupMaster";
+import StockCategoryMaster from "./pages/StockCategoryMaster";
+import VoucherTypeMaster from "./pages/VoucherTypeMaster";
+import ScenarioMaster from "./pages/ScenarioMaster";
+import CostCategoryMaster from "./pages/CostCategoryMaster";
+import CostCentreClassMaster from "./pages/CostCentreClassMaster";
+import ReorderLevelMaster from "./pages/ReorderLevelMaster";
+import PriceLevelMaster from "./pages/PriceLevelMaster";
+import PriceListMaster from "./pages/PriceListMaster";
+import HSCodeMaster from "./pages/HSCodeMaster";
+import BatchMaster from "./pages/BatchMaster";
+import VATClassificationMaster from "./pages/VATClassificationMaster";
+import TDSNatureOfPaymentMaster from "./pages/TDSNatureOfPaymentMaster";
+import EmployeeGroupMaster from "./pages/EmployeeGroupMaster";
+import PayHeadMaster from "./pages/PayHeadMaster";
+import SalaryDetailsMaster from "./pages/SalaryDetailsMaster";
+import PayrollUnitMaster from "./pages/PayrollUnitMaster";
+import AttendanceTypeMaster from "./pages/AttendanceTypeMaster";
+import LedgerMaster from "./pages/LedgerMaster";
+import MasterControlCentre from "./pages/MasterControlCentre";
 import UnitConversionMaster from "./pages/UnitConversionMaster";
 import StandardNarrationMaster from "./pages/StandardNarrationMaster";
 import BillSundryMaster from "./pages/BillSundryMaster";
@@ -533,8 +552,46 @@ function MainRouter() {
       );
     case "account-groups":
       return <ErrorBoundary><AccountGroupMaster /></ErrorBoundary>;
+    case "ledgers":
+      return <ErrorBoundary><LedgerMaster /></ErrorBoundary>;
+    case "master-control-centre":
+      return <ErrorBoundary><MasterControlCentre /></ErrorBoundary>;
     case "item-groups":
       return <ErrorBoundary><ItemGroupMaster /></ErrorBoundary>;
+    case "stock-categories":
+      return <ErrorBoundary><StockCategoryMaster /></ErrorBoundary>;
+    case "voucher-types":
+      return <ErrorBoundary><VoucherTypeMaster /></ErrorBoundary>;
+    case "scenarios":
+      return <ErrorBoundary><ScenarioMaster /></ErrorBoundary>;
+    case "cost-categories":
+      return <ErrorBoundary><CostCategoryMaster /></ErrorBoundary>;
+    case "cost-centre-classes":
+      return <ErrorBoundary><CostCentreClassMaster /></ErrorBoundary>;
+    case "reorder-levels":
+      return <ErrorBoundary><ReorderLevelMaster /></ErrorBoundary>;
+    case "price-levels":
+      return <ErrorBoundary><PriceLevelMaster /></ErrorBoundary>;
+    case "price-lists":
+      return <ErrorBoundary><PriceListMaster /></ErrorBoundary>;
+    case "hs-codes":
+      return <ErrorBoundary><HSCodeMaster /></ErrorBoundary>;
+    case "batches":
+      return <ErrorBoundary><BatchMaster /></ErrorBoundary>;
+    case "vat-classifications":
+      return <ErrorBoundary><VATClassificationMaster /></ErrorBoundary>;
+    case "tds-nature-of-payments":
+      return <ErrorBoundary><TDSNatureOfPaymentMaster /></ErrorBoundary>;
+    case "employee-groups":
+      return <ErrorBoundary><EmployeeGroupMaster /></ErrorBoundary>;
+    case "pay-heads":
+      return <ErrorBoundary><PayHeadMaster /></ErrorBoundary>;
+    case "salary-details":
+      return <ErrorBoundary><SalaryDetailsMaster /></ErrorBoundary>;
+    case "payroll-units":
+      return <ErrorBoundary><PayrollUnitMaster /></ErrorBoundary>;
+    case "attendance-types":
+      return <ErrorBoundary><AttendanceTypeMaster /></ErrorBoundary>;
     case "unit-conversions":
       return <ErrorBoundary><UnitConversionMaster /></ErrorBoundary>;
     case "standard-narrations":
