@@ -126,9 +126,9 @@ export const TallyAccountSelect: React.FC<Props> = ({
       )}
       {showCreate && (
         <QuickCreateAccountModal
+          isOpen={showCreate}
           onClose={() => setShowCreate(false)}
-          onSave={handleCreated}
-          initialName={query}
+          onCreated={handleCreated}
         />
       )}
     </div>

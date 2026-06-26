@@ -20,7 +20,7 @@ export const TallyContraVoucher: React.FC = () => {
   const [bankLineIdx, setBankLineIdx] = useState<number | null>(null);
   const [cashLineIdx, setCashLineIdx] = useState<number | null>(null);
 
-  const { saveVoucher, vouchers, loadVoucher, deleteVoucher } = useStore();
+  const { addVoucher, updateVoucher, vouchers, cancelVoucher } = useStore();
 
   const isBankAccount = (name: string) => name.toLowerCase().includes('bank');
   const isCashAccount = (name: string) => name.toLowerCase().includes('cash');
@@ -54,11 +54,15 @@ export const TallyContraVoucher: React.FC = () => {
       toast.error('Debit and Credit totals must be equal.');
       return;
     }
-    await saveVoucher(voucher);
+    if (voucher.id) {
+      await updateVoucher(voucher.id, voucher);
+    } else {
+      await addVoucher(voucher);
+    }
     toast.success('Contra voucher saved.');
     setVoucher(blankVoucher('Contra'));
     setSelectedRow(0);
-  }, [voucher, saveVoucher]);
+  }, [voucher, updateVoucher, addVoucher]);
 
   const handleCancel = useCallback(() => {
     setVoucher(blankVoucher('Contra'));
@@ -66,9 +70,9 @@ export const TallyContraVoucher: React.FC = () => {
   }, []);
 
   const handleSelect = useCallback((id: string) => {
-    const loaded = loadVoucher(id);
+    const loaded = vouchers.find(v => v.id === id);
     if (loaded) { setVoucher(loaded); setShowList(false); setSelectedRow(0); }
-  }, [loadVoucher]);
+  }, [vouchers]);
 
   return (
     <TallyVoucherShell
@@ -183,8 +187,8 @@ export const TallyContraVoucher: React.FC = () => {
         vouchers={vouchers || []}
         onClose={() => setShowList(false)}
         onSelect={handleSelect}
-        onPrint={(id) => { const v = loadVoucher(id); if (v) { setVoucher(v); setShowPrint(true); } }}
-        onDelete={deleteVoucher}
+        onPrint={(id) => { const v = vouchers.find(v => v.id === id); if (v) { setVoucher(v); setShowPrint(true); } }}
+        onDelete={(id) => cancelVoucher(id, 'Deleted from UI')}
       />
     </TallyVoucherShell>
   );
