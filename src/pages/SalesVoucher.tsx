@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Button, Input, Select, NepaliDatePicker, Badge, ActionToolbar, AmountInput } from "../components/ui";
@@ -9,8 +9,12 @@ import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
 import toast from "react-hot-toast";
+import { useScreenF12 } from "../hooks/useF12Config";
 
 const SalesVoucher: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("sales-voucher");
+
   const { accounts, items, parties, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
   
   const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);

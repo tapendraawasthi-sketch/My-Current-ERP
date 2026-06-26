@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { useMemo, useState, useEffect } from "react";
+import { useScreenF12 } from "../hooks/useF12Config";
 import { useStore } from "../store/useStore";
 import { computeLedgerBalance, isDebitNature } from "../lib/accounting";
 import { exportLedgerToExcel } from "../lib/exportUtils";
@@ -9,6 +9,9 @@ import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 
 const GeneralLedger: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("ledger");
+
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [options, setOptions] = useState({});

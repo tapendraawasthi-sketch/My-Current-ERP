@@ -4,6 +4,10 @@ import { Toaster } from "react-hot-toast";
 import { Loader2, Keyboard } from "lucide-react";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import Layout from "./components/Layout";
+
+// F12 CONFIG SYSTEM
+import { F12Provider } from './hooks/useF12Config';
+import F12Panel from './components/F12Panel';
 import AuthGateway from "./pages/AuthGateway";
 import Gateway from "./components/Gateway";
 import Dashboard from "./components/Dashboard";
@@ -729,11 +733,13 @@ export default function App() {
   }
 
   return (
-    <>
-      <Layout>
-        <MainRouter />
-      </Layout>
-      <ShortcutPanel />
+    <F12Provider>
+      <>
+        <Layout>
+          {renderContent()}
+        </Layout>
+        <ShortcutPanel />
+        <F12Panel />
 <Toaster
   position="top-right"
   toastOptions={{
@@ -773,5 +779,6 @@ export default function App() {
   }}
 />
     </>
+    </F12Provider>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { useF12Keyboard } from "../hooks/useF12Keyboard";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
@@ -25,6 +26,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   } = useStore();
 
   const { rawShortcuts } = useKeyboardShortcuts();
+  
+  // Attach global F12 keyboard handler
+  useF12Keyboard();
+
   const isMobile = useIsMobile();
 
   const [collapsed, setCollapsed] = useState(() => {

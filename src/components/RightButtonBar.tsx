@@ -1,37 +1,12 @@
-// @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { useRightBarButtons, type RightBarButton } from "../hooks/useRightBarButtons";
+import { useF12Config } from '../hooks/useF12Config';
 
 const normalizeShortcut = (shortcut: string) =>
-  shortcut
-    .replace(/\s+/g, "")
-    .replace("Control+", "Ctrl+")
-    .replace("Escape", "Esc")
-    .toUpperCase();
+  shortcut.replace(/\s+/g, "").replace("Control+", "Ctrl+").replace("Escape", "Esc");
 
-const comboFromEvent = (e: KeyboardEvent) => {
-  const parts: string[] = [];
-
-  if (e.ctrlKey || e.metaKey) parts.push("Ctrl");
-  if (e.altKey) parts.push("Alt");
-  if (e.shiftKey) parts.push("Shift");
-
-  let key = e.key;
-
-  if (key === "Escape") key = "Esc";
-  else if (key === " ") key = "Space";
-  else if (/^[a-z]$/i.test(key)) key = key.toUpperCase();
-  else if (/^F\d{1,2}$/i.test(key)) key = key.toUpperCase();
-
-  parts.push(key);
-
-  return normalizeShortcut(parts.join("+"));
-};
-
-const isEditableTarget = (target: EventTarget | null) => {
-  const el = target as HTMLElement | null;
+const isInputElement = (el: Element | null): boolean => {
   if (!el) return false;
-
   const tag = el.tagName?.toLowerCase();
   return (
     tag === "input" ||
@@ -53,28 +28,37 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
   const buttons = useRightBarButtons();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const visibleButtons = useMemo(() => buttons.filter((b) => b.visible), [buttons]);
+  const { toggleF12, isOpen: f12IsOpen } = useF12Config();
 
-  const grouped = useMemo(() => {
-    const result: Record<string, RightBarButton[]> = {};
-    visibleButtons.forEach((button) => {
-      if (!result[button.group]) result[button.group] = [];
-      result[button.group].push(button);
-    });
-    return result;
-  }, [visibleButtons]);
+  const visibleButtons = useMemo(() => {
+    return buttons.filter((b) => b.visible);
+  }, [buttons]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isEditableTarget(e.target)) return;
+      if (isInputElement(document.activeElement)) return;
 
-      const combo = comboFromEvent(e);
+      const combo = normalizeShortcut(`${e.ctrlKey ? "Ctrl+" : ""}${
+        e.altKey ? "Alt+" : ""
+      }${e.shiftKey ? "Shift+" : ""}${e.key}`);
+
+      if (e.key === 'F12') {
+        e.preventDefault();
+        toggleF12();
+        return;
+      }
+
       const button = visibleButtons.find(
-        (b) => normalizeShortcut(b.shortcut) === combo && b.visible,
+        (b) => b.shortcut && normalizeShortcut(b.shortcut) === combo
       );
 
       if (button) {
-        if (!button.enabled) return;
+        if (!button.enabled) {
+          if (button.disabledReason) {
+            alert(`Cannot perform action: ${button.disabledReason}`);
+          }
+          return;
+        }
         e.preventDefault();
         executeButton(button);
         return;
@@ -85,158 +69,85 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [visibleButtons, onShortcut]);
-
-  const sidebarStyle: React.CSSProperties = {
-    width: 148,
-    background: "#D4EABD",
-    borderLeft: "1px solid #000000",
-    fontSize: 11,
-    display: "flex",
-    flexDirection: "column",
-    flexShrink: 0,
-    overflowY: "auto",
-    color: "#000000",
-  };
-
-  const headerStyle: React.CSSProperties = {
-    background: "#C9DEB5",
-    textAlign: "center",
-    padding: "3px 0",
-    fontWeight: "bold",
-    borderBottom: "1px solid #000000",
-    color: "#000000",
-  };
-
-  const groupHeaderStyle: React.CSSProperties = {
-    background: "#C9DEB5",
-    textAlign: "center",
-    padding: "2px 0",
-    fontWeight: "bold",
-    borderBottom: "1px solid #000000",
-    color: "#000000",
-    fontSize: 11,
-  };
-
-  const rowStyle = (button: RightBarButton, hovered: boolean): React.CSSProperties => ({
-    height: 22,
-    borderBottom: "1px solid #000000",
-    cursor: button.enabled ? "pointer" : "not-allowed",
-    background: button.active ? "#B8D89A" : hovered && button.enabled ? "#C9DEB5" : "#D4EABD",
-    display: "flex",
-    alignItems: "center",
-    opacity: button.enabled ? 1 : 0.4,
-    color: "#000000",
-    padding: 0,
-    width: "100%",
-    textAlign: "left",
-    borderTop: "none",
-    borderRight: "none",
-    borderLeft: "none",
-    borderRadius: 0,
-  });
-
-  const shortcutStyle: React.CSSProperties = {
-    width: 32,
-    color: "#000000",
-    fontWeight: "bold",
-    textAlign: "center",
-    flexShrink: 0,
-    fontSize: 9,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    padding: "0 2px",
-  };
-
-  const labelStyle: React.CSSProperties = {
-    color: "#000000",
-    fontSize: 11,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    paddingRight: 4,
-    flex: 1,
-  };
+  }, [visibleButtons, onShortcut, toggleF12]);
 
   return (
-    <div style={sidebarStyle} className="sidebar-scroll no-print">
-      <div style={headerStyle}>Actions</div>
-
-      {Object.entries(grouped).map(([group, groupButtons]) => {
-        const usable = groupButtons.filter((b) => b.visible);
-        if (usable.length === 0) return null;
+    <div className="w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto">
+      <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest shadow-sm">
+        Quick Actions
+      </div>
+      
+      {visibleButtons.map((button) => {
+        const isHovered = hoveredId === button.id;
+        const isActive = button.active;
+        
+        let bgClass = "bg-[#1e2433]";
+        if (isActive) bgClass = "bg-[#1557b0]";
+        else if (isHovered && button.enabled) bgClass = "bg-[#273148]";
 
         return (
-          <div key={group}>
-            <div style={groupHeaderStyle}>{group}</div>
-            {usable.map((button) => (
-              <button
-                key={button.id}
-                type="button"
-                title={!button.enabled ? button.disabledReason || "Disabled" : `${button.shortcut}: ${button.label}`}
-                onClick={() => executeButton(button)}
-                onMouseEnter={() => setHoveredId(button.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                style={rowStyle(button, hoveredId === button.id)}
-                disabled={!button.enabled}
-              >
-                <span style={shortcutStyle}>{button.shortcut}</span>
-                <span style={labelStyle}>
-                  {button.active ? "[✓] " : ""}
-                  {button.label}
-                </span>
-              </button>
-            ))}
+          <div
+            key={button.id}
+            className={`h-[26px] border-b border-[#2d3748] flex items-center select-none ${bgClass} ${
+              button.enabled ? "cursor-pointer" : "cursor-not-allowed opacity-40"
+            }`}
+            onMouseEnter={() => setHoveredId(button.id)}
+            onMouseLeave={() => setHoveredId(null)}
+            onClick={() => executeButton(button)}
+            title={button.enabled ? button.shortcut : button.disabledReason}
+          >
+            <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${isActive ? 'text-blue-200' : 'text-[#d97706]'}`}>
+              {button.shortcut}
+            </span>
+            <span className="flex-1 text-[11px] truncate pr-1">
+              {button.label}
+            </span>
           </div>
         );
       })}
 
-      <div style={{ height: 6, borderBottom: "1px solid #000000" }} />
-      <div
-        style={{
-          background: "#C9DEB5",
-          textAlign: "center",
-          padding: "2px 0",
-          fontSize: 10,
-          color: "#000000",
-          borderBottom: "1px solid #000000",
-          fontWeight: "bold",
-        }}
-      >
-        Nepal Links
+      <div className="bg-[#273148] text-center py-1 font-bold border-y border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest mt-1">
+        Configuration
       </div>
-      <a
-        href="https://ird.gov.np"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          color: "#000000",
-          textDecoration: "underline",
-          textAlign: "center",
-          padding: "3px 0",
-          display: "block",
-          fontSize: 11,
-          borderBottom: "1px solid #000000",
-        }}
+      <button
+        type="button"
+        onClick={toggleF12}
+        className={`h-[26px] border-b border-[#2d3748] flex items-center select-none w-full text-left transition-colors ${
+          f12IsOpen ? "bg-[#1557b0] text-white" : "bg-[#1e2433] hover:bg-[#273148] text-white"
+        }`}
+        title="F12: Open screen configuration settings"
       >
-        IRD Portal
-      </a>
-      <a
-        href="https://etds.ird.gov.np"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          color: "#000000",
-          textDecoration: "underline",
-          textAlign: "center",
-          padding: "3px 0",
-          display: "block",
-          fontSize: 11,
-        }}
-      >
-        e-TDS Portal
-      </a>
+        <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? 'text-blue-200' : 'text-[#d97706]'}`}>
+          F12
+        </span>
+        <span className="flex-1 text-[11px] truncate pr-1">
+          {f12IsOpen ? '[✓] Configure' : 'Configure'}
+        </span>
+      </button>
+
+      <div className="mt-auto border-t border-[#2d3748] bg-[#1e2433] pt-1">
+        <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest">
+          Nepal Links
+        </div>
+        <div className="py-1">
+          <a
+            href="https://ird.gov.np"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
+          >
+            IRD Portal
+          </a>
+          <a
+            href="https://etds.ird.gov.np"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
+          >
+            e-TDS Portal
+          </a>
+        </div>
+      </div>
     </div>
   );
 };

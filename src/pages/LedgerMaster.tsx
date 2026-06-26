@@ -3,10 +3,14 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, FileText, MapPin, Receipt, Building2, Settings } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateId } from "../lib/db";
+import { useScreenF12 } from "../hooks/useF12Config";
 
 const NEPAL_PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
 
 const LedgerMaster: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("ledger-master");
+
   const { 
     accounts, 
     addAccount, 

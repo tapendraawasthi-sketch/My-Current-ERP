@@ -1,5 +1,5 @@
-// @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { useScreenF12 } from "../hooks/useF12Config";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import ReportShell from "../components/reporting/ReportShell";
@@ -28,6 +28,9 @@ type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
 const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
 
 const TrialBalance: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("trial-balance");
+
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -48,6 +51,14 @@ const TrialBalance: React.FC = () => {
     showZero: true,
     showAlphabetical: false,
   });
+
+  // Sync F12 config for showZeroBalanceAccounts
+  useEffect(() => {
+    const f12ShowZero = getConfig("show_zero_balance_accounts");
+    if (f12ShowZero !== undefined) {
+      setTbOptions(prev => ({ ...prev, showZero: Boolean(f12ShowZero) }));
+    }
+  }, [getConfig]);
 
   const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
   const ledgerTotals = useMemo(

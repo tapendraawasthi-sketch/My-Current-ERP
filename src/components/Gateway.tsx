@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "../store/useStore";
 import GatewayTile from "./GatewayTile";
@@ -9,6 +8,7 @@ import { computeOutstandingReceivables } from "../lib/accounting";
 import { computeAllStockPositions } from "../lib/stockUtils";
 import { isAdminOrOwner, isAccountantOrAdmin } from "../lib/permissions";
 import { PaymentStatus, VoucherStatus, VoucherType } from "../lib/types";
+import { useScreenF12 } from '../hooks/useF12Config';
 
 type PermissionScope = "all" | "accounting" | "admin";
 
@@ -42,57 +42,13 @@ const safeTimestamp = (timestamp?: string) => {
   }
 };
 
-const sectionHeaderStyle: React.CSSProperties = {
-  background: "#D4EABD",
-  borderBottom: "1px solid #000",
-  padding: "6px 8px",
-  fontWeight: 700,
-  fontSize: 12,
-  textTransform: "uppercase",
-  color: "#000",
-};
-
-const panelStyle: React.CSSProperties = {
-  background: "#D4EABD",
-  border: "1px solid #000",
-  color: "#000",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  lineHeight: 1.2,
-};
-
-const valueStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 600,
-  lineHeight: 1.25,
-};
-
-const smallButtonStyle: React.CSSProperties = {
-  height: 26,
-  padding: "0 8px",
-  border: "1px solid #000",
-  background: "#D4EABD",
-  color: "#000",
-  fontSize: 11,
-  fontWeight: 700,
-  borderRadius: 0,
-  cursor: "pointer",
-};
-
-const inputStyle: React.CSSProperties = {
-  height: 28,
-  width: "100%",
-  border: "1px solid #000",
-  background: "#EBF5E2",
-  color: "#000",
-  padding: "0 6px",
-  borderRadius: 0,
-  fontSize: 12,
-};
+// --- Tailwind CSS class strings ---
+const sectionHeaderClass = "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const panelClass = "bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden";
+const labelClass = "text-[11px] font-medium text-gray-500";
+const valueClass = "text-[12px] font-semibold text-gray-800";
+const smallButtonClass = "h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 transition-colors inline-flex items-center justify-center whitespace-nowrap";
+const inputClass = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
 
 const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
   MASTERS: [
@@ -202,6 +158,9 @@ const QUICK_ACTIONS: GatewayMenuItem[] = [
 ];
 
 const Gateway: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12('global');
+
   const {
     currentUser,
     companySettings,
@@ -537,33 +496,19 @@ const Gateway: React.FC = () => {
     const visibleRows = rows.filter(canSee);
 
     return (
-      <div ref={sectionRefs[section]} style={panelStyle}>
-        <div style={sectionHeaderStyle}>{section}</div>
+      <div ref={sectionRefs[section]} className={panelClass}>
+        <div className={sectionHeaderClass}>{section}</div>
 
-        <div style={{ padding: 4 }}>
+        <div className="p-1 divide-y divide-gray-50">
           {visibleRows.length === 0 ? (
-            <div style={{ padding: 8, fontSize: 11 }}>No permitted items.</div>
+            <div className="p-2 text-[11px] text-gray-500">No permitted items.</div>
           ) : (
             visibleRows.map((item) => (
               <button
                 key={`${section}-${item.label}-${item.page}`}
                 type="button"
                 onClick={() => navigate(item.label, item.page)}
-                className="hover:bg-[#B8D4A0] transition-colors"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  border: "1px solid transparent",
-                  background: "transparent",
-                  color: "#000",
-                  padding: "4px 6px",
-                  borderRadius: 0,
-                  cursor: "pointer",
-                  fontSize: 12,
-                  fontFamily:
-                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-                }}
+                className="w-full text-left px-2.5 py-1.5 hover:bg-[#f5f6fa] text-[12px] text-gray-700 transition-colors"
               >
                 {item.label}
               </button>
@@ -575,41 +520,23 @@ const Gateway: React.FC = () => {
   };
 
   return (
-    <div
-      className="min-h-full"
-      style={{
-        background: "#C9DEB5",
-        color: "#000",
-        padding: 10,
-        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-        fontSize: 12,
-      }}
-    >
+    <div className="min-h-full bg-[#f5f6fa] p-4">
       {/* QUICK ACTIONS */}
-      <div style={{ ...panelStyle, marginBottom: 8 }}>
-        <div
-          style={{
-            ...sectionHeaderStyle,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-          }}
-        >
-          <span>Gateway / Main Home</span>
-          <span style={{ fontSize: 11, fontWeight: 600 }}>
-            Active Date: {safeBS(activeVoucherDate)} · AD {activeVoucherDate}
+      <div className={`${panelClass} mb-3`}>
+        <div className={`${sectionHeaderClass} flex items-center justify-between bg-white border-b border-gray-200`}>
+          <span className="text-[14px] text-gray-800 font-semibold tracking-normal normal-case">Gateway / Main Home</span>
+          <span className="text-[11px] font-medium text-gray-500 normal-case tracking-normal">
+            Active Date: <span className="font-bold text-[#1557b0]">{safeBS(activeVoucherDate)}</span> <span className="mx-1">·</span> AD {activeVoucherDate}
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5" style={{ padding: 6 }}>
+        <div className="flex flex-wrap gap-2 p-3 bg-gray-50">
           {QUICK_ACTIONS.filter(canSee).map((item) => (
             <button
               key={item.page}
               type="button"
               onClick={() => navigate(item.label, item.page)}
-              className="hover:bg-[#B8D4A0] transition-colors"
-              style={smallButtonStyle}
+              className={smallButtonClass}
             >
               {item.label}
             </button>
@@ -619,12 +546,12 @@ const Gateway: React.FC = () => {
 
       {/* MISSING CONFIG WARNINGS */}
       {!companySettings ? (
-        <div style={{ ...panelStyle, padding: 10, marginBottom: 8 }}>
-          <b>No company configured.</b>
+        <div className="bg-amber-50 text-amber-800 border border-amber-200 rounded-md p-3 mb-3 flex items-center justify-between shadow-sm">
+          <span className="text-[12px] font-medium">No company configured.</span>
           <button
             type="button"
             onClick={() => navigate("Company Settings", "settings")}
-            style={{ ...smallButtonStyle, marginLeft: 8 }}
+            className="h-7 px-3 bg-white border border-amber-300 text-amber-800 text-[11px] font-medium rounded hover:bg-amber-100 transition-colors"
           >
             Configure Company
           </button>
@@ -632,12 +559,12 @@ const Gateway: React.FC = () => {
       ) : null}
 
       {!currentFiscalYear ? (
-        <div style={{ ...panelStyle, padding: 10, marginBottom: 8 }}>
-          <b>No active fiscal year.</b>
+        <div className="bg-amber-50 text-amber-800 border border-amber-200 rounded-md p-3 mb-3 flex items-center justify-between shadow-sm">
+          <span className="text-[12px] font-medium">No active fiscal year.</span>
           <button
             type="button"
             onClick={() => navigate("Fiscal Year", "fiscal-year")}
-            style={{ ...smallButtonStyle, marginLeft: 8 }}
+            className="h-7 px-3 bg-white border border-amber-300 text-amber-800 text-[11px] font-medium rounded hover:bg-amber-100 transition-colors"
           >
             Open Fiscal Year
           </button>
@@ -645,127 +572,126 @@ const Gateway: React.FC = () => {
       ) : null}
 
       {/* MAIN BODY */}
-      <div className="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-2">
+      <div className="grid grid-cols-1 xl:grid-cols-[340px_1fr] gap-3">
         {/* LEFT PANEL */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {/* Company Info */}
-          <div style={panelStyle}>
-            <div style={sectionHeaderStyle}>Company & Period Info</div>
+          <div className={panelClass}>
+            <div className={sectionHeaderClass}>Company & Period Info</div>
 
-            <div className="grid grid-cols-2 gap-2" style={{ padding: 8 }}>
+            <div className="grid grid-cols-2 gap-y-3 gap-x-4 p-4">
               <div>
-                <div style={labelStyle}>Company</div>
-                <div style={valueStyle}>{companyName}</div>
+                <div className={labelClass}>Company</div>
+                <div className={valueClass}>{companyName}</div>
               </div>
 
               <div>
-                <div style={labelStyle}>Fiscal Year</div>
-                <div style={valueStyle}>{fiscalYearLabel}</div>
+                <div className={labelClass}>Fiscal Year</div>
+                <div className={valueClass}>{fiscalYearLabel}</div>
               </div>
 
               <div>
-                <div style={labelStyle}>PAN</div>
-                <div style={valueStyle}>{companySettings?.panNumber || "—"}</div>
+                <div className={labelClass}>PAN</div>
+                <div className={valueClass}>{companySettings?.panNumber || "—"}</div>
               </div>
 
               <div>
-                <div style={labelStyle}>VAT Reg No</div>
-                <div style={valueStyle}>{companySettings?.vatNumber || "—"}</div>
+                <div className={labelClass}>VAT Reg No</div>
+                <div className={valueClass}>{companySettings?.vatNumber || "—"}</div>
               </div>
 
               <div>
-                <div style={labelStyle}>FY Start</div>
-                <div style={valueStyle}>
+                <div className={labelClass}>FY Start</div>
+                <div className={valueClass}>
                   {safeBS(currentFiscalYear?.startDate)}
-                  <div style={{ fontSize: 10 }}>AD {currentFiscalYear?.startDate || "—"}</div>
+                  <div className="text-[10px] text-gray-500 font-normal mt-0.5">AD {currentFiscalYear?.startDate || "—"}</div>
                 </div>
               </div>
 
               <div>
-                <div style={labelStyle}>FY End</div>
-                <div style={valueStyle}>
+                <div className={labelClass}>FY End</div>
+                <div className={valueClass}>
                   {safeBS(currentFiscalYear?.endDate)}
-                  <div style={{ fontSize: 10 }}>AD {currentFiscalYear?.endDate || "—"}</div>
+                  <div className="text-[10px] text-gray-500 font-normal mt-0.5">AD {currentFiscalYear?.endDate || "—"}</div>
                 </div>
               </div>
 
-              <div className="col-span-2">
-                <div style={labelStyle}>Today</div>
-                <div style={valueStyle}>
-                  {getBSTodayLong()} · AD {new Date().toLocaleDateString()}
+              <div className="col-span-2 border-t border-gray-100 pt-3">
+                <div className={labelClass}>Today</div>
+                <div className={valueClass}>
+                  {getBSTodayLong()} <span className="text-gray-400 mx-1">·</span> <span className="text-gray-500 font-medium">AD {new Date().toLocaleDateString()}</span>
                 </div>
               </div>
 
               <div>
-                <div style={labelStyle}>User</div>
-                <div style={valueStyle}>{currentUser?.name || currentUser?.username || "—"}</div>
+                <div className={labelClass}>User</div>
+                <div className={valueClass}>{currentUser?.name || currentUser?.username || "—"}</div>
               </div>
 
               <div>
-                <div style={labelStyle}>Role</div>
-                <div style={valueStyle}>{role || "—"}</div>
+                <div className={labelClass}>Role</div>
+                <div className={valueClass}>{role || "—"}</div>
               </div>
-            </div>
 
-            <div className="flex flex-wrap gap-1.5" style={{ padding: "0 8px 8px" }}>
-              <button
-                type="button"
-                onClick={() => {
-                  setDatePanelOpen((open) => !open);
-                  window.setTimeout(() => dateInputRef.current?.focus(), 0);
-                }}
-                style={{ ...smallButtonStyle, background: "#C9DEB5" }}
-              >
-                Change Date [F2]
-              </button>
+              <div className="col-span-2 pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDatePanelOpen((open) => !open);
+                    window.setTimeout(() => dateInputRef.current?.focus(), 0);
+                  }}
+                  className={smallButtonClass}
+                >
+                  Change Date [F2]
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setPeriodPanelOpen((open) => !open);
-                  window.setTimeout(() => periodFromRef.current?.focus(), 0);
-                }}
-                style={{ ...smallButtonStyle, background: "#C9DEB5" }}
-              >
-                Change Period [Alt+F2]
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPeriodPanelOpen((open) => !open);
+                    window.setTimeout(() => periodFromRef.current?.focus(), 0);
+                  }}
+                  className={smallButtonClass}
+                >
+                  Change Period [Alt+F2]
+                </button>
+              </div>
             </div>
 
             {datePanelOpen ? (
-              <div style={{ padding: 8, borderTop: "1px solid #000", background: "#C9DEB5" }}>
-                <div style={labelStyle}>Active Voucher Date</div>
+              <div className="p-3 border-t border-gray-200 bg-gray-50">
+                <div className={labelClass}>Active Voucher Date</div>
                 <input
                   ref={dateInputRef}
                   type="date"
                   value={activeVoucherDate}
                   onChange={(event) => setLocalActiveVoucherDate(event.target.value)}
-                  style={{ ...inputStyle, marginTop: 4 }}
+                  className={`${inputClass} mt-1.5 max-w-[200px]`}
                 />
-                <div style={{ fontSize: 11, marginTop: 4 }}>BS: {safeBS(activeVoucherDate)}</div>
+                <div className="text-[10px] text-gray-500 mt-1.5 font-medium">BS: {safeBS(activeVoucherDate)}</div>
               </div>
             ) : null}
 
             {periodPanelOpen ? (
-              <div style={{ padding: 8, borderTop: "1px solid #000", background: "#C9DEB5" }}>
-                <div style={labelStyle}>Report Period</div>
-
-                <div className="grid grid-cols-2 gap-2" style={{ marginTop: 4 }}>
+              <div className="p-3 border-t border-gray-200 bg-gray-50">
+                <div className={labelClass}>Report Period</div>
+                <div className="flex items-center gap-2 mt-1.5">
                   <input
                     ref={periodFromRef}
                     type="date"
                     value={reportPeriodFrom}
                     onChange={(event) => setReportPeriodFrom(event.target.value)}
-                    style={inputStyle}
+                    className={`${inputClass} max-w-[140px]`}
                   />
+                  <span className="text-gray-400 text-[11px] font-medium">to</span>
                   <input
                     type="date"
                     value={reportPeriodTo}
                     onChange={(event) => setReportPeriodTo(event.target.value)}
-                    style={inputStyle}
+                    className={`${inputClass} max-w-[140px]`}
                   />
                 </div>
-
-                <div style={{ fontSize: 11, marginTop: 4 }}>
+                <div className="text-[10px] text-gray-500 mt-1.5 font-medium">
                   BS: {safeBS(reportPeriodFrom)} to {safeBS(reportPeriodTo)}
                 </div>
               </div>
@@ -773,58 +699,32 @@ const Gateway: React.FC = () => {
           </div>
 
           {/* Recent Activity */}
-          <div style={panelStyle}>
-            <div
-              style={{
-                ...sectionHeaderStyle,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+          <div className={panelClass}>
+            <div className={`${sectionHeaderClass} flex items-center justify-between`}>
               <span>Recent Activity</span>
-
               {recentActivity.length ? (
                 <button
                   type="button"
                   onClick={clearActivity}
-                  style={{
-                    border: "1px solid #000",
-                    background: "#C9DEB5",
-                    fontSize: 10,
-                    padding: "1px 6px",
-                    cursor: "pointer",
-                    borderRadius: 0,
-                  }}
+                  className="text-[10px] text-gray-400 hover:text-red-600 transition-colors normal-case tracking-normal font-medium px-1"
                 >
                   Clear
                 </button>
               ) : null}
             </div>
-
-            <div style={{ padding: 4 }}>
+            <div className="divide-y divide-gray-100">
               {recentActivity.length === 0 ? (
-                <div style={{ padding: 8, fontSize: 11 }}>No recent activity</div>
+                <div className="p-4 text-[11px] text-gray-500 text-center">No recent activity</div>
               ) : (
                 recentActivity.slice(0, 8).map((item) => (
                   <button
                     key={`${item.page}-${item.timestamp}`}
                     type="button"
                     onClick={() => navigate(item.label, item.page)}
-                    className="hover:bg-[#B8D4A0] transition-colors"
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      border: "1px solid transparent",
-                      background: "transparent",
-                      padding: "5px 6px",
-                      cursor: "pointer",
-                      borderRadius: 0,
-                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-[#f5f6fa] transition-colors"
                   >
-                    <div style={{ fontSize: 12, fontWeight: 700 }}>{item.label}</div>
-                    <div style={{ fontSize: 10 }}>{safeTimestamp(item.timestamp)}</div>
+                    <div className="text-[12px] font-medium text-gray-800">{item.label}</div>
+                    <div className="text-[10px] text-gray-400 mt-0.5">{safeTimestamp(item.timestamp)}</div>
                   </button>
                 ))
               )}
@@ -832,20 +732,14 @@ const Gateway: React.FC = () => {
           </div>
 
           {/* Alerts */}
-          <div style={panelStyle}>
-            <div style={sectionHeaderStyle}>Alerts / Notifications</div>
+          <div className={panelClass}>
+            <div className={sectionHeaderClass}>Alerts / Notifications</div>
 
-            <div style={{ padding: 6 }}>
+            <div className="p-3">
               {businessAlerts.map((alert) => (
                 <div
                   key={alert}
-                  style={{
-                    border: "1px solid #000",
-                    background: "#C9DEB5",
-                    padding: "5px 6px",
-                    marginBottom: 4,
-                    fontWeight: 700,
-                  }}
+                  className="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-md mb-2 text-[12px] font-medium shadow-sm"
                 >
                   {alert}
                 </div>
@@ -856,54 +750,36 @@ const Gateway: React.FC = () => {
                   key={notification.id || index}
                   type="button"
                   onClick={() => navigate("Audit Log", "audit-log")}
-                  className="hover:bg-[#B8D4A0] transition-colors"
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "left",
-                    border: "1px solid #000",
-                    background: "#D4EABD",
-                    padding: "5px 6px",
-                    marginTop: 4,
-                    cursor: "pointer",
-                    borderRadius: 0,
-                  }}
+                  className="w-full text-left bg-white border border-gray-200 px-3 py-2 rounded-md mb-2 hover:bg-gray-50 transition-colors shadow-sm"
                 >
-                  <div style={{ fontWeight: 700 }}>
+                  <div className="font-semibold text-[12px] text-gray-800">
                     {notification.message || notification.title || "Notification"}
                   </div>
-                  <div style={{ fontSize: 10 }}>
+                  <div className="text-[10px] text-gray-500 mt-1">
                     {safeTimestamp(notification.timestamp || notification.createdAt)}
                   </div>
                 </button>
               ))}
 
               {businessAlerts.length === 0 && unreadNotifications.length === 0 ? (
-                <div style={{ padding: 4, fontSize: 11 }}>No pending alerts.</div>
+                <div className="text-[11px] text-gray-500 py-2 text-center">No pending alerts.</div>
               ) : null}
 
-              <button
-                type="button"
-                onClick={() => navigate("Audit Log", "audit-log")}
-                style={{
-                  marginTop: 6,
-                  border: "none",
-                  background: "transparent",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  padding: 0,
-                }}
-              >
-                View All
-              </button>
+              {(businessAlerts.length > 0 || unreadNotifications.length > 0) && (
+                <button
+                  type="button"
+                  onClick={() => navigate("Audit Log", "audit-log")}
+                  className="mt-1 text-[#1557b0] hover:text-[#0f4a96] hover:underline text-[11px] font-medium block text-center w-full"
+                >
+                  View All Activity Logs
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* RIGHT MENU PANEL */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
           {Object.entries(MENU_SECTIONS).map(([section, rows]) => (
             <React.Fragment key={section}>{renderMenuSection(section, rows)}</React.Fragment>
           ))}
@@ -911,10 +787,9 @@ const Gateway: React.FC = () => {
       </div>
 
       {/* SNAPSHOT */}
-      <div style={{ ...panelStyle, marginTop: 8 }}>
-        <div style={sectionHeaderStyle}>Business Snapshot</div>
-
-        <div className="flex flex-wrap gap-1.5" style={{ padding: 6 }}>
+      <div className={`${panelClass} mt-3`}>
+        <div className={sectionHeaderClass}>Business Snapshot</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50">
           <GatewayTile
             label="Cash Balance"
             value={money(snapshot.cashBalance)}

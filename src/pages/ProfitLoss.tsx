@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { useMemo, useState } from "react";
+import { useScreenF12 } from "../hooks/useF12Config";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import ReportShell from "../components/reporting/ReportShell";
@@ -26,6 +26,9 @@ const fmtDrCr = (dr: number, cr: number) => {
 type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
 
 const ProfitLoss: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("profit-loss");
+
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const navigate = useNavigate();
   const [optionsOpen, setOptionsOpen] = useState(false);

@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { useMemo, useState } from "react";
+import { useScreenF12 } from "../hooks/useF12Config";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import ReportShell from "../components/reporting/ReportShell";
@@ -7,6 +7,9 @@ import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 
 const StockSummary: React.FC = () => {
+  // Register this screen with F12 system
+  const getConfig = useScreenF12("stock-summary");
+
   const { items, stockMovements, companySettings } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [options, setOptions] = useState({});
