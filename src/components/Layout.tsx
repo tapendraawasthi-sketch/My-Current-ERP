@@ -3,9 +3,7 @@ import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
-import TopMenuBar from "./TopMenuBar/TopMenuBar";
-import { AppProvider } from "../context/AppContext";
-import { MenuProvider } from "../context/MenuContext";
+import BusyMenuBar from "./BusyMenuBar";
 import { useIsMobile } from "../hooks/use-mobile";
 import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
@@ -270,11 +268,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {!isMinimized && (
         <>
-          <AppProvider>
-            <MenuProvider>
-              <TopMenuBar />
-            </MenuProvider>
-          </AppProvider>
+          <BusyMenuBar />
           <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
             <main style={{ flex: 1, overflowY: "auto", padding: 12, background: TWO_COLOR.bg }}>
               <div style={{ fontSize: 11, color: "#000000", textAlign: "center", marginBottom: 6, fontWeight: 600 }}>
