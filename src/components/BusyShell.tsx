@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
+import { RightButtonBar } from "./RightButtonBar";
 
 const S = { background: "#C9DEB5", color: "#000000", border: "1px solid #000000" } as const;
 const S_DARK = { background: "#D4EABD", color: "#000000", border: "1px solid #000000" } as const;
@@ -196,70 +197,7 @@ const quickKeys = [
 ];
 
 export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> = ({ onShortcut }) => {
-  const rowStyle = (hovered: boolean): React.CSSProperties => ({
-    height: 22,
-    borderBottom: "1px solid #000000",
-    cursor: "pointer",
-    background: hovered ? "#C9DEB5" : "#D4EABD",
-    display: "flex",
-    alignItems: "center",
-  });
-
-  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
-
-  return (
-    <div
-      style={{
-        width: 148,
-        background: "#D4EABD",
-        borderLeft: "1px solid #000000",
-        fontSize: 11,
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-        overflowY: "auto",
-      }}
-    >
-      <div
-        style={{
-          background: "#C9DEB5",
-          textAlign: "center",
-          padding: "3px 0",
-          fontWeight: "bold",
-          borderBottom: "1px solid #000000",
-          color: "#000000",
-        }}
-      >
-        Shortcut Keys
-      </div>
-      {[...fKeys, ...quickKeys].map(({ key, label }) => (
-        <div
-          key={key}
-          onClick={() => onShortcut?.(key)}
-          style={rowStyle(hoveredKey === key)}
-          onMouseEnter={() => setHoveredKey(key)}
-          onMouseLeave={() => setHoveredKey(null)}
-        >
-          <span style={{ width: 32, color: "#000000", fontWeight: "bold", textAlign: "center", flexShrink: 0 }}>
-            {key}
-          </span>
-          <span style={{ color: "#000000" }}>{label}</span>
-        </div>
-      ))}
-      <div style={{ height: 6, borderBottom: "1px solid #000000" }} />
-      <div style={{ background: "#C9DEB5", textAlign: "center", padding: "2px 0", fontSize: 10, color: "#000000", borderBottom: "1px solid #000000" }}>
-        Training Videos
-      </div>
-      <a href="https://ird.gov.np" target="_blank" rel="noopener noreferrer"
-        style={{ color: "#000000", textDecoration: "underline", textAlign: "center", padding: "2px 0", display: "block", fontSize: 11 }}>
-        IRD Portal
-      </a>
-      <a href="https://etds.ird.gov.np" target="_blank" rel="noopener noreferrer"
-        style={{ color: "#000000", textDecoration: "underline", textAlign: "center", padding: "2px 0", display: "block", fontSize: 11 }}>
-        e-TDS Portal
-      </a>
-    </div>
-  );
+  return <RightButtonBar onShortcut={onShortcut} />;
 };
 
 export const PillTitle: React.FC<{ title: string }> = ({ title }) => (

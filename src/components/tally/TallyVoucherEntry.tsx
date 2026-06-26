@@ -317,6 +317,19 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
   const [primaryAccount, setPrimaryAccount] = useState({ id: "", name: "" }); // single-entry header
   const [lines, setLines] = useState<Line[]>([blankLine("dr"), blankLine("cr")]);
   const [activeCell, setActiveCell] = useState<{ row: number; col: string }>({ row: 0, col: "account" });
+
+  const [isOptional, setIsOptional] = useState(false);
+  const [isPostDated, setIsPostDated] = useState(false);
+  const { currentPage, setCurrentPage } = store as any;
+
+  const resolved =
+    currentPage === "payment"
+      ? "payment"
+      : currentPage === "receipt"
+        ? "receipt"
+        : currentPage === "contra"
+          ? "contra"
+          : "journal";
  
   // popups
   const [bankIdx, setBankIdx] = useState<number | null>(null);
@@ -566,18 +579,191 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
         </div>
 
         {/* Right side panel (Actions) */}
-        <div className="tally-right-bar w-[120px] p-2 flex flex-col gap-2 no-print">
-          <button className="tally-btn tally-btn-primary flex justify-between items-center" onClick={handleAccept}>
-            <span>F2: Save</span>
+        <div className="tally-right-bar w-[120px] p-2 flex flex-col gap-1 no-print">
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textAlign: "center",
+              background: "#C9DEB5",
+              border: "1px solid #000000",
+              padding: "2px 4px",
+              color: "#000000",
+            }}
+          >
+            Voucher Type
+          </div>
+
+          {[
+            { key: "F4", label: "Contra", page: "contra" },
+            { key: "F5", label: "Payment", page: "payment" },
+            { key: "F6", label: "Receipt", page: "receipt" },
+            { key: "F7", label: "Journal", page: "journal" },
+          ].map((item) => (
+            <button
+              key={item.page}
+              type="button"
+              className="tally-btn flex justify-between items-center"
+              onClick={() => setCurrentPage(item.page)}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: 11,
+                padding: "2px 4px",
+                height: 20,
+                fontWeight: resolved === item.page ? 700 : 500,
+                background: resolved === item.page ? "#B8D89A" : undefined,
+              }}
+            >
+              <span>{item.key}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textAlign: "center",
+              background: "#C9DEB5",
+              border: "1px solid #000000",
+              padding: "2px 4px",
+              color: "#000000",
+              marginTop: 4,
+            }}
+          >
+            Tools
+          </div>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => toast.success("Change mode: Single ↔ Double entry")}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+            }}
+          >
+            <span>Ctrl+H</span>
+            <span>Mode</span>
           </button>
-          <button className="tally-btn flex justify-between items-center" onClick={() => addLine()}>
-            <span>Ctrl+A: Add Row</span>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => setIsOptional((prev) => !prev)}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+              background: isOptional ? "#B8D89A" : undefined,
+              fontWeight: isOptional ? 700 : 500,
+            }}
+          >
+            <span>Ctrl+L</span>
+            <span>Optional {isOptional ? "[ON]" : ""}</span>
           </button>
-          <button className="tally-btn flex justify-between items-center" onClick={() => setDrCrNotation(!drCrNotation)}>
-            <span>F12: Config</span>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => setIsPostDated((prev) => !prev)}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+              background: isPostDated ? "#B8D89A" : undefined,
+              fontWeight: isPostDated ? 700 : 500,
+            }}
+          >
+            <span>Ctrl+T</span>
+            <span>PostDated {isPostDated ? "[ON]" : ""}</span>
           </button>
-          <button className="tally-btn flex justify-between items-center" onClick={() => reset()}>
-            <span>Esc: Clear</span>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => setDrCrNotation(!drCrNotation)}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+            }}
+          >
+            <span>F12</span>
+            <span>Configure</span>
+          </button>
+
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textAlign: "center",
+              background: "#C9DEB5",
+              border: "1px solid #000000",
+              padding: "2px 4px",
+              color: "#000000",
+              marginTop: 4,
+            }}
+          >
+            Actions
+          </div>
+
+          <button
+            type="button"
+            className="tally-btn tally-btn-primary flex justify-between items-center"
+            onClick={handleAccept}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+            }}
+          >
+            <span>F2</span>
+            <span>Save</span>
+          </button>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => addLine()}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+            }}
+          >
+            <span>Ctrl+A</span>
+            <span>Add Row</span>
+          </button>
+
+          <button
+            type="button"
+            className="tally-btn flex justify-between items-center"
+            onClick={() => reset()}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 11,
+              padding: "2px 4px",
+              height: 20,
+            }}
+          >
+            <span>Esc</span>
+            <span>Clear</span>
           </button>
         </div>
       </div>

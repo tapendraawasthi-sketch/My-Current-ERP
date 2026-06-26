@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { ScreenProvider } from "./context/ScreenContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import "./styles.css";
 
@@ -15,7 +16,9 @@ createRoot(container).render(
     <ErrorBoundary>
       <ThemeProvider>
         <LanguageProvider>
-          <App />
+          <ScreenProvider>
+            <App />
+          </ScreenProvider>
         </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>
