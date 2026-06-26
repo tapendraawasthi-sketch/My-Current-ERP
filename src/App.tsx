@@ -5,6 +5,7 @@ import { Loader2, Keyboard } from "lucide-react";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import Layout from "./components/Layout";
 import AuthGateway from "./pages/AuthGateway";
+import Gateway from "./components/Gateway";
 import Dashboard from "./components/Dashboard";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import PartiesDirectory from "./components/PartiesDirectory";
@@ -80,10 +81,53 @@ function MainRouter() {
   const { currentPage } = useStore();
 
   switch (currentPage) {
+    case "gateway":
     case "dashboard":
       return (
         <ErrorBoundary>
+          <Gateway />
+        </ErrorBoundary>
+      );
+    case "analytics-dashboard":
+      return (
+        <ErrorBoundary>
           <Dashboard />
+        </ErrorBoundary>
+      );
+    case "bill-wise-pending":
+      return (
+        <ErrorBoundary>
+          <BillWisePending />
+        </ErrorBoundary>
+      );
+    case "party-ledger":
+      return (
+        <ErrorBoundary>
+          <PartyLedgerStatement />
+        </ErrorBoundary>
+      );
+    case "vouchers-log":
+      return (
+        <ErrorBoundary>
+          <VouchersRegister />
+        </ErrorBoundary>
+      );
+    case "bank-statement-import":
+      return (
+        <ErrorBoundary>
+          <BankStatementImport />
+        </ErrorBoundary>
+      );
+    case "overdue-bills-interest":
+      return (
+        <ErrorBoundary>
+          <OverdueBillsInterest />
+        </ErrorBoundary>
+      );
+    case "currency-master":
+      return (
+        <ErrorBoundary>
+          <ConfigurationHub />
         </ErrorBoundary>
       );
     case "shortcuts":

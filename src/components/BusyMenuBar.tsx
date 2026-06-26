@@ -12,6 +12,7 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Company",
     items: [
+      { label: "Gateway / Home", page: "gateway" },
       { label: "Company Settings", page: "settings" },
       { label: "Fiscal Year", page: "fiscal-year" },
       { separator: true, label: "" },

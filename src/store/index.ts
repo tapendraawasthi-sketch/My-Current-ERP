@@ -218,6 +218,8 @@ interface AppState {
   companySettings: CompanySettings | null;
   // UI
   currentPage: string;
+  activeVoucherDate: string;
+  setActiveVoucherDate: (date: string) => void;
   reportFilters: ReportFilters;
   showHelp?: boolean;
   // Actions
@@ -385,7 +387,8 @@ export const useStore = create<AppState>((set, get) => ({
   itemGroups: [],
   holidays: [],
   companySettings: null,
-  currentPage: "dashboard",
+  currentPage: "gateway",
+  activeVoucherDate: new Date().toISOString().split("T")[0],
   reportFilters: {},
   showHelp: false,
 
@@ -631,7 +634,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   logout: () => {
     sessionStorage.removeItem("sutra_user_id");
-    set({ isAuthenticated: false, currentUser: null, currentPage: "dashboard" });
+    set({ isAuthenticated: false, currentUser: null, currentPage: "gateway" });
   },
 
   createCompanyAndAdmin: async ({ company, adminUser }) => {
@@ -651,6 +654,7 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   setCurrentPage: (page) => set({ currentPage: page }),
+  setActiveVoucherDate: (date) => set({ activeVoucherDate: date }),
   setReportFilters: (filters) => set({ reportFilters: filters }),
 
   addStockJournal: async (entry) => {

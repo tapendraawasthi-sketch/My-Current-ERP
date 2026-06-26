@@ -30,8 +30,17 @@ interface MenuGroup {
 
 const menuGroups: MenuGroup[] = [
   {
+    title: "Gateway",
+    items: [
+      { label: "Gateway / Home", page: "gateway", icon: LayoutDashboard },
+    ],
+  },
+  {
     title: "Overview",
-    items: [{ label: "Dashboard", nepaliLabel: "ड्यासबोर्ड", page: "dashboard", icon: LayoutDashboard }],
+    items: [
+      { label: "Dashboard", nepaliLabel: "ड्यासबोर्ड", page: "gateway", icon: LayoutDashboard },
+      { label: "Analytics Dashboard", page: "analytics-dashboard", icon: PieChart },
+    ],
   },
   {
     title: "Masters",
@@ -165,7 +174,7 @@ const menuGroups: MenuGroup[] = [
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const { currentPage, setCurrentPage, currentUser, logout, currentFiscalYear, items, stockMovements } = useStore();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    Overview: true, Masters: false, Transactions: true, Payroll: false,
+    Gateway: true, Overview: true, Masters: false, Transactions: true, Payroll: false,
     Inventory: false, Books: false, Reports: false, Admin: false,
     "Admin Masters": false, Configuration: false, "Bulk Operations": false, "Misc Entry": false,
   });
