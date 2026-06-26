@@ -220,15 +220,6 @@ interface AppState {
   currentPage: string;
   reportFilters: ReportFilters;
   showHelp?: boolean;
-  // Top Menu
-  activeTopMenu: string | null;
-  setActiveTopMenu: (menu: string | null) => void;
-  gotoOpen: boolean;
-  setGotoOpen: (open: boolean) => void;
-  switchToOpen: boolean;
-  setSwitchToOpen: (open: boolean) => void;
-  companyFeatures: any | null;
-  setCompanyFeatures: (f: any) => void;
   // Actions
   initializeApp: () => Promise<void>;
   login: (username: string, password: string) => Promise<boolean>;
@@ -397,14 +388,6 @@ export const useStore = create<AppState>((set, get) => ({
   currentPage: "dashboard",
   reportFilters: {},
   showHelp: false,
-  activeTopMenu: null,
-  setActiveTopMenu: (menu) => set({ activeTopMenu: menu }),
-  gotoOpen: false,
-  setGotoOpen: (open) => set({ gotoOpen: open }),
-  switchToOpen: false,
-  setSwitchToOpen: (open) => set({ switchToOpen: open }),
-  companyFeatures: null,
-  setCompanyFeatures: (f) => set({ companyFeatures: f }),
 
   initializeApp: async () => {
     const db = getDB();

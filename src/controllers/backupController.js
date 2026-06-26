@@ -188,35 +188,3 @@ export const getBackupHistory = async (req, res, next) => {
     next(err);
   }
 };
-
-export const scheduleCloudBackup = async (req, res, next) => {
-  try {
-    res.json({ success: true, message: 'Cloud backup scheduled' });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const repairDatabase = async (req, res, next) => {
-  try {
-    res.json({ success: true, message: 'Database repair started' });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const migrateData = async (req, res, next) => {
-  try {
-    res.json({ success: true, message: 'Data migration started' });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const splitCompanyData = async (req, res, next) => {
-  try {
-    res.json({ success: true, message: 'Company data split started' });
-  } catch (error) {
-    next(error);
-  }
-};

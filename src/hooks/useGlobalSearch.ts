@@ -40,23 +40,6 @@ const ALL_PAGES = [
   { name: "Warehouses", path: "warehouses" },
   { name: "Units of Measure", path: "units" },
   { name: "Cost Centers", path: "cost-centers" },
-  { name: "Company Features", path: "company-features" },
-  { name: "Data Migration", path: "data-migration" },
-  { name: "Data Repair", path: "data-repair" },
-  { name: "Split Company Data", path: "split-company-data" },
-  { name: "Cloud Backup Settings", path: "cloud-backup-settings" },
-  { name: "Exchange Sync", path: "exchange-sync" },
-  { name: "Import Masters", path: "import-masters" },
-  { name: "Import Transactions", path: "import-transactions" },
-  { name: "E-Invoice", path: "e-invoice" },
-  { name: "E-Way Bill", path: "e-waybill" },
-  { name: "Data Encryption", path: "data-encryption" },
-  { name: "License Management", path: "license-management" },
-  { name: "Share History", path: "share-history" },
-  { name: "Export Logs", path: "export-logs" },
-  { name: "Import Logs", path: "import-logs" },
-  { name: "Print Logs", path: "print-logs" },
-  { name: "Troubleshoot", path: "troubleshoot" },
 ];
 
 export function useGlobalSearch(query: string): {

@@ -64,24 +64,12 @@ import fiscalYearRoutes from './routes/fiscalYearRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import shortcutRoutes from './routes/shortcutRoutes.js';
 import backupRoutes from './routes/backupRoutes.js';
-import exchangeRoutes from './routes/exchangeRoutes.js';
-import importRoutes from './routes/importRoutes.js';
-import exportRoutes from './routes/exportRoutes.js';
-import shareRoutes from './routes/shareRoutes.js';
-import featureRoutes from './routes/featureRoutes.js';
-import licenseRoutes from './routes/licenseRoutes.js';
  
 app.use('/api/company', companyRoutes);
 app.use('/api/fiscal-years', fiscalYearRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/audit-logs', auditRoutes);
 app.use('/api/shortcuts', shortcutRoutes);
-app.use('/api/exchange', exchangeRoutes);
-app.use('/api/import', importRoutes);
-app.use('/api/export', exportRoutes);
-app.use('/api/share', shareRoutes);
-app.use('/api/features', featureRoutes);
-app.use('/api/license', licenseRoutes);
  
 // ── SERVE UPLOADED FILES (logos) ─────────────────────────────────
 // In production, logos are stored as base64 in DB. But serve /uploads for local dev.

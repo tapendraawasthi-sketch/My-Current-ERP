@@ -76,24 +76,6 @@ import BulkUpdations from "./pages/BulkUpdations";
 import DataExportImport from "./pages/DataExportImport";
 import MiscDataEntry from "./pages/MiscDataEntry";
 
-import CompanyFeatures from "./pages/CompanyFeatures";
-import DataMigration from "./pages/DataMigration";
-import DataRepair from "./pages/DataRepair";
-import SplitCompanyData from "./pages/SplitCompanyData";
-import CloudBackupSettings from "./pages/CloudBackupSettings";
-import ExchangeSync from "./pages/ExchangeSync";
-import ImportMasters from "./pages/ImportMasters";
-import ImportTransactions from "./pages/ImportTransactions";
-import EInvoice from "./pages/EInvoice";
-import EWayBill from "./pages/EWayBill";
-import DataEncryption from "./pages/DataEncryption";
-import LicenseManagement from "./pages/LicenseManagement";
-import ShareHistory from "./pages/ShareHistory";
-import ExportLogs from "./pages/ExportLogs";
-import ImportLogs from "./pages/ImportLogs";
-import PrintLogs from "./pages/PrintLogs";
-import Troubleshoot from "./pages/Troubleshoot";
-
 function MainRouter() {
   const { currentPage } = useStore();
 
@@ -529,42 +511,10 @@ function MainRouter() {
       return <ErrorBoundary><ConfigurationHub /></ErrorBoundary>;
     case "bulk-updations":
       return <ErrorBoundary><BulkUpdations /></ErrorBoundary>;
+    case "data-export-import":
+      return <ErrorBoundary><DataExportImport /></ErrorBoundary>;
     case "misc-data-entry":
       return <ErrorBoundary><MiscDataEntry /></ErrorBoundary>;
-    case "company-features":
-      return <ErrorBoundary><CompanyFeatures /></ErrorBoundary>;
-    case "data-migration":
-      return <ErrorBoundary><DataMigration /></ErrorBoundary>;
-    case "data-repair":
-      return <ErrorBoundary><DataRepair /></ErrorBoundary>;
-    case "split-company-data":
-      return <ErrorBoundary><SplitCompanyData /></ErrorBoundary>;
-    case "cloud-backup-settings":
-      return <ErrorBoundary><CloudBackupSettings /></ErrorBoundary>;
-    case "exchange-sync":
-      return <ErrorBoundary><ExchangeSync /></ErrorBoundary>;
-    case "import-masters":
-      return <ErrorBoundary><ImportMasters /></ErrorBoundary>;
-    case "import-transactions":
-      return <ErrorBoundary><ImportTransactions /></ErrorBoundary>;
-    case "e-invoice":
-      return <ErrorBoundary><EInvoice /></ErrorBoundary>;
-    case "e-waybill":
-      return <ErrorBoundary><EWayBill /></ErrorBoundary>;
-    case "data-encryption":
-      return <ErrorBoundary><DataEncryption /></ErrorBoundary>;
-    case "license-management":
-      return <ErrorBoundary><LicenseManagement /></ErrorBoundary>;
-    case "share-history":
-      return <ErrorBoundary><ShareHistory /></ErrorBoundary>;
-    case "export-logs":
-      return <ErrorBoundary><ExportLogs /></ErrorBoundary>;
-    case "import-logs":
-      return <ErrorBoundary><ImportLogs /></ErrorBoundary>;
-    case "print-logs":
-      return <ErrorBoundary><PrintLogs /></ErrorBoundary>;
-    case "troubleshoot":
-      return <ErrorBoundary><Troubleshoot /></ErrorBoundary>;
     default:
       return (
         <ErrorBoundary>

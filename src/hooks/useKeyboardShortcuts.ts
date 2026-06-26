@@ -48,17 +48,6 @@ const DEFAULT_SHORTCUTS: Shortcut[] = [
   { id: 14, key_combo: 'F7',      label: 'Journal Voucher',      action_type: 'navigate', action_value: 'journal',        category: 'Vouchers',     is_active: true },
   { id: 15, key_combo: 'F8',      label: 'Sales Voucher',        action_type: 'navigate', action_value: 'sales',          category: 'Vouchers',     is_active: true },
   { id: 16, key_combo: 'F9',      label: 'Purchase Voucher',     action_type: 'navigate', action_value: 'purchase',       category: 'Vouchers',     is_active: true },
-  // Top Menu
-  { id: 17, key_combo: 'Alt+K',   label: 'Company Menu',         action_type: 'topmenu',  action_value: 'company',        category: 'Menu',         is_active: true },
-  { id: 18, key_combo: 'Alt+Y',   label: 'Data Menu',            action_type: 'topmenu',  action_value: 'data',           category: 'Menu',         is_active: true },
-  { id: 19, key_combo: 'Alt+X',   label: 'Exchange Menu',        action_type: 'topmenu',  action_value: 'exchange',       category: 'Menu',         is_active: true },
-  { id: 20, key_combo: 'Alt+O',   label: 'Import Menu',          action_type: 'topmenu',  action_value: 'import',         category: 'Menu',         is_active: true },
-  { id: 21, key_combo: 'Alt+E',   label: 'Export Menu',          action_type: 'topmenu',  action_value: 'export',         category: 'Menu',         is_active: true },
-  { id: 22, key_combo: 'Alt+S',   label: 'Share Menu',           action_type: 'topmenu',  action_value: 'share',          category: 'Menu',         is_active: true },
-  { id: 23, key_combo: 'Alt+P',   label: 'Print Menu',           action_type: 'topmenu',  action_value: 'print',          category: 'Menu',         is_active: true },
-  { id: 24, key_combo: 'Alt+H',   label: 'Help Menu',            action_type: 'topmenu',  action_value: 'help',           category: 'Menu',         is_active: true },
-  { id: 25, key_combo: 'Alt+G',   label: 'Go To',                action_type: 'action',   action_value: 'goto',           category: 'Menu',         is_active: true },
-  { id: 26, key_combo: 'Ctrl+G',  label: 'Switch Context',       action_type: 'action',   action_value: 'switch',         category: 'Menu',         is_active: true },
 ];
 
 let _shortcuts: Shortcut[] = DEFAULT_SHORTCUTS;
@@ -69,7 +58,7 @@ function notifyListeners() {
 }
 
 export function useKeyboardShortcuts() {
-  const { setCurrentPage, setActiveTopMenu, setGotoOpen, setSwitchToOpen } = useStore();
+  const { setCurrentPage } = useStore();
   const [rawShortcuts, setRawShortcuts] = useState<Shortcut[]>(_shortcuts);
   const [showHelp, setShowHelp] = useState(false);
 
@@ -165,12 +154,6 @@ export function useKeyboardShortcuts() {
         if (sc.action_type === 'save' || sc.action_type === 'search') break;
         if (sc.action_type === 'help') {
           setShowHelp((h) => !h);
-        } else if (sc.action_type === 'topmenu') {
-          setActiveTopMenu(sc.action_value);
-        } else if (sc.action_type === 'action' && sc.action_value === 'goto') {
-          setGotoOpen(true);
-        } else if (sc.action_type === 'action' && sc.action_value === 'switch') {
-          setSwitchToOpen(true);
         } else if (
           sc.action_type === 'navigate' ||
           sc.action_type === 'report' ||
