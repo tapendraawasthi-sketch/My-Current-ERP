@@ -736,7 +736,7 @@ export default function App() {
     <F12Provider>
       <>
         <Layout>
-          {renderContent()}
+          <MainRouter />
         </Layout>
         <ShortcutPanel />
         <F12Panel />
