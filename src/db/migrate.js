@@ -197,6 +197,114 @@ export async function runMigrations() {
       ON CONFLICT (key_combo) DO NOTHING;
     `);
     
+    // 6. Company Features
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS company_features (
+        id SERIAL PRIMARY KEY,
+        company_id INTEGER DEFAULT 1,
+        show_more_features BOOLEAN DEFAULT false,
+        show_all_features BOOLEAN DEFAULT false,
+        maintain_accounts BOOLEAN DEFAULT true,
+        enable_bill_wise_entry BOOLEAN DEFAULT true,
+        enable_cost_centres BOOLEAN DEFAULT false,
+        enable_interest_calculation BOOLEAN DEFAULT false,
+        maintain_inventory BOOLEAN DEFAULT true,
+        integrate_accounts_with_inventory BOOLEAN DEFAULT false,
+        enable_multiple_price_levels BOOLEAN DEFAULT false,
+        enable_batches BOOLEAN DEFAULT false,
+        maintain_expiry_date_for_batches BOOLEAN DEFAULT false,
+        enable_job_order_processing BOOLEAN DEFAULT false,
+        enable_cost_tracking BOOLEAN DEFAULT false,
+        use_discount_column_in_invoices BOOLEAN DEFAULT false,
+        use_separate_actual_billed_qty BOOLEAN DEFAULT false,
+        enable_gst BOOLEAN DEFAULT false,
+        gst_registration_type VARCHAR(50),
+        gstin VARCHAR(20),
+        gst_applicable_from DATE,
+        enable_tds BOOLEAN DEFAULT false,
+        tan_number VARCHAR(20),
+        tds_applicable_from DATE,
+        enable_tcs BOOLEAN DEFAULT false,
+        tcs_applicable_from DATE,
+        enable_vat BOOLEAN DEFAULT false,
+        vat_registration_number VARCHAR(50),
+        vat_applicable_from DATE,
+        enable_excise BOOLEAN DEFAULT false,
+        excise_registration_number VARCHAR(50),
+        enable_service_tax BOOLEAN DEFAULT false,
+        service_tax_registration_number VARCHAR(50),
+        enable_browser_access_for_reports BOOLEAN DEFAULT false,
+        enable_remote_access_sync BOOLEAN DEFAULT false,
+        maintain_payroll BOOLEAN DEFAULT false,
+        enable_payroll_statutory BOOLEAN DEFAULT false,
+        pf_registration_number VARCHAR(50),
+        esi_registration_number VARCHAR(50),
+        enable_multiple_addresses BOOLEAN DEFAULT false,
+        mark_modified_vouchers BOOLEAN DEFAULT false,
+        mailing_details_in_local_language BOOLEAN DEFAULT false,
+        created_by INTEGER,
+        created_at TIMESTAMP DEFAULT NOW(),
+        modified_by INTEGER,
+        modified_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    
+    // Insert default row for company_features
+    await client.query(`
+      INSERT INTO company_features (id, company_id) VALUES (1, 1) ON CONFLICT (id) DO NOTHING;
+    `);
+
+    // 7. Company Feature Audit
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS company_feature_audit (
+        id SERIAL PRIMARY KEY,
+        company_id INTEGER DEFAULT 1,
+        feature_group VARCHAR(100),
+        feature_name VARCHAR(200) NOT NULL,
+        old_value TEXT,
+        new_value TEXT,
+        old_details_json JSONB,
+        new_details_json JSONB,
+        changed_by INTEGER,
+        changed_by_name VARCHAR(100),
+        changed_at TIMESTAMP DEFAULT NOW(),
+        ip_address VARCHAR(50),
+        status VARCHAR(20) DEFAULT 'success',
+        failure_reason TEXT
+      );
+    `);
+
+    // 8. Company Addresses
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS company_addresses (
+        id SERIAL PRIMARY KEY,
+        company_id INTEGER DEFAULT 1,
+        address_type VARCHAR(100) NOT NULL,
+        mailing_name VARCHAR(255),
+        address_line1 TEXT,
+        address_line2 TEXT,
+        address_line3 TEXT,
+        country VARCHAR(100) DEFAULT 'Nepal',
+        state VARCHAR(100),
+        city VARCHAR(100),
+        pin_code VARCHAR(20),
+        phone VARCHAR(50),
+        mobile VARCHAR(50),
+        email VARCHAR(255),
+        website VARCHAR(255),
+        gstin VARCHAR(20),
+        contact_person VARCHAR(255),
+        is_primary BOOLEAN DEFAULT false,
+        is_default_for_invoice BOOLEAN DEFAULT false,
+        is_default_for_reports BOOLEAN DEFAULT false,
+        is_active BOOLEAN DEFAULT true,
+        created_by INTEGER,
+        created_at TIMESTAMP DEFAULT NOW(),
+        modified_by INTEGER,
+        modified_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
     // Fix sequence if we seeded specific IDs
     await client.query(`
         SELECT setval('keyboard_shortcuts_id_seq', (SELECT MAX(id) FROM keyboard_shortcuts));

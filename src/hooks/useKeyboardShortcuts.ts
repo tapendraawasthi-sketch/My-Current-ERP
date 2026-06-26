@@ -135,6 +135,16 @@ export function useKeyboardShortcuts() {
         return;
       }
 
+      if (e.key === 'F11' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        const tag = target?.tagName?.toLowerCase();
+        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
+          setCurrentPage('f11-company-features');
+        }
+        return;
+      }
+
       // F4–F9: only fire when NOT inside a tally-shell (they handle themselves)
       const inTallyShell = !!document.querySelector('.tally-shell');
       const fKey = e.key.match(/^F([4-9])$/)?.[0];

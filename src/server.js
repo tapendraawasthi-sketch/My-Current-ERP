@@ -65,8 +65,10 @@ import auditRoutes from './routes/auditRoutes.js';
 import shortcutRoutes from './routes/shortcutRoutes.js';
 import backupRoutes from './routes/backupRoutes.js';
 import topbarRoutes from './routes/topbarRoutes.js';
+import companyFeaturesRoutes from './routes/companyFeaturesRoutes.js';
  
 app.use('/api/company', companyRoutes);
+app.use('/api/company-features', companyFeaturesRoutes);
 app.use('/api/fiscal-years', fiscalYearRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/audit-logs', auditRoutes);

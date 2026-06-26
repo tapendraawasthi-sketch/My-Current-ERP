@@ -182,6 +182,7 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "Audit Log", page: "audit-log", permission: "admin" },
     { label: "Users Management", page: "users", permission: "admin" },
     { label: "Company Settings", page: "settings", permission: "admin" },
+    { label: "F11: Company Features", page: "f11-company-features", permission: "admin" },
     { label: "Fiscal Year", page: "fiscal-year", permission: "admin" },
     { label: "Bulk Updations", page: "bulk-updations", permission: "accounting" },
     { label: "Opening Balance", page: "opening-balance", permission: "accounting" },

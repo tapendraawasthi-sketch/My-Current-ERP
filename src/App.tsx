@@ -104,6 +104,7 @@ import StockJournalVoucher from "./pages/StockJournalPage";
 import SalesOrderVoucher from "./pages/SalesOrderVoucher";
 import MemorandumVoucher from "./pages/MemorandumVoucher";
 import VouchersRegisterFull from "./pages/VouchersRegisterFull";
+import F11CompanyFeatures from './pages/F11CompanyFeatures';
 
 function MainRouter() {
   const { currentPage } = useStore();
@@ -515,6 +516,12 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <StockSummary />
+        </ErrorBoundary>
+      );
+    case "f11-company-features":
+      return (
+        <ErrorBoundary>
+          <F11CompanyFeatures />
         </ErrorBoundary>
       );
     case "settings":
