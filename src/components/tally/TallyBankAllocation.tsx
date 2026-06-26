@@ -29,6 +29,7 @@ export const TallyBankAllocation: React.FC<Props> = ({
     branchName: existing?.branchName || '',
     ifscCode: existing?.ifscCode || '',
     amount: existing?.amount || amount,
+    bankStatus: existing?.bankStatus || 'Not Reconciled',
   });
 
   useEffect(() => {

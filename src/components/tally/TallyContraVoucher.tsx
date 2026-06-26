@@ -114,7 +114,7 @@ export const TallyContraVoucher: React.FC = () => {
                 <td>
                   <TallyAccountSelect
                     value={line.accountId}
-                    onChange={(id, name) => updateLine(idx, { accountId: id, accountName: name, isBank: isBankAccount(name), isCasH: isCashAccount(name) })}
+                    onChange={(id, name) => updateLine(idx, { accountId: id, accountName: name, isBank: isBankAccount(name), isCash: isCashAccount(name) })}
                   />
                 </td>
                 <td>
@@ -142,7 +142,7 @@ export const TallyContraVoucher: React.FC = () => {
                       Bank
                     </button>
                   )}
-                  {line.isCasH && (
+                  {line.isCash && (
                     <button
                       className="tally-btn text-xs py-0.5 px-2"
                       onClick={() => { setCashLineIdx(idx); setShowCash(true); }}

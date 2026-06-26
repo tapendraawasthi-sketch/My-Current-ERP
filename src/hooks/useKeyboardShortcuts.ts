@@ -1,7 +1,17 @@
 // src/hooks/useKeyboardShortcuts.ts
-import { useEffect, useState, useCallback } from "react";
-import { useStore } from "../store/useStore";
-import { getDB } from "../lib/db";
+/**
+ * Global keyboard shortcuts (app-level navigation).
+ *
+ * IMPORTANT — Tally F-key alignment:
+ *   F4  Contra  |  F5  Payment  |  F6  Receipt  |  F7  Journal
+ *   F8  Sales   |  F9  Purchase
+ *
+ * The previous F5 = "List View" assignment conflicted with Tally's F5 = Payment.
+ * List view is now accessible via Alt+L or the sidebar.
+ */
+import { useEffect, useState, useCallback } from 'react';
+import { useStore } from '../store/useStore';
+import { getDB } from '../lib/db';
 
 export interface Shortcut {
   id: number;
@@ -13,17 +23,31 @@ export interface Shortcut {
   is_active: boolean;
 }
 
+// ─── Default shortcuts ────────────────────────────────────────────────────────
+// NOTE: F4–F9 are intentionally absent here; they are handled inside
+//       useTallyKeyboard (voucher-entry screens) and TallyVoucherPage.
+//       Do NOT reassign F4–F9 in this list.
 const DEFAULT_SHORTCUTS: Shortcut[] = [
-  { id: 1, key_combo: "Ctrl+N", label: "New Voucher", action_type: "navigate", action_value: "journal", category: "Transactions", is_active: true },
-  { id: 2, key_combo: "Ctrl+I", label: "New Invoice", action_type: "navigate", action_value: "billing", category: "Transactions", is_active: true },
-  { id: 3, key_combo: "F2", label: "Save", action_type: "save", action_value: "save", category: "General", is_active: true },
-  { id: 4, key_combo: "F5", label: "List View", action_type: "navigate", action_value: "vouchers", category: "General", is_active: true },
-  { id: 5, key_combo: "?", label: "Shortcuts Panel", action_type: "help", action_value: "shortcuts", category: "General", is_active: true },
-  { id: 6, key_combo: "Ctrl+B", label: "Balance Sheet", action_type: "report", action_value: "balance-sheet", category: "Reports", is_active: true },
-  { id: 7, key_combo: "Ctrl+T", label: "Trial Balance", action_type: "report", action_value: "trial-balance", category: "Reports", is_active: true },
-  { id: 8, key_combo: "Ctrl+P", label: "Parties Directory", action_type: "navigate", action_value: "parties", category: "Masters", is_active: true },
-  { id: 9, key_combo: "Ctrl+A", label: "Chart of Accounts", action_type: "navigate", action_value: "accounts", category: "Masters", is_active: true },
-  { id: 10, key_combo: "Ctrl+D", label: "Dashboard", action_type: "navigate", action_value: "dashboard", category: "General", is_active: true },
+  // General
+  { id: 1,  key_combo: 'Ctrl+N',  label: 'New Journal Voucher',  action_type: 'navigate', action_value: 'journal',        category: 'Transactions', is_active: true },
+  { id: 2,  key_combo: 'Ctrl+I',  label: 'New Sales Invoice',    action_type: 'navigate', action_value: 'billing',        category: 'Transactions', is_active: true },
+  { id: 3,  key_combo: 'F2',      label: 'Save (voucher ctx)',   action_type: 'save',     action_value: 'save',           category: 'General',      is_active: true },
+  { id: 4,  key_combo: 'Alt+L',   label: 'Voucher Register',     action_type: 'navigate', action_value: 'vouchers',       category: 'General',      is_active: true },
+  { id: 5,  key_combo: '?',       label: 'Shortcuts Panel',      action_type: 'help',     action_value: 'shortcuts',      category: 'General',      is_active: true },
+  // Reports
+  { id: 6,  key_combo: 'Ctrl+B',  label: 'Balance Sheet',        action_type: 'report',   action_value: 'balance-sheet',  category: 'Reports',      is_active: true },
+  { id: 7,  key_combo: 'Ctrl+G',  label: 'Trial Balance',        action_type: 'report',   action_value: 'trial-balance',  category: 'Reports',      is_active: true },
+  // Masters
+  { id: 8,  key_combo: 'Ctrl+P',  label: 'Parties Directory',    action_type: 'navigate', action_value: 'parties',        category: 'Masters',      is_active: true },
+  { id: 9,  key_combo: 'Ctrl+A',  label: 'Chart of Accounts',    action_type: 'navigate', action_value: 'accounts',       category: 'Masters',      is_active: true },
+  { id: 10, key_combo: 'Ctrl+D',  label: 'Dashboard',            action_type: 'navigate', action_value: 'dashboard',      category: 'General',      is_active: true },
+  // Tally voucher pages (F4-F9 handled in useTallyKeyboard, listed here for help panel display only)
+  { id: 11, key_combo: 'F4',      label: 'Contra Voucher',       action_type: 'navigate', action_value: 'contra',         category: 'Vouchers',     is_active: true },
+  { id: 12, key_combo: 'F5',      label: 'Payment Voucher',      action_type: 'navigate', action_value: 'payment',        category: 'Vouchers',     is_active: true },
+  { id: 13, key_combo: 'F6',      label: 'Receipt Voucher',      action_type: 'navigate', action_value: 'receipt',        category: 'Vouchers',     is_active: true },
+  { id: 14, key_combo: 'F7',      label: 'Journal Voucher',      action_type: 'navigate', action_value: 'journal',        category: 'Vouchers',     is_active: true },
+  { id: 15, key_combo: 'F8',      label: 'Sales Voucher',        action_type: 'navigate', action_value: 'sales',          category: 'Vouchers',     is_active: true },
+  { id: 16, key_combo: 'F9',      label: 'Purchase Voucher',     action_type: 'navigate', action_value: 'purchase',       category: 'Vouchers',     is_active: true },
 ];
 
 let _shortcuts: Shortcut[] = DEFAULT_SHORTCUTS;
@@ -38,16 +62,19 @@ export function useKeyboardShortcuts() {
   const [rawShortcuts, setRawShortcuts] = useState<Shortcut[]>(_shortcuts);
   const [showHelp, setShowHelp] = useState(false);
 
+  // Load persisted shortcuts from IndexedDB
   useEffect(() => {
-    // Load from DB
     const db = getDB();
-    db.shortcuts.toArray().then((dbShortcuts) => {
-      if (dbShortcuts.length > 0) {
-        _shortcuts = dbShortcuts as Shortcut[];
-        setRawShortcuts([..._shortcuts]);
-        notifyListeners();
-      }
-    }).catch(() => {});
+    db.shortcuts
+      .toArray()
+      .then((dbShortcuts) => {
+        if (dbShortcuts.length > 0) {
+          _shortcuts = dbShortcuts as Shortcut[];
+          setRawShortcuts([..._shortcuts]);
+          notifyListeners();
+        }
+      })
+      .catch(() => {/* ignore */});
   }, []);
 
   useEffect(() => {
@@ -58,83 +85,91 @@ export function useKeyboardShortcuts() {
     };
   }, []);
 
-  const setShortcuts = useCallback((updater: ((prev: Shortcut[]) => Shortcut[]) | Shortcut[]) => {
-    if (typeof updater === "function") {
-      _shortcuts = updater(_shortcuts);
-    } else {
-      _shortcuts = updater;
-    }
-    notifyListeners();
-  }, []);
+  const setShortcuts = useCallback(
+    (updater: ((prev: Shortcut[]) => Shortcut[]) | Shortcut[]) => {
+      _shortcuts = typeof updater === 'function' ? updater(_shortcuts) : updater;
+      notifyListeners();
+    },
+    [],
+  );
 
-  // Map every known action_value → correct page route
+  // action_value → page route
   const ACTION_VALUE_TO_PAGE: Record<string, string> = {
-    "journal": "journal", "billing": "billing", "vouchers": "vouchers",
-    "/help": "dashboard", "/masters": "accounts",
-    "dashboard": "dashboard", "accounts": "accounts", "parties": "parties",
-    "items": "items", "payment": "payment", "receipt": "receipt",
-    "company/settings": "settings", "/company/settings": "settings",
-    "/reports/ledger": "ledger",
-    "balance_sheet": "balance-sheet", "balance-sheet": "balance-sheet",
-    "trial_balance": "trial-balance", "trial-balance": "trial-balance",
-    "stock_status": "stock-summary", "stock-status": "stock-summary",
-    "acc_summary": "ledger", "acc-summary": "ledger",
-    "vat_report": "vat-reports", "vat-report": "vat-reports",
-    "day_book": "day-book", "day-book": "day-book",
-    "gst_vat_summary": "vat-reports", "gst-vat-summary": "vat-reports",
-    "AddAccountModal": "accounts", "AddItemModal": "items",
-    "AddVoucherModal": "journal", "AddPaymentModal": "payment",
-    "AddReceiptModal": "receipt", "AddJournalModal": "journal",
-    "AddSalesModal": "billing", "SwitchUserModal": "dashboard",
-    "LockProgramModal": "dashboard",
+    journal:        'journal',
+    billing:        'billing',
+    vouchers:       'vouchers',
+    dashboard:      'dashboard',
+    accounts:       'accounts',
+    parties:        'parties',
+    items:          'items',
+    payment:        'payment',
+    receipt:        'receipt',
+    contra:         'contra',
+    sales:          'sales',      // ← new
+    purchase:       'purchase',   // ← new
+    'balance-sheet':'balance-sheet',
+    'trial-balance':'trial-balance',
+    settings:       'settings',
+    'day-book':     'day-book',
+    'vat-reports':  'vat-reports',
+    'stock-summary':'stock-summary',
+    ledger:         'ledger',
   };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      // Show help panel
-      if (e.key === "?" && !e.ctrlKey && !e.metaKey) {
+      // Help panel toggle
+      if (e.key === '?' && !e.ctrlKey && !e.metaKey) {
         const active = document.activeElement;
-        if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
         e.preventDefault();
         setShowHelp((h) => !h);
         return;
       }
 
+      // F4–F9: only fire when NOT inside a tally-shell (they handle themselves)
+      const inTallyShell = !!document.querySelector('.tally-shell');
+      const fKey = e.key.match(/^F([4-9])$/)?.[0];
+      if (fKey && inTallyShell) return; // let useTallyKeyboard handle it
+
       const active = document.activeElement;
-      if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
 
       for (const sc of _shortcuts) {
         if (!sc.is_active) continue;
+
         const combo = sc.key_combo.toLowerCase();
         const pressed = [
-          e.ctrlKey ? "ctrl+" : "",
-          e.metaKey ? "meta+" : "",
-          e.altKey ? "alt+" : "",
-          e.shiftKey && !combo.includes("shift+") ? "" : e.shiftKey ? "shift+" : "",
+          e.ctrlKey  ? 'ctrl+'  : '',
+          e.metaKey  ? 'meta+'  : '',
+          e.altKey   ? 'alt+'   : '',
+          e.shiftKey && combo.includes('shift+') ? 'shift+' : '',
           e.key.toLowerCase(),
-        ].join("");
+        ].join('');
 
-        const normalizedCombo = combo
-          .replace("ctrl+", "ctrl+")
-          .replace("meta+", "meta+");
+        if (pressed !== combo && e.key.toLowerCase() !== combo) continue;
 
-        if (pressed === normalizedCombo || e.key.toLowerCase() === combo) {
-          e.preventDefault();
-          if (sc.action_type === "save" || sc.action_type === "search") break;
-          if (sc.action_type === "help") {
-            setShowHelp((h) => !h);
-          } else if (sc.action_type === "navigate" || sc.action_type === "report" || sc.action_type === "modal") {
-            const av = sc.action_value;
-            const page = ACTION_VALUE_TO_PAGE[av] || ACTION_VALUE_TO_PAGE[av.replace(/^\//, "")];
-            if (page) setCurrentPage(page);
-          }
-          break;
+        e.preventDefault();
+
+        if (sc.action_type === 'save' || sc.action_type === 'search') break;
+        if (sc.action_type === 'help') {
+          setShowHelp((h) => !h);
+        } else if (
+          sc.action_type === 'navigate' ||
+          sc.action_type === 'report' ||
+          sc.action_type === 'modal'
+        ) {
+          const page =
+            ACTION_VALUE_TO_PAGE[sc.action_value] ||
+            ACTION_VALUE_TO_PAGE[sc.action_value.replace(/^\//, '')];
+          if (page) setCurrentPage(page);
         }
+        break;
       }
     };
 
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [setCurrentPage]);
 
   return { rawShortcuts, setShortcuts, showHelp, setShowHelp };

@@ -21,16 +21,16 @@ export const TallyCashDenomination: React.FC<Props> = ({
   onSave,
 }) => {
   const [rows, setRows] = useState<CashDenomination[]>(
-    existing?.length ? existing : standardDenominations.map((d) => ({ denomination: d, count: 0 }))
+    existing?.length ? existing : standardDenominations.map((d) => ({ denom: d, count: 0 }))
   );
 
   if (!isOpen) return null;
 
-  const total = rows.reduce((sum, r) => sum + r.denomination * r.count, 0);
+  const total = rows.reduce((sum, r) => sum + r.denom * r.count, 0);
 
   const updateCount = (denomination: number, count: number) => {
     setRows((prev) =>
-      prev.map((r) => (r.denomination === denomination ? { ...r, count: Math.max(0, count || 0) } : r))
+      prev.map((r) => (r.denom === denomination ? { ...r, count: Math.max(0, count || 0) } : r))
     );
   };
 
@@ -60,18 +60,18 @@ export const TallyCashDenomination: React.FC<Props> = ({
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.denomination}>
-                  <td className="text-right">{formatMoney(r.denomination)}</td>
+                <tr key={r.denom}>
+                  <td className="text-right">{formatMoney(r.denom)}</td>
                   <td>
                     <input
                       type="number"
                       min={0}
                       className="tally-input text-right"
                       value={r.count || ''}
-                      onChange={(e) => updateCount(r.denomination, parseInt(e.target.value || '0', 10))}
+                      onChange={(e) => updateCount(r.denom, parseInt(e.target.value || '0', 10))}
                     />
                   </td>
-                  <td className="text-right">{formatMoney(r.denomination * r.count)}</td>
+                  <td className="text-right">{formatMoney(r.denom * r.count)}</td>
                 </tr>
               ))}
             </tbody>
