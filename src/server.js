@@ -64,12 +64,31 @@ import fiscalYearRoutes from './routes/fiscalYearRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import shortcutRoutes from './routes/shortcutRoutes.js';
 import backupRoutes from './routes/backupRoutes.js';
+import topbarRoutes from './routes/topbarRoutes.js';
  
 app.use('/api/company', companyRoutes);
 app.use('/api/fiscal-years', fiscalYearRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/audit-logs', auditRoutes);
 app.use('/api/shortcuts', shortcutRoutes);
+
+/**
+ * Top menu backend endpoints:
+ * /api/companies
+ * /api/auth/switch-user
+ * /api/data/*
+ * /api/exchange/*
+ * /api/import/*
+ * /api/export/*
+ * /api/reports/:reportName/export
+ * /api/share/*
+ * /api/settings/*
+ * /api/support/*
+ * /api/admin/*
+ * /api/license/*
+ * /api/audit-log
+ */
+app.use('/api', topbarRoutes);
  
 // ── SERVE UPLOADED FILES (logos) ─────────────────────────────────
 // In production, logos are stored as base64 in DB. But serve /uploads for local dev.

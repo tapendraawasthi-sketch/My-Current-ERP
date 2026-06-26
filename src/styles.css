@@ -1020,3 +1020,108 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 26px;
   min-width: 120px;
 }
+
+/* Top Menu Bar */
+.top-menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 50;
+  background: #1e2433 !important;
+  border-bottom: 1px solid #2d3748 !important;
+  display: flex;
+  align-items: center;
+}
+
+.top-menu-bar,
+.top-menu-bar * {
+  color: #cbd5e1 !important;
+  border-color: #2d3748 !important;
+}
+
+.top-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  height: 100%;
+  font-size: 12px;
+  color: #cbd5e1 !important;
+  cursor: pointer;
+  border: none !important;
+  background: transparent !important;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+
+.top-menu-btn:hover,
+.top-menu-btn.active {
+  background: #273148 !important;
+  color: #fff !important;
+}
+
+.top-menu-btn:hover *,
+.top-menu-btn.active * {
+  color: #fff !important;
+}
+
+.top-menu-shortcut {
+  font-size: 10px;
+  color: #64748b !important;
+  margin-left: 2px;
+}
+
+.top-menu-dropdown {
+  position: absolute;
+  top: 40px;
+  background: #1e2433 !important;
+  border: 1px solid #2d3748 !important;
+  border-radius: 6px;
+  min-width: 220px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  overflow: hidden;
+}
+
+.top-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #cbd5e1 !important;
+  cursor: pointer;
+  transition: background 0.1s;
+  border: none !important;
+  background: transparent !important;
+  width: 100%;
+  text-align: left;
+}
+
+.top-menu-item:hover {
+  background: #273148 !important;
+  color: #fff !important;
+}
+
+.top-menu-item:hover * {
+  color: #fff !important;
+}
+
+.top-menu-item .item-shortcut {
+  font-size: 10px;
+  color: #64748b !important;
+  font-family: monospace;
+}
+
+.top-menu-separator {
+  height: 1px;
+  background: #2d3748 !important;
+  margin: 4px 0;
+}
+
+/* Adjust app layout to account for fixed top bar */
+.app-layout-with-topbar {
+  padding-top: 40px;
+}
