@@ -79,6 +79,59 @@ const DeliveryChallan = lazy(() => import('./pages/DeliveryChallan'));
 const GoodsReceiptNote = lazy(() => import('./pages/GoodsReceiptNote'));
 const ReceiptsAndPayments = lazy(() => import('./pages/ReceiptsAndPayments'));
 const PaymentAdvice = lazy(() => import('./pages/PaymentAdvice'));
+const Gateway = lazy(() => import('./components/Gateway'));
+const ReportHub = lazy(() => import('./components/ReportHub'));
+const BillingInvoice = lazy(() => import('./pages/BillingInvoice'));
+const TdsReport = lazy(() => import('./pages/TdsReport'));
+const TdsPayment = lazy(() => import('./pages/TdsPayment'));
+const BankBook = lazy(() => import('./pages/BankBook'));
+const CashBook = lazy(() => import('./pages/CashBook'));
+const AgingReport = lazy(() => import('./pages/AgingReport'));
+const BillWisePending = lazy(() => import('./pages/BillWisePending'));
+const PartyLedgerStatement = lazy(() => import('./pages/PartyLedgerStatement'));
+const CostCenterReport = lazy(() => import('./pages/CostCenterReport'));
+const BudgetVsActual = lazy(() => import('./pages/BudgetVsActual'));
+const VouchersLog = lazy(() => import('./pages/VouchersLog'));
+const BankingHub = lazy(() => import('./pages/BankingHub'));
+const ChequePrinting = lazy(() => import('./pages/ChequePrinting'));
+const ChequeRegister = lazy(() => import('./pages/ChequeRegister'));
+const DepositSlip = lazy(() => import('./pages/DepositSlip'));
+const EPayments = lazy(() => import('./pages/EPayments'));
+const PDCSummary = lazy(() => import('./pages/PDCSummary'));
+const AutoBankReconciliation = lazy(() => import('./pages/AutoBankReconciliation'));
+const EmployeeMaster = lazy(() => import('./pages/EmployeeMaster'));
+const EmployeeGroupMaster = lazy(() => import('./pages/EmployeeGroupMaster'));
+const PayHeadMaster = lazy(() => import('./pages/PayHeadMaster'));
+const SalaryDetailsMaster = lazy(() => import('./pages/SalaryDetailsMaster'));
+const PayrollUnitMaster = lazy(() => import('./pages/PayrollUnitMaster'));
+const AttendanceTypeMaster = lazy(() => import('./pages/AttendanceTypeMaster'));
+const TDSNatureOfPaymentMaster = lazy(() => import('./pages/TDSNatureOfPaymentMaster'));
+const AccountGroupMaster = lazy(() => import('./pages/AccountGroupMaster'));
+const LedgerMaster = lazy(() => import('./pages/LedgerMaster'));
+const VoucherTypeMaster = lazy(() => import('./pages/VoucherTypeMaster'));
+const CurrencyMaster = lazy(() => import('./pages/CurrencyMaster'));
+const StandardNarrationMaster = lazy(() => import('./pages/StandardNarrationMaster'));
+const TaxCategoryMaster = lazy(() => import('./pages/TaxCategoryMaster'));
+const SaleTypeMaster = lazy(() => import('./pages/SaleTypeMaster'));
+const PurchaseTypeMaster = lazy(() => import('./pages/PurchaseTypeMaster'));
+const CostCenters = lazy(() => import('./pages/CostCenters'));
+const BankAccountsPage = lazy(() => import('./pages/BankAccountsPage'));
+const BudgetMaster = lazy(() => import('./pages/BudgetMaster'));
+const ItemGroupMaster = lazy(() => import('./pages/ItemGroupMaster'));
+const Units = lazy(() => import('./pages/Units'));
+const Warehouses = lazy(() => import('./pages/Warehouses'));
+const ScenarioMaster = lazy(() => import('./pages/ScenarioMaster'));
+const OpeningBalance = lazy(() => import('./pages/OpeningBalance'));
+const FiscalYear = lazy(() => import('./pages/FiscalYear'));
+const MasterControlCentre = lazy(() => import('./pages/MasterControlCentre'));
+const AuditLog = lazy(() => import('./pages/AuditLog'));
+const UsersManagement = lazy(() => import('./pages/UsersManagement'));
+const OverdueBillsInterest = lazy(() => import('./pages/OverdueBillsInterest'));
+const PayrollRun = lazy(() => import('./pages/PayrollRun'));
+const InventoryReport = lazy(() => import('./pages/InventoryReport'));
+const RecurringVouchers = lazy(() => import('./pages/RecurringVouchers'));
+const StockCategoryMaster = lazy(() => import('./pages/StockCategoryMaster'));
+const Parties = lazy(() => import('./pages/Parties'));
 
 
 import Layout from "./components/Layout";
@@ -219,6 +272,82 @@ const App = () => {
       case 'receipt-note': return <GoodsReceiptNote />;
       case 'receipts-and-payments': return <ReceiptsAndPayments />;
       case 'payment-advice': return <PaymentAdvice />;
+
+      // Gateway & Navigation Hubs
+      case 'gateway': return <Gateway />;
+      case 'reports-hub': return <ReportHub />;
+      case 'configuration-hub': return <ConfigurationHub />;
+      case 'data-import-export': return <DataExportImport />;
+
+      // Masters
+      case 'master-control-centre': return <MasterControlCentre />;
+      case 'accounts': return <ChartOfAccounts />;
+      case 'parties': return <Parties />;
+      case 'items': return <StockBook />;
+      case 'ledgers': return <LedgerMaster />;
+      case 'account-groups': return <AccountGroupMaster />;
+      case 'item-groups': return <ItemGroupMaster />;
+      case 'units': return <Units />;
+      case 'cost-centers': return <CostCenters />;
+      case 'bank-accounts': return <BankAccountsPage />;
+      case 'employees': return <EmployeeMaster />;
+      case 'employee-groups': return <EmployeeGroupMaster />;
+      case 'tds-nature-of-payments': return <TDSNatureOfPaymentMaster />;
+      case 'pay-heads': return <PayHeadMaster />;
+      case 'salary-details': return <SalaryDetailsMaster />;
+      case 'payroll-units': return <PayrollUnitMaster />;
+      case 'attendance-types': return <AttendanceTypeMaster />;
+      case 'voucher-types': return <VoucherTypeMaster />;
+      case 'budget': return <BudgetMaster />;
+      case 'currency-master': return <CurrencyMaster />;
+      case 'standard-narrations': return <StandardNarrationMaster />;
+      case 'tax-categories': return <TaxCategoryMaster />;
+      case 'sale-types': return <SaleTypeMaster />;
+      case 'purchase-types': return <PurchaseTypeMaster />;
+      case 'scenarios': return <ScenarioMaster />;
+      case 'warehouses': return <Warehouses />;
+      case 'opening-balance': return <OpeningBalance />;
+      case 'fiscal-year': return <FiscalYear />;
+
+      // Transactions
+      case 'billing': return <BillingInvoice />;
+
+      // Reports
+      case 'ledger': return <GeneralLedger />;
+      case 'bank-book': return <BankBook />;
+      case 'cash-book': return <CashBook />;
+      case 'tds-report': return <TdsReport />;
+      case 'aging-report': return <AgingReport />;
+      case 'bill-wise-pending':
+      case 'bill-pending': return <BillWisePending />;
+      case 'party-ledger':
+      case 'party-statement': return <PartyLedgerStatement />;
+      case 'cost-center-report': return <CostCenterReport />;
+      case 'budget-vs-actual': return <BudgetVsActual />;
+      case 'vouchers-log': return <VouchersLog />;
+      case 'inventory-report': return <InventoryReport />;
+      case 'stock-categories': return <StockCategoryMaster />;
+      case 'overdue-bills-interest': return <OverdueBillsInterest />;
+      case 'recurring-vouchers': return <RecurringVouchers />;
+
+      // Banking
+      case 'banking-hub': return <BankingHub />;
+      case 'cheque-printing': return <ChequePrinting />;
+      case 'cheque-register': return <ChequeRegister />;
+      case 'deposit-slip': return <DepositSlip />;
+      case 'e-payments': return <EPayments />;
+      case 'pdc-summary': return <PDCSummary />;
+      case 'auto-bank-reconciliation': return <AutoBankReconciliation />;
+
+      // Payroll
+      case 'payroll-run': return <PayrollRun />;
+      case 'tds-payment': return <TdsPayment />;
+
+      // Administration
+      case 'backup': return <BackupRestore />;
+      case 'audit-log': return <AuditLog />;
+      case 'users': return <UsersManagement />;
+      case 'grn': return <GoodsReceiptNote />;
 
             default:
         return (
