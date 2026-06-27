@@ -27,14 +27,14 @@ const ReportShell: React.FC<ReportShellProps> = ({
   children,
 }) => {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#E4F1D9] p-4 text-gray-800">
-      <div className="max-w-7xl mx-auto bg-[#EBF5E2] border border-black rounded-md overflow-hidden">
+    <div className="min-h-[calc(100vh-4rem)] bg-[#E4F1D9] p-4 text-[#000]">
+      <div className="max-w-7xl mx-auto bg-[#EBF5E2] border border-black overflow-hidden" style={{borderRadius: '4px'}}>
         
         {/* Busy-like top action bar */}
         <div className="report-action-bar">
           <div className="report-action-left">
             {actionBarButtons.map((btn) => (
-              <button key={btn.label} onClick={btn.onClick} className="report-action-btn">
+              <button key={btn.label} onClick={btn.onClick} className="report-action-btn" type="button">
                 {btn.label}
               </button>
             ))}

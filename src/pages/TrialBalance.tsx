@@ -245,6 +245,10 @@ const TrialBalance: React.FC = () => {
     );
   };
 
+  if (!accounts || accounts.length === 0) {
+    return <div className="p-8 text-center text-[12px]">Loading trial balance...</div>;
+  }
+
   return (
     <ReportShell
       title="Trial Balance"

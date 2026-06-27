@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useState, useEffect } from "react";
 import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
@@ -199,15 +199,17 @@ const quickKeys = [
   { key: "K", label: "Lock Program" },
 ];
 
-export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> = ({ onShortcut }) => {
-  return <RightButtonBar onShortcut={onShortcut} />;
+export const ShortcutSidebar: React.FC<React.ComponentProps<typeof RightButtonBar>> = (props) => {
+  return <RightButtonBar {...props} />;
 };
 
 export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({ title, variant = "tally" }) => (
   <div className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""} style={variant === "tally" ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 } : {}}>
     <span
-      className={variant === "standard" ? "inline-block bg-gray-100 text-gray-800 font-semibold text-[13px] px-[18px] py-[3px] text-center rounded border border-gray-200" : ""}
-      style={variant === "tally" ? {
+      className={variant === "standard" ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border" : ""}
+      style={variant === "standard" ? {
+        background: '#D4EABD', color: '#000000', border: '1px solid #000000', borderRadius: '4px'
+      } : variant === "tally" ? {
         display: "inline-block",
         background: "#C9DEB5",
         color: "#000000",
@@ -268,7 +270,7 @@ export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = 
   </div>
 );
 
-export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
+export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { width?: string | number }> = (props) => (
   <input
     {...props}
     style={{

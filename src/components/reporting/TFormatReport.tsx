@@ -20,7 +20,7 @@ interface TFormatReportProps {
 }
 
 const renderCell = (row?: TFormatRow, isAmount = false) => {
-  if (!row) return <td className="tformat-cell"> </td>;
+  if (!row) return <td className="tformat-cell">&nbsp;</td>;
 
   const className = [
     "tformat-cell",
@@ -37,14 +37,18 @@ const renderCell = (row?: TFormatRow, isAmount = false) => {
     ? { paddingLeft: `${12 + row.indent * 14}px` }
     : undefined;
 
+  const displayValue = isAmount 
+    ? (row.amount != null && row.amount !== '' ? row.amount : '–')
+    : row.label;
+
   return (
     <td className={className} style={style}>
       {row.onClick ? (
         <button className="tformat-link" onClick={row.onClick}>
-          {isAmount ? row.amount : row.label}
+          {displayValue}
         </button>
       ) : (
-        <span>{isAmount ? row.amount : row.label}</span>
+        <span>{displayValue}</span>
       )}
     </td>
   );

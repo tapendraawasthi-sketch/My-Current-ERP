@@ -2,14 +2,32 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #E4F1D9;
-  --bg-card: #EBF5E2;
-  --bg-muted: #D4EABD;
-  --bg-hover: #C9DEB5;
-  --border: #000000;
-  --text: #000000;
-  --text-muted: #000000;
-  --accent: #000000;
+  /* Layout backgrounds */
+  --bg:               #E4F1D9;   /* page background */
+  --bg-card:          #EBF5E2;   /* card/form background */
+  --bg-muted:         #D4EABD;   /* muted/hover background */
+  --bg-hover:         #C9DEB5;   /* hover/active background */
+
+  /* Borders — use black for the Tally-style sharp grid look */
+  --border:           #000000;
+  --border-soft:      #9DC07A;   /* secondary/soft borders */
+
+  /* Text */
+  --text:             #000000;
+  --text-muted:       #000000;
+  --accent:           #000000;
+
+  /* Semantic colors (used by badges, indicators, charts) */
+  --color-positive:   #059669;   /* success green */
+  --color-negative:   #dc2626;   /* danger red */
+  --color-accent:     #1557b0;   /* primary blue */
+  --color-warning:    #d97706;   /* warning amber */
+
+  /* Surfaces */
+  --color-surface-raised: #D4EABD;
+
+  /* Typography */
+  --font-mono: 'Courier New', Courier, monospace;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -29,6 +47,33 @@ body {
 *, *::before, *::after {
   color: #000000 !important;
   border-color: #000000 !important;
+}
+
+/* ── DARK THEME EXEMPTIONS — Right sidebar + Top menu bar ── */
+/* These components intentionally use dark backgrounds (#1e2433).
+   The global color reset above must NOT apply inside them. */
+
+.top-menu-bar,
+.top-menu-bar *,
+.top-menu-bar button,
+.top-menu-bar a,
+.top-menu-dropdown,
+.top-menu-dropdown *,
+.top-menu-dropdown button,
+[data-topbar-dark],
+[data-topbar-dark] * {
+  color: unset !important;
+  border-color: unset !important;
+}
+
+/* Right sidebar (RightButtonBar / ShortcutSidebar) */
+.right-button-bar,
+.right-button-bar *,
+.right-button-bar button,
+.right-button-bar a {
+  color: unset !important;
+  border-color: unset !important;
+  background-color: unset !important;
 }
 
 /* Background overrides — only two backgrounds allowed */
@@ -78,8 +123,25 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* Preserve dark button styles inside dark-theme containers */
+.top-menu-bar button,
+.top-menu-dropdown button,
+.top-menu-item,
+.top-menu-btn,
+.right-button-bar button {
+  background-color: unset !important;
+  color: unset !important;
+  border: unset !important;
+  border-radius: unset;
+}
 button:hover {
   background-color: #C9DEB5 !important;
+}
+.top-menu-bar button:hover,
+.top-menu-dropdown button:hover,
+.right-button-bar button:hover {
+  background-color: unset !important;
 }
 button:disabled {
   opacity: 0.5;
@@ -92,6 +154,15 @@ button:focus-visible {
 
 /* Links */
 a { color: #000000 !important; text-decoration: underline; }
+.right-button-bar a,
+.top-menu-bar a,
+.top-menu-dropdown a {
+  color: unset !important;
+}
+.right-button-bar a:hover,
+.top-menu-dropdown a:hover {
+  color: unset !important;
+}
 a:hover { text-decoration: none; }
 
 /* ── PAGE LAYOUT ── */
@@ -174,6 +245,8 @@ a:hover { text-decoration: none; }
   background: transparent;
 }
 .data-table tbody td:last-child { border-right: none !important; }
+.data-table .amt-dr { color: #1557b0 !important; }  /* Debit — blue */
+.data-table .amt-cr { color: #dc2626 !important; }  /* Credit — red */
 
 .data-table tfoot tr {
   background: #D4EABD !important;
@@ -224,14 +297,20 @@ a:hover { text-decoration: none; }
   color: #000000 !important;
   border: 1px solid #000000 !important;
 }
+/* Status badges that should retain green theme */
 .badge-posted, .badge-paid, .badge-active, .badge-success,
-.badge-draft, .badge-warning, .badge-danger, .badge-cancelled,
-.badge-unpaid, .badge-partial, .badge-inactive, .badge-info,
 .badge-default, .badge-secondary, .status-badge {
   background: #D4EABD !important;
   color: #000000 !important;
   border: 1px solid #000000 !important;
 }
+/* Status badges that need DISTINCT colors — do NOT override */
+.badge-draft    { background: #fef9c3 !important; color: #854d0e !important; border-color: #ca8a04 !important; }
+.badge-cancelled, .badge-danger { background: #fee2e2 !important; color: #991b1b !important; border-color: #dc2626 !important; }
+.badge-warning  { background: #fef3c7 !important; color: #92400e !important; border-color: #d97706 !important; }
+.badge-unpaid, .badge-partial { background: #fef3c7 !important; color: #92400e !important; border-color: #d97706 !important; }
+.badge-info     { background: #dbeafe !important; color: #1e3a8a !important; border-color: #3b82f6 !important; }
+.badge-inactive { background: #f1f5f9 !important; color: #64748b !important; border-color: #94a3b8 !important; }
 
 /* ── FORMS ── */
 .form-wrapper, .form-card {
@@ -555,11 +634,7 @@ aside {
   body { font-size: 11px; background: white; color: black; }
 }
 
-/* ── TAILWIND BASE LAYER OVERRIDE ── */
-@layer base {
-  * { border-color: #000000; }
-  body { background-color: #E4F1D9; color: #000000; }
-}
+
 
 /* ── RADIX UI / SHADCN COMPONENT OVERRIDES ── */
 [data-radix-popper-content-wrapper] {
@@ -649,14 +724,19 @@ progress, [role="progressbar"] {
   color: #000000 !important;
 }
 
-/* SVG icons */
-svg, svg * {
+/* SVG icons — green theme areas only */
+main svg,
+main svg *,
+.page-content-area svg,
+.page-content-area svg * {
   color: #000000 !important;
   stroke: currentColor;
 }
-
-/* Lucide icons */
-.lucide { color: #000000 !important; }
+/* Lucide icons — green theme areas only */
+main .lucide,
+.page-content-area .lucide {
+  color: #000000 !important;
+}
 
 /* ── FOCUS RING GLOBAL ── */
 *:focus-visible {
@@ -695,10 +775,7 @@ svg, svg * {
 /* ===== SUTRA ERP GLOBAL UTILITY CLASSES ===== */
 
 /* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -708,68 +785,11 @@ svg, svg * {
 }
 .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
 
-/* Data tables */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  color: #000000;
-}
-.data-table thead tr {
-  background: #EBF5E2;
-  border-bottom: 2px solid #000000;
-}
-.data-table th {
-  padding: 8px 12px;
-  text-align: left;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #000000;
-  white-space: nowrap;
-}
-.data-table td {
-  padding: 7px 12px;
-  font-size: 12px;
-  color: #000000;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-.data-table tbody tr:hover { background: #EBF5E2; }
-.data-table .th-right { text-align: right; }
-.data-table .amt { text-align: right; font-family: 'Courier New', monospace; font-weight: 600; }
-.data-table .amt-dr { color: #1557b0; }
-.data-table .amt-cr { color: #dc2626; }
 
-/* Page toolbar */
-.page-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.page-toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
 
-/* Search input */
-.search-input {
-  height: 32px;
-  padding: 0 10px 0 32px;
-  font-size: 12px;
-  border: 1px solid #000000;
-  background: #EBF5E2;
-  color: #000000;
-  border-radius: 3px;
-  outline: none;
-  width: 220px;
-}
-.search-input:focus { border-color: #1557b0; }
+
+
+
 
 /* Badges */
 .badge {
@@ -855,29 +875,98 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 .print-only { display: none; }
 
-/* CSS variables */
-:root {
-  --border: #9DC07A;
-  --color-positive: #059669;
-  --color-negative: #dc2626;
-  --color-accent: #1557b0;
-  --color-warning: #d97706;
-  --color-surface-raised: #D4EABD;
-  --font-mono: 'Courier New', Courier, monospace;
-}
+
 
 
 /* New utility classes for transactions */
-.page { @apply flex flex-col gap-5 text-xs select-none; animation: fadeIn 0.2s ease-out; }
-.page-header { @apply flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-4; }
-.card { @apply bg-white border border-[#9DC07A] rounded-md p-4 shadow-sm; }
-.table-card { @apply bg-white border border-[#9DC07A] rounded-md shadow-sm; }
-.section-title { @apply text-[11px] font-bold text-[#1557b0] uppercase tracking-wider mb-3 border-b border-gray-100 pb-1; }
-.form-grid { @apply grid grid-cols-1 md:grid-cols-3 gap-4; }
-.form-row { @apply grid gap-3 md:grid-cols-4 items-end border-b border-gray-100 pb-3 last:border-0 last:pb-0; }
-.actions { @apply flex items-center gap-3 justify-end mt-4 pt-4 border-t border-gray-100; }
-.badge.draft { @apply bg-gray-100 text-gray-700 border-gray-200; }
-.badge.posted { @apply bg-green-50 text-green-700 border-green-200; }
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 0.75rem;
+  user-select: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid #9DC07A;
+  padding-bottom: 1rem;
+}
+@media (min-width: 640px) {
+  .page-header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.card {
+  background: #EBF5E2;
+  border: 1px solid #9DC07A;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.table-card {
+  background: #EBF5E2;
+  border: 1px solid #9DC07A;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1557b0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.25rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.form-row {
+  display: grid;
+  gap: 0.75rem;
+  align-items: flex-end;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.75rem;
+}
+.form-row:last-child {
+  border-bottom-width: 0;
+  padding-bottom: 0;
+}
+@media (min-width: 768px) {
+  .form-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
 /* === T-FORMAT REPORTS === */
 .tformat-wrapper {
   width: 100%;
@@ -891,6 +980,12 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
+}
+.tformat-table td.tformat-cell:last-child {
+  border-right: none;
+}
+.tformat-table th:last-child {
+  border-right: none;
 }
 
 .tformat-table thead th {

@@ -20,10 +20,10 @@ const ReportGrid: React.FC<ReportGridProps> = ({
   getRowClassName,
 }) => {
   return (
-    <div className="overflow-x-auto w-full border border-gray-200 rounded-md">
+    <div className="overflow-x-auto w-full border border-black">
       <table className="w-full text-left whitespace-nowrap">
         <thead>
-          <tr className="bg-[#f5f6fa] border-b border-gray-200">
+          <tr className="bg-[#C9DEB5] border-b border-black">
             {columns.map((col) => (
               <th
                 key={col.key}
@@ -40,7 +40,7 @@ const ReportGrid: React.FC<ReportGridProps> = ({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
+        <tbody className="divide-y divide-[#000] bg-[#EBF5E2]">
           {data.map((row, rowIdx) => (
             <tr
               key={rowIdx}
@@ -60,13 +60,13 @@ const ReportGrid: React.FC<ReportGridProps> = ({
                 return (
                   <td
                     key={col.key}
-                    className={`px-3 py-2.5 text-[12px] text-gray-700 ${
+                    className={`px-3 py-2.5 text-[12px] text-[#000] ${
                       isAmount
                         ? "text-right font-mono"
                         : col.align === "center"
                         ? "text-center"
                         : "text-left"
-                    } ${isSummary ? "font-bold text-gray-900 bg-gray-50" : ""}`}
+                    } ${isSummary ? "font-bold bg-[#D4EABD] border-t-2 border-black" : ""}`}
                   >
                     {row[col.key] || "—"}
                   </td>
@@ -78,7 +78,7 @@ const ReportGrid: React.FC<ReportGridProps> = ({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-8 text-center text-gray-500 text-[12px]"
+                className="px-4 py-8 text-center text-[#000] text-[12px]"
               >
                 No records found for the selected period.
               </td>

@@ -5,6 +5,15 @@ import { useF12Config } from '../hooks/useF12Config';
 const normalizeShortcut = (shortcut: string) =>
   shortcut.replace(/\s+/g, "").replace("Control+", "Ctrl+").replace("Escape", "Esc");
 
+const formatShortcutLabel = (shortcut: string): string => {
+  return shortcut
+    .replace('Control+', 'C+')
+    .replace('Ctrl+', 'C+')
+    .replace('Alt+', 'A+')
+    .replace('Shift+', 'S+')
+    .replace('Escape', 'Esc');
+};
+
 const isInputElement = (el: Element | null): boolean => {
   if (!el) return false;
   const tag = el.tagName?.toLowerCase();
@@ -66,7 +75,7 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
   }, [visibleButtons, onShortcut, toggleF12]);
 
   return (
-    <div className="w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto">
+    <div className="right-button-bar w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto">
       <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest shadow-sm">
         Quick Actions
       </div>
@@ -88,12 +97,16 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
             }`}
             onMouseEnter={() => setHoveredId(button.id)}
             onMouseLeave={() => setHoveredId(null)}
+            onBlur={() => setHoveredId(null)}
             onClick={() => executeButton(button)}
             title={button.enabled ? button.shortcut : button.disabledReason}
             aria-label={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ""}`}
           >
-            <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${isActive ? 'text-blue-200' : 'text-[#d97706]'}`}>
-              {button.shortcut}
+            <span
+              className={`w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden ${isActive ? 'text-blue-200' : 'text-[#d97706]'}`}
+              title={button.shortcut}
+            >
+              {button.shortcut ? formatShortcutLabel(button.shortcut) : ''}
             </span>
             <span className="flex-1 text-[11px] truncate pr-1">
               {button.label}
@@ -117,8 +130,9 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? 'text-blue-200' : 'text-[#d97706]'}`}>
           F12
         </span>
-        <span className="flex-1 text-[11px] truncate pr-1">
-          {f12IsOpen ? '[✓] Configure' : 'Configure'}
+        <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
+          {f12IsOpen && <span className="text-blue-200 text-[9px]">✓</span>}
+          Configure
         </span>
       </button>
 
