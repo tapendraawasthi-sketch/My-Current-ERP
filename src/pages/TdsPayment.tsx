@@ -137,8 +137,8 @@ export default function TdsPayment() {
         status: VoucherStatus.POSTED,
         narration: `TDS Entry for ${paymentNature} - Section ${section}`,
         lines: lines,
-        totalDebit: grossNum,
-        totalCredit: grossNum
+        totalDebit: lines.reduce((sum, l) => sum + (l.debit || 0), 0),
+        totalCredit: lines.reduce((sum, l) => sum + (l.credit || 0), 0)
       } as any);
 
       toast.success("TDS payment recorded successfully!");
@@ -153,10 +153,10 @@ export default function TdsPayment() {
   };
 
   return (
-    <div style={{ background: "#e8e4f0", padding: 12 }}>
+    <div className="p-3 bg-[#f5f6fa] min-h-full">
       <PillTitle title="TDS Payment Entry" />
       <FormPanel>
-        <div className="flex flex-col gap-6 animate-fadeIn select-none">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 animate-fadeIn select-none">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-[#000000]">TDS Entry Form</h1>
@@ -164,7 +164,7 @@ export default function TdsPayment() {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={handleSubmit}
+                type="submit"
                 className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Save className="h-3.5 w-3.5" /> Save Entry
@@ -252,7 +252,7 @@ export default function TdsPayment() {
                </div>
             </div>
           </Card>
-        </div>
+        </form>
       </FormPanel>
     </div>
   );

@@ -51,7 +51,7 @@ const paymentVariant: Record<string, string> = {
 };
 
 const BillingInvoice: React.FC = () => {
-  const { invoices, accounts, parties, companySettings, currentPage } = useStore();
+  const { invoices, accounts, parties, companySettings, currentPage, setCurrentPage } = useStore();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [tab, setTab] = useState<TabKey>("sales");
@@ -77,6 +77,13 @@ const BillingInvoice: React.FC = () => {
       setTab("purchase-return");
     }
   }, [currentPage]);
+
+  const handleTabChange = (k: TabKey) => {
+    setTab(k);
+    if (k === "sales") setCurrentPage("sales-invoice");
+    else if (k === "purchase") setCurrentPage("purchase-invoice");
+    else setCurrentPage(k);
+  };
 
   const filtered = useMemo(() => {
     return invoices
@@ -120,6 +127,7 @@ const BillingInvoice: React.FC = () => {
   if (mode === "new" || mode === "edit") {
     return (
       <SalesInvoiceForm
+        key={`${editType}-${activeId || "new"}`}
         invoiceId={mode === "edit" ? activeId! : undefined}
         type={editType}
         onSave={backToList}
@@ -145,9 +153,9 @@ const BillingInvoice: React.FC = () => {
       header: "Grand Total",
       align: "right" as const,
       render: (v: number) => (
-        <span className="font-mono font-bold text-[#000000]">
+        <div className="text-right font-mono font-bold text-[#000000]">
           {symbol} {formatNumber(v || 0)}
-        </span>
+        </div>
       ),
     },
     {
@@ -155,9 +163,9 @@ const BillingInvoice: React.FC = () => {
       header: "VAT",
       align: "right" as const,
       render: (v: number) => (
-        <span className="font-mono text-[#000000]">
+        <div className="text-right font-mono text-[#000000]">
           {symbol} {formatNumber(v || 0)}
-        </span>
+        </div>
       ),
     },
     {
@@ -245,7 +253,7 @@ const BillingInvoice: React.FC = () => {
           return (
             <button
               key={k}
-              onClick={() => setTab(k)}
+              onClick={() => handleTabChange(k)}
               className={
                 active
                   ? "px-4 py-2 text-[12px] font-medium border-b-2 border-[#1557b0] text-[#1557b0] bg-white -mb-px transition-colors"
@@ -254,7 +262,7 @@ const BillingInvoice: React.FC = () => {
             >
               {m.label}
               <span
-                className={`ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-medium ${active ? "bg-[#3D6B25]/10 text-[#1557b0]" : "bg-[#EBF5E2] text-[#000000]"}`}
+                className={`ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-medium ${active ? "bg-[#1557b0]/10 text-[#1557b0]" : "bg-[#EBF5E2] text-[#000000]"}`}
               >
                 {count}
               </span>

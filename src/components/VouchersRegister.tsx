@@ -260,13 +260,13 @@ const VouchersRegister: React.FC = () => {
   if (isCreating || currentPage === "vouchers-new") {
     return (
       <div className="flex flex-col gap-6 animate-fadeIn text-xs font-semibold select-none">
-        <div className="flex items-center justify-between border-b border-[#9DC07A] pb-5">
+        <div className="flex items-center justify-between border-b border-[#d1d5db] pb-5">
           <div>
-            <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-              <Receipt className="h-5 w-5 text-[#000000]" />
+            <h2 className="text-xl font-bold text-[#1f2937] tracking-tight flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-[#1f2937]" />
               <span>POST DOUBLE ENTRY VOUCHER</span>
             </h2>
-            <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-bold">
+            <p className="text-xs text-[#1f2937] mt-1 leading-none uppercase tracking-wider font-bold">
               Generate auditable transaction bookkeeping voucher
             </p>
           </div>
@@ -322,9 +322,9 @@ const VouchersRegister: React.FC = () => {
           {/* Posting ledger entries table builder */}
           <Card title="Ledger Accounts Posting Details Grid">
             <div className="flex flex-col gap-4">
-              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white">
+              <div className="border border-[#d1d5db] rounded-lg overflow-hidden bg-white">
                 <table className="w-full text-xs text-left border-collapse">
-                  <thead className="bg-[#EBF5E2] border-b border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold">
+                  <thead className="bg-[#f9fafb] border-b border-[#d1d5db] text-[#1f2937] uppercase tracking-wider font-bold">
                     <tr>
                       <th className="px-4 py-2.5 w-[45%]">Post Account Ledger</th>
                       <th className="px-4 py-2.5 w-[20%] text-right">Debit Balance (Dr)</th>
@@ -334,7 +334,7 @@ const VouchersRegister: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-150">
                     {lines.map((line, idx) => (
-                      <tr key={idx} className="hover:bg-[#EBF5E2]/50">
+                      <tr key={idx} className="hover:bg-[#f9fafb]/50">
                         <td className="px-3 py-2">
                           <AccountSelect
                             value={line.accountId}
@@ -347,7 +347,7 @@ const VouchersRegister: React.FC = () => {
                             placeholder="Line narration memo..."
                             value={line.narration}
                             onChange={(e) => handleLineChange(idx, "narration", e.target.value)}
-                            className="w-full h-8 px-2 border border-[#9DC07A] rounded focus:outline-none focus:ring-1 focus:ring-[#3D6B25] mt-1.5 font-medium"
+                            className="w-full h-8 px-2 border border-[#d1d5db] rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] mt-1.5 font-medium"
                           />
                         </td>
                         <td className="px-3 py-2 text-right">
@@ -382,12 +382,12 @@ const VouchersRegister: React.FC = () => {
                     ))}
                   </tbody>
                   {/* Validation sums tfoot wrapper */}
-                  <tfoot className="bg-[#EBF5E2] border-t border-[#9DC07A] text-[#000000] font-bold">
+                  <tfoot className="bg-[#f9fafb] border-t border-[#d1d5db] text-[#1f2937] font-bold">
                     <tr>
-                      <td className="px-4 py-3 text-right text-xs uppercase tracking-wider font-extrabold text-[#000000]">
+                      <td className="px-4 py-3 text-right text-xs uppercase tracking-wider font-extrabold text-[#1f2937]">
                         Verification sum totals:
                       </td>
-                      <td className="px-4 py-3 text-right text-xs font-mono font-extrabold text-[#000000]">
+                      <td className="px-4 py-3 text-right text-xs font-mono font-extrabold text-[#1f2937]">
                         Rs. {formatNumber(sums.debit)}
                       </td>
                       <td className="px-4 py-3 text-right text-xs font-mono font-extrabold text-amber-700">
@@ -403,14 +403,14 @@ const VouchersRegister: React.FC = () => {
                 </table>
               </div>
 
-              <div className="flex justify-between items-center bg-[#EBF5E2] border border-[#9DC07A] rounded-lg p-3">
-                <span className="text-[11px] text-[#000000] leading-none">
+              <div className="flex justify-between items-center bg-[#f9fafb] border border-[#d1d5db] rounded-lg p-3">
+                <span className="text-[11px] text-[#1f2937] leading-none">
                   Accounting validation: Double-entry rules require DR = CR sum balance exactly.
                 </span>
                 <button
                   type="button"
                   onClick={handleAddLine}
-                  className="px-3 py-1.5 text-xs text-[#000000] bg-[#D4EABD] hover:bg-[#D4EABD] border border-[#9DC07A] rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-1.5 text-xs text-[#1f2937] bg-[#e5e7eb] hover:bg-[#e5e7eb] border border-[#d1d5db] rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <PlusCircle className="h-4 w-4" />
                   <span>Insert Post Row</span>
@@ -419,7 +419,7 @@ const VouchersRegister: React.FC = () => {
 
               {/* Master Narration box */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#000000] leading-none">
+                <label className="text-xs font-semibold text-[#1f2937] leading-none">
                   General Voucher Narration / Explanation
                 </label>
                 <textarea
@@ -428,7 +428,7 @@ const VouchersRegister: React.FC = () => {
                   rows={3}
                   value={vNarration}
                   onChange={(e) => setVNarration(e.target.value)}
-                  className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white shadow-sm"
+                  className="w-full text-xs font-medium p-3 border border-[#d1d5db] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#d1d5db] bg-white shadow-sm"
                 />
               </div>
 
@@ -459,8 +459,8 @@ const VouchersRegister: React.FC = () => {
       {/* List Page title */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Vouchers Register</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">All posted and draft vouchers</p>
+          <h1 className="text-[15px] font-semibold text-[#1f2937]">Vouchers Register</h1>
+          <p className="text-[11px] text-[#1f2937] mt-0.5">All posted and draft vouchers</p>
         </div>
 
         <div className="shrink-0 flex gap-2">
@@ -484,7 +484,7 @@ const VouchersRegister: React.FC = () => {
       </div>
 
       {/* FILTER SEARCH PANEL */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm no-print">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-[#d1d5db] rounded-xl shadow-sm no-print">
         <div className="w-full md:max-w-xs relative bg-white">
           <Input
             value={searchTerm}
@@ -492,12 +492,12 @@ const VouchersRegister: React.FC = () => {
             placeholder="Search voucher ledger memo..."
             inputClassName="pl-9 text-xs"
           />
-          <div className="absolute left-3 top-2.5 text-[#000000]">
+          <div className="absolute left-3 top-2.5 text-[#1f2937]">
             <Search className="h-4 w-4" />
           </div>
         </div>
 
-        <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(1); }} className="h-8 px-2 border rounded-md text-[12px] font-semibold text-[#000000] bg-white" style={{ borderColor: "var(--border)" }}>
+        <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(1); }} className="h-8 px-2 border rounded-md text-[12px] font-semibold text-[#1f2937] bg-white" style={{ borderColor: "var(--border)" }}>
           <option value="">All Types</option>
           <option value="journal">Journal</option>
           <option value="payment">Payment</option>
@@ -511,7 +511,7 @@ const VouchersRegister: React.FC = () => {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab as any)}
-              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#3D6B25] text-white" : "bg-[#EBF5E2] text-[#000000] hover:bg-[#EBF5E2]"}`}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#1557b0] text-white" : "bg-[#f9fafb] text-[#1f2937] hover:bg-[#f9fafb]"}`}
             >
               {tab === "ALL" ? "Show All" : tab.replace("_", " ")}
             </button>
@@ -538,7 +538,7 @@ const VouchersRegister: React.FC = () => {
             <tbody>
               {paginatedVouchers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-[#000000]">
+                  <td colSpan={7} className="text-center py-8 text-[#1f2937]">
                     No financial transaction vouchers cataloged in this filter criteria yet.
                   </td>
                 </tr>
@@ -546,12 +546,12 @@ const VouchersRegister: React.FC = () => {
                 paginatedVouchers.map((v) => (
                   <tr key={v.id} onClick={() => setSelectedVoucher(v)} className="cursor-pointer">
                     <td>
-                      <span className="font-mono font-bold text-[#000000]">{v.voucherNo}</span>
+                      <span className="font-mono font-bold text-[#1f2937]">{v.voucherNo}</span>
                     </td>
                     <td>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-[#000000] leading-tight">{v.dateNepali}</span>
-                        <span className="text-[10px] font-medium text-[#000000] mt-0.5">
+                        <span className="font-semibold text-[#1f2937] leading-tight">{v.dateNepali}</span>
+                        <span className="text-[10px] font-medium text-[#1f2937] mt-0.5">
                           {v.date} (AD)
                         </span>
                       </div>
@@ -560,15 +560,15 @@ const VouchersRegister: React.FC = () => {
                       <span className={`badge badge-${v.type?.replace(/-/g,'')}`}>{v.type?.replace(/-/g,' ').toUpperCase()}</span>
                     </td>
                     <td>
-                      <p className="text-[#000000] line-clamp-2 max-w-sm font-medium leading-relaxed" title={v.narration}>
+                      <p className="text-[#1f2937] line-clamp-2 max-w-sm font-medium leading-relaxed" title={v.narration}>
                         {v.narration}
                       </p>
                     </td>
                     <td className="amt amt-dr">
-                      {v.type === 'payment' || v.type === 'journal' || v.type === 'sales_invoice' || v.type === 'sales_return' ? formatCurrency(v.totalDebit) : "-"}
+                      {formatCurrency(v.totalDebit || 0)}
                     </td>
                     <td className="amt amt-cr">
-                      {v.type === 'receipt' || v.type === 'contra' || v.type === 'purchase_invoice' || v.type === 'purchase_return' ? formatCurrency(v.totalDebit) : "-"}
+                      {formatCurrency(v.totalCredit || 0)}
                     </td>
                     <td>
                       <Badge
@@ -646,36 +646,36 @@ const VouchersRegister: React.FC = () => {
             </div>
           }
         >
-          <div className="flex flex-col gap-6 select-none font-semibold text-[#000000] text-xs">
+          <div className="flex flex-col gap-6 select-none font-semibold text-[#1f2937] text-xs">
             {/* Header meta grid details */}
-            <div className="grid grid-cols-4 gap-4 bg-[#EBF5E2] border border-[#9DC07A] p-4 rounded-xl">
+            <div className="grid grid-cols-4 gap-4 bg-[#f9fafb] border border-[#d1d5db] p-4 rounded-xl">
               <div>
-                <span className="block text-[10px] font-bold text-[#000000] uppercase tracking-wider">
+                <span className="block text-[10px] font-bold text-[#1f2937] uppercase tracking-wider">
                   Voucher No
                 </span>
-                <span className="font-mono font-extrabold text-[#000000] text-sm">
+                <span className="font-mono font-extrabold text-[#1f2937] text-sm">
                   {selectedVoucher.voucherNo}
                 </span>
               </div>
               <div>
-                <span className="block text-[10px] font-bold text-[#000000] uppercase tracking-wider">
+                <span className="block text-[10px] font-bold text-[#1f2937] uppercase tracking-wider">
                   Date (B.S.)
                 </span>
-                <span className="font-bold text-[#000000] text-sm">
+                <span className="font-bold text-[#1f2937] text-sm">
                   {selectedVoucher.dateNepali}
                 </span>
               </div>
               <div>
-                <span className="block text-[10px] font-bold text-[#000000] uppercase tracking-wider">
+                <span className="block text-[10px] font-bold text-[#1f2937] uppercase tracking-wider">
                   Date (A.D.)
                 </span>
-                <span className="font-bold text-[#000000] text-sm">{selectedVoucher.date}</span>
+                <span className="font-bold text-[#1f2937] text-sm">{selectedVoucher.date}</span>
               </div>
               <div>
-                <span className="block text-[10px] font-bold text-[#000000] uppercase tracking-wider">
+                <span className="block text-[10px] font-bold text-[#1f2937] uppercase tracking-wider">
                   Voucher Class
                 </span>
-                <span className="text-[#000000] font-extrabold uppercase shrink-0 mt-1 block">
+                <span className="text-[#1f2937] font-extrabold uppercase shrink-0 mt-1 block">
                   {selectedVoucher.type}
                 </span>
               </div>
@@ -683,22 +683,22 @@ const VouchersRegister: React.FC = () => {
 
             {/* General Narration description */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-[#000000] text-[10px] font-bold uppercase tracking-wider">
+              <span className="text-[#1f2937] text-[10px] font-bold uppercase tracking-wider">
                 Executive Narration statement
               </span>
-              <p className="bg-white border rounded-lg p-3 text-[#000000] shadow-sm leading-relaxed font-semibold">
+              <p className="bg-white border rounded-lg p-3 text-[#1f2937] shadow-sm leading-relaxed font-semibold">
                 {selectedVoucher.narration}
               </p>
             </div>
 
             {/* Line postings list */}
             <div className="flex flex-col gap-2">
-              <span className="text-[#000000] text-[10px] font-bold uppercase tracking-wider">
+              <span className="text-[#1f2937] text-[10px] font-bold uppercase tracking-wider">
                 Ledger Accounts Postings details
               </span>
-              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white shadow-sm">
+              <div className="border border-[#d1d5db] rounded-lg overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs border-collapse font-bold">
-                  <thead className="bg-[#EBF5E2] border-b text-[#000000] select-none">
+                  <thead className="bg-[#f9fafb] border-b text-[#1f2937] select-none">
                     <tr>
                       <th className="px-4 py-2 w-1/2">Ledger Head</th>
                       <th className="px-4 py-2 text-right w-1/4">Debit Balance (Dr)</th>
@@ -707,11 +707,11 @@ const VouchersRegister: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-150">
                     {selectedVoucher.lines.map((l: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-[#EBF5E2]/20">
+                      <tr key={idx} className="hover:bg-[#f9fafb]/20">
                         <td className="px-4 py-2 flex flex-col">
-                          <span className="text-[#000000] font-bold">{l.accountName}</span>
+                          <span className="text-[#1f2937] font-bold">{l.accountName}</span>
                           {l.narration && (
-                            <span className="text-[10px] font-semibold text-[#000000] mt-0.5">
+                            <span className="text-[10px] font-semibold text-[#1f2937] mt-0.5">
                               {l.narration}
                             </span>
                           )}
@@ -725,9 +725,9 @@ const VouchersRegister: React.FC = () => {
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-[#EBF5E2] border-t border-[#9DC07A] font-bold">
+                  <tfoot className="bg-[#f9fafb] border-t border-[#d1d5db] font-bold">
                     <tr>
-                      <td className="px-4 py-2.5 text-right font-extrabold uppercase text-[#000000]">
+                      <td className="px-4 py-2.5 text-right font-extrabold uppercase text-[#1f2937]">
                         Totals:
                       </td>
                       <td className="px-4 py-2.5 text-right font-mono text-sm amt amt-dr">
@@ -777,7 +777,7 @@ const VouchersRegister: React.FC = () => {
         }
       >
         <div className="flex flex-col gap-4 text-xs select-none">
-          <p className="text-[#000000] leading-relaxed font-semibold">
+          <p className="text-[#1f2937] leading-relaxed font-semibold">
             Are you sure you want to cancel and void this posted voucher? This will balance reverse
             from all ledgers accounts. This log transaction cannot be undone.
           </p>

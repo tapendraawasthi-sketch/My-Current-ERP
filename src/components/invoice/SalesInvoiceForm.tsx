@@ -263,9 +263,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   }, [billSundries]);
 
   // Adjust grand total to include sundries
-  const grandTotal = round2(computation.grandTotal + sundryTotal);
+  const exactGrandTotal = round2(computation.grandTotal + sundryTotal);
+  const grandTotal = Math.round(exactGrandTotal);
+  const roundOff = round2(grandTotal - exactGrandTotal);
   const netPayable = round2(grandTotal - tdsAmount);
-  const balance = round2(grandTotal - (Number(paidAmount) || 0));
+  const balance = round2(netPayable - (Number(paidAmount) || 0));
 
   const words = useMemo(() => numberToWords(grandTotal, "Rupees"), [grandTotal]);
 
@@ -295,8 +297,32 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   }, [existing?.invoiceNo, meta.vt, currentFiscalYear?.fiscalYearBS]);
 
   // ---- line helpers ----
+  const recalculateLine = (line: any) => {
+    const quantity = Number(line.quantity ?? line.qty ?? 0);
+    const rate = Number(line.rate ?? 0);
+    const discount = Number(line.discount ?? line.discountPercent ?? 0);
+    const taxRate = Number(line.taxRate ?? line.vatRate ?? 0);
+
+    line.discountAmount = round2((rate * quantity * discount) / 100);
+    line.amount = round2(rate * quantity - line.discountAmount);
+    line.taxAmount = round2((line.amount * taxRate) / 100);
+    line.vatAmount = line.taxAmount;
+    line.totalAmount = round2(line.amount + line.taxAmount);
+    line.netAmount = line.totalAmount;
+
+    return line;
+  };
+
   const updateLine = (id: string, updates: Partial<InvoiceLineState>) => {
-    setLines((prev) => prev.map((l) => (l.id === id ? { ...l, ...updates } : l)));
+    setLines((prev) =>
+      prev.map((l) => {
+        if (l.id === id) {
+          const updatedLine = { ...l, ...updates };
+          return recalculateLine(updatedLine);
+        }
+        return l;
+      })
+    );
     markDirty();
   };
   const addLine = () => {
@@ -368,7 +394,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     });
 
     const ps: PaymentStatus =
-      paidAmount >= grandTotal
+      paidAmount >= netPayable
         ? PaymentStatus.PAID
         : paidAmount > 0
           ? PaymentStatus.PARTIAL
@@ -388,18 +414,18 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       subTotal: computation.subtotal,
       discountAmount,
       taxableAmount: computation.taxableAmount,
-      exemptAmount: round2(computation.subtotal - discountAmount - computation.taxableAmount),
+      exemptAmount: computation.exemptAmount,
       vatAmount: computation.vatAmount,
       taxAmount: computation.vatAmount,
       tdsAmount: tdsEnabled ? tdsAmount : undefined,
       tdsRate: tdsEnabled ? tdsRate : undefined,
       tdsType: tdsEnabled ? tdsType : undefined,
-      roundOff: 0,
+      roundOff,
       grandTotal,
       lines: payloadLines,
       paymentMode: payMode,
       paymentStatus: ps,
-      paidAmount: payMode === PaymentMode.CREDIT ? paidAmount || 0 : grandTotal,
+      paidAmount: payMode === PaymentMode.CREDIT ? paidAmount || 0 : netPayable,
       bankAccountId: payMode === PaymentMode.BANK_TRANSFER ? bankAccountId : undefined,
       chequeNo: chequeNo || undefined,
       chequeDate: chequeNo ? chequeDate : undefined,
@@ -416,6 +442,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   };
 
   const handleSave = async (status: VoucherStatus) => {
+    if (saving) return;
     const err = validate(status === VoucherStatus.POSTED);
     if (err) {
       toast.error(err);
@@ -1100,6 +1127,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               <div className="flex justify-between items-baseline text-[12px] text-orange-600">
                 <span className="font-medium">TDS Deducted</span>
                 <span className="font-mono">- {symbol} {formatNumber(tdsAmount)}</span>
+              </div>
+            )}
+            {roundOff !== 0 && (
+              <div className="flex justify-between items-baseline text-[12px]">
+                <span className="font-medium">Round Off</span>
+                <span className="font-mono">{roundOff > 0 ? "+" : ""}{symbol} {formatNumber(roundOff)}</span>
               </div>
             )}
             <div className={`border-t-2 mt-1 pt-2 flex justify-between items-baseline rounded-sm ${computation.vatAmount > 0 ? "border-green-200" : "border-[#9DC07A]"}`}>
