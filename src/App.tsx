@@ -59,6 +59,13 @@ const ExceptionReports = lazy(() => import('./pages/ExceptionReports'));
 const AuditLogs = lazy(() => import('./pages/AuditLogs'));
 const Troubleshooting = lazy(() => import('./pages/Troubleshooting'));
 
+import Layout from "./components/Layout";
+import { F12Provider } from './hooks/useF12Config';
+import F12Panel from './components/F12Panel';
+import AuthGateway from "./pages/AuthGateway";
+import ShortcutPanel from "./components/ShortcutPanel";
+import { Loader2 } from "lucide-react";
+
 class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
   constructor(props: {children: React.ReactNode}) {
     super(props);
@@ -84,12 +91,26 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 }
 
 const App = () => {
-  const { currentPage } = useStore();
+  const { currentPage, currentUser, initializeApp } = useStore();
+  const [isDbReady, setIsDbReady] = useState(false);
   
   // NEW: Calculator and language modal state
   const [calcOpen, setCalcOpen] = useState(false);
   const [displayLangOpen, setDisplayLangOpen] = useState(false);
   const [dataEntryLangOpen, setDataEntryLangOpen] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initializeApp();
+      } catch (err) {
+        console.error("[Sutra ERP] App init error:", err);
+      } finally {
+        setIsDbReady(true);
+      }
+    };
+    init();
+  }, [initializeApp]);
 
   // NEW: Global shortcut handler
   useEffect(() => {
@@ -154,37 +175,97 @@ const App = () => {
       case 'data-export-import': return <DataExportImport />;
       default:
         return (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-700">
-            <h2 className="text-xl font-bold mb-2">Page Not Found</h2>
-            <p className="text-sm">Select a page from the menu to continue.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6 h-full">
+            <h2 className="text-[15px] font-semibold text-gray-800">404 - Page Not Found</h2>
+            <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
+            <button
+              onClick={() => useStore.getState().setCurrentPage("dashboard")}
+              className="mt-4 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
+            >
+              Go to Dashboard
+            </button>
           </div>
         );
     }
   };
 
+  if (!isDbReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#E4F1D9]">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 text-[#3D6B25] animate-spin mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-[#000000] mb-2">Loading Sutra ERP...</h2>
+          <p className="text-[#000000]">Please wait while we initialize the application</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <AuthGateway>
+        <div />
+      </AuthGateway>
+    );
+  }
+
   return (
-    <>
-      <ErrorBoundary>
-        <Suspense fallback={<LoadingSpinner />}>
-          {renderPage()}
-        </Suspense>
-      </ErrorBoundary>
+    <F12Provider>
+      <Layout>
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingSpinner />}>
+            {renderPage()}
+          </Suspense>
+        </ErrorBoundary>
+      </Layout>
       
+      <ShortcutPanel />
+      <F12Panel />
+
       {/* Modals and Overlays */}
       <CalculatorPanel isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
       <DisplayLanguageModal isOpen={displayLangOpen} onClose={() => setDisplayLangOpen(false)} />
       <DataEntryLanguageModal isOpen={dataEntryLangOpen} onClose={() => setDataEntryLangOpen(false)} />
-      <Toaster 
-        position="bottom-right" 
+      
+      <Toaster
+        position="top-right"
         toastOptions={{
+          duration: 4000,
           style: {
-            fontSize: '12px',
-            fontFamily: 'system-ui, sans-serif',
-            borderRadius: '6px',
+            background: "#1F2937",
+            color: "#FFFFFF",
+            fontSize: "12px",
+            fontWeight: "500",
+            borderRadius: "6px",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.35)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            maxWidth: "380px",
+          },
+          success: {
+            style: {
+              background: "#14532D",
+              color: "#FFFFFF",
+              border: "1px solid #22c55e",
+            },
+            iconTheme: {
+              primary: "#4ade80",
+              secondary: "#14532D",
+            },
+          },
+          error: {
+            style: {
+              background: "#7F1D1D",
+              color: "#FFFFFF",
+              border: "1px solid #ef4444",
+            },
+            iconTheme: {
+              primary: "#f87171",
+              secondary: "#7F1D1D",
+            },
           },
         }}
       />
-    </>
+    </F12Provider>
   );
 };
 
