@@ -43,9 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    initializeApp();
-  }, [initializeApp]);
+  // App.tsx handles initialization
 
   useEffect(() => {
     localStorage.setItem("sutra_sidebar_collapsed", String(collapsed));

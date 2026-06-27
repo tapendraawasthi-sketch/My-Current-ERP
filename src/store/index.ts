@@ -7,6 +7,46 @@ import { generateNextNumber } from "../lib/accounting";
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type UserRole = "admin" | "manager" | "accountant" | "viewer";
 
+// ─── Validation Helpers ───────────────────────────────────────────────────────
+const round2 = (value: number | string | null | undefined) =>
+  Math.round((Number(value) || 0) * 100) / 100;
+
+export const validateVoucherBalance = (lines: any[]) => {
+  const totalDebit = round2(
+    (lines ?? []).reduce((sum, line) => sum + Number(line.debit || 0), 0)
+  );
+  const totalCredit = round2(
+    (lines ?? []).reduce((sum, line) => sum + Number(line.credit || 0), 0)
+  );
+
+  if (Math.abs(totalDebit - totalCredit) >= 0.01) {
+    throw new Error(
+      `Unbalanced voucher: Debit ${totalDebit} does not equal Credit ${totalCredit}.`
+    );
+  }
+
+  if (totalDebit <= 0) {
+    throw new Error("Voucher amount must be greater than zero.");
+  }
+
+  return { totalDebit, totalCredit };
+};
+
+export const assertDateInFiscalYear = (
+  date: string,
+  fiscalYear: FiscalYear | null | undefined
+) => {
+  if (!fiscalYear) {
+    throw new Error("No active fiscal year selected.");
+  }
+  if (date < fiscalYear.startDate || date > fiscalYear.endDate) {
+    throw new Error(
+      `Date ${date} is outside the current fiscal year (${fiscalYear.name}).`
+    );
+  }
+};
+export type UserRole = "admin" | "manager" | "accountant" | "viewer";
+
 export interface StoreUser {
   id: string;
   username: string;
@@ -438,6 +478,7 @@ interface AppState {
   updatePDCheque: (id: string, data: Partial<any>) => Promise<void>;
   convertPDCToBank: (pdcId: string, journalData: any) => Promise<void>;
   saveEPaymentBatch: (data: Partial<any>) => Promise<string>;
+  addAuditLog: (params: { action: string; resourceType: string; resourceId?: string; before?: unknown; after?: unknown; }) => Promise<void>;
   updateEPaymentBatch: (id: string, data: Partial<any>) => Promise<void>;
   savePaymentAdvice: (data: Partial<any>) => Promise<string>;
   updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;
@@ -445,15 +486,32 @@ interface AppState {
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  return crypto.randomUUID();
 }
 
 async function hashPassword(password: string): Promise<string> {
-  // Simple hash for client-side (not secure for prod server, but fine for IndexedDB local auth)
-  const msgBuffer = new TextEncoder().encode(password);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  const enc = new TextEncoder();
+  const salt = enc.encode("sutra-erp-salt-v1");
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"]
+  );
+  const hashBuffer = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    256
+  );
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 async function verifyPassword(password: string, hash: string): Promise<boolean> {
@@ -526,6 +584,7 @@ export const useStore = create<AppState>((set, get) => ({
   // Banking Module State
   chequeBooks: [],
   cheques: [],
+  auditLogs: [],
   depositSlips: [],
   pdCheques: [],
   ePaymentBatches: [],
@@ -555,7 +614,12 @@ export const useStore = create<AppState>((set, get) => ({
   showHelp: false,
 
   initializeApp: async () => {
-    const db = getDB();
+    const { isInitializing, isDbReady } = get();
+    if (isInitializing || isDbReady) return;
+    set({ isInitializing: true });
+
+    try {
+      const db = getDB();
 
     // Seed default data if empty
     const accountCount = await db.accounts.count();
@@ -1282,7 +1346,7 @@ export const useStore = create<AppState>((set, get) => ({
     
     const newRecord: any = {
       ...data,
-      id: `vtm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id: `vtm-${crypto.randomUUID()}`,
       createdAt: new Date().toISOString(),
     };
     
@@ -1371,7 +1435,7 @@ export const useStore = create<AppState>((set, get) => ({
     
     const newLog: any = {
       ...log,
-      id: `al-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id: `al-${crypto.randomUUID()}`,
     };
     
     await db.voucherAuditLogs.add(newLog);
@@ -1731,39 +1795,46 @@ export const useStore = create<AppState>((set, get) => ({
   // ── Vouchers ─────────────────────────────────────────────────────────────
   addVoucher: async (voucher) => {
     const db = getDB();
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(voucher.date, currentFiscalYear);
+
+    const { totalDebit, totalCredit } = validateVoucherBalance(voucher.lines);
+
     const id = generateId();
-    const voucherNo = await generateNextVoucherNo(voucher.type || "journal", db);
-    const totalDebit = (voucher.lines || []).reduce((s: number, l: any) => s + (Number(l.debit) || 0), 0);
-    const totalCredit = (voucher.lines || []).reduce((s: number, l: any) => s + (Number(l.credit) || 0), 0);
-    // Bug 26 fix: Validate double-entry balance before saving
-    const difference = Math.abs(totalDebit - totalCredit);
-    if (difference > 0.01 && voucher.status === "posted") {
-      throw new Error(
-        `Voucher is unbalanced: Debit (${totalDebit.toFixed(2)}) ≠ Credit (${totalCredit.toFixed(2)}). Difference: ${difference.toFixed(2)}`
-      );
-    }
-    const newVoucher = {
-      ...voucher,
-      id,
-      voucherNo,
-      totalDebit: Math.round(totalDebit * 100) / 100,
-      totalCredit: Math.round(totalCredit * 100) / 100,
-      grandTotal: Math.round(totalDebit * 100) / 100,
-    };
-    await db.vouchers.add(newVoucher as any);
-    // Update account balances if posted
-    if (newVoucher.status === "posted" && newVoucher.lines) {
-      for (const line of newVoucher.lines) {
-        if (line.accountId) {
-          await db.accounts.where("id").equals(line.accountId).modify((acc) => {
-            acc.balance = (acc.balance || 0) + (line.debit || 0) - (line.credit || 0);
-          });
+    const type = voucher.type || "journal";
+
+    return db.transaction("rw", [db.vouchers, db.accounts], async () => {
+      const voucherNo = await generateNextVoucherNo(type, db);
+
+      const newVoucher = {
+        ...voucher,
+        id,
+        voucherNo,
+        totalDebit,
+        totalCredit,
+        grandTotal: totalDebit,
+      };
+
+      await db.vouchers.add(newVoucher as any);
+
+      if (newVoucher.status === "posted" && newVoucher.lines) {
+        for (const line of newVoucher.lines) {
+          if (line.accountId) {
+            const acc = await db.accounts.get(line.accountId);
+            if (acc) {
+              await db.accounts.update(line.accountId, {
+                balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
+              });
+            }
+          }
         }
       }
+
       await reloadAccounts(db, set);
-    }
-    set((s) => ({ vouchers: [newVoucher, ...s.vouchers] }));
-    return newVoucher;
+      
+      set((s) => ({ vouchers: [newVoucher, ...s.vouchers] }));
+      return newVoucher;
+    });
   },
 
   updateVoucher: async (id, updates) => {
@@ -1776,42 +1847,92 @@ export const useStore = create<AppState>((set, get) => ({
 
   cancelVoucher: async (id, reason) => {
     const db = getDB();
-    const voucher = await db.vouchers.get(id);
-    if (!voucher) throw new Error("Voucher not found");
-    await db.vouchers.update(id, { status: "cancelled", cancellationReason: reason });
-    // Reverse account balances
-    if (voucher.lines && voucher.status === "posted") {
-      for (const line of voucher.lines) {
-        if (line.accountId) {
-          await db.accounts.where("id").equals(line.accountId).modify((acc) => {
-            acc.balance = (acc.balance || 0) - (line.debit || 0) + (line.credit || 0);
-          });
+    const { currentFiscalYear } = get();
+
+    return db.transaction("rw", [db.vouchers, db.accounts], async () => {
+      const original = await db.vouchers.get(id);
+      if (!original) throw new Error("Voucher not found");
+      if (original.status === "cancelled") throw new Error("Voucher is already cancelled");
+
+      const reversalVoucherId = generateId();
+      
+      if (original.lines && original.status === "posted") {
+        const reversalLines = original.lines.map((line: any) => ({
+          ...line,
+          id: generateId(),
+          debit: Number(line.credit || 0),
+          credit: Number(line.debit || 0),
+        }));
+
+        const reversalVoucher = {
+          id: reversalVoucherId,
+          voucherNo: await generateNextVoucherNo("reversal", db),
+          date: new Date().toISOString().split("T")[0],
+          type: "reversal",
+          status: "posted",
+          narration: `Reversal of ${original.voucherNo}: ${reason}`,
+          lines: reversalLines,
+          totalDebit: original.totalDebit,
+          totalCredit: original.totalCredit,
+          grandTotal: original.grandTotal,
+        };
+
+        await db.vouchers.add(reversalVoucher as any);
+
+        for (const line of reversalLines) {
+          if (line.accountId) {
+            const acc = await db.accounts.get(line.accountId);
+            if (acc) {
+              await db.accounts.update(line.accountId, {
+                balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
+              });
+            }
+          }
         }
       }
+
+      await db.vouchers.update(id, { 
+        status: "cancelled", 
+        cancellationReason: reason,
+        reversalVoucherId 
+      });
+
       await reloadAccounts(db, set);
-    }
-    set((s) => ({
-      vouchers: s.vouchers.map((v) =>
-        v.id === id ? { ...v, status: "cancelled", cancellationReason: reason } : v
-      ),
-    }));
+      
+      const allVouchers = await db.vouchers.toArray();
+      set({ vouchers: allVouchers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) });
+    });
   },
 
   // ── Invoices ─────────────────────────────────────────────────────────────
   addInvoice: async (invoice) => {
     const db = getDB();
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(invoice.date, currentFiscalYear);
+
     const id = generateId();
-    const invoiceNo = await generateNextInvoiceNo(invoice.type || "sales-invoice", db);
-    const newInvoice = { ...invoice, id, invoiceNo };
-    await db.invoices.add(newInvoice as any);
-    // Auto-post journal if posted
-    if (newInvoice.status === "posted") {
-      await postInvoiceJournal(newInvoice, db, get, set);
-      // Stock movements for inventory items
-      await postInvoiceStock(newInvoice, db, get, set);
-    }
-    set((s) => ({ invoices: [newInvoice, ...s.invoices] }));
-    return newInvoice;
+    const type = invoice.type || "sales-invoice";
+
+    return db.transaction(
+      "rw", 
+      [db.invoices, db.vouchers, db.stockMovements, db.accounts], 
+      async () => {
+        const invoiceNo = await generateNextInvoiceNo(type, db);
+        const newInvoice = { ...invoice, id, invoiceNo };
+        
+        await db.invoices.add(newInvoice as any);
+
+        if (newInvoice.status === "posted") {
+          await postInvoiceJournal(newInvoice, db, get, set);
+          await postInvoiceStock(newInvoice, db, get, set);
+        }
+
+        const allInvoices = await db.invoices.toArray();
+        set({ invoices: allInvoices.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) });
+        
+        return newInvoice;
+      }
+    );
   },
 
   updateInvoice: async (id, updates) => {
@@ -1824,31 +1945,96 @@ export const useStore = create<AppState>((set, get) => ({
 
   cancelInvoice: async (id, reason) => {
     const db = getDB();
-    const invoice = await db.invoices.get(id);
-    if (!invoice) throw new Error("Invoice not found");
-    await db.invoices.update(id, {
-      status: "cancelled",
-      cancellationReason: reason,
-      paymentStatus: "cancelled",
+    
+    return db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements, db.accounts], async () => {
+      const invoice = await db.invoices.get(id);
+      if (!invoice) throw new Error("Invoice not found");
+      if (invoice.status === "cancelled") throw new Error("Invoice is already cancelled");
+
+      await db.invoices.update(id, {
+        status: "cancelled",
+        cancellationReason: reason,
+        paymentStatus: "cancelled",
+      });
+
+      // Reverse stock movements
+      const movements = await db.stockMovements.where("referenceId").equals(id).toArray();
+      for (const mov of movements) {
+        const reversalMovement = {
+          ...mov,
+          id: generateId(),
+          qty: -(mov.qty || 0),
+          amount: -(mov.amount || 0),
+          narration: `Reversal of ${mov.referenceNo}: ${reason}`,
+          referenceType: "reversal"
+        };
+        await db.stockMovements.add(reversalMovement as any);
+      }
+
+      // Reverse journal entry if posted
+      if (invoice.status === "posted") {
+        const jnlId = `jnl-${invoice.id}`;
+        const originalVoucher = await db.vouchers.get(jnlId);
+        if (originalVoucher && originalVoucher.status === "posted") {
+          const reversalLines = (originalVoucher.lines || []).map((line: any) => ({
+            ...line,
+            id: generateId(),
+            debit: Number(line.credit || 0),
+            credit: Number(line.debit || 0),
+          }));
+
+          const reversalVoucher = {
+            id: generateId(),
+            voucherNo: await generateNextVoucherNo("reversal", db),
+            date: new Date().toISOString().split("T")[0],
+            type: "reversal",
+            status: "posted",
+            narration: `Reversal of ${originalVoucher.voucherNo}: ${reason}`,
+            lines: reversalLines,
+            totalDebit: originalVoucher.totalDebit,
+            totalCredit: originalVoucher.totalCredit,
+            grandTotal: originalVoucher.grandTotal,
+          };
+          
+          await db.vouchers.add(reversalVoucher as any);
+          await db.vouchers.update(jnlId, {
+            status: "cancelled",
+            cancellationReason: reason,
+            reversalVoucherId: reversalVoucher.id
+          });
+
+          for (const line of reversalLines) {
+            if (line.accountId) {
+              const acc = await db.accounts.get(line.accountId);
+              if (acc) {
+                await db.accounts.update(line.accountId, {
+                  balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
+                });
+              }
+            }
+          }
+        }
+      }
+
+      await reloadAccounts(db, set);
+      
+      const updatedInvoices = await db.invoices.toArray();
+      const updatedMovements = await db.stockMovements.toArray();
+      const updatedVouchers = await db.vouchers.toArray();
+
+      set({
+        invoices: updatedInvoices.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+        stockMovements: updatedMovements,
+        vouchers: updatedVouchers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+      });
     });
-    // Reverse stock movements
-    const movements = await db.stockMovements.where("referenceId").equals(id).toArray();
-    for (const mov of movements) {
-      await db.stockMovements.update(mov.id, { qty: -mov.qty, amount: -mov.amount });
-    }
-    const updatedMovements = await db.stockMovements.toArray();
-    set((s) => ({
-      invoices: s.invoices.map((inv) =>
-        inv.id === id
-          ? { ...inv, status: "cancelled", cancellationReason: reason, paymentStatus: "cancelled" }
-          : inv
-      ),
-      stockMovements: updatedMovements,
-    }));
   },
 
   // ── Delivery / GRN ────────────────────────────────────────────────────────
   addDeliveryChallan: async (challan) => {
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(challan.date, currentFiscalYear);
+    
     const db = getDB();
     const id = generateId();
     const count = await db.deliveryChallans.count();
@@ -1860,6 +2046,9 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   addGoodsReceiptNote: async (grn) => {
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(grn.date, currentFiscalYear);
+    
     const db = getDB();
     const id = generateId();
     const count = await db.goodsReceiptNotes.count();
@@ -1918,6 +2107,9 @@ export const useStore = create<AppState>((set, get) => ({
 
   // ── Recurring Vouchers ─────────────────────────────────────────────────────
   addRecurringVoucher: async (data) => {
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(data.startDate, currentFiscalYear);
+    
     const db = getDB();
     const record = {
       ...data,
@@ -2196,6 +2388,24 @@ export const useStore = create<AppState>((set, get) => ({
     set({ pdCheques: allPDC, vouchers: allVouchers });
   },
 
+  addAuditLog: async ({ action, resourceType, resourceId, before, after }) => {
+    const user = get().currentUser;
+    const db = await getDB();
+    await db.auditLogs.add({
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      userId: user?.id,
+      userName: user?.name,
+      action,
+      resourceType,
+      resourceId,
+      before,
+      after,
+    });
+    const logs = await db.auditLogs.toArray();
+    set({ auditLogs: logs });
+  },
+
   saveEPaymentBatch: async (data) => {
     const db = getDB();
     const id = data.id || generateId();
@@ -2266,25 +2476,37 @@ async function reloadAccounts(db: ReturnType<typeof getDB>, set: any) {
 async function postInvoiceJournal(invoice: any, db: ReturnType<typeof getDB>, get: any, set: any) {
   // Build journal lines for the invoice
   const lines: any[] = [];
-  const partyAccountId = invoice.type === "sales-invoice" || invoice.type === "sales-return"
+  const partyAccountId = invoice.partyAccountId || (invoice.type === "sales-invoice" || invoice.type === "sales-return"
     ? "acc-sundry-debtors"
-    : "acc-sundry-creditors";
+    : "acc-sundry-creditors");
+
+  const taxable = Number(invoice.taxableAmount || 0);
+  const exempt = Number(invoice.exemptAmount || 0);
+  const vat = Number(invoice.vatAmount || 0);
+  const tds = Number(invoice.tdsAmount || 0);
+  const grandTotal = Number(invoice.grandTotal || 0);
 
   if (invoice.type === "sales-invoice") {
-    lines.push({ accountId: partyAccountId, accountName: invoice.partyName, debit: invoice.grandTotal, credit: 0 });
-    if ((invoice.taxableAmount || 0) > 0) lines.push({ accountId: "acc-sales", accountName: "Sales", debit: 0, credit: invoice.taxableAmount });
-    if ((invoice.exemptAmount || 0) > 0) lines.push({ accountId: "acc-sales", accountName: "Sales (Exempt)", debit: 0, credit: invoice.exemptAmount });
-    if ((invoice.vatAmount || 0) > 0) lines.push({ accountId: "acc-vat-payable", accountName: "VAT Payable", debit: 0, credit: invoice.vatAmount });
+    lines.push({ accountId: partyAccountId, accountName: invoice.partyName, debit: grandTotal, credit: 0 });
+    if (taxable > 0) lines.push({ accountId: "acc-sales", accountName: "Sales", debit: 0, credit: taxable });
+    if (exempt > 0) lines.push({ accountId: "acc-sales", accountName: "Sales (Exempt)", debit: 0, credit: exempt });
+    if (vat > 0) lines.push({ accountId: "acc-vat-payable", accountName: "VAT Payable", debit: 0, credit: vat });
   } else if (invoice.type === "purchase-invoice") {
-    if ((invoice.taxableAmount || 0) > 0) lines.push({ accountId: "acc-purchase", accountName: "Purchases", debit: invoice.taxableAmount, credit: 0 });
-    if ((invoice.vatAmount || 0) > 0) lines.push({ accountId: "acc-vat-payable", accountName: "VAT Receivable", debit: invoice.vatAmount, credit: 0 });
-    lines.push({ accountId: partyAccountId, accountName: invoice.partyName, debit: 0, credit: invoice.grandTotal });
+    if (taxable > 0) lines.push({ accountId: "acc-purchase", accountName: "Purchases", debit: taxable, credit: 0 });
+    if (exempt > 0) lines.push({ accountId: "acc-purchase", accountName: "Purchases (Exempt)", debit: exempt, credit: 0 });
+    if (vat > 0) lines.push({ accountId: "acc-vat-payable", accountName: "VAT Receivable", debit: vat, credit: 0 });
+    lines.push({ accountId: partyAccountId, accountName: invoice.partyName, debit: 0, credit: grandTotal });
   }
 
   if (lines.length === 0) return;
 
+  validateVoucherBalance(lines);
+
   const id = `jnl-${invoice.id}`;
   const voucherNo = `AUTO-${invoice.invoiceNo}`;
+  const totalDebit = lines.reduce((s, l) => s + l.debit, 0);
+  const totalCredit = lines.reduce((s, l) => s + l.credit, 0);
+
   await db.vouchers.add({
     id,
     voucherNo,
@@ -2294,17 +2516,22 @@ async function postInvoiceJournal(invoice: any, db: ReturnType<typeof getDB>, ge
     narration: `Auto-journal for ${invoice.invoiceNo}`,
     lines,
     status: "posted",
-    totalDebit: lines.reduce((s, l) => s + l.debit, 0),
-    totalCredit: lines.reduce((s, l) => s + l.credit, 0),
+    totalDebit,
+    totalCredit,
+    grandTotal: totalDebit,
   } as any);
 
   // Update account balances
   for (const line of lines) {
-    await db.accounts.where("id").equals(line.accountId).modify((acc) => {
-      acc.balance = (acc.balance || 0) + (line.debit || 0) - (line.credit || 0);
-    });
+    if (line.accountId) {
+      const acc = await db.accounts.get(line.accountId);
+      if (acc) {
+        await db.accounts.update(line.accountId, {
+          balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
+        });
+      }
+    }
   }
-  await reloadAccounts(db, set);
 }
 
 async function postInvoiceStock(invoice: any, db: ReturnType<typeof getDB>, get: any, set: any) {

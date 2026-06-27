@@ -7,8 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatNumber(value: number | string | undefined | null, decimals = 2): string {
-  const num = Number(value);
-  if (isNaN(num)) return "0.00";
+  const num = Number(value ?? 0);
+  if (!Number.isFinite(num)) return "0.00";
   return new Intl.NumberFormat("en-IN", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
