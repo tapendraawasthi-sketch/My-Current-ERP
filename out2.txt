@@ -24,6 +24,10 @@ src/lib/cbmsService.ts(632,15): error TS2345: Argument of type 'import("D:/50/My
   Types of property 'cbmsStatus' are incompatible.
     Type '"pending" | "failed" | "success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
       Type '"success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
+src/lib/db.ts(159,3): error TS2300: Duplicate identifier 'tdsAmount'.
+src/lib/db.ts(160,3): error TS2300: Duplicate identifier 'tdsRate'.
+src/lib/db.ts(171,3): error TS2300: Duplicate identifier 'tdsRate'.
+src/lib/db.ts(172,3): error TS2300: Duplicate identifier 'tdsAmount'.
 src/lib/nepalFinancialStatements.ts(511,62): error TS2559: Type 'string' has no properties in common with type '{ startDate?: string; endDate?: string; includeOpening?: boolean; }'.
 src/lib/nepalFinancialStatements.ts(515,63): error TS2559: Type 'string' has no properties in common with type '{ startDate?: string; endDate?: string; includeOpening?: boolean; }'.
 src/lib/nepalFinancialStatements.ts(620,75): error TS2554: Expected 2-3 arguments, but got 4.
@@ -107,19 +111,23 @@ src/pages/VatReports.tsx(956,25): error TS2322: Type '({ key: string; header: st
 src/pages/VatReports.tsx(981,27): error TS2322: Type '({ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; })[]' is not assignable to type 'Column[]'.
   Type '{ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; }' is not assignable to type 'Column'.
     Property 'label' is missing in type '{ key: string; header: string; align: "center"; width: string; render?: undefined; }' but required in type 'Column'.
-src/store/index.ts(570,56): error TS2739: Type '{ isDbReady: false; isAuthenticated: false; currentUser: any; accounts: any[]; parties: any[]; items: any[]; vouchers: any[]; invoices: any[]; stockMovements: any[]; warehouses: any[]; stockTransfers: any[]; units: any[]; ... 215 more ...; getBaseCurrency: () => any; }' is missing the following properties from type 'AppState': loadWarehouses, addWarehouse, updateWarehouse, getNextTransferNo, saveStockTransfer
-src/store/index.ts(653,13): error TS2339: Property 'isInitializing' does not exist on type 'AppState'.
-src/store/index.ts(655,11): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
-src/store/index.ts(968,13): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
-src/store/index.ts(995,47): error TS2339: Property 'password' does not exist on type 'Partial<StoreUser>'.
-src/store/index.ts(1106,18): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1114,27): error TS2339: Property 'name' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1117,22): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1118,23): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1119,26): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1119,56): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
-src/store/index.ts(1881,22): error TS2339: Property 'status' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
-src/store/index.ts(1881,56): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
-src/store/index.ts(1882,39): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
-src/store/index.ts(1986,24): error TS2339: Property 'status' does not exist on type '{ id: string; invoiceNo: string; }'.
-src/store/index.ts(2468,11): error TS2353: Object literal may only specify known properties, and 'auditLogs' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
+src/store/index.ts(11,13): error TS2300: Duplicate identifier 'UserRole'.
+src/store/index.ts(51,13): error TS2300: Duplicate identifier 'UserRole'.
+src/store/index.ts(96,3): error TS2300: Duplicate identifier 'cbmsEnabled'.
+src/store/index.ts(103,3): error TS2300: Duplicate identifier 'cbmsEnabled'.
+src/store/index.ts(572,56): error TS2739: Type '{ isDbReady: false; isAuthenticated: false; currentUser: any; accounts: any[]; parties: any[]; items: any[]; vouchers: any[]; invoices: any[]; stockMovements: any[]; warehouses: any[]; stockTransfers: any[]; units: any[]; ... 215 more ...; getBaseCurrency: () => any; }' is missing the following properties from type 'AppState': loadWarehouses, addWarehouse, updateWarehouse, getNextTransferNo, saveStockTransfer
+src/store/index.ts(655,13): error TS2339: Property 'isInitializing' does not exist on type 'AppState'.
+src/store/index.ts(657,11): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
+src/store/index.ts(970,13): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
+src/store/index.ts(997,47): error TS2339: Property 'password' does not exist on type 'Partial<StoreUser>'.
+src/store/index.ts(1108,18): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1116,27): error TS2339: Property 'name' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1119,22): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1120,23): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1121,26): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1121,56): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1883,22): error TS2339: Property 'status' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1883,56): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1884,39): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1988,24): error TS2339: Property 'status' does not exist on type '{ id: string; invoiceNo: string; }'.
+src/store/index.ts(2470,11): error TS2353: Object literal may only specify known properties, and 'auditLogs' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.

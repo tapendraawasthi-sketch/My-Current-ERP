@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { useStore } from "@/store/useStore";
+import { useStore } from "../../store/useStore";
 import { Bell, Info, AlertCircle, Package, Check, Trash2 } from "lucide-react";
 import Badge from "./Badge";
 

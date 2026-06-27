@@ -9,7 +9,7 @@ import {
   BSToADString,
   getBSMonthCalendarGrid,
   type BSDay,
-} from "@/lib/nepaliDate";
+} from "../../lib/nepaliDate";
  
 const NEPALI_MONTHS = [
   "Baisakh","Jestha","Ashadh","Shrawan","Bhadra","Ashwin",

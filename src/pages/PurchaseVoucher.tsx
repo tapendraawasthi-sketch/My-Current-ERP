@@ -118,28 +118,19 @@ const PurchaseVoucher: React.FC = () => {
   }, [selectedParty]);
 
   const tdsBreakdown = useMemo(() => {
-    if (!selectedParty?.subjectToTds) {
-      return {
-        applicable: false,
-        grossAmount: grandTotal,
-        tdsAmount: 0,
-        netPayable: grandTotal,
-        rate: 0,
-        sectionCode: "",
+    if (!tdsSection || !selectedParty) {
+      return { 
+        applicable: false, 
+        grossAmount: grandTotal, 
+        tdsAmount: 0, 
+        netPayable: grandTotal, 
+        rate: 0, 
+        sectionId: "",
+        sectionCode: "", 
         description: "",
-      };
-    }
-
-    if (!tdsSection) {
-      return {
-        applicable: false,
-        grossAmount: grandTotal,
-        tdsAmount: 0,
-        netPayable: grandTotal,
-        rate: 0,
-        sectionCode: "",
-        description: "",
-      };
+        descriptionNepali: "",
+        thresholdAmount: 0
+      } as NepalTdsCalculationResult;
     }
 
     return calculateNepalTds({
@@ -170,9 +161,12 @@ const PurchaseVoucher: React.FC = () => {
     };
   }
 
-  const updateLine = useCallback((index: number, field: string, value: any) => {
+  const updateLine = useCallback((key: string, field: string, value: any) => {
     setLines(prev => {
       const newLines = [...prev];
+      const index = newLines.findIndex(l => l.key === key);
+      if (index === -1) return prev;
+      
       const line = { ...newLines[index] };
       
       if (field === "itemId") {
@@ -366,11 +360,12 @@ const PurchaseVoucher: React.FC = () => {
         
         <div className="flex items-center gap-4">
           <div className="text-sm font-medium">No: {voucherNumber}</div>
-          <NepaliDatePicker
-            value={date}
-            onChange={setDate}
-            className="w-36"
-          />
+          <div className="w-36">
+            <NepaliDatePicker
+              value={date}
+              onChange={setDate}
+            />
+          </div>
           <Input
             placeholder="Ref No."
             value={referenceNo}
@@ -429,25 +424,26 @@ const PurchaseVoucher: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Invoice No</label>
             <Input
               value={supplierInvoiceNo}
-              onChange={(e) => setSupplierInvoiceNo(e.target.value)}
+              onChange={(val: any) => setSupplierInvoiceNo(val?.target ? val.target.value : val)}
               placeholder="Supplier's invoice no."
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Invoice Date</label>
-            <NepaliDatePicker
-              value={supplierInvoiceDate}
-              onChange={setSupplierInvoiceDate}
-              className="w-full"
-            />
+            <div className="flex-1 min-w-[150px]">
+              <NepaliDatePicker
+                value={supplierInvoiceDate || ""}
+                onChange={setSupplierInvoiceDate}
+              />
+            </div>
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Payment Type</label>
             <Select
               value={paymentType}
-              onChange={setPaymentType}
+              onChange={(val) => setPaymentType(val as "cash" | "credit" | "bank")}
               options={[
                 { value: "credit", label: "Credit" },
                 { value: "cash", label: "Cash" },
@@ -497,33 +493,36 @@ const PurchaseVoucher: React.FC = () => {
                   <td className="px-4 py-2 whitespace-nowrap">
                     <Select
                       value={line.itemId}
-                      onChange={(value) => updateLine(index, "itemId", value)}
+                      onChange={(value) => updateLine(line.key, "itemId", value)}
                       options={itemOptions}
                       placeholder="Select item"
                       className="w-full"
                     />
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.quantity}
-                      onChange={(value) => updateLine(index, "quantity", value)}
-                      className="w-20"
-                    />
+                    <div className="w-24">
+                      <AmountInput
+                        value={line.quantity}
+                        onChange={(val) => updateLine(line.key, "quantity", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{line.unit}</td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.rate}
-                      onChange={(value) => updateLine(index, "rate", value)}
-                      className="w-24"
-                    />
+                    <div className="w-28">
+                      <AmountInput
+                        value={line.rate}
+                        onChange={(val) => updateLine(line.key, "rate", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.discount}
-                      onChange={(value) => updateLine(index, "discount", value)}
-                      className="w-20"
-                    />
+                    <div className="w-20">
+                      <AmountInput
+                        value={line.discount}
+                        onChange={(val) => updateLine(line.key, "discount", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm font-medium">
                     {formatNumber(line.amount || 0)}
@@ -531,7 +530,7 @@ const PurchaseVoucher: React.FC = () => {
                   <td className="px-4 py-2 whitespace-nowrap">
                     <AmountInput
                       value={line.taxRate}
-                      onChange={(value) => updateLine(index, "taxRate", value)}
+                      onChange={(val) => updateLine(line.key, "taxRate", val)}
                       className="w-20"
                     />
                   </td>
@@ -542,7 +541,7 @@ const PurchaseVoucher: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={line.itcEligible}
-                      onChange={(e) => updateLine(index, "itcEligible", e.target.checked)}
+                      onChange={(e) => updateLine(line.key, "itcEligible", e.target.checked)}
                       className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
                     />
                   </td>
@@ -599,11 +598,12 @@ const PurchaseVoucher: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>Round Off:</span>
-            <AmountInput
-              value={roundOff}
-              onChange={setRoundOff}
-              className="w-24 text-right"
-            />
+            <div className="w-32">
+              <AmountInput
+                value={roundOff}
+                onChange={setRoundOff}
+              />
+            </div>
           </div>
           <div className="flex justify-between pt-2 border-t border-gray-200">
             <span className="font-bold">Grand Total:</span>
@@ -616,7 +616,7 @@ const PurchaseVoucher: React.FC = () => {
                 <label className="text-[10px] font-semibold text-amber-700 uppercase">TDS Section</label>
                 <select
                   value={tdsSection}
-                  onChange={(e) => setTdsSection(e.target.value)}
+                  onChange={(val: any) => setTdsSection(val?.target ? val.target.value : val)}
                   className="w-full mt-1 h-7 px-2 border border-amber-300 rounded text-amber-900 bg-white"
                 >
                   <option value="">-- Select TDS Section --</option>
@@ -639,9 +639,6 @@ const PurchaseVoucher: React.FC = () => {
                   <div className="font-mono font-bold text-green-700">Rs. {tdsBreakdown.netPayable.toLocaleString("en-NP")}</div>
                 </div>
               </div>
-              {tdsBreakdown.reason && (
-                <p className="mt-2 text-[11px] text-amber-700">{tdsBreakdown.reason}</p>
-              )}
             </div>
           )}
         </div>
@@ -727,7 +724,7 @@ const PurchaseVoucher: React.FC = () => {
                 Cancel
               </Button>
               <Button
-                variant="destructive"
+                variant="danger"
                 onClick={confirmCancel}
               >
                 Discard Changes

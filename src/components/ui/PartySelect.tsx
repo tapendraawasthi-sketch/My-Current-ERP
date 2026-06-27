@@ -4,8 +4,8 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { useStore } from "@/store/useStore";
-import { PartyType } from "@/lib/types";
+import { useStore } from "../../store/useStore";
+import { PartyType } from "../../lib/types";
 import { ChevronDown, Search } from "lucide-react";
 
 interface PartySelectProps {

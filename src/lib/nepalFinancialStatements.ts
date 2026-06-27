@@ -508,11 +508,11 @@ export function buildBalanceSheetData(args: {
   previousAsAtDate?: string;
 }): BalanceSheetData {
   const currentTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.currentVouchers, args.asAtDate),
+    computeLedgerTotals(args.accounts, args.currentVouchers, { endDate: args.asAtDate }),
   );
 
   const previousTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.previousVouchers, args.previousAsAtDate),
+    computeLedgerTotals(args.accounts, args.previousVouchers, { endDate: args.previousAsAtDate }),
   );
 
   const equity = buildSectionLines(
@@ -617,11 +617,11 @@ export function buildProfitLossData(args: {
   closingStockPrevious?: number;
 }): ProfitLossData {
   const currentTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.currentVouchers, args.toDate, args.fromDate),
+    computeLedgerTotals(args.accounts, args.currentVouchers, { endDate: args.toDate, startDate: args.fromDate }),
   );
 
   const previousTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.previousVouchers, args.previousToDate, args.previousFromDate),
+    computeLedgerTotals(args.accounts, args.previousVouchers, { endDate: args.previousToDate, startDate: args.previousFromDate }),
   );
 
   const revenue = buildSectionLines(

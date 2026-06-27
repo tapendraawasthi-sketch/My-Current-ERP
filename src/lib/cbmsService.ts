@@ -41,7 +41,7 @@ export interface DBInvoice {
   cbmsQrString?: string;
   cbmsQrCode?: string;
   cbmsSubmittedAt?: string;
-  cbmsStatus?: "pending" | "submitted" | "failed" | "cancelled";
+  cbmsStatus?: "pending" | "submitted" | "failed" | "cancelled" | "success";
   cbmsError?: string;
 }
 

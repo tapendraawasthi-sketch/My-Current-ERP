@@ -166,7 +166,7 @@ export interface DBInvoice {
   cbmsQrString?: string;
   cbmsQrCode?: string;
   cbmsSubmittedAt?: string;
-  cbmsStatus?: "success" | "failed" | "pending";
+  cbmsStatus?: "success" | "failed" | "pending" | "submitted" | "cancelled";
   tdsSection?: string;
   tdsDeductedFrom?: string;
   grossAmount?: number;
@@ -978,6 +978,8 @@ export function getDB(): SutraDB {
   }
   return dbInstance;
 }
+
+export const db = getDB();
 
 export function generateId(): string {
   return crypto.randomUUID();

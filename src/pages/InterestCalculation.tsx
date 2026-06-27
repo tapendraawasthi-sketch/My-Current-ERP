@@ -61,7 +61,7 @@ async function postInterestJournal(
     `Interest on overdue receivables for ${records.length} bill(s). ` +
     `Bills: ${records.map((r) => r.bill.billNo).join(", ")}.`;
 
-  const { generateSerialNumber } = await import("../lib/db");
+  const { generateSerialNumber } = await import("../lib/accounting");
 
   const voucherNo = await generateSerialNumber(
     VoucherType.JOURNAL,

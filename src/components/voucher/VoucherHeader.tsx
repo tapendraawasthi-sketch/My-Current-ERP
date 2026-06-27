@@ -61,32 +61,32 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
           </div>
           
           {mode && (
-            <Badge variant="outline" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
+            <Badge variant="default" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
               {mode}
             </Badge>
           )}
           
           <div className="flex gap-2">
             {isOptional && (
-              <Badge variant="outline" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200">
+              <Badge variant="default" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200">
                 Optional
               </Badge>
             )}
             
             {isPostDated && (
-              <Badge variant="outline" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200">
+              <Badge variant="default" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200">
                 Post-Dated
               </Badge>
             )}
             
             {isCancelled && (
-              <Badge variant="outline" className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">
+              <Badge variant="default" className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">
                 Cancelled
               </Badge>
             )}
             
             {isEdit && (
-              <Badge variant="outline" className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+              <Badge variant="default" className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
                 Edit Mode
               </Badge>
             )}
@@ -104,21 +104,23 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
           
           <div className="flex items-center gap-2">
             <label className="text-xs text-gray-500 dark:text-gray-400">Date:</label>
-            <NepaliDatePicker
-              value={date}
-              onChange={onDateChange}
-              className="w-36 text-sm"
-            />
+            <div className="w-36 text-sm">
+              <NepaliDatePicker
+                value={date}
+                onChange={onDateChange}
+              />
+            </div>
           </div>
           
           {showEffectiveDate && onEffectiveDateChange && (
             <div className="flex items-center gap-2">
               <label className="text-xs text-gray-500 dark:text-gray-400">Eff. Date:</label>
-              <NepaliDatePicker
-                value={effectiveDate || ""}
-                onChange={onEffectiveDateChange}
-                className="w-36 text-sm"
-              />
+              <div className="w-36 text-sm">
+                <NepaliDatePicker
+                  value={effectiveDate || ""}
+                  onChange={onEffectiveDateChange}
+                />
+              </div>
             </div>
           )}
           
@@ -127,7 +129,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
               <label className="text-xs text-gray-500 dark:text-gray-400">Ref. No:</label>
               <Input
                 value={referenceNumber || ""}
-                onChange={(e) => onReferenceNumberChange(e.target.value)}
+                onChange={(val: any) => onReferenceNumberChange(val?.target ? val.target.value : val)}
                 className="w-32 text-sm"
                 placeholder="Reference no."
               />

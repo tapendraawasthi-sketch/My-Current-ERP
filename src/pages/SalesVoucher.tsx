@@ -261,29 +261,39 @@ const SalesVoucher: React.FC = () => {
           <Badge variant="outline" className="bg-blue-100 text-blue-700">
             {mode === "item-invoice" ? "Item Invoice" : "Accounting Invoice"}
           </Badge>
-          {isOptional && (
-            <Badge variant="outline" className="bg-amber-100 text-amber-700">
-              Optional
-            </Badge>
-          )}
-          {isPostDated && (
-            <Badge variant="outline" className="bg-purple-100 text-purple-700">
-              Post-Dated
-            </Badge>
-          )}
+          <div className="flex gap-2">
+            {isOptional && (
+              <Badge variant="default" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200">
+                Optional
+              </Badge>
+            )}
+            
+            {isPostDated && (
+              <Badge variant="default" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200">
+                Post-Dated
+              </Badge>
+            )}
+            
+            {isEdit && (
+              <Badge variant="default" className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                Edit Mode
+              </Badge>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="text-sm font-medium">No: {voucherNumber}</div>
-          <NepaliDatePicker
-            value={date}
-            onChange={setDate}
-            className="w-36"
-          />
+          <div className="w-36">
+            <NepaliDatePicker
+              value={date}
+              onChange={setDate}
+            />
+          </div>
           <Input
             placeholder="Ref No."
             value={referenceNo}
-            onChange={(e) => setReferenceNo(e.target.value)}
+            onChange={(val: any) => setReferenceNo(val?.target ? val.target.value : val)}
             className="w-32"
           />
         </div>
@@ -369,26 +379,29 @@ const SalesVoucher: React.FC = () => {
                     />
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.quantity}
-                      onChange={(value) => updateLine(index, "quantity", value)}
-                      className="w-20"
-                    />
+                    <div className="w-24">
+                      <AmountInput
+                        value={line.quantity}
+                        onChange={(val) => updateLine(index, "quantity", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{line.unit}</td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.rate}
-                      onChange={(value) => updateLine(index, "rate", value)}
-                      className="w-24"
-                    />
+                    <div className="w-28">
+                      <AmountInput
+                        value={line.rate}
+                        onChange={(val) => updateLine(index, "rate", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <AmountInput
-                      value={line.discount}
-                      onChange={(value) => updateLine(index, "discount", value)}
-                      className="w-20"
-                    />
+                    <div className="w-20">
+                      <AmountInput
+                        value={line.discount}
+                        onChange={(val) => updateLine(index, "discount", val)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm font-medium">
                     {formatNumber(line.amount || 0)}
@@ -456,11 +469,12 @@ const SalesVoucher: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>Round Off:</span>
-            <AmountInput
-              value={roundOff}
-              onChange={setRoundOff}
-              className="w-24 text-right"
-            />
+              <div className="w-32">
+                <AmountInput
+                  value={roundOff}
+                  onChange={setRoundOff}
+                />
+              </div>
           </div>
           <div className="flex justify-between pt-2 border-t border-gray-200">
             <span className="font-bold">Grand Total:</span>
@@ -548,10 +562,7 @@ const SalesVoucher: React.FC = () => {
               >
                 Cancel
               </Button>
-              <Button
-                variant="destructive"
-                onClick={confirmCancel}
-              >
+              <Button variant="danger" onClick={confirmCancel}>
                 Discard Changes
               </Button>
             </div>

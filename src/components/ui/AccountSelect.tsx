@@ -4,8 +4,8 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { useStore } from "@/store/useStore";
-import { AccountType } from "@/lib/types";
+import { useStore } from "../../store/useStore";
+import { AccountType } from "../../lib/types";
 import QuickCreateAccountModal from "./QuickCreateAccountModal";
 import { Plus, ChevronDown, Search } from "lucide-react";
 

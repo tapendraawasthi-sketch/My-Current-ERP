@@ -337,7 +337,7 @@ const PriceListMaster: React.FC = () => {
                 type="number"
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.mrp}
-                onChange={(e) => setForm({ ...form, mrp: parseFloat(e.target.value) || "" })}
+                onChange={(e) => setForm({ ...form, mrp: e.target.value })}
                 min="0"
                 step="any"
               />

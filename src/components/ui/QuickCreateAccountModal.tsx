@@ -8,8 +8,8 @@ import Modal from "./Modal";
 import Input from "./Input";
 import Select from "./Select";
 import Button from "./Button";
-import { useStore } from "@/store/useStore";
-import { AccountType, AccountLevel } from "@/lib/types";
+import { useStore } from "../../store/useStore";
+import { AccountType, AccountLevel } from "../../lib/types";
 import toast from "react-hot-toast";
 
 interface QuickCreateAccountModalProps {
@@ -66,8 +66,8 @@ const QuickCreateAccountModal: React.FC<QuickCreateAccountModalProps> = ({
   };
 
   const accountTypeOptions = Object.values(AccountType).map((t) => ({
-    value: t,
-    label: t.charAt(0) + t.slice(1).toLowerCase().replace("_", " "),
+    value: t as string,
+    label: (t as string).charAt(0) + (t as string).slice(1).toLowerCase().replace("_", " "),
   }));
 
   return (

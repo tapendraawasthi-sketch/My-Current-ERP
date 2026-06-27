@@ -4,14 +4,18 @@ interface ActionToolbarProps {
   subtitle?: string;
   primaryAction?: { label: string; onClick: () => void; icon?: React.ReactNode };
   secondaryActions?: Array<{ label: string; onClick: () => void; icon?: React.ReactNode }>;
+  className?: string;
+  children?: React.ReactNode;
 }
 export const ActionToolbar: React.FC<ActionToolbarProps> = ({
   title,
   subtitle,
   primaryAction,
   secondaryActions,
+  className,
+  children,
 }) => (
-  <div className="flex items-center justify-between mb-4">
+  <div className={`flex items-center justify-between mb-4 ${className || ""}`}>
     {(title || subtitle) && (
       <div>
         {title && <h1 className="text-[15px] font-semibold text-[#000000]">{title}</h1>}
@@ -38,6 +42,7 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({
           {primaryAction.label}
         </button>
       )}
+      {children}
     </div>
   </div>
 );

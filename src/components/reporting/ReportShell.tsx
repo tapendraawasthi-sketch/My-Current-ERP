@@ -11,6 +11,7 @@ interface ReportShellProps {
   onPrint?: () => void;
   onExport?: () => void;
   onOptions?: () => void;
+  actions?: React.ReactNode;
   children: React.ReactNode;
 }
 

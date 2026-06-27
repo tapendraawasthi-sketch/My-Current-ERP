@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import { formatBSDate } from "@/lib/nepaliDate";
+import { formatBSDate } from "../../lib/nepaliDate";
 
 interface DualDateProps {
   date: string; // AD date ISO string YYYY-MM-DD

@@ -101,12 +101,12 @@ const DayBook: React.FC = () => {
   const [zoom, setZoom] = useState<80 | 100 | 120>(100);
 
   const accountMap = useMemo(
-    () => new Map((accounts || []).map((a: Account) => [a.id, a.name])),
+    () => new Map<string, string>((accounts || []).map((a: Account) => [a.id, a.name])),
     [accounts],
   );
 
   const voucherTypes = useMemo(() => {
-    return Array.from(new Set((vouchers || []).map((v: Voucher) => v.type))).filter(Boolean);
+    return Array.from(new Set((vouchers || []).map((v: Voucher) => v.type))).filter(Boolean) as string[];
   }, [vouchers]);
 
   const filtered = useMemo(() => {

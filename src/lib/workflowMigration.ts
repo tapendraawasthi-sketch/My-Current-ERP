@@ -21,5 +21,5 @@ export async function migrateWorkflowFields(): Promise<void> {
     };
   });
 
-  await db.vouchers.bulkPut(migrated);
+  await db.vouchers.bulkPut(migrated as any[]);
 }
