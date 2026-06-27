@@ -547,6 +547,125 @@ export interface DBBankStatement {
   reconciledAt?: string;
 }
 
+// --- NEW BANKING MODULE INTERFACES ---
+export interface DBChequeBook {
+  id: string;
+  bankAccountId: string;      // Links to accounts table
+  bankName: string;
+  branchName: string;
+  accountNumber: string;
+  chequeBookNo: string;       // Cheque book series identifier e.g. "CB-2024-001"
+  fromChequeNo: string;       // Starting cheque number in this book
+  toChequeNo: string;         // Ending cheque number in this book
+  currentChequeNo: string;    // Next cheque number to be used (auto-incremented)
+  isActive: boolean;
+  createdAt: string;
+  // Layout configuration for printing (stored as JSON-stringified object)
+  printLayout?: string;
+}
+
+export interface DBCheque {
+  id: string;
+  voucherId: string;           // Links to vouchers table (payment voucher)
+  voucherNo: string;
+  bankAccountId: string;
+  chequeNo: string;
+  chequeDate: string;          // Date written on the cheque (AD, YYYY-MM-DD)
+  chequeDateNepali?: string;
+  payeeName: string;
+  amount: number;
+  amountInWords: string;
+  status: "issued" | "presented" | "cleared" | "bounced" | "cancelled" | "stale";
+  isPrinted: boolean;
+  printedAt?: string;
+  printedBy?: string;
+  clearedDate?: string;        // Date it appeared on bank statement
+  bouncedDate?: string;
+  bouncedReason?: string;
+  narration?: string;
+  createdAt: string;
+}
+
+export interface DBDepositSlip {
+  id: string;
+  slipNo: string;
+  bankAccountId: string;
+  depositDate: string;         // AD
+  depositDateNepali?: string;
+  instruments: string;         // JSON: array of { voucherId, voucherNo, instrumentNo, drawerName, drawerBankName, drawerBankBranch, instrumentDate, amount }
+  totalAmount: number;
+  cashAmount: number;
+  chequeAmount: number;
+  status: "draft" | "deposited" | "reversed";
+  printedAt?: string;
+  depositedAt?: string;
+  narration?: string;
+  createdAt: string;
+}
+
+export interface DBPDCheque {
+  id: string;
+  type: "issued" | "received";    // issued = we gave PDC to supplier; received = customer gave us PDC
+  chequeNo: string;
+  chequeDate: string;             // The future date written on the cheque (AD)
+  chequeDateNepali?: string;
+  partyId: string;
+  partyName: string;
+  bankName: string;               // Bank of the cheque issuer
+  bankBranch: string;
+  amount: number;
+  bankAccountId: string;          // Our bank account (the account it will eventually affect)
+  voucherId?: string;             // The original voucher this PDC relates to
+  voucherNo?: string;
+  holdingAccountId?: string;      // PDC Receivable / PDC Payable ledger used as holding
+  status: "pending" | "due" | "overdue" | "presented" | "cleared" | "bounced" | "cancelled";
+  convertedAt?: string;           // When it was converted to a regular bank entry
+  convertedVoucherId?: string;    // The journal entry created on conversion
+  narration?: string;
+  createdAt: string;
+}
+
+export interface DBEPaymentBatch {
+  id: string;
+  batchNo: string;
+  bankAccountId: string;
+  paymentDate: string;
+  paymentDateNepali?: string;
+  entries: string;           // JSON: array of { voucherId, voucherNo, partyId, partyName, amount, accountNo, ifscCode, bankName, paymentType: "NEFT"|"RTGS"|"IMPS", status: "pending"|"success"|"failed" }
+  totalAmount: number;
+  entryCount: number;
+  fileFormat: string;        // "csv" | "text" | "xml"
+  generatedFileContent?: string;  // The actual file content generated
+  status: "draft" | "generated" | "uploaded" | "processed";
+  uploadedAt?: string;
+  processedAt?: string;
+  narration?: string;
+  createdAt: string;
+  createdBy?: string;
+}
+
+export interface DBPaymentAdvice {
+  id: string;
+  voucherId: string;
+  voucherNo: string;
+  partyId: string;
+  partyName: string;
+  partyEmail?: string;
+  partyAddress?: string;
+  paymentDate: string;
+  paymentMode: string;
+  chequeNo?: string;
+  chequeDate?: string;
+  bankName?: string;
+  totalAmount: number;
+  billDetails: string;   // JSON: array of { billRef, billDate, billAmount, adjustedAmount, creditNoteRef?, debitNoteRef? }
+  status: "draft" | "sent" | "emailed";
+  sentAt?: string;
+  emailedAt?: string;
+  createdAt: string;
+}
+// --- END NEW BANKING MODULE INTERFACES ---
+
 class SutraDB extends Dexie {
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
@@ -570,6 +689,16 @@ class SutraDB extends Dexie {
   recurringVouchers!: Table<DBRecurringVoucher>;
   customFieldDefs!: Table<DBCustomFieldDef>;
   currencies!: Table<DBCurrency>;
+
+  // --- NEW BANKING MODULE TABLES ---
+  chequeBooks!: Table<DBChequeBook>;
+  cheques!: Table<DBCheque>;
+  depositSlips!: Table<DBDepositSlip>;
+  pdCheques!: Table<DBPDCheque>;
+  ePaymentBatches!: Table<DBEPaymentBatch>;
+  paymentAdvices!: Table<DBPaymentAdvice>;
+  // --- END NEW BANKING MODULE TABLES ---
+
   // Administration module tables
   unitConversions!: Table<DBUnitConversion>;
   standardNarrations!: Table<DBStandardNarration>;
@@ -702,6 +831,16 @@ class SutraDB extends Dexie {
       payrollUnits: 'id, name, symbol, isActive',
       attendanceTypes: 'id, name, type, isActive',
       ledgerExtensions: 'id, ledgerId',
+    });
+
+    // Version 9 — Banking Module
+    this.version(9).stores({
+      chequeBooks: "id, bankAccountId, isActive",
+      cheques: "id, voucherId, bankAccountId, chequeNo, chequeDate, status, isPrinted",
+      depositSlips: "id, slipNo, bankAccountId, depositDate, status",
+      pdCheques: "id, type, chequeDate, partyId, bankAccountId, status",
+      ePaymentBatches: "id, batchNo, bankAccountId, paymentDate, status",
+      paymentAdvices: "id, voucherId, partyId, status",
     });
   }
 }

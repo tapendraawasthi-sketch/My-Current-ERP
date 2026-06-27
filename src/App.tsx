@@ -50,6 +50,14 @@ import OpeningBalance from "./pages/OpeningBalance";
 import TdsReport from "./pages/TdsReport";
 import TdsPayment from "./pages/TdsPayment";
 import BankReconciliation from "./pages/BankReconciliation";
+import ChequePrinting from "./pages/ChequePrinting";
+import ChequeRegister from "./pages/ChequeRegister";
+import DepositSlip from "./pages/DepositSlip";
+import PaymentAdvice from "./pages/PaymentAdvice";
+import AutoBankReconciliation from "./pages/AutoBankReconciliation";
+import EPayments from "./pages/EPayments";
+import PDCSummary from "./pages/PDCSummary";
+import BankingHub from "./pages/BankingHub";
 import CostCenters from "./pages/CostCenters";
 import CostCenterReport from "./pages/CostCenterReport";
 import BillWisePending from "./pages/BillWisePending";
@@ -454,6 +462,54 @@ function MainRouter() {
       return (
         <ErrorBoundary>
           <BankReconciliation />
+        </ErrorBoundary>
+      );
+    case "cheque-printing":
+      return (
+        <ErrorBoundary>
+          <ChequePrinting />
+        </ErrorBoundary>
+      );
+    case "cheque-register":
+      return (
+        <ErrorBoundary>
+          <ChequeRegister />
+        </ErrorBoundary>
+      );
+    case "deposit-slip":
+      return (
+        <ErrorBoundary>
+          <DepositSlip />
+        </ErrorBoundary>
+      );
+    case "payment-advice":
+      return (
+        <ErrorBoundary>
+          <PaymentAdvice />
+        </ErrorBoundary>
+      );
+    case "auto-bank-reconciliation":
+      return (
+        <ErrorBoundary>
+          <AutoBankReconciliation />
+        </ErrorBoundary>
+      );
+    case "e-payments":
+      return (
+        <ErrorBoundary>
+          <EPayments />
+        </ErrorBoundary>
+      );
+    case "pdc-summary":
+      return (
+        <ErrorBoundary>
+          <PDCSummary />
+        </ErrorBoundary>
+      );
+    case "banking-hub":
+      return (
+        <ErrorBoundary>
+          <BankingHub />
         </ErrorBoundary>
       );
     case "vat-reports":

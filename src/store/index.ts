@@ -36,6 +36,18 @@ export interface CompanySettings {
   enableBatchTracking?: boolean;
   enableMultiCurrency?: boolean;
   tdsEnabled?: boolean;
+  enableBankReconciliation?: boolean;
+  enablePayroll?: boolean;
+  enableEInvoice?: boolean;
+  enableEPayment?: boolean;
+  enableChequePrinting?: boolean;
+  enablePDC?: boolean;
+  enableDepositSlips?: boolean;
+  defaultSalesAccount?: string;
+  defaultPurchaseAccount?: string;
+  defaultCashAccount?: string;
+  defaultBankAccount?: string;
+  defaultCostCenter?: string;
   stockValuationMethod?: string;
   dateFormat?: string;
   fiscalYearStartMonth?: number;
@@ -217,6 +229,15 @@ interface AppState {
   materialIssued: any[];
   materialReceived: any[];
   physicalStocks: any[];
+
+  // Banking Module State
+  chequeBooks: any[];
+  cheques: any[];
+  depositSlips: any[];
+  pdCheques: any[];
+  ePaymentBatches: any[];
+  paymentAdvices: any[];
+
   addStockJournal: (entry: any) => Promise<void>;
   addProduction: (entry: any) => Promise<void>;
   addUnassemble: (entry: any) => Promise<void>;
@@ -402,6 +423,24 @@ interface AppState {
   // Ledger Extension
   upsertLedgerExtension: (id: string, data: Partial<any>) => Promise<void>;
   getLedgerExtension: (id: string) => Promise<any>;
+
+  // Banking Module Actions
+  loadBankingData: () => Promise<void>;
+  saveChequeBook: (data: Partial<any>) => Promise<string>;
+  updateChequeBook: (id: string, data: Partial<any>) => Promise<void>;
+  saveCheque: (data: Partial<any>) => Promise<string>;
+  updateCheque: (id: string, data: Partial<any>) => Promise<void>;
+  markChequePrinted: (chequeIds: string[], userId?: string) => Promise<void>;
+  saveDepositSlip: (data: Partial<any>) => Promise<string>;
+  updateDepositSlip: (id: string, data: Partial<any>) => Promise<void>;
+  markDepositConfirmed: (slipId: string) => Promise<void>;
+  savePDCheque: (data: Partial<any>) => Promise<string>;
+  updatePDCheque: (id: string, data: Partial<any>) => Promise<void>;
+  convertPDCToBank: (pdcId: string, journalData: any) => Promise<void>;
+  saveEPaymentBatch: (data: Partial<any>) => Promise<string>;
+  updateEPaymentBatch: (id: string, data: Partial<any>) => Promise<void>;
+  savePaymentAdvice: (data: Partial<any>) => Promise<string>;
+  updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -483,6 +522,15 @@ export const useStore = create<AppState>((set, get) => ({
   ledgerExtensions: [],
   tdsEntries: [],
   tdsRates: DEFAULT_TDS_RATES,
+  
+  // Banking Module State
+  chequeBooks: [],
+  cheques: [],
+  depositSlips: [],
+  pdCheques: [],
+  ePaymentBatches: [],
+  paymentAdvices: [],
+
   stockJournals: [],
   productions: [],
   unassembles: [],
@@ -611,6 +659,8 @@ export const useStore = create<AppState>((set, get) => ({
       payrollUnits,
       attendanceTypes,
       ledgerExtensions,
+      // Banking module data
+      chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -669,6 +719,13 @@ export const useStore = create<AppState>((set, get) => ({
       db.payrollUnits.toArray(),
       db.attendanceTypes.toArray(),
       db.ledgerExtensions.toArray(),
+      // Banking module data
+      db.chequeBooks.toArray(),
+      db.cheques.toArray(),
+      db.depositSlips.toArray(),
+      db.pdCheques.toArray(),
+      db.ePaymentBatches.toArray(),
+      db.paymentAdvices.toArray(),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -759,6 +816,14 @@ export const useStore = create<AppState>((set, get) => ({
       payrollUnits: payrollUnits as any[],
       attendanceTypes: attendanceTypes as any[],
       ledgerExtensions: ledgerExtensions as any[],
+      // Banking module data
+      chequeBooks: chequeBooks as any[],
+      cheques: cheques as any[],
+      depositSlips: depositSlips as any[],
+      pdCheques: pdCheques as any[],
+      ePaymentBatches: ePaymentBatches as any[],
+      paymentAdvices: paymentAdvices as any[],
+      
       journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
 
@@ -2009,6 +2074,160 @@ export const useStore = create<AppState>((set, get) => ({
       companySettings: null, isDbReady: false,
     });
     await get().initializeApp();
+  },
+
+  // ── Banking Module Actions ──────────────────────────────────────────────────
+  loadBankingData: async () => {
+    const db = getDB();
+    const [chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices] = await Promise.all([
+      db.chequeBooks.toArray(),
+      db.cheques.toArray(),
+      db.depositSlips.toArray(),
+      db.pdCheques.toArray(),
+      db.ePaymentBatches.toArray(),
+      db.paymentAdvices.toArray(),
+    ]);
+    set({ chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices });
+  },
+
+  saveChequeBook: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.chequeBooks.put(record as any);
+    const all = await db.chequeBooks.toArray();
+    set({ chequeBooks: all });
+    return id;
+  },
+
+  updateChequeBook: async (id, data) => {
+    const db = getDB();
+    await db.chequeBooks.update(id, data);
+    const all = await db.chequeBooks.toArray();
+    set({ chequeBooks: all });
+  },
+
+  saveCheque: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.cheques.put(record as any);
+    const all = await db.cheques.toArray();
+    set({ cheques: all });
+    return id;
+  },
+
+  updateCheque: async (id, data) => {
+    const db = getDB();
+    await db.cheques.update(id, data);
+    const all = await db.cheques.toArray();
+    set({ cheques: all });
+  },
+
+  markChequePrinted: async (chequeIds, userId) => {
+    const db = getDB();
+    const now = new Date().toISOString();
+    await Promise.all(chequeIds.map(id => db.cheques.update(id, { isPrinted: true, printedAt: now, printedBy: userId || "system" })));
+    await Promise.all(chequeIds.map(id => db.auditLogs.add({
+      id: generateId(), timestamp: now, userId: userId || "system",
+      action: "CHEQUE_PRINTED", module: "banking", recordId: id, recordType: "cheque"
+    })));
+    const all = await db.cheques.toArray();
+    set({ cheques: all });
+  },
+
+  saveDepositSlip: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.depositSlips.put(record as any);
+    const all = await db.depositSlips.toArray();
+    set({ depositSlips: all });
+    return id;
+  },
+
+  updateDepositSlip: async (id, data) => {
+    const db = getDB();
+    await db.depositSlips.update(id, data);
+    const all = await db.depositSlips.toArray();
+    set({ depositSlips: all });
+  },
+
+  markDepositConfirmed: async (slipId) => {
+    const db = getDB();
+    const now = new Date().toISOString();
+    await db.depositSlips.update(slipId, { status: "deposited", depositedAt: now });
+    await db.auditLogs.add({
+      id: generateId(), timestamp: now, userId: "system",
+      action: "DEPOSIT_CONFIRMED", module: "banking", recordId: slipId, recordType: "depositSlip"
+    });
+    const all = await db.depositSlips.toArray();
+    set({ depositSlips: all });
+  },
+
+  savePDCheque: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.pdCheques.put(record as any);
+    const all = await db.pdCheques.toArray();
+    set({ pdCheques: all });
+    return id;
+  },
+
+  updatePDCheque: async (id, data) => {
+    const db = getDB();
+    await db.pdCheques.update(id, data);
+    const all = await db.pdCheques.toArray();
+    set({ pdCheques: all });
+  },
+
+  convertPDCToBank: async (pdcId, journalData) => {
+    const db = getDB();
+    const now = new Date().toISOString();
+    const vId = generateId();
+    await db.vouchers.add({ ...journalData, id: vId, createdAt: now } as any);
+    await db.pdCheques.update(pdcId, { status: "presented", convertedAt: now, convertedVoucherId: vId });
+    await db.auditLogs.add({
+      id: generateId(), timestamp: now, userId: "system",
+      action: "PDC_CONVERTED", module: "banking", recordId: pdcId, recordType: "pdCheque"
+    });
+    const [allPDC, allVouchers] = await Promise.all([db.pdCheques.toArray(), db.vouchers.toArray()]);
+    set({ pdCheques: allPDC, vouchers: allVouchers });
+  },
+
+  saveEPaymentBatch: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.ePaymentBatches.put(record as any);
+    const all = await db.ePaymentBatches.toArray();
+    set({ ePaymentBatches: all });
+    return id;
+  },
+
+  updateEPaymentBatch: async (id, data) => {
+    const db = getDB();
+    await db.ePaymentBatches.update(id, data);
+    const all = await db.ePaymentBatches.toArray();
+    set({ ePaymentBatches: all });
+  },
+
+  savePaymentAdvice: async (data) => {
+    const db = getDB();
+    const id = data.id || generateId();
+    const record = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
+    await db.paymentAdvices.put(record as any);
+    const all = await db.paymentAdvices.toArray();
+    set({ paymentAdvices: all });
+    return id;
+  },
+
+  updatePaymentAdvice: async (id, data) => {
+    const db = getDB();
+    await db.paymentAdvices.update(id, data);
+    const all = await db.paymentAdvices.toArray();
+    set({ paymentAdvices: all });
   },
 
   getBaseCurrency: () => {
