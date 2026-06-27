@@ -1,505 +1,864 @@
+// src/pages/BankReconciliation.tsx
 // @ts-nocheck
-import React, { useState, useMemo, useRef } from "react";
-import { Upload, CheckCircle, RefreshCw, Plus, Link as LinkIcon, Unlink } from "lucide-react";
-import { ActionToolbar, Select, NepaliDatePicker, Button } from "../components/ui";
-import { useStore } from "../store/useStore";
-import { parseCSVBankStatement, autoMatchStatements, BookEntry, MatchResult } from "../lib/bankUtils";
-import { formatNumber, generateId } from "../lib/utils";
-import toast from "react-hot-toast";
-import { BankStatement, VoucherType, VoucherStatus, JournalEntryLine } from "../lib/types";
-import { formatADToBS } from "../lib/nepaliDate";
+import React, { useState, useMemo, useRef, useCallback } from 'react';
+import { useStore } from '../store/useStore';
+import { ActionToolbar, Select, NepaliDatePicker, Button } from '../components/ui';
+import {
+  RefreshCw, Link as LinkIcon, Unlink, Plus, Printer, CheckCircle,
+  Upload, AlertTriangle, ChevronDown, ChevronUp, X, FileText,
+  CheckCircle2, Info, Smartphone,
+} from 'lucide-react';
+import toast from 'react-hot-toast';
+import { formatNumber, generateId } from '../lib/utils';
+import { formatADToBS } from '../lib/nepaliDate';
+import {
+  runMatchingEngine,
+  createManualMatch,
+  computeReconciliationSummary,
+  BookEntry,
+  StatementEntry,
+  MatchPair,
+  MatchConfidence,
+} from '../lib/bankMatchingEngine';
 
-export default function BankReconciliation() {
-  const { 
-    accounts, 
-    journalEntries, 
-    bankStatements, 
-    importBankStatements, 
-    updateBankStatements, 
-    addVoucher 
-  } = useStore();
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-  const [selectedAccountId, setSelectedAccountId] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [showImportModal, setShowImportModal] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+type ActiveTab = 'bank' | 'digital';
+type DigitalMode = 'esewa' | 'khalti' | 'connectips';
 
-  // Column mapping state
-  const [colMapping, setColMapping] = useState({
-    date: 0,
-    description: 1,
-    debit: 2,
-    credit: 3,
-    balance: 4
-  });
+const CONFIDENCE_COLORS: Record<MatchConfidence, string> = {
+  HIGH:   'bg-green-100 text-green-700 border-green-300',
+  MEDIUM: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+  LOW:    'bg-red-100 text-red-600 border-red-300',
+};
 
-  const [localMatches, setLocalMatches] = useState<MatchResult[]>([]);
-  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  const bankAccounts = useMemo(() => 
-    accounts.filter(a => a.group === "Bank Accounts" || a.name.toLowerCase().includes("bank")),
-  [accounts]);
-
-  // Extract Book Entries
-  const bookEntries = useMemo(() => {
-    if (!selectedAccountId) return [];
-    
-    const entries: BookEntry[] = [];
-    journalEntries.forEach(jv => {
-      // Date filter (assuming JV date is AD and matches range, simplified for now if range provided)
-      if (startDate && jv.date < startDate) return;
-      if (endDate && jv.date > endDate) return;
-
-      jv.lines.forEach(line => {
-        if (line.accountId === selectedAccountId) {
-          // Check if already reconciled in our local state memory or DB?
-          // The bank statement 'reconciledVoucherId' points to the book entry ID.
-          // For now, we extract all, and later flag if they are reconciled.
-          const isReconciled = bankStatements.some(bs => bs.reconciledVoucherId === line.id && bs.reconciled);
-          if (!isReconciled) {
-             entries.push({
-               id: line.id || jv.id + "-" + line.accountId,
-               date: jv.date,
-               amount: line.debit > 0 ? line.debit : line.credit,
-               description: line.narration || jv.narration || "",
-               ledgerId: line.accountId,
-               type: line.debit > 0 ? 'debit' : 'credit'
-             });
-          }
-        }
+function buildBookEntries(vouchers: any[], accountId: string): BookEntry[] {
+  const entries: BookEntry[] = [];
+  vouchers.forEach(v => {
+    if (v.status !== 'posted') return;
+    v.lines?.forEach((line: any, idx: number) => {
+      if (line.accountId !== accountId) return;
+      const dr = Number(line.drAmount ?? line.debit ?? 0);
+      const cr = Number(line.crAmount ?? line.credit ?? 0);
+      const amount = dr > 0 ? dr : cr;
+      if (amount === 0) return;
+      entries.push({
+        id: `${v.id}-${idx}`,
+        date: v.date,
+        amount,
+        description: v.narration || v.voucherNo || '',
+        voucherId: v.id,
+        voucherNo: v.voucherNo,
+        type: dr > 0 ? 'debit' : 'credit',
+        refNo: v.referenceNo || v.chequeNo || line.chequeNo || '',
+        partyName: v.partyName || '',
       });
     });
-    return entries;
-  }, [journalEntries, selectedAccountId, startDate, endDate, bankStatements]);
+  });
+  return entries;
+}
 
-  // Extract Unreconciled Statement Entries
-  const statementEntries = useMemo(() => {
-    if (!selectedAccountId) return [];
-    return bankStatements.filter(bs => bs.bankAccountId === selectedAccountId && !bs.reconciled);
-  }, [bankStatements, selectedAccountId]);
+function buildStatementEntries(bankStatements: any[], accountId: string, dateFrom: string, dateTo: string): StatementEntry[] {
+  return (bankStatements as any[])
+    .filter(bs =>
+      bs.bankAccountId === accountId &&
+      !bs.reconciled &&
+      (!dateFrom || bs.date >= dateFrom) &&
+      (!dateTo   || bs.date <= dateTo)
+    )
+    .map(bs => ({
+      id: bs.id,
+      date: bs.date,
+      description: bs.narration || bs.description || '',
+      refNo: bs.chequeNo || bs.refNo || '',
+      debit:   Number(bs.debit  ?? 0),
+      credit:  Number(bs.credit ?? 0),
+      balance: Number(bs.balance ?? 0),
+      bankFormat: bs.bankFormat,
+    }));
+}
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
-    const reader = new FileReader();
-    reader.onload = async (evt) => {
-      try {
-        const text = evt.target?.result as string;
-        const parsed = parseCSVBankStatement(text, colMapping, selectedAccountId);
-        if (parsed.length === 0) {
-          toast.error("No valid data found in CSV or mapping is incorrect.");
-          return;
-        }
-        await importBankStatements(selectedAccountId, parsed as any);
-        setShowImportModal(false);
-      } catch (err) {
-        toast.error("Failed to parse CSV");
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
+const ConfidenceBadge: React.FC<{ confidence: MatchConfidence; reason: string }> = ({ confidence, reason }) => (
+  <span
+    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase cursor-help ${CONFIDENCE_COLORS[confidence]}`}
+    title={reason}
+  >
+    {confidence}
+  </span>
+);
+
+const AmountChip: React.FC<{ amount: number; type: 'debit' | 'credit' }> = ({ amount, type }) => (
+  <span className={`font-mono font-bold text-[12px] ${type === 'debit' ? 'text-emerald-700' : 'text-red-600'}`}>
+    {type === 'debit' ? '+' : '−'} Rs.{formatNumber(amount)}
+  </span>
+);
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
+export default function BankReconciliation() {
+  const {
+    accounts, vouchers, bankStatements, companySettings, currentUser,
+    addVoucher, updateBankStatements, saveAuditLog,
+    setCurrentPage,
+  } = useStore();
+
+  // ── Filter state ──────────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<ActiveTab>('bank');
+  const [selectedAccountId, setSelectedAccountId] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo,   setDateTo]   = useState('');
+  const [digitalMode, setDigitalMode] = useState<DigitalMode>('esewa');
+
+  // ── Reconciliation state ──────────────────────────────────────────────────
+  const [matchedPairs, setMatchedPairs]       = useState<MatchPair[]>([]);
+  const [selectedBookId, setSelectedBookId]   = useState<string | null>(null);
+  const [selectedStmtId, setSelectedStmtId]   = useState<string | null>(null);
+  const [showReport, setShowReport]           = useState(false);
+  const [hasRun, setHasRun]                   = useState(false);
+
+  // ── Create-voucher modal state ─────────────────────────────────────────────
+  const [voucherModal, setVoucherModal] = useState<{
+    stmtEntry: StatementEntry;
+    type: 'journal' | 'payment' | 'receipt';
+    counterAccountId: string;
+    narration: string;
+  } | null>(null);
+
+  // ── Derived data ──────────────────────────────────────────────────────────
+  const bankAccounts = useMemo(() =>
+    accounts.filter((a: any) => !a.isGroup &&
+      (a.group === 'Bank Accounts' || a.group === 'Bank OD Accounts')),
+  [accounts]);
+
+  const allAccounts = useMemo(() =>
+    accounts.filter((a: any) => !a.isGroup),
+  [accounts]);
+
+  const allBookEntries = useMemo(() =>
+    selectedAccountId ? buildBookEntries(vouchers, selectedAccountId) : [],
+  [vouchers, selectedAccountId]);
+
+  const allStmtEntries = useMemo(() =>
+    selectedAccountId ? buildStatementEntries(bankStatements, selectedAccountId, dateFrom, dateTo) : [],
+  [bankStatements, selectedAccountId, dateFrom, dateTo]);
+
+  // Already-matched IDs
+  const matchedBookIds = useMemo(() => new Set(matchedPairs.map(p => p.bookEntry.id)), [matchedPairs]);
+  const matchedStmtIds = useMemo(() => new Set(matchedPairs.map(p => p.statementEntry.id)), [matchedPairs]);
+
+  const unmatchedBook = useMemo(() =>
+    allBookEntries.filter(b => !matchedBookIds.has(b.id)),
+  [allBookEntries, matchedBookIds]);
+
+  const unmatchedStmt = useMemo(() =>
+    allStmtEntries.filter(s => !matchedStmtIds.has(s.id)),
+  [allStmtEntries, matchedStmtIds]);
+
+  // Book running balance
+  const bankAccount = accounts.find((a: any) => a.id === selectedAccountId);
+  const bookBalance = useMemo(() => {
+    const opening = (bankAccount?.openingBalanceDr ?? 0) - (bankAccount?.openingBalanceCr ?? 0);
+    return allBookEntries.reduce((sum, b) => b.type === 'debit' ? sum + b.amount : sum - b.amount, opening);
+  }, [allBookEntries, bankAccount]);
+
+  const summary = useMemo(() =>
+    computeReconciliationSummary(allBookEntries, unmatchedBook, allStmtEntries, bookBalance),
+  [allBookEntries, unmatchedBook, allStmtEntries, bookBalance]);
+
+  // ── Actions ────────────────────────────────────────────────────────────────
+
+  const handleAutoMatch = () => {
+    if (!selectedAccountId) { toast.error('Select a bank account first.'); return; }
+    const { matched } = runMatchingEngine(unmatchedBook, unmatchedStmt);
+    if (matched.length === 0) { toast('No new matches found.', { icon: 'ℹ️' }); return; }
+    setMatchedPairs(prev => [...prev, ...matched]);
+    setHasRun(true);
+    toast.success(`${matched.length} pair(s) auto-matched!`);
   };
 
-  const runAutoMatch = () => {
-    if (!selectedAccountId) {
-      toast.error("Select a Bank Account first");
+  const handleManualMatch = () => {
+    if (!selectedBookId || !selectedStmtId) {
+      toast.error('Select one entry from each side to match.');
       return;
     }
-    const matches = autoMatchStatements(bookEntries, statementEntries, 3);
-    const actualMatches = matches.filter(m => m.matchType === 'exact' || m.matchType === 'amount-match');
-    
-    // Merge into local matches avoiding duplicates
-    const newMatches = [...localMatches];
-    let added = 0;
-    actualMatches.forEach(am => {
-      if (!newMatches.some(nm => nm.bookId === am.bookId || nm.statementId === am.statementId)) {
-        newMatches.push(am);
-        added++;
-      }
+    const book = unmatchedBook.find(b => b.id === selectedBookId);
+    const stmt = unmatchedStmt.find(s => s.id === selectedStmtId);
+    if (!book || !stmt) { toast.error('Could not find selected entries.'); return; }
+
+    setMatchedPairs(prev => [...prev, createManualMatch(book, stmt)]);
+    setSelectedBookId(null);
+    setSelectedStmtId(null);
+    toast.success('Manually matched!');
+  };
+
+  const handleUnmatch = (bookId: string) => {
+    setMatchedPairs(prev => prev.filter(p => p.bookEntry.id !== bookId));
+  };
+
+  const handleSave = async () => {
+    if (matchedPairs.length === 0) { toast.error('Nothing to save.'); return; }
+    try {
+      const updates = matchedPairs.map(p => ({
+        id: p.statementEntry.id,
+        updates: {
+          reconciled: true,
+          reconciledVoucherId: p.bookEntry.voucherId,
+          reconciledDate: new Date().toISOString().split('T')[0],
+        },
+      }));
+      await updateBankStatements(updates);
+      await saveAuditLog?.({
+        id: generateId(),
+        timestamp: new Date().toISOString(),
+        userId: currentUser?.id || 'system',
+        action: 'BANK_RECONCILIATION_SAVED',
+        module: 'banking',
+        recordId: selectedAccountId,
+        recordType: 'bank-account',
+        details: JSON.stringify({ matched: matchedPairs.length, period: `${dateFrom} to ${dateTo}` }),
+      });
+      toast.success(`Reconciliation saved — ${matchedPairs.length} pairs.`);
+      setMatchedPairs([]);
+      setHasRun(false);
+    } catch (err: any) {
+      toast.error('Save failed: ' + err.message);
+    }
+  };
+
+  // ── Create voucher from statement line ─────────────────────────────────────
+
+  const openCreateVoucher = (stmt: StatementEntry) => {
+    setVoucherModal({
+      stmtEntry: stmt,
+      type: 'journal',
+      counterAccountId: '',
+      narration: stmt.description,
     });
-    setLocalMatches(newMatches);
-    toast.success(`${added} entries auto-matched!`);
   };
 
-  const handleBookClick = (bookId: string) => {
-    if (localMatches.some(m => m.bookId === bookId)) return; // Already matched
-    setSelectedBookId(selectedBookId === bookId ? null : bookId);
-  };
-
-  const handleStatementClick = (stmtId: string) => {
-    if (localMatches.some(m => m.statementId === stmtId)) return; // Already matched
-    if (selectedBookId) {
-      // Link them manually
-      setLocalMatches([...localMatches, {
-        bookId: selectedBookId,
-        statementId: stmtId,
-        matchType: 'exact' // Manual overrides treated as exact
-      }]);
-      setSelectedBookId(null);
-    } else {
-      toast("Select a book entry first to link manually", { icon: "👆" });
-    }
-  };
-
-  const removeMatch = (bookId: string) => {
-    setLocalMatches(localMatches.filter(m => m.bookId !== bookId));
-  };
-
-  const saveReconciliation = async () => {
-    if (localMatches.length === 0) {
-      toast.error("No matches to save");
-      return;
-    }
-      try {
-        const bulkUpdates = localMatches.map((match) => ({
-          id: match.statementId,
-          updates: {
-            reconciled: true,
-            reconciledVoucherId: match.bookId,
-            reconciledDate: new Date().toISOString().split('T')[0]
-          }
-        }));
-        if (bulkUpdates.length > 0) {
-          await updateBankStatements(bulkUpdates);
-        }
-        toast.success("Reconciliation saved successfully!");
-        setLocalMatches([]);
-      } catch (e) {
-      toast.error("Failed to save reconciliation");
-    }
-  };
-
-  const postUnmatchedStatements = async () => {
-    // Get unmatched statements
-    const unmatchedStmts = statementEntries.filter(
-      stmt => !localMatches.some(m => m.statementId === stmt.id)
-    );
-
-    if (unmatchedStmts.length === 0) {
-      toast.success("No unmatched statements to post");
-      return;
-    }
-
-    // Default Bank Charges Account
-    const bankChargesAcc = accounts.find(a => a.name.toLowerCase().includes("bank charge")) 
-                           || accounts.find(a => a.type === "IndirectExpense");
-    
-    if (!bankChargesAcc) {
-      toast.error("Could not find a 'Bank Charges' or expense ledger.");
-      return;
-    }
+  const handleCreateVoucher = async () => {
+    if (!voucherModal) return;
+    const { stmtEntry: stmt, type, counterAccountId, narration } = voucherModal;
+    if (!counterAccountId) { toast.error('Select a counter account.'); return; }
 
     try {
-      let created = 0;
-      const bulkUpdates: { id: string, updates: any }[] = [];
-      for (const stmt of unmatchedStmts) {
-        // If bank statement debit > 0, it means money left the bank (Payment). Book should credit bank.
-        // If bank statement credit > 0, money entered bank (Receipt). Book should debit bank.
-        const isBankDebit = stmt.debit > 0;
-        
-        const lines: JournalEntryLine[] = [
+      const isDebit = stmt.debit > 0;
+      const amount  = isDebit ? stmt.debit : stmt.credit;
+      const vId     = generateId();
+      const lineId1 = generateId();
+      const lineId2 = generateId();
+
+      await addVoucher({
+        id: vId,
+        voucherNo: `BNK-${Date.now().toString().slice(-5)}`,
+        date: stmt.date,
+        dateNepali: formatADToBS(stmt.date),
+        type,
+        status: 'posted',
+        narration,
+        partyId: null,
+        partyName: '',
+        lines: [
           {
+            id: lineId1,
             accountId: selectedAccountId,
-            debit: isBankDebit ? 0 : stmt.credit,
-            credit: isBankDebit ? stmt.debit : 0,
-            narration: stmt.narration
+            accountName: bankAccount?.name || '',
+            drAmount: isDebit ? 0 : amount,
+            crAmount: isDebit ? amount : 0,
+            particulars: narration,
           },
           {
-            accountId: bankChargesAcc.id,
-            debit: isBankDebit ? stmt.debit : 0,
-            credit: isBankDebit ? 0 : stmt.credit,
-            narration: stmt.narration
-          }
-        ];
+            id: lineId2,
+            accountId: counterAccountId,
+            accountName: accounts.find((a: any) => a.id === counterAccountId)?.name || '',
+            drAmount: isDebit ? amount : 0,
+            crAmount: isDebit ? 0 : amount,
+            particulars: narration,
+          },
+        ],
+        totalDebit: amount,
+        totalCredit: amount,
+        grandTotal: amount,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        postedBy: currentUser?.id,
+      });
 
-        const vId = generateId("jv");
-        await addVoucher({
-          id: vId,
-          date: stmt.date,
-          dateNepali: formatADToBS(stmt.date),
-          voucherNo: `AUTO-${Date.now().toString().slice(-5)}`,
-          type: VoucherType.JOURNAL,
-          status: VoucherStatus.POSTED,
-          narration: `Auto-posted from bank statement: ${stmt.narration}`,
-          lines: lines,
-          totalDebit: stmt.debit > 0 ? stmt.debit : stmt.credit,
-          totalCredit: stmt.debit > 0 ? stmt.debit : stmt.credit
-        } as any);
-
-        // Mark as reconciled
-        bulkUpdates.push({
-          id: stmt.id,
-          updates: {
-            reconciled: true,
-            reconciledVoucherId: lines[0].id || vId,
-            reconciledDate: new Date().toISOString().split('T')[0]
-          }
-        });
-        created++;
-      }
-      if (bulkUpdates.length > 0) {
-        await updateBankStatements(bulkUpdates);
-      }
-      toast.success(`${created} unmatched statements posted as Journal Vouchers.`);
-      setLocalMatches([]); // Refresh
-    } catch (e) {
-      toast.error("Failed to post unmatched statements");
+      // Auto-link the new book entry to this statement
+      const newBookEntry: BookEntry = {
+        id: `${vId}-0`,
+        date: stmt.date,
+        amount,
+        description: narration,
+        voucherId: vId,
+        voucherNo: `BNK-${Date.now().toString().slice(-5)}`,
+        type: isDebit ? 'credit' : 'debit',
+      };
+      setMatchedPairs(prev => [...prev, createManualMatch(newBookEntry, stmt)]);
+      setVoucherModal(null);
+      toast.success('Voucher created and linked to statement.');
+    } catch (err: any) {
+      toast.error('Failed to create voucher: ' + err.message);
     }
   };
 
-  // Compute Balances
-  const bankAcc = accounts.find(a => a.id === selectedAccountId);
-  let initialBookBal = bankAcc?.openingBalance || 0;
-  if (bankAcc?.openingBalanceDr === false) initialBookBal = -initialBookBal;
+  // ── Digital payment commission voucher ────────────────────────────────────
 
-  const bookBalance = initialBookBal + journalEntries.reduce((sum, jv) => {
-    const line = jv.lines.find(l => l.accountId === selectedAccountId);
-    if (line) return sum + Number(line.debit || 0) - Number(line.credit || 0);
-    return sum;
-  }, 0);
+  const handleCreateCommissionVoucher = async (stmt: StatementEntry, invoiceAmount: number) => {
+    const commissionAcct = accounts.find((a: any) =>
+      a.name.toLowerCase().includes('commission') || a.name.toLowerCase().includes('bank charge')
+    );
+    if (!commissionAcct) {
+      toast.error('Add a "Commission Expense" or "Bank Charges" account first.');
+      return;
+    }
+    const settlementAmt = stmt.credit;
+    const commission    = invoiceAmount - settlementAmt;
+    if (commission <= 0) { toast.error('No commission difference to post.'); return; }
 
-  // Statement balance (last statement's balance)
-  const allStmts = bankStatements.filter(bs => bs.bankAccountId === selectedAccountId);
-  // Sort by date to get latest
-  const sortedStmts = [...allStmts].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  const statementBalance = sortedStmts.length > 0 ? Number(sortedStmts[sortedStmts.length - 1].balance) : 0;
+    try {
+      const vId = generateId();
+      await addVoucher({
+        id: vId,
+        voucherNo: `COMM-${Date.now().toString().slice(-5)}`,
+        date: stmt.date,
+        dateNepali: formatADToBS(stmt.date),
+        type: 'journal',
+        status: 'posted',
+        narration: `${digitalMode.toUpperCase()} commission on ${stmt.description}`,
+        lines: [
+          { id: generateId(), accountId: commissionAcct.id, accountName: commissionAcct.name, drAmount: commission, crAmount: 0, particulars: 'Payment gateway commission' },
+          { id: generateId(), accountId: selectedAccountId, accountName: bankAccount?.name || '', drAmount: 0, crAmount: commission, particulars: 'Commission deducted' },
+        ],
+        totalDebit: commission,
+        totalCredit: commission,
+        grandTotal: commission,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      toast.success(`Commission voucher created: Rs.${formatNumber(commission)}`);
+    } catch (err: any) {
+      toast.error('Failed: ' + err.message);
+    }
+  };
 
-  // Reconciled balance = Statement Balance + Uncleared Deposits - Uncleared Payments
-  const unclearedPayments = bookEntries.filter(b => !localMatches.some(m => m.bookId === b.id) && b.type === 'credit').reduce((s, b) => s + b.amount, 0);
-  const unclearedDeposits = bookEntries.filter(b => !localMatches.some(m => m.bookId === b.id) && b.type === 'debit').reduce((s, b) => s + b.amount, 0);
-  
-  const reconciledBalance = statementBalance + unclearedDeposits - unclearedPayments;
-  const difference = Math.round((bookBalance - reconciledBalance) * 100) / 100;
+  // ─────────────────────────────────────────────────────────────────────────
+  // PRINT REPORT
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const printReport = () => {
+    const company = companySettings?.companyNameEn || companySettings?.name || 'Company';
+    const accName = bankAccount?.name || '—';
+    const asOnDate = dateTo || new Date().toISOString().split('T')[0];
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<title>Bank Reconciliation Statement</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 11px; color: #000; margin: 0; padding: 16px; }
+  h1 { text-align: center; font-size: 15px; margin: 0 0 2px; }
+  .company { text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 12px; }
+  .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 12px; font-size: 10px; }
+  .meta span { display: block; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  th { background: #dde; text-align: left; padding: 4px 6px; font-size: 10px; border: 1px solid #ccc; }
+  td { padding: 3px 6px; border: 1px solid #ddd; }
+  .section-head { background: #eef; font-weight: bold; padding: 4px 6px; }
+  .total { font-weight: bold; border-top: 2px solid #000; }
+  .diff-ok { color: green; }
+  .diff-bad { color: red; }
+  .footer { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+  .footer div { border-top: 1px solid #000; padding-top: 4px; text-align: center; font-size: 10px; }
+  @media print { body { padding: 8px; } }
+</style>
+</head>
+<body>
+<div class="company">${company}</div>
+<h1>Bank Reconciliation Statement</h1>
+<div class="meta">
+  <span><b>Bank Account:</b> ${accName}</span>
+  <span><b>Account No.:</b> ${bankAccount?.accountNo || '—'}</span>
+  <span><b>Bank Name:</b> ${bankAccount?.bankName || '—'}</span>
+  <span><b>As on Date:</b> ${asOnDate}</span>
+  <span><b>Period:</b> ${dateFrom || '—'} to ${dateTo || '—'}</span>
+</div>
+
+<table>
+  <tr><td class="section-head" colspan="2">Balance as per Bank Statement</td></tr>
+  <tr><td>Closing Balance (Bank Statement)</td><td style="text-align:right">Rs. ${formatNumber(summary.statementClosingBalance)}</td></tr>
+
+  <tr><td class="section-head" colspan="2">Less: Uncleared Cheques / Payments Issued</td></tr>
+  ${summary.unclearedCheques.map(x => `
+  <tr>
+    <td style="padding-left:16px">${x.entry.date} — ${x.entry.description} (${x.entry.voucherNo})</td>
+    <td style="text-align:right">(${formatNumber(x.amount)})</td>
+  </tr>`).join('')}
+  ${summary.unclearedCheques.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:#777">None</td></tr>' : ''}
+
+  <tr><td class="section-head" colspan="2">Add: Deposits in Transit / Uncleared Receipts</td></tr>
+  ${summary.depositsInTransit.map(x => `
+  <tr>
+    <td style="padding-left:16px">${x.entry.date} — ${x.entry.description} (${x.entry.voucherNo})</td>
+    <td style="text-align:right">${formatNumber(x.amount)}</td>
+  </tr>`).join('')}
+  ${summary.depositsInTransit.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:#777">None</td></tr>' : ''}
+
+  <tr class="total">
+    <td>Adjusted Balance as per Bank Statement</td>
+    <td style="text-align:right">Rs. ${formatNumber(summary.adjustedStatementBalance)}</td>
+  </tr>
+  <tr class="total">
+    <td>Balance as per Books</td>
+    <td style="text-align:right">Rs. ${formatNumber(summary.bookBalance)}</td>
+  </tr>
+  <tr class="total">
+    <td>Difference (should be zero)</td>
+    <td style="text-align:right;${summary.isReconciled ? 'color:green' : 'color:red'}">
+      Rs. ${formatNumber(summary.difference)} ${summary.isReconciled ? '✓ Reconciled' : '✗ Difference exists'}
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <div>Prepared by<br><br>${currentUser?.name || '_______________'}</div>
+  <div>Date<br><br>${new Date().toLocaleDateString()}</div>
+  <div>Checked by<br><br>_______________</div>
+</div>
+</body>
+</html>`;
+
+    const w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); w.print(); }
+  };
+
+  // ── Panel entry card helpers ──────────────────────────────────────────────
+
+  const BookEntryCard: React.FC<{ entry: BookEntry }> = ({ entry }) => {
+    const isSelected = selectedBookId === entry.id;
+    return (
+      <div
+        onClick={() => setSelectedBookId(isSelected ? null : entry.id)}
+        className={`p-2.5 rounded-lg border cursor-pointer transition-all select-none
+          ${isSelected
+            ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+            : 'border-[#9DC07A] bg-white hover:bg-[#EBF5E2]'}`}
+      >
+        <div className="flex justify-between items-start gap-2">
+          <div className="min-w-0">
+            <div className="text-[10px] text-gray-500 font-mono">{entry.date}</div>
+            <div className="text-[11px] font-semibold text-gray-800 truncate" title={entry.description}>{entry.description || 'No narration'}</div>
+            <div className="text-[10px] text-gray-500">{entry.voucherNo}</div>
+          </div>
+          <AmountChip amount={entry.amount} type={entry.type} />
+        </div>
+        {entry.refNo && <div className="text-[9px] text-gray-400 mt-0.5 font-mono">Ref: {entry.refNo}</div>}
+      </div>
+    );
+  };
+
+  const StmtEntryCard: React.FC<{ entry: StatementEntry; onCreateVoucher?: () => void }> = ({ entry, onCreateVoucher }) => {
+    const isSelected = selectedStmtId === entry.id;
+    const stmtType = entry.credit > 0 ? 'credit' : 'debit';
+    const amount   = entry.credit > 0 ? entry.credit : entry.debit;
+    return (
+      <div
+        className={`p-2.5 rounded-lg border transition-all select-none
+          ${isSelected
+            ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+            : 'border-[#9DC07A] bg-white hover:bg-[#EBF5E2]'}`}
+      >
+        <div
+          className="flex justify-between items-start gap-2 cursor-pointer"
+          onClick={() => setSelectedStmtId(isSelected ? null : entry.id)}
+        >
+          <div className="min-w-0">
+            <div className="text-[10px] text-gray-500 font-mono">{entry.date}</div>
+            <div className="text-[11px] font-semibold text-gray-800 truncate" title={entry.description}>{entry.description || 'No narration'}</div>
+            {entry.refNo && <div className="text-[9px] text-gray-400 font-mono">Ref: {entry.refNo}</div>}
+          </div>
+          <AmountChip amount={amount} type={stmtType} />
+        </div>
+        {onCreateVoucher && (
+          <div className="mt-1.5 flex justify-end">
+            <button
+              onClick={e => { e.stopPropagation(); onCreateVoucher(); }}
+              className="flex items-center gap-1 h-6 px-2 bg-[#EBF5E2] hover:bg-[#D4EABD] border border-[#9DC07A] rounded text-[9px] font-bold text-gray-600 transition-colors"
+            >
+              <Plus className="h-2.5 w-2.5" /> Create Voucher
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RENDER
+  // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-4 max-w-[1400px] mx-auto pb-20">
+    <div className="flex flex-col h-full overflow-hidden">
+
+      {/* ── Toolbar ──────────────────────────────────────────────────────── */}
       <ActionToolbar
         title="Bank Reconciliation"
-        subtitle="Match book entries with bank statements seamlessly."
+        subtitle="Match ERP book entries against imported bank statements"
         secondaryActions={[
           {
-            label: "Auto Reconcile",
-            onClick: runAutoMatch,
-            icon: <RefreshCw className="w-4 h-4" />,
+            label: 'Auto Match',
+            onClick: handleAutoMatch,
+            icon: <RefreshCw className="h-3.5 w-3.5" />,
           },
           {
-            label: "Post Unmatched Statements",
-            onClick: postUnmatchedStatements,
-            icon: <Plus className="w-4 h-4" />,
+            label: 'Match Selected',
+            onClick: handleManualMatch,
+            icon: <LinkIcon className="h-3.5 w-3.5" />,
+            disabled: !selectedBookId || !selectedStmtId,
           },
           {
-            label: "Save Reconciliation",
-            onClick: saveReconciliation,
-            icon: <CheckCircle className="w-4 h-4" />,
-            variant: "primary"
+            label: 'Save Reconciliation',
+            onClick: handleSave,
+            icon: <CheckCircle className="h-3.5 w-3.5" />,
+            variant: 'primary',
+            disabled: matchedPairs.length === 0,
+          },
+          {
+            label: 'Print Report',
+            onClick: printReport,
+            icon: <Printer className="h-3.5 w-3.5" />,
+          },
+          {
+            label: 'Import Statement',
+            onClick: () => setCurrentPage('bank-statement-import'),
+            icon: <Upload className="h-3.5 w-3.5" />,
           },
         ]}
       />
 
-      {/* Top Filters */}
-      <div className="bg-white p-4 border border-[#9DC07A] rounded-md shadow-sm flex items-end gap-4">
-        <div className="w-64">
-          <Select 
+      {/* ── Tab bar ──────────────────────────────────────────────────────── */}
+      <div className="flex gap-0 border-b border-[#9DC07A] bg-white px-4 shrink-0">
+        {([
+          { id: 'bank', label: '🏦 Bank Reconciliation' },
+          { id: 'digital', label: '📱 Digital Payments (eSewa / Khalti / ConnectIPS)' },
+        ] as { id: ActiveTab; label: string }[]).map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2.5 text-[11px] font-bold border-b-2 transition-colors
+              ${activeTab === tab.id
+                ? 'border-[#3D6B25] text-[#3D6B25]'
+                : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Filters ──────────────────────────────────────────────────────── */}
+      <div className="flex items-end gap-3 px-4 py-3 bg-white border-b border-[#9DC07A] shrink-0 flex-wrap">
+        <div className="w-56">
+          <Select
             label="Bank Account"
             value={selectedAccountId}
-            onChange={setSelectedAccountId}
-            options={bankAccounts.map(a => ({value: a.id, label: a.name}))}
+            onChange={val => { setSelectedAccountId(val); setMatchedPairs([]); }}
+            options={bankAccounts.map((a: any) => ({ value: a.id, label: a.name }))}
           />
         </div>
-        <div className="w-48">
-          <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
+        <div className="w-40">
+          <NepaliDatePicker label="From Date" value={dateFrom} onChange={setDateFrom} />
         </div>
-        <div className="w-48">
-          <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
+        <div className="w-40">
+          <NepaliDatePicker label="To Date" value={dateTo} onChange={setDateTo} />
         </div>
-        <div>
-          <button 
-            onClick={() => setShowImportModal(true)}
-            disabled={!selectedAccountId}
-            className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-2 disabled:opacity-50"
-          >
-            <Upload className="w-3.5 h-3.5" />
-            Import CSV
-          </button>
-        </div>
+        {activeTab === 'digital' && (
+          <div className="w-44">
+            <Select
+              label="Digital Platform"
+              value={digitalMode}
+              onChange={val => setDigitalMode(val as DigitalMode)}
+              options={[
+                { value: 'esewa',      label: 'eSewa' },
+                { value: 'khalti',     label: 'Khalti' },
+                { value: 'connectips', label: 'ConnectIPS' },
+              ]}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Main Reconciliation Area */}
-      <div className="grid grid-cols-2 gap-6 relative">
-        
-        {/* LEFT PANEL - BOOK ENTRIES */}
-        <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
-          <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
-            <h3 className="text-[13px] font-bold text-white">Book Entries (Company Ledger)</h3>
-          </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
-            {bookEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled book entries found.</p>}
-            {bookEntries.map(book => {
-              const match = localMatches.find(m => m.bookId === book.id);
-              const isSelected = selectedBookId === book.id;
-              
-              let borderClass = "border-[#9DC07A]";
-              if (match) borderClass = "border-green-400 bg-green-50";
-              else if (isSelected) borderClass = "border-[#9DC07A] bg-[#D4EABD] ring-2 ring-blue-200";
-              else borderClass = "border-amber-300 bg-white hover:bg-amber-50";
-
-              return (
-                <div 
-                  key={book.id} 
-                  onClick={() => handleBookClick(book.id)}
-                  className={`p-2 rounded border cursor-pointer transition-colors flex justify-between items-center ${borderClass}`}
-                >
-                  <div>
-                    <div className="text-[11px] font-semibold text-[#000000]">{book.date}</div>
-                    <div className="text-[12px] text-[#000000] line-clamp-1">{book.description || 'No Description'}</div>
-                  </div>
-                  <div className="text-right flex items-center gap-2">
-                    <div className={`text-[13px] font-bold font-mono ${book.type === 'debit' ? 'text-green-700' : 'text-red-700'}`}>
-                      {book.type === 'debit' ? '+ ' : '- '}Rs.{formatNumber(book.amount)}
-                    </div>
-                    {match && (
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); removeMatch(book.id); }}
-                        className="text-[#000000] hover:text-red-500"
-                        title="Unlink"
-                      >
-                        <Unlink className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* RIGHT PANEL - STATEMENT ENTRIES */}
-        <div className="bg-white border border-[#9DC07A] rounded-md shadow-sm overflow-hidden flex flex-col h-[500px]">
-           <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A]">
-            <h3 className="text-[13px] font-bold text-white">Bank Statement (Imported)</h3>
-          </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f5f6fa]">
-            {statementEntries.length === 0 && <p className="text-center text-xs text-[#000000] mt-4">No unreconciled statement entries found.</p>}
-            {statementEntries.map(stmt => {
-              const match = localMatches.find(m => m.statementId === stmt.id);
-              const isMatchable = !!selectedBookId && !match;
-
-              let borderClass = "border-[#9DC07A] bg-white";
-              if (match) borderClass = "border-green-400 bg-green-50 opacity-70";
-              else if (isMatchable) borderClass = "border-[#9DC07A] bg-white hover:bg-[#D4EABD] ring-1 ring-blue-300 border-dashed cursor-pointer";
-              else borderClass = "border-[#9DC07A] bg-white opacity-90";
-
-              return (
-                <div 
-                  key={stmt.id} 
-                  onClick={() => isMatchable && handleStatementClick(stmt.id)}
-                  className={`p-2 rounded border transition-all flex justify-between items-center ${borderClass}`}
-                >
-                  <div className="flex items-center gap-2">
-                    {isMatchable && <LinkIcon className="w-3 h-3 text-[#000000]" />}
-                    <div>
-                      <div className="text-[11px] font-semibold text-[#000000]">{stmt.date}</div>
-                      <div className="text-[12px] text-[#000000] line-clamp-1">{stmt.narration}</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {stmt.debit > 0 ? (
-                      <div className="text-[13px] font-bold font-mono text-red-700">- Rs.{formatNumber(stmt.debit)}</div>
-                    ) : (
-                      <div className="text-[13px] font-bold font-mono text-green-700">+ Rs.{formatNumber(stmt.credit)}</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-      </div>
-
-      {/* Summary Footer */}
-      <div className="grid grid-cols-4 gap-4 mt-6 border-t border-[#9DC07A] pt-4">
-        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-          <div className="text-[10px] uppercase font-bold text-[#000000]">Book Balance</div>
-          <div className="text-[16px] font-bold text-[#000000]">Rs. {formatNumber(bookBalance)}</div>
-        </div>
-        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-          <div className="text-[10px] uppercase font-bold text-[#000000]">Statement Balance</div>
-          <div className="text-[16px] font-bold text-[#000000]">Rs. {formatNumber(statementBalance)}</div>
-        </div>
-        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-          <div className="text-[10px] uppercase font-bold text-[#000000]">Unreconciled Difference</div>
-          <div className={`text-[16px] font-bold ${difference !== 0 ? 'text-red-600' : 'text-green-600'}`}>
-            Rs. {formatNumber(difference)}
-          </div>
-        </div>
-        <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-          <div className="text-[10px] uppercase font-bold text-[#000000]">Auto-Matched Session</div>
-          <div className="text-[16px] font-bold text-[#000000]">{localMatches.length} Pairs</div>
-        </div>
-      </div>
-
-      {/* CSV Import Modal */}
-      {showImportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
-            <div className="bg-[#1e2433] px-4 py-3 flex justify-between items-center">
-              <h2 className="text-white text-[14px] font-semibold">Import Bank Statement (CSV)</h2>
-              <button onClick={() => setShowImportModal(false)} className="text-white hover:text-white/80">✕</button>
+      {/* ── Main 3-panel area ────────────────────────────────────────────── */}
+      <div className="flex-1 overflow-hidden">
+        {!selectedAccountId ? (
+          <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+            <div className="text-center">
+              <FileText className="h-10 w-10 mx-auto mb-2 opacity-40" />
+              <p>Select a bank account to begin reconciliation</p>
             </div>
-            <div className="p-4 space-y-4">
-              <div>
-                <label className="text-[11px] font-medium text-[#000000] block mb-1">Select CSV File</label>
-                <input 
-                  type="file" 
-                  accept=".csv"
-                  ref={fileInputRef}
-                  className="block w-full text-[12px] text-[#000000] file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[12px] file:font-semibold file:bg-[#3D6B25] file:text-white hover:file:bg-[#0f4a96]"
-                />
-              </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-[1fr_280px_1fr] h-full gap-0 overflow-hidden">
 
-              <div className="border-t border-[#9DC07A] pt-4">
-                <h4 className="text-[12px] font-semibold text-[#000000] mb-2">Column Mapping (0-indexed)</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {Object.keys(colMapping).map(key => (
-                    <div key={key}>
-                      <label className="text-[10px] font-medium text-[#000000] uppercase tracking-wide">{key}</label>
-                      <input 
-                        type="number" 
-                        value={(colMapping as any)[key]} 
-                        onChange={e => setColMapping({...colMapping, [key]: parseInt(e.target.value) || 0})}
-                        className="h-7 w-full px-2 text-[12px] border border-[#9DC07A] rounded-md"
-                      />
-                    </div>
-                  ))}
+            {/* LEFT: Unmatched Book Entries */}
+            <div className="flex flex-col h-full overflow-hidden border-r border-[#9DC07A]">
+              <div className="flex items-center justify-between px-3 py-2 bg-[#1e2433] shrink-0">
+                <div>
+                  <h3 className="text-[11px] font-bold text-white">📒 Book Entries</h3>
+                  <p className="text-[9px] text-gray-400">{unmatchedBook.length} unmatched</p>
                 </div>
-                <p className="text-[10px] text-[#000000] mt-2 leading-relaxed">
-                  Provide the 0-based index of the columns in your CSV. If debit and credit are in the same column, assign both to that index.
-                </p>
+                {selectedBookId && (
+                  <span className="text-[9px] bg-blue-500 text-white px-2 py-0.5 rounded-full">1 selected</span>
+                )}
+              </div>
+              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[#f8f9fa]">
+                {unmatchedBook.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400">
+                    <CheckCircle2 className="h-8 w-8 mb-1 text-green-400" />
+                    <p className="text-[11px]">All book entries matched!</p>
+                  </div>
+                ) : (
+                  unmatchedBook.map(entry => (
+                    <BookEntryCard key={entry.id} entry={entry} />
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* CENTER: Matched Pairs */}
+            <div className="flex flex-col h-full overflow-hidden border-r border-[#9DC07A]">
+              <div className="px-3 py-2 bg-[#3D6B25] shrink-0">
+                <h3 className="text-[11px] font-bold text-white">🔗 Matched Pairs</h3>
+                <p className="text-[9px] text-green-200">{matchedPairs.length} pair(s)</p>
+              </div>
+              <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f0f7ee]">
+                {matchedPairs.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400 px-3">
+                    <LinkIcon className="h-7 w-7 mb-1 opacity-30" />
+                    <p className="text-[10px]">Run Auto Match or select one entry from each panel and click Match Selected</p>
+                  </div>
+                ) : (
+                  matchedPairs.map(pair => (
+                    <div key={pair.bookEntry.id} className="bg-white border border-green-300 rounded-lg p-2 shadow-sm">
+                      {/* Book side */}
+                      <div className="pb-1.5 border-b border-dashed border-gray-200 mb-1.5">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">Book</span>
+                          <AmountChip amount={pair.bookEntry.amount} type={pair.bookEntry.type} />
+                        </div>
+                        <div className="text-[10px] font-semibold text-gray-700 truncate">{pair.bookEntry.description}</div>
+                        <div className="text-[9px] text-gray-400 font-mono">{pair.bookEntry.date} · {pair.bookEntry.voucherNo}</div>
+                      </div>
+                      {/* Statement side */}
+                      <div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">Statement</span>
+                          <AmountChip
+                            amount={pair.statementEntry.credit > 0 ? pair.statementEntry.credit : pair.statementEntry.debit}
+                            type={pair.statementEntry.credit > 0 ? 'credit' : 'debit'}
+                          />
+                        </div>
+                        <div className="text-[10px] font-semibold text-gray-700 truncate">{pair.statementEntry.description}</div>
+                        <div className="text-[9px] text-gray-400 font-mono">{pair.statementEntry.date}</div>
+                      </div>
+                      {/* Confidence + Unmatch */}
+                      <div className="flex items-center justify-between mt-1.5">
+                        <ConfidenceBadge confidence={pair.confidence} reason={pair.matchReason} />
+                        <button
+                          onClick={() => handleUnmatch(pair.bookEntry.id)}
+                          className="flex items-center gap-0.5 text-[9px] text-red-500 hover:text-red-700 font-bold"
+                        >
+                          <Unlink className="h-2.5 w-2.5" /> Unmatch
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#9DC07A]">
-                <button 
-                  onClick={() => setShowImportModal(false)}
-                  className="h-8 px-3 text-[12px] font-medium text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2]"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={() => handleFileUpload({target: {files: fileInputRef.current?.files}} as any)}
-                  className="h-8 px-3 text-[12px] font-medium text-white bg-[#3D6B25] rounded-md hover:bg-[#2D5A1A]"
-                >
-                  Import Data
-                </button>
+              {/* Manual match button */}
+              {selectedBookId && selectedStmtId && (
+                <div className="shrink-0 p-2 bg-blue-50 border-t border-blue-200">
+                  <button
+                    onClick={handleManualMatch}
+                    className="w-full h-8 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5"
+                  >
+                    <LinkIcon className="h-3.5 w-3.5" /> Match Selected Pair
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT: Unmatched Statement Entries */}
+            <div className="flex flex-col h-full overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2 bg-[#1e2433] shrink-0">
+                <div>
+                  <h3 className="text-[11px] font-bold text-white">🏦 Bank Statement</h3>
+                  <p className="text-[9px] text-gray-400">{unmatchedStmt.length} unmatched</p>
+                </div>
+                {selectedStmtId && (
+                  <span className="text-[9px] bg-blue-500 text-white px-2 py-0.5 rounded-full">1 selected</span>
+                )}
+              </div>
+              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[#f8f9fa]">
+                {unmatchedStmt.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400">
+                    <CheckCircle2 className="h-8 w-8 mb-1 text-green-400" />
+                    <p className="text-[11px]">All statement lines matched!</p>
+                  </div>
+                ) : (
+                  unmatchedStmt.map(stmt => (
+                    <StmtEntryCard
+                      key={stmt.id}
+                      entry={stmt}
+                      onCreateVoucher={() => openCreateVoucher(stmt)}
+                    />
+                  ))
+                )}
+              </div>
+              {unmatchedStmt.length > 0 && (
+                <div className="shrink-0 p-2 border-t border-[#9DC07A] bg-[#f5f9f2] text-[9px] text-gray-500 flex items-center gap-1">
+                  <Info className="h-3 w-3 flex-shrink-0" />
+                  Click a statement line to select it, then pick a book entry on the left and click "Match Selected".
+                  Use "Create Voucher" for bank charges / interest not in books.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Reconciliation Summary Footer ─────────────────────────────── */}
+      {selectedAccountId && (
+        <div className="shrink-0 border-t border-[#9DC07A] bg-white px-4 py-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <SummaryTile label="Book Balance"           value={summary.bookBalance}              color="blue" />
+            <SummaryTile label="Statement Balance"      value={summary.statementClosingBalance}  color="purple" />
+            <SummaryTile label="Uncleared Cheques"      value={-summary.unclearedCheques.reduce((s,x) => s+x.amount, 0)} color="red" />
+            <SummaryTile label="Deposits in Transit"    value={summary.depositsInTransit.reduce((s,x) => s+x.amount, 0)} color="green" />
+            <SummaryTile label="Adj. Statement Balance" value={summary.adjustedStatementBalance} color="gray" />
+            <div className={`rounded-lg border p-2.5 ${summary.isReconciled ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300'}`}>
+              <div className="text-[9px] uppercase font-bold text-gray-500 mb-0.5">Difference</div>
+              <div className={`text-[14px] font-bold font-mono ${summary.isReconciled ? 'text-green-700' : 'text-red-600'}`}>
+                Rs. {formatNumber(Math.abs(summary.difference))}
+              </div>
+              <div className={`text-[9px] font-bold mt-0.5 ${summary.isReconciled ? 'text-green-600' : 'text-red-500'}`}>
+                {summary.isReconciled ? '✓ Reconciled' : '✗ Not balanced'}
               </div>
             </div>
           </div>
         </div>
       )}
 
+      {/* ── Create Voucher Modal ──────────────────────────────────────── */}
+      {voucherModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
+              <div>
+                <h2 className="text-[13px] font-bold text-white">Create Voucher from Statement</h2>
+                <p className="text-[10px] text-gray-400 mt-0.5">For bank charges, interest, or other items</p>
+              </div>
+              <button onClick={() => setVoucherModal(null)} className="text-gray-400 hover:text-white">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-3">
+              {/* Statement info */}
+              <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-lg p-3 text-[11px]">
+                <p className="font-bold text-gray-700 mb-1">Statement Entry</p>
+                <p className="text-gray-600">{voucherModal.stmtEntry.description}</p>
+                <p className="text-gray-500 font-mono mt-0.5">{voucherModal.stmtEntry.date}</p>
+                <AmountChip
+                  amount={voucherModal.stmtEntry.credit > 0 ? voucherModal.stmtEntry.credit : voucherModal.stmtEntry.debit}
+                  type={voucherModal.stmtEntry.credit > 0 ? 'credit' : 'debit'}
+                />
+              </div>
+
+              {/* Voucher type */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Voucher Type</label>
+                <select
+                  value={voucherModal.type}
+                  onChange={e => setVoucherModal(m => m ? { ...m, type: e.target.value as any } : m)}
+                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                >
+                  <option value="journal">Journal</option>
+                  <option value="payment">Payment</option>
+                  <option value="receipt">Receipt</option>
+                </select>
+              </div>
+
+              {/* Counter account */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Counter Account *</label>
+                <select
+                  value={voucherModal.counterAccountId}
+                  onChange={e => setVoucherModal(m => m ? { ...m, counterAccountId: e.target.value } : m)}
+                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                >
+                  <option value="">Select account...</option>
+                  {allAccounts
+                    .filter((a: any) => a.id !== selectedAccountId)
+                    .map((a: any) => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Narration */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Narration</label>
+                <input
+                  type="text"
+                  value={voucherModal.narration}
+                  onChange={e => setVoucherModal(m => m ? { ...m, narration: e.target.value } : m)}
+                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-1">
+                <button
+                  onClick={() => setVoucherModal(null)}
+                  className="flex-1 h-8 border border-[#9DC07A] text-gray-600 text-[12px] font-medium rounded-lg hover:bg-[#EBF5E2]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateVoucher}
+                  className="flex-1 h-8 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-bold rounded-lg"
+                >
+                  Save & Link
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+// ─── Summary Tile ─────────────────────────────────────────────────────────────
+
+const COLOR_MAP: Record<string, string> = {
+  blue:   'bg-blue-50 border-blue-200 text-blue-700',
+  purple: 'bg-purple-50 border-purple-200 text-purple-700',
+  red:    'bg-red-50 border-red-200 text-red-700',
+  green:  'bg-green-50 border-green-200 text-green-700',
+  gray:   'bg-gray-50 border-gray-200 text-gray-700',
+};
+
+function SummaryTile({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div className={`rounded-lg border p-2.5 ${COLOR_MAP[color] || COLOR_MAP.gray}`}>
+      <div className="text-[9px] uppercase font-bold opacity-60 mb-0.5">{label}</div>
+      <div className="text-[13px] font-bold font-mono">Rs. {formatNumber(value)}</div>
+    </div>
+  );
+}
