@@ -48,7 +48,6 @@ export const assertDateInFiscalYear = (
     );
   }
 };
-export type UserRole = "admin" | "manager" | "accountant" | "viewer";
 
 export interface StoreUser {
   id: string;
@@ -100,7 +99,6 @@ export interface CompanySettings {
   stockValuationMethod?: string;
   dateFormat?: string;
   fiscalYearStartMonth?: number;
-  cbmsEnabled?: boolean;
   printBankDetails?: boolean;
   termsConditions?: string;
   invoiceFooter?: string;

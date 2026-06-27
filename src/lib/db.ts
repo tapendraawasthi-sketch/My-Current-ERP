@@ -168,8 +168,6 @@ export interface DBInvoice {
   cbmsSubmittedAt?: string;
   cbmsStatus?: "success" | "failed" | "pending";
   tdsSection?: string;
-  tdsRate?: number;
-  tdsAmount?: number;
   tdsDeductedFrom?: string;
   grossAmount?: number;
   netPayable?: number;
