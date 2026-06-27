@@ -141,22 +141,27 @@ export function exportTdsReturnToExcel(
   if (!entries?.length) return;
 
   const headers = [
-    "SN", "Date", "Party Name", "PAN", "Section",
-    "Nature of Payment", "Gross Amount", "TDS Rate (%)", "TDS Amount", "Net Amount", "Status"
+    "S.N.",
+    "Deductee Name",
+    "Deductee PAN",
+    "Nature of Payment (Section)",
+    "Payment Date (BS)",
+    "Gross Payment Amount",
+    "TDS Rate (%)",
+    "TDS Amount Deducted",
+    "Remarks"
   ];
 
   const rows = entries.map((e: any, idx: number) => [
     idx + 1,
-    e.dateBS || e.date || "",
     e.partyName || "",
     e.partyPAN || "",
-    e.section || "",
-    e.paymentNature || "",
+    `${e.paymentNature || ""} (${e.section || ""})`,
+    e.dateBS || e.date || "",
     Number(e.grossAmount) || 0,
     Number(e.tdsRate) || 0,
     Number(e.tdsAmount) || 0,
-    Number(e.netAmount) || 0,
-    e.status || "",
+    e.remarks || "",
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet([

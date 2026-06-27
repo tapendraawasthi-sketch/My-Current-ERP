@@ -3,6 +3,8 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { formatNumber } from "./utils";
 
+import QRCode from "qrcode";
+
 export async function generateInvoicePDF(
   invoice: any,
   companySettings: any,
@@ -10,6 +12,8 @@ export async function generateInvoicePDF(
   items?: any[]
 ): Promise<Blob> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  await renderCbmsQrOnInvoicePdf(doc, invoice, companySettings);
+
   const companyName = companySettings?.companyNameEn || companySettings?.name || "Company";
   const pageW = doc.internal.pageSize.getWidth();
 
@@ -75,8 +79,9 @@ export async function generateInvoicePDF(
   doc.text(`Discount: Rs. ${formatNumber(invoice.discountAmount)}`, totalsX, finalY + 13);
   doc.text(`Taxable: Rs. ${formatNumber(invoice.taxableAmount)}`, totalsX, finalY + 18);
   doc.text(`VAT (13%): Rs. ${formatNumber(invoice.vatAmount)}`, totalsX, finalY + 23);
-  if (invoice.tdsAmount) {
-    doc.text(`TDS (${invoice.tdsRate}%): Rs. ${formatNumber(invoice.tdsAmount)}`, totalsX, finalY + 28);
+  if (Number(invoice.tdsAmount) > 0) {
+    doc.text("TDS Amount", 150, finalY + 20, { align: "right" });
+    doc.text(formatNumber(invoice.tdsAmount), 195, finalY + 20, { align: "right" });
   }
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
@@ -209,4 +214,106 @@ export function generatePartyStatementPDF(
   doc.text(`Closing Balance: Rs. ${formatNumber(statement?.closingBalance || 0)}`, 14, finalY + 8);
 
   return doc.output("blob");
+}
+
+interface PrintableInvoice {
+  invoiceNo: string;
+  date: string;
+  dateNepali?: string;
+  partyPan?: string;
+  taxableAmount?: number;
+  vatAmount?: number;
+  grandTotal?: number;
+  cbmsSubmitted?: boolean;
+  cbmsIrn?: string;
+  cbmsQrString?: string;
+  cbmsSubmittedAt?: string;
+}
+
+interface PrintableCompanySettings {
+  panNumber?: string;
+  vatNumber?: string;
+}
+
+function money(value: unknown): string {
+  return Number(value || 0).toFixed(2);
+}
+
+export function buildInvoiceQrString(
+  invoice: PrintableInvoice,
+  companySettings: PrintableCompanySettings,
+) {
+  if (invoice.cbmsQrString) return invoice.cbmsQrString;
+
+  if (!invoice.cbmsIrn) return "";
+
+  return [
+    invoice.cbmsIrn,
+    invoice.invoiceNo,
+    invoice.dateNepali || invoice.date,
+    companySettings.panNumber || companySettings.vatNumber || "",
+    invoice.partyPan || "",
+    money(invoice.taxableAmount),
+    money(invoice.vatAmount),
+    money(invoice.grandTotal),
+  ].join("|");
+}
+
+export async function renderCbmsQrOnInvoicePdf(
+  doc: jsPDF,
+  invoice: PrintableInvoice,
+  companySettings: PrintableCompanySettings,
+) {
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const qrX = pageWidth - 42;
+  const qrY = 12;
+  const qrSize = 28;
+
+  if (invoice.cbmsSubmitted && invoice.cbmsIrn) {
+    const qrString = buildInvoiceQrString(invoice, companySettings);
+
+    const qrDataUrl = await QRCode.toDataURL(qrString, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 160,
+    });
+
+    doc.addImage(qrDataUrl, "PNG", qrX, qrY, qrSize, qrSize);
+
+    doc.setFontSize(6);
+    doc.setTextColor(40, 40, 40);
+
+    doc.text(`IRN: ${invoice.cbmsIrn}`, qrX, qrY + qrSize + 4, {
+      maxWidth: qrSize + 8,
+    });
+
+    doc.text(
+      `Submitted: ${invoice.cbmsSubmittedAt || ""}`,
+      qrX,
+      qrY + qrSize + 8,
+      {
+        maxWidth: qrSize + 8,
+      },
+    );
+
+    doc.setTextColor(0, 0, 0);
+    return;
+  }
+
+  // Warning watermark when invoice is not submitted to CBMS
+  doc.setTextColor(220, 38, 38);
+  doc.setFontSize(24);
+
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  doc.text("CBMS NOT SUBMITTED", pageWidth / 2, pageHeight / 2, {
+    align: "center",
+    angle: 35,
+  });
+
+  doc.setFontSize(8);
+  doc.text("CBMS NOT SUBMITTED", qrX - 4, qrY + 10);
+
+  doc.setTextColor(0, 0, 0);
 }

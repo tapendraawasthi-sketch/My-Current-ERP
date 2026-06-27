@@ -6,10 +6,11 @@ import { FileSpreadsheet, Layers, FileCheck } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { exportTdsReturnToExcel } from "../lib/exportUtils";
 import { PillTitle, FormPanel } from "../components/BusyShell";
+import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
 
 export default function TdsReport() {
-  const { tdsEntries, updateTdsEntry, currentFiscalYear, companySettings } = useStore();
+  const { tdsEntries, updateTdsEntry, currentFiscalYear, companySettings, addTdsChallan, accounts, addVoucher } = useStore();
   
   const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.fiscalYearBS || "2081/2082");
   const [sectionFilter, setSectionFilter] = useState("All");
@@ -18,6 +19,12 @@ export default function TdsReport() {
   const [showChallanModal, setShowChallanModal] = useState(false);
   const [challanEntryId, setChallanEntryId] = useState("");
   const [challanNo, setChallanNo] = useState("");
+  const [challanDateBS, setChallanDateBS] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankBranch, setBankBranch] = useState("");
+  const [fromBS, setFromBS] = useState("");
+  const [toBS, setToBS] = useState("");
+  const [bankAccountId, setBankAccountId] = useState("");
 
   const filteredEntries = useMemo(() => {
     return tdsEntries.filter(entry => {
@@ -56,22 +63,72 @@ export default function TdsReport() {
   const openChallanModal = (id: string) => {
     setChallanEntryId(id);
     setChallanNo("");
+    setChallanDateBS("");
+    setBankName("");
+    setBankBranch("");
+    setFromBS("");
+    setToBS("");
+    setBankAccountId("");
     setShowChallanModal(true);
   };
 
   const saveChallan = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!challanNo) {
-      toast.error("Please enter a Challan Number");
+    if (!challanNo || !challanDateBS || !bankAccountId || !fromBS || !toBS) {
+      toast.error("Please fill all required fields");
       return;
     }
     try {
+      const entry = tdsEntries.find(e => e.id === challanEntryId);
+      if (!entry) throw new Error("Entry not found");
+      
+      const tdsPayableId = accounts.find(a => a.name?.toLowerCase().includes("tds") && a.type === "liability")?.id || "acc-tds-payable";
+      const bankAcc = accounts.find(a => a.id === bankAccountId);
+
+      // 1. Create a payment voucher
+      const paymentVoucher = {
+        id: "pv-" + Date.now(),
+        type: VoucherType.PAYMENT,
+        voucherNo: "PV-" + Math.floor(Math.random() * 10000),
+        date: new Date().toISOString().split("T")[0],
+        dateNepali: challanDateBS,
+        narration: `TDS Deposit to IRD for ${entry.partyName}`,
+        status: VoucherStatus.POSTED,
+        lines: [
+          { accountId: tdsPayableId, accountName: "TDS Payable", debit: entry.tdsAmount, credit: 0 },
+          { accountId: bankAccountId, accountName: bankAcc?.name, debit: 0, credit: entry.tdsAmount }
+        ],
+        tdsChallanNo: challanNo,
+        tdsChallanDateBS: challanDateBS,
+        createdAt: new Date().toISOString(),
+      };
+      
+      await addVoucher(paymentVoucher);
+
+      // 2. Add TDS Challan to Dexie
+      const newChallan = {
+        id: crypto.randomUUID(),
+        challanNo,
+        dateBS: challanDateBS,
+        dateNepali: challanDateBS,
+        bankName,
+        bankBranch,
+        amount: entry.tdsAmount,
+        fiscalYearBS,
+        fromBS,
+        toBS,
+        createdAt: new Date().toISOString(),
+      };
+      await addTdsChallan(newChallan);
+
+      // 3. Update entry status
       await updateTdsEntry(challanEntryId, {
         challanNumber: challanNo,
         status: "challanGenerated",
         depositedAt: new Date().toISOString()
       });
-      toast.success("Challan generated successfully");
+
+      toast.success("TDS Payment recorded and Challan generated successfully");
       setShowChallanModal(false);
     } catch (err: any) {
       toast.error(err.message || "Failed to save challan");
@@ -274,6 +331,49 @@ export default function TdsReport() {
                     placeholder="Enter Challan Number"
                     autoFocus
                   />
+                </div>
+                <div className="grid gap-1">
+                  <label className="text-[11px] font-medium text-[#000000]">Challan Date (BS) *</label>
+                  <input
+                    type="text"
+                    value={challanDateBS}
+                    onChange={(e) => setChallanDateBS(e.target.value)}
+                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                    placeholder="YYYY-MM-DD"
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <label className="text-[11px] font-medium text-[#000000]">Payment Bank Account *</label>
+                  <select
+                    value={bankAccountId}
+                    onChange={(e) => setBankAccountId(e.target.value)}
+                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                  >
+                    <option value="">Select Bank Account</option>
+                    {accounts.filter(a => a.type === "bank" || a.type === "cash" || a.group?.toLowerCase().includes("bank")).map(a => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-1">
+                    <label className="text-[11px] font-medium text-[#000000]">Depositing Bank Name</label>
+                    <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="e.g. Nabil Bank" />
+                  </div>
+                  <div className="grid gap-1">
+                    <label className="text-[11px] font-medium text-[#000000]">Bank Branch</label>
+                    <input type="text" value={bankBranch} onChange={e => setBankBranch(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="e.g. Kathmandu" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-1">
+                    <label className="text-[11px] font-medium text-[#000000]">Period From (BS) *</label>
+                    <input type="text" value={fromBS} onChange={e => setFromBS(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="YYYY-MM-DD" />
+                  </div>
+                  <div className="grid gap-1">
+                    <label className="text-[11px] font-medium text-[#000000]">Period To (BS) *</label>
+                    <input type="text" value={toBS} onChange={e => setToBS(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="YYYY-MM-DD" />
+                  </div>
                 </div>
               </div>
 

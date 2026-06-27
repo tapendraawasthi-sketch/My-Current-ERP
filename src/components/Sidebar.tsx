@@ -126,6 +126,7 @@ const menuGroups: MenuGroup[] = [
       { label: "GST Reports", page: "gst-reports", icon: FileText },
       { label: "TDS Reports", page: "tds-reports", icon: FileText },
       { label: "VAT Reports", page: "vat-reports", icon: FileText },
+      { label: "CBMS Dashboard", page: "cbms-dashboard", icon: FileText },
       { label: "Payroll Reports", page: "payroll-reports", icon: FileText },
       { label: "Budget Reports", page: "budgets", icon: Banknote },
       { label: "Ratio Analysis", page: "ratio-analysis", icon: PieChart },

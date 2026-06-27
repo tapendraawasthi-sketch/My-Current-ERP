@@ -48,6 +48,7 @@ import {
   AccountType, 
   PaymentStatus 
 } from "@/lib/types";
+import { calculateNepalTds, getApplicableNepalTdsRates } from "@/lib/tdsNepal";
 import toast from "react-hot-toast";
 
 interface PaymentVoucherFormProps {
@@ -150,18 +151,17 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
   const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
 
   // ---- TDS ----
-  const [tdsEnabled, setTdsEnabled] = useState(false);
-  const [tdsRate, setTdsRate] = useState(0);
+  const [tdsSection, setTdsSection] = useState("");
 
-  useEffect(() => {
-    if (party?.subjectToTds) {
-      setTdsEnabled(true);
-      setTdsRate(party.tdsRate || 0);
-    } else {
-      setTdsEnabled(false);
-      setTdsRate(0);
-    }
-  }, [partyId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const tdsOptions = useMemo(() => {
+    return getApplicableNepalTdsRates({
+      personType: party?.personType || "entity",
+      residency: party?.residency || "resident",
+    }).map((r) => ({
+      value: r.id,
+      label: `${r.sectionCode} - ${r.description} (${r.rate ?? "Slab"}%)`,
+    }));
+  }, [party]);
 
   // ---- outstanding invoices for the selected party ----
   const outstandingInvoices = useMemo(() => {
@@ -264,10 +264,25 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
   // ---- totals ----
   const totals = useMemo(() => {
     const gross = round2(lines.reduce((s, l) => s + (Number(l.amount) || 0), 0));
-    const tds = tdsEnabled ? round2((gross * (Number(tdsRate) || 0)) / 100) : 0;
-    const net = round2(gross - tds);
+    
+    let tds = 0;
+    let net = gross;
+    
+    if (party?.subjectToTds && tdsSection) {
+      const breakdown = calculateNepalTds({
+        sectionId: tdsSection,
+        grossAmount: gross,
+        personType: party.personType || "entity",
+        residency: party.residency || "resident",
+      });
+      if (breakdown.applicable) {
+        tds = breakdown.tdsAmount;
+        net = breakdown.netPayable;
+      }
+    }
+    
     return { gross, tds, net };
-  }, [lines, tdsEnabled, tdsRate]);
+  }, [lines, party, tdsSection]);
 
   // ---- line helpers ----
   const updateLine = (idx: number, field: string, value: any) => {
@@ -374,15 +389,31 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         narration: payMode === "cheque" ? `Cheque No. ${chequeNo}` : undefined,
       },
     ];
-    if (tdsEnabled && totals.tds > 0) {
+    if (party?.subjectToTds && totals.tds > 0) {
+      const breakdown = calculateNepalTds({
+        sectionId: tdsSection,
+        grossAmount: totals.gross,
+        personType: party.personType || "entity",
+        residency: party.residency || "resident",
+      });
+
       creditLines.push({
         accountId: tdsPayableId,
         accountName: "TDS Payable A/C",
         debit: 0,
         credit: totals.tds,
-        narration: `TDS @ ${tdsRate}%`,
+        narration: `TDS @ ${breakdown.rate}%`,
       });
     }
+
+    const payloadTdsRate = party?.subjectToTds && tdsSection
+      ? calculateNepalTds({
+          sectionId: tdsSection,
+          grossAmount: totals.gross,
+          personType: party.personType || "entity",
+          residency: party.residency || "resident",
+        }).rate
+      : 0;
 
     return {
       date,
@@ -400,8 +431,12 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       bankLedgerId: payMode === "cash" ? undefined : bankAccountId,
       chequeNo: payMode === "cheque" ? chequeNo.trim() : undefined,
       chequeDate: payMode === "cheque" ? chequeDate : undefined,
-      tdsRate: tdsEnabled ? tdsRate : undefined,
-      tdsAmount: tdsEnabled ? totals.tds : undefined,
+      tdsRate: party?.subjectToTds ? payloadTdsRate : undefined,
+      tdsAmount: party?.subjectToTds ? totals.tds : undefined,
+      tdsSection: party?.subjectToTds ? tdsSection : undefined,
+      grossAmount: totals.gross,
+      netPayable: totals.net,
+      tdsDeductedFrom: party?.subjectToTds ? partyId : undefined,
     };
   };
 
@@ -1006,13 +1041,34 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                 {symbol} {formatNumber(totals.gross)}
               </span>
             </div>
-            {tdsEnabled && (
-              <div className="flex justify-between">
-                <span className="text-[#000000] font-semibold">Less: TDS @ {tdsRate}%</span>
-                <span className="font-mono font-bold text-amber-700">
-                  - {symbol} {formatNumber(totals.tds)}
-                </span>
-              </div>
+            {party?.subjectToTds && (
+              <>
+                <div className="mt-2 mb-2">
+                  <label className="text-[10px] font-semibold text-[#000000] uppercase">TDS Section</label>
+                  <select
+                    value={tdsSection}
+                    onChange={(e) => {
+                      setTdsSection(e.target.value);
+                      markDirty();
+                    }}
+                    disabled={readOnly}
+                    className="w-full mt-1 h-7 px-2 border border-[#9DC07A] rounded text-[#000000] bg-white"
+                  >
+                    <option value="">-- Select TDS Section --</option>
+                    {tdsOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+                {totals.tds > 0 && (
+                  <div className="flex justify-between text-amber-700">
+                    <span className="font-semibold">Less: TDS Deducted</span>
+                    <span className="font-mono font-bold">
+                      - {symbol} {formatNumber(totals.tds)}
+                    </span>
+                  </div>
+                )}
+              </>
             )}
             <div className="flex justify-between border-t border-[#9DC07A] pt-2 mt-1">
               <span className="text-[#000000] font-bold">Net Amount Paid</span>
@@ -1045,7 +1101,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
               </span>
               <span className="text-amber-700">Cr {formatNumber(totals.net)}</span>
             </div>
-            {tdsEnabled && totals.tds > 0 && (
+            {totals.tds > 0 && (
               <div className="flex justify-between">
                 <span className="text-[#000000] pl-4">TDS Payable A/C</span>
                 <span className="text-amber-700">Cr {formatNumber(totals.tds)}</span>

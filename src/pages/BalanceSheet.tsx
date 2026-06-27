@@ -1,420 +1,254 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useScreenF12 } from "../hooks/useF12Config";
+import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
 import ReportShell from "../components/reporting/ReportShell";
-import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
-import TFormatReport from "../components/reporting/TFormatReport";
-import ReportGrid from "../components/reporting/ReportGrid";
+import NepalStatementTable from "../components/reports/NepalStatementTable";
 import {
-  buildAccountTree,
-  computeLedgerTotals,
-  computeGroupTotals,
-  getLedgerEntries,
-  groupEntriesByMonth,
-} from "../lib/reportingHierarchy";
-import { exportToExcel } from "../lib/reporting";
-import { useNavigate } from "@tanstack/react-router";
+  buildBalanceSheetData,
+  NepalStatementLine,
+} from "../lib/nepalFinancialStatements";
 
-const fmtDrCr = (dr: number, cr: number) => {
-  if (Math.abs(dr) < 0.005 && Math.abs(cr) < 0.005) return "—";
-  if (dr > 0) return `${formatNumber(dr)} Dr`;
-  if (cr > 0) return `${formatNumber(cr)} Cr`;
-  return "—";
-};
-
-type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
+function money(value: number): string {
+  const abs = Math.abs(Number(value || 0));
+  const text = abs.toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return value < 0 ? `(${text})` : text;
+}
 
 const BalanceSheet: React.FC = () => {
-  // Register this screen with F12 system
-  const getConfig = useScreenF12("balance-sheet");
+  const {
+    accounts,
+    vouchers,
+    previousYearVouchers,
+    companySettings,
+    currentFiscalYear,
+    currentUser,
+  } = useStore() as any;
 
-  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
-  const navigate = useNavigate();
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
+  const asAtBS =
+    currentFiscalYear?.endDateBS ||
+    currentFiscalYear?.endDateNepali ||
+    "2082-03-31";
 
-  const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
-  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
-  const [activeSubgroupId, setActiveSubgroupId] = useState<string | null>(null);
-  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
-  const [activeMonth, setActiveMonth] = useState<string | null>(null);
+  const currentYearLabel =
+    currentFiscalYear?.fiscalYearBS ||
+    currentFiscalYear?.name ||
+    "Current Year";
 
-  const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
+  const previousYearLabel =
+    currentFiscalYear?.previousFiscalYearBS ||
+    "Previous Year";
 
-  const [bsOptions, setBsOptions] = useState({
-    startDate: fiscalEnd,
-    endDate: fiscalEnd,
-    updateStock: false,
-    showSecondLevel: true,
-    showGroupsSeparate: true,
-    showPreviousYear: false,
-    showRatios: false,
-    showZeroDuringDrill: false,
-    skipPL: false,
-    scaleFactor: 1,
-  });
+  const data = useMemo(() => {
+    return buildBalanceSheetData({
+      accounts: accounts || [],
+      currentVouchers: vouchers || [],
+      previousVouchers: previousYearVouchers || [],
+      asAtDate: currentFiscalYear?.endDate,
+      previousAsAtDate: currentFiscalYear?.previousEndDate,
+    });
+  }, [accounts, vouchers, previousYearVouchers, currentFiscalYear]);
 
-  useEffect(() => {
-    if (bsOptions.showSecondLevel) setMode("detailed");
-  }, [bsOptions.showSecondLevel]);
+  const equityRows: NepalStatementLine[] = [
+    {
+      id: "heading-equity",
+      label: "A. Shareholders' Equity / Proprietor's Capital",
+      labelNepali: "क. शेयरधनीको पूँजी / स्वामित्व पूँजी",
+      currentYear: 0,
+      previousYear: 0,
+      isTotal: true,
+    },
+    ...data.equity,
+    {
+      id: "total-equity",
+      label: "TOTAL EQUITY",
+      labelNepali: "कुल पूँजी",
+      currentYear: data.totalEquity,
+      previousYear: data.equity.reduce((s, r) => s + r.previousYear, 0),
+      isTotal: true,
+    },
+  ];
 
-  const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
-  const ledgerTotals = useMemo(
-    () =>
-      computeLedgerTotals(accounts, vouchers, {
-        endDate: bsOptions.endDate,
-      }),
-    [accounts, vouchers, bsOptions.endDate]
+  const liabilityRows: NepalStatementLine[] = [
+    {
+      id: "heading-ncl",
+      label: "B. Non-Current Liabilities",
+      labelNepali: "ख. दीर्घकालीन दायित्व",
+      currentYear: 0,
+      previousYear: 0,
+      isTotal: true,
+    },
+    ...data.nonCurrentLiabilities,
+    {
+      id: "total-ncl",
+      label: "TOTAL NON-CURRENT LIABILITIES",
+      labelNepali: "कुल दीर्घकालीन दायित्व",
+      currentYear: data.totalNonCurrentLiabilities,
+      previousYear: data.nonCurrentLiabilities.reduce((s, r) => s + r.previousYear, 0),
+      isTotal: true,
+    },
+
+    {
+      id: "heading-cl",
+      label: "C. Current Liabilities",
+      labelNepali: "ग. चालू दायित्व",
+      currentYear: 0,
+      previousYear: 0,
+      isTotal: true,
+    },
+    ...data.currentLiabilities,
+    {
+      id: "total-cl",
+      label: "TOTAL CURRENT LIABILITIES",
+      labelNepali: "कुल चालू दायित्व",
+      currentYear: data.totalCurrentLiabilities,
+      previousYear: data.currentLiabilities.reduce((s, r) => s + r.previousYear, 0),
+      isTotal: true,
+    },
+
+    {
+      id: "total-eq-liab",
+      label: "TOTAL EQUITY AND LIABILITIES",
+      labelNepali: "कुल पूँजी तथा दायित्व",
+      currentYear: data.totalEquityAndLiabilities,
+      previousYear:
+        data.equity.reduce((s, r) => s + r.previousYear, 0) +
+        data.nonCurrentLiabilities.reduce((s, r) => s + r.previousYear, 0) +
+        data.currentLiabilities.reduce((s, r) => s + r.previousYear, 0),
+      isGrandTotal: true,
+    },
+  ];
+
+  const assetRows: NepalStatementLine[] = [
+    {
+      id: "heading-nca",
+      label: "A. Non-Current Assets",
+      labelNepali: "क. दीर्घकालीन सम्पत्ति",
+      currentYear: 0,
+      previousYear: 0,
+      isTotal: true,
+    },
+    {
+      id: "fixed-assets-caption",
+      label: "Fixed Assets at Cost Less Accumulated Depreciation",
+      labelNepali: "लागतबाट सञ्चित ह्रासकट्टी घटाई स्थायी सम्पत्ति",
+      currentYear: 0,
+      previousYear: 0,
+      indent: 1,
+    },
+    ...data.fixedAssets,
+    ...data.nonCurrentAssets,
+    {
+      id: "total-nca",
+      label: "TOTAL NON-CURRENT ASSETS",
+      labelNepali: "कुल दीर्घकालीन सम्पत्ति",
+      currentYear: data.totalFixedAssets + data.totalNonCurrentAssets,
+      previousYear:
+        data.fixedAssets.reduce((s, r) => s + r.previousYear, 0) +
+        data.nonCurrentAssets.reduce((s, r) => s + r.previousYear, 0),
+      isTotal: true,
+    },
+
+    {
+      id: "heading-ca",
+      label: "B. Current Assets",
+      labelNepali: "ख. चालू सम्पत्ति",
+      currentYear: 0,
+      previousYear: 0,
+      isTotal: true,
+    },
+    ...data.currentAssets,
+    {
+      id: "total-ca",
+      label: "TOTAL CURRENT ASSETS",
+      labelNepali: "कुल चालू सम्पत्ति",
+      currentYear: data.totalCurrentAssets,
+      previousYear: data.currentAssets.reduce((s, r) => s + r.previousYear, 0),
+      isTotal: true,
+    },
+
+    {
+      id: "total-assets",
+      label: "TOTAL ASSETS",
+      labelNepali: "कुल सम्पत्ति",
+      currentYear: data.totalAssets,
+      previousYear:
+        data.fixedAssets.reduce((s, r) => s + r.previousYear, 0) +
+        data.nonCurrentAssets.reduce((s, r) => s + r.previousYear, 0) +
+        data.currentAssets.reduce((s, r) => s + r.previousYear, 0),
+      isGrandTotal: true,
+    },
+  ];
+
+  const printHeader = (
+    <div className="print-only hidden text-center mb-4">
+      <h1 className="text-[16px] font-bold">
+        {companySettings?.companyNameEn || companySettings?.name || "Company Name"}
+      </h1>
+      <h2 className="text-[15px] font-semibold">
+        {companySettings?.companyNameNp || companySettings?.nameNepali || "कम्पनीको नाम"}
+      </h2>
+      <div className="text-[11px] mt-2 leading-5">
+        <div>PAN No.: {companySettings?.panNumber || companySettings?.pan || "—"}</div>
+        <div>Balance Sheet as at {asAtBS}</div>
+        <div>Prepared By: {currentUser?.name || "—"} | Approved By: __________________</div>
+      </div>
+      <div className="border border-gray-400 mt-3 p-2 text-left text-[11px]">
+        Auditor's Note: ________________________________________________________________
+      </div>
+    </div>
   );
-  const groupTotals = useMemo(
-    () => computeGroupTotals(tree, ledgerTotals),
-    [tree, ledgerTotals]
-  );
-
-  const rootGroups = tree.roots.filter(
-    (r) => r.type === "asset" || r.type === "liability" || r.type === "equity"
-  );
-
-  const bsTotals = useMemo(() => {
-    let totalAssets = 0;
-    let totalLiabilitiesEquity = 0;
-    let netProfit = 0;
-    
-    tree.roots.forEach((grp) => {
-      const gt = groupTotals.get(grp.id);
-      if (!gt) return;
-      if (grp.type === "asset") {
-        totalAssets += gt.closingDr - gt.closingCr;
-      } else if (grp.type === "liability" || grp.type === "equity") {
-        totalLiabilitiesEquity += gt.closingCr - gt.closingDr;
-      } else if (grp.type === "income") {
-        netProfit += gt.closingCr - gt.closingDr;
-      } else if (grp.type === "expense") {
-        netProfit -= gt.closingDr - gt.closingCr;
-      }
-    });
-
-    totalLiabilitiesEquity += netProfit;
-    const difference = Math.round((totalAssets - totalLiabilitiesEquity) * 100) / 100;
-    
-    return {
-      totalAssets,
-      totalLiabilitiesEquity,
-      netProfit,
-      difference,
-      isBalanced: Math.abs(difference) < 0.01,
-    };
-  }, [tree.roots, groupTotals]);
-
-  const groupedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
-
-    rootGroups.forEach((grp) => {
-      const totals = groupTotals.get(grp.id);
-      const row = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-      if (grp.type === "asset") left.push(row);
-      else right.push(row);
-    });
-
-    if (bsTotals.netProfit !== 0) {
-      right.push({
-        id: "current-year-profit",
-        label: "Current Year Net Profit",
-        amount: fmtDrCr(0, bsTotals.netProfit),
-        level: "group",
-        indent: 0,
-      });
-    }
-
-    return { left, right };
-  }, [rootGroups, groupTotals, bsTotals.netProfit]);
-
-  const detailedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
-
-    rootGroups.forEach((grp) => {
-      const children = grp.children || [];
-      const grpTotals = groupTotals.get(grp.id);
-      const grpRow = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(grpTotals?.closingDr || 0, grpTotals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-
-      const childRows = children.flatMap((sub) => {
-        const subTotals = groupTotals.get(sub.id);
-        const subRow = {
-          id: sub.id,
-          label: sub.name,
-          amount: fmtDrCr(subTotals?.closingDr || 0, subTotals?.closingCr || 0),
-          level: "subgroup",
-          indent: 1,
-          onClick: () => {
-            setDrillLevel("ledger");
-            setActiveSubgroupId(sub.id);
-          },
-        };
-
-        const ledgerRows = (sub.children || [])
-          .filter((c) => !c.isGroup)
-          .map((ledger) => {
-            const totals = ledgerTotals.get(ledger.id);
-            const showRow =
-              bsOptions.showZeroDuringDrill ||
-              totals?.hasActivity ||
-              (totals && (totals.closingDr > 0 || totals.closingCr > 0));
-            if (!showRow) return null;
-            return {
-              id: ledger.id,
-              label: ledger.name,
-              amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-              level: "ledger",
-              indent: 2,
-              onClick: () => {
-                setDrillLevel("month");
-                setActiveLedgerId(ledger.id);
-              },
-            };
-          })
-          .filter(Boolean);
-
-        return [subRow, ...ledgerRows];
-      });
-
-      if (grp.type === "asset") left.push(grpRow, ...childRows);
-      else right.push(grpRow, ...childRows);
-    });
-
-    if (bsTotals.netProfit !== 0) {
-      right.push({
-        id: "current-year-profit",
-        label: "Current Year Net Profit",
-        amount: fmtDrCr(0, bsTotals.netProfit),
-        level: "group",
-        indent: 0,
-      });
-    }
-
-    return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, bsOptions.showZeroDuringDrill, bsTotals.netProfit]);
-
-  const ledgerMonthRows = useMemo(() => {
-    if (!activeLedgerId) return [];
-    const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      endDate: bsOptions.endDate,
-    });
-    return groupEntriesByMonth(entries).map((m) => ({
-      monthKey: m.monthKey,
-      debit: formatNumber(m.debit),
-      credit: formatNumber(m.credit),
-      onClick: () => {
-        setActiveMonth(m.monthKey);
-        setDrillLevel("entries");
-      },
-    }));
-  }, [activeLedgerId, vouchers, bsOptions.endDate]);
-
-  const entryRows = useMemo(() => {
-    if (!activeLedgerId || !activeMonth) return [];
-    const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      startDate: `${activeMonth}-01`,
-      endDate: `${activeMonth}-31`,
-    });
-    return entries.map((e) => ({
-      date: e.date,
-      voucherNo: e.voucherNo,
-      narration: e.narration,
-      debit: e.debit ? formatNumber(e.debit) : "—",
-      credit: e.credit ? formatNumber(e.credit) : "—",
-      voucherId: e.voucherId,
-      voucherType: e.voucherType,
-    }));
-  }, [activeLedgerId, activeMonth, vouchers]);
-
-  const drillBack = () => {
-    if (drillLevel === "entries") return setDrillLevel("month");
-    if (drillLevel === "month") return setDrillLevel("ledger");
-    if (drillLevel === "ledger") return setDrillLevel("subgroup");
-    if (drillLevel === "subgroup") return setDrillLevel("group");
-  };
-
-  const openVoucher = (row: any) => {
-    if (!row.voucherId) return;
-    navigate({ to: `/vouchers/${row.voucherId}` });
-  };
-
-  const handleExport = () => {
-    const rows = mode === "grouped" ? groupedRows : detailedRows;
-    exportToExcel(
-      "Balance Sheet",
-      ["Account", "Amount"],
-      [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
-    );
-  };
 
   return (
     <ReportShell
       title="Balance Sheet"
-      subtitle="Statement of Financial Position"
-      companyName={companySettings?.companyNameEn}
-      periodText={`As at ${bsOptions.endDate}`}
-      onPrint={() => window.print()}
-      onExport={handleExport}
-      onOptions={() => setOptionsOpen(true)}
-      actionBarButtons={[
-        { label: "Email - [M]" },
-        { label: "Print - [P]" },
-        { label: "Refresh - [R]" },
-        { label: "Export - [E]" },
-        { label: "Search - F3" },
-        { label: "Summary - F5" },
-        { label: "Filter - F7" },
-        { label: "Custom Columns" },
-      ]}
-      toolbarLeft={
-        <div className="report-toggle">
-          <button className={mode === "grouped" ? "active" : ""} onClick={() => setMode("grouped")}>
-            Grouped
-          </button>
-          <button className={mode === "detailed" ? "active" : ""} onClick={() => setMode("detailed")}>
-            Detailed
-          </button>
-          {drillLevel !== "group" && <button onClick={drillBack}>Back</button>}
-        </div>
+      subtitle={`Nepal Companies Act / NAS vertical format as at ${asAtBS}`}
+      actions={
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md no-print"
+        >
+          Print
+        </button>
       }
     >
-      {!bsTotals.isBalanced && drillLevel === "group" && (
-        <div className="mb-3 mx-4 mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">
-          Balance Sheet is out of balance by Rs. {formatNumber(Math.abs(bsTotals.difference))}.
-        </div>
-      )}
-      {drillLevel === "group" && (
-        <TFormatReport
-          leftTitle="Liabilities & Equity"
-          rightTitle="Assets"
-          leftRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
-          rightRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
-        />
-      )}
+      {printHeader}
 
-      {drillLevel === "subgroup" && activeGroupId && (
-        <ReportGrid
-          columns={[
-            { key: "label", label: "Subgroup" },
-            { key: "amount", label: "Closing", align: "right" },
-          ]}
-          data={(tree.nodesById.get(activeGroupId)?.children || [])
-            .filter((n) => n.isGroup)
-            .map((sub) => {
-              const totals = groupTotals.get(sub.id);
-              return {
-                id: sub.id,
-                label: sub.name,
-                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-                onClick: () => {
-                  setDrillLevel("ledger");
-                  setActiveSubgroupId(sub.id);
-                },
-              };
-            })}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
+      <div className="space-y-6 bg-white border border-gray-200 rounded-md p-4">
+        <section>
+          <h2 className="text-[13px] font-bold text-gray-800 mb-2 uppercase">
+            Equity and Liabilities
+          </h2>
+          <NepalStatementTable
+            rows={[...equityRows, ...liabilityRows]}
+            currentYearLabel={currentYearLabel}
+            previousYearLabel={previousYearLabel}
+          />
+        </section>
 
-      {drillLevel === "ledger" && activeSubgroupId && (
-        <ReportGrid
-          columns={[
-            { key: "label", label: "Ledger" },
-            { key: "amount", label: "Closing", align: "right" },
-          ]}
-          data={(tree.nodesById.get(activeSubgroupId)?.children || [])
-            .filter((n) => !n.isGroup)
-            .map((ledger) => {
-              const totals = ledgerTotals.get(ledger.id);
-              return {
-                id: ledger.id,
-                label: ledger.name,
-                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-                onClick: () => {
-                  setActiveLedgerId(ledger.id);
-                  setDrillLevel("month");
-                },
-              };
-            })}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
+        <section>
+          <h2 className="text-[13px] font-bold text-gray-800 mb-2 uppercase">
+            Assets
+          </h2>
+          <NepalStatementTable
+            rows={assetRows}
+            currentYearLabel={currentYearLabel}
+            previousYearLabel={previousYearLabel}
+          />
+        </section>
 
-      {drillLevel === "month" && activeLedgerId && (
-        <ReportGrid
-          columns={[
-            { key: "monthKey", label: "Month" },
-            { key: "debit", label: "Debit", align: "right" },
-            { key: "credit", label: "Credit", align: "right" },
-          ]}
-          data={ledgerMonthRows}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
-
-      {drillLevel === "entries" && activeLedgerId && (
-        <ReportGrid
-          columns={[
-            { key: "date", label: "Date" },
-            { key: "voucherNo", label: "Voucher No" },
-            { key: "narration", label: "Narration" },
-            { key: "debit", label: "Debit", align: "right" },
-            { key: "credit", label: "Credit", align: "right" },
-          ]}
-          data={entryRows}
-          onRowClick={openVoucher}
-        />
-      )}
-
-      <ReportOptionsModal
-        open={optionsOpen}
-        title="Balance Sheet"
-        onClose={() => setOptionsOpen(false)}
-        onApply={() => setOptionsOpen(false)}
-      >
-        <div className="report-option-row">
-          <span>Starting Date</span>
-          <input type="date" value={bsOptions.startDate} onChange={(e) => setBsOptions({ ...bsOptions, startDate: e.target.value })} />
-        </div>
-        <div className="report-option-row">
-          <span>Ending Date</span>
-          <input type="date" value={bsOptions.endDate} onChange={(e) => setBsOptions({ ...bsOptions, endDate: e.target.value })} />
-        </div>
-        <div className="report-option-row"><span>Update Balance Sheet Stock ?</span><select value={bsOptions.updateStock ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, updateStock: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Show Second Level Group Details</span><select value={bsOptions.showSecondLevel ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showSecondLevel: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Show Groups and Amounts in separate columns</span><select value={bsOptions.showGroupsSeparate ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showGroupsSeparate: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Show Previous Year Balances also</span><select value={bsOptions.showPreviousYear ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showPreviousYear: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Show Ratio(s)</span><select value={bsOptions.showRatios ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showRatios: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Show Zero Balance Masters During Drill Down</span><select value={bsOptions.showZeroDuringDrill ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, showZeroDuringDrill: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Skip 'P/L for the period'?</span><select value={bsOptions.skipPL ? "Y" : "N"} onChange={(e) => setBsOptions({ ...bsOptions, skipPL: e.target.value === "Y" })}><option>Y</option><option>N</option></select></div>
-        <div className="report-option-row"><span>Specify Scale Factor</span><input type="number" value={bsOptions.scaleFactor} onChange={(e) => setBsOptions({ ...bsOptions, scaleFactor: Number(e.target.value) })} /></div>
-      </ReportOptionsModal>
+        {Math.abs(data.difference) > 0.01 && (
+          <div className="bg-red-50 text-red-700 border border-red-200 rounded-md p-3 text-[12px]">
+            Balance Sheet difference: Rs. {money(data.difference)}. Please check opening balances,
+            retained earnings, or unposted vouchers.
+          </div>
+        )}
+      </div>
     </ReportShell>
   );
 };
 
 export default BalanceSheet;
+

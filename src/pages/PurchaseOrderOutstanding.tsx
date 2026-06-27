@@ -1,371 +1,86 @@
-// @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import { VoucherStatus } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
-import ReportGrid from "../components/reporting/ReportGrid";
-import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
-import { useScreenF12 } from "../hooks/useF12Config";
+import { buildPurchaseOrderOutstandingReport } from "../lib/workflowUtils";
+
+function money(v: number) {
+  return Number(v || 0).toLocaleString("en-NP", { minimumFractionDigits: 2 });
+}
 
 const PurchaseOrderOutstanding: React.FC = () => {
-  // Register this screen with F12 system
-  const getConfig = useScreenF12("purchase-order-outstanding");
-  
-  const { purchaseOrders, parties, companySettings, currentFiscalYear } = useStore();
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [view, setView] = useState<"details" | "summary">("details");
-  const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
-  const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
-  const [selectedPartyId, setSelectedPartyId] = useState("");
-  
-  // Pending states for options modal
-  const [pendingStart, setPendingStart] = useState(startDate);
-  const [pendingEnd, setPendingEnd] = useState(endDate);
-  const [pendingSelectedPartyId, setPendingSelectedPartyId] = useState(selectedPartyId);
+  const { vouchers } = useStore() as any;
 
-  const applyOptions = () => {
-    setStartDate(pendingStart);
-    setEndDate(pendingEnd);
-    setSelectedPartyId(pendingSelectedPartyId);
-    setOptionsOpen(false);
-  };
-
-  // Compute purchase order outstanding data
-  const reportData = useMemo(() => {
-    if (!purchaseOrders) return { rows: [], totals: {} };
-
-    let filteredOrders = purchaseOrders.filter(order => 
-      order.status !== "fulfilled" && 
-      order.status !== "cancelled" &&
-      order.date >= startDate &&
-      order.date <= endDate
-    );
-
-    if (selectedPartyId) {
-      filteredOrders = filteredOrders.filter(order => order.partyId === selectedPartyId);
-    }
-
-    if (view === "details") {
-      // Order details view - one row per order item line
-      const rows = [];
-      filteredOrders.forEach(order => {
-        order.lines.forEach(line => {
-          const orderedQty = line.qty || 0;
-          const receivedQty = line.deliveredQty || 0; // Using deliveredQty for received based on model
-          const pendingQty = orderedQty - receivedQty;
-          const pendingValue = pendingQty * (line.rate || 0);
-
-          // Determine status badge
-          let statusDisplay = "Pending";
-          if (receivedQty > 0 && pendingQty > 0) {
-            statusDisplay = `Partial (${Math.round((receivedQty / orderedQty) * 100)}%)`;
-          } else if (receivedQty === 0) {
-            statusDisplay = "Pending";
-          } else if (pendingQty > 0) {
-            statusDisplay = `${Math.round((pendingQty / orderedQty) * 100)}% Pending`;
-          }
-
-          rows.push({
-            id: `${order.id}-${line.id}`,
-            orderNo: order.orderNo,
-            date: order.date,
-            party: order.partyName,
-            itemName: line.itemName,
-            orderedQty,
-            receivedQty: receivedQty,
-            pendingQty,
-            rate: line.rate || 0,
-            pendingValue,
-            status: statusDisplay
-          });
-        });
-      });
-
-      // Add total row
-      if (rows.length > 0) {
-        const totalOrderedValue = rows.reduce((sum, row) => sum + (row.orderedQty * row.rate), 0);
-        const totalReceivedValue = rows.reduce((sum, row) => sum + (row.receivedQty * row.rate), 0);
-        const totalPendingValue = rows.reduce((sum, row) => sum + row.pendingValue, 0);
-
-        rows.push({
-          id: "total",
-          orderNo: "TOTAL",
-          date: "",
-          party: "",
-          itemName: "",
-          orderedQty: rows.reduce((sum, row) => sum + row.orderedQty, 0),
-          receivedQty: rows.reduce((sum, row) => sum + row.receivedQty, 0),
-          pendingQty: rows.reduce((sum, row) => sum + row.pendingQty, 0),
-          rate: "",
-          pendingValue: totalPendingValue,
-          status: "",
-          isTotal: true
-        });
-
-        return { rows, totals: { totalOrderedValue, totalReceivedValue, totalPendingValue } };
-      }
-      return { rows, totals: {} };
-    } else {
-      // Order summary view - one row per order
-      const rows = filteredOrders.map(order => {
-        const totalOrderedQty = order.lines.reduce((sum, line) => sum + (line.qty || 0), 0);
-        const totalReceivedQty = order.lines.reduce((sum, line) => sum + (line.deliveredQty || 0), 0);
-        const totalPendingQty = totalOrderedQty - totalReceivedQty;
-        const totalOrderValue = order.lines.reduce((sum, line) => sum + ((line.qty || 0) * (line.rate || 0)), 0);
-        const receivedValue = order.lines.reduce((sum, line) => sum + ((line.deliveredQty || 0) * (line.rate || 0)), 0);
-        const pendingValue = totalOrderValue - receivedValue;
-
-        // Determine status badge
-        let statusDisplay = "Pending";
-        if (totalReceivedQty > 0 && totalPendingQty > 0) {
-          statusDisplay = `Partial (${Math.round((totalReceivedQty / totalOrderedQty) * 100)}%)`;
-        } else if (totalReceivedQty === 0) {
-          statusDisplay = "Pending";
-        } else if (totalPendingQty > 0) {
-          statusDisplay = `${Math.round((totalPendingQty / totalOrderedQty) * 100)}% Pending`;
-        }
-
-        return {
-          id: order.id,
-          orderNo: order.orderNo,
-          date: order.date,
-          party: order.partyName,
-          totalOrderValue,
-          receivedValue,
-          pendingValue,
-          status: statusDisplay
-        };
-      });
-
-      // Add total row
-      if (rows.length > 0) {
-        const totalOrderValue = rows.reduce((sum, row) => sum + row.totalOrderValue, 0);
-        const totalReceivedValue = rows.reduce((sum, row) => sum + row.receivedValue, 0);
-        const totalPendingValue = rows.reduce((sum, row) => sum + row.pendingValue, 0);
-
-        rows.push({
-          id: "total",
-          orderNo: "TOTAL",
-          date: "",
-          party: "",
-          totalOrderValue,
-          receivedValue,
-          pendingValue,
-          status: "",
-          isTotal: true
-        });
-
-        return { rows, totals: { totalOrderValue, totalReceivedValue, totalPendingValue } };
-      }
-      return { rows, totals: {} };
-    }
-  }, [purchaseOrders, startDate, endDate, selectedPartyId, view]);
-
-  // Get unique parties for filter
-  const uniqueParties = useMemo(() => {
-    const partySet = new Set();
-    (purchaseOrders || []).forEach(order => {
-      if (order.partyId) {
-        partySet.add(order.partyId);
-      }
-    });
-    
-    return Array.from(partySet).map(id => {
-      const party = parties.find(p => p.id === id);
-      return { id, name: party?.name || "Unknown" };
-    });
-  }, [purchaseOrders, parties]);
-
-  const renderCell = (columnKey: string, value: any, row: any) => {
-    if (row.isTotal) {
-      if (columnKey === "orderNo") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
-      }
-      if (["orderedQty", "receivedQty", "pendingQty", "totalOrderValue", "receivedValue", "pendingValue"].includes(columnKey)) {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
-      }
-      return "";
-    }
-
-    if (["orderedQty", "receivedQty", "pendingQty", "rate", "totalOrderValue", "receivedValue", "pendingValue"].includes(columnKey)) {
-      if (value === 0 || value === "") return "";
-      
-      let colorClass = "text-gray-700";
-      // Highlight pending values to draw attention
-      if (["pendingQty", "pendingValue"].includes(columnKey)) {
-        colorClass = "text-[#1557b0] font-medium";
-      }
-      
-      return <span className={`font-mono ${colorClass}`}>{formatNumber(value)}</span>;
-    }
-    
-    if (columnKey === "status") {
-      if (!value) return "";
-      const isPartial = value.includes("Partial") || value.includes("%");
-      return (
-        <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md ${
-          isPartial ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-700"
-        }`}>
-          {value}
-        </span>
-      );
-    }
-
-    return value;
-  };
+  const rows = useMemo(
+    () => buildPurchaseOrderOutstandingReport(vouchers || []),
+    [vouchers],
+  );
 
   return (
-    <ReportShell
-      title="Purchase Order Outstanding"
-      subtitle="Open purchase orders pending receipt"
-      companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`${startDate} to ${endDate}`}
-      onPrint={() => window.print()}
-      onOptions={() => {
-        setPendingStart(startDate);
-        setPendingEnd(endDate);
-        setPendingSelectedPartyId(selectedPartyId);
-        setOptionsOpen(true);
-      }}
-      actionBarButtons={[
-        { label: "Print" },
-        { label: "Export" }
-      ]}
-      toolbarLeft={
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* View toggle */}
-          <div className="flex bg-gray-100 p-0.5 rounded-md border border-gray-200">
-            <button
-              onClick={() => setView("details")}
-              className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors ${
-                view === "details" ? "bg-white shadow-sm text-[#1557b0]" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Order Details
-            </button>
-            <button
-              onClick={() => setView("summary")}
-              className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors ${
-                view === "summary" ? "bg-white shadow-sm text-[#1557b0]" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Order Summary
-            </button>
-          </div>
+    <div className="p-4">
+      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">
+        Purchase Order Outstanding
+      </h1>
 
-          <div className="h-4 w-px bg-gray-300"></div>
-
-          <div className="flex items-center gap-1.5">
-            <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-              From: 
-              <input 
-                type="date" 
-                value={startDate} 
-                onChange={e => setStartDate(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-              />
-            </label>
-            
-            <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 ml-1">
-              To: 
-              <input 
-                type="date" 
-                value={endDate} 
-                onChange={e => setEndDate(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-              />
-            </label>
-            
-            <select
-              value={selectedPartyId}
-              onChange={e => setSelectedPartyId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[160px]"
-            >
-              <option value="">All Suppliers</option>
-              {uniqueParties.map(party => (
-                <option key={party.id} value={party.id}>{party.name}</option>
+      <div className="bg-white border rounded-md overflow-auto">
+        <table className="w-full text-[12px]">
+          <thead className="bg-[#f5f6fa]">
+            <tr>
+              {[
+                "PO No.",
+                "Date",
+                "Supplier",
+                "Item",
+                "Ordered Qty",
+                "Received Qty",
+                "Billed Qty",
+                "Rejected Qty",
+                "Pending Qty",
+                "PO Value",
+                "Pending Value",
+                "Status",
+              ].map((h) => (
+                <th key={h} className="px-3 py-2 text-left">{h}</th>
               ))}
-            </select>
-          </div>
-        </div>
-      }
-    >
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
-        <ReportGrid 
-          columns={
-            view === "details" 
-            ? [
-                { key: "orderNo", label: "Order No" },
-                { key: "date", label: "Date" },
-                { key: "party", label: "Supplier" },
-                { key: "itemName", label: "Item" },
-                { key: "orderedQty", label: "Ordered", align: "right" },
-                { key: "receivedQty", label: "Received", align: "right" },
-                { key: "pendingQty", label: "Pending Qty", align: "right" },
-                { key: "rate", label: "Rate", align: "right" },
-                { key: "pendingValue", label: "Pending Val", align: "right" },
-                { key: "status", label: "Status", align: "center" }
-              ]
-            : [
-                { key: "orderNo", label: "Order No" },
-                { key: "date", label: "Date" },
-                { key: "party", label: "Supplier" },
-                { key: "totalOrderValue", label: "Total Value", align: "right" },
-                { key: "receivedValue", label: "Received Val", align: "right" },
-                { key: "pendingValue", label: "Pending Val", align: "right" },
-                { key: "status", label: "Status", align: "center" }
-              ]
-          } 
-          data={reportData.rows} 
-          getRowClassName={(row) => row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""}
-          renderCell={renderCell}
-        />
+            </tr>
+          </thead>
+
+          <tbody>
+            {rows.map((r, idx) => (
+              <tr key={`${r.orderId}-${r.itemId}-${idx}`} className="border-t">
+                <td className="px-3 py-2 font-mono">{r.orderNo}</td>
+                <td className="px-3 py-2">{r.dateNepali || r.date}</td>
+                <td className="px-3 py-2">{r.partyName}</td>
+                <td className="px-3 py-2">{r.itemName}</td>
+                <td className="px-3 py-2 text-right">{r.orderedQty}</td>
+                <td className="px-3 py-2 text-right">{r.receivedOrDispatchedQty}</td>
+                <td className="px-3 py-2 text-right">{r.billedOrInvoicedQty}</td>
+                <td className="px-3 py-2 text-right">{r.rejectedQty}</td>
+                <td className="px-3 py-2 text-right font-bold">{r.pendingQty}</td>
+                <td className="px-3 py-2 text-right">{money(r.orderValue)}</td>
+                <td className="px-3 py-2 text-right">{money(r.pendingValue)}</td>
+                <td className="px-3 py-2">
+                  <StatusBadge status={r.workflowStatus} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      
-      <ReportOptionsModal
-        open={optionsOpen}
-        title="Purchase Order Outstanding Options"
-        onClose={() => setOptionsOpen(false)}
-        onApply={applyOptions}
-      >
-        <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date 
-            <input 
-              type="date" 
-              value={pendingStart} 
-              onChange={e => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date 
-            <input 
-              type="date" 
-              value={pendingEnd} 
-              onChange={e => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Supplier 
-            <select
-              value={pendingSelectedPartyId}
-              onChange={e => setPendingSelectedPartyId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              <option value="">All Suppliers</option>
-              {uniqueParties.map(party => (
-                <option key={party.id} value={party.id}>{party.name}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </ReportOptionsModal>
-    </ReportShell>
+    </div>
+  );
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const cls =
+    status === "closed"
+      ? "bg-green-100 text-green-700"
+      : status === "partial"
+        ? "bg-amber-100 text-amber-700"
+        : "bg-blue-100 text-blue-700";
+
+  return (
+    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${cls}`}>
+      {status}
+    </span>
   );
 };
 

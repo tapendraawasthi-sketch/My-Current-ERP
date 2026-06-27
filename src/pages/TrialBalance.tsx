@@ -1,402 +1,424 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useScreenF12 } from "../hooks/useF12Config";
+import React, { useMemo, useState } from "react";
+import * as XLSX from "xlsx";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import ReportShell from "../components/reporting/ReportShell";
-import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
-import TFormatReport from "../components/reporting/TFormatReport";
-import ReportGrid from "../components/reporting/ReportGrid";
-import {
-  buildAccountTree,
-  computeLedgerTotals,
-  computeGroupTotals,
-  getLedgerEntries,
-  groupEntriesByMonth,
-} from "../lib/reportingHierarchy";
-import { exportToExcel } from "../lib/reporting";
-import { useNavigate } from "@tanstack/react-router";
+import ColumnReportShell from "../components/reporting/ColumnReportShell";
 
-const fmtDrCr = (dr: number, cr: number) => {
-  if (Math.abs(dr) < 0.005 && Math.abs(cr) < 0.005) return "—";
-  if (dr > 0) return `${formatNumber(dr)} Dr`;
-  if (cr > 0) return `${formatNumber(cr)} Cr`;
-  return "—";
-};
+interface Account {
+  id: string;
+  code: string;
+  name: string;
+  type: "asset" | "liability" | "equity" | "income" | "expense";
+  parentId?: string;
+  isGroup: boolean;
+  openingBalanceDr?: number;
+  openingBalanceCr?: number;
+}
 
-type DrillLevel = "group" | "subgroup" | "ledger" | "month" | "entries";
+interface VoucherLine {
+  accountId: string;
+  debit?: number;
+  credit?: number;
+}
 
-const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
+interface Voucher {
+  id: string;
+  date: string;
+  dateNepali?: string;
+  status?: string;
+  lines: VoucherLine[];
+}
 
-const TrialBalance: React.FC = () => {
-  // Register this screen with F12 system
-  const getConfig = useScreenF12("trial-balance");
+interface TrialRow {
+  id: string;
+  name: string;
+  code: string;
+  isGroup: boolean;
+  depth: number;
+  parentId?: string;
+  children: TrialRow[];
 
-  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
-  const navigate = useNavigate();
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [mode, setMode] = useState<"grouped" | "detailed">("grouped");
+  openingDr: number;
+  openingCr: number;
+  periodDr: number;
+  periodCr: number;
+  closingDr: number;
+  closingCr: number;
+}
 
-  const [drillLevel, setDrillLevel] = useState<DrillLevel>("group");
-  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
-  const [activeSubgroupId, setActiveSubgroupId] = useState<string | null>(null);
-  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
-  const [activeMonth, setActiveMonth] = useState<string | null>(null);
-
-  const fiscalStart = currentFiscalYear?.startDate || "2026-04-14";
-  const fiscalEnd = currentFiscalYear?.endDate || "2027-04-13";
-
-  const [tbOptions, setTbOptions] = useState({
-    startDate: fiscalStart,
-    endDate: fiscalEnd,
-    showZero: true,
-    showAlphabetical: false,
+function money(value: number): string {
+  return Number(value || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
+}
 
-  // Sync F12 config for showZeroBalanceAccounts
-  useEffect(() => {
-    const f12ShowZero = getConfig("show_zero_balance_accounts");
-    if (f12ShowZero !== undefined) {
-      setTbOptions(prev => ({ ...prev, showZero: Boolean(f12ShowZero) }));
-    }
-  }, [getConfig]);
+function bsToNum(bs: string): number {
+  const [y, m, d] = String(bs || "").split("-").map(Number);
+  return y * 10000 + m * 100 + d;
+}
 
-  const tree = useMemo(() => buildAccountTree(accounts), [accounts]);
-  const ledgerTotals = useMemo(
-    () =>
-      computeLedgerTotals(accounts, vouchers, {
-        startDate: tbOptions.startDate,
-        endDate: tbOptions.endDate,
-      }),
-    [accounts, vouchers, tbOptions.startDate, tbOptions.endDate]
-  );
-  const groupTotals = useMemo(
-    () => computeGroupTotals(tree, ledgerTotals),
-    [tree, ledgerTotals]
-  );
+function isDebitNature(type: string) {
+  return type === "asset" || type === "expense";
+}
 
-  const rootGroups = tree.roots
-    .filter((r) => r.type === "asset" || r.type === "liability" || r.type === "equity")
-    .sort(tbOptions.showAlphabetical ? sortByName : () => 0);
+function computeLedgerTrial(
+  account: Account,
+  vouchers: Voucher[],
+  fromBS: string,
+  toBS: string,
+) {
+  let openingDr = Number(account.openingBalanceDr || 0);
+  let openingCr = Number(account.openingBalanceCr || 0);
+  let periodDr = 0;
+  let periodCr = 0;
 
-  const tbTotals = useMemo(() => {
-    let totalDebit = 0;
-    let totalCredit = 0;
-    rootGroups.forEach((grp) => {
-      const gt = groupTotals.get(grp.id);
-      if (gt) {
-        totalDebit += gt.closingDr || 0;
-        totalCredit += gt.closingCr || 0;
-      }
-    });
-    const difference = Math.round((totalDebit - totalCredit) * 100) / 100;
-    return {
-      totalDebit,
-      totalCredit,
-      difference,
-      isBalanced: Math.abs(difference) < 0.01,
-    };
-  }, [rootGroups, groupTotals]);
+  vouchers
+    .filter((v) => v.status !== "cancelled")
+    .forEach((voucher) => {
+      const bs = voucher.dateNepali || "";
 
-  const groupedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
+      voucher.lines.forEach((line) => {
+        if (line.accountId !== account.id) return;
 
-    rootGroups.forEach((grp) => {
-      const totals = groupTotals.get(grp.id);
-      const row = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-      if (grp.type === "asset") left.push(row);
-      else right.push(row);
-    });
+        const debit = Number(line.debit || 0);
+        const credit = Number(line.credit || 0);
 
-    return { left, right };
-  }, [rootGroups, groupTotals, tbOptions]);
-
-  const detailedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
-
-    rootGroups.forEach((grp) => {
-      const children = grp.children || [];
-      const grpTotals = groupTotals.get(grp.id);
-      const grpRow = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(grpTotals?.closingDr || 0, grpTotals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-
-      const childRows = children.flatMap((sub) => {
-        const subTotals = groupTotals.get(sub.id);
-        const subRow = {
-          id: sub.id,
-          label: sub.name,
-          amount: fmtDrCr(subTotals?.closingDr || 0, subTotals?.closingCr || 0),
-          level: "subgroup",
-          indent: 1,
-          onClick: () => {
-            setDrillLevel("ledger");
-            setActiveSubgroupId(sub.id);
-          },
-        };
-
-        const ledgerRows = (sub.children || [])
-          .filter((c) => !c.isGroup)
-          .map((ledger) => {
-            const totals = ledgerTotals.get(ledger.id);
-            const showRow =
-              tbOptions.showZero ||
-              totals?.hasActivity ||
-              (totals && (totals.closingDr > 0 || totals.closingCr > 0));
-            if (!showRow) return null;
-            return {
-              id: ledger.id,
-              label: ledger.name,
-              amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-              level: "ledger",
-              indent: 2,
-              onClick: () => {
-                setDrillLevel("month");
-                setActiveLedgerId(ledger.id);
-              },
-            };
-          })
-          .filter(Boolean);
-
-        return [subRow, ...ledgerRows];
+        if (bsToNum(bs) < bsToNum(fromBS)) {
+          openingDr += debit;
+          openingCr += credit;
+        } else if (bsToNum(bs) <= bsToNum(toBS)) {
+          periodDr += debit;
+          periodCr += credit;
+        }
       });
-
-      if (grp.type === "asset") {
-        left.push(grpRow, ...childRows);
-      } else {
-        right.push(grpRow, ...childRows);
-      }
     });
 
-    return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, tbOptions]);
+  const totalDr = openingDr + periodDr;
+  const totalCr = openingCr + periodCr;
+  const net = totalDr - totalCr;
 
-  const ledgerMonthRows = useMemo(() => {
-    if (!activeLedgerId) return [];
-    const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      startDate: tbOptions.startDate,
-      endDate: tbOptions.endDate,
-    });
-    return groupEntriesByMonth(entries).map((m) => ({
-      monthKey: m.monthKey,
-      debit: formatNumber(m.debit),
-      credit: formatNumber(m.credit),
-      onClick: () => {
-        setActiveMonth(m.monthKey);
-        setDrillLevel("entries");
-      },
-    }));
-  }, [activeLedgerId, vouchers, tbOptions.startDate, tbOptions.endDate]);
+  let closingDr = 0;
+  let closingCr = 0;
 
-  const entryRows = useMemo(() => {
-    if (!activeLedgerId || !activeMonth) return [];
-    const entries = getLedgerEntries(activeLedgerId, vouchers, {
-      startDate: `${activeMonth}-01`,
-      endDate: `${activeMonth}-31`,
-    });
-    return entries.map((e) => ({
-      date: e.date,
-      voucherNo: e.voucherNo,
-      narration: e.narration,
-      debit: e.debit ? formatNumber(e.debit) : "—",
-      credit: e.credit ? formatNumber(e.credit) : "—",
-      voucherId: e.voucherId,
-      voucherType: e.voucherType,
-    }));
-  }, [activeLedgerId, activeMonth, vouchers]);
-
-  const drillBack = () => {
-    if (drillLevel === "entries") return setDrillLevel("month");
-    if (drillLevel === "month") return setDrillLevel("ledger");
-    if (drillLevel === "ledger") return setDrillLevel("subgroup");
-    if (drillLevel === "subgroup") return setDrillLevel("group");
-  };
-
-  const openVoucher = (row: any) => {
-    if (!row.voucherId) return;
-    navigate({ to: `/vouchers/${row.voucherId}` });
-  };
-
-  const handleExport = () => {
-    const rows = mode === "grouped" ? groupedRows : detailedRows;
-    exportToExcel(
-      "Trial Balance",
-      ["Account", "Amount"],
-      [...rows.left, ...rows.right].map((r) => [r.label, r.amount])
-    );
-  };
-
-  if (!accounts || accounts.length === 0) {
-    return <div className="p-8 text-center text-[12px]">Loading trial balance...</div>;
+  if (isDebitNature(account.type)) {
+    if (net >= 0) closingDr = net;
+    else closingCr = Math.abs(net);
+  } else {
+    if (net <= 0) closingCr = Math.abs(net);
+    else closingDr = net;
   }
 
-  return (
-    <ReportShell
-      title="Trial Balance"
-      subtitle="All Groups"
-      companyName={companySettings?.companyNameEn}
-      periodText={`From ${tbOptions.startDate} to ${tbOptions.endDate}`}
-      onPrint={() => window.print()}
-      onExport={handleExport}
-      onOptions={() => setOptionsOpen(true)}
-      actionBarButtons={[
-        { label: "Email - [M]" },
-        { label: "Print - [P]" },
-        { label: "Refresh - [R]" },
-        { label: "Export - [E]" },
-        { label: "Search - F3" },
-        { label: "Summary - F5" },
-        { label: "Filter - F7" },
-        { label: "Custom Columns" },
-      ]}
-      toolbarLeft={
-        <div className="report-toggle">
-          <button className={mode === "grouped" ? "active" : ""} onClick={() => setMode("grouped")}>Grouped</button>
-          <button className={mode === "detailed" ? "active" : ""} onClick={() => setMode("detailed")}>Detailed</button>
-          {drillLevel !== "group" && <button onClick={drillBack}>Back</button>}
-        </div>
+  return {
+    openingDr,
+    openingCr,
+    periodDr,
+    periodCr,
+    closingDr,
+    closingCr,
+  };
+}
+
+function sumRows(rows: TrialRow[]) {
+  return rows.reduce(
+    (sum, row) => {
+      sum.openingDr += row.openingDr;
+      sum.openingCr += row.openingCr;
+      sum.periodDr += row.periodDr;
+      sum.periodCr += row.periodCr;
+      sum.closingDr += row.closingDr;
+      sum.closingCr += row.closingCr;
+      return sum;
+    },
+    {
+      openingDr: 0,
+      openingCr: 0,
+      periodDr: 0,
+      periodCr: 0,
+      closingDr: 0,
+      closingCr: 0,
+    },
+  );
+}
+
+const allColumns = [
+  { key: "account", label: "Account Name" },
+  { key: "openingDr", label: "Opening Dr" },
+  { key: "openingCr", label: "Opening Cr" },
+  { key: "periodDr", label: "Period Dr" },
+  { key: "periodCr", label: "Period Cr" },
+  { key: "closingDr", label: "Closing Dr" },
+  { key: "closingCr", label: "Closing Cr" },
+];
+
+const TrialBalance: React.FC = () => {
+  const { accounts, vouchers, initializeApp } = useStore() as any;
+
+  const [fromBS, setFromBS] = useState("2081-04-01");
+  const [toBS, setToBS] = useState("2082-03-31");
+  const [mode, setMode] = useState<"condensed" | "detailed">("detailed");
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [visibleColumns, setVisibleColumns] = useState(allColumns.map((c) => c.key));
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number | "all">("all");
+  const [rowHeight, setRowHeight] = useState<"compact" | "normal" | "comfortable">("compact");
+  const [zoom, setZoom] = useState<80 | 100 | 120>(100);
+
+  const trialTree = useMemo<TrialRow[]>(() => {
+    const accountList = (accounts || []) as Account[];
+    const voucherList = (vouchers || []) as Voucher[];
+
+    const buildNode = (account: Account, depth: number): TrialRow => {
+      const childrenAccounts = accountList
+        .filter((a) => a.parentId === account.id)
+        .sort((a, b) => a.code.localeCompare(b.code));
+
+      const children = childrenAccounts.map((child) => buildNode(child, depth + 1));
+
+      if (!account.isGroup) {
+        return {
+          ...computeLedgerTrial(account, voucherList, fromBS, toBS),
+          id: account.id,
+          name: account.name,
+          code: account.code,
+          isGroup: false,
+          depth,
+          parentId: account.parentId,
+          children: [],
+        };
       }
+
+      const childTotals = sumRows(children);
+
+      return {
+        id: account.id,
+        name: account.name,
+        code: account.code,
+        isGroup: true,
+        depth,
+        parentId: account.parentId,
+        children,
+        ...childTotals,
+      };
+    };
+
+    return accountList
+      .filter((a) => !a.parentId)
+      .sort((a, b) => a.code.localeCompare(b.code))
+      .map((a) => buildNode(a, 0));
+  }, [accounts, vouchers, fromBS, toBS]);
+
+  const flatRows = useMemo(() => {
+    const result: TrialRow[] = [];
+
+    const visit = (row: TrialRow) => {
+      if (mode === "condensed" && !row.isGroup) return;
+
+      result.push(row);
+
+      if (mode === "detailed" && row.isGroup && expanded[row.id]) {
+        row.children.forEach(visit);
+      }
+    };
+
+    trialTree.forEach(visit);
+    return result;
+  }, [trialTree, expanded, mode]);
+
+  const grandTotals = useMemo(() => {
+    const ledgers: TrialRow[] = [];
+
+    const collect = (row: TrialRow) => {
+      if (!row.isGroup) ledgers.push(row);
+      row.children.forEach(collect);
+    };
+
+    trialTree.forEach(collect);
+    return sumRows(ledgers);
+  }, [trialTree]);
+
+  const difference = Math.abs(grandTotals.closingDr - grandTotals.closingCr);
+
+  const show = (key: string) => visibleColumns.includes(key);
+
+  const exportTrialBalance = () => {
+    const rows = flatRows.map((row) => ({
+      "Account Name": `${" ".repeat(row.depth * 4)}${row.name}`,
+      "Opening Dr": row.openingDr,
+      "Opening Cr": row.openingCr,
+      "Period Dr": row.periodDr,
+      "Period Cr": row.periodCr,
+      "Closing Dr": row.closingDr,
+      "Closing Cr": row.closingCr,
+    }));
+
+    rows.push({
+      "Account Name": "GRAND TOTAL",
+      "Opening Dr": grandTotals.openingDr,
+      "Opening Cr": grandTotals.openingCr,
+      "Period Dr": grandTotals.periodDr,
+      "Period Cr": grandTotals.periodCr,
+      "Closing Dr": grandTotals.closingDr,
+      "Closing Cr": grandTotals.closingCr,
+    });
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+
+    // Best-effort indentation for compatible spreadsheet engines.
+    flatRows.forEach((row, index) => {
+      const cellAddress = XLSX.utils.encode_cell({ r: index + 1, c: 0 });
+      if (ws[cellAddress]) {
+        ws[cellAddress].s = {
+          alignment: { indent: row.depth },
+        } as any;
+      }
+    });
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Trial Balance");
+    XLSX.writeFile(wb, "Trial_Balance.xlsx");
+  };
+
+  return (
+    <ColumnReportShell
+      title="Trial Balance"
+      subtitle={`${mode === "condensed" ? "Condensed" : "Detailed"} mode`}
+      fromBS={fromBS}
+      toBS={toBS}
+      onFromBSChange={setFromBS}
+      onToBSChange={setToBS}
+      columns={allColumns}
+      onVisibleColumnsChange={setVisibleColumns}
+      totalRows={flatRows.length}
+      page={page}
+      pageSize={pageSize}
+      onPageChange={setPage}
+      onPageSizeChange={setPageSize}
+      rowHeight={rowHeight}
+      onRowHeightChange={setRowHeight}
+      zoom={zoom}
+      onZoomChange={setZoom}
+      onPrint={() => window.print()}
+      onExport={exportTrialBalance}
+      onRefresh={initializeApp}
     >
-      {!tbTotals.isBalanced && drillLevel === "group" && (
-        <div className="mb-3 mx-4 mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">
-          Trial Balance is out of balance by Rs. {formatNumber(Math.abs(tbTotals.difference))}.
+      <div className="no-print bg-white border-b border-gray-200 px-4 py-2 flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("condensed")}
+          className={`h-8 px-3 text-[12px] rounded-md border ${
+            mode === "condensed"
+              ? "bg-[#1557b0] text-white border-[#1557b0]"
+              : "bg-white border-gray-300"
+          }`}
+        >
+          Condensed
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMode("detailed")}
+          className={`h-8 px-3 text-[12px] rounded-md border ${
+            mode === "detailed"
+              ? "bg-[#1557b0] text-white border-[#1557b0]"
+              : "bg-white border-gray-300"
+          }`}
+        >
+          Detailed
+        </button>
+      </div>
+
+      {difference > 0.01 && (
+        <div className="bg-red-50 text-red-700 border border-red-200 px-4 py-2 text-[12px] font-semibold">
+          WARNING: Trial Balance does not tally by Rs. {money(difference)}
         </div>
       )}
-      {drillLevel === "group" && (
-        <TFormatReport
-          leftTitle="Assets"
-          rightTitle="Liabilities & Equity"
-          leftRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
-          rightRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
-        />
-      )}
 
-      {drillLevel === "subgroup" && activeGroupId && (
-        <ReportGrid
-          columns={[
-            { key: "label", label: "Subgroup" },
-            { key: "amount", label: "Closing", align: "right" },
-          ]}
-          data={(tree.nodesById.get(activeGroupId)?.children || [])
-            .filter((n) => n.isGroup)
-            .map((sub) => {
-              const totals = groupTotals.get(sub.id);
-              return {
-                id: sub.id,
-                label: sub.name,
-                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-                onClick: () => {
-                  setDrillLevel("ledger");
-                  setActiveSubgroupId(sub.id);
-                },
-              };
-            })}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
+      <table className="w-full border-collapse">
+        <thead className="sticky top-0 z-10 bg-[#f5f6fa] border-b border-gray-200">
+          <tr>
+            {show("account") && <Th>Account Name</Th>}
+            {show("openingDr") && <Th right>Opening Dr</Th>}
+            {show("openingCr") && <Th right>Opening Cr</Th>}
+            {show("periodDr") && <Th right>Period Dr</Th>}
+            {show("periodCr") && <Th right>Period Cr</Th>}
+            {show("closingDr") && <Th right>Closing Dr</Th>}
+            {show("closingCr") && <Th right>Closing Cr</Th>}
+          </tr>
+        </thead>
 
-      {drillLevel === "ledger" && activeSubgroupId && (
-        <ReportGrid
-          columns={[
-            { key: "label", label: "Ledger" },
-            { key: "amount", label: "Closing", align: "right" },
-          ]}
-          data={(tree.nodesById.get(activeSubgroupId)?.children || [])
-            .filter((n) => !n.isGroup)
-            .map((ledger) => {
-              const totals = ledgerTotals.get(ledger.id);
-              return {
-                id: ledger.id,
-                label: ledger.name,
-                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-                onClick: () => {
-                  setActiveLedgerId(ledger.id);
-                  setDrillLevel("month");
-                },
-              };
-            })}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
+        <tbody>
+          {flatRows.map((row) => (
+            <tr
+              key={row.id}
+              onClick={() => {
+                if (row.isGroup) {
+                  setExpanded((prev) => ({
+                    ...prev,
+                    [row.id]: !prev[row.id],
+                  }));
+                }
+              }}
+              className={[
+                "border-b border-gray-100 hover:bg-yellow-50",
+                row.isGroup ? "font-bold bg-gray-50 cursor-pointer" : "font-normal",
+              ].join(" ")}
+            >
+              {show("account") && (
+                <Td>
+                  <div
+                    className="flex items-center gap-1"
+                    style={{ paddingLeft: `${row.depth * 16}px` }}
+                  >
+                    {row.isGroup && mode === "detailed" && (
+                      <span className="inline-flex w-5 h-5 items-center justify-center border border-gray-300 bg-white rounded text-[11px]">
+                        {expanded[row.id] ? "−" : "+"}
+                      </span>
+                    )}
+                    <span>{row.name}</span>
+                  </div>
+                </Td>
+              )}
 
-      {drillLevel === "month" && activeLedgerId && (
-        <ReportGrid
-          columns={[
-            { key: "monthKey", label: "Month" },
-            { key: "debit", label: "Debit", align: "right" },
-            { key: "credit", label: "Credit", align: "right" },
-          ]}
-          data={ledgerMonthRows}
-          onRowClick={(row) => row.onClick?.()}
-        />
-      )}
+              {show("openingDr") && <Td right className="font-mono">{row.openingDr ? money(row.openingDr) : ""}</Td>}
+              {show("openingCr") && <Td right className="font-mono italic">{row.openingCr ? money(row.openingCr) : ""}</Td>}
+              {show("periodDr") && <Td right className="font-mono">{row.periodDr ? money(row.periodDr) : ""}</Td>}
+              {show("periodCr") && <Td right className="font-mono italic">{row.periodCr ? money(row.periodCr) : ""}</Td>}
+              {show("closingDr") && <Td right className="font-mono">{row.closingDr ? money(row.closingDr) : ""}</Td>}
+              {show("closingCr") && <Td right className="font-mono italic">{row.closingCr ? money(row.closingCr) : ""}</Td>}
+            </tr>
+          ))}
+        </tbody>
 
-      {drillLevel === "entries" && activeLedgerId && (
-        <ReportGrid
-          columns={[
-            { key: "date", label: "Date" },
-            { key: "voucherNo", label: "Voucher No" },
-            { key: "narration", label: "Narration" },
-            { key: "debit", label: "Debit", align: "right" },
-            { key: "credit", label: "Credit", align: "right" },
-          ]}
-          data={entryRows}
-          onRowClick={openVoucher}
-        />
-      )}
-
-      <ReportOptionsModal
-        open={optionsOpen}
-        title="Trial Balance"
-        onClose={() => setOptionsOpen(false)}
-        onApply={() => {
-          setOptionsOpen(false);
-        }}
-      >
-        <div className="report-option-row">
-          <span>Start Date</span>
-          <input type="date" value={tbOptions.startDate} onChange={(e) => setTbOptions({ ...tbOptions, startDate: e.target.value })} />
-        </div>
-        <div className="report-option-row">
-          <span>End Date</span>
-          <input type="date" value={tbOptions.endDate} onChange={(e) => setTbOptions({ ...tbOptions, endDate: e.target.value })} />
-        </div>
-        <div className="report-option-row">
-          <span>Show Zero Balance Groups ?</span>
-          <select value={tbOptions.showZero ? "Y" : "N"} onChange={(e) => setTbOptions({ ...tbOptions, showZero: e.target.value === "Y" })}>
-            <option>Y</option>
-            <option>N</option>
-          </select>
-        </div>
-        <div className="report-option-row">
-          <span>Show All Groups Alphabetically ?</span>
-          <select value={tbOptions.showAlphabetical ? "Y" : "N"} onChange={(e) => setTbOptions({ ...tbOptions, showAlphabetical: e.target.value === "Y" })}>
-            <option>Y</option>
-            <option>N</option>
-          </select>
-        </div>
-      </ReportOptionsModal>
-    </ReportShell>
+        <tfoot>
+          <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
+            {show("account") && <Td>GRAND TOTAL</Td>}
+            {show("openingDr") && <Td right className="font-mono">{money(grandTotals.openingDr)}</Td>}
+            {show("openingCr") && <Td right className="font-mono">{money(grandTotals.openingCr)}</Td>}
+            {show("periodDr") && <Td right className="font-mono">{money(grandTotals.periodDr)}</Td>}
+            {show("periodCr") && <Td right className="font-mono">{money(grandTotals.periodCr)}</Td>}
+            {show("closingDr") && <Td right className="font-mono">{money(grandTotals.closingDr)}</Td>}
+            {show("closingCr") && <Td right className="font-mono">{money(grandTotals.closingCr)}</Td>}
+          </tr>
+        </tfoot>
+      </table>
+    </ColumnReportShell>
   );
 };
+
+const Th: React.FC<{ children: React.ReactNode; right?: boolean }> = ({ children, right }) => (
+  <th className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 ${right ? "text-right" : "text-left"}`}>
+    {children}
+  </th>
+);
+
+const Td: React.FC<{ children: React.ReactNode; right?: boolean; className?: string }> = ({
+  children,
+  right,
+  className,
+}) => (
+  <td className={`px-3 py-1.5 text-[12px] border-r border-gray-100 ${right ? "text-right" : "text-left"} ${className || ""}`}>
+    {children}
+  </td>
+);
 
 export default TrialBalance;

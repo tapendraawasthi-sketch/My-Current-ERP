@@ -3,6 +3,7 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateId } from "../lib/db";
+import { NEPAL_TDS_RATES_2081_82 } from "../lib/tdsNepal";
 
 const TDSNatureOfPaymentMaster: React.FC = () => {
   const { tdsNatureOfPayment, addTDSNatureOfPayment, updateTDSNatureOfPayment, deleteTDSNatureOfPayment } = useStore();
@@ -25,13 +26,14 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
   useEffect(() => {
     if ((tdsNatureOfPayment || []).length === 0 && !seedDone) {
       setSeedDone(true);
-      const seedData = [
-        { name: "Contract/Consultancy/Service Fee", sectionCode: "88", tdsRate: 1.5, panNotAvailableRate: 3, thresholdAmount: 0, isActive: true },
-        { name: "House/Land Rent", sectionCode: "88", tdsRate: 10, panNotAvailableRate: 15, thresholdAmount: 400000, isActive: true },
-        { name: "Bank/Financial Institution Interest", sectionCode: "88K", tdsRate: 5, panNotAvailableRate: 5, thresholdAmount: 0, isActive: true },
-        { name: "Commission/Brokerage", sectionCode: "88", tdsRate: 1.5, panNotAvailableRate: 3, thresholdAmount: 0, isActive: true },
-        { name: "Dividend", sectionCode: "88", tdsRate: 5, panNotAvailableRate: 5, thresholdAmount: 0, isActive: true },
-      ];
+      const seedData = NEPAL_TDS_RATES_2081_82.map((rate) => ({
+        name: rate.description,
+        sectionCode: rate.sectionCode,
+        tdsRate: rate.rate || 0,
+        panNotAvailableRate: (rate.rate || 0) * 1.5, // approximate placeholder
+        thresholdAmount: rate.thresholdAmount,
+        isActive: true,
+      }));
 
       seedData.forEach(async (item) => {
         await addTDSNatureOfPayment(item);

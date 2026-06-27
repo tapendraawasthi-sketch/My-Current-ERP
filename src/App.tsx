@@ -58,6 +58,7 @@ const StatisticsReport = lazy(() => import('./pages/StatisticsReport'));
 const ExceptionReports = lazy(() => import('./pages/ExceptionReports'));
 const AuditLogs = lazy(() => import('./pages/AuditLogs'));
 const Troubleshooting = lazy(() => import('./pages/Troubleshooting'));
+const CbmsDashboard = lazy(() => import('./pages/CbmsDashboard'));
 
 import Layout from "./components/Layout";
 import { F12Provider } from './hooks/useF12Config';
@@ -173,6 +174,7 @@ const App = () => {
       case 'print-configuration': return <PrintConfiguration />;
       case 'f11-features': return <F11CompanyFeatures />;
       case 'data-export-import': return <DataExportImport />;
+      case 'cbms-dashboard': return <CbmsDashboard />;
       default:
         return (
           <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6 h-full">

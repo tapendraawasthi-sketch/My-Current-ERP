@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Settings, Info, AlertTriangle, Save, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useStore } from '../../store/useStore';
 
 interface F11State {
   // ACCOUNTING
@@ -63,6 +64,7 @@ const DEFAULT_F11: F11State = {
 };
 
 const F11CompanyFeatures = () => {
+  const { companySettings, updateCompanySettings } = useStore() as any;
   const [features, setFeatures] = useState<F11State>(() => {
     try {
       const s = localStorage.getItem('f11_features');
@@ -138,6 +140,7 @@ const F11CompanyFeatures = () => {
     inventory: { icon: "📦", label: "Inventory" },
     orders: { icon: "📋", label: "Order Processing" },
     tax: { icon: "🏛", label: "GST & Taxation" },
+    cbms: { icon: "🇳🇵", label: "Nepal e-Invoicing" },
     payroll: { icon: "👥", label: "Payroll" },
     advanced: { icon: "⚙", label: "Advanced" }
   };
@@ -271,6 +274,88 @@ const F11CompanyFeatures = () => {
                 {renderFeatureRow('enableTDS', 'Enable TDS (Tax Deducted at Source)', 'Activates TDS deduction in payment/expense vouchers and TDS return reports.', 'TDS Nature of Payment master; TDS computation in vouchers; Form 26Q/27Q visible')}
                 {renderFeatureRow('enableTCS', 'Enable TCS (Tax Collected at Source)', 'Activates TCS collection in sales vouchers.', 'TCS field in Sales Invoice; Form 27EQ report active')}
                 {renderFeatureRow('enableVAT', 'Enable VAT', 'For petroleum products or states with pre-GST VAT regime.', 'VAT rate field in items; VAT return report visible')}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'cbms' && (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
+                Nepal e-Invoicing / CBMS
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-md p-4">
+                <div className="mb-3">
+                  <p className="text-[11px] text-gray-500 mt-0.5">
+                    Configure IRD Nepal CBMS invoice submission.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className="flex items-center justify-between border border-gray-200 rounded-md px-3 py-2">
+                    <span className="text-[12px] font-medium text-gray-700">
+                      Enable CBMS Integration
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={!!companySettings?.cbmsEnabled}
+                      onChange={(e) =>
+                        updateCompanySettings?.({ ...companySettings, cbmsEnabled: e.target.checked })
+                      }
+                    />
+                  </label>
+
+                  <div>
+                    <label className="text-[11px] font-medium text-gray-600">
+                      CBMS API URL
+                    </label>
+                    <input
+                      type="text"
+                      value={companySettings?.cbmsApiUrl || "https://cbms.ird.gov.np/api"}
+                      onChange={(e) =>
+                        updateCompanySettings?.({ ...companySettings, cbmsApiUrl: e.target.value })
+                      }
+                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-medium text-gray-600">
+                      CBMS API Key
+                    </label>
+                    <input
+                      type="password"
+                      value={companySettings?.cbmsApiKey || ""}
+                      onChange={(e) =>
+                        updateCompanySettings?.({ ...companySettings, cbmsApiKey: e.target.value })
+                      }
+                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                    />
+                    <p className="text-[10px] text-amber-600 mt-1">
+                      For production, prefer storing this key on your backend, not in browser storage.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-medium text-gray-600">
+                      Simplified Invoice Threshold
+                    </label>
+                    <input
+                      type="number"
+                      value={companySettings?.simplifiedInvoiceThreshold ?? 10000}
+                      onChange={(e) =>
+                        updateCompanySettings?.({
+                          ...companySettings,
+                          simplifiedInvoiceThreshold: Number(e.target.value || 10000),
+                        })
+                      }
+                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full text-right"
+                    />
+                    <p className="text-[10px] text-gray-500 mt-1">
+                      Default: Rs. 10,000 for unregistered retail buyers.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}

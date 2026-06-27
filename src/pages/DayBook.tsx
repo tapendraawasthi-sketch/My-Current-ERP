@@ -1,357 +1,348 @@
-// @ts-nocheck
 import React, { useMemo, useState } from "react";
+import * as XLSX from "xlsx";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import { VoucherType, VoucherStatus } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
-import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
-import { useScreenF12 } from "../hooks/useF12Config";
+import BsDateCell from "../components/reporting/BsDateCell";
+import ColumnReportShell from "../components/reporting/ColumnReportShell";
+
+interface VoucherLine {
+  accountId: string;
+  accountName?: string;
+  debit?: number;
+  credit?: number;
+}
+
+interface Voucher {
+  id: string;
+  voucherNo: string;
+  date: string;
+  dateNepali?: string;
+  type: string;
+  narration?: string;
+  partyName?: string;
+  status?: string;
+  lines: VoucherLine[];
+}
+
+interface Account {
+  id: string;
+  name: string;
+}
+
+function money(value: number): string {
+  return Number(value || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function bsToNum(bs: string): number {
+  const [y, m, d] = String(bs || "").split("-").map(Number);
+  return y * 10000 + m * 100 + d;
+}
+
+function voucherTint(type: string): string {
+  const t = String(type || "").toLowerCase();
+
+  if (t.includes("sales") || t.includes("receipt")) return "bg-green-50/60";
+  if (t.includes("purchase")) return "bg-blue-50/60";
+  if (t.includes("payment")) return "bg-red-50/60";
+
+  return "bg-white";
+}
+
+function exportDayBook(rows: Voucher[], accounts: Account[]) {
+  const accountMap = new Map(accounts.map((a) => [a.id, a.name]));
+
+  const exportRows: any[] = [];
+
+  rows.forEach((voucher) => {
+    voucher.lines.forEach((line, index) => {
+      exportRows.push({
+        "BS Date": index === 0 ? voucher.dateNepali || "" : "",
+        "AD Date": index === 0 ? voucher.date : "",
+        "Voucher No.": index === 0 ? voucher.voucherNo : "",
+        "Voucher Type": index === 0 ? voucher.type : "",
+        Particulars: line.accountName || accountMap.get(line.accountId) || line.accountId,
+        Narration: index === 0 ? voucher.narration || "" : "",
+        "Dr. Amount": Number(line.debit || 0),
+        "Cr. Amount": Number(line.credit || 0),
+      });
+    });
+  });
+
+  const ws = XLSX.utils.json_to_sheet(exportRows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Day Book");
+  XLSX.writeFile(wb, "Day_Book.xlsx");
+}
+
+const allColumns = [
+  { key: "date", label: "Date" },
+  { key: "voucherNo", label: "Voucher No." },
+  { key: "type", label: "Voucher Type" },
+  { key: "particulars", label: "Particulars" },
+  { key: "narration", label: "Narration" },
+  { key: "debit", label: "Dr. Amount" },
+  { key: "credit", label: "Cr. Amount" },
+];
 
 const DayBook: React.FC = () => {
-  // Register this screen with F12 system
-  const getConfig = useScreenF12("day-book");
-  
-  const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
-  const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
-  const [voucherTypeFilter, setVoucherTypeFilter] = useState("all");
-  const [includeCancelled, setIncludeCancelled] = useState(false);
-  
-  // Pending states for options modal
-  const [pendingStart, setPendingStart] = useState(startDate);
-  const [pendingEnd, setPendingEnd] = useState(endDate);
-  const [pendingVoucherTypeFilter, setPendingVoucherTypeFilter] = useState(voucherTypeFilter);
-  const [pendingIncludeCancelled, setPendingIncludeCancelled] = useState(includeCancelled);
+  const { vouchers, accounts, setCurrentPage, setEditingVoucherId, initializeApp } =
+    useStore() as any;
 
-  const applyOptions = () => {
-    setStartDate(pendingStart);
-    setEndDate(pendingEnd);
-    setVoucherTypeFilter(pendingVoucherTypeFilter);
-    setIncludeCancelled(pendingIncludeCancelled);
-    setOptionsOpen(false);
+  const [fromBS, setFromBS] = useState("2081-04-01");
+  const [toBS, setToBS] = useState("2082-03-31");
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+  const [visibleColumns, setVisibleColumns] = useState(allColumns.map((c) => c.key));
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number | "all">(100);
+  const [rowHeight, setRowHeight] = useState<"compact" | "normal" | "comfortable">("compact");
+  const [zoom, setZoom] = useState<80 | 100 | 120>(100);
+
+  const accountMap = useMemo(
+    () => new Map((accounts || []).map((a: Account) => [a.id, a.name])),
+    [accounts],
+  );
+
+  const voucherTypes = useMemo(() => {
+    return Array.from(new Set((vouchers || []).map((v: Voucher) => v.type))).filter(Boolean);
+  }, [vouchers]);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+
+    return ((vouchers || []) as Voucher[])
+      .filter((v) => v.status !== "cancelled")
+      .filter((v) => {
+        const bs = v.dateNepali || "";
+        if (fromBS && bsToNum(bs) < bsToNum(fromBS)) return false;
+        if (toBS && bsToNum(bs) > bsToNum(toBS)) return false;
+        return true;
+      })
+      .filter((v) => {
+        if (selectedTypes.length === 0) return true;
+        return selectedTypes.includes(v.type);
+      })
+      .filter((v) => {
+        if (!q) return true;
+
+        const lineAccountNames = v.lines
+          .map((line) => line.accountName || accountMap.get(line.accountId) || "")
+          .join(" ")
+          .toLowerCase();
+
+        return (
+          String(v.voucherNo || "").toLowerCase().includes(q) ||
+          String(v.narration || "").toLowerCase().includes(q) ||
+          String(v.partyName || "").toLowerCase().includes(q) ||
+          lineAccountNames.includes(q)
+        );
+      })
+      .sort((a, b) => {
+        const dateDiff = bsToNum(a.dateNepali || "") - bsToNum(b.dateNepali || "");
+        if (dateDiff !== 0) return dateDiff;
+        return String(a.voucherNo).localeCompare(String(b.voucherNo));
+      });
+  }, [vouchers, fromBS, toBS, selectedTypes, search, accountMap]);
+
+  const totals = useMemo(() => {
+    let debit = 0;
+    let credit = 0;
+
+    filtered.forEach((v) => {
+      v.lines.forEach((l) => {
+        debit += Number(l.debit || 0);
+        credit += Number(l.credit || 0);
+      });
+    });
+
+    return {
+      debit,
+      credit,
+      count: filtered.length,
+    };
+  }, [filtered]);
+
+  const paged = useMemo(() => {
+    if (pageSize === "all") return filtered;
+    const start = (page - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, page, pageSize]);
+
+  const openVoucher = (voucher: Voucher) => {
+    setEditingVoucherId?.(voucher.id);
+    setCurrentPage?.("voucher-entry");
   };
 
-  // Compute day book data
-  const groupedData = useMemo(() => {
-    if (!vouchers) return { days: [], grandTotalDebit: 0, grandTotalCredit: 0 };
-    
-    // Filter vouchers by date range and type
-    let filteredVouchers = vouchers.filter(v => 
-      v.date >= startDate && 
-      v.date <= endDate && 
-      (includeCancelled || v.status !== "cancelled")
-    );
-    
-    if (voucherTypeFilter !== "all") {
-      filteredVouchers = filteredVouchers.filter(v => {
-        if (voucherTypeFilter === "sales") return v.type.includes("sales");
-        if (voucherTypeFilter === "purchase") return v.type.includes("purchase");
-        if (voucherTypeFilter === "receipt") return v.type === "receipt";
-        if (voucherTypeFilter === "payment") return v.type === "payment";
-        if (voucherTypeFilter === "journal") return v.type === "journal";
-        if (voucherTypeFilter === "contra") return v.type === "contra";
-        if (voucherTypeFilter === "credit-note") return v.type === "credit-note";
-        if (voucherTypeFilter === "debit-note") return v.type === "debit-note";
-        if (voucherTypeFilter === "stock-journal") return v.type === "stock-journal";
-        return v.type === voucherTypeFilter;
-      });
-    }
-    
-    // Sort by date then voucher number
-    filteredVouchers.sort((a, b) => {
-      if (a.date !== b.date) {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      }
-      return (a.voucherNo || "").localeCompare(b.voucherNo || "");
-    });
-    
-    // Group by date
-    const dateGroups: Record<string, any[]> = {};
-    filteredVouchers.forEach(voucher => {
-      if (!dateGroups[voucher.date]) {
-        dateGroups[voucher.date] = [];
-      }
-      dateGroups[voucher.date].push(voucher);
-    });
-    
-    // Process each voucher to extract details
-    const processedDays = Object.keys(dateGroups).map(date => {
-      const dayVouchers = dateGroups[date];
-      
-      // Process each voucher in the day
-      const processedVouchers = dayVouchers.map(voucher => {
-        // Get the first non-cash/bank account name from lines
-        let partyOrLedger = "Miscellaneous";
-        const nonCashBankLine = voucher.lines.find(line => {
-          const acc = accounts.find(a => a.id === line.accountId);
-          return acc && 
-                 !acc.name.toLowerCase().includes("cash") && 
-                 !acc.name.toLowerCase().includes("bank");
-        });
-        
-        if (nonCashBankLine) {
-          const acc = accounts.find(a => a.id === nonCashBankLine.accountId);
-          partyOrLedger = acc?.name || "Unknown";
-        } else if (voucher.partyName) {
-          partyOrLedger = voucher.partyName;
-        }
-        
-        // Format voucher type
-        let voucherTypeLabel = voucher.type;
-        switch(voucher.type) {
-          case "sales-invoice": voucherTypeLabel = "Sales Invoice"; break;
-          case "purchase-invoice": voucherTypeLabel = "Purchase Invoice"; break;
-          case "receipt": voucherTypeLabel = "Receipt"; break;
-          case "payment": voucherTypeLabel = "Payment"; break;
-          case "journal": voucherTypeLabel = "Journal"; break;
-          case "contra": voucherTypeLabel = "Contra"; break;
-          case "credit-note": voucherTypeLabel = "Credit Note"; break;
-          case "debit-note": voucherTypeLabel = "Debit Note"; break;
-          case "stock-journal": voucherTypeLabel = "Stock Journal"; break;
-          case "sales-return": voucherTypeLabel = "Sales Return"; break;
-          case "purchase-return": voucherTypeLabel = "Purchase Return"; break;
-          default: 
-            voucherTypeLabel = voucher.type.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        }
-        
-        return {
-          id: voucher.id,
-          date: voucher.date,
-          voucherType: voucherTypeLabel,
-          voucherNo: voucher.voucherNo || "",
-          partyOrLedger,
-          narration: voucher.narration || "",
-          debit: voucher.totalDebit || 0,
-          credit: voucher.totalCredit || 0,
-          status: voucher.status
-        };
-      });
-      
-      // Calculate day totals
-      const dayTotalDebit = processedVouchers.reduce((sum, v) => sum + v.debit, 0);
-      const dayTotalCredit = processedVouchers.reduce((sum, v) => sum + v.credit, 0);
-      
-      return {
-        date,
-        vouchers: processedVouchers,
-        totalDebit: dayTotalDebit,
-        totalCredit: dayTotalCredit
-      };
-    });
-    
-    // Calculate grand totals
-    const grandTotalDebit = processedDays.reduce((sum, day) => sum + day.totalDebit, 0);
-    const grandTotalCredit = processedDays.reduce((sum, day) => sum + day.totalCredit, 0);
-    
-    return {
-      days: processedDays,
-      grandTotalDebit,
-      grandTotalCredit
-    };
-  }, [vouchers, accounts, startDate, endDate, voucherTypeFilter, includeCancelled]);
-
-  const voucherTypeOptions = [
-    { value: "all", label: "All Types" },
-    { value: "sales", label: "Sales" },
-    { value: "purchase", label: "Purchase" },
-    { value: "receipt", label: "Receipt" },
-    { value: "payment", label: "Payment" },
-    { value: "journal", label: "Journal" },
-    { value: "contra", label: "Contra" },
-    { value: "credit-note", label: "Credit Note" },
-    { value: "debit-note", label: "Debit Note" },
-    { value: "stock-journal", label: "Stock Journal" }
-  ];
+  const show = (key: string) => visibleColumns.includes(key);
 
   return (
-    <ReportShell
+    <ColumnReportShell
       title="Day Book"
-      subtitle="All vouchers by date"
-      companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`${startDate} to ${endDate}`}
+      subtitle="Tally Prime-style voucher register"
+      fromBS={fromBS}
+      toBS={toBS}
+      onFromBSChange={setFromBS}
+      onToBSChange={setToBS}
+      columns={allColumns}
+      onVisibleColumnsChange={setVisibleColumns}
+      totalRows={filtered.length}
+      page={page}
+      pageSize={pageSize}
+      onPageChange={setPage}
+      onPageSizeChange={setPageSize}
+      rowHeight={rowHeight}
+      onRowHeightChange={setRowHeight}
+      zoom={zoom}
+      onZoomChange={setZoom}
       onPrint={() => window.print()}
-      onOptions={() => {
-        setPendingStart(startDate);
-        setPendingEnd(endDate);
-        setPendingVoucherTypeFilter(voucherTypeFilter);
-        setPendingIncludeCancelled(includeCancelled);
-        setOptionsOpen(true);
-      }}
-      toolbarLeft={
-        <>
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            From: 
-            <input 
-              type="date" 
-              value={startDate} 
-              onChange={e => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            To: 
-            <input 
-              type="date" 
-              value={endDate} 
-              onChange={e => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            Type: 
-            <select 
-              value={voucherTypeFilter} 
-              onChange={e => setVoucherTypeFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              {voucherTypeOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </label>
-          
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={includeCancelled}
-              onChange={e => setIncludeCancelled(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
-            />
-            Include Cancelled
-          </label>
-        </>
-      }
+      onExport={() => exportDayBook(filtered, accounts || [])}
+      onRefresh={initializeApp}
     >
-      <div className="overflow-x-auto w-full border border-gray-200 rounded-md bg-white">
-        <table className="w-full text-left whitespace-nowrap">
-          <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Vch Type</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Vch No</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party / Ledger</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Debit</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Credit</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {groupedData.days.length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-500 text-[12px]">
-                  No records found for the selected period.
-                </td>
-              </tr>
-            )}
-            
-            {groupedData.days.map(day => (
-              <React.Fragment key={day.date}>
-                {/* Vouchers for this day */}
-                {day.vouchers.map(voucher => (
-                  <tr 
-                    key={voucher.id} 
-                    className={`hover:bg-gray-50 transition-colors ${voucher.status === "cancelled" ? "text-red-500 line-through" : ""}`}
-                  >
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{voucher.date}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{voucher.voucherType}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{voucher.voucherNo}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{voucher.partyOrLedger}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{voucher.narration}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: voucher.status !== "cancelled" && voucher.debit > 0 ? "#1557b0" : "inherit" }}>
-                      {voucher.debit > 0 ? formatNumber(voucher.debit) : ""}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: voucher.status !== "cancelled" && voucher.credit > 0 ? "#dc2626" : "inherit" }}>
-                      {voucher.credit > 0 ? formatNumber(voucher.credit) : ""}
-                    </td>
-                  </tr>
-                ))}
-
-                {/* Day subtotal row */}
-                <tr className="bg-[#f8fafc] border-t border-b border-gray-200">
-                  <td colSpan={4} className="px-3 py-2 text-[11px] font-medium text-gray-600 text-right">Total for {day.date}</td>
-                  <td className="px-3 py-2 text-[12px] text-right font-mono font-medium text-gray-700">{formatNumber(day.totalDebit)}</td>
-                  <td className="px-3 py-2 text-[12px] text-right font-mono font-medium text-gray-700">{formatNumber(day.totalCredit)}</td>
-                </tr>
-              </React.Fragment>
+      <div className="no-print bg-white border-b border-gray-200 px-4 py-2 flex flex-wrap gap-3 items-center">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold text-gray-500">Voucher Type</span>
+          <select
+            multiple
+            value={selectedTypes}
+            onChange={(e) =>
+              setSelectedTypes(Array.from(e.target.selectedOptions).map((o) => o.value))
+            }
+            className="h-16 px-2 text-[12px] border border-gray-300 rounded-md bg-white min-w-[180px]"
+          >
+            {voucherTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
             ))}
-            
-            {/* Grand total row */}
-            {groupedData.days.length > 0 && (
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">GRAND TOTAL</td>
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">{formatNumber(groupedData.grandTotalDebit)}</td>
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">{formatNumber(groupedData.grandTotalCredit)}</td>
-              </tr>
-            )}
-            
-            {/* Unbalanced warning row */}
-            {groupedData.grandTotalDebit !== groupedData.grandTotalCredit && (
-              <tr className="bg-red-50 border border-red-200">
-                <td colSpan={7} className="px-3 py-3 text-[12px] text-center text-red-700 font-bold">
-                  ⚠️ WARNING: Debit and Credit totals do not match! System is unbalanced.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      
-      <ReportOptionsModal
-        open={optionsOpen}
-        title="Day Book Options"
-        onClose={() => setOptionsOpen(false)}
-        onApply={applyOptions}
-      >
-        <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date 
-            <input 
-              type="date" 
-              value={pendingStart} 
-              onChange={e => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date 
-            <input 
-              type="date" 
-              value={pendingEnd} 
-              onChange={e => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
-            />
-          </label>
-          
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Voucher Type 
-            <select 
-              value={pendingVoucherTypeFilter} 
-              onChange={e => setPendingVoucherTypeFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              {voucherTypeOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </label>
-          
-          <label className="flex items-center gap-2 text-[11px] font-medium text-gray-600 cursor-pointer mt-2">
-            <input 
-              type="checkbox" 
-              checked={pendingIncludeCancelled}
-              onChange={e => setPendingIncludeCancelled(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
-            />
-            Include Cancelled Vouchers
-          </label>
+          </select>
         </div>
-      </ReportOptionsModal>
-    </ReportShell>
+
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search narration, voucher no., party, account..."
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white min-w-[320px]"
+        />
+      </div>
+
+      <div className="bg-[#eef2ff] border-b border-[#c7d2fe] px-4 py-2 flex gap-8 text-[12px] font-semibold sticky top-0 z-20">
+        <span>Total Debit: Rs. {money(totals.debit)}</span>
+        <span>Total Credit: Rs. {money(totals.credit)}</span>
+        <span>Voucher Count: {totals.count}</span>
+      </div>
+
+      <table className="w-full border-collapse">
+        <thead className="sticky top-[36px] z-10 bg-[#f5f6fa] border-b border-gray-200">
+          <tr>
+            {show("date") && <Th>Date</Th>}
+            {show("voucherNo") && <Th>Voucher No.</Th>}
+            {show("type") && <Th>Voucher Type</Th>}
+            {show("particulars") && <Th>Particulars</Th>}
+            {show("narration") && <Th>Narration</Th>}
+            {show("debit") && <Th right>Dr. Amount</Th>}
+            {show("credit") && <Th right>Cr. Amount</Th>}
+          </tr>
+        </thead>
+
+        <tbody>
+          {paged.map((voucher) => (
+            <React.Fragment key={voucher.id}>
+              {voucher.lines.map((line, index) => {
+                const isFirst = index === 0;
+                const accountName =
+                  line.accountName || accountMap.get(line.accountId) || line.accountId;
+
+                return (
+                  <tr
+                    key={`${voucher.id}-${index}`}
+                    onClick={() => openVoucher(voucher)}
+                    className={[
+                      "cursor-pointer hover:bg-yellow-50 border-b border-gray-100",
+                      isFirst ? voucherTint(voucher.type) : "bg-white",
+                    ].join(" ")}
+                  >
+                    {show("date") && (
+                      <Td>
+                        {isFirst ? (
+                          <BsDateCell adDate={voucher.date} bsDate={voucher.dateNepali} />
+                        ) : null}
+                      </Td>
+                    )}
+
+                    {show("voucherNo") && (
+                      <Td className="font-mono font-semibold">
+                        {isFirst ? voucher.voucherNo : ""}
+                      </Td>
+                    )}
+
+                    {show("type") && (
+                      <Td>{isFirst ? voucher.type : ""}</Td>
+                    )}
+
+                    {show("particulars") && (
+                      <Td>
+                        <div className={isFirst ? "font-semibold" : "pl-6 text-gray-700"}>
+                          {isFirst ? voucher.partyName || accountName : accountName}
+                        </div>
+                      </Td>
+                    )}
+
+                    {show("narration") && (
+                      <Td className="text-gray-600">
+                        {isFirst ? voucher.narration || "" : ""}
+                      </Td>
+                    )}
+
+                    {show("debit") && (
+                      <Td right className="font-mono">
+                        {line.debit ? money(line.debit) : ""}
+                      </Td>
+                    )}
+
+                    {show("credit") && (
+                      <Td right className="font-mono">
+                        {line.credit ? money(line.credit) : ""}
+                      </Td>
+                    )}
+                  </tr>
+                );
+              })}
+
+              <tr>
+                <td colSpan={7} className="h-1 bg-gray-100" />
+              </tr>
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </ColumnReportShell>
   );
 };
+
+const Th: React.FC<{ children: React.ReactNode; right?: boolean }> = ({ children, right }) => (
+  <th
+    className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 ${
+      right ? "text-right" : "text-left"
+    }`}
+  >
+    {children}
+  </th>
+);
+
+const Td: React.FC<{
+  children: React.ReactNode;
+  right?: boolean;
+  className?: string;
+}> = ({ children, right, className }) => (
+  <td
+    className={`px-3 py-1.5 text-[12px] border-r border-gray-100 align-top ${
+      right ? "text-right" : "text-left"
+    } ${className || ""}`}
+  >
+    {children}
+  </td>
+);
 
 export default DayBook;

@@ -8,6 +8,7 @@ import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
+import { calculateNepalTds, getApplicableNepalTdsRates } from "../lib/tdsNepal";
 import toast from "react-hot-toast";
 import { useScreenF12 } from "../hooks/useF12Config";
 
@@ -38,6 +39,7 @@ const PurchaseVoucher: React.FC = () => {
   const [supplierInvoiceDate, setSupplierInvoiceDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [paymentType, setPaymentType] = useState<"credit" | "cash" | "bank">("credit");
   const [cashBankLedgerId, setCashBankLedgerId] = useState<string>("");
+  const [tdsSection, setTdsSection] = useState<string>("");
 
   useEffect(() => {
     const generateNumber = async () => {
@@ -100,6 +102,53 @@ const PurchaseVoucher: React.FC = () => {
   const grandTotal = useMemo(() => {
     return subTotal - totalDiscount + totalTax + roundOff;
   }, [subTotal, totalDiscount, totalTax, roundOff]);
+
+  const selectedParty = useMemo(() => {
+    return parties.find((p) => p.id === partyId);
+  }, [parties, partyId]);
+
+  const tdsOptions = useMemo(() => {
+    return getApplicableNepalTdsRates({
+      personType: selectedParty?.personType || "entity",
+      residency: selectedParty?.residency || "resident",
+    }).map((r) => ({
+      value: r.id,
+      label: `${r.sectionCode} - ${r.description} (${r.rate ?? "Slab"}%)`,
+    }));
+  }, [selectedParty]);
+
+  const tdsBreakdown = useMemo(() => {
+    if (!selectedParty?.subjectToTds) {
+      return {
+        applicable: false,
+        grossAmount: grandTotal,
+        tdsAmount: 0,
+        netPayable: grandTotal,
+        rate: 0,
+        sectionCode: "",
+        description: "",
+      };
+    }
+
+    if (!tdsSection) {
+      return {
+        applicable: false,
+        grossAmount: grandTotal,
+        tdsAmount: 0,
+        netPayable: grandTotal,
+        rate: 0,
+        sectionCode: "",
+        description: "",
+      };
+    }
+
+    return calculateNepalTds({
+      sectionId: tdsSection,
+      grossAmount: grandTotal,
+      personType: selectedParty.personType || "entity",
+      residency: selectedParty.residency || "resident",
+    });
+  }, [selectedParty, tdsSection, grandTotal]);
 
   function emptyLine() {
     return {
@@ -233,7 +282,14 @@ const PurchaseVoucher: React.FC = () => {
         supplierInvoiceDate: supplierInvoiceDate,
         paymentType: paymentType,
         cashBankLedgerId: paymentType === "credit" ? null : cashBankLedgerId,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        
+        grossAmount: tdsBreakdown.grossAmount,
+        netPayable: tdsBreakdown.netPayable,
+        tdsSection: tdsBreakdown.applicable ? tdsBreakdown.sectionId : undefined,
+        tdsRate: tdsBreakdown.applicable ? tdsBreakdown.rate : 0,
+        tdsAmount: tdsBreakdown.applicable ? tdsBreakdown.tdsAmount : 0,
+        tdsDeductedFrom: tdsBreakdown.applicable ? partyId : undefined,
       };
 
       await addVoucher(voucher);
@@ -553,6 +609,41 @@ const PurchaseVoucher: React.FC = () => {
             <span className="font-bold">Grand Total:</span>
             <span className="font-bold text-lg text-amber-600">{formatNumber(grandTotal)}</span>
           </div>
+
+          {selectedParty?.subjectToTds && (
+            <div className="mt-3 border border-amber-200 bg-amber-50 rounded-md p-3 text-[12px] -mx-4 -mb-4">
+              <div className="mb-2">
+                <label className="text-[10px] font-semibold text-amber-700 uppercase">TDS Section</label>
+                <select
+                  value={tdsSection}
+                  onChange={(e) => setTdsSection(e.target.value)}
+                  className="w-full mt-1 h-7 px-2 border border-amber-300 rounded text-amber-900 bg-white"
+                >
+                  <option value="">-- Select TDS Section --</option>
+                  {tdsOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-amber-200">
+                <div>
+                  <div className="text-[10px] font-semibold text-amber-700 uppercase">Gross Amount</div>
+                  <div className="font-mono font-bold">Rs. {tdsBreakdown.grossAmount.toLocaleString("en-NP")}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-semibold text-amber-700 uppercase">TDS @ {tdsBreakdown.rate}%</div>
+                  <div className="font-mono font-bold text-red-700">Rs. {tdsBreakdown.tdsAmount.toLocaleString("en-NP")}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-semibold text-amber-700 uppercase">Net Payable</div>
+                  <div className="font-mono font-bold text-green-700">Rs. {tdsBreakdown.netPayable.toLocaleString("en-NP")}</div>
+                </div>
+              </div>
+              {tdsBreakdown.reason && (
+                <p className="mt-2 text-[11px] text-amber-700">{tdsBreakdown.reason}</p>
+              )}
+            </div>
+          )}
         </div>
       </Card>
 

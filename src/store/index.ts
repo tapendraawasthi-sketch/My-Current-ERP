@@ -1,8 +1,11 @@
+import { migrateWorkflowFields } from "../lib/workflowMigration";
+import { createWorkflowActions } from "./workflowActions";
 // @ts-nocheck
 // src/store/index.ts
 import { create } from "zustand";
 import { getDB } from "../lib/db";
 import { generateNextNumber } from "../lib/accounting";
+import { startCbmsQueueWorker } from "../lib/cbmsService";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type UserRole = "admin" | "manager" | "accountant" | "viewer";
@@ -88,6 +91,12 @@ export interface CompanySettings {
   defaultCashAccount?: string;
   defaultBankAccount?: string;
   defaultCostCenter?: string;
+  
+  // Nepal e-Invoicing / CBMS
+  cbmsEnabled?: boolean;
+  cbmsApiUrl?: string;
+  cbmsApiKey?: string;
+  simplifiedInvoiceThreshold?: number;
   stockValuationMethod?: string;
   dateFormat?: string;
   fiscalYearStartMonth?: number;
@@ -205,7 +214,32 @@ const DEFAULT_CURRENCY = {
 };
 
 // ─── Store interface ───────────────────────────────────────────────────────────
-interface AppState {
+import type {
+  DBWarehouse,
+  DBStockMovement,
+  DBStockTransferVoucher,
+} from "../lib/db";
+
+const transferNo = (n: number) => `TRF-${String(n).padStart(4, "0")}`;
+
+export interface MultiGodownStoreSlice {
+  warehouses: DBWarehouse[];
+  stockMovements: DBStockMovement[];
+  stockTransfers: DBStockTransferVoucher[];
+
+  loadWarehouses: () => Promise<void>;
+  addWarehouse: (warehouse: Omit<DBWarehouse, "id">) => Promise<DBWarehouse>;
+  updateWarehouse: (id: string, updates: Partial<DBWarehouse>) => Promise<void>;
+
+  getNextTransferNo: () => Promise<string>;
+  saveStockTransfer: (
+    transfer: Omit<
+      DBStockTransferVoucher,
+      "id" | "transferNo" | "createdAt" | "updatedAt" | "status"
+    >
+  ) => Promise<DBStockTransferVoucher>;
+}
+interface AppState extends MultiGodownStoreSlice {
   // DB
   isDbReady: boolean;
   // Auth
@@ -235,6 +269,8 @@ interface AppState {
   currencies: any[];
   // Payroll module state
   employees: any[];
+  // TDS module state
+  tdsChallans: any[];
   // Masters Module v8
   stockCategories: any[];
   voucherTypeMasters: any[];
@@ -544,6 +580,7 @@ export const useStore = create<AppState>((set, get) => ({
   invoices: [],
   stockMovements: [],
   warehouses: [],
+  stockTransfers: [],
   units: [],
   costCenters: [],
   fiscalYears: [],
@@ -559,6 +596,7 @@ export const useStore = create<AppState>((set, get) => ({
   customFieldDefs: [],
   currencies: [],
   employees: [],
+  tdsChallans: [],
   stockCategories: [],
   voucherTypeMasters: [],
   voucherAuditLogs: [],
@@ -619,12 +657,19 @@ export const useStore = create<AppState>((set, get) => ({
     set({ isInitializing: true });
 
     try {
+      startCbmsQueueWorker();
       const db = getDB();
 
     // Seed default data if empty
     const accountCount = await db.accounts.count();
     if (accountCount === 0) {
-      await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any);
+      try {
+        const { seedNepalNASChartOfAccounts } = await import("../lib/seeders/nepalNasCoaSeeder");
+        await seedNepalNASChartOfAccounts(db as any);
+      } catch (err) {
+        console.error("Error seeding Nepal NAS Chart of Accounts:", err);
+        await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any); // Fallback
+      }
     }
 
     const warehouseCount = await db.warehouses.count();
@@ -687,6 +732,8 @@ export const useStore = create<AppState>((set, get) => ({
       await db.shortcuts.bulkAdd(DEFAULT_SHORTCUTS as any);
     }
 
+    await migrateWorkflowFields();
+
     // Load all data
     const [
       accounts, parties, items, vouchers, invoices, stockMovements,
@@ -699,6 +746,7 @@ export const useStore = create<AppState>((set, get) => ({
       employees,
       bankStatements,
       tdsEntries,
+      tdsChallans,
       stockJournals,
       productions,
       unassembles,
@@ -759,6 +807,7 @@ export const useStore = create<AppState>((set, get) => ({
       db.employees.toArray(),
       db.bankStatements.toArray(),
       db.tdsEntries.toArray(),
+      db.tdsChallans.toArray(),
       db.stockJournals.toArray(),
       db.productions.toArray(),
       db.unassembles.toArray(),
@@ -856,6 +905,7 @@ export const useStore = create<AppState>((set, get) => ({
       employees,
       bankStatements,
       tdsEntries: tdsEntries as any[],
+      tdsChallans: tdsChallans as any[],
       stockJournals: stockJournals as any[],
       productions: productions as any[],
       unassembles: unassembles as any[],
@@ -1797,6 +1847,14 @@ export const useStore = create<AppState>((set, get) => ({
     }));
   },
 
+  addTdsChallan: async (challan) => {
+    const db = getDB();
+    const id = challan.id || crypto.randomUUID();
+    const newChallan = { ...challan, id };
+    await db.tdsChallans.add(newChallan);
+    set((s) => ({ tdsChallans: [...s.tdsChallans, newChallan] }));
+  },
+
   // ── Vouchers ─────────────────────────────────────────────────────────────
   addVoucher: async (voucher) => {
     const db = getDB();
@@ -2264,7 +2322,8 @@ export const useStore = create<AppState>((set, get) => ({
     ]);
     set({
       accounts: [], parties: [], items: [], vouchers: [], invoices: [],
-      stockMovements: [], warehouses: [], units: [], costCenters: [],
+      stockMovements: [], warehouses: [],
+  stockTransfers: [], units: [], costCenters: [],
       fiscalYears: [], currentFiscalYear: null, deliveryChallans: [],
       goodsReceiptNotes: [], salesOrders: [], purchaseOrders: [],
       notifications: [], budgets: [], recurringVouchers: [],

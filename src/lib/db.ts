@@ -49,8 +49,11 @@ export interface DBParty {
   openingBalanceType?: string;
   openingBalanceDate?: string;
   subjectToTds?: boolean;
+  tdsSection?: string;
   tdsType?: string;
   tdsRate?: number;
+  personType?: "individual" | "entity";
+  residency?: "resident" | "non-resident";
   isActive?: boolean;
   balance?: number;
   status?: string;
@@ -106,7 +109,28 @@ export interface DBVoucher {
   totalCredit: number;
   cancellationReason?: string;
   grandTotal?: number;
+  tdsSection?: string;
+  tdsRate?: number;
+  tdsAmount?: number;
+  tdsDeductedFrom?: string;
+  grossAmount?: number;
+  netPayable?: number;
+  tdsChallanNo?: string;
+  tdsChallanDateBS?: string;
   [key: string]: any;
+}
+
+export interface CBMSQueueItem {
+  id?: string;
+  invoiceId: string;
+  action: "submit" | "cancel";
+  payload?: any;
+  reason?: string;
+  attempts: number;
+  lastError?: string;
+  status: "pending" | "processing" | "failed";
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DBInvoice {
@@ -139,27 +163,60 @@ export interface DBInvoice {
   attachments?: string[];
   cbmsSubmitted?: boolean;
   cbmsIrn?: string;
+  cbmsQrString?: string;
+  cbmsQrCode?: string;
   cbmsSubmittedAt?: string;
+  cbmsStatus?: "success" | "failed" | "pending";
+  tdsSection?: string;
+  tdsRate?: number;
+  tdsAmount?: number;
+  tdsDeductedFrom?: string;
+  grossAmount?: number;
+  netPayable?: number;
+  cbmsError?: string;
+  cbmsCancelledAt?: string;
+  cbmsCancelReason?: string;
+  isCancelled?: boolean;
+  isAmended?: boolean;
+  isExport?: boolean;
+  isZeroRated?: boolean;
   [key: string]: any;
 }
 
 export interface DBStockMovement {
   id: string;
-  date: string;
-  dateNepali: string;
-  type: string;
+  date: string; // AD
+  dateNepali: string; // BS
+  type:
+    | "opening"
+    | "purchase"
+    | "purchase-return"
+    | "sales"
+    | "sales-return"
+    | "stock-transfer-out"
+    | "stock-transfer-in"
+    | "stock-journal-in"
+    | "stock-journal-out"
+    | "production-in"
+    | "production-out"
+    | "physical-stock";
+
   itemId: string;
   itemName: string;
   warehouseId: string;
   warehouseName: string;
-  qty: number;
+
+  qty: number; // positive qty
   rate: number;
   amount: number;
+
   referenceId?: string;
-  referenceNo?: string;
   referenceType?: string;
-  narration?: string;
-  [key: string]: any;
+  referenceNo?: string;
+
+  batchNo?: string;
+  branchId?: string;
+  branchName?: string;
 }
 
 export interface DBWarehouse {
@@ -167,9 +224,65 @@ export interface DBWarehouse {
   code: string;
   name: string;
   address?: string;
-  isDefault?: boolean;
+  isDefault: boolean;
   isActive: boolean;
-  [key: string]: any;
+
+  // Multi-branch / godown additions
+  branchId?: string;
+  branchName?: string;
+  branchCompanyCode?: string;
+  isMainBranch?: boolean;
+  allowNegativeStock?: boolean;
+  costCenterId?: string;
+
+  // Godown hierarchy
+  parentId?: string;
+  level?: "main" | "sub";
+}
+
+export type StockValuationMethod = "fifo" | "weighted-average" | "lifo";
+
+export interface DBStockTransferLine {
+  id: string;
+  itemId: string;
+  itemName: string;
+  itemCode?: string;
+  fromBatch?: string;
+  qty: number;
+  rate: number;
+  amount: number;
+}
+
+export interface DBStockTransferVoucher {
+  id: string;
+  transferNo: string;
+  date: string; // AD
+  dateNepali: string; // BS
+
+  fromWarehouseId: string;
+  fromWarehouseName: string;
+  fromBranchId?: string;
+  fromBranchName?: string;
+
+  toWarehouseId: string;
+  toWarehouseName: string;
+  toBranchId?: string;
+  toBranchName?: string;
+
+  isInterBranch: boolean;
+  lines: DBStockTransferLine[];
+
+  totalQty: number;
+  totalAmount: number;
+
+  narration?: string;
+  authorizedBy?: string;
+  status: "draft" | "posted" | "cancelled";
+
+  accountingVoucherId?: string;
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DBUnit {
@@ -667,6 +780,7 @@ export interface DBPaymentAdvice {
 // --- END NEW BANKING MODULE INTERFACES ---
 
 class SutraDB extends Dexie {
+  cbmsQueue!: Table<CBMSQueueItem, string>;
   accounts!: Table<DBAccount>;
   parties!: Table<DBParty>;
   items!: Table<DBItem>;
@@ -674,6 +788,7 @@ class SutraDB extends Dexie {
   invoices!: Table<DBInvoice>;
   stockMovements!: Table<DBStockMovement>;
   warehouses!: Table<DBWarehouse>;
+  stockTransfers!: Table<DBStockTransferVoucher>;
   units!: Table<DBUnit>;
   costCenters!: Table<DBCostCenter>;
   fiscalYears!: Table<DBFiscalYear>;
@@ -712,6 +827,7 @@ class SutraDB extends Dexie {
   employees!: Table<DBEmployee>;
   bankStatements!: Table<DBBankStatement>;
   tdsEntries!: Table<any>;
+  tdsChallans!: Table<any>;
   auditLogs!: Table<any>;
   stockJournals!: Table<any>;
   productions!: Table<any>;
@@ -841,6 +957,17 @@ class SutraDB extends Dexie {
       pdCheques: "id, type, chequeDate, partyId, bankAccountId, status",
       ePaymentBatches: "id, batchNo, bankAccountId, paymentDate, status",
       paymentAdvices: "id, voucherId, partyId, status",
+    });
+
+    // Version 10 — CBMS Queue
+    this.version(10).stores({
+      cbmsQueue: "++id, invoiceId, action, status, createdAt, updatedAt",
+      invoices: "id, invoiceNo, date, type, partyId, status, paymentStatus, cbmsSubmitted, cbmsIrn, cbmsSubmittedAt, cbmsStatus",
+    });
+
+    // Version 11 — TDS Challans
+    this.version(11).stores({
+      tdsChallans: "id, challanNo, dateBS, fiscalYearBS, fromBS, toBS",
     });
   }
 }
