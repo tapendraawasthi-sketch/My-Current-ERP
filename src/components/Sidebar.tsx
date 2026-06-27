@@ -255,19 +255,37 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
           {(isExpanded || collapsed) && (
             <div className="mt-1 space-y-0.5">
               {visibleItems.map(item => {
-                const isActive = currentPage === item.page;
+                const ROUTE_ALIASES: Record<string, string> = {
+                  "general-ledger": "ledger",
+                  "ledger-report": "ledger",
+                  "stock-book": "items",
+                  "company-settings": "settings",
+                  "reorder-alerts": "stock-summary",
+                  "stock-valuation": "stock-summary",
+                  "sales-analysis": "dashboard",
+                  "purchase-analysis": "dashboard",
+                  "import-vouchers": "data-import-export",
+                  "import-items": "data-import-export",
+                  "import-parties": "data-import-export",
+                  "import-stock": "data-import-export"
+                };
+                
+                const normalizedCurrent = ROUTE_ALIASES[currentPage] || currentPage;
+                const normalizedItem = ROUTE_ALIASES[item.page] || item.page;
+                
+                const isActive = normalizedCurrent === normalizedItem;
                 return (
                   <button
                     key={item.page + item.label}
                     className={`
                       w-full flex items-center gap-2 px-3 py-1.5 text-left transition-colors relative
                       ${isActive 
-                        ? "bg-[#1557b0] text-white" 
+                        ? "bg-[#1557b0] text-white"  
                         : "text-gray-300 hover:bg-[#273148] hover:text-white"
                       }
                       ${collapsed ? "justify-center" : "justify-start"}
                     `}
-                    onClick={() => setCurrentPage(item.page)}
+                    onClick={() => setCurrentPage(ROUTE_ALIASES[item.page] || item.page)}
                     title={collapsed ? item.label : undefined}
                   >
                     <div className="flex-shrink-0">

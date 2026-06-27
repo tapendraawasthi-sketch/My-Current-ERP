@@ -11,6 +11,7 @@ import F12Panel from './components/F12Panel';
 import AuthGateway from "./pages/AuthGateway";
 import Gateway from "./components/Gateway";
 import Dashboard from "./components/Dashboard";
+import ReportHub from "./components/ReportHub";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import PartiesDirectory from "./components/PartiesDirectory";
 import StockBook from "./pages/StockBook";
@@ -20,7 +21,6 @@ import BillingInvoice from "./pages/BillingInvoice";
 import DebitCreditNote from "./pages/DebitCreditNote";
 import SalesOrder from "./pages/SalesOrder";
 import PurchaseOrder from "./pages/PurchaseOrder";
-import StockJournalPage from "./pages/StockJournalPage";
 import ProductionPage from "./pages/ProductionPage";
 import UnassemblePage from "./pages/UnassemblePage";
 import MaterialIssuedPage from "./pages/MaterialIssuedPage";
@@ -112,11 +112,26 @@ import SalesVoucher from "./pages/SalesVoucher";
 import PurchaseVoucher from "./pages/PurchaseVoucher";
 import CreditNoteVoucher from "./pages/CreditNoteVoucher";
 import DebitNoteVoucher from "./pages/DebitNoteVoucher";
-import StockJournalVoucher from "./pages/StockJournalPage";
+import StockJournalPage from "./pages/StockJournalPage";
 import SalesOrderVoucher from "./pages/SalesOrderVoucher";
 import MemorandumVoucher from "./pages/MemorandumVoucher";
 import VouchersRegisterFull from "./pages/VouchersRegisterFull";
 import F11CompanyFeatures from './pages/F11CompanyFeatures';
+
+function ExternalRedirect({ url, fallbackPage }: { url: string; fallbackPage: string }) {
+  const { setCurrentPage } = useStore();
+
+  useEffect(() => {
+    window.open(url, "_blank", "noopener,noreferrer");
+    setCurrentPage(fallbackPage);
+  }, [url, fallbackPage, setCurrentPage]);
+
+  return (
+    <ErrorBoundary>
+      <Dashboard />
+    </ErrorBoundary>
+  );
+}
 
 function MainRouter() {
   const { currentPage } = useStore();
@@ -174,13 +189,13 @@ function MainRouter() {
     case "shortcuts":
       return (
         <ErrorBoundary>
-          <div style={{ padding: 24, maxWidth: 600, margin: "0 auto" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Keyboard Shortcuts</h2>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <div className="p-6 max-w-[600px] mx-auto bg-[#f5f6fa]">
+            <h2 className="text-[15px] font-semibold text-gray-800 mb-4">Keyboard Shortcuts</h2>
+            <table className="w-full border-collapse text-[12px] bg-white">
               <thead>
-                <tr style={{ background: "#D4EABD" }}>
-                  <th style={{ padding: "6px 12px", textAlign: "left", border: "1px solid #000" }}>Key</th>
-                  <th style={{ padding: "6px 12px", textAlign: "left", border: "1px solid #000" }}>Action</th>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200">Key</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,9 +211,9 @@ function MainRouter() {
                   ["D", "Day Book"], ["G", "GST/VAT Summary"],
                   ["F", "Configuration"], ["U", "Switch User"],
                 ].map(([key, label]) => (
-                  <tr key={key}>
-                    <td style={{ padding: "5px 12px", border: "1px solid #000", fontWeight: 700, fontFamily: "monospace" }}>{key}</td>
-                    <td style={{ padding: "5px 12px", border: "1px solid #000" }}>{label}</td>
+                  <tr key={key} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                    <td className="px-3 py-2.5 font-semibold font-mono text-gray-700 border border-gray-200">{key}</td>
+                    <td className="px-3 py-2.5 text-gray-600 border border-gray-200">{label}</td>
                   </tr>
                 ))}
               </tbody>
@@ -207,11 +222,9 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "ird-portal":
-      window.open("https://ird.gov.np", "_blank", "noopener,noreferrer");
-      return <ErrorBoundary><Dashboard /></ErrorBoundary>;
+      return <ExternalRedirect url="https://ird.gov.np" fallbackPage="dashboard" />;
     case "etds-portal":
-      window.open("https://etds.ird.gov.np", "_blank", "noopener,noreferrer");
-      return <ErrorBoundary><Dashboard /></ErrorBoundary>;
+      return <ExternalRedirect url="https://etds.ird.gov.np" fallbackPage="dashboard" />;
     case "accounts":
       return (
         <ErrorBoundary>
@@ -290,7 +303,7 @@ function MainRouter() {
     case "stock-journal":
       return (
         <ErrorBoundary>
-          <StockJournalVoucher />
+          <StockJournalPage />
         </ErrorBoundary>
       );
     case "production":
@@ -330,6 +343,8 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "ledger":
+    case "general-ledger":
+    case "ledger-report":
       return (
         <ErrorBoundary>
           <GeneralLedger />
@@ -338,7 +353,37 @@ function MainRouter() {
     case "ledgers":
       return (
         <ErrorBoundary>
-          <ChartOfAccounts />
+          <LedgerMaster />
+        </ErrorBoundary>
+      );
+    case "reports-hub":
+      return (
+        <ErrorBoundary>
+          <ReportHub />
+        </ErrorBoundary>
+      );
+    case "configuration-hub":
+      return (
+        <ErrorBoundary>
+          <ConfigurationHub />
+        </ErrorBoundary>
+      );
+    case "data-import-export":
+      return (
+        <ErrorBoundary>
+          <DataExportImport />
+        </ErrorBoundary>
+      );
+    case "stock-book":
+      return (
+        <ErrorBoundary>
+          <StockBook />
+        </ErrorBoundary>
+      );
+    case "debit-credit-note":
+      return (
+        <ErrorBoundary>
+          <DebitCreditNote />
         </ErrorBoundary>
       );
     case "trial-balance":
@@ -573,6 +618,8 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "stock-summary":
+    case "stock-valuation":
+    case "reorder-alerts":
       return (
         <ErrorBoundary>
           <StockSummary />
@@ -585,6 +632,7 @@ function MainRouter() {
         </ErrorBoundary>
       );
     case "settings":
+    case "company-settings":
       return (
         <ErrorBoundary>
           <CompanySettings />
@@ -627,12 +675,6 @@ function MainRouter() {
           <POSMode />
         </ErrorBoundary>
       );
-    case "price-lists":
-      return (
-        <ErrorBoundary>
-          <POSMode />
-        </ErrorBoundary>
-      );
     case "employees":
     case "salesmen":
       return (
@@ -667,8 +709,6 @@ function MainRouter() {
       );
     case "account-groups":
       return <ErrorBoundary><AccountGroupMaster /></ErrorBoundary>;
-    case "ledgers":
-      return <ErrorBoundary><LedgerMaster /></ErrorBoundary>;
     case "master-control-centre":
       return <ErrorBoundary><MasterControlCentre /></ErrorBoundary>;
     case "item-groups":
@@ -734,12 +774,12 @@ function MainRouter() {
     default:
       return (
         <ErrorBoundary>
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-[#9DC07A] rounded-lg p-6">
-            <h2 className="text-[15px] font-bold text-[#000000]">404 - Page Not Found</h2>
-            <p className="text-[11px] text-[#000000] mt-1">The requested page "{currentPage}" could not be found.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6">
+            <h2 className="text-[15px] font-semibold text-gray-800">404 - Page Not Found</h2>
+            <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
             <button
               onClick={() => useStore.getState().setCurrentPage("dashboard")}
-              className="mt-4 h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-semibold rounded-md cursor-pointer"
+              className="mt-4 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
             >
               Go to Dashboard
             </button>

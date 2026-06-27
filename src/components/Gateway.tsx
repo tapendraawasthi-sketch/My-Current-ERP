@@ -60,7 +60,6 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "New Contra", page: "contra", permission: "accounting" },
     { label: "New Debit Note", page: "debit-note", permission: "accounting" },
     { label: "New Credit Note", page: "credit-note", permission: "accounting" },
-    { label: "New Debit/Credit Note", page: "debit-credit-note", permission: "accounting" },
     { label: "Sales Order", page: "sales-order", permission: "accounting" },
     { label: "Purchase Order", page: "purchase-order", permission: "accounting" },
     { label: "Delivery Challan", page: "delivery-challan", permission: "accounting" },
@@ -201,6 +200,8 @@ const Gateway: React.FC = () => {
     }
   }, [role, currentUser, canAdmin]);
 
+  const { pushActivity } = useRecentActivity();
+
   const canSee = (item: GatewayMenuItem) => {
     if (!item.permission || item.permission === "all") return true;
     if (item.permission === "admin") return canAdmin;
@@ -211,16 +212,6 @@ const Gateway: React.FC = () => {
   const navigate = (label: string, page: string) => {
     pushActivity(label, page);
     setCurrentPage(page);
-  };
-
-  const pushActivity = (label: string, page: string) => {
-    notifications.activities.unshift({
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      message: `Visited: ${label}`,
-      read: false,
-      page: page
-    });
   };
 
   const stockPositions = useMemo(() => computeAllStockPositions(stockMovements, items), [stockMovements, items]);
@@ -292,13 +283,13 @@ const Gateway: React.FC = () => {
   }, [searchQuery]);
 
   return (
-    <div className="flex flex-col h-full bg-[#F9FBF7]">
+    <div className="flex flex-col h-full bg-[#f5f6fa]">
       {/* Header */}
-      <div className="bg-white border-b border-[#9DC07A] p-4">
+      <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-[#000000]">{companyName}</h1>
-            <p className="text-sm text-[#6B7280]">{fiscalYearLabel} • {getBSTodayLong()}</p>
+            <h1 className="text-xl font-bold text-gray-800">{companyName}</h1>
+            <p className="text-sm text-gray-500">{fiscalYearLabel} • {getBSTodayLong()}</p>
           </div>
           
           <div className="relative">
@@ -307,10 +298,10 @@ const Gateway: React.FC = () => {
               placeholder="Search features..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full md:w-64 px-4 py-2 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6B25] text-sm"
+              className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-sm"
             />
             {searchQuery && (
-              <div className="absolute top-full left-0 right-0 bg-white border border-[#9DC07A] rounded-lg shadow-lg mt-1 z-10 max-h-60 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10 max-h-60 overflow-y-auto">
                 {filteredItems.length > 0 ? (
                   filteredItems.map(({ section, item }, idx) => (
                     <button
@@ -319,7 +310,7 @@ const Gateway: React.FC = () => {
                         navigate(item.label, item.page);
                         setSearchQuery("");
                       }}
-                      className="w-full text-left px-4 py-2 hover:bg-[#EBF5E2] border-b border-gray-100 last:border-0"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-50 border-b border-gray-100 last:border-0"
                     >
                       <div className="font-medium">{item.label}</div>
                       <div className="text-xs text-gray-500">{section}</div>
@@ -337,7 +328,7 @@ const Gateway: React.FC = () => {
       <div className="flex-1 overflow-auto p-4">
         {searchQuery ? (
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-lg font-semibold mb-4">Search Results</h2>
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">Search Results</h2>
             {filteredItems.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredItems.map(({ section, item }, idx) => (
@@ -347,9 +338,9 @@ const Gateway: React.FC = () => {
                       navigate(item.label, item.page);
                       setSearchQuery("");
                     }}
-                    className="bg-white border border-[#9DC07A] rounded-lg p-4 shadow-sm hover:shadow-md hover:border-[#3D6B25] transition-all cursor-pointer"
+                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-[#1557b0] transition-all cursor-pointer"
                   >
-                    <div className="font-medium">{item.label}</div>
+                    <div className="font-medium text-gray-800">{item.label}</div>
                     <div className="text-xs text-gray-500">{section}</div>
                   </div>
                 ))}
@@ -378,15 +369,15 @@ const Gateway: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* Sidebar Navigation */}
               <div className="lg:col-span-1 space-y-6">
-                <div className="bg-white border border-[#9DC07A] rounded-lg p-4">
-                  <h2 className="font-semibold text-[#000000] mb-3">Navigation</h2>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                  <h2 className="font-semibold text-gray-800 mb-3">Navigation</h2>
                   <nav className="space-y-1">
                     {Object.keys(MENU_SECTIONS).map((section) => (
                       <button
                         key={section}
                         onClick={() => setActiveSection(activeSection === section ? null : section)}
                         className={`w-full text-left px-3 py-2 rounded flex justify-between items-center ${
-                          activeSection === section ? "bg-[#EBF5E2] text-[#3D6B25] font-medium" : "hover:bg-[#EBF5E2]"
+                          activeSection === section ? "bg-[#eef2ff] text-[#1557b0] font-medium" : "hover:bg-gray-50 text-gray-700"
                         }`}
                       >
                         {section}
@@ -398,14 +389,14 @@ const Gateway: React.FC = () => {
                   </nav>
                 </div>
 
-                <div className="bg-white border border-[#9DC07A] rounded-lg p-4">
-                  <h2 className="font-semibold text-[#000000] mb-3">Quick Actions</h2>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                  <h2 className="font-semibold text-gray-800 mb-3">Quick Actions</h2>
                   <div className="space-y-2">
                     {QUICK_ACTIONS.filter(canSee).map((action, idx) => (
                       <button
                         key={idx}
                         onClick={() => navigate(action.label, action.page)}
-                        className="w-full text-left px-3 py-2 text-sm rounded hover:bg-[#EBF5E2] transition-colors"
+                        className="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-50 text-gray-700 transition-colors"
                       >
                         {action.label}
                       </button>
@@ -417,12 +408,12 @@ const Gateway: React.FC = () => {
               {/* Content Area */}
               <div className="lg:col-span-4">
                 {activeSection ? (
-                  <div className="bg-white border border-[#9DC07A] rounded-lg p-6">
+                  <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold text-[#000000]">{activeSection}</h2>
+                      <h2 className="text-xl font-bold text-gray-800">{activeSection}</h2>
                       <button
                         onClick={() => setActiveSection(null)}
-                        className="text-sm text-[#6B7280] hover:text-[#3D6B25]"
+                        className="text-sm text-gray-500 hover:text-[#1557b0]"
                       >
                         Close
                       </button>
@@ -436,14 +427,14 @@ const Gateway: React.FC = () => {
                       if (visibleItems.length === 0) return null;
                       
                       return (
-                        <div key={section} className="bg-white border border-[#9DC07A] rounded-lg p-6">
-                          <h2 className="text-lg font-bold text-[#000000] mb-4">{section}</h2>
+                        <div key={section} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                          <h2 className="text-lg font-bold text-gray-800 mb-4">{section}</h2>
                           <div className="space-y-2">
                             {visibleItems.map((item, idx) => (
                               <button
                                 key={idx}
                                 onClick={() => navigate(item.label, item.page)}
-                                className="w-full text-left px-3 py-2 text-sm rounded hover:bg-[#EBF5E2] transition-colors"
+                                className="w-full text-left px-3 py-2 text-sm rounded text-gray-700 hover:bg-gray-50 transition-colors"
                               >
                                 {item.label}
                               </button>

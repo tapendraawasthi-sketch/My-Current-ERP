@@ -68,6 +68,16 @@ const PAGE_TITLES: Record<string, string> = {
   units: "Units of Measure",
   "cost-centers": "Cost Centers",
   "bank-accounts": "Bank Accounts",
+  "bank-statement-import": "Bank Statement Import",
+  "overdue-bills-interest": "Overdue Bills Interest",
+  "account-groups": "Account Groups",
+  "item-groups": "Item Groups",
+  "voucher-types": "Voucher Types",
+  "price-lists": "Price Lists",
+  "f11-company-features": "F11 Company Features",
+  "auto-bank-reconciliation": "Auto Bank Reconciliation",
+  "payment-advice": "Payment Advice",
+  "pdc-summary": "PDC Summary",
 };
 
 const Breadcrumb: React.FC = () => {
@@ -79,7 +89,10 @@ const Breadcrumb: React.FC = () => {
     if (currentPage !== "dashboard") {
       const label =
         PAGE_TITLES[currentPage] ||
-        currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace("-", " ");
+        currentPage
+          .split("-")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
       list.push({ label, page: currentPage });
     }
 
@@ -90,24 +103,24 @@ const Breadcrumb: React.FC = () => {
 
   return (
     <nav className="flex items-center gap-0 select-none" aria-label="Breadcrumb">
-      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-[#000000] hover:text-[#000000] transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
-      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-[#000000] mx-1" />}
+      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-gray-500 hover:text-gray-800 transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
+      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
 
       {breadcrumbs.map((b, idx) => {
         if (idx === 0) return null;
         const isLast = idx === breadcrumbs.length - 1;
         return (
           <React.Fragment key={idx}>
-            {idx > 1 && <ChevronRight className="h-3 w-3 text-[#000000] mx-1" />}
+            {idx > 1 && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
             {isLast ? (
-              <span className="text-[12px] font-medium text-[#000000] truncate max-w-[120px] md:max-w-xs">
+              <span className="text-[12px] font-medium text-gray-800 truncate max-w-[120px] md:max-w-xs">
                 {b.label}
               </span>
             ) : (
               <button
                 type="button"
                 onClick={() => setCurrentPage(b.page)}
-                className="text-[12px] text-[#000000] hover:text-[#000000] cursor-pointer transition-colors"
+                className="text-[12px] text-gray-500 hover:text-gray-800 cursor-pointer transition-colors"
               >
                 {b.label}
               </button>
