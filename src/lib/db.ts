@@ -23,6 +23,38 @@ export interface DBAccount {
   [key: string]: any;
 }
 
+export interface DBAuditLog {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  action: string;
+  module: string;
+  recordId: string;
+  recordNo: string;
+  description: string;
+  beforeData: string | null;
+  afterData: string | null;
+  ipAddress: string;
+  deviceInfo: string;
+  fiscalYear: string;
+  companyId: string;
+}
+
+export interface DBPeriodLock {
+  id: string;
+  companyId: string;
+  fiscalYear: string;
+  lockedMonth: string;
+  lockedBy: string;
+  lockedAt: string;
+  lockReason: string;
+  isUnlocked: boolean;
+  unlockedBy?: string;
+  unlockedAt?: string;
+  unlockReason?: string;
+}
+
 export interface DBParty {
   id: string;
   code: string;
@@ -853,6 +885,9 @@ class SutraDB extends Dexie {
   attendanceTypes!: Table<any>;
   ledgerExtensions!: Table<any>;
 
+  auditLog!: Table<DBAuditLog>;
+  periodLocks!: Table<DBPeriodLock>;
+
   constructor() {
     super("SutraERP");
 
@@ -966,6 +1001,12 @@ class SutraDB extends Dexie {
     // Version 11 — TDS Challans
     this.version(11).stores({
       tdsChallans: "id, challanNo, dateBS, fiscalYearBS, fromBS, toBS",
+    });
+
+    // Version 12 - Add Audit Log and Period Lock tables
+    this.version(12).stores({
+      auditLog: "id, timestamp, module, action, userId, recordId, companyId",
+      periodLocks: "id, companyId, fiscalYear, lockedMonth"
     });
   }
 }

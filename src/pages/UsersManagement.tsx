@@ -16,7 +16,7 @@ import {
   VOUCHER_SCREENS,
   getDefaultPermissionsForRole, formatAmountLimit, mergePermissions,
 } from '../lib/permissions';
-import { logPermissionChange, writeAuditLog } from '../lib/auditLogger';
+import { logAudit } from '../lib/auditLogger';
 import toast from 'react-hot-toast';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -390,11 +390,13 @@ export default function UsersManagement() {
           name: form.name, username: form.username,
           email: form.email, role: form.role, isActive: form.isActive,
         });
-        await writeAuditLog({
+        await logAudit({
           userId: currentUser!.id, userName: currentUser!.name,
-          action: 'edit', entityType: 'user',
-          entityId: selectedUser.id, entityNo: form.username,
-          notes: `User profile updated`,
+          action: 'UPDATE', module: 'USER',
+          recordId: selectedUser.id, recordNo: form.username,
+          description: `User profile updated`,
+          beforeData: null, afterData: null,
+          fiscalYear: '', companyId: 'company-default',
         });
         toast.success('User updated');
       } else {
@@ -407,10 +409,13 @@ export default function UsersManagement() {
         // Seed default permissions
         const defaultPerm = getDefaultPermissionsForRole(form.role, newUser?.id || `usr-${Date.now()}`);
         await saveUserPermissions(defaultPerm);
-        await writeAuditLog({
+        await logAudit({
           userId: currentUser!.id, userName: currentUser!.name,
-          action: 'create', entityType: 'user', entityNo: form.username,
-          notes: `New user created with role: ${form.role}`,
+          action: 'CREATE', module: 'USER',
+          recordId: newUser?.id || `usr-${Date.now()}`, recordNo: form.username,
+          description: `New user created with role: ${form.role}`,
+          beforeData: null, afterData: null,
+          fiscalYear: '', companyId: 'company-default',
         });
         toast.success('User created');
       }
@@ -467,7 +472,15 @@ export default function UsersManagement() {
         }
         if (changes.length > 0) {
           const targetUser = users.find((u) => u.id === editPermUserId);
-          await logPermissionChange(currentUser.id, currentUser.name, editPermUserId, targetUser?.name || editPermUserId, changes);
+          await logAudit({
+            userId: currentUser.id, userName: currentUser.name,
+            action: 'UPDATE', module: 'USER',
+            recordId: editPermUserId, recordNo: targetUser?.name || editPermUserId,
+            description: `Updated user permissions`,
+            beforeData: { changes: changes.map(c => ({ field: c.field, value: c.oldValue })) },
+            afterData: { changes: changes.map(c => ({ field: c.field, value: c.newValue })) },
+            fiscalYear: '', companyId: 'company-default',
+          });
         }
       }
 
@@ -485,10 +498,13 @@ export default function UsersManagement() {
   const handleForceLogout = async (targetUser: any) => {
     if (targetUser.isCurrentUser) { toast.error('Cannot force-logout yourself'); return; }
     // In a real app: invalidate the session token in DB
-    await writeAuditLog({
+    await logAudit({
       userId: currentUser!.id, userName: currentUser!.name,
-      action: 'force_logout', entityType: 'user',
-      entityId: targetUser.userId, entityNo: targetUser.userName,
+      action: 'LOGOUT', module: 'USER',
+      recordId: targetUser.userId, recordNo: targetUser.userName,
+      description: `Force logout user`,
+      beforeData: null, afterData: null,
+      fiscalYear: '', companyId: 'company-default',
     });
     toast.success(`${targetUser.userName} will be logged out on their next request`);
   };

@@ -45,7 +45,12 @@ import {
   Lock,
   Monitor,
   Printer,
-  Building
+  Building,
+  CheckCircle,
+  AlertTriangle,
+  Tag,
+  Building2,
+  History
 } from "lucide-react";
 
 interface NavItem {
@@ -94,6 +99,9 @@ const menuGroups: MenuGroup[] = [
       { label: "Purchase Register", page: "purchase-register", icon: TrendingDown },
       { label: "Journal Register", page: "journal-register", icon: ScrollText },
       { label: "Day Book", page: "day-book", icon: BookMarked },
+      { label: "Voucher Approval", page: "maker-checker", icon: CheckCircle },
+      { label: "Missing Vouchers", page: "missing-vouchers", icon: AlertTriangle },
+      { label: "Quotations", page: "quotations", icon: FileText },
     ],
   },
   {
@@ -113,6 +121,8 @@ const menuGroups: MenuGroup[] = [
       { label: "Stock Book", page: "stock-book", icon: Archive },
       { label: "Stock Summary", page: "stock-summary", icon: Package },
       { label: "Stock Categories", page: "stock-categories", icon: FolderOpen },
+      { label: "Batch Management", page: "batch-management", icon: Package },
+      { label: "Serial Tracking", page: "serial-tracking", icon: Tag },
     ],
   },
   {
@@ -127,11 +137,15 @@ const menuGroups: MenuGroup[] = [
       { label: "TDS Reports", page: "tds-reports", icon: FileText },
       { label: "VAT Reports", page: "vat-reports", icon: FileText },
       { label: "CBMS Dashboard", page: "cbms-dashboard", icon: FileText },
+      { label: "Sales & Purchase Analysis", page: "sales-purchase-analysis", icon: BarChart2 },
+      { label: "Price History & Rates", page: "price-history", icon: History },
       { label: "Payroll Reports", page: "payroll-reports", icon: FileText },
       { label: "Budget Reports", page: "budgets", icon: Banknote },
       { label: "Ratio Analysis", page: "ratio-analysis", icon: PieChart },
       { label: "Statistics Report", page: "statistics-report", icon: BarChart2 },
       { label: "Exception Reports", page: "exception-reports", icon: FileBarChart },
+      { label: "Party Reconciliation", page: "party-reconciliation", icon: Users },
+      { label: "Credit Limits", page: "credit-limits", icon: CreditCard },
     ],
   },
   {
@@ -147,6 +161,8 @@ const menuGroups: MenuGroup[] = [
       { label: 'Security Control', page: 'security-control', icon: Shield },
       { label: 'Roles Management', page: 'roles-management', icon: Users },
       { label: 'Control Centre', page: 'control-centre', icon: Monitor },
+      { label: 'Audit Trail', page: 'audit-trail', icon: Shield },
+      { label: 'Period Lock', page: 'period-lock', icon: Lock },
     ],
   },
   {
@@ -172,6 +188,18 @@ const menuGroups: MenuGroup[] = [
       { label: 'Company Information', page: 'company-info', icon: Building },
       { label: 'Fiscal Year', page: 'fiscal-year', icon: Calendar },
       { label: 'Company Settings', page: 'company-settings', icon: Settings },
+    ],
+  },
+  {
+    title: "Assets",
+    items: [
+      { label: "Fixed Assets", page: "fixed-assets", icon: Building2 },
+    ],
+  },
+  {
+    title: "POS",
+    items: [
+      { label: "POS Billing", page: "pos", icon: ShoppingCart },
     ],
   },
 ];
@@ -262,7 +290,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
               >
                 {!collapsed && (
                   <>
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider group-hover:text-gray-200 transition-colors">
+                    <span className="text-[10px] font-semibold uppercase text-[#475c8a] tracking-wider group-hover:text-[#5f7ab3] transition-colors">
                       {group.title}
                     </span>
                     {isExpanded ? (
@@ -287,15 +315,15 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                       <button
                         key={index}
                         onClick={() => setCurrentPage(item.page)}
-                        className={`w-full text-left px-2.5 py-1.5 rounded transition-all flex justify-between items-center ${
+                        className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-[12px] rounded-md transition-colors group ${
                           active 
-                            ? 'bg-[#1557b0] text-white shadow-sm font-medium' 
-                            : 'hover:bg-[#273148] text-gray-300 hover:text-white'
+                            ? 'bg-[#1557b0] text-white' 
+                            : 'text-[#cbd5e1] hover:bg-[#273148] hover:text-white'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <item.icon size={14} className={active ? 'text-white' : 'text-gray-400'} />
-                          <span className="text-[12px]">{item.label}</span>
+                        <div className="flex items-center gap-2">
+                          <item.icon size={14} className={active ? 'text-white' : 'text-[#cbd5e1] group-hover:text-white'} />
+                          <span>{item.label}</span>
                         </div>
                         {count !== undefined && count > 0 && (
                           <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${

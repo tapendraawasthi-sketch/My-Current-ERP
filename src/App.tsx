@@ -132,7 +132,21 @@ const InventoryReport = lazy(() => import('./pages/InventoryReport'));
 const RecurringVouchers = lazy(() => import('./pages/RecurringVouchers'));
 const StockCategoryMaster = lazy(() => import('./pages/StockCategoryMaster'));
 const Parties = lazy(() => import('./pages/Parties'));
-
+const MakerCheckerApproval = lazy(() => import('./pages/MakerCheckerApproval'));
+const AuditTrailLog = lazy(() => import('./pages/AuditTrailLog'));
+const PeriodLockPage = lazy(() => import('./pages/PeriodLockPage'));
+const MissingVoucherReport = lazy(() => import('./pages/MissingVoucherReport'));
+const CreditLimitManager = lazy(() => import('./pages/CreditLimitManager'));
+const Quotation = lazy(() => import('./pages/Quotation'));
+const PartyReconciliation = lazy(() => import('./pages/PartyReconciliation'));
+const BatchManagement = lazy(() => import('./pages/BatchManagement'));
+const SerialNumberTracking = lazy(() => import('./pages/SerialNumberTracking'));
+const PayrollProcessing = lazy(() => import('./pages/PayrollProcessing'));
+const FixedAssetRegister = lazy(() => import('./pages/FixedAssetRegister'));
+const SmartBankReconciliation = lazy(() => import('./pages/SmartBankReconciliation'));
+const POSBilling = lazy(() => import('./pages/POSBilling'));
+const SalesPurchaseAnalysis = lazy(() => import('./pages/SalesPurchaseAnalysis'));
+const PriceHistory = lazy(() => import('./pages/PriceHistory'));
 
 import Layout from "./components/Layout";
 import { F12Provider } from './hooks/useF12Config';
@@ -229,11 +243,11 @@ const App = () => {
       case 'purchase-order-outstanding': return <PurchaseOrderOutstanding />;
       case 'debtors-aging': return <DebtorsAging />;
       case 'creditors-aging': return <CreditorsAging />;
-      case 'bank-reconciliation': return <BankReconciliation />;
+      case 'bank-reconciliation': return <SmartBankReconciliation />;
       case 'gst-reports': return <GstReports />;
       case 'tds-reports': return <TdsReports />;
       case 'vat-reports': return <VatReports />;
-      case 'payroll': return <Payroll />;
+      case 'payroll': return <PayrollProcessing />;
       case 'payroll-reports': return <PayrollReports />;
       case 'budgets': return <Budgets />;
       case 'ratio-analysis': return <RatioAnalysis />;
@@ -348,8 +362,21 @@ const App = () => {
       case 'audit-log': return <AuditLog />;
       case 'users': return <UsersManagement />;
       case 'grn': return <GoodsReceiptNote />;
+      case 'maker-checker': return <MakerCheckerApproval />;
+      case 'audit-trail': return <AuditTrailLog />;
+      case 'period-lock': return <PeriodLockPage />;
+      case 'missing-vouchers': return <MissingVoucherReport />;
+      case 'credit-limits': return <CreditLimitManager />;
+      case 'quotations': return <Quotation />;
+      case 'party-reconciliation': return <PartyReconciliation />;
+      case 'batch-management': return <BatchManagement />;
+      case 'serial-tracking': return <SerialNumberTracking />;
+      case 'fixed-assets': return <FixedAssetRegister />;
+      case 'pos': return <POSBilling />;
+      case 'sales-purchase-analysis': return <SalesPurchaseAnalysis />;
+      case 'price-history': return <PriceHistory />;
 
-            default:
+      default:
         return (
           <div className="flex flex-col items-center justify-center py-16 text-center bg-[#EBF5E2] border border-[#000000] rounded-lg p-8 h-full shadow-sm animate-fadeIn">
             <div className="w-16 h-16 bg-[#D4EABD] rounded-full flex items-center justify-center mb-4 border border-[#000000]">
