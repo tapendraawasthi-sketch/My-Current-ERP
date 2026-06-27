@@ -15,7 +15,7 @@ const GeneralLedger: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [options, setOptions] = useState({});
-  const ledgerAccounts = useMemo(() => accounts.filter((a) => !a.isGroup && a.isActive), [accounts]);
+  const ledgerAccounts = useMemo(() => (accounts || []).filter((a) => !a.isGroup && a.isActive), [accounts]);
 
   const [accountId, setAccountId] = useState("");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "2026-07-16");
@@ -35,16 +35,16 @@ const GeneralLedger: React.FC = () => {
     let baseOpSign: "DR" | "CR" = "DR";
     if (isDr) { baseOp = opDr - opCr; baseOpSign = baseOp >= 0 ? "DR" : "CR"; }
     else { baseOp = opCr - opDr; baseOpSign = baseOp >= 0 ? "CR" : "DR"; }
-    return computeLedgerBalance(accountId, vouchers, [], startDate, endDate, Math.abs(baseOp), baseOpSign);
+    return computeLedgerBalance(accountId, vouchers || [], [], startDate, endDate, Math.abs(baseOp), baseOpSign);
   }, [accountId, selected, vouchers, startDate, endDate]);
 
   const columns = [
     { key: "dateBS", label: "Date" },
     { key: "voucherNo", label: "Voucher No" },
     { key: "narration", label: "Narration" },
-    { key: "debit", label: "Debit", align: "right" },
-    { key: "credit", label: "Credit", align: "right" },
-    { key: "runningBalance", label: "Balance", align: "right" },
+    { key: "debit", label: "Debit", align: "right" as const },
+    { key: "credit", label: "Credit", align: "right" as const },
+    { key: "runningBalance", label: "Balance", align: "right" as const },
   ];
 
   const data = (ledgerData?.transactions || []).map((r) => ({
@@ -58,7 +58,7 @@ const GeneralLedger: React.FC = () => {
     <ReportShell
       title="General Ledger"
       subtitle={selected?.name || ""}
-      companyName={companySettings?.companyNameEn}
+      companyName={companySettings?.companyNameEn || companySettings?.name || "Company"}
       periodText={`From ${startDate} to ${endDate}`}
       onPrint={() => window.print()}
       onExport={() => selected && ledgerData && exportLedgerToExcel(selected.name, ledgerData.transactions as any)}

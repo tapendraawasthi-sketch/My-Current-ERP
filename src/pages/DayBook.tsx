@@ -16,13 +16,13 @@ const DayBook: React.FC = () => {
   const from = currentFiscalYear?.startDate;
   const to = currentFiscalYear?.endDate;
 
-  const data = useMemo(() => vouchers
-    .filter(v => !from || v.date >= from)
-    .filter(v => !to || v.date <= to)
+  const data = useMemo(() => (vouchers || [])
+    .filter(v => !from || (v.date && v.date >= from))
+    .filter(v => !to || (v.date && v.date <= to))
     .map(v => ({
-      date: v.date,
-      type: v.type,
-      voucherNo: v.voucherNo,
+      date: v.date || "",
+      type: v.type || "",
+      voucherNo: v.voucherNo || "",
       narration: v.narration || "—",
       amount: formatNumber(v.totalDebit || v.totalCredit || 0),
     })), [vouchers, from, to]);
@@ -32,11 +32,18 @@ const DayBook: React.FC = () => {
     { key: "voucherNo", label: "Voucher No" },
     { key: "type", label: "Type" },
     { key: "narration", label: "Narration" },
-    { key: "amount", label: "Amount", align: "right" },
+    { key: "amount", label: "Amount", align: "right" as const },
   ];
 
   return (
-    <ReportShell title="Day Book" subtitle="All vouchers by date" companyName={companySettings?.companyNameEn} periodText={`From ${from} to ${to}`} onPrint={() => window.print()} onOptions={() => setOptionsOpen(true)}>
+    <ReportShell 
+      title="Day Book" 
+      subtitle="All vouchers by date" 
+      companyName={companySettings?.companyNameEn || companySettings?.name || "Company"} 
+      periodText={`From ${from || "Start"} to ${to || "End"}`} 
+      onPrint={() => window.print()} 
+      onOptions={() => setOptionsOpen(true)}
+    >
       <ReportGrid columns={columns} data={data} />
       <ReportOptionsModal open={optionsOpen} onClose={() => setOptionsOpen(false)} onApply={setOptions} initial={options} />
     </ReportShell>
