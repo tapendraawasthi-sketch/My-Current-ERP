@@ -1,0 +1,1 @@
+import React from 'react'; export default function Budgets() { return <div>Budgets Under Construction</div>; }
