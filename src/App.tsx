@@ -134,7 +134,10 @@ const App = () => {
       case 'item-master': return <ItemMaster />;
       case 'unit-conversion': return <UnitConversionMaster />;
       case 'bill-sundry': return <BillSundryMaster />;
-      case 'configuration': return <ConfigurationHub />;
+      case 'configuration':
+      case 'settings':
+      case 'company/settings':
+      case '/company/settings': return <ConfigurationHub />;
       case 'memorandum-voucher': return <MemorandumVoucher />;
       case 'sales-register': return <SalesRegister />;
       case 'purchase-register': return <PurchaseRegister />;
@@ -175,16 +178,23 @@ const App = () => {
       case 'f11-features': return <F11CompanyFeatures />;
       case 'data-export-import': return <DataExportImport />;
       case 'cbms-dashboard': return <CbmsDashboard />;
-      default:
+            default:
         return (
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-gray-200 rounded-lg p-6 h-full">
-            <h2 className="text-[15px] font-semibold text-gray-800">404 - Page Not Found</h2>
-            <p className="text-[11px] text-gray-500 mt-1">The requested page "{currentPage}" could not be found.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-[#EBF5E2] border border-[#000000] rounded-lg p-8 h-full shadow-sm animate-fadeIn">
+            <div className="w-16 h-16 bg-[#D4EABD] rounded-full flex items-center justify-center mb-4 border border-[#000000]">
+              <svg className="w-8 h-8 text-[#000000]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h2 className="text-[16px] font-bold text-[#000000] tracking-tight mb-2">Module Under Development</h2>
+            <p className="text-[12px] text-[#000000] max-w-md mx-auto mb-6">
+              The <span className="font-semibold px-1 py-0.5 bg-[#D4EABD] rounded text-[#000000] border border-[#9DC07A]">"{currentPage}"</span> module is currently under active development. This feature will be available in an upcoming update.
+            </p>
             <button
               onClick={() => useStore.getState().setCurrentPage("dashboard")}
-              className="mt-4 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md cursor-pointer"
+              className="h-9 px-5 bg-white hover:bg-[#D4EABD] text-[#000000] text-[12px] font-bold rounded cursor-pointer border border-[#000000] transition-colors shadow-[2px_2px_0px_#000000] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
             >
-              Go to Dashboard
+              Return to Dashboard
             </button>
           </div>
         );
@@ -272,3 +282,4 @@ const App = () => {
 };
 
 export default App;
+
