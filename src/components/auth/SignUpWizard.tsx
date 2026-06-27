@@ -129,16 +129,16 @@ export default function SignUpWizard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f0f4ff] via-white to-[#f0f4ff] flex items-center justify-center p-6">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
-        <div className="relative h-1 bg-[#EBF5E2] rounded-full overflow-hidden mb-6">
+        <div className="relative h-1 bg-[#f9fafb] rounded-full overflow-hidden mb-6">
           <div
-            className="absolute top-0 left-0 h-full bg-[#3D6B25] transition-all duration-300"
+            className="absolute top-0 left-0 h-full bg-[#1557b0] transition-all duration-300"
             style={{ width: `${(currentStep / steps.length) * 100}%` }}
           />
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#000000] mb-2">Welcome to Sutra ERP</h1>
-          <p className="text-[#000000]">Let's set up your accounting system in just 4 steps</p>
+          <h1 className="text-3xl font-bold text-[#1f2937] mb-2">Welcome to Sutra ERP</h1>
+          <p className="text-[#1f2937]">Let's set up your accounting system in just 4 steps</p>
         </div>
 
         <div className="mb-8">
@@ -151,24 +151,24 @@ export default function SignUpWizard() {
                       currentStep > step.id
                         ? "bg-green-500"
                         : currentStep === step.id
-                          ? "bg-[#3D6B25]"
-                          : "bg-[#EBF5E2] text-[#000000]"
+                          ? "bg-[#1557b0]"
+                          : "bg-[#f9fafb] text-[#1f2937]"
                     }`}
                   >
                     {currentStep > step.id ? (
-                      <CheckCircle className="w-6 h-6 text-[#000000]" />
+                      <CheckCircle className="w-6 h-6 text-[#1f2937]" />
                     ) : (
-                      <span className={currentStep === step.id ? "text-white" : "text-[#000000]"}>
+                      <span className={currentStep === step.id ? "text-white" : "text-[#1f2937]"}>
                         {step.id}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs mt-2 text-[#000000] font-medium">{step.name}</span>
+                  <span className="text-xs mt-2 text-[#1f2937] font-medium">{step.name}</span>
                 </div>
                 {index < steps.length - 1 && (
                   <div
                     className={`flex-1 h-1 mx-2 ${
-                      currentStep > step.id ? "bg-green-500" : "bg-[#EBF5E2]"
+                      currentStep > step.id ? "bg-green-500" : "bg-[#f9fafb]"
                     }`}
                   />
                 )}
@@ -185,21 +185,21 @@ export default function SignUpWizard() {
           <button
             onClick={handleBack}
             disabled={currentStep === 1}
-            className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="h-8 px-3 bg-white border border-[#d1d5db] text-[#1f2937] text-[12px] font-medium rounded-md hover:bg-[#f9fafb] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Previous
           </button>
           {currentStep < 4 ? (
             <button
               onClick={handleNext}
-              className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
             >
               Next
             </button>
           ) : (
             <button
               onClick={handleFinish}
-              className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
             >
               Finish & Launch
             </button>

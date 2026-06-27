@@ -1,3 +1,4 @@
+throw new Error("LEGACY SCRIPT DO NOT RUN");
 const { Project, SyntaxKind } = require('ts-morph');
 const project = new Project();
 const sourceFile = project.addSourceFileAtPath('src/store/useStore.ts');

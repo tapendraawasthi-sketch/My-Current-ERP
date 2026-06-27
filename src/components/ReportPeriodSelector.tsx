@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar } from "lucide-react";
 import NepaliDatePicker from "./ui/NepaliDatePicker";
+import { adToBS } from "../lib/nepaliDate";
 
 export interface ReportFilters {
   periodType: "today" | "week" | "month" | "quarter" | "fy" | "custom";
@@ -148,24 +149,19 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
   };
 
   const formatNepaliDate = (date: Date): string => {
-    const months = [
-      "Baisakh",
-      "Jestha",
-      "Ashadh",
-      "Shrawan",
-      "Bhadra",
-      "Ashwin",
-      "Kartik",
-      "Mangsir",
-      "Poush",
-      "Magh",
-      "Falgun",
-      "Chaitra",
-    ];
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = months[date.getMonth() % 12];
-    const year = date.getFullYear() + 57;
-    return `${day} ${month} ${year}`;
+    try {
+      const bs = adToBS(date);
+      const months = [
+        "Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin",
+        "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra",
+      ];
+      const day = bs.day.toString().padStart(2, "0");
+      const month = months[bs.month - 1];
+      const year = bs.year;
+      return `${day} ${month} ${year}`;
+    } catch {
+      return "";
+    }
   };
 
   return (

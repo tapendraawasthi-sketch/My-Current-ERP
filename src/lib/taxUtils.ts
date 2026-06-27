@@ -24,6 +24,30 @@ export interface VATComputation {
 }
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
+export const VAT_RATE = 0.13;
+
+export function computeVatExclusive(baseAmount: number) {
+  const taxableAmount = round2(baseAmount);
+  const vatAmount = round2(taxableAmount * VAT_RATE);
+
+  return {
+    taxableAmount,
+    vatAmount,
+    totalAmount: round2(taxableAmount + vatAmount),
+  };
+}
+
+export function computeVatInclusive(inclusiveAmount: number) {
+  const totalAmount = round2(inclusiveAmount);
+  const taxableAmount = round2(totalAmount / (1 + VAT_RATE));
+  const vatAmount = round2(totalAmount - taxableAmount);
+
+  return {
+    taxableAmount,
+    vatAmount,
+    totalAmount,
+  };
+}
 
 export function computeInvoiceVAT(lines: LineForVAT[], vatRate = 13): VATComputation {
   let subtotal = 0;
@@ -157,17 +181,18 @@ export function computeVatAnnexA(
 
   const salesInvoices = invoices.filter(
     (inv) =>
-      (inv.type === "sales-invoice" || inv.type === "sales_invoice") &&
-      inv.status !== "cancelled" &&
+      (inv.status === "posted" || inv.status === "POSTED") &&
+      (inv.type === "sales-invoice" || inv.type === "sales_invoice" || inv.type === "sales-return" || inv.type === "sales_return") &&
       isBetween(inv.date, startDate, endDate)
   );
 
   let taxable = 0, vat = 0, exempt = 0, total = 0;
   const rows: AnnexRow[] = salesInvoices.map((inv, idx) => {
-    const t = round2(Number(inv.taxableAmount) || 0);
-    const v = round2(Number(inv.vatAmount) || 0);
-    const e = round2(Number(inv.exemptAmount) || 0);
-    const tot = round2(Number(inv.grandTotal) || t + v + e);
+    const sign = (inv.type === "sales-return" || inv.type === "sales_return") ? -1 : 1;
+    const t = round2(Number(inv.taxableAmount) || 0) * sign;
+    const v = round2(Number(inv.vatAmount) || 0) * sign;
+    const e = round2(Number(inv.exemptAmount) || 0) * sign;
+    const tot = round2(Number(inv.grandTotal) || (t + v + e)) * sign;
     taxable += t; vat += v; exempt += e; total += tot;
     return {
       sn: idx + 1,
@@ -208,17 +233,18 @@ export function computeVatAnnexB(
 
   const purchaseInvoices = invoices.filter(
     (inv) =>
-      (inv.type === "purchase-invoice" || inv.type === "purchase_invoice") &&
-      inv.status !== "cancelled" &&
+      (inv.status === "posted" || inv.status === "POSTED") &&
+      (inv.type === "purchase-invoice" || inv.type === "purchase_invoice" || inv.type === "purchase-return" || inv.type === "purchase_return") &&
       isBetween(inv.date, startDate, endDate)
   );
 
   let taxable = 0, vat = 0, exempt = 0, total = 0;
   const rows: AnnexRow[] = purchaseInvoices.map((inv, idx) => {
-    const t = round2(Number(inv.taxableAmount) || 0);
-    const v = round2(Number(inv.vatAmount) || 0);
-    const e = round2(Number(inv.exemptAmount) || 0);
-    const tot = round2(Number(inv.grandTotal) || t + v + e);
+    const sign = (inv.type === "purchase-return" || inv.type === "purchase_return") ? -1 : 1;
+    const t = round2(Number(inv.taxableAmount) || 0) * sign;
+    const v = round2(Number(inv.vatAmount) || 0) * sign;
+    const e = round2(Number(inv.exemptAmount) || 0) * sign;
+    const tot = round2(Number(inv.grandTotal) || (t + v + e)) * sign;
     taxable += t; vat += v; exempt += e; total += tot;
     return {
       sn: idx + 1,

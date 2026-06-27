@@ -78,12 +78,20 @@ export default function TdsReport() {
     }
   };
 
-  let totalGross = 0;
-  let totalTds = 0;
-  let totalNet = 0;
+  const { totalGross, totalTds, totalNet } = useMemo(() => {
+    const round2 = (num: number) => Math.round((Number(num) || 0) * 100) / 100;
+    return filteredEntries.reduce(
+      (acc, e) => ({
+        totalGross: round2(acc.totalGross + Number(e.grossAmount || 0)),
+        totalTds: round2(acc.totalTds + Number(e.tdsAmount || 0)),
+        totalNet: round2(acc.totalNet + Number(e.netAmount || 0)),
+      }),
+      { totalGross: 0, totalTds: 0, totalNet: 0 },
+    );
+  }, [filteredEntries]);
 
   return (
-    <div style={{ background: "#e8e4f0", padding: 12 }}>
+    <div className="p-3 bg-[#f5f6fa] min-h-full">
       <PillTitle title="TDS Report" />
       <FormPanel>
         <div className="flex flex-col gap-6 animate-fadeIn select-none">
@@ -143,13 +151,10 @@ export default function TdsReport() {
                 const secGross = entries.reduce((acc, e) => acc + e.grossAmount, 0);
                 const secTds = entries.reduce((acc, e) => acc + e.tdsAmount, 0);
                 const secNet = entries.reduce((acc, e) => acc + e.netAmount, 0);
-                totalGross += secGross;
-                totalTds += secTds;
-                totalNet += secNet;
 
                 return (
                   <Card key={sec} border padding="none" className="overflow-hidden">
-                    <div className="bg-[#1e2433] px-3 py-2 border-b border-[#9DC07A] flex justify-between items-center">
+                    <div className="bg-[#1557b0] px-3 py-2 text-white text-[12px] font-semibold flex justify-between items-center">
                       <h3 className="text-[13px] font-bold text-white">Section {sec}</h3>
                       <div className="text-[11px] font-medium text-white/80">
                         {entries.length} Entries
@@ -157,19 +162,19 @@ export default function TdsReport() {
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-left whitespace-nowrap">
-                        <thead className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+                        <thead className="bg-[#f5f6fa] border-b border-gray-200">
                           <tr>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Date (BS)</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Party</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">PAN</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Payment Nature</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Gross Amount</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">TDS Rate</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">TDS Amount</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Net Paid</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Status</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Challan No</th>
-                            <th className="px-3 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-center">Action</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date (BS)</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">PAN</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Payment Nature</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Gross Amount</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">TDS Rate</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">TDS Amount</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Net Paid</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Challan No</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-center">Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 bg-white">

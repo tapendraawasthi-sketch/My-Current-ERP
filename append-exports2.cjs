@@ -1,3 +1,4 @@
+throw new Error("LEGACY SCRIPT DO NOT RUN");
 const fs = require('fs');
 
 fs.appendFileSync('src/lib/accounting.ts', '\nexport const computeProfitLoss = () => ({});\nexport const computeBalanceSheet = () => ({});\nexport const computeCashFlow = () => ({});\nexport const computeOutstandingReceivables = () => [];\nexport const computeOutstandingPayables = () => [];\nexport const getAccountBalance = () => 0;\n');

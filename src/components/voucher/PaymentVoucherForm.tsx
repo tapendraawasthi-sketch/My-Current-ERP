@@ -546,7 +546,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
           <h2 className="text-lg font-bold text-[#000000]">Payment Voucher Saved</h2>
           <p className="text-xs text-[#000000] mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(totals.net)} paid via{" "}
-            {payMode.toUpperCase()}
+            {payMode ? payMode.toUpperCase() : 'CASH'}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -592,7 +592,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="danger" size="sm">
+          <Badge variant="info" size="sm">
             PAYMENT
           </Badge>
           <Badge

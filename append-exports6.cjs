@@ -1,3 +1,4 @@
+throw new Error("LEGACY SCRIPT DO NOT RUN");
 const fs = require('fs');
 
 fs.appendFileSync('src/lib/exportUtils.ts', '\nexport const exportTdsReturnToExcel = () => {};\n');

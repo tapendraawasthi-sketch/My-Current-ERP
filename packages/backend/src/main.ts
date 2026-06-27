@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import { Logger } from '@nestjs/common';
-import * as pino from 'pino-http';
+import pinoHttp from 'pino-http';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,18 +17,25 @@ async function bootstrap() {
   app.use(compression());
   
   // CORS
+  const allowedOrigins = (process.env.CORS_ORIGIN || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+    
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'https://busy.vercel.app',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked for origin ${origin}`));
+      }
+    },
     credentials: true,
   });
   
   // Logging with pino
-  app.use(pino({
+  app.use(pinoHttp({
     level: process.env.LOG_LEVEL || 'info',
-    transport: {
-      target: 'pino/file',
-      options: { destination: '/dev/stdout' }, // Log to stdout (Render requirement)
-    },
   }));
   
   // Health check endpoint (required by Render)

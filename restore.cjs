@@ -1,3 +1,4 @@
+throw new Error("LEGACY SCRIPT DO NOT RUN");
 const fs = require('fs');
 const oldApp = require('child_process').execSync('git show HEAD:src/App.tsx').toString();
 

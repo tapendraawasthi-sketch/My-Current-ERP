@@ -3,8 +3,8 @@ services:
     name: sutra-erp
     env: node
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: node src/server.js
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    startCommand: node serve.mjs
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV

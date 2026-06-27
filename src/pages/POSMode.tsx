@@ -172,6 +172,11 @@ export default function POSMode() {
       return;
     }
 
+    if (selectedPayment === "cash" && cashTendered < grandTotal) {
+      toast.error(`Cash received is short by Rs. ${formatNumber(grandTotal - cashTendered)}`);
+      return;
+    }
+
     const todayAD = new Date().toISOString().split("T")[0];
     const todayBS = ADToBSString(todayAD);
     const invoiceNo = `INV-${Date.now().toString().slice(-6)}`;
@@ -233,13 +238,15 @@ export default function POSMode() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "F2") {
         e.preventDefault();
+        e.stopPropagation();
         handlePrintAndNew();
       } else if (e.key === "Escape") {
+        e.stopPropagation();
         clearCart();
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [cart, customerName, selectedPayment, grandTotal]);
 
   const dateNow = new Date().toLocaleDateString();

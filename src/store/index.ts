@@ -914,6 +914,11 @@ export const useStore = create<AppState>((set, get) => ({
     }
 
     await get().loadVoucherTypeMasters();
+    } catch (err) {
+      console.error("initializeApp failed:", err);
+    } finally {
+      set({ isInitializing: false });
+    }
   },
 
   login: async (username: string, password: string): Promise<boolean> => {

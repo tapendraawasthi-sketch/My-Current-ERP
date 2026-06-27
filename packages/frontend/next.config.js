@@ -1,12 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    domains: ['busy-erp-uploads.s3.amazonaws.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'busy-erp-uploads.s3.amazonaws.com',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   headers: async () => {

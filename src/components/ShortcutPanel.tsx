@@ -10,7 +10,6 @@ export default function ShortcutPanel() {
   const [editCombo, setEditCombo] = useState("");
   const [saving, setSaving] = useState(false);
 
-  if (!showHelp) return null;
 
   const handleEdit = (s: Shortcut) => {
     setEditingId(s.id);

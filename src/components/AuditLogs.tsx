@@ -21,8 +21,8 @@ const ACTION_COLORS: Record<string, string> = {
   CREATE: "bg-green-50 text-green-700 border border-green-200",
   UPDATE: "bg-amber-50 text-amber-700 border border-amber-200",
   DELETE: "bg-red-50 text-red-700 border border-red-200",
-  LOGIN: "bg-[#D4EABD] text-[#000000] border border-[#9DC07A]",
-  LOGOUT: "bg-[#EBF5E2] text-[#000000] border border-[#9DC07A]",
+  LOGIN: "bg-[#e5e7eb] text-[#1f2937] border border-[#d1d5db]",
+  LOGOUT: "bg-[#f9fafb] text-[#1f2937] border border-[#d1d5db]",
 };
 
 const AuditLogs: React.FC = () => {
@@ -98,8 +98,8 @@ const AuditLogs: React.FC = () => {
     <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Secure Audit Monitor Logs</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">Sutra Built-in Irreversible Compliance Ledger</p>
+          <h1 className="text-[15px] font-semibold text-[#1f2937]">Secure Audit Monitor Logs</h1>
+          <p className="text-[11px] text-[#1f2937] mt-0.5">Sutra Built-in Irreversible Compliance Ledger</p>
         </div>
       </div>
 
@@ -107,13 +107,13 @@ const AuditLogs: React.FC = () => {
       <div className="page-toolbar mb-3">
         <div className="page-toolbar-left gap-3">
           <div className="relative">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#000000] pointer-events-none" />
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1f2937] pointer-events-none" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Query security logs..."
-              className="h-8 pl-8 pr-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 pl-8 pr-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
             />
           </div>
           <select
@@ -122,7 +122,7 @@ const AuditLogs: React.FC = () => {
               setActionFilter(e.target.value);
               setPage(1);
             }}
-            className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           >
             <option value="">All Actions</option>
             <option value="CREATE">Create</option>
@@ -148,30 +148,30 @@ const AuditLogs: React.FC = () => {
           <tbody>
             {paginatedLogs.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-[#000000]">
+                <td colSpan={5} className="text-center py-8 text-[#1f2937]">
                   No operations logs matched query.
                 </td>
               </tr>
             ) : (
               paginatedLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-[#e8eeff]">
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">
+                  <td className="px-3 py-[7px] text-[12px] text-[#1f2937] font-mono">
                     {new Date(log.timestamp).toLocaleString()}
                   </td>
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">
+                  <td className="px-3 py-[7px] text-[12px] text-[#1f2937] font-bold">
                     <div className="flex items-center gap-1.5 align-middle">
-                      <div className="h-5 w-5 rounded-full bg-[#EBF5E2] flex items-center justify-center font-bold text-[10px] text-[#000000]">
+                      <div className="h-5 w-5 rounded-full bg-[#f9fafb] flex items-center justify-center font-bold text-[10px] text-[#1f2937]">
                         {log.user.charAt(0).toUpperCase()}
                       </div>
                       <span>{log.user}</span>
                     </div>
                   </td>
                   <td className="px-3 py-[7px] text-[12px]">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ACTION_COLORS[log.action] || "bg-[#EBF5E2] text-[#000000]"}`}>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ACTION_COLORS[log.action] || "bg-[#f9fafb] text-[#1f2937]"}`}>
                       {log.action}
                     </span>
                   </td>
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000]">
+                  <td className="px-3 py-[7px] text-[12px] text-[#1f2937]">
                     {log.description}
                   </td>
                   <td className="px-3 py-[7px] text-[12px] text-center">

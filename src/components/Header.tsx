@@ -48,8 +48,8 @@ const Header: React.FC = () => {
 
   const hdrStyle: React.CSSProperties = {
     height: 40,
-    background: "#D4EABD",
-    borderBottom: "1px solid #000000",
+    background: "#ffffff",
+    borderBottom: "1px solid #e5e7eb",
     padding: "0 12px",
     display: "flex",
     alignItems: "center",
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
     top: 0,
     zIndex: 40,
     userSelect: "none",
-    color: "#000000",
+    color: "#374151",
     flexShrink: 0,
   };
 
@@ -68,7 +68,7 @@ const Header: React.FC = () => {
     borderRadius: 4,
     padding: 6,
     cursor: "pointer",
-    color: "#000000",
+    color: "#374151",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -79,12 +79,12 @@ const Header: React.FC = () => {
     right: 0,
     top: "100%",
     marginTop: 4,
-    background: "#EBF5E2",
-    border: "1px solid #000000",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
     borderRadius: 4,
     minWidth: 200,
     zIndex: 1000,
-    boxShadow: "2px 2px 8px rgba(0,0,0,0.2)",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
   };
 
   const dropdownItem: React.CSSProperties = {
@@ -94,7 +94,7 @@ const Header: React.FC = () => {
     padding: "8px 14px",
     fontSize: 12,
     cursor: "pointer",
-    color: "#000000",
+    color: "#374151",
     background: "transparent",
     border: "none",
     width: "100%",
@@ -120,28 +120,28 @@ const Header: React.FC = () => {
             height: 28,
             padding: "0 10px",
             fontSize: 12,
-            background: "#EBF5E2",
-            border: "1px solid #000000",
+            background: "#ffffff",
+            border: "1px solid #d1d5db",
             borderRadius: 3,
             cursor: "pointer",
-            color: "#000000",
+            color: "#374151",
           }}
         >
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <Search style={{ width: 13, height: 13, color: "#000000" }} />
+            <Search style={{ width: 13, height: 13, color: "#374151" }} />
             <span>Search anything...</span>
           </span>
-          <kbd style={{ fontSize: 9, background: "#D4EABD", border: "1px solid #000000", borderRadius: 2, padding: "1px 4px", color: "#000000" }}>/</kbd>
+          <kbd style={{ fontSize: 9, background: "#f3f4f6", border: "1px solid #d1d5db", borderRadius: 2, padding: "1px 4px", color: "#374151" }}>/</kbd>
         </button>
-        <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
+      <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Company name center */}
       <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none" }} className="hidden lg:block">
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>
           {companySettings?.name || "Sutra ERP"}
         </div>
-        <div style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#000000" }}>
+        <div style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#6b7280" }}>
           {currentFiscalYear?.name || "FY 2083/84"}
         </div>
       </div>

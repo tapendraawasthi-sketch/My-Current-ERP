@@ -37,7 +37,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
 
     if (score <= 2) return { score, label: "Weak", color: "bg-red-500" };
     if (score <= 3) return { score, label: "Fair", color: "bg-yellow-500" };
-    if (score <= 4) return { score, label: "Good", color: "bg-[#D4EABD]" };
+    if (score <= 4) return { score, label: "Good", color: "bg-[#e5e7eb]" };
     return { score, label: "Strong", color: "bg-green-500" };
   };
 
@@ -71,7 +71,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Change Password</h2>
-          <button onClick={onClose} className="text-[#000000] hover:text-[#000000]">
+          <button onClick={onClose} className="text-[#1f2937] hover:text-[#1f2937]">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -79,7 +79,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isOwnPassword && (
             <div>
-              <label className="block text-sm font-medium text-[#000000] mb-1">
+              <label className="block text-sm font-medium text-[#1f2937] mb-1">
                 Current Password *
               </label>
               <div className="relative">
@@ -95,7 +95,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
                   onClick={() =>
                     setShowPassword({ ...showPassword, current: !showPassword.current })
                   }
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#1f2937]"
                 >
                   {showPassword.current ? (
                     <EyeOff className="w-4 h-4" />
@@ -108,7 +108,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[#000000] mb-1">
+            <label className="block text-sm font-medium text-[#1f2937] mb-1">
               New Password * (min 6 chars, at least 1 number)
             </label>
             <div className="relative">
@@ -123,7 +123,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
               <button
                 type="button"
                 onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000]"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#1f2937]"
               >
                 {showPassword.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -131,20 +131,20 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
             {formData.newPassword && (
               <div className="mt-2">
                 <div className="flex items-center space-x-2">
-                  <div className="flex-1 bg-[#EBF5E2] rounded-full h-2">
+                  <div className="flex-1 bg-[#f9fafb] rounded-full h-2">
                     <div
                       className={`h-2 rounded-full transition-all ${strength.color}`}
                       style={{ width: `${(strength.score / 5) * 100}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium text-[#000000]">{strength.label}</span>
+                  <span className="text-xs font-medium text-[#1f2937]">{strength.label}</span>
                 </div>
               </div>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#000000] mb-1">
+            <label className="block text-sm font-medium text-[#1f2937] mb-1">
               Confirm New Password *
             </label>
             <div className="relative">
@@ -158,7 +158,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
               <button
                 type="button"
                 onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000]"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#1f2937]"
               >
                 {showPassword.confirm ? (
                   <EyeOff className="w-4 h-4" />
@@ -176,7 +176,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
+              className="px-4 py-2 border border-[#d1d5db] rounded-lg hover:bg-[#f9fafb]"
             >
               Cancel
             </button>

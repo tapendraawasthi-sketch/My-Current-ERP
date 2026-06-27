@@ -28,18 +28,5 @@ try {
   writeFileSync(outPath, html, 'utf-8');
   console.log('✓ Generated dist/client/index.html (' + html.length + ' bytes)');
 } catch (error) {
-  console.warn('WARNING: SSR failed during index generation, wrote fallback shell.', error);
-  const fallbackHtml = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sutra ERP</title>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>`;
-  const outPath = join(__dirname, '..', 'dist', 'client', 'index.html');
-  writeFileSync(outPath, fallbackHtml, 'utf-8');
+  console.warn('WARNING: SSR failed during index generation. Using default Vite index.html fallback.', error);
 }

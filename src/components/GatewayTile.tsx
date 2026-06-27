@@ -12,18 +12,14 @@ const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, subtitle, onCli
     <button
       type="button"
       onClick={onClick}
-      className="hover:bg-[#B8D4A0] transition-colors"
+      className="hover:bg-gray-50 transition-colors bg-white border border-gray-200 text-gray-800 rounded shadow-sm"
       style={{
         minWidth: 145,
         flex: "1 1 145px",
-        background: "#D4EABD",
-        border: "1px solid #000",
-        color: "#000",
-        padding: "7px 9px",
-        borderRadius: 0,
+        padding: "10px 12px",
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       }}
     >
       <div

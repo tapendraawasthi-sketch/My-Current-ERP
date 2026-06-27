@@ -56,11 +56,11 @@ const TYPE_CONFIG: Record<
   { bg: string; text: string; border: string; badge: string; dot: string; label: string }
 > = {
   [AccountType.ASSET]: {
-    bg: "bg-[#D4EABD]",
-    text: "text-[#000000]",
+    bg: "bg-[#e5e7eb]",
+    text: "text-[#1f2937]",
     border: "border-l-blue-600",
-    badge: "bg-[#D4EABD] text-[#000000] border-[#9DC07A]",
-    dot: "bg-[#D4EABD]",
+    badge: "bg-[#e5e7eb] text-[#1f2937] border-[#d1d5db]",
+    dot: "bg-[#e5e7eb]",
     label: "Assets",
   },
   [AccountType.LIABILITY]: {
@@ -598,10 +598,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           if (!accCode || !accName) { failCount++; continue; }
           let resolvedParentId: string | undefined;
           if (pCodeOrId) {
-            const parentDef = accounts.find((a) => a.id === pCodeOrId || a.code === pCodeOrId);
+            const parentDef = tempAccounts.find((a) => a.id === pCodeOrId || a.code === pCodeOrId);
             if (parentDef) resolvedParentId = parentDef.id;
           }
-          await addAccount({
+          const newAcc = await addAccount({
             code: accCode,
             name: accName,
             nameNepali: accNepali,
@@ -615,6 +615,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             openingBalanceCr: balDrCr.toLowerCase() === "cr" ? oBalance : 0,
             openingBalanceDate: currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
           });
+          tempAccounts.push(newAcc);
           successCount++;
         }
         toast.success(`Import complete: ${successCount} accounts added, ${failCount} skipped.`);
@@ -692,8 +693,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
   useEffect(() => { setPage(1); }, [searchTerm, activeTab]);
 
   // ─── SHARED LEDGER FORM JSX ───────────────────────────────────────────────────
-  const renderLedgerForm = (onSubmit: (e: React.FormEvent) => void) => (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+  const renderLedgerForm = (onSubmit: (e: React.FormEvent) => void, formId: string) => (
+    <form id={formId} onSubmit={onSubmit} className="flex flex-col gap-4">
       {/* Type + Level row */}
       <div className="grid grid-cols-2 gap-3">
         <Select
@@ -727,8 +728,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       </div>
 
       {/* Under (Parent) */}
-      <div className="rounded-lg border border-[#9DC07A] bg-[#EBF5E2] p-3 flex flex-col gap-2">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#000000]">Under (Parent Group)</span>
+      <div className="rounded-lg border border-[#d1d5db] bg-[#f9fafb] p-3 flex flex-col gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f2937]">Under (Parent Group)</span>
         <Select
           label=""
           options={accounts
@@ -747,7 +748,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           searchable={true}
         />
         {parentId && (
-          <p className="text-[10px] text-[#000000] font-medium">
+          <p className="text-[10px] text-[#1f2937] font-medium">
             Account type and level are auto-set based on the selected parent group.
           </p>
         )}
@@ -763,15 +764,15 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           required
         />
         <div className="flex flex-col gap-1 justify-end pb-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#000000] mb-1">Status</span>
-          <label className="inline-flex items-center gap-2 cursor-pointer border border-[#9DC07A] bg-white rounded-md px-3 py-2">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f2937] mb-1">Status</span>
+          <label className="inline-flex items-center gap-2 cursor-pointer border border-[#d1d5db] bg-white rounded-md px-3 py-2">
             <input
               type="checkbox"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="rounded text-[#000000] focus:ring-[#3D6B25]"
+              className="rounded text-[#1f2937] focus:ring-[#1557b0]"
             />
-            <span className="text-xs font-medium text-[#000000]">Active</span>
+            <span className="text-xs font-medium text-[#1f2937]">Active</span>
           </label>
         </div>
       </div>
@@ -793,8 +794,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
       {/* Opening Balance — ledger/subledger only */}
       {!["group", "subgroup"].includes(level) && (
-        <div className="rounded-lg border border-[#9DC07A] bg-[#D4EABD]/40 p-3 flex flex-col gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#000000]">Opening Balance</span>
+        <div className="rounded-lg border border-[#d1d5db] bg-[#e5e7eb]/40 p-3 flex flex-col gap-3">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f2937]">Opening Balance</span>
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Amount"
@@ -851,8 +852,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           {/* ── TOP TOOLBAR ─────────────────────────────────────────────────────── */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-[15px] font-semibold text-[#000000]">Chart of Accounts</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">
+              <h1 className="text-[15px] font-semibold text-[#1f2937]">Chart of Accounts</h1>
+              <p className="text-[11px] text-[#1f2937] mt-0.5">
                 {viewMode === "groups" 
                   ? `${groupsOnlyList.length} account groups · ${groupsOnlyList.filter(a=>!a.parentId).length} primary`
                   : `${accounts.length} accounts · ${accounts.filter((a) => a.isGroup).length} groups · ${accounts.filter((a) => !a.isGroup).length} ledgers`
@@ -860,18 +861,18 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center rounded-md border border-[#9DC07A] bg-white overflow-hidden mr-2">
+              <div className="flex items-center rounded-md border border-[#d1d5db] bg-white overflow-hidden mr-2">
                 <button
                   type="button"
                   onClick={() => setViewMode("tree")}
-                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "tree" ? "bg-[#3D6B25] text-white" : "text-[#000000] hover:bg-[#EBF5E2]"}`}
+                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "tree" ? "bg-[#1557b0] text-white" : "text-[#1f2937] hover:bg-[#f9fafb]"}`}
                 >
                   Tree
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode("groups")}
-                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "groups" ? "bg-[#3D6B25] text-white" : "text-[#000000] hover:bg-[#EBF5E2]"}`}
+                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "groups" ? "bg-[#1557b0] text-white" : "text-[#1f2937] hover:bg-[#f9fafb]"}`}
                 >
                   List of Groups
                 </button>
@@ -880,7 +881,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 type="button"
                 onClick={collapseAll}
                 title="Collapse All"
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5 transition-colors"
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#d1d5db] bg-white text-[#1f2937] hover:bg-[#f9fafb] flex items-center gap-1.5 transition-colors"
               >
                 <ChevronRight className="h-3.5 w-3.5" /> Collapse
               </button>
@@ -888,28 +889,28 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 type="button"
                 onClick={expandAll}
                 title="Expand All"
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5 transition-colors"
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#d1d5db] bg-white text-[#1f2937] hover:bg-[#f9fafb] flex items-center gap-1.5 transition-colors"
               >
                 <ChevronDown className="h-3.5 w-3.5" /> Expand
               </button>
               <button
                 type="button"
                 onClick={() => setImportModalOpen(true)}
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5 transition-colors"
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#d1d5db] bg-white text-[#1f2937] hover:bg-[#f9fafb] flex items-center gap-1.5 transition-colors"
               >
                 <Upload className="h-3.5 w-3.5" /> Import
               </button>
               <button
                 type="button"
                 onClick={handleExportToExcel}
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#9DC07A] bg-white text-[#000000] hover:bg-[#EBF5E2] flex items-center gap-1.5 transition-colors"
+                className="h-8 px-3 text-[11px] font-medium rounded-md border border-[#d1d5db] bg-white text-[#1f2937] hover:bg-[#f9fafb] flex items-center gap-1.5 transition-colors"
               >
                 <Download className="h-3.5 w-3.5" /> Export
               </button>
               <button
                 type="button"
                 onClick={handleOpenCreateModal}
-                className="h-8 px-3 text-[11px] font-semibold rounded-md bg-[#3D6B25] hover:bg-[#2D5A1A] text-white flex items-center gap-1.5 transition-colors"
+                className="h-8 px-3 text-[11px] font-semibold rounded-md bg-[#1557b0] hover:bg-[#2D5A1A] text-white flex items-center gap-1.5 transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> New Account
               </button>
@@ -919,16 +920,16 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           {/* ── SEARCH + TABS ────────────────────────────────────────────────────── */}
           <div className="flex items-center gap-3 flex-wrap">
             <div className="relative flex-shrink-0">
-              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#000000] pointer-events-none" />
+              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1f2937] pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by name or code…"
-                className="h-8 pl-8 pr-3 text-xs border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] w-56 transition"
+                className="h-8 pl-8 pr-3 text-xs border border-[#d1d5db] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#d1d5db] w-56 transition"
               />
             </div>
-            <div className="flex items-center gap-1 border border-[#9DC07A] rounded-md bg-white p-0.5">
+            <div className="flex items-center gap-1 border border-[#d1d5db] rounded-md bg-white p-0.5">
               {(["ALL", "asset", "liability", "equity", "income", "expense"] as const).map((tab) => {
                 const cfg = tab !== "ALL" ? TYPE_CONFIG[tab as AccountType] : null;
                 const isActive2 = activeTab === tab;
@@ -939,8 +940,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                     onClick={() => setActiveTab(tab)}
                     className={`h-7 px-3 text-[11px] font-semibold rounded transition-colors flex items-center gap-1.5 ${
                       isActive2
-                        ? "bg-[#3D6B25] text-white shadow-sm"
-                        : "text-[#000000] hover:bg-[#EBF5E2] hover:text-[#000000]"
+                        ? "bg-[#1557b0] text-white shadow-sm"
+                        : "text-[#1f2937] hover:bg-[#f9fafb] hover:text-[#1f2937]"
                     }`}
                   >
                     {cfg && isActive2 && (
@@ -954,12 +955,12 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 );
               })}
             </div>
-            <div className="ml-auto flex items-center gap-1 text-[10.5px] text-[#000000] font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white border border-[#9DC07A] rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+N</kbd> New
+            <div className="ml-auto flex items-center gap-1 text-[10.5px] text-[#1f2937] font-medium">
+              <kbd className="px-1.5 py-0.5 bg-white border border-[#d1d5db] rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+N</kbd> New
               &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-[#9DC07A] rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+E</kbd> Edit
+              <kbd className="px-1.5 py-0.5 bg-white border border-[#d1d5db] rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+E</kbd> Edit
               &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-[#9DC07A] rounded text-[10px] shadow-sm font-mono mr-0.5">Del</kbd> Delete
+              <kbd className="px-1.5 py-0.5 bg-white border border-[#d1d5db] rounded text-[10px] shadow-sm font-mono mr-0.5">Del</kbd> Delete
             </div>
           </div>
 
@@ -968,20 +969,20 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
             {/* ── ACCOUNTS TABLE ────────────────────────────────────────────────── */}
             <div className="flex-1 w-full flex flex-col gap-3">
-              <div className="rounded-xl border border-[#9DC07A] bg-white overflow-hidden shadow-sm">
+              <div className="rounded-xl border border-[#d1d5db] bg-white overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                   {viewMode === "groups" ? (
                     <>
                       <table className="w-full text-xs border-collapse">
                         <thead>
-                          <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
-                            <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px]">
+                          <tr className="bg-[#f9fafb] border-b border-[#d1d5db]">
+                            <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px]">
                               Name
                             </th>
-                            <th className="px-3 py-2.5 text-center font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-24">
+                            <th className="px-3 py-2.5 text-center font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-24">
                               Primary
                             </th>
-                            <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px]">
+                            <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px]">
                               Under Group
                             </th>
                           </tr>
@@ -996,17 +997,17 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                               <tr
                                 key={account.id}
                                 onClick={() => handleOpenEditModal(account)}
-                                className="cursor-pointer hover:bg-[#D4EABD]/30 transition-colors"
+                                className="cursor-pointer hover:bg-[#e5e7eb]/30 transition-colors"
                               >
                                 <td className="px-3 py-2 text-[12px] font-medium text-[#1557b0] hover:underline">
                                   {account.name}
                                   {account.nameNepali && (
-                                    <span className="ml-1.5 text-[10px] text-[#000000]">
+                                    <span className="ml-1.5 text-[10px] text-[#1f2937]">
                                       · {account.nameNepali}
                                     </span>
                                   )}
                                 </td>
-                                <td className="px-3 py-2 text-center text-[12px] font-bold text-[#000000]">
+                                <td className="px-3 py-2 text-center text-[12px] font-bold text-[#1f2937]">
                                   {isPrimary ? "Y" : "N"}
                                 </td>
                                 <td className="px-3 py-2 text-[12px] text-[#1557b0] hover:underline">
@@ -1017,14 +1018,14 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                           })}
                           {groupsOnlyList.length === 0 && (
                             <tr>
-                              <td colSpan={3} className="text-center py-10 text-[11px] text-[#000000]">
+                              <td colSpan={3} className="text-center py-10 text-[11px] text-[#1f2937]">
                                 No account groups found.
                               </td>
                             </tr>
                           )}
                         </tbody>
                       </table>
-                      <div className="px-3 py-1.5 border-t border-[#9DC07A] bg-[#EBF5E2] flex items-center gap-4 text-[10px] text-[#000000]">
+                      <div className="px-3 py-1.5 border-t border-[#d1d5db] bg-[#f9fafb] flex items-center gap-4 text-[10px] text-[#1f2937]">
                         <span>Entry No : 1 / {groupsOnlyList.length}</span>
                         <span>|</span>
                         <span>Total Groups : {groupsOnlyList.length}</span>
@@ -1037,39 +1038,39 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                   ) : (
                   <table className="w-full text-xs border-collapse">
                     <thead>
-                      <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
+                      <tr className="bg-[#f9fafb] border-b border-[#d1d5db]">
                         <th className="w-10 px-3 py-2.5 text-center">
                           <button
                             type="button"
                             onClick={selectAllFlattened}
-                            className="text-[#000000] hover:text-[#000000]"
+                            className="text-[#1f2937] hover:text-[#1f2937]"
                             title="Select all"
                           >
                             {getActiveSelectedList().length > 0 &&
                             getActiveSelectedList().length ===
                               flattenedRows.filter((r) => !r.id.startsWith("root-")).length ? (
-                              <CheckSquare className="h-4 w-4 text-[#000000]" />
+                              <CheckSquare className="h-4 w-4 text-[#1f2937]" />
                             ) : (
                               <Square className="h-4 w-4" />
                             )}
                           </button>
                         </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-24">
+                        <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-24">
                           Code
                         </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px]">
+                        <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px]">
                           Account Name
                         </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-28">
+                        <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-28">
                           Type
                         </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-24">
+                        <th className="px-3 py-2.5 text-left font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-24">
                           Level
                         </th>
-                        <th className="px-3 py-2.5 text-right font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-40">
+                        <th className="px-3 py-2.5 text-right font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-40">
                           Closing Balance
                         </th>
-                        <th className="px-3 py-2.5 text-center font-semibold text-[#000000] uppercase tracking-wider text-[10px] w-20">
+                        <th className="px-3 py-2.5 text-center font-semibold text-[#1f2937] uppercase tracking-wider text-[10px] w-20">
                           Actions
                         </th>
                       </tr>
@@ -1079,7 +1080,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                       {isSearchActive ? (
                         paginatedData.length === 0 ? (
                           <tr>
-                            <td colSpan={7} className="text-center py-14 text-[#000000] text-xs font-medium">
+                            <td colSpan={7} className="text-center py-14 text-[#1f2937] text-xs font-medium">
                               <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
                               No accounts match your search.
                             </td>
@@ -1108,23 +1109,23 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                     children: [],
                                   })
                                 }
-                                className={`cursor-pointer transition-colors hover:bg-[#D4EABD]/30 ${selectedNode?.id === row.id ? "bg-[#D4EABD]/50" : ""}`}
+                                className={`cursor-pointer transition-colors hover:bg-[#e5e7eb]/30 ${selectedNode?.id === row.id ? "bg-[#e5e7eb]/50" : ""}`}
                               >
                                 <td className="px-3 py-2.5 text-center" onClick={(e) => handleToggleSelectRow(row.id, e)}>
                                   {isSelected
-                                    ? <CheckSquare className="h-4 w-4 text-[#000000] mx-auto" />
-                                    : <Square className="h-4 w-4 text-[#000000] hover:text-[#000000] mx-auto" />}
+                                    ? <CheckSquare className="h-4 w-4 text-[#1f2937] mx-auto" />
+                                    : <Square className="h-4 w-4 text-[#1f2937] hover:text-[#1f2937] mx-auto" />}
                                 </td>
-                                <td className="px-3 py-2.5 font-mono text-[11px] text-[#000000] font-semibold">{row.code}</td>
+                                <td className="px-3 py-2.5 font-mono text-[11px] text-[#1f2937] font-semibold">{row.code}</td>
                                 <td className="px-3 py-2.5">
                                   <div className="flex items-center gap-1.5">
                                     {!row.isActive && (
                                       <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-500 border border-red-100">Inactive</span>
                                     )}
                                     {row.isSystemAccount && <Lock className="h-3 w-3 text-amber-400 shrink-0" />}
-                                    <span className={`font-semibold text-[#000000] ${!row.isActive ? "opacity-50" : ""}`}>{row.name}</span>
+                                    <span className={`font-semibold text-[#1f2937] ${!row.isActive ? "opacity-50" : ""}`}>{row.name}</span>
                                     {row.nameNepali && (
-                                      <span className="text-[10px] text-[#000000] ml-1">· {row.nameNepali}</span>
+                                      <span className="text-[10px] text-[#1f2937] ml-1">· {row.nameNepali}</span>
                                     )}
                                   </div>
                                 </td>
@@ -1135,20 +1136,20 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                   </span>
                                 </td>
                                 <td className="px-3 py-2.5">
-                                  <span className="text-[10px] font-medium text-[#000000] bg-[#EBF5E2] border border-[#9DC07A] rounded px-2 py-0.5">
+                                  <span className="text-[10px] font-medium text-[#1f2937] bg-[#f9fafb] border border-[#d1d5db] rounded px-2 py-0.5">
                                     {LEVEL_LABELS[row.level] || row.level}
                                   </span>
                                 </td>
-                                <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-bold ${row.balance < 0 ? "text-red-600" : "text-[#000000]"}`}>
+                                <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-bold ${row.balance < 0 ? "text-red-600" : "text-[#1f2937]"}`}>
                                   {formatDrCrBalance(row.balance || 0, row.type)}
                                 </td>
                                 <td className="px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
                                   <div className="flex items-center justify-center gap-0.5">
-                                    <button onClick={() => handleOpenEditModal(row)} className="p-1.5 rounded text-[#000000] hover:bg-[#D4EABD] hover:text-[#000000] transition" title="Edit">
+                                    <button onClick={() => handleOpenEditModal(row)} className="p-1.5 rounded text-[#1f2937] hover:bg-[#e5e7eb] hover:text-[#1f2937] transition" title="Edit">
                                       <Edit2 className="h-3.5 w-3.5" />
                                     </button>
                                     {!row.isSystemAccount && (
-                                      <button onClick={() => setConfirmDeleteAccount(row)} className="p-1.5 rounded text-[#000000] hover:bg-red-50 hover:text-red-500 transition" title="Delete">
+                                      <button onClick={() => setConfirmDeleteAccount(row)} className="p-1.5 rounded text-[#1f2937] hover:bg-red-50 hover:text-red-500 transition" title="Delete">
                                         <Trash2 className="h-3.5 w-3.5" />
                                       </button>
                                     )}
@@ -1174,7 +1175,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                 className={`cursor-pointer border-l-4 ${cfg.border} ${cfg.bg} hover:brightness-95 transition-all`}
                               >
                                 <td className="px-3 py-3 text-center w-10" />
-                                <td className="px-3 py-3 font-mono text-[11px] text-[#000000] font-medium">—</td>
+                                <td className="px-3 py-3 font-mono text-[11px] text-[#1f2937] font-medium">—</td>
                                 <td className="px-3 py-3" colSpan={1}>
                                   <div className="flex items-center gap-2">
                                     <button
@@ -1201,7 +1202,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                   </span>
                                 </td>
                                 <td className="px-3 py-3">
-                                  <span className="text-[10px] font-medium text-[#000000] bg-white/60 border border-[#9DC07A] rounded px-2 py-0.5">Primary</span>
+                                  <span className="text-[10px] font-medium text-[#1f2937] bg-white/60 border border-[#d1d5db] rounded px-2 py-0.5">Primary</span>
                                 </td>
                                 <td className={`px-3 py-3 text-right font-mono text-[11px] font-bold ${cfg.text}`}>
                                   {formatDrCrBalance(row.balance, row.type)}
@@ -1219,20 +1220,20 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                               key={row.id}
                               onClick={() => setSelectedNode(row)}
                               className={`cursor-pointer transition-colors
-                                ${selectedNode?.id === row.id ? "bg-[#D4EABD]/60 ring-1 ring-inset ring-blue-200" : ""}
-                                ${isGroupRow ? "bg-[#EBF5E2]/70 hover:bg-[#EBF5E2]/60" : "bg-white hover:bg-[#EBF5E2]/50"}
+                                ${selectedNode?.id === row.id ? "bg-[#e5e7eb]/60 ring-1 ring-inset ring-blue-200" : ""}
+                                ${isGroupRow ? "bg-[#f9fafb]/70 hover:bg-[#f9fafb]/60" : "bg-white hover:bg-[#f9fafb]/50"}
                                 ${!row.isActive ? "opacity-60" : ""}
                               `}
                             >
                               {/* Checkbox */}
                               <td className="px-3 py-2.5 text-center w-10" onClick={(e) => handleToggleSelectRow(row.id, e)}>
                                 {isSelected
-                                  ? <CheckSquare className="h-4 w-4 text-[#000000] mx-auto" />
-                                  : <Square className="h-4 w-4 text-[#000000] hover:text-[#000000] mx-auto" />}
+                                  ? <CheckSquare className="h-4 w-4 text-[#1f2937] mx-auto" />
+                                  : <Square className="h-4 w-4 text-[#1f2937] hover:text-[#1f2937] mx-auto" />}
                               </td>
 
                               {/* Code */}
-                              <td className="px-3 py-2.5 font-mono text-[11px] text-[#000000] font-medium">
+                              <td className="px-3 py-2.5 font-mono text-[11px] text-[#1f2937] font-medium">
                                 {row.code || "—"}
                               </td>
 
@@ -1244,7 +1245,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                     <button
                                       type="button"
                                       onClick={(e) => toggleExpand(row.id, e)}
-                                      className="p-0.5 rounded hover:bg-[#EBF5E2]/70 text-[#000000] hover:text-[#000000] transition shrink-0"
+                                      className="p-0.5 rounded hover:bg-[#f9fafb]/70 text-[#1f2937] hover:text-[#1f2937] transition shrink-0"
                                       title={expandedNodes[row.id] ? "Collapse" : "Expand"}
                                     >
                                       {expandedNodes[row.id]
@@ -1257,13 +1258,13 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
                                   {/* Icon */}
                                   {isGroupRow
-                                    ? <FolderOpen className="h-3.5 w-3.5 text-[#000000] shrink-0" />
-                                    : <BookOpen className="h-3 w-3 text-[#000000] shrink-0" />}
+                                    ? <FolderOpen className="h-3.5 w-3.5 text-[#1f2937] shrink-0" />
+                                    : <BookOpen className="h-3 w-3 text-[#1f2937] shrink-0" />}
 
                                   {/* Name */}
                                   <div className="flex flex-col leading-tight min-w-0">
                                     <div className="flex items-center gap-1.5 flex-wrap">
-                                      <span className={`leading-tight ${isGroupRow ? "font-semibold text-[#000000]" : "font-medium text-[#000000]"} text-[12px]`}>
+                                      <span className={`leading-tight ${isGroupRow ? "font-semibold text-[#1f2937]" : "font-medium text-[#1f2937]"} text-[12px]`}>
                                         {row.name}
                                       </span>
                                       {row.isSystemAccount && (
@@ -1274,7 +1275,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                       )}
                                     </div>
                                     {row.nameNepali && (
-                                      <span className="text-[10px] text-[#000000] mt-0.5">{row.nameNepali}</span>
+                                      <span className="text-[10px] text-[#1f2937] mt-0.5">{row.nameNepali}</span>
                                     )}
                                   </div>
                                 </div>
@@ -1290,13 +1291,13 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
                               {/* Level */}
                               <td className="px-3 py-2.5">
-                                <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${isGroupRow ? "bg-[#EBF5E2] text-[#000000] border-[#9DC07A]" : "bg-white text-[#000000] border-[#9DC07A]"}`}>
+                                <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${isGroupRow ? "bg-[#f9fafb] text-[#1f2937] border-[#d1d5db]" : "bg-white text-[#1f2937] border-[#d1d5db]"}`}>
                                   {LEVEL_LABELS[row.level] || row.level}
                                 </span>
                               </td>
 
                               {/* Balance */}
-                              <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-semibold ${row.balance < 0 ? "text-red-600" : isGroupRow ? "text-[#000000]" : "text-[#000000]"}`}>
+                              <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-semibold ${row.balance < 0 ? "text-red-600" : isGroupRow ? "text-[#1f2937]" : "text-[#1f2937]"}`}>
                                 {formatDrCrBalance(row.balance, row.type)}
                               </td>
 
@@ -1305,7 +1306,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                 <div className="flex items-center justify-center gap-0.5">
                                   <button
                                     onClick={() => handleOpenEditModal(row.rowObject)}
-                                    className="p-1.5 rounded text-[#000000] hover:bg-[#D4EABD] hover:text-[#000000] transition"
+                                    className="p-1.5 rounded text-[#1f2937] hover:bg-[#e5e7eb] hover:text-[#1f2937] transition"
                                     title="Edit account (Ctrl+E)"
                                   >
                                     <Edit2 className="h-3.5 w-3.5" />
@@ -1313,7 +1314,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                                   {!row.isSystemAccount && (
                                     <button
                                       onClick={() => setConfirmDeleteAccount(row.rowObject || null)}
-                                      className="p-1.5 rounded text-[#000000] hover:bg-red-50 hover:text-red-500 transition"
+                                      className="p-1.5 rounded text-[#1f2937] hover:bg-red-50 hover:text-red-500 transition"
                                       title="Delete account"
                                     >
                                       <Trash2 className="h-3.5 w-3.5" />
@@ -1343,16 +1344,16 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
               {/* ── BULK ACTION BAR ───────────────────────────────────────────── */}
               {getActiveSelectedList().length > 0 && (
-                <div className="sticky bottom-4 bg-[#EBF5E2] text-[#000000] rounded-xl shadow-xl border border-[#9DC07A] px-4 py-3 flex items-center justify-between gap-3 animate-fadeIn">
+                <div className="sticky bottom-4 bg-[#f9fafb] text-[#1f2937] rounded-xl shadow-xl border border-[#d1d5db] px-4 py-3 flex items-center justify-between gap-3 animate-fadeIn">
                   <div className="flex items-center gap-2 text-xs">
-                    <CheckSquare className="h-4 w-4 text-[#000000]" />
+                    <CheckSquare className="h-4 w-4 text-[#1f2937]" />
                     <span className="font-semibold">
                       {getActiveSelectedList().length} account{getActiveSelectedList().length > 1 ? "s" : ""} selected
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="default" size="sm" onClick={() => setSelectedIds({})}
-                      className="bg-transparent text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2] text-xs">
+                      className="bg-transparent text-[#1f2937] border-[#d1d5db] hover:bg-[#f9fafb] text-xs">
                       Clear
                     </Button>
                     <Button variant="default" size="sm" onClick={handleBulkDeactivate}
@@ -1371,9 +1372,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             {/* ── RIGHT DETAIL PANEL ─────────────────────────────────────────────── */}
             {selectedNode && selectedNode.level !== "root" && (
               <div className="w-full lg:w-72 shrink-0 sticky top-6">
-                <div className="rounded-xl border border-[#9DC07A] bg-white shadow-sm overflow-hidden">
+                <div className="rounded-xl border border-[#d1d5db] bg-white shadow-sm overflow-hidden">
                   {/* Panel header */}
-                  <div className={`px-4 py-3 border-b border-[#9DC07A] flex items-center justify-between ${TYPE_CONFIG[selectedNode.type].bg}`}>
+                  <div className={`px-4 py-3 border-b border-[#d1d5db] flex items-center justify-between ${TYPE_CONFIG[selectedNode.type].bg}`}>
                     <div className="flex items-center gap-2">
                       {selectedNode.isGroup
                         ? <FolderOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
@@ -1384,7 +1385,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                     </div>
                     <button
                       onClick={() => setSelectedNode(null)}
-                      className="text-[#000000] hover:text-[#000000] text-[10px] font-bold border border-[#9DC07A] bg-white rounded px-2 py-0.5 leading-none hover:bg-[#EBF5E2] transition"
+                      className="text-[#1f2937] hover:text-[#1f2937] text-[10px] font-bold border border-[#d1d5db] bg-white rounded px-2 py-0.5 leading-none hover:bg-[#f9fafb] transition"
                     >
                       ✕ Close
                     </button>
@@ -1393,26 +1394,26 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                   <div className="p-4 flex flex-col gap-4">
                     {/* Account title block */}
                     <div>
-                      <p className="text-[13px] font-bold text-[#000000] leading-snug">{selectedNode.name}</p>
+                      <p className="text-[13px] font-bold text-[#1f2937] leading-snug">{selectedNode.name}</p>
                       {selectedNode.nameNepali && (
-                        <p className="text-[11px] text-[#000000] mt-0.5">{selectedNode.nameNepali}</p>
+                        <p className="text-[11px] text-[#1f2937] mt-0.5">{selectedNode.nameNepali}</p>
                       )}
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        <span className="font-mono text-[10px] bg-[#EBF5E2] text-[#000000] px-2 py-0.5 rounded border border-[#9DC07A] font-semibold">
+                        <span className="font-mono text-[10px] bg-[#f9fafb] text-[#1f2937] px-2 py-0.5 rounded border border-[#d1d5db] font-semibold">
                           {selectedNode.code || "—"}
                         </span>
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${TYPE_CONFIG[selectedNode.type].badge}`}>
                           {TYPE_CONFIG[selectedNode.type].label}
                         </span>
-                        <span className="text-[10px] font-medium text-[#000000] bg-[#EBF5E2] border border-[#9DC07A] rounded px-2 py-0.5">
+                        <span className="text-[10px] font-medium text-[#1f2937] bg-[#f9fafb] border border-[#d1d5db] rounded px-2 py-0.5">
                           {LEVEL_LABELS[selectedNode.level] || selectedNode.level}
                         </span>
                       </div>
                     </div>
 
                     {/* Status */}
-                    <div className="flex items-center justify-between text-xs border border-[#9DC07A] rounded-lg px-3 py-2 bg-[#EBF5E2]">
-                      <span className="text-[#000000] font-medium">Status</span>
+                    <div className="flex items-center justify-between text-xs border border-[#d1d5db] rounded-lg px-3 py-2 bg-[#f9fafb]">
+                      <span className="text-[#1f2937] font-medium">Status</span>
                       <span className={`flex items-center gap-1.5 font-semibold text-[11px] ${selectedNode.isActive ? "text-emerald-600" : "text-red-500"}`}>
                         <span className={`h-2 w-2 rounded-full ${selectedNode.isActive ? "bg-emerald-400" : "bg-red-400"}`} />
                         {selectedNode.isActive ? "Active" : "Inactive"}
@@ -1421,50 +1422,50 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
                     {/* Balance */}
                     <div className={`rounded-lg border p-3 ${TYPE_CONFIG[selectedNode.type].bg} border-opacity-40`}>
-                      <p className="text-[10px] font-semibold text-[#000000] uppercase tracking-wider mb-1">Closing Balance</p>
+                      <p className="text-[10px] font-semibold text-[#1f2937] uppercase tracking-wider mb-1">Closing Balance</p>
                       <p className={`text-[15px] font-bold font-mono leading-tight ${TYPE_CONFIG[selectedNode.type].text}`}>
                         {formatDrCrBalance(selectedNode.balance, selectedNode.type)}
                       </p>
-                      <p className="text-[10px] text-[#000000] mt-1 font-medium">As per posted vouchers</p>
+                      <p className="text-[10px] text-[#1f2937] mt-1 font-medium">As per posted vouchers</p>
                     </div>
 
                     {/* Voucher stats */}
                     {detailPanelData && (
                       <div className="flex flex-col gap-1.5 text-[11px]">
-                        <div className="flex items-center justify-between py-1.5 border-b border-[#9DC07A]">
-                          <span className="text-[#000000] font-medium">Voucher entries</span>
-                          <span className="font-mono font-semibold text-[#000000]">{detailPanelData.transactionsCount}</span>
+                        <div className="flex items-center justify-between py-1.5 border-b border-[#d1d5db]">
+                          <span className="text-[#1f2937] font-medium">Voucher entries</span>
+                          <span className="font-mono font-semibold text-[#1f2937]">{detailPanelData.transactionsCount}</span>
                         </div>
-                        <div className="flex items-center justify-between py-1.5 border-b border-[#9DC07A]">
-                          <span className="text-[#000000] font-medium">Last transaction</span>
-                          <span className="font-semibold text-[#000000]">{detailPanelData.lastTxDate || "—"}</span>
+                        <div className="flex items-center justify-between py-1.5 border-b border-[#d1d5db]">
+                          <span className="text-[#1f2937] font-medium">Last transaction</span>
+                          <span className="font-semibold text-[#1f2937]">{detailPanelData.lastTxDate || "—"}</span>
                         </div>
                       </div>
                     )}
 
                     {/* Quick actions */}
                     <div className="flex flex-col gap-2 pt-1">
-                      <p className="text-[10px] font-bold text-[#000000] uppercase tracking-wider">Quick Actions</p>
+                      <p className="text-[10px] font-bold text-[#1f2937] uppercase tracking-wider">Quick Actions</p>
                       <button
                         onClick={() => handleOpenEditModal(selectedNode.rowObject)}
-                        className="w-full px-3 py-2 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white rounded-lg font-semibold text-[11px] text-left flex items-center justify-between transition"
+                        className="w-full px-3 py-2 bg-[#1557b0] hover:bg-[#2D5A1A] text-white rounded-lg font-semibold text-[11px] text-left flex items-center justify-between transition"
                       >
                         <span>Edit This Account</span>
                         <Edit2 className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => { setCurrentPage("reports"); setReportFilters({ selectedReport: "trial-balance" }); }}
-                        className="w-full px-3 py-2 bg-[#EBF5E2] border border-[#9DC07A] hover:bg-[#EBF5E2] text-[#000000] rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
+                        className="w-full px-3 py-2 bg-[#f9fafb] border border-[#d1d5db] hover:bg-[#f9fafb] text-[#1f2937] rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
                       >
                         <span>View Trial Balance</span>
-                        <ArrowRight className="h-3.5 w-3.5 text-[#000000]" />
+                        <ArrowRight className="h-3.5 w-3.5 text-[#1f2937]" />
                       </button>
                       <button
                         onClick={() => setCurrentPage("vouchers")}
-                        className="w-full px-3 py-2 bg-[#EBF5E2] border border-[#9DC07A] hover:bg-[#EBF5E2] text-[#000000] rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
+                        className="w-full px-3 py-2 bg-[#f9fafb] border border-[#d1d5db] hover:bg-[#f9fafb] text-[#1f2937] rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
                       >
                         <span>View Vouchers</span>
-                        <ArrowRight className="h-3.5 w-3.5 text-[#000000]" />
+                        <ArrowRight className="h-3.5 w-3.5 text-[#1f2937]" />
                       </button>
                     </div>
                   </div>
@@ -1483,11 +1484,11 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           footer={
             <div className="flex justify-end gap-2">
               <Button variant="default" size="sm" onClick={() => setAddModalOpen(false)}>Cancel</Button>
-              <Button variant="primary" size="sm" onClick={handleAddSubmit}>Create Account</Button>
+              <Button variant="primary" size="sm" type="submit" form="add-ledger-form">Create Account</Button>
             </div>
           }
         >
-          {renderLedgerForm(handleAddSubmit)}
+          {renderLedgerForm(handleAddSubmit, "add-ledger-form")}
         </Modal>
 
         {/* ── ALTER LEDGER MODAL ─────────────────────────────────────────────────── */}
@@ -1511,12 +1512,12 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               ) : <span />}
               <div className="flex gap-2">
                 <Button variant="default" size="sm" onClick={() => setEditModalOpen(false)}>Cancel</Button>
-                <Button variant="primary" size="sm" onClick={handleEditSubmit}>Save Changes</Button>
+                <Button variant="primary" size="sm" type="submit" form="edit-ledger-form">Save Changes</Button>
               </div>
             </div>
           }
         >
-          {renderLedgerForm(handleEditSubmit)}
+          {renderLedgerForm(handleEditSubmit, "edit-ledger-form")}
         </Modal>
 
         {/* ── IMPORT MODAL ───────────────────────────────────────────────────────── */}
@@ -1532,13 +1533,13 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           }
         >
           <div className="flex flex-col gap-4 text-xs">
-            <p className="text-[#000000] leading-relaxed">
+            <p className="text-[#1f2937] leading-relaxed">
               Import accounts from a CSV file. Download the template first to ensure correct column mapping.
             </p>
-            <div className="rounded-lg border border-[#9DC07A] bg-[#EBF5E2] p-3 flex items-center justify-between gap-3">
+            <div className="rounded-lg border border-[#d1d5db] bg-[#f9fafb] p-3 flex items-center justify-between gap-3">
               <div>
-                <p className="font-semibold text-[#000000] text-[11px]">Import Template (CSV)</p>
-                <p className="text-[10px] text-[#000000] mt-0.5">Pre-formatted columns for correct import</p>
+                <p className="font-semibold text-[#1f2937] text-[11px]">Import Template (CSV)</p>
+                <p className="text-[10px] text-[#1f2937] mt-0.5">Pre-formatted columns for correct import</p>
               </div>
               <Button
                 variant="default"
@@ -1550,20 +1551,20 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               </Button>
             </div>
             <div
-              className="border-2 border-dashed border-[#9DC07A] rounded-xl text-center flex flex-col items-center justify-center gap-3 py-8 bg-[#EBF5E2]/50 hover:bg-[#EBF5E2] transition-colors cursor-pointer"
+              className="border-2 border-dashed border-[#d1d5db] rounded-xl text-center flex flex-col items-center justify-center gap-3 py-8 bg-[#f9fafb]/50 hover:bg-[#f9fafb] transition-colors cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
-              <div className="p-2.5 bg-[#D4EABD] rounded-full">
-                <FileSpreadsheet className="h-5 w-5 text-[#000000]" />
+              <div className="p-2.5 bg-[#e5e7eb] rounded-full">
+                <FileSpreadsheet className="h-5 w-5 text-[#1f2937]" />
               </div>
               <div>
-                <p className="font-semibold text-[#000000]">Click to upload CSV file</p>
-                <p className="text-[10px] text-[#000000] mt-0.5">Accepts .csv format only</p>
+                <p className="font-semibold text-[#1f2937]">Click to upload CSV file</p>
+                <p className="text-[10px] text-[#1f2937] mt-0.5">Accepts .csv format only</p>
               </div>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                className="px-4 py-1.5 bg-[#D4EABD] hover:bg-[#D4EABD] text-[#000000] rounded-lg font-semibold text-[11px] transition"
+                className="px-4 py-1.5 bg-[#e5e7eb] hover:bg-[#e5e7eb] text-[#1f2937] rounded-lg font-semibold text-[11px] transition"
               >
                 Select File
               </button>

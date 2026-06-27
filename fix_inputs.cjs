@@ -1,3 +1,4 @@
+throw new Error("LEGACY SCRIPT DO NOT RUN");
 const fs = require('fs');
 let css = fs.readFileSync('src/styles.css', 'utf8');
 

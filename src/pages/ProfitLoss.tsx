@@ -70,94 +70,96 @@ const ProfitLoss: React.FC = () => {
 
   const rootGroups = tree.roots.filter((r) => r.type === "income" || r.type === "expense");
 
-  const groupedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
+  const splitRows = (useDetailed: boolean) => {
+    const tl: any[] = [];
+    const tr: any[] = [];
+    const pl: any[] = [];
+    const pr: any[] = [];
 
-    rootGroups.forEach((grp) => {
-      const totals = groupTotals.get(grp.id);
-      const row = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-      if (grp.type === "expense") left.push(row);
-      else right.push(row);
-    });
-
-    return { left, right };
-  }, [rootGroups, groupTotals]);
-
-  const detailedRows = useMemo(() => {
-    const left: any[] = [];
-    const right: any[] = [];
+    let tradingDr = 0;
+    let tradingCr = 0;
+    let plDr = 0;
+    let plCr = 0;
 
     rootGroups.forEach((grp) => {
       const children = grp.children || [];
-      const grpTotals = groupTotals.get(grp.id);
-      const grpRow = {
-        id: grp.id,
-        label: grp.name,
-        amount: fmtDrCr(grpTotals?.closingDr || 0, grpTotals?.closingCr || 0),
-        level: "group",
-        indent: 0,
-        onClick: () => {
-          setDrillLevel("subgroup");
-          setActiveGroupId(grp.id);
-        },
-      };
-
-      const childRows = children.flatMap((sub) => {
+      children.forEach((sub) => {
+        const isDirect = sub.id === "grp-purchase" || sub.id === "grp-sales" || sub.name.toLowerCase().includes("direct");
         const subTotals = groupTotals.get(sub.id);
+        const subDr = (subTotals?.closingDr || 0);
+        const subCr = (subTotals?.closingCr || 0);
+        const netAmt = Math.abs(subDr - subCr);
+
         const subRow = {
           id: sub.id,
           label: sub.name,
-          amount: fmtDrCr(subTotals?.closingDr || 0, subTotals?.closingCr || 0),
-          level: "subgroup",
-          indent: 1,
+          amount: fmtDrCr(subDr, subCr),
+          level: "group",
+          indent: 0,
           onClick: () => {
-            setDrillLevel("ledger");
-            setActiveSubgroupId(sub.id);
+            setDrillLevel("subgroup");
+            setActiveGroupId(grp.id); // This is a bit hacked for drill-down but works
           },
         };
 
-        const ledgerRows = (sub.children || [])
-          .filter((c) => !c.isGroup)
-          .map((ledger) => {
-            const totals = ledgerTotals.get(ledger.id);
-            const showRow =
-              totals?.hasActivity ||
-              (totals && (totals.closingDr > 0 || totals.closingCr > 0));
-            if (!showRow) return null;
-            return {
-              id: ledger.id,
-              label: ledger.name,
-              amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
-              level: "ledger",
-              indent: 2,
-              onClick: () => {
-                setDrillLevel("month");
-                setActiveLedgerId(ledger.id);
-              },
-            };
-          })
-          .filter(Boolean);
+        const rowsToAdd = [subRow];
 
-        return [subRow, ...ledgerRows];
+        if (useDetailed) {
+          const ledgerRows = (sub.children || [])
+            .filter((c) => !c.isGroup)
+            .map((ledger) => {
+              const totals = ledgerTotals.get(ledger.id);
+              const showRow = totals?.hasActivity || (totals && (totals.closingDr > 0 || totals.closingCr > 0));
+              if (!showRow) return null;
+              return {
+                id: ledger.id,
+                label: ledger.name,
+                amount: fmtDrCr(totals?.closingDr || 0, totals?.closingCr || 0),
+                level: "ledger",
+                indent: 1,
+                onClick: () => {
+                  setDrillLevel("month");
+                  setActiveLedgerId(ledger.id);
+                },
+              };
+            })
+            .filter(Boolean);
+          rowsToAdd.push(...ledgerRows);
+        }
+
+        if (grp.type === "expense") {
+          if (isDirect) { tl.push(...rowsToAdd); tradingDr += subDr - subCr; }
+          else { pl.push(...rowsToAdd); plDr += subDr - subCr; }
+        } else {
+          if (isDirect) { tr.push(...rowsToAdd); tradingCr += subCr - subDr; }
+          else { pr.push(...rowsToAdd); plCr += subCr - subDr; }
+        }
       });
-
-      if (grp.type === "expense") left.push(grpRow, ...childRows);
-      else right.push(grpRow, ...childRows);
     });
 
-    return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals]);
+    const gp = Math.round((tradingCr - tradingDr) * 100) / 100;
+    if (gp > 0) {
+      tl.push({ id: "gp", label: "Gross Profit c/o", amount: fmtDrCr(gp, 0) });
+      pr.unshift({ id: "gp-bd", label: "Gross Profit b/f", amount: fmtDrCr(0, gp) });
+      plCr += gp;
+    } else if (gp < 0) {
+      tr.push({ id: "gl", label: "Gross Loss c/o", amount: fmtDrCr(0, Math.abs(gp)) });
+      pl.unshift({ id: "gl-bd", label: "Gross Loss b/f", amount: fmtDrCr(Math.abs(gp), 0) });
+      plDr += Math.abs(gp);
+    }
+
+    const np = Math.round((plCr - plDr) * 100) / 100;
+    if (np > 0) {
+      pl.push({ id: "np", label: "Net Profit", amount: fmtDrCr(np, 0) });
+    } else if (np < 0) {
+      pr.push({ id: "nl", label: "Net Loss", amount: fmtDrCr(0, Math.abs(np)) });
+    }
+
+    return { tl, tr, pl, pr };
+  };
+
+  const groupedRows = useMemo(() => splitRows(false), [rootGroups, groupTotals]);
+  const detailedRows = useMemo(() => splitRows(true), [rootGroups, groupTotals, ledgerTotals]);
 
   const ledgerMonthRows = useMemo(() => {
     if (!activeLedgerId) return [];
@@ -246,12 +248,20 @@ const ProfitLoss: React.FC = () => {
       }
     >
       {drillLevel === "group" && (
-        <TFormatReport
-          leftTitle="Expenses"
-          rightTitle="Income"
-          leftRows={mode === "grouped" ? groupedRows.left : detailedRows.left}
-          rightRows={mode === "grouped" ? groupedRows.right : detailedRows.right}
-        />
+        <div className="flex flex-col gap-6">
+          <TFormatReport
+            leftTitle="Direct Expenses"
+            rightTitle="Direct Income"
+            leftRows={mode === "grouped" ? groupedRows.tl : detailedRows.tl}
+            rightRows={mode === "grouped" ? groupedRows.tr : detailedRows.tr}
+          />
+          <TFormatReport
+            leftTitle="Indirect Expenses"
+            rightTitle="Indirect Income"
+            leftRows={mode === "grouped" ? groupedRows.pl : detailedRows.pl}
+            rightRows={mode === "grouped" ? groupedRows.pr : detailedRows.pr}
+          />
+        </div>
       )}
 
       {drillLevel === "subgroup" && activeGroupId && (

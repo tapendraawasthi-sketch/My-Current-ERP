@@ -12,16 +12,30 @@ const CashBook: React.FC = () => {
   const [options, setOptions] = useState({});
 
   const data = useMemo(() => {
+    const cashAccount = (accounts || []).find(a => a.id === "acc-cash");
+    let runningBalance = cashAccount ? (cashAccount.openingBalance || 0) : 0;
+    if (cashAccount?.openingBalanceDr === false) runningBalance = -runningBalance;
+
     return (vouchers || [])
       .filter(v => (v.lines || []).some(l => l.accountId === "acc-cash"))
-      .map(v => ({
-        date: v.date || "",
-        voucherNo: v.voucherNo || "",
-        narration: v.narration || "—",
-        debit: formatNumber((v.lines || []).reduce((s,l)=> s + (l.debit||0),0)),
-        credit: formatNumber((v.lines || []).reduce((s,l)=> s + (l.credit||0),0)),
-      }));
-  }, [vouchers]);
+      .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map(v => {
+        const cashLines = (v.lines || []).filter(l => l.accountId === "acc-cash");
+        const debit = cashLines.reduce((s,l) => s + (Number(l.debit)||0), 0);
+        const credit = cashLines.reduce((s,l) => s + (Number(l.credit)||0), 0);
+        
+        runningBalance = Math.round((runningBalance + debit - credit) * 100) / 100;
+        
+        return {
+          date: v.date || "",
+          voucherNo: v.voucherNo || "",
+          narration: v.narration || "—",
+          debit: debit > 0 ? formatNumber(debit) : "-",
+          credit: credit > 0 ? formatNumber(credit) : "-",
+          balance: formatNumber(Math.abs(runningBalance)) + (runningBalance >= 0 ? " Dr" : " Cr")
+        };
+      });
+  }, [vouchers, accounts]);
 
   const columns = [
     { key: "date", label: "Date" },
@@ -29,6 +43,7 @@ const CashBook: React.FC = () => {
     { key: "narration", label: "Narration" },
     { key: "debit", label: "Debit", align: "right" as const },
     { key: "credit", label: "Credit", align: "right" as const },
+    { key: "balance", label: "Balance", align: "right" as const },
   ];
 
   return (

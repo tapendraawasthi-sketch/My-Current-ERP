@@ -31,11 +31,69 @@ const GeneralLedger: React.FC = () => {
     const isDr = isDebitNature(selected.type);
     const opDr = selected.openingBalanceDr || 0;
     const opCr = selected.openingBalanceCr || 0;
+    
     let baseOp = 0;
     let baseOpSign: "DR" | "CR" = "DR";
-    if (isDr) { baseOp = opDr - opCr; baseOpSign = baseOp >= 0 ? "DR" : "CR"; }
-    else { baseOp = opCr - opDr; baseOpSign = baseOp >= 0 ? "CR" : "DR"; }
-    return computeLedgerBalance(accountId, vouchers || [], [], startDate, endDate, Math.abs(baseOp), baseOpSign);
+    
+    if (isDr) { 
+      baseOp = opDr - opCr; 
+      baseOpSign = baseOp >= 0 ? "DR" : "CR"; 
+    } else { 
+      baseOp = opCr - opDr; 
+      baseOpSign = baseOp >= 0 ? "CR" : "DR"; 
+    }
+    
+    let runningBalance = baseOpSign === "DR" ? Math.abs(baseOp) : -Math.abs(baseOp);
+    const transactions: any[] = [];
+
+    // Prepend transactions BEFORE startDate to runningBalance
+    const previousVouchers = (vouchers || [])
+       .filter(v => (v.status === "posted" || v.status === "POSTED") && v.date < startDate);
+    
+    for (const v of previousVouchers) {
+       for (const line of v.lines || []) {
+          if (line.accountId === accountId) {
+             runningBalance += (Number(line.debit) || 0) - (Number(line.credit) || 0);
+          }
+       }
+    }
+
+    if (runningBalance !== 0) {
+      transactions.push({
+        dateBS: startDate,
+        voucherNo: "OPENING",
+        narration: "Opening Balance",
+        debit: runningBalance > 0 ? runningBalance : 0,
+        credit: runningBalance < 0 ? Math.abs(runningBalance) : 0,
+        runningBalance,
+      });
+    }
+
+    const filteredVouchers = (vouchers || [])
+       .filter(v => (v.status === "posted" || v.status === "POSTED"))
+       .filter(v => v.date >= startDate && v.date <= endDate)
+       .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    for (const v of filteredVouchers) {
+       for (const line of v.lines || []) {
+          if (line.accountId === accountId) {
+             const debit = Number(line.debit) || 0;
+             const credit = Number(line.credit) || 0;
+             runningBalance = Math.round((runningBalance + debit - credit) * 100) / 100;
+             
+             transactions.push({
+                dateBS: v.dateNepali || v.date,
+                voucherNo: v.voucherNo,
+                narration: line.narration || v.narration || "",
+                debit,
+                credit,
+                runningBalance,
+             });
+          }
+       }
+    }
+
+    return { transactions };
   }, [accountId, selected, vouchers, startDate, endDate]);
 
   const columns = [

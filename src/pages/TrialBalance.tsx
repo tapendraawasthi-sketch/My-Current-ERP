@@ -78,6 +78,25 @@ const TrialBalance: React.FC = () => {
     .filter((r) => r.type === "asset" || r.type === "liability" || r.type === "equity")
     .sort(tbOptions.showAlphabetical ? sortByName : () => 0);
 
+  const tbTotals = useMemo(() => {
+    let totalDebit = 0;
+    let totalCredit = 0;
+    rootGroups.forEach((grp) => {
+      const gt = groupTotals.get(grp.id);
+      if (gt) {
+        totalDebit += gt.closingDr || 0;
+        totalCredit += gt.closingCr || 0;
+      }
+    });
+    const difference = Math.round((totalDebit - totalCredit) * 100) / 100;
+    return {
+      totalDebit,
+      totalCredit,
+      difference,
+      isBalanced: Math.abs(difference) < 0.01,
+    };
+  }, [rootGroups, groupTotals]);
+
   const groupedRows = useMemo(() => {
     const left: any[] = [];
     const right: any[] = [];
@@ -253,6 +272,11 @@ const TrialBalance: React.FC = () => {
         </div>
       }
     >
+      {!tbTotals.isBalanced && drillLevel === "group" && (
+        <div className="mb-3 mx-4 mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">
+          Trial Balance is out of balance by Rs. {formatNumber(Math.abs(tbTotals.difference))}.
+        </div>
+      )}
       {drillLevel === "group" && (
         <TFormatReport
           leftTitle="Assets"

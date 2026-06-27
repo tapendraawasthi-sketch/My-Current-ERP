@@ -26,7 +26,7 @@ services:
     runtime: node
     buildCommand: >
       pnpm install --frozen-lockfile &&
-      pnpm --filter backend build &&
+      pnpm --filter @busy-erp/backend build &&
       pnpm db:migrate
     startCommand: cd packages/backend && pnpm start
     envVars:

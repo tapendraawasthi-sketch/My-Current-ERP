@@ -9,10 +9,6 @@
       "maxDuration": 30
     }
   },
-  "env": [
-    "NEXT_PUBLIC_API_URL"
-  ],
-  "envPrefix": "NEXT_PUBLIC_",
   "headers": [
     {
       "source": "/api/(.+)",

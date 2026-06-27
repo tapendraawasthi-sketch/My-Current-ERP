@@ -8,6 +8,7 @@ import { generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import { ADToBSString } from "../lib/nepaliDate";
+import { isDebitNature } from "../lib/accounting";
 
 export default function OpeningBalance() {
   const { accounts, addVoucher, addAccount } = useStore();
@@ -133,8 +134,8 @@ export default function OpeningBalance() {
         const rows = data.map((row: any) => {
           const ledgerName = row["Ledger Name"] || row["Account Name"] || row["Ledger"];
           const amount = parseFloat(row["Amount"] || row["Balance"]) || 0;
-          const drCrStr = String(row["Dr/Cr"] || row["Nature"] || row["Type"]).toUpperCase();
-          const nature = (drCrStr === "CR" || drCrStr === "CREDIT") ? "CR" : "DR";
+          const drCrStr = String(row["Dr/Cr"] || row["Nature"] || row["Type"] || "").toUpperCase();
+          let nature = (drCrStr === "CR" || drCrStr === "CREDIT") ? "CR" : (drCrStr === "DR" || drCrStr === "DEBIT") ? "DR" : "";
           
           return { ledgerName, amount, nature };
         }).filter(r => r.ledgerName && r.amount > 0);
@@ -145,7 +146,12 @@ export default function OpeningBalance() {
         const mapping: Record<number, string> = {};
         rows.forEach((r, idx) => {
           const match = accounts.find(a => a.name.toLowerCase() === r.ledgerName.toLowerCase());
-          if (match) mapping[idx] = match.id;
+          if (match) {
+            mapping[idx] = match.id;
+            if (!r.nature) r.nature = isDebitNature(match.type) ? "DR" : "CR";
+          } else {
+            if (!r.nature) r.nature = "DR"; // fallback
+          }
         });
         setMappedAccounts(mapping);
         toast.success(`Loaded ${rows.length} records`);
@@ -214,7 +220,8 @@ export default function OpeningBalance() {
                     </thead>
                     <tbody>
                       {accs.map(acc => {
-                        const bal = manualBalances[acc.id] || { amount: 0, nature: "DR" };
+                        const defaultNature = isDebitNature(acc.type) ? "DR" : "CR";
+                        const bal = manualBalances[acc.id] || { amount: 0, nature: defaultNature };
                         return (
                           <tr key={acc.id} className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]">
                             <td className="px-3 py-2 text-[12px] font-medium text-[#000000]">{acc.name}</td>

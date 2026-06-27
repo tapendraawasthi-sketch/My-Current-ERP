@@ -156,7 +156,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
           type="number"
           className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
           value={line.qty || ""}
-          onChange={(e) => onUpdate({ qty: Number(e.target.value) || 0 })}
+          onChange={(e) => onUpdate({ qty: Math.max(0, Number(e.target.value) || 0) })}
           disabled={readOnly}
           placeholder="0"
           min={0}
@@ -180,7 +180,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(({
           type="number"
           className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
           value={line.rate || ""}
-          onChange={(e) => onUpdate({ rate: Number(e.target.value) || 0 })}
+          onChange={(e) => onUpdate({ rate: Math.max(0, Number(e.target.value) || 0) })}
           disabled={readOnly}
           placeholder="0.00"
           min={0}

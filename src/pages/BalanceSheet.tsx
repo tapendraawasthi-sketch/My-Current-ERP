@@ -76,6 +76,37 @@ const BalanceSheet: React.FC = () => {
     (r) => r.type === "asset" || r.type === "liability" || r.type === "equity"
   );
 
+  const bsTotals = useMemo(() => {
+    let totalAssets = 0;
+    let totalLiabilitiesEquity = 0;
+    let netProfit = 0;
+    
+    tree.roots.forEach((grp) => {
+      const gt = groupTotals.get(grp.id);
+      if (!gt) return;
+      if (grp.type === "asset") {
+        totalAssets += gt.closingDr - gt.closingCr;
+      } else if (grp.type === "liability" || grp.type === "equity") {
+        totalLiabilitiesEquity += gt.closingCr - gt.closingDr;
+      } else if (grp.type === "income") {
+        netProfit += gt.closingCr - gt.closingDr;
+      } else if (grp.type === "expense") {
+        netProfit -= gt.closingDr - gt.closingCr;
+      }
+    });
+
+    totalLiabilitiesEquity += netProfit;
+    const difference = Math.round((totalAssets - totalLiabilitiesEquity) * 100) / 100;
+    
+    return {
+      totalAssets,
+      totalLiabilitiesEquity,
+      netProfit,
+      difference,
+      isBalanced: Math.abs(difference) < 0.01,
+    };
+  }, [tree.roots, groupTotals]);
+
   const groupedRows = useMemo(() => {
     const left: any[] = [];
     const right: any[] = [];
@@ -97,8 +128,18 @@ const BalanceSheet: React.FC = () => {
       else right.push(row);
     });
 
+    if (bsTotals.netProfit !== 0) {
+      right.push({
+        id: "current-year-profit",
+        label: "Current Year Net Profit",
+        amount: fmtDrCr(0, bsTotals.netProfit),
+        level: "group",
+        indent: 0,
+      });
+    }
+
     return { left, right };
-  }, [rootGroups, groupTotals]);
+  }, [rootGroups, groupTotals, bsTotals.netProfit]);
 
   const detailedRows = useMemo(() => {
     const left: any[] = [];
@@ -163,8 +204,18 @@ const BalanceSheet: React.FC = () => {
       else right.push(grpRow, ...childRows);
     });
 
+    if (bsTotals.netProfit !== 0) {
+      right.push({
+        id: "current-year-profit",
+        label: "Current Year Net Profit",
+        amount: fmtDrCr(0, bsTotals.netProfit),
+        level: "group",
+        indent: 0,
+      });
+    }
+
     return { left, right };
-  }, [rootGroups, groupTotals, ledgerTotals, bsOptions.showZeroDuringDrill]);
+  }, [rootGroups, groupTotals, ledgerTotals, bsOptions.showZeroDuringDrill, bsTotals.netProfit]);
 
   const ledgerMonthRows = useMemo(() => {
     if (!activeLedgerId) return [];
@@ -251,6 +302,11 @@ const BalanceSheet: React.FC = () => {
         </div>
       }
     >
+      {!bsTotals.isBalanced && drillLevel === "group" && (
+        <div className="mb-3 mx-4 mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">
+          Balance Sheet is out of balance by Rs. {formatNumber(Math.abs(bsTotals.difference))}.
+        </div>
+      )}
       {drillLevel === "group" && (
         <TFormatReport
           leftTitle="Liabilities & Equity"

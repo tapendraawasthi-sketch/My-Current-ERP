@@ -840,13 +840,15 @@ export default function ChequePrinting() {
       )}
       
       {/* Print styles for the cheques */}
-      <style jsx>{`
+      <style>{`
         @media print {
-          body {
+          body * {
             visibility: hidden;
           }
-          .print-container {
+          .print-container, .print-container * {
             visibility: visible;
+          }
+          .print-container {
             position: absolute;
             left: 0;
             top: 0;
@@ -855,6 +857,10 @@ export default function ChequePrinting() {
           .cheque-preview {
             break-inside: avoid;
             margin-bottom: 20px;
+          }
+          .fixed.inset-0 {
+             position: absolute !important;
+             background: transparent !important;
           }
         }
       `}</style>

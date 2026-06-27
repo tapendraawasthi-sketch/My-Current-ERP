@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
     let todayTotal = 0;
     let yesterdayTotal = 0;
 
-    invoices.forEach(inv => {
+    (invoices || []).forEach(inv => {
       if (inv.type === VoucherType.SALES_INVOICE && inv.status === VoucherStatus.POSTED) {
         if (inv.date === todayAD) todayTotal += (inv.grandTotal || 0);
         else if (inv.date === yesterdayAD) yesterdayTotal += (inv.grandTotal || 0);
@@ -42,9 +42,9 @@ const Dashboard: React.FC = () => {
 
   // 2. OUTSTANDING RECEIVABLES
   const receivables = useMemo(() => {
-    const data = computeOutstandingReceivables(parties, invoices, vouchers);
+    const data = computeOutstandingReceivables(parties || [], invoices || [], vouchers || []);
     let overdueCount = 0;
-    invoices.forEach(inv => {
+    (invoices || []).forEach(inv => {
       if (inv.type === VoucherType.SALES_INVOICE && inv.status === VoucherStatus.POSTED) {
         if (inv.paymentStatus === PaymentStatus.UNPAID || inv.paymentStatus === PaymentStatus.PARTIAL) {
           if (inv.dueDate && inv.dueDate < todayAD) {
@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
 
   // 3. CASH & BANK BALANCE
   const cashAndBank = useMemo(() => {
-    const list = accounts.filter(a => 
+    const list = (accounts || []).filter(a => 
       a.group === "Current Assets" && 
       (a.name.toLowerCase().includes("cash") || a.name.toLowerCase().includes("bank"))
     );
@@ -68,14 +68,14 @@ const Dashboard: React.FC = () => {
 
   // 4. VAT LIABILITY
   const vatLiability = useMemo(() => {
-    const vatLedgers = accounts.filter(a => a.name.toLowerCase().includes("vat payable"));
+    const vatLedgers = (accounts || []).filter(a => a.name.toLowerCase().includes("vat payable"));
     const ledgerBalance = vatLedgers.reduce((sum, a) => sum + (a.balance || 0), 0);
 
     const currentMonthPrefix = todayBS.substring(0, 7);
     let inputVat = 0;
     let outputVat = 0;
 
-    invoices.forEach(inv => {
+    (invoices || []).forEach(inv => {
       if (inv.status === VoucherStatus.POSTED && formatADToBS(inv.date).startsWith(currentMonthPrefix)) {
         if (inv.type === VoucherType.SALES_INVOICE) outputVat += (inv.vatAmount || 0);
         else if (inv.type === VoucherType.PURCHASE_INVOICE) inputVat += (inv.vatAmount || 0);
@@ -101,7 +101,7 @@ const Dashboard: React.FC = () => {
 
   // 7. RECENT VOUCHERS
   const recentVouchers = useMemo(() => {
-    return [...vouchers]
+    return [...(vouchers || [])]
       .filter(v => v.status === VoucherStatus.POSTED)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 10);
@@ -109,15 +109,15 @@ const Dashboard: React.FC = () => {
 
   // 8. STOCK ALERTS
   const stockAlerts = useMemo(() => {
-    const positions = computeAllStockPositions(stockMovements, items, warehouses);
+    const positions = computeAllStockPositions(stockMovements || [], items || [], warehouses || []);
     return positions
       .filter(pos => {
-        const item = items.find(i => i.id === pos.itemId);
+        const item = (items || []).find(i => i.id === pos.itemId);
         const reorder = item?.reorderLevel || 0;
         return pos.qty <= reorder;
       })
       .map(pos => {
-        const item = items.find(i => i.id === pos.itemId);
+        const item = (items || []).find(i => i.id === pos.itemId);
         return {
           id: pos.itemId,
           name: item?.name || "Unknown",
@@ -161,34 +161,34 @@ const Dashboard: React.FC = () => {
   }, [todayBS]);
 
   if (!isDbReady) {
-    return <div style={{ padding: "2rem", display: "flex", justifyContent: "center" }}><RefreshCw className="animate-spin" style={{ color: "#4A7A30" }} /></div>;
+    return <div style={{ padding: "2rem", display: "flex", justifyContent: "center" }}><RefreshCw className="animate-spin text-[#1557b0]" /></div>;
   }
 
   return (
-    <div style={{ background: "#E4F1D9", paddingBottom: "2.5rem" }} className="min-h-screen">
+    <div className="min-h-screen bg-[#f5f6fa] pb-10">
       <div className="space-y-6 max-w-[1600px] mx-auto pt-6 px-4">
         
         {/* TOP ROW: KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Today's Sales (BS {todayBS})</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(salesToday.total)}</div>
-            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>vs yesterday: {salesToday.trend > 0 ? "+" : ""}{salesToday.trend.toFixed(1)}%</div>
+          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Today's Sales (BS {todayBS})</div>
+            <div className="text-[22px] font-bold text-gray-800 font-mono">Rs. {formatNumber(salesToday.total)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">vs yesterday: {salesToday.trend > 0 ? "+" : ""}{salesToday.trend.toFixed(1)}%</div>
           </div>
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Outstanding Receivables</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(receivables.totalAmount)}</div>
-            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>{receivables.overdueCount} overdue invoice{receivables.overdueCount !== 1 ? "s" : ""}</div>
+          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Outstanding Receivables</div>
+            <div className="text-[22px] font-bold text-gray-800 font-mono">Rs. {formatNumber(receivables.total)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">{receivables.overdueCount} overdue invoice{receivables.overdueCount !== 1 ? "s" : ""}</div>
           </div>
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>Cash & Bank Balance</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(cashAndBank.total)}</div>
-            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>{cashAndBank.list.length} account{cashAndBank.list.length !== 1 ? "s" : ""}</div>
+          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cash & Bank Balance</div>
+            <div className="text-[22px] font-bold text-gray-800 font-mono">Rs. {formatNumber(cashAndBank.total)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">{cashAndBank.list.length} account{cashAndBank.list.length !== 1 ? "s" : ""}</div>
           </div>
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, padding: "14px 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#000000", marginBottom: 6 }}>VAT Liability</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#000000", fontFamily: "Courier New, monospace" }}>Rs. {formatNumber(vatLiability.total)}</div>
-            <div style={{ fontSize: 11, color: "#000000", marginTop: 4 }}>Due: {vatLiability.dueDateBS}</div>
+          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">VAT Liability</div>
+            <div className="text-[22px] font-bold text-gray-800 font-mono">Rs. {formatNumber(vatLiability.total)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Due: {vatLiability.dueDateBS}</div>
           </div>
         </div>
 
@@ -196,31 +196,31 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Recent Vouchers */}
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>Recent Vouchers</h3>
+          <div className="bg-white border border-gray-200 rounded flex flex-col overflow-hidden shadow-sm">
+            <div className="bg-gray-50 border-b border-gray-200 px-3 py-2.5">
+              <h3 className="text-[13px] font-bold text-gray-800">Recent Vouchers</h3>
             </div>
             <div className="flex-1 overflow-x-auto">
               <table className="w-full text-left whitespace-nowrap">
-                <thead style={{ borderBottom: "1px solid #8FB870", background: "rgba(0,0,0,0.02)" }}>
+                <thead className="border-b border-gray-200 bg-gray-50">
                   <tr>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Date (BS)</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Type / No</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase", textAlign: "right" }}>Amount</th>
+                    <th className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase">Date (BS)</th>
+                    <th className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase">Type / No</th>
+                    <th className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase text-right">Amount</th>
                   </tr>
                 </thead>
-                <tbody style={{ divideY: "1px solid #8FB870" }}>
+                <tbody className="divide-y divide-gray-100">
                   {recentVouchers.length === 0 ? (
-                    <tr><td colSpan={3} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#000000" }}>No recent vouchers</td></tr>
+                    <tr><td colSpan={3} className="text-center p-4 text-xs text-gray-500">No recent vouchers</td></tr>
                   ) : (
                     recentVouchers.map(v => (
-                      <tr key={v.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                        <td style={{ padding: "8px 12px", fontSize: 11, color: "#000000", fontFamily: "monospace" }}>{v.dateNepali}</td>
-                        <td style={{ padding: "8px 12px" }}>
-                           <div style={{ fontSize: 10, fontWeight: 700, color: "#000000", textTransform: "uppercase" }}>{v.type.replace(/_/g, ' ')}</div>
-                           <div style={{ fontSize: 12, fontFamily: "monospace", color: "#000000" }}>{v.voucherNo}</div>
+                      <tr key={v.id} className="hover:bg-gray-50">
+                        <td className="px-3 py-2 text-[11px] text-gray-700 font-mono">{v.dateNepali}</td>
+                        <td className="px-3 py-2">
+                           <div className="text-[10px] font-bold text-gray-800 uppercase">{v.type.replace(/_/g, ' ')}</div>
+                           <div className="text-[12px] font-mono text-gray-600">{v.voucherNo}</div>
                         </td>
-                        <td style={{ padding: "8px 12px", textAlign: "right", fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#000000" }}>
+                        <td className="px-3 py-2 text-right text-[12px] font-mono font-bold text-gray-800">
                           Rs. {formatNumber(v.grandTotal || v.totalDebit || 0)}
                         </td>
                       </tr>
@@ -232,32 +232,32 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Stock Alerts */}
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-             <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
+          <div className="bg-white border border-gray-200 rounded flex flex-col overflow-hidden shadow-sm">
+             <div className="bg-gray-50 border-b border-gray-200 px-3 py-2.5">
+              <h3 className="text-[13px] font-bold text-gray-800">
                 Stock Alerts
               </h3>
             </div>
             <div className="flex-1 overflow-x-auto">
                <table className="w-full text-left whitespace-nowrap">
-                <thead style={{ borderBottom: "1px solid #8FB870", background: "rgba(0,0,0,0.02)" }}>
+                <thead className="border-b border-gray-200 bg-gray-50">
                   <tr>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase" }}>Item Name</th>
-                    <th style={{ padding: "8px 12px", fontSize: 10, fontWeight: 600, color: "#000000", textTransform: "uppercase", textAlign: "right" }}>Current Qty</th>
+                    <th className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase">Item Name</th>
+                    <th className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase text-right">Current Qty</th>
                   </tr>
                 </thead>
-                <tbody style={{ divideY: "1px solid #8FB870" }}>
+                <tbody className="divide-y divide-gray-100">
                   {stockAlerts.length === 0 ? (
-                    <tr><td colSpan={2} style={{ textAlign: "center", padding: "16px", fontSize: 12, color: "#000000" }}>Stock levels healthy</td></tr>
+                    <tr><td colSpan={2} className="text-center p-4 text-xs text-gray-500">Stock levels healthy</td></tr>
                   ) : (
                     stockAlerts.map(alert => (
-                      <tr key={alert.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                        <td style={{ padding: "8px 12px" }}>
-                           <div style={{ fontSize: 12, fontWeight: 600, color: "#000000" }}>{alert.name}</div>
-                           <div style={{ fontSize: 10, color: "#000000" }}>Reorder: {alert.reorderLevel} {alert.unit}</div>
+                      <tr key={alert.id} className="hover:bg-gray-50">
+                        <td className="px-3 py-2">
+                           <div className="text-[12px] font-semibold text-gray-800">{alert.name}</div>
+                           <div className="text-[10px] text-gray-500">Reorder: {alert.reorderLevel} {alert.unit}</div>
                         </td>
-                        <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                           <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 9999, background: "transparent", color: "#000000" }}>
+                        <td className="px-3 py-2 text-right">
+                           <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
                              {alert.qty} {alert.unit}
                            </span>
                         </td>
@@ -270,23 +270,23 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Key Compliance Dates */}
-          <div style={{ background: "#EBF5E2", border: "1px solid #8FB870", borderRadius: 4, color: "#000000", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <div style={{ background: "#D4EABD", borderBottom: "1px solid #8FB870", padding: "10px 12px" }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
+          <div className="bg-white border border-gray-200 rounded flex flex-col overflow-hidden shadow-sm">
+            <div className="bg-gray-50 border-b border-gray-200 px-3 py-2.5">
+              <h3 className="text-[13px] font-bold text-gray-800">
                 Compliance Deadlines
               </h3>
             </div>
-            <div style={{ flex: 1, overflowX: "auto", padding: "12px" }}>
+            <div className="flex-1 overflow-x-auto p-3">
                <div className="space-y-3">
                  {complianceDates.map(cd => (
-                   <div key={cd.name} style={{ border: "1px solid #8FB870", borderRadius: 4, padding: "12px", background: "rgba(0,0,0,0.02)", boxShadow: "none" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
+                   <div key={cd.name} className="border border-gray-200 rounded p-3 bg-gray-50">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[12px] font-bold text-gray-800">
                            {cd.name}
                         </span>
-                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: "#000000" }}>{cd.date}</span>
+                        <span className="text-[13px] font-bold font-mono text-gray-800">{cd.date}</span>
                       </div>
-                      <div style={{ fontSize: 10, fontWeight: 500, color: "#000000", opacity: 0.8 }}>
+                      <div className="text-[10px] font-medium text-gray-500">
                         Deadline in BS Date
                       </div>
                    </div>

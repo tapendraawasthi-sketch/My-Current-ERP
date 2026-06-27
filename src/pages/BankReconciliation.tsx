@@ -250,10 +250,13 @@ export default function BankReconciliation() {
   };
 
   // Compute Balances
-  // We need opening balance of the bank account + sum of all journal lines.
-  const bookBalance = journalEntries.reduce((sum, jv) => {
+  const bankAcc = accounts.find(a => a.id === selectedAccountId);
+  let initialBookBal = bankAcc?.openingBalance || 0;
+  if (bankAcc?.openingBalanceDr === false) initialBookBal = -initialBookBal;
+
+  const bookBalance = initialBookBal + journalEntries.reduce((sum, jv) => {
     const line = jv.lines.find(l => l.accountId === selectedAccountId);
-    if (line) return sum + line.debit - line.credit;
+    if (line) return sum + Number(line.debit || 0) - Number(line.credit || 0);
     return sum;
   }, 0);
 
@@ -261,10 +264,14 @@ export default function BankReconciliation() {
   const allStmts = bankStatements.filter(bs => bs.bankAccountId === selectedAccountId);
   // Sort by date to get latest
   const sortedStmts = [...allStmts].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  const statementBalance = sortedStmts.length > 0 ? sortedStmts[sortedStmts.length - 1].balance : 0;
+  const statementBalance = sortedStmts.length > 0 ? Number(sortedStmts[sortedStmts.length - 1].balance) : 0;
 
-  const unreconciledItemsAmount = statementEntries.reduce((sum, s) => sum + s.credit - s.debit, 0); // Simplified diff
-  const difference = bookBalance - statementBalance;
+  // Reconciled balance = Statement Balance + Uncleared Deposits - Uncleared Payments
+  const unclearedPayments = bookEntries.filter(b => !localMatches.some(m => m.bookId === b.id) && b.type === 'credit').reduce((s, b) => s + b.amount, 0);
+  const unclearedDeposits = bookEntries.filter(b => !localMatches.some(m => m.bookId === b.id) && b.type === 'debit').reduce((s, b) => s + b.amount, 0);
+  
+  const reconciledBalance = statementBalance + unclearedDeposits - unclearedPayments;
+  const difference = Math.round((bookBalance - reconciledBalance) * 100) / 100;
 
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto pb-20">

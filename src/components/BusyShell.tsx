@@ -30,7 +30,10 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
 
   const handleClose = () => {
     if (window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.")) {
-      try { window.close(); } catch {}
+      try { 
+        window.close(); 
+        window.location.href = "about:blank";
+      } catch {}
     }
   };
 
@@ -200,10 +203,11 @@ export const ShortcutSidebar: React.FC<{ onShortcut?: (key: string) => void }> =
   return <RightButtonBar onShortcut={onShortcut} />;
 };
 
-export const PillTitle: React.FC<{ title: string }> = ({ title }) => (
-  <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 }}>
+export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({ title, variant = "tally" }) => (
+  <div className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""} style={variant === "tally" ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 } : {}}>
     <span
-      style={{
+      className={variant === "standard" ? "inline-block bg-gray-100 text-gray-800 font-semibold text-[13px] px-[18px] py-[3px] text-center rounded border border-gray-200" : ""}
+      style={variant === "tally" ? {
         display: "inline-block",
         background: "#C9DEB5",
         color: "#000000",
@@ -213,23 +217,34 @@ export const PillTitle: React.FC<{ title: string }> = ({ title }) => (
         textAlign: "center",
         borderRadius: 4,
         border: "1px solid #000000",
-      }}
+      } : {}}
     >
       {title}
     </span>
   </div>
 );
 
-export const FormPanel: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({
-  children, style,
-}) => (
+export const FormPanel: React.FC<{
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  variant?: "tally" | "standard";
+}> = ({ children, style, variant = "tally" }) => (
   <div
-    style={{
-      background: "#EBF5E2",
-      border: "1px solid #000000",
-      padding: "10px 14px",
-      ...style,
-    }}
+    className={
+      variant === "standard"
+        ? "bg-white border border-gray-200 rounded-md p-3"
+        : ""
+    }
+    style={
+      variant === "tally"
+        ? {
+            background: "#EBF5E2",
+            border: "1px solid #000000",
+            padding: "10px 14px",
+            ...style,
+          }
+        : style
+    }
   >
     {children}
   </div>

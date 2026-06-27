@@ -98,6 +98,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
     addDeliveryChallan,
     addGoodsReceiptNote,
     initializeApp,
+    accounts,
   } = useStore();
 
   const existing = useMemo(() => {
@@ -234,6 +235,13 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
   const validate = () => {
     if (!date) return "Date is required.";
     if (!partyId) return `Select a ${type === "challan" ? "customer" : "supplier"}.`;
+    
+    const p = parties.find((x) => x.id === partyId);
+    if (p) {
+      const partyAcc = accounts.find((a) => a.id === p.accountId);
+      if (partyAcc && partyAcc.isActive === false) return "Cannot save: party ledger is inactive.";
+    }
+
     if (!lines.some((line) => line.itemId)) return "At least one line item is required.";
     if (type === "challan") {
       for (const line of lines as ChallanLineState[]) {
@@ -757,14 +765,16 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
       </div>
 
       <ConfirmDialog
-        open={confirmCancel}
+        isOpen={confirmCancel}
         title="Discard changes?"
-        description="Any unsaved changes will be lost."
+        message="Any unsaved changes will be lost."
         onConfirm={() => {
           setConfirmCancel(false);
           onCancel?.();
         }}
-        onCancel={() => setConfirmCancel(false)}
+        onClose={() => setConfirmCancel(false)}
+        confirmText="Discard"
+        cancelText="Keep Editing"
       />
     </div>
   );
