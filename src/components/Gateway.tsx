@@ -145,14 +145,11 @@ const Gateway: React.FC = () => {
     setCurrentPage,
     activeVoucherDate: storeActiveVoucherDate,
     setActiveVoucherDate,
-    loadNotifications,
-    loadRecentActivities,
-    loadDashboardSnapshot
   } = useStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [dashboardSnapshot, setDashboardSnapshot] = useState<any>(null);
+  
   
   const mastersRef = useRef<HTMLDivElement>(null);
   const transactionsRef = useRef<HTMLDivElement>(null);
@@ -160,10 +157,9 @@ const Gateway: React.FC = () => {
   const utilitiesRef = useRef<HTMLDivElement>(null);
   const bankingRef = useRef<HTMLDivElement>(null);
 
+  // Dashboard snapshot computed locally from store data
   useEffect(() => {
-    loadNotifications();
-    loadRecentActivities();
-    loadDashboardSnapshot().then(setDashboardSnapshot);
+    // Notifications and recent activities are loaded via initializeApp
   }, []);
 
   useEffect(() => {
@@ -214,30 +210,48 @@ const Gateway: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const stockPositions = useMemo(() => computeAllStockPositions(stockMovements, items), [stockMovements, items]);
+  const stockPositions = useMemo(() => {
+    try { return computeAllStockPositions(stockMovements, items); } catch { return []; }
+  }, [stockMovements, items]);
   const snapshot = useMemo(() => {
-    if (!dashboardSnapshot) return {
-      cashBalance: 0,
-      bankBalance: 0,
-      receivables: 0,
-      payables: 0,
-      todaysSales: 0,
-      todaysPurchases: 0,
-      vatPayable: 0,
-      stockValue: 0
-    };
+    const today = todayISO();
+    const postedVouchers = (vouchers || []).filter((v: any) => v.status === "posted");
 
-    return {
-      cashBalance: dashboardSnapshot.cashBalance,
-      bankBalance: dashboardSnapshot.bankBalance,
-      receivables: dashboardSnapshot.receivables,
-      payables: dashboardSnapshot.payables,
-      todaysSales: dashboardSnapshot.todaysSales,
-      todaysPurchases: dashboardSnapshot.todaysPurchases,
-      vatPayable: dashboardSnapshot.vatPayable,
-      stockValue: dashboardSnapshot.stockValue
-    };
-  }, [dashboardSnapshot]);
+    // Cash balance from cash accounts
+    const cashAccounts = (accounts || []).filter((a: any) => a.name?.toLowerCase().includes("cash"));
+    const cashBalance = cashAccounts.reduce((sum: number, a: any) => sum + (a.balance || 0), 0);
+
+    // Bank balance from bank accounts
+    const bankAccounts = (accounts || []).filter((a: any) =>
+      a.type === "bank" || a.name?.toLowerCase().includes("bank")
+    );
+    const bankBalance = bankAccounts.reduce((sum: number, a: any) => sum + (a.balance || 0), 0);
+
+    // Receivables from unpaid/partial sales invoices
+    const receivables = (invoices || [])
+      .filter((i: any) => (i.type === "sales-invoice" || i.type === "sales_invoice") && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+      .reduce((sum: number, i: any) => sum + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0);
+
+    // Payables from unpaid/partial purchase invoices
+    const payables = (invoices || [])
+      .filter((i: any) => (i.type === "purchase-invoice" || i.type === "purchase_invoice") && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+      .reduce((sum: number, i: any) => sum + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0);
+
+    // Today's sales
+    const todaysSales = (invoices || [])
+      .filter((i: any) => i.date === today && (i.type === "sales-invoice" || i.type === "sales_invoice") && i.status === "posted")
+      .reduce((sum: number, i: any) => sum + (i.grandTotal || 0), 0);
+
+    // Today's purchases
+    const todaysPurchases = (invoices || [])
+      .filter((i: any) => i.date === today && (i.type === "purchase-invoice" || i.type === "purchase_invoice") && i.status === "posted")
+      .reduce((sum: number, i: any) => sum + (i.grandTotal || 0), 0);
+
+    // Stock value
+    const stockValue = stockPositions.reduce((sum: number, sp: any) => sum + (sp.value || 0), 0);
+
+    return { cashBalance, bankBalance, receivables, payables, todaysSales, todaysPurchases, vatPayable: 0, stockValue };
+  }, [vouchers, accounts, invoices, stockPositions]);
 
   const companyName = companySettings?.companyNameEn || companySettings?.name || "No company configured";
   const fiscalYearLabel = currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "No active fiscal year";
