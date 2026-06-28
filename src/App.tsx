@@ -41,6 +41,15 @@ import PriceLists from "./pages/PriceLists";
 import UnitConversionMaster from "./pages/UnitConversionMaster";
 import StandardNarrationMaster from "./pages/StandardNarrationMaster";
 import BillSundryMaster from "./pages/BillSundryMaster";
+import JournalEntries from "./pages/JournalEntries";
+import DebitNoteVoucher from "./pages/DebitNoteVoucher";
+import CreditNoteVoucher from "./pages/CreditNoteVoucher";
+import PhysicalStockPage from "./pages/PhysicalStockPage";
+import CashFlowStatement from "./pages/CashFlowStatement";
+import GeneralLedger from "./pages/GeneralLedger";
+import VatReports from "./pages/VatReports";
+import BillingInvoice from "./pages/BillingInvoice";
+import PartyStatement from "./pages/PartyStatement";
 
 // ─── Pages that already exist in the project ─────────────────────────────────
 import SignInForm from "./components/auth/SignInForm";
@@ -102,33 +111,50 @@ const App: React.FC = () => {
 
       // ── Sales transactions ────────────────────────────────────────────────
       case "sales":             return <SalesVoucher />;
+      case "sales-return":      return <BillingInvoice />;
       case "delivery-challan":  return <DeliveryChallan />;
       case "quotation":         return <Quotation />;
       case "sales-order":       return <SalesOrder />;
 
       // ── Purchase transactions ─────────────────────────────────────────────
       case "purchase":          return <PurchaseVoucher />;
+      case "purchase-return":   return <BillingInvoice />;
       case "goods-receipt":     return <GoodsReceiptNote />;
       case "purchase-order":    return <PurchaseOrder />;
 
       // ── Inventory transactions ────────────────────────────────────────────
       case "stock-transfer":    return <StockTransfer />;
+      case "physical-stock":    return <PhysicalStockPage />;
 
       // ── Finance / Accounts ────────────────────────────────────────────────
+      case "journal":           return <JournalEntries />;
       case "payment":           return <PaymentVoucher />;
       case "receipt":           return <ReceiptVoucher />;
       case "contra":            return <ContraVoucher />;
+      case "debit-note":        return <DebitNoteVoucher />;
+      case "credit-note":       return <CreditNoteVoucher />;
 
       // ── Financial reports ─────────────────────────────────────────────────
       case "balance-sheet":     return <BalanceSheet />;
       case "profit-loss":       return <ProfitLoss />;
       case "trial-balance":     return <TrialBalance />;
       case "day-book":          return <DayBook />;
+      case "cash-flow":         return <CashFlowStatement />;
+      case "ledger-report":     return <GeneralLedger />;
+      case "ledger":            return <GeneralLedger />;
+
+      // ── GST / VAT reports ─────────────────────────────────────────────────
+      case "vat-reports":       return <VatReports />;
+      case "gstr1":
+      case "gstr2":
+      case "gstr3b":
+      case "gst-summary":       return <VatReports />;
 
       // ── Party reports ─────────────────────────────────────────────────────
       case "outstanding-receivables": return <OutstandingReceivables />;
       case "outstanding-payables":    return <OutstandingPayables />;
       case "aging-report":            return <AgingReport />;
+      case "party-statement":         return <PartyStatement />;
       case "interest-calculation":    return <InterestCalculation />;
 
       // ── Inventory reports ─────────────────────────────────────────────────
