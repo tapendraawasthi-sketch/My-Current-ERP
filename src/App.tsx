@@ -147,6 +147,13 @@ const SmartBankReconciliation = lazy(() => import('./pages/SmartBankReconciliati
 const POSBilling = lazy(() => import('./pages/POSBilling'));
 const SalesPurchaseAnalysis = lazy(() => import('./pages/SalesPurchaseAnalysis'));
 const PriceHistory = lazy(() => import('./pages/PriceHistory'));
+const AdvancedTaxCompliance = lazy(() => import('./pages/AdvancedTaxCompliance'));
+const PriceListMaster = lazy(() => import('./pages/PriceListMaster'));
+const BOMProduction = lazy(() => import('./pages/BOMProduction'));
+const CommunicationHub = lazy(() => import('./pages/CommunicationHub'));
+const YearEndProcess = lazy(() => import('./pages/YearEndProcess'));
+const POSMode = lazy(() => import('./pages/POSMode'));
+const BankStatementImport = lazy(() => import('./pages/BankStatementImport'));
 
 import Layout from "./components/Layout";
 import { F12Provider } from './hooks/useF12Config';
@@ -375,6 +382,21 @@ const App = () => {
       case 'pos': return <POSBilling />;
       case 'sales-purchase-analysis': return <SalesPurchaseAnalysis />;
       case 'price-history': return <PriceHistory />;
+      case "advanced-tax-compliance": return <AdvancedTaxCompliance />;
+      case "price-list-master": return <PriceListMaster />;
+      case "bom-production": return <BOMProduction />;
+      case "debtors-aging": return <DebtorsAging />;
+      case "credit-limit-manager": return <CreditLimitManager />;
+      case "cost-center-report": return <CostCenterReport />;
+      case "communication-hub": return <CommunicationHub />;
+      case "year-end-process": return <YearEndProcess />;
+      case "period-lock": return <PeriodLockPage />;
+      case "audit-log": return <AuditLog />;
+      case "backup-restore": return <BackupRestore />;
+      case "opening-balance": return <OpeningBalance />;
+      case "recurring-vouchers": return <RecurringVouchers />;
+      case "pos-mode": return <POSMode />;
+      case "bank-statement-import": return <BankStatementImport />;
 
       default:
         return (

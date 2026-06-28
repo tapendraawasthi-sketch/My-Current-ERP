@@ -1,0 +1,1025 @@
+// @ts-nocheck
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useStore } from "../store/useStore";
+import { getDB, generateId } from "../lib/db";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
+import {
+  AlertTriangle,
+  Banknote,
+  Barcode,
+  Calculator,
+  CalendarClock,
+  CheckCircle2,
+  CreditCard,
+  Download,
+  FileSpreadsheet,
+  History,
+  Minus,
+  Package,
+  PauseCircle,
+  PlayCircle,
+  Plus,
+  Printer,
+  QrCode,
+  Receipt,
+  RefreshCcw,
+  RotateCcw,
+  Save,
+  Search,
+  ShoppingCart,
+  Trash2,
+  User,
+  WalletCards,
+  XCircle,
+  Clock,
+  LogOut,
+  X,
+  CreditCard as CardIcon
+} from "lucide-react";
+
+const money = (v: any) =>
+  `Rs. ${Number(v || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+
+const btn =
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const btn2 =
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const btnDanger =
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const input =
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const card =
+  "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+const td =
+  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
+
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const nowISO = () => new Date().toISOString();
+
+const tableAll = (db: any, name: string) => {
+  try {
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.toArray) return t.toArray().catch(() => []);
+    return Promise.resolve([]);
+  } catch {
+    return Promise.resolve([]);
+  }
+};
+
+const tablePut = async (db: any, name: string, rows: any[]) => {
+  try {
+    if (!rows?.length) return;
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.bulkPut) await t.bulkPut(rows);
+  } catch (err) {
+    console.warn("bulkPut failed", name, err);
+  }
+};
+
+const tableDelete = async (db: any, name: string, id: any) => {
+  try {
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.delete) await t.delete(id);
+  } catch (err) {
+    console.warn("delete failed", name, err);
+  }
+};
+
+const itemName = (items: any[], id: string) =>
+  items.find((i) => i.id === id)?.name ||
+  items.find((i) => i.itemId === id)?.name ||
+  id ||
+  "-";
+
+const partyName = (parties: any[], id: string) =>
+  parties.find((p) => p.id === id)?.name ||
+  parties.find((p) => p.partyId === id)?.name ||
+  "Walk-in Customer";
+
+const warehouseName = (warehouses: any[], id: string) =>
+  warehouses.find((w) => w.id === id)?.name ||
+  warehouses.find((w) => w.warehouseId === id)?.name ||
+  "Main Warehouse";
+
+const findAccount = (accounts: any[], keywords: string[]) => {
+  const words = keywords.map((x) => String(x).toLowerCase());
+  return (
+    accounts.find((a) =>
+      words.some((w) =>
+        [a.name, a.group, a.groupName, a.type, a.nature]
+          .join(" ")
+          .toLowerCase()
+          .includes(w)
+      )
+    ) || {}
+  );
+};
+
+const normalizePAN = (v: any) => String(v || "").replace(/\D/g, "").slice(0, 9);
+
+const stockForItem = (stockMovements: any[], itemId: string, warehouseId = "") => {
+  return (stockMovements || [])
+    .filter((m) => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId))
+    .reduce(
+      (sum, m) =>
+        sum +
+        Number(m.qtyIn || m.inQty || 0) -
+        Number(m.qtyOut || m.outQty || 0) +
+        Number(m.qty || 0),
+      0
+    );
+};
+
+const lineNet = (l: any) => {
+  const gross = Number(l.qty || 0) * Number(l.rate || 0);
+  const disc = gross * (Number(l.discountPercent || 0) / 100) + Number(l.discountAmount || 0);
+  const taxable = Math.max(0, gross - disc);
+  const vat = l.taxable ? taxable * 0.13 : 0;
+
+  return {
+    gross,
+    disc,
+    taxable,
+    vat,
+    total: taxable + vat,
+  };
+};
+
+const defaultPayment = () => ({
+  cash: 0,
+  card: 0,
+  wallet: 0,
+  bank: 0,
+  credit: 0,
+  referenceNo: "",
+});
+
+const paymentTotal = (p: any) =>
+  Number(p.cash || 0) +
+  Number(p.card || 0) +
+  Number(p.wallet || 0) +
+  Number(p.bank || 0) +
+  Number(p.credit || 0);
+
+const defaultSession = (currentUser: any) => ({
+  id: generateId(),
+  date: todayISO(),
+  openedAt: nowISO(),
+  closedAt: "",
+  userId: currentUser?.id || "",
+  userName: currentUser?.name || currentUser?.username || "Cashier",
+  openingCash: 0,
+  closingCash: 0,
+  expectedCash: 0,
+  variance: 0,
+  status: "Open",
+});
+
+const makeAuditRow = (currentUser: any, action: string, narration: string, risk = "Low") => ({
+  id: generateId(),
+  timestamp: nowISO(),
+  date: todayISO(),
+  userId: currentUser?.id || "",
+  userName: currentUser?.name || currentUser?.username || "System",
+  role: currentUser?.role || "",
+  module: "POS Mode",
+  action,
+  narration,
+  status: "Success",
+  risk,
+  createdAt: nowISO(),
+});
+
+const receiptCss = `
+  <style>
+    body { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:#000; }
+    .receipt { width: 310px; margin: 0 auto; font-size: 12px; }
+    .center { text-align:center; }
+    .bold { font-weight: 800; }
+    .row { display:flex; justify-content:space-between; gap:8px; }
+    .line { border-top:1px dashed #000; margin:8px 0; }
+    table { width:100%; border-collapse:collapse; font-size:11px; }
+    th, td { padding:2px 0; text-align:left; }
+    .right { text-align:right; }
+    @media print { button { display:none; } }
+  </style>
+`;
+
+const Modal = ({ open, title, children, onClose, max = "max-w-5xl" }: any) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className={`bg-white rounded-lg shadow-xl w-full ${max} max-h-[90vh] overflow-hidden flex flex-col`}>
+        <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+          <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
+            <XCircle className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="p-4 overflow-auto">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+export default function POSBilling() {
+  const store = useStore();
+  const currentUser = store.currentUser || store.user || {};
+  const storeItems = store.items || [];
+  const storeParties = store.parties || [];
+  const storeAccounts = store.accounts || [];
+  const storeWarehouses = store.warehouses || [];
+  const storeStockMovements = store.stockMovements || [];
+  const companySettings = store.companySettings || store.company || {};
+  const fiscalYear = store.currentFiscalYear || store.fiscalYear || {};
+
+  const barcodeRef = useRef<HTMLInputElement>(null);
+
+  const [activeTab, setActiveTab] = useState("Billing");
+  const [loading, setLoading] = useState(false);
+
+  const [items, setItems] = useState<any[]>([]);
+  const [parties, setParties] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [warehouses, setWarehouses] = useState<any[]>([]);
+  const [stockMovements, setStockMovements] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [holds, setHolds] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [currentSession, setCurrentSession] = useState<any>(null);
+
+  const [warehouseId, setWarehouseId] = useState("");
+  const [partyId, setPartyId] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [cart, setCart] = useState<any[]>([]);
+  const [billDiscountPercent, setBillDiscountPercent] = useState(0);
+  const [billDiscountAmount, setBillDiscountAmount] = useState(0);
+  const [payment, setPayment] = useState<any>(defaultPayment());
+  const [modalType, setModalType] = useState("");
+  const [receiptData, setReceiptData] = useState<any>(null);
+  const [openingCash, setOpeningCash] = useState(0);
+  const [closingCash, setClosingCash] = useState(0);
+  const [holdName, setHoldName] = useState("");
+  const [saleDate, setSaleDate] = useState(todayISO());
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (!warehouseId && warehouses[0]?.id) setWarehouseId(warehouses[0].id);
+  }, [warehouses, warehouseId]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const db = getDB();
+      const [
+        dbItems,
+        dbParties,
+        dbAccounts,
+        dbWarehouses,
+        dbStock,
+        dbInvoices,
+        dbHolds,
+        dbSessions,
+      ] = await Promise.all([
+        tableAll(db, "items"),
+        tableAll(db, "parties"),
+        tableAll(db, "accounts"),
+        tableAll(db, "warehouses"),
+        tableAll(db, "stockMovements"),
+        tableAll(db, "invoices"),
+        tableAll(db, "posHolds"),
+        tableAll(db, "posSessions"),
+      ]);
+
+      const itemRows = dbItems?.length ? dbItems : storeItems;
+      const partyRows = dbParties?.length ? dbParties : storeParties;
+      const accountRows = dbAccounts?.length ? dbAccounts : storeAccounts;
+      const warehouseRows = dbWarehouses?.length ? dbWarehouses : storeWarehouses;
+      const stockRows = dbStock?.length ? dbStock : storeStockMovements;
+
+      setItems(itemRows || []);
+      setParties(partyRows || []);
+      setAccounts(accountRows || []);
+      setWarehouses(warehouseRows || []);
+      setStockMovements(stockRows || []);
+      setInvoices(dbInvoices || []);
+      setHolds(dbHolds || []);
+      setSessions((dbSessions || []).sort((a, b) => String(b.openedAt || "").localeCompare(String(a.openedAt || ""))));
+
+      const open = (dbSessions || []).find(
+        (s) =>
+          s.status === "Open" &&
+          (!s.userId || !currentUser?.id || s.userId === currentUser.id) &&
+          s.date === todayISO()
+      );
+
+      setCurrentSession(open || null);
+      if (!warehouseId && warehouseRows?.[0]?.id) setWarehouseId(warehouseRows[0].id);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not load POS data");
+    } finally {
+      setLoading(false);
+      setTimeout(() => barcodeRef.current?.focus(), 100);
+    }
+  };
+
+  const categories = useMemo(
+    () => [
+      "All",
+      ...Array.from(
+        new Set(
+          items
+            .map((i) => i.category || i.group || i.groupName || i.itemGroup)
+            .filter(Boolean)
+        )
+      ).sort(),
+    ],
+    [items]
+  );
+
+  const filteredItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return items
+      .filter((i) => {
+        const cat = i.category || i.group || i.groupName || i.itemGroup || "";
+        if (categoryFilter !== "All" && cat !== categoryFilter) return false;
+        if (!q) return true;
+
+        return [
+          i.name,
+          i.code,
+          i.barcode,
+          i.sku,
+          i.hsnCode,
+          cat,
+          i.description,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(q);
+      })
+      .slice(0, 80);
+  }, [items, search, categoryFilter]);
+
+  const cartSummary = useMemo(() => {
+    const gross = cart.reduce((sum, l) => sum + lineNet(l).gross, 0);
+    const lineDiscount = cart.reduce((sum, l) => sum + lineNet(l).disc, 0);
+    const taxableBeforeBillDiscount = cart.reduce((sum, l) => sum + lineNet(l).taxable, 0);
+
+    const billPercentDiscount =
+      taxableBeforeBillDiscount * (Number(billDiscountPercent || 0) / 100);
+    const billDiscount = billPercentDiscount + Number(billDiscountAmount || 0);
+
+    const taxableBase = Math.max(0, taxableBeforeBillDiscount - billDiscount);
+
+    const taxableRatio =
+      taxableBeforeBillDiscount > 0 ? taxableBase / taxableBeforeBillDiscount : 1;
+
+    const vat = cart.reduce((sum, l) => {
+      const x = lineNet(l);
+      return sum + (l.taxable ? x.vat * taxableRatio : 0);
+    }, 0);
+
+    const subTotal = taxableBase;
+    const grandTotal = subTotal + vat;
+    const paid = paymentTotal(payment);
+    const balance = grandTotal - paid;
+    const change = paid > grandTotal && Number(payment.credit || 0) <= 0 ? paid - grandTotal : 0;
+
+    return {
+      gross,
+      lineDiscount,
+      billPercentDiscount,
+      billDiscountAmount: Number(billDiscountAmount || 0),
+      billDiscount,
+      totalDiscount: lineDiscount + billDiscount,
+      taxable: subTotal,
+      vat,
+      grandTotal,
+      paid,
+      balance,
+      change,
+      itemCount: cart.reduce((sum, l) => sum + Number(l.qty || 0), 0),
+      lineCount: cart.length,
+    };
+  }, [cart, billDiscountPercent, billDiscountAmount, payment]);
+
+  const todaySales = useMemo(
+    () =>
+      invoices.filter(
+        (inv) =>
+          String(inv.date || inv.invoiceDate || "").slice(0, 10) === todayISO() &&
+          String(inv.sourceType || inv.channel || "").toLowerCase().includes("pos")
+      ),
+    [invoices]
+  );
+
+  const dayStats = useMemo(() => {
+    const totalSales = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.grandTotal || inv.total || 0),
+      0
+    );
+    const cash = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.cash || inv.cash || 0), 0);
+    const card = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.card || inv.card || 0), 0);
+    const wallet = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.wallet || inv.wallet || 0), 0);
+    const bank = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.bank || inv.bank || 0), 0);
+    const credit = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.credit || inv.credit || 0), 0);
+
+    return {
+      bills: todaySales.length,
+      totalSales,
+      cash,
+      card,
+      wallet,
+      bank,
+      credit,
+      expectedCash: Number(currentSession?.openingCash || 0) + cash,
+    };
+  }, [todaySales, currentSession]);
+
+  const addToCart = (item: any, qty = 1) => {
+    if (!item?.id) return;
+    const available = stockForItem(stockMovements, item.id, warehouseId);
+    const allowNegative = companySettings?.allowNegativeStock === true;
+
+    setCart((prev) => {
+      const existing = prev.find((l) => l.itemId === item.id);
+      const nextQty = Number(existing?.qty || 0) + Number(qty || 1);
+
+      if (!allowNegative && available < nextQty) {
+        toast.error(`Insufficient stock. Available: ${available}`);
+        return prev;
+      }
+
+      const rate = Number(item.sellingPrice || item.salePrice || item.mrp || item.rate || item.price || 0) || 0;
+
+      const row = {
+        id: existing?.id || generateId(),
+        itemId: item.id,
+        name: item.name,
+        code: item.code || item.sku || "",
+        barcode: item.barcode || "",
+        unit: item.unit || item.uom || "PCS",
+        qty: nextQty,
+        rate: existing?.rate ?? rate,
+        discountPercent: existing?.discountPercent || 0,
+        discountAmount: existing?.discountAmount || 0,
+        taxable: existing?.taxable ?? (item.taxable !== false && item.vatExempt !== true && item.taxRate !== 0),
+        warehouseId,
+        available,
+      };
+
+      if (existing) {
+        return prev.map((l) => (l.itemId === item.id ? row : l));
+      }
+      return [row, ...prev];
+    });
+
+    setBarcode("");
+    setSearch("");
+    setTimeout(() => barcodeRef.current?.focus(), 50);
+  };
+
+  const scanBarcode = () => {
+    const q = barcode.trim().toLowerCase();
+    if (!q) return;
+
+    const item = items.find(
+      (i) =>
+        String(i.barcode || "").toLowerCase() === q ||
+        String(i.code || "").toLowerCase() === q ||
+        String(i.sku || "").toLowerCase() === q ||
+        String(i.name || "").toLowerCase() === q
+    );
+
+    if (!item) {
+      toast.error("Item not found for barcode/code");
+      return;
+    }
+
+    addToCart(item, 1);
+  };
+
+  const updateCartLine = (id: string, key: string, value: any) => {
+    setCart((prev) =>
+      prev.map((l) => {
+        if (l.id !== id) return l;
+
+        const next = {
+          ...l,
+          [key]:
+            key === "qty" ||
+            key === "rate" ||
+            key === "discountPercent" ||
+            key === "discountAmount"
+              ? Number(value || 0)
+              : value,
+        };
+
+        if (key === "qty") {
+          const available = stockForItem(stockMovements, l.itemId, warehouseId);
+          const allowNegative = companySettings?.allowNegativeStock === true;
+          if (!allowNegative && Number(value || 0) > available) {
+            toast.error(`Insufficient stock. Available: ${available}`);
+            return l;
+          }
+        }
+        return next;
+      })
+    );
+  };
+
+  const removeCartLine = (id: string) => {
+    setCart((prev) => prev.filter((l) => l.id !== id));
+  };
+
+  const clearCart = () => {
+    if (!cart.length) return;
+    if (!confirm("Clear current cart?")) return;
+    setCart([]);
+    setBillDiscountPercent(0);
+    setBillDiscountAmount(0);
+    setPayment(defaultPayment());
+    setPartyId("");
+    toast.success("Cart cleared");
+  };
+
+  const quickSetPayment = (mode: string) => {
+    const total = Number(cartSummary.grandTotal || 0);
+
+    if (mode === "cash") setPayment({ ...defaultPayment(), cash: total });
+    if (mode === "card") setPayment({ ...defaultPayment(), card: total });
+    if (mode === "wallet") setPayment({ ...defaultPayment(), wallet: total });
+    if (mode === "bank") setPayment({ ...defaultPayment(), bank: total });
+    if (mode === "credit") {
+      if (!partyId) {
+        toast.error("Select customer for credit sale");
+        return;
+      }
+      setPayment({ ...defaultPayment(), credit: total });
+    }
+  };
+
+  const validateSale = () => {
+    if (!currentSession) {
+      toast.error("Open POS session first");
+      return false;
+    }
+    if (!cart.length) {
+      toast.error("Cart is empty");
+      return false;
+    }
+    if (!warehouseId) {
+      toast.error("Select warehouse");
+      return false;
+    }
+
+    const bad = cart.find((l) => !l.itemId || Number(l.qty || 0) <= 0 || Number(l.rate || 0) < 0);
+    if (bad) {
+      toast.error("Cart contains invalid item/qty/rate");
+      return false;
+    }
+
+    const paid = paymentTotal(payment);
+    if (paid + 0.01 < cartSummary.grandTotal) {
+      toast.error("Payment is less than bill total");
+      return false;
+    }
+    if (Number(payment.credit || 0) > 0 && !partyId) {
+      toast.error("Select customer for credit amount");
+      return false;
+    }
+
+    return true;
+  };
+
+  const buildInvoice = () => {
+    const party = parties.find((p) => p.id === partyId) || {};
+    const invoiceNo = `POS-${saleDate.replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
+
+    const lines = cart.map((l) => {
+      const x = lineNet(l);
+      return {
+        id: generateId(),
+        itemId: l.itemId,
+        itemName: l.name,
+        qty: Number(l.qty || 0),
+        unit: l.unit || "PCS",
+        rate: Number(l.rate || 0),
+        discountPercent: Number(l.discountPercent || 0),
+        discountAmount: Number(l.discountAmount || 0),
+        taxable: !!l.taxable,
+        taxableAmount: x.taxable,
+        vatAmount: x.vat,
+        lineTotal: x.total,
+        warehouseId: l.warehouseId || warehouseId,
+      };
+    });
+
+    return {
+      id: generateId(),
+      invoiceNo,
+      number: invoiceNo,
+      type: "sales",
+      voucherType: "sales_invoice",
+      sourceType: "POS",
+      channel: "POS",
+      date: saleDate,
+      invoiceDate: saleDate,
+      partyId: partyId || "",
+      partyName: party.name || "Walk-in Customer",
+      partyPan: normalizePAN(party.pan || party.vatNo || party.taxNo),
+      warehouseId,
+      lines,
+      items: lines,
+      grossAmount: cartSummary.gross,
+      discountAmount: cartSummary.totalDiscount,
+      taxableAmount: cartSummary.taxable,
+      vatAmount: cartSummary.vat,
+      grandTotal: cartSummary.grandTotal,
+      total: cartSummary.grandTotal,
+      payments: { ...payment },
+      paymentMode:
+        Number(payment.cash || 0) > 0
+          ? "Cash"
+          : Number(payment.card || 0) > 0
+          ? "Card"
+          : Number(payment.wallet || 0) > 0
+          ? "Wallet"
+          : Number(payment.bank || 0) > 0
+          ? "Bank"
+          : "Credit",
+      status: "paid",
+      fiscalYearId: fiscalYear?.id || "",
+      posSessionId: currentSession?.id || "",
+      createdBy: currentUser?.id || "",
+      createdByName: currentUser?.name || currentUser?.username || "Cashier",
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    };
+  };
+
+  const buildVoucher = (invoice: any) => {
+    const salesAcc = findAccount(accounts, ["sales"]);
+    const vatAcc = findAccount(accounts, ["vat", "tax payable"]);
+    const cashAcc = findAccount(accounts, ["cash"]);
+    const bankAcc = findAccount(accounts, ["bank"]);
+    const cardAcc = findAccount(accounts, ["card", "pos receivable"]);
+    const walletAcc = findAccount(accounts, ["wallet", "digital"]);
+    const debtorAcc = findAccount(accounts, ["debtor", "receivable", "customer"]);
+
+    const lines: any[] = [];
+
+    if (Number(invoice.payments.cash || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: cashAcc.id || "cash",
+        debit: Number(invoice.payments.cash || 0),
+        credit: 0,
+        narration: `POS cash sale ${invoice.invoiceNo}`,
+      });
+    }
+    if (Number(invoice.payments.bank || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: bankAcc.id || "bank",
+        debit: Number(invoice.payments.bank || 0),
+        credit: 0,
+        narration: `POS bank sale ${invoice.invoiceNo}`,
+      });
+    }
+    if (Number(invoice.payments.card || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: cardAcc.id || bankAcc.id || "card",
+        debit: Number(invoice.payments.card || 0),
+        credit: 0,
+        narration: `POS card sale ${invoice.invoiceNo}`,
+      });
+    }
+    if (Number(invoice.payments.wallet || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: walletAcc.id || bankAcc.id || "wallet",
+        debit: Number(invoice.payments.wallet || 0),
+        credit: 0,
+        narration: `POS wallet sale ${invoice.invoiceNo}`,
+      });
+    }
+    if (Number(invoice.payments.credit || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: debtorAcc.id || partyId || "debtors",
+        partyId,
+        debit: Number(invoice.payments.credit || 0),
+        credit: 0,
+        narration: `POS credit sale ${invoice.invoiceNo}`,
+      });
+    }
+
+    lines.push({
+      id: generateId(),
+      accountId: salesAcc.id || "sales",
+      debit: 0,
+      credit: Number(invoice.taxableAmount || 0),
+      narration: `POS sales ${invoice.invoiceNo}`,
+    });
+
+    if (Number(invoice.vatAmount || 0) > 0) {
+      lines.push({
+        id: generateId(),
+        accountId: vatAcc.id || "vat-payable",
+        debit: 0,
+        credit: Number(invoice.vatAmount || 0),
+        narration: `VAT on POS sales ${invoice.invoiceNo}`,
+      });
+    }
+
+    return {
+      id: generateId(),
+      voucherNo: invoice.invoiceNo,
+      type: "sales",
+      date: invoice.date,
+      narration: `POS sale ${invoice.invoiceNo}`,
+      partyId: invoice.partyId,
+      lines,
+      totalDebit: lines.reduce((sum, l) => sum + Number(l.debit || 0), 0),
+      totalCredit: lines.reduce((sum, l) => sum + Number(l.credit || 0), 0),
+      status: "posted",
+      sourceType: "POS",
+      sourceId: invoice.id,
+      fiscalYearId: fiscalYear?.id || "",
+      createdBy: currentUser?.id || "",
+      createdAt: nowISO(),
+    };
+  };
+
+  const saveSale = async () => {
+    if (!validateSale()) return;
+    setLoading(true);
+
+    try {
+      const db = getDB();
+      const invoice = buildInvoice();
+      const voucher = buildVoucher(invoice);
+
+      const stockRows = invoice.lines.map((l) => ({
+        id: generateId(),
+        date: invoice.date,
+        type: "sales",
+        itemId: l.itemId,
+        warehouseId: l.warehouseId || warehouseId,
+        qtyIn: 0,
+        qtyOut: Number(l.qty || 0),
+        qty: -Number(l.qty || 0),
+        rate: Number(l.rate || 0),
+        value: Number(l.taxableAmount || 0),
+        sourceType: "POS",
+        sourceId: invoice.id,
+        invoiceId: invoice.id,
+        narration: `POS sale ${invoice.invoiceNo}`,
+        createdAt: nowISO(),
+      }));
+
+      await tablePut(db, "invoices", [invoice]);
+      await tablePut(db, "vouchers", [voucher]);
+      await tablePut(db, "stockMovements", stockRows);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "POS Sale Saved",
+          `${invoice.invoiceNo} ${money(invoice.grandTotal)} ${invoice.paymentMode}`,
+          "Medium"
+        ),
+      ]);
+
+      if (store.addInvoice) {
+        try { store.addInvoice(invoice); } catch {}
+      }
+      if (store.addVoucher) {
+        try { store.addVoucher(voucher); } catch {}
+      }
+
+      setInvoices((prev) => [invoice, ...prev]);
+      setStockMovements((prev) => [...stockRows, ...prev]);
+      setReceiptData(invoice);
+      setCart([]);
+      setBillDiscountPercent(0);
+      setBillDiscountAmount(0);
+      setPayment(defaultPayment());
+      setPartyId("");
+      setModalType("receipt");
+
+      toast.success(`POS invoice ${invoice.invoiceNo} saved`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not save POS sale");
+    } finally {
+      setLoading(false);
+      setTimeout(() => barcodeRef.current?.focus(), 100);
+    }
+  };
+
+  const openSession = async () => {
+    if (currentSession) {
+      toast.error("POS session is already open");
+      return;
+    }
+    try {
+      const db = getDB();
+      const row = {
+        ...defaultSession(currentUser),
+        openingCash: Number(openingCash || 0),
+        expectedCash: Number(openingCash || 0),
+      };
+
+      await tablePut(db, "posSessions", [row]);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "POS Session Opened",
+          `Opening cash ${money(row.openingCash)}`,
+          "Medium"
+        ),
+      ]);
+
+      setCurrentSession(row);
+      setSessions((prev) => [row, ...prev]);
+      setModalType("");
+      toast.success("POS session opened");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not open POS session");
+    }
+  };
+
+  const closeSession = async () => {
+    if (!currentSession) {
+      toast.error("No open POS session");
+      return;
+    }
+    const variance = Number(closingCash || 0) - Number(dayStats.expectedCash || 0);
+
+    try {
+      const db = getDB();
+      const row = {
+        ...currentSession,
+        closingCash: Number(closingCash || 0),
+        expectedCash: Number(dayStats.expectedCash || 0),
+        variance,
+        closedAt: nowISO(),
+        status: "Closed",
+      };
+
+      await tablePut(db, "posSessions", [row]);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "POS Session Closed",
+          `Closing cash ${money(row.closingCash)}, variance ${money(row.variance)}`,
+          Math.abs(variance) > 1 ? "High" : "Medium"
+        ),
+      ]);
+
+      setCurrentSession(null);
+      setSessions((prev) => [row, ...prev.filter((s) => s.id !== row.id)]);
+      setModalType("");
+      toast.success("POS session closed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not close POS session");
+    }
+  };
+
+  const holdBill = async () => {
+    if (!cart.length) {
+      toast.error("Cart is empty");
+      return;
+    }
+    try {
+      const db = getDB();
+      const row = {
+        id: generateId(),
+        name: holdName || `Hold ${new Date().toLocaleTimeString()}`,
+        date: todayISO(),
+        heldAt: nowISO(),
+        partyId,
+        warehouseId,
+        cart,
+        billDiscountPercent,
+        billDiscountAmount,
+        payment,
+        total: cartSummary.grandTotal,
+        userId: currentUser?.id || "",
+      };
+
+      await tablePut(db, "posHolds", [row]);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(currentUser, "POS Bill Held", `${row.name} ${money(row.total)}`, "Low"),
+      ]);
+
+      setHolds((prev) => [row, ...prev]);
+      setCart([]);
+      setBillDiscountPercent(0);
+      setBillDiscountAmount(0);
+      setPayment(defaultPayment());
+      setHoldName("");
+      setModalType("");
+      toast.success("Bill held");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not hold bill");
+    }
+  };
+
+  const recallHold = async (h: any) => {
+    if (cart.length && !confirm("Current cart will be replaced. Continue?")) return;
+    setPartyId(h.partyId || "");
+    setWarehouseId(h.warehouseId || warehouseId);
+    setCart(h.cart || []);
+    setBillDiscountPercent(Number(h.billDiscountPercent || 0));
+    setBillDiscountAmount(Number(h.billDiscountAmount || 0));
+    setPayment(h.payment || defaultPayment());
+
+    try {
+      const db = getDB();
+      await tableDelete(db, "posHolds", h.id);
+      setHolds((prev) => prev.filter((x) => x.id !== h.id));
+    } catch {}
+
+    setModalType("");
+    setActiveTab("Billing");
+    toast.success("Held bill recalled");
+  };
+
+  const deleteHold = async (h: any) => {
+    if (!confirm(`Delete held bill "${h.name}"?`)) return;
+    try {
+      const db = getDB();
+      await tableDelete(db, "posHolds", h.id);
+      setHolds((prev) => prev.filter((x) => x.id !== h.id));
+      toast.success("Held bill deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not delete held bill");
+    }
+  };
+
+  const exportDayReport = () => {
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(
+        todaySales.map((inv) => ({
+          Date: inv.date,
+          InvoiceNo: inv.invoiceNo || inv.number,
+          Customer: inv.partyName || partyName(parties, inv.partyId),
+          Gross: inv.grossAmount,
+          Discount: inv.discountAmount,
+          Taxable: inv.taxableAmount,
+          VAT: inv.vatAmount,
+          Total: inv.grandTotal,
+          Cash: inv.payments?.cash || 0,
+          Card: inv.payments?.card || 0,
+          Wallet: inv.payments?.wallet || 0,
+          Bank: inv.payments?.bank || 0,
+          Credit: inv.payments?.credit || 0,
+          Cashier: inv.createdByName,
+        }))
+      ),
+      "POS Sales"
+    );
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet([
+        { Metric: "Bills", Value: dayStats.bills },
+        { Metric: "Total Sales", Value: dayStats.totalSales },
+        { Metric: "Cash", Value: dayStats.cash },
+        { Metric: "Card", Value: dayStats.card },
+        { Metric: "Wallet", Value: dayStats.wallet },
+        { Metric: "Bank", Value: dayStats.bank },
+        { Metric: "Credit", Value: dayStats.credit },
+        { Metric: "Expected Cash", Value: dayStats.expectedCash },
+      ]),
+      "Summary"
+    );
+
+    XLSX.writeFile(wb, `POS_Day_Report_${todayISO()}.xlsx`);
+    toast.success("POS day report exported");
+  };
+

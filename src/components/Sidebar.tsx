@@ -50,7 +50,14 @@ import {
   AlertTriangle,
   Tag,
   Building2,
-  History
+  History,
+  ShieldCheck,
+  Factory,
+  MessageSquare,
+  CalendarCheck,
+  Repeat,
+  Receipt,
+  Clock
 } from "lucide-react";
 
 interface NavItem {
@@ -89,6 +96,7 @@ const menuGroups: MenuGroup[] = [
       { label: "Item Master", page: "item-master", icon: Package },
       { label: "Unit Conversion", page: "unit-conversion", icon: Scale },
       { label: "Bill Sundries", page: "bill-sundry", icon: Tags },
+      { label: "Price List Master", page: "price-list-master", icon: Tags },
     ],
   },
   {
@@ -102,6 +110,7 @@ const menuGroups: MenuGroup[] = [
       { label: "Voucher Approval", page: "maker-checker", icon: CheckCircle },
       { label: "Missing Vouchers", page: "missing-vouchers", icon: AlertTriangle },
       { label: "Quotations", page: "quotations", icon: FileText },
+      { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },
     ],
   },
   {
@@ -123,6 +132,7 @@ const menuGroups: MenuGroup[] = [
       { label: "Stock Categories", page: "stock-categories", icon: FolderOpen },
       { label: "Batch Management", page: "batch-management", icon: Package },
       { label: "Serial Tracking", page: "serial-tracking", icon: Tag },
+      { label: "BOM & Production", page: "bom-production", icon: Factory },
     ],
   },
   {
@@ -145,7 +155,10 @@ const menuGroups: MenuGroup[] = [
       { label: "Statistics Report", page: "statistics-report", icon: BarChart2 },
       { label: "Exception Reports", page: "exception-reports", icon: FileBarChart },
       { label: "Party Reconciliation", page: "party-reconciliation", icon: Users },
-      { label: "Credit Limits", page: "credit-limits", icon: CreditCard },
+      { label: "Credit Limit Manager", page: "credit-limit-manager", icon: CreditCard },
+      { label: "Advanced Tax Compliance", page: "advanced-tax-compliance", icon: ShieldCheck },
+      { label: "Cost Center Report", page: "cost-center-report", icon: FileText },
+      { label: "Bank Statement Import", page: "bank-statement-import", icon: Banknote },
     ],
   },
   {
@@ -173,6 +186,7 @@ const menuGroups: MenuGroup[] = [
       { label: 'Backup & Restore', page: 'backup-restore', icon: Database },
       { label: 'Users Management', page: 'users', icon: Users },
       { label: 'Audit Logs', page: 'audit-logs', icon: FileClock },
+      { label: 'Audit Log (System)', page: 'audit-log', icon: FileClock },
     ],
   },
   {
@@ -180,6 +194,8 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: 'Bulk Updations', page: 'bulk-updations', icon: RefreshCw },
       { label: 'Troubleshooting', page: 'troubleshooting', icon: Settings },
+      { label: "Communication Hub", page: "communication-hub", icon: MessageSquare },
+      { label: "Year End Process", page: "year-end-process", icon: CalendarCheck },
     ],
   },
   {
@@ -188,6 +204,7 @@ const menuGroups: MenuGroup[] = [
       { label: 'Company Information', page: 'company-info', icon: Building },
       { label: 'Fiscal Year', page: 'fiscal-year', icon: Calendar },
       { label: 'Company Settings', page: 'company-settings', icon: Settings },
+      { label: "Opening Balance", page: "opening-balance", icon: BookOpen },
     ],
   },
   {
@@ -200,6 +217,7 @@ const menuGroups: MenuGroup[] = [
     title: "POS",
     items: [
       { label: "POS Billing", page: "pos", icon: ShoppingCart },
+      { label: "POS Mode", page: "pos-mode", icon: Receipt },
     ],
   },
 ];

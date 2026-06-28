@@ -1,442 +1,1527 @@
-// src/pages/BankStatementImport.tsx
 // @ts-nocheck
-import React, { useState, useRef, useCallback } from 'react';
-import { useStore } from '../store/useStore';
-import { ActionToolbar } from '../components/ui';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useStore } from "../store/useStore";
+import { getDB, generateId } from "../lib/db";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
 import {
-  ArrowLeft, Upload, FileText, AlertTriangle,
-  CheckCircle2, Eye, ChevronDown, Info, Zap
-} from 'lucide-react';
-import toast from 'react-hot-toast';
-import { formatNumber } from '../lib/utils';
-import {
-  parseNepalBankStatement,
-  detectBankFormat,
-  BANK_FORMAT_LABELS,
-  BankStatementEntry,
-  NepalBankFormat,
-} from '../lib/bankParsers';
+  AlertTriangle,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Banknote,
+  CheckCircle2,
+  Download,
+  Eye,
+  FileSpreadsheet,
+  Filter,
+  Link2,
+  RefreshCcw,
+  Save,
+  Search,
+  Trash2,
+  Upload,
+  WalletCards,
+  Wand2,
+  XCircle,
+  Plus,
+} from "lucide-react";
 
-// ─── Format help text ─────────────────────────────────────────────────────────
+const money = (v: any) =>
+  `Rs. ${Number(v || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 
-const FORMAT_HINTS: Record<NepalBankFormat, { cols: string; dateFormat: string; tip: string }> = {
-  NMB:        { cols: 'Date, Description, Ref No., Withdrawal (Dr.), Deposit (Cr.), Balance', dateFormat: 'DD/MM/YYYY', tip: 'Download from NMB Online > Accounts > Statement > Export CSV' },
-  NABIL:      { cols: 'Date, Narration, Cheque No., Debit, Credit, Balance', dateFormat: 'YYYY-MM-DD', tip: 'Nabil Smart Banking > Account > Statement > Download CSV' },
-  EVEREST:    { cols: 'Date, Particulars, Cheque, Withdrawal, Deposit, Balance', dateFormat: 'DD/MM/YYYY or YYYY-MM-DD', tip: 'Everest NetBanking > e-Statement > Export' },
-  SBL:        { cols: 'Date (BS), Description, Ref, Dr, Cr, Balance', dateFormat: 'DD-MonthName-YYYY (BS)', tip: 'SBL uses Bikram Sambat dates — we convert to AD automatically' },
-  HIMALAYAN:  { cols: 'Date, Value Date, Particulars, Cheque, Withdrawal, Deposit, Balance', dateFormat: 'DD/MM/YYYY', tip: 'Himalayan Bank e-Banking > Statement > Download' },
-  KUMARI:     { cols: 'Date, Narration, Ref, Dr, Cr, Balance', dateFormat: 'YYYY/MM/DD', tip: 'Kumari Bank Online > Account Statement > CSV Export' },
-  NEPALSBI:   { cols: 'Txn Date, Value Date, Particulars, Ref No, Debit, Credit, Balance', dateFormat: 'DD-MMM-YYYY or YYYY-MM-DD', tip: 'SBI NetBanking statement may have 1–2 header rows — auto-skipped' },
-  CONNECTIPS: { cols: 'Date, Transaction ID, Description, Type, Amount, Balance', dateFormat: 'YYYY-MM-DD', tip: 'ConnectIPS > Transaction History > Download CSV' },
-  ESEWA:      { cols: 'Date, Transaction ID, Description, Amount, Type, Remarks', dateFormat: 'YYYY-MM-DD', tip: 'eSewa > Transaction History > Export CSV' },
-  KHALTI:     { cols: 'Date, Transaction ID, Merchant, Amount, Status', dateFormat: 'YYYY-MM-DD', tip: 'Khalti > Transaction History > Export. Only "Completed" rows are imported.' },
-  UNKNOWN:    { cols: 'Auto-detected from header row', dateFormat: 'Any standard format', tip: 'Generic fallback — verify imported data carefully.' },
+const btn =
+  "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const btn2 =
+  "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const btnDanger =
+  "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+const input =
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]";
+const card =
+  "bg-white border border-gray-200 rounded-lg p-4 text-gray-800 shadow-sm";
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 text-gray-500";
+const td =
+  "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-800";
+
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const nowISO = () => new Date().toISOString();
+
+const tableAll = (db: any, name: string) => {
+  try {
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.toArray) return t.toArray().catch(() => []);
+    return Promise.resolve([]);
+  } catch {
+    return Promise.resolve([]);
+  }
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const tablePut = async (db: any, name: string, rows: any[]) => {
+  try {
+    if (!rows?.length) return;
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.bulkPut) await t.bulkPut(rows);
+  } catch (err) {
+    console.warn("bulkPut failed", name, err);
+  }
+};
 
-const BankStatementImport: React.FC = () => {
-  const { accounts, bankStatements, importBankStatements, setCurrentPage } = useStore();
+const tableDelete = async (db: any, name: string, id: any) => {
+  try {
+    const t = db?.table ? db.table(name) : db?.[name];
+    if (t?.delete) await t.delete(id);
+  } catch (err) {
+    console.warn("delete failed", name, err);
+  }
+};
 
-  const bankAccounts = accounts.filter(
-    (a: any) => !a.isGroup && (a.group === 'Bank Accounts' || a.group === 'Bank OD Accounts')
-  );
-
-  const [selectedAccountId, setSelectedAccountId] = useState<string>(bankAccounts[0]?.id || '');
-  const [fileName, setFileName] = useState('');
-  const [csvContent, setCsvContent] = useState('');
-  const [detectedFormat, setDetectedFormat] = useState<NepalBankFormat | null>(null);
-  const [manualFormat, setManualFormat] = useState<NepalBankFormat | ''>('');
-  const [parsedRows, setParsedRows] = useState<BankStatementEntry[]>([]);
-  const [parseErrors, setParseErrors] = useState<string[]>([]);
-  const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
-  const [showFormatGuide, setShowFormatGuide] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const effectiveFormat = (manualFormat || detectedFormat) as NepalBankFormat | null;
-
-  // ── File handling ──────────────────────────────────────────────────────────
-
-  const processFile = useCallback((file: File) => {
-    if (!file) return;
-    setFileName(file.name);
+const readFileArrayBuffer = (file: File) =>
+  new Promise<ArrayBuffer>((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      setCsvContent(text);
-      // Auto-detect format on file load
-      const fmt = detectBankFormat(text);
-      setDetectedFormat(fmt);
-      setParsedRows([]);
-      setParseErrors([]);
-      setCheckedIds(new Set());
-    };
-    reader.readAsText(file);
-  }, []);
+    reader.onload = () => resolve(reader.result as ArrayBuffer);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) processFile(file);
-  };
+const cleanAmount = (v: any) => {
+  if (v === null || v === undefined || v === "") return 0;
+  if (typeof v === "number") return v;
+  return Number(String(v).replace(/,/g, "").replace(/[^\d.-]/g, "")) || 0;
+};
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) processFile(file);
-  };
+const normalizeDate = (v: any) => {
+  if (!v) return "";
 
-  // ── Parsing ────────────────────────────────────────────────────────────────
-
-  const handleParse = () => {
-    if (!csvContent) {
-      toast.error('Please select a CSV file first.');
-      return;
-    }
+  if (typeof v === "number") {
     try {
-      const result = parseNepalBankStatement(csvContent);
-      setParseErrors(result.errors);
-
-      if (result.entries.length === 0) {
-        toast.error('No valid transaction rows found. Check the format guide below.');
-        return;
+      const d = XLSX.SSF.parse_date_code(v);
+      if (d) {
+        return `${d.y}-${String(d.m).padStart(2, "0")}-${String(d.d).padStart(2, "0")}`;
       }
-
-      // Mark duplicates
-      const rows = result.entries.map((entry, idx) => {
-        const isDuplicate = (bankStatements as any[]).some(
-          (bs: any) =>
-            bs.bankAccountId === selectedAccountId &&
-            bs.date === entry.date &&
-            ((entry.debit > 0 && Math.abs(bs.debit - entry.debit) < 0.01) ||
-             (entry.credit > 0 && Math.abs(bs.credit - entry.credit) < 0.01))
-        );
-        return { ...entry, _isDuplicate: isDuplicate, _idx: idx };
-      });
-
-      setParsedRows(rows as any);
-      // Default: select all non-duplicates
-      const sel = new Set<number>(
-        rows.filter((r: any) => !r._isDuplicate).map((_, i) => i)
-      );
-      setCheckedIds(sel);
-
-      toast.success(
-        `Parsed ${rows.length} rows (${result.format} format detected). ` +
-        (result.errors.length ? `${result.errors.length} warning(s).` : '')
-      );
-    } catch (err: any) {
-      toast.error('Parse error: ' + err.message);
+    } catch {
+      return "";
     }
-  };
+  }
 
-  // ── Row selection ──────────────────────────────────────────────────────────
+  const s = String(v).trim();
 
-  const toggleRow = (i: number) => {
-    const next = new Set(checkedIds);
-    next.has(i) ? next.delete(i) : next.add(i);
-    setCheckedIds(next);
-  };
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
 
-  const selectAll  = () => setCheckedIds(new Set(parsedRows.map((_, i) => i)));
-  const selectNone = () => setCheckedIds(new Set());
-  const selectNonDupe = () =>
-    setCheckedIds(new Set(parsedRows.map((r: any, i) => ({ r, i })).filter(({ r }) => !r._isDuplicate).map(({ i }) => i)));
+  const slash = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if (slash) {
+    const d = slash[1].padStart(2, "0");
+    const m = slash[2].padStart(2, "0");
+    let y = slash[3];
+    if (y.length === 2) y = `20${y}`;
+    return `${y}-${m}-${d}`;
+  }
 
-  // ── Import ─────────────────────────────────────────────────────────────────
+  const parsed = new Date(s);
+  if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
 
-  const handleImport = async () => {
-    if (!selectedAccountId) { toast.error('Please select a bank account.'); return; }
-    if (checkedIds.size === 0) { toast.error('No rows selected.'); return; }
+  return "";
+};
 
-    const toImport = parsedRows
-      .filter((_, i) => checkedIds.has(i))
-      .map((r: any) => ({
-        date: r.date,
-        narration: r.description,
-        debit: r.debit,
-        credit: r.credit,
-        balance: r.balance,
-        chequeNo: r.refNo || '',
-      }));
+const findCol = (row: any, names: string[]) => {
+  const keys = Object.keys(row || {});
+  const found = keys.find((k) =>
+    names.some((n) => String(k).toLowerCase().replace(/\s+/g, "").includes(n))
+  );
+  return found ? row[found] : "";
+};
 
-    try {
-      await importBankStatements(selectedAccountId, toImport);
-      toast.success(`Imported ${toImport.length} transactions.`);
-      setCurrentPage('bank-reconciliation');
-    } catch (err: any) {
-      toast.error('Import failed: ' + err.message);
-    }
-  };
+const accountName = (accounts: any[], id: string) =>
+  accounts.find((a) => a.id === id)?.name ||
+  accounts.find((a) => a.accountId === id)?.name ||
+  id ||
+  "-";
 
-  // ── Render ─────────────────────────────────────────────────────────────────
-
-  const hint = effectiveFormat ? FORMAT_HINTS[effectiveFormat] : null;
-  const fmtLabel = effectiveFormat ? BANK_FORMAT_LABELS[effectiveFormat] : '—';
-  const totalDebit  = parsedRows.reduce((s: number, r: any) => s + r.debit,  0);
-  const totalCredit = parsedRows.reduce((s: number, r: any) => s + r.credit, 0);
+const isBankAccount = (a: any) => {
+  const hay = [a.name, a.group, a.groupName, a.type, a.nature]
+    .join(" ")
+    .toLowerCase();
 
   return (
-    <div className="flex flex-col gap-5 p-5 max-w-6xl mx-auto pb-20 text-xs">
-      <ActionToolbar
-        title="Bank Statement Import"
-        subtitle="Import Nepal bank statement CSV for reconciliation"
-      />
+    hay.includes("bank") ||
+    hay.includes("cash at bank") ||
+    hay.includes("current account") ||
+    hay.includes("saving account")
+  );
+};
 
-      {/* Back + title */}
-      <div className="flex items-center gap-3 border-b border-[#9DC07A] pb-4">
-        <button
-          onClick={() => setCurrentPage('bank-reconciliation')}
-          className="p-1.5 rounded hover:bg-[#EBF5E2] text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <div>
-          <h2 className="text-[15px] font-bold text-gray-900">Import Bank Statement</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Supports NMB, Nabil, Everest, SBL, Himalayan, Kumari, Nepal SBI, ConnectIPS, eSewa, Khalti
-          </p>
-        </div>
-      </div>
+const lineAmountForBank = (voucher: any, bankAccountId: string) => {
+  const lines = voucher.lines || voucher.entries || [];
+  const bankLine =
+    lines.find((l: any) => l.accountId === bankAccountId) ||
+    lines.find((l: any) => String(l.accountId || "").toLowerCase().includes("bank"));
 
-      {/* ── Step 1: Setup ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+  if (!bankLine) return 0;
 
-        {/* Left: Account + file upload */}
-        <div className="bg-white border border-[#9DC07A] rounded-xl p-5 flex flex-col gap-4 shadow-sm">
-          <h3 className="text-[11px] font-bold uppercase text-gray-500 tracking-wider">Step 1 — Select Account & File</h3>
+  const debit = Number(bankLine.debit || bankLine.dr || 0);
+  const credit = Number(bankLine.credit || bankLine.cr || 0);
 
-          {/* Bank account */}
-          <div>
-            <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Target Bank Account *</label>
-            <select
-              value={selectedAccountId}
-              onChange={e => setSelectedAccountId(e.target.value)}
-              className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-300"
-            >
-              <option value="">Select account...</option>
-              {bankAccounts.map((a: any) => (
-                <option key={a.id} value={a.id}>{a.name}</option>
-              ))}
-            </select>
-          </div>
+  return debit - credit;
+};
 
-          {/* Manual format override */}
-          <div>
-            <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Bank Format (auto-detected)</label>
-            <select
-              value={manualFormat}
-              onChange={e => setManualFormat(e.target.value as NepalBankFormat)}
-              className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-300"
-            >
-              <option value="">Auto-detect</option>
-              {(Object.keys(BANK_FORMAT_LABELS) as NepalBankFormat[]).map(fmt => (
-                <option key={fmt} value={fmt}>{BANK_FORMAT_LABELS[fmt]}</option>
-              ))}
-            </select>
-          </div>
+const voucherAmount = (voucher: any) => {
+  const lines = voucher.lines || voucher.entries || [];
+  const dr = lines.reduce((sum: number, l: any) => sum + Number(l.debit || l.dr || 0), 0);
+  const cr = lines.reduce((sum: number, l: any) => sum + Number(l.credit || l.cr || 0), 0);
+  return Math.max(dr, cr, Number(voucher.amount || voucher.total || 0));
+};
 
-          {/* File drop zone */}
-          <div>
-            <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">CSV File *</label>
-            <div
-              onDrop={handleDrop}
-              onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onClick={() => fileRef.current?.click()}
-              className={`border-2 border-dashed rounded-lg p-5 text-center cursor-pointer transition-colors
-                ${isDragging ? 'border-green-500 bg-green-50' : 'border-[#9DC07A] hover:bg-[#EBF5E2]'}`}
-            >
-              <Upload className="h-6 w-6 mx-auto text-gray-400 mb-1" />
-              <p className="text-[11px] text-gray-600 font-medium">
-                {fileName ? fileName : 'Drop CSV here or click to browse'}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-0.5">CSV files from all major Nepal banks</p>
-              <input ref={fileRef} type="file" accept=".csv,.txt" className="hidden" onChange={handleFileChange} />
-            </div>
-          </div>
+const dateDiffDays = (a: string, b: string) => {
+  if (!a || !b) return 9999;
+  const x = new Date(a).getTime();
+  const y = new Date(b).getTime();
+  if (Number.isNaN(x) || Number.isNaN(y)) return 9999;
+  return Math.abs(Math.round((x - y) / 86400000));
+};
 
-          {/* Detected format badge */}
-          {detectedFormat && (
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-semibold
-              ${detectedFormat === 'UNKNOWN' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
-              <Zap className="h-3.5 w-3.5 flex-shrink-0" />
-              Detected: {fmtLabel}
-              {manualFormat && manualFormat !== detectedFormat && (
-                <span className="ml-1 opacity-70">(overridden → {BANK_FORMAT_LABELS[manualFormat]})</span>
-              )}
-            </div>
-          )}
+const normalizeStatementRow = (r: any, bankAccountId: string, batchId: string, idx: number) => {
+  const date =
+    normalizeDate(findCol(r, ["date", "valuedate", "transactiondate", "txndate"])) ||
+    todayISO();
 
-          <button
-            onClick={handleParse}
-            disabled={!csvContent || !selectedAccountId}
-            className="w-full h-9 bg-[#3D6B25] hover:bg-[#2D5A1A] disabled:opacity-40 text-white text-[12px] font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-          >
-            <Eye className="h-4 w-4" />
-            Parse & Preview
+  const narration =
+    String(
+      findCol(r, ["description", "particular", "narration", "remarks", "details"]) || ""
+    ).trim();
+
+  const refNo =
+    String(
+      findCol(r, ["ref", "cheque", "instrument", "utr", "voucher", "transactionid", "txn"])
+    ).trim();
+
+  const debit =
+    cleanAmount(findCol(r, ["debit", "withdrawal", "withdraw", "dr", "paid"])) || 0;
+  const credit =
+    cleanAmount(findCol(r, ["credit", "deposit", "cr", "receipt", "received"])) || 0;
+
+  let amount = credit - debit;
+
+  const amountCol = cleanAmount(findCol(r, ["amount"]));
+  const typeCol = String(findCol(r, ["type", "drcr", "crdr"])).toLowerCase();
+
+  if (!debit && !credit && amountCol) {
+    amount = typeCol.includes("dr") || typeCol.includes("debit") || typeCol.includes("withdraw")
+      ? -Math.abs(amountCol)
+      : Math.abs(amountCol);
+  }
+
+  const balance = cleanAmount(findCol(r, ["balance", "closingbalance", "runningbalance"]));
+
+  return {
+    id: generateId(),
+    batchId,
+    rowNo: idx + 1,
+    bankAccountId,
+    date,
+    narration,
+    refNo,
+    debit: amount < 0 ? Math.abs(amount) : debit,
+    credit: amount > 0 ? amount : credit,
+    amount,
+    balance,
+    status: "Imported",
+    matchedVoucherId: "",
+    matchedVoucherNo: "",
+    matchScore: 0,
+    matchReason: "",
+    createdAt: nowISO(),
+    raw: r,
+  };
+};
+
+const matchStatementRow = (row: any, vouchers: any[], bankAccountId: string) => {
+  const candidates = (vouchers || [])
+    .map((v) => {
+      const bankAmount = lineAmountForBank(v, bankAccountId);
+      const amt = bankAmount || voucherAmount(v);
+      const amountDiff = Math.abs(Math.abs(Number(amt || 0)) - Math.abs(Number(row.amount || 0)));
+      const days = dateDiffDays(row.date, v.date || v.voucherDate);
+      const voucherNo = String(v.voucherNo || v.number || v.refNo || "");
+      const narration = String(v.narration || v.description || "").toLowerCase();
+      const rowHay = `${row.narration || ""} ${row.refNo || ""}`.toLowerCase();
+
+      let score = 0;
+      const reasons: string[] = [];
+
+      if (amountDiff <= 0.01) {
+        score += 60;
+        reasons.push("amount");
+      } else if (amountDiff <= 5) {
+        score += 35;
+        reasons.push("near amount");
+      }
+
+      if (days === 0) {
+        score += 25;
+        reasons.push("same date");
+      } else if (days <= 3) {
+        score += 15;
+        reasons.push("date ±3");
+      } else if (days <= 7) {
+        score += 8;
+        reasons.push("date ±7");
+      }
+
+      if (voucherNo && rowHay.includes(voucherNo.toLowerCase())) {
+        score += 20;
+        reasons.push("voucher no");
+      }
+
+      if (row.refNo && narration.includes(String(row.refNo).toLowerCase())) {
+        score += 10;
+        reasons.push("reference");
+      }
+
+      return {
+        voucher: v,
+        score,
+        reasons: reasons.join(", "),
+        amountDiff,
+        days,
+      };
+    })
+    .filter((x) => x.score >= 60)
+    .sort((a, b) => b.score - a.score);
+
+  const best = candidates[0];
+
+  if (!best) return row;
+
+  return {
+    ...row,
+    status: best.score >= 80 ? "Matched" : "Probable",
+    matchedVoucherId: best.voucher.id,
+    matchedVoucherNo: best.voucher.voucherNo || best.voucher.number || "",
+    matchScore: best.score,
+    matchReason: best.reasons,
+  };
+};
+
+const makeAuditRow = (currentUser: any, action: string, narration: string, risk = "Low") => ({
+  id: generateId(),
+  timestamp: nowISO(),
+  date: todayISO(),
+  userId: currentUser?.id || "",
+  userName: currentUser?.name || currentUser?.username || "System",
+  role: currentUser?.role || "",
+  module: "Bank Statement Import",
+  action,
+  narration,
+  status: "Success",
+  risk,
+  createdAt: nowISO(),
+});
+
+const Modal = ({ open, title, children, onClose, max = "max-w-4xl" }: any) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div
+        className={`bg-white rounded-lg border border-gray-300 shadow-xl w-full ${max} max-h-[90vh] flex flex-col`}
+      >
+        <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+          <h3 className="text-[14px] font-semibold text-gray-800">{title}</h3>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
+            <XCircle className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Right: Format guide */}
-        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-5 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-[#3D6B25]" />
-              <h3 className="text-[11px] font-bold uppercase text-gray-600 tracking-wider">Format Guide</h3>
-            </div>
-            <button
-              onClick={() => setShowFormatGuide(!showFormatGuide)}
-              className="text-[10px] text-[#1557b0] font-bold flex items-center gap-1 hover:underline"
-            >
-              {showFormatGuide ? 'Hide' : 'Show all'} <ChevronDown className={`h-3 w-3 transition-transform ${showFormatGuide ? 'rotate-180' : ''}`} />
-            </button>
+        <div className="p-4 overflow-y-auto flex-1">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+export default function BankStatementImport() {
+  const store = useStore();
+  const currentUser = store.currentUser || store.user || {};
+  const storeAccounts = store.accounts || [];
+  const storeVouchers = store.vouchers || [];
+  const fiscalYear = store.currentFiscalYear || store.fiscalYear || {};
+
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const [activeTab, setActiveTab] = useState("Import & Match");
+  const [loading, setLoading] = useState(false);
+
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [vouchers, setVouchers] = useState<any[]>([]);
+  const [statementRows, setStatementRows] = useState<any[]>([]);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [selectedBankId, setSelectedBankId] = useState("");
+  const [selectedBatchId, setSelectedBatchId] = useState("All");
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [previewRows, setPreviewRows] = useState<any[]>([]);
+  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [modalType, setModalType] = useState("");
+
+  const [voucherForm, setVoucherForm] = useState({
+    statementRowId: "",
+    type: "receipt",
+    accountId: "",
+    narration: "",
+  });
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const bank = accounts.find(isBankAccount);
+    if (!selectedBankId && bank?.id) setSelectedBankId(bank.id);
+  }, [accounts, selectedBankId]);
+
+  const loadData = async () => {
+    setLoading(true);
+
+    try {
+      const db = getDB();
+
+      const [dbAccounts, dbVouchers, dbRows, dbBatches] = await Promise.all([
+        tableAll(db, "accounts"),
+        tableAll(db, "vouchers"),
+        tableAll(db, "bankStatementRows"),
+        tableAll(db, "bankStatementBatches"),
+      ]);
+
+      setAccounts(dbAccounts?.length ? dbAccounts : storeAccounts);
+      setVouchers(dbVouchers?.length ? dbVouchers : storeVouchers);
+      setStatementRows((dbRows || []).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))));
+      setBatches((dbBatches || []).sort((a, b) => String(b.importedAt || "").localeCompare(String(a.importedAt || ""))));
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not load bank statement data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const bankAccounts = useMemo(
+    () => accounts.filter(isBankAccount),
+    [accounts]
+  );
+
+  const filteredRows = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    return statementRows.filter((r) => {
+      if (selectedBankId && r.bankAccountId !== selectedBankId) return false;
+      if (selectedBatchId !== "All" && r.batchId !== selectedBatchId) return false;
+      if (statusFilter !== "All" && r.status !== statusFilter) return false;
+
+      if (!q) return true;
+
+      return [
+        r.date,
+        r.narration,
+        r.refNo,
+        r.status,
+        r.matchedVoucherNo,
+        r.matchReason,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+    });
+  }, [statementRows, selectedBankId, selectedBatchId, statusFilter, query]);
+
+  const stats = useMemo(() => {
+    const rows = filteredRows;
+    const receipts = rows.reduce((sum, r) => sum + Number(r.credit || 0), 0);
+    const payments = rows.reduce((sum, r) => sum + Number(r.debit || 0), 0);
+    const matched = rows.filter((r) => r.status === "Matched").length;
+    const probable = rows.filter((r) => r.status === "Probable").length;
+    const unmatched = rows.filter((r) => !["Matched", "Probable", "Reconciled"].includes(r.status)).length;
+    const reconciled = rows.filter((r) => r.status === "Reconciled").length;
+
+    return {
+      count: rows.length,
+      receipts,
+      payments,
+      net: receipts - payments,
+      matched,
+      probable,
+      unmatched,
+      reconciled,
+    };
+  }, [filteredRows]);
+
+  const parseExcelFile = async (file: File) => {
+    if (!selectedBankId) {
+      toast.error("Select bank account first");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const buf = await readFileArrayBuffer(file);
+      const wb = XLSX.read(buf, { type: "array" });
+      const sheetName = wb.SheetNames[0];
+      const ws = wb.Sheets[sheetName];
+
+      const rawRows: any[] = XLSX.utils.sheet_to_json(ws, { defval: "" });
+
+      if (!rawRows.length) {
+        toast.error("No rows found in file");
+        return;
+      }
+
+      const batchId = generateId();
+
+      const rows = rawRows
+        .map((r, idx) => normalizeStatementRow(r, selectedBankId, batchId, idx))
+        .filter((r) => r.date && (r.debit || r.credit || r.amount));
+
+      const matched = rows.map((r) => matchStatementRow(r, vouchers, selectedBankId));
+
+      setPreviewRows(matched);
+      setModalType("preview");
+
+      toast.success(`${matched.length} rows loaded for preview`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not parse Excel/CSV file");
+    } finally {
+      setLoading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const commitImport = async () => {
+    if (!previewRows.length) {
+      toast.error("No preview rows to import");
+      return;
+    }
+
+    try {
+      const db = getDB();
+
+      const batchId = previewRows[0].batchId;
+
+      const batch = {
+        id: batchId,
+        bankAccountId: selectedBankId,
+        bankAccountName: accountName(accounts, selectedBankId),
+        importedAt: nowISO(),
+        importedBy: currentUser?.id || "",
+        rowCount: previewRows.length,
+        matchedCount: previewRows.filter((r) => r.status === "Matched").length,
+        probableCount: previewRows.filter((r) => r.status === "Probable").length,
+        totalDebit: previewRows.reduce((sum, r) => sum + Number(r.debit || 0), 0),
+        totalCredit: previewRows.reduce((sum, r) => sum + Number(r.credit || 0), 0),
+      };
+
+      await tablePut(db, "bankStatementRows", previewRows);
+      await tablePut(db, "bankStatementBatches", [batch]);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "Bank Statement Imported",
+          `${batch.rowCount} rows imported for ${batch.bankAccountName}`,
+          "Medium"
+        ),
+      ]);
+
+      setStatementRows((prev) => [...previewRows, ...prev]);
+      setBatches((prev) => [batch, ...prev]);
+      setPreviewRows([]);
+      setModalType("");
+      setSelectedBatchId(batchId);
+
+      toast.success("Bank statement imported");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not commit import");
+    }
+  };
+
+  const autoMatchExisting = async () => {
+    if (!selectedBankId) {
+      toast.error("Select bank account");
+      return;
+    }
+
+    const candidates = filteredRows.filter((r) => !["Matched", "Reconciled"].includes(r.status));
+
+    if (!candidates.length) {
+      toast.error("No unmatched rows to auto-match");
+      return;
+    }
+
+    try {
+      const db = getDB();
+
+      const matchedRows = candidates.map((r) => matchStatementRow(r, vouchers, selectedBankId));
+      await tablePut(db, "bankStatementRows", matchedRows);
+
+      setStatementRows((prev) =>
+        prev.map((r) => matchedRows.find((m) => m.id === r.id) || r)
+      );
+
+      toast.success("Auto-match completed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not auto-match rows");
+    }
+  };
+
+  const markReconciled = async (row: any) => {
+    if (!row.matchedVoucherId) {
+      toast.error("Row must be matched to a voucher first");
+      return;
+    }
+
+    try {
+      const db = getDB();
+
+      const updated = {
+        ...row,
+        status: "Reconciled",
+        reconciledAt: nowISO(),
+        reconciledBy: currentUser?.id || "",
+      };
+
+      const voucher =
+        vouchers.find((v) => v.id === row.matchedVoucherId) || {};
+
+      const updatedVoucher = {
+        ...voucher,
+        reconciled: true,
+        reconciledAt: nowISO(),
+        bankStatementRowId: row.id,
+      };
+
+      await tablePut(db, "bankStatementRows", [updated]);
+      if (voucher.id) await tablePut(db, "vouchers", [updatedVoucher]);
+
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "Bank Row Reconciled",
+          `${row.date} ${row.refNo || ""} ${money(Math.abs(row.amount || 0))}`,
+          "Medium"
+        ),
+      ]);
+
+      setStatementRows((prev) => prev.map((r) => (r.id === row.id ? updated : r)));
+      setVouchers((prev) => prev.map((v) => (v.id === updatedVoucher.id ? updatedVoucher : v)));
+
+      toast.success("Statement row reconciled");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not reconcile row");
+    }
+  };
+
+  const unlinkMatch = async (row: any) => {
+    try {
+      const db = getDB();
+
+      const updated = {
+        ...row,
+        status: "Imported",
+        matchedVoucherId: "",
+        matchedVoucherNo: "",
+        matchScore: 0,
+        matchReason: "",
+        reconciledAt: "",
+      };
+
+      await tablePut(db, "bankStatementRows", [updated]);
+      setStatementRows((prev) => prev.map((r) => (r.id === row.id ? updated : r)));
+
+      toast.success("Match removed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not unlink match");
+    }
+  };
+
+  const openCreateVoucher = (row: any) => {
+    setSelectedRow(row);
+    setVoucherForm({
+      statementRowId: row.id,
+      type: Number(row.amount || 0) >= 0 ? "receipt" : "payment",
+      accountId: "",
+      narration: row.narration || row.refNo || "",
+    });
+    setModalType("voucher");
+  };
+
+  const createVoucherForRow = async () => {
+    if (!selectedRow) return;
+
+    if (!voucherForm.accountId) {
+      toast.error("Select opposite account");
+      return;
+    }
+
+    const isReceipt = Number(selectedRow.amount || 0) >= 0;
+    const amt = Math.abs(Number(selectedRow.amount || 0));
+
+    if (!amt) {
+      toast.error("Invalid amount");
+      return;
+    }
+
+    try {
+      const db = getDB();
+
+      const voucherNo = `BANK-${selectedRow.date.replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
+
+      const lines = isReceipt
+        ? [
+            {
+              id: generateId(),
+              accountId: selectedBankId,
+              debit: amt,
+              credit: 0,
+              narration: voucherForm.narration,
+            },
+            {
+              id: generateId(),
+              accountId: voucherForm.accountId,
+              debit: 0,
+              credit: amt,
+              narration: voucherForm.narration,
+            },
+          ]
+        : [
+            {
+              id: generateId(),
+              accountId: voucherForm.accountId,
+              debit: amt,
+              credit: 0,
+              narration: voucherForm.narration,
+            },
+            {
+              id: generateId(),
+              accountId: selectedBankId,
+              debit: 0,
+              credit: amt,
+              narration: voucherForm.narration,
+            },
+          ];
+
+      const voucher = {
+        id: generateId(),
+        voucherNo,
+        type: voucherForm.type,
+        date: selectedRow.date,
+        narration: voucherForm.narration || selectedRow.narration,
+        refNo: selectedRow.refNo,
+        lines,
+        totalDebit: amt,
+        totalCredit: amt,
+        status: "posted",
+        fiscalYearId: fiscalYear?.id || "",
+        sourceType: "bankStatement",
+        sourceId: selectedRow.id,
+        createdBy: currentUser?.id || "",
+        createdAt: nowISO(),
+      };
+
+      const updatedRow = {
+        ...selectedRow,
+        status: "Reconciled",
+        matchedVoucherId: voucher.id,
+        matchedVoucherNo: voucher.voucherNo,
+        matchScore: 100,
+        matchReason: "voucher created",
+        reconciledAt: nowISO(),
+        reconciledBy: currentUser?.id || "",
+      };
+
+      await tablePut(db, "vouchers", [voucher]);
+      await tablePut(db, "bankStatementRows", [updatedRow]);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "Voucher Created From Bank Statement",
+          `${voucher.voucherNo} ${money(amt)}`,
+          "Medium"
+        ),
+      ]);
+
+      if (store.addVoucher) {
+        try {
+          store.addVoucher(voucher);
+        } catch {
+          // ignore
+        }
+      }
+
+      setVouchers((prev) => [voucher, ...prev]);
+      setStatementRows((prev) => prev.map((r) => (r.id === updatedRow.id ? updatedRow : r)));
+      setModalType("");
+      setSelectedRow(null);
+
+      toast.success("Voucher created and reconciled");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not create voucher");
+    }
+  };
+
+  const deleteBatch = async (batch: any) => {
+    if (!confirm(`Delete imported batch ${batch.bankAccountName}?`)) return;
+
+    try {
+      const db = getDB();
+
+      const ids = statementRows.filter((r) => r.batchId === batch.id).map((r) => r.id);
+
+      for (const id of ids) await tableDelete(db, "bankStatementRows", id);
+      await tableDelete(db, "bankStatementBatches", batch.id);
+
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "Bank Statement Batch Deleted",
+          `${batch.bankAccountName} ${batch.rowCount} rows`,
+          "High"
+        ),
+      ]);
+
+      setStatementRows((prev) => prev.filter((r) => r.batchId !== batch.id));
+      setBatches((prev) => prev.filter((b) => b.id !== batch.id));
+
+      toast.success("Batch deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not delete batch");
+    }
+  };
+
+  const exportExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(
+        filteredRows.map((r) => ({
+          Date: r.date,
+          BankAccount: accountName(accounts, r.bankAccountId),
+          Narration: r.narration,
+          RefNo: r.refNo,
+          Debit: r.debit,
+          Credit: r.credit,
+          Amount: r.amount,
+          Balance: r.balance,
+          Status: r.status,
+          MatchedVoucherNo: r.matchedVoucherNo,
+          MatchScore: r.matchScore,
+          MatchReason: r.matchReason,
+        }))
+      ),
+      "Statement Rows"
+    );
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(
+        batches.map((b) => ({
+          ImportedAt: b.importedAt,
+          BankAccount: b.bankAccountName,
+          RowCount: b.rowCount,
+          MatchedCount: b.matchedCount,
+          ProbableCount: b.probableCount,
+          TotalDebit: b.totalDebit,
+          TotalCredit: b.totalCredit,
+        }))
+      ),
+      "Batches"
+    );
+
+    XLSX.writeFile(wb, `Bank_Statement_Reconciliation_${todayISO()}.xlsx`);
+    toast.success("Bank reconciliation exported");
+  };
+
+  const downloadTemplate = () => {
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet([
+        {
+          Date: todayISO(),
+          Description: "Sample deposit / payment narration",
+          RefNo: "CHQ/UTR001",
+          Debit: 0,
+          Credit: 0,
+          Balance: 0,
+        },
+      ]),
+      "Bank Statement"
+    );
+
+    XLSX.writeFile(wb, `Bank_Statement_Template_${todayISO()}.xlsx`);
+    toast.success("Template downloaded");
+  };
+
+  const statusClass = (status: string) => {
+    if (status === "Reconciled") return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    if (status === "Matched") return "bg-blue-100 text-blue-700 border-blue-200";
+    if (status === "Probable") return "bg-amber-100 text-amber-700 border-amber-200";
+    if (status === "Imported") return "bg-gray-100 text-gray-700 border-gray-200";
+    return "bg-red-100 text-red-700 border-red-200";
+  };
+
+  const renderSummary = () => (
+    <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rows</p>
+        <p className="text-[15px] font-bold text-gray-800">{stats.count}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Receipts</p>
+        <p className="text-[15px] font-bold text-emerald-600">{money(stats.receipts)}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Payments</p>
+        <p className="text-[15px] font-bold text-red-600">{money(stats.payments)}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Net</p>
+        <p className={`text-[15px] font-bold ${stats.net >= 0 ? "text-emerald-600" : "text-red-600"}`}>{money(stats.net)}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Matched</p>
+        <p className="text-[15px] font-bold text-[#1557b0]">{stats.matched}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Probable</p>
+        <p className="text-[15px] font-bold text-amber-600">{stats.probable}</p>
+      </div>
+
+      <div className={card}>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Reconciled</p>
+        <p className="text-[15px] font-bold text-emerald-600">{stats.reconciled}</p>
+      </div>
+    </div>
+  );
+
+  const renderFilters = () => (
+    <div className={card}>
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Bank Account</label>
+          <select
+            className={input}
+            value={selectedBankId}
+            onChange={(e) => setSelectedBankId(e.target.value)}
+          >
+            <option value="">Select bank</option>
+            {bankAccounts.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Batch</label>
+          <select
+            className={input}
+            value={selectedBatchId}
+            onChange={(e) => setSelectedBatchId(e.target.value)}
+          >
+            <option value="All">All Batches</option>
+            {batches
+              .filter((b) => !selectedBankId || b.bankAccountId === selectedBankId)
+              .map((b) => (
+                <option key={b.id} value={b.id}>
+                  {String(b.importedAt).slice(0, 10)} ({b.rowCount})
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Status</label>
+          <select
+            className={input}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            {["All", "Imported", "Probable", "Matched", "Reconciled"].map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Search</label>
+          <div className="relative">
+            <Search className="h-4 w-4 absolute left-2.5 top-2 text-gray-400" />
+            <input
+              className={`${input} pl-8`}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Narration, ref no, voucher..."
+            />
+          </div>
+        </div>
+
+        <div className="flex items-end">
+          <button className={btn2} onClick={() => {
+            setQuery("");
+            setStatusFilter("All");
+            setSelectedBatchId("All");
+          }}>
+            <RefreshCcw className="h-3.5 w-3.5" />
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderImportAndMatch = () => (
+    <div className="space-y-4">
+      {renderSummary()}
+      {renderFilters()}
+
+      <div className={card}>
+        <div className="flex flex-wrap justify-between gap-3">
+          <div>
+            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+              <Upload className="h-4 w-4 text-[#1557b0]" />
+              Import Bank Statement
+            </h3>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Upload Excel/CSV statement, preview rows, auto-match to vouchers and reconcile.
+            </p>
           </div>
 
-          {hint ? (
-            <div className="space-y-2">
-              <div>
-                <p className="text-[10px] font-bold uppercase text-gray-500 mb-0.5">Columns</p>
-                <p className="text-[11px] text-gray-700 font-mono bg-white/60 rounded px-2 py-1">{hint.cols}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase text-gray-500 mb-0.5">Date Format</p>
-                <p className="text-[11px] text-gray-700">{hint.dateFormat}</p>
-              </div>
-              <div className="flex gap-1.5 items-start bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-2">
-                <Info className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
-                <p className="text-[10px] text-blue-700">{hint.tip}</p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-[11px] text-gray-500">Upload a file to see format hints.</p>
-          )}
+          <div className="flex flex-wrap gap-2">
+            <input
+              ref={fileRef}
+              type="file"
+              className="hidden"
+              accept=".xlsx,.xls,.csv"
+              onChange={(e) => e.target.files?.[0] && parseExcelFile(e.target.files[0])}
+            />
 
-          {showFormatGuide && (
-            <div className="mt-1 space-y-2 border-t border-[#9DC07A] pt-3 max-h-64 overflow-y-auto">
-              {(Object.entries(FORMAT_HINTS) as [NepalBankFormat, typeof FORMAT_HINTS[NepalBankFormat]][]).map(([fmt, h]) => (
-                <div key={fmt} className="text-[10px] bg-white rounded p-2 border border-[#9DC07A]">
-                  <p className="font-bold text-gray-700">{BANK_FORMAT_LABELS[fmt]}</p>
-                  <p className="text-gray-500 font-mono mt-0.5 truncate">{h.cols}</p>
-                  <p className="text-gray-400 mt-0.5">Date: {h.dateFormat}</p>
-                </div>
-              ))}
-            </div>
-          )}
+            <button className={btn2} onClick={downloadTemplate}>
+              <FileSpreadsheet className="h-3.5 w-3.5" />
+              Template
+            </button>
+
+            <button className={btn} onClick={() => fileRef.current?.click()}>
+              <Upload className="h-3.5 w-3.5" />
+              Upload Statement
+            </button>
+
+            <button className={btn2} onClick={autoMatchExisting}>
+              <Wand2 className="h-3.5 w-3.5" />
+              Auto Match
+            </button>
+
+            <button className={btn2} onClick={exportExcel}>
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ── Parse warnings ─────────────────────────────────────────────────── */}
-      {parseErrors.length > 0 && (
-        <div className="flex gap-2 items-start bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+      <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+        <div className="overflow-auto max-h-[62vh]">
+          <table className="w-full min-w-[1250px]">
+            <thead className="sticky top-0 z-10">
+              <tr>
+                <th className={th}>Date</th>
+                <th className={th}>Narration</th>
+                <th className={th}>Ref No</th>
+                <th className={`${th} text-right`}>Debit</th>
+                <th className={`${th} text-right`}>Credit</th>
+                <th className={`${th} text-right`}>Balance</th>
+                <th className={th}>Match</th>
+                <th className={th}>Status</th>
+                <th className={`${th} text-center`}>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredRows.map((r) => (
+                <tr key={r.id} className="hover:bg-gray-50">
+                  <td className={`${td} font-medium`}>{r.date}</td>
+
+                  <td className={td}>
+                    <div className="max-w-[360px]">{r.narration || "-"}</div>
+                  </td>
+
+                  <td className={td}>{r.refNo || "-"}</td>
+                  <td className={`${td} text-right font-medium text-red-600`}>
+                    {r.debit ? money(r.debit) : "-"}
+                  </td>
+                  <td className={`${td} text-right font-medium text-emerald-600`}>
+                    {r.credit ? money(r.credit) : "-"}
+                  </td>
+                  <td className={`${td} text-right`}>{r.balance ? money(r.balance) : "-"}</td>
+
+                  <td className={td}>
+                    {r.matchedVoucherId ? (
+                      <div>
+                        <div className="font-semibold text-gray-800">{r.matchedVoucherNo || r.matchedVoucherId}</div>
+                        <div className="text-[10px] text-gray-500">
+                          Score {r.matchScore || 0} • {r.matchReason || "-"}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-[11px] font-medium text-gray-400">No match</span>
+                    )}
+                  </td>
+
+                  <td className={td}>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                        r.status
+                      )}`}
+                    >
+                      {r.status}
+                    </span>
+                  </td>
+
+                  <td className={`${td} text-center`}>
+                    <div className="inline-flex flex-wrap justify-center gap-1">
+                      {r.status !== "Reconciled" && r.matchedVoucherId && (
+                        <button
+                          className="p-1.5 rounded-md hover:bg-emerald-50 text-emerald-600"
+                          onClick={() => markReconciled(r)}
+                          title="Mark reconciled"
+                        >
+                          <CheckCircle2 className="h-4 w-4" />
+                        </button>
+                      )}
+
+                      {r.matchedVoucherId && r.status !== "Reconciled" && (
+                        <button
+                          className="p-1.5 rounded-md hover:bg-amber-50 text-amber-600"
+                          onClick={() => unlinkMatch(r)}
+                          title="Unlink match"
+                        >
+                          <XCircle className="h-4 w-4" />
+                        </button>
+                      )}
+
+                      {!r.matchedVoucherId && (
+                        <button
+                          className="p-1.5 rounded-md hover:bg-gray-100 text-[#1557b0]"
+                          onClick={() => openCreateVoucher(r)}
+                          title="Create voucher"
+                        >
+                          <Save className="h-4 w-4" />
+                        </button>
+                      )}
+
+                      <button
+                        className="p-1.5 rounded-md hover:bg-gray-100 text-gray-600"
+                        onClick={() => {
+                          setSelectedRow(r);
+                          setModalType("row");
+                        }}
+                        title="View"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {!filteredRows.length && (
+                <tr>
+                  <td colSpan={9} className="p-8 text-center text-[12px] font-medium text-gray-500">
+                    No bank statement rows found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderBatches = () => (
+    <div className="space-y-4">
+      <div className={card}>
+        <div className="flex justify-between gap-3">
           <div>
-            <p className="text-[11px] font-bold text-amber-700">Warnings</p>
-            {parseErrors.map((e, i) => <p key={i} className="text-[10px] text-amber-600">{e}</p>)}
+            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+              <WalletCards className="h-4 w-4 text-[#1557b0]" />
+              Import Batches
+            </h3>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Review imported statement batches and delete if wrongly imported.
+            </p>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* ── Preview table ──────────────────────────────────────────────────── */}
-      {parsedRows.length > 0 && (
-        <div className="bg-white border border-[#9DC07A] rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#9DC07A] bg-[#f5f9f2]">
-            <div className="flex items-center gap-3">
-              <h3 className="text-[12px] font-bold text-gray-800 uppercase tracking-wide">
-                Preview — {parsedRows.length} rows
-              </h3>
-              <span className="text-[10px] text-gray-500">
-                Dr: Rs.{formatNumber(totalDebit)} | Cr: Rs.{formatNumber(totalCredit)}
-              </span>
-            </div>
-            <div className="flex items-center gap-3 text-[10px] font-bold text-[#1557b0]">
-              <button onClick={selectAll} className="hover:underline">Select All</button>
-              <span className="text-gray-300">|</span>
-              <button onClick={selectNonDupe} className="hover:underline">Skip Duplicates</button>
-              <span className="text-gray-300">|</span>
-              <button onClick={selectNone} className="hover:underline">None</button>
-            </div>
-          </div>
+      <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+        <table className="w-full min-w-[950px]">
+          <thead>
+            <tr>
+              <th className={th}>Imported At</th>
+              <th className={th}>Bank Account</th>
+              <th className={`${th} text-right`}>Rows</th>
+              <th className={`${th} text-right`}>Matched</th>
+              <th className={`${th} text-right`}>Probable</th>
+              <th className={`${th} text-right`}>Debit</th>
+              <th className={`${th} text-right`}>Credit</th>
+              <th className={`${th} text-center`}>Action</th>
+            </tr>
+          </thead>
 
-          <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
-            <table className="w-full text-[11px]">
-              <thead className="sticky top-0 bg-[#EBF5E2] border-b border-[#9DC07A] z-10">
+          <tbody>
+            {batches.map((b) => (
+              <tr key={b.id} className="hover:bg-gray-50">
+                <td className={td}>
+                  <div className="font-medium">{String(b.importedAt).slice(0, 10)}</div>
+                  <div className="text-[10px] text-gray-400">{String(b.importedAt).slice(11, 19)}</div>
+                </td>
+                <td className={`${td} font-semibold`}>{b.bankAccountName}</td>
+                <td className={`${td} text-right font-medium`}>{b.rowCount}</td>
+                <td className={`${td} text-right font-medium text-emerald-600`}>{b.matchedCount}</td>
+                <td className={`${td} text-right font-medium text-amber-600`}>{b.probableCount}</td>
+                <td className={`${td} text-right text-red-600 font-medium`}>{money(b.totalDebit)}</td>
+                <td className={`${td} text-right text-emerald-600 font-medium`}>{money(b.totalCredit)}</td>
+                <td className={`${td} text-center`}>
+                  <button className={btnDanger} onClick={() => deleteBatch(b)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {!batches.length && (
+              <tr>
+                <td colSpan={8} className="p-8 text-center text-[12px] font-medium text-gray-500">
+                  No import batches found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderPreviewModal = () => (
+    <Modal open={modalType === "preview"} title="Import Preview" onClose={() => setModalType("")} max="max-w-6xl">
+      <div className="space-y-4">
+        <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="overflow-auto max-h-[58vh]">
+            <table className="w-full min-w-[1100px]">
+              <thead className="sticky top-0 z-10">
                 <tr>
-                  <th className="w-8 px-3 py-2.5 text-center"></th>
-                  <th className="px-2 py-2.5 text-left font-bold text-gray-600">Date</th>
-                  <th className="px-2 py-2.5 text-left font-bold text-gray-600">Description</th>
-                  <th className="px-2 py-2.5 text-left font-bold text-gray-600">Ref/Cheque</th>
-                  <th className="px-2 py-2.5 text-right font-bold text-gray-600">Debit (Dr.)</th>
-                  <th className="px-2 py-2.5 text-right font-bold text-gray-600">Credit (Cr.)</th>
-                  <th className="px-2 py-2.5 text-right font-bold text-gray-600">Balance</th>
-                  <th className="px-2 py-2.5 text-center font-bold text-gray-600">Note</th>
+                  <th className={th}>Date</th>
+                  <th className={th}>Narration</th>
+                  <th className={th}>Ref No</th>
+                  <th className={`${th} text-right`}>Debit</th>
+                  <th className={`${th} text-right`}>Credit</th>
+                  <th className={`${th} text-right`}>Balance</th>
+                  <th className={th}>Match</th>
+                  <th className={th}>Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {parsedRows.map((row: any, idx) => (
-                  <tr
-                    key={idx}
-                    className={`hover:bg-[#EBF5E2]/40 transition-colors
-                      ${!checkedIds.has(idx) ? 'opacity-50' : ''}
-                      ${row._isDuplicate ? 'bg-amber-50/40' : ''}`}
-                  >
-                    <td className="px-3 py-2 text-center">
-                      <input
-                        type="checkbox"
-                        checked={checkedIds.has(idx)}
-                        onChange={() => toggleRow(idx)}
-                        className="h-3.5 w-3.5 rounded border-[#9DC07A] text-green-600 focus:ring-green-400"
-                      />
+
+              <tbody>
+                {previewRows.map((r) => (
+                  <tr key={r.id} className="hover:bg-gray-50">
+                    <td className={`${td} font-medium`}>{r.date}</td>
+                    <td className={td}>{r.narration || "-"}</td>
+                    <td className={td}>{r.refNo || "-"}</td>
+                    <td className={`${td} text-right text-red-600 font-medium`}>
+                      {r.debit ? money(r.debit) : "-"}
                     </td>
-                    <td className="px-2 py-2 font-mono font-semibold text-gray-800">{row.date}</td>
-                    <td className="px-2 py-2 text-gray-700 max-w-[220px] truncate" title={row.description}>{row.description}</td>
-                    <td className="px-2 py-2 font-mono text-gray-500">{row.refNo}</td>
-                    <td className="px-2 py-2 text-right font-mono font-semibold text-red-600">
-                      {row.debit > 0 ? formatNumber(row.debit) : ''}
+                    <td className={`${td} text-right text-emerald-600 font-medium`}>
+                      {r.credit ? money(r.credit) : "-"}
                     </td>
-                    <td className="px-2 py-2 text-right font-mono font-semibold text-emerald-700">
-                      {row.credit > 0 ? formatNumber(row.credit) : ''}
-                    </td>
-                    <td className="px-2 py-2 text-right font-mono text-gray-600">
-                      {row.balance ? formatNumber(row.balance) : ''}
-                    </td>
-                    <td className="px-2 py-2 text-center">
-                      {row._isDuplicate && (
-                        <span className="inline-flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-700 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">
-                          <AlertTriangle className="h-2.5 w-2.5" /> Dupe?
-                        </span>
+                    <td className={`${td} text-right`}>{r.balance ? money(r.balance) : "-"}</td>
+                    <td className={td}>
+                      {r.matchedVoucherId ? (
+                        <div>
+                          <div className="font-semibold text-gray-800">{r.matchedVoucherNo}</div>
+                          <div className="text-[10px] text-gray-500">
+                            Score {r.matchScore} • {r.matchReason}
+                          </div>
+                        </div>
+                      ) : (
+                        "-"
                       )}
+                    </td>
+                    <td className={td}>
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                          r.status
+                        )}`}
+                      >
+                        {r.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+        </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between px-4 py-3 border-t border-[#9DC07A] bg-[#f5f9f2]">
-            <span className="text-[11px] font-semibold text-gray-600">
-              {checkedIds.size} of {parsedRows.length} rows selected
-              {parsedRows.filter((r: any) => r._isDuplicate).length > 0 && (
-                <span className="ml-2 text-amber-600">
-                  ({parsedRows.filter((r: any) => r._isDuplicate).length} possible duplicates)
-                </span>
-              )}
+        <div className="flex flex-wrap justify-between gap-3 pt-2">
+          <div className="text-[12px] font-medium text-gray-700 mt-1">
+            Rows: <span className="font-bold">{previewRows.length}</span>
+            {" • "}
+            Matched: <span className="font-bold text-emerald-600">
+              {previewRows.filter((r) => r.status === "Matched").length}
             </span>
-            <button
-              onClick={handleImport}
-              disabled={checkedIds.size === 0}
-              className="flex items-center gap-2 h-9 px-5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-[12px] font-bold rounded-lg transition-colors shadow-sm"
+            {" • "}
+            Probable: <span className="font-bold text-amber-600">
+              {previewRows.filter((r) => r.status === "Probable").length}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+            <button className={btn} onClick={commitImport}>
+              <Upload className="h-4 w-4" />
+              Commit Import
+            </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+
+  const renderRowModal = () => (
+    <Modal open={modalType === "row"} title="Bank Statement Row Details" onClose={() => setModalType("")}>
+      {selectedRow && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</p>
+              <p className="font-semibold text-gray-800">{selectedRow.date}</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Debit</p>
+              <p className="font-semibold text-red-600">{money(selectedRow.debit)}</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Credit</p>
+              <p className="font-semibold text-emerald-600">{money(selectedRow.credit)}</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</p>
+              <span
+                className={`inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                  selectedRow.status
+                )}`}
+              >
+                {selectedRow.status}
+              </span>
+            </div>
+          </div>
+
+          <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration</p>
+            <p className="font-medium text-[12px] text-gray-800">{selectedRow.narration || "-"}</p>
+          </div>
+
+          <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Match</p>
+            <p className="font-semibold text-gray-800">
+              {selectedRow.matchedVoucherNo || selectedRow.matchedVoucherId || "No match"}
+            </p>
+            <p className="text-[11px] font-medium text-gray-500">
+              Score {selectedRow.matchScore || 0} • {selectedRow.matchReason || "-"}
+            </p>
+          </div>
+
+          <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Raw Imported Data</p>
+            <pre className="text-[10px] bg-white border border-gray-200 p-3 rounded-lg overflow-auto max-h-64">
+              {JSON.stringify(selectedRow.raw || selectedRow, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+
+  const renderVoucherModal = () => (
+    <Modal open={modalType === "voucher"} title="Create Voucher From Bank Row" onClose={() => setModalType("")}>
+      {selectedRow && (
+        <div className="space-y-4">
+          <div className="p-3 rounded-lg border border-blue-200 bg-blue-50 text-blue-800">
+            <p className="font-semibold">
+              {Number(selectedRow.amount || 0) >= 0 ? "Receipt" : "Payment"} •{" "}
+              {money(Math.abs(Number(selectedRow.amount || 0)))}
+            </p>
+            <p className="text-[11px] font-medium mt-1">
+              {selectedRow.date} • {selectedRow.narration || selectedRow.refNo || "-"}
+            </p>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Voucher Type</label>
+            <select
+              className={input}
+              value={voucherForm.type}
+              onChange={(e) => setVoucherForm((f) => ({ ...f, type: e.target.value }))}
             >
-              <CheckCircle2 className="h-4 w-4" />
-              Import {checkedIds.size} Rows
+              <option value="receipt">Receipt</option>
+              <option value="payment">Payment</option>
+              <option value="contra">Contra</option>
+              <option value="journal">Journal</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Bank Account</label>
+            <input className={`${input} bg-gray-100`} value={accountName(accounts, selectedBankId)} disabled />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Opposite Account {Number(selectedRow.amount || 0) >= 0 ? "(Credit)" : "(Debit)"}
+            </label>
+            <select
+              className={input}
+              value={voucherForm.accountId}
+              onChange={(e) => setVoucherForm((f) => ({ ...f, accountId: e.target.value }))}
+            >
+              <option value="">Select account</option>
+              {accounts
+                .filter((a) => a.id !== selectedBankId)
+                .map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} {a.group || a.groupName ? `(${a.group || a.groupName})` : ""}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Narration</label>
+            <textarea
+              className={`${input} h-auto py-2`}
+              rows={3}
+              value={voucherForm.narration}
+              onChange={(e) => setVoucherForm((f) => ({ ...f, narration: e.target.value }))}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-2">
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+
+            <button className={btn} onClick={createVoucherForRow}>
+              <Save className="h-4 w-4" />
+              Create & Reconcile
             </button>
           </div>
         </div>
       )}
+    </Modal>
+  );
+
+  return (
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen text-gray-800">
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+            <Banknote className="h-4 w-4 text-[#1557b0]" />
+            Bank Statement Import
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Import Excel/CSV bank statements, auto-match vouchers, reconcile and create missing vouchers.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <button className={btn2} onClick={loadData} disabled={loading}>
+            <RefreshCcw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            Refresh
+          </button>
+
+          <button className={btn2} onClick={exportExcel}>
+            <Download className="h-3.5 w-3.5" />
+            Export
+          </button>
+
+          <button className={btn} onClick={() => fileRef.current?.click()}>
+            <Upload className="h-3.5 w-3.5" />
+            Upload
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {[
+          ["Import & Match", Upload],
+          ["Batches", FileSpreadsheet],
+        ].map(([name, Icon]: any) => (
+          <button
+            key={name}
+            onClick={() => setActiveTab(name)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors border ${
+              activeTab === name
+                ? "bg-[#1557b0] text-white border-[#1557b0]"
+                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            <Icon className="h-3.5 w-3.5" />
+            {name}
+          </button>
+        ))}
+      </div>
+
+      {loading && (
+        <div className={`${card} mb-4`}>
+          <div className="flex items-center gap-2 text-[12px] font-medium text-[#1557b0]">
+            <RefreshCcw className="h-4 w-4 animate-spin" />
+            Processing bank statement operation...
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={fileRef}
+        type="file"
+        className="hidden"
+        accept=".xlsx,.xls,.csv"
+        onChange={(e) => e.target.files?.[0] && parseExcelFile(e.target.files[0])}
+      />
+
+      {activeTab === "Import & Match" && renderImportAndMatch()}
+      {activeTab === "Batches" && renderBatches()}
+
+      {renderPreviewModal()}
+      {renderRowModal()}
+      {renderVoucherModal()}
     </div>
   );
-};
-
-export default BankStatementImport;
+}

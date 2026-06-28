@@ -5,6 +5,7 @@ import { useStore } from "../store/useStore";
 import { adToBS, formatBSDate } from "../lib/nepaliDate";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
+import VatAnnexExport from "../components/tax/VatAnnexExport";
 
 type VatInvoiceType =
   | "sales-invoice"
@@ -537,7 +538,7 @@ const VatReports: React.FC = () => {
   );
 
   const [quarterKey, setQuarterKey] = useState<QuarterKey>("Q1");
-  const [activeTab, setActiveTab] = useState<"annex1" | "annex2" | "vat10">("vat10");
+  const [activeTab, setActiveTab] = useState<"annex1" | "annex2" | "vat10" | "IRD Annex Export">("vat10");
   const [previousCredit, setPreviousCredit] = useState<number>(0);
 
   const selectedPeriod = useMemo(
@@ -853,6 +854,18 @@ const VatReports: React.FC = () => {
           >
             Annex 2 Purchase Book
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("IRD Annex Export")}
+            className={`h-8 px-3 text-[12px] font-medium rounded-md border ${
+              activeTab === "IRD Annex Export"
+                ? "bg-[#1557b0] text-white border-[#1557b0]"
+                : "bg-white text-gray-700 border-gray-300"
+            }`}
+          >
+            IRD Annex Export
+          </button>
         </div>
 
         <div className="flex items-center gap-2">
@@ -982,6 +995,10 @@ const VatReports: React.FC = () => {
             </div>
           )}
         </div>
+      )}
+
+      {activeTab === "IRD Annex Export" && (
+        <VatAnnexExport />
       )}
     </ReportShell>
   );
