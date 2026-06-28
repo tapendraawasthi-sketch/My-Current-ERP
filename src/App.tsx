@@ -71,7 +71,7 @@ const App: React.FC = () => {
   }
 
   // ── Auth gate ─────────────────────────────────────────────────────────────
-  if (!isAuthenticated || currentPage === "gateway") {
+  if (!isAuthenticated) {
     return (
       <>
         <Toaster position="top-right" />

@@ -1045,7 +1045,7 @@ export const useStore = create<AppState>((set, get) => ({
       if (password !== "admin123") return false;
     }
     sessionStorage.setItem("sutra_user_id", user.id);
-    set({ isAuthenticated: true, currentUser: user as StoreUser });
+    set({ isAuthenticated: true, currentUser: user as StoreUser, currentPage: "dashboard" });
     return true;
   },
 
