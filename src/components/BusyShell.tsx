@@ -1,12 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
 import { RightButtonBar } from "./RightButtonBar";
-
-const S = { background: "#C9DEB5", color: "#000000", border: "1px solid #000000" } as const;
-const S_DARK = { background: "#D4EABD", color: "#000000", border: "1px solid #000000" } as const;
-const S_TEXT = { color: "#000000" } as const;
 
 export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) => {
   const { companySettings, currentFiscalYear } = useStore();
@@ -38,7 +33,13 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
   };
 
   const btnHover = (e: React.MouseEvent<HTMLSpanElement>, enter: boolean) => {
-    (e.currentTarget as HTMLSpanElement).style.background = enter ? "#C9DEB5" : "transparent";
+    const el = e.currentTarget as HTMLSpanElement;
+    if (el.title === "Close") {
+      el.style.background = enter ? "#dc2626" : "transparent";
+      el.style.color = enter ? "#fff" : "inherit";
+    } else {
+      el.style.background = enter ? "#374151" : "transparent";
+    }
   };
 
   return (
@@ -48,11 +49,11 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
         alignItems: "center",
         justifyContent: "space-between",
         height: 22,
-        background: "#D4EABD",
-        color: "#000000",
+        background: "#1e2433",
+        color: "#cbd5e1",
         fontSize: 11,
         padding: "0 8px",
-        borderBottom: "1px solid #000000",
+        borderBottom: "1px solid #2d3748",
         userSelect: "none",
         flexShrink: 0,
       }}
@@ -62,9 +63,9 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
           style={{
             width: 18,
             height: 18,
-            background: "#C9DEB5",
-            border: "1px solid #000000",
-            color: "#000000",
+            background: "#273148",
+            border: "none",
+            color: "#93c5fd",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -116,7 +117,7 @@ export const StatusBar: React.FC = () => {
     display: "flex",
     alignItems: "center",
     padding: "0 8px",
-    borderRight: "1px solid #000000",
+    borderRight: "1px solid #2d3748",
     height: "100%",
     flexDirection: "column",
     justifyContent: "center",
@@ -129,13 +130,13 @@ export const StatusBar: React.FC = () => {
         alignItems: "center",
         flexShrink: 0,
         height: 28,
-        background: "#D4EABD",
-        borderTop: "1px solid #000000",
+        background: "#1e2433",
+        borderTop: "1px solid #2d3748",
         fontSize: 11,
-        color: "#000000",
+        color: "#cbd5e1",
       }}
     >
-      <div style={{ ...cellStyle, fontWeight: "bold", fontSize: 15 }}>Sutra</div>
+      <div style={{ ...cellStyle, fontWeight: "bold", fontSize: 13, color: "#93c5fd" }}>Sutra</div>
       <div style={cellStyle}>
         <div style={{ fontSize: 11 }}>{company}</div>
         <div style={{ fontSize: 10 }}>F.Y.: {fy}</div>
@@ -148,12 +149,12 @@ export const StatusBar: React.FC = () => {
         <div>State: Nepal</div>
         <div>Currency: रू</div>
       </div>
-      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, borderLeft: "1px solid #000000", padding: "0 12px", height: "100%" }}>
-        <div style={{ background: "#C9DEB5", color: "#000000", padding: "1px 5px", fontSize: 10, fontWeight: "bold", border: "1px solid #000000" }}>
+      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, borderLeft: "1px solid #2d3748", padding: "0 12px", height: "100%" }}>
+        <div style={{ background: "#273148", color: "#94a3b8", padding: "1px 5px", fontSize: 10, fontWeight: "bold", border: "1px solid #374151" }}>
           ACCOUNTING SOFTWARE
         </div>
-        <span style={{ fontWeight: "bold" }}>{weekday}</span>
-        <div style={{ flexDirection: "column" }}>
+        <span style={{ fontWeight: "bold", color: "#cbd5e1" }}>{weekday}</span>
+        <div style={{ flexDirection: "column", color: "#cbd5e1" }}>
           <div>BS Date: {bsDate}</div>
           <div>AD Date: {dateStr}</div>
         </div>
@@ -173,31 +174,15 @@ export const CommandHintBar: React.FC<{ hints?: string[] }> = ({
       padding: "0 12px",
       flexShrink: 0,
       height: 20,
-      background: "#D4EABD",
-      borderTop: "1px solid #000000",
-      color: "#000000",
-      fontSize: 11,
+      background: "#1e2433",
+      borderTop: "1px solid #2d3748",
+      color: "#6b7280",
+      fontSize: 10,
     }}
   >
     {hints.map((h) => <span key={h}>[ {h} ]</span>)}
   </div>
 );
-
-const fKeys = [
-  { key: "F1", label: "Help" }, { key: "F2", label: "Add Account" },
-  { key: "F3", label: "Add Item" }, { key: "F4", label: "Add Master" },
-  { key: "F5", label: "Add Voucher" }, { key: "F6", label: "Add Payment" },
-  { key: "F7", label: "Add Receipt" }, { key: "F8", label: "Add Journal" },
-  { key: "F9", label: "Add Sales" },
-];
-const quickKeys = [
-  { key: "B", label: "Balance Sheet" }, { key: "T", label: "Trial Balance" },
-  { key: "S", label: "Stock Status" }, { key: "A", label: "Acc. Summary" },
-  { key: "L", label: "Acc. Ledger" }, { key: "V", label: "VAT Report" },
-  { key: "D", label: "Day Book" }, { key: "G", label: "GST/VAT Summary" },
-  { key: "U", label: "Switch User" }, { key: "F", label: "Configuration" },
-  { key: "K", label: "Lock Program" },
-];
 
 export const ShortcutSidebar: React.FC<React.ComponentProps<typeof RightButtonBar>> = (props) => {
   return <RightButtonBar {...props} />;
@@ -206,19 +191,19 @@ export const ShortcutSidebar: React.FC<React.ComponentProps<typeof RightButtonBa
 export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({ title, variant = "tally" }) => (
   <div className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""} style={variant === "tally" ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 } : {}}>
     <span
-      className={variant === "standard" ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border" : ""}
+      className={variant === "standard" ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border rounded" : ""}
       style={variant === "standard" ? {
-        background: '#D4EABD', color: '#000000', border: '1px solid #000000', borderRadius: '4px'
+        background: '#e8f1ff', color: '#1557b0', border: '1px solid #1557b0'
       } : variant === "tally" ? {
         display: "inline-block",
-        background: "#C9DEB5",
-        color: "#000000",
-        fontWeight: "bold",
-        fontSize: 13,
+        background: "#e8f1ff",
+        color: "#1557b0",
+        fontWeight: "600",
+        fontSize: 12,
         padding: "3px 18px",
         textAlign: "center",
         borderRadius: 4,
-        border: "1px solid #000000",
+        border: "1px solid #1557b0",
       } : {}}
     >
       {title}
@@ -240,9 +225,10 @@ export const FormPanel: React.FC<{
     style={
       variant === "tally"
         ? {
-            background: "#EBF5E2",
-            border: "1px solid #000000",
-            padding: "10px 14px",
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: 6,
+            padding: "12px 16px",
             ...style,
           }
         : style
@@ -253,8 +239,8 @@ export const FormPanel: React.FC<{
 );
 
 export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-  <div style={{ border: "1px solid #000000", padding: "12px 10px 8px", position: "relative", marginTop: 10, borderRadius: 4, background: "#EBF5E2" }}>
-    <span style={{ position: "absolute", top: -8, left: 8, background: "#EBF5E2", padding: "0 4px", color: "#000000", fontSize: 11, fontWeight: "bold" }}>
+  <div style={{ border: "1px solid #e5e7eb", padding: "12px 10px 8px", position: "relative", marginTop: 10, borderRadius: 4, background: "#ffffff" }}>
+    <span style={{ position: "absolute", top: -8, left: 8, background: "#ffffff", padding: "0 4px", color: "#6b7280", fontSize: 11, fontWeight: "600" }}>
       {label}
     </span>
     {children}
@@ -263,10 +249,10 @@ export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = 
 
 export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 3 }}>
-    <span style={{ color: "#000000", minWidth: 130, textAlign: "right", paddingRight: 8, paddingTop: 2, flexShrink: 0 }}>
+    <span style={{ color: "#6b7280", minWidth: 130, textAlign: "right", paddingRight: 8, paddingTop: 2, flexShrink: 0 }}>
       {label}
     </span>
-    <span style={{ flex: 1, color: "#000000" }}>{children}</span>
+    <span style={{ flex: 1, color: "#1f2937" }}>{children}</span>
   </div>
 );
 
@@ -274,13 +260,22 @@ export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement> & {
   <input
     {...props}
     style={{
-      border: "1px solid #000000",
-      background: "#EBF5E2",
-      color: "#000000",
-      height: 20,
+      border: "1px solid #d1d5db",
+      background: "#ffffff",
+      color: "#1f2937",
+      height: 24,
       padding: "0 3px",
       width: props.width || "100%",
+      outline: "none",
       ...props.style,
+    }}
+    onFocus={(e) => {
+      e.currentTarget.style.borderColor = "#1557b0";
+      if (props.onFocus) props.onFocus(e);
+    }}
+    onBlur={(e) => {
+      e.currentTarget.style.borderColor = "#d1d5db";
+      if (props.onBlur) props.onBlur(e);
     }}
   />
 );
@@ -292,9 +287,9 @@ export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
   return (
     <button
       style={{
-        background: "#D4EABD",
-        border: "1px solid #000000",
-        color: "#000000",
+        background: "#ffffff",
+        border: "1px solid #d1d5db",
+        color: "#374151",
         padding: "4px 12px",
         borderRadius: 4,
         cursor: "pointer",
@@ -302,6 +297,8 @@ export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
         minWidth: 64,
         textAlign: "center",
       }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
       {...rest}
     >
       {idx >= 0 ? (

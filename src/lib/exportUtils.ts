@@ -73,9 +73,22 @@ export function exportToCSV(data: any[], filename = "export.csv"): void {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export function exportToExcel(data: any[], filename: string = "export.xlsx"): void {
+  if (!data || !data.length) return;
+  import("xlsx").then((XLSX) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, filename);
+  });
+}
+
 
 export const exportLedgerToExcel = () => {};
 export const exportTrialBalanceToExcel = () => {};

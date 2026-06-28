@@ -1,1 +1,7 @@
-import React from 'react'; export default function AuditLogs() { return <div>AuditLogs Under Construction</div>; }
+// @ts-nocheck
+import React from 'react';
+import AuditLog from './AuditLog';
+
+export default function AuditLogs() {
+  return <AuditLog />;
+}

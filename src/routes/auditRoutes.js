@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAuditLogs } from '../controllers/auditController.js';
+import { getAuditLogs, purgeAuditLogs } from '../controllers/auditController.js';
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ const requireAdmin = (req, res, next) => {
 router.use(requireAdmin);
 
 router.get('/', getAuditLogs);
+router.delete('/purge', purgeAuditLogs);
 
 export default router;

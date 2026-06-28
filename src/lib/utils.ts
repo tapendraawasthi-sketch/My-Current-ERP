@@ -23,6 +23,10 @@ export function formatCurrency(
   return `${symbol} ${formatNumber(value, decimals)}`;
 }
 
+export function round2(num: number | string | undefined | null): number {
+  return Math.round((Number(num) || 0) * 100) / 100;
+}
+
 export function numberToWords(num: number, currency = "Rupees"): string {
   if (!num || isNaN(num)) return `Zero ${currency} Only`;
   const ones = [

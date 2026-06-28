@@ -153,6 +153,44 @@ export async function runMigrations() {
     await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_module ON audit_logs(module);`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_logs(action);`);
 
+    // Migration: Add BS date support to audit_logs
+    await client.query(`
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS bs_date VARCHAR(10);
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS bs_fiscal_year VARCHAR(7);
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS session_id UUID;
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS risk VARCHAR(20) DEFAULT 'low';
+      
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_bs_date ON audit_logs (bs_date);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_bs_fiscal_year ON audit_logs (bs_fiscal_year);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_session_id ON audit_logs (session_id);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_risk ON audit_logs (risk);
+      
+      CREATE OR REPLACE FUNCTION gregorian_to_bs_year(ad_date DATE) RETURNS INTEGER AS $$
+      BEGIN
+      IF EXTRACT(MONTH FROM ad_date) >= 4 AND EXTRACT(DAY FROM ad_date) >= 14 THEN
+      RETURN EXTRACT(YEAR FROM ad_date)::INTEGER + 57;
+      ELSE
+      RETURN EXTRACT(YEAR FROM ad_date)::INTEGER + 56;
+      END IF;
+      END;
+      $$ LANGUAGE plpgsql IMMUTABLE;
+      
+      UPDATE audit_logs
+      SET bs_fiscal_year = (
+      CASE
+      WHEN EXTRACT(MONTH FROM timestamp) >= 7 OR (EXTRACT(MONTH FROM timestamp) = 7 AND EXTRACT(DAY FROM timestamp) >= 16)
+      THEN CONCAT(gregorian_to_bs_year(timestamp::date), '/', RIGHT((gregorian_to_bs_year(timestamp::date) + 1)::TEXT, 2))
+      ELSE CONCAT(gregorian_to_bs_year(timestamp::date) - 1, '/', RIGHT(gregorian_to_bs_year(timestamp::date)::TEXT, 2))
+      END
+      )
+      WHERE bs_fiscal_year IS NULL AND timestamp IS NOT NULL;
+      
+      COMMENT ON COLUMN audit_logs.bs_date IS 'Bikram Sambat date string YYYY-MM-DD, populated by application layer on insert';
+      COMMENT ON COLUMN audit_logs.bs_fiscal_year IS 'Nepal fiscal year e.g. 2082/83, July 16 to July 15';
+      COMMENT ON COLUMN audit_logs.session_id IS 'UUID from user login session, groups all actions within one login';
+      COMMENT ON COLUMN audit_logs.risk IS 'Risk level: low, medium, high, critical';
+    `);
+
     // 5. Keyboard Shortcuts
     await client.query(`
       CREATE TABLE IF NOT EXISTS keyboard_shortcuts (
