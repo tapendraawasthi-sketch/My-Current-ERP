@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { BarChart2, Download, RefreshCw, TrendingUp, Package, AlertTriangle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { formatNumber } from '../lib/utils';
-import { adToBS, formatBS, todayBS } from '../utils/nepaliDate';
+import { adToBS, formatBS, todayBS } from '../lib/nepaliDate';
 import {
   computeWeightedAverage,
   computeFIFO,

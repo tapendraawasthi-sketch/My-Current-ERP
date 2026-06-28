@@ -22,7 +22,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { db } from "../lib/db";
-import { adToBS, formatBS } from "../utils/nepaliDate";
+import { adToBS, formatBS } from "../lib/nepaliDate";
 import {
   computeBillWiseOutstanding,
   buildPartySummaries,

@@ -105,7 +105,7 @@ const DayBook: React.FC = () => {
     [accounts],
   );
 
-  const voucherTypes = useMemo(() => {
+  const voucherTypes = useMemo<string[]>(() => {
     return Array.from(new Set((vouchers || []).map((v: Voucher) => v.type))).filter(Boolean) as string[];
   }, [vouchers]);
 

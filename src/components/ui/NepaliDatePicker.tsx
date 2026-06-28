@@ -25,6 +25,7 @@ interface NepaliDatePickerProps {
   disabled?: boolean;
   error?: string;
   id?: string;
+  className?: string;
 }
  
 const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
@@ -35,6 +36,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
   disabled = false,
   error,
   id,
+  className,
 }) => {
   const [bsValue, setBsValue] = useState("");
   const [activeTab, setActiveTab] = useState<"AD" | "BS">("BS");
@@ -258,7 +260,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
   ) : null;
  
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 w-full">
+    <div ref={containerRef} className={`flex flex-col gap-1 w-full ${className || ""}`}>
       <div className="flex items-end gap-1 w-full">
         <div className="flex-1">
           {activeTab === "BS" ? (

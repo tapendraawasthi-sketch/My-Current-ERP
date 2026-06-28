@@ -22,7 +22,7 @@ import {
   Info,
 } from "lucide-react";
 import { db } from "../lib/db";
-import { adToBS, formatBS, todayBS } from "../utils/nepaliDate";
+import { adToBS, formatBS, todayBS } from "../lib/nepaliDate";
 import {
   computeBillWiseOutstanding,
   computeInterestOnOverdue,

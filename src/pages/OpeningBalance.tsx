@@ -711,7 +711,7 @@ export default function OpeningBalance() {
 
       const voucher = {
         id: generateId(),
-        voucherNo: `OB-${todayISO().replaceAll("-", "")}`,
+        voucherNo: `OB-${todayISO().split("-").join("")}`,
         type: "opening",
         date: storeFiscalYear?.startDate || todayISO(),
         narration: "Opening balance voucher",

@@ -1158,8 +1158,6 @@ export function generateId(): string {
 }
 
 export async function seedPredefinedVoucherTypes(): Promise<void> {
-  const db = await getDB();
-  
   // Check if predefined voucher types already exist
   const existingCount = await db.voucherTypeMasters.where({ isPredefined: true }).count();
   
@@ -1827,8 +1825,6 @@ export async function seedPredefinedVoucherTypes(): Promise<void> {
 }
 
 export async function generateVoucherNumber(voucherTypeId: string): Promise<string> {
-  const db = await getDB();
-  
   try {
     const voucherType = await db.voucherTypeMasters.get(voucherTypeId);
     
@@ -1847,5 +1843,3 @@ export async function generateVoucherNumber(voucherTypeId: string): Promise<stri
     return `VCH-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
   }
 }
-
-export default getDB;

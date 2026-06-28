@@ -608,7 +608,7 @@ export default function POSBilling() {
 
   const buildInvoice = () => {
     const party = parties.find((p) => p.id === partyId) || {};
-    const invoiceNo = `POS-${saleDate.replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
+    const invoiceNo = `POS-${saleDate.split("-").join("")}-${String(Date.now()).slice(-5)}`;
 
     const lines = cart.map((l) => {
       const x = lineNet(l);

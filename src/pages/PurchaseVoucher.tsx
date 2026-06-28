@@ -424,7 +424,7 @@ const PurchaseVoucher: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Invoice No</label>
             <Input
               value={supplierInvoiceNo}
-              onChange={(val: any) => setSupplierInvoiceNo(val?.target ? val.target.value : val)}
+              onChange={(val: any) => setSupplierInvoiceNo(typeof val === 'string' ? val : val?.target?.value || val)}
               placeholder="Supplier's invoice no."
             />
           </div>
@@ -616,7 +616,7 @@ const PurchaseVoucher: React.FC = () => {
                 <label className="text-[10px] font-semibold text-amber-700 uppercase">TDS Section</label>
                 <select
                   value={tdsSection}
-                  onChange={(val: any) => setTdsSection(val?.target ? val.target.value : val)}
+                  onChange={(val: any) => setTdsSection(typeof val === 'string' ? val : val?.target?.value || val)}
                   className="w-full mt-1 h-7 px-2 border border-amber-300 rounded text-amber-900 bg-white"
                 >
                   <option value="">-- Select TDS Section --</option>

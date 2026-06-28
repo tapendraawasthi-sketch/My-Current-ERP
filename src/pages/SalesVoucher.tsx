@@ -289,7 +289,7 @@ const SalesVoucher: React.FC = () => {
           <Input
             placeholder="Ref No."
             value={referenceNo}
-            onChange={(val: any) => setReferenceNo(val?.target ? val.target.value : val)}
+            onChange={(val: any) => setReferenceNo(typeof val === 'string' ? val : val?.target?.value || val)}
             className="w-32"
           />
         </div>

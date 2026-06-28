@@ -1,1 +1,0 @@
-import React from 'react'; export default function GstReports() { return <div>GstReports Under Construction</div>; }

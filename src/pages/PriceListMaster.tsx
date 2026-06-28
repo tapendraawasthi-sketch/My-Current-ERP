@@ -346,7 +346,7 @@ export default function PriceListMaster() {
             listName: pl.name,
             changedBy: pl.updatedBy || "System",
             status: getStatus(pl),
-            validTo: pl.effectiveTo || "",
+            validTo: pl.effectiveTo ? String(pl.effectiveTo) : "",
           })),
       )
       .sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime());

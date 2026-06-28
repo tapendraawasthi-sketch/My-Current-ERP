@@ -22,7 +22,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Zap, RefreshCw, AlertCircle } from "lucide-react";
 import { db } from "../lib/db";
-import { adToBS, formatBS } from "../utils/nepaliDate";
+import { adToBS, formatBS } from "../lib/nepaliDate";
 import {
   computeBillWiseOutstanding,
   suggestFIFOAllocation,

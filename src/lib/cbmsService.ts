@@ -1,7 +1,7 @@
 // src/lib/cbmsService.ts
 
 import toast from "react-hot-toast";
-import { getDB } from "./db";
+import { getDB, type DBInvoice } from "./db";
 
 export type CBMSInvoiceType =
   | "tax-invoice"
@@ -9,41 +9,7 @@ export type CBMSInvoiceType =
   | "credit-note"
   | "debit-note";
 
-export interface DBInvoice {
-  id: string;
-  invoiceNo: string;
-  date: string;
-  dateNepali?: string;
-  type: "sales-invoice" | "purchase-invoice" | "sales-return" | "purchase-return" | string;
-  partyName: string;
-  partyPan?: string;
-  taxableAmount?: number;
-  exemptAmount?: number;
-  vatAmount?: number;
-  grandTotal?: number;
-  lines?: Array<{
-    itemId?: string;
-    itemName?: string;
-    description?: string;
-    hsCode?: string;
-    hsnCode?: string;
-    unit?: string;
-    qty?: number;
-    rate?: number;
-    taxableAmount?: number;
-    exemptAmount?: number;
-    vatAmount?: number;
-    totalAmount?: number;
-  }>;
 
-  cbmsSubmitted?: boolean;
-  cbmsIrn?: string;
-  cbmsQrString?: string;
-  cbmsQrCode?: string;
-  cbmsSubmittedAt?: string;
-  cbmsStatus?: "pending" | "submitted" | "failed" | "cancelled" | "success";
-  cbmsError?: string;
-}
 
 export interface CompanySettings {
   id?: string;

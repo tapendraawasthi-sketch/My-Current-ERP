@@ -75,7 +75,6 @@ const PAGE_TITLES: Record<string, string> = {
   "voucher-types": "Voucher Types",
   "price-lists": "Price Lists",
   "f11-company-features": "F11 Company Features",
-
 };
 
 const Breadcrumb: React.FC = () => {

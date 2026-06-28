@@ -257,9 +257,9 @@ export default function CommunicationHub() {
 
   function buildReminderMessage(row: any) {
     return templateText
-      .replaceAll("{partyName}", row.party.name || "")
-      .replaceAll("{amount}", money(row.total))
-      .replaceAll("{days}", String(row.oldestDays));
+      .split("{partyName}").join(row.party.name || "")
+      .split("{amount}").join(money(row.total))
+      .split("{days}").join(String(row.oldestDays));
   }
 
   function sendBulkWhatsApp() {

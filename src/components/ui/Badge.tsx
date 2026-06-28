@@ -1,7 +1,7 @@
 // src/components/ui/Badge.tsx
 import React from "react";
 
-type BadgeVariant = "default" | "success" | "warning" | "danger" | "info" | "primary" | "secondary";
+type BadgeVariant = "default" | "success" | "warning" | "danger" | "info" | "primary" | "secondary" | "outline";
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -19,6 +19,7 @@ const VARIANT_STYLES: Record<BadgeVariant, React.CSSProperties> = {
   info:      { background: "#dbeafe", color: "#1e3a8a", borderColor: "#3b82f6" },
   primary:   { background: "#D4EABD", color: "#000000", borderColor: "#000000" },
   secondary: { background: "#f1f5f9", color: "#475569", borderColor: "#cbd5e1" },
+  outline:   { background: "transparent", color: "#475569", borderColor: "#cbd5e1" },
 };
 
 const Badge: React.FC<BadgeProps> = ({

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useEffect } from "react";
 import { useStore } from "./store";
 import { Toaster } from "react-hot-toast";
@@ -10,7 +10,7 @@ import Warehouses from "./pages/Warehouses";
 import Units from "./pages/Units";
 import CostCenters from "./pages/CostCenters";
 import Parties from "./pages/Parties";
-import ItemMaster from "./pages/ItemMaster";
+import StockBook from "./pages/StockBook";
 import SalesVoucher from "./pages/SalesVoucher";
 import PurchaseVoucher from "./pages/PurchaseVoucher";
 import PaymentVoucher from "./pages/PaymentVoucher";
@@ -98,7 +98,7 @@ const App: React.FC = () => {
       case "cost-centers":      return <CostCenters />;
       case "budget":            return <BudgetMaster />;
       case "parties":           return <Parties />;
-      case "item-master":       return <ItemMaster />;
+      case "item-master":       return <StockBook />;
       case "warehouses":        return <Warehouses />;
       case "units":             return <Units />;
       case "unit-conversion":   return <UnitConversionMaster />;

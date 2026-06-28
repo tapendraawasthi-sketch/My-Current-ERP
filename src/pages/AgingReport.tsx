@@ -23,7 +23,7 @@ import {
 import { Download, BarChart2, Table2, RefreshCw } from "lucide-react";
 import * as XLSX from "xlsx";
 import { db } from "../lib/db";
-import { adToBS, formatBS } from "../utils/nepaliDate";
+import { adToBS, formatBS } from "../lib/nepaliDate";
 import {
   computeBillWiseOutstanding,
   buildAgingReport,

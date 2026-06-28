@@ -18,6 +18,8 @@ export async function migrateWorkflowFields(): Promise<void> {
       linkedDcIds: next.linkedDcIds || [],
       linkedDocuments: next.linkedDocuments || [],
       workflowStatus: next.workflowStatus || "open",
+      totalDebit: (next as any).totalDebit ?? 0,
+      totalCredit: (next as any).totalCredit ?? 0,
     };
   });
 

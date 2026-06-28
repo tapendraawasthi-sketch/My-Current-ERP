@@ -508,7 +508,7 @@ export default function RecurringVouchers() {
     const total = voucherTotal(t.lines);
     return {
       id: generateId(),
-      voucherNo: `RV-${date.replaceAll("-", "")}-${String(Date.now()).slice(-5)}`,
+      voucherNo: `RV-${date.split("-").join("")}-${String(Date.now()).slice(-5)}`,
       type: t.voucherType || "journal",
       date,
       narration: t.narration || `Recurring voucher: ${t.name}`,

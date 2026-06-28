@@ -622,7 +622,7 @@ function AboutModal({ onClose }: { onClose: () => void }) {
     registeredUser: currentUser?.name || currentUser?.username || "User",
     company: companySettings?.companyNameEn || companySettings?.name || "—",
     databaseVersion: "Local/Cloud",
-    environment: (import.meta as any).env.MODE,
+    environment: (import.meta as any).env?.MODE ?? "development",
   };
 
   return (

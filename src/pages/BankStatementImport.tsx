@@ -678,7 +678,7 @@ export default function BankStatementImport() {
     try {
       const db = getDB();
 
-      const voucherNo = `BANK-${selectedRow.date.replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
+      const voucherNo = `BANK-${selectedRow.date.split("-").join("")}-${String(Date.now()).slice(-5)}`;
 
       const lines = isReceipt
         ? [

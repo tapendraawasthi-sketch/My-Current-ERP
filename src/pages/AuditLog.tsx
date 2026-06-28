@@ -11,7 +11,7 @@ import { useScreenF12 } from "../hooks/useF12Config";
 import { getDB } from "../lib/db";
 import { generateId } from "../lib/utils";
 import { formatBSDate as formatBsDate } from "../lib/nepaliDate";
-import { getNepaliMonths } from "../utils/nepaliDate";
+import { getNepaliMonths } from "../lib/nepaliDate";
 
 const stringifySmall = (obj: any) => {
   try {
