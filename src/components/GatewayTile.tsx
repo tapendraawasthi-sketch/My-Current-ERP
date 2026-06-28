@@ -2,35 +2,60 @@ import React from "react";
 
 interface GatewayTileProps {
   label: string;
-  value: string | number;
-  sub?: string;
-  color?: string;
-  icon?: React.ReactNode;
-  onClick?: () => void;
+  value: string;
+  subtitle?: string;
+  onClick: () => void;
 }
 
-const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, sub, color, icon, onClick }) => {
+const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, subtitle, onClick }) => {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="bg-white border border-gray-200 rounded-md p-3 text-left w-full hover:border-[#1557b0] hover:shadow-sm transition-all cursor-pointer group"
+      className="hover:bg-gray-50 transition-colors bg-white border border-gray-200 text-gray-800 rounded shadow-sm"
+      style={{
+        minWidth: 145,
+        flex: "1 1 145px",
+        padding: "10px 12px",
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      }}
     >
-      <div className="flex items-start justify-between">
-        <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1 leading-tight">
-          {label}
-        </div>
-        {icon && (
-          <div className="text-gray-300 group-hover:text-[#1557b0] transition-colors">
-            {icon}
-          </div>
-        )}
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          lineHeight: 1.2,
+        }}
+      >
+        {label}
       </div>
-      <div className={`text-[18px] font-bold font-mono leading-tight ${color || "text-gray-800"}`}>
+
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          marginTop: 3,
+          lineHeight: 1.2,
+          whiteSpace: "nowrap",
+        }}
+      >
         {value}
       </div>
-      {sub && (
-        <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">{sub}</div>
-      )}
+
+      {subtitle ? (
+        <div
+          style={{
+            fontSize: 10,
+            marginTop: 2,
+            lineHeight: 1.2,
+          }}
+        >
+          {subtitle}
+        </div>
+      ) : null}
     </button>
   );
 };

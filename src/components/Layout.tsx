@@ -2,114 +2,237 @@ import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { useF12Keyboard } from "../hooks/useF12Keyboard";
-import { useF12Config } from "../hooks/useF12Config";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
 import TopMenuBar from "./topbar/TopMenuBar";
 import { useIsMobile } from "../hooks/use-mobile";
-import { Menu, X, Home, Users, Package, FileText, Settings, Calculator, BarChart3, FileStack, Banknote, CreditCard, ShoppingCart, Receipt, Building2, Briefcase, TrendingUp, PieChart, FolderOpen, UserRound, Globe, Calendar, Clock, AlertTriangle, FileSpreadsheet, Warehouse, Truck, NotebookTabs, MessageSquare, Shield, Key, Monitor, Laptop, Smartphone, Tablet, Watch, Camera, Headphones, Gamepad2, Radio, Speaker, Mic, Video, Image, File, Folder, FolderKanban, FolderLock, FolderSearch, FolderGit, FolderArchive, FolderInput, FolderOutput, FolderClock, FolderHeart, FolderX, FolderPlus, FolderMinus, FolderSymlink, FolderClosed, FolderDot, FolderOpenDot, FolderRoot, FolderTree, FolderSync, FolderUp, FolderDown } from "lucide-react";
+import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
+import toast from "react-hot-toast";
 
-const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isDbReady, login } = useStore();
-  useKeyboardShortcuts();
-  useF12Keyboard();
-  const { isOpen } = useF12Config();
-  const isMobile = useIsMobile();
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const {
+    isAuthenticated,
+    isDbReady,
+    initializeApp,
+    login,
+    currentUser,
+    currentPage,
+    setCurrentPage,
+  } = useStore();
+
+  const { rawShortcuts } = useKeyboardShortcuts();
   
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  // Attach global F12 keyboard handler
+  useF12Keyboard();
 
-  const SHELL = {
-    bg:       "#f5f6fa",
-    card:     "#ffffff",
-    muted:    "#f3f4f6",
-    hover:    "#e8f1ff",
-    border:   "#e5e7eb",
-    text:     "#1f2937",
-    sideBg:   "#1e2433",
-    sideBorder: "#2d3748",
+  const isMobile = useIsMobile();
+
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sutra_sidebar_collapsed") === "true";
+  });
+
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("admin123");
+  const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // App.tsx handles initialization
+
+  useEffect(() => {
+    localStorage.setItem("sutra_sidebar_collapsed", String(collapsed));
+  }, [collapsed]);
+
+  const handleSidebarShortcut = (key: string) => {
+    const ACTION_VALUE_TO_PAGE: Record<string, string> = {
+      journal: "journal",
+      billing: "billing",
+      vouchers: "vouchers",
+      "/help": "dashboard",
+      "/masters": "accounts",
+      dashboard: "dashboard",
+      accounts: "accounts",
+      parties: "parties",
+      items: "items",
+      payment: "payment",
+      receipt: "receipt",
+      "company/settings": "settings",
+      "/company/settings": "settings",
+      "/reports/ledger": "ledger",
+
+      balance_sheet: "balance-sheet",
+      "balance-sheet": "balance-sheet",
+      trial_balance: "trial-balance",
+      "trial-balance": "trial-balance",
+      stock_status: "stock-summary",
+      "stock-status": "stock-summary",
+      acc_summary: "ledger",
+      "acc-summary": "ledger",
+      vat_report: "vat-reports",
+      "vat-report": "vat-reports",
+      day_book: "day-book",
+      "day-book": "day-book",
+      gst_vat_summary: "vat-reports",
+      "gst-vat-summary": "vat-reports",
+
+      AddAccountModal: "accounts",
+      AddItemModal: "items",
+      AddVoucherModal: "journal",
+      AddPaymentModal: "payment",
+      AddReceiptModal: "receipt",
+      AddJournalModal: "journal",
+      AddSalesModal: "billing",
+      SwitchUserModal: "dashboard",
+      LockProgramModal: "dashboard",
+    };
+
+    const KEY_FALLBACK: Record<string, string> = {
+      F1: "dashboard",
+      F2: "accounts",
+      F3: "items",
+      F4: "accounts",
+      F5: "journal",
+      F6: "payment",
+      F7: "receipt",
+      F8: "journal",
+      F9: "billing",
+      F10: "settings",
+      B: "balance-sheet",
+      T: "trial-balance",
+      S: "stock-summary",
+      A: "ledger",
+      L: "ledger",
+      V: "vat-reports",
+      D: "day-book",
+      G: "vat-reports",
+      U: "dashboard",
+      F: "settings",
+      K: "dashboard",
+    };
+
+    const found = rawShortcuts.find(
+      (shortcut) => shortcut.key_combo.toUpperCase() === key.toUpperCase() && shortcut.is_active,
+    );
+
+    if (found) {
+      const actionValue = found.action_value;
+
+      if (found.action_type === "save" || found.action_type === "search") return;
+      if (found.action_type === "help") return;
+
+      const page =
+        ACTION_VALUE_TO_PAGE[actionValue] ||
+        ACTION_VALUE_TO_PAGE[actionValue.replace(/^\//, "")];
+
+      if (page) {
+        setCurrentPage(page);
+      } else if (KEY_FALLBACK[key]) {
+        setCurrentPage(KEY_FALLBACK[key]);
+      }
+    } else if (KEY_FALLBACK[key]) {
+      setCurrentPage(KEY_FALLBACK[key]);
+    }
   };
 
+  const handleLoginSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoggingIn(true);
-    try {
-      await login(username, password);
-    } finally {
-      setIsLoggingIn(false);
+    if (!username.trim() || !password.trim()) {
+      toast.error("Credentials cannot be empty.");
+      return;
     }
+
+    setLoading(true);
+
+    try {
+      const ok = await login(username.trim(), password.trim());
+      if (ok) toast.success(`Access Granted: Logged in as ${username}.`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Error occurred.";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const TWO_COLOR = {
+    bg: "#E4F1D9",
+    card: "#EBF5E2",
+    muted: "#D4EABD",
+    hover: "#C9DEB5",
+    border: "#000000",
+    text: "#000000",
   };
 
   if (!isDbReady) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", background: SHELL.bg }}>
-        <div style={{
-          flex: 1,
+      <div
+        style={{
+          minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 24,
-        }}>
-          <div style={{
+          background: TWO_COLOR.bg,
+        }}
+      >
+        <div
+          style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 16,
-          }}>
-            <div style={{
-              width: 120,
-              height: 120,
-              background: "#1557b0",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              background: TWO_COLOR.muted,
+              border: "2px solid #000000",
               borderRadius: 12,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}>
-              <div style={{
-                fontSize: 28,
+              fontWeight: 700,
+              fontSize: 28,
+              color: "#000000",
+            }}
+          >
+            S
+          </div>
+
+          <div>
+            <div
+              style={{
                 fontWeight: 700,
-                color: "#ffffff",
-              }}>
-                S
-              </div>
-            </div>
-            <div style={{
-              textAlign: "center",
-            }}>
-              <div style={{
                 fontSize: 18,
-                fontWeight: 700,
-                color: "#1f2937",
-                letterSpacing: "1px",
-                marginBottom: 4,
-              }}>
-                Sutra ERP
-              </div>
-              <div style={{
-                fontSize: 12,
-                color: "#6b7280",
-              }}>
-                Initializing database...
-              </div>
+                color: "#000000",
+                letterSpacing: 2,
+                textTransform: "uppercase",
+              }}
+            >
+              Sutra ERP
+            </div>
+            <div style={{ fontSize: 12, color: "#000000", marginTop: 4 }}>
+              Initializing database...
             </div>
           </div>
-          <div style={{
-            display: "flex",
-            gap: 6,
-          }}>
+
+          <div style={{ display: "flex", gap: 6 }}>
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
                 style={{
                   width: 8,
                   height: 8,
-                  background: "#1557b0",
+                  background: "#000000",
                   borderRadius: "50%",
                   animation: "bounce 1.2s infinite",
                   animationDelay: `${i * 0.2}s`,
@@ -124,174 +247,235 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   if (!isAuthenticated) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", background: SHELL.bg }}>
-        <div style={{
-          width: 420,
-          background: SHELL.sideBg,
-          borderRight: `1px solid ${SHELL.sideBorder}`,
-          padding: 40,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }} className="hidden lg:flex">
+      <div style={{ minHeight: "100vh", display: "flex", background: TWO_COLOR.bg }}>
+        <div
+          style={{
+            width: 420,
+            background: TWO_COLOR.muted,
+            borderRight: "1px solid #000000",
+            padding: 40,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+          className="hidden lg:flex"
+        >
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 48 }}>
-              <div style={{
-                width: 40,
-                height: 40,
-                background: "#1557b0",
-                border: "none",
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-                fontSize: 20,
-                color: "#fff",
-              }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  background: TWO_COLOR.hover,
+                  border: "2px solid #000000",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 700,
+                  fontSize: 20,
+                  color: "#000000",
+                }}
+              >
                 S
               </div>
+
               <div>
-                <div style={{ fontWeight: 700, fontSize: 20, color: "#ffffff" }}>
-                  Sutra ERP
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: "#94a3b8",
-                }}>
-                  Nepal's Professional Accounting Solution
+                <div style={{ fontWeight: 700, fontSize: 20, color: "#000000" }}>Sutra ERP</div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: 2,
+                    color: "#000000",
+                  }}
+                >
+                  Nepal&apos;s Cloud Accounting
                 </div>
               </div>
             </div>
-            
-            <div style={{ color: "#ffffff", fontSize: 14, lineHeight: 1.6 }}>
-              <p>Streamline your business operations with our comprehensive ERP solution designed specifically for Nepal's unique requirements.</p>
-              <p style={{ marginTop: 16 }}>Compliant with IRD regulations and built for local businesses.</p>
-            </div>
+
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: "#000000", marginBottom: 8 }}>
+              Powerful accounting
+              <br />
+              built for Nepal
+            </h2>
+
+            <p style={{ fontSize: 13, color: "#000000", marginBottom: 32, lineHeight: 1.6 }}>
+              Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company
+              support.
+            </p>
+
+            {[
+              {
+                title: "BS Calendar & VAT Ready",
+                desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in",
+              },
+              {
+                title: "Multi-Company & Users",
+                desc: "Role-based access with complete audit trail",
+              },
+              {
+                title: "Inventory + Accounting",
+                desc: "Integrated stock, invoicing and double-entry ledger",
+              },
+              {
+                title: "Reports & Export",
+                desc: "Trial Balance, P&L, Balance Sheet, VAT reports",
+              },
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 14 }}
+              >
+                <span
+                  style={{
+                    width: 18,
+                    height: 18,
+                    background: TWO_COLOR.hover,
+                    border: "1px solid #000000",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: "#000000",
+                    flexShrink: 0,
+                  }}
+                >
+                  ✓
+                </span>
+
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
+                    {feature.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#000000" }}>{feature.desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
-          
-          <div style={{ color: "#6b7280", fontSize: 12 }}>
+
+          <div style={{ fontSize: 10, color: "#000000" }}>
             © 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal
           </div>
         </div>
 
-        <div style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 32,
-        }}>
-          <div style={{ width: "100%", maxWidth: 360 }}>
-            <div style={{
-              background: SHELL.card,
-              border: `1px solid ${SHELL.border}`,
-              borderRadius: 8,
-              padding: 32,
-            }}>
-              <div style={{ marginBottom: 24 }}>
-                <div style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: SHELL.text,
-                  marginBottom: 4,
-                }}>
-                  Sign In
-                </div>
-                <div style={{
-                  fontSize: 13,
-                  color: "#6b7280",
-                }}>
-                  Access your Sutra ERP account
-                </div>
-              </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 32,
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: 380 }}>
+            <div
+              style={{
+                background: TWO_COLOR.card,
+                border: "1px solid #000000",
+                borderRadius: 4,
+                padding: 32,
+              }}
+            >
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#000000", marginBottom: 4 }}>
+                Sign In
+              </h3>
+              <p style={{ fontSize: 12, color: "#000000", marginBottom: 24 }}>
+                Enter your credentials to access the system
+              </p>
 
               <form onSubmit={handleLoginSubmit}>
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{
-                    display: "block",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: "#374151",
-                    marginBottom: 6,
-                  }}>
-                    Username
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#000000",
+                      marginBottom: 4,
+                    }}
+                  >
+                    System Operator ID
                   </label>
                   <input
                     type="text"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(event) => setUsername(event.target.value)}
+                    required
+                    placeholder="e.g. admin"
                     style={{
                       width: "100%",
                       height: 36,
-                      padding: "0 12px",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 4,
+                      padding: "0 10px",
                       fontSize: 13,
-                      color: SHELL.text,
-                      backgroundColor: "#ffffff",
+                      border: "1px solid #000000",
+                      background: TWO_COLOR.card,
+                      color: "#000000",
+                      borderRadius: 3,
+                      outline: "none",
                     }}
-                    required
                   />
                 </div>
 
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{
-                    display: "block",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: "#374151",
-                    marginBottom: 6,
-                  }}>
-                    Password
+                <div style={{ marginBottom: 24 }}>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#000000",
+                      marginBottom: 4,
+                    }}
+                  >
+                    Access Code
                   </label>
                   <input
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                    placeholder="••••••••"
                     style={{
                       width: "100%",
                       height: 36,
-                      padding: "0 12px",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 4,
+                      padding: "0 10px",
                       fontSize: 13,
-                      color: SHELL.text,
-                      backgroundColor: "#ffffff",
+                      border: "1px solid #000000",
+                      background: TWO_COLOR.card,
+                      color: "#000000",
+                      borderRadius: 3,
+                      outline: "none",
                     }}
-                    required
                   />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isLoggingIn}
+                  disabled={loading}
                   style={{
                     width: "100%",
                     height: 38,
-                    backgroundColor: "#1557b0",
-                    color: "#ffffff",
-                    border: "none",
+                    background: TWO_COLOR.muted,
+                    border: "1px solid #000000",
                     borderRadius: 4,
                     fontSize: 13,
-                    fontWeight: 600,
-                    cursor: isLoggingIn ? "not-allowed" : "pointer",
+                    fontWeight: 700,
+                    color: "#000000",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.6 : 1,
                   }}
-                  className="hover:bg-[#0f4a96]"
                 >
-                  {isLoggingIn ? "Authorizing..." : "Authorize Entry"}
+                  {loading ? "Authorizing..." : "Authorize Entry"}
                 </button>
               </form>
+            </div>
 
-              <div style={{
-                marginTop: 20,
-                textAlign: "center",
-                fontSize: 11,
-                color: "#6b7280",
-              }}>
-                All activities are logged for compliance.
-              </div>
+            <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: "#000000" }}>
+              All activities are logged for compliance.
             </div>
           </div>
         </div>
@@ -300,239 +484,152 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (isMobile) {
-    const navigationItems = [
-      { icon: Home, label: "Home", path: "/" },
-      { icon: Users, label: "Parties", path: "/parties" },
-      { icon: Package, label: "Items", path: "/items" },
-      { icon: FileText, label: "Vouchers", path: "/vouchers" },
-      { icon: Calculator, label: "Ledger", path: "/ledger" },
-      { icon: BarChart3, label: "Reports", path: "/reports" },
-      { icon: Settings, label: "Settings", path: "/settings" },
-    ];
-
     return (
-      <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: SHELL.sideBg }}>
-        {/* Mobile Header */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          height: 48,
-          background: SHELL.sideBg,
-          borderBottom: `1px solid ${SHELL.sideBorder}`,
-        }}>
-          <div style={{
+      <div
+        className="app-layout-with-topbar"
+        style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}
+      >
+        <TopMenuBar />
+
+        <header
+          style={{
+            height: 48,
+            background: TWO_COLOR.muted,
+            borderBottom: "1px solid #000000",
             display: "flex",
             alignItems: "center",
-            gap: 8,
-          }}>
-            <div style={{
-              width: 32,
-              height: 32,
-              background: "#1557b0",
-              border: "none",
-              borderRadius: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 16,
-              fontWeight: 700,
-              color: "#fff",
-            }}>
-              S
-            </div>
-            <span style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "#cbd5e1",
-            }}>
-              {location.pathname.split('/').pop()?.replace(/-/g, ' ') || 'Home'}
-            </span>
-          </div>
-          
-          <button
-            onClick={() => setMobileDrawerOpen(true)}
-            style={{
-              background: "transparent",
-              border: "1px solid #374151",
-              borderRadius: 4,
-              padding: 8,
-              color: "#cbd5e1",
-            }}
-          >
-            <Menu size={16} />
-          </button>
-        </div>
-
-        {/* Main Content */}
-        <div style={{
-          flex: 1,
-          background: SHELL.bg,
-          overflow: "auto",
-        }}>
-          {isMinimized ? (
+            justifyContent: "space-between",
+            padding: "0 16px",
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div
-              onClick={() => setIsMinimized(false)}
               style={{
-                flex: 1,
-                background: SHELL.bg,
+                width: 28,
+                height: 28,
+                background: TWO_COLOR.hover,
+                border: "1px solid #000000",
+                borderRadius: 4,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#6b7280",
-                fontSize: 13,
-                cursor: "pointer",
-                userSelect: "none",
+                fontWeight: 700,
+                fontSize: 14,
+                color: "#000000",
               }}
             >
-              Click here or press — again to restore Sutra ERP
+              S
             </div>
-          ) : (
-            <>
-              <TopMenuBar />
-              <div className="app-layout-with-topbar">
-                {children}
-              </div>
-            </>
-          )}
-        </div>
+            <span style={{ fontWeight: 600, color: "#000000", fontSize: 14 }}>
+              {currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, " ")}
+            </span>
+          </div>
 
-        {/* Bottom Navigation */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-around",
-          padding: "8px 0",
-          background: SHELL.sideBg,
-          borderTop: `1px solid ${SHELL.sideBorder}`,
-        }}>
-          {navigationItems.map((item, index) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <button
-                key={index}
-                onClick={() => window.location.hash = item.path}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: "4px 8px",
-                  background: "transparent",
-                  border: "none",
-                  color: isActive ? "#cbd5e1" : "#6b7280",
-                  fontWeight: isActive ? 700 : "normal",
-                  fontSize: 10,
-                }}
-              >
-                <item.icon size={16} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            style={{
+              background: "transparent",
+              border: "1px solid #000000",
+              borderRadius: 4,
+              padding: 6,
+              cursor: "pointer",
+              color: "#000000",
+            }}
+          >
+            <Menu style={{ width: 18, height: 18, color: "#000000" }} />
+          </button>
+        </header>
 
-        {/* Mobile Drawer */}
-        {mobileDrawerOpen && (
-          <div style={{
+        <main
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: 16,
+            paddingBottom: 72,
+            background: TWO_COLOR.bg,
+          }}
+        >
+          {children}
+        </main>
+
+        <nav
+          style={{
             position: "fixed",
-            top: 0,
+            bottom: 0,
             left: 0,
             right: 0,
-            bottom: 0,
-            zIndex: 100,
-            background: "rgba(0,0,0,0.5)",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              bottom: 0,
-              width: 280,
-              background: SHELL.sideBg,
-              boxShadow: "2px 0 8px rgba(0,0,0,0.2)",
-            }}>
-              <div style={{
+            height: 56,
+            background: TWO_COLOR.muted,
+            borderTop: "1px solid #000000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            zIndex: 40,
+          }}
+        >
+          {[
+            { page: "dashboard", icon: LayoutDashboard, label: "Home" },
+            { page: "billing", icon: FileText, label: "Invoices" },
+            { page: "journal", icon: BookOpen, label: "Vouchers" },
+            { page: "profit-loss", icon: TrendingUp, label: "Reports" },
+            { page: "settings", icon: Settings, label: "More" },
+          ].map(({ page, icon: Icon, label }) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              style={{
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px",
-                background: SHELL.sideBg,
-                borderBottom: `1px solid ${SHELL.sideBorder}`,
-              }}>
-                <div style={{
+                gap: 2,
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: "#000000",
+                fontWeight: currentPage === page ? 700 : 400,
+              }}
+            >
+              <Icon style={{ width: 20, height: 20, color: "#000000" }} />
+              <span style={{ fontSize: 10, color: "#000000" }}>{label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {drawerOpen && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex" }}>
+            <div
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }}
+              onClick={() => setDrawerOpen(false)}
+            />
+            <div style={{ position: "relative", width: 272, height: "100%", overflowY: "auto" }}>
+              <div
+                style={{
+                  padding: "12px 16px",
+                  borderBottom: "1px solid #000000",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                }}>
-                  <div style={{
-                    width: 32,
-                    height: 32,
-                    background: "#1557b0",
-                    border: "none",
-                    borderRadius: 4,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "#fff",
-                  }}>
-                    S
-                  </div>
-                  <span style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#cbd5e1",
-                  }}>
-                    Sutra ERP
-                  </span>
-                </div>
-                
+                  justifyContent: "space-between",
+                  background: TWO_COLOR.muted,
+                  color: "#000000",
+                }}
+              >
+                <span style={{ fontWeight: 600, color: "#000000" }}>Menu</span>
                 <button
-                  onClick={() => setMobileDrawerOpen(false)}
+                  onClick={() => setDrawerOpen(false)}
                   style={{
                     background: "transparent",
-                    border: "1px solid #374151",
+                    border: "1px solid #000000",
                     borderRadius: 4,
-                    padding: 8,
-                    color: "#cbd5e1",
+                    padding: 4,
+                    cursor: "pointer",
+                    color: "#000000",
                   }}
                 >
-                  <X size={16} />
+                  <X style={{ width: 16, height: 16, color: "#000000" }} />
                 </button>
               </div>
-              
-              <nav style={{ padding: "16px" }}>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {navigationItems.map((item, index) => (
-                    <li key={index}>
-                      <button
-                        onClick={() => {
-                          window.location.hash = item.path;
-                          setMobileDrawerOpen(false);
-                        }}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
-                          width: "100%",
-                          padding: "10px 12px",
-                          background: location.pathname === item.path ? SHELL.hover : "transparent",
-                          border: "none",
-                          borderRadius: 4,
-                          color: location.pathname === item.path ? "#cbd5e1" : "#94a3b8",
-                          textAlign: "left",
-                          fontSize: 13,
-                        }}
-                      >
-                        <item.icon size={16} />
-                        <span>{item.label}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+              <Sidebar collapsed={false} setCollapsed={() => undefined} />
             </div>
           </div>
         )}
@@ -541,62 +638,63 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      height: "100vh",
-      background: SHELL.sideBg,
-    }}>
-      {isOpen && <ShortcutSidebar />}
-      <TitleBar />
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <Sidebar collapsed={isMinimized} setCollapsed={setIsMinimized} />
-        <div style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          background: SHELL.bg,
-        }}>
+    <div
+      className="app-layout-with-topbar"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        overflow: "hidden",
+        background: TWO_COLOR.muted,
+      }}
+    >
+      <TopMenuBar />
+
+      <TitleBar onMinimize={() => setIsMinimized((prev) => !prev)} />
+
+      {!isMinimized && (
+        <>
           <BusyMenuBar />
-          <TopMenuBar />
-          <div style={{
-            fontSize: 11,
-            fontWeight: 500,
-            color: "#6b7280",
-            textAlign: "center",
-            marginBottom: 6,
-          }}>
-            {location.pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'Home'}
-          </div>
-          <div style={{ flex: 1, overflow: "auto" }}>
-            {isMinimized ? (
+          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+            <main style={{ flex: 1, overflowY: "auto", padding: 12, background: TWO_COLOR.bg }}>
               <div
-                onClick={() => setIsMinimized(false)}
                 style={{
-                  flex: 1,
-                  background: SHELL.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#6b7280",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  userSelect: "none",
+                  fontSize: 11,
+                  color: "#000000",
+                  textAlign: "center",
+                  marginBottom: 6,
+                  fontWeight: 600,
                 }}
               >
-                Click here or press — again to restore Sutra ERP
+                {currentPage.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
               </div>
-            ) : (
-              <div className="app-layout-with-topbar">
-                {children}
-              </div>
-            )}
+              {children}
+            </main>
+            <ShortcutSidebar onShortcut={handleSidebarShortcut} />
           </div>
+          <CommandHintBar />
+          <StatusBar />
+        </>
+      )}
+
+      {isMinimized && (
+        <div
+          onClick={() => setIsMinimized(false)}
+          style={{
+            flex: 1,
+            background: TWO_COLOR.bg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#000000",
+            fontSize: 13,
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          Click here or press — again to restore Sutra ERP
         </div>
-      </div>
-      <StatusBar />
-      <CommandHintBar />
+      )}
     </div>
   );
 };

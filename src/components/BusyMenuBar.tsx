@@ -16,138 +16,113 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       { label: "Company Settings", page: "settings" },
       { label: "Fiscal Year", page: "fiscal-year" },
       { separator: true, label: "" },
-      { label: "Change Company", page: "switch-company" },
-      { label: "New Company", page: "new-company" },
-      { separator: true, label: "" },
-      { label: "Backup Data", page: "backup-data" },
-      { label: "Restore Data", page: "restore-data" },
-      { label: "Data Migration", page: "data-migration" },
-      { label: "Data Split", page: "data-split" },
-      { label: "Data Repair", page: "data-repair" },
-    ],
-  },
-  {
-    title: "Gateway",
-    items: [
-      { label: "Dashboard", page: "dashboard" },
-      { label: "Recent Transactions", page: "recent-transactions" },
-      { label: "Quick Reports", page: "quick-reports" },
-      { separator: true, label: "" },
-      { label: "Find", page: "find" },
-      { label: "Go To", page: "go-to" },
-      { label: "Switch To", page: "switch-to" },
+      { label: "Backup / Restore", page: "backup" },
+      { label: "Audit Log", page: "audit-log" },
     ],
   },
   {
     title: "Masters",
     items: [
-      { label: "Parties", page: "parties" },
-      { label: "Items", page: "items" },
-      { label: "Units", page: "units" },
-      { label: "Voucher Types", page: "voucher-types" },
-      { label: "Godowns", page: "godowns" },
-      { separator: true, label: "" },
-      { label: "Ledgers", page: "ledgers" },
-      { label: "Groups", page: "groups" },
-      { label: "Categories", page: "categories" },
-      { label: "Brands", page: "brands" },
-      { label: "Sub-ledgers", page: "sub-ledgers" },
+      { label: "Chart of Accounts", page: "accounts" },
+      { label: "Parties Directory", page: "parties" },
+      { label: "Stock Items", page: "items" },
+      { label: "Warehouses", page: "warehouses" },
+      { label: "Units of Measure", page: "units" },
+      { label: "Cost Centers", page: "cost-centers" },
+      { label: "Budget Master", page: "budget" },
     ],
   },
   {
     title: "Transactions",
     items: [
-      { label: "Vouchers", page: "vouchers" },
-      { label: "Sales", page: "sales" },
-      { label: "Purchase", page: "purchase" },
-      { label: "Journal", page: "journal" },
-      { label: "Receipt", page: "receipt" },
-      { label: "Payment", page: "payment" },
-      { label: "Contra", page: "contra" },
-      { label: "Debit Note", page: "debit-note" },
-      { label: "Credit Note", page: "credit-note" },
-      { label: "Memo", page: "memo" },
+      { label: "Sales Invoice", page: "billing" },
+      { label: "Purchase Invoice", page: "purchase-register" },
+      { label: "Sales Return", page: "credit-note" },
+      { label: "Purchase Return", page: "debit-note" },
+      { separator: true, label: "" },
+      { label: "Payment Voucher", page: "payment" },
+      { label: "Receipt Voucher", page: "receipt" },
+      { label: "Journal Entry", page: "journal" },
+      { label: "Contra Voucher", page: "contra" },
+      { separator: true, label: "" },
+      { label: "Sales Order", page: "sales-order" },
+      { label: "Purchase Order", page: "purchase-order" },
+      { label: "Delivery Challan", page: "delivery-challan" },
+      { label: "GRN", page: "grn" },
+      { separator: true, label: "" },
+      { label: "Stock Journal", page: "stock-journal" },
+      { separator: true, label: "" },
+      { label: "Production", page: "production" },
+      { label: "Unassemble", page: "unassemble" },
+      { label: "Material Issued", page: "material-issued" },
+      { label: "Material Received", page: "material-received" },
+      { label: "Physical Stock", page: "physical-stock" },
     ],
   },
   {
-    title: "Inventory",
+    title: "Display",
     items: [
-      { label: "Stock Journal", page: "stock-journal" },
-      { label: "Physical Stock", page: "physical-stock" },
-      { label: "Batch", page: "batch" },
-      { label: "Serial Numbers", page: "serial-numbers" },
+      { label: "Dashboard", page: "dashboard" },
+      { separator: true, label: "" },
+      { label: "Trial Balance", page: "trial-balance" },
+      { label: "Balance Sheet", page: "balance-sheet" },
+      { label: "Profit & Loss", page: "profit-loss" },
+      { label: "Cash Flow Statement", page: "cash-flow" },
+      { separator: true, label: "" },
+      { label: "Day Book", page: "day-book" },
+      { label: "Cash Book", page: "cash-book" },
+      { label: "Bank Book", page: "bank-book" },
+      { label: "General Ledger", page: "ledger" },
+      { label: "Party Ledger", page: "party-statement" },
       { separator: true, label: "" },
       { label: "Stock Summary", page: "stock-summary" },
-      { label: "Stock Ageing", page: "stock-ageing" },
-      { label: "Stock Valuation", page: "stock-valuation" },
-      { label: "ABC Analysis", page: "abc-analysis" },
-    ],
-  },
-  {
-    title: "Accounting",
-    items: [
-      { label: "Ledger", page: "ledger" },
-      { label: "Trial Balance", page: "trial-balance" },
-      { label: "Profit & Loss", page: "profit-loss" },
-      { label: "Balance Sheet", page: "balance-sheet" },
-      { label: "Cash Flow", page: "cash-flow" },
-      { label: "Fund Flow", page: "fund-flow" },
+      { label: "Inventory Report", page: "inventory-report" },
       { separator: true, label: "" },
-      { label: "Bank Reconciliation", page: "bank-reconciliation" },
-      { label: "Budget", page: "budget" },
+      { label: "Aging Report", page: "aging-report" },
+      { label: "Bill-wise Pending", page: "bill-pending" },
       { label: "Ratio Analysis", page: "ratio-analysis" },
     ],
   },
   {
-    title: "Statutory",
+    title: "VAT / Tax",
     items: [
-      { label: "GST Reports", page: "gst-reports" },
-      { label: "TDS Reports", page: "tds-reports" },
       { label: "VAT Reports", page: "vat-reports" },
-      { label: "Excise Reports", page: "excise-reports" },
-      { separator: true, label: "" },
-      { label: "Compliance Manager", page: "compliance-manager" },
-      { label: "Due Date Tracker", page: "due-date-tracker" },
-      { label: "Tax Calculator", page: "tax-calculator" },
+      { label: "TDS Report", page: "tds-report" },
+      { label: "TDS Payment", page: "tds-payment" },
     ],
   },
   {
     title: "Payroll",
     items: [
-      { label: "Employee", page: "employee" },
-      { label: "Attendance", page: "attendance" },
-      { label: "Salary Structure", page: "salary-structure" },
-      { label: "Pay Slip", page: "pay-slip" },
-      { separator: true, label: "" },
-      { label: "Payroll Reports", page: "payroll-reports" },
-      { label: "PF Reports", page: "pf-reports" },
-      { label: "ESI Reports", page: "esi-reports" },
+      { label: "Employee Master", page: "employees" },
+      { label: "Payroll Run", page: "payroll-run" },
     ],
   },
   {
-    title: "Utilities",
+    title: "House-Keeping",
     items: [
-      { label: "Import Data", page: "import-data" },
-      { label: "Export Data", page: "export-data" },
-      { label: "Data Audit", page: "data-audit" },
-      { label: "System Diagnostics", page: "system-diagnostics" },
-      { separator: true, label: "" },
-      { label: "User Management", page: "user-management" },
-      { label: "Role Management", page: "role-management" },
-      { label: "Activity Log", page: "activity-log" },
+      { label: "Users & Roles", page: "users" },
+      { label: "Banking Hub", page: "banking-hub" },
+      { label: "Bank Reconciliation", page: "bank-reconciliation" },
+      { label: "Auto Bank Reconciliation", page: "auto-bank-reconciliation" },
+      { label: "Cheque Printing", page: "cheque-printing" },
+      { label: "Cheque Register", page: "cheque-register" },
+      { label: "Deposit Slip", page: "deposit-slip" },
+      { label: "Payment Advice", page: "payment-advice" },
+      { label: "e-Payments", page: "e-payments" },
+      { label: "PDC Summary", page: "pdc-summary" },
+      { label: "Recurring Vouchers", page: "recurring-vouchers" },
+      { label: "Opening Balance", page: "opening-balance" },
     ],
   },
   {
     title: "Help",
     items: [
-      { label: "Contents", page: "contents" },
-      { label: "Tutorials", page: "tutorials" },
-      { label: "Support", page: "support" },
-      { label: "Feedback", page: "feedback" },
-      { separator: true, label: "" },
-      { label: "About Sutra ERP", page: "about" },
-      { label: "Check for Updates", page: "check-updates" },
-      { label: "System Information", page: "system-info" },
+      { label: "About Sutra ERP", page: "configuration" },
+      { label: "Keyboard Shortcuts", page: "shortcuts" },
+      { label: "Audit Log", page: "audit-log" },
+      { label: "IRD Nepal Portal", page: "ird-portal" },
+      { label: "e-TDS Portal", page: "etds-portal" },
     ],
   },
 ];
@@ -164,30 +139,31 @@ const BusyMenuBar: React.FC = () => {
         setOpenMenu(null);
       }
     };
-
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   const navigate = (page?: string) => {
-    if (page) {
-      setCurrentPage(page);
-      setOpenMenu(null);
-    }
+    if (page) setCurrentPage(page);
+    setOpenMenu(null);
   };
 
   return (
     <div
       ref={barRef}
       style={{
-        height: 26,
-        background: "#1e2433",
-        borderBottom: "1px solid #2d3748",
         display: "flex",
         alignItems: "center",
         flexShrink: 0,
+        height: 26,
+        background: "#D4EABD",
+        borderBottom: "1px solid #000000",
+        userSelect: "none",
+        zIndex: 100,
+        position: "relative",
       }}
     >
+      <span style={{ color: "#000000", marginLeft: 4, marginRight: 6, fontWeight: "bold" }}>{">>"}</span>
       {MENU_TREE.map((menu, idx) => (
         <div key={menu.title} style={{ position: "relative" }}>
           <div
@@ -195,17 +171,14 @@ const BusyMenuBar: React.FC = () => {
             style={{
               padding: "2px 10px",
               cursor: "pointer",
-              background: openMenu === idx ? "#273148" : "transparent",
-              color: openMenu === idx ? "#ffffff" : "#cbd5e1",
-              height: 22,
+              background: openMenu === idx ? "#C9DEB5" : "transparent",
+              color: "#000000",
+              height: 26,
               display: "flex",
               alignItems: "center",
-              fontWeight: openMenu === idx ? 600 : 500,
-              border: openMenu === idx ? "1px solid #374151" : "1px solid transparent",
-              fontSize: 12,
+              fontWeight: openMenu === idx ? "bold" : "normal",
+              border: openMenu === idx ? "1px solid #000000" : "1px solid transparent",
             }}
-            onMouseEnter={() => setHoveredItem(`${idx}-${-1}`)}
-            onMouseLeave={() => setHoveredItem(null)}
           >
             {menu.title}
           </div>
@@ -213,51 +186,40 @@ const BusyMenuBar: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                top: 24,
+                top: 26,
                 left: 0,
-                background: "#1e2433",
-                border: "1px solid #374151",
+                background: "#EBF5E2",
+                border: "1px solid #000000",
                 minWidth: 200,
-                zIndex: 100,
-                borderRadius: 4,
-                boxShadow: "0 8px 16px rgba(0,0,0,0.3)",
+                boxShadow: "2px 2px 8px rgba(0,0,0,0.3)",
+                zIndex: 200,
               }}
             >
-              {menu.items.map((item, iidx) => {
-                if (item.separator) {
-                  return (
-                    <div
-                      key={iidx}
-                      style={{
-                        background: "#2d3748",
-                        height: 1,
-                        margin: "2px 8px",
-                      }}
-                    />
-                  );
-                }
-                return (
+              {menu.items.map((item, iidx) =>
+                item.separator ? (
+                  <div key={iidx} style={{ height: 1, background: "#000000", margin: "2px 0" }} />
+                ) : (
                   <div
                     key={iidx}
                     onClick={() => navigate(item.page)}
-                    onMouseEnter={() => setHoveredItem(`${idx}-${iidx}`)}
-                    onMouseLeave={() => setHoveredItem(null)}
                     style={{
-                      padding: "4px 20px 4px 28px",
+                      padding: "3px 20px 3px 28px",
                       cursor: "pointer",
-                      color: hoveredItem === `${idx}-${iidx}` ? "#ffffff" : "#cbd5e1",
-                      background: hoveredItem === `${idx}-${iidx}` ? "#273148" : "transparent",
-                      fontSize: 12,
+                      color: "#000000",
                       display: "flex",
                       alignItems: "center",
-                      gap: 8,
+                      gap: 6,
+                      position: "relative",
+                      background: hoveredItem === `${idx}-${iidx}` ? "#D4EABD" : "transparent",
                     }}
+                    onMouseEnter={() => setHoveredItem(`${idx}-${iidx}`)}
+                    onMouseLeave={() => setHoveredItem(null)}
                   >
-                    <span style={{ color: "#94a3b8", position: "absolute", left: 8, fontSize: 10 }}>•</span>
+                    <span style={{ position: "absolute", left: 8, fontSize: 10 }}>•</span>
                     {item.label}
                   </div>
-                );
-              })}
+                )
+              )}
             </div>
           )}
         </div>
