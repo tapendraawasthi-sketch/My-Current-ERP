@@ -1133,6 +1133,12 @@ class SutraDB extends Dexie {
       priceFloorPolicies: "id, itemId, minSellingPrice, maxDiscountPct, isActive",
       chequeBounceLogs: "id, chequeId, bounceDate, bounceCharges, status",
     });
+
+    // Version 14 — Phase 4 masters (Sales Persons & Price Lists)
+    this.version(14).stores({
+      salesPersons: "id, code, name, isActive",
+      priceLists:   "id, code, name, isActive",
+    });
   }
 }
 

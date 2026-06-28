@@ -1025,12 +1025,12 @@ export const useStore = create<AppState>((set, get) => ({
     }
 
     await get().loadVoucherTypeMasters();
-    await get().loadSalesPersons();
-    await get().loadPriceLists();
+    try { await get().loadSalesPersons(); } catch (e) { console.warn("loadSalesPersons skipped:", e); }
+    try { await get().loadPriceLists();   } catch (e) { console.warn("loadPriceLists skipped:",   e); }
     } catch (err) {
       console.error("initializeApp failed:", err);
     } finally {
-      set({ isInitializing: false });
+      set({ isInitializing: false, isDbReady: true });
     }
   },
 
