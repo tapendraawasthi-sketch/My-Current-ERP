@@ -258,7 +258,7 @@ const SalesVoucher: React.FC = () => {
       <ActionToolbar className="mb-4 sticky top-0 z-10 bg-white shadow-sm">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold text-green-700">Sales Invoice</h1>
-          <Badge variant="outline" className="bg-blue-100 text-blue-700">
+          <Badge variant="primary" className="bg-blue-100 text-blue-700">
             {mode === "item-invoice" ? "Item Invoice" : "Accounting Invoice"}
           </Badge>
           <div className="flex gap-2">
@@ -274,11 +274,7 @@ const SalesVoucher: React.FC = () => {
               </Badge>
             )}
             
-            {isEdit && (
-              <Badge variant="default" className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                Edit Mode
-              </Badge>
-            )}
+            
           </div>
         </div>
         
@@ -438,7 +434,7 @@ const SalesVoucher: React.FC = () => {
         
         <div className="p-4">
           <Button
-            variant="outline"
+            variant="primary"
             onClick={addLine}
             className="w-full flex items-center justify-center gap-2"
           >
@@ -514,7 +510,7 @@ const SalesVoucher: React.FC = () => {
         </Button>
         
         <Button
-          variant="outline"
+          variant="primary"
           onClick={handleCancel}
           className="text-red-600 border-red-600 hover:bg-red-50"
         >
@@ -557,7 +553,7 @@ const SalesVoucher: React.FC = () => {
             </p>
             <div className="flex justify-end space-x-2">
               <Button
-                variant="outline"
+                variant="primary"
                 onClick={() => setShowConfirmCancel(false)}
               >
                 Cancel

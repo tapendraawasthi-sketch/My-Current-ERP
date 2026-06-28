@@ -1,7 +1,8 @@
 // src/pages/SmartBankReconciliation.tsx
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
-import { ActionToolbar, Button, Input, Select, Badge } from '../components/ui'; // Assuming these components existimport { Upload, Download, Eye, Trash2, Link, Unlink, Printer } from 'lucide-react';
+import { ActionToolbar, Button, Input, Select, Badge } from '../components/ui';
+import { Upload, Download, Eye, Trash2, Link, Unlink, Printer } from 'lucide-react';
 
 // Define interfaces
 interface BankStatement {
@@ -12,6 +13,7 @@ interface BankStatement {
   openingBalance: number;   // from bank statement
   closingBalance: number;   // from bank statement
   entries: BankStatementEntry[];
+  companyId?: string;
   importedAt: string;
   importedBy: string;
 }
@@ -231,7 +233,7 @@ const computeReconciliation = (
 };
 
 const SmartBankReconciliation: React.FC = () => {
-  const { accounts, vouchers, currentUser } = useStore();
+  const { companySettings, accounts, vouchers, currentUser } = useStore();
   const [activeTab, setActiveTab] = useState<"upload" | "match" | "reconcile" | "history">("upload");
   const [statements, setStatements] = useState<BankStatement[]>([]);
   const [selectedStatement, setSelectedStatement] = useState<BankStatement | null>(null);
@@ -247,11 +249,11 @@ const SmartBankReconciliation: React.FC = () => {
 
   // Load statements and accounts on mount
   useEffect(() => {
-    if (currentUser?.companyId) {
-      const loadedStatements = loadStatements(currentUser.companyId);
+    if (companySettings?.id) {
+      const loadedStatements = loadStatements(companySettings.id);
       setStatements(loadedStatements);
     }
-  }, [currentUser]);
+  }, [companySettings]);
 
   useEffect(() => {
     if (selectedStatement) {
@@ -323,12 +325,13 @@ const SmartBankReconciliation: React.FC = () => {
         closingBalance: 0, // Calculated later
         entries: parsedEntries,
         importedAt: new Date().toISOString(),
-        importedBy: currentUser?.id || 'system'
+        importedBy: currentUser?.id || 'system',
+        companyId: companySettings?.id || 'main'
       };
 
       setSelectedStatement(newStatement);
       setStatements(prev => [...prev, newStatement]);
-      saveStatement(newStatement, currentUser?.companyId || '');
+      saveStatement(newStatement, companySettings?.id || 'main');
       setActiveTab('match'); // Switch to match tab after import
     } catch (error) {
       setCsvError("Failed to parse CSV: " + (error as Error).message);
@@ -361,7 +364,7 @@ const SmartBankReconciliation: React.FC = () => {
 
     setSelectedStatement(updatedStatement);
     setStatements(prev => prev.map(s => s.id === updatedStatement.id ? updatedStatement : s));
-    saveStatement(updatedStatement, currentUser?.companyId || '');
+    saveStatement(updatedStatement, companySettings?.id || 'main');
 
     setMatchResults({
       matched: result.matched,
@@ -386,7 +389,7 @@ const SmartBankReconciliation: React.FC = () => {
 
     setSelectedStatement(updatedStatement);
     setStatements(prev => prev.map(s => s.id === updatedStatement.id ? updatedStatement : s));
-    saveStatement(updatedStatement, currentUser?.companyId || '');
+    saveStatement(updatedStatement, companySettings?.id || 'main');
 
     setManualMatches(prev => ({ ...prev, [statementId]: ledgerId }));
   };
@@ -408,7 +411,7 @@ const SmartBankReconciliation: React.FC = () => {
 
     setSelectedStatement(updatedStatement);
     setStatements(prev => prev.map(s => s.id === updatedStatement.id ? updatedStatement : s));
-    saveStatement(updatedStatement, currentUser?.companyId || '');
+    saveStatement(updatedStatement, companySettings?.id || 'main');
   };
 
   // Print Reconciliation
@@ -449,10 +452,10 @@ const SmartBankReconciliation: React.FC = () => {
               value={selectedStatement?.period || ''}
               onChange={(e) => {
                 if (selectedStatement) {
-                  const updated = { ...selectedStatement, period: e.target.value };
+                  const updated = { ...selectedStatement, period: e as unknown as string };
                   setSelectedStatement(updated);
                   setStatements(prev => prev.map(s => s.id === updated.id ? updated : s));
-                  saveStatement(updated, currentUser?.companyId || '');
+                  saveStatement(updated, companySettings?.id || 'main');
                 }
               }}
               disabled={!selectedStatement}
@@ -484,6 +487,7 @@ const SmartBankReconciliation: React.FC = () => {
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="text-lg font-semibold mb-4">Import Bank Statement</h2>
+              
               <textarea
                 value={csvText}
                 onChange={(e) => setCsvText(e.target.value)}
@@ -539,7 +543,7 @@ const SmartBankReconciliation: React.FC = () => {
                     <Button
                       onClick={() => {
                         if (selectedStatement) {
-                          saveStatement(selectedStatement, currentUser?.companyId || '');
+                          saveStatement(selectedStatement, companySettings?.id || 'main');
                           alert('Statement saved successfully!');
                         }
                       }}
@@ -615,8 +619,6 @@ const SmartBankReconciliation: React.FC = () => {
                                       size="sm"
                                       variant="outline"
                                       onClick={() => {
-                                        // Logic for manual matching would go here
-                                        // This requires a modal or dropdown which is simplified for now
                                         console.log('Manual match for', entry.id);
                                       }}
                                     >
@@ -671,7 +673,7 @@ const SmartBankReconciliation: React.FC = () => {
                                 {type === 'debit' ? '+' : '-'} {formatCurrency(Math.abs(entry.amount))}
                               </td>
                               <td className="px-4 py-2 text-center">
-                                <Badge variant={type === 'debit' ? 'info' : 'destructive'}>
+                                <Badge variant={type === 'debit' ? 'info' : 'danger'}>
                                   {type.toUpperCase()}
                                 </Badge>
                               </td>
@@ -715,7 +717,7 @@ const SmartBankReconciliation: React.FC = () => {
                   <Input
                     type="number"
                     value={openingBalance}
-                    onChange={(e) => setOpeningBalance(parseFloat(e.target.value) || 0)}
+                    onChange={(e) => setOpeningBalance(parseFloat(e as unknown as string) || 0)}
                     className="mt-1"
                     disabled
                   />
@@ -725,7 +727,7 @@ const SmartBankReconciliation: React.FC = () => {
                   <Input
                     type="number"
                     value={closingBalance}
-                    onChange={(e) => setClosingBalance(parseFloat(e.target.value) || 0)}
+                    onChange={(e) => setClosingBalance(parseFloat(e as unknown as string) || 0)}
                     className="mt-1"
                     disabled
                   />
@@ -832,7 +834,7 @@ const SmartBankReconciliation: React.FC = () => {
                             <td className="px-4 py-2 text-right text-[12px] text-gray-700 font-mono">{formatCurrency(stmt.closingBalance)}</td>
                             <td className="px-4 py-2 text-center text-[12px] text-gray-700">{stmt.entries.length}</td>
                             <td className="px-4 py-2 text-center">
-                              <Badge variant={isBalanced ? "success" : "destructive"}>
+                              <Badge variant={isBalanced ? "success" : "danger"}>
                                 {isBalanced ? 'Reconciled' : 'Pending'}
                               </Badge>
                             </td>
@@ -860,7 +862,7 @@ const SmartBankReconciliation: React.FC = () => {
                                       }
                                       if (typeof window !== 'undefined') {
                                         localStorage.setItem(
-                                          `sutra_bank_statements_${currentUser?.companyId || ''}`,
+                                          `sutra_bank_statements_${companySettings?.id || 'main'}`,
                                           JSON.stringify(updated)
                                         );
                                       }

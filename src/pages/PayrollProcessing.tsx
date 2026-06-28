@@ -467,7 +467,7 @@ export default function PayrollProcessing() {
   };
 
   const totalBasic = payrollResults.reduce((s, r) => s + r.basicSalary, 0);
-  const totalAllowances = payrollResults.reduce(
+  const totalAllowancesAmount = payrollResults.reduce(
     (s, r) =>
       s +
       r.gradeAllowance +
@@ -893,7 +893,7 @@ export default function PayrollProcessing() {
             {[
               ["Total Gross", payrollSummary.totalGrossEarnings],
               ["Total Basic", totalBasic],
-              ["Total Allowances", totalAllowances],
+              ["Total Allowances", totalAllowancesAmount],
               ["Total OT", totalOT],
             ].map(([label, value]) => (
               <div key={String(label)} className="flex justify-between py-2 text-[12px] border-b border-gray-100">

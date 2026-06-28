@@ -8,7 +8,7 @@ import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
-import { calculateNepalTds, getApplicableNepalTdsRates } from "../lib/tdsNepal";
+import { calculateNepalTds, getApplicableNepalTdsRates, type NepalTdsCalculationResult } from "../lib/tdsNepal";
 import toast from "react-hot-toast";
 import { useScreenF12 } from "../hooks/useF12Config";
 
@@ -369,7 +369,7 @@ const PurchaseVoucher: React.FC = () => {
           <Input
             placeholder="Ref No."
             value={referenceNo}
-            onChange={(e) => setReferenceNo(e.target.value)}
+            onChange={(val) => setReferenceNo(val)}
             className="w-32"
           />
         </div>

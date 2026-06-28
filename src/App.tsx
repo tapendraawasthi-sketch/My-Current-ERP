@@ -140,12 +140,20 @@ const CreditLimitManager = lazy(() => import('./pages/CreditLimitManager'));
 const Quotation = lazy(() => import('./pages/Quotation'));
 const PartyReconciliation = lazy(() => import('./pages/PartyReconciliation'));
 const BatchManagement = lazy(() => import('./pages/BatchManagement'));
+const StockAgeingReport = lazy(() => import('./pages/StockAgeingReport'));
+const ItemProfitabilityReport = lazy(() => import('./pages/ItemProfitabilityReport'));
+const BranchMaster = lazy(() => import('./pages/BranchMaster'));
+const BranchReports = lazy(() => import('./pages/BranchReports'));
+const SalespersonMaster = lazy(() => import('./pages/SalespersonMaster'));
+const FollowUpTracker = lazy(() => import('./pages/FollowUpTracker'));
 const SerialNumberTracking = lazy(() => import('./pages/SerialNumberTracking'));
 const PayrollProcessing = lazy(() => import('./pages/PayrollProcessing'));
 const FixedAssetRegister = lazy(() => import('./pages/FixedAssetRegister'));
 const SmartBankReconciliation = lazy(() => import('./pages/SmartBankReconciliation'));
 const POSBilling = lazy(() => import('./pages/POSBilling'));
 const SalesPurchaseAnalysis = lazy(() => import('./pages/SalesPurchaseAnalysis'));
+const MultiCurrencyHub = lazy(() => import('./pages/MultiCurrencyHub'));
+const Form25B = lazy(() => import('./pages/Form25B'));
 const PriceHistory = lazy(() => import('./pages/PriceHistory'));
 const AdvancedTaxCompliance = lazy(() => import('./pages/AdvancedTaxCompliance'));
 const PriceListMaster = lazy(() => import('./pages/PriceListMaster'));
@@ -154,6 +162,9 @@ const CommunicationHub = lazy(() => import('./pages/CommunicationHub'));
 const YearEndProcess = lazy(() => import('./pages/YearEndProcess'));
 const POSMode = lazy(() => import('./pages/POSMode'));
 const BankStatementImport = lazy(() => import('./pages/BankStatementImport'));
+const JobWorkRegister = lazy(() => import('./pages/JobWorkRegister'));
+const PricePolicyManager = lazy(() => import('./pages/PricePolicyManager'));
+const ReportScheduler = lazy(() => import('./pages/ReportScheduler'));
 
 import Layout from "./components/Layout";
 import { F12Provider } from './hooks/useF12Config';
@@ -302,6 +313,8 @@ const App = () => {
 
       // Masters
       case 'master-control-centre': return <MasterControlCentre />;
+      case 'branch-master': return <BranchMaster />;
+      case 'salesperson-master': return <SalespersonMaster />;
       case 'accounts': return <ChartOfAccounts />;
       case 'parties': return <Parties />;
       case 'items': return <StockBook />;
@@ -347,6 +360,9 @@ const App = () => {
       case 'budget-vs-actual': return <BudgetVsActual />;
       case 'vouchers-log': return <VouchersLog />;
       case 'inventory-report': return <InventoryReport />;
+      case 'stock-ageing-report': return <StockAgeingReport />;
+      case 'item-profitability': return <ItemProfitabilityReport />;
+      case 'branch-reports': return <BranchReports />;
       case 'stock-categories': return <StockCategoryMaster />;
       case 'overdue-bills-interest': return <OverdueBillsInterest />;
       case 'recurring-vouchers': return <RecurringVouchers />;
@@ -358,6 +374,7 @@ const App = () => {
       case 'deposit-slip': return <DepositSlip />;
       case 'e-payments': return <EPayments />;
       case 'pdc-summary': return <PDCSummary />;
+      case 'follow-up-tracker': return <FollowUpTracker />;
       case 'auto-bank-reconciliation': return <AutoBankReconciliation />;
 
       // Payroll
@@ -397,6 +414,19 @@ const App = () => {
       case "recurring-vouchers": return <RecurringVouchers />;
       case "pos-mode": return <POSMode />;
       case "bank-statement-import": return <BankStatementImport />;
+      case "job-work":
+      case "job-work-register": return <JobWorkRegister />;
+      case "price-policy":
+      case "price-floor":
+      case "price-policy-manager": return <PricePolicyManager />;
+      case "report-scheduler":
+      case "auto-reports": return <ReportScheduler />;
+      case "form-25b": return <Form25B />;
+      case "stock-ageing": return <StockAgeingReport />;
+      case "branch-master": return <BranchMaster />;
+      case "salesperson-master":
+      case "salesperson-report": return <SalespersonMaster />;
+      case "collection-followup": return <FollowUpTracker />;
 
       default:
         return (

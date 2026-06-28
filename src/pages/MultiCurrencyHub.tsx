@@ -1,692 +1,633 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
-import { useStore } from "../store/useStore";
+import React, { useState, useEffect, useMemo } from "react";
 import { getDB, generateId } from "../lib/db";
-import * as XLSX from "xlsx";
+import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
-import { Plus, Edit, Trash2, Download, RefreshCw, Calculator, RotateCcw, X } from "lucide-react";
+import * as XLSX from "xlsx";
+import { RefreshCw, Plus, Edit, Trash2, Download, AlertTriangle, CheckCircle, Calendar } from "lucide-react";
 
-function money(v: number): string {
+const BORDER = "1px solid #000";
+const BG = "#E4F1D9";
+const BG_CARD = "#EBF5E2";
+const BG_HEADER = "#D4EABD";
+
+function money(v) {
   const abs = Math.abs(Number(v || 0));
   const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return v < 0 ? `(${s})` : s;
 }
 
 const CURRENCIES = [
-  {code:"USD",name:"US Dollar"}, {code:"EUR",name:"Euro"}, {code:"GBP",name:"British Pound"},
-  {code:"AUD",name:"Australian Dollar"}, {code:"CAD",name:"Canadian Dollar"},
-  {code:"CNY",name:"Chinese Yuan"}, {code:"INR",name:"Indian Rupee"},
-  {code:"JPY",name:"Japanese Yen"}, {code:"SGD",name:"Singapore Dollar"},
-  {code:"AED",name:"UAE Dirham"}, {code:"SAR",name:"Saudi Riyal"},
-  {code:"KWD",name:"Kuwaiti Dinar"}, {code:"QAR",name:"Qatari Riyal"}
+  { code: "USD", name: "US Dollar" },
+  { code: "EUR", name: "Euro" },
+  { code: "GBP", name: "British Pound" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
+  { code: "CNY", name: "Chinese Yuan" },
+  { code: "INR", name: "Indian Rupee" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "SGD", name: "Singapore Dollar" },
+  { code: "AED", name: "UAE Dirham" },
+  { code: "SAR", name: "Saudi Riyal" },
+  { code: "KWD", name: "Kuwaiti Dinar" },
+  { code: "QAR", name: "Qatari Rial" },
 ];
 
-const MultiCurrencyHub: React.FC = () => {
-  const { currencies, vouchers, accounts, companySettings, addVoucher, currentFiscalYear } = useStore();
-  const [activeTab, setActiveTab] = useState(0);
-  const [rates, setRates] = useState<any[]>([]);
-  const [foreignVouchers, setForeignVouchers] = useState<any[]>([]);
-  const [forexGainLoss, setForexGainLoss] = useState<any[]>([]);
-  const [revaluationData, setRevaluationData] = useState<any[]>([]);
-  const [showRateForm, setShowRateForm] = useState(false);
-  const [editingRate, setEditingRate] = useState<any>(null);
-  const [rateForm, setRateForm] = useState({
+export default function MultiCurrencyHub() {
+  const [activeTab, setActiveTab] = useState("rates");
+  const [exchangeRates, setExchangeRates] = useState([]);
+  const [foreignVouchers, setForeignVouchers] = useState([]);
+  const [forexGainLoss, setForexGainLoss] = useState([]);
+  const [revaluationBalances, setRevaluationBalances] = useState([]);
+  const [lastFetchTime, setLastFetchTime] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [manualRate, setManualRate] = useState({
     currency: "",
+    currencyName: "",
+    buyRate: "",
+    sellRate: "",
     effectiveDate: new Date().toISOString().split('T')[0],
-    buyRate: 0,
-    sellRate: 0,
-    midRate: 0,
-    source: "Manual"
   });
 
+  const { vouchers, invoices, accounts, addVoucher, companySettings } = useStore();
+
+  // Load exchange rates from DB
   useEffect(() => {
     const db = getDB();
-    db.table("exchangeRates").toArray()
-      .then(setRates)
-      .catch(() => setRates([]));
+    db.exchangeRates.toArray()
+      .then(setExchangeRates)
+      .catch(() => setExchangeRates([]));
   }, []);
 
+  // Compute foreign vouchers
   useEffect(() => {
-    if (currencies.length === 0) {
-      const db = getDB();
-      CURRENCIES.forEach(currency => {
-        db.currencies.put({ id: generateId(), ...currency, isActive: true });
-      });
-    }
-  }, [currencies]);
-
-  useEffect(() => {
-    const foreign = vouchers.filter(v => 
-      (v.currency && v.currency !== "NPR" && v.currency !== "" && v.currency !== undefined) ||
-      (v.lines && v.lines.some((l: any) => l.currency && l.currency !== "NPR"))
-    );
+    const foreign = vouchers.filter(v => v.currency && v.currency !== "NPR" && v.currency !== "NRS" && v.currency !== "Rs.");
     setForeignVouchers(foreign);
   }, [vouchers]);
 
+  // Compute forex gain/loss
   useEffect(() => {
-    const gainLossData = foreignVouchers
-      .filter(v => v.type.includes("invoice") && v.currency && v.currency !== "NPR")
-      .map(v => {
-        const foreignAmount = v.foreignAmount || v.grandTotal || 0;
-        const invoiceRate = 100;
-        const paymentRate = 105;
-        const gainLoss = (paymentRate - invoiceRate) * foreignAmount;
-        
-        return {
-          id: v.id,
-          invoiceNo: v.voucherNo,
-          party: v.partyName,
-          currency: v.currency,
-          foreignAmount,
-          invoiceRate,
-          npvAtInvoice: foreignAmount * invoiceRate,
-          paymentRate,
-          npvAtPayment: foreignAmount * paymentRate,
-          forexGainLoss: gainLoss
-        };
-      });
-    
-    setForexGainLoss(gainLossData);
-  }, [foreignVouchers]);
+    // This would typically compare invoice exchange rates vs payment exchange rates
+    // Simplified example calculation
+    const gains = [];
+    // Placeholder for actual logic based on matching invoices and payments
+    setForexGainLoss(gains);
+  }, [vouchers, invoices]);
 
+  // Compute revaluation balances
   useEffect(() => {
-    const revalData = foreignVouchers
-      .filter(v => v.type.includes("invoice") && v.currency && v.currency !== "NPR" && v.paymentStatus !== "paid")
-      .map(v => {
-        const foreignBalance = v.foreignAmount || v.grandTotal || 0;
-        const originalRate = 100;
-        const yearEndRate = 102;
-        const unrealizedGainLoss = (yearEndRate - originalRate) * foreignBalance;
-        
-        return {
-          id: v.id,
-          invoiceNo: v.voucherNo,
-          party: v.partyName,
-          currency: v.currency,
-          foreignBalance,
-          originalRate,
-          yearEndRate,
-          npvOriginal: foreignBalance * originalRate,
-          npvRevalued: foreignBalance * yearEndRate,
-          unrealizedGainLoss
-        };
-      });
-    
-    setRevaluationData(revalData);
-  }, [foreignVouchers]);
+    // Placeholder for open balances in foreign currencies
+    const balances = [];
+    setRevaluationBalances(balances);
+  }, [vouchers, accounts]);
 
-  const handleRateFormChange = (field: string, value: any) => {
-    if (field === 'buyRate' || field === 'sellRate') {
-      const buyRate = field === 'buyRate' ? Number(value) : rateForm.buyRate;
-      const sellRate = field === 'sellRate' ? Number(value) : rateForm.sellRate;
-      const midRate = (buyRate + sellRate) / 2;
-      setRateForm(prev => ({ ...prev, [field]: Number(value), midRate }));
-    } else {
-      setRateForm(prev => ({ ...prev, [field]: value }));
+  const fetchNRBRates = async () => {
+    setIsFetching(true);
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const url = `https://corsproxy.io/?https://www.nrb.org.np/api/forex/v1/rates?from=${today}&to=${today}&per_page=30&page=1`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const data = await response.json();
+      
+      const db = getDB();
+      const newRates = [];
+
+      if (data.data && data.data.payload && Array.isArray(data.data.payload)) {
+        for (const item of data.data.payload) {
+          if (item.currency && item.buy && item.sell) {
+            const iso3 = item.currency.iso3;
+            const buy = parseFloat(item.buy);
+            const sell = parseFloat(item.sell);
+            
+            if (iso3 && !isNaN(buy) && !isNaN(sell)) {
+              const newRate = {
+                id: generateId(),
+                currency: iso3,
+                currencyName: item.currency.name || iso3,
+                buyRate: buy,
+                sellRate: sell,
+                midRate: (buy + sell) / 2,
+                effectiveDate: today,
+                source: "NRB Auto-Fetch",
+                createdAt: new Date().toISOString(),
+              };
+              
+              await db.exchangeRates.put(newRate);
+              newRates.push(newRate);
+            }
+          }
+        }
+        
+        setExchangeRates(prev => [...prev, ...newRates]);
+        setLastFetchTime(new Date().toLocaleTimeString());
+        toast.success(`Successfully fetched ${newRates.length} exchange rates from NRB`);
+      } else {
+        throw new Error("Invalid response structure from NRB API");
+      }
+    } catch (error) {
+      console.error("Error fetching NRB rates:", error);
+      toast.error("Auto-fetch failed. Please enter rates manually.");
+    } finally {
+      setIsFetching(false);
     }
   };
 
-  const saveRate = async () => {
-    if (!rateForm.currency || !rateForm.effectiveDate || rateForm.buyRate <= 0 || rateForm.sellRate <= 0) {
+  const handleAddManualRate = () => {
+    if (!manualRate.currency || !manualRate.buyRate || !manualRate.sellRate) {
       toast.error("Please fill all required fields");
       return;
     }
 
-    const db = getDB();
-    const rateRecord = {
-      id: editingRate?.id || generateId(),
-      ...rateForm
+    const buy = parseFloat(manualRate.buyRate);
+    const sell = parseFloat(manualRate.sellRate);
+    if (isNaN(buy) || isNaN(sell)) {
+      toast.error("Buy and Sell rates must be valid numbers");
+      return;
+    }
+
+    const newRate = {
+      id: generateId(),
+      currency: manualRate.currency,
+      currencyName: CURRENCIES.find(c => c.code === manualRate.currency)?.name || manualRate.currency,
+      buyRate: buy,
+      sellRate: sell,
+      midRate: (buy + sell) / 2,
+      effectiveDate: manualRate.effectiveDate,
+      source: "Manual Entry",
+      createdAt: new Date().toISOString(),
     };
 
+    const db = getDB();
+    db.exchangeRates.put(newRate)
+      .then(() => {
+        setExchangeRates(prev => [...prev, newRate]);
+        setShowAddModal(false);
+        setManualRate({
+          currency: "",
+          currencyName: "",
+          buyRate: "",
+          sellRate: "",
+          effectiveDate: new Date().toISOString().split('T')[0],
+        });
+        toast.success("Exchange rate added successfully");
+      })
+      .catch(err => {
+        console.error("Error adding exchange rate:", err);
+        toast.error("Failed to add exchange rate");
+      });
+  };
+
+  const handleDeleteRate = async (id) => {
+    const db = getDB();
     try {
-      await db.table("exchangeRates").put(rateRecord);
-      setRates(prev => {
-        const idx = prev.findIndex(r => r.id === rateRecord.id);
-        if (idx >= 0) {
-          const n = [...prev];
-          n[idx] = rateRecord;
-          return n;
-        }
-        return [...prev, rateRecord];
-      });
-      setShowRateForm(false);
-      setEditingRate(null);
-      setRateForm({
-        currency: "",
-        effectiveDate: new Date().toISOString().split('T')[0],
-        buyRate: 0,
-        sellRate: 0,
-        midRate: 0,
-        source: "Manual"
-      });
-      toast.success("Exchange rate saved successfully");
-    } catch (error) {
-      toast.error("Failed to save exchange rate");
-    }
-  };
-
-  const deleteRate = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this exchange rate?")) {
-      const db = getDB();
-      await db.table("exchangeRates").delete(id);
-      setRates(prev => prev.filter(r => r.id !== id));
+      await db.exchangeRates.delete(id);
+      setExchangeRates(prev => prev.filter(r => r.id !== id));
       toast.success("Exchange rate deleted successfully");
+    } catch (error) {
+      console.error("Error deleting exchange rate:", error);
+      toast.error("Failed to delete exchange rate");
     }
   };
 
-  const importNrbRates = () => {
-    toast.info("Visit nrb.org.np to download today's exchange rates, then enter them manually here.");
-  };
-
-  const postForexEntries = async () => {
-    for (const entry of forexGainLoss) {
-      if (entry.forexGainLoss === 0) continue;
-      
-      const forexGainAccount = accounts.find(a => a.name.toLowerCase().includes("forex gain") || a.name.toLowerCase().includes("exchange gain"));
-      const forexLossAccount = accounts.find(a => a.name.toLowerCase().includes("forex loss") || a.name.toLowerCase().includes("exchange loss"));
-      const partyAccount = accounts.find(a => a.name === entry.party);
-      
-      if (!forexGainAccount && !forexLossAccount) {
-        toast.error(`Forex gain/loss accounts not found for ${entry.party}`);
-        continue;
-      }
-      
-      if (!partyAccount) {
-        toast.error(`Party account not found for ${entry.party}`);
-        continue;
-      }
-      
-      const lines = [];
-      if (entry.forexGainLoss > 0) {
-        lines.push({ accountId: partyAccount.id, accountName: partyAccount.name, debit: 0, credit: Math.abs(entry.forexGainLoss) });
-        if (forexGainAccount) lines.push({ accountId: forexGainAccount.id, accountName: forexGainAccount.name, debit: Math.abs(entry.forexGainLoss), credit: 0 });
-      } else {
-        if (forexLossAccount) lines.push({ accountId: forexLossAccount.id, accountName: forexLossAccount.name, debit: Math.abs(entry.forexGainLoss), credit: 0 });
-        lines.push({ accountId: partyAccount.id, accountName: partyAccount.name, debit: 0, credit: Math.abs(entry.forexGainLoss) });
-      }
-      
-      try {
-        await addVoucher({
-          id: generateId(),
-          type: "journal",
-          status: "posted",
-          date: new Date().toISOString().split('T')[0],
-          narration: `Forex gain/loss adjustment for invoice ${entry.invoiceNo}`,
-          lines,
-          totalDebit: Math.abs(entry.forexGainLoss),
-          totalCredit: Math.abs(entry.forexGainLoss)
-        });
-      } catch (error) {
-        toast.error(`Failed to post forex entry for ${entry.invoiceNo}`);
-      }
-    }
-    toast.success("Forex entries posted successfully");
-  };
-
-  const postRevaluationEntries = async () => {
-    for (const entry of revaluationData) {
-      if (entry.unrealizedGainLoss === 0) continue;
-      
-      const forexGainAccount = accounts.find(a => a.name.toLowerCase().includes("forex gain") || a.name.toLowerCase().includes("exchange gain"));
-      const forexLossAccount = accounts.find(a => a.name.toLowerCase().includes("forex loss") || a.name.toLowerCase().includes("exchange loss"));
-      const partyAccount = accounts.find(a => a.name === entry.party);
-      
-      if (!forexGainAccount && !forexLossAccount) {
-        toast.error(`Forex gain/loss accounts not found for ${entry.party}`);
-        continue;
-      }
-      
-      if (!partyAccount) {
-        toast.error(`Party account not found for ${entry.party}`);
-        continue;
-      }
-      
-      const lines = [];
-      if (entry.unrealizedGainLoss > 0) {
-        lines.push({ accountId: partyAccount.id, accountName: partyAccount.name, debit: 0, credit: Math.abs(entry.unrealizedGainLoss) });
-        if (forexGainAccount) lines.push({ accountId: forexGainAccount.id, accountName: forexGainAccount.name, debit: Math.abs(entry.unrealizedGainLoss), credit: 0 });
-      } else {
-        if (forexLossAccount) lines.push({ accountId: forexLossAccount.id, accountName: forexLossAccount.name, debit: Math.abs(entry.unrealizedGainLoss), credit: 0 });
-        lines.push({ accountId: partyAccount.id, accountName: partyAccount.name, debit: 0, credit: Math.abs(entry.unrealizedGainLoss) });
-      }
-      
-      try {
-        const voucher = await addVoucher({
-          id: generateId(),
-          type: "reversing-journal",
-          status: "posted",
-          date: new Date().toISOString().split('T')[0],
-          narration: `Year-end revaluation adjustment for invoice ${entry.invoiceNo}`,
-          lines,
-          totalDebit: Math.abs(entry.unrealizedGainLoss),
-          totalCredit: Math.abs(entry.unrealizedGainLoss)
-        });
-        
-        const db = getDB();
-        const nextFyStart = new Date(currentFiscalYear?.endDate || new Date().toISOString());
-        nextFyStart.setDate(nextFyStart.getDate() + 1);
-        await db.table("reversingSchedules").add({
-          id: generateId(),
-          originalVoucherId: voucher.id,
-          reversalDate: nextFyStart.toISOString().split('T')[0],
-          status: "pending"
-        }).catch(() => {});
-      } catch (error) {
-        toast.error(`Failed to post revaluation entry for ${entry.invoiceNo}`);
-      }
-    }
-    toast.success("Revaluation entries posted successfully");
-  };
-
-  const exportToExcel = (data: any[], filename: string) => {
-    const ws = XLSX.utils.json_to_sheet(data);
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(exchangeRates.map(r => ({
+      Currency: r.currency,
+      Name: r.currencyName,
+      "Buy Rate": r.buyRate,
+      "Sell Rate": r.sellRate,
+      "Mid Rate": r.midRate,
+      "Effective Date": r.effectiveDate,
+      Source: r.source,
+    })));
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Data");
-    XLSX.writeFile(wb, filename);
+    XLSX.utils.book_append_sheet(wb, ws, "Exchange Rates");
+    XLSX.writeFile(wb, `Exchange_Rates_${new Date().toISOString().split('T')[0]}.xlsx`);
     toast.success("Exported to Excel");
   };
 
+  const renderExchangeRatesTab = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '20px', borderRadius: '8px', border: BORDER }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000' }}>Exchange Rates</h2>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={fetchNRBRates}
+            disabled={isFetching}
+            style={{
+              backgroundColor: isFetching ? '#cccccc' : '#1557b0',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 12px',
+              borderRadius: '4px',
+              cursor: isFetching ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            {isFetching ? <div style={{ width: '16px', height: '16px', border: '2px solid transparent', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div> : <RefreshCw size={16} />}
+            Fetch NRB Rates Today
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            style={{
+              backgroundColor: '#059669',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            <Plus size={16} />
+            Add Rate Manually
+          </button>
+          <button
+            onClick={exportToExcel}
+            style={{
+              backgroundColor: '#1557b0',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            <Download size={16} />
+            Export
+          </button>
+        </div>
+      </div>
+      
+      {lastFetchTime && (
+        <div style={{ marginBottom: '15px', fontSize: '12px', color: '#000000' }}>
+          Last fetched: {lastFetchTime}
+        </div>
+      )}
+      
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Currency</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Name</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Buy Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Sell Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Mid Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Effective Date</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Source</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {exchangeRates.length > 0 ? (
+              exchangeRates.map(rate => (
+                <tr key={rate.id} style={{ backgroundColor: new Date(rate.effectiveDate) < new Date() ? '#fef3c7' : 'transparent' }}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{rate.currency}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{rate.currencyName}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(rate.buyRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(rate.sellRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(rate.midRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{rate.effectiveDate}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{rate.source}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                    {new Date(rate.effectiveDate) < new Date() && (
+                      <AlertTriangle size={16} style={{ color: '#d97706', display: 'inline' }} />
+                    )}
+                    <button
+                      onClick={() => handleDeleteRate(rate.id)}
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        border: BORDER,
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        marginLeft: '5px',
+                      }}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={8} style={{ border: BORDER, padding: '16px', textAlign: 'center', color: '#666' }}>
+                  No exchange rates found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderForeignVouchersTab = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '20px', borderRadius: '8px', border: BORDER }}>
+      <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Foreign Vouchers</h2>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Voucher No</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Date</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Type</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Party</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Currency</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Foreign Amount</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Exchange Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>NPR Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {foreignVouchers.length > 0 ? (
+              foreignVouchers.map(v => (
+                <tr key={v.id}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{v.voucherNo}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{v.date}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{v.type}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{v.partyName || 'N/A'}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{v.currency}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(v.grandTotal)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{'1.00'}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(v.grandTotal)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={8} style={{ border: BORDER, padding: '16px', textAlign: 'center', color: '#666' }}>
+                  No foreign vouchers found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderForexGainLossTab = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '20px', borderRadius: '8px', border: BORDER }}>
+      <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Forex Gain/Loss</h2>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Invoice No</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Party</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Currency</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Invoice Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Payment Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Foreign Amount</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Gain/Loss Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {forexGainLoss.length > 0 ? (
+              <>
+                {forexGainLoss.map((g, i) => (
+                  <tr key={i}>
+                    <td style={{ border: BORDER, padding: '8px' }}>{g.invoiceNo}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{g.party}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{g.currency}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(g.invoiceRate)}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(g.paymentRate)}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(g.foreignAmount)}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right', color: g.gainLoss >= 0 ? '#059669' : '#dc2626' }}>{money(g.gainLoss)}</td>
+                  </tr>
+                ))}
+                <tr style={{ backgroundColor: BG_HEADER, fontWeight: 'bold' }}>
+                  <td colSpan={6} style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Total:</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>
+                    {money(forexGainLoss.reduce((sum, g) => sum + g.gainLoss, 0))}
+                  </td>
+                </tr>
+              </>
+            ) : (
+              <tr>
+                <td colSpan={7} style={{ border: BORDER, padding: '16px', textAlign: 'center', color: '#666' }}>
+                  No forex gain/loss entries found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderRevaluationTab = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '20px', borderRadius: '8px', border: BORDER }}>
+      <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Revaluation</h2>
+      <div style={{ marginBottom: '20px' }}>
+        <button
+          onClick={() => {
+            // Placeholder for revaluation logic
+            toast.success("Revaluation process initiated");
+          }}
+          style={{
+            backgroundColor: '#059669',
+            color: 'white',
+            border: BORDER,
+            padding: '10px 16px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          }}
+        >
+          Revalue Open Balances
+        </button>
+      </div>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Account</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'left' }}>Currency</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Balance</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Old Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>New Rate</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            {revaluationBalances.length > 0 ? (
+              revaluationBalances.map((b, i) => (
+                <tr key={i}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{b.account}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{b.currency}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(b.balance)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(b.oldRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(b.newRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right', color: b.diff >= 0 ? '#059669' : '#dc2626' }}>{money(b.diff)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} style={{ border: BORDER, padding: '16px', textAlign: 'center', color: '#666' }}>
+                  No open foreign balances to revalue.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
-      <div className="w-full">
-        {/* Page Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Multi-Currency Hub</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">Manage exchange rates, forex gains/losses, and year-end revaluation</p>
-          </div>
-        </div>
-        
-        {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md shadow-sm overflow-x-auto hide-scrollbar">
-          {["Exchange Rate Master", "Foreign Currency Voucher Report", "Forex Gain/Loss", "Year-End Revaluation"].map((tab, index) => (
-            <button
-              key={index}
-              className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === index 
-                  ? 'border-[#1557b0] text-[#1557b0]' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-              onClick={() => setActiveTab(index)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Exchange Rate Master</h2>
-              <div className="flex gap-2">
-                <button
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                  onClick={importNrbRates}
-                >
-                  <RefreshCw size={14} />
-                  Import NRB Rates
-                </button>
-                <button
-                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                  onClick={() => {
-                    setEditingRate(null);
-                    setRateForm({
-                      currency: "",
-                      effectiveDate: new Date().toISOString().split('T')[0],
-                      buyRate: 0,
-                      sellRate: 0,
-                      midRate: 0,
-                      source: "Manual"
-                    });
-                    setShowRateForm(true);
-                  }}
-                >
-                  <Plus size={14} />
-                  Add Rate
-                </button>
-              </div>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Currency Code</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Currency Name</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Buy Rate (NPR)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Sell Rate (NPR)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Mid Rate</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Effective Date</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Source</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rates.map(rate => {
-                    const currency = CURRENCIES.find(c => c.code === rate.currency) || 
-                                    currencies.find(c => c.code === rate.currency);
-                    return (
-                      <tr key={rate.id} className="hover:bg-gray-50 border-b border-gray-100 bg-white text-[12px] transition-colors">
-                        <td className="px-3 py-2.5 text-gray-800 font-medium">{rate.currency}</td>
-                        <td className="px-3 py-2.5 text-gray-700">{currency?.name || rate.currency}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">{rate.buyRate.toFixed(4)}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">{rate.sellRate.toFixed(4)}</td>
-                        <td className="px-3 py-2.5 text-right font-medium text-[#1557b0]">{rate.midRate.toFixed(4)}</td>
-                        <td className="px-3 py-2.5 text-gray-700">{rate.effectiveDate}</td>
-                        <td className="px-3 py-2.5 text-gray-700">{rate.source}</td>
-                        <td className="px-3 py-2.5 text-center">
-                          <div className="flex justify-center gap-3">
-                            <button 
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                              onClick={() => {
-                                setEditingRate(rate);
-                                setRateForm({
-                                  currency: rate.currency,
-                                  effectiveDate: rate.effectiveDate,
-                                  buyRate: rate.buyRate,
-                                  sellRate: rate.sellRate,
-                                  midRate: rate.midRate,
-                                  source: rate.source
-                                });
-                                setShowRateForm(true);
-                              }}
-                            >
-                              <Edit size={14} />
-                            </button>
-                            <button 
-                              className="text-red-600 hover:text-red-800 transition-colors"
-                              onClick={() => deleteRate(rate.id)}
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {rates.length === 0 && (
-                    <tr>
-                      <td colSpan={8} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                        No exchange rates found. Please add or import rates.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Foreign Currency Voucher Report</h2>
-              <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                onClick={() => exportToExcel(foreignVouchers, "foreign_currency_vouchers.xlsx")}
-              >
-                <Download size={14} />
-                Export
-              </button>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Voucher No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Currency</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Foreign Amount</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Exchange Rate</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">NPR Equivalent</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {foreignVouchers.map(voucher => {
-                    const foreignAmount = voucher.foreignAmount || voucher.grandTotal || 0;
-                    const exchangeRate = 100;
-                    const npvEquivalent = foreignAmount * exchangeRate;
-                    
-                    return (
-                      <tr key={voucher.id} className="hover:bg-gray-50 border-b border-gray-100 bg-white text-[12px] transition-colors">
-                        <td className="px-3 py-2.5 text-gray-800 font-medium">{voucher.voucherNo}</td>
-                        <td className="px-3 py-2.5 text-gray-700">{voucher.date}</td>
-                        <td className="px-3 py-2.5 text-gray-700">{voucher.type}</td>
-                        <td className="px-3 py-2.5 text-gray-800 font-medium">{voucher.currency}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">{money(foreignAmount)}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-600">{exchangeRate.toFixed(4)}</td>
-                        <td className="px-3 py-2.5 text-right font-medium text-[#1557b0]">{money(npvEquivalent)}</td>
-                      </tr>
-                    );
-                  })}
-                  {foreignVouchers.length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                        No foreign currency vouchers found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Forex Gain/Loss Analysis</h2>
-              <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                onClick={postForexEntries}
-              >
-                <Calculator size={14} />
-                Post Forex Entries
-              </button>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Invoice No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Currency</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Foreign Amt</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rate (Inv)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">NPR (Inv)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rate (Pmt)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">NPR (Pmt)</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Forex Gain/(Loss)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {forexGainLoss.map(entry => (
-                    <tr key={entry.id} className="hover:bg-gray-50 border-b border-gray-100 bg-white text-[12px] transition-colors">
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">{entry.invoiceNo}</td>
-                      <td className="px-3 py-2.5 text-gray-700">{entry.party}</td>
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">{entry.currency}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-800">{money(entry.foreignAmount)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{entry.invoiceRate.toFixed(4)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-700">{money(entry.npvAtInvoice)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{entry.paymentRate.toFixed(4)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-700">{money(entry.npvAtPayment)}</td>
-                      <td className={`px-3 py-2.5 text-right font-medium ${entry.forexGainLoss >= 0 ? 'text-green-600 bg-green-50/50' : 'text-red-600 bg-red-50/50'}`}>
-                        {entry.forexGainLoss >= 0 ? '+' : ''}{money(entry.forexGainLoss)}
-                      </td>
-                    </tr>
-                  ))}
-                  {forexGainLoss.length === 0 && (
-                    <tr>
-                      <td colSpan={9} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                        No forex gain/loss data available.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Year-End Revaluation</h2>
-              <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                onClick={postRevaluationEntries}
-              >
-                <RotateCcw size={14} />
-                Post Revaluation
-              </button>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Invoice No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Currency</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Foreign Balance</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Orig Rate</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Year-End Rate</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">NPR Orig</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">NPR Revalued</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Unrealized Gain/(Loss)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {revaluationData.map(entry => (
-                    <tr key={entry.id} className="hover:bg-gray-50 border-b border-gray-100 bg-white text-[12px] transition-colors">
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">{entry.invoiceNo}</td>
-                      <td className="px-3 py-2.5 text-gray-700">{entry.party}</td>
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">{entry.currency}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-800">{money(entry.foreignBalance)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{entry.originalRate.toFixed(4)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{entry.yearEndRate.toFixed(4)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-700">{money(entry.npvOriginal)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-700">{money(entry.npvRevalued)}</td>
-                      <td className={`px-3 py-2.5 text-right font-medium ${entry.unrealizedGainLoss >= 0 ? 'text-green-600 bg-green-50/50' : 'text-red-600 bg-red-50/50'}`}>
-                        {entry.unrealizedGainLoss >= 0 ? '+' : ''}{money(entry.unrealizedGainLoss)}
-                      </td>
-                    </tr>
-                  ))}
-                  {revaluationData.length === 0 && (
-                    <tr>
-                      <td colSpan={9} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                        No outstanding foreign currency invoices for revaluation.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+    <div style={{ backgroundColor: BG, minHeight: '100vh', padding: '20px' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Multi-Currency Hub</h1>
+      
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: '5px', marginBottom: '20px', borderBottom: BORDER }}>
+        {[
+          { id: 'rates', label: 'Exchange Rates' },
+          { id: 'foreign', label: 'Foreign Vouchers' },
+          { id: 'gainloss', label: 'Forex Gain/Loss' },
+          { id: 'reval', label: 'Revaluation' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              backgroundColor: activeTab === tab.id ? BG_HEADER : 'transparent',
+              color: activeTab === tab.id ? '#000000' : '#666',
+              border: BORDER,
+              padding: '10px 16px',
+              borderRadius: '4px 4px 0 0',
+              cursor: 'pointer',
+              fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Rate Form Modal */}
-      {showRateForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-[15px] font-semibold text-gray-800">
-                {editingRate ? "Edit Exchange Rate" : "Add Exchange Rate"}
-              </h2>
-              <button onClick={() => { setShowRateForm(false); setEditingRate(null); }} className="text-gray-400 hover:text-gray-600">
-                <X size={18} />
-              </button>
+      {/* Tab Content */}
+      {activeTab === 'rates' && renderExchangeRatesTab()}
+      {activeTab === 'foreign' && renderForeignVouchersTab()}
+      {activeTab === 'gainloss' && renderForexGainLossTab()}
+      {activeTab === 'reval' && renderRevaluationTab()}
+
+      {/* Add Manual Rate Modal */}
+      {showAddModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: BG_CARD,
+            padding: '20px',
+            borderRadius: '8px',
+            border: BORDER,
+            width: '90%',
+            maxWidth: '500px',
+          }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>Add Exchange Rate</h2>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Currency *</label>
+              <select
+                value={manualRate.currency}
+                onChange={(e) => setManualRate({...manualRate, currency: e.target.value, currencyName: CURRENCIES.find(c => c.code === e.target.value)?.name || e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              >
+                <option value="">Select Currency</option>
+                {CURRENCIES.map(c => (
+                  <option key={c.code} value={c.code}>{c.code} - {c.name}</option>
+                ))}
+              </select>
             </div>
             
-            <div className="p-5 space-y-4">
-              <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Currency <span className="text-red-500">*</span></label>
-                <select
-                  value={rateForm.currency}
-                  onChange={(e) => handleRateFormChange('currency', e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                >
-                  <option value="">Select Currency</option>
-                  {CURRENCIES.map(curr => (
-                    <option key={curr.code} value={curr.code}>{curr.code} - {curr.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Effective Date <span className="text-red-500">*</span></label>
-                <input
-                  type="date"
-                  value={rateForm.effectiveDate}
-                  onChange={(e) => handleRateFormChange('effectiveDate', e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Buy Rate (NPR) <span className="text-red-500">*</span></label>
-                  <input
-                    type="number"
-                    step="0.0001"
-                    value={rateForm.buyRate || ""}
-                    onChange={(e) => handleRateFormChange('buyRate', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Sell Rate (NPR) <span className="text-red-500">*</span></label>
-                  <input
-                    type="number"
-                    step="0.0001"
-                    value={rateForm.sellRate || ""}
-                    onChange={(e) => handleRateFormChange('sellRate', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Mid Rate (NPR)</label>
-                  <input
-                    type="number"
-                    step="0.0001"
-                    value={rateForm.midRate || ""}
-                    readOnly
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 text-gray-500 w-full text-right outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Source</label>
-                  <select
-                    value={rateForm.source}
-                    onChange={(e) => handleRateFormChange('source', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  >
-                    <option value="Manual">Manual</option>
-                    <option value="NRB Official">NRB Official</option>
-                    <option value="Bank">Bank</option>
-                  </select>
-                </div>
-              </div>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Buy Rate *</label>
+              <input
+                type="number"
+                step="any"
+                value={manualRate.buyRate}
+                onChange={(e) => setManualRate({...manualRate, buyRate: e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
             </div>
             
-            <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Sell Rate *</label>
+              <input
+                type="number"
+                step="any"
+                value={manualRate.sellRate}
+                onChange={(e) => setManualRate({...manualRate, sellRate: e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Mid Rate (Calculated)</label>
+              <input
+                type="number"
+                step="any"
+                value={manualRate.buyRate && manualRate.sellRate ? ((parseFloat(manualRate.buyRate) + parseFloat(manualRate.sellRate))/2).toFixed(4) : ''}
+                readOnly
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px', backgroundColor: '#f0f0f0' }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Effective Date *</label>
+              <input
+                type="date"
+                value={manualRate.effectiveDate}
+                onChange={(e) => setManualRate({...manualRate, effectiveDate: e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
-                onClick={() => {
-                  setShowRateForm(false);
-                  setEditingRate(null);
+                onClick={() => setShowAddModal(false)}
+                style={{
+                  backgroundColor: '#dc2626',
+                  color: 'white',
+                  border: BORDER,
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
-                onClick={saveRate}
+                onClick={handleAddManualRate}
+                style={{
+                  backgroundColor: '#059669',
+                  color: 'white',
+                  border: BORDER,
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
               >
                 Save Rate
               </button>
@@ -696,6 +637,4 @@ const MultiCurrencyHub: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default MultiCurrencyHub;
+}

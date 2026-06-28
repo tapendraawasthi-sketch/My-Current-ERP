@@ -88,7 +88,7 @@ const computeTopParties = (invoices: any[], partyType: "customer"|"vendor", topN
     return acc;
   }, {} as Record<string, any>);
   
-  const result: PartyAnalysis[] = Object.values(grouped).map(p => ({
+  const result: PartyAnalysis[] = (Object.values(grouped) as any[]).map(p => ({
     partyId: p.partyId,
     partyName: p.partyName,
     totalAmount: p.totalAmount,
@@ -150,7 +150,7 @@ const computeTopItems = (invoices: any[], itemType: "sales"|"purchase", topN: nu
     return acc;
   }, {} as Record<string, any>);
   
-  const result: ItemAnalysis[] = Object.values(grouped).map(item => ({
+  const result: ItemAnalysis[] = (Object.values(grouped) as any[]).map(item => ({
     itemId: item.itemId,
     itemName: item.itemName,
     totalQty: item.totalQty,

@@ -276,22 +276,22 @@ export default function OutstandingReceivables() {
         .toArray() ?? Promise.resolve([]),
     []
   );
-  const pdcEntries = useLiveQuery(
-    () => db.pdcEntries?.toArray() ?? Promise.resolve([]),
+  const pdCheques = useLiveQuery(
+    () => db.pdCheques?.toArray() ?? Promise.resolve([]),
     []
   );
 
   // ── Build PDC map: billRefNo → pdc amount ────────────────────────────────
   const pdcMap = useMemo(() => {
     const m = new Map<string, number>();
-    if (!pdcEntries) return m;
-    for (const p of pdcEntries as any[]) {
+    if (!pdCheques) return m;
+    for (const p of pdCheques as any[]) {
       if (p.billRefNo && p.pdcAmount) {
         m.set(p.billRefNo, (m.get(p.billRefNo) ?? 0) + Number(p.pdcAmount));
       }
     }
     return m;
-  }, [pdcEntries]);
+  }, [pdCheques]);
 
   // ── Build parties map ─────────────────────────────────────────────────────
   const partiesMap = useMemo(() => {

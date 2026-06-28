@@ -1,480 +1,873 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
-import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
-import { formatNumber, numberToWords } from "../lib/utils";
-import { generateId } from "../lib/db";
+import { getDB, generateId } from "../lib/db";
 import toast from "react-hot-toast";
-import { FileText, Download } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { FileText, Download, AlertTriangle, XCircle, CheckCircle, RotateCcw, Clock, Plus, Edit, Trash2 } from "lucide-react";
+
+const BORDER = "1px solid #000";
+const BG_HEADER = "#D4EABD";
+const BG_CARD = "#EBF5E2";
+
+function money(v) {
+  const abs = Math.abs(Number(v || 0));
+  const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return v < 0 ? `(${s})` : s;
+}
 
 export default function ChequeRegister() {
   const { 
+    cheques, 
     accounts, 
     vouchers, 
-    cheques, 
+    parties, 
+    bankAccounts, 
+    addVoucher, 
     companySettings,
-    currentUser,
     updateCheque,
     saveAuditLog
   } = useStore();
+  
+  const [activeTab, setActiveTab] = useState("cheques");
+  const [bounceModal, setBounceModal] = useState({ show: false, cheque: null });
+  const [bounceForm, setBounceForm] = useState({
+    bounceDate: new Date().toISOString().split('T')[0],
+    bounceReason: "Insufficient Funds",
+    otherReason: "",
+    bounceCharges: 0,
+    bankChargesAccountId: "",
+    notificationMethods: [],
+    recoveryExpectedBy: "",
+    notes: ""
+  });
+  
+  const [chequeBookForm, setChequeBookForm] = useState({
+    bankAccountId: "",
+    startingLeaf: "",
+    endingLeaf: "",
+    dateReceived: new Date().toISOString().split('T')[0]
+  });
+  
+  const [chequeBooks, setChequeBooks] = useState([]);
 
-  const [bankFilter, setBankFilter] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
-  const [sortBy, setSortBy] = useState("chequeNo");
-  const [expandedCheque, setExpandedCheque] = useState<string | null>(null);
-  const [actionDropdown, setActionDropdown] = useState<{[key: string]: boolean}>({});
-  const [statusAction, setStatusAction] = useState<{chequeId: string, action: string} | null>(null);
-  const [clearedDate, setClearedDate] = useState("");
-  const [bouncedReason, setBouncedReason] = useState("");
-
-  const bankAccounts = useMemo(() => {
-    return accounts.filter(a => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
-  }, [accounts]);
-
-  // Auto-mark stale cheques on mount
+  // Load cheque books
   useEffect(() => {
-    const markStaleCheques = async () => {
-      const ninetyDaysAgo = new Date();
-      ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-      const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split('T')[0];
-      
-      const chequesToMark = cheques.filter(c => 
-        (c.status === "issued" || c.status === "presented") && 
-        c.chequeDate < ninetyDaysAgoStr
-      );
-      
-      if (chequesToMark.length > 0) {
-        for (const cheque of chequesToMark) {
-          await updateCheque(cheque.id, { status: "stale" });
-        }
-        toast.success(`Marked ${chequesToMark.length} cheques as stale`);
-      }
-    };
-    
-    markStaleCheques();
+    const db = getDB();
+    db.chequeBooks.toArray()
+      .catch(() => [])
+      .then(setChequeBooks);
   }, []);
 
-  const filteredCheques = useMemo(() => {
-    let result = cheques;
-    
-    if (bankFilter) {
-      result = result.filter(c => c.bankAccountId === bankFilter);
-    }
-    
-    if (dateFrom) {
-      result = result.filter(c => c.chequeDate >= dateFrom);
-    }
-    
-    if (dateTo) {
-      result = result.filter(c => c.chequeDate <= dateTo);
-    }
-    
-    if (statusFilter !== "ALL") {
-      result = result.filter(c => c.status === statusFilter.toLowerCase());
-    }
-    
-    // Sort
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case "date":
-          return a.chequeDate.localeCompare(b.chequeDate);
-        case "amount":
-          return b.amount - a.amount;
-        case "payee":
-          return a.payeeName.localeCompare(b.payeeName);
-        case "chequeNo":
-        default:
-          return a.chequeNo.localeCompare(b.chequeNo);
-      }
+  // Filter accounts for bank charges
+  const bankChargeAccounts = useMemo(() => {
+    return accounts.filter(acc => 
+      acc.type === 'expense' && 
+      acc.name.toLowerCase().includes('bank charges')
+    );
+  }, [accounts]);
+
+  // Handle bounce modal open
+  const openBounceModal = (cheque) => {
+    setBounceModal({ show: true, cheque });
+    setBounceForm({
+      bounceDate: new Date().toISOString().split('T')[0],
+      bounceReason: "Insufficient Funds",
+      otherReason: "",
+      bounceCharges: 0,
+      bankChargesAccountId: "",
+      notificationMethods: [],
+      recoveryExpectedBy: "",
+      notes: ""
     });
-    
-    return result;
-  }, [cheques, bankFilter, dateFrom, dateTo, statusFilter, sortBy]);
+  };
 
-  // Calculate summary stats
-  const summaryStats = useMemo(() => {
-    const total = filteredCheques.length;
-    const outstanding = filteredCheques.filter(c => c.status === "issued" || c.status === "presented").length;
-    const cleared = filteredCheques.filter(c => c.status === "cleared").length;
-    const bounced = filteredCheques.filter(c => c.status === "bounced").length;
+  // Handle bounce form submit
+  const handleBounceSubmit = async () => {
+    if (!bounceModal.cheque) return;
     
-    const totalAmount = filteredCheques.reduce((sum, c) => sum + c.amount, 0);
-    const outstandingAmount = filteredCheques
-      .filter(c => c.status === "issued" || c.status === "presented")
-      .reduce((sum, c) => sum + c.amount, 0);
-    const clearedAmount = filteredCheques
-      .filter(c => c.status === "cleared")
-      .reduce((sum, c) => sum + c.amount, 0);
-    const bouncedAmount = filteredCheques
-      .filter(c => c.status === "bounced")
-      .reduce((sum, c) => sum + c.amount, 0);
-    
-    return {
-      total: { count: total, amount: totalAmount },
-      outstanding: { count: outstanding, amount: outstandingAmount },
-      cleared: { count: cleared, amount: clearedAmount },
-      bounced: { count: bounced, amount: bouncedAmount }
-    };
-  }, [filteredCheques]);
-
-  const handleUpdateStatus = async () => {
-    if (!statusAction) return;
-    
-    const { chequeId, action } = statusAction;
-    const cheque = cheques.find(c => c.id === chequeId);
-    if (!cheque) return;
+    const { cheque } = bounceModal;
+    const reason = bounceForm.bounceReason === "Other" ? bounceForm.otherReason : bounceForm.bounceReason;
     
     try {
-      let updateData: any = { status: action.toLowerCase() };
+      const db = getDB();
       
-      if (action === "Mark Cleared") {
-        if (!clearedDate) {
-          toast.error("Please provide cleared date");
-          return;
-        }
-        updateData.clearedDate = clearedDate;
-      } else if (action === "Mark Bounced") {
-        if (!bouncedReason) {
-          toast.error("Please provide bounce reason");
-          return;
-        }
-        updateData.bouncedDate = new Date().toISOString().split('T')[0];
-        updateData.bouncedReason = bouncedReason;
-      }
+      // Update cheque status
+      await db.cheques.update(cheque.id, { status: "bounced", bouncedDate: bounceForm.bounceDate });
       
-      await updateCheque(chequeId, updateData);
-      
-      // Log to audit
-      await saveAuditLog({
+      // Save bounce log
+      await db.chequeBounceLogs.put({
         id: generateId(),
-        timestamp: new Date().toISOString(),
-        userId: currentUser?.id || "system",
-        action: `CHEQUE_STATUS_CHANGED_TO_${action.toUpperCase()}`,
-        module: "banking",
-        recordId: chequeId,
-        recordType: "cheque",
-        details: JSON.stringify({ oldStatus: cheque.status, newStatus: action.toLowerCase() })
+        chequeId: cheque.id,
+        bounceDate: bounceForm.bounceDate,
+        bounceReason: reason,
+        bounceCharges: bounceForm.bounceCharges,
+        bankChargesAccountId: bounceForm.bankChargesAccountId,
+        recoveryExpectedBy: bounceForm.recoveryExpectedBy,
+        notes: bounceForm.notes,
+        status: "bounced",
+        createdAt: new Date().toISOString()
       });
       
-      if (action === "Mark Bounced") {
-        toast.success("Cheque marked as bounced. Remember to create a reversal journal entry in Journal Entry screen.");
-      } else {
-        toast.success("Cheque status updated successfully");
+      // Determine if original was receipt or payment
+      const relatedVoucher = vouchers.find(v => v.id === cheque.voucherId);
+      const isReceipt = relatedVoucher?.type.includes("receipt");
+      const party = parties.find(p => p.id === relatedVoucher?.partyId);
+      const bankAccount = accounts.find(acc => acc.id === cheque.bankAccountId);
+      
+      // Create reversal journal for original amount
+      if (relatedVoucher && party && bankAccount) {
+        const reversalVoucher = {
+          id: generateId(),
+          voucherNo: `REV-${generateId().slice(0, 6)}`,
+          date: bounceForm.bounceDate,
+          dateNepali: formatADToBS(bounceForm.bounceDate),
+          type: "journal",
+          partyId: party.id,
+          narration: `Reversal of ${relatedVoucher.type} - Cheque No ${cheque.chequeNumber} bounced on ${bounceForm.bounceDate}`,
+          lines: [
+            {
+              accountId: party.accountId || party.id,
+              amount: cheque.amount,
+              type: isReceipt ? "debit" : "credit",
+              description: `Cheque bounce reversal`
+            },
+            {
+              accountId: bankAccount.id,
+              amount: cheque.amount,
+              type: isReceipt ? "credit" : "debit",
+              description: `Cheque bounce reversal`
+            }
+          ],
+          subTotal: cheque.amount,
+          grandTotal: cheque.amount,
+          status: "posted",
+          linkedDocuments: [{ type: "cheque", id: cheque.id }],
+          createdAt: new Date().toISOString()
+        };
+        
+        await addVoucher(reversalVoucher);
       }
       
-      setStatusAction(null);
-      setClearedDate("");
-      setBouncedReason("");
-    } catch (error) {
-      toast.error("Failed to update cheque status");
-    }
-  };
-
-  const handleExportCSV = () => {
-    // Create CSV content
-    const headers = [
-      "Cheque No",
-      "Cheque Date",
-      "Payee Name",
-      "Amount",
-      "Voucher No",
-      "Voucher Date",
-      "Status"
-    ];
-    
-    const rows = filteredCheques.map(c => {
-      const voucher = vouchers.find(v => v.id === c.voucherId);
-      return [
-        c.chequeNo,
-        c.chequeDate,
-        c.payeeName,
-        c.amount,
-        voucher?.voucherNo || "",
-        voucher?.date || "",
-        c.status
-      ].join(",");
-    });
-    
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `cheque-register-${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case "issued": return "warning";
-      case "presented": return "info";
-      case "cleared": return "success";
-      case "bounced": return "danger";
-      case "cancelled": return "secondary";
-      case "stale": return "destructive";
-      default: return "default";
-    }
-  };
-
-  return (
-    <div className="flex flex-col h-full">
-      <ActionToolbar 
-        title="Cheque Register" 
-        icon={<FileText size={16} />}
-      >
-        <Button size="sm" variant="outline" onClick={handleExportCSV}>
-          <Download size={14} className="mr-1" />
-          Export CSV
-        </Button>
-      </ActionToolbar>
+      // Create journal for bank charges if applicable
+      if (bounceForm.bounceCharges > 0 && bounceForm.bankChargesAccountId) {
+        const bankAccount = accounts.find(acc => acc.id === cheque.bankAccountId);
+        const chargesAccount = accounts.find(acc => acc.id === bounceForm.bankChargesAccountId);
+        
+        if (bankAccount && chargesAccount) {
+          const chargesVoucher = {
+            id: generateId(),
+            voucherNo: `CHG-${generateId().slice(0, 6)}`,
+            date: bounceForm.bounceDate,
+            dateNepali: formatADToBS(bounceForm.bounceDate),
+            type: "journal",
+            narration: `Bank charges for bounced cheque No ${cheque.chequeNumber}`,
+            lines: [
+              {
+                accountId: bounceForm.bankChargesAccountId,
+                amount: bounceForm.bounceCharges,
+                type: "debit",
+                description: `Bank charges for bounced cheque`
+              },
+              {
+                accountId: bankAccount.id,
+                amount: bounceForm.bounceCharges,
+                type: "credit",
+                description: `Bank charges for bounced cheque`
+              }
+            ],
+            subTotal: bounceForm.bounceCharges,
+            grandTotal: bounceForm.bounceCharges,
+            status: "posted",
+            linkedDocuments: [{ type: "cheque", id: cheque.id }],
+            createdAt: new Date().toISOString()
+          };
+          
+          await addVoucher(chargesVoucher);
+        }
+      }
       
-      <div className="flex-1 overflow-auto p-4">
-        {/* Filter Bar */}
-        <div className="mb-4 flex flex-wrap gap-3 items-end">
-          <div className="w-48">
-            <Select
-              label="Bank Account"
-              options={[
-                { value: "", label: "All Banks" },
-                ...bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))
-              ]}
-              value={bankFilter}
-              onChange={setBankFilter}
+      toast.success("Cheque dishonoured. Reversal entries created.");
+      setBounceModal({ show: false, cheque: null });
+      // Refresh cheques - this would be handled by the store
+    } catch (error) {
+      console.error("Error processing bounce:", error);
+      toast.error("Failed to process cheque bounce");
+    }
+  };
+
+  // Handle bounce form change
+  const handleBounceFormChange = (field, value) => {
+    if (field === 'notificationMethods') {
+      const methods = [...bounceForm.notificationMethods];
+      if (methods.includes(value)) {
+        setBounceForm(prev => ({ ...prev, notificationMethods: methods.filter(m => m !== value) }));
+      } else {
+        setBounceForm(prev => ({ ...prev, notificationMethods: [...methods, value] }));
+      }
+    } else {
+      setBounceForm(prev => ({ ...prev, [field]: value }));
+    }
+  };
+
+  // Handle adding cheque book
+  const handleAddChequeBook = async () => {
+    if (!chequeBookForm.bankAccountId || !chequeBookForm.startingLeaf || !chequeBookForm.endingLeaf) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    
+    const totalLeaves = parseInt(chequeBookForm.endingLeaf) - parseInt(chequeBookForm.startingLeaf) + 1;
+    if (totalLeaves <= 0) {
+      toast.error("Ending leaf must be greater than starting leaf");
+      return;
+    }
+    
+    try {
+      const db = getDB();
+      await db.chequeBooks.put({
+        id: generateId(),
+        bankAccountId: chequeBookForm.bankAccountId,
+        bookName: `Cheque Book - ${chequeBookForm.startingLeaf} to ${chequeBookForm.endingLeaf}`,
+        fromNumber: chequeBookForm.startingLeaf,
+        toNumber: chequeBookForm.endingLeaf,
+        lastUsedNumber: null,
+        status: "active",
+        isActive: true,
+        dateReceived: chequeBookForm.dateReceived,
+        createdAt: new Date().toISOString()
+      });
+      
+      toast.success("Cheque book added successfully");
+      setChequeBookForm({
+        bankAccountId: "",
+        startingLeaf: "",
+        endingLeaf: "",
+        dateReceived: new Date().toISOString().split('T')[0]
+      });
+      
+      // Refresh cheque books
+      const updated = await db.chequeBooks.toArray();
+      setChequeBooks(updated);
+    } catch (error) {
+      console.error("Error adding cheque book:", error);
+      toast.error("Failed to add cheque book");
+    }
+  };
+
+  // Calculate bounce tracker data
+  const bounceTrackerData = useMemo(() => {
+    const bouncedCheques = cheques.filter(c => c.status === "bounced");
+    const bounceLogs = [];
+    
+    for (const cheque of bouncedCheques) {
+      const relatedVoucher = vouchers.find(v => v.id === cheque.voucherId);
+      const party = parties.find(p => p.id === relatedVoucher?.partyId);
+      
+      bounceLogs.push({
+        cheque,
+        partyName: party?.name || "N/A",
+        amount: cheque.amount,
+        bounceDate: cheque.bouncedDate || cheque.cancelledDate || cheque.statusChangedAt,
+        bounceReason: "N/A", // Would come from bounce logs table
+        recoveryExpectedBy: "N/A",
+        recoveryStatus: "Pending Recovery",
+        daysOverdue: 0 // Calculated based on expected date
+      });
+    }
+    
+    return bounceLogs;
+  }, [cheques, vouchers, parties]);
+
+  // Calculate summary
+  const bounceSummary = useMemo(() => {
+    const totalBounceAmount = bounceTrackerData.reduce((sum, log) => sum + log.amount, 0);
+    const totalRecovered = 0; // Placeholder
+    const totalPending = totalBounceAmount - totalRecovered;
+    
+    return { totalBounceAmount, totalRecovered, totalPending };
+  }, [bounceTrackerData]);
+
+  // Calculate cheque book status
+  const chequeBooksWithUsage = useMemo(() => {
+    return chequeBooks.map(book => {
+      const start = parseInt(book.fromNumber);
+      const end = parseInt(book.toNumber);
+      const totalLeaves = end - start + 1;
+      
+      // Count used cheques from db.cheques where number falls in range
+      const used = cheques.filter(c => 
+        c.chequeNumber >= book.fromNumber && 
+        c.chequeNumber <= book.toNumber
+      ).length;
+      
+      const remaining = totalLeaves - used;
+      let status = "Active";
+      if (remaining === 0) status = "Exhausted";
+      if (!book.isActive) status = "Cancelled";
+      
+      return {
+        ...book,
+        totalLeaves,
+        used,
+        remaining,
+        status
+      };
+    });
+  }, [chequeBooks, cheques]);
+
+  // Render bounce modal
+  const renderBounceModal = () => {
+    if (!bounceModal.show) return null;
+    
+    const cheque = bounceModal.cheque;
+    const relatedVoucher = vouchers.find(v => v.id === cheque?.voucherId);
+    const isReceipt = relatedVoucher?.type.includes("receipt");
+    
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+      }}>
+        <div style={{
+          backgroundColor: BG_CARD,
+          padding: '20px',
+          borderRadius: '8px',
+          border: BORDER,
+          width: '90%',
+          maxWidth: '600px',
+        }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>
+            Cheque Dishonour Processing
+          </h2>
+          
+          <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#fee2e2', borderRadius: '4px', border: '1px solid #dc2626' }}>
+            <div style={{ fontWeight: 'bold' }}>Cheque Details:</div>
+            <div>No: {cheque.chequeNumber} | Amount: {money(cheque.amount)} | {isReceipt ? 'Receipt' : 'Payment'}</div>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '15px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Bounce Date *</label>
+              <input
+                type="date"
+                value={bounceForm.bounceDate}
+                onChange={(e) => handleBounceFormChange('bounceDate', e.target.value)}
+                style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Bounce Reason *</label>
+              <select
+                value={bounceForm.bounceReason}
+                onChange={(e) => handleBounceFormChange('bounceReason', e.target.value)}
+                style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+              >
+                <option value="Insufficient Funds">Insufficient Funds</option>
+                <option value="Signature Mismatch">Signature Mismatch</option>
+                <option value="Account Closed">Account Closed</option>
+                <option value="Payment Stopped">Payment Stopped</option>
+                <option value="Post-dated">Post-dated</option>
+                <option value="Cheque Damaged">Cheque Damaged</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            
+            {bounceForm.bounceReason === "Other" && (
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Other Reason</label>
+                <input
+                  type="text"
+                  value={bounceForm.otherReason}
+                  onChange={(e) => handleBounceFormChange('otherReason', e.target.value)}
+                  style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+                />
+              </div>
+            )}
+            
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Bank Charges Amount</label>
+              <input
+                type="number"
+                value={bounceForm.bounceCharges}
+                onChange={(e) => handleBounceFormChange('bounceCharges', parseFloat(e.target.value) || 0)}
+                style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Bank Charges Account</label>
+              <select
+                value={bounceForm.bankChargesAccountId}
+                onChange={(e) => handleBounceFormChange('bankChargesAccountId', e.target.value)}
+                style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+              >
+                <option value="">Select Account</option>
+                {bankChargeAccounts.map(acc => (
+                  <option key={acc.id} value={acc.id}>{acc.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Party Notification Method</label>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                {['Phone', 'WhatsApp', 'Legal Notice'].map(method => (
+                  <label key={method} style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={bounceForm.notificationMethods.includes(method)}
+                      onChange={() => handleBounceFormChange('notificationMethods', method)}
+                      style={{ marginRight: '5px' }}
+                    />
+                    {method}
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Recovery Expected By</label>
+              <input
+                type="date"
+                value={bounceForm.recoveryExpectedBy}
+                onChange={(e) => handleBounceFormChange('recoveryExpectedBy', e.target.value)}
+                style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Internal Notes</label>
+            <textarea
+              value={bounceForm.notes}
+              onChange={(e) => handleBounceFormChange('notes', e.target.value)}
+              rows={3}
+              style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
             />
           </div>
           
-          <div className="w-32">
-            <NepaliDatePicker
-              label="From Date"
-              value={dateFrom}
-              onChange={setDateFrom}
-            />
-          </div>
-          
-          <div className="w-32">
-            <NepaliDatePicker
-              label="To Date"
-              value={dateTo}
-              onChange={setDateTo}
-            />
-          </div>
-          
-          <div className="w-32">
-            <Select
-              label="Status"
-              options={[
-                { value: "ALL", label: "All" },
-                { value: "ISSUED", label: "Issued" },
-                { value: "PRESENTED", label: "Presented" },
-                { value: "CLEARED", label: "Cleared" },
-                { value: "BOUNCED", label: "Bounced" },
-                { value: "CANCELLED", label: "Cancelled" },
-                { value: "STALE", label: "Stale" }
-              ]}
-              value={statusFilter}
-              onChange={setStatusFilter}
-            />
-          </div>
-          
-          <div className="w-32">
-            <Select
-              label="Sort By"
-              options={[
-                { value: "chequeNo", label: "Cheque No" },
-                { value: "date", label: "Date" },
-                { value: "amount", label: "Amount" },
-                { value: "payee", label: "Payee" }
-              ]}
-              value={sortBy}
-              onChange={setSortBy}
-            />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <button
+              onClick={() => setBounceModal({ show: false, cheque: null })}
+              style={{
+                backgroundColor: '#dc2626',
+                color: 'white',
+                border: BORDER,
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleBounceSubmit}
+              style={{
+                backgroundColor: '#059669',
+                color: 'white',
+                border: BORDER,
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+            >
+              Process Bounce
+            </button>
           </div>
         </div>
-        
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-4 border rounded-lg shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500">Total Cheques</h3>
-            <p className="text-2xl font-bold">{summaryStats.total.count}</p>
-            <p className="text-sm text-gray-600">{formatNumber(summaryStats.total.amount)}</p>
-          </div>
-          
-          <div className="bg-white p-4 border rounded-lg shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500">Outstanding</h3>
-            <p className="text-2xl font-bold">{summaryStats.outstanding.count}</p>
-            <p className="text-sm text-gray-600">{formatNumber(summaryStats.outstanding.amount)}</p>
-          </div>
-          
-          <div className="bg-white p-4 border rounded-lg shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500">Cleared</h3>
-            <p className="text-2xl font-bold">{summaryStats.cleared.count}</p>
-            <p className="text-sm text-gray-600">{formatNumber(summaryStats.cleared.amount)}</p>
-          </div>
-          
-          <div className="bg-white p-4 border rounded-lg shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500">Bounced</h3>
-            <p className="text-2xl font-bold">{summaryStats.bounced.count}</p>
-            <p className="text-sm text-gray-600">{formatNumber(summaryStats.bounced.amount)}</p>
-          </div>
+      </div>
+    );
+  };
+
+  // Render bounce tracker tab
+  const renderBounceTracker = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '15px', borderRadius: '8px', border: BORDER }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: '#fee2e2', padding: '15px', borderRadius: '6px', border: BORDER }}>
+          <div style={{ fontSize: '12px', color: '#000000', marginBottom: '5px' }}>Total Bounce Amount</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc2626' }}>{money(bounceSummary.totalBounceAmount)}</div>
         </div>
-        
-        {/* Cheque Table */}
-        <div className="bg-white border rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="p-3 text-left">Cheque No</th>
-                <th className="p-3 text-left">Cheque Date</th>
-                <th className="p-3 text-left">Payee Name</th>
-                <th className="p-3 text-right">Amount</th>
-                <th className="p-3 text-left">Voucher No</th>
-                <th className="p-3 text-left">Voucher Date</th>
-                <th className="p-3 text-left">Status</th>
-                <th className="p-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCheques.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="p-4 text-center text-gray-500">
-                    No cheques found
-                  </td>
-                </tr>
-              ) : (
-                filteredCheques.map(cheque => {
-                  const voucher = vouchers.find(v => v.id === cheque.voucherId);
-                  const isExpanded = expandedCheque === cheque.id;
-                  
-                  return (
-                    <React.Fragment key={cheque.id}>
-                      <tr 
-                        className={`border-t hover:bg-gray-50 cursor-pointer ${isExpanded ? "bg-blue-50" : ""}`}
-                        onClick={() => setExpandedCheque(isExpanded ? null : cheque.id)}
-                      >
-                        <td className="p-3">{cheque.chequeNo}</td>
-                        <td className="p-3">{cheque.chequeDate}</td>
-                        <td className="p-3">{cheque.payeeName}</td>
-                        <td className="p-3 text-right">{formatNumber(cheque.amount)}</td>
-                        <td className="p-3">{voucher?.voucherNo || cheque.voucherNo}</td>
-                        <td className="p-3">{voucher?.date || "-"}</td>
-                        <td className="p-3">
-                          <Badge variant={getStatusVariant(cheque.status)}>
-                            {cheque.status.charAt(0).toUpperCase() + cheque.status.slice(1)}
-                          </Badge>
-                        </td>
-                        <td className="p-3">
-                          <Select
-                            value=""
-                            onChange={(val) => {
-                              if (val) {
-                                setStatusAction({ chequeId: cheque.id, action: val });
-                              }
-                            }}
-                            options={[
-                              { value: "", label: "Update Status" },
-                              { value: "Mark Presented", label: "Mark Presented" },
-                              { value: "Mark Cleared", label: "Mark Cleared" },
-                              { value: "Mark Bounced", label: "Mark Bounced" },
-                              { value: "Mark Cancelled", label: "Mark Cancelled" },
-                              { value: "Mark Stale", label: "Mark Stale" }
-                            ]}
-                            className="w-32"
-                          />
-                        </td>
-                      </tr>
-                      
-                      {isExpanded && (
-                        <tr className="bg-blue-50 border-t border-blue-100">
-                          <td colSpan={8} className="p-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <h4 className="font-medium mb-2">Details</h4>
-                                <p className="text-sm">
-                                  <span className="font-medium">Narration:</span> {cheque.narration || "—"}
-                                </p>
-                              </div>
-                              <div>
-                                <h4 className="font-medium mb-2">Amount in Words</h4>
-                                <p className="text-sm">{cheque.amountInWords}</p>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+        <div style={{ backgroundColor: '#dcfce7', padding: '15px', borderRadius: '6px', border: BORDER }}>
+          <div style={{ fontSize: '12px', color: '#000000', marginBottom: '5px' }}>Total Recovered</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#059669' }}>{money(bounceSummary.totalRecovered)}</div>
+        </div>
+        <div style={{ backgroundColor: '#fef9c3', padding: '15px', borderRadius: '6px', border: BORDER }}>
+          <div style={{ fontSize: '12px', color: '#000000', marginBottom: '5px' }}>Total Pending Recovery</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#d97706' }}>{money(bounceSummary.totalPending)}</div>
         </div>
       </div>
       
-      {/* Update Status Modal */}
-      {statusAction && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h3 className="font-bold text-lg">Update Cheque Status</h3>
-            </div>
-            
-            <div className="p-4">
-              <p className="mb-4">
-                Updating status for cheque <strong>{cheques.find(c => c.id === statusAction.chequeId)?.chequeNo}</strong>
-              </p>
-              
-              {statusAction.action === "Mark Cleared" && (
-                <div className="mb-4">
-                  <NepaliDatePicker
-                    label="Cleared Date"
-                    value={clearedDate}
-                    onChange={setClearedDate}
-                  />
-                </div>
-              )}
-              
-              {statusAction.action === "Mark Bounced" && (
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Bounce Reason</label>
-                  <textarea
-                    value={bouncedReason}
-                    onChange={(e) => setBouncedReason(e.target.value)}
-                    className="w-full p-2 border rounded text-sm"
-                    rows={3}
-                    placeholder="Enter reason for bounce..."
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Remember to create a reversal journal entry in Journal Entry screen.
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            <div className="p-4 border-t flex justify-end gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setStatusAction(null);
-                  setClearedDate("");
-                  setBouncedReason("");
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleUpdateStatus}>
-                Confirm
-              </Button>
-            </div>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px' }}>Cheque No</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Party Name</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Amount</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Bounce Date</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Bounce Reason</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Recovery Expected By</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Recovery Status</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>Days Overdue</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bounceTrackerData.map((log, idx) => (
+              <tr key={log.cheque.id} style={{ backgroundColor: idx % 2 === 0 ? '#f0f0f0' : 'transparent' }}>
+                <td style={{ border: BORDER, padding: '8px' }}>{log.cheque.chequeNumber}</td>
+                <td style={{ border: BORDER, padding: '8px' }}>{log.partyName}</td>
+                <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(log.amount)}</td>
+                <td style={{ border: BORDER, padding: '8px' }}>{log.bounceDate}</td>
+                <td style={{ border: BORDER, padding: '8px' }}>{log.bounceReason}</td>
+                <td style={{ border: BORDER, padding: '8px' }}>{log.recoveryExpectedBy}</td>
+                <td style={{ border: BORDER, padding: '8px' }}>
+                  <span style={{
+                    backgroundColor: log.recoveryStatus === 'Fully Recovered' ? '#059669' : 
+                                    log.recoveryStatus === 'Written Off' ? '#dc2626' : '#d97706',
+                    color: 'white',
+                    padding: '2px 6px',
+                    borderRadius: '12px',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                  }}>
+                    {log.recoveryStatus}
+                  </span>
+                </td>
+                <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>{log.daysOverdue}</td>
+                <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                  <button
+                    onClick={() => {}}
+                    style={{
+                      backgroundColor: '#059669',
+                      color: 'white',
+                      border: BORDER,
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      marginRight: '5px',
+                    }}
+                  >
+                    Mark Recovered
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    style={{
+                      backgroundColor: '#1557b0',
+                      color: 'white',
+                      border: BORDER,
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      marginRight: '5px',
+                    }}
+                  >
+                    Send Notice
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    style={{
+                      backgroundColor: '#dc2626',
+                      color: 'white',
+                      border: BORDER,
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                    }}
+                  >
+                    Write Off
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  // Render cheque book register tab
+  const renderChequeBookRegister = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '15px', borderRadius: '8px', border: BORDER }}>
+      <div style={{ marginBottom: '20px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>Add New Cheque Book</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Bank Account</label>
+            <select
+              value={chequeBookForm.bankAccountId}
+              onChange={(e) => setChequeBookForm({...chequeBookForm, bankAccountId: e.target.value})}
+              style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+            >
+              <option value="">Select Bank Account</option>
+              {bankAccounts.map(acc => (
+                <option key={acc.id} value={acc.id}>{acc.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Starting Leaf No</label>
+            <input
+              type="number"
+              value={chequeBookForm.startingLeaf}
+              onChange={(e) => setChequeBookForm({...chequeBookForm, startingLeaf: e.target.value})}
+              style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Ending Leaf No</label>
+            <input
+              type="number"
+              value={chequeBookForm.endingLeaf}
+              onChange={(e) => setChequeBookForm({...chequeBookForm, endingLeaf: e.target.value})}
+              style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '12px' }}>Date Received</label>
+            <input
+              type="date"
+              value={chequeBookForm.dateReceived}
+              onChange={(e) => setChequeBookForm({...chequeBookForm, dateReceived: e.target.value})}
+              style={{ width: '100%', padding: '6px', border: BORDER, borderRadius: '4px', fontSize: '12px' }}
+            />
+          </div>
+          <div style={{ alignSelf: 'flex-end' }}>
+            <button
+              onClick={handleAddChequeBook}
+              style={{
+                backgroundColor: '#1557b0',
+                color: 'white',
+                border: BORDER,
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+              }}
+            >
+              <Plus size={14} />
+              Add Cheque Book
+            </button>
           </div>
         </div>
-      )}
+      </div>
+      
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px' }}>Bank Account</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Starting Leaf</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Ending Leaf</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Total Leaves</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Used</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Remaining</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Status</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {chequeBooksWithUsage.map((book, idx) => {
+              const bankAccount = bankAccounts.find(acc => acc.id === book.bankAccountId);
+              return (
+                <tr key={book.id} style={{ backgroundColor: idx % 2 === 0 ? '#f0f0f0' : 'transparent' }}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{bankAccount?.name || 'N/A'}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{book.fromNumber}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{book.toNumber}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{book.totalLeaves}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{book.used}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{book.remaining}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>
+                    <span style={{
+                      backgroundColor: book.status === 'Active' ? '#059669' : 
+                                      book.status === 'Exhausted' ? '#d97706' : '#dc2626',
+                      color: 'white',
+                      padding: '2px 6px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                    }}>
+                      {book.status}
+                    </span>
+                  </td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                    <button
+                      onClick={() => {}}
+                      style={{
+                        backgroundColor: '#1557b0',
+                        color: 'white',
+                        border: BORDER,
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                        marginRight: '5px',
+                      }}
+                    >
+                      <Edit size={12} />
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        border: BORDER,
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                      }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  // Render existing cheques tab (placeholder)
+  const renderChequesTab = () => (
+    <div style={{ backgroundColor: BG_CARD, padding: '15px', borderRadius: '8px', border: BORDER }}>
+      <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>Cheque Register</h2>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px' }}>Cheque No</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Bank Account</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Party Name</th>
+              <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Amount</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Issue Date</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Status</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cheques.map((cheque, idx) => {
+              const relatedVoucher = vouchers.find(v => v.id === cheque.voucherId);
+              const party = parties.find(p => p.id === relatedVoucher?.partyId);
+              
+              let rowStyle = {};
+              if (cheque.status === 'bounced') {
+                rowStyle.backgroundColor = '#fee2e2';
+              } else if (cheque.status === 'cleared') {
+                rowStyle.backgroundColor = '#dcfce7';
+              } else {
+                // Check if stale (older than 90 days)
+                const issueDate = new Date(cheque.issueDate);
+                const ninetyDaysAgo = new Date();
+                ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+                if (issueDate < ninetyDaysAgo) {
+                  rowStyle.backgroundColor = '#fef9c3';
+                }
+              }
+              
+              return (
+                <tr key={cheque.id} style={rowStyle}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{cheque.chequeNumber}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{cheque.bankAccountId}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{party?.name || 'N/A'}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(cheque.amount)}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{cheque.issueDate}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>
+                    <span style={{
+                      backgroundColor: cheque.status === 'bounced' ? '#dc2626' : 
+                                      cheque.status === 'cleared' ? '#059669' : 
+                                      cheque.status === 'cancelled' ? '#6b7280' : '#d97706',
+                      color: 'white',
+                      padding: '2px 6px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                    }}>
+                      {cheque.status.charAt(0).toUpperCase() + cheque.status.slice(1)}
+                    </span>
+                  </td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                    {cheque.status !== 'bounced' && (
+                      <button
+                        onClick={() => openBounceModal(cheque)}
+                        style={{
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Mark Bounced
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ backgroundColor: '#E4F1D9', minHeight: '100vh', padding: '20px' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Cheque Register</h1>
+      
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: '5px', marginBottom: '20px', borderBottom: BORDER }}>
+        {[
+          { id: 'cheques', label: 'Cheques' },
+          { id: 'bounce', label: 'Bounce Tracker' },
+          { id: 'books', label: 'Cheque Books' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              backgroundColor: activeTab === tab.id ? BG_HEADER : 'transparent',
+              color: activeTab === tab.id ? '#000000' : '#666',
+              border: BORDER,
+              padding: '10px 16px',
+              borderRadius: '4px 4px 0 0',
+              cursor: 'pointer',
+              fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      
+      {/* Tab Content */}
+      {activeTab === 'cheques' && renderChequesTab()}
+      {activeTab === 'bounce' && renderBounceTracker()}
+      {activeTab === 'books' && renderChequeBookRegister()}
+      
+      {/* Bounce Modal */}
+      {renderBounceModal()}
     </div>
   );
 }

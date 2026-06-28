@@ -518,6 +518,26 @@ interface AppState extends MultiGodownStoreSlice {
   updateEPaymentBatch: (id: string, data: Partial<any>) => Promise<void>;
   savePaymentAdvice: (data: Partial<any>) => Promise<string>;
   updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;
+
+  // NEW FEATURE TABLES FROM VERSION 13
+  branches: any[];
+  salespersons: any[];
+  exchangeRates: any[];
+  followUpNotes: any[];
+  jobWorkOrders: any[];
+  reportSchedules: any[];
+  priceFloorPolicies: any[];
+  chequeBounceLogs: any[];
+
+  addBranch: (data: Partial<any>) => Promise<any>;
+  updateBranch: (id: string, data: Partial<any>) => Promise<void>;
+  deleteBranch: (id: string) => Promise<void>;
+  addSalesperson: (data: Partial<any>) => Promise<any>;
+  updateSalesperson: (id: string, data: Partial<any>) => Promise<void>;
+  deleteSalesperson: (id: string) => Promise<void>;
+  addExchangeRate: (data: Partial<any>) => Promise<any>;
+  updateExchangeRate: (id: string, data: Partial<any>) => Promise<void>;
+  deleteExchangeRate: (id: string) => Promise<void>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -632,6 +652,15 @@ export const useStore = create<AppState>((set, get) => ({
   pdCheques: [],
   ePaymentBatches: [],
   paymentAdvices: [],
+
+  branches: [],
+  salespersons: [],
+  exchangeRates: [],
+  followUpNotes: [],
+  jobWorkOrders: [],
+  reportSchedules: [],
+  priceFloorPolicies: [],
+  chequeBounceLogs: [],
 
   stockJournals: [],
   productions: [],
@@ -778,6 +807,8 @@ export const useStore = create<AppState>((set, get) => ({
       ledgerExtensions,
       // Banking module data
       chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,
+      // Version 13
+      branches, salespersons, exchangeRates, followUpNotes, jobWorkOrders, reportSchedules, priceFloorPolicies, chequeBounceLogs,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -844,6 +875,14 @@ export const useStore = create<AppState>((set, get) => ({
       db.pdCheques.toArray(),
       db.ePaymentBatches.toArray(),
       db.paymentAdvices.toArray(),
+      db.branches.toArray().catch(() => []),
+      db.salespersons.toArray().catch(() => []),
+      db.exchangeRates.toArray().catch(() => []),
+      db.followUpNotes.toArray().catch(() => []),
+      db.jobWorkOrders.toArray().catch(() => []),
+      db.reportSchedules.toArray().catch(() => []),
+      db.priceFloorPolicies.toArray().catch(() => []),
+      db.chequeBounceLogs.toArray().catch(() => []),
     ]);
 
     const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
@@ -942,6 +981,14 @@ export const useStore = create<AppState>((set, get) => ({
       pdCheques: pdCheques as any[],
       ePaymentBatches: ePaymentBatches as any[],
       paymentAdvices: paymentAdvices as any[],
+      branches: branches as any[],
+      salespersons: salespersons as any[],
+      exchangeRates: exchangeRates as any[],
+      followUpNotes: followUpNotes as any[],
+      jobWorkOrders: jobWorkOrders as any[],
+      reportSchedules: reportSchedules as any[],
+      priceFloorPolicies: priceFloorPolicies as any[],
+      chequeBounceLogs: chequeBounceLogs as any[],
       
       journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
     });
@@ -2512,6 +2559,61 @@ export const useStore = create<AppState>((set, get) => ({
   getBaseCurrency: () => {
     const { currencies } = get();
     return currencies.find((c) => c.isBase) || currencies[0] || DEFAULT_CURRENCY;
+  },
+
+  // NEW ACTIONS FOR VERSION 13
+  addBranch: async (branch: any) => {
+    const db = getDB();
+    const newBranch = { id: generateId(), ...branch, createdAt: new Date().toISOString() };
+    await db.branches.put(newBranch);
+    set((s: any) => ({ branches: [...s.branches, newBranch] }));
+    return newBranch;
+  },
+  updateBranch: async (id: string, data: any) => {
+    const db = getDB();
+    await db.branches.update(id, data);
+    set((s: any) => ({ branches: s.branches.map((b: any) => b.id === id ? { ...b, ...data } : b) }));
+  },
+  deleteBranch: async (id: string) => {
+    const db = getDB();
+    await db.branches.delete(id);
+    set((s: any) => ({ branches: s.branches.filter((b: any) => b.id !== id) }));
+  },
+
+  addSalesperson: async (sp: any) => {
+    const db = getDB();
+    const newSp = { id: generateId(), ...sp, createdAt: new Date().toISOString() };
+    await db.salespersons.put(newSp);
+    set((s: any) => ({ salespersons: [...s.salespersons, newSp] }));
+    return newSp;
+  },
+  updateSalesperson: async (id: string, data: any) => {
+    const db = getDB();
+    await db.salespersons.update(id, data);
+    set((s: any) => ({ salespersons: s.salespersons.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
+  },
+  deleteSalesperson: async (id: string) => {
+    const db = getDB();
+    await db.salespersons.delete(id);
+    set((s: any) => ({ salespersons: s.salespersons.filter((x: any) => x.id !== id) }));
+  },
+
+  addExchangeRate: async (rate: any) => {
+    const db = getDB();
+    const newRate = { id: generateId(), ...rate, createdAt: new Date().toISOString() };
+    await db.exchangeRates.put(newRate);
+    set((s: any) => ({ exchangeRates: [...s.exchangeRates, newRate] }));
+    return newRate;
+  },
+  updateExchangeRate: async (id: string, data: any) => {
+    const db = getDB();
+    await db.exchangeRates.update(id, data);
+    set((s: any) => ({ exchangeRates: s.exchangeRates.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
+  },
+  deleteExchangeRate: async (id: string) => {
+    const db = getDB();
+    await db.exchangeRates.delete(id);
+    set((s: any) => ({ exchangeRates: s.exchangeRates.filter((x: any) => x.id !== id) }));
   },
 }));
 

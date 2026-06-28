@@ -199,7 +199,7 @@ function normalizeBSDate(invoice: VatInvoice): string {
   if (invoice.dateNepali) return invoice.dateNepali;
 
   try {
-    const converted = adToBS(invoice.date) as unknown;
+    const converted = adToBS(new Date(invoice.date)) as unknown;
 
     if (typeof converted === "string") {
       return converted;
@@ -591,7 +591,7 @@ const VatReports: React.FC = () => {
 
   const preparedDateBS = (() => {
     try {
-      const converted = adToBS(todayAD) as any;
+      const converted = adToBS(new Date(todayAD)) as any;
       return typeof converted === "string" ? converted : formatBSDate(converted);
     } catch {
       return todayAD;
@@ -616,30 +616,30 @@ const VatReports: React.FC = () => {
   );
 
   const annexColumns = [
-    { key: "sn", header: "S.N.", align: "center" as const, width: "60px" },
-    { key: "billDateBS", header: "Bill Date (BS)" },
-    { key: "partyName", header: activeTab === "annex1" ? "Customer Name" : "Supplier Name" },
-    { key: "partyPan", header: "PAN No." },
-    { key: "billNo", header: "Bill No." },
+    { key: "sn", label: "S.N.", align: "center" as const, width: "60px" },
+    { key: "billDateBS", label: "Bill Date (BS)" },
+    { key: "partyName", label: activeTab === "annex1" ? "Customer Name" : "Supplier Name" },
+    { key: "partyPan", label: "PAN No." },
+    { key: "billNo", label: "Bill No." },
     {
       key: "taxableAmount",
-      header: "Taxable Amount (Rs.)",
+      label: "Taxable Amount (Rs.)",
       align: "right" as const,
       render: (value: number) => formatMoney(value),
     },
     {
       key: "vatAmount",
-      header: "VAT Amount (Rs.)",
+      label: "VAT Amount (Rs.)",
       align: "right" as const,
       render: (value: number) => formatMoney(value),
     },
     {
       key: "totalAmount",
-      header: "Total Amount (Rs.)",
+      label: "Total Amount (Rs.)",
       align: "right" as const,
       render: (value: number) => formatMoney(value),
     },
-    { key: "remarks", header: "Remarks" },
+    { key: "remarks", label: "Remarks" },
   ];
 
   const vat10Rows = [
@@ -745,18 +745,18 @@ const VatReports: React.FC = () => {
   ];
 
   const vat10Columns = [
-    { key: "part", header: "Part", width: "90px" },
-    { key: "row", header: "Row", width: "70px" },
-    { key: "description", header: "Description" },
+    { key: "part", label: "Part", width: "90px" },
+    { key: "row", label: "Row", width: "70px" },
+    { key: "description", label: "Description" },
     {
       key: "baseAmount",
-      header: "Taxable / Base Amount",
+      label: "Taxable / Base Amount",
       align: "right" as const,
       render: (value: number) => (value ? formatMoney(value) : "—"),
     },
     {
       key: "vatAmount",
-      header: "VAT Amount",
+      label: "VAT Amount",
       align: "right" as const,
       render: (value: number) => formatMoney(value),
     },
@@ -926,7 +926,7 @@ const VatReports: React.FC = () => {
           <ReportGrid
             columns={vat10Columns}
             data={vat10Rows}
-            rowClassName={(row: any) =>
+            getRowClassName={(row: any) =>
               row.isGrandTotal
                 ? "bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]"
                 : row.isTotal

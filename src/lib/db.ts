@@ -809,6 +809,105 @@ export interface DBPaymentAdvice {
 }
 // --- END NEW BANKING MODULE INTERFACES ---
 
+export interface DBBranch {
+  id: string;
+  code: string;
+  name: string;
+  nameNepali?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBSalesperson {
+  id: string;
+  code: string;
+  name: string;
+  nameNepali?: string;
+  branchId?: string;
+  employeeId?: string;
+  phone?: string;
+  email?: string;
+  commissionRate?: number;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBExchangeRate {
+  id: string;
+  currency: string;
+  rate: number;
+  effectiveDate: string;
+  source: string;
+  [key: string]: any;
+}
+
+export interface DBFollowUpNote {
+  id: string;
+  partyId: string;
+  invoiceId?: string;
+  followUpDate: string;
+  note: string;
+  createdBy: string;
+  isResolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  [key: string]: any;
+}
+
+export interface DBJobWorkOrder {
+  id: string;
+  orderNo: string;
+  date: string;
+  dateNepali: string;
+  jobWorkerId: string;
+  status: "open" | "in-progress" | "completed" | "cancelled";
+  type: "outgoing" | "incoming";
+  lines: any[];
+  subTotal: number;
+  taxAmount?: number;
+  grandTotal: number;
+  narration?: string;
+  [key: string]: any;
+}
+
+export interface DBReportSchedule {
+  id: string;
+  reportType: string;
+  frequency: "daily" | "weekly" | "monthly" | "quarterly" | "yearly";
+  isActive: boolean;
+  nextRunDate: string;
+  lastRunDate?: string;
+  recipients: string[];
+  parameters?: any;
+  [key: string]: any;
+}
+
+export interface DBPriceFloorPolicy {
+  id: string;
+  itemId: string;
+  minSellingPrice: number;
+  maxDiscountPct: number;
+  effectiveDate: string;
+  expiryDate?: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+export interface DBChequeBounceLog {
+  id: string;
+  chequeId: string;
+  bounceDate: string;
+  bounceReason: string;
+  bounceCharges: number;
+  status: "logged" | "resolved";
+  resolvedDate?: string;
+  resolvedBy?: string;
+  [key: string]: any;
+}
+
 class SutraDB extends Dexie {
   cbmsQueue!: Table<CBMSQueueItem, string>;
   accounts!: Table<DBAccount>;
@@ -887,6 +986,16 @@ class SutraDB extends Dexie {
 
   auditLog!: Table<DBAuditLog>;
   periodLocks!: Table<DBPeriodLock>;
+
+  // - NEW FEATURE TABLES FROM VERSION 13 -
+  branches!: Table<DBBranch>;
+  salespersons!: Table<DBSalesperson>;
+  exchangeRates!: Table<DBExchangeRate>;
+  followUpNotes!: Table<DBFollowUpNote>;
+  jobWorkOrders!: Table<DBJobWorkOrder>;
+  reportSchedules!: Table<DBReportSchedule>;
+  priceFloorPolicies!: Table<DBPriceFloorPolicy>;
+  chequeBounceLogs!: Table<DBChequeBounceLog>;
 
   constructor() {
     super("SutraERP");
@@ -1007,6 +1116,18 @@ class SutraDB extends Dexie {
     this.version(12).stores({
       auditLog: "id, timestamp, module, action, userId, recordId, companyId",
       periodLocks: "id, companyId, fiscalYear, lockedMonth"
+    });
+
+    // Version 13 — New Feature Tables (Branches, Salespersons, NRB Rates, Follow-up, Job Work, Price Floor, Cheque Bounce, Report Scheduler)
+    this.version(13).stores({
+      branches: "id, code, name, isActive",
+      salespersons: "id, code, name, branchId, employeeId, isActive",
+      exchangeRates: "id, currency, effectiveDate, source",
+      followUpNotes: "id, partyId, invoiceId, followUpDate, createdBy, isResolved",
+      jobWorkOrders: "id, orderNo, date, jobWorkerId, status, type",
+      reportSchedules: "id, reportType, frequency, isActive, nextRunDate",
+      priceFloorPolicies: "id, itemId, minSellingPrice, maxDiscountPct, isActive",
+      chequeBounceLogs: "id, chequeId, bounceDate, bounceCharges, status",
     });
   }
 }

@@ -4,874 +4,1293 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { Package, AlertTriangle, Calendar, Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle } from "lucide-react";
+import { 
+  Package, 
+  AlertTriangle, 
+  Calendar, 
+  Search, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Eye, 
+  CheckCircle, 
+  XCircle, 
+  Bell, 
+  Lock, 
+  Clock 
+} from 'lucide-react';
 
-function money(v: number): string {
+const BORDER = "1px solid #000";
+const BG = "#E4F1D9";
+const BG_CARD = "#EBF5E2";
+const BG_HEADER = "#D4EABD";
+const BG_DEEP = "#C9DEB5";
+const EXPIRED_BG = "#fee2e2";
+const NEAR_EXPIRY_BG = "#fef9c3";
+const OK_BG = "#dcfce7";
+
+function money(v) {
   const abs = Math.abs(Number(v || 0));
   const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return v < 0 ? `(${s})` : s;
 }
 
-const BatchManagement: React.FC = () => {
-  const { items, batches, warehouses, parties, vouchers, addBatch, updateBatch } = useStore();
-  const [activeTab, setActiveTab] = useState(0);
+const TABS = [
+  { id: 'master', label: 'Batch Master' },
+  { id: 'near_expiry', label: 'Near-Expiry Dashboard' },
+  { id: 'on_hold', label: 'Batches On Hold' },
+  { id: 'report', label: 'Expiry Report' },
+  { id: 'fifo', label: 'FIFO Picker' },
+];
+
+export default function BatchManagement() {
+  const { batches, items, warehouses, addVoucher, accounts, companySettings } = useStore();
+  const [activeTab, setActiveTab] = useState('master');
+  const [allBatches, setAllBatches] = useState([]);
+  const [filteredBatches, setFilteredBatches] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [threshold, setThreshold] = useState(30);
-  const [searchBatch, setSearchBatch] = useState("");
-  const [serials, setSerials] = useState([]);
-  
-  // Form state
+  const [searchTerm, setSearchTerm] = useState('');
   const [form, setForm] = useState({
-    itemId: "",
-    itemName: "",
-    batchNo: "",
-    mfgDate: "",
-    expiryDate: "",
+    id: '',
+    batchName: '',
+    itemId: '',
+    mfgDate: '',
+    expiryDate: '',
     mrp: 0,
     purchaseRate: 0,
-    saleRate: 0,
+    salesRate: 0,
+    godownId: '',
     openingQty: 0,
-    unit: "",
-    warehouseId: "",
-    supplierId: "",
-    purchaseInvoiceNo: "",
-    purchaseDate: new Date().toISOString().split('T')[0]
+    isActive: true,
+    trackExpiry: false,
+    isOnHold: false,
+    holdReason: '',
   });
+  const [writeOffModal, setWriteOffModal] = useState({ show: false, batch: null });
+  const [writeOffData, setWriteOffData] = useState({ date: '', reason: '' });
+  const [expiryFilters, setExpiryFilters] = useState({
+    itemGroupId: '',
+    itemId: '',
+    daysRange: 30,
+  });
+  const [reportData, setReportData] = useState([]);
+  const [reportFilters, setReportFilters] = useState({
+    fromDate: '',
+    toDate: '',
+    itemGroupId: '',
+  });
+  const [selectedItemForFifo, setSelectedItemForFifo] = useState('');
 
-  // Load serial numbers
+  // Load batches from DB
   useEffect(() => {
     const db = getDB();
-    db.serialNumbers.toArray()
-      .catch(() => [])
-      .then(setSerials);
+    Promise.all([
+      db.batches.toArray().catch(() => []),
+    ]).then(([batchData]) => {
+      setAllBatches(batchData);
+    });
   }, []);
 
+  // Recompute filtered batches when allBatches or search term changes
+  useEffect(() => {
+    let result = allBatches;
+    
+    if (searchTerm) {
+      result = result.filter(b => 
+        b.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        b.itemId.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    if (activeTab === 'master') {
+      // For master tab, show all batches
+    } else if (activeTab === 'near_expiry') {
+      // Filter for near-expiry batches
+      const days = expiryFilters.daysRange === 'ALL' ? 9999 : expiryFilters.daysRange;
+      result = result.filter(b => {
+        const daysToExp = daysToExpiry(b.expiryDate);
+        return daysToExp <= days && daysToExp >= 0;
+      });
+    } else if (activeTab === 'on_hold') {
+      // Filter for held batches
+      result = result.filter(b => b.isOnHold);
+    }
+    
+    setFilteredBatches(result);
+  }, [allBatches, searchTerm, activeTab, expiryFilters]);
+
   // Calculate days to expiry
-  const calculateDaysToExpiry = (expiryDate: string) => {
+  const daysToExpiry = (expiryDate) => {
+    if (!expiryDate) return 9999;
     const today = new Date();
     const expiry = new Date(expiryDate);
-    const diffTime = expiry.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
   };
 
-  // Filter batches based on search and status
-  const filteredBatches = useMemo(() => {
-    return batches.filter(batch => {
-      const matchesSearch = batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           batch.itemName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = !statusFilter || batch.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [batches, searchTerm, statusFilter]);
+  // Determine status and color
+  const getStatusAndColor = (days) => {
+    if (days < 0) return { status: 'EXPIRED', color: '#dc2626', bgColor: EXPIRED_BG };
+    if (days <= 30) return { status: 'CRITICAL', color: '#d97706', bgColor: NEAR_EXPIRY_BG };
+    if (days <= 60) return { status: 'NEAR EXPIRY', color: '#f59e0b', bgColor: NEAR_EXPIRY_BG };
+    if (days <= 90) return { status: 'WATCH', color: '#eab308', bgColor: NEAR_EXPIRY_BG };
+    return { status: 'OK', color: '#059669', bgColor: OK_BG };
+  };
 
-  // Near expiry batches
-  const nearExpiryBatches = useMemo(() => {
-    return batches.filter(batch => {
-      const daysToExpiry = calculateDaysToExpiry(batch.expiryDate);
-      return daysToExpiry <= threshold && daysToExpiry > 0;
-    });
-  }, [batches, threshold]);
-
-  // Expired batches
-  const expiredBatches = useMemo(() => {
-    return batches.filter(batch => {
-      const daysToExpiry = calculateDaysToExpiry(batch.expiryDate);
-      return daysToExpiry <= 0;
-    });
-  }, [batches]);
-
-  // Lot traceability results
-  const lotTraceResults = useMemo(() => {
-    if (!searchBatch) return { forward: [], backward: null };
-    
-    const matchingBatch = batches.find(b => b.batchNo === searchBatch);
-    if (!matchingBatch) return { forward: [], backward: null };
-    
-    // Forward trace - find sales invoices with this batch
-    const forwardTrace = vouchers
-      .filter(v => v.type === "sales-invoice" && v.status !== "cancelled")
-      .flatMap(v => 
-        (v.lines || [])
-          .filter(l => l.batchId === matchingBatch.id)
-          .map(l => ({
-            date: v.date,
-            invoiceNo: v.invoiceNo,
-            customerName: v.partyName,
-            qty: l.quantity,
-            rate: l.rate
-          }))
-      );
-    
-    return { forward: forwardTrace, backward: matchingBatch };
-  }, [vouchers, batches, searchBatch]);
-
-  // Handle form changes
-  const handleFormChange = (field: string, value: any) => {
+  // Handle form input changes
+  const handleInputChange = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
-    
-    // Auto-fill unit when item is selected
-    if (field === 'itemId' && value) {
-      const item = items.find(i => i.id === value);
-      if (item) {
-        setForm(prev => ({ ...prev, unit: item.unit || "Pcs", itemName: item.name }));
-      }
-    }
-    
-    // Auto-fill supplier name when supplier is selected
-    if (field === 'supplierId' && value) {
-      const party = parties.find(p => p.id === value);
-      if (party) {
-        setForm(prev => ({ ...prev, supplierName: party.name }));
-      }
-    }
   };
 
-  // Handle save batch
-  const handleSaveBatch = async () => {
-    if (!form.batchNo.trim() || !form.itemId || !form.expiryDate) {
-      toast.error("Batch No, Item, and Expiry Date are required");
-      return;
-    }
-    
+  // Handle form submission
+  const handleSubmit = async () => {
     const db = getDB();
-    const batchRecord = {
+    const batchToSave = {
       ...form,
-      id: selectedBatch?.id || generateId(),
-      currentQty: form.openingQty,
-      isActive: true,
-      createdAt: new Date().toISOString()
+      id: form.id || generateId(),
+      createdAt: form.id ? undefined : new Date().toISOString(),
     };
-    
+
     try {
-      if (selectedBatch) {
-        await updateBatch(selectedBatch.id, batchRecord);
-        toast.success("Batch updated successfully");
-      } else {
-        await addBatch(batchRecord);
-        toast.success("Batch created successfully");
-      }
+      await db.batches.put(batchToSave);
+      setAllBatches(prev => [...prev.filter(b => b.id !== batchToSave.id), batchToSave]);
       setShowForm(false);
       setForm({
-        itemId: "",
-        itemName: "",
-        batchNo: "",
-        mfgDate: "",
-        expiryDate: "",
+        id: '',
+        batchName: '',
+        itemId: '',
+        mfgDate: '',
+        expiryDate: '',
         mrp: 0,
         purchaseRate: 0,
-        saleRate: 0,
+        salesRate: 0,
+        godownId: '',
         openingQty: 0,
-        unit: "",
-        warehouseId: "",
-        supplierId: "",
-        purchaseInvoiceNo: "",
-        purchaseDate: new Date().toISOString().split('T')[0]
+        isActive: true,
+        trackExpiry: false,
+        isOnHold: false,
+        holdReason: '',
       });
+      toast.success(form.id ? 'Batch updated successfully' : 'Batch created successfully');
     } catch (error) {
-      toast.error("Failed to save batch");
+      console.error('Error saving batch:', error);
+      toast.error('Failed to save batch');
     }
   };
 
-  // Handle edit batch
-  const handleEdit = (batch: any) => {
-    setSelectedBatch(batch);
+  // Handle edit
+  const handleEdit = (batch) => {
     setForm({
+      id: batch.id,
+      batchName: batch.batchName,
       itemId: batch.itemId,
-      itemName: batch.itemName,
-      batchNo: batch.batchNo,
-      mfgDate: batch.mfgDate,
-      expiryDate: batch.expiryDate,
-      mrp: batch.mrp,
-      purchaseRate: batch.purchaseRate,
-      saleRate: batch.saleRate,
-      openingQty: batch.openingQty,
-      unit: batch.unit,
-      warehouseId: batch.warehouseId,
-      supplierId: batch.supplierId,
-      purchaseInvoiceNo: batch.purchaseInvoiceNo,
-      purchaseDate: batch.purchaseDate
+      mfgDate: batch.mfgDate || '',
+      expiryDate: batch.expiryDate || '',
+      mrp: batch.mrp || 0,
+      purchaseRate: batch.purchaseRate || 0,
+      salesRate: batch.salesRate || 0,
+      godownId: batch.godownId || '',
+      openingQty: batch.openingQty || 0,
+      isActive: batch.isActive !== undefined ? batch.isActive : true,
+      trackExpiry: batch.trackExpiry || false,
+      isOnHold: batch.isOnHold || false,
+      holdReason: batch.holdReason || '',
     });
     setShowForm(true);
   };
 
-  // Handle delete batch
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this batch?")) {
-      try {
-        const db = getDB();
-        await db.batches.update(id, { isActive: false });
-        toast.success("Batch deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete batch");
-      }
+  // Handle delete
+  const handleDelete = async (id) => {
+    const db = getDB();
+    try {
+      await db.batches.delete(id);
+      setAllBatches(prev => prev.filter(b => b.id !== id));
+      toast.success('Batch deleted successfully');
+    } catch (error) {
+      console.error('Error deleting batch:', error);
+      toast.error('Failed to delete batch');
     }
   };
 
-  // Handle write off expired batch
-  const handleWriteOff = async (batch: any) => {
-    if (window.confirm(`Write off expired batch ${batch.batchNo}? This will create a stock journal.`)) {
-      try {
-        const db = getDB();
-        const journalVoucher = {
-          id: generateId(),
-          type: "stock-journal",
-          date: new Date().toISOString().split('T')[0],
-          status: "posted",
-          narration: `Write-off expired batch ${batch.batchNo}`,
-          lines: [
-            {
-              itemId: batch.itemId,
-              batchId: batch.id,
-              warehouseId: batch.warehouseId,
-              quantity: batch.currentQty,
-              rate: batch.purchaseRate,
-              type: "out"
-            }
-          ],
-          createdAt: new Date().toISOString()
-        };
-        
-        await db.vouchers.add(journalVoucher);
-        await db.batches.update(batch.id, { currentQty: 0 });
-        toast.success(`Batch ${batch.batchNo} written off successfully`);
-      } catch (error) {
-        toast.error("Failed to write off batch");
-      }
+  // Handle hold/release
+  const handleHoldToggle = async (batchId, isHold, reason = '') => {
+    const db = getDB();
+    try {
+      await db.batches.update(batchId, { isOnHold: isHold, holdReason: reason });
+      setAllBatches(prev => 
+        prev.map(b => b.id === batchId ? { ...b, isOnHold: isHold, holdReason: reason } : b)
+      );
+      toast.success(isHold ? 'Batch placed on hold' : 'Batch released');
+    } catch (error) {
+      console.error('Error updating hold status:', error);
+      toast.error('Failed to update hold status');
     }
   };
 
-  // Calculate status for a batch
-  const getStatusInfo = (batch: any) => {
-    const daysToExpiry = calculateDaysToExpiry(batch.expiryDate);
+  // Handle write-off submission
+  const handleWriteOffSubmit = async () => {
+    if (!writeOffData.date || !writeOffData.reason) {
+      toast.error('Please provide date and reason for write-off');
+      return;
+    }
     
-    if (daysToExpiry <= 0) {
-      return { status: "Expired", class: "bg-red-100 text-red-700", days: daysToExpiry };
-    } else if (daysToExpiry <= 30) {
-      return { status: "Near Expiry", class: "bg-amber-100 text-amber-700", days: daysToExpiry };
-    } else {
-      return { status: "Good", class: "bg-green-100 text-green-700", days: daysToExpiry };
+    const batch = writeOffModal.batch;
+    const item = items.find(i => i.id === batch.itemId);
+    
+    if (!item) {
+      toast.error('Item not found for this batch');
+      return;
+    }
+    
+    // Create a stock journal voucher for write-off
+    const writeOffVoucher = {
+      id: generateId(),
+      voucherNo: `WR-${generateId().slice(0, 6)}`,
+      date: writeOffData.date,
+      dateNepali: '', // Will be computed later
+      type: 'stock-journal',
+      partyId: null,
+      lines: [
+        {
+          itemId: batch.itemId,
+          warehouseId: batch.godownId,
+          batchId: batch.id,
+          quantity: batch.openingQty,
+          rate: batch.purchaseRate,
+          amount: batch.openingQty * batch.purchaseRate,
+          type: 'credit', // Remove stock
+          narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`
+        },
+        {
+          itemId: batch.itemId,
+          warehouseId: batch.godownId,
+          batchId: batch.id,
+          quantity: batch.openingQty,
+          rate: batch.purchaseRate,
+          amount: batch.openingQty * batch.purchaseRate,
+          type: 'debit', // Expense account
+          accountId: 'EXPIRED_STOCK_WRITE_OFF_ACCOUNT_ID', // This needs to be a real account ID
+          narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`
+        }
+      ],
+      subTotal: batch.openingQty * batch.purchaseRate,
+      grandTotal: batch.openingQty * batch.purchaseRate,
+      status: 'posted',
+      narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`,
+      createdAt: new Date().toISOString(),
+    };
+    
+    try {
+      await addVoucher(writeOffVoucher);
+      await handleDelete(batch.id);
+      setWriteOffModal({ show: false, batch: null });
+      setWriteOffData({ date: '', reason: '' });
+      toast.success('Batch written off successfully');
+    } catch (error) {
+      console.error('Error writing off batch:', error);
+      toast.error('Failed to write off batch');
     }
   };
 
-  // Export to Excel
-  const exportToExcel = () => {
-    const headers = ["Batch No", "Item Name", "Qty Available", "Expiry Date", "Status", "Warehouse"];
-    const rows = filteredBatches.map(batch => [
-      batch.batchNo,
-      batch.itemName,
-      batch.currentQty,
-      batch.expiryDate,
-      getStatusInfo(batch).status,
-      warehouses.find(w => w.id === batch.warehouseId)?.name || "N/A"
-    ]);
-    
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Batches");
-    XLSX.writeFile(wb, "Batch_Management_Report.xlsx");
-    toast.success("Batch report exported to Excel");
-  };
-
-  return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
-      <div className="w-full">
-        {/* Standard Page Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Batch Management</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">Manage batch details, lot traceability, and expiry tracking</p>
-          </div>
-        </div>
-        
-        {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md shadow-sm">
-          {["Batch Master", "Near Expiry Alert", "Expired Stock", "Lot Traceability", "Serial Number Register"].map((tab, index) => (
-            <button
-              key={index}
-              className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors ${
-                activeTab === index 
-                  ? 'border-[#1557b0] text-[#1557b0]' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-              onClick={() => setActiveTab(index)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-3 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search batches..."
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-48"
-                />
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                >
-                  <option value="">All Statuses</option>
-                  <option value="Expired">Expired</option>
-                  <option value="Near Expiry">Near Expiry</option>
-                  <option value="Good">Good</option>
-                </select>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-                  onClick={() => {
-                    setSelectedBatch(null);
-                    setForm({
-                      itemId: "",
-                      itemName: "",
-                      batchNo: "",
-                      mfgDate: "",
-                      expiryDate: "",
-                      mrp: 0,
-                      purchaseRate: 0,
-                      saleRate: 0,
-                      openingQty: 0,
-                      unit: "",
-                      warehouseId: "",
-                      supplierId: "",
-                      purchaseInvoiceNo: "",
-                      purchaseDate: new Date().toISOString().split('T')[0]
-                    });
-                    setShowForm(true);
-                  }}
-                >
-                  <Plus size={14} />
-                  Add Batch
-                </button>
-                <button
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-                  onClick={exportToExcel}
-                >
-                  <Search size={14} />
-                  Export to Excel
-                </button>
-              </div>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Batch No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item Name</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Qty Available</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expiry Date</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">MFG Date</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days to Expiry</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Warehouse</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredBatches.map(batch => {
-                    const statusInfo = getStatusInfo(batch);
-                    return (
-                      <tr key={batch.id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{batch.batchNo}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{batch.itemName}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">{batch.currentQty}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{batch.expiryDate}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{batch.mfgDate}</td>
-                        <td className="px-3 py-2.5 text-center">
-                          <span className={`${statusInfo.class} px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide`}>
-                            {statusInfo.status}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">{statusInfo.days}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                          {warehouses.find(w => w.id === batch.warehouseId)?.name || "N/A"}
-                        </td>
-                        <td className="px-3 py-2.5 text-center flex items-center justify-center gap-3">
-                          <button 
-                            className="text-[#1557b0] hover:text-[#0f4a96]"
-                            onClick={() => handleEdit(batch)}
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button 
-                            className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDelete(batch.id)}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {filteredBatches.length === 0 && (
-                    <tr>
-                      <td colSpan={9} className="px-3 py-8 text-[12px] text-gray-500 text-center">
-                        No batches found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-3 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <label className="text-[11px] font-medium text-gray-600">Days Threshold:</label>
-                <input
-                  type="number"
-                  value={threshold}
-                  onChange={(e) => setThreshold(Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-24"
-                />
-              </div>
-            </div>
-            
-            {nearExpiryBatches.length > 0 && (
-              <div className="bg-amber-50 text-amber-800 p-3 rounded-md border border-amber-200 mb-4 flex items-center gap-2">
-                <AlertTriangle size={16} className="text-amber-600" />
-                <span className="text-[12px] font-medium">
-                  {nearExpiryBatches.length} batches expiring within {threshold} days — Total value: NPR {money(nearExpiryBatches.reduce((sum, b) => sum + (b.currentQty * b.saleRate), 0))}
-                </span>
-              </div>
-            )}
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Batch No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Qty</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expiry Date</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days Remaining</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Value</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {nearExpiryBatches.map(batch => {
-                    const daysToExpiry = calculateDaysToExpiry(batch.expiryDate);
-                    return (
-                      <tr key={batch.id} className="border-b border-gray-100 hover:bg-gray-50 bg-amber-50/20">
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{batch.batchNo}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{batch.itemName}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">{batch.currentQty}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{batch.expiryDate}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-amber-700 font-medium text-right">{daysToExpiry}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono">{money(batch.currentQty * batch.saleRate)}</td>
-                        <td className="px-3 py-2.5 text-center flex items-center justify-center gap-2">
-                          <button 
-                            className="h-6 px-2 bg-[#1557b0] text-white text-[10px] font-medium rounded-md hover:bg-[#0f4a96]"
-                            onClick={() => navigator.clipboard.writeText(batch.itemName)}
-                          >
-                            Sell First
-                          </button>
-                          <button 
-                            className="h-6 px-2 bg-red-600 text-white text-[10px] font-medium rounded-md hover:bg-red-700"
-                            onClick={() => toast.info("Return to supplier functionality would go here")}
-                          >
-                            Return
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {nearExpiryBatches.length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="px-3 py-8 text-[12px] text-gray-500 text-center">
-                        No batches expiring within {threshold} days.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-3 mb-4 max-w-full overflow-auto">
-            <div className="bg-red-50 text-red-800 p-4 rounded-md border border-red-200 mb-4 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <AlertTriangle size={18} className="text-red-600" />
-                <span className="text-[13px] font-medium">
-                  Expired Stock Alert
-                </span>
-              </div>
-              <span className="text-[14px] font-bold">
-                Total Value: NPR {money(expiredBatches.reduce((sum, b) => sum + (b.currentQty * b.purchaseRate), 0))}
-              </span>
-            </div>
-            
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Batch No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Qty</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expiry Date</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Value</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expiredBatches.map(batch => {
-                    return (
-                      <tr key={batch.id} className="border-b border-gray-100 hover:bg-gray-50 bg-red-50/30">
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{batch.batchNo}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{batch.itemName}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-red-700 font-medium text-right">{batch.currentQty}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-red-700 font-medium">{batch.expiryDate}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right font-mono">{money(batch.currentQty * batch.purchaseRate)}</td>
-                        <td className="px-3 py-2.5 text-center flex items-center justify-center">
-                          <button 
-                            className="h-7 px-3 bg-red-600 text-white text-[11px] font-medium rounded-md hover:bg-red-700"
-                            onClick={() => handleWriteOff(batch)}
-                          >
-                            Write Off
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {expiredBatches.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="px-3 py-8 text-[12px] text-gray-500 text-center">
-                        No expired batches found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex gap-2 mb-6">
+  // Render batch master tab
+  const renderBatchMaster = () => (
+    <div style={{ padding: '20px', backgroundColor: BG_CARD, borderRadius: '8px', border: BORDER }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000' }}>Batch Master</h2>
+        <button
+          onClick={() => {
+            setForm({
+              id: '',
+              batchName: '',
+              itemId: '',
+              mfgDate: '',
+              expiryDate: '',
+              mrp: 0,
+              purchaseRate: 0,
+              salesRate: 0,
+              godownId: '',
+              openingQty: 0,
+              isActive: true,
+              trackExpiry: false,
+              isOnHold: false,
+              holdReason: '',
+            });
+            setShowForm(true);
+          }}
+          style={{
+            backgroundColor: '#1557b0',
+            color: 'white',
+            border: BORDER,
+            padding: '8px 16px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+          }}
+        >
+          <Plus size={16} />
+          Add Batch
+        </button>
+      </div>
+      
+      {showForm && (
+        <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: BG_DEEP, borderRadius: '8px', border: BORDER }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px' }}>
+            {form.id ? 'Edit Batch' : 'Add New Batch'}
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Batch Name *</label>
               <input
                 type="text"
-                value={searchBatch}
-                onChange={(e) => setSearchBatch(e.target.value)}
-                placeholder="Enter Batch Number to trace..."
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+                value={form.batchName}
+                onChange={(e) => handleInputChange('batchName', e.target.value)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
               />
-              <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-                onClick={() => {}}
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Item *</label>
+              <select
+                value={form.itemId}
+                onChange={(e) => handleInputChange('itemId', e.target.value)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
               >
-                Trace Lot
-              </button>
+                <option value="">Select Item</option>
+                {items.map(item => (
+                  <option key={item.id} value={item.id}>{item.code} - {item.name}</option>
+                ))}
+              </select>
             </div>
-            
-            {lotTraceResults.forward.length > 0 && (
-              <div className="mb-6 border border-gray-200 rounded-md overflow-hidden">
-                <div className="bg-[#f5f6fa] border-b border-gray-200 p-3">
-                  <h3 className="text-[13px] font-semibold text-gray-800">Forward Trace (Sales)</h3>
-                </div>
-                <table className="w-full min-w-max border-collapse">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Invoice No</th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Customer Name</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Qty</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rate</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lotTraceResults.forward.map((sale, idx) => (
-                      <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="px-3 py-2 text-[12px] text-gray-700">{sale.date}</td>
-                        <td className="px-3 py-2 text-[12px] text-gray-700 font-mono">{sale.invoiceNo}</td>
-                        <td className="px-3 py-2 text-[12px] text-gray-700">{sale.customerName}</td>
-                        <td className="px-3 py-2 text-[12px] text-gray-700 text-right">{sale.qty}</td>
-                        <td className="px-3 py-2 text-[12px] text-gray-700 text-right font-mono">{money(sale.rate)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            
-            {lotTraceResults.backward && (
-              <div className="border border-gray-200 rounded-md overflow-hidden">
-                <div className="bg-[#f5f6fa] border-b border-gray-200 p-3">
-                  <h3 className="text-[13px] font-semibold text-gray-800">Backward Trace (Purchases)</h3>
-                </div>
-                <div className="p-4 bg-white">
-                  <div className="flex items-start">
-                    <div className="flex flex-col items-center mr-4 mt-1">
-                      <div className="w-3 h-3 bg-[#1557b0] rounded-full"></div>
-                      <div className="w-0.5 h-16 bg-gray-200 my-1"></div>
-                      <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                    </div>
-                    <div>
-                      <div className="text-[13px] font-semibold text-gray-800 mb-1">Receipt from Supplier</div>
-                      <div className="text-[12px] text-gray-600 mb-0.5">
-                        <span className="font-medium mr-1">Supplier:</span> 
-                        {parties.find(p => p.id === lotTraceResults.backward.supplierId)?.name || "N/A"}
-                      </div>
-                      <div className="text-[12px] text-gray-600 mb-0.5">
-                        <span className="font-medium mr-1">Invoice No:</span> 
-                        <span className="font-mono">{lotTraceResults.backward.purchaseInvoiceNo || "N/A"}</span>
-                      </div>
-                      <div className="text-[12px] text-gray-600">
-                        <span className="font-medium mr-1">Date:</span> 
-                        {lotTraceResults.backward.purchaseDate || "N/A"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {searchBatch && lotTraceResults.forward.length === 0 && !lotTraceResults.backward && (
-              <div className="text-center p-8 text-[13px] text-gray-500">
-                No trace data found for batch "{searchBatch}"
-              </div>
-            )}
-            
-            {!searchBatch && (
-              <div className="text-center p-8 text-[13px] text-gray-400 border-2 border-dashed border-gray-200 rounded-md mt-4">
-                Enter a batch number above to see its full trace history
-              </div>
-            )}
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Mfg Date</label>
+              <input
+                type="date"
+                value={form.mfgDate}
+                onChange={(e) => handleInputChange('mfgDate', e.target.value)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Expiry Date</label>
+              <input
+                type="date"
+                value={form.expiryDate}
+                onChange={(e) => handleInputChange('expiryDate', e.target.value)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+                disabled={!form.trackExpiry}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Track Expiry</label>
+              <input
+                type="checkbox"
+                checked={form.trackExpiry}
+                onChange={(e) => handleInputChange('trackExpiry', e.target.checked)}
+                style={{ marginRight: '5px' }}
+              />
+              Enable expiry tracking
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>MRP</label>
+              <input
+                type="number"
+                value={form.mrp}
+                onChange={(e) => handleInputChange('mrp', parseFloat(e.target.value) || 0)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Purchase Rate</label>
+              <input
+                type="number"
+                value={form.purchaseRate}
+                onChange={(e) => handleInputChange('purchaseRate', parseFloat(e.target.value) || 0)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Sales Rate</label>
+              <input
+                type="number"
+                value={form.salesRate}
+                onChange={(e) => handleInputChange('salesRate', parseFloat(e.target.value) || 0)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Warehouse</label>
+              <select
+                value={form.godownId}
+                onChange={(e) => handleInputChange('godownId', e.target.value)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              >
+                <option value="">Select Warehouse</option>
+                {warehouses.map(wh => (
+                  <option key={wh.id} value={wh.id}>{wh.code} - {wh.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Opening Qty</label>
+              <input
+                type="number"
+                value={form.openingQty}
+                onChange={(e) => handleInputChange('openingQty', parseInt(e.target.value) || 0)}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Active</label>
+              <input
+                type="checkbox"
+                checked={form.isActive}
+                onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                style={{ marginRight: '5px' }}
+              />
+              Is Active
+            </div>
           </div>
-        )}
+          <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+            <button
+              onClick={handleSubmit}
+              style={{
+                backgroundColor: '#059669',
+                color: 'white',
+                border: BORDER,
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              {form.id ? 'Update' : 'Save'} Batch
+            </button>
+            <button
+              onClick={() => setShowForm(false)}
+              style={{
+                backgroundColor: '#dc2626',
+                color: 'white',
+                border: BORDER,
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      
+      <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Search size={18} style={{ color: '#000000' }} />
+        <input
+          type="text"
+          placeholder="Search batches..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ padding: '8px', border: BORDER, borderRadius: '4px', width: '300px' }}
+        />
+      </div>
+      
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+          <thead>
+            <tr style={{ backgroundColor: BG_HEADER }}>
+              <th style={{ border: BORDER, padding: '8px' }}>Batch No</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Item</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Mfg Date</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Expiry Date</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Days Remaining</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Status</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Qty</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Purchase Rate</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Value</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Warehouse</th>
+              <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredBatches.map(batch => {
+              const item = items.find(i => i.id === batch.itemId);
+              const days = daysToExpiry(batch.expiryDate);
+              const { status, color, bgColor } = getStatusAndColor(days);
+              const value = (batch.openingQty || 0) * (batch.purchaseRate || 0);
+              
+              return (
+                <tr key={batch.id} style={{ backgroundColor: bgColor }}>
+                  <td style={{ border: BORDER, padding: '8px' }}>{batch.batchName}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{item?.name || 'N/A'}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{batch.mfgDate}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{batch.expiryDate}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>{days}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>
+                    <span style={{
+                      backgroundColor: color,
+                      color: 'white',
+                      padding: '2px 6px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                    }}>
+                      {status}
+                    </span>
+                  </td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{batch.openingQty}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(batch.purchaseRate)}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(value)}</td>
+                  <td style={{ border: BORDER, padding: '8px' }}>{batch.godownId}</td>
+                  <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                    {!batch.isOnHold ? (
+                      <button
+                        onClick={() => handleHoldToggle(batch.id, true)}
+                        style={{
+                          backgroundColor: '#d97706',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Hold
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleHoldToggle(batch.id, false)}
+                        style={{
+                          backgroundColor: '#059669',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Release
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleEdit(batch)}
+                      style={{
+                        backgroundColor: '#1557b0',
+                        color: 'white',
+                        border: BORDER,
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                        marginRight: '5px',
+                      }}
+                    >
+                      <Edit size={12} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(batch.id)}
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        border: BORDER,
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                      }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
-        {activeTab === 4 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-3 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-[14px] font-semibold text-gray-800">Serial Number Register</h3>
+  // Render near-expiry dashboard
+  const renderNearExpiryDashboard = () => {
+    const expiringIn30 = allBatches.filter(b => {
+      const days = daysToExpiry(b.expiryDate);
+      return days >= 0 && days <= 30;
+    });
+    const expiringIn60 = allBatches.filter(b => {
+      const days = daysToExpiry(b.expiryDate);
+      return days >= 0 && days <= 60;
+    });
+    const expiringIn90 = allBatches.filter(b => {
+      const days = daysToExpiry(b.expiryDate);
+      return days >= 0 && days <= 90;
+    });
+
+const expired = allBatches.filter(b => daysToExpiry(b.expiryDate) < 0);
+    
+    const value30 = expiringIn30.reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    const value60 = expiringIn60.reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    const value90 = expiringIn90.reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    const valueExpired = expired.reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    
+    return (
+      <div style={{ padding: '20px', backgroundColor: BG_CARD, borderRadius: '8px', border: BORDER }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Near-Expiry Dashboard</h2>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
+          <div style={{ 
+            backgroundColor: '#fecaca', 
+            padding: '15px', 
+            borderRadius: '8px', 
+            border: BORDER,
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc2626' }}>{expired.length}</div>
+            <div style={{ color: '#000000', marginTop: '5px' }}>Already Expired</div>
+            <div style={{ color: '#000000', fontWeight: 'bold', marginTop: '5px' }}>{money(valueExpired)}</div>
+          </div>
+          <div style={{ 
+            backgroundColor: EXPIRED_BG, 
+            padding: '15px', 
+            borderRadius: '8px', 
+            border: BORDER,
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc2626' }}>{expiringIn30.length}</div>
+            <div style={{ color: '#000000', marginTop: '5px' }}>Expiring in 30 Days</div>
+            <div style={{ color: '#000000', fontWeight: 'bold', marginTop: '5px' }}>{money(value30)}</div>
+          </div>
+          <div style={{ 
+            backgroundColor: NEAR_EXPIRY_BG, 
+            padding: '15px', 
+            borderRadius: '8px', 
+            border: BORDER,
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d97706' }}>{expiringIn60.length}</div>
+            <div style={{ color: '#000000', marginTop: '5px' }}>Expiring in 60 Days</div>
+            <div style={{ color: '#000000', fontWeight: 'bold', marginTop: '5px' }}>{money(value60)}</div>
+          </div>
+          <div style={{ 
+            backgroundColor: NEAR_EXPIRY_BG, 
+            padding: '15px', 
+            borderRadius: '8px', 
+            border: BORDER,
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f59e0b' }}>{expiringIn90.length}</div>
+            <div style={{ color: '#000000', marginTop: '5px' }}>Expiring in 90 Days</div>
+            <div style={{ color: '#000000', fontWeight: 'bold', marginTop: '5px' }}>{money(value90)}</div>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Item Group</label>
+            <select
+              value={expiryFilters.itemGroupId}
+              onChange={(e) => setExpiryFilters({...expiryFilters, itemGroupId: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            >
+              <option value="">All Groups</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Item</label>
+            <select
+              value={expiryFilters.itemId}
+              onChange={(e) => setExpiryFilters({...expiryFilters, itemId: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            >
+              <option value="">All Items</option>
+              {items.map(item => (
+                <option key={item.id} value={item.id}>{item.code} - {item.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Days Filter</label>
+            <select
+              value={expiryFilters.daysRange}
+              onChange={(e) => setExpiryFilters({...expiryFilters, daysRange: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            >
+              <option value={30}>30 Days</option>
+              <option value={60}>60 Days</option>
+              <option value={90}>90 Days</option>
+              <option value="ALL">All</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+            <thead>
+              <tr style={{ backgroundColor: BG_HEADER }}>
+                <th style={{ border: BORDER, padding: '8px' }}>Item Name</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Batch No</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Qty In Stock</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Expiry Date</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>Days Remaining</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Value</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Status</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredBatches.map(batch => {
+                const item = items.find(i => i.id === batch.itemId);
+                const days = daysToExpiry(batch.expiryDate);
+                const { status, color, bgColor } = getStatusAndColor(days);
+                const value = (batch.openingQty || 0) * (batch.purchaseRate || 0);
+                
+                return (
+                  <tr key={batch.id} style={{ backgroundColor: bgColor }}>
+                    <td style={{ border: BORDER, padding: '8px' }}>{item?.name || 'N/A'}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.batchName}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{batch.openingQty}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.expiryDate}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>{days}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(value)}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>
+                      <span style={{
+                        backgroundColor: color,
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '12px',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                      }}>
+                        {status}
+                      </span>
+                    </td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleHoldToggle(batch.id, true)}
+                        style={{
+                          backgroundColor: '#d97706',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Hold
+                      </button>
+                      <button
+                        onClick={() => setWriteOffModal({ show: true, batch })}
+                        style={{
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                        }}
+                      >
+                        Write Off
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  // Render on-hold tab
+  const renderOnHoldTab = () => {
+    const heldBatches = allBatches.filter(b => b.isOnHold);
+    
+    return (
+      <div style={{ padding: '20px', backgroundColor: BG_CARD, borderRadius: '8px', border: BORDER }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Batches On Hold</h2>
+        
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+            <thead>
+              <tr style={{ backgroundColor: BG_HEADER }}>
+                <th style={{ border: BORDER, padding: '8px' }}>Item</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Batch No</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Qty</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Expiry Date</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Hold Reason</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Hold Date</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {heldBatches.map(batch => {
+                const item = items.find(i => i.id === batch.itemId);
+                
+                return (
+                  <tr key={batch.id}>
+                    <td style={{ border: BORDER, padding: '8px' }}>{item?.name || 'N/A'}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.batchName}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{batch.openingQty}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.expiryDate}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.holdReason}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.createdAt?.split('T')[0]}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleHoldToggle(batch.id, false)}
+                        style={{
+                          backgroundColor: '#059669',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Release
+                      </button>
+                      <button
+                        onClick={() => setWriteOffModal({ show: true, batch })}
+                        style={{
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          marginRight: '5px',
+                        }}
+                      >
+                        Write Off
+                      </button>
+                      <button
+                        onClick={() => {}}
+                        style={{
+                          backgroundColor: '#1557b0',
+                          color: 'white',
+                          border: BORDER,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                        }}
+                      >
+                        Return
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  // Render expiry report
+  const renderExpiryReport = () => {
+    const runReport = () => {
+      let result = allBatches;
+      
+      if (reportFilters.fromDate) {
+        result = result.filter(b => new Date(b.expiryDate) >= new Date(reportFilters.fromDate));
+      }
+      if (reportFilters.toDate) {
+        result = result.filter(b => new Date(b.expiryDate) <= new Date(reportFilters.toDate));
+      }
+      if (reportFilters.itemGroupId) {
+        result = result.filter(b => {
+          const item = items.find(i => i.id === b.itemId);
+          return item?.groupId === reportFilters.itemGroupId;
+        });
+      }
+      
+      setReportData(result);
+    };
+    
+    const exportExcel = () => {
+      if (reportData.length === 0) {
+        toast.error('No data to export');
+        return;
+      }
+      
+      const ws = XLSX.utils.json_to_sheet(reportData.map(b => {
+        const item = items.find(i => i.id === b.itemId);
+        const warehouse = warehouses.find(w => w.id === b.godownId);
+        const days = daysToExpiry(b.expiryDate);
+        return {
+          'Item Code': item?.code || 'N/A',
+          'Item Name': item?.name || 'N/A',
+          'Batch No': b.batchName,
+          'Batch Qty': b.openingQty,
+          'MFG Date': b.mfgDate,
+          'Expiry Date': b.expiryDate,
+          'Days to Expiry': days,
+          'Purchase Rate': b.purchaseRate,
+          'Stock Value': (b.openingQty || 0) * (b.purchaseRate || 0),
+          'Warehouse': warehouse?.name || 'N/A',
+        };
+      }));
+      
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Expiry Report');
+      XLSX.writeFile(wb, `Expiry_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+      toast.success('Exported to Excel successfully');
+    };
+    
+    const totalNearExpiry = reportData
+      .filter(b => daysToExpiry(b.expiryDate) >= 0 && daysToExpiry(b.expiryDate) <= 90)
+      .reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    
+    const totalExpired = reportData
+      .filter(b => daysToExpiry(b.expiryDate) < 0)
+      .reduce((sum, b) => sum + (b.openingQty * b.purchaseRate), 0);
+    
+    return (
+      <div style={{ padding: '20px', backgroundColor: BG_CARD, borderRadius: '8px', border: BORDER }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Expiry Report</h2>
+        
+        <div style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Expiring Between</label>
+            <input
+              type="date"
+              value={reportFilters.fromDate}
+              onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>And</label>
+            <input
+              type="date"
+              value={reportFilters.toDate}
+              onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Item Group</label>
+            <select
+              value={reportFilters.itemGroupId}
+              onChange={(e) => setReportFilters({...reportFilters, itemGroupId: e.target.value})}
+              style={{ padding: '8px', border: BORDER, borderRadius: '4px' }}
+            >
+              <option value="">All Groups</option>
+            </select>
+          </div>
+          <button
+            onClick={runReport}
+            style={{
+              backgroundColor: '#1557b0',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              alignSelf: 'flex-end',
+            }}
+          >
+            Run Report
+          </button>
+          <button
+            onClick={exportExcel}
+            style={{
+              backgroundColor: '#059669',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              alignSelf: 'flex-end',
+            }}
+          >
+            Export Excel
+          </button>
+          <button
+            onClick={() => {}}
+            style={{
+              backgroundColor: '#1557b0',
+              color: 'white',
+              border: BORDER,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              alignSelf: 'flex-end',
+            }}
+          >
+            Print
+          </button>
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
+          <div style={{ backgroundColor: NEAR_EXPIRY_BG, padding: '15px', borderRadius: '8px', border: BORDER }}>
+            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#000000' }}>Total Near-Expiry Value</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#d97706' }}>{money(totalNearExpiry)}</div>
+          </div>
+          <div style={{ backgroundColor: EXPIRED_BG, padding: '15px', borderRadius: '8px', border: BORDER }}>
+            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#000000' }}>Total Expired Value</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#dc2626' }}>{money(totalExpired)}</div>
+          </div>
+        </div>
+        
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
+            <thead>
+              <tr style={{ backgroundColor: BG_HEADER }}>
+                <th style={{ border: BORDER, padding: '8px' }}>Item Code</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Item Name</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Batch No</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Batch Qty</th>
+                <th style={{ border: BORDER, padding: '8px' }}>MFG Date</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Expiry Date</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>Days to Expiry</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Purchase Rate</th>
+                <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Stock Value</th>
+                <th style={{ border: BORDER, padding: '8px' }}>Warehouse</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.map(batch => {
+                const item = items.find(i => i.id === batch.itemId);
+                const warehouse = warehouses.find(w => w.id === batch.godownId);
+                const days = daysToExpiry(batch.expiryDate);
+                
+                return (
+                  <tr key={batch.id}>
+                    <td style={{ border: BORDER, padding: '8px' }}>{item?.code || 'N/A'}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{item?.name || 'N/A'}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.batchName}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{batch.openingQty}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.mfgDate}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{batch.expiryDate}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'center' }}>{days}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(batch.purchaseRate)}</td>
+                    <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{money(batch.openingQty * batch.purchaseRate)}</td>
+                    <td style={{ border: BORDER, padding: '8px' }}>{warehouse?.name || 'N/A'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  // Render FIFO picker
+  const renderFIFOPicker = () => {
+    const item = items.find(i => i.id === selectedItemForFifo);
+    const relevantBatches = allBatches
+      .filter(b => b.itemId === selectedItemForFifo)
+      .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+    
+    return (
+      <div style={{ padding: '20px', backgroundColor: BG_CARD, borderRadius: '8px', border: BORDER }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>FIFO Expiry Picker</h2>
+        
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Select Item</label>
+          <select
+            value={selectedItemForFifo}
+            onChange={(e) => setSelectedItemForFifo(e.target.value)}
+            style={{ padding: '8px', border: BORDER, borderRadius: '4px', width: '300px' }}
+          >
+            <option value="">Select an item to see FIFO picking order</option>
+            {items.map(item => (
+              <option key={item.id} value={item.id}>{item.code} - {item.name}</option>
+            ))}
+          </select>
+        </div>
+        
+        {selectedItemForFifo && (
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>
+              FIFO Order for {item?.name || 'Selected Item'}
+            </h3>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>How many units do you want to sell?</label>
+              <input
+                type="number"
+                placeholder="Enter quantity to pick"
+                style={{ padding: '8px', border: BORDER, borderRadius: '4px', width: '200px' }}
+              />
             </div>
             
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full min-w-max border-collapse">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', border: BORDER }}>
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Serial No</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Purchase Date</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Customer</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Sale Date</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Warranty Expiry</th>
+                  <tr style={{ backgroundColor: BG_HEADER }}>
+                    <th style={{ border: BORDER, padding: '8px' }}>Batch No</th>
+                    <th style={{ border: BORDER, padding: '8px' }}>Expiry Date</th>
+                    <th style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>Available Qty</th>
+                    <th style={{ border: BORDER, padding: '8px' }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {serials.map(serial => (
-                    <tr key={serial.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono font-medium">{serial.serialNo}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.itemName}</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className={`${serial.status === "in-stock" ? "bg-green-100 text-green-700" : serial.status === "sold" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"} px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide`}>
-                          {serial.status}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.purchaseDate}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.customerName || "N/A"}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.saleDate || "N/A"}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.warrantyExpiry}</td>
-                    </tr>
-                  ))}
-                  {serials.length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="px-3 py-8 text-[12px] text-gray-500 text-center">
-                        No serial numbers recorded yet.
-                      </td>
-                    </tr>
-                  )}
+                  {relevantBatches.map(batch => {
+                    const days = daysToExpiry(batch.expiryDate);
+                    const { status, color } = getStatusAndColor(days);
+                    
+                    return (
+                      <tr key={batch.id}>
+                        <td style={{ border: BORDER, padding: '8px' }}>{batch.batchName}</td>
+                        <td style={{ border: BORDER, padding: '8px' }}>{batch.expiryDate}</td>
+                        <td style={{ border: BORDER, padding: '8px', textAlign: 'right' }}>{batch.openingQty}</td>
+                        <td style={{ border: BORDER, padding: '8px' }}>
+                          <span style={{
+                            backgroundColor: color,
+                            color: 'white',
+                            padding: '2px 6px',
+                            borderRadius: '12px',
+                            fontSize: '11px',
+                            fontWeight: 'bold',
+                          }}>
+                            {status}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
+            </div>
+            
+            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: BG_DEEP, borderRadius: '8px', border: BORDER }}>
+              <h4 style={{ fontSize: '14px', fontWeight: 'bold', color: '#000000', marginBottom: '10px' }}>FIFO Consumption Plan</h4>
+              <p style={{ color: '#000000' }}>
+                {relevantBatches.length > 0 
+                  ? `When selling units from "${item?.name}", the system will prioritize batches by expiry date (earliest first).`
+                  : 'No batches available for this item.'}
+              </p>
+              {relevantBatches.slice(0, 3).map((batch, idx) => (
+                <p key={batch.id} style={{ color: '#000000', marginTop: '5px' }}>
+                  {idx + 1}. {batch.batchName} (exp: {batch.expiryDate})
+                </p>
+              ))}
             </div>
           </div>
         )}
       </div>
+    );
+  };
 
-      {/* Batch Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-[#f5f6fa]">
-              <h2 className="text-[15px] font-semibold text-gray-800">
-                {selectedBatch ? "Edit Batch" : "Add New Batch"}
-              </h2>
-              <button 
-                onClick={() => setShowForm(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <XCircle size={20} />
-              </button>
+  return (
+    <div style={{ backgroundColor: BG, minHeight: '100vh', padding: '20px' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#000000', marginBottom: '20px' }}>Batch Management</h1>
+      
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: '5px', marginBottom: '20px', borderBottom: BORDER }}>
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              backgroundColor: activeTab === tab.id ? BG_HEADER : 'transparent',
+              color: activeTab === tab.id ? '#000000' : '#666',
+              border: BORDER,
+              padding: '10px 16px',
+              borderRadius: '4px 4px 0 0',
+              cursor: 'pointer',
+              fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      
+      {/* Tab Content */}
+      {activeTab === 'master' && renderBatchMaster()}
+      {activeTab === 'near_expiry' && renderNearExpiryDashboard()}
+      {activeTab === 'on_hold' && renderOnHoldTab()}
+      {activeTab === 'report' && renderExpiryReport()}
+      {activeTab === 'fifo' && renderFIFOPicker()}
+      
+      {/* Write-Off Modal */}
+      {writeOffModal.show && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: BG_CARD,
+            padding: '20px',
+            borderRadius: '8px',
+            border: BORDER,
+            width: '90%',
+            maxWidth: '500px',
+          }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#000000', marginBottom: '15px' }}>
+              Write Off Batch: {writeOffModal.batch?.batchName}
+            </h2>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Write-Off Date</label>
+              <input
+                type="date"
+                value={writeOffData.date}
+                onChange={(e) => setWriteOffData({...writeOffData, date: e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px' }}
+              />
             </div>
             
-            <div className="p-5 overflow-y-auto flex-1 bg-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Item <span className="text-red-500">*</span></label>
-                  <select
-                    value={form.itemId}
-                    onChange={(e) => handleFormChange('itemId', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  >
-                    <option value="">Select Item</option>
-                    {items.map(item => (
-                      <option key={item.id} value={item.id}>{item.code} - {item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Batch Number <span className="text-red-500">*</span></label>
-                  <input
-                    type="text"
-                    value={form.batchNo}
-                    onChange={(e) => handleFormChange('batchNo', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Manufacturing Date</label>
-                  <input
-                    type="date"
-                    value={form.mfgDate}
-                    onChange={(e) => handleFormChange('mfgDate', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Expiry Date <span className="text-red-500">*</span></label>
-                  <input
-                    type="date"
-                    value={form.expiryDate}
-                    onChange={(e) => handleFormChange('expiryDate', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">MRP</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={form.mrp}
-                    onChange={(e) => handleFormChange('mrp', parseFloat(e.target.value) || 0)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Purchase Rate</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={form.purchaseRate}
-                    onChange={(e) => handleFormChange('purchaseRate', parseFloat(e.target.value) || 0)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Sale Rate</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={form.saleRate}
-                    onChange={(e) => handleFormChange('saleRate', parseFloat(e.target.value) || 0)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Opening Quantity <span className="text-red-500">*</span></label>
-                  <input
-                    type="number"
-                    step="1"
-                    value={form.openingQty}
-                    onChange={(e) => handleFormChange('openingQty', parseInt(e.target.value) || 0)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Unit</label>
-                  <input
-                    type="text"
-                    value={form.unit}
-                    readOnly
-                    className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-gray-50 text-gray-500 w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Warehouse</label>
-                  <select
-                    value={form.warehouseId}
-                    onChange={(e) => handleFormChange('warehouseId', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  >
-                    <option value="">Select Warehouse</option>
-                    {warehouses.map(warehouse => (
-                      <option key={warehouse.id} value={warehouse.id}>{warehouse.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Supplier</label>
-                  <select
-                    value={form.supplierId}
-                    onChange={(e) => handleFormChange('supplierId', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  >
-                    <option value="">Select Supplier</option>
-                    {parties.filter(p => p.type?.toLowerCase().includes("supplier")).map(party => (
-                      <option key={party.id} value={party.id}>{party.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Purchase Invoice No</label>
-                  <input
-                    type="text"
-                    value={form.purchaseInvoiceNo}
-                    onChange={(e) => handleFormChange('purchaseInvoiceNo', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Purchase Date</label>
-                  <input
-                    type="date"
-                    value={form.purchaseDate}
-                    onChange={(e) => handleFormChange('purchaseDate', e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full md:w-1/2"
-                  />
-                </div>
-              </div>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Reason for Write-Off</label>
+              <textarea
+                value={writeOffData.reason}
+                onChange={(e) => setWriteOffData({...writeOffData, reason: e.target.value})}
+                style={{ width: '100%', padding: '8px', border: BORDER, borderRadius: '4px', minHeight: '80px' }}
+              />
             </div>
             
-            <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-                onClick={() => setShowForm(false)}
+                onClick={() => {
+                  setWriteOffModal({ show: false, batch: null });
+                  setWriteOffData({ date: '', reason: '' });
+                }}
+                style={{
+                  backgroundColor: '#dc2626',
+                  color: 'white',
+                  border: BORDER,
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
               >
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
-                onClick={handleSaveBatch}
+                onClick={handleWriteOffSubmit}
+                style={{
+                  backgroundColor: '#059669',
+                  color: 'white',
+                  border: BORDER,
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
               >
-                {selectedBatch ? "Update" : "Save"} Batch
+                Confirm Write-Off
               </button>
             </div>
           </div>
@@ -879,6 +1298,4 @@ const BatchManagement: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default BatchManagement;
+}

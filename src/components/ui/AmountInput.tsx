@@ -10,6 +10,7 @@ interface AmountInputProps {
   required?: boolean;
   error?: string;
   id?: string;
+  className?: string;
 }
 
 const AmountInput: React.FC<AmountInputProps> = ({
@@ -21,12 +22,13 @@ const AmountInput: React.FC<AmountInputProps> = ({
   required = false,
   error,
   id,
+  className = "",
 }) => {
   const company = useStore((state) => state.companySettings);
   const symbol = company ? company.currencySymbol : "Rs.";
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
         <label
           htmlFor={id}
