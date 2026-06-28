@@ -821,16 +821,20 @@ export interface DBBranch {
   [key: string]: any;
 }
 
-export interface DBSalesperson {
+export interface DBSalesPerson {
   id: string;
-  code: string;
   name: string;
-  nameNepali?: string;
-  branchId?: string;
-  employeeId?: string;
+  code: string;
   phone?: string;
   email?: string;
-  commissionRate?: number;
+  commissionRate?: number; // percentage
+  isActive: boolean;
+}
+
+export interface DBPriceList {
+  id: string;
+  name: string;
+  type: "wholesale" | "retail" | "distributor";
   isActive: boolean;
   [key: string]: any;
 }
@@ -972,7 +976,8 @@ class SutraDB extends Dexie {
   costCentreClasses!: Table<any>;
   reorderLevels!: Table<any>;
   priceLevels!: Table<any>;
-  priceLists!: Table<any>;
+  priceLists!: Table<DBPriceList>;
+  salesPersons!: Table<DBSalesPerson>;
   hsCodes!: Table<any>;
   batches!: Table<any>;
   vatClassifications!: Table<any>;
@@ -989,7 +994,6 @@ class SutraDB extends Dexie {
 
   // - NEW FEATURE TABLES FROM VERSION 13 -
   branches!: Table<DBBranch>;
-  salespersons!: Table<DBSalesperson>;
   exchangeRates!: Table<DBExchangeRate>;
   followUpNotes!: Table<DBFollowUpNote>;
   jobWorkOrders!: Table<DBJobWorkOrder>;

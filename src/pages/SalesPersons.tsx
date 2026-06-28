@@ -1,38 +1,33 @@
+// @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
-import { DBUnitConversion, DBUnit } from "../lib/db";
+import { DBSalesPerson } from "../lib/db";
 import {
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  Save,
-  Search,
-  CheckCircle,
-  XCircle,
-  Scale,
-  RefreshCcw,
+  Plus, Pencil, Trash2, X, Save,
+  Search, User, Phone, Mail, Percent,
+  CheckCircle, XCircle, Users,
 } from "lucide-react";
 
 // ─── Empty form template ──────────────────────────────────────────────────────
 
-const emptyForm = (): Omit<DBUnitConversion, "id"> => ({
-  mainUnit: "",
-  subUnit: "",
-  conversionFactor: 1,
+const emptyForm = (): Omit<DBSalesPerson, "id"> => ({
+  name: "",
+  code: "",
+  phone: "",
+  email: "",
+  commissionRate: 0,
   isActive: true,
 });
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function UnitConversionMaster() {
+export default function SalesPersons() {
   const {
-    unitConversions,
-    units,
-    addUnitConversion,
-    updateUnitConversion,
-    deleteUnitConversion,
+    salesPersons,
+    addSalesPerson,
+    updateSalesPerson,
+    deleteSalesPerson,
   } = useStore();
 
   // ── UI state ────────────────────────────────────────────────────────────────
@@ -46,22 +41,19 @@ export default function UnitConversionMaster() {
   // ── Derived data ────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return unitConversions;
-    return unitConversions.filter(
-      (uc) =>
-        uc.mainUnit.toLowerCase().includes(q) ||
-        uc.subUnit.toLowerCase().includes(q)
+    if (!q) return salesPersons;
+    return salesPersons.filter(
+      (sp) =>
+        sp.name.toLowerCase().includes(q) ||
+        sp.code.toLowerCase().includes(q) ||
+        (sp.email ?? "").toLowerCase().includes(q) ||
+        (sp.phone ?? "").includes(q)
     );
-  }, [unitConversions, search]);
+  }, [salesPersons, search]);
 
   const deleteTarget = useMemo(
-    () => unitConversions.find((uc) => uc.id === deleteTargetId) ?? null,
-    [unitConversions, deleteTargetId]
-  );
-
-  const activeUnits = useMemo(
-    () => (units ?? []).filter((u: DBUnit) => u.isActive !== false),
-    [units]
+    () => salesPersons.find((sp) => sp.id === deleteTargetId) ?? null,
+    [salesPersons, deleteTargetId]
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -72,13 +64,15 @@ export default function UnitConversionMaster() {
     setShowForm(true);
   };
 
-  const handleOpenEdit = (uc: DBUnitConversion) => {
-    setEditingId(uc.id);
+  const handleOpenEdit = (sp: DBSalesPerson) => {
+    setEditingId(sp.id);
     setForm({
-      mainUnit: uc.mainUnit,
-      subUnit: uc.subUnit,
-      conversionFactor: uc.conversionFactor ?? 1,
-      isActive: uc.isActive,
+      name: sp.name,
+      code: sp.code,
+      phone: sp.phone ?? "",
+      email: sp.email ?? "",
+      commissionRate: sp.commissionRate ?? 0,
+      isActive: sp.isActive,
     });
     setShowForm(true);
   };
@@ -95,19 +89,29 @@ export default function UnitConversionMaster() {
   ) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): string | null => {
-    if (!form.mainUnit) return "Main unit is required.";
-    if (!form.subUnit) return "Sub unit is required.";
-    if (form.mainUnit === form.subUnit) return "Main unit and sub unit cannot be the same.";
-    if (form.conversionFactor <= 0) return "Conversion factor must be greater than zero.";
+    if (!form.name.trim()) return "Name is required.";
+    if (!form.code.trim()) return "Code is required.";
 
-    // Check for duplicates
-    const dup = unitConversions.find(
-      (uc) =>
-        uc.mainUnit === form.mainUnit &&
-        uc.subUnit === form.subUnit &&
-        uc.id !== editingId
+    const dupCode = salesPersons.find(
+      (sp) =>
+        sp.code.toLowerCase() === form.code.trim().toLowerCase() &&
+        sp.id !== editingId
     );
-    if (dup) return `Conversion rule for ${form.mainUnit} to ${form.subUnit} already exists.`;
+    if (dupCode) return `Code "${form.code.trim()}" is already in use.`;
+
+    const dupName = salesPersons.find(
+      (sp) =>
+        sp.name.toLowerCase() === form.name.trim().toLowerCase() &&
+        sp.id !== editingId
+    );
+    if (dupName) return `Sales person "${form.name.trim()}" already exists.`;
+
+    if (form.commissionRate < 0 || form.commissionRate > 100)
+      return "Commission rate must be between 0 and 100.";
+
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      return "Please enter a valid email address.";
+    }
 
     return null;
   };
@@ -122,19 +126,27 @@ export default function UnitConversionMaster() {
 
     setSaving(true);
     try {
-      const payload = {
-        mainUnit: form.mainUnit,
-        subUnit: form.subUnit,
-        conversionFactor: Number(form.conversionFactor),
-        isActive: form.isActive,
-      };
-
       if (editingId) {
-        await updateUnitConversion(editingId, payload);
-        toast.success("Unit conversion updated successfully.");
+        await updateSalesPerson({
+          id: editingId,
+          name: form.name.trim(),
+          code: form.code.trim().toUpperCase(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
+          commissionRate: Number(form.commissionRate),
+          isActive: form.isActive,
+        });
+        toast.success("Sales person updated successfully.");
       } else {
-        await addUnitConversion(payload);
-        toast.success("Unit conversion added successfully.");
+        await addSalesPerson({
+          name: form.name.trim(),
+          code: form.code.trim().toUpperCase(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
+          commissionRate: Number(form.commissionRate),
+          isActive: form.isActive,
+        });
+        toast.success("Sales person added successfully.");
       }
       handleCloseForm();
     } catch {
@@ -149,10 +161,10 @@ export default function UnitConversionMaster() {
   const handleDeleteConfirm = async () => {
     if (!deleteTargetId) return;
     try {
-      await deleteUnitConversion(deleteTargetId);
-      toast.success("Unit conversion deleted.");
+      await deleteSalesPerson(deleteTargetId);
+      toast.success("Sales person deleted.");
     } catch {
-      toast.error("Failed to delete unit conversion.");
+      toast.error("Failed to delete sales person.");
     } finally {
       setDeleteTargetId(null);
     }
@@ -164,9 +176,9 @@ export default function UnitConversionMaster() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Unit Conversions</h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Sales Persons</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            Manage relationships and conversion factors between units
+            Manage your sales team members and commission rates
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -176,7 +188,7 @@ export default function UnitConversionMaster() {
             className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
           >
             <Plus className="h-3.5 w-3.5" />
-            New Conversion
+            New Sales Person
           </button>
         </div>
       </div>
@@ -189,7 +201,7 @@ export default function UnitConversionMaster() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by unit..."
+            placeholder="Search by name, code, email..."
             className="w-64 h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           />
         </div>
@@ -200,9 +212,11 @@ export default function UnitConversionMaster() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Main Unit</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Sub Unit</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Conv. Factor</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Comm. %</th>
               <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
               <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
             </tr>
@@ -210,47 +224,53 @@ export default function UnitConversionMaster() {
           <tbody className="divide-y divide-gray-200">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-3 py-10 text-center text-gray-500 text-[12px]">
-                  <Scale className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No unit conversions yet. Create your first conversion rule."}
+                <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
+                  <Users className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  {search ? "No results found." : "No sales persons yet. Create your first sales person."}
                 </td>
               </tr>
             ) : (
-              filtered.map((uc) => (
+              filtered.map((sp) => (
                 <tr
-                  key={uc.id}
+                  key={sp.id}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700">
-                    {uc.mainUnit}
+                  <td className="px-3 py-2.5 font-mono text-[12px] text-gray-700">
+                    {sp.code || "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
+                    {sp.name}
                   </td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {uc.subUnit}
+                    {sp.phone || "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                    {sp.email || "—"}
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                    <div className="flex items-center justify-end gap-1.5 text-gray-500">
-                      <span>1 {uc.mainUnit}</span>
-                      <span>=</span>
-                      <span className="font-semibold text-gray-900">{uc.conversionFactor}</span>
-                      <span>{uc.subUnit}</span>
-                    </div>
+                    {sp.commissionRate != null ? (
+                      <span className="flex items-center justify-end gap-1">
+                        {sp.commissionRate}
+                        <Percent className="w-3 h-3 text-gray-400" />
+                      </span>
+                    ) : "—"}
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     <span
                       className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        uc.isActive
+                        sp.isActive
                           ? "bg-green-100 text-green-700 border border-green-200"
                           : "bg-red-100 text-red-700 border border-red-200"
                       }`}
                     >
-                      {uc.isActive ? "Active" : "Inactive"}
+                      {sp.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="px-3 py-2.5">
                     <div className="flex items-center justify-center gap-2">
                       <button
                         type="button"
-                        onClick={() => handleOpenEdit(uc)}
+                        onClick={() => handleOpenEdit(sp)}
                         title="Edit"
                         className="text-gray-400 hover:text-[#1557b0] transition-colors"
                       >
@@ -258,7 +278,7 @@ export default function UnitConversionMaster() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDeleteRequest(uc.id)}
+                        onClick={() => handleDeleteRequest(sp.id)}
                         title="Delete"
                         className="text-gray-400 hover:text-red-600 transition-colors"
                       >
@@ -276,10 +296,10 @@ export default function UnitConversionMaster() {
       {/* ── Add / Edit Modal ─────────────────────────────────────────────────── */}
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-lg shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg">
               <h2 className="text-[14px] font-semibold text-gray-800">
-                {editingId ? "Edit Unit Conversion" : "New Unit Conversion"}
+                {editingId ? "Edit Sales Person" : "New Sales Person"}
               </h2>
               <button
                 type="button"
@@ -291,64 +311,92 @@ export default function UnitConversionMaster() {
             </div>
             
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Code *
+                  </label>
+                  <input
+                    type="text"
+                    value={form.code}
+                    onChange={(e) => setField("code", e.target.value.toUpperCase())}
+                    placeholder="e.g. SP01"
+                    maxLength={20}
+                    className="h-8 px-2.5 text-[12px] font-mono border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Full Name *
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setField("name", e.target.value)}
+                      placeholder="e.g. Rajesh Kumar"
+                      autoFocus
+                      className="h-8 w-full pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Phone
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setField("phone", e.target.value)}
+                      placeholder="+91 98..."
+                      className="h-8 w-full pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setField("email", e.target.value)}
+                      placeholder="salesperson@example.com"
+                      className="h-8 w-full pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1 w-1/2 pr-1.5">
                 <label className="text-[11px] font-medium text-gray-600">
-                  Main Unit *
+                  Commission Rate (%)
                 </label>
-                <select
-                  value={form.mainUnit}
-                  onChange={(e) => setField("mainUnit", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                >
-                  <option value="">— Select main unit —</option>
-                  {activeUnits.map((u) => (
-                    <option key={u.id} value={u.code}>
-                      {u.name} ({u.code})
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <Percent className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.01}
+                    value={form.commissionRate}
+                    onChange={(e) => setField("commissionRate", Number(e.target.value))}
+                    className="h-8 w-full pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center justify-center py-1 opacity-50">
-                <RefreshCcw className="h-4 w-4 text-gray-400" />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Sub Unit *
-                </label>
-                <select
-                  value={form.subUnit}
-                  onChange={(e) => setField("subUnit", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                >
-                  <option value="">— Select sub unit —</option>
-                  {activeUnits.map((u) => (
-                    <option key={u.id} value={u.code}>
-                      {u.name} ({u.code})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1 mt-2">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Conversion Factor (1 {form.mainUnit || 'Main'} = ? {form.subUnit || 'Sub'}) *
-                </label>
-                <input
-                  type="number"
-                  min={0.0001}
-                  step={0.0001}
-                  value={form.conversionFactor}
-                  onChange={(e) => setField("conversionFactor", Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] font-mono border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  required
-                />
-              </div>
-
-              <div className="pt-1 mt-1">
+              <div className="pt-1">
                 <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
                   <input
                     type="checkbox"
@@ -374,7 +422,7 @@ export default function UnitConversionMaster() {
                   className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
                 >
                   <Save className="h-3.5 w-3.5" />
-                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Conversion"}
+                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Sales Person"}
                 </button>
               </div>
             </form>
@@ -387,13 +435,12 @@ export default function UnitConversionMaster() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800">Delete Unit Conversion</h2>
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Sales Person</h2>
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete the conversion rule from{" "}
-                <span className="font-semibold text-gray-900">{deleteTarget.mainUnit}</span> to{" "}
-                <span className="font-semibold text-gray-900">{deleteTarget.subUnit}</span>? 
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-gray-900">"{deleteTarget.name}"</span>? 
                 This action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">

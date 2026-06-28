@@ -1,158 +1,95 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/store/index.ts', 'utf-8').replace(/\r\n/g, '\n');
+const file = 'src/components/ChartOfAccounts.tsx';
+let content = fs.readFileSync(file, 'utf8');
 
-// 1. Update AppState Interface
-const target1 = '  updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;\n}';
-const replacement1 = `  updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;
+// 1. interface TreeNode
+content = content.replace(
+  /balance: number;\n  rowObject\?: Account;/g,
+  'balance: number;\n  billByBill?: boolean;\n  rowObject?: Account;'
+);
 
-  // NEW FEATURE TABLES FROM VERSION 13
-  branches: any[];
-  salespersons: any[];
-  exchangeRates: any[];
-  followUpNotes: any[];
-  jobWorkOrders: any[];
-  reportSchedules: any[];
-  priceFloorPolicies: any[];
-  chequeBounceLogs: any[];
+// 2. State
+content = content.replace(
+  /const \[openingBalanceDate, setOpeningBalanceDate\] = useState<string>\([^;]+;\n/m,
+  "$&  const [billByBill, setBillByBill] = useState<boolean>(false);\n"
+);
 
-  addBranch: (data: Partial<any>) => Promise<any>;
-  updateBranch: (id: string, data: Partial<any>) => Promise<void>;
-  deleteBranch: (id: string) => Promise<void>;
-  addSalesperson: (data: Partial<any>) => Promise<any>;
-  updateSalesperson: (id: string, data: Partial<any>) => Promise<void>;
-  deleteSalesperson: (id: string) => Promise<void>;
-  addExchangeRate: (data: Partial<any>) => Promise<any>;
-  updateExchangeRate: (id: string, data: Partial<any>) => Promise<void>;
-  deleteExchangeRate: (id: string) => Promise<void>;
-}`;
-if (content.includes(target1)) content = content.replace(target1, replacement1);
-else console.log('Target 1 not found');
+// 3. handleOpenCreateModal
+content = content.replace(
+  /setOpeningType\("Dr"\);\n    setOpeningBalanceDate\([^)]+\);\n/m,
+  "$&    setBillByBill(false);\n"
+);
 
-// 2. Update initial store properties (before stockJournals: [])
-const target2 = '  paymentAdvices: [],\n\n  stockJournals: [],';
-const replacement2 = `  paymentAdvices: [],
+// 4. handleOpenEditModal
+content = content.replace(
+  /setOpeningType\(acc\.openingBalanceDr && acc\.openingBalanceDr > 0 \? "Dr" : "Cr"\);\n    setOpeningBalanceDate\([^)]+\);\n/m,
+  "$&    setBillByBill(!!(acc as any).billByBill);\n"
+);
 
-  branches: [],
-  salespersons: [],
-  exchangeRates: [],
-  followUpNotes: [],
-  jobWorkOrders: [],
-  reportSchedules: [],
-  priceFloorPolicies: [],
-  chequeBounceLogs: [],
+// 5. handleAddSubmit
+content = content.replace(
+  /openingBalanceDate: openingBalanceDate \|\| new Date\(\)\.toISOString\(\)\.split\("T"\)\[0\],\n/g,
+  "$&        billByBill: ![\"group\", \"subgroup\"].includes(level) && (type === AccountType.ASSET || type === AccountType.LIABILITY) ? billByBill : false,\n"
+);
 
-  stockJournals: [],`;
-if (content.includes(target2)) content = content.replace(target2, replacement2);
-else console.log('Target 2 not found');
+// 6. getSubNodes
+content = content.replace(
+  /balance: a\.balance \|\| 0,\n            rowObject: a,/g,
+  "balance: a.balance || 0,\n            billByBill: !!(a as any).billByBill,\n            rowObject: a,"
+);
 
-// 3. Promise.all destructuring array
-const target3 = '      chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,\n    ] = await Promise.all([';
-const replacement3 = `      chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,
-      // Version 13
-      branches, salespersons, exchangeRates, followUpNotes, jobWorkOrders, reportSchedules, priceFloorPolicies, chequeBounceLogs,
-    ] = await Promise.all([`;
-if (content.includes(target3)) content = content.replace(target3, replacement3);
-else console.log('Target 3 not found');
+// 7. root nodes
+content = content.replace(
+  /balance: rootBalance,\n        children,/g,
+  "balance: rootBalance,\n        billByBill: false,\n        children,"
+);
 
-// 4. Promise.all array calls
-const target4 = '      db.paymentAdvices.toArray(),\n    ]);\n\n    const currentFiscalYear';
-const replacement4 = `      db.paymentAdvices.toArray(),
-      db.branches.toArray().catch(() => []),
-      db.salespersons.toArray().catch(() => []),
-      db.exchangeRates.toArray().catch(() => []),
-      db.followUpNotes.toArray().catch(() => []),
-      db.jobWorkOrders.toArray().catch(() => []),
-      db.reportSchedules.toArray().catch(() => []),
-      db.priceFloorPolicies.toArray().catch(() => []),
-      db.chequeBounceLogs.toArray().catch(() => []),
-    ]);
+// 8. Excel headers
+content = content.replace(
+  /const headers = \["Code", "Account Name", "Nepali Name", "Type", "Level", "Balance", "Status", "System Account"\];/g,
+  "const headers = [\"Code\", \"Account Name\", \"Nepali Name\", \"Type\", \"Level\", \"Balance\", \"Status\", \"System Account\", \"Bill By Bill\"];"
+);
 
-    const currentFiscalYear`;
-if (content.includes(target4)) content = content.replace(target4, replacement4);
-else console.log('Target 4 not found');
+// 9. Excel rows
+content = content.replace(
+  /node\.isSystemAccount \? "Yes" : "No",\n      \]\);/g,
+  "node.isSystemAccount ? \"Yes\" : \"No\",\n        node.billByBill ? \"Yes\" : \"No\",\n      ]);"
+);
 
-// 5. set state in initializeApp
-const target5 = '      paymentAdvices: paymentAdvices as any[],\n      \n      journalEntries: vouchers,';
-const replacement5 = `      paymentAdvices: paymentAdvices as any[],
-      branches: branches as any[],
-      salespersons: salespersons as any[],
-      exchangeRates: exchangeRates as any[],
-      followUpNotes: followUpNotes as any[],
-      jobWorkOrders: jobWorkOrders as any[],
-      reportSchedules: reportSchedules as any[],
-      priceFloorPolicies: priceFloorPolicies as any[],
-      chequeBounceLogs: chequeBounceLogs as any[],
-      
-      journalEntries: vouchers,`;
-if (content.includes(target5)) content = content.replace(target5, replacement5);
-else console.log('Target 5 not found');
+// 10. Import CSV Data
+content = content.replace(
+  /openingBalanceDate: currentFiscalYear\?\.startDate \|\| new Date\(\)\.toISOString\(\)\.split\("T"\)\[0\],\n          \}\);/g,
+  "$&          billByBill: false,\n          });"
+);
 
-// 6. Add the actions before getBaseCurrency closes
-const target6 = '  getBaseCurrency: () => {\n    const { currencies } = get();\n    return currencies.find((c) => c.isBase) || currencies[0] || DEFAULT_CURRENCY;\n  },\n}));\n\n// ─── Private helpers';
-const replacement6 = `  getBaseCurrency: () => {
-    const { currencies } = get();
-    return currencies.find((c) => c.isBase) || currencies[0] || DEFAULT_CURRENCY;
-  },
+// 11. renderLedgerForm (first we remove the old toggle if it exists, but the file doesn't have it)
+const toggleUI = `
+      {/* ── TASK 1.6: Bill-by-Bill toggle for ASSET / LIABILITY ledgers ── */}
+      {!["group", "subgroup"].includes(level) && (type === AccountType.ASSET || type === AccountType.LIABILITY) && (
+        <div className="rounded-lg border border-gray-300 bg-gray-50 p-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              id="billByBill"
+              checked={billByBill}
+              onChange={(e) => setBillByBill(e.target.checked)}
+              className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+            />
+            <div>
+              <span className="text-[12px] font-semibold text-gray-800">
+                Maintain Bill-by-Bill Details
+              </span>
+              <p className="text-[10px] text-gray-800 mt-0.5">
+                Track individual invoice references for this ledger (recommended for
+                Sundry Debtors and Sundry Creditors accounts)
+              </p>
+            </div>
+          </label>
+        </div>
+      )}
+    </form>`;
 
-  // NEW ACTIONS FOR VERSION 13
-  addBranch: async (branch: any) => {
-    const db = getDB();
-    const newBranch = { id: generateId(), ...branch, createdAt: new Date().toISOString() };
-    await db.branches.put(newBranch);
-    set((s: any) => ({ branches: [...s.branches, newBranch] }));
-    return newBranch;
-  },
-  updateBranch: async (id: string, data: any) => {
-    const db = getDB();
-    await db.branches.update(id, data);
-    set((s: any) => ({ branches: s.branches.map((b: any) => b.id === id ? { ...b, ...data } : b) }));
-  },
-  deleteBranch: async (id: string) => {
-    const db = getDB();
-    await db.branches.delete(id);
-    set((s: any) => ({ branches: s.branches.filter((b: any) => b.id !== id) }));
-  },
+content = content.replace(/<\/form>\s*\);\s*\/\/\s*─── RENDER/, toggleUI + '\n  );\n\n  // ─── RENDER');
 
-  addSalesperson: async (sp: any) => {
-    const db = getDB();
-    const newSp = { id: generateId(), ...sp, createdAt: new Date().toISOString() };
-    await db.salespersons.put(newSp);
-    set((s: any) => ({ salespersons: [...s.salespersons, newSp] }));
-    return newSp;
-  },
-  updateSalesperson: async (id: string, data: any) => {
-    const db = getDB();
-    await db.salespersons.update(id, data);
-    set((s: any) => ({ salespersons: s.salespersons.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
-  },
-  deleteSalesperson: async (id: string) => {
-    const db = getDB();
-    await db.salespersons.delete(id);
-    set((s: any) => ({ salespersons: s.salespersons.filter((x: any) => x.id !== id) }));
-  },
-
-  addExchangeRate: async (rate: any) => {
-    const db = getDB();
-    const newRate = { id: generateId(), ...rate, createdAt: new Date().toISOString() };
-    await db.exchangeRates.put(newRate);
-    set((s: any) => ({ exchangeRates: [...s.exchangeRates, newRate] }));
-    return newRate;
-  },
-  updateExchangeRate: async (id: string, data: any) => {
-    const db = getDB();
-    await db.exchangeRates.update(id, data);
-    set((s: any) => ({ exchangeRates: s.exchangeRates.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
-  },
-  deleteExchangeRate: async (id: string) => {
-    const db = getDB();
-    await db.exchangeRates.delete(id);
-    set((s: any) => ({ exchangeRates: s.exchangeRates.filter((x: any) => x.id !== id) }));
-  },
-}));
-
-// ─── Private helpers`;
-if (content.includes(target6)) content = content.replace(target6, replacement6);
-else console.log('Target 6 not found');
-
-fs.writeFileSync('src/store/index.ts', content);
-console.log('done');
+fs.writeFileSync(file, content);
+console.log('Applied billByBill patches to ChartOfAccounts.tsx');

@@ -341,6 +341,17 @@ export interface Account {
   costCenterId?: string;
   group?: string;
   accountId?: string;
+  billByBill?: boolean;
+  alias?: string;
+  bankDetails?: {
+    bankName?: string;
+    branch?: string;
+    accountNo?: string;
+    ifscSwift?: string;
+    accountType?: "Current" | "Savings" | "Overdraft" | "CashCredit";
+  };
+  creditLimit?: number;
+  creditPeriod?: number;
 }
 
 export interface Party {
@@ -378,6 +389,29 @@ export interface Party {
   status?: string;
   accountId?: string;
   isBoth?: boolean;
+  partyType?: PartyType;
+  alias?: string;
+  gstin?: string;
+  state?: string;
+  pincode?: string;
+  contacts?: Array<{
+    name: string;
+    phone: string;
+    email: string;
+    designation: string;
+  }>;
+  bankAccounts?: Array<{
+    bankName: string;
+    accountNo: string;
+    ifsc: string;
+    branch: string;
+    accountType: string;
+  }>;
+  creditPeriod?: number;
+  ledgerId?: string;
+  salesPersonId?: string;
+  priceListId?: string;
+  tdsApplicable?: boolean;
 }
 
 export interface Item {

@@ -3,7 +3,7 @@ import { createWorkflowActions } from "./workflowActions";
 // @ts-nocheck
 // src/store/index.ts
 import { create } from "zustand";
-import { getDB } from "../lib/db";
+import { getDB, DBSalesPerson, DBPriceList } from "../lib/db";
 import { generateNextNumber } from "../lib/accounting";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 
@@ -280,7 +280,19 @@ interface AppState extends MultiGodownStoreSlice {
   costCentreClasses: any[];
   reorderLevels: any[];
   priceLevels: any[];
-  priceLists: any[];
+  // ─── Sales Persons ────────────────────────────────────────────────────────────
+  salesPersons: DBSalesPerson[];
+  loadSalesPersons: () => Promise<void>;
+  addSalesPerson: (data: Omit<DBSalesPerson, "id">) => Promise<void>;
+  updateSalesPerson: (data: DBSalesPerson) => Promise<void>;
+  deleteSalesPerson: (id: string) => Promise<void>;
+
+  // ─── Price Lists ──────────────────────────────────────────────────────────────
+  priceLists: DBPriceList[];
+  loadPriceLists: () => Promise<void>;
+  addPriceList: (data: Omit<DBPriceList, "id">) => Promise<void>;
+  updatePriceList: (data: DBPriceList) => Promise<void>;
+  deletePriceList: (id: string) => Promise<void>;
   hsCodes: any[];
   batches: any[];
   vatClassifications: any[];
@@ -456,10 +468,7 @@ interface AppState extends MultiGodownStoreSlice {
   addPriceLevel: (data: Partial<any>) => Promise<any>;
   updatePriceLevel: (id: string, data: Partial<any>) => Promise<void>;
   deletePriceLevel: (id: string) => Promise<void>;
-  // Price List
-  addPriceList: (data: Partial<any>) => Promise<any>;
-  updatePriceList: (id: string, data: Partial<any>) => Promise<void>;
-  deletePriceList: (id: string) => Promise<void>;
+
   // HS Code
   addHSCode: (data: Partial<any>) => Promise<any>;
   updateHSCode: (id: string, data: Partial<any>) => Promise<void>;
@@ -605,6 +614,7 @@ export const useStore = create<AppState>((set, get) => ({
   costCenters: [],
   fiscalYears: [],
   currentFiscalYear: null,
+  salesPersons: [],
   loadWarehouses: async () => {},
   addWarehouse: async (w) => (w as any),
   updateWarehouse: async () => {},
@@ -769,8 +779,7 @@ export const useStore = create<AppState>((set, get) => ({
     await migrateWorkflowFields();
 
     // Load all data
-    const [
-      accounts, parties, items, vouchers, invoices, stockMovements,
+    const [ accounts, parties, items, vouchers, invoices, stockMovements,
       warehouses, units, costCenters, fiscalYears, deliveryChallans,
       goodsReceiptNotes, salesOrders, purchaseOrders, users, notifications,
       budgets, recurringVouchers, customFieldDefs, currencies,
@@ -808,7 +817,7 @@ export const useStore = create<AppState>((set, get) => ({
       // Banking module data
       chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,
       // Version 13
-      branches, salespersons, exchangeRates, followUpNotes, jobWorkOrders, reportSchedules, priceFloorPolicies, chequeBounceLogs,
+      branches, salesPersons, exchangeRates, followUpNotes, jobWorkOrders, reportSchedules, priceFloorPolicies, chequeBounceLogs,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -876,7 +885,7 @@ export const useStore = create<AppState>((set, get) => ({
       db.ePaymentBatches.toArray(),
       db.paymentAdvices.toArray(),
       db.branches.toArray().catch(() => []),
-      db.salespersons.toArray().catch(() => []),
+      db.salesPersons.toArray().catch(() => []),
       db.exchangeRates.toArray().catch(() => []),
       db.followUpNotes.toArray().catch(() => []),
       db.jobWorkOrders.toArray().catch(() => []),
@@ -982,7 +991,7 @@ export const useStore = create<AppState>((set, get) => ({
       ePaymentBatches: ePaymentBatches as any[],
       paymentAdvices: paymentAdvices as any[],
       branches: branches as any[],
-      salespersons: salespersons as any[],
+      salespersons: salesPersons as any[],
       exchangeRates: exchangeRates as any[],
       followUpNotes: followUpNotes as any[],
       jobWorkOrders: jobWorkOrders as any[],
@@ -1016,6 +1025,8 @@ export const useStore = create<AppState>((set, get) => ({
     }
 
     await get().loadVoucherTypeMasters();
+    await get().loadSalesPersons();
+    await get().loadPriceLists();
     } catch (err) {
       console.error("initializeApp failed:", err);
     } finally {
@@ -1669,23 +1680,100 @@ export const useStore = create<AppState>((set, get) => ({
     set((s) => ({ priceLevels: s.priceLevels.filter((r) => r.id !== id) }));
   },
 
-  // Price List
-  addPriceList: async (data) => {
-    const db = getDB();
-    const record = { ...data, id: data.id || `plist-${generateId()}`, isActive: true };
-    await db.priceLists.add(record as any);
-    set((s) => ({ priceLists: [...s.priceLists, record] }));
-    return record;
+  // ─── Sales Persons ────────────────────────────────────────────────────────────
+  loadSalesPersons: async () => {
+    try {
+      const db = getDB();
+      const rows = await db.salesPersons.toArray();
+      set({ salesPersons: rows as DBSalesPerson[] });
+    } catch (e) {
+      console.error("loadSalesPersons:", e);
+    }
   },
-  updatePriceList: async (id, data) => {
-    const db = getDB();
-    await db.priceLists.update(id, data);
-    set((s) => ({ priceLists: s.priceLists.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  addSalesPerson: async (data) => {
+    try {
+      const db = getDB();
+      const record: DBSalesPerson = { ...data, id: (data as any).id || generateId() } as DBSalesPerson;
+      await db.salesPersons.add(record as any);
+      set((state) => ({ salesPersons: [...state.salesPersons, record] }));
+    } catch (e) {
+      console.error("addSalesPerson:", e);
+      throw e;
+    }
+  },
+  updateSalesPerson: async (data) => {
+    try {
+      const db = getDB();
+      await db.salesPersons.put(data as any);
+      set((state) => ({
+        salesPersons: state.salesPersons.map((sp) =>
+          sp.id === data.id ? data : sp
+        ),
+      }));
+    } catch (e) {
+      console.error("updateSalesPerson:", e);
+      throw e;
+    }
+  },
+  deleteSalesPerson: async (id) => {
+    try {
+      const db = getDB();
+      await db.salesPersons.delete(id);
+      set((state) => ({
+        salesPersons: state.salesPersons.filter((sp) => sp.id !== id),
+      }));
+    } catch (e) {
+      console.error("deleteSalesPerson:", e);
+      throw e;
+    }
+  },
+
+  // ─── Price Lists ──────────────────────────────────────────────────────────────
+  loadPriceLists: async () => {
+    try {
+      const db = getDB();
+      const rows = await db.priceLists.toArray();
+      set({ priceLists: rows as DBPriceList[] });
+    } catch (e) {
+      console.error("loadPriceLists:", e);
+    }
+  },
+  addPriceList: async (data) => {
+    try {
+      const db = getDB();
+      const record: DBPriceList = { ...data, id: (data as any).id || generateId() } as DBPriceList;
+      await db.priceLists.add(record as any);
+      set((state) => ({ priceLists: [...state.priceLists, record] }));
+    } catch (e) {
+      console.error("addPriceList:", e);
+      throw e;
+    }
+  },
+  updatePriceList: async (data) => {
+    try {
+      const db = getDB();
+      await db.priceLists.put(data as any);
+      set((state) => ({
+        priceLists: state.priceLists.map((pl) =>
+          pl.id === data.id ? data : pl
+        ),
+      }));
+    } catch (e) {
+      console.error("updatePriceList:", e);
+      throw e;
+    }
   },
   deletePriceList: async (id) => {
-    const db = getDB();
-    await db.priceLists.delete(id);
-    set((s) => ({ priceLists: s.priceLists.filter((r) => r.id !== id) }));
+    try {
+      const db = getDB();
+      await db.priceLists.delete(id);
+      set((state) => ({
+        priceLists: state.priceLists.filter((pl) => pl.id !== id),
+      }));
+    } catch (e) {
+      console.error("deletePriceList:", e);
+      throw e;
+    }
   },
 
   // HS Code
@@ -2583,18 +2671,18 @@ export const useStore = create<AppState>((set, get) => ({
   addSalesperson: async (sp: any) => {
     const db = getDB();
     const newSp = { id: generateId(), ...sp, createdAt: new Date().toISOString() };
-    await db.salespersons.put(newSp);
+    await db.salesPersons.put(newSp);
     set((s: any) => ({ salespersons: [...s.salespersons, newSp] }));
     return newSp;
   },
   updateSalesperson: async (id: string, data: any) => {
     const db = getDB();
-    await db.salespersons.update(id, data);
+    await db.salesPersons.update(id, data);
     set((s: any) => ({ salespersons: s.salespersons.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
   },
   deleteSalesperson: async (id: string) => {
     const db = getDB();
-    await db.salespersons.delete(id);
+    await db.salesPersons.delete(id);
     set((s: any) => ({ salespersons: s.salespersons.filter((x: any) => x.id !== id) }));
   },
 

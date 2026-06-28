@@ -1,514 +1,192 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { useStore } from './store/useStore';
-import LoadingSpinner from './components/ui/Spinner';
-import { Toaster } from 'react-hot-toast';
-import { ErrorBoundary } from './components/ErrorBoundary';
-
-// Existing imports...
-import BulkUpdations from './pages/BulkUpdations';
-import ChartOfAccounts from './components/ChartOfAccounts';
-
-// Refactored Tally Components
-import BackupRestore from './components/tally/BackupRestore';
-import ControlCentre from './components/tally/ControlCentre';
-import DataExportImport from './components/tally/DataExportImport';
-import F11CompanyFeatures from './components/tally/F11CompanyFeatures';
-import PrintConfiguration from './components/tally/PrintConfiguration';
-import RolesManagement from './components/tally/RolesManagement';
-import SecurityControl from './components/tally/SecurityControl';
-import TallyVault from './components/tally/TallyVault';
-
-// Modals and Utilities
-import { CalculatorPanel } from './components/ui/CalculatorPanel';
-import { DisplayLanguageModal, DataEntryLanguageModal } from './components/ui/LanguageModal';
-
-// Lazy load heavy pages
-const Dashboard = lazy(() => import('./components/Dashboard'));
-const VoucherEntryHub = lazy(() => import('./pages/VoucherEntryHub'));
-const PartyMaster = lazy(() => import('./pages/PartyMaster'));
-const ItemMaster = lazy(() => import('./pages/ItemMaster'));
-const UnitConversionMaster = lazy(() => import('./pages/UnitConversionMaster'));
-const BillSundryMaster = lazy(() => import('./pages/BillSundryMaster'));
-const ConfigurationHub = lazy(() => import('./pages/ConfigurationHub'));
-const MemorandumVoucher = lazy(() => import('./pages/MemorandumVoucher'));
-const SalesRegister = lazy(() => import('./pages/SalesRegister'));
-const PurchaseRegister = lazy(() => import('./pages/PurchaseRegister'));
-const JournalRegister = lazy(() => import('./pages/JournalRegister'));
-const DayBook = lazy(() => import('./pages/DayBook'));
-const GeneralLedger = lazy(() => import('./pages/GeneralLedger'));
-const TrialBalance = lazy(() => import('./pages/TrialBalance'));
-const ProfitLoss = lazy(() => import('./pages/ProfitLoss'));
-const BalanceSheet = lazy(() => import('./pages/BalanceSheet'));
-const CashFlowStatement = lazy(() => import('./pages/CashFlowStatement'));
-const FundsFlowStatement = lazy(() => import('./pages/FundsFlowStatement'));
-const StockBook = lazy(() => import('./pages/StockBook'));
-const StockSummary = lazy(() => import('./pages/StockSummary'));
-const SalesOrderOutstanding = lazy(() => import('./pages/SalesOrderOutstanding'));
-const PurchaseOrderOutstanding = lazy(() => import('./pages/PurchaseOrderOutstanding'));
-const DebtorsAging = lazy(() => import('./pages/DebtorsAging'));
-const CreditorsAging = lazy(() => import('./pages/CreditorsAging'));
-const BankReconciliation = lazy(() => import('./pages/BankReconciliation'));
-const GstReports = lazy(() => import('./pages/GstReports'));
-const TdsReports = lazy(() => import('./pages/TdsReports'));
-const VatReports = lazy(() => import('./pages/VatReports'));
-const Payroll = lazy(() => import('./pages/Payroll'));
-const PayrollReports = lazy(() => import('./pages/PayrollReports'));
-const Budgets = lazy(() => import('./pages/Budgets'));
-const RatioAnalysis = lazy(() => import('./pages/RatioAnalysis'));
-const StatisticsReport = lazy(() => import('./pages/StatisticsReport'));
-const ExceptionReports = lazy(() => import('./pages/ExceptionReports'));
-const AuditLogs = lazy(() => import('./pages/AuditLogs'));
-const Troubleshooting = lazy(() => import('./pages/Troubleshooting'));
-const CbmsDashboard = lazy(() => import('./pages/CbmsDashboard'));
-const ReceiptVoucher = lazy(() => import('./pages/ReceiptVoucher'));
-const PaymentVoucher = lazy(() => import('./pages/PaymentVoucher'));
-const ContraVoucher = lazy(() => import('./pages/ContraVoucher'));
-const JournalEntries = lazy(() => import('./pages/JournalEntries'));
-const SalesVoucher = lazy(() => import('./pages/SalesVoucher'));
-const PurchaseVoucher = lazy(() => import('./pages/PurchaseVoucher'));
-const DebitNoteVoucher = lazy(() => import('./pages/DebitNoteVoucher'));
-const CreditNoteVoucher = lazy(() => import('./pages/CreditNoteVoucher'));
-const SalesOrderVoucher = lazy(() => import('./pages/SalesOrderVoucher'));
-const PurchaseOrder = lazy(() => import('./pages/PurchaseOrder'));
-const StockJournalPage = lazy(() => import('./pages/StockJournalPage'));
-const PhysicalStockPage = lazy(() => import('./pages/PhysicalStockPage'));
-const MaterialIssuedPage = lazy(() => import('./pages/MaterialIssuedPage'));
-const MaterialReceivedPage = lazy(() => import('./pages/MaterialReceivedPage'));
-const ProductionPage = lazy(() => import('./pages/ProductionPage'));
-const UnassemblePage = lazy(() => import('./pages/UnassemblePage'));
-const DeliveryChallan = lazy(() => import('./pages/DeliveryChallan'));
-const GoodsReceiptNote = lazy(() => import('./pages/GoodsReceiptNote'));
-const ReceiptsAndPayments = lazy(() => import('./pages/ReceiptsAndPayments'));
-const PaymentAdvice = lazy(() => import('./pages/PaymentAdvice'));
-const Gateway = lazy(() => import('./components/Gateway'));
-const ReportHub = lazy(() => import('./components/ReportHub'));
-const BillingInvoice = lazy(() => import('./pages/BillingInvoice'));
-const TdsReport = lazy(() => import('./pages/TdsReport'));
-const TdsPayment = lazy(() => import('./pages/TdsPayment'));
-const BankBook = lazy(() => import('./pages/BankBook'));
-const CashBook = lazy(() => import('./pages/CashBook'));
-const AgingReport = lazy(() => import('./pages/AgingReport'));
-const BillWisePending = lazy(() => import('./pages/BillWisePending'));
-const PartyLedgerStatement = lazy(() => import('./pages/PartyLedgerStatement'));
-const CostCenterReport = lazy(() => import('./pages/CostCenterReport'));
-const BudgetVsActual = lazy(() => import('./pages/BudgetVsActual'));
-const VouchersLog = lazy(() => import('./pages/VouchersLog'));
-const BankingHub = lazy(() => import('./pages/BankingHub'));
-const ChequePrinting = lazy(() => import('./pages/ChequePrinting'));
-const ChequeRegister = lazy(() => import('./pages/ChequeRegister'));
-const DepositSlip = lazy(() => import('./pages/DepositSlip'));
-const EPayments = lazy(() => import('./pages/EPayments'));
-const PDCSummary = lazy(() => import('./pages/PDCSummary'));
-const AutoBankReconciliation = lazy(() => import('./pages/AutoBankReconciliation'));
-const EmployeeMaster = lazy(() => import('./pages/EmployeeMaster'));
-const EmployeeGroupMaster = lazy(() => import('./pages/EmployeeGroupMaster'));
-const PayHeadMaster = lazy(() => import('./pages/PayHeadMaster'));
-const SalaryDetailsMaster = lazy(() => import('./pages/SalaryDetailsMaster'));
-const PayrollUnitMaster = lazy(() => import('./pages/PayrollUnitMaster'));
-const AttendanceTypeMaster = lazy(() => import('./pages/AttendanceTypeMaster'));
-const TDSNatureOfPaymentMaster = lazy(() => import('./pages/TDSNatureOfPaymentMaster'));
-const AccountGroupMaster = lazy(() => import('./pages/AccountGroupMaster'));
-const LedgerMaster = lazy(() => import('./pages/LedgerMaster'));
-const VoucherTypeMaster = lazy(() => import('./pages/VoucherTypeMaster'));
-const CurrencyMaster = lazy(() => import('./pages/CurrencyMaster'));
-const StandardNarrationMaster = lazy(() => import('./pages/StandardNarrationMaster'));
-const TaxCategoryMaster = lazy(() => import('./pages/TaxCategoryMaster'));
-const SaleTypeMaster = lazy(() => import('./pages/SaleTypeMaster'));
-const PurchaseTypeMaster = lazy(() => import('./pages/PurchaseTypeMaster'));
-const CostCenters = lazy(() => import('./pages/CostCenters'));
-const BankAccountsPage = lazy(() => import('./pages/BankAccountsPage'));
-const BudgetMaster = lazy(() => import('./pages/BudgetMaster'));
-const ItemGroupMaster = lazy(() => import('./pages/ItemGroupMaster'));
-const Units = lazy(() => import('./pages/Units'));
-const Warehouses = lazy(() => import('./pages/Warehouses'));
-const ScenarioMaster = lazy(() => import('./pages/ScenarioMaster'));
-const OpeningBalance = lazy(() => import('./pages/OpeningBalance'));
-const FiscalYear = lazy(() => import('./pages/FiscalYear'));
-const MasterControlCentre = lazy(() => import('./pages/MasterControlCentre'));
-const AuditLog = lazy(() => import('./pages/AuditLog'));
-const UsersManagement = lazy(() => import('./pages/UsersManagement'));
-const OverdueBillsInterest = lazy(() => import('./pages/OverdueBillsInterest'));
-const PayrollRun = lazy(() => import('./pages/PayrollRun'));
-const InventoryReport = lazy(() => import('./pages/InventoryReport'));
-const RecurringVouchers = lazy(() => import('./pages/RecurringVouchers'));
-const StockCategoryMaster = lazy(() => import('./pages/StockCategoryMaster'));
-const Parties = lazy(() => import('./pages/Parties'));
-const MakerCheckerApproval = lazy(() => import('./pages/MakerCheckerApproval'));
-const AuditTrailLog = lazy(() => import('./pages/AuditTrailLog'));
-const PeriodLockPage = lazy(() => import('./pages/PeriodLockPage'));
-const MissingVoucherReport = lazy(() => import('./pages/MissingVoucherReport'));
-const CreditLimitManager = lazy(() => import('./pages/CreditLimitManager'));
-const Quotation = lazy(() => import('./pages/Quotation'));
-const PartyReconciliation = lazy(() => import('./pages/PartyReconciliation'));
-const BatchManagement = lazy(() => import('./pages/BatchManagement'));
-const StockAgeingReport = lazy(() => import('./pages/StockAgeingReport'));
-const ItemProfitabilityReport = lazy(() => import('./pages/ItemProfitabilityReport'));
-const BranchMaster = lazy(() => import('./pages/BranchMaster'));
-const BranchReports = lazy(() => import('./pages/BranchReports'));
-const SalespersonMaster = lazy(() => import('./pages/SalespersonMaster'));
-const FollowUpTracker = lazy(() => import('./pages/FollowUpTracker'));
-const SerialNumberTracking = lazy(() => import('./pages/SerialNumberTracking'));
-const PayrollProcessing = lazy(() => import('./pages/PayrollProcessing'));
-const FixedAssetRegister = lazy(() => import('./pages/FixedAssetRegister'));
-const SmartBankReconciliation = lazy(() => import('./pages/SmartBankReconciliation'));
-const POSBilling = lazy(() => import('./pages/POSBilling'));
-const SalesPurchaseAnalysis = lazy(() => import('./pages/SalesPurchaseAnalysis'));
-const MultiCurrencyHub = lazy(() => import('./pages/MultiCurrencyHub'));
-const Form25B = lazy(() => import('./pages/Form25B'));
-const PriceHistory = lazy(() => import('./pages/PriceHistory'));
-const AdvancedTaxCompliance = lazy(() => import('./pages/AdvancedTaxCompliance'));
-const PriceListMaster = lazy(() => import('./pages/PriceListMaster'));
-const BOMProduction = lazy(() => import('./pages/BOMProduction'));
-const CommunicationHub = lazy(() => import('./pages/CommunicationHub'));
-const YearEndProcess = lazy(() => import('./pages/YearEndProcess'));
-const POSMode = lazy(() => import('./pages/POSMode'));
-const BankStatementImport = lazy(() => import('./pages/BankStatementImport'));
-const JobWorkRegister = lazy(() => import('./pages/JobWorkRegister'));
-const PricePolicyManager = lazy(() => import('./pages/PricePolicyManager'));
-const ReportScheduler = lazy(() => import('./pages/ReportScheduler'));
-
+// @ts-nocheck
+import React, { useEffect } from "react";
+import { useStore } from "./store";
+import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
-import { F12Provider } from './hooks/useF12Config';
-import F12Panel from './components/F12Panel';
-import AuthGateway from "./pages/AuthGateway";
-import ShortcutPanel from "./components/ShortcutPanel";
-import { Loader2 } from "lucide-react";
+import BusyMenuBar from "./components/BusyMenuBar";
+import Dashboard from "./pages/Dashboard";
+import ChartOfAccounts from "./components/ChartOfAccounts";
+import Warehouses from "./pages/Warehouses";
+import Units from "./pages/Units";
+import CostCenters from "./pages/CostCenters";
+import Parties from "./pages/Parties";
+import PartyForm from "./pages/PartyForm";
+import ItemMaster from "./pages/ItemMaster";
+import SalesVoucher from "./pages/SalesVoucher";
+import SalesReturn from "./pages/SalesReturn";
+import PurchaseVoucher from "./pages/PurchaseVoucher";
+import PurchaseReturn from "./pages/PurchaseReturn";
+import JournalVoucher from "./pages/JournalVoucher";
+import PaymentVoucher from "./pages/PaymentVoucher";
+import ReceiptVoucher from "./pages/ReceiptVoucher";
+import ContraVoucher from "./pages/ContraVoucher";
+import DeliveryChallan from "./pages/DeliveryChallan";
+import GoodsReceiptNote from "./pages/GoodsReceiptNote";
+import StockTransfer from "./pages/StockTransfer";
+import StockAdjustment from "./pages/StockAdjustment";
+import PhysicalStock from "./pages/PhysicalStock";
+import Quotation from "./pages/Quotation";
+import SalesOrder from "./pages/SalesOrder";
+import PurchaseOrder from "./pages/PurchaseOrder";
+import CreditNote from "./pages/CreditNote";
+import DebitNote from "./pages/DebitNote";
+import BalanceSheet from "./pages/BalanceSheet";
+import ProfitLoss from "./pages/ProfitLoss";
+import TrialBalance from "./pages/TrialBalance";
+import DayBook from "./pages/DayBook";
+import LedgerReport from "./pages/LedgerReport";
+import OutstandingReceivables from "./pages/OutstandingReceivables";
+import OutstandingPayables from "./pages/OutstandingPayables";
+import AgingReport from "./pages/AgingReport";
+import PartyStatement from "./pages/PartyStatement";
+import InterestCalculation from "./pages/InterestCalculation";
+import StockSummary from "./pages/StockSummary";
+import StockMovement from "./pages/StockMovement";
+import BudgetMaster from "./pages/BudgetMaster";
+import Settings from "./pages/Settings";
+import FiscalYear from "./pages/FiscalYear";
+import Backup from "./pages/Backup";
+import AuditLog from "./pages/AuditLog";
+import ImportExport from "./pages/ImportExport";
+import UserManagement from "./pages/UserManagement";
+import Workflow from "./pages/Workflow";
+// ── Phase 4 new pages ─────────────────────────────────────────────────────────
+import SalesPersons from "./pages/SalesPersons";
+import PriceLists from "./pages/PriceLists";
+import UnitConversionMaster from "./pages/UnitConversionMaster";
+import StandardNarrationMaster from "./pages/StandardNarrationMaster";
+import BillSundryMaster from "./pages/BillSundryMaster";
 
+// ─── Gateway / Auth ───────────────────────────────────────────────────────────
+import Gateway from "./pages/AuthGateway";
 
-
-const App = () => {
-  const { currentPage, currentUser, initializeApp } = useStore();
-  const [isDbReady, setIsDbReady] = useState(false);
-  
-  // NEW: Calculator and language modal state
-  const [calcOpen, setCalcOpen] = useState(false);
-  const [displayLangOpen, setDisplayLangOpen] = useState(false);
-  const [dataEntryLangOpen, setDataEntryLangOpen] = useState(false);
+const App: React.FC = () => {
+  const {
+    currentPage,
+    isInitialised,
+    isInitialising,
+    initializeApp,
+    company,
+  } = useStore();
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        await initializeApp();
-      } catch (err) {
-        console.error("[Sutra ERP] App init error:", err);
-      } finally {
-        setIsDbReady(true);
-      }
-    };
-    init();
-  }, [initializeApp]);
-
-  // NEW: Global shortcut handler
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      const tag = (document.activeElement as HTMLElement)?.tagName?.toLowerCase();
-      if (tag === 'input' || tag === 'textarea') return;
-      if (e.ctrlKey && e.key === 'n') { e.preventDefault(); setCalcOpen(p => !p); }
-      if (e.ctrlKey && e.key === 'k') { e.preventDefault(); setDisplayLangOpen(p => !p); }
-      if (e.ctrlKey && e.key === 'w') { e.preventDefault(); setDataEntryLangOpen(p => !p); }
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    initializeApp();
   }, []);
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard': return <Dashboard />;
-      case 'voucher-entry': return <VoucherEntryHub />;
-      case 'party-master': return <PartyMaster />;
-      case 'item-master': return <ItemMaster />;
-      case 'unit-conversion': return <UnitConversionMaster />;
-      case 'bill-sundry': return <BillSundryMaster />;
-      case 'configuration':
-      case 'settings':
-      case 'company/settings':
-      case '/company/settings': return <ConfigurationHub />;
-      case 'memorandum-voucher': return <MemorandumVoucher />;
-      case 'sales-register': return <SalesRegister />;
-      case 'purchase-register': return <PurchaseRegister />;
-      case 'journal-register': return <JournalRegister />;
-      case 'day-book': return <DayBook />;
-      case 'general-ledger': return <GeneralLedger />;
-      case 'trial-balance': return <TrialBalance />;
-      case 'profit-loss': return <ProfitLoss />;
-      case 'balance-sheet': return <BalanceSheet />;
-      case 'cash-flow': return <CashFlowStatement />;
-      case 'funds-flow': return <FundsFlowStatement />;
-      case 'stock-book': return <StockBook />;
-      case 'stock-summary': return <StockSummary />;
-      case 'sales-order-outstanding': return <SalesOrderOutstanding />;
-      case 'purchase-order-outstanding': return <PurchaseOrderOutstanding />;
-      case 'debtors-aging': return <DebtorsAging />;
-      case 'creditors-aging': return <CreditorsAging />;
-      case 'bank-reconciliation': return <SmartBankReconciliation />;
-      case 'gst-reports': return <GstReports />;
-      case 'tds-reports': return <TdsReports />;
-      case 'vat-reports': return <VatReports />;
-      case 'payroll': return <PayrollProcessing />;
-      case 'payroll-reports': return <PayrollReports />;
-      case 'budgets': return <Budgets />;
-      case 'ratio-analysis': return <RatioAnalysis />;
-      case 'statistics-report': return <StatisticsReport />;
-      case 'exception-reports': return <ExceptionReports />;
-      case 'audit-logs': return <AuditLogs />;
-      case 'troubleshooting': return <Troubleshooting />;
-      case 'bulk-updations': return <BulkUpdations />;
-      case 'chart-of-accounts': return <ChartOfAccounts />;
-      case 'backup-restore': return <BackupRestore />;
-      case 'tally-vault': return <TallyVault />;
-      case 'security-control': return <SecurityControl />;
-      case 'roles-management': return <RolesManagement />;
-      case 'control-centre': return <ControlCentre />;
-      case 'print-configuration': return <PrintConfiguration />;
-      case 'f11-features': return <F11CompanyFeatures />;
-      case 'data-export-import': return <DataExportImport />;
-      case 'cbms-dashboard': return <CbmsDashboard />;
-      case 'receipt': return <ReceiptVoucher />;
-      case 'payment': return <PaymentVoucher />;
-      case 'contra': return <ContraVoucher />;
-      case 'journal': return <JournalEntries />;
-      case 'sales': return <SalesVoucher />;
-      case 'purchase': return <PurchaseVoucher />;
-      case 'debit-note': return <DebitNoteVoucher />;
-      case 'credit-note': return <CreditNoteVoucher />;
-      case 'sales-order': return <SalesOrderVoucher />;
-      case 'purchase-order': return <PurchaseOrder />;
-      case 'stock-journal': return <StockJournalPage />;
-      case 'physical-stock': return <PhysicalStockPage />;
-      case 'material-issued': return <MaterialIssuedPage />;
-      case 'material-received': return <MaterialReceivedPage />;
-      case 'production': return <ProductionPage />;
-      case 'unassemble': return <UnassemblePage />;
-      case 'delivery-challan': return <DeliveryChallan />;
-      case 'receipt-note': return <GoodsReceiptNote />;
-      case 'receipts-and-payments': return <ReceiptsAndPayments />;
-      case 'payment-advice': return <PaymentAdvice />;
-
-      // Gateway & Navigation Hubs
-      case 'gateway': return <Gateway />;
-      case 'reports-hub': return <ReportHub />;
-      case 'configuration-hub': return <ConfigurationHub />;
-      case 'data-import-export': return <DataExportImport />;
-
-      // Masters
-      case 'master-control-centre': return <MasterControlCentre />;
-      case 'branch-master': return <BranchMaster />;
-      case 'salesperson-master': return <SalespersonMaster />;
-      case 'accounts': return <ChartOfAccounts />;
-      case 'parties': return <Parties />;
-      case 'items': return <StockBook />;
-      case 'ledgers': return <LedgerMaster />;
-      case 'account-groups': return <AccountGroupMaster />;
-      case 'item-groups': return <ItemGroupMaster />;
-      case 'units': return <Units />;
-      case 'cost-centers': return <CostCenters />;
-      case 'bank-accounts': return <BankAccountsPage />;
-      case 'employees': return <EmployeeMaster />;
-      case 'employee-groups': return <EmployeeGroupMaster />;
-      case 'tds-nature-of-payments': return <TDSNatureOfPaymentMaster />;
-      case 'pay-heads': return <PayHeadMaster />;
-      case 'salary-details': return <SalaryDetailsMaster />;
-      case 'payroll-units': return <PayrollUnitMaster />;
-      case 'attendance-types': return <AttendanceTypeMaster />;
-      case 'voucher-types': return <VoucherTypeMaster />;
-      case 'budget': return <BudgetMaster />;
-      case 'currency-master': return <CurrencyMaster />;
-      case 'standard-narrations': return <StandardNarrationMaster />;
-      case 'tax-categories': return <TaxCategoryMaster />;
-      case 'sale-types': return <SaleTypeMaster />;
-      case 'purchase-types': return <PurchaseTypeMaster />;
-      case 'scenarios': return <ScenarioMaster />;
-      case 'warehouses': return <Warehouses />;
-      case 'opening-balance': return <OpeningBalance />;
-      case 'fiscal-year': return <FiscalYear />;
-
-      // Transactions
-      case 'billing': return <BillingInvoice />;
-
-      // Reports
-      case 'ledger': return <GeneralLedger />;
-      case 'bank-book': return <BankBook />;
-      case 'cash-book': return <CashBook />;
-      case 'tds-report': return <TdsReport />;
-      case 'aging-report': return <AgingReport />;
-      case 'bill-wise-pending':
-      case 'bill-pending': return <BillWisePending />;
-      case 'party-ledger':
-      case 'party-statement': return <PartyLedgerStatement />;
-      case 'cost-center-report': return <CostCenterReport />;
-      case 'budget-vs-actual': return <BudgetVsActual />;
-      case 'vouchers-log': return <VouchersLog />;
-      case 'inventory-report': return <InventoryReport />;
-      case 'stock-ageing-report': return <StockAgeingReport />;
-      case 'item-profitability': return <ItemProfitabilityReport />;
-      case 'branch-reports': return <BranchReports />;
-      case 'stock-categories': return <StockCategoryMaster />;
-      case 'overdue-bills-interest': return <OverdueBillsInterest />;
-      case 'recurring-vouchers': return <RecurringVouchers />;
-
-      // Banking
-      case 'banking-hub': return <BankingHub />;
-      case 'cheque-printing': return <ChequePrinting />;
-      case 'cheque-register': return <ChequeRegister />;
-      case 'deposit-slip': return <DepositSlip />;
-      case 'e-payments': return <EPayments />;
-      case 'pdc-summary': return <PDCSummary />;
-      case 'follow-up-tracker': return <FollowUpTracker />;
-      case 'auto-bank-reconciliation': return <AutoBankReconciliation />;
-
-      // Payroll
-      case 'payroll-run': return <PayrollRun />;
-      case 'tds-payment': return <TdsPayment />;
-
-      // Administration
-      case 'backup': return <BackupRestore />;
-      case 'audit-log': return <AuditLog />;
-      case 'users': return <UsersManagement />;
-      case 'grn': return <GoodsReceiptNote />;
-      case 'maker-checker': return <MakerCheckerApproval />;
-      case 'audit-trail': return <AuditTrailLog />;
-      case 'period-lock': return <PeriodLockPage />;
-      case 'missing-vouchers': return <MissingVoucherReport />;
-      case 'credit-limits': return <CreditLimitManager />;
-      case 'quotations': return <Quotation />;
-      case 'party-reconciliation': return <PartyReconciliation />;
-      case 'batch-management': return <BatchManagement />;
-      case 'serial-tracking': return <SerialNumberTracking />;
-      case 'fixed-assets': return <FixedAssetRegister />;
-      case 'pos': return <POSBilling />;
-      case 'sales-purchase-analysis': return <SalesPurchaseAnalysis />;
-      case 'price-history': return <PriceHistory />;
-      case "advanced-tax-compliance": return <AdvancedTaxCompliance />;
-      case "price-list-master": return <PriceListMaster />;
-      case "bom-production": return <BOMProduction />;
-      case "debtors-aging": return <DebtorsAging />;
-      case "credit-limit-manager": return <CreditLimitManager />;
-      case "cost-center-report": return <CostCenterReport />;
-      case "communication-hub": return <CommunicationHub />;
-      case "year-end-process": return <YearEndProcess />;
-      case "period-lock": return <PeriodLockPage />;
-      case "audit-log": return <AuditLog />;
-      case "backup-restore": return <BackupRestore />;
-      case "opening-balance": return <OpeningBalance />;
-      case "recurring-vouchers": return <RecurringVouchers />;
-      case "pos-mode": return <POSMode />;
-      case "bank-statement-import": return <BankStatementImport />;
-      case "job-work":
-      case "job-work-register": return <JobWorkRegister />;
-      case "price-policy":
-      case "price-floor":
-      case "price-policy-manager": return <PricePolicyManager />;
-      case "report-scheduler":
-      case "auto-reports": return <ReportScheduler />;
-      case "form-25b": return <Form25B />;
-      case "stock-ageing": return <StockAgeingReport />;
-      case "branch-master": return <BranchMaster />;
-      case "salesperson-master":
-      case "salesperson-report": return <SalespersonMaster />;
-      case "collection-followup": return <FollowUpTracker />;
-
-      default:
-        return (
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-[#EBF5E2] border border-[#000000] rounded-lg p-8 h-full shadow-sm animate-fadeIn">
-            <div className="w-16 h-16 bg-[#D4EABD] rounded-full flex items-center justify-center mb-4 border border-[#000000]">
-              <svg className="w-8 h-8 text-[#000000]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <h2 className="text-[16px] font-bold text-[#000000] tracking-tight mb-2">Module Under Development</h2>
-            <p className="text-[12px] text-[#000000] max-w-md mx-auto mb-6">
-              The <span className="font-semibold px-1 py-0.5 bg-[#D4EABD] rounded text-[#000000] border border-[#9DC07A]">"{currentPage}"</span> module is currently under active development. This feature will be available in an upcoming update.
-            </p>
-            <button
-              onClick={() => useStore.getState().setCurrentPage("dashboard")}
-              className="h-9 px-5 bg-white hover:bg-[#D4EABD] text-[#000000] text-[12px] font-bold rounded cursor-pointer border border-[#000000] transition-colors shadow-[2px_2px_0px_#000000] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
-            >
-              Return to Dashboard
-            </button>
-          </div>
-        );
-    }
-  };
-
-  if (!isDbReady) {
+  // ── Loading splash ────────────────────────────────────────────────────────
+  if (isInitialising) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#E4F1D9]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#3D6B25] animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-[#000000] mb-2">Loading Sutra ERP...</h2>
-          <p className="text-[#000000]">Please wait while we initialize the application</p>
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm text-gray-500">Loading…</p>
         </div>
       </div>
     );
   }
 
-  if (!currentUser) {
+  // ── Gateway (not yet initialised / no company) ────────────────────────────
+  if (!isInitialised || currentPage === "gateway") {
     return (
-      <AuthGateway>
-        <div />
-      </AuthGateway>
+      <>
+        <Toaster position="top-right" />
+        <Gateway />
+      </>
     );
   }
 
-  return (
-    <F12Provider>
-      <Layout>
-        <ErrorBoundary key={currentPage}>
-          <Suspense key={currentPage} fallback={<LoadingSpinner />}>
-            {renderPage()}
-          </Suspense>
-        </ErrorBoundary>
-      </Layout>
-      
-      <ShortcutPanel />
-      <F12Panel />
+  // ── Page resolver ─────────────────────────────────────────────────────────
+  const renderPage = () => {
+    switch (currentPage) {
 
-      {/* Modals and Overlays */}
-      <CalculatorPanel isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
-      <DisplayLanguageModal isOpen={displayLangOpen} onClose={() => setDisplayLangOpen(false)} />
-      <DataEntryLanguageModal isOpen={dataEntryLangOpen} onClose={() => setDataEntryLangOpen(false)} />
-      
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: "#1F2937",
-            color: "#FFFFFF",
-            fontSize: "12px",
-            fontWeight: "500",
-            borderRadius: "6px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.35)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            maxWidth: "380px",
-          },
-          success: {
-            style: {
-              background: "#14532D",
-              color: "#FFFFFF",
-              border: "1px solid #22c55e",
-            },
-            iconTheme: {
-              primary: "#4ade80",
-              secondary: "#14532D",
-            },
-          },
-          error: {
-            style: {
-              background: "#7F1D1D",
-              color: "#FFFFFF",
-              border: "1px solid #ef4444",
-            },
-            iconTheme: {
-              primary: "#f87171",
-              secondary: "#7F1D1D",
-            },
-          },
-        }}
-      />
-    </F12Provider>
+      // ── Masters ────────────────────────────────────────────────────────────
+      case "accounts":          return <ChartOfAccounts />;
+      case "cost-centers":      return <CostCenters />;
+      case "budget":            return <BudgetMaster />;
+      case "parties":           return <Parties />;
+      case "party-form":        return <PartyForm onClose={() => useStore.getState().setCurrentPage("parties")} />;
+      case "item-master":       return <ItemMaster />;
+      case "warehouses":        return <Warehouses />;
+      case "units":             return <Units />;
+      case "unit-conversion":   return <UnitConversionMaster />;
+      // ── Phase 4 new routes ────────────────────────────────────────────────
+      case "sales-persons":     return <SalesPersons />;
+      case "price-lists":       return <PriceLists />;
+      case "standard-narration":return <StandardNarrationMaster />;
+      case "bill-sundry":       return <BillSundryMaster />;
+
+      // ── Sales transactions ─────────────────────────────────────────────────
+      case "sales":             return <SalesVoucher />;
+      case "sales-return":      return <SalesReturn />;
+      case "delivery-challan":  return <DeliveryChallan />;
+      case "quotation":         return <Quotation />;
+      case "sales-order":       return <SalesOrder />;
+
+      // ── Purchase transactions ──────────────────────────────────────────────
+      case "purchase":          return <PurchaseVoucher />;
+      case "purchase-return":   return <PurchaseReturn />;
+      case "goods-receipt":     return <GoodsReceiptNote />;
+      case "purchase-order":    return <PurchaseOrder />;
+
+      // ── Inventory transactions ─────────────────────────────────────────────
+      case "stock-transfer":    return <StockTransfer />;
+      case "stock-adjustment":  return <StockAdjustment />;
+      case "physical-stock":    return <PhysicalStock />;
+
+      // ── Finance / Accounts transactions ───────────────────────────────────
+      case "journal":           return <JournalVoucher />;
+      case "payment":           return <PaymentVoucher />;
+      case "receipt":           return <ReceiptVoucher />;
+      case "contra":            return <ContraVoucher />;
+      case "credit-note":       return <CreditNote />;
+      case "debit-note":        return <DebitNote />;
+
+      // ── Financial reports ─────────────────────────────────────────────────
+      case "balance-sheet":     return <BalanceSheet />;
+      case "profit-loss":       return <ProfitLoss />;
+      case "trial-balance":     return <TrialBalance />;
+      case "day-book":          return <DayBook />;
+      case "ledger-report":     return <LedgerReport />;
+
+      // ── Party reports ─────────────────────────────────────────────────────
+      case "outstanding-receivables": return <OutstandingReceivables />;
+      case "outstanding-payables":    return <OutstandingPayables />;
+      case "aging-report":            return <AgingReport />;
+      case "party-statement":         return <PartyStatement />;
+      case "interest-calculation":    return <InterestCalculation />;
+
+      // ── Inventory reports ─────────────────────────────────────────────────
+      case "stock-summary":     return <StockSummary />;
+      case "stock-movement":    return <StockMovement />;
+
+      // ── Company / utilities ───────────────────────────────────────────────
+      case "settings":          return <Settings />;
+      case "fiscal-year":       return <FiscalYear />;
+      case "backup":            return <Backup />;
+      case "audit-log":         return <AuditLog />;
+      case "import-export":     return <ImportExport />;
+      case "user-management":   return <UserManagement />;
+      case "workflow":          return <Workflow />;
+
+      // ── Dashboard / fallback ──────────────────────────────────────────────
+      default:                  return <Dashboard />;
+    }
+  };
+
+  // ── Shell ─────────────────────────────────────────────────────────────────
+  return (
+    <>
+      <Toaster position="top-right" />
+      <Layout>
+        <div className="flex flex-col h-full">
+          <BusyMenuBar />
+          <main className="flex-1 overflow-y-auto bg-gray-50">
+            {renderPage()}
+          </main>
+        </div>
+      </Layout>
+    </>
   );
 };
 
 export default App;
-

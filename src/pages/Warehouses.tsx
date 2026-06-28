@@ -1,212 +1,251 @@
-import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
-import { Plus, Edit2, Trash2, Package } from "lucide-react";
-
-interface Warehouse {
-  id: string;
-  code: string;
-  name: string;
-  address: string;
-  isDefault: boolean;
-  isActive: boolean;
-}
+// @ts-nocheck
+import React, { useState, useEffect, useMemo } from "react";
+import { useStore } from "../store";
+import toast from "react-hot-toast";
+import { DBWarehouse } from "../lib/db";
+import {
+  Plus, Pencil, Trash2, X, Save,
+  CheckCircle, XCircle, Building2, Star
+} from "lucide-react";
 
 export default function Warehouses() {
-  const [warehouses, setWarehouses] = useState<Warehouse[]>([
-    {
-      id: "1",
-      code: "WH-MAIN",
-      name: "Main Warehouse",
-      address: "Kathmandu, Nepal",
-      isDefault: true,
-      isActive: true,
-    },
-    {
-      id: "2",
-      code: "WH-BKT",
-      name: "Bhaktapur Branch",
-      address: "Bhaktapur, Nepal",
-      isDefault: false,
-      isActive: true,
-    },
-  ]);
+  const { warehouses, addWarehouse, updateWarehouse, deleteWarehouse, loadWarehouses } = useStore();
 
   const [showForm, setShowForm] = useState(false);
-  const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [formData, setFormData] = useState({
+  const [editingWarehouse, setEditingWarehouse] = useState<DBWarehouse | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (loadWarehouses) {
+      loadWarehouses();
+    }
+  }, [loadWarehouses]);
+
+  const emptyForm = {
     code: "",
     name: "",
     address: "",
     isDefault: false,
     isActive: true,
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (formData.isDefault) {
-      setWarehouses(warehouses.map((w) => ({ ...w, isDefault: false })));
-    }
-
-    if (selectedWarehouse) {
-      setWarehouses(
-        warehouses.map((w) => (w.id === selectedWarehouse.id ? { ...w, ...formData } : w)),
-      );
-      alert("Warehouse updated successfully");
-    } else {
-      setWarehouses([
-        ...warehouses,
-        {
-          id: Date.now().toString(),
-          ...formData,
-        },
-      ]);
-      alert("Warehouse added successfully");
-    }
-
-    resetForm();
+    isMainBranch: false,
+    allowNegativeStock: false,
   };
 
-  const resetForm = () => {
-    setFormData({
-      code: "",
-      name: "",
-      address: "",
-      isDefault: false,
-      isActive: true,
-    });
-    setSelectedWarehouse(null);
-    setShowForm(false);
+  const [formData, setFormData] = useState<Omit<DBWarehouse, "id">>(emptyForm as any);
+
+  const handleOpenCreate = () => {
+    setEditingWarehouse(null);
+    setFormData(emptyForm as any);
+    setShowForm(true);
   };
 
-  const handleEdit = (warehouse: Warehouse) => {
-    setSelectedWarehouse(warehouse);
+  const handleOpenEdit = (warehouse: DBWarehouse) => {
+    setEditingWarehouse(warehouse);
     setFormData({
-      code: warehouse.code,
-      name: warehouse.name,
-      address: warehouse.address,
-      isDefault: warehouse.isDefault,
-      isActive: warehouse.isActive,
+      code: warehouse.code || "",
+      name: warehouse.name || "",
+      address: warehouse.address || "",
+      isDefault: !!warehouse.isDefault,
+      isActive: warehouse.isActive !== false,
+      isMainBranch: !!warehouse.isMainBranch,
+      allowNegativeStock: !!warehouse.allowNegativeStock,
+      branchId: warehouse.branchId,
+      branchName: warehouse.branchName,
+      costCenterId: warehouse.costCenterId,
     });
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    const warehouse = warehouses.find((w) => w.id === id);
-    if (warehouse?.isDefault) {
-      alert("Cannot delete default warehouse. Set another warehouse as default first.");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name?.trim()) {
+      toast.error("Warehouse name is required.");
       return;
     }
-
-    if (confirm("Are you sure you want to delete this warehouse?")) {
-      setWarehouses(warehouses.filter((w) => w.id !== id));
-      alert("Warehouse deleted successfully");
+    if (!formData.code?.trim()) {
+      toast.error("Warehouse code is required.");
+      return;
+    }
+    // Check duplicate code
+    const duplicate = warehouses.find(
+      (w) =>
+        w.code === formData.code?.trim() &&
+        w.id !== editingWarehouse?.id
+    );
+    if (duplicate) {
+      toast.error(`Code "${formData.code}" is already used by "${duplicate.name}".`);
+      return;
+    }
+    try {
+      if (editingWarehouse) {
+        await updateWarehouse(editingWarehouse.id, formData);
+        toast.success("Warehouse updated successfully.");
+      } else {
+        await addWarehouse(formData);
+        toast.success("Warehouse added successfully.");
+      }
+      setShowForm(false);
+      setEditingWarehouse(null);
+      setFormData(emptyForm as any);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to save warehouse.");
     }
   };
 
-  const filteredWarehouses = warehouses.filter(
-    (w) =>
-      w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.code.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const handleDeleteRequest = (warehouse: DBWarehouse) => {
+    if (warehouse.isDefault) {
+      toast.error("Cannot delete the default warehouse. Set another warehouse as default first.");
+      return;
+    }
+    setConfirmDeleteId(warehouse.id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!confirmDeleteId) return;
+    try {
+      await deleteWarehouse(confirmDeleteId);
+      toast.success("Warehouse deleted successfully.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete warehouse.");
+    } finally {
+      setConfirmDeleteId(null);
+    }
+  };
+
+  const handleSetDefault = async (warehouse: DBWarehouse) => {
+    try {
+      // Remove default from all others, then set this one
+      for (const w of warehouses) {
+        if (w.isDefault && w.id !== warehouse.id) {
+          await updateWarehouse(w.id, { isDefault: false });
+        }
+      }
+      await updateWarehouse(warehouse.id, { isDefault: true });
+      toast.success(`"${warehouse.name}" set as default warehouse.`);
+    } catch (err: any) {
+      toast.error("Failed to update default warehouse.");
+    }
+  };
+
+  const warehouseToDelete = warehouses.find((w) => w.id === confirmDeleteId);
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="Warehouses" subtitle="Stock storage locations" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Warehouses</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Warehouse</span>
-        </button>
+    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Warehouses / Go-downs</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Manage stock locations and go-downs for inventory tracking
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Warehouse
+          </button>
+        </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search warehouses..."
-          className="input"
-        />
-      </div>
-
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-[#EBF5E2]">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Code
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Address
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Default
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Status
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
-                Actions
-              </th>
+      {/* Table */}
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Address</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Default</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Neg. Stock</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredWarehouses.length === 0 ? (
+          <tbody className="divide-y divide-gray-200">
+            {warehouses.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-[#000000]">
-                  <Package className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
-                  <p>No warehouses found</p>
+                <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
+                  <Building2 className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  No warehouses found. Create your first warehouse.
                 </td>
               </tr>
             ) : (
-              filteredWarehouses.map((warehouse) => (
-                <tr key={warehouse.id} className="hover:bg-[#EBF5E2]">
-                  <td className="px-6 py-4 text-sm font-medium text-[#000000]">{warehouse.code}</td>
-                  <td className="px-6 py-4 text-sm text-[#000000]">{warehouse.name}</td>
-                  <td className="px-6 py-4 text-sm text-[#000000]">{warehouse.address}</td>
-                  <td className="px-6 py-4 text-sm">
+              warehouses.map((warehouse) => (
+                <tr key={warehouse.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-2.5 font-mono text-[12px] text-gray-700">
+                    {warehouse.code || "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-medium">{warehouse.name}</span>
+                      {warehouse.isDefault && (
+                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold uppercase">
+                          Default
+                        </span>
+                      )}
+                      {warehouse.isMainBranch && (
+                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold uppercase">
+                          Main
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                    {warehouse.address || "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
                     {warehouse.isDefault ? (
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                        Default
-                      </span>
+                      <CheckCircle className="h-4 w-4 text-green-600 mx-auto" />
                     ) : (
-                      <span className="text-[#000000]">-</span>
+                      <button
+                        type="button"
+                        onClick={() => handleSetDefault(warehouse)}
+                        title="Set as default"
+                        className="text-gray-400 hover:text-green-600 transition-colors mx-auto block"
+                      >
+                        <Star className="h-4 w-4" />
+                      </button>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm">
+                  <td className="px-3 py-2.5 text-center">
+                    {warehouse.allowNegativeStock ? (
+                      <CheckCircle className="h-4 w-4 text-amber-500 mx-auto" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-gray-300 mx-auto" />
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        warehouse.isActive
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        warehouse.isActive !== false
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : "bg-red-100 text-red-700 border border-red-200"
                       }`}
                     >
-                      {warehouse.isActive ? "Active" : "Inactive"}
+                      {warehouse.isActive !== false ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
-                    <div className="flex justify-end space-x-2">
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => handleEdit(warehouse)}
-                        className="text-[#1557b0] hover:text-[#000000]"
+                        type="button"
+                        onClick={() => handleOpenEdit(warehouse)}
+                        title="Edit"
+                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Pencil className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(warehouse.id)}
-                        className="text-red-600 hover:text-red-900"
-                        disabled={warehouse.isDefault}
+                        type="button"
+                        onClick={() => handleDeleteRequest(warehouse)}
+                        title="Delete"
+                        className="text-gray-400 hover:text-red-600 transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -217,76 +256,154 @@ export default function Warehouses() {
         </table>
       </div>
 
+      {/* Add/Edit Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">
-              {selectedWarehouse ? "Edit Warehouse" : "Add Warehouse"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Code *</label>
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-lg shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">
+                {editingWarehouse ? "Edit Warehouse" : "New Warehouse"}
+              </h2>
+              <button
+                type="button"
+                onClick={() => { setShowForm(false); setEditingWarehouse(null); }}
+                className="text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Code *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.code || ""}
+                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                    placeholder="e.g. WH-01"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name || ""}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. Main Warehouse"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-medium text-gray-600">
+                  Address
+                </label>
                 <input
                   type="text"
-                  value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="input"
-                  required
-                  placeholder="WH-001"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Name *</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input"
-                  required
-                  placeholder="Main Warehouse"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Address</label>
-                <textarea
-                  value={formData.address}
+                  value={formData.address || ""}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="input"
-                  rows={2}
-                  placeholder="Full address"
+                  placeholder="e.g. Kathmandu, Nepal"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.isDefault}
-                  onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                  className="rounded border-[#9DC07A]"
-                />
-                <label className="text-sm font-medium text-[#000000]">Set as Default</label>
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={!!formData.isDefault}
+                    onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <span className="text-[12px] font-medium text-gray-700">Set as Default</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive !== false}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <span className="text-[12px] font-medium text-gray-700">Active</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={!!formData.isMainBranch}
+                    onChange={(e) => setFormData({ ...formData, isMainBranch: e.target.checked })}
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <span className="text-[12px] font-medium text-gray-700">Main Branch</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={!!formData.allowNegativeStock}
+                    onChange={(e) => setFormData({ ...formData, allowNegativeStock: e.target.checked })}
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <span className="text-[12px] font-medium text-gray-700">Allow Negative Stock</span>
+                </label>
               </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-[#9DC07A]"
-                />
-                <label className="text-sm font-medium text-[#000000]">Is Active</label>
-              </div>
-              <div className="flex justify-end space-x-3 pt-4">
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-2">
                 <button
                   type="button"
-                  onClick={resetForm}
-                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
+                  onClick={() => { setShowForm(false); setEditingWarehouse(null); }}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
-                  {selectedWarehouse ? "Update" : "Add"} Warehouse
+                <button
+                  type="submit"
+                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  {editingWarehouse ? "Save Changes" : "Add Warehouse"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Warehouse</h2>
+            </div>
+            <div className="p-4">
+              <p className="text-[12px] text-gray-700 mb-4">
+                Are you sure you want to delete{" "}
+                <strong>"{warehouseToDelete?.name}"</strong>? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

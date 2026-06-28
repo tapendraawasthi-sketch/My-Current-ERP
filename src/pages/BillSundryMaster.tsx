@@ -1,179 +1,504 @@
-// @ts-nocheck
-import React, { useState } from "react";
-import { useStore } from "../store/useStore";
-import { Plus, Edit2, Trash2, FileText, X, Save } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { useStore } from "../store";
+import toast from "react-hot-toast";
+import { DBBillSundryMaster } from "../lib/db";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Save,
+  Search,
+  Receipt,
+} from "lucide-react";
 
-const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_ROW_ALT = "#F5FAF0";
-const INPUT_STYLE: React.CSSProperties = {
-  width: "100%", padding: "5px 8px", border: BORDER, borderRadius: 3, fontSize: 12, background: "#fff", outline: "none",
-};
-const BTN = (bg: string): React.CSSProperties => ({
-  padding: "5px 14px", background: bg, border: BORDER, borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
+// ─── Empty form template ──────────────────────────────────────────────────────
+
+const emptyForm = (): Omit<DBBillSundryMaster, "id"> => ({
+  name: "",
+  alias: "",
+  type: "additive",
+  nature: "percentage",
+  accountHeadId: "",
+  defaultValue: 0,
+  affectsCostInSale: false,
+  affectsCostInPurchase: false,
+  isActive: true,
 });
 
-const DEFAULT_FORM = {
-  name: "", alias: "", type: "additive", nature: "percentage",
-  accountHeadId: "", defaultValue: 0, affectsCostInSale: false,
-  affectsCostInPurchase: true, adjustInPartyAmount: true,
-  applicableOn: "nett_bill",
-};
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function BillSundryMaster() {
-  const { billSundryMasters, accounts, addBillSundryMaster, updateBillSundryMaster, deleteBillSundryMaster } = useStore();
+  const {
+    billSundryMasters,
+    accounts,
+    addBillSundryMaster,
+    updateBillSundryMaster,
+    deleteBillSundryMaster,
+  } = useStore();
+
+  // ── UI state ────────────────────────────────────────────────────────────────
   const [showForm, setShowForm] = useState(false);
-  const [selected, setSelected] = useState<any>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [form, setForm] = useState(DEFAULT_FORM);
+  const [form, setForm] = useState(emptyForm());
+  const [saving, setSaving] = useState(false);
 
-  const filtered = (billSundryMasters || []).filter((b: any) =>
-    b.name.toLowerCase().includes(search.toLowerCase())
+  // ── Derived data ────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    if (!q) return billSundryMasters;
+    return billSundryMasters.filter(
+      (bs) =>
+        bs.name.toLowerCase().includes(q) ||
+        (bs.alias ?? "").toLowerCase().includes(q)
+    );
+  }, [billSundryMasters, search]);
+
+  const deleteTarget = useMemo(
+    () => billSundryMasters.find((bs) => bs.id === deleteTargetId) ?? null,
+    [billSundryMasters, deleteTargetId]
   );
-  const ledgerAccounts = (accounts || []).filter((a: any) => !a.isGroup);
 
-  const resetForm = () => { setForm(DEFAULT_FORM as any); setSelected(null); setShowForm(false); };
+  const activeAccounts = useMemo(
+    () => (accounts ?? []).filter((a: any) => a.isActive !== false),
+    [accounts]
+  );
 
-  const handleEdit = (b: any) => {
-    setSelected(b);
+  // ── Handlers ────────────────────────────────────────────────────────────────
+
+  const handleOpenCreate = () => {
+    setEditingId(null);
+    setForm(emptyForm());
+    setShowForm(true);
+  };
+
+  const handleOpenEdit = (bs: DBBillSundryMaster) => {
+    setEditingId(bs.id);
     setForm({
-      name: b.name || "", alias: b.alias || "", type: b.type || "additive",
-      nature: b.nature || "percentage", accountHeadId: b.accountHeadId || "",
-      defaultValue: b.defaultValue || 0, affectsCostInSale: !!b.affectsCostInSale,
-      affectsCostInPurchase: b.affectsCostInPurchase !== false,
-      adjustInPartyAmount: b.adjustInPartyAmount !== false, applicableOn: b.applicableOn || "nett_bill",
+      name: bs.name,
+      alias: bs.alias ?? "",
+      type: bs.type,
+      nature: bs.nature,
+      accountHeadId: bs.accountHeadId ?? "",
+      defaultValue: bs.defaultValue ?? 0,
+      affectsCostInSale: bs.affectsCostInSale ?? false,
+      affectsCostInPurchase: bs.affectsCostInPurchase ?? false,
+      isActive: bs.isActive ?? true,
     });
     setShowForm(true);
   };
 
-  const handleSubmit = async () => {
-    if (!form.name.trim()) return alert("Name is required.");
-    if (selected) {
-      await updateBillSundryMaster(selected.id, form);
-      alert("Bill Sundry updated.");
-    } else {
-      await addBillSundryMaster(form);
-      alert("Bill Sundry saved.");
-    }
-    resetForm();
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setForm(emptyForm());
   };
 
+  const setField = <K extends keyof typeof form>(
+    key: K,
+    value: (typeof form)[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  const validate = (): string | null => {
+    if (!form.name.trim()) return "Bill Sundry name is required.";
+    
+    const dup = billSundryMasters.find(
+      (bs) => bs.name.toLowerCase() === form.name.trim().toLowerCase() && bs.id !== editingId
+    );
+    if (dup) return `Bill Sundry "${form.name.trim()}" already exists.`;
+
+    if (form.defaultValue < 0) return "Default value cannot be negative.";
+    
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validate();
+    if (err) {
+      toast.error(err);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload: Omit<DBBillSundryMaster, "id"> = {
+        name: form.name.trim(),
+        alias: form.alias?.trim() || undefined,
+        type: form.type,
+        nature: form.nature,
+        accountHeadId: form.accountHeadId || undefined,
+        defaultValue: Number(form.defaultValue),
+        affectsCostInSale: form.affectsCostInSale,
+        affectsCostInPurchase: form.affectsCostInPurchase,
+        isActive: form.isActive,
+      };
+
+      if (editingId) {
+        await updateBillSundryMaster(editingId, payload);
+        toast.success("Bill Sundry updated successfully.");
+      } else {
+        await addBillSundryMaster(payload);
+        toast.success("Bill Sundry created successfully.");
+      }
+      handleCloseForm();
+    } catch {
+      toast.error("Failed to save. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteRequest = (id: string) => setDeleteTargetId(id);
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await deleteBillSundryMaster(deleteTargetId);
+      toast.success("Bill Sundry deleted.");
+    } catch {
+      toast.error("Failed to delete bill sundry.");
+    } finally {
+      setDeleteTargetId(null);
+    }
+  };
+
+  const getAccountName = (id?: string) => {
+    if (!id) return "—";
+    const acc = activeAccounts.find((a: any) => a.id === id);
+    return acc ? acc.name : "Unknown Account";
+  };
+
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", height: "100%", gap: 0 }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", borderRight: showForm ? BORDER : "none" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: BORDER, background: BG_HEADER }}>
-          <FileText style={{ width: 16, height: 16 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Bill Sundry Master</span>
-          <div style={{ flex: 1 }} />
-          <input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...INPUT_STYLE, width: 180 }} />
-          <button style={BTN("#3D6B25")} onClick={() => { resetForm(); setShowForm(true); }}>
-            <Plus style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />Add Sundry
+    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
+      {/* Page header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Bill Sundries</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Manage additional charges, discounts, and taxes for billing
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Bill Sundry
           </button>
         </div>
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-            <thead>
-              <tr style={{ background: BG_HEADER, position: "sticky", top: 0 }}>
-                {["#", "Name", "Type", "Nature", "Default Value", "Account Head", "Actions"].map((h) => (
-                  <th key={h} style={{ padding: "6px 10px", borderBottom: BORDER, textAlign: "left", fontWeight: 700 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr><td colSpan={7} style={{ textAlign: "center", padding: 24, color: "#666" }}>No bill sundries defined. Examples: Freight, Discount, Packaging charges.</td></tr>
-              ) : (
-                filtered.map((b: any, i: number) => (
-                  <tr key={b.id} style={{ background: i % 2 === 0 ? "#fff" : BG_ROW_ALT }}>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{i + 1}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER, fontWeight: 600 }}>{b.name}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      <span style={{ color: b.type === "additive" ? "#2E7D32" : "#C62828", fontWeight: 600 }}>
-                        {b.type === "additive" ? "▲ Addition" : "▼ Deduction"}
-                      </span>
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{b.nature}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{b.defaultValue || 0}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{ledgerAccounts.find((a: any) => a.id === b.accountHeadId)?.name || "—"}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      <div style={{ display: "flex", gap: 6 }}>
-                        <button style={BTN("#fff")} onClick={() => handleEdit(b)}><Edit2 style={{ width: 12, height: 12 }} /></button>
-                        <button style={{ ...BTN("#fff"), color: "#c00" }} onClick={async () => { if (confirm("Delete?")) await deleteBillSundryMaster(b.id); }}><Trash2 style={{ width: 12, height: 12 }} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div style={{ padding: "4px 12px", borderTop: BORDER, background: BG_HEADER, fontSize: 11 }}>Total: {filtered.length} sundry(ies)</div>
       </div>
 
+      {/* Search bar */}
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or alias..."
+            className="w-64 h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nature</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Head</th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Default Value</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
+                  <Receipt className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  {search ? "No results found." : "No bill sundries yet. Create your first bill sundry."}
+                </td>
+              </tr>
+            ) : (
+              filtered.map((bs) => (
+                <tr
+                  key={bs.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700">
+                    <div>{bs.name}</div>
+                    {bs.alias && <div className="text-[10px] text-gray-400 font-normal">Alias: {bs.alias}</div>}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
+                    {bs.type === "additive" ? (
+                      <span className="text-blue-600 font-medium">Add (+)</span>
+                    ) : (
+                      <span className="text-red-600 font-medium">Sub (-)</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
+                    {bs.nature.replace('_', ' ')}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[200px] truncate" title={getAccountName(bs.accountHeadId)}>
+                    {getAccountName(bs.accountHeadId)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    {bs.defaultValue > 0 ? (
+                      <span>
+                        {bs.defaultValue}
+                        {bs.nature === "percentage" ? "%" : ""}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        bs.isActive
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : "bg-red-100 text-red-700 border border-red-200"
+                      }`}
+                    >
+                      {bs.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(bs)}
+                        title="Edit"
+                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteRequest(bs.id)}
+                        title="Delete"
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Add / Edit Modal ─────────────────────────────────────────────────── */}
       {showForm && (
-        <div style={{ width: 360, borderLeft: BORDER, display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", background: BG_HEADER, borderBottom: BORDER }}>
-            <span style={{ fontWeight: 700, fontSize: 13 }}>{selected ? "Edit" : "Add"} Bill Sundry</span>
-            <button style={{ marginLeft: "auto", background: "transparent", border: "none", cursor: "pointer" }} onClick={resetForm}><X style={{ width: 16, height: 16 }} /></button>
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-2xl shadow-xl flex flex-col max-h-[90vh]">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg flex-shrink-0">
+              <h2 className="text-[14px] font-semibold text-gray-800">
+                {editingId ? "Edit Bill Sundry" : "New Bill Sundry"}
+              </h2>
+              <button
+                type="button"
+                onClick={handleCloseForm}
+                className="text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-3 border-b border-gray-100 pb-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => setField("name", e.target.value)}
+                    placeholder="e.g. VAT, Freight Charges"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Alias
+                  </label>
+                  <input
+                    type="text"
+                    value={form.alias}
+                    onChange={(e) => setField("alias", e.target.value)}
+                    placeholder="Short name or code"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Bill Sundry Type *
+                  </label>
+                  <select
+                    value={form.type}
+                    onChange={(e) => setField("type", e.target.value as any)}
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  >
+                    <option value="additive">Additive (+)</option>
+                    <option value="subtractive">Subtractive (-)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Bill Sundry Nature *
+                  </label>
+                  <select
+                    value={form.nature}
+                    onChange={(e) => setField("nature", e.target.value as any)}
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  >
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="fixed">Absolute Amount</option>
+                    <option value="per_unit">Per Unit Rate</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Default Value
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={form.defaultValue}
+                    onChange={(e) => setField("defaultValue", Number(e.target.value))}
+                    className="h-8 px-2.5 font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Account Head to Post (Optional)
+                  </label>
+                  <select
+                    value={form.accountHeadId}
+                    onChange={(e) => setField("accountHeadId", e.target.value)}
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  >
+                    <option value="">— Do not post to account —</option>
+                    {activeAccounts.map((a: any) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Behavior Settings */}
+              <div className="flex flex-col gap-2 pt-2">
+                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  Behavior & Costing
+                </span>
+                
+                <div className="flex flex-col gap-2 mt-1">
+                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={form.affectsCostInSale}
+                      onChange={(e) => setField("affectsCostInSale", e.target.checked)}
+                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                    <span className="text-[12px] font-medium text-gray-700">Affects Cost of Goods Sold (COGS)</span>
+                  </label>
+
+                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={form.affectsCostInPurchase}
+                      onChange={(e) => setField("affectsCostInPurchase", e.target.checked)}
+                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                    <span className="text-[12px] font-medium text-gray-700">Affects Cost of Goods Purchased (Landed Cost)</span>
+                  </label>
+                  
+                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={form.isActive}
+                      onChange={(e) => setField("isActive", e.target.checked)}
+                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                    <span className="text-[12px] font-medium text-gray-700">Active Status</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Bill Sundry"}
+                </button>
+              </div>
+            </form>
           </div>
-          <div style={{ flex: 1, overflowY: "auto", padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
-            {[{ label: "Name *", key: "name" }, { label: "Alias", key: "alias" }].map(({ label, key }) => (
-              <label key={key} style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>{label}</div>
-                <input value={(form as any)[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} style={INPUT_STYLE} />
-              </label>
-            ))}
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Sundry Type</div>
-              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as any })} style={INPUT_STYLE}>
-                <option value="additive">Addition (charge added to bill)</option>
-                <option value="subtractive">Deduction (discount/reduction)</option>
-              </select>
-            </label>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Amount Nature</div>
-              <select value={form.nature} onChange={(e) => setForm({ ...form, nature: e.target.value as any })} style={INPUT_STYLE}>
-                <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount</option>
-                <option value="per_unit">Per Unit</option>
-              </select>
-            </label>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Applicable On</div>
-              <select value={form.applicableOn} onChange={(e) => setForm({ ...form, applicableOn: e.target.value as any })} style={INPUT_STYLE}>
-                <option value="nett_bill">Nett Bill Amount</option>
-                <option value="basic_amount">Basic Amount</option>
-                <option value="taxable_amount">Taxable Amount</option>
-                <option value="previous_sundry">Previous Sundry Amount</option>
-              </select>
-            </label>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Default Value</div>
-              <input type="number" min="0" step="0.01" value={form.defaultValue}
-                onChange={(e) => setForm({ ...form, defaultValue: parseFloat(e.target.value) || 0 })} style={INPUT_STYLE} />
-            </label>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Account Head to Post</div>
-              <select value={form.accountHeadId} onChange={(e) => setForm({ ...form, accountHeadId: e.target.value })} style={INPUT_STYLE}>
-                <option value="">— Select Account —</option>
-                {ledgerAccounts.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-              </select>
-            </label>
-            {[
-              { label: "Affects Cost in Sale", key: "affectsCostInSale" },
-              { label: "Affects Cost in Purchase", key: "affectsCostInPurchase" },
-              { label: "Adjust in Party Amount", key: "adjustInPartyAmount" },
-            ].map(({ label, key }) => (
-              <label key={key} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-                <input type="checkbox" checked={(form as any)[key]} onChange={(e) => setForm({ ...form, [key]: e.target.checked })} />
-                <span>{label}</span>
-              </label>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 8, padding: "10px 14px", borderTop: BORDER, background: BG_HEADER }}>
-            <button style={BTN("#3D6B25")} onClick={handleSubmit}><Save style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />{selected ? "Update" : "Save"}</button>
-            <button style={BTN("#fff")} onClick={resetForm}>Cancel</button>
+        </div>
+      )}
+
+      {/* ── Delete Confirmation Modal ─────────────────────────────────────────── */}
+      {deleteTargetId && deleteTarget && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Bill Sundry</h2>
+            </div>
+            <div className="p-4">
+              <p className="text-[12px] text-gray-700 mb-4">
+                Are you sure you want to delete <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? 
+                This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTargetId(null)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

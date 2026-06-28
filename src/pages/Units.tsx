@@ -1,181 +1,251 @@
+// @ts-nocheck
 import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
-import { Plus, Edit2, Trash2, Ruler } from "lucide-react";
-
-interface Unit {
-  id: string;
-  code: string;
-  symbol: string;
-  name: string;
-  isActive: boolean;
-}
+import { useStore } from "../store";
+import toast from "react-hot-toast";
+import { DBUnit } from "../lib/db";
+import { Plus, Edit2, Trash2, Ruler, CheckCircle, XCircle } from "lucide-react";
 
 export default function Units() {
-  const [units, setUnits] = useState<Unit[]>([
-    { id: "1", code: "PCS", symbol: "Pcs", name: "Pieces", isActive: true },
-    { id: "2", code: "KG", symbol: "Kg", name: "Kilogram", isActive: true },
-    { id: "3", code: "G", symbol: "g", name: "Gram", isActive: true },
-    { id: "4", code: "L", symbol: "L", name: "Liter", isActive: true },
-    { id: "5", code: "ML", symbol: "mL", name: "Milliliter", isActive: true },
-    { id: "6", code: "M", symbol: "m", name: "Meter", isActive: true },
-    { id: "7", code: "CM", symbol: "cm", name: "Centimeter", isActive: true },
-    { id: "8", code: "FT", symbol: "ft", name: "Feet", isActive: true },
-    { id: "9", code: "IN", symbol: "in", name: "Inch", isActive: true },
-    { id: "10", code: "BOX", symbol: "Box", name: "Box", isActive: true },
-    { id: "11", code: "CTN", symbol: "Ctn", name: "Carton", isActive: true },
-    { id: "12", code: "DOZ", symbol: "Doz", name: "Dozen", isActive: true },
-    { id: "13", code: "SET", symbol: "Set", name: "Set", isActive: true },
-    { id: "14", code: "BAG", symbol: "Bag", name: "Bag", isActive: true },
-    { id: "15", code: "BTL", symbol: "Btl", name: "Bottle", isActive: true },
-  ]);
+  const { units, addUnit, updateUnit, deleteUnit } = useStore();
 
   const [showForm, setShowForm] = useState(false);
-  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+  const [editingUnit, setEditingUnit] = useState<DBUnit | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [formData, setFormData] = useState({
+
+  const emptyForm = {
     code: "",
-    symbol: "",
     name: "",
+    symbol: "",
+    decimalPlaces: 2,
     isActive: true,
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (selectedUnit) {
-      setUnits(units.map((u) => (u.id === selectedUnit.id ? { ...u, ...formData } : u)));
-      alert("Unit updated successfully");
-    } else {
-      setUnits([
-        ...units,
-        {
-          id: Date.now().toString(),
-          ...formData,
-        },
-      ]);
-      alert("Unit added successfully");
-    }
-
-    resetForm();
   };
 
-  const resetForm = () => {
-    setFormData({
-      code: "",
-      symbol: "",
-      name: "",
-      isActive: true,
-    });
-    setSelectedUnit(null);
-    setShowForm(false);
+  const [formData, setFormData] = useState<Omit<DBUnit, "id">>(emptyForm as any);
+
+  const handleOpenCreate = () => {
+    setEditingUnit(null);
+    setFormData(emptyForm as any);
+    setShowForm(true);
   };
 
-  const handleEdit = (unit: Unit) => {
-    setSelectedUnit(unit);
+  const handleOpenEdit = (unit: DBUnit) => {
+    setEditingUnit(unit);
     setFormData({
-      code: unit.code,
-      symbol: unit.symbol,
-      name: unit.name,
-      isActive: unit.isActive,
+      code: unit.code || "",
+      name: unit.name || "",
+      symbol: unit.symbol || "",
+      decimalPlaces: unit.decimalPlaces ?? 2,
+      isActive: unit.isActive !== false,
     });
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this unit?")) {
-      setUnits(units.filter((u) => u.id !== id));
-      alert("Unit deleted successfully");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name?.trim()) {
+      toast.error("Unit name is required.");
+      return;
+    }
+    if (!formData.code?.trim()) {
+      toast.error("Unit code is required.");
+      return;
+    }
+    if (!formData.symbol?.trim()) {
+      toast.error("Unit symbol is required.");
+      return;
+    }
+    // Check duplicate code
+    const duplicate = units.find(
+      (u) =>
+        u.code?.toLowerCase() === formData.code?.trim().toLowerCase() &&
+        u.id !== editingUnit?.id
+    );
+    if (duplicate) {
+      toast.error(`Code "${formData.code}" is already used by "${duplicate.name}".`);
+      return;
+    }
+    try {
+      if (editingUnit) {
+        await updateUnit(editingUnit.id, {
+          ...formData,
+          code: formData.code?.trim(),
+          name: formData.name?.trim(),
+          symbol: formData.symbol?.trim(),
+          decimalPlaces: Number(formData.decimalPlaces) || 0,
+        });
+        toast.success("Unit updated successfully.");
+      } else {
+        await addUnit({
+          ...formData,
+          code: formData.code?.trim(),
+          name: formData.name?.trim(),
+          symbol: formData.symbol?.trim(),
+          decimalPlaces: Number(formData.decimalPlaces) || 0,
+        });
+        toast.success("Unit added successfully.");
+      }
+      setShowForm(false);
+      setEditingUnit(null);
+      setFormData(emptyForm as any);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to save unit.");
     }
   };
 
-  const filteredUnits = units.filter(
-    (u) =>
-      u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.symbol.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const handleDeleteRequest = (unit: DBUnit) => {
+    setConfirmDeleteId(unit.id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!confirmDeleteId) return;
+    try {
+      await deleteUnit(confirmDeleteId);
+      toast.success("Unit deleted successfully.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete unit.");
+    } finally {
+      setConfirmDeleteId(null);
+    }
+  };
+
+  const unitToDelete = units.find((u) => u.id === confirmDeleteId);
+
+  const filteredUnits = units.filter((u) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    return (
+      u.name?.toLowerCase().includes(q) ||
+      u.code?.toLowerCase().includes(q) ||
+      u.symbol?.toLowerCase().includes(q)
+    );
+  });
+
+  const DECIMAL_OPTIONS = [
+    { value: 0, label: "0 (whole numbers)" },
+    { value: 1, label: "1 decimal place" },
+    { value: 2, label: "2 decimal places" },
+    { value: 3, label: "3 decimal places" },
+    { value: 4, label: "4 decimal places" },
+  ];
 
   return (
-    <div className="space-y-6">
-      <ActionToolbar title="Units of Measure" subtitle="Quantity units for items" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Units of Measurement</h1>
+    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Units of Measure</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Manage measurement units used for stock items (kg, pcs, ltr, etc.)
+          </p>
+        </div>
         <button
-          onClick={() => setShowForm(true)}
-          className="btn-primary flex items-center space-x-2"
+          type="button"
+          onClick={handleOpenCreate}
+          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
         >
-          <Plus className="w-4 h-4" />
-          <span>Add Unit</span>
+          <Plus className="h-3.5 w-3.5" />
+          New Unit
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search units..."
-          className="input"
-        />
+      {/* Search */}
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <Ruler className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name, code or symbol…"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+          />
+        </div>
+        <span className="text-[11px] text-gray-500 font-medium">
+          {filteredUnits.length} of {units.length} unit{units.length !== 1 ? "s" : ""}
+        </span>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-[#EBF5E2]">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
+      {/* Table */}
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Code
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                Symbol
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Symbol
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Decimal Places
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200">
             {filteredUnits.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-[#000000]">
-                  <Ruler className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
-                  <p>No units found</p>
+                <td colSpan={6} className="px-3 py-10 text-center text-gray-500 text-[12px]">
+                  <Ruler className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  {searchTerm
+                    ? "No units match your search."
+                    : "No units found. Create your first unit of measure."}
                 </td>
               </tr>
             ) : (
               filteredUnits.map((unit) => (
-                <tr key={unit.id} className="hover:bg-[#EBF5E2]">
-                  <td className="px-6 py-4 text-sm font-medium text-[#000000]">{unit.code}</td>
-                  <td className="px-6 py-4 text-sm text-[#000000]">{unit.symbol}</td>
-                  <td className="px-6 py-4 text-sm text-[#000000]">{unit.name}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        unit.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {unit.isActive ? "Active" : "Inactive"}
+                <tr key={unit.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-gray-700">
+                    {unit.code || "—"}
+                  </td>
+                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">
+                    {unit.name}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded text-[11px] font-mono text-gray-700">
+                      {unit.symbol || "—"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
-                    <div className="flex justify-end space-x-2">
+                  <td className="px-3 py-2.5 text-center text-[12px] font-mono text-gray-700">
+                    {unit.decimalPlaces ?? 2}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        unit.isActive !== false
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : "bg-red-100 text-red-700 border border-red-200"
+                      }`}
+                    >
+                      {unit.isActive !== false ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => handleEdit(unit)}
-                        className="text-[#1557b0] hover:text-[#000000]"
+                        type="button"
+                        onClick={() => handleOpenEdit(unit)}
+                        title="Edit"
+                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(unit.id)}
-                        className="text-red-600 hover:text-red-900"
+                        type="button"
+                        onClick={() => handleDeleteRequest(unit)}
+                        title="Delete"
+                        className="text-gray-400 hover:text-red-600 transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -186,68 +256,160 @@ export default function Units() {
         </table>
       </div>
 
+      {/* Add/Edit Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">
-              {selectedUnit ? "Edit Unit" : "Add Unit"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Code *</label>
-                <input
-                  type="text"
-                  value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                  className="input"
-                  required
-                  placeholder="KG"
-                />
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">
+                {editingUnit ? "Edit Unit of Measure" : "New Unit of Measure"}
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingUnit(null);
+                }}
+                className="text-gray-400 hover:text-gray-700 font-bold text-[16px] leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Code *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.code || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, code: e.target.value.toUpperCase() })
+                    }
+                    placeholder="e.g. KG"
+                    maxLength={10}
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-medium text-gray-600">
+                    Symbol *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.symbol || ""}
+                    onChange={(e) => setFormData({ ...formData, symbol: e.target.value })}
+                    placeholder="e.g. kg"
+                    maxLength={10}
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    required
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Symbol *</label>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-medium text-gray-600">
+                  Name *
+                </label>
                 <input
                   type="text"
-                  value={formData.symbol}
-                  onChange={(e) => setFormData({ ...formData, symbol: e.target.value })}
-                  className="input"
-                  required
-                  placeholder="Kg"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#000000] mb-1">Name *</label>
-                <input
-                  type="text"
-                  value={formData.name}
+                  value={formData.name || ""}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input"
+                  placeholder="e.g. Kilogram"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   required
-                  placeholder="Kilogram"
                 />
               </div>
-              <div className="flex items-center space-x-2">
+
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-medium text-gray-600">
+                  Decimal Places
+                </label>
+                <select
+                  value={formData.decimalPlaces ?? 2}
+                  onChange={(e) =>
+                    setFormData({ ...formData, decimalPlaces: Number(e.target.value) })
+                  }
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                >
+                  {DECIMAL_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[10px] text-gray-500 mt-0.5">
+                  Number of decimal places allowed when entering quantities
+                </p>
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
                 <input
                   type="checkbox"
-                  checked={formData.isActive}
+                  checked={formData.isActive !== false}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-[#9DC07A]"
+                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                 />
-                <label className="text-sm font-medium text-[#000000]">Is Active</label>
-              </div>
-              <div className="flex justify-end space-x-3 pt-4">
+                <span className="text-[12px] font-medium text-gray-700">Active</span>
+              </label>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-1">
                 <button
                   type="button"
-                  onClick={resetForm}
-                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingUnit(null);
+                  }}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
-                  {selectedUnit ? "Update" : "Add"} Unit
+                <button
+                  type="submit"
+                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
+                >
+                  {editingUnit ? "Save Changes" : "Add Unit"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Unit</h2>
+            </div>
+            <div className="p-4">
+              <p className="text-[12px] text-gray-700 mb-4">
+                Are you sure you want to delete{" "}
+                <strong>
+                  "{unitToDelete?.name}" ({unitToDelete?.symbol})
+                </strong>
+                ? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

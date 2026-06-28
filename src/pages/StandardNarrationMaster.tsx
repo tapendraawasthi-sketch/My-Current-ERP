@@ -1,138 +1,359 @@
-// @ts-nocheck
-import React, { useState } from "react";
-import { useStore } from "../store/useStore";
-import { Plus, Edit2, Trash2, BookOpen, X, Save } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { useStore } from "../store";
+import toast from "react-hot-toast";
+import { DBStandardNarration } from "../lib/db";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Save,
+  Search,
+  MessageSquare,
+} from "lucide-react";
 
-const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_ROW_ALT = "#F5FAF0";
-const INPUT_STYLE: React.CSSProperties = {
-  width: "100%", padding: "5px 8px", border: BORDER, borderRadius: 3, fontSize: 12, background: "#fff", outline: "none",
-};
-const BTN = (bg: string): React.CSSProperties => ({
-  padding: "5px 14px", background: bg, border: BORDER, borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
+// ─── Empty form template ──────────────────────────────────────────────────────
+
+const emptyForm = (): Omit<DBStandardNarration, "id"> => ({
+  voucherType: "all",
+  narration: "",
+  isActive: true,
 });
 
-const VOUCHER_TYPES = ["All", "Payment", "Receipt", "Purchase", "Sales", "Sales Return", "Purchase Return", "Journal", "Stock Transfer", "Contra"];
-const DEFAULT_FORM = { voucherType: "All", narration: "" };
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function StandardNarrationMaster() {
-  const { standardNarrations, addStandardNarration, updateStandardNarration, deleteStandardNarration } = useStore();
+  const {
+    standardNarrations,
+    addStandardNarration,
+    updateStandardNarration,
+    deleteStandardNarration,
+  } = useStore();
+
+  // ── UI state ────────────────────────────────────────────────────────────────
   const [showForm, setShowForm] = useState(false);
-  const [selected, setSelected] = useState<any>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("All");
-  const [form, setForm] = useState(DEFAULT_FORM);
+  const [form, setForm] = useState(emptyForm());
+  const [saving, setSaving] = useState(false);
 
-  const filtered = (standardNarrations || []).filter((sn: any) => {
-    const matchSearch = sn.narration.toLowerCase().includes(search.toLowerCase());
-    const matchType = filterType === "All" || sn.voucherType === filterType;
-    return matchSearch && matchType;
-  });
+  // ── Derived data ────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    if (!q) return standardNarrations;
+    return standardNarrations.filter(
+      (sn) =>
+        sn.narration.toLowerCase().includes(q) ||
+        sn.voucherType.toLowerCase().includes(q)
+    );
+  }, [standardNarrations, search]);
 
-  const resetForm = () => { setForm(DEFAULT_FORM); setSelected(null); setShowForm(false); };
+  const deleteTarget = useMemo(
+    () => standardNarrations.find((sn) => sn.id === deleteTargetId) ?? null,
+    [standardNarrations, deleteTargetId]
+  );
 
-  const handleEdit = (sn: any) => {
-    setSelected(sn);
-    setForm({ voucherType: sn.voucherType || "All", narration: sn.narration || "" });
+  // ── Handlers ────────────────────────────────────────────────────────────────
+
+  const handleOpenCreate = () => {
+    setEditingId(null);
+    setForm(emptyForm());
     setShowForm(true);
   };
 
-  const handleSubmit = async () => {
-    if (!form.narration.trim()) return alert("Narration text is required.");
-    if (selected) {
-      await updateStandardNarration(selected.id, form);
-      alert("Narration updated.");
-    } else {
-      await addStandardNarration(form);
-      alert("Narration saved.");
+  const handleOpenEdit = (sn: DBStandardNarration) => {
+    setEditingId(sn.id);
+    setForm({
+      voucherType: sn.voucherType || "all",
+      narration: sn.narration,
+      isActive: sn.isActive,
+    });
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setForm(emptyForm());
+  };
+
+  const setField = <K extends keyof typeof form>(
+    key: K,
+    value: (typeof form)[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  const validate = (): string | null => {
+    if (!form.narration.trim()) return "Narration text is required.";
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validate();
+    if (err) {
+      toast.error(err);
+      return;
     }
-    resetForm();
+
+    setSaving(true);
+    try {
+      const payload = {
+        voucherType: form.voucherType,
+        narration: form.narration.trim(),
+        isActive: form.isActive,
+      };
+
+      if (editingId) {
+        await updateStandardNarration(editingId, payload);
+        toast.success("Standard narration updated successfully.");
+      } else {
+        await addStandardNarration(payload);
+        toast.success("Standard narration added successfully.");
+      }
+      handleCloseForm();
+    } catch {
+      toast.error("Failed to save. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this narration?")) return;
-    await deleteStandardNarration(id);
+  const handleDeleteRequest = (id: string) => setDeleteTargetId(id);
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await deleteStandardNarration(deleteTargetId);
+      toast.success("Standard narration deleted.");
+    } catch {
+      toast.error("Failed to delete standard narration.");
+    } finally {
+      setDeleteTargetId(null);
+    }
   };
 
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", height: "100%", gap: 0 }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", borderRight: showForm ? BORDER : "none" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: BORDER, background: BG_HEADER }}>
-          <BookOpen style={{ width: 16, height: 16 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Standard Narration Master</span>
-          <div style={{ flex: 1 }} />
-          <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ ...INPUT_STYLE, width: 130 }}>
-            {VOUCHER_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <input placeholder="Search narrations..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...INPUT_STYLE, width: 180 }} />
-          <button style={BTN("#3D6B25")} onClick={() => { resetForm(); setShowForm(true); }}>
-            <Plus style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />Add Narration
+    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
+      {/* Page header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Standard Narrations</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Pre-defined reusable remarks for voucher entries
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Narration
           </button>
         </div>
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-            <thead>
-              <tr style={{ background: BG_HEADER, position: "sticky", top: 0 }}>
-                {["#", "Voucher Type", "Narration Text", "Actions"].map((h) => (
-                  <th key={h} style={{ padding: "6px 10px", borderBottom: BORDER, textAlign: "left", fontWeight: 700 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr><td colSpan={4} style={{ textAlign: "center", padding: 24, color: "#666" }}>No narrations found. Add standard narrations to speed up voucher entry.</td></tr>
-              ) : (
-                filtered.map((sn: any, i: number) => (
-                  <tr key={sn.id} style={{ background: i % 2 === 0 ? "#fff" : BG_ROW_ALT }}>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{i + 1}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      <span style={{ padding: "2px 8px", background: BG_HEADER, border: BORDER, borderRadius: 10, fontSize: 10 }}>{sn.voucherType}</span>
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{sn.narration}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      <div style={{ display: "flex", gap: 6 }}>
-                        <button style={BTN("#fff")} onClick={() => handleEdit(sn)}><Edit2 style={{ width: 12, height: 12 }} /></button>
-                        <button style={{ ...BTN("#fff"), color: "#c00" }} onClick={() => handleDelete(sn.id)}><Trash2 style={{ width: 12, height: 12 }} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div style={{ padding: "4px 12px", borderTop: BORDER, background: BG_HEADER, fontSize: 11 }}>Total: {filtered.length} narration(s)</div>
       </div>
 
+      {/* Search bar */}
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search narrations..."
+            className="w-64 h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">Voucher Type</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration Text</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Status</th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-3 py-10 text-center text-gray-500 text-[12px]">
+                  <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  {search ? "No results found." : "No standard narrations yet. Create your first template."}
+                </td>
+              </tr>
+            ) : (
+              filtered.map((sn) => (
+                <tr
+                  key={sn.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700 capitalize">
+                    {sn.voucherType === "all" ? "All Vouchers" : sn.voucherType}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-xl truncate" title={sn.narration}>
+                    {sn.narration}
+                  </td>
+                  <td className="px-3 py-2.5 text-center">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        sn.isActive
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : "bg-red-100 text-red-700 border border-red-200"
+                      }`}
+                    >
+                      {sn.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(sn)}
+                        title="Edit"
+                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteRequest(sn.id)}
+                        title="Delete"
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Add / Edit Modal ─────────────────────────────────────────────────── */}
       {showForm && (
-        <div style={{ width: 340, borderLeft: BORDER, display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", background: BG_HEADER, borderBottom: BORDER }}>
-            <span style={{ fontWeight: 700, fontSize: 13 }}>{selected ? "Edit" : "Add"} Standard Narration</span>
-            <button style={{ marginLeft: "auto", background: "transparent", border: "none", cursor: "pointer" }} onClick={resetForm}><X style={{ width: 16, height: 16 }} /></button>
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">
+                {editingId ? "Edit Standard Narration" : "New Standard Narration"}
+              </h2>
+              <button
+                type="button"
+                onClick={handleCloseForm}
+                className="text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-medium text-gray-600">
+                  Voucher Type
+                </label>
+                <select
+                  value={form.voucherType}
+                  onChange={(e) => setField("voucherType", e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                >
+                  <option value="all">All Vouchers</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Purchase">Purchase</option>
+                  <option value="Sales Return">Sales Return</option>
+                  <option value="Purchase Return">Purchase Return</option>
+                  <option value="Payment">Payment</option>
+                  <option value="Receipt">Receipt</option>
+                  <option value="Journal">Journal</option>
+                  <option value="Contra">Contra</option>
+                  <option value="Stock Transfer">Stock Transfer</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1 mt-1">
+                <label className="text-[11px] font-medium text-gray-600">
+                  Narration Text *
+                </label>
+                <textarea
+                  value={form.narration}
+                  onChange={(e) => setField("narration", e.target.value)}
+                  placeholder="Enter standard remark/narration here..."
+                  className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-h-[100px] resize-y"
+                  required
+                />
+              </div>
+
+              <div className="pt-1 mt-1">
+                <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={form.isActive}
+                    onChange={(e) => setField("isActive", e.target.checked)}
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  />
+                  <span className="text-[12px] font-medium text-gray-700">Active</span>
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-2">
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Narration"}
+                </button>
+              </div>
+            </form>
           </div>
-          <div style={{ flex: 1, overflowY: "auto", padding: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Voucher Type</div>
-              <select value={form.voucherType} onChange={(e) => setForm({ ...form, voucherType: e.target.value })} style={INPUT_STYLE}>
-                {VOUCHER_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
-            </label>
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Narration Text *</div>
-              <textarea
-                value={form.narration}
-                onChange={(e) => setForm({ ...form, narration: e.target.value })}
-                rows={5}
-                style={{ ...INPUT_STYLE, resize: "vertical" }}
-                placeholder="Enter the standard narration text..."
-              />
-            </label>
-          </div>
-          <div style={{ display: "flex", gap: 8, padding: "10px 14px", borderTop: BORDER, background: BG_HEADER }}>
-            <button style={BTN("#3D6B25")} onClick={handleSubmit}><Save style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />{selected ? "Update" : "Save"}</button>
-            <button style={BTN("#fff")} onClick={resetForm}>Cancel</button>
+        </div>
+      )}
+
+      {/* ── Delete Confirmation Modal ─────────────────────────────────────────── */}
+      {deleteTargetId && deleteTarget && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Standard Narration</h2>
+            </div>
+            <div className="p-4">
+              <p className="text-[12px] text-gray-700 mb-4">
+                Are you sure you want to delete this narration template? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTargetId(null)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
