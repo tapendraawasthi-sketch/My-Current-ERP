@@ -20,7 +20,9 @@ export default function SignInForm() {
     }
   }, [lockoutCountdown, isLocked]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -29,9 +31,16 @@ export default function SignInForm() {
       return;
     }
 
-    const success = login(formData.username, formData.password);
-    if (!success) {
-      setError("Invalid username or password");
+    setIsSubmitting(true);
+    try {
+      const success = await login(formData.username, formData.password);
+      if (!success) {
+        setError("Invalid username or password");
+      }
+    } catch (err) {
+      setError("Sign in failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -147,10 +156,17 @@ export default function SignInForm() {
 
             <button
               type="submit"
-              disabled={isLocked}
-              className="w-full h-10 bg-[#1557b0] hover:bg-[#2D5A1A] text-white font-medium rounded-md transition-colors disabled:opacity-50 text-[13px]"
+              disabled={isLocked || isSubmitting}
+              className="w-full h-10 bg-[#1557b0] hover:bg-[#0f4a96] text-white font-medium rounded-md transition-colors disabled:opacity-50 text-[13px] flex items-center justify-center gap-2"
             >
-              Sign In
+              {isSubmitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Signing in…
+                </>
+              ) : (
+                "Sign In"
+              )}
             </button>
 
             <div className="text-center">
