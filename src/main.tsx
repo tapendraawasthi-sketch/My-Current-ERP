@@ -6,6 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { ScreenProvider } from "./context/ScreenContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { F12Provider } from "./hooks/useF12Config";
 import "./styles.css";
 
 const container = document.getElementById("root");
@@ -17,7 +18,9 @@ createRoot(container).render(
       <ThemeProvider>
         <LanguageProvider>
           <ScreenProvider>
-            <App />
+            <F12Provider>
+              <App />
+            </F12Provider>
           </ScreenProvider>
         </LanguageProvider>
       </ThemeProvider>
