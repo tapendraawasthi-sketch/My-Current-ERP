@@ -205,17 +205,17 @@ const F12Panel: React.FC = () => {
         {/* Title Bar */}
         <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between shrink-0">
           <div className="flex flex-col">
-            <span className="text-[15px] font-semibold text-white leading-tight">
+            <span className="text-[15px] font-semibold !text-white leading-tight">
               {screenDef ? screenDef.screenLabel : `Screen: ${activeScreenId}`}
             </span>
-            <span className="text-[11px] text-gray-400 mt-0.5 uppercase tracking-wide">
+            <span className="text-[11px] !text-gray-400 mt-0.5 uppercase tracking-wide">
               F12 — Configuration Settings
             </span>
           </div>
           <button 
             type="button" 
             onClick={closeF12}
-            className="text-gray-400 hover:text-white transition-colors text-lg leading-none p-1"
+            className="!text-gray-400 hover:!text-white transition-colors text-lg leading-none p-1"
             title="Close (Esc)"
           >
             ✕
