@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { useF12Keyboard } from "../hooks/useF12Keyboard";
+import { useF12Config } from "../hooks/useF12Config";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
 import TopMenuBar from "./topbar/TopMenuBar";
 import { useIsMobile } from "../hooks/use-mobile";
-import { Menu, X, Home, Users, Package, FileText, Settings, Calculator, BarChart3, FileStack, Banknote, CreditCard, ShoppingCart, Receipt, Building2, Briefcase, TrendingUp, PieChart, FolderOpen, UserRound, Globe, Calendar, Clock, AlertTriangle, FileSpreadsheet, Warehouse, Truck, NotebookTabs, MessageSquare, Shield, Key, Monitor, Laptop, Smartphone, Tablet, Watch, Camera, Headphones, Gamepad2, Radio, Speaker, Mic, Video, Image, File, Folder, FolderKanban, FolderLock, FolderSearch, FolderGit, FolderArchive, FolderInput, FolderOutput, FolderClock, FolderHeart, FolderStar, FolderX, FolderPlus, FolderMinus, FolderSymlink, FolderClosed, FolderDot, FolderOpenDot, FolderRoot, FolderTree, FolderSync, FolderUp, FolderDown, FolderArchiveX, FolderArchivePlus, FolderArchiveMinus, FolderArchiveOpen, FolderArchiveClosed, FolderArchiveDot, FolderArchiveOpenDot, FolderArchiveRoot, FolderArchiveTree, FolderArchiveSync, FolderArchiveUp, FolderArchiveDown, FolderArchiveHeart, FolderArchiveStar, FolderArchiveSymlink } from "lucide-react";
+import { Menu, X, Home, Users, Package, FileText, Settings, Calculator, BarChart3, FileStack, Banknote, CreditCard, ShoppingCart, Receipt, Building2, Briefcase, TrendingUp, PieChart, FolderOpen, UserRound, Globe, Calendar, Clock, AlertTriangle, FileSpreadsheet, Warehouse, Truck, NotebookTabs, MessageSquare, Shield, Key, Monitor, Laptop, Smartphone, Tablet, Watch, Camera, Headphones, Gamepad2, Radio, Speaker, Mic, Video, Image, File, Folder, FolderKanban, FolderLock, FolderSearch, FolderGit, FolderArchive, FolderInput, FolderOutput, FolderClock, FolderHeart, FolderX, FolderPlus, FolderMinus, FolderSymlink, FolderClosed, FolderDot, FolderOpenDot, FolderRoot, FolderTree, FolderSync, FolderUp, FolderDown } from "lucide-react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isDbReady, login } = useStore();
-  const { handleShortcut } = useKeyboardShortcuts();
-  const { isF12Active } = useF12Keyboard();
+  useKeyboardShortcuts();
+  useF12Keyboard();
+  const { isOpen } = useF12Config();
   const isMobile = useIsMobile();
   
   const [username, setUsername] = useState("");
@@ -32,21 +34,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     sideBorder: "#2d3748",
   };
 
-  const handleSidebarShortcut = (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      const key = e.key.toLowerCase();
-      if (key >= "1" && key <= "9") {
-        e.preventDefault();
-        const index = parseInt(key) - 1;
-        handleShortcut(index);
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleSidebarShortcut);
-    return () => window.removeEventListener("keydown", handleSidebarShortcut);
-  }, []);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -560,10 +547,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       height: "100vh",
       background: SHELL.sideBg,
     }}>
-      {isF12Active && <ShortcutSidebar />}
+      {isOpen && <ShortcutSidebar />}
       <TitleBar />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <Sidebar />
+        <Sidebar collapsed={isMinimized} setCollapsed={setIsMinimized} />
         <div style={{
           flex: 1,
           display: "flex",
