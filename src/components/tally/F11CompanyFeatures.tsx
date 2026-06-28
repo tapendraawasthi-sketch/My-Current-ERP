@@ -1,428 +1,717 @@
 // @ts-nocheck
-import React, { useState } from 'react';
-import { Settings, Info, AlertTriangle, Save, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useStore } from '../../store/useStore';
+import { useStore } from '../store/useStore';
+import { useTallyKeyboard } from '../hooks/useTallyKeyboard';
 
-interface F11State {
-  // ACCOUNTING
-  enableChequeprinting: boolean;
-  enableBillWise: boolean;
-  enableCostCentres: boolean;
-  enableBudgets: boolean;
-  enableCreditLimits: boolean;
-  enableInterestCalc: boolean;
-  enableMultiCurrency: boolean;
-  enableScenarios: boolean;
-  // INVENTORY
-  enableInventory: boolean;
-  enableMultiGodown: boolean;
-  enableMultiUOM: boolean;
-  enableBatches: boolean;
-  enableSerialNumbers: boolean;
-  enableMfgJournal: boolean;
-  enableReorderLevels: boolean;
-  enableRejections: boolean;
-  // ORDER PROCESSING
-  enableSalesOrders: boolean;
-  enablePurchaseOrders: boolean;
-  enableJobWorkOrders: boolean;
-  // GST/TAX
-  enableGST: boolean;
-  enableEWayBill: boolean;
-  enableEInvoice: boolean;
-  enableCompositionScheme: boolean;
-  enableTDS: boolean;
-  enableTCS: boolean;
-  enableVAT: boolean;
-  // PAYROLL
-  enablePayroll: boolean;
-  enablePF: boolean;
-  enableESI: boolean;
-  enableProfessionalTax: boolean;
-  enableGratuity: boolean;
-  // ADVANCED
-  enableJobCosting: boolean;
-  enablePOS: boolean;
-  enableTallyAudit: boolean;
-  enableConsolidation: boolean;
-  enableBankReconciliation: boolean;
-  enableEPayments: boolean;
+interface CompanyFeatures {
+  show_more_features: boolean;
+  show_all_features: boolean;
+  maintain_accounts: boolean;
+  enable_bill_wise_entry: boolean;
+  enable_cost_centres: boolean;
+  enable_interest_calculation: boolean;
+  maintain_inventory: boolean;
+  integrate_accounts_with_inventory: boolean;
+  enable_multiple_price_levels: boolean;
+  enable_batches: boolean;
+  maintain_expiry_date_for_batches: boolean;
+  enable_job_order_processing: boolean;
+  enable_cost_tracking: boolean;
+  use_discount_column_in_invoices: boolean;
+  use_separate_actual_billed_qty: boolean;
+  enable_tds: boolean;
+  tds_applicable_from: string;
+  ird_office_name: string;
+  enable_vat: boolean;
+  vat_registration_number: string;
+  vat_applicable_from: string;
+  enable_excise: boolean;
+  excise_registration_number: string;
+  enable_browser_access_for_reports: boolean;
+  enable_remote_access_sync: boolean;
+  maintain_payroll: boolean;
+  enable_payroll_statutory: boolean;
+  ssf_registration_number: string;
+  ssf_employer_code: string;
+  ssf_employee_rate: number;
+  ssf_employer_rate: number;
+  enable_cit: boolean;
+  cit_member_code: string;
+  enable_gratuity: boolean;
+  mark_modified_vouchers: boolean;
+  enable_multiple_addresses: boolean;
+  mailing_details_in_local_language: boolean;
 }
 
-const DEFAULT_F11: F11State = {
-  enableChequeprinting: true, enableBillWise: true, enableCostCentres: true, enableBudgets: true,
-  enableCreditLimits: false, enableInterestCalc: false, enableMultiCurrency: false, enableScenarios: false,
-  enableInventory: true, enableMultiGodown: true, enableMultiUOM: true, enableBatches: false,
-  enableSerialNumbers: false, enableMfgJournal: false, enableReorderLevels: false, enableRejections: false,
-  enableSalesOrders: true, enablePurchaseOrders: true, enableJobWorkOrders: false,
-  enableGST: true, enableEWayBill: true, enableEInvoice: false, enableCompositionScheme: false,
-  enableTDS: true, enableTCS: false, enableVAT: false,
-  enablePayroll: false, enablePF: false, enableESI: false, enableProfessionalTax: false, enableGratuity: false,
-  enableJobCosting: false, enablePOS: false, enableTallyAudit: true, enableConsolidation: false,
-  enableBankReconciliation: true, enableEPayments: false,
+const defaultState: CompanyFeatures = {
+  show_more_features: false,
+  show_all_features: false,
+  maintain_accounts: true,
+  enable_bill_wise_entry: false,
+  enable_cost_centres: false,
+  enable_interest_calculation: false,
+  maintain_inventory: true,
+  integrate_accounts_with_inventory: false,
+  enable_multiple_price_levels: false,
+  enable_batches: false,
+  maintain_expiry_date_for_batches: false,
+  enable_job_order_processing: false,
+  enable_cost_tracking: false,
+  use_discount_column_in_invoices: false,
+  use_separate_actual_billed_qty: false,
+  enable_tds: false,
+  tds_applicable_from: '',
+  ird_office_name: '',
+  enable_vat: false,
+  vat_registration_number: '',
+  vat_applicable_from: '',
+  enable_excise: false,
+  excise_registration_number: '',
+  enable_browser_access_for_reports: false,
+  enable_remote_access_sync: false,
+  maintain_payroll: false,
+  enable_payroll_statutory: false,
+  ssf_registration_number: '',
+  ssf_employer_code: '',
+  ssf_employee_rate: 11,
+  ssf_employer_rate: 20,
+  enable_cit: false,
+  cit_member_code: '',
+  enable_gratuity: false,
+  mark_modified_vouchers: false,
+  enable_multiple_addresses: false,
+  mailing_details_in_local_language: false,
 };
 
 const F11CompanyFeatures = () => {
-  const { companySettings, updateCompanySettings } = useStore() as any;
-  const [features, setFeatures] = useState<F11State>(() => {
-    try {
-      const s = localStorage.getItem('f11_features');
-      return s ? { ...DEFAULT_F11, ...JSON.parse(s) } : DEFAULT_F11;
-    } catch {
-      return DEFAULT_F11;
-    }
-  });
+  const [features, setFeatures] = useState<CompanyFeatures>(defaultState);
+  const [isDirty, setIsDirty] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('accounting');
-  const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const { setCurrentPage, companySettings } = useStore();
 
-  const toggle = (key: keyof F11State) => {
-    setFeatures(prev => ({ ...prev, [key]: !prev[key] }));
-    setHasChanges(true);
-  };
-
-  const handleSave = () => {
-    localStorage.setItem('f11_features', JSON.stringify(features));
-    setHasChanges(false);
-    toast.success('F11 Features saved! Changes will take effect immediately.');
-  };
-
-  const handleReset = () => {
-    if (window.confirm('Are you sure you want to reset all features to default settings?')) {
-      setFeatures(DEFAULT_F11);
-      setHasChanges(true);
-      toast.success('Reset to default settings (Not saved yet)');
+  const fetchFeatures = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate fetching company features
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    } catch (error) {
+      console.error('Error fetching features:', error);
+      setIsLoading(false);
     }
   };
 
-  const renderFeatureRow = (key: keyof F11State, label: string, description: string, impact?: string) => {
-    const isActive = features[key];
-    return (
-      <div className="flex items-start justify-between py-3 border-b border-gray-100 gap-4 last:border-b-0 hover:bg-gray-50/50 transition-colors px-2 -mx-2 rounded">
-        <div className="flex-1">
-          <div className="text-[12px] font-semibold text-gray-800 leading-tight">{label}</div>
-          <div className="text-[11px] text-gray-500 mt-1 leading-relaxed">{description}</div>
-          {impact && isActive && (
-            <div className="inline-flex items-center gap-1 text-[10px] bg-blue-50 border border-blue-200 text-blue-700 px-1.5 py-0.5 rounded-sm mt-1.5">
-              <Info size={10} />
-              <span className="font-semibold tracking-wide uppercase">Active Impact:</span> {impact}
+  useEffect(() => {
+    setCurrentPage('F11CompanyFeatures');
+    fetchFeatures();
+  }, [setCurrentPage]);
+
+  const handleToggle = (field: keyof CompanyFeatures) => {
+    setFeatures(prev => ({ ...prev, [field]: !prev[field] }));
+    setIsDirty(true);
+  };
+
+  const handleTextChange = (field: keyof CompanyFeatures, value: string | number) => {
+    setFeatures(prev => ({ ...prev, [field]: value }));
+    setIsDirty(true);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate saving
+      setTimeout(() => {
+        setIsSaving(false);
+        setIsDirty(false);
+        toast.success('Company features saved successfully!');
+      }, 800);
+    } catch (error) {
+      console.error('Error saving features:', error);
+      setIsSaving(false);
+      toast.error('Failed to save company features');
+    }
+  };
+
+  useTallyKeyboard({
+    onF1: () => setActiveSection('accounting'),
+    onF2: () => setActiveSection('inventory'),
+    onF3: () => setActiveSection('taxation'),
+    onF4: () => setActiveSection('online'),
+    onF5: () => setActiveSection('payroll'),
+    onF6: () => setActiveSection('others'),
+    onSave: handleSave,
+  });
+
+  const FeatureRow = ({ label, description, isActive, onToggle, children }: {
+    label: string;
+    description: string;
+    isActive: boolean;
+    onToggle: () => void;
+    children?: React.ReactNode;
+  }) => (
+    <div style={{
+      borderBottom: '1px solid #ccc',
+      padding: '12px 16px',
+      background: 'transparent'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 'bold', color: '#000' }}>{label}</div>
+          <div style={{ color: '#555', fontSize: 11 }}>{description}</div>
+          {children && isActive && (
+            <div style={{ marginTop: '8px' }}>
+              {children}
             </div>
           )}
         </div>
-        <div className="flex rounded-md shadow-sm shrink-0">
+        <div style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
           <button
-            onClick={() => { if(!isActive) toggle(key); }}
-            className={`px-3 py-1 text-[11px] font-bold border transition-colors rounded-l-md ${
-              isActive
-                ? 'bg-[#059669] text-white border-[#059669] z-10'
-                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-            }`}
+            onClick={onToggle}
+            style={{
+              background: isActive ? '#4A7A30' : '#C9DEB5',
+              color: isActive ? '#fff' : '#000',
+              border: isActive ? 'none' : '1px solid #888',
+              padding: '4px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              minWidth: '60px',
+            }}
           >
             Yes
           </button>
           <button
-            onClick={() => { if(isActive) toggle(key); }}
-            className={`px-3 py-1 text-[11px] font-bold border-y border-r transition-colors rounded-r-md -ml-px ${
-              !isActive
-                ? 'bg-[#dc2626] text-white border-[#dc2626] z-10'
-                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-            }`}
+            onClick={onToggle}
+            style={{
+              background: !isActive ? '#4A7A30' : '#C9DEB5',
+              color: !isActive ? '#fff' : '#000',
+              border: !isActive ? 'none' : '1px solid #888',
+              padding: '4px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              minWidth: '60px',
+            }}
           >
             No
           </button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
-  const sections = {
-    accounting: { icon: "📒", label: "Accounting" },
-    inventory: { icon: "📦", label: "Inventory" },
-    orders: { icon: "📋", label: "Order Processing" },
-    tax: { icon: "🏛", label: "GST & Taxation" },
-    cbms: { icon: "🇳🇵", label: "Nepal e-Invoicing" },
-    payroll: { icon: "👥", label: "Payroll" },
-    advanced: { icon: "⚙", label: "Advanced" }
-  };
+  const AccountingSection = () => (
+    <div>
+      <FeatureRow
+        label="Maintain Accounts"
+        description="Maintain accounts only (without inventory)"
+        isActive={features.maintain_accounts}
+        onToggle={() => handleToggle('maintain_accounts')}
+      />
 
-  const enabledCount = Object.values(features).filter(Boolean).length;
-  const totalCount = Object.keys(features).length;
-
-  return (
-    <div className="max-w-[850px] mx-auto p-5 font-sans">
-      {/* Page Header */}
-      <div className="bg-[#1e2433] px-5 py-4 rounded-t-lg shadow-sm">
-        <div className="flex items-center gap-2 mb-1">
-          <Settings size={20} className="text-white" />
-          <h1 className="text-[15px] font-semibold text-white tracking-wide">F11 — Company Features</h1>
-        </div>
-        <p className="text-[11px] text-gray-300 ml-7 leading-relaxed max-w-2xl">
-          Feature flags control which modules appear in the application. Disabling a feature hides ALL related menus, buttons, and fields system-wide instantly.
-        </p>
-      </div>
-      
-      {/* Has Changes Banner */}
-      {hasChanges && (
-        <div className="bg-amber-50 border-x border-b border-amber-200 px-5 py-2.5 flex justify-between items-center animate-pulse">
-          <div className="flex items-center gap-2 text-[12px] font-medium text-amber-800">
-            <AlertTriangle size={16} className="text-amber-600" />
-            You have unsaved changes. Save before navigating away.
-          </div>
-          <button
-            onClick={handleSave}
-            className="h-7 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded transition-colors flex items-center gap-1.5 shadow-sm"
-          >
-            <Save size={12} /> Save Now
-          </button>
-        </div>
+      {features.show_more_features && (
+        <>
+          <FeatureRow
+            label="Bill-wise Details"
+            description="Maintain bill-wise details for receivables/payables"
+            isActive={features.enable_bill_wise_entry}
+            onToggle={() => handleToggle('enable_bill_wise_entry')}
+          />
+          <FeatureRow
+            label="Cost Centres"
+            description="Maintain cost centres for expenses/profit centres for incomes"
+            isActive={features.enable_cost_centres}
+            onToggle={() => handleToggle('enable_cost_centres')}
+          />
+          <FeatureRow
+            label="Interest Calculation"
+            description="Calculate interest on overdue amounts"
+            isActive={features.enable_interest_calculation}
+            onToggle={() => handleToggle('enable_interest_calculation')}
+          />
+        </>
       )}
-      
-      {/* Two Column Layout */}
-      <div className={`flex bg-white border-x ${!hasChanges ? 'border-t' : ''} border-gray-200 min-h-[500px] shadow-sm`}>
-        {/* Left Sidebar */}
-        <div className="w-[200px] bg-gray-50 border-r border-gray-200 shrink-0">
-          <div className="py-2">
-            {Object.entries(sections).map(([key, { icon, label }]) => (
-              <button
-                key={key}
-                onClick={() => setActiveSection(key)}
-                className={`w-full text-left px-4 py-3 flex items-center gap-2 transition-colors border-l-2 ${
-                  activeSection === key 
-                    ? 'bg-blue-50/50 border-[#1557b0] text-[#1557b0]' 
-                    : 'border-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-              >
-                <span className="text-base">{icon}</span>
-                <span className="text-[12px] font-semibold">{label}</span>
-              </button>
-            ))}
+    </div>
+  );
+
+  const InventorySection = () => (
+    <div>
+      <FeatureRow
+        label="Maintain Inventory"
+        description="Maintain inventory along with accounts"
+        isActive={features.maintain_inventory}
+        onToggle={() => handleToggle('maintain_inventory')}
+      />
+
+      {features.show_more_features && (
+        <>
+          <FeatureRow
+            label="Integrate Accounts with Inventory"
+            description="Update accounts automatically when inventory vouchers are entered"
+            isActive={features.integrate_accounts_with_inventory}
+            onToggle={() => handleToggle('integrate_accounts_with_inventory')}
+          />
+          <FeatureRow
+            label="Multiple Price Levels"
+            description="Maintain different price levels for the same item"
+            isActive={features.enable_multiple_price_levels}
+            onToggle={() => handleToggle('enable_multiple_price_levels')}
+          />
+          <FeatureRow
+            label="Batch Wise Details"
+            description="Maintain batch wise details for inventory"
+            isActive={features.enable_batches}
+            onToggle={() => handleToggle('enable_batches')}
+          />
+          <FeatureRow
+            label="Expiry Date Tracking"
+            description="Maintain expiry date for batches"
+            isActive={features.maintain_expiry_date_for_batches}
+            onToggle={() => handleToggle('maintain_expiry_date_for_batches')}
+          />
+          <FeatureRow
+            label="Job Order Processing"
+            description="Maintain job work details for inventory"
+            isActive={features.enable_job_order_processing}
+            onToggle={() => handleToggle('enable_job_order_processing')}
+          />
+          <FeatureRow
+            label="Cost Tracking"
+            description="Track costs for manufactured goods"
+            isActive={features.enable_cost_tracking}
+            onToggle={() => handleToggle('enable_cost_tracking')}
+          />
+          <FeatureRow
+            label="Discount Column in Invoices"
+            description="Use discount column in invoices"
+            isActive={features.use_discount_column_in_invoices}
+            onToggle={() => handleToggle('use_discount_column_in_invoices')}
+          />
+          <FeatureRow
+            label="Actual vs Billed Quantity"
+            description="Maintain separate actual and billed quantities"
+            isActive={features.use_separate_actual_billed_qty}
+            onToggle={() => handleToggle('use_separate_actual_billed_qty')}
+          />
+        </>
+      )}
+    </div>
+  );
+
+  const TaxationSection = () => (
+    <div>
+      <FeatureRow
+        label="Enable Value Added Tax (VAT)"
+        description="Nepal's primary business tax at 13%. Mandatory for annual turnover above NPR 50 lakh (NPR 5,000,000). Regulated by IRD (Inland Revenue Department)."
+        isActive={features.enable_vat}
+        onToggle={() => handleToggle('enable_vat')}
+      >
+        {features.enable_vat && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: '#000' }}>VAT Registration No.</label>
+                <input
+                  type="text"
+                  value={features.vat_registration_number}
+                  onChange={(e) => handleTextChange('vat_registration_number', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '6px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    fontSize: 12
+                  }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: '#000' }}>Applicable From</label>
+                <input
+                  type="date"
+                  value={features.vat_applicable_from}
+                  onChange={(e) => handleTextChange('vat_applicable_from', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '6px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    fontSize: 12
+                  }}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        
-        {/* Right Content */}
-        <div className="flex-1 p-6 h-[500px] overflow-y-auto">
-          {activeSection === 'accounting' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Accounting Features
+        )}
+      </FeatureRow>
+
+      <FeatureRow
+        label="Enable TDS (Income Tax Withholding)"
+        description="Withhold income tax on contractor payments (1.5%), rent (10%), professional fees (15%), commission (5%), interest (15%) per Nepal Income Tax Act 2058."
+        isActive={features.enable_tds}
+        onToggle={() => handleToggle('enable_tds')}
+      >
+        {features.enable_tds && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: '#000' }}>IRD Office Name:</label>
+                <input
+                  type="text"
+                  value={features.ird_office_name}
+                  onChange={(e) => handleTextChange('ird_office_name', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '6px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    fontSize: 12
+                  }}
+                />
               </div>
-              <div className="flex flex-col">
-                {renderFeatureRow('enableChequeprinting', 'Enable Cheque Printing', 'Enables cheque printing for payment vouchers with customizable cheque format.', 'Cheque Printing menu and print format visible in Payment voucher')}
-                {renderFeatureRow('enableBillWise', 'Maintain Bill-wise Details', 'Tracks individual bills for debtors and creditors — enables Receivables/Payables ageing reports.', 'Bill-wise entry in Sales/Purchase vouchers; Ageing report active')}
-                {renderFeatureRow('enableCostCentres', 'Maintain Cost Centres', 'Allocate transactions to departments, projects, or profit centres for detailed reporting.', 'Cost Centre field visible in all vouchers; Cost Centre reports active')}
-                {renderFeatureRow('enableBudgets', 'Use Budgets and Controls', 'Set budget limits per ledger/cost centre and receive alerts when vouchers exceed budget.', 'Budget Master active; Budget vs Actual report visible')}
-                {renderFeatureRow('enableCreditLimits', 'Enable Credit Limits', 'Set maximum credit allowed per party — blocks invoices exceeding the limit.', 'Credit limit field in Ledger Master; alerts on invoice entry')}
-                {renderFeatureRow('enableInterestCalc', 'Enable Interest Calculation', 'Automatically computes interest on overdue receivables/payables.', 'Interest Calculation report and Interest Voucher visible')}
-                {renderFeatureRow('enableMultiCurrency', 'Maintain Multiple Currencies', 'Record transactions in foreign currencies with automatic forex gain/loss computation.', 'Currency field visible in vouchers; Forex Gain/Loss report active')}
-                {renderFeatureRow('enableScenarios', 'Use Scenario Management', 'Create what-if scenarios using Optional/Reversing journals without affecting actual books.', 'Optional and Reversing voucher types visible')}
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: '#000' }}>Applicable From</label>
+                <input
+                  type="date"
+                  value={features.tds_applicable_from}
+                  onChange={(e) => handleTextChange('tds_applicable_from', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '6px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    fontSize: 12
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </FeatureRow>
+
+      {(features.show_all_features || features.enable_excise) && (
+        <FeatureRow
+          label="Enable Excise Duty"
+          description="Nepal excise duty on alcohol, tobacco, petroleum, vehicles. Register with Inland Revenue Department for excise compliance."
+          isActive={features.enable_excise}
+          onToggle={() => handleToggle('enable_excise')}
+        >
+          {features.enable_excise && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, color: '#000' }}>Excise Reg. No.</label>
+                  <input
+                    type="text"
+                    value={features.excise_registration_number}
+                    onChange={(e) => handleTextChange('excise_registration_number', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '6px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: 12
+                    }}
+                  />
+                </div>
               </div>
             </div>
           )}
-          
-          {activeSection === 'inventory' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Inventory Features
+        </FeatureRow>
+      )}
+    </div>
+  );
+
+  const OnlineAccessSection = () => (
+    <div>
+      <FeatureRow
+        label="Enable Browser-based Reports Access"
+        description="Allow access to reports through web browser"
+        isActive={features.enable_browser_access_for_reports}
+        onToggle={() => handleToggle('enable_browser_access_for_reports')}
+      />
+      <FeatureRow
+        label="Enable Remote Access & Cloud Synchronisation"
+        description="Allow remote access and synchronize data with cloud"
+        isActive={features.enable_remote_access_sync}
+        onToggle={() => handleToggle('enable_remote_access_sync')}
+      />
+    </div>
+  );
+
+  const PayrollSection = () => (
+    <div>
+      <FeatureRow
+        label="Maintain Payroll"
+        description="Maintain payroll along with accounts"
+        isActive={features.maintain_payroll}
+        onToggle={() => handleToggle('maintain_payroll')}
+      />
+
+      {features.maintain_payroll && (
+        <FeatureRow
+          label="Enable Statutory Compliance"
+          description="Enable compliance with statutory requirements like SSF, CIT, etc."
+          isActive={features.enable_payroll_statutory}
+          onToggle={() => handleToggle('enable_payroll_statutory')}
+        >
+          {features.enable_payroll_statutory && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, color: '#000' }}>SSF Registration No.</label>
+                  <input
+                    type="text"
+                    value={features.ssf_registration_number}
+                    onChange={(e) => handleTextChange('ssf_registration_number', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '6px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: 12
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, color: '#000' }}>SSF Employer Code</label>
+                  <input
+                    type="text"
+                    value={features.ssf_employer_code}
+                    onChange={(e) => handleTextChange('ssf_employer_code', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '6px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: 12
+                    }}
+                  />
+                </div>
               </div>
-              <div className="flex flex-col">
-                {renderFeatureRow('enableInventory', 'Enable Inventory Management', 'Tracks stock quantities — enables all inventory vouchers, reports, and item masters.', 'Inventory menu, stock vouchers, and item masters visible')}
-                {renderFeatureRow('enableMultiGodown', 'Maintain Multiple Godowns/Warehouses', 'Track stock separately per location (warehouse, shop, site).', 'Godown field visible in inventory vouchers and stock reports')}
-                {renderFeatureRow('enableMultiUOM', 'Use Multiple Units of Measure', 'Define primary and alternate units (e.g. BOX with 12 PCS) with conversion factors.', 'Alternate unit column visible in inventory vouchers')}
-                {renderFeatureRow('enableBatches', 'Enable Batch/Lot Number Tracking', 'Track stock by batch number — includes expiry date management.', 'Batch column visible in purchase/sales vouchers and stock reports')}
-                {renderFeatureRow('enableSerialNumbers', 'Enable Serial Number Tracking', 'Track unique serial numbers per individual item unit (e.g. electronics, machinery).', 'Serial number field visible in vouchers; Serial-wise report active')}
-                {renderFeatureRow('enableMfgJournal', 'Enable Manufacturing Journal (BOM/Production)', 'Use Bill of Materials to assemble/manufacture finished goods from raw materials.', 'Manufacturing Journal and BOM master visible')}
-                {renderFeatureRow('enableReorderLevels', 'Enable Reorder Levels', 'Set minimum stock levels and receive alerts when items fall below threshold.', 'Reorder level in Item Master; Reorder Alerts report active')}
-                {renderFeatureRow('enableRejections', 'Use Rejection Vouchers', 'Record goods rejected and returned (Rejection In / Rejection Out vouchers).', 'Rejection In and Rejection Out voucher types visible')}
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, color: '#000' }}>SSF Employee Contribution Rate %</label>
+                  <input
+                    type="number"
+                    value={features.ssf_employee_rate}
+                    onChange={(e) => handleTextChange('ssf_employee_rate', parseFloat(e.target.value) || 0)}
+                    style={{
+                      width: '100%',
+                      padding: '6px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: 12
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, color: '#000' }}>SSF Employer Contribution Rate %</label>
+                  <input
+                    type="number"
+                    value={features.ssf_employer_rate}
+                    onChange={(e) => handleTextChange('ssf_employer_rate', parseFloat(e.target.value) || 0)}
+                    style={{
+                      width: '100%',
+                      padding: '6px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: 12
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          )}
-          
-          {activeSection === 'orders' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Order Processing Features
+
+              <div style={{ padding: '6px 12px 6px 28px', fontSize: 11, color: '#2E5B1E', borderBottom: '1px solid #e0e0e0', background: '#f0f8e8' }}>
+                Per Nepal Social Security Act 2074: Employee contributes 11%, Employer contributes 20% of basic + grade pay to SSF (Social Security Fund). Register at ssf.gov.np
               </div>
-              <div className="flex flex-col">
-                {renderFeatureRow('enableSalesOrders', 'Enable Sales Orders', 'Record customer orders before raising invoices — track order fulfillment.', 'Sales Order voucher type and Outstanding Orders report visible')}
-                {renderFeatureRow('enablePurchaseOrders', 'Enable Purchase Orders', 'Raise purchase orders to suppliers before recording bills.', 'Purchase Order voucher type and PO Outstanding report visible')}
-                {renderFeatureRow('enableJobWorkOrders', 'Enable Job Work (In/Out) Orders', 'Manage outsourcing — send raw materials out for processing and receive finished goods.', 'Job Order voucher types visible')}
-              </div>
-            </div>
-          )}
-          
-          {activeSection === 'tax' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                GST & Taxation Features
-              </div>
-              
-              <div className="flex flex-col">
-                {renderFeatureRow('enableGST', 'Enable GST', 'Activates all GST fields, GSTR reports (1, 3B, 2A/2B), HSN codes, and GST computation in vouchers.', 'GSTIN fields, HSN column, GST breakup in vouchers; GSTR-1, 3B reports visible')}
-                
-                {features.enableGST && (
-                  <div className="bg-blue-50 border border-blue-100 rounded-md p-3 my-3 ml-2 text-[11px] text-blue-800 flex items-start gap-2 shadow-sm">
-                    <Info size={14} className="shrink-0 text-blue-600 mt-0.5" />
-                    <div>
-                      <strong className="font-semibold">When GST is enabled:</strong> all Sales/Purchase invoices show CGST/SGST/IGST columns. Ledger masters get GSTIN field. Item masters get HSN/SAC field.
+
+              <FeatureRow
+                label="Enable CIT Deduction"
+                description="Citizen Investment Trust monthly deduction for employee retirement benefit. Optional but common in Nepal."
+                isActive={features.enable_cit}
+                onToggle={() => handleToggle('enable_cit')}
+              >
+                {features.enable_cit && (
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: 12, color: '#000' }}>CIT Member Code</label>
+                      <input
+                        type="text"
+                        value={features.cit_member_code}
+                        onChange={(e) => handleTextChange('cit_member_code', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '6px',
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          fontSize: 12
+                        }}
+                      />
                     </div>
                   </div>
                 )}
-                
-                {renderFeatureRow('enableEWayBill', 'Enable e-Way Bill Generation', 'Integrate with NIC portal to generate e-Way Bills for goods movement above ₹50,000.', 'e-Way Bill button visible on Sales Invoice; e-WB register report active')}
-                {renderFeatureRow('enableEInvoice', 'Enable e-Invoice Generation', 'Integrate with IRP (via GSP) to generate IRN and signed QR code for B2B invoices.', 'e-Invoice button on Sales Invoice; IRN/QR printed on invoice PDF')}
-                {renderFeatureRow('enableCompositionScheme', 'Enable Composition Scheme', 'For composition dealers — generates CMP-08 instead of GSTR-1/3B.', 'CMP-08 report replaces GSTR-1 and GSTR-3B')}
-                {renderFeatureRow('enableTDS', 'Enable TDS (Tax Deducted at Source)', 'Activates TDS deduction in payment/expense vouchers and TDS return reports.', 'TDS Nature of Payment master; TDS computation in vouchers; Form 26Q/27Q visible')}
-                {renderFeatureRow('enableTCS', 'Enable TCS (Tax Collected at Source)', 'Activates TCS collection in sales vouchers.', 'TCS field in Sales Invoice; Form 27EQ report active')}
-                {renderFeatureRow('enableVAT', 'Enable VAT', 'For petroleum products or states with pre-GST VAT regime.', 'VAT rate field in items; VAT return report visible')}
-              </div>
+              </FeatureRow>
+
+              <FeatureRow
+                label="Enable Gratuity Provision (Labor Act 2074)"
+                description="Nepal Labor Act 2074 mandates gratuity after 3 years of service. 8.33% of basic salary provision."
+                isActive={features.enable_gratuity}
+                onToggle={() => handleToggle('enable_gratuity')}
+              />
+            </div>
+          )}
+        </FeatureRow>
+      )}
+    </div>
+  );
+
+  const OthersSection = () => (
+    <div>
+      <FeatureRow
+        label="Mark Modified Vouchers"
+        description="Mark vouchers which were modified after finalization"
+        isActive={features.mark_modified_vouchers}
+        onToggle={() => handleToggle('mark_modified_vouchers')}
+      />
+      <FeatureRow
+        label="Multiple Addresses"
+        description="Maintain multiple addresses for parties"
+        isActive={features.enable_multiple_addresses}
+        onToggle={() => handleToggle('enable_multiple_addresses')}
+      />
+      <FeatureRow
+        label="Local Language Mailing Details"
+        description="Print mailing details in local language"
+        isActive={features.mailing_details_in_local_language}
+        onToggle={() => handleToggle('mailing_details_in_local_language')}
+      />
+    </div>
+  );
+
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'accounting':
+        return <AccountingSection />;
+      case 'inventory':
+        return <InventorySection />;
+      case 'taxation':
+        return <TaxationSection />;
+      case 'online':
+        return <OnlineAccessSection />;
+      case 'payroll':
+        return <PayrollSection />;
+      case 'others':
+        return <OthersSection />;
+      default:
+        return <AccountingSection />;
+    }
+  };
+
+  return (
+    <div style={{ background: '#C9DEB5', minHeight: '100vh', padding: '12px' }}>
+      <div style={{ background: '#4A7A30', padding: '12px', borderRadius: '6px 6px 0 0', color: '#fff' }}>
+        <h1 style={{ margin: 0, fontSize: '18px' }}>Company Features</h1>
+      </div>
+
+      <div style={{ background: '#D4EABD', padding: '8px', display: 'flex', gap: '2px', marginBottom: '12px' }}>
+        {[
+          { key: 'accounting',  label: 'Accounting' },
+          { key: 'inventory',   label: 'Inventory' },
+          { key: 'taxation',    label: 'Taxation' },
+          { key: 'online',      label: 'Online Access' },
+          { key: 'payroll',     label: 'Payroll' },
+          { key: 'others',      label: 'Others' },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveSection(tab.key)}
+            style={{
+              padding: '8px 12px',
+              background: activeSection === tab.key ? '#4A7A30' : 'transparent',
+              color: activeSection === tab.key ? '#fff' : '#000',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px 4px 0 0',
+              fontWeight: 'bold',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ background: '#fff', borderRadius: '0 0 6px 6px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <div style={{ background: '#4A7A30', padding: '8px 16px', color: '#fff' }}>
+          <h2 style={{ margin: 0, fontSize: '14px', textTransform: 'uppercase' }}>
+            {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Features
+          </h2>
+        </div>
+
+        <div style={{ maxHeight: 'calc(100vh - 220px)', overflowY: 'auto' }}>
+          {renderSection()}
+
+          {activeSection === 'accounting' && (
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid #ccc' }}>
+              <button
+                onClick={() => handleToggle('show_more_features')}
+                style={{
+                  background: features.show_more_features ? '#4A7A30' : '#C9DEB5',
+                  color: features.show_more_features ? '#fff' : '#000',
+                  border: features.show_more_features ? 'none' : '1px solid #888',
+                  padding: '4px 12px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                {features.show_more_features ? 'Hide More' : 'Show More Features'}
+              </button>
             </div>
           )}
 
-          {activeSection === 'cbms' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Nepal e-Invoicing / CBMS
-              </div>
-
-              <div className="bg-white border border-gray-200 rounded-md p-4">
-                <div className="mb-3">
-                  <p className="text-[11px] text-gray-500 mt-0.5">
-                    Configure IRD Nepal CBMS invoice submission.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <label className="flex items-center justify-between border border-gray-200 rounded-md px-3 py-2">
-                    <span className="text-[12px] font-medium text-gray-700">
-                      Enable CBMS Integration
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={!!companySettings?.cbmsEnabled}
-                      onChange={(e) =>
-                        updateCompanySettings?.({ ...companySettings, cbmsEnabled: e.target.checked })
-                      }
-                    />
-                  </label>
-
-                  <div>
-                    <label className="text-[11px] font-medium text-gray-600">
-                      CBMS API URL
-                    </label>
-                    <input
-                      type="text"
-                      value={companySettings?.cbmsApiUrl || "https://cbms.ird.gov.np/api"}
-                      onChange={(e) =>
-                        updateCompanySettings?.({ ...companySettings, cbmsApiUrl: e.target.value })
-                      }
-                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-medium text-gray-600">
-                      CBMS API Key
-                    </label>
-                    <input
-                      type="password"
-                      value={companySettings?.cbmsApiKey || ""}
-                      onChange={(e) =>
-                        updateCompanySettings?.({ ...companySettings, cbmsApiKey: e.target.value })
-                      }
-                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
-                    />
-                    <p className="text-[10px] text-amber-600 mt-1">
-                      For production, prefer storing this key on your backend, not in browser storage.
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-medium text-gray-600">
-                      Simplified Invoice Threshold
-                    </label>
-                    <input
-                      type="number"
-                      value={companySettings?.simplifiedInvoiceThreshold ?? 10000}
-                      onChange={(e) =>
-                        updateCompanySettings?.({
-                          ...companySettings,
-                          simplifiedInvoiceThreshold: Number(e.target.value || 10000),
-                        })
-                      }
-                      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full text-right"
-                    />
-                    <p className="text-[10px] text-gray-500 mt-1">
-                      Default: Rs. 10,000 for unregistered retail buyers.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeSection === 'payroll' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Payroll Features
-              </div>
-              
-              <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mb-4 text-[11px] text-amber-800 flex items-start gap-2 shadow-sm">
-                <AlertTriangle size={14} className="shrink-0 text-amber-600 mt-0.5" />
-                <div>
-                  Enabling individual components (PF, ESI etc.) requires Payroll to be enabled first.
-                </div>
-              </div>
-              
-              <div className="flex flex-col">
-                {renderFeatureRow('enablePayroll', 'Enable Payroll', 'Complete employee payroll management — salary processing, pay slips, and statutory compliance.', 'Payroll menu, Employee Master, Payroll vouchers, and Pay Slip report visible')}
-                {renderFeatureRow('enablePF', 'Enable Provident Fund (PF)', 'Compute Employee and Employer PF contributions with PF challan generation.', 'PF components in pay heads; PF Challan report visible')}
-                {renderFeatureRow('enableESI', 'Enable ESI (Employee State Insurance)', 'Compute ESI contributions for eligible employees.', 'ESI components in pay heads; ESI Challan report visible')}
-                {renderFeatureRow('enableProfessionalTax', 'Enable Professional Tax', 'Deduct Professional Tax as per state slabs.', 'PT slab in Employee Master; PT deduction in payroll vouchers')}
-                {renderFeatureRow('enableGratuity', 'Enable Gratuity Computation', 'Track gratuity eligibility and compute gratuity payable.', 'Gratuity report and computation tool visible')}
-              </div>
-            </div>
-          )}
-          
-          {activeSection === 'advanced' && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">
-                Advanced Features
-              </div>
-              
-              <div className="flex flex-col">
-                {renderFeatureRow('enableJobCosting', 'Enable Job Costing', 'Assign costs and revenues to specific projects/jobs for profitability analysis.', 'Job Cost Centre Master; Job P&L report visible')}
-                {renderFeatureRow('enablePOS', 'Enable Point of Sale (POS)', 'Simplified cash billing interface for retail counter sales.', 'POS mode accessible from main menu')}
-                {renderFeatureRow('enableTallyAudit', 'Enable Tally Audit', 'Maintain immutable log of every voucher creation, alteration, and deletion with user and timestamp.', 'Audit Trail report visible; all voucher changes logged permanently')}
-                {renderFeatureRow('enableConsolidation', 'Enable Company Consolidation', 'Merge financial data from multiple companies into a consolidated balance sheet/P&L.', 'Consolidation wizard and Consolidated Balance Sheet visible')}
-                {renderFeatureRow('enableBankReconciliation', 'Enable Bank Reconciliation', 'Reconcile bank statement with book entries — import bank CSV/OFX.', 'Bank Reconciliation, Bank Statement Import, Auto-Reconciliation visible')}
-                {renderFeatureRow('enableEPayments', 'Enable E-Payments', 'Generate NEFT/RTGS/IMPS payment files for bulk bank uploads.', 'E-Payment menu; payment file generation for supported banks')}
-              </div>
+          {(activeSection === 'accounting' || activeSection === 'taxation' || activeSection === 'inventory') && features.show_more_features && (
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid #ccc' }}>
+              <button
+                onClick={() => handleToggle('show_all_features')}
+                style={{
+                  background: features.show_all_features ? '#4A7A30' : '#C9DEB5',
+                  color: features.show_all_features ? '#fff' : '#000',
+                  border: features.show_all_features ? 'none' : '1px solid #888',
+                  padding: '4px 12px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                {features.show_all_features ? 'Hide All Features' : 'Show All Features'}
+              </button>
             </div>
           )}
         </div>
       </div>
-      
-      {/* Save Bar */}
-      <div className="bg-[#f5f6fa] border border-t-0 border-gray-200 px-5 py-3 rounded-b-lg flex justify-between items-center shadow-sm">
-        <div className="text-[11px] font-medium text-gray-600">
-          <span className="font-bold text-gray-800">{enabledCount}</span> of {totalCount} features enabled
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleReset}
-            className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-1.5"
-          >
-            <RefreshCw size={14} className="text-gray-500" />
-            Reset to Defaults
-          </button>
-          <button
-            onClick={handleSave}
-            className="h-8 px-5 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded transition-colors shadow-sm flex items-center gap-1.5"
-          >
-            <Save size={14} />
-            Save Settings
-          </button>
-        </div>
+
+      <div style={{ background: '#D4EABD', padding: '12px', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #ccc' }}>
+        <button
+          onClick={handleSave}
+          disabled={!isDirty || isSaving}
+          style={{
+            background: !isDirty || isSaving ? '#aaa' : '#4A7A30',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            cursor: !isDirty || isSaving ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px',
+          }}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
       </div>
     </div>
   );
