@@ -149,7 +149,6 @@ const App: React.FC = () => {
       <Toaster position="top-right" />
       <Layout>
         <div className="flex flex-col h-full">
-          <BusyMenuBar />
           <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">
             {renderPage()}
           </main>
