@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useStore } from './store/useStore';
 import LoadingSpinner from './components/ui/Spinner';
 import { Toaster } from 'react-hot-toast';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Existing imports...
 import BulkUpdations from './pages/BulkUpdations';
@@ -173,29 +174,7 @@ import AuthGateway from "./pages/AuthGateway";
 import ShortcutPanel from "./components/ShortcutPanel";
 import { Loader2 } from "lucide-react";
 
-class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
-  constructor(props: {children: React.ReactNode}) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-700">
-          <h2 className="text-lg font-bold text-red-600 mb-2">Component Error</h2>
-          <p className="text-sm">Something went wrong while loading this page. Please try refreshing.</p>
-        </div>
-      );
-    }
-    return this.props.children; 
-  }
-}
+
 
 const App = () => {
   const { currentPage, currentUser, initializeApp } = useStore();
@@ -474,8 +453,8 @@ const App = () => {
   return (
     <F12Provider>
       <Layout>
-        <ErrorBoundary>
-          <Suspense fallback={<LoadingSpinner />}>
+        <ErrorBoundary key={currentPage}>
+          <Suspense key={currentPage} fallback={<LoadingSpinner />}>
             {renderPage()}
           </Suspense>
         </ErrorBoundary>
