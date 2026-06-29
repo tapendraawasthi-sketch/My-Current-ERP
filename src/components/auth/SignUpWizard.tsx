@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, AlertCircle } from "lucide-react";
 import Step1CompanyProfile from "./wizard/Step1CompanyProfile";
 import Step2TaxRegistration from "./wizard/Step2TaxRegistration";
 import Step3AccountingSetup from "./wizard/Step3AccountingSetup";
@@ -10,6 +10,10 @@ import { useStore } from "@/store/useStore";
 export default function SignUpWizard() {
   const { createCompanyAndAdmin } = useStore();
   const [currentStep, setCurrentStep] = useState(1);
+  const [submitError, setSubmitError] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [stepErrors, setStepErrors] = useState<Record<number, Record<string, string>>>({});
+
   const [formData, setFormData] = useState({
     companyNameEn: "",
     companyNameNe: "",
@@ -40,40 +44,48 @@ export default function SignUpWizard() {
     { id: 4, name: "Admin Account", component: Step4AdminAccount },
   ];
 
-  const validateStep = (step: number): boolean => {
+  const validateStep = (step: number): Record<string, string> => {
+    const errors: Record<string, string> = {};
     switch (step) {
       case 1:
-        return !!(
-          formData.companyNameEn &&
-          formData.businessType &&
-          formData.address &&
-          formData.city &&
-          formData.phone &&
-          formData.email
-        );
+        if (!formData.companyNameEn.trim()) errors.companyNameEn = "Company name (English) is required";
+        if (!formData.businessType) errors.businessType = "Business type is required";
+        if (!formData.address.trim()) errors.address = "Address is required";
+        if (!formData.city.trim()) errors.city = "City is required";
+        if (!formData.phone.trim()) errors.phone = "Phone number is required";
+        if (!formData.email.trim()) errors.email = "Email is required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = "Enter a valid email address";
+        break;
       case 2:
-        const validPAN = /^\d{9}$/.test(formData.panNumber);
-        return !!(validPAN && formData.irdProvince && formData.fiscalYear);
+        if (!formData.panNumber) errors.panNumber = "PAN number is required";
+        else if (!/^\d{9}$/.test(formData.panNumber)) errors.panNumber = "PAN must be exactly 9 digits";
+        if (!formData.irdProvince) errors.irdProvince = "IRD Province is required";
+        if (!formData.fiscalYear) errors.fiscalYear = "Fiscal year is required";
+        break;
       case 3:
-        return !!formData.dateFormat;
+        if (!formData.dateFormat) errors.dateFormat = "Date format is required";
+        break;
       case 4:
-        const validUsername = /^[a-zA-Z0-9]{4,}$/.test(formData.username);
-        const validPassword =
-          formData.password.length >= 6 &&
-          /[a-zA-Z]/.test(formData.password) &&
-          /\d/.test(formData.password);
-        const passwordMatch = formData.password === formData.confirmPassword;
-        return !!(formData.fullName && validUsername && validPassword && passwordMatch);
-      default:
-        return false;
+        if (!formData.fullName.trim()) errors.fullName = "Full name is required";
+        if (!formData.username.trim()) errors.username = "Username is required";
+        else if (!/^[a-zA-Z0-9]{4,}$/.test(formData.username)) errors.username = "Username must be alphanumeric, min 4 characters";
+        if (!formData.password) errors.password = "Password is required";
+        else if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
+        else if (!/[a-zA-Z]/.test(formData.password) || !/\d/.test(formData.password)) errors.password = "Password must contain both letters and numbers";
+        if (!formData.confirmPassword) errors.confirmPassword = "Please confirm your password";
+        else if (formData.password !== formData.confirmPassword) errors.confirmPassword = "Passwords do not match";
+        break;
     }
+    return errors;
   };
 
   const handleNext = () => {
-    if (!validateStep(currentStep)) {
-      alert("Please fill in all required fields correctly");
+    const errors = validateStep(currentStep);
+    if (Object.keys(errors).length > 0) {
+      setStepErrors((prev) => ({ ...prev, [currentStep]: errors }));
       return;
     }
+    setStepErrors((prev) => ({ ...prev, [currentStep]: {} }));
     if (currentStep < 4) setCurrentStep(currentStep + 1);
   };
 
@@ -82,11 +94,13 @@ export default function SignUpWizard() {
   };
 
   const handleFinish = async () => {
-    if (!validateStep(4)) {
-      alert("Please complete all required fields");
+    const errors = validateStep(4);
+    if (Object.keys(errors).length > 0) {
+      setStepErrors((prev) => ({ ...prev, [4]: errors }));
       return;
     }
-
+    setSubmitError("");
+    setSubmitLoading(true);
     try {
       await createCompanyAndAdmin({
         company: {
@@ -122,93 +136,186 @@ export default function SignUpWizard() {
           isActive: true,
         },
       });
-      alert("Welcome to Sutra ERP! Your company is now set up.");
     } catch (error: any) {
-      alert(`Failed to setup company. Please try again. Error: ${error?.message || error}`);
-      console.error("Setup error:", error);
+      setSubmitError(error?.message || "Failed to setup company. Please check your inputs and try again.");
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
+  const currentErrors = stepErrors[currentStep] || {};
   const CurrentStepComponent = steps[currentStep - 1].component;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f0f4ff] via-white to-[#f0f4ff] flex items-center justify-center p-6">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
-        <div className="relative h-1 bg-[#f9fafb] rounded-full overflow-hidden mb-6">
+    <div
+      className="min-h-screen flex items-center justify-center p-6"
+      style={{ background: "#f5f6fa" }}
+    >
+      <div
+        className="w-full max-w-3xl rounded-xl shadow-lg p-8"
+        style={{ background: "#ffffff", border: "1px solid #e5e7eb" }}
+      >
+        {/* Progress bar */}
+        <div
+          className="relative h-1.5 rounded-full overflow-hidden mb-6"
+          style={{ background: "#e5e7eb" }}
+        >
           <div
-            className="absolute top-0 left-0 h-full bg-[#1557b0] transition-all duration-300"
-            style={{ width: `${(currentStep / steps.length) * 100}%` }}
+            className="absolute top-0 left-0 h-full rounded-full transition-all duration-300"
+            style={{
+              width: `${(currentStep / steps.length) * 100}%`,
+              background: "#1557b0",
+            }}
           />
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1f2937] mb-2">Welcome to Sutra ERP</h1>
-          <p className="text-[#1f2937]">Let's set up your accounting system in just 4 steps</p>
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-[22px] font-bold text-gray-800 mb-1">Welcome to Sutra ERP</h1>
+          <p className="text-[13px] text-gray-500">Let's set up your accounting system in just 4 steps</p>
         </div>
 
+        {/* Step indicators */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <React.Fragment key={step.id}>
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
-                      currentStep > step.id
-                        ? "bg-green-500"
-                        : currentStep === step.id
-                          ? "bg-[#1557b0]"
-                          : "bg-[#f9fafb] text-[#1f2937]"
-                    }`}
-                  >
-                    {currentStep > step.id ? (
-                      <CheckCircle className="w-6 h-6 text-[#1f2937]" />
-                    ) : (
-                      <span className={currentStep === step.id ? "text-white" : "text-[#1f2937]"}>
-                        {step.id}
-                      </span>
-                    )}
+            {steps.map((step, index) => {
+              const hasErrors = stepErrors[step.id] && Object.keys(stepErrors[step.id]).length > 0;
+              return (
+                <React.Fragment key={step.id}>
+                  <div className="flex flex-col items-center">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-[13px] transition-colors"
+                      style={{
+                        background:
+                          hasErrors
+                            ? "#dc2626"
+                            : currentStep > step.id
+                            ? "#059669"
+                            : currentStep === step.id
+                            ? "#1557b0"
+                            : "#e5e7eb",
+                        color:
+                          currentStep >= step.id || hasErrors ? "#ffffff" : "#6b7280",
+                      }}
+                    >
+                      {hasErrors ? (
+                        <AlertCircle className="w-5 h-5" />
+                      ) : currentStep > step.id ? (
+                        <CheckCircle className="w-5 h-5" />
+                      ) : (
+                        step.id
+                      )}
+                    </div>
+                    <span
+                      className="text-[11px] mt-2 font-medium"
+                      style={{
+                        color: currentStep === step.id ? "#1557b0" : "#6b7280",
+                      }}
+                    >
+                      {step.name}
+                    </span>
                   </div>
-                  <span className="text-xs mt-2 text-[#1f2937] font-medium">{step.name}</span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`flex-1 h-1 mx-2 ${
-                      currentStep > step.id ? "bg-green-500" : "bg-[#f9fafb]"
-                    }`}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+                  {index < steps.length - 1 && (
+                    <div
+                      className="flex-1 h-0.5 mx-2"
+                      style={{
+                        background: currentStep > step.id ? "#059669" : "#e5e7eb",
+                        marginTop: "-18px",
+                      }}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
 
-        <div className="mb-8">
-          <CurrentStepComponent data={formData} onChange={setFormData} />
+        {/* Step content */}
+        <div className="mb-6">
+          <CurrentStepComponent
+            data={formData}
+            onChange={(newData: any) => {
+              setFormData(newData);
+              // Clear errors for fields as user types
+              if (currentErrors && Object.keys(currentErrors).length > 0) {
+                setStepErrors((prev) => ({ ...prev, [currentStep]: {} }));
+              }
+            }}
+            errors={currentErrors}
+          />
         </div>
 
-        <div className="flex justify-between items-center">
+        {/* Global submit error */}
+        {submitError && (
+          <div
+            className="mb-4 px-4 py-3 rounded-md flex items-start gap-2"
+            style={{
+              background: "#fef2f2",
+              border: "1px solid #fca5a5",
+              color: "#b91c1c",
+            }}
+          >
+            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span className="text-[12px] font-medium">{submitError}</span>
+          </div>
+        )}
+
+        {/* Navigation buttons */}
+        <div className="flex justify-between items-center pt-4" style={{ borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={handleBack}
             disabled={currentStep === 1}
-            className="h-8 px-3 bg-white border border-[#d1d5db] text-[#1f2937] text-[12px] font-medium rounded-md hover:bg-[#f9fafb] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{
+              background: "#ffffff",
+              border: "1px solid #d1d5db",
+              color: "#374151",
+            }}
           >
             Previous
           </button>
-          {currentStep < 4 ? (
-            <button
-              onClick={handleNext}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              onClick={handleFinish}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md transition-colors"
-            >
-              Finish & Launch
-            </button>
-          )}
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-gray-400">
+              Step {currentStep} of {steps.length}
+            </span>
+            {currentStep < 4 ? (
+              <button
+                onClick={handleNext}
+                className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors"
+                style={{
+                  background: "#1557b0",
+                  color: "#ffffff",
+                  border: "none",
+                }}
+              >
+                Next →
+              </button>
+            ) : (
+              <button
+                onClick={handleFinish}
+                disabled={submitLoading}
+                className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                style={{
+                  background: "#1557b0",
+                  color: "#ffffff",
+                  border: "none",
+                }}
+              >
+                {submitLoading ? (
+                  <>
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border-2 animate-spin"
+                      style={{ borderColor: "#ffffff", borderTopColor: "transparent" }}
+                    />
+                    Setting up…
+                  </>
+                ) : (
+                  "Finish & Launch"
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
