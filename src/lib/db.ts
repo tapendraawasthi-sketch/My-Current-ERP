@@ -1223,11 +1223,10 @@ export class SutraERPDatabase extends Dexie {
     });
 
     this.version(20).stores({
-      fixedAssets: "++id, name, category, purchaseDate, isActive",
+      fixedAssets: "id, name, category, purchaseDate, isActive",
       depreciationLedger: "++id, assetId, date, fiscalYear",
       batches: "++id, itemId, batchNo, expiryDate, isActive",
       serialNumbers: "++id, itemId, serialNo, status, soldToPartyId",
-      currencies: "id, code, name, isActive",
       recurringVouchers: "id, type, status, nextDueDate, createdAt",
       customFieldDefs: "id, entityType, fieldName, isActive, createdAt",
       billSundryMasters: "id, code, name, type, isActive, createdAt",
@@ -1253,7 +1252,6 @@ export class SutraERPDatabase extends Dexie {
       reorderLevels: "id, itemId, warehouseId, reorderQty, createdAt",
       priceLevels: "id, name, isActive, createdAt",
       hsCodes: "id, code, description, createdAt",
-      batches: "id, batchNo, itemId, expiryDate, createdAt",
       vatClassifications: "id, name, rate, isActive, createdAt",
       tdsNatureOfPayment: "id, name, section, rate, isActive, createdAt",
       employeeGroups: "id, name, isActive, createdAt",
@@ -1269,10 +1267,10 @@ export class SutraERPDatabase extends Dexie {
       pdcRegister: "++id, type, partyId, chequeDate, status",
       ePaymentBatches: "id, batchNo, bankAccountId, date, status, createdAt",
       paymentAdvices: "id, adviceNo, partyId, date, status, createdAt",
-      employees: "++id, employeeCode, name, department, designation, isActive",
+      employees: "id, employeeCode, name, department, designation, isActive",
       salaryStructures: "++id, employeeId, effectiveFrom",
       payrollRuns: "++id, month, year, status",
-      payrollEntries: "++id, payrollRunId, employeeId, month, year",
+      payrollEntries: "id, payrollRunId, employeeId, month, year",
       currencies: "++id, code, isActive",
       exchangeRates: "++id, currencyCode, date",
       fxGainLossEntries: "++id, date, currencyCode, voucherId",

@@ -123,8 +123,9 @@ export default function SignUpWizard() {
         },
       });
       alert("Welcome to Sutra ERP! Your company is now set up.");
-    } catch (error) {
-      alert("Failed to setup company. Please try again.");
+    } catch (error: any) {
+      alert(`Failed to setup company. Please try again. Error: ${error?.message || error}`);
+      console.error("Setup error:", error);
     }
   };
 

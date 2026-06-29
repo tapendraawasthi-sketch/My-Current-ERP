@@ -1013,7 +1013,8 @@ export const useStore = create<AppState>()((...a) => {
     },
 
     addEmployee: async (emp: any) => {
-      const id = await db.employees.add({ ...emp, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const id = emp.id || generateId();
+      await db.employees.put({ ...emp, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
       const employees = await db.employees.toArray();
       set({ employees });
       return id;
@@ -1029,6 +1030,13 @@ export const useStore = create<AppState>()((...a) => {
       await db.employees.delete(id);
       const employees = await db.employees.toArray();
       set({ employees });
+    },
+
+    addPayrollRun: async (run: any) => {
+      const id = run.id || generateId();
+      await db.payrollRuns.put({ ...run, id });
+      const payrollRuns = await db.payrollRuns.toArray();
+      set({ payrollRuns });
     },
 
     addSalaryStructure: async (s: any) => {
@@ -1217,6 +1225,13 @@ export const useStore = create<AppState>()((...a) => {
       await db.costCentres.delete(id);
       const costCentres = await db.costCentres.toArray();
       set({ costCentres });
+    },
+
+    addPayrollEntry: async (entry: any) => {
+      const id = entry.id || generateId();
+      await db.payrollEntries.put({ ...entry, id });
+      const payrollEntries = await db.payrollEntries.toArray();
+      set({ payrollEntries });
     },
 
     addCostCentreAllocation: async (a: Omit<DBCostCentreAllocation, "id">) => {
