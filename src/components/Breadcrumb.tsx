@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from "react";
 import { useStore } from "../store/useStore";
 import { Home, ChevronRight } from "lucide-react";
@@ -12,6 +7,7 @@ const PAGE_TITLES: Record<string, string> = {
   accounts: "Chart of Accounts",
   parties: "Parties Directory",
   items: "Stock Book",
+  "item-master": "Stock Book",
   "sales-invoice": "Sales Invoice",
   "purchase-invoice": "Purchase Invoice",
   "sales-return": "Sales Return",
@@ -26,14 +22,53 @@ const PAGE_TITLES: Record<string, string> = {
   "purchase-order": "Purchase Orders",
   "delivery-challan": "Delivery Challans",
   grn: "Goods Receipt Notes",
-  "stock-journal": "Stock Journals",
+  "goods-receipt": "Goods Receipt Notes",
+  "stock-transfer": "Stock Transfer",
   pos: "POS Billing",
+  "pos-mode": "POS Mode",
   "day-book": "Day Book",
-  "cash-book": "Cash Book",
-  "bank-book": "Bank Book",
   ledger: "General Ledger",
+  "ledger-report": "General Ledger",
   "party-statement": "Party Ledger Statement",
   vouchers: "Vouchers Register",
+  "trial-balance": "Trial Balance",
+  "profit-loss": "Profit & Loss Statement",
+  "balance-sheet": "Balance Sheet",
+  "cash-flow": "Cash Flow Statement",
+  "stock-summary": "Stock Summary",
+  "stock-book": "Stock Book",
+  "aging-report": "Aging Report",
+  "vat-reports": "VAT Reports",
+  "gst-reports": "GST Reports",
+  gstr1: "GSTR-1 Report",
+  gstr2: "GSTR-2 Report",
+  gstr3b: "GSTR-3B Report",
+  "gst-summary": "GST Summary",
+  "tds-report": "TDS Report",
+  settings: "System Settings",
+  "company-settings": "Company Settings",
+  "fiscal-year": "Fiscal Year",
+  users: "Users & Roles",
+  budget: "Budget Master",
+  budgets: "Budget Master",
+  "audit-log": "Audit Log",
+  "audit-logs": "Audit Logs",
+  backup: "Backup & Restore",
+  warehouses: "Warehouses",
+  units: "Units of Measure",
+  "cost-centers": "Cost Centers",
+  "price-lists": "Price Lists",
+  "item-groups": "Item Groups",
+  "voucher-types": "Voucher Types",
+  "sales-persons": "Sales Persons",
+  "unit-conversion": "Unit Conversions",
+  "standard-narration": "Standard Narrations",
+  "bill-sundry": "Bill Sundries",
+  "physical-stock": "Physical Stock",
+  quotation: "Quotation",
+  "outstanding-receivables": "Outstanding Receivables",
+  "outstanding-payables": "Outstanding Payables",
+  "interest-calculation": "Interest Calculation",
   "bank-reconciliation": "Bank Reconciliation",
   "auto-bank-reconciliation": "Auto Bank Reconciliation",
   "cheque-printing": "Cheque Printing",
@@ -43,38 +78,45 @@ const PAGE_TITLES: Record<string, string> = {
   "e-payments": "e-Payments",
   "pdc-summary": "PDC Summary",
   "banking-hub": "Banking Hub",
-  "trial-balance": "Trial Balance",
-  "profit-loss": "Profit & Loss Statement",
-  "balance-sheet": "Balance Sheet",
-  "cash-flow": "Cash Flow Statement",
-  "sales-register": "Sales Register",
-  "purchase-register": "Purchase Register",
-  "stock-summary": "Stock Summary",
-  "inventory-report": "Inventory Report",
-  "aging-report": "Aging Report",
-  "bill-pending": "Bill-wise Pending",
-  "vat-reports": "VAT Reports",
-  "tds-report": "TDS Report",
-  "cost-center-report": "Cost Center Report",
-  "budget-vs-actual": "Budget vs Actual",
-  settings: "System Settings",
-  "fiscal-year": "Fiscal Year",
-  users: "Users & Roles",
-  budget: "Budget Master",
-  "recurring-vouchers": "Recurring Vouchers",
-  "audit-log": "Audit Log",
-  backup: "Backup & Restore",
-  warehouses: "Warehouses",
-  units: "Units of Measure",
-  "cost-centers": "Cost Centers",
-  "bank-accounts": "Bank Accounts",
   "bank-statement-import": "Bank Statement Import",
   "overdue-bills-interest": "Overdue Bills Interest",
   "account-groups": "Account Groups",
-  "item-groups": "Item Groups",
-  "voucher-types": "Voucher Types",
-  "price-lists": "Price Lists",
   "f11-company-features": "F11 Company Features",
+  "fixed-assets": "Fixed Assets",
+  employees: "Employees",
+  payroll: "Payroll",
+  "payroll-reports": "Payroll Reports",
+  "sales-register": "Sales Register",
+  "purchase-register": "Purchase Register",
+  billing: "Sales Invoice",
+  "billing-invoice": "Billing & Invoice",
+  "reports-hub": "Reports Hub",
+  "configuration-hub": "Configuration Hub",
+  "data-import-export": "Data Import / Export",
+  "make-checker": "Maker-Checker Approval",
+  "recurring-vouchers": "Recurring Vouchers",
+  "party-reconciliation": "Party Reconciliation",
+  "credit-limit-manager": "Credit Limit Manager",
+  "batch-management": "Batch Management",
+  "serial-tracking": "Serial Number Tracking",
+  "bom-production": "BOM & Production",
+  "stock-categories": "Stock Categories",
+  "price-history": "Price History & Rates",
+  "ratio-analysis": "Ratio Analysis",
+  "statistics-report": "Statistics Report",
+  "exception-reports": "Exception Reports",
+  "advanced-tax-compliance": "Advanced Tax Compliance",
+  "cost-center-report": "Cost Center Report",
+  "funds-flow": "Funds Flow Statement",
+  "sales-order-outstanding": "Sales Order Outstanding",
+  "purchase-order-outstanding": "Purchase Order Outstanding",
+  "debtors-aging": "Debtors Aging",
+  "creditors-aging": "Creditors Aging",
+  "bulk-updations": "Bulk Updations",
+  "year-end-process": "Year End Process",
+  "communication-hub": "Communication Hub",
+  "opening-balance": "Opening Balance",
+  gateway: "Gateway",
 };
 
 const Breadcrumb: React.FC = () => {
@@ -99,16 +141,30 @@ const Breadcrumb: React.FC = () => {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <nav className="flex items-center gap-0 select-none" aria-label="Breadcrumb">
-      <button type="button" onClick={() => setCurrentPage("dashboard")} className="text-gray-500 hover:text-gray-800 transition-colors flex items-center"><Home className="h-3.5 w-3.5" /></button>
-      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
+    <nav
+      className="flex items-center gap-0 select-none"
+      aria-label="Breadcrumb"
+    >
+      <button
+        type="button"
+        onClick={() => setCurrentPage("dashboard")}
+        className="text-gray-500 hover:text-gray-800 transition-colors flex items-center"
+      >
+        <Home className="h-3.5 w-3.5" />
+      </button>
+
+      {currentPage !== "dashboard" && (
+        <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />
+      )}
 
       {breadcrumbs.map((b, idx) => {
         if (idx === 0) return null;
         const isLast = idx === breadcrumbs.length - 1;
         return (
           <React.Fragment key={idx}>
-            {idx > 1 && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
+            {idx > 1 && (
+              <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />
+            )}
             {isLast ? (
               <span className="text-[12px] font-medium text-gray-800 truncate max-w-[120px] md:max-w-xs">
                 {b.label}
