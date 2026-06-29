@@ -186,27 +186,11 @@ export const useStore = create<AppState>()((...a) => {
         passwordHash: hash,
         isActive: true,
       } as any);
-    } else {
-      // Repair any legacy hash format and ensure admin always exists
+    } else if (crypto?.subtle) {
+      // Repair fallback_ hash stored when crypto.subtle was unavailable (HTTP env)
       try {
         const adminUser = await db.users.where("username").equals("admin").first() as any;
-        if (!adminUser) {
-          // Admin user missing — re-seed it
-          const hash = await hashPassword("admin123");
-          await db.users.put({
-            id: "user-admin",
-            username: "admin",
-            name: "Administrator",
-            email: "admin@company.com",
-            role: "admin",
-            passwordHash: hash,
-            isActive: true,
-          } as any);
-        } else if (
-          adminUser.passwordHash?.startsWith("fallback_") ||
-          (!adminUser.passwordHash?.startsWith("pbkdf2v2_") && !adminUser.passwordHash?.startsWith("sha256v1_"))
-        ) {
-          // Upgrade legacy hash (fallback_ or old PBKDF2 v1 64-char hex)
+        if (adminUser?.passwordHash?.startsWith("fallback_")) {
           await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
         }
       } catch { /* non-critical */ }
@@ -275,7 +259,7 @@ export const useStore = create<AppState>()((...a) => {
       db.salesOrders.toArray(),
       db.purchaseOrders.toArray(),
       db.users.toArray(),
-      db.notifications.orderBy("createdAt").reverse().limit(50).toArray(),
+      db.notifications.orderBy("timestamp").reverse().limit(50).toArray(),
       db.budgets.toArray(),
       db.recurringVouchers.toArray(),
       db.customFieldDefs.toArray(),

@@ -171,7 +171,7 @@ export const DEFAULT_ACCOUNTS = [
   { id: "grp-income", code: "4000", name: "Income", type: "income", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
   { id: "grp-sales", code: "4100", name: "Sales Accounts", type: "income", level: "subgroup", parentId: "grp-income", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
   { id: "acc-sales", code: "4101", name: "Sales", type: "income", level: "ledger", parentId: "grp-sales", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-sales-return", code: "4102", name: "Sales Return", type: "income", level: "ledger", parentId: "grp-sales", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceCr: 0, isSystemAccount: true },
+  { id: "acc-sales-return", code: "4102", name: "Sales Return", type: "income", level: "ledger", parentId: "grp-sales", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
   // Expenses
   { id: "grp-expenses", code: "5000", name: "Expenses", type: "expense", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
   { id: "grp-purchase", code: "5100", name: "Purchase Accounts", type: "expense", level: "subgroup", parentId: "grp-expenses", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
@@ -555,187 +555,45 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
-// ─── Pure-JS SHA-256 (no dependency on crypto.subtle, works on HTTP) ──────────
-// Used as a deterministic fallback when crypto.subtle is unavailable.
-function _sha256Hex(message: string): string {
-  const K = [
-    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
-    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
-    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
-    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
-    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
-    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2,
-  ];
-
-  function safeAdd(x: number, y: number): number {
-    const lsw = (x & 0xffff) + (y & 0xffff);
-    return (((x >> 16) + (y >> 16) + (lsw >> 16)) << 16) | (lsw & 0xffff);
+export async function hashPassword(password: string): Promise<string> {
+  if (!crypto || !crypto.subtle) {
+    console.warn("crypto.subtle is not available (likely non-HTTPS environment). Using fallback hash.");
+    return `fallback_${password}`;
   }
-  function rotr(n: number, x: number): number { return (x >>> n) | (x << (32 - n)); }
-
-  // UTF-8 encode the message
-  const msgBytes: number[] = [];
-  for (let i = 0; i < message.length; i++) {
-    const c = message.charCodeAt(i);
-    if (c < 0x80) { msgBytes.push(c); }
-    else if (c < 0x800) { msgBytes.push((c >> 6) | 0xc0, (c & 0x3f) | 0x80); }
-    else { msgBytes.push((c >> 12) | 0xe0, ((c >> 6) & 0x3f) | 0x80, (c & 0x3f) | 0x80); }
-  }
-
-  // SHA-256 padding
-  const bitLen = msgBytes.length * 8;
-  msgBytes.push(0x80);
-  while ((msgBytes.length % 64) !== 56) msgBytes.push(0);
-  // Append big-endian 64-bit bit length
-  for (let i = 7; i >= 0; i--) msgBytes.push((bitLen / Math.pow(2, i * 8)) & 0xff);
-
-  let h0=0x6a09e667, h1=0xbb67ae85, h2=0x3c6ef372, h3=0xa54ff53a;
-  let h4=0x510e527f, h5=0x9b05688c, h6=0x1f83d9ab, h7=0x5be0cd19;
-
-  for (let i = 0; i < msgBytes.length; i += 64) {
-    const w: number[] = new Array(64);
-    for (let j = 0; j < 16; j++) {
-      w[j] = ((msgBytes[i+j*4]<<24)|(msgBytes[i+j*4+1]<<16)|(msgBytes[i+j*4+2]<<8)|msgBytes[i+j*4+3]) >>> 0;
-    }
-    for (let j = 16; j < 64; j++) {
-      const s0 = rotr(7,w[j-15]) ^ rotr(18,w[j-15]) ^ (w[j-15]>>>3);
-      const s1 = rotr(17,w[j-2])  ^ rotr(19,w[j-2])  ^ (w[j-2]>>>10);
-      w[j] = safeAdd(safeAdd(w[j-16], s0), safeAdd(w[j-7], s1));
-    }
-    let a=h0, b=h1, c=h2, d=h3, e=h4, f=h5, g=h6, h=h7;
-    for (let j = 0; j < 64; j++) {
-      const S1   = rotr(6,e)  ^ rotr(11,e) ^ rotr(25,e);
-      const ch   = (e & f) ^ (~e & g);
-      const temp1 = safeAdd(safeAdd(h, S1), safeAdd(ch, safeAdd(K[j], w[j])));
-      const S0   = rotr(2,a)  ^ rotr(9,a)  ^ rotr(13,a);
-      const maj  = (a & b) ^ (a & c) ^ (b & c);
-      const temp2 = safeAdd(S0, maj);
-      h=g; g=f; f=e; e=safeAdd(d,temp1);
-      d=c; c=b; b=a; a=safeAdd(temp1,temp2);
-    }
-    h0=safeAdd(h0,a); h1=safeAdd(h1,b); h2=safeAdd(h2,c); h3=safeAdd(h3,d);
-    h4=safeAdd(h4,e); h5=safeAdd(h5,f); h6=safeAdd(h6,g); h7=safeAdd(h7,h);
-  }
-
-  return [h0,h1,h2,h3,h4,h5,h6,h7]
-    .map(v => (v >>> 0).toString(16).padStart(8, "0"))
+  const enc = new TextEncoder();
+  const salt = enc.encode("sutra-erp-salt-v1");
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"]
+  );
+  const hashBuffer = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    256
+  );
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
 
-// Salt constants — v1 is the legacy PBKDF2 salt, v2 is the new unified salt
-const SALT_V1 = "sutra-erp-salt-v1"; // old PBKDF2 — kept for verifyPassword backwards compat
-const SALT_V2 = "sutra-erp-salt-v2"; // new hashes (both PBKDF2 v2 and SHA-256 v1)
-
-/**
- * Hash a password.
- * - On HTTPS / localhost (crypto.subtle available): PBKDF2-SHA256, prefix "pbkdf2v2_"
- * - On plain HTTP (crypto.subtle unavailable):      pure-JS SHA-256, prefix "sha256v1_"
- *
- * Both formats are stable and deterministic — the same password always produces
- * the same hash in the same environment, so login works correctly on any protocol.
- */
-export async function hashPassword(password: string): Promise<string> {
-  if (crypto && crypto.subtle) {
-    try {
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
-      );
-      const hashBuffer = await crypto.subtle.deriveBits(
-        { name: "PBKDF2", salt: enc.encode(SALT_V2), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
-      );
-      return "pbkdf2v2_" + Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
-    } catch {
-      // crypto.subtle threw (rare, e.g. iframe sandbox) — fall through to pure-JS
-    }
-  }
-  // Pure-JS path — identical result every time regardless of HTTP/HTTPS
-  return "sha256v1_" + _sha256Hex(SALT_V2 + ":" + password);
-}
-
-/**
- * Verify a password against a stored hash.
- * Handles all legacy formats transparently:
- *   - ""              (no hash)     → allow "admin123" only
- *   - "fallback_XXX"  (old HTTP)    → compare fallback_password
- *   - 64-char hex     (old PBKDF2 v1, HTTPS-only) → recompute with old salt
- *   - "pbkdf2v2_…"   (new PBKDF2)  → recompute with new salt
- *   - "sha256v1_…"   (new HTTP)    → pure-JS SHA-256 compare
- *   - plain text      (very old dev seeds) → direct compare
- */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  // ── No hash stored ────────────────────────────────────────────────────────
+  // Hard fallback: no hash stored at all → only the default admin password is accepted
   if (!hash) return password === "admin123";
-
-  // ── Legacy fallback_ (HTTP first-boot, old format) ────────────────────────
+  // Handle fallback_ prefix stored when crypto.subtle was unavailable (HTTP env)
   if (hash.startsWith("fallback_")) {
     return hash === `fallback_${password}`;
   }
-
-  // ── New PBKDF2 v2 ─────────────────────────────────────────────────────────
-  if (hash.startsWith("pbkdf2v2_")) {
-    if (!crypto?.subtle) {
-      // Can't recompute PBKDF2 without crypto.subtle.
-      // Try the pure-JS path with the same password — if it matches a sha256v1_
-      // hash this wouldn't apply, so we must allow the default password as
-      // an emergency recovery mechanism for HTTP deployments.
-      // (The hash will be replaced with a sha256v1_ hash on next login.)
-      if (password === "admin123") return true;
-      // For non-default passwords, try sha256v1 equivalent stored as pbkdf2v2
-      // — this can't match, so return false. User must access via HTTPS.
-      return false;
-    }
-    try {
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
-      );
-      const hashBuffer = await crypto.subtle.deriveBits(
-        { name: "PBKDF2", salt: enc.encode(SALT_V2), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
-      );
-      const computed = "pbkdf2v2_" + Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
-      return computed === hash;
-    } catch { return false; }
-  }
-
-  // ── New SHA-256 v1 (HTTP-safe) ────────────────────────────────────────────
-  if (hash.startsWith("sha256v1_")) {
-    return hash === "sha256v1_" + _sha256Hex(SALT_V2 + ":" + password);
-  }
-
-  // ── Legacy PBKDF2 v1 (64-char hex, no prefix, created with old salt) ──────
-  if (/^[0-9a-f]{64}$/.test(hash)) {
-    if (!crypto?.subtle) {
-      // Emergency fallback: allow default admin password on HTTP
-      // so admin can log in and the hash gets upgraded on next HTTPS visit.
-      if (password === "admin123") return true;
-      return false;
-    }
-    try {
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
-      );
-      const hashBuffer = await crypto.subtle.deriveBits(
-        { name: "PBKDF2", salt: enc.encode(SALT_V1), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
-      );
-      const computed = Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
-      return computed === hash;
-    } catch { return false; }
-  }
-
-  // ── Plain-text legacy (very old dev seeds) ────────────────────────────────
+  // Handle plain-text stored hash (legacy / dev seeds)
   if (hash === password) return true;
-
-  // ── Last resort: hash the password and compare ────────────────────────────
+  // PBKDF2 path
   const computed = await hashPassword(password);
   return computed === hash;
 }
@@ -753,4 +611,4 @@ export const DEFAULT_TDS_RATES = [
   { id: "tds-9", section: "88", natureOfPayment: "Other", rate: 1.5, threshold: 0 },
 ];
 
-// ─── Store ────────────────────────────────────────────────────────────────────
+// ─── Store ────────────────────────────────────────────────────────────────────
