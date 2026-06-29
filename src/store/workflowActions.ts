@@ -34,7 +34,7 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = await db.vouchers.toArray();
+    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const pos = allVouchers.filter((v) => args.poIds.includes(v.id));
 
     const lines =
@@ -90,7 +90,7 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = await db.vouchers.toArray();
+    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const grns = allVouchers.filter((v) => args.grnIds.includes(v.id));
 
     const poIds = Array.from(
@@ -166,7 +166,7 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = await db.vouchers.toArray();
+    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const sos = allVouchers.filter((v) => args.soIds.includes(v.id));
 
     const lines =
@@ -218,7 +218,7 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = await db.vouchers.toArray();
+    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const dcs = allVouchers.filter((v) => args.dcIds.includes(v.id));
 
     const soIds = Array.from(
@@ -294,7 +294,7 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = await db.vouchers.toArray();
+    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const grn = allVouchers.find((v) => v.id === args.grnId);
 
     if (!grn) throw new Error("Linked GRN not found.");

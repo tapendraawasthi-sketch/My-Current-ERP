@@ -157,7 +157,7 @@ export default function SignInForm() {
             <button
               type="submit"
               disabled={isLocked || isSubmitting}
-              className="w-full h-10 bg-[#1557b0] hover:bg-[#0f4a96] text-white font-medium rounded-md transition-colors disabled:opacity-50 text-[13px] flex items-center justify-center gap-2"
+              className="btn-primary w-full flex items-center justify-center gap-2 h-10 text-[13px] disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

@@ -585,13 +585,15 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  if (!hash) return false;
-  // Handle fallback hash stored when crypto.subtle was unavailable
+  // Hard fallback: no hash stored at all → only the default admin password is accepted
+  if (!hash) return password === "admin123";
+  // Handle fallback_ prefix stored when crypto.subtle was unavailable (HTTP env)
   if (hash.startsWith("fallback_")) {
     return hash === `fallback_${password}`;
   }
   // Handle plain-text stored hash (legacy / dev seeds)
   if (hash === password) return true;
+  // PBKDF2 path
   const computed = await hashPassword(password);
   return computed === hash;
 }

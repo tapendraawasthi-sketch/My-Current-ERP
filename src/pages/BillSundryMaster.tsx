@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
-import { DBBillSundryMaster } from "../lib/db";
+import { DBBillSundry as DBBillSundryMaster } from "../lib/db";
 import {
   Plus,
   Pencil,

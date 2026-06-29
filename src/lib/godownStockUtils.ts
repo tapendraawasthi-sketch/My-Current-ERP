@@ -1,8 +1,10 @@
 import type {
   DBStockMovement,
   DBWarehouse,
-  StockValuationMethod,
 } from "./db";
+
+// Local string-based alias matching the actual usage across this file
+type StockValuationMethod = "fifo" | "lifo" | "weighted-average" | string;
 
 export interface StockPosition {
   itemId: string;

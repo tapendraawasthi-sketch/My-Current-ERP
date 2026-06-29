@@ -25,6 +25,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
   onPrint,
   onExport,
   onOptions,
+  actions,
   children,
 }) => {
   return (
@@ -41,6 +42,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
               {btn.label}
             </button>
           ))}
+          {actions}
         </div>
       </div>
 

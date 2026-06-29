@@ -319,7 +319,7 @@ export const useStore = create<AppState>()((...a) => {
       db.chequeBounceLogs.toArray().catch(() => []),
     ]);
 
-    const currentFiscalYear = (fiscalYears.find((fy) => fy.isCurrent) || fiscalYears[0]) as FiscalYear | undefined;
+    const currentFiscalYear = (fiscalYears.find((fy: any) => fy.isCurrent || fy.isDefault) || fiscalYears[0]) as unknown as FiscalYear | undefined;
 
     // Compute account balances from voucher lines
     const balanceMap: Record<string, number> = {};
@@ -356,14 +356,14 @@ export const useStore = create<AppState>()((...a) => {
       warehouses,
       units,
       costCenters,
-      fiscalYears: fiscalYears as FiscalYear[],
-      currentFiscalYear: (currentFiscalYear as FiscalYear) || null,
+      fiscalYears: fiscalYears as unknown as FiscalYear[],
+      currentFiscalYear: (currentFiscalYear as unknown as FiscalYear) || null,
       deliveryChallans,
       goodsReceiptNotes,
       salesOrders,
       purchaseOrders,
       users: users as StoreUser[],
-      notifications: notifications as Notification[],
+      notifications: notifications as unknown as Notification[],
       budgets,
       recurringVouchers,
       customFieldDefs,
@@ -465,13 +465,14 @@ export const useStore = create<AppState>()((...a) => {
     if (!user) return false;
     if (!user.isActive) return false;
     const storedHash: string = user.passwordHash || "";
-    // Check all hash variants: PBKDF2, fallback_ (HTTP env), and plain-text compat
-    let valid = await verifyPassword(password, storedHash);
-    if (!valid && storedHash.startsWith("fallback_")) valid = storedHash === `fallback_${password}`;
-    if (!valid) valid = (password === "admin123");
+    // verifyPassword is the single source of truth for all hash variants:
+    // empty hash, fallback_ (HTTP env), plain-text legacy, PBKDF2
+    const valid = await verifyPassword(password, storedHash);
     if (!valid) return false;
-    // Upgrade fallback_ hash to real PBKDF2 now that crypto.subtle is available
-    if (storedHash.startsWith("fallback_") && crypto?.subtle) {
+    // Upgrade hash to real PBKDF2 whenever crypto.subtle is now available
+    // Covers: fallback_ (HTTP→HTTPS migration) and missing/empty hashes
+    const needsUpgrade = !storedHash || storedHash.startsWith("fallback_");
+    if (needsUpgrade && crypto?.subtle) {
       try { await db.users.update(user.id, { passwordHash: await hashPassword(password) }); } catch { /* ok */ }
     }
     sessionStorage.setItem("sutra_user_id", user.id);

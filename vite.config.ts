@@ -20,6 +20,18 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: false,
     rollupOptions: {
+      external: [
+        "express",
+        "pg",
+        "ioredis",
+        "nodemailer",
+        "node-cron",
+        "multer",
+        "jsonwebtoken",
+        "pg-dump-restore",
+        "@aws-sdk/client-s3",
+        "@aws-sdk/lib-storage"
+      ],
       output: {
         manualChunks(id) {
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react";

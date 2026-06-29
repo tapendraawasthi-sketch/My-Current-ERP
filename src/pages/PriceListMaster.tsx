@@ -341,7 +341,7 @@ export default function PriceListMaster() {
           .filter((i) => i.itemId === selectedItemId)
           .map((i) => ({
             effectiveDate: pl.effectiveFrom,
-            priceLevel: priceLevels.find((l) => l.id === pl.priceLevelId)?.name || pl.priceLevelId,
+            priceLevel: priceLevels.find((l) => l.id === pl.priceLevelId)?.name || String(pl.priceLevelId),
             rate: i.rate || 0,
             listName: pl.name,
             changedBy: pl.updatedBy || "System",

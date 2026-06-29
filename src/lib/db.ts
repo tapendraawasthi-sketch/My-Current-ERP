@@ -185,6 +185,8 @@ export interface DBVoucher {
   rejectedBy?: string;
   rejectedAt?: string;
   rejectionReason?: string;
+  cancellationReason?: string;
+  reversalVoucherId?: string;
   createdBy?: string;
   createdByName?: string;
   updatedBy?: string;
@@ -239,6 +241,9 @@ export interface DBInvoiceLine {
   profit?: number;
   accountId?: string;
   costCenterId?: string;
+  taxableAmount?: number;
+  exemptAmount?: number;
+  hsCode?: string;
 }
 
 // ─── Invoice ──────────────────────────────────────────────────────────────────
@@ -289,7 +294,7 @@ export interface DBInvoice {
   linkedDcId?: string;
   linkedDocuments?: WorkflowDocRef[];
   workflowStatus?: WorkflowStatus;
-  cbmsStatus?: "pending" | "failed" | "success";
+  cbmsStatus?: "pending" | "failed" | "success" | "submitted" | "cancelled";
   cbmsIrn?: string;
   cbmsQrCode?: string;
   cbmsQrString?: string;
@@ -368,14 +373,23 @@ export interface DBWarehouse {
   isActive: boolean;
   isDefault?: boolean;
   notes?: string;
+  branchName?: string;
+  allowNegativeStock?: boolean;
+  parentId?: string;
+  branchId?: string;
+  branchCompanyCode?: string;
+  isMainBranch?: boolean;
+  costCenterId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
 // ─── Stock Transfer ───────────────────────────────────────────────────────────
 export interface DBStockTransferLine {
+  id?: string;
   itemId: string;
   itemName?: string;
+  itemCode?: string;
   qty: number;
   rate: number;
   amount: number;
@@ -423,14 +437,16 @@ export interface DBUnit {
 // ─── Unit Conversion ──────────────────────────────────────────────────────────
 export interface DBUnitConversion {
   id: string;
-  fromUnitId: string;
+  fromUnitId?: string;
   fromUnitName?: string;
-  toUnitId: string;
+  toUnitId?: string;
   toUnitName?: string;
   conversionFactor: number;
   itemId?: string;
   itemName?: string;
   isActive: boolean;
+  mainUnit?: string;
+  subUnit?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -629,14 +645,20 @@ export interface DBBillSundry {
   id: string;
   code?: string;
   name: string;
-  type: "addition" | "deduction";
-  calculationType: "fixed" | "percentage";
+  alias?: string;
+  type: "addition" | "deduction" | "additive";
+  nature?: string;
+  calculationType?: "fixed" | "percentage";
   rate?: number;
   accountId?: string;
+  accountHeadId?: string;
   accountName?: string;
+  defaultValue?: number;
   isActive: boolean;
   isTaxable?: boolean;
   applyOn?: string;
+  affectsCostInSale?: boolean;
+  affectsCostInPurchase?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -991,25 +1013,31 @@ export interface DBPayrollEntry {
 
 // ─── Audit Log ────────────────────────────────────────────────────────────────
 export interface DBAuditLog {
-  id?: number;
+  id?: string | number;
   timestamp: string;
   timestampNepali?: string;
-  userId: string;
-  userName: string;
+  userId?: string;
+  userName?: string;
   userRole?: string;
   action: string;
-  entityType: string;
-  entityId: string;
+  entityType?: string;
+  entityId?: string;
   entityName?: string;
   oldValue?: string;
   newValue?: string;
-  changeDescription: string;
-  severity: "INFO" | "WARNING" | "CRITICAL";
+  changeDescription?: string;
+  severity?: "INFO" | "WARNING" | "CRITICAL";
   ipAddress?: string;
   sessionId?: string;
   companyId?: string;
   fiscalYearId?: string;
   checksum?: string;
+  // Banking module fields
+  module?: string;
+  recordId?: string;
+  recordType?: string;
+  // Generic extensible fields
+  [key: string]: any;
 }
 
 // ─── Database Class ───────────────────────────────────────────────────────────
@@ -1051,6 +1079,59 @@ export class SutraERPDatabase extends Dexie {
   employees!: Table<DBEmployee>;
   payrollEntries!: Table<DBPayrollEntry>;
   auditLogs!: Table<DBAuditLog>;
+
+  // ─── Extended / Feature Tables (declared as Table<any> for flexibility) ───
+  currencies!: Table<any>;
+  recurringVouchers!: Table<any>;
+  customFieldDefs!: Table<any>;
+  billSundryMasters!: Table<any>;
+  saleTypes!: Table<any>;
+  purchaseTypes!: Table<any>;
+  taxCategories!: Table<any>;
+  discountStructures!: Table<any>;
+  itemGroups!: Table<any>;
+  holidays!: Table<any>;
+  bankStatements!: Table<any>;
+  tdsEntries!: Table<any>;
+  tdsChallans!: Table<any>;
+  stockJournals!: Table<any>;
+  productions!: Table<any>;
+  unassembles!: Table<any>;
+  materialIssued!: Table<any>;
+  materialReceived!: Table<any>;
+  stockCategories!: Table<any>;
+  voucherTypeMasters!: Table<any>;
+  scenarios!: Table<any>;
+  costCategories!: Table<any>;
+  costCentreClasses!: Table<any>;
+  reorderLevels!: Table<any>;
+  priceLevels!: Table<any>;
+  hsCodes!: Table<any>;
+  batches!: Table<any>;
+  vatClassifications!: Table<any>;
+  tdsNatureOfPayment!: Table<any>;
+  employeeGroups!: Table<any>;
+  payHeads!: Table<any>;
+  salaryDetails!: Table<any>;
+  payrollUnits!: Table<any>;
+  attendanceTypes!: Table<any>;
+  ledgerExtensions!: Table<any>;
+  chequeBooks!: Table<any>;
+  cheques!: Table<any>;
+  depositSlips!: Table<any>;
+  pdCheques!: Table<any>;
+  ePaymentBatches!: Table<any>;
+  paymentAdvices!: Table<any>;
+  branches!: Table<any>;
+  exchangeRates!: Table<any>;
+  followUpNotes!: Table<any>;
+  jobWorkOrders!: Table<any>;
+  reportSchedules!: Table<any>;
+  priceFloorPolicies!: Table<any>;
+  chequeBounceLogs!: Table<any>;
+  cbmsQueue!: Table<any>;
+  voucherAuditLogs!: Table<any>;
+  salespersons!: Table<any>;
 
   constructor() {
     super("SutraERPDatabase");
@@ -1143,3 +1224,26 @@ export function getDB(): SutraERPDatabase {
 export const db = getDB();
 
 export default getDB;
+
+// ─── Seed Helpers ─────────────────────────────────────────────────────────────
+
+export async function seedPredefinedVoucherTypes(): Promise<void> {
+  const database = getDB();
+  const existing = await database.voucherTypeMasters.count();
+  if (existing > 0) return; // already seeded
+
+  const predefined = [
+    { id: "vt-sales-invoice",    name: "Sales Invoice",    type: "sales-invoice",    isPredefined: true, isActive: true, prefix: "SI", numbering: "auto" },
+    { id: "vt-purchase-invoice", name: "Purchase Invoice", type: "purchase-invoice", isPredefined: true, isActive: true, prefix: "PI", numbering: "auto" },
+    { id: "vt-sales-return",     name: "Sales Return",     type: "sales-return",     isPredefined: true, isActive: true, prefix: "SR", numbering: "auto" },
+    { id: "vt-purchase-return",  name: "Purchase Return",  type: "purchase-return",  isPredefined: true, isActive: true, prefix: "PR", numbering: "auto" },
+    { id: "vt-receipt",          name: "Receipt",          type: "receipt",          isPredefined: true, isActive: true, prefix: "RC", numbering: "auto" },
+    { id: "vt-payment",          name: "Payment",          type: "payment",          isPredefined: true, isActive: true, prefix: "PV", numbering: "auto" },
+    { id: "vt-journal",          name: "Journal",          type: "journal",          isPredefined: true, isActive: true, prefix: "JV", numbering: "auto" },
+    { id: "vt-contra",           name: "Contra",           type: "contra",           isPredefined: true, isActive: true, prefix: "CV", numbering: "auto" },
+    { id: "vt-debit-note",       name: "Debit Note",       type: "debit-note",       isPredefined: true, isActive: true, prefix: "DN", numbering: "auto" },
+    { id: "vt-credit-note",      name: "Credit Note",      type: "credit-note",      isPredefined: true, isActive: true, prefix: "CN", numbering: "auto" },
+  ];
+
+  await database.voucherTypeMasters.bulkPut(predefined as any[]);
+}
