@@ -186,6 +186,14 @@ export const useStore = create<AppState>()((...a) => {
         passwordHash: hash,
         isActive: true,
       } as any);
+    } else if (crypto?.subtle) {
+      // Repair fallback_ hash stored when crypto.subtle was unavailable (HTTP env)
+      try {
+        const adminUser = await db.users.where("username").equals("admin").first() as any;
+        if (adminUser?.passwordHash?.startsWith("fallback_")) {
+          await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
+        }
+      } catch { /* non-critical */ }
     }
 
     const shortcutCount = await db.shortcuts.count();
@@ -453,13 +461,18 @@ export const useStore = create<AppState>()((...a) => {
 
   login: async (username: string, password: string): Promise<boolean> => {
     const db = getDB();
-    const user = await db.users.where("username").equals(username.trim()).first();
+    const user = await db.users.where("username").equals(username.trim()).first() as any;
     if (!user) return false;
     if (!user.isActive) return false;
-    const valid = await verifyPassword(password, user.passwordHash || "");
-    if (!valid) {
-      // Also allow plain text for initial admin (backward compat)
-      if (password !== "admin123") return false;
+    const storedHash: string = user.passwordHash || "";
+    // Check all hash variants: PBKDF2, fallback_ (HTTP env), and plain-text compat
+    let valid = await verifyPassword(password, storedHash);
+    if (!valid && storedHash.startsWith("fallback_")) valid = storedHash === `fallback_${password}`;
+    if (!valid) valid = (password === "admin123");
+    if (!valid) return false;
+    // Upgrade fallback_ hash to real PBKDF2 now that crypto.subtle is available
+    if (storedHash.startsWith("fallback_") && crypto?.subtle) {
+      try { await db.users.update(user.id, { passwordHash: await hashPassword(password) }); } catch { /* ok */ }
     }
     sessionStorage.setItem("sutra_user_id", user.id);
     set({ isAuthenticated: true, currentUser: user as StoreUser, currentPage: "dashboard" });
