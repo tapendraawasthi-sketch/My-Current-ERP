@@ -2,7 +2,6 @@
 import React, { useRef, useEffect } from "react";
 import { Building2, ChevronRight } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import AuthBrandingPanel from "./AuthBrandingPanel";
 
 function formatLoginDate(isoString: string): string {
   const d = new Date(isoString);
@@ -27,132 +26,80 @@ export default function GatewayScreen() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#E4F1D9" }}>
-      {/* Left: Branding Panel */}
-      <AuthBrandingPanel />
-
-      {/* Right: Company Selection */}
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>
       <div
-        className="flex-1 flex items-center justify-center p-8"
-        style={{ background: "#E4F1D9" }}
+        className="w-full max-w-md rounded-xl shadow-lg p-8"
+        style={{ background: "#ffffff", border: "1px solid #e5e7eb" }}
       >
-        <div className="w-full max-w-md">
-          {/* Heading */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#1f2937" }}>
-              Select a Company
-            </h2>
-            <p className="text-sm mt-1" style={{ color: "#1f2937" }}>
-              Select a company to open or create a new one.
-            </p>
-          </div>
-
-          {/* Company Card */}
-          {companySettings ? (
-            <div
-              style={{
-                background: "#EBF5E2",
-                border: "1px solid #000000",
-                borderRadius: "4px",
-                padding: "16px",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-              }}
-            >
-              {/* Company Icon */}
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  background: "#D4EABD",
-                  border: "1px solid #000000",
-                  borderRadius: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Building2 style={{ width: 20, height: 20 }} />
-              </div>
-
-              {/* Company Info */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: "15px",
-                    color: "#1f2937",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {companySettings.companyNameEn || companySettings.name || "My Company"}
-                </div>
-                <div style={{ fontSize: "11px", color: "#1f2937", marginTop: "2px" }}>
-                  PAN: {companySettings.panNumber || "—"}
-                </div>
-                <div style={{ fontSize: "11px", color: "#666", marginTop: "4px" }}>
-                  {lastLoginInfo
-                    ? `Last opened: ${formatLoginDate(lastLoginInfo.loginAt)} by ${lastLoginInfo.username}`
-                    : "Not yet opened"}
-                </div>
-              </div>
-
-              {/* Open Button */}
-              <button
-                ref={openBtnRef}
-                onClick={handleOpen}
-                className="btn-primary"
-                style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: "4px" }}
-              >
-                Open
-                <ChevronRight style={{ width: 14, height: 14 }} />
-              </button>
-            </div>
-          ) : (
-            <div
-              style={{
-                padding: "24px",
-                textAlign: "center",
-                border: "1px solid #000000",
-                borderRadius: "4px",
-                background: "#EBF5E2",
-                fontSize: "13px",
-                color: "#1f2937",
-              }}
-            >
-              Loading company data…
-            </div>
-          )}
-
-          {/* Divider */}
+        {/* Logo + Title */}
+        <div className="text-center mb-8">
           <div
-            style={{
-              borderBottom: "1px solid #000000",
-              margin: "24px 0",
-            }}
-          />
+            className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-[22px] mx-auto mb-4"
+            style={{ background: "#1557b0", color: "#ffffff" }}
+          >
+            S
+          </div>
+          <h1 className="text-[22px] font-bold text-gray-800">Sutra ERP</h1>
+          <p className="text-[12px] text-gray-500 mt-1">Select a company to open</p>
+        </div>
 
-          {/* Create New Company */}
-          <div style={{ textAlign: "center" }}>
-            <button
-              onClick={() => setAuthStage("no-company")}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "12px",
-                color: "#1f2937",
-                textDecoration: "underline",
-                padding: "4px 8px",
-              }}
+        {/* Company Card */}
+        {companySettings ? (
+          <div
+            className="rounded-lg p-4 flex items-center gap-3 mb-6"
+            style={{ background: "#f9fafb", border: "1px solid #e5e7eb" }}
+          >
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+              style={{ background: "#e0e7ff" }}
             >
-              + Create New Company
+              <Building2 className="w-5 h-5" style={{ color: "#3730a3" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-[13px] text-gray-800 truncate">
+                {companySettings.companyNameEn || companySettings.name || "My Company"}
+              </div>
+              <div className="text-[11px] text-gray-500 mt-0.5">
+                PAN: {companySettings.panNumber || "—"}
+              </div>
+              {lastLoginInfo && (
+                <div className="text-[10px] text-gray-400 mt-0.5">
+                  Last: {formatLoginDate(lastLoginInfo.loginAt)} by {lastLoginInfo.username}
+                </div>
+              )}
+            </div>
+            <button
+              ref={openBtnRef}
+              onClick={handleOpen}
+              className="flex items-center gap-1 px-3 h-8 rounded-md text-[12px] font-medium shrink-0 transition-colors"
+              style={{ background: "#1557b0", color: "#ffffff", border: "none" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#1557b0"; }}
+            >
+              Open
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
+        ) : (
+          <div
+            className="rounded-lg p-6 text-center mb-6"
+            style={{ background: "#f9fafb", border: "1px solid #e5e7eb" }}
+          >
+            <p className="text-[12px] text-gray-500">Loading company data…</p>
+          </div>
+        )}
+
+        {/* Divider */}
+        <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "16px", textAlign: "center" }}>
+          <button
+            onClick={() => setAuthStage("no-company")}
+            className="text-[12px] font-medium transition-colors"
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#1557b0" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#0f4a96"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#1557b0"; }}
+          >
+            + Create New Company
+          </button>
         </div>
       </div>
     </div>
