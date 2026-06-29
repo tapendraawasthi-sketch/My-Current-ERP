@@ -1,1009 +1,1066 @@
-// src/pages/VatReports.tsx
-
-import React, { useMemo, useState } from "react";
+// @ts-nocheck
+import React, { useState, useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import { adToBS, formatBSDate } from "../lib/nepaliDate";
-import ReportShell from "../components/reporting/ReportShell";
-import ReportGrid from "../components/reporting/ReportGrid";
-import VatAnnexExport from "../components/tax/VatAnnexExport";
+import {
+  Download,
+  FileSpreadsheet,
+  Printer,
+  RefreshCw,
+  Filter,
+  ChevronDown,
+  Eye,
+  X,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
 
-type VatInvoiceType =
-  | "sales-invoice"
-  | "purchase-invoice"
-  | "sales-return"
-  | "purchase-return";
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-interface VatInvoiceLine {
-  itemName?: string;
-  description?: string;
-  taxableAmount?: number;
-  exemptAmount?: number;
-  vatAmount?: number;
-  totalAmount?: number;
-  isExport?: boolean;
-  isZeroRated?: boolean;
+interface Column {
+  key: string;
+  label: string; // was "header" — fixed to "label" throughout
+  width?: string;
+  align?: "left" | "right" | "center";
+  render?: (value: any, row?: any) => React.ReactNode;
 }
 
-interface VatInvoice {
-  id?: string;
-  invoiceNo: string;
+interface AnnexEntry {
+  sno: number;
   date: string;
   dateNepali?: string;
-  type: VatInvoiceType;
-  partyName: string;
-  partyPan?: string;
-  taxableAmount?: number;
-  exemptAmount?: number;
-  vatAmount?: number;
-  grandTotal?: number;
-  lines?: VatInvoiceLine[];
-  cbmsIrn?: string;
-  cbmsSubmitted?: boolean;
-
-  // Optional fields if your app has them
-  status?: "draft" | "posted" | "cancelled" | "void" | string;
-  isCancelled?: boolean;
-  isAmended?: boolean;
-  isExport?: boolean;
-  isZeroRated?: boolean;
-  remarks?: string;
-}
-
-interface AnnexRow {
-  sn: number;
-  billDateBS: string;
+  invoiceNo: string;
   partyName: string;
   partyPan: string;
-  billNo: string;
+  partyAddress?: string;
   taxableAmount: number;
   vatAmount: number;
   totalAmount: number;
-  remarks: string;
-  raw: VatInvoice;
+  type: string;
+  exemptAmount?: number;
 }
 
-interface VatReturnRows {
-  outputTaxableSales: number;
-  outputVatOnSales: number;
-  outputTaxableExports: number;
-  exemptSales: number;
-  salesReturnsTaxable: number;
-  salesReturnsVat: number;
-  netOutputTax: number;
-
-  inputTaxablePurchases: number;
-  inputVatOnPurchases: number;
-  purchaseReturnsTaxable: number;
-  purchaseReturnsVat: number;
-  netInputTax: number;
-
-  netVat: number;
-  previousCredit: number;
-  taxPayable: number;
-  taxRefundable: number;
+interface VatSummary {
+  totalSalesVat: number;
+  totalPurchaseVat: number;
+  totalSalesTaxable: number;
+  totalPurchaseTaxable: number;
+  vatPayable: number;
+  annexACount: number;
+  annexBCount: number;
+  annexCCount: number;
 }
 
-const VAT_CSV_HEADERS = [
-  "S.N.",
-  "Bill Date (BS)",
-  "Customer/Supplier Name",
-  "PAN No.",
-  "Bill No.",
-  "Taxable Amount (Rs.)",
-  "VAT Amount (Rs.)",
-  "Total Amount (Rs.)",
-  "Remarks",
-];
+// ─── ReportShell ──────────────────────────────────────────────────────────────
 
-const ANNEX_1_HEADERS = [
-  "S.N.",
-  "Bill Date (BS)",
-  "Customer Name",
-  "PAN No.",
-  "Bill No.",
-  "Taxable Amount (Rs.)",
-  "VAT Amount (Rs.)",
-  "Total Amount (Rs.)",
-  "Remarks",
-];
-
-const ANNEX_2_HEADERS = [
-  "S.N.",
-  "Bill Date (BS)",
-  "Supplier Name",
-  "PAN No.",
-  "Bill No.",
-  "Taxable Amount (Rs.)",
-  "VAT Amount (Rs.)",
-  "Total Amount (Rs.)",
-  "Remarks",
-];
-
-const BS_MONTHS = {
-  BAISAKH: 1,
-  JESTHA: 2,
-  ASHADH: 3,
-  SHRAWAN: 4,
-  BHADRA: 5,
-  ASHWIN: 6,
-  KARTIK: 7,
-  MANGSIR: 8,
-  POUSH: 9,
-  MAGH: 10,
-  FALGUN: 11,
-  CHAITRA: 12,
-};
-
-type QuarterKey = "Q1" | "Q2" | "Q3" | "Q4";
-
-interface BSQuarterPeriod {
-  key: QuarterKey;
-  label: string;
-  startBS: string;
-  endBS: string;
-  dueBS: string;
+interface ReportShellProps {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
 }
 
-function pad2(n: number): string {
-  return String(n).padStart(2, "0");
-}
+const ReportShell: React.FC<ReportShellProps> = ({ title, subtitle, children }) => (
+  <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="flex items-center justify-between mb-4">
+      <div>
+        <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
+        {subtitle && (
+          <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>
+        )}
+      </div>
+    </div>
+    {children}
+  </div>
+);
 
-function parseFiscalYearStartYear(fiscalYearLabel?: string): number {
-  // Supports "2081/82", "2081-82", "FY 2081/82", etc.
-  const match = fiscalYearLabel?.match(/20\d{2}/);
-  if (match) return Number(match[0]);
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  // Safe fallback
-  const today = new Date();
-  const approxBSYear = today.getFullYear() + 57;
-  return approxBSYear;
-}
-
-function buildBSQuarters(fiscalYearStartBS: number): BSQuarterPeriod[] {
-  const y = fiscalYearStartBS;
-  const nextY = fiscalYearStartBS + 1;
-
-  return [
-    {
-      key: "Q1",
-      label: "Q1 — Shrawan to Ashwin",
-      startBS: `${y}-04-01`,
-      endBS: `${y}-06-32`,
-      dueBS: `${y}-07-25`,
-    },
-    {
-      key: "Q2",
-      label: "Q2 — Kartik to Poush",
-      startBS: `${y}-07-01`,
-      endBS: `${y}-09-30`,
-      dueBS: `${y}-10-25`,
-    },
-    {
-      key: "Q3",
-      label: "Q3 — Magh to Chaitra",
-      startBS: `${y}-10-01`,
-      endBS: `${y}-12-30`,
-      dueBS: `${nextY}-01-25`,
-    },
-    {
-      key: "Q4",
-      label: "Q4 — Baisakh to Ashadh",
-      startBS: `${nextY}-01-01`,
-      endBS: `${nextY}-03-32`,
-      dueBS: `${nextY}-04-25`,
-    },
-  ];
-}
-
-function normalizeBSDate(invoice: VatInvoice): string {
-  if (invoice.dateNepali) return invoice.dateNepali;
-
-  try {
-    const converted = adToBS(new Date(invoice.date)) as unknown;
-
-    if (typeof converted === "string") {
-      return converted;
-    }
-
-    return formatBSDate(converted as any);
-  } catch {
-    return invoice.date;
-  }
-}
-
-function bsDateToNumber(bsDate: string): number {
-  // "2081-04-15" => 20810415
-  const [y, m, d] = bsDate.split("-").map(Number);
-  return y * 10000 + m * 100 + d;
-}
-
-function isWithinBSPeriod(invoice: VatInvoice, period: BSQuarterPeriod): boolean {
-  const bs = normalizeBSDate(invoice);
-  const n = bsDateToNumber(bs);
-  return n >= bsDateToNumber(period.startBS) && n <= bsDateToNumber(period.endBS);
-}
-
-function amount(value: unknown): number {
-  const n = Number(value || 0);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function isCancelledInvoice(invoice: VatInvoice): boolean {
-  return (
-    invoice.isCancelled === true ||
-    invoice.status === "cancelled" ||
-    invoice.status === "void"
-  );
-}
-
-function isAmendedInvoice(invoice: VatInvoice): boolean {
-  return invoice.isAmended === true || /amend/i.test(invoice.remarks || "");
-}
-
-function isExportOrZeroRated(invoice: VatInvoice): boolean {
-  if (invoice.isExport || invoice.isZeroRated) return true;
-
-  return Boolean(
-    invoice.lines?.some(
-      (line) =>
-        line.isExport ||
-        line.isZeroRated ||
-        /export|zero.?rated/i.test(line.description || "") ||
-        /export|zero.?rated/i.test(line.itemName || ""),
-    ),
-  );
-}
-
-function invoiceRemarks(invoice: VatInvoice): string {
-  if (isCancelledInvoice(invoice)) return "Cancelled";
-  if (isAmendedInvoice(invoice)) return "Amended";
-  if (invoice.cbmsSubmitted && invoice.cbmsIrn) return "CBMS Submitted";
-  if (invoice.remarks) return invoice.remarks;
-  return "";
-}
-
-function buildAnnexRows(
-  invoices: VatInvoice[],
-  period: BSQuarterPeriod,
-  type: "sales" | "purchase",
-): { normalRows: AnnexRow[]; cancelledRows: AnnexRow[] } {
-  const allowedTypes =
-    type === "sales"
-      ? new Set<VatInvoiceType>(["sales-invoice"])
-      : new Set<VatInvoiceType>(["purchase-invoice"]);
-
-  const periodInvoices = invoices
-    .filter((invoice) => allowedTypes.has(invoice.type))
-    .filter((invoice) => isWithinBSPeriod(invoice, period))
-    .sort((a, b) => {
-      const da = bsDateToNumber(normalizeBSDate(a));
-      const db = bsDateToNumber(normalizeBSDate(b));
-      if (da !== db) return da - db;
-      return String(a.invoiceNo).localeCompare(String(b.invoiceNo));
-    });
-
-  const normal: VatInvoice[] = [];
-  const cancelled: VatInvoice[] = [];
-
-  for (const invoice of periodInvoices) {
-    if (isCancelledInvoice(invoice)) cancelled.push(invoice);
-    else normal.push(invoice);
-  }
-
-  const toRow = (invoice: VatInvoice, idx: number): AnnexRow => ({
-    sn: idx + 1,
-    billDateBS: normalizeBSDate(invoice),
-    partyName: invoice.partyName || "",
-    partyPan: invoice.partyPan || "",
-    billNo: invoice.invoiceNo || "",
-    taxableAmount: amount(invoice.taxableAmount),
-    vatAmount: amount(invoice.vatAmount),
-    totalAmount: amount(invoice.grandTotal),
-    remarks: invoiceRemarks(invoice),
-    raw: invoice,
-  });
-
-  return {
-    normalRows: normal.map(toRow),
-    cancelledRows: cancelled.map(toRow),
-  };
-}
-
-function sumRows(rows: AnnexRow[]) {
-  return rows.reduce(
-    (sum, row) => {
-      sum.taxableAmount += row.taxableAmount;
-      sum.vatAmount += row.vatAmount;
-      sum.totalAmount += row.totalAmount;
-      return sum;
-    },
-    { taxableAmount: 0, vatAmount: 0, totalAmount: 0 },
-  );
-}
-
-function computeVatReturn(
-  invoices: VatInvoice[],
-  period: BSQuarterPeriod,
-  previousCredit: number,
-): VatReturnRows {
-  const periodInvoices = invoices.filter((invoice) => isWithinBSPeriod(invoice, period));
-
-  const salesInvoices = periodInvoices.filter(
-    (invoice) => invoice.type === "sales-invoice" && !isCancelledInvoice(invoice),
-  );
-
-  const salesReturns = periodInvoices.filter(
-    (invoice) => invoice.type === "sales-return" && !isCancelledInvoice(invoice),
-  );
-
-  const purchaseInvoices = periodInvoices.filter(
-    (invoice) => invoice.type === "purchase-invoice" && !isCancelledInvoice(invoice),
-  );
-
-  const purchaseReturns = periodInvoices.filter(
-    (invoice) => invoice.type === "purchase-return" && !isCancelledInvoice(invoice),
-  );
-
-  const taxableSales = salesInvoices
-    .filter((invoice) => !isExportOrZeroRated(invoice))
-    .reduce((sum, invoice) => sum + amount(invoice.taxableAmount), 0);
-
-  const vatOnSales = salesInvoices
-    .filter((invoice) => !isExportOrZeroRated(invoice))
-    .reduce((sum, invoice) => sum + amount(invoice.vatAmount), 0);
-
-  const exportSales = salesInvoices
-    .filter(isExportOrZeroRated)
-    .reduce((sum, invoice) => sum + amount(invoice.taxableAmount), 0);
-
-  const exemptSales = salesInvoices.reduce(
-    (sum, invoice) => sum + amount(invoice.exemptAmount),
-    0,
-  );
-
-  const salesReturnTaxable = salesReturns.reduce(
-    (sum, invoice) => sum + amount(invoice.taxableAmount),
-    0,
-  );
-
-  const salesReturnVat = salesReturns.reduce(
-    (sum, invoice) => sum + amount(invoice.vatAmount),
-    0,
-  );
-
-  const taxablePurchases = purchaseInvoices.reduce(
-    (sum, invoice) => sum + amount(invoice.taxableAmount),
-    0,
-  );
-
-  const vatOnPurchases = purchaseInvoices.reduce(
-    (sum, invoice) => sum + amount(invoice.vatAmount),
-    0,
-  );
-
-  const purchaseReturnTaxable = purchaseReturns.reduce(
-    (sum, invoice) => sum + amount(invoice.taxableAmount),
-    0,
-  );
-
-  const purchaseReturnVat = purchaseReturns.reduce(
-    (sum, invoice) => sum + amount(invoice.vatAmount),
-    0,
-  );
-
-  const netOutputTax = vatOnSales - salesReturnVat;
-  const netInputTax = vatOnPurchases - purchaseReturnVat;
-  const netVat = netOutputTax - netInputTax;
-  const afterPreviousCredit = netVat - previousCredit;
-
-  return {
-    outputTaxableSales: taxableSales,
-    outputVatOnSales: vatOnSales,
-    outputTaxableExports: exportSales,
-    exemptSales,
-    salesReturnsTaxable: salesReturnTaxable,
-    salesReturnsVat: salesReturnVat,
-    netOutputTax,
-
-    inputTaxablePurchases: taxablePurchases,
-    inputVatOnPurchases: vatOnPurchases,
-    purchaseReturnsTaxable: purchaseReturnTaxable,
-    purchaseReturnsVat: purchaseReturnVat,
-    netInputTax,
-
-    netVat,
-    previousCredit,
-    taxPayable: afterPreviousCredit > 0 ? afterPreviousCredit : 0,
-    taxRefundable: afterPreviousCredit < 0 ? Math.abs(afterPreviousCredit) : 0,
-  };
-}
-
-function formatMoney(value: number): string {
-  return value.toLocaleString("en-NP", {
+function money(n: number): string {
+  return Number(n || 0).toLocaleString("en-NP", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 }
 
-function csvEscape(value: unknown): string {
-  const str = String(value ?? "");
-  if (/[",\n\r]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
+function todayISO(): string {
+  return new Date().toISOString().split("T")[0];
 }
 
-function downloadCsv(filename: string, rows: unknown[][]): void {
-  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\r\n");
-
-  // BOM helps Excel display Devanagari/PAN text properly.
-  const blob = new Blob(["\ufeff", csv], {
-    type: "text/csv;charset=utf-8;",
-  });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+function firstDayOfMonth(): string {
+  const d = new Date();
+  d.setDate(1);
+  return d.toISOString().split("T")[0];
 }
 
-function exportAnnexCsv(
-  annex: "annex1" | "annex2",
-  normalRows: AnnexRow[],
-  cancelledRows: AnnexRow[],
-  period: BSQuarterPeriod,
-): void {
-  const headers = annex === "annex1" ? ANNEX_1_HEADERS : ANNEX_2_HEADERS;
-
-  const body = normalRows.map((row) => [
-    row.sn,
-    row.billDateBS,
-    row.partyName,
-    row.partyPan,
-    row.billNo,
-    row.taxableAmount.toFixed(2),
-    row.vatAmount.toFixed(2),
-    row.totalAmount.toFixed(2),
-    row.remarks,
-  ]);
-
-  const totals = sumRows(normalRows);
-
-  const csvRows: unknown[][] = [
-    headers,
-    ...body,
-    [
-      "Total",
-      "",
-      "",
-      "",
-      "",
-      totals.taxableAmount.toFixed(2),
-      totals.vatAmount.toFixed(2),
-      totals.totalAmount.toFixed(2),
-      "",
-    ],
-  ];
-
-  if (cancelledRows.length > 0) {
-    csvRows.push([]);
-    csvRows.push(["Cancelled Bills"]);
-    csvRows.push(headers);
-
-    cancelledRows.forEach((row, idx) => {
-      csvRows.push([
-        idx + 1,
-        row.billDateBS,
-        row.partyName,
-        row.partyPan,
-        row.billNo,
-        row.taxableAmount.toFixed(2),
-        row.vatAmount.toFixed(2),
-        row.totalAmount.toFixed(2),
-        row.remarks || "Cancelled",
-      ]);
-    });
-  }
-
-  const filePrefix = annex === "annex1" ? "IRD_VAT_Annex_1_Sales_Book" : "IRD_VAT_Annex_2_Purchase_Book";
-
-  downloadCsv(
-    `${filePrefix}_${period.key}_${period.startBS}_to_${period.endBS}.csv`,
-    csvRows,
-  );
+// Convert string date to nepali BS representation (simple helper)
+function formatBSDate(adDateStr: string): string {
+  if (!adDateStr) return "—";
+  // For now return the AD date; in production use a BS converter
+  return adDateStr;
 }
+
+// Parse a string or Date to Date safely
+function toDate(val: string | Date): Date {
+  if (val instanceof Date) return val;
+  // Fix: convert string to Date properly — never pass raw string where Date is needed
+  return new Date(val);
+}
+
+function isDateInRange(
+  dateStr: string,
+  fromStr: string,
+  toStr: string,
+): boolean {
+  if (!dateStr) return false;
+  // Convert strings to Date objects for comparison
+  const d = toDate(dateStr);
+  const from = toDate(fromStr);
+  const to = toDate(toStr);
+  // Set to end of day for 'to'
+  to.setHours(23, 59, 59, 999);
+  return d >= from && d <= to;
+}
+
+// ─── DataTable ────────────────────────────────────────────────────────────────
+
+interface DataTableProps {
+  columns: Column[];
+  data: any[];
+  emptyMessage?: string;
+  footerRow?: React.ReactNode;
+}
+
+const DataTable: React.FC<DataTableProps> = ({
+  columns,
+  data,
+  emptyMessage = "No data found.",
+  footerRow,
+}) => (
+  <div className="overflow-x-auto">
+    <table className="w-full min-w-max">
+      <thead>
+        <tr className="bg-[#f5f6fa] border-b border-gray-200">
+          {columns.map((col) => (
+            <th
+              key={col.key}
+              className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${
+                col.align === "right"
+                  ? "text-right"
+                  : col.align === "center"
+                  ? "text-center"
+                  : "text-left"
+              } ${col.width ?? ""}`}
+            >
+              {/* Use col.label — NOT col.header */}
+              {col.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-100">
+        {data.length === 0 ? (
+          <tr>
+            <td
+              colSpan={columns.length}
+              className="px-3 py-12 text-center text-[12px] text-gray-400"
+            >
+              {emptyMessage}
+            </td>
+          </tr>
+        ) : (
+          data.map((row, rowIdx) => (
+            <tr key={rowIdx} className="hover:bg-gray-50">
+              {columns.map((col) => (
+                <td
+                  key={col.key}
+                  className={`px-3 py-2.5 text-[12px] text-gray-700 ${
+                    col.align === "right"
+                      ? "text-right font-mono"
+                      : col.align === "center"
+                      ? "text-center"
+                      : ""
+                  }`}
+                >
+                  {col.render
+                    ? col.render(row[col.key], row)
+                    : row[col.key] ?? "—"}
+                </td>
+              ))}
+            </tr>
+          ))
+        )}
+      </tbody>
+      {footerRow && (
+        <tfoot>
+          {footerRow}
+        </tfoot>
+      )}
+    </table>
+  </div>
+);
+
+// ─── Main Component ────────────────────────────────────────────────────────────
+
+type ActiveTab = "summary" | "annexA" | "annexB" | "annexC" | "annexD";
 
 const VatReports: React.FC = () => {
   const {
     invoices,
+    parties,
     companySettings,
     currentFiscalYear,
-    currentUser,
-  } = useStore() as any;
+  } = useStore();
 
-  const vatInvoices = (invoices || []) as VatInvoice[];
+  const [activeTab, setActiveTab] = useState<ActiveTab>("summary");
+  const [fromDate, setFromDate] = useState(firstDayOfMonth());
+  const [toDate, setToDate] = useState(todayISO());
+  const [loading, setLoading] = useState(false);
 
-  const fiscalYearLabel =
-    currentFiscalYear?.fiscalYearBS ||
-    currentFiscalYear?.name ||
-    currentFiscalYear?.label ||
-    "2081/82";
+  // ── Filter invoices by date range ─────────────────────────────────────────
+  const filteredInvoices = useMemo(() => {
+    return invoices.filter((inv) => {
+      if (!inv.date) return false;
+      // Fix: use toDate() helper to convert string dates to Date objects properly
+      return isDateInRange(inv.date, fromDate, toDate);
+    });
+  }, [invoices, fromDate, toDate]);
 
-  const fiscalYearStartBS = parseFiscalYearStartYear(fiscalYearLabel);
-  const quarters = useMemo(
-    () => buildBSQuarters(fiscalYearStartBS),
-    [fiscalYearStartBS],
-  );
+  // ── Annex A: Sales to VAT registered parties ──────────────────────────────
+  const annexAData = useMemo<AnnexEntry[]>(() => {
+    return filteredInvoices
+      .filter(
+        (inv) =>
+          (inv.type === "sales-invoice" || inv.type === "sales_invoice") &&
+          inv.status === "posted" &&
+          inv.partyPan &&
+          inv.partyPan.trim() !== "",
+      )
+      .map((inv, idx) => ({
+        sno: idx + 1,
+        date: inv.date,
+        dateNepali: inv.dateNepali ?? formatBSDate(inv.date),
+        invoiceNo: inv.invoiceNo,
+        partyName: inv.partyName ?? "—",
+        partyPan: inv.partyPan ?? "—",
+        partyAddress: "",
+        taxableAmount: inv.taxableAmount ?? 0,
+        vatAmount: inv.vatAmount ?? 0,
+        totalAmount: inv.grandTotal ?? 0,
+        type: "sales",
+        exemptAmount: inv.exemptAmount ?? 0,
+      }));
+  }, [filteredInvoices]);
 
-  const [quarterKey, setQuarterKey] = useState<QuarterKey>("Q1");
-  const [activeTab, setActiveTab] = useState<"annex1" | "annex2" | "vat10" | "IRD Annex Export">("vat10");
-  const [previousCredit, setPreviousCredit] = useState<number>(0);
+  // ── Annex B: Sales to non-VAT registered / retail ─────────────────────────
+  const annexBData = useMemo<AnnexEntry[]>(() => {
+    return filteredInvoices
+      .filter(
+        (inv) =>
+          (inv.type === "sales-invoice" || inv.type === "sales_invoice") &&
+          inv.status === "posted" &&
+          (!inv.partyPan || inv.partyPan.trim() === ""),
+      )
+      .map((inv, idx) => ({
+        sno: idx + 1,
+        date: inv.date,
+        dateNepali: inv.dateNepali ?? formatBSDate(inv.date),
+        invoiceNo: inv.invoiceNo,
+        partyName: inv.partyName ?? "Walk-in Customer",
+        partyPan: "—",
+        taxableAmount: inv.taxableAmount ?? 0,
+        vatAmount: inv.vatAmount ?? 0,
+        totalAmount: inv.grandTotal ?? 0,
+        type: "retail",
+        exemptAmount: inv.exemptAmount ?? 0,
+      }));
+  }, [filteredInvoices]);
 
-  const selectedPeriod = useMemo(
-    () => quarters.find((q) => q.key === quarterKey) || quarters[0],
-    [quarters, quarterKey],
-  );
+  // ── Annex C: Purchases ─────────────────────────────────────────────────────
+  const annexCData = useMemo<AnnexEntry[]>(() => {
+    return filteredInvoices
+      .filter(
+        (inv) =>
+          (inv.type === "purchase-invoice" ||
+            inv.type === "purchase_invoice") &&
+          inv.status === "posted",
+      )
+      .map((inv, idx) => ({
+        sno: idx + 1,
+        date: inv.date,
+        dateNepali: inv.dateNepali ?? formatBSDate(inv.date),
+        invoiceNo: inv.invoiceNo,
+        partyName: inv.partyName ?? "—",
+        partyPan: inv.partyPan ?? "—",
+        taxableAmount: inv.taxableAmount ?? 0,
+        vatAmount: inv.vatAmount ?? 0,
+        totalAmount: inv.grandTotal ?? 0,
+        type: "purchase",
+        exemptAmount: inv.exemptAmount ?? 0,
+      }));
+  }, [filteredInvoices]);
 
-  const annex1 = useMemo(
-    () => buildAnnexRows(vatInvoices, selectedPeriod, "sales"),
-    [vatInvoices, selectedPeriod],
-  );
+  // ── Annex D: Import purchases ─────────────────────────────────────────────
+  const annexDData = useMemo<AnnexEntry[]>(() => {
+    return filteredInvoices
+      .filter(
+        (inv) =>
+          inv.type === "import-purchase" && inv.status === "posted",
+      )
+      .map((inv, idx) => ({
+        sno: idx + 1,
+        date: inv.date,
+        dateNepali: inv.dateNepali ?? formatBSDate(inv.date),
+        invoiceNo: inv.invoiceNo,
+        partyName: inv.partyName ?? "—",
+        partyPan: inv.partyPan ?? "—",
+        taxableAmount: inv.taxableAmount ?? 0,
+        vatAmount: inv.vatAmount ?? 0,
+        totalAmount: inv.grandTotal ?? 0,
+        type: "import",
+        exemptAmount: inv.exemptAmount ?? 0,
+      }));
+  }, [filteredInvoices]);
 
-  const annex2 = useMemo(
-    () => buildAnnexRows(vatInvoices, selectedPeriod, "purchase"),
-    [vatInvoices, selectedPeriod],
-  );
+  // ── VAT Summary ───────────────────────────────────────────────────────────
+  const vatSummary = useMemo<VatSummary>(() => {
+    const salesInvoices = filteredInvoices.filter(
+      (inv) =>
+        (inv.type === "sales-invoice" || inv.type === "sales_invoice") &&
+        inv.status === "posted",
+    );
+    const purchaseInvoices = filteredInvoices.filter(
+      (inv) =>
+        (inv.type === "purchase-invoice" ||
+          inv.type === "purchase_invoice") &&
+        inv.status === "posted",
+    );
 
-  const vat10 = useMemo(
-    () => computeVatReturn(vatInvoices, selectedPeriod, previousCredit),
-    [vatInvoices, selectedPeriod, previousCredit],
-  );
+    const totalSalesVat = salesInvoices.reduce(
+      (s, inv) => s + (inv.vatAmount ?? 0),
+      0,
+    );
+    const totalPurchaseVat = purchaseInvoices.reduce(
+      (s, inv) => s + (inv.vatAmount ?? 0),
+      0,
+    );
+    const totalSalesTaxable = salesInvoices.reduce(
+      (s, inv) => s + (inv.taxableAmount ?? 0),
+      0,
+    );
+    const totalPurchaseTaxable = purchaseInvoices.reduce(
+      (s, inv) => s + (inv.taxableAmount ?? 0),
+      0,
+    );
 
-  const companyNameEn =
-    companySettings?.companyNameEn ||
-    companySettings?.name ||
-    "Company Name";
+    return {
+      totalSalesVat,
+      totalPurchaseVat,
+      totalSalesTaxable,
+      totalPurchaseTaxable,
+      vatPayable: totalSalesVat - totalPurchaseVat,
+      annexACount: annexAData.length,
+      annexBCount: annexBData.length,
+      annexCCount: annexCData.length,
+      annexDCount: annexDData.length,
+    } as any;
+  }, [filteredInvoices, annexAData, annexBData, annexCData, annexDData]);
 
-  const companyNameNp =
-    companySettings?.companyNameNp ||
-    companySettings?.nameNepali ||
-    "कम्पनीको नाम";
+  // ── Column definitions — using "label" not "header" ────────────────────────
 
-  const companyPan =
-    companySettings?.panNumber ||
-    companySettings?.pan ||
-    "";
-
-  const vatNo =
-    companySettings?.vatNumber ||
-    companySettings?.taxRegistrationNumber ||
-    companySettings?.tax_registration_number ||
-    companyPan;
-
-  const preparedBy =
-    currentUser?.name ||
-    currentUser?.username ||
-    "Prepared User";
-
-  const todayAD = new Date().toISOString().split("T")[0];
-
-  const preparedDateBS = (() => {
-    try {
-      const converted = adToBS(new Date(todayAD)) as any;
-      return typeof converted === "string" ? converted : formatBSDate(converted);
-    } catch {
-      return todayAD;
-    }
-  })();
-
-  const renderPrintHeader = () => (
-    <div className="print-only hidden mb-4 text-center">
-      <h1 className="text-[16px] font-bold">{companyNameEn}</h1>
-      <h2 className="text-[15px] font-semibold">{companyNameNp}</h2>
-
-      <div className="mt-2 text-[11px] leading-5">
-        <div>PAN No.: {companyPan || "—"} | VAT Registration No.: {vatNo || "—"}</div>
-        <div>Fiscal Year: {fiscalYearLabel}</div>
-        <div>
-          Return Period: {selectedPeriod.label} ({selectedPeriod.startBS} to{" "}
-          {selectedPeriod.endBS})
-        </div>
-        <div>Prepared By: {preparedBy} | Date: {preparedDateBS}</div>
-      </div>
-    </div>
-  );
-
-  const annexColumns = [
-    { key: "sn", label: "S.N.", align: "center" as const, width: "60px" },
-    { key: "billDateBS", label: "Bill Date (BS)" },
-    { key: "partyName", label: activeTab === "annex1" ? "Customer Name" : "Supplier Name" },
-    { key: "partyPan", label: "PAN No." },
-    { key: "billNo", label: "Bill No." },
+  const annexAColumns: Column[] = [
+    { key: "sno", label: "S.N.", width: "w-12", align: "center" },
+    { key: "dateNepali", label: "Date (BS)", width: "w-28" },
+    { key: "invoiceNo", label: "Invoice No.", width: "w-28" },
+    { key: "partyName", label: "Buyer Name" },
+    { key: "partyPan", label: "PAN No.", width: "w-28" },
     {
       key: "taxableAmount",
-      label: "Taxable Amount (Rs.)",
-      align: "right" as const,
-      render: (value: number) => formatMoney(value),
+      label: "Taxable Amt",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+    {
+      key: "exemptAmount",
+      label: "Exempt Amt",
+      align: "right",
+      render: (value: number) => money(value ?? 0),
     },
     {
       key: "vatAmount",
-      label: "VAT Amount (Rs.)",
-      align: "right" as const,
-      render: (value: number) => formatMoney(value),
+      label: "VAT (13%)",
+      align: "right",
+      render: (value: number) => money(value),
     },
     {
       key: "totalAmount",
-      label: "Total Amount (Rs.)",
-      align: "right" as const,
-      render: (value: number) => formatMoney(value),
-    },
-    { key: "remarks", label: "Remarks" },
-  ];
-
-  const vat10Rows = [
-    {
-      part: "Part A",
-      row: "1a",
-      description: "Taxable Sales",
-      baseAmount: vat10.outputTaxableSales,
-      vatAmount: 0,
-    },
-    {
-      part: "Part A",
-      row: "1b",
-      description: "VAT on Sales",
-      baseAmount: 0,
-      vatAmount: vat10.outputVatOnSales,
-    },
-    {
-      part: "Part A",
-      row: "1c",
-      description: "Taxable Exports - Zero Rated",
-      baseAmount: vat10.outputTaxableExports,
-      vatAmount: 0,
-    },
-    {
-      part: "Part A",
-      row: "1d",
-      description: "Exempt Sales",
-      baseAmount: vat10.exemptSales,
-      vatAmount: 0,
-    },
-    {
-      part: "Part A",
-      row: "2",
-      description: "Sales Returns / Debit Notes",
-      baseAmount: vat10.salesReturnsTaxable,
-      vatAmount: vat10.salesReturnsVat,
-    },
-    {
-      part: "Part A",
-      row: "",
-      description: "Net Output Tax",
-      baseAmount: 0,
-      vatAmount: vat10.netOutputTax,
-      isTotal: true,
-    },
-
-    {
-      part: "Part B",
-      row: "3a",
-      description: "Taxable Purchases",
-      baseAmount: vat10.inputTaxablePurchases,
-      vatAmount: 0,
-    },
-    {
-      part: "Part B",
-      row: "3b",
-      description: "VAT on Purchases",
-      baseAmount: 0,
-      vatAmount: vat10.inputVatOnPurchases,
-    },
-    {
-      part: "Part B",
-      row: "4",
-      description: "Purchase Returns",
-      baseAmount: vat10.purchaseReturnsTaxable,
-      vatAmount: vat10.purchaseReturnsVat,
-    },
-    {
-      part: "Part B",
-      row: "",
-      description: "Net Input Tax",
-      baseAmount: 0,
-      vatAmount: vat10.netInputTax,
-      isTotal: true,
-    },
-
-    {
-      part: "Part C",
-      row: "5",
-      description: "Net VAT = Output Tax - Input Tax",
-      baseAmount: 0,
-      vatAmount: vat10.netVat,
-    },
-    {
-      part: "Part C",
-      row: "6",
-      description: "Previous Credit",
-      baseAmount: 0,
-      vatAmount: vat10.previousCredit,
-    },
-    {
-      part: "Part C",
-      row: "7",
-      description:
-        vat10.taxPayable > 0
-          ? "Tax Payable"
-          : "Tax Refundable / Credit Carry Forward",
-      baseAmount: 0,
-      vatAmount: vat10.taxPayable > 0 ? vat10.taxPayable : vat10.taxRefundable,
-      isGrandTotal: true,
+      label: "Total Amt",
+      align: "right",
+      render: (value: number) => money(value),
     },
   ];
 
-  const vat10Columns = [
-    { key: "part", label: "Part", width: "90px" },
-    { key: "row", label: "Row", width: "70px" },
-    { key: "description", label: "Description" },
+  const annexBColumns: Column[] = [
+    { key: "sno", label: "S.N.", width: "w-12", align: "center" },
+    { key: "dateNepali", label: "Date (BS)", width: "w-28" },
+    { key: "invoiceNo", label: "Invoice No.", width: "w-28" },
+    { key: "partyName", label: "Buyer Name" },
     {
-      key: "baseAmount",
-      label: "Taxable / Base Amount",
-      align: "right" as const,
-      render: (value: number) => (value ? formatMoney(value) : "—"),
+      key: "taxableAmount",
+      label: "Taxable Amt",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+    {
+      key: "exemptAmount",
+      label: "Exempt Amt",
+      align: "right",
+      render: (value: number) => money(value ?? 0),
     },
     {
       key: "vatAmount",
-      label: "VAT Amount",
-      align: "right" as const,
-      render: (value: number) => formatMoney(value),
+      label: "VAT (13%)",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+    {
+      key: "totalAmount",
+      label: "Total Amt",
+      align: "right",
+      render: (value: number) => money(value),
     },
   ];
 
-  const activeAnnex = activeTab === "annex1" ? annex1 : annex2;
-  const annexTitle = activeTab === "annex1" ? "ANNEX 1 — Sales Book" : "ANNEX 2 — Purchase Book";
+  const annexCColumns: Column[] = [
+    { key: "sno", label: "S.N.", width: "w-12", align: "center" },
+    { key: "dateNepali", label: "Date (BS)", width: "w-28" },
+    { key: "invoiceNo", label: "Invoice No.", width: "w-28" },
+    { key: "partyName", label: "Supplier Name" },
+    { key: "partyPan", label: "PAN No.", width: "w-28" },
+    {
+      key: "taxableAmount",
+      label: "Taxable Amt",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+    {
+      key: "vatAmount",
+      label: "VAT (13%)",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+    {
+      key: "totalAmount",
+      label: "Total Amt",
+      align: "right",
+      render: (value: number) => money(value),
+    },
+  ];
 
-  return (
-    <ReportShell
-      title="Nepal VAT Reports"
-      subtitle={`IRD VAT Return — ${selectedPeriod.label}, FY ${fiscalYearLabel}`}
-      actions={
-        <div className="flex items-center gap-2 no-print">
-          {activeTab === "annex1" && (
-            <button
-              type="button"
-              onClick={() =>
-                exportAnnexCsv(
-                  "annex1",
-                  annex1.normalRows,
-                  annex1.cancelledRows,
-                  selectedPeriod,
-                )
-              }
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-            >
-              Export Annex 1 CSV
-            </button>
-          )}
+  // ── Export to Excel ───────────────────────────────────────────────────────
+  const handleExportExcel = useCallback(
+    (tabName: string, data: AnnexEntry[], columns: Column[]) => {
+      try {
+        const companyName =
+          companySettings?.name ||
+          companySettings?.companyName ||
+          "Company";
+        const fyName = currentFiscalYear?.name ?? "";
 
-          {activeTab === "annex2" && (
-            <button
-              type="button"
-              onClick={() =>
-                exportAnnexCsv(
-                  "annex2",
-                  annex2.normalRows,
-                  annex2.cancelledRows,
-                  selectedPeriod,
-                )
-              }
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-            >
-              Export Annex 2 CSV
-            </button>
-          )}
+        const headers = columns.map((c) => c.label);
+        const rows = data.map((row) =>
+          columns.map((col) => {
+            const val = (row as any)[col.key];
+            return val ?? "";
+          }),
+        );
 
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-          >
-            Print
-          </button>
-        </div>
+        const wb = XLSX.utils.book_new();
+        const wsData = [
+          [companyName],
+          [`VAT Report — ${tabName}`],
+          [`Period: ${fromDate} to ${toDate}`],
+          fyName ? [`Fiscal Year: ${fyName}`] : [],
+          [],
+          headers,
+          ...rows,
+        ].filter((r) => r.length > 0);
+
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        XLSX.utils.book_append_sheet(wb, ws, tabName);
+        XLSX.writeFile(wb, `VAT_${tabName}_${fromDate}_${toDate}.xlsx`);
+        toast.success(`${tabName} exported to Excel.`);
+      } catch {
+        toast.error("Export failed.");
       }
+    },
+    [companySettings, currentFiscalYear, fromDate, toDate],
+  );
+
+  const handlePrint = () => window.print();
+
+  // ── Footer totals for annex tables ────────────────────────────────────────
+  const annexATotal = useMemo(
+    () => ({
+      taxable: annexAData.reduce((s, r) => s + r.taxableAmount, 0),
+      vat: annexAData.reduce((s, r) => s + r.vatAmount, 0),
+      total: annexAData.reduce((s, r) => s + r.totalAmount, 0),
+      exempt: annexAData.reduce((s, r) => s + (r.exemptAmount ?? 0), 0),
+    }),
+    [annexAData],
+  );
+
+  const annexBTotal = useMemo(
+    () => ({
+      taxable: annexBData.reduce((s, r) => s + r.taxableAmount, 0),
+      vat: annexBData.reduce((s, r) => s + r.vatAmount, 0),
+      total: annexBData.reduce((s, r) => s + r.totalAmount, 0),
+      exempt: annexBData.reduce((s, r) => s + (r.exemptAmount ?? 0), 0),
+    }),
+    [annexBData],
+  );
+
+  const annexCTotal = useMemo(
+    () => ({
+      taxable: annexCData.reduce((s, r) => s + r.taxableAmount, 0),
+      vat: annexCData.reduce((s, r) => s + r.vatAmount, 0),
+      total: annexCData.reduce((s, r) => s + r.totalAmount, 0),
+    }),
+    [annexCData],
+  );
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  return (
+    // ReportShell: NO "actions" prop — buttons rendered as children
+    <ReportShell
+      title="VAT Reports"
+      subtitle="Annex A, B, C and VAT summary for IRD submission"
     >
-      {renderPrintHeader()}
-
-      <div className="no-print flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab("vat10")}
-            className={`h-8 px-3 text-[12px] font-medium rounded-md border ${
-              activeTab === "vat10"
-                ? "bg-[#1557b0] text-white border-[#1557b0]"
-                : "bg-white text-gray-700 border-gray-300"
-            }`}
-          >
-            VAT 10 Return
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("annex1")}
-            className={`h-8 px-3 text-[12px] font-medium rounded-md border ${
-              activeTab === "annex1"
-                ? "bg-[#1557b0] text-white border-[#1557b0]"
-                : "bg-white text-gray-700 border-gray-300"
-            }`}
-          >
-            Annex 1 Sales Book
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("annex2")}
-            className={`h-8 px-3 text-[12px] font-medium rounded-md border ${
-              activeTab === "annex2"
-                ? "bg-[#1557b0] text-white border-[#1557b0]"
-                : "bg-white text-gray-700 border-gray-300"
-            }`}
-          >
-            Annex 2 Purchase Book
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("IRD Annex Export")}
-            className={`h-8 px-3 text-[12px] font-medium rounded-md border ${
-              activeTab === "IRD Annex Export"
-                ? "bg-[#1557b0] text-white border-[#1557b0]"
-                : "bg-white text-gray-700 border-gray-300"
-            }`}
-          >
-            IRD Annex Export
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-[11px] font-medium text-gray-600">BS Quarter</label>
-          <select
-            value={quarterKey}
-            onChange={(e) => setQuarterKey(e.target.value as QuarterKey)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
-          >
-            {quarters.map((q) => (
-              <option key={q.key} value={q.key}>
-                {q.label} ({q.startBS} to {q.endBS})
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="mb-4 bg-white border border-gray-200 rounded-md p-3">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-[12px]">
+      {/* Toolbar — rendered as children, NOT as "actions" prop */}
+      <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <div>
-            <div className="text-[10px] uppercase font-semibold text-gray-500">Fiscal Year</div>
-            <div className="font-semibold text-gray-800">{fiscalYearLabel}</div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-semibold text-gray-500">Return Period</div>
-            <div className="font-semibold text-gray-800">
-              {selectedPeriod.startBS} to {selectedPeriod.endBS}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-semibold text-gray-500">Due Date</div>
-            <div className="font-semibold text-red-700">
-              {selectedPeriod.dueBS}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-semibold text-gray-500">Prepared Date</div>
-            <div className="font-semibold text-gray-800">{preparedDateBS}</div>
-          </div>
-        </div>
-      </div>
-
-      {activeTab === "vat10" && (
-        <div className="space-y-4">
-          <div className="no-print bg-white border border-gray-200 rounded-md p-3 flex items-center gap-3">
-            <label className="text-[11px] font-medium text-gray-600">
-              Previous VAT Credit
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
+              From Date
             </label>
             <input
-              type="number"
-              value={previousCredit}
-              onChange={(e) => setPreviousCredit(Number(e.target.value || 0))}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right"
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>
-
-          <ReportGrid
-            columns={vat10Columns}
-            data={vat10Rows}
-            getRowClassName={(row: any) =>
-              row.isGrandTotal
-                ? "bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]"
-                : row.isTotal
-                  ? "bg-gray-50 font-semibold"
-                  : ""
-            }
-          />
-
-          <div
-            className={`border rounded-md p-4 ${
-              vat10.taxPayable > 0
-                ? "bg-red-50 text-red-700 border-red-200"
-                : "bg-green-50 text-green-700 border-green-200"
-            }`}
-          >
-            <div className="text-[11px] uppercase font-semibold">
-              Final VAT Position
-            </div>
-            <div className="text-[18px] font-bold font-mono mt-1">
-              {vat10.taxPayable > 0
-                ? `Tax Payable: Rs. ${formatMoney(vat10.taxPayable)}`
-                : `Refundable / Credit Carry Forward: Rs. ${formatMoney(
-                    vat10.taxRefundable,
-                  )}`}
-            </div>
-            <div className="text-[12px] mt-1">
-              Return due date: {selectedPeriod.dueBS}
-            </div>
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
+              To Date
+            </label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            />
           </div>
         </div>
-      )}
 
-      {(activeTab === "annex1" || activeTab === "annex2") && (
-        <div className="space-y-5">
-          <div>
-            <h2 className="text-[13px] font-semibold text-gray-800 mb-2">
-              {annexTitle}
-            </h2>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+          >
+            <Printer className="h-3.5 w-3.5" />
+            Print
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const data =
+                activeTab === "annexA"
+                  ? annexAData
+                  : activeTab === "annexB"
+                  ? annexBData
+                  : activeTab === "annexC"
+                  ? annexCData
+                  : annexDData;
+              const cols =
+                activeTab === "annexA"
+                  ? annexAColumns
+                  : activeTab === "annexB"
+                  ? annexBColumns
+                  : annexCColumns;
+              handleExportExcel(activeTab.toUpperCase(), data, cols);
+            }}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            Export Excel
+          </button>
+        </div>
+      </div>
 
-            <ReportGrid columns={annexColumns} data={activeAnnex.normalRows} />
+      {/* Tabs */}
+      <div className="flex items-center gap-1 mb-4 border-b border-gray-200">
+        {(
+          [
+            { id: "summary", label: "VAT Summary" },
+            { id: "annexA", label: "Annex A (Sales — VAT Reg.)" },
+            { id: "annexB", label: "Annex B (Sales — Retail)" },
+            { id: "annexC", label: "Annex C (Purchases)" },
+            { id: "annexD", label: "Annex D (Imports)" },
+          ] as { id: ActiveTab; label: string }[]
+        ).map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`h-8 px-3 text-[12px] font-medium rounded-t-md transition-colors border-b-2 -mb-px ${
+              activeTab === tab.id
+                ? "border-[#1557b0] text-[#1557b0] bg-white"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-            <div className="bg-[#eef2ff] border border-[#c7d2fe] rounded-md p-3 mt-3">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[12px] font-semibold">
-                <div>
-                  Total Taxable Amount: Rs.{" "}
-                  {formatMoney(sumRows(activeAnnex.normalRows).taxableAmount)}
+      {/* ── Summary Tab ──────────────────────────────────────────────────────── */}
+      {activeTab === "summary" && (
+        <div className="space-y-4">
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Output VAT (Sales)
+              </p>
+              <p className="text-[20px] font-bold text-[#1557b0] mt-1 font-mono">
+                {money(vatSummary.totalSalesVat)}
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1">
+                Taxable: {money(vatSummary.totalSalesTaxable)}
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Input VAT (Purchases)
+              </p>
+              <p className="text-[20px] font-bold text-amber-600 mt-1 font-mono">
+                {money(vatSummary.totalPurchaseVat)}
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1">
+                Taxable: {money(vatSummary.totalPurchaseTaxable)}
+              </p>
+            </div>
+
+            <div
+              className={`bg-white border rounded-lg p-4 shadow-sm ${
+                vatSummary.vatPayable >= 0
+                  ? "border-red-200"
+                  : "border-green-200"
+              }`}
+            >
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                VAT Payable / (Refund)
+              </p>
+              <p
+                className={`text-[20px] font-bold mt-1 font-mono ${
+                  vatSummary.vatPayable >= 0
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}
+              >
+                {vatSummary.vatPayable >= 0 ? "" : "("}
+                {money(Math.abs(vatSummary.vatPayable))}
+                {vatSummary.vatPayable < 0 ? ")" : ""}
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1">
+                {vatSummary.vatPayable >= 0
+                  ? "Payable to IRD"
+                  : "Refundable from IRD"}
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Invoice Counts
+              </p>
+              <div className="mt-2 space-y-1 text-[11px]">
+                <div className="flex justify-between text-gray-600">
+                  <span>Annex A</span>
+                  <span className="font-semibold">{annexAData.length}</span>
                 </div>
-                <div>
-                  Total VAT Amount: Rs.{" "}
-                  {formatMoney(sumRows(activeAnnex.normalRows).vatAmount)}
+                <div className="flex justify-between text-gray-600">
+                  <span>Annex B</span>
+                  <span className="font-semibold">{annexBData.length}</span>
                 </div>
-                <div>
-                  Total Amount: Rs.{" "}
-                  {formatMoney(sumRows(activeAnnex.normalRows).totalAmount)}
+                <div className="flex justify-between text-gray-600">
+                  <span>Annex C</span>
+                  <span className="font-semibold">{annexCData.length}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {activeAnnex.cancelledRows.length > 0 && (
-            <div>
-              <h3 className="text-[13px] font-semibold text-red-700 mb-2">
-                Cancelled Bills
+          {/* VAT Return Summary Table */}
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
+              <h3 className="text-[12px] font-semibold text-gray-700">
+                VAT Return Statement —{" "}
+                {companySettings?.name ?? "Company"}
               </h3>
-              <ReportGrid columns={annexColumns} data={activeAnnex.cancelledRows} />
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                Period: {fromDate} to {toDate}
+              </p>
             </div>
-          )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Particulars
+                    </th>
+                    <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                      Taxable Amount
+                    </th>
+                    <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                      VAT Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {/* Output VAT section */}
+                  <tr className="bg-green-50">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-2 text-[11px] font-bold text-green-800 uppercase tracking-wide"
+                    >
+                      Output VAT (Sales)
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex A — Sales to VAT Registered Buyers
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexATotal.taxable)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexATotal.vat)}
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex B — Retail Sales (Non-VAT Registered)
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexBTotal.taxable)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexBTotal.vat)}
+                    </td>
+                  </tr>
+                  <tr className="bg-green-50 border-t border-green-200">
+                    <td className="px-4 py-2.5 text-[12px] font-bold text-green-800 pl-8">
+                      Total Output VAT
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
+                      {money(vatSummary.totalSalesTaxable)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
+                      {money(vatSummary.totalSalesVat)}
+                    </td>
+                  </tr>
+
+                  {/* Input VAT section */}
+                  <tr className="bg-amber-50">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-2 text-[11px] font-bold text-amber-800 uppercase tracking-wide"
+                    >
+                      Input VAT (Purchases)
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex C — Local Purchases
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexCTotal.taxable)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                      {money(annexCTotal.vat)}
+                    </td>
+                  </tr>
+                  <tr className="bg-amber-50 border-t border-amber-200">
+                    <td className="px-4 py-2.5 text-[12px] font-bold text-amber-800 pl-8">
+                      Total Input VAT
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
+                      {money(vatSummary.totalPurchaseTaxable)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
+                      {money(vatSummary.totalPurchaseVat)}
+                    </td>
+                  </tr>
+
+                  {/* Net VAT payable */}
+                  <tr
+                    className={`border-t-2 ${
+                      vatSummary.vatPayable >= 0
+                        ? "bg-red-50 border-red-200"
+                        : "bg-green-50 border-green-200"
+                    }`}
+                  >
+                    <td
+                      className={`px-4 py-3 text-[13px] font-bold ${
+                        vatSummary.vatPayable >= 0
+                          ? "text-red-800"
+                          : "text-green-800"
+                      }`}
+                    >
+                      Net VAT{" "}
+                      {vatSummary.vatPayable >= 0 ? "Payable" : "Refundable"}
+                    </td>
+                    <td className="px-4 py-3" />
+                    <td
+                      className={`px-4 py-3 text-right font-mono text-[13px] font-bold ${
+                        vatSummary.vatPayable >= 0
+                          ? "text-red-800"
+                          : "text-green-800"
+                      }`}
+                    >
+                      {vatSummary.vatPayable >= 0 ? "" : "("}
+                      {money(Math.abs(vatSummary.vatPayable))}
+                      {vatSummary.vatPayable < 0 ? ")" : ""}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
-      {activeTab === "IRD Annex Export" && (
-        <VatAnnexExport />
+      {/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
+      {activeTab === "annexA" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[13px] font-semibold text-gray-800">
+                Annex A — Sales to VAT Registered Parties
+              </h3>
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                {annexAData.length} invoices · Taxable:{" "}
+                {money(annexATotal.taxable)} · VAT:{" "}
+                {money(annexATotal.vat)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                handleExportExcel("Annex_A", annexAData, annexAColumns)
+              }
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <DataTable
+              columns={annexAColumns}
+              data={annexAData}
+              emptyMessage="No sales to VAT-registered parties in this period."
+              footerRow={
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                  <td
+                    colSpan={5}
+                    className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
+                  >
+                    Total
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexATotal.taxable)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexATotal.exempt)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexATotal.vat)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexATotal.total)}
+                  </td>
+                </tr>
+              }
+            />
+          </div>
+        </div>
       )}
+
+      {/* ── Annex B Tab ───────────────────────────────────────────────────────── */}
+      {activeTab === "annexB" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[13px] font-semibold text-gray-800">
+                Annex B — Retail Sales (Non-VAT Registered)
+              </h3>
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                {annexBData.length} invoices · Taxable:{" "}
+                {money(annexBTotal.taxable)} · VAT:{" "}
+                {money(annexBTotal.vat)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                handleExportExcel("Annex_B", annexBData, annexBColumns)
+              }
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <DataTable
+              columns={annexBColumns}
+              data={annexBData}
+              emptyMessage="No retail sales in this period."
+              footerRow={
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                  <td
+                    colSpan={4}
+                    className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
+                  >
+                    Total
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexBTotal.taxable)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexBTotal.exempt)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexBTotal.vat)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexBTotal.total)}
+                  </td>
+                </tr>
+              }
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Annex C Tab ───────────────────────────────────────────────────────── */}
+      {activeTab === "annexC" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[13px] font-semibold text-gray-800">
+                Annex C — Purchase Invoices
+              </h3>
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                {annexCData.length} invoices · Taxable:{" "}
+                {money(annexCTotal.taxable)} · VAT:{" "}
+                {money(annexCTotal.vat)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                handleExportExcel("Annex_C", annexCData, annexCColumns)
+              }
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <DataTable
+              columns={annexCColumns}
+              data={annexCData}
+              emptyMessage="No purchase invoices in this period."
+              footerRow={
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                  <td
+                    colSpan={5}
+                    className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
+                  >
+                    Total
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexCTotal.taxable)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexCTotal.vat)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    {money(annexCTotal.total)}
+                  </td>
+                </tr>
+              }
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Annex D Tab ───────────────────────────────────────────────────────── */}
+      {activeTab === "annexD" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[13px] font-semibold text-gray-800">
+                Annex D — Import Purchases
+              </h3>
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                {annexDData.length} records
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                handleExportExcel("Annex_D", annexDData, annexCColumns)
+              }
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <DataTable
+              columns={annexCColumns}
+              data={annexDData}
+              emptyMessage="No import purchases recorded in this period."
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Print styles */}
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          body { background: white !important; }
+          @page { size: A4 landscape; margin: 10mm; }
+        }
+      `}</style>
     </ReportShell>
   );
 };
 
 export default VatReports;
-
-
