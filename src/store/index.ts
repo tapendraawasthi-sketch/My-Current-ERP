@@ -26,7 +26,7 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting } from "../lib/db";
+import { getDB, resetDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting } from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -733,7 +733,26 @@ export const useStore = create<AppState>()((...a) => {
     },
 
     createCompanyAndAdmin: async ({ company, adminUser }) => {
-      const db = getDB();
+      let db = getDB();
+
+      // If the local IndexedDB has a stale schema with a different primary key on
+      // the users table, Dexie throws an UpgradeError. For a first-time setup we
+      // can safely wipe the old database and start fresh.
+      try {
+        await db.open();
+      } catch (upgradeErr: any) {
+        const msg: string = upgradeErr?.message || "";
+        if (
+          upgradeErr?.name === "UpgradeError" ||
+          msg.toLowerCase().includes("primary key")
+        ) {
+          db = await resetDB();
+          await db.open();
+        } else {
+          throw upgradeErr;
+        }
+      }
+
       await db.companySettings.put({ id: "main", ...company } as any);
       const hash = await hashPassword((adminUser as any).password || "admin123");
       await db.users.put({

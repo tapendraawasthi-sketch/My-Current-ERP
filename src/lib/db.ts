@@ -1296,6 +1296,15 @@ export function getDB(): SutraERPDatabase {
   return _db;
 }
 
+export async function resetDB(): Promise<SutraERPDatabase> {
+  if (_db) {
+    try { await _db.delete(); } catch (_) {}
+    _db = null;
+  }
+  _db = new SutraERPDatabase();
+  return _db;
+}
+
 // Named alias used by some pages
 export const db = getDB();
 
