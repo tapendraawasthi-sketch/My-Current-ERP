@@ -26,9 +26,11 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, generateId } from "../lib/db";
+import { getDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting } from "../lib/db";
+import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
+import { computeNextDueDate } from "../lib/recurringUtils";
 
 export const useStore = create<AppState>()((...a) => {
   const [set, get] = a;
@@ -47,6 +49,8 @@ export const useStore = create<AppState>()((...a) => {
     invoices: [],
     stockMovements: [],
     warehouses: [],
+    fixedAssets: [],
+    depreciationLedger: [],
     stockTransfers: [],
     units: [],
     costCenters: [],
@@ -68,7 +72,10 @@ export const useStore = create<AppState>()((...a) => {
     recurringVouchers: [],
     customFieldDefs: [],
     currencies: [],
-    employees: [],
+    employees: [] as any[],
+    salaryStructures: [] as any[],
+    payrollRuns: [] as any[],
+    payrollEntries: [] as any[],
     tdsChallans: [],
     stockCategories: [],
     voucherTypeMasters: [],
@@ -81,6 +88,7 @@ export const useStore = create<AppState>()((...a) => {
     priceLists: [],
     hsCodes: [],
     batches: [],
+    serialNumbers: [],
     vatClassifications: [],
     tdsNatureOfPayment: [],
     employeeGroups: [],
@@ -98,12 +106,22 @@ export const useStore = create<AppState>()((...a) => {
     auditLogs: [],
     depositSlips: [],
     pdCheques: [],
+    pdcRegister: [],
     ePaymentBatches: [],
     paymentAdvices: [],
 
     branches: [],
     salespersons: [],
-    exchangeRates: [],
+    currencies: [] as DBCurrency[],
+    exchangeRates: [] as DBExchangeRate[],
+    fxGainLossEntries: [] as DBFXGainLossEntry[],
+    costCentres: [] as DBCostCentre[],
+    costCentreAllocations: [] as DBCostCentreAllocation[],
+    approvalPolicies: [] as DBApprovalPolicy[],
+    approvalRequests: [] as DBApprovalRequest[],
+    approvalActions:  [] as DBApprovalAction[],
+    recurringTemplates: [] as DBRecurringTemplate[],
+    recurringPostings:  [] as DBRecurringPosting[],
     followUpNotes: [],
     jobWorkOrders: [],
     reportSchedules: [],
@@ -788,6 +806,619 @@ export const useStore = create<AppState>()((...a) => {
     ...createInventorySlice(...a),
     ...createVoucherSlice(...a),
     ...createSettingsSlice(...a),
+    // ─── Fixed Asset Actions ──────────────────────────────────────────────────────
+    addFixedAsset: async (asset: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        const id = crypto.randomUUID();
+        const row = { ...asset, id, createdAt: now, updatedAt: now };
+        if (db.fixedAssets) await db.fixedAssets.put(row);
+        set((state: any) => ({
+          fixedAssets: [...(state.fixedAssets || []), row],
+        }));
+        return row;
+      } catch (err) {
+        console.warn("addFixedAsset failed", err);
+        throw err;
+      }
+    },
+
+    updateFixedAsset: async (id: string, updates: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        if (db.fixedAssets) await db.fixedAssets.update(id, { ...updates, updatedAt: now });
+        set((state: any) => ({
+          fixedAssets: (state.fixedAssets || []).map((a: any) =>
+            a.id === id ? { ...a, ...updates, updatedAt: now } : a
+          ),
+        }));
+      } catch (err) {
+        console.warn("updateFixedAsset failed", err);
+        throw err;
+      }
+    },
+
+    deleteFixedAsset: async (id: string) => {
+      try {
+        const db = getDB();
+        if (db.fixedAssets) await db.fixedAssets.delete(id);
+        set((state: any) => ({
+          fixedAssets: (state.fixedAssets || []).filter((a: any) => a.id !== id),
+        }));
+      } catch (err) {
+        console.warn("deleteFixedAsset failed", err);
+      }
+    },
+
+    loadFixedAssets: async () => {
+      try {
+        const db = getDB();
+        if (!db.fixedAssets) return;
+        const assets = await db.fixedAssets.toArray();
+        set({ fixedAssets: assets || [] });
+      } catch (err) {
+        console.warn("loadFixedAssets failed", err);
+      }
+    },
+
+    saveDepreciationEntry: async (entry: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        const id = crypto.randomUUID();
+        const row = { ...entry, id, createdAt: now };
+        if (db.depreciationLedger) await db.depreciationLedger.put(row);
+        set((state: any) => ({
+          depreciationLedger: [...(state.depreciationLedger || []), row],
+        }));
+        return row;
+      } catch (err) {
+        console.warn("saveDepreciationEntry failed", err);
+        throw err;
+      }
+    },
+
+    // ─── Batch Actions ────────────────────────────────────────────────────────────
+    addBatch: async (batch: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        const id = crypto.randomUUID();
+        const row = { ...batch, id, createdAt: now, updatedAt: now };
+        if (db.batches) await db.batches.put(row);
+        set((s: any) => ({ batches: [...(s.batches || []), row] }));
+        return row;
+      } catch (err) { console.warn("addBatch failed", err); throw err; }
+    },
+    updateBatch: async (id: string, updates: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        if (db.batches) await db.batches.update(id, { ...updates, updatedAt: now });
+        set((s: any) => ({
+          batches: (s.batches || []).map((b: any) =>
+            b.id === id ? { ...b, ...updates, updatedAt: now } : b
+          ),
+        }));
+      } catch (err) { console.warn("updateBatch failed", err); }
+    },
+    deleteBatch: async (id: string) => {
+      try {
+        const db = getDB();
+        if (db.batches) await db.batches.delete(id);
+        set((s: any) => ({ batches: (s.batches || []).filter((b: any) => b.id !== id) }));
+      } catch (err) { console.warn("deleteBatch failed", err); }
+    },
+    loadBatches: async () => {
+      try {
+        const db = getDB();
+        if (!db.batches) return;
+        const batches = await db.batches.toArray();
+        set({ batches: batches || [] });
+      } catch (err) { console.warn("loadBatches failed", err); }
+    },
+
+    // ─── Serial Number Actions ────────────────────────────────────────────────────
+    addSerialNumber: async (sn: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        const id = crypto.randomUUID();
+        const row = { ...sn, id, createdAt: now, updatedAt: now };
+        if (db.serialNumbers) await db.serialNumbers.put(row);
+        set((s: any) => ({ serialNumbers: [...(s.serialNumbers || []), row] }));
+        return row;
+      } catch (err) { console.warn("addSerialNumber failed", err); throw err; }
+    },
+    updateSerialNumber: async (id: string, updates: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        if (db.serialNumbers) await db.serialNumbers.update(id, { ...updates, updatedAt: now });
+        set((s: any) => ({
+          serialNumbers: (s.serialNumbers || []).map((sn: any) =>
+            sn.id === id ? { ...sn, ...updates, updatedAt: now } : sn
+          ),
+        }));
+      } catch (err) { console.warn("updateSerialNumber failed", err); }
+    },
+    deleteSerialNumber: async (id: string) => {
+      try {
+        const db = getDB();
+        if (db.serialNumbers) await db.serialNumbers.delete(id);
+        set((s: any) => ({
+          serialNumbers: (s.serialNumbers || []).filter((sn: any) => sn.id !== id),
+        }));
+      } catch (err) { console.warn("deleteSerialNumber failed", err); }
+    },
+    loadSerialNumbers: async () => {
+      try {
+        const db = getDB();
+        if (!db.serialNumbers) return;
+        const sns = await db.serialNumbers.toArray();
+        set({ serialNumbers: sns || [] });
+      } catch (err) { console.warn("loadSerialNumbers failed", err); }
+    },
+    // ─── PDC Actions ──────────────────────────────────────────────────────────────
+    addPDC: async (pdc: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        const id = crypto.randomUUID();
+        const row = { ...pdc, id, createdAt: now, updatedAt: now };
+        if (db.pdcRegister) await db.pdcRegister.put(row);
+        set((s: any) => ({ pdcRegister: [...(s.pdcRegister || []), row] }));
+        return row;
+      } catch (err) { console.warn("addPDC failed", err); throw err; }
+    },
+    updatePDC: async (id: string, updates: any) => {
+      try {
+        const db = getDB();
+        const now = new Date().toISOString();
+        if (db.pdcRegister) await db.pdcRegister.update(id, { ...updates, updatedAt: now });
+        set((s: any) => ({
+          pdcRegister: (s.pdcRegister || []).map((p: any) =>
+            p.id === id ? { ...p, ...updates, updatedAt: now } : p
+          ),
+        }));
+      } catch (err) { console.warn("updatePDC failed", err); }
+    },
+    deletePDC: async (id: string) => {
+      try {
+        const db = getDB();
+        if (db.pdcRegister) await db.pdcRegister.delete(id);
+        set((s: any) => ({ pdcRegister: (s.pdcRegister || []).filter((p: any) => p.id !== id) }));
+      } catch (err) { console.warn("deletePDC failed", err); }
+    },
+    loadPDCRegister: async () => {
+      try {
+        const db = getDB();
+        if (!db.pdcRegister) return;
+        const records = await db.pdcRegister.toArray();
+        set({ pdcRegister: records || [] });
+      } catch (err) { console.warn("loadPDCRegister failed", err); }
+    },
+    // ── PAYROLL ACTIONS ─────────────────────────────────────────────────────
+    loadPayrollData: async () => {
+      const [employees, salaryStructures, payrollRuns, payrollEntries] =
+        await Promise.all([
+          db.employees.toArray(),
+          db.salaryStructures.toArray(),
+          db.payrollRuns.toArray(),
+          db.payrollEntries.toArray(),
+        ]);
+      set({ employees, salaryStructures, payrollRuns, payrollEntries });
+    },
+
+    addEmployee: async (emp: any) => {
+      const id = await db.employees.add({ ...emp, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const employees = await db.employees.toArray();
+      set({ employees });
+      return id;
+    },
+
+    updateEmployee: async (id: number, changes: any) => {
+      await db.employees.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const employees = await db.employees.toArray();
+      set({ employees });
+    },
+
+    deleteEmployee: async (id: number) => {
+      await db.employees.delete(id);
+      const employees = await db.employees.toArray();
+      set({ employees });
+    },
+
+    addSalaryStructure: async (s: any) => {
+      const id = await db.salaryStructures.add({ ...s, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const salaryStructures = await db.salaryStructures.toArray();
+      set({ salaryStructures });
+      return id;
+    },
+
+    processPayroll: async (month: number, year: number, fiscalYear: string) => {
+      const { employees, salaryStructures } = get();
+      const activeEmps = employees.filter((e: any) => e.isActive);
+
+      const entries: any[] = activeEmps.map((emp: any) => {
+        // Get latest salary structure
+        const structs = salaryStructures
+          .filter((s: any) => s.employeeId === emp.id)
+          .sort((a: any, b: any) => b.effectiveFrom.localeCompare(a.effectiveFrom));
+        const sal = structs[0] || { basicSalary: 0, houseRentAllowance: 0, medicalAllowance: 0, transportAllowance: 0, otherAllowances: 0, epfRate: 10, citRate: 10, ssfRate: 1, epfApplicable: emp.epfApplicable, citApplicable: emp.citApplicable, ssfApplicable: emp.ssfApplicable };
+
+        const grossSalary = sal.basicSalary + sal.houseRentAllowance + sal.medicalAllowance + sal.transportAllowance + sal.otherAllowances;
+
+        // EPF: 10% of basic (employee + employer)
+        const epfEmployee = emp.epfApplicable ? sal.basicSalary * (sal.epfRate / 100) : 0;
+        const epfEmployer = emp.epfApplicable ? sal.basicSalary * (sal.epfRate / 100) : 0;
+
+        // CIT: 10% of basic (optional, employee only, reduces taxable income)
+        const citEmployee = emp.citApplicable ? sal.basicSalary * (sal.citRate / 100) : 0;
+
+        // SSF: 1% employee, 3.33% employer
+        const ssfEmployee = emp.ssfApplicable ? grossSalary * (sal.ssfRate / 100) : 0;
+        const ssfEmployer = emp.ssfApplicable ? grossSalary * 0.0333 : 0;
+
+        // Annualised gross for TDS calculation
+        const annualisedGross = grossSalary * 12;
+
+        // Deductions allowed from taxable income
+        const deductionsFromTax = (epfEmployee + citEmployee) * 12;
+
+        // Taxable income (married couples get NPR 500k exemption, single NPR 400k)
+        const personalExemption = emp.maritalStatus === "married" ? 500000 : 400000;
+        const taxableIncome = Math.max(0, annualisedGross - deductionsFromTax - personalExemption);
+
+        // Nepal IRD progressive TDS slabs (FY 2081/82)
+        const annualTax = computeNepalTDS(taxableIncome);
+        const tdsAmount = Math.round(annualTax / 12);
+
+        const totalDeductions = epfEmployee + citEmployee + ssfEmployee + tdsAmount;
+        const netPay = grossSalary - totalDeductions;
+
+        return {
+          payrollRunId: 0, // set after run is created
+          employeeId: emp.id!,
+          employeeName: emp.name,
+          department: emp.department,
+          month,
+          year,
+          basicSalary: sal.basicSalary,
+          houseRentAllowance: sal.houseRentAllowance,
+          medicalAllowance: sal.medicalAllowance,
+          transportAllowance: sal.transportAllowance,
+          otherAllowances: sal.otherAllowances,
+          overtimePay: 0,
+          grossSalary,
+          epfEmployee,
+          citEmployee,
+          ssfEmployee,
+          tdsAmount,
+          otherDeductions: 0,
+          totalDeductions,
+          netPay,
+          epfEmployer,
+          ssfEmployer,
+          annualisedGross,
+          taxableIncome,
+          annualTax,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+      });
+
+      // Create payroll run
+      const totalGross = entries.reduce((s: number, e: any) => s + e.grossSalary, 0);
+      const totalDeductions = entries.reduce((s: number, e: any) => s + e.totalDeductions, 0);
+      const totalNetPay = entries.reduce((s: number, e: any) => s + e.netPay, 0);
+      const totalEmployerContribution = entries.reduce((s: number, e: any) => s + e.epfEmployer + e.ssfEmployer, 0);
+
+      const runId = await db.payrollRuns.add({
+        month, year, fiscalYear,
+        status: "processed",
+        totalGross, totalDeductions, totalNetPay, totalEmployerContribution,
+        processedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      const finalEntries = entries.map((e: any) => ({ ...e, payrollRunId: runId as number }));
+      await db.payrollEntries.bulkAdd(finalEntries as any[]);
+
+      const [payrollRuns, payrollEntries] = await Promise.all([
+        db.payrollRuns.toArray(),
+        db.payrollEntries.toArray(),
+      ]);
+      set({ payrollRuns, payrollEntries });
+    },
+
+    // ── MULTI-CURRENCY ACTIONS ───────────────────────────────────────────────
+    loadCurrencyData: async () => {
+      const db = getDB();
+      const [currencies, exchangeRates, fxGainLossEntries] = await Promise.all([
+        db.currencies.toArray(),
+        db.exchangeRates.toArray(),
+        db.fxGainLossEntries.toArray(),
+      ]);
+      set({ currencies, exchangeRates, fxGainLossEntries });
+    },
+
+    addCurrency: async (c: Omit<DBCurrency, "id">) => {
+      const db = getDB();
+      await db.currencies.add({ ...c, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const currencies = await db.currencies.toArray();
+      set({ currencies });
+    },
+
+    updateCurrency: async (id: number, changes: Partial<DBCurrency>) => {
+      const db = getDB();
+      await db.currencies.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const currencies = await db.currencies.toArray();
+      set({ currencies });
+    },
+
+    addExchangeRate: async (r: Omit<DBExchangeRate, "id">) => {
+      const db = getDB();
+      await db.exchangeRates.add({ ...r, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const exchangeRates = await db.exchangeRates.toArray();
+      set({ exchangeRates });
+    },
+
+    updateExchangeRate: async (id: number, changes: Partial<DBExchangeRate>) => {
+      const db = getDB();
+      await db.exchangeRates.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const exchangeRates = await db.exchangeRates.toArray();
+      set({ exchangeRates });
+    },
+
+    deleteExchangeRate: async (id: number) => {
+      const db = getDB();
+      await db.exchangeRates.delete(id);
+      const exchangeRates = await db.exchangeRates.toArray();
+      set({ exchangeRates });
+    },
+
+    addFXGainLoss: async (entry: Omit<DBFXGainLossEntry, "id">) => {
+      const db = getDB();
+      await db.fxGainLossEntries.add({ ...entry, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const fxGainLossEntries = await db.fxGainLossEntries.toArray();
+      set({ fxGainLossEntries });
+    },
+
+    // ── COST CENTRE ACTIONS ──────────────────────────────────────────────────
+    loadCostCentreData: async () => {
+      const db = getDB();
+      const [costCentres, costCentreAllocations] = await Promise.all([
+        db.costCentres.toArray(),
+        db.costCentreAllocations.toArray(),
+      ]);
+      set({ costCentres, costCentreAllocations });
+    },
+
+    addCostCentre: async (cc: Omit<DBCostCentre, "id">) => {
+      const db = getDB();
+      await db.costCentres.add({ ...cc, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const costCentres = await db.costCentres.toArray();
+      set({ costCentres });
+    },
+
+    updateCostCentre: async (id: number, changes: Partial<DBCostCentre>) => {
+      const db = getDB();
+      await db.costCentres.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const costCentres = await db.costCentres.toArray();
+      set({ costCentres });
+    },
+
+    deleteCostCentre: async (id: number) => {
+      const db = getDB();
+      await db.costCentres.delete(id);
+      const costCentres = await db.costCentres.toArray();
+      set({ costCentres });
+    },
+
+    addCostCentreAllocation: async (a: Omit<DBCostCentreAllocation, "id">) => {
+      const db = getDB();
+      await db.costCentreAllocations.add({ ...a, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const costCentreAllocations = await db.costCentreAllocations.toArray();
+      set({ costCentreAllocations });
+    },
+
+    deleteCostCentreAllocation: async (id: number) => {
+      const db = getDB();
+      await db.costCentreAllocations.delete(id);
+      const costCentreAllocations = await db.costCentreAllocations.toArray();
+      set({ costCentreAllocations });
+    },
+
+    // ── APPROVAL WORKFLOW ACTIONS ────────────────────────────────────────────
+    loadApprovalData: async () => {
+      const db = getDB();
+      const [approvalPolicies, approvalRequests, approvalActions] = await Promise.all([
+        db.approvalPolicies.toArray(),
+        db.approvalRequests.toArray(),
+        db.approvalActions.toArray(),
+      ]);
+      // Parse JSON levels field
+      const parsed = approvalPolicies.map(p => ({
+        ...p,
+        levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels,
+      }));
+      set({ approvalPolicies: parsed, approvalRequests, approvalActions });
+    },
+
+    addApprovalPolicy: async (policy: Omit<DBApprovalPolicy, "id">) => {
+      const db = getDB();
+      const toStore = { ...policy, levels: JSON.stringify(policy.levels), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      await db.approvalPolicies.add(toStore);
+      const raw = await db.approvalPolicies.toArray();
+      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      set({ approvalPolicies });
+    },
+
+    updateApprovalPolicy: async (id: number, changes: Partial<DBApprovalPolicy>) => {
+      const db = getDB();
+      const toStore: any = { ...changes, updatedAt: new Date().toISOString() };
+      if (changes.levels) toStore.levels = JSON.stringify(changes.levels);
+      await db.approvalPolicies.update(id, toStore);
+      const raw = await db.approvalPolicies.toArray();
+      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      set({ approvalPolicies });
+    },
+
+    deleteApprovalPolicy: async (id: number) => {
+      const db = getDB();
+      await db.approvalPolicies.delete(id);
+      const raw = await db.approvalPolicies.toArray();
+      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      set({ approvalPolicies });
+    },
+
+    submitForApproval: async (request: Omit<DBApprovalRequest, "id">) => {
+      const db = getDB();
+      const id = await db.approvalRequests.add({ ...request, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const approvalRequests = await db.approvalRequests.toArray();
+      set({ approvalRequests });
+      return id;
+    },
+
+    takeApprovalAction: async (
+      requestId: number,
+      action: "approved" | "rejected" | "returned",
+      actionByUserId: string,
+      actionByName: string,
+      comments: string
+    ) => {
+      const db = getDB();
+      const now = new Date().toISOString();
+      // Record the action
+      await db.approvalActions.add({
+        requestId,
+        level: 0, // will be set below
+        action,
+        actionByUserId,
+        actionByName,
+        comments,
+        actionAt: now,
+        createdAt: now,
+      });
+
+      // Update request status
+      const req = await db.approvalRequests.get(requestId);
+      if (!req) return;
+
+      let newStatus: ApprovalStatus = req.status;
+      let newLevel = req.currentLevel;
+
+      if (action === "approved") {
+        if (req.currentLevel >= req.totalLevels) {
+          newStatus = "approved";
+        } else {
+          newLevel = req.currentLevel + 1;
+        }
+      } else if (action === "rejected") {
+        newStatus = "rejected";
+      } else if (action === "returned") {
+        newLevel = Math.max(1, req.currentLevel - 1);
+      }
+
+      // Update the action level
+      const actions = await db.approvalActions.where("requestId").equals(requestId).toArray();
+      const lastAction = actions[actions.length - 1];
+      if (lastAction?.id) await db.approvalActions.update(lastAction.id, { level: req.currentLevel });
+
+      await db.approvalRequests.update(requestId, {
+        status: newStatus,
+        currentLevel: newLevel,
+        updatedAt: now,
+        ...(action === "rejected" ? { rejectionReason: comments } : {}),
+      });
+
+      const [approvalRequests, approvalActions] = await Promise.all([
+        db.approvalRequests.toArray(),
+        db.approvalActions.toArray(),
+      ]);
+      set({ approvalRequests, approvalActions });
+    },
+
+    // ── RECURRING VOUCHER ACTIONS ────────────────────────────────────────────
+    loadRecurringData: async () => {
+      const db = getDB();
+      const [recurringTemplates, recurringPostings] = await Promise.all([
+        db.recurringTemplates.toArray(),
+        db.recurringPostings.toArray(),
+      ]);
+      const parsed = recurringTemplates.map(t => ({
+        ...t,
+        lines: typeof t.lines === "string" ? JSON.parse(t.lines) : (t.lines || []),
+      }));
+      set({ recurringTemplates: parsed, recurringPostings });
+    },
+
+    addRecurringTemplate: async (t: Omit<DBRecurringTemplate, "id">) => {
+      const db = getDB();
+      const toStore = { ...t, lines: JSON.stringify(t.lines), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      await db.recurringTemplates.add(toStore);
+      const raw = await db.recurringTemplates.toArray();
+      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      set({ recurringTemplates });
+    },
+
+    updateRecurringTemplate: async (id: number, changes: Partial<DBRecurringTemplate>) => {
+      const db = getDB();
+      const toStore: any = { ...changes, updatedAt: new Date().toISOString() };
+      if (changes.lines) toStore.lines = JSON.stringify(changes.lines);
+      await db.recurringTemplates.update(id, toStore);
+      const raw = await db.recurringTemplates.toArray();
+      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      set({ recurringTemplates });
+    },
+
+    deleteRecurringTemplate: async (id: number) => {
+      const db = getDB();
+      await db.recurringTemplates.delete(id);
+      const raw = await db.recurringTemplates.toArray();
+      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      set({ recurringTemplates });
+    },
+
+    postRecurringTemplate: async (templateId: number, postDate: string, notes = "") => {
+      const db = getDB();
+      const template = (await db.recurringTemplates.get(templateId)) as any;
+      if (!template) return;
+      const lines = typeof template.lines === "string" ? JSON.parse(template.lines) : (template.lines || []);
+
+      // Compute next due date after posting
+      const nextDue = computeNextDueDate(postDate, template.frequency);
+
+      // Record posting
+      await db.recurringPostings.add({
+        templateId,
+        templateName: template.name,
+        postedDate: postDate,
+        status: "posted",
+        notes,
+        createdAt: new Date().toISOString(),
+      });
+
+      // Update template
+      await db.recurringTemplates.update(templateId, {
+        lastPostedDate: postDate,
+        nextDueDate: nextDue,
+        postingCount: (template.postingCount || 0) + 1,
+        updatedAt: new Date().toISOString(),
+      });
+
+      const [raw, recurringPostings] = await Promise.all([
+        db.recurringTemplates.toArray(),
+        db.recurringPostings.toArray(),
+      ]);
+      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      set({ recurringTemplates, recurringPostings });
+    },
+
   };
 });
 

@@ -45,6 +45,20 @@ import DebitNoteVoucher from "./pages/DebitNoteVoucher";
 import CreditNoteVoucher from "./pages/CreditNoteVoucher";
 import PhysicalStockPage from "./pages/PhysicalStockPage";
 import CashFlowStatement from "./pages/CashFlowStatement";
+import FundsFlow from "./pages/FundsFlow";
+import EquityStatement from "./pages/EquityStatement";
+import RatioAnalysis from "./pages/RatioAnalysis";
+import FixedAssets from "./pages/FixedAssets";
+import BatchManagement from "./pages/BatchManagement";
+import PDCManagement from "./pages/PDCManagement";
+import Payroll from "./pages/Payroll";
+import BudgetVsActual from "./pages/BudgetVsActual";
+import MultiCurrency from "./pages/MultiCurrency";
+import CostCentre from "./pages/CostCentre";
+import ApprovalWorkflow from "./pages/ApprovalWorkflow";
+import StatutoryCompliance from "./pages/StatutoryCompliance";
+import RecurringVouchers from "./pages/RecurringVouchers";
+import FinancialDashboard from "./pages/FinancialDashboard";
 import GeneralLedger from "./pages/GeneralLedger";
 import VatReports from "./pages/VatReports";
 import BillingInvoice from "./pages/BillingInvoice";
@@ -60,6 +74,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     initializeApp();
+  }, []);
+
+  useEffect(() => {
+    const handleNav = (e: CustomEvent) => {
+      useStore.getState().setCurrentPage(e.detail);
+    };
+    window.addEventListener("navigate", handleNav as EventListener);
+    return () => window.removeEventListener("navigate", handleNav as EventListener);
   }, []);
 
   // ── Auth Stage Machine — single source of truth for what renders ──────────
@@ -113,6 +135,9 @@ const App: React.FC = () => {
   const renderPage = () => {
     switch (currentPage) {
       // ── Masters ──────────────────────────────────────────────────────────
+      case "financial-dashboard":
+      case "dashboard":
+        return <FinancialDashboard />;
       case "accounts":
         return <ChartOfAccounts />;
       case "cost-centers":
@@ -123,6 +148,12 @@ const App: React.FC = () => {
         return <Parties />;
       case "item-master":
         return <StockBook />;
+      case "batch-management":
+        return <BatchManagement />;
+      case "pdc-summary":
+        return <PDCManagement />;
+      case "pdc-management":
+        return <PDCManagement />;
       case "warehouses":
         return <Warehouses />;
       case "units":
@@ -193,8 +224,32 @@ const App: React.FC = () => {
         return <TrialBalance />;
       case "day-book":
         return <DayBook />;
+      case "payroll":
+        return <Payroll />;
+      case "salary-process":
+        return <Payroll />;
+      case "budget-vs-actual":
+        return <BudgetVsActual />;
+      case "multi-currency":
+        return <MultiCurrency />;
+      case "cost-centre":
+        return <CostCentre />;
+      case "approval-workflow":
+        return <ApprovalWorkflow />;
+      case "statutory-compliance":
+        return <StatutoryCompliance />;
+      case "recurring-vouchers":
+        return <RecurringVouchers />;
       case "cash-flow":
         return <CashFlowStatement />;
+      case "funds-flow":
+        return <FundsFlow />;
+      case "equity-statement":
+        return <EquityStatement />;
+      case "ratio-analysis":
+        return <RatioAnalysis />;
+      case "fixed-assets":
+        return <FixedAssets />;
       case "ledger-report":
         return <GeneralLedger />;
       case "ledger":

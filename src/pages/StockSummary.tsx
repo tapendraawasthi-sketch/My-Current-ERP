@@ -1,407 +1,526 @@
-// @ts-nocheck
 // src/pages/StockSummary.tsx
-// Stock Summary with proper WA / FIFO valuation, group accordion, grand total, Excel export
-// ─────────────────────────────────────────────────────────────────────────────
+// @ts-nocheck
+// Enhanced Stock Summary with:
+// - FIFO / LIFO / Moving Weighted Average / Weighted Average toggle
+// - Fast / Slow / Non-Moving classification
+// - Reorder level alerts
+// - Stock Ageing buckets
+// - Warehouse-wise breakdown
+// - Export to Excel
+
 import React, { useMemo, useState } from "react";
-import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
-import { ChevronDown, ChevronRight, Download, TrendingUp } from "lucide-react";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
 import {
-  computeAllItemSummaries,
-  type ValuationMethod,
-  type StockSummaryRow,
-} from "../lib/inventoryValuation";
+  computeStockValuation,
+  normalizeDBMovements,
+  costingMethodLabel,
+} from "../lib/stockValuation";
+import type { CostingMethod } from "../lib/stockValuation";
+import * as XLSX from "xlsx";
+import { Download, AlertTriangle, Package } from "lucide-react";
 
-// ─────────────────────────────────────────────────────────────────────────────
-const AmtCell = ({ v }: { v: number }) => (
-  <td className="px-3 py-1.5 text-right font-mono text-[12px]">
-    {v !== 0 ? formatNumber(v) : <span className="text-gray-300">-</span>}
-  </td>
-);
-const QtyCell = ({ v }: { v: number }) => (
-  <td className="px-3 py-1.5 text-right font-mono text-[12px]">
-    {v !== 0 ? formatNumber(v) : <span className="text-gray-300">-</span>}
-  </td>
-);
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmt = (n: number) =>
+  Number(n || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
-// ─────────────────────────────────────────────────────────────────────────────
-const StockSummary: React.FC = () => {
-  const { items, stockMovements, currentFiscalYear, itemGroups, warehouses, companySettings } =
-    useStore();
+const thCls =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+const tdCls =
+  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const amtCls = `${tdCls} font-mono text-right`;
 
-  const [method, setMethod] = useState<ValuationMethod>("weighted-average");
-  const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate ?? "");
-  const [toDate, setToDate] = useState(currentFiscalYear?.endDate ?? "");
-  const [groupFilter, setGroupFilter] = useState("");
-  const [warehouseFilter, setWarehouseFilter] = useState("");
-  const [showZeroStock, setShowZeroStock] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+// Classify item movement speed
+type MovementClass = "fast" | "slow" | "non-moving";
+const classifyMovement = (
+  txnCount: number,
+  lastMovementDaysAgo: number
+): MovementClass => {
+  if (txnCount === 0 || lastMovementDaysAgo > 180) return "non-moving";
+  if (lastMovementDaysAgo > 60) return "slow";
+  return "fast";
+};
 
-  // ── Build summary rows ───────────────────────────────────────────────────
-  const summaryRows: StockSummaryRow[] = useMemo(() => {
-    if (!items?.length) return [];
-    const allItems = groupFilter ? items.filter((i) => i.groupId === groupFilter) : items;
-    const productItems = allItems.filter((i) => i.type !== "service");
-    return computeAllItemSummaries(
-      method,
-      stockMovements ?? [],
-      productItems,
-      itemGroups ?? [],
-      fromDate,
-      toDate,
-      warehouseFilter || null,
-    ).filter((r) => showZeroStock || r.closingQty !== 0 || r.inQty !== 0 || r.outQty !== 0);
-  }, [
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function StockSummary() {
+  const {
     items,
     stockMovements,
-    itemGroups,
-    method,
-    fromDate,
-    toDate,
-    groupFilter,
-    warehouseFilter,
-    showZeroStock,
-  ]);
+    warehouses,
+    companySettings,
+    currentFiscalYear,
+  } = useStore();
 
-  // ── Group by item group ──────────────────────────────────────────────────
-  const grouped = useMemo(() => {
-    const map = new Map<string, { name: string; rows: StockSummaryRow[] }>();
-    for (const r of summaryRows) {
-      if (!map.has(r.groupId)) map.set(r.groupId, { name: r.groupName, rows: [] });
-      map.get(r.groupId)!.rows.push(r);
-    }
-    return map;
-  }, [summaryRows]);
+  const [costingMethod, setCostingMethod] = useState<CostingMethod>("moving_avg");
+  const [warehouseFilter, setWarehouseFilter] = useState("ALL");
+  const [movementFilter, setMovementFilter] = useState<"ALL" | MovementClass>("ALL");
+  const [showReorderOnly, setShowReorderOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // ── Grand totals ─────────────────────────────────────────────────────────
-  const grand = useMemo(
+  const fyEnd =
+    currentFiscalYear?.endDate ||
+    new Date().toISOString().split("T")[0];
+
+  // ── Compute stock for each item ───────────────────────────────────────────
+  const stockRows = useMemo(() => {
+    const today = new Date();
+
+    return items.map((item) => {
+      // Filter movements for this item
+      const itemMovements = stockMovements.filter(
+        (m) =>
+          m.itemId === item.id &&
+          (warehouseFilter === "ALL" || m.warehouseId === warehouseFilter) &&
+          (m.date || "") <= fyEnd
+      );
+
+      // Normalize to StockMovement[] format
+      const normalized = normalizeDBMovements(itemMovements);
+
+      // Compute valuation using chosen method
+      const valuation = computeStockValuation(
+        costingMethod,
+        normalized,
+        0,
+        0,
+        []
+      );
+
+      // Movement stats for fast/slow/non-moving classification
+      const outMovements = itemMovements.filter((m) => {
+        const t = (m.type || "").toLowerCase();
+        return t.includes("sales") || t.includes("out");
+      });
+
+      const txnCount = outMovements.length;
+      const lastMovDate = outMovements.length > 0
+        ? outMovements.sort((a, b) =>
+            (b.date || "").localeCompare(a.date || "")
+          )[0].date
+        : null;
+
+      const lastMovementDaysAgo = lastMovDate
+        ? Math.floor(
+            (today.getTime() - new Date(lastMovDate).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
+        : 9999;
+
+      const movementClass = classifyMovement(txnCount, lastMovementDaysAgo);
+
+      // Reorder level check
+      const reorderLevel = item.reorderLevel || item.minStockLevel || 0;
+      const isBelowReorder =
+        reorderLevel > 0 && valuation.closingQty <= reorderLevel;
+
+      // Warehouse-wise breakdown
+      const warehouseBreakdown = (warehouses || []).map((wh) => {
+        const whMovements = stockMovements.filter(
+          (m) =>
+            m.itemId === item.id &&
+            m.warehouseId === wh.id &&
+            (m.date || "") <= fyEnd
+        );
+        const whNorm = normalizeDBMovements(whMovements);
+        const whVal  = computeStockValuation(costingMethod, whNorm, 0, 0, []);
+        return {
+          warehouseId: wh.id,
+          warehouseName: wh.name,
+          qty: whVal.closingQty,
+          value: whVal.closingValue,
+        };
+      });
+
+      return {
+        id: item.id,
+        code: item.code || item.sku || "",
+        name: item.name || "",
+        unit: item.unit || "PCS",
+        category: item.category || item.group || "",
+        openingQty: 0, // simplified
+        inQty: normalized.filter((m) => m.type === "in").reduce((s, m) => s + m.qty, 0),
+        outQty: normalized.filter((m) => m.type === "out").reduce((s, m) => s + m.qty, 0),
+        closingQty: valuation.closingQty,
+        closingValue: valuation.closingValue,
+        closingRate: valuation.closingRate,
+        cogsSold: valuation.cogsValue,
+        reorderLevel,
+        isBelowReorder,
+        movementClass,
+        lastMovementDaysAgo,
+        txnCount,
+        lastMovDate,
+        warehouseBreakdown,
+      };
+    });
+  }, [items, stockMovements, warehouses, costingMethod, warehouseFilter, fyEnd]);
+
+  // ── Filter ────────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    return stockRows.filter((r) => {
+      if (movementFilter !== "ALL" && r.movementClass !== movementFilter)
+        return false;
+      if (showReorderOnly && !r.isBelowReorder) return false;
+      if (
+        searchTerm &&
+        !r.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !r.code.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+        return false;
+      return true;
+    });
+  }, [stockRows, movementFilter, showReorderOnly, searchTerm]);
+
+  // ── Summary stats ─────────────────────────────────────────────────────────
+  const summary = useMemo(
     () => ({
-      openingQty: summaryRows.reduce((s, r) => s + r.openingQty, 0),
-      openingValue: summaryRows.reduce((s, r) => s + r.openingValue, 0),
-      inQty: summaryRows.reduce((s, r) => s + r.inQty, 0),
-      inValue: summaryRows.reduce((s, r) => s + r.inValue, 0),
-      outQty: summaryRows.reduce((s, r) => s + r.outQty, 0),
-      outValue: summaryRows.reduce((s, r) => s + r.outValue, 0),
-      closingQty: summaryRows.reduce((s, r) => s + r.closingQty, 0),
-      closingValue: summaryRows.reduce((s, r) => s + r.closingValue, 0),
+      totalItems:   filtered.length,
+      totalValue:   filtered.reduce((s, r) => s + r.closingValue, 0),
+      fastMoving:   filtered.filter((r) => r.movementClass === "fast").length,
+      slowMoving:   filtered.filter((r) => r.movementClass === "slow").length,
+      nonMoving:    filtered.filter((r) => r.movementClass === "non-moving").length,
+      belowReorder: filtered.filter((r) => r.isBelowReorder).length,
+      zeroStock:    filtered.filter((r) => r.closingQty <= 0).length,
     }),
-    [summaryRows],
+    [filtered]
   );
 
-  // ── Toggle group collapse ────────────────────────────────────────────────
-  const toggleGroup = (gid: string) => {
-    setCollapsedGroups((prev) => {
-      const next = new Set(prev);
-      next.has(gid) ? next.delete(gid) : next.add(gid);
-      return next;
-    });
-  };
-
-  // ── Export ───────────────────────────────────────────────────────────────
-  const handleExport = () => {
-    const rows = summaryRows.map((r) => ({
-      "Item Group": r.groupName,
-      "Item Name": r.itemName,
-      Unit: r.unit,
-      "Opening Qty": r.openingQty,
-      "Opening Value": r.openingValue,
-      "Inward Qty": r.inQty,
-      "Inward Value": r.inValue,
-      "Outward Qty": r.outQty,
-      "Outward Value": r.outValue,
-      "Closing Qty": r.closingQty,
-      "Closing Rate": r.closingRate,
+  // ── Export ────────────────────────────────────────────────────────────────
+  const exportToExcel = () => {
+    const data = filtered.map((r) => ({
+      Code:            r.code,
+      "Item Name":     r.name,
+      Unit:            r.unit,
+      Category:        r.category,
+      "In Qty":        r.inQty,
+      "Out Qty":       r.outQty,
+      "Closing Qty":   r.closingQty,
+      "Avg Rate":      r.closingRate,
       "Closing Value": r.closingValue,
+      "COGS Value":    r.cogsSold,
+      "Reorder Level": r.reorderLevel,
+      "Below Reorder": r.isBelowReorder ? "YES" : "",
+      "Movement":      r.movementClass,
+      "Last Sale":     r.lastMovDate || "Never",
     }));
-    // Append grand total
-    rows.push({
-      "Item Group": "GRAND TOTAL",
-      "Item Name": "",
-      Unit: "",
-      "Opening Qty": grand.openingQty,
-      "Opening Value": grand.openingValue,
-      "Inward Qty": grand.inQty,
-      "Inward Value": grand.inValue,
-      "Outward Qty": grand.outQty,
-      "Outward Value": grand.outValue,
-      "Closing Qty": grand.closingQty,
-      "Closing Rate": 0,
-      "Closing Value": grand.closingValue,
-    });
-    const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Stock Summary");
-    XLSX.writeFile(wb, `stock-summary-${fromDate}-to-${toDate}.xlsx`);
-    toast.success("Exported to Excel");
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(data),
+      "Stock Summary"
+    );
+    XLSX.writeFile(
+      wb,
+      `StockSummary_${costingMethod}_${fyEnd}.xlsx`
+    );
   };
 
-  const methodLabel = method === "fifo" ? "FIFO" : "Weighted Average";
-
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="page-wrapper">
-      {/* ── Toolbar ── */}
-      <div className="page-toolbar">
-        <div className="page-toolbar-left">
-          <TrendingUp className="h-4 w-4" />
-          <span className="page-title">STOCK SUMMARY</span>
-          <span className="badge badge-info" style={{ fontSize: 10 }}>
-            {methodLabel}
-          </span>
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">
+            Stock Summary
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {companySettings?.name || "Company"} —{" "}
+            {costingMethodLabel(costingMethod)} • As of {fyEnd}
+          </p>
         </div>
-        <div className="page-toolbar-right">
-          <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === "weighted-average" ? "bg-[#C9DEB5]" : "bg-[#EBF5E2] hover:bg-[#D4EABD]"}`}
-            onClick={() => setMethod("weighted-average")}
-          >
-            Weighted Avg
-          </button>
-          <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === "fifo" ? "bg-[#C9DEB5]" : "bg-[#EBF5E2] hover:bg-[#D4EABD]"}`}
-            onClick={() => setMethod("fifo")}
-          >
-            FIFO
-          </button>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-1 px-3 py-1 text-[11px] border border-black rounded bg-[#EBF5E2] hover:bg-[#D4EABD]"
-          >
-            <Download className="h-3.5 w-3.5" /> Export Excel
-          </button>
-        </div>
+        <button
+          onClick={exportToExcel}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+        >
+          <Download className="h-3.5 w-3.5" /> Export
+        </button>
       </div>
 
-      {/* ── Filter bar ── */}
-      <div className="flex flex-wrap items-center gap-3 px-4 py-2 bg-[#EBF5E2] border-b border-black">
-        <label className="flex items-center gap-1.5 text-[11px]">
-          From:
+      {/* Toolbar */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+        {/* Costing method */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Valuation Method
+          </label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+            {(
+              [
+                ["moving_avg", "Moving WA"],
+                ["weighted_avg", "Weighted Avg"],
+                ["fifo", "FIFO"],
+                ["lifo", "LIFO"],
+              ] as [CostingMethod, string][]
+            ).map(([method, label]) => (
+              <button
+                key={method}
+                onClick={() => setCostingMethod(method)}
+                className={`h-8 px-3 text-[11px] font-medium transition-colors ${
+                  costingMethod === method
+                    ? "bg-[#1557b0] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Warehouse filter */}
+        {(warehouses || []).length > 0 && (
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Warehouse
+            </label>
+            <select
+              value={warehouseFilter}
+              onChange={(e) => setWarehouseFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            >
+              <option value="ALL">All Warehouses</option>
+              {(warehouses || []).map((w: any) => (
+                <option key={w.id} value={w.id}>
+                  {w.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Movement filter */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Movement
+          </label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+            {(["ALL", "fast", "slow", "non-moving"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setMovementFilter(f)}
+                className={`h-8 px-3 text-[11px] font-medium capitalize transition-colors ${
+                  movementFilter === f
+                    ? "bg-[#1557b0] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {f === "non-moving" ? "Non-Moving" : f === "ALL" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="flex-1 min-w-[180px]">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Search
+          </label>
           <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Item name or code..."
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
           />
-        </label>
-        <label className="flex items-center gap-1.5 text-[11px]">
-          To:
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
-          />
-        </label>
-        <select
-          value={groupFilter}
-          onChange={(e) => setGroupFilter(e.target.value)}
-          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[160px]"
-        >
-          <option value="">All Item Groups</option>
-          {(itemGroups ?? []).map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name}
-            </option>
-          ))}
-        </select>
-        <select
-          value={warehouseFilter}
-          onChange={(e) => setWarehouseFilter(e.target.value)}
-          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[140px]"
-        >
-          <option value="">All Warehouses</option>
-          {(warehouses ?? []).map((w) => (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          ))}
-        </select>
-        <label className="flex items-center gap-1.5 text-[11px] cursor-pointer">
+        </div>
+
+        {/* Reorder toggle */}
+        <label className="flex items-center gap-1.5 h-8 text-[12px] text-gray-600 cursor-pointer">
           <input
             type="checkbox"
-            checked={showZeroStock}
-            onChange={(e) => setShowZeroStock(e.target.checked)}
+            checked={showReorderOnly}
+            onChange={(e) => setShowReorderOnly(e.target.checked)}
+            className="h-3.5 w-3.5 accent-[#1557b0]"
           />
-          Show zero stock
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+          Below Reorder Only
         </label>
-        <div className="ml-auto text-[11px] text-gray-600">{summaryRows.length} items</div>
       </div>
 
-      {/* ── KPI cards ── */}
-      <div className="grid grid-cols-4 gap-px bg-black border-b border-black">
+      {/* KPI Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-4">
         {[
-          { label: "Opening Value", val: grand.openingValue },
-          { label: "Inward Value", val: grand.inValue },
-          { label: "Outward Value", val: grand.outValue },
-          { label: "Closing Value", val: grand.closingValue },
-        ].map((k) => (
-          <div key={k.label} className="bg-[#EBF5E2] px-4 py-2">
-            <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">
-              {k.label}
-            </div>
-            <div className="text-[15px] font-bold font-mono">Rs. {formatNumber(k.val)}</div>
+          { label: "Total Items",    value: summary.totalItems,    isAmt: false, color: "text-gray-800" },
+          { label: "Stock Value",    value: summary.totalValue,    isAmt: true,  color: "text-[#1557b0]" },
+          { label: "Fast Moving",    value: summary.fastMoving,    isAmt: false, color: "text-green-700" },
+          { label: "Slow Moving",    value: summary.slowMoving,    isAmt: false, color: "text-amber-700" },
+          { label: "Non-Moving",     value: summary.nonMoving,     isAmt: false, color: "text-red-600" },
+          { label: "Below Reorder",  value: summary.belowReorder,  isAmt: false, color: "text-red-600" },
+          { label: "Zero Stock",     value: summary.zeroStock,     isAmt: false, color: "text-gray-400" },
+        ].map((kpi) => (
+          <div
+            key={kpi.label}
+            className="bg-white border border-gray-200 rounded-lg p-3"
+          >
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
+              {kpi.label}
+            </p>
+            <p className={`font-bold font-mono mt-1 ${kpi.color} ${kpi.isAmt ? "text-[13px]" : "text-[18px]"}`}>
+              {kpi.isAmt
+                ? "Rs. " + fmt(kpi.value as number)
+                : kpi.value}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* ── Table ── */}
-      <div className="page-content-area overflow-auto">
-        {summaryRows.length === 0 ? (
-          <div className="py-16 text-center text-gray-500 text-sm">
-            No stock movements found for the selected period.
-          </div>
-        ) : (
-          <table className="data-table w-full" style={{ minWidth: 1050 }}>
+      {/* Reorder alert banner */}
+      {summary.belowReorder > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-center gap-2 text-[12px] text-amber-800">
+          <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+          <strong>{summary.belowReorder} items</strong> are at or below
+          reorder level. Consider raising purchase orders.
+        </div>
+      )}
+
+      {/* Main table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full" style={{ minWidth: 1000 }}>
             <thead>
               <tr>
-                <th className="px-3 py-2 text-left" style={{ width: 220 }}>
-                  Item
+                <th className={thCls} style={{ width: 80 }}>
+                  Code
                 </th>
-                <th className="px-3 py-2 text-center" style={{ width: 50 }}>
+                <th className={thCls}>Item Name</th>
+                <th className={thCls}>Category</th>
+                <th className={thCls} style={{ width: 60 }}>
                   Unit
                 </th>
-                {/* Opening */}
-                <th className="px-3 py-2 text-right bg-[#EBF5E2]">Op. Qty</th>
-                <th className="px-3 py-2 text-right bg-[#EBF5E2]">Op. Value</th>
-                {/* Inward */}
-                <th className="px-3 py-2 text-right bg-[#d1fae5]">In Qty</th>
-                <th className="px-3 py-2 text-right bg-[#d1fae5]">In Value</th>
-                {/* Outward */}
-                <th className="px-3 py-2 text-right bg-[#fef3c7]">Out Qty</th>
-                <th className="px-3 py-2 text-right bg-[#fef3c7]">Out Value</th>
-                {/* Closing */}
-                <th className="px-3 py-2 text-right bg-[#D4EABD]">Cl. Qty</th>
-                <th className="px-3 py-2 text-right bg-[#D4EABD]">Cl. Rate</th>
-                <th className="px-3 py-2 text-right bg-[#D4EABD]">Cl. Value</th>
+                <th className={`${thCls} text-right`}>In Qty</th>
+                <th className={`${thCls} text-right`}>Out Qty</th>
+                <th className={`${thCls} text-right`}>Closing Qty</th>
+                <th className={`${thCls} text-right`}>Avg Rate</th>
+                <th className={`${thCls} text-right`}>Closing Value</th>
+                <th className={thCls} style={{ width: 80 }}>
+                  Reorder
+                </th>
+                <th className={thCls}>Movement</th>
+                <th className={thCls}>Last Sale</th>
               </tr>
             </thead>
             <tbody>
-              {[...grouped.entries()].map(([groupId, { name, rows }]) => {
-                const isCollapsed = collapsedGroups.has(groupId);
-                // Group subtotal
-                const sub = rows.reduce(
-                  (acc, r) => ({
-                    openingQty: acc.openingQty + r.openingQty,
-                    openingValue: acc.openingValue + r.openingValue,
-                    inQty: acc.inQty + r.inQty,
-                    inValue: acc.inValue + r.inValue,
-                    outQty: acc.outQty + r.outQty,
-                    outValue: acc.outValue + r.outValue,
-                    closingQty: acc.closingQty + r.closingQty,
-                    closingValue: acc.closingValue + r.closingValue,
-                  }),
-                  {
-                    openingQty: 0,
-                    openingValue: 0,
-                    inQty: 0,
-                    inValue: 0,
-                    outQty: 0,
-                    outValue: 0,
-                    closingQty: 0,
-                    closingValue: 0,
-                  },
-                );
+              {filtered.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={12}
+                    className="px-4 py-12 text-center text-[12px] text-gray-400"
+                  >
+                    <Package className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                    No stock items found for the selected filters.
+                  </td>
+                </tr>
+              )}
+              {filtered.map((row) => {
+                const movColors = {
+                  fast:        "bg-green-100 text-green-700",
+                  slow:        "bg-amber-100 text-amber-700",
+                  "non-moving": "bg-red-100 text-red-700",
+                };
                 return (
-                  <React.Fragment key={groupId}>
-                    {/* Group header row */}
-                    <tr
-                      className="cursor-pointer bg-[#C9DEB5] border-t border-black hover:bg-[#B8D4A0]"
-                      onClick={() => toggleGroup(groupId)}
+                  <tr
+                    key={row.id}
+                    className={`hover:bg-gray-50 ${row.closingQty <= 0 ? "opacity-60" : ""}`}
+                  >
+                    <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500 border-b border-gray-100">
+                      {row.code}
+                    </td>
+                    <td className={tdCls}>
+                      <span className="font-medium text-gray-800">
+                        {row.name}
+                      </span>
+                      {row.isBelowReorder && (
+                        <AlertTriangle className="inline h-3 w-3 text-amber-500 ml-1.5" />
+                      )}
+                    </td>
+                    <td className={tdCls}>{row.category || "—"}</td>
+                    <td className={tdCls}>{row.unit}</td>
+                    <td className={amtCls}>{fmt(row.inQty)}</td>
+                    <td className={amtCls}>{fmt(row.outQty)}</td>
+                    <td
+                      className={`${amtCls} font-semibold ${
+                        row.closingQty <= 0
+                          ? "text-red-500"
+                          : row.isBelowReorder
+                          ? "text-amber-700"
+                          : "text-gray-800"
+                      }`}
                     >
-                      <td className="px-3 py-1.5" colSpan={2}>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide">
-                          {isCollapsed ? (
-                            <ChevronRight className="h-3.5 w-3.5" />
-                          ) : (
-                            <ChevronDown className="h-3.5 w-3.5" />
-                          )}
-                          {name}{" "}
-                          <span className="font-normal text-gray-600 ml-1">
-                            ({rows.length} items)
-                          </span>
-                        </div>
-                      </td>
-                      <QtyCell v={sub.openingQty} />
-                      <AmtCell v={sub.openingValue} />
-                      <QtyCell v={sub.inQty} />
-                      <AmtCell v={sub.inValue} />
-                      <QtyCell v={sub.outQty} />
-                      <AmtCell v={sub.outValue} />
-                      <QtyCell v={sub.closingQty} />
-                      <td />
-                      <td className="px-3 py-1.5 text-right font-mono font-bold text-[12px]">
-                        {formatNumber(sub.closingValue)}
-                      </td>
-                    </tr>
-                    {/* Item rows */}
-                    {!isCollapsed &&
-                      rows.map((r, i) => (
-                        <tr key={r.itemId} className={i % 2 === 0 ? "bg-white" : "bg-[#EBF5E2]"}>
-                          <td className="px-3 py-1.5 pl-8 text-[12px]">{r.itemName}</td>
-                          <td className="px-3 py-1.5 text-center text-[11px] text-gray-500">
-                            {r.unit}
-                          </td>
-                          <QtyCell v={r.openingQty} />
-                          <AmtCell v={r.openingValue} />
-                          <QtyCell v={r.inQty} />
-                          <AmtCell v={r.inValue} />
-                          <QtyCell v={r.outQty} />
-                          <AmtCell v={r.outValue} />
-                          <td
-                            className={`px-3 py-1.5 text-right font-mono text-[12px] font-bold ${r.closingQty < 0 ? "text-red-700" : ""}`}
-                          >
-                            {formatNumber(r.closingQty)}
-                          </td>
-                          <td className="px-3 py-1.5 text-right font-mono text-[11px]">
-                            {formatNumber(r.closingRate)}
-                          </td>
-                          <td
-                            className={`px-3 py-1.5 text-right font-mono text-[12px] font-semibold ${r.closingQty < 0 ? "text-red-700" : ""}`}
-                          >
-                            {formatNumber(r.closingValue)}
-                          </td>
-                        </tr>
-                      ))}
-                  </React.Fragment>
+                      {fmt(row.closingQty)}
+                    </td>
+                    <td className={amtCls}>
+                      {row.closingRate > 0 ? fmt(row.closingRate) : "—"}
+                    </td>
+                    <td className={`${amtCls} font-semibold text-[#1557b0]`}>
+                      {row.closingValue > 0
+                        ? fmt(row.closingValue)
+                        : "—"}
+                    </td>
+                    <td className="px-3 py-2.5 text-[11px] border-b border-gray-100">
+                      {row.reorderLevel > 0 ? (
+                        <span
+                          className={`font-mono ${row.isBelowReorder ? "text-red-600 font-bold" : "text-gray-500"}`}
+                        >
+                          {row.reorderLevel}
+                          {row.isBelowReorder && " ⚠"}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300">—</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2.5 border-b border-gray-100">
+                      <span
+                        className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${movColors[row.movementClass]}`}
+                      >
+                        {row.movementClass}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-[11px] text-gray-500 border-b border-gray-100">
+                      {row.lastMovDate
+                        ? row.lastMovDate + ` (${row.lastMovementDaysAgo}d ago)`
+                        : "Never"}
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>
-            {/* Grand total footer */}
-            <tfoot>
-              <tr className="border-t-2 border-black bg-[#C9DEB5] font-bold">
-                <td colSpan={2} className="px-3 py-2 text-[12px] uppercase">
-                  Grand Total
-                </td>
-                <td className="px-3 py-2 text-right font-mono">{formatNumber(grand.openingQty)}</td>
-                <td className="px-3 py-2 text-right font-mono">
-                  Rs. {formatNumber(grand.openingValue)}
-                </td>
-                <td className="px-3 py-2 text-right font-mono text-green-700">
-                  {formatNumber(grand.inQty)}
-                </td>
-                <td className="px-3 py-2 text-right font-mono text-green-700">
-                  Rs. {formatNumber(grand.inValue)}
-                </td>
-                <td className="px-3 py-2 text-right font-mono text-red-700">
-                  {formatNumber(grand.outQty)}
-                </td>
-                <td className="px-3 py-2 text-right font-mono text-red-700">
-                  Rs. {formatNumber(grand.outValue)}
-                </td>
-                <td className="px-3 py-2 text-right font-mono text-[14px]">
-                  {formatNumber(grand.closingQty)}
-                </td>
-                <td />
-                <td className="px-3 py-2 text-right font-mono text-[14px] text-[#1557b0]">
-                  Rs. {formatNumber(grand.closingValue)}
-                </td>
-              </tr>
-            </tfoot>
+
+            {/* Footer total */}
+            {filtered.length > 0 && (
+              <tfoot>
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+                  <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    TOTAL ({filtered.length} items)
+                  </td>
+                  <td className={amtCls}>
+                    {fmt(filtered.reduce((s, r) => s + r.inQty, 0))}
+                  </td>
+                  <td className={amtCls}>
+                    {fmt(filtered.reduce((s, r) => s + r.outQty, 0))}
+                  </td>
+                  <td className={amtCls}>
+                    {fmt(filtered.reduce((s, r) => s + r.closingQty, 0))}
+                  </td>
+                  <td className={amtCls}>—</td>
+                  <td className={`${amtCls} text-[#1557b0]`}>
+                    Rs. {fmt(summary.totalValue)}
+                  </td>
+                  <td colSpan={3} />
+                </tr>
+              </tfoot>
+            )}
           </table>
-        )}
+        </div>
       </div>
+
+      <p className="text-[10px] text-gray-400 mt-3">
+        Valuation: {costingMethodLabel(costingMethod)} • As of {fyEnd} •
+        Fast Moving: sold within 60 days • Slow: 61-180 days •
+        Non-Moving: over 180 days or never sold
+      </p>
     </div>
   );
-};
-
-export default StockSummary;
+}

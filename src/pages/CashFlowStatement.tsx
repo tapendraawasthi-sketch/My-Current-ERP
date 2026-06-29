@@ -1,493 +1,569 @@
+// src/pages/CashFlowStatement.tsx
 // @ts-nocheck
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- *
- * Cash Flow Statement report page.
- */
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Badge, Button, Table, NepaliDatePicker } from "../components/ui";
-import { FileSpreadsheet, Printer, Activity } from "lucide-react";
-import { computeCashFlow } from "../lib/accounting";
-import { formatNumber, dateToAD } from "../lib/utils";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import { Download, Info } from "lucide-react";
 
-interface FlowRow {
-  id: string;
+// ─── Types ────────────────────────────────────────────────────────────────────
+type CFMethod = "indirect" | "direct";
+
+interface CFLine {
   label: string;
   amount: number;
+  isTotal?: boolean;
+  isSubtotal?: boolean;
+  indent?: number;
+  note?: string;
 }
 
-const CashFlowStatement: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear } = useStore();
-  const [startDate, setStartDate] = useState<string>(
-    currentFiscalYear?.startDate || dateToAD(new Date()),
-  );
-  const [endDate, setEndDate] = useState<string>(
-    currentFiscalYear?.endDate || dateToAD(new Date()),
-  );
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmt = (n: number) =>
+  Math.abs(n).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
-  useEffect(() => {
-    if (currentFiscalYear) {
-      setStartDate(currentFiscalYear.startDate);
-      setEndDate(currentFiscalYear.endDate);
-    }
-  }, [currentFiscalYear]);
+const thCls =
+  "px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+const tdCls = "px-4 py-2 text-[12px] text-gray-700 border-b border-gray-100";
+const amtCls = `${tdCls} font-mono text-right`;
 
-  const cashFlow = useMemo(() => {
-    return computeCashFlow(accounts, vouchers, startDate, endDate);
-  }, [accounts, vouchers, startDate, endDate]);
+// Keywords to classify accounts into cash-flow sections
+const OPERATING_KEYWORDS = [
+  "sales", "revenue", "income", "purchase", "cost of", "expense",
+  "debtor", "creditor", "receivable", "payable", "inventory", "stock",
+  "salary", "wages", "tax payable", "vat", "advance", "prepaid",
+];
+const INVESTING_KEYWORDS = [
+  "fixed asset", "property", "plant", "equipment", "furniture",
+  "vehicle", "machinery", "investment", "loan given", "capital work",
+  "intangible", "goodwill", "software",
+];
+const FINANCING_KEYWORDS = [
+  "loan", "borrowing", "debenture", "share capital", "equity",
+  "dividend", "reserve", "bank overdraft", "term loan", "mortgage",
+  "partner capital", "owner",
+];
+const CASH_KEYWORDS = ["cash", "bank", "petty cash", "cash in hand", "cash at bank"];
 
-  const verifiedClosing = useMemo(() => {
-    const expected = round2(cashFlow.openingCash + cashFlow.netChange);
-    return round2(cashFlow.closingCash) === expected;
-  }, [cashFlow]);
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function CashFlowStatement() {
+  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
 
-  const verificationDifference = useMemo(() => {
-    return round2(cashFlow.closingCash - round2(cashFlow.openingCash + cashFlow.netChange));
-  }, [cashFlow]);
+  const [method, setMethod] = useState<CFMethod>("indirect");
+  const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
+  const fyEnd   = currentFiscalYear?.endDate   || (new Date().getFullYear() + 1) + "-03-31";
+  const [fromDate, setFromDate] = useState(fyStart);
+  const [toDate, setToDate]     = useState(fyEnd);
 
-  const operatingRows: FlowRow[] = [
-    {
-      id: "net-profit-before-tax",
-      label: "Net Profit Before Tax",
-      amount: cashFlow.operating.items[0]?.amount || 0,
-    },
-    {
-      id: "depreciation",
-      label: "Add: Depreciation",
-      amount: cashFlow.operating.items[1]?.amount || 0,
-    },
-    {
-      id: "loss-on-sale",
-      label: "Add: Loss on Sale of Assets",
-      amount: cashFlow.operating.items[2]?.amount || 0,
-    },
-    {
-      id: "gain-on-sale",
-      label: "Less: Gain on Sale of Assets",
-      amount: cashFlow.operating.items[3]?.amount || 0,
-    },
-    {
-      id: "operating-profit-before-wcms",
-      label: "Operating Profit Before Working Capital Changes",
-      amount: cashFlow.operating.total,
-    },
-  ];
-
-  const workingCapitalRows: FlowRow[] = [
-    {
-      id: "debtors",
-      label: "Decrease/(Increase) in Debtors",
-      amount: cashFlow.operating.items[4]?.amount || 0,
-    },
-    {
-      id: "stock",
-      label: "Decrease/(Increase) in Stock",
-      amount: cashFlow.operating.items[5]?.amount || 0,
-    },
-    {
-      id: "advances",
-      label: "Decrease/(Increase) in Advances",
-      amount: cashFlow.operating.items[6]?.amount || 0,
-    },
-    {
-      id: "creditors",
-      label: "Increase/(Decrease) in Creditors",
-      amount: cashFlow.operating.items[7]?.amount || 0,
-    },
-    {
-      id: "outstanding-expenses",
-      label: "Increase/(Decrease) in Outstanding Expenses",
-      amount: cashFlow.operating.items[8]?.amount || 0,
-    },
-    {
-      id: "net-cash-operations",
-      label: "Net Cash from Operations",
-      amount: round2(
-        cashFlow.operating.total +
-          (cashFlow.operating.items[4]?.amount || 0) +
-          (cashFlow.operating.items[5]?.amount || 0) +
-          (cashFlow.operating.items[6]?.amount || 0) +
-          (cashFlow.operating.items[7]?.amount || 0) +
-          (cashFlow.operating.items[8]?.amount || 0),
-      ),
-    },
-  ];
-
-  const investingRows: FlowRow[] = [
-    {
-      id: "purchase-fixed-assets",
-      label: "Purchase of Fixed Assets",
-      amount: cashFlow.investing.items[0]?.amount || 0,
-    },
-    {
-      id: "sale-fixed-assets",
-      label: "Sale of Fixed Assets",
-      amount: cashFlow.investing.items[1]?.amount || 0,
-    },
-    {
-      id: "net-cash-investing",
-      label: "Net Cash from Investing",
-      amount: cashFlow.investing.total,
-    },
-  ];
-
-  const financingRows: FlowRow[] = [
-    {
-      id: "proceeds-loans",
-      label: "Proceeds from Loans",
-      amount: cashFlow.financing.items[0]?.amount || 0,
-    },
-    {
-      id: "repayment-loans",
-      label: "Repayment of Loans",
-      amount: cashFlow.financing.items[1]?.amount || 0,
-    },
-    {
-      id: "capital-introduced",
-      label: "Capital Introduced",
-      amount: cashFlow.financing.items[2]?.amount || 0,
-    },
-    { id: "drawings", label: "Drawings", amount: cashFlow.financing.items[3]?.amount || 0 },
-    {
-      id: "net-cash-financing",
-      label: "Net Cash from Financing",
-      amount: cashFlow.financing.total,
-    },
-  ];
-
-  const columns = [
-    { key: "label", header: "Particulars", width: "65%" },
-    {
-      key: "amount",
-      header: "Amount (Rs.)",
-      align: "right" as const,
-      render: (value: number) => <span className="font-mono">{formatNumber(value)}</span>,
-    },
-  ];
-
-  const handleExportExcel = () => {
-    try {
-      exportCashFlowToExcel(cashFlow, startDate, endDate);
-      toast.success("Cash Flow Statement exported to Excel.");
-    } catch (error: any) {
-      toast.error(error?.message || "Could not export Cash Flow Statement.");
-    }
+  // ── Classify account by name ───────────────────────────────────────────────
+  const classifyAccount = (acc: any): "cash" | "operating" | "investing" | "financing" | "other" => {
+    const name = (acc.name || "").toLowerCase();
+    if (CASH_KEYWORDS.some((k) => name.includes(k))) return "cash";
+    if (INVESTING_KEYWORDS.some((k) => name.includes(k))) return "investing";
+    if (FINANCING_KEYWORDS.some((k) => name.includes(k))) return "financing";
+    if (OPERATING_KEYWORDS.some((k) => name.includes(k))) return "operating";
+    // Fallback by account type
+    if (acc.type === "income" || acc.type === "expense") return "operating";
+    if (acc.type === "asset" || acc.type === "liability") return "operating";
+    return "other";
   };
 
-  const handlePrintPDF = () => {
-    try {
-      const blob = generateCashFlowPDF(cashFlow, companySettings, startDate, endDate);
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url);
-      if (win) win.focus();
-    } catch (error: any) {
-      toast.error(error?.message || "Could not generate PDF.");
+  // ── Build account lookup map ───────────────────────────────────────────────
+  const accountMap = useMemo(() => {
+    const m: Record<string, any> = {};
+    for (const acc of accounts) m[acc.id] = acc;
+    return m;
+  }, [accounts]);
+
+  // ── Compute movements in period ────────────────────────────────────────────
+  const movements = useMemo(() => {
+    const map: Record<string, number> = {}; // net debit for each account
+
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date || "";
+      if (vDate < fromDate || vDate > toDate) continue;
+
+      for (const line of v.lines || []) {
+        const aid = line.accountId;
+        if (!aid) continue;
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
+      }
     }
+    return map;
+  }, [vouchers, fromDate, toDate]);
+
+  // ── Compute opening balances (before period) ───────────────────────────────
+  const openingBalances = useMemo(() => {
+    const map: Record<string, number> = {};
+
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date || "";
+      if (vDate >= fromDate) continue;
+
+      for (const line of v.lines || []) {
+        const aid = line.accountId;
+        if (!aid) continue;
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
+      }
+    }
+
+    // Add opening balances from account master
+    for (const acc of accounts) {
+      if (acc.openingBalance && acc.openingBalanceDate && acc.openingBalanceDate < fromDate) {
+        const sign = (acc.openingBalanceDr || 0) > 0 ? 1 : -1;
+        map[acc.id] = (map[acc.id] || 0) + Number(acc.openingBalance || 0) * sign;
+      }
+    }
+    return map;
+  }, [vouchers, accounts, fromDate]);
+
+  // ── Cash and Bank balances ─────────────────────────────────────────────────
+  const cashAccounts = useMemo(
+    () => accounts.filter((a) => CASH_KEYWORDS.some((k) => (a.name || "").toLowerCase().includes(k))),
+    [accounts]
+  );
+
+  const openingCash = cashAccounts.reduce(
+    (s, acc) => s + (openingBalances[acc.id] || 0),
+    0
+  );
+
+  const closingCash = cashAccounts.reduce(
+    (s, acc) => s + (openingBalances[acc.id] || 0) + (movements[acc.id] || 0),
+    0
+  );
+
+  // ── INDIRECT METHOD computation ────────────────────────────────────────────
+  const indirectLines = useMemo((): CFLine[] => {
+    // 1. Start from Net Profit
+    const incomeAccounts = accounts.filter((a) => a.type === "income");
+    const expenseAccounts = accounts.filter((a) => a.type === "expense");
+    const totalIncome  = incomeAccounts.reduce((s, a) => s + (movements[a.id] || 0) * -1, 0);
+    const totalExpense = expenseAccounts.reduce((s, a) => s + (movements[a.id] || 0), 0);
+    const netProfit    = totalIncome - totalExpense;
+
+    // 2. Add back non-cash items (depreciation = accounts with "depreciation" in name)
+    const deprAccounts = expenseAccounts.filter((a) =>
+      (a.name || "").toLowerCase().includes("depreciation")
+    );
+    const depreciation = deprAccounts.reduce((s, a) => s + (movements[a.id] || 0), 0);
+
+    // 3. Working capital changes
+    // Increase in current assets = use of cash (negative)
+    // Increase in current liabilities = source of cash (positive)
+    const currentAssetKeywords = ["debtor", "receivable", "prepaid", "inventory", "stock", "advance paid"];
+    const currentLiabilityKeywords = ["creditor", "payable", "advance received", "tax payable", "vat payable"];
+
+    const currentAssetAccounts = accounts.filter(
+      (a) => a.type === "asset" && !cashAccounts.find((c) => c.id === a.id) &&
+      currentAssetKeywords.some((k) => (a.name || "").toLowerCase().includes(k))
+    );
+    const currentLiabilityAccounts = accounts.filter(
+      (a) => a.type === "liability" &&
+      currentLiabilityKeywords.some((k) => (a.name || "").toLowerCase().includes(k))
+    );
+
+    const changeInDebtors = currentAssetAccounts.reduce((s, a) => s + (movements[a.id] || 0), 0);
+    const changeInCreditors = currentLiabilityAccounts.reduce((s, a) => s + (movements[a.id] || 0), 0);
+
+    const operatingCF =
+      netProfit + depreciation - changeInDebtors + changeInCreditors;
+
+    // 4. Investing activities
+    const fixedAssetAccounts = accounts.filter(
+      (a) => a.type === "asset" &&
+      INVESTING_KEYWORDS.some((k) => (a.name || "").toLowerCase().includes(k))
+    );
+    const investingCF = fixedAssetAccounts.reduce(
+      (s, a) => s - (movements[a.id] || 0), // increase in FA = outflow
+      0
+    );
+
+    // 5. Financing activities
+    const financingAccounts = accounts.filter(
+      (a) => FINANCING_KEYWORDS.some((k) => (a.name || "").toLowerCase().includes(k)) &&
+      !cashAccounts.find((c) => c.id === a.id)
+    );
+    const financingCF = financingAccounts.reduce(
+      (s, a) => s - (movements[a.id] || 0),
+      0
+    );
+
+    const netChange = operatingCF + investingCF + financingCF;
+
+    return [
+      // ── A. Operating ───────────────────────────────────────────────────
+      { label: "A. OPERATING ACTIVITIES", amount: 0, isTotal: false, indent: 0, note: "Indirect method starts from net profit" },
+      { label: "Net Profit / (Loss) for the period", amount: netProfit, indent: 1 },
+      { label: "Adjustments for non-cash items:", amount: 0, indent: 1, note: "" },
+      { label: "Add: Depreciation & Amortization", amount: depreciation, indent: 2 },
+      { label: "Working Capital Changes:", amount: 0, indent: 1 },
+      { label: "(Increase) / Decrease in Trade Debtors", amount: -changeInDebtors, indent: 2, note: "Increase in debtors = use of cash" },
+      { label: "Increase / (Decrease) in Trade Creditors", amount: changeInCreditors, indent: 2, note: "Increase in creditors = source of cash" },
+      { label: "Net Cash from Operating Activities (A)", amount: operatingCF, isSubtotal: true, indent: 0 },
+
+      // ── B. Investing ───────────────────────────────────────────────────
+      { label: "B. INVESTING ACTIVITIES", amount: 0, indent: 0 },
+      { label: "Purchase of Fixed Assets / Capital Expenditure", amount: investingCF, indent: 1 },
+      { label: "Net Cash from Investing Activities (B)", amount: investingCF, isSubtotal: true, indent: 0 },
+
+      // ── C. Financing ───────────────────────────────────────────────────
+      { label: "C. FINANCING ACTIVITIES", amount: 0, indent: 0 },
+      { label: "Proceeds / (Repayment) of Loans & Borrowings", amount: financingCF, indent: 1 },
+      { label: "Net Cash from Financing Activities (C)", amount: financingCF, isSubtotal: true, indent: 0 },
+
+      // ── Summary ────────────────────────────────────────────────────────
+      { label: "Net Increase / (Decrease) in Cash (A+B+C)", amount: netChange, isTotal: true },
+      { label: "Cash & Bank Balance — Opening", amount: openingCash, indent: 1 },
+      { label: "Cash & Bank Balance — Closing (Opening + Net Change)", amount: closingCash, isSubtotal: true, indent: 1 },
+    ];
+  }, [accounts, movements, openingCash, closingCash, cashAccounts]);
+
+  // ── DIRECT METHOD computation ──────────────────────────────────────────────
+  const directLines = useMemo((): CFLine[] => {
+    // Direct method: show actual cash receipts and payments
+
+    // Cash receipts from customers (credit sales collected = receipts vouchers with party debit)
+    const receiptVouchers = vouchers.filter(
+      (v) => v.status === "posted" && v.type === "receipt" &&
+      (v.date || "") >= fromDate && (v.date || "") <= toDate
+    );
+    const cashReceiptsFromCustomers = receiptVouchers.reduce(
+      (s, v) => s + Number(v.totalDebit || v.grandTotal || 0), 0
+    );
+
+    // Cash paid to suppliers
+    const paymentVouchers = vouchers.filter(
+      (v) => v.status === "posted" && v.type === "payment" &&
+      (v.date || "") >= fromDate && (v.date || "") <= toDate
+    );
+    const cashPaidToSuppliers = paymentVouchers.reduce(
+      (s, v) => s + Number(v.totalCredit || v.grandTotal || 0), 0
+    );
+
+    // Cash paid for expenses (expense vouchers)
+    const expenseVouchers = vouchers.filter(
+      (v) => v.status === "posted" && (v.type === "payment" || v.type === "journal") &&
+      (v.date || "") >= fromDate && (v.date || "") <= toDate
+    );
+    const cashPaidForExpenses = expenseVouchers.reduce((s, v) => {
+      const expenseLines = (v.lines || []).filter((l: any) => {
+        const acc = accountMap[l.accountId];
+        return acc && acc.type === "expense" && !(acc.name || "").toLowerCase().includes("depreciation");
+      });
+      return s + expenseLines.reduce((ls: number, l: any) => ls + Number(l.debit || 0), 0);
+    }, 0);
+
+    // Fixed asset purchases
+    const fixedAssetAccounts = accounts.filter(
+      (a) => INVESTING_KEYWORDS.some((k) => (a.name || "").toLowerCase().includes(k))
+    );
+    const capex = fixedAssetAccounts.reduce(
+      (s, a) => s + Math.max(0, movements[a.id] || 0),
+      0
+    );
+
+    // Loan receipts / repayments
+    const financingAccounts = accounts.filter(
+      (a) => FINANCING_KEYWORDS.some((k) => (a.name || "").toLowerCase().includes(k)) &&
+      !cashAccounts.find((c) => c.id === a.id)
+    );
+    const loanReceipts   = financingAccounts.reduce((s, a) => s + Math.max(0, -(movements[a.id] || 0)), 0);
+    const loanRepayments = financingAccounts.reduce((s, a) => s + Math.max(0, movements[a.id] || 0), 0);
+
+    const operatingCF = cashReceiptsFromCustomers - cashPaidToSuppliers - cashPaidForExpenses;
+    const investingCF = -capex;
+    const financingCF = loanReceipts - loanRepayments;
+    const netChange   = operatingCF + investingCF + financingCF;
+
+    return [
+      // ── A. Operating ───────────────────────────────────────────────────
+      { label: "A. OPERATING ACTIVITIES", amount: 0, indent: 0, note: "Direct method shows actual cash inflows and outflows" },
+      { label: "Cash Receipts from Customers", amount: cashReceiptsFromCustomers, indent: 1, note: "Receipts collected from customers" },
+      { label: "Cash Paid to Suppliers & for Purchases", amount: -cashPaidToSuppliers, indent: 1, note: "Payments made to suppliers" },
+      { label: "Cash Paid for Operating Expenses", amount: -cashPaidForExpenses, indent: 1, note: "Salaries, rent, utilities, etc." },
+      { label: "Net Cash from Operating Activities (A)", amount: operatingCF, isSubtotal: true, indent: 0 },
+
+      // ── B. Investing ───────────────────────────────────────────────────
+      { label: "B. INVESTING ACTIVITIES", amount: 0, indent: 0 },
+      { label: "Purchase of Fixed Assets (Capital Expenditure)", amount: -capex, indent: 1, note: "Outflow for buying fixed assets" },
+      { label: "Net Cash from Investing Activities (B)", amount: investingCF, isSubtotal: true, indent: 0 },
+
+      // ── C. Financing ───────────────────────────────────────────────────
+      { label: "C. FINANCING ACTIVITIES", amount: 0, indent: 0 },
+      { label: "Proceeds from Loans & Borrowings", amount: loanReceipts, indent: 1 },
+      { label: "Repayment of Loans & Borrowings", amount: -loanRepayments, indent: 1 },
+      { label: "Net Cash from Financing Activities (C)", amount: financingCF, isSubtotal: true, indent: 0 },
+
+      // ── Summary ────────────────────────────────────────────────────────
+      { label: "Net Increase / (Decrease) in Cash (A+B+C)", amount: netChange, isTotal: true },
+      { label: "Cash & Bank Balance — Opening", amount: openingCash, indent: 1 },
+      { label: "Cash & Bank Balance — Closing", amount: closingCash, isSubtotal: true, indent: 1 },
+    ];
+  }, [accounts, vouchers, movements, openingCash, closingCash, accountMap, cashAccounts, fromDate, toDate]);
+
+  const lines = method === "indirect" ? indirectLines : directLines;
+
+  // Summary amounts from lines
+  const operatingCF = lines.find((l) => l.label.includes("Operating Activities (A)"))?.amount || 0;
+  const investingCF = lines.find((l) => l.label.includes("Investing Activities (B)"))?.amount || 0;
+  const financingCF = lines.find((l) => l.label.includes("Financing Activities (C)"))?.amount || 0;
+  const netChange   = operatingCF + investingCF + financingCF;
+
+  // ── Export ────────────────────────────────────────────────────────────────
+  const exportToExcel = () => {
+    const rows = lines
+      .filter((l) => l.amount !== 0 || l.isTotal || l.isSubtotal || l.label.toUpperCase() === l.label)
+      .map((l) => ({
+        "Particulars": "  ".repeat(l.indent || 0) + l.label,
+        "Amount (Rs.)": l.amount !== 0 ? l.amount : "",
+        "Note": l.note || "",
+      }));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Cash Flow");
+    XLSX.writeFile(wb, `CashFlow_${method}_${fromDate}_to_${toDate}.xlsx`);
   };
 
+  // ─── Row renderer ─────────────────────────────────────────────────────────
+  const renderRow = (line: CFLine, idx: number) => {
+    const indent = (line.indent || 0) * 20;
+    const isHeader = line.amount === 0 && !line.isTotal && !line.isSubtotal &&
+      line.label === line.label.toUpperCase();
+
+    if (isHeader) {
+      return (
+        <tr key={idx}>
+          <td
+            colSpan={2}
+            className="px-4 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200"
+          >
+            {line.label}
+            {line.note && (
+              <span className="ml-2 text-[10px] text-gray-400 normal-case font-normal">
+                — {line.note}
+              </span>
+            )}
+          </td>
+        </tr>
+      );
+    }
+
+    if (line.isTotal) {
+      return (
+        <tr key={idx} className="bg-[#1e2433] text-white">
+          <td className="px-4 py-2.5 text-[12px] font-bold" style={{ paddingLeft: 16 + indent }}>
+            {line.label}
+          </td>
+          <td className={`px-4 py-2.5 text-[12px] font-bold font-mono text-right ${line.amount >= 0 ? "text-green-400" : "text-red-400"}`}>
+            Rs. {fmt(line.amount)}
+            {line.amount < 0 ? " (outflow)" : " (inflow)"}
+          </td>
+        </tr>
+      );
+    }
+
+    if (line.isSubtotal) {
+      return (
+        <tr key={idx} className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+          <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800 border-b border-gray-100"
+            style={{ paddingLeft: 16 + indent }}>
+            {line.label}
+          </td>
+          <td className={`px-4 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 ${line.amount >= 0 ? "text-[#1557b0]" : "text-red-600"}`}>
+            Rs. {fmt(line.amount)}
+          </td>
+        </tr>
+      );
+    }
+
+    if (line.amount === 0) {
+      return (
+        <tr key={idx}>
+          <td
+            className="px-4 py-1.5 text-[11px] font-semibold text-gray-600 border-b border-gray-100"
+            style={{ paddingLeft: 16 + indent }}
+            colSpan={2}
+          >
+            {line.label}
+            {line.note && <span className="ml-2 text-[10px] text-gray-400 font-normal">({line.note})</span>}
+          </td>
+        </tr>
+      );
+    }
+
+    return (
+      <tr key={idx} className="hover:bg-gray-50">
+        <td className="px-4 py-2 text-[12px] text-gray-700 border-b border-gray-100"
+          style={{ paddingLeft: 16 + indent }}>
+          {line.label}
+          {line.note && (
+            <span className="ml-2 text-[10px] text-gray-400">
+              <Info className="inline h-3 w-3 mr-0.5" />{line.note}
+            </span>
+          )}
+        </td>
+        <td className={`px-4 py-2 text-[12px] font-mono text-right border-b border-gray-100 ${line.amount < 0 ? "text-red-600" : "text-gray-800"}`}>
+          {line.amount < 0 ? `(${fmt(line.amount)})` : fmt(line.amount)}
+        </td>
+      </tr>
+    );
+  };
+
+  // ─── Main render ──────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none">
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Cash Flow Statement</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
-            Operating, investing and financing activities
+          <h1 className="text-[15px] font-semibold text-gray-800">Cash Flow Statement</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {companySettings?.name || "Company"} — {fromDate} to {toDate} •{" "}
+            {method === "indirect" ? "Indirect Method (IAS 7)" : "Direct Method (IAS 7)"}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            icon={<FileSpreadsheet className="h-4 w-4" />}
-            onClick={handleExportExcel}
+          <button
+            onClick={exportToExcel}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
           >
-            Export Excel
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            icon={<Printer className="h-4 w-4" />}
-            onClick={handlePrintPDF}
-          >
-            Print PDF
-          </Button>
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
         </div>
       </div>
 
-      <Card border padding="md" className="no-print">
-        <div className="grid gap-4 lg:grid-cols-3">
-          <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
-          <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
-          <div className="rounded-xl border border-[#9DC07A] bg-[#EBF5E2] p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Verification
-            </div>
-            <div className="mt-3 text-sm font-bold text-[#000000]">
-              {verifiedClosing ? (
-                <Badge variant="success">VERIFIED ✓</Badge>
-              ) : (
-                <Badge variant="danger">WARNING</Badge>
-              )}
-            </div>
-            {!verifiedClosing && (
-              <div className="mt-2 text-[11px] text-rose-600">
-                Difference: Rs. {formatNumber(verificationDifference)}
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
-
-      <Card border padding="md" className="bg-[#EBF5E2]">
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Net Cash from Operations
-            </div>
-            <div className="mt-3 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.operating.total)}
-            </div>
-          </div>
-          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Net Cash from Investing
-            </div>
-            <div className="mt-3 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.investing.total)}
-            </div>
-          </div>
-          <div className="rounded-xl border border-[#9DC07A] bg-white p-4">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Net Cash from Financing
-            </div>
-            <div className="mt-3 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.financing.total)}
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <Card border padding="md" className="grid gap-5">
+      {/* Toolbar */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
         <div>
-          <div className="px-4 py-2 bg-[#f0f4ff] text-[11px] font-bold text-[#1557b0] uppercase tracking-wide mb-3">
-            A. CASH FLOWS FROM OPERATING ACTIVITIES
-          </div>
-          <Table columns={columns} data={operatingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
-            Operating Profit Before Working Capital Changes: Rs.{" "}
-            {formatNumber(cashFlow.operating.total)}
-          </div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            From Date
+          </label>
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
         </div>
-
         <div>
-          <div className="mb-3 text-xs font-bold uppercase tracking-wider text-[#000000]">
-            Working Capital Changes
-          </div>
-          <Table columns={columns} data={workingCapitalRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
-            Net Cash from Operations: Rs.{" "}
-            {formatNumber(
-              workingCapitalRows.find((row) => row.id === "net-cash-operations")?.amount || 0,
-            )}
-          </div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            To Date
+          </label>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
         </div>
 
+        {/* Method toggle */}
         <div>
-          <div className="px-4 py-2 bg-[#f0f4ff] text-[11px] font-bold text-[#1557b0] uppercase tracking-wide mb-3">
-            B. CASH FLOWS FROM INVESTING ACTIVITIES
-          </div>
-          <Table columns={columns} data={investingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
-            Net Cash from Investing: Rs. {formatNumber(cashFlow.investing.total)}
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Method
+          </label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+            {(["indirect", "direct"] as CFMethod[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMethod(m)}
+                className={`h-8 px-4 text-[11px] font-medium capitalize transition-colors ${
+                  method === m
+                    ? "bg-[#1557b0] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {m === "indirect"
+                  ? "Indirect (Net Profit → Cash)"
+                  : "Direct (Actual Cash Flows)"}
+              </button>
+            ))}
           </div>
         </div>
+      </div>
 
-        <div>
-          <div className="px-4 py-2 bg-[#f0f4ff] text-[11px] font-bold text-[#1557b0] uppercase tracking-wide mb-3">
-            C. CASH FLOWS FROM FINANCING ACTIVITIES
-          </div>
-          <Table columns={columns} data={financingRows} rowKey="id" stickyHeader compact />
-          <div className="mt-3 text-right text-sm font-bold text-[#000000]">
-            Net Cash from Financing: Rs. {formatNumber(cashFlow.financing.total)}
-          </div>
-        </div>
+      {/* Method explanation */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[11px] text-blue-800">
+        {method === "indirect" ? (
+          <span>
+            <strong>Indirect Method:</strong> Starts from Net Profit and adjusts for non-cash items
+            (depreciation) and working capital changes. Most common method — preferred by auditors
+            and used in most financial statements worldwide.
+          </span>
+        ) : (
+          <span>
+            <strong>Direct Method:</strong> Shows actual cash receipts and payments — cash collected
+            from customers, cash paid to suppliers, cash paid for expenses. Preferred by banks and
+            financial institutions for detailed cash analysis.
+          </span>
+        )}
+      </div>
 
-        <div className="grid gap-3 md:grid-cols-3 bg-[#EBF5E2] rounded-xl p-4">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Net Increase/(Decrease) in Cash
-            </div>
-            <div className="mt-2 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.netChange)}
-            </div>
+      {/* KPI summary */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+        {[
+          { label: "Operating Cash Flow", value: operatingCF, color: operatingCF >= 0 ? "text-green-700" : "text-red-600" },
+          { label: "Investing Cash Flow", value: investingCF, color: investingCF >= 0 ? "text-green-700" : "text-red-600" },
+          { label: "Financing Cash Flow", value: financingCF, color: financingCF >= 0 ? "text-green-700" : "text-red-600" },
+          { label: "Opening Cash & Bank", value: openingCash, color: "text-gray-700" },
+          { label: "Closing Cash & Bank", value: closingCash, color: closingCash >= 0 ? "text-[#1557b0]" : "text-red-600" },
+        ].map((kpi) => (
+          <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              {kpi.label}
+            </p>
+            <p className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}>
+              {kpi.value < 0 ? "(" : ""}Rs. {fmt(kpi.value)}{kpi.value < 0 ? ")" : ""}
+            </p>
           </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Opening Cash &amp; Cash Equivalents
-            </div>
-            <div className="mt-2 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.openingCash)}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#000000]">
-              Closing Cash &amp; Cash Equivalents
-            </div>
-            <div className="mt-2 text-lg font-bold text-[#000000]">
-              Rs. {formatNumber(cashFlow.closingCash)}
-            </div>
-          </div>
+        ))}
+      </div>
+
+      {/* Reconciliation check */}
+      {Math.abs(closingCash - (openingCash + netChange)) > 1 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-[11px] text-amber-800">
+          ⚠ Note: Computed closing cash ({fmt(openingCash + netChange)}) differs from actual cash
+          account balance ({fmt(closingCash)}) by Rs.{" "}
+          {fmt(Math.abs(closingCash - (openingCash + netChange)))}. This may be due to
+          classification of some accounts. Review your account groupings.
         </div>
-      </Card>
+      )}
+
+      {/* Main statement */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 flex justify-between">
+          <span className="text-[12px] font-semibold text-gray-800">
+            Statement of Cash Flows — {method === "indirect" ? "Indirect" : "Direct"} Method
+          </span>
+          <span className="text-[11px] text-gray-500">
+            Period: {fromDate} to {toDate}
+          </span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
+            <thead>
+              <tr>
+                <th className={thCls}>Particulars</th>
+                <th className={`${thCls} text-right`} style={{ width: 200 }}>
+                  Amount (Rs.)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((line, idx) => renderRow(line, idx))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p className="text-[10px] text-gray-400 mt-3">
+        Prepared as per IAS 7 — Statement of Cash Flows •{" "}
+        {method === "indirect" ? "Indirect" : "Direct"} Method • All amounts in NPR
+      </p>
     </div>
   );
-};
-
-function exportCashFlowToExcel(
-  data: any,
-  startDate: string,
-  endDate: string,
-  filename: string = "Cash_Flow_Statement.xlsx",
-) {
-  const headers = ["Section", "Particulars", "Amount (Rs.)"];
-  const rows: any[] = [];
-
-  rows.push(["Period", `${startDate} to ${endDate}`, ""]);
-  rows.push([]);
-
-  rows.push(["A. OPERATING ACTIVITIES", "", ""]);
-  data.operating.items.forEach((item: any) => rows.push(["", item.label, item.amount]));
-  rows.push(["", "Operating Profit Before Working Capital Changes", data.operating.total]);
-  rows.push([]);
-
-  rows.push(["A. WORKING CAPITAL CHANGES", "", ""]);
-  rows.push(["", "Net Cash from Operations", data.operating.total]);
-  rows.push([]);
-
-  rows.push(["B. INVESTING ACTIVITIES", "", ""]);
-  data.investing.items.forEach((item: any) => rows.push(["", item.label, item.amount]));
-  rows.push(["", "Net Cash from Investing", data.investing.total]);
-  rows.push([]);
-
-  rows.push(["C. FINANCING ACTIVITIES", "", ""]);
-  data.financing.items.forEach((item: any) => rows.push(["", item.label, item.amount]));
-  rows.push(["", "Net Cash from Financing", data.financing.total]);
-  rows.push([]);
-
-  rows.push(["", "Net Increase/(Decrease) in Cash", data.netChange]);
-  rows.push(["", "Opening Cash & Cash Equivalents", data.openingCash]);
-  rows.push(["", "Closing Cash & Cash Equivalents", data.closingCash]);
-  rows.push([
-    "",
-    "Verified Closing Cash",
-    data.openingCash + data.netChange === data.closingCash ? "VERIFIED" : "WARNING",
-  ]);
-
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Cash Flow Statement");
-  XLSX.writeFile(wb, filename);
 }
-
-function generateCashFlowPDF(data: any, company: any, startDate: string, endDate: string): Blob {
-  const doc = new jsPDF();
-  let y = 18;
-
-  doc.setFont("Helvetica", "bold");
-  doc.setFontSize(14);
-  doc.text(company.name || "Company Name", 105, y, { align: "center" });
-  y += 6;
-  if (company.address) {
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text(company.address, 105, y, { align: "center" });
-    y += 5;
-  }
-  doc.setFont("Helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("Cash Flow Statement", 105, y, { align: "center" });
-  y += 5;
-  doc.setFont("Helvetica", "normal");
-  doc.setFontSize(9);
-  doc.text(`Period: ${startDate} to ${endDate}`, 105, y, { align: "center" });
-  y += 8;
-
-  const drawSection = (title: string, rows: any[], totalLabel: string, totalValue: number) => {
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(10);
-    doc.text(title, 15, y);
-    y += 5;
-    doc.setLineWidth(0.25);
-    doc.line(15, y, 195, y);
-    y += 6;
-
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(9);
-    rows.forEach((row) => {
-      doc.text(row.label, 18, y);
-      doc.text(formatNumber(row.amount), 195, y, { align: "right" });
-      y += 5;
-      if (y > 265) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-
-    doc.setFont("Helvetica", "bold");
-    doc.text(totalLabel, 18, y);
-    doc.text(formatNumber(totalValue), 195, y, { align: "right" });
-    y += 10;
-  };
-
-  drawSection(
-    "A. CASH FLOWS FROM OPERATING ACTIVITIES",
-    data.operating.items,
-    "Operating Profit Before Working Capital Changes",
-    data.operating.total,
-  );
-  drawSection(
-    "B. CASH FLOWS FROM INVESTING ACTIVITIES",
-    data.investing.items,
-    "Net Cash from Investing",
-    data.investing.total,
-  );
-  drawSection(
-    "C. CASH FLOWS FROM FINANCING ACTIVITIES",
-    data.financing.items,
-    "Net Cash from Financing",
-    data.financing.total,
-  );
-
-  doc.setFont("Helvetica", "bold");
-  doc.text("NET INCREASE/(DECREASE) IN CASH:", 15, y);
-  doc.text(formatNumber(data.netChange), 195, y, { align: "right" });
-  y += 6;
-  doc.text("Opening Cash & Cash Equivalents:", 15, y);
-  doc.text(formatNumber(data.openingCash), 195, y, { align: "right" });
-  y += 6;
-  doc.text("CLOSING CASH & CASH EQUIVALENTS:", 15, y);
-  doc.text(formatNumber(data.closingCash), 195, y, { align: "right" });
-  y += 8;
-
-  const verifiedText =
-    round2(data.openingCash + data.netChange) === round2(data.closingCash)
-      ? "VERIFIED ✓"
-      : "WARNING: Reconciliation mismatch";
-  doc.setFont("Helvetica", "normal");
-  doc.text(verifiedText, 15, y);
-
-  return doc.output("blob");
-}
-
-function round2(value: number) {
-  return Math.round(value * 100) / 100;
-}
-
-export default CashFlowStatement;

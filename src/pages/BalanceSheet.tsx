@@ -1,272 +1,670 @@
+// src/pages/BalanceSheet.tsx
 // @ts-nocheck
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Download, FileSpreadsheet, Printer, RefreshCw, TrendingUp } from "lucide-react";
+import { formatNumber } from "../lib/utils";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import { Download, ChevronDown, ChevronRight, TrendingUp } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+type BSFormat = "vertical" | "horizontal";
 
-interface BalanceSheetLine {
-  accountId: string;
-  accountName: string;
-  accountCode: string;
-  amount: number;
-  level: number;
+interface BSNode {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  level: string;
   isGroup: boolean;
-  children?: BalanceSheetLine[];
+  depth: number;
+  balance: number;        // current period closing balance (signed: positive = normal side)
+  priorBalance: number;   // prior period closing balance
+  pct: number;            // % of total assets
+  children: BSNode[];
 }
-
-interface BalanceSheetSection {
-  title: string;
-  lines: BalanceSheetLine[];
-  total: number;
-}
-
-// ─── ReportShell ──────────────────────────────────────────────────────────────
-
-interface ReportShellProps {
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}
-
-const ReportShell: React.FC<ReportShellProps> = ({ title, subtitle, children }) => {
-  return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatAmount(amount: number): string {
-  const abs = Math.abs(amount);
-  const formatted = abs.toLocaleString("en-NP", {
+const fmt = (n: number, abs = true) => {
+  const v = abs ? Math.abs(n) : n;
+  return Number(v).toLocaleString("en-NP", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  return amount < 0 ? `(${formatted})` : formatted;
-}
-
-function buildTree(
-  accounts: any[],
-  parentId: string | undefined,
-  type: string,
-  vouchers: any[],
-  invoices: any[],
-): BalanceSheetLine[] {
-  return accounts
-    .filter(
-      (a) =>
-        a.type === type &&
-        (parentId === undefined ? !a.parentId : a.parentId === parentId) &&
-        a.isActive !== false,
-    )
-    .map((account) => {
-      const children = buildTree(accounts, account.id, type, vouchers, invoices);
-
-      // Compute balance from voucher lines
-      let balance = account.balance ?? 0;
-
-      const childTotal = children.reduce((sum, c) => sum + c.amount, 0);
-      const total = account.isGroup ? childTotal : balance;
-
-      return {
-        accountId: account.id,
-        accountName: account.name,
-        accountCode: account.code ?? "",
-        amount: total,
-        level: 0,
-        isGroup: !!account.isGroup,
-        children: children.length > 0 ? children : undefined,
-      };
-    })
-    .filter((line) => line.amount !== 0 || line.isGroup);
-}
-
-function flattenLines(
-  lines: BalanceSheetLine[],
-  depth = 0,
-): (BalanceSheetLine & { depth: number })[] {
-  const result: (BalanceSheetLine & { depth: number })[] = [];
-  for (const line of lines) {
-    result.push({ ...line, depth });
-    if (line.children && line.children.length > 0) {
-      result.push(...flattenLines(line.children, depth + 1));
-    }
-  }
-  return result;
-}
-
-function sumLines(lines: BalanceSheetLine[]): number {
-  return lines.reduce((sum, line) => {
-    if (line.isGroup && line.children) {
-      return sum + sumLines(line.children);
-    }
-    return sum + line.amount;
-  }, 0);
-}
-
-// ─── Row Component ─────────────────────────────────────────────────────────────
-
-const BalanceSheetRow: React.FC<{
-  line: BalanceSheetLine & { depth: number };
-  isCredit?: boolean;
-}> = ({ line, isCredit }) => {
-  const indent = line.depth * 16;
-
-  return (
-    <tr
-      className={`border-b border-gray-100 ${line.isGroup ? "bg-[#f5f6fa]" : "hover:bg-gray-50"}`}
-    >
-      <td className="px-3 py-2 text-[11px] font-mono text-gray-500 w-20">
-        {line.accountCode || "—"}
-      </td>
-      <td className="px-3 py-2">
-        <span
-          style={{ paddingLeft: `${indent}px` }}
-          className={`text-[12px] ${
-            line.isGroup ? "font-semibold text-gray-700" : "font-normal text-gray-700"
-          }`}
-        >
-          {line.accountName}
-        </span>
-      </td>
-      <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-700">
-        {line.isGroup ? "" : formatAmount(line.amount)}
-      </td>
-      <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-700">
-        {line.isGroup && line.amount !== 0 ? formatAmount(line.amount) : ""}
-      </td>
-    </tr>
-  );
 };
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+const pctFmt = (n: number) =>
+  n === 0 ? "—" : (n > 0 ? "" : "-") + Math.abs(n).toFixed(1) + "%";
 
-const BalanceSheet: React.FC = () => {
-  const { accounts, vouchers, invoices, currentFiscalYear, companySettings } = useStore();
+const thCls =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+const tdCls = "px-3 py-2 text-[12px] text-gray-700 border-b border-gray-100";
+const amtCls = `${tdCls} font-mono text-right`;
 
-  const [asOfDate, setAsOfDate] = useState(() => new Date().toISOString().split("T")[0]);
-  const [loading, setLoading] = useState(false);
-  const [expandAll, setExpandAll] = useState(true);
+// ─── Determine if an account type is debit-nature ─────────────────────────────
+const isDebitNature = (type: string) =>
+  type === "asset" || type === "expense";
 
-  // ── Compute Balance Sheet sections ──────────────────────────────────────────
-  const { assets, liabilities, equity, isBalanced, difference } = useMemo(() => {
-    const assetLines = buildTree(accounts, undefined, "asset", vouchers, invoices);
-    const liabilityLines = buildTree(accounts, undefined, "liability", vouchers, invoices);
-    const equityLines = buildTree(accounts, undefined, "equity", vouchers, invoices);
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function BalanceSheet() {
+  const { accounts, vouchers, invoices, stockMovements, currentFiscalYear, companySettings } =
+    useStore();
 
-    const totalAssets = sumLines(assetLines);
-    const totalLiabilities = sumLines(liabilityLines);
-    const totalEquity = sumLines(equityLines);
+  const [format, setFormat] = useState<BSFormat>("vertical");
+  const [showPct, setShowPct] = useState(false);
+  const [showComparative, setShowComparative] = useState(false);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [asOfDate, setAsOfDate] = useState(
+    currentFiscalYear?.endDate || new Date().toISOString().split("T")[0]
+  );
+  const [priorDate, setPriorDate] = useState(
+    currentFiscalYear?.startDate || ""
+  );
 
-    const liabEquity = totalLiabilities + totalEquity;
-    const diff = Math.abs(totalAssets - liabEquity);
-    const balanced = diff < 0.01;
+  // ── Compute account balances from vouchers ────────────────────────────────
+  const balanceMap = useMemo(() => {
+    const map: Record<string, number> = {};
 
-    return {
-      assets: { lines: assetLines, total: totalAssets },
-      liabilities: { lines: liabilityLines, total: totalLiabilities },
-      equity: { lines: equityLines, total: totalEquity },
-      isBalanced: balanced,
-      difference: diff,
-    };
-  }, [accounts, vouchers, invoices]);
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date || "";
+      if (vDate > asOfDate) continue;
 
-  const flatAssets = useMemo(() => flattenLines(assets.lines), [assets.lines]);
-  const flatLiabilities = useMemo(() => flattenLines(liabilities.lines), [liabilities.lines]);
-  const flatEquity = useMemo(() => flattenLines(equity.lines), [equity.lines]);
-
-  // ── Export to Excel ─────────────────────────────────────────────────────────
-  const handleExportExcel = () => {
-    try {
-      const wb = XLSX.utils.book_new();
-
-      const companyName = companySettings?.name || companySettings?.companyName || "Company";
-      const fyName = currentFiscalYear?.name || "";
-
-      const rows: any[][] = [
-        [companyName],
-        ["Balance Sheet"],
-        [fyName ? `Fiscal Year: ${fyName}` : `As of: ${asOfDate}`],
-        [],
-        ["Code", "Account", "Amount", "Sub-Total"],
-        [],
-        ["ASSETS"],
-      ];
-
-      for (const line of flatAssets) {
-        const indent = "  ".repeat(line.depth);
-        rows.push([
-          line.accountCode || "",
-          indent + line.accountName,
-          line.isGroup ? "" : line.amount,
-          line.isGroup && line.amount !== 0 ? line.amount : "",
-        ]);
+      for (const line of v.lines || []) {
+        const aid = line.accountId;
+        if (!aid) continue;
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
       }
-
-      rows.push(["", "TOTAL ASSETS", "", assets.total]);
-      rows.push([]);
-      rows.push(["LIABILITIES"]);
-
-      for (const line of flatLiabilities) {
-        const indent = "  ".repeat(line.depth);
-        rows.push([
-          line.accountCode || "",
-          indent + line.accountName,
-          line.isGroup ? "" : line.amount,
-          line.isGroup && line.amount !== 0 ? line.amount : "",
-        ]);
-      }
-
-      rows.push(["", "TOTAL LIABILITIES", "", liabilities.total]);
-      rows.push([]);
-      rows.push(["EQUITY"]);
-
-      for (const line of flatEquity) {
-        const indent = "  ".repeat(line.depth);
-        rows.push([
-          line.accountCode || "",
-          indent + line.accountName,
-          line.isGroup ? "" : line.amount,
-          line.isGroup && line.amount !== 0 ? line.amount : "",
-        ]);
-      }
-
-      rows.push(["", "TOTAL EQUITY", "", equity.total]);
-      rows.push([]);
-      rows.push(["", "TOTAL LIABILITIES & EQUITY", "", liabilities.total + equity.total]);
-
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      XLSX.utils.book_append_sheet(wb, ws, "Balance Sheet");
-      XLSX.writeFile(wb, `BalanceSheet_${asOfDate.replace(/-/g, "")}.xlsx`);
-      toast.success("Balance Sheet exported to Excel.");
-    } catch (err) {
-      toast.error("Export failed.");
     }
+
+    // Also factor in opening balances from account master
+    for (const acc of accounts) {
+      if (acc.openingBalance && acc.openingBalanceDate) {
+        if (acc.openingBalanceDate <= asOfDate) {
+          const ob = Number(acc.openingBalance || 0);
+          const sign = acc.openingBalanceDr > 0 ? 1 : -1;
+          map[acc.id] = (map[acc.id] || 0) + ob * sign;
+        }
+      }
+    }
+
+    return map;
+  }, [vouchers, accounts, asOfDate]);
+
+  // Prior period balance map
+  const priorBalanceMap = useMemo(() => {
+    if (!showComparative || !priorDate) return {};
+    const map: Record<string, number> = {};
+
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date || "";
+      if (vDate > priorDate) continue;
+
+      for (const line of v.lines || []) {
+        const aid = line.accountId;
+        if (!aid) continue;
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
+      }
+    }
+
+    for (const acc of accounts) {
+      if (acc.openingBalance && acc.openingBalanceDate) {
+        if (acc.openingBalanceDate <= priorDate) {
+          const ob = Number(acc.openingBalance || 0);
+          const sign = acc.openingBalanceDr > 0 ? 1 : -1;
+          map[acc.id] = (map[acc.id] || 0) + ob * sign;
+        }
+      }
+    }
+
+    return map;
+  }, [vouchers, accounts, priorDate, showComparative]);
+
+  // ── Compute closing stock from inventory ───────────────────────────────────
+  const closingStockValue = useMemo(() => {
+    const inflow = stockMovements
+      .filter((m) => {
+        const t = (m.type || "").toLowerCase();
+        return (
+          (t.includes("purchase") || t.includes("in") || t.includes("opening")) &&
+          (m.date || "") <= asOfDate
+        );
+      })
+      .reduce((s, m) => s + Number(m.qty || 0) * Number(m.rate || 0), 0);
+
+    const outflow = stockMovements
+      .filter((m) => {
+        const t = (m.type || "").toLowerCase();
+        return (
+          (t.includes("sales") || t.includes("out")) &&
+          (m.date || "") <= asOfDate
+        );
+      })
+      .reduce((s, m) => s + Number(m.qty || 0) * Number(m.rate || 0), 0);
+
+    return Math.max(0, inflow - outflow);
+  }, [stockMovements, asOfDate]);
+
+  // ── Build BSNode tree ──────────────────────────────────────────────────────
+  const buildTree = (
+    bMap: Record<string, number>,
+    pMap: Record<string, number>
+  ) => {
+    const nodeMap: Record<string, BSNode> = {};
+
+    const sorted = [...accounts].sort(
+      (a, b) =>
+        (a.type || "").localeCompare(b.type || "") ||
+        (a.code || "").localeCompare(b.code || "")
+    );
+
+    for (const acc of sorted) {
+      const rawBal = bMap[acc.id] || 0;
+      const priorRaw = pMap[acc.id] || 0;
+
+      // Normalize: positive = normal side of the account type
+      const balance = isDebitNature(acc.type) ? rawBal : -rawBal;
+      const priorBalance = isDebitNature(acc.type) ? priorRaw : -priorRaw;
+
+      nodeMap[acc.id] = {
+        id: acc.id,
+        code: acc.code || "",
+        name: acc.name || "",
+        type: acc.type || "",
+        level: acc.level || "ledger",
+        isGroup: !!acc.isGroup,
+        depth: 0,
+        balance,
+        priorBalance,
+        pct: 0,
+        children: [],
+      };
+    }
+
+    const roots: BSNode[] = [];
+    for (const acc of sorted) {
+      const node = nodeMap[acc.id];
+      if (acc.parentId && nodeMap[acc.parentId]) {
+        nodeMap[acc.parentId].children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+
+    // Aggregate groups bottom-up
+    const aggregate = (node: BSNode): void => {
+      for (const child of node.children) aggregate(child);
+      if (node.isGroup && node.children.length > 0) {
+        node.balance = node.children.reduce((s, c) => s + c.balance, 0);
+        node.priorBalance = node.children.reduce(
+          (s, c) => s + c.priorBalance,
+          0
+        );
+      }
+    };
+    for (const r of roots) aggregate(r);
+
+    return { roots, nodeMap };
   };
 
-  // ── Print ───────────────────────────────────────────────────────────────────
-  const handlePrint = () => {
-    window.print();
+  const { roots } = useMemo(
+    () => buildTree(balanceMap, priorBalanceMap),
+    [balanceMap, priorBalanceMap]
+  );
+
+  // ── Separate into Balance Sheet categories ────────────────────────────────
+  const getByType = (type: string) =>
+    roots.filter((r) => r.type === type || r.type === type.toLowerCase());
+
+  const assetRoots = roots.filter((r) => r.type === "asset");
+  const liabilityRoots = roots.filter((r) => r.type === "liability");
+  const equityRoots = roots.filter((r) => r.type === "equity");
+
+  const totalAssets = assetRoots.reduce((s, r) => s + r.balance, 0) + closingStockValue;
+  const totalLiabilities = liabilityRoots.reduce((s, r) => s + r.balance, 0);
+  const totalEquity = equityRoots.reduce((s, r) => s + r.balance, 0);
+  const totalLiabilitiesAndEquity = totalLiabilities + totalEquity;
+
+  const priorTotalAssets = assetRoots.reduce((s, r) => s + r.priorBalance, 0);
+  const priorTotalLiabilities = liabilityRoots.reduce(
+    (s, r) => s + r.priorBalance,
+    0
+  );
+  const priorTotalEquity = equityRoots.reduce(
+    (s, r) => s + r.priorBalance,
+    0
+  );
+
+  const isBalanced =
+    Math.abs(totalAssets - totalLiabilitiesAndEquity) < 1;
+
+  // ── Toggle expand ─────────────────────────────────────────────────────────
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   };
 
-  // ── Render ──────────────────────────────────────────────────────────────────
+  const expandAll = () =>
+    setExpandedIds(
+      new Set(accounts.filter((a) => a.isGroup).map((a) => a.id))
+    );
+  const collapseAll = () => setExpandedIds(new Set());
+
+  // ── Flatten nodes for table rendering ────────────────────────────────────
+  const flattenNodes = (nodes: BSNode[], depth = 0): BSNode[] => {
+    const result: BSNode[] = [];
+    for (const node of nodes) {
+      const withDepth = { ...node, depth };
+      result.push(withDepth);
+      if (expandedIds.has(node.id) && node.children.length > 0) {
+        result.push(...flattenNodes(node.children, depth + 1));
+      }
+    }
+    return result;
+  };
+
+  // ── Export ────────────────────────────────────────────────────────────────
+  const exportToExcel = () => {
+    const makeRows = (nodes: BSNode[], label: string) =>
+      flattenNodes(nodes).map((n) => ({
+        Section: label,
+        Code: n.code,
+        Account: "  ".repeat(n.depth) + n.name,
+        Balance: n.balance,
+        "Prior Balance": showComparative ? n.priorBalance : undefined,
+        "% of Total Assets": showPct
+          ? totalAssets > 0
+            ? ((n.balance / totalAssets) * 100).toFixed(1) + "%"
+            : "—"
+          : undefined,
+      }));
+
+    const data = [
+      ...makeRows(assetRoots, "Assets"),
+      ...makeRows(liabilityRoots, "Liabilities"),
+      ...makeRows(equityRoots, "Equity"),
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(data),
+      "Balance Sheet"
+    );
+    XLSX.writeFile(wb, `BalanceSheet_${asOfDate}.xlsx`);
+  };
+
+  // ─── Reusable section renderer ────────────────────────────────────────────
+  const renderSection = (
+    nodes: BSNode[],
+    sectionTotal: number,
+    priorTotal: number,
+    label: string,
+    totalLabel: string
+  ) => {
+    const flat = flattenNodes(nodes);
+
+    return (
+      <>
+        {/* Section header */}
+        <tr>
+          <td
+            colSpan={showComparative ? (showPct ? 5 : 4) : showPct ? 4 : 3}
+            className="px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200"
+          >
+            {label}
+          </td>
+        </tr>
+
+        {flat.map((node) => {
+          const indent = node.depth * 18;
+          const pctVal =
+            totalAssets > 0 ? (node.balance / totalAssets) * 100 : 0;
+
+          return (
+            <tr
+              key={node.id}
+              className={`${node.isGroup ? "bg-gray-50" : "hover:bg-gray-50"}`}
+            >
+              <td className={`${tdCls} font-mono text-[11px] text-gray-400`} style={{ width: 80 }}>
+                {node.code}
+              </td>
+              <td className={tdCls}>
+                <div
+                  className="flex items-center gap-1.5"
+                  style={{ paddingLeft: indent }}
+                >
+                  {node.isGroup && node.children.length > 0 ? (
+                    <button
+                      onClick={() => toggleExpand(node.id)}
+                      className="text-gray-400 hover:text-gray-700 shrink-0"
+                    >
+                      {expandedIds.has(node.id) ? (
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      ) : (
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  ) : (
+                    <span className="w-3.5 shrink-0" />
+                  )}
+                  <span
+                    className={
+                      node.isGroup
+                        ? "font-semibold text-gray-800"
+                        : "text-gray-700"
+                    }
+                  >
+                    {node.name}
+                  </span>
+                </div>
+              </td>
+              <td className={`${amtCls} ${node.isGroup ? "font-semibold" : ""}`}>
+                {node.balance !== 0 ? fmt(node.balance) : "—"}
+              </td>
+              {showComparative && (
+                <td className={`${amtCls} text-gray-500`} style={{ background: "#fffbeb" }}>
+                  {node.priorBalance !== 0 ? fmt(node.priorBalance) : "—"}
+                </td>
+              )}
+              {showPct && (
+                <td className={`${amtCls} text-gray-500`} style={{ background: "#f0f9ff" }}>
+                  {pctFmt(pctVal)}
+                </td>
+              )}
+            </tr>
+          );
+        })}
+
+        {/* Section total */}
+        <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+          <td className={tdCls} />
+          <td className="px-3 py-2 text-[12px] font-bold text-gray-800 border-b border-gray-100">
+            {totalLabel}
+          </td>
+          <td className="px-3 py-2 text-[12px] font-bold font-mono text-right text-[#1557b0] border-b border-gray-100">
+            {fmt(sectionTotal)}
+          </td>
+          {showComparative && (
+            <td
+              className="px-3 py-2 text-[12px] font-bold font-mono text-right text-amber-700 border-b border-gray-100"
+              style={{ background: "#fffbeb" }}
+            >
+              {fmt(priorTotal)}
+            </td>
+          )}
+          {showPct && (
+            <td
+              className="px-3 py-2 text-[12px] font-bold font-mono text-right text-gray-500 border-b border-gray-100"
+              style={{ background: "#f0f9ff" }}
+            >
+              {pctFmt(
+                totalAssets > 0 ? (sectionTotal / totalAssets) * 100 : 0
+              )}
+            </td>
+          )}
+        </tr>
+        <tr>
+          <td
+            colSpan={showComparative ? (showPct ? 5 : 4) : showPct ? 4 : 3}
+            className="py-1"
+          />
+        </tr>
+      </>
+    );
+  };
+
+  // ─── Vertical format (single column) ─────────────────────────────────────
+  const renderVertical = () => (
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[700px]">
+          <thead>
+            <tr>
+              <th className={thCls} style={{ width: 80 }}>Code</th>
+              <th className={thCls}>Account</th>
+              <th className={`${thCls} text-right`}>
+                As of {asOfDate}
+              </th>
+              {showComparative && (
+                <th
+                  className={`${thCls} text-right`}
+                  style={{ background: "#fffbeb" }}
+                >
+                  Prior ({priorDate || "—"})
+                </th>
+              )}
+              {showPct && (
+                <th
+                  className={`${thCls} text-right`}
+                  style={{ background: "#f0f9ff" }}
+                >
+                  % of Assets
+                </th>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {renderSection(
+              assetRoots,
+              totalAssets,
+              priorTotalAssets,
+              "ASSETS",
+              "Total Assets"
+            )}
+
+            {/* Closing Stock line (from inventory) */}
+            <tr className="bg-blue-50">
+              <td className={`${tdCls} font-mono text-[11px] text-gray-400`} />
+              <td className={tdCls}>
+                <span className="text-[12px] text-blue-700 font-medium pl-5">
+                  + Closing Stock (Inventory)
+                </span>
+              </td>
+              <td className="px-3 py-2 text-[12px] font-mono text-right text-blue-700 border-b border-gray-100">
+                {fmt(closingStockValue)}
+              </td>
+              {showComparative && <td style={{ background: "#fffbeb" }} className={amtCls}>—</td>}
+              {showPct && <td style={{ background: "#f0f9ff" }} className={amtCls}>—</td>}
+            </tr>
+            <tr>
+              <td colSpan={showComparative ? (showPct ? 5 : 4) : showPct ? 4 : 3} className="py-1" />
+            </tr>
+
+            {renderSection(
+              liabilityRoots,
+              totalLiabilities,
+              priorTotalLiabilities,
+              "LIABILITIES",
+              "Total Liabilities"
+            )}
+
+            {renderSection(
+              equityRoots,
+              totalEquity,
+              priorTotalEquity,
+              "EQUITY / CAPITAL",
+              "Total Equity"
+            )}
+
+            {/* Grand total */}
+            <tr className="bg-[#1e2433] text-white">
+              <td className="px-3 py-2.5 text-[12px]" />
+              <td className="px-3 py-2.5 text-[12px] font-bold">
+                Total Liabilities + Equity
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right">
+                {fmt(totalLiabilitiesAndEquity)}
+              </td>
+              {showComparative && (
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right">
+                  {fmt(priorTotalLiabilities + priorTotalEquity)}
+                </td>
+              )}
+              {showPct && <td />}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  // ─── Horizontal (T-Format) ────────────────────────────────────────────────
+  const renderHorizontal = () => {
+    const assetFlat = flattenNodes(assetRoots);
+    const liabEquityFlat = [
+      ...flattenNodes(liabilityRoots),
+      ...flattenNodes(equityRoots),
+    ];
+    const maxRows = Math.max(assetFlat.length, liabEquityFlat.length);
+
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px] text-[12px]">
+            <thead>
+              <tr>
+                <th className={thCls} colSpan={2} style={{ textAlign: "center" }}>
+                  LIABILITIES & EQUITY
+                </th>
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
+                  Amount
+                </th>
+                <th className={thCls} colSpan={2} style={{ textAlign: "center" }}>
+                  ASSETS
+                </th>
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: maxRows + 3 }).map((_, i) => {
+                const liabNode = liabEquityFlat[i];
+                const assetNode = assetFlat[i];
+
+                // Summary rows at the bottom
+                if (i === maxRows) {
+                  return (
+                    <tr key="summary1" className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+                      <td className={tdCls} />
+                      <td className="px-3 py-2.5 font-bold text-gray-800 border-b border-gray-100">
+                        Total Liabilities + Equity
+                      </td>
+                      <td className="px-3 py-2.5 font-bold font-mono text-right text-[#1557b0] border-b border-gray-100">
+                        {fmt(totalLiabilitiesAndEquity)}
+                      </td>
+                      <td className={tdCls} />
+                      <td className="px-3 py-2.5 font-bold text-gray-800 border-b border-gray-100">
+                        Total Assets
+                      </td>
+                      <td className="px-3 py-2.5 font-bold font-mono text-right text-[#1557b0] border-b border-gray-100">
+                        {fmt(totalAssets)}
+                      </td>
+                    </tr>
+                  );
+                }
+                if (i > maxRows) return null;
+
+                return (
+                  <tr key={i} className="hover:bg-gray-50">
+                    {/* Left side — liabilities & equity */}
+                    {liabNode ? (
+                      <>
+                        <td
+                          className="px-2 py-1.5 text-[11px] font-mono text-gray-400 border-b border-gray-100"
+                          style={{ width: 60 }}
+                        >
+                          {liabNode.code}
+                        </td>
+                        <td
+                          className="px-2 py-1.5 border-b border-gray-100"
+                          style={{
+                            paddingLeft: 8 + liabNode.depth * 14,
+                            fontWeight: liabNode.isGroup ? 600 : 400,
+                          }}
+                        >
+                          {liabNode.name}
+                        </td>
+                        <td className="px-3 py-1.5 font-mono text-right border-b border-r border-gray-200">
+                          {liabNode.balance !== 0
+                            ? fmt(liabNode.balance)
+                            : ""}
+                        </td>
+                      </>
+                    ) : (
+                      <td colSpan={3} className="border-b border-r border-gray-200" />
+                    )}
+
+                    {/* Right side — assets */}
+                    {assetNode ? (
+                      <>
+                        <td
+                          className="px-2 py-1.5 text-[11px] font-mono text-gray-400 border-b border-gray-100"
+                          style={{ width: 60 }}
+                        >
+                          {assetNode.code}
+                        </td>
+                        <td
+                          className="px-2 py-1.5 border-b border-gray-100"
+                          style={{
+                            paddingLeft: 8 + assetNode.depth * 14,
+                            fontWeight: assetNode.isGroup ? 600 : 400,
+                          }}
+                        >
+                          {assetNode.name}
+                        </td>
+                        <td className="px-3 py-1.5 font-mono text-right border-b border-gray-100">
+                          {assetNode.balance !== 0
+                            ? fmt(assetNode.balance)
+                            : ""}
+                        </td>
+                      </>
+                    ) : (
+                      <td colSpan={3} className="border-b border-gray-100" />
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <ReportShell title="Balance Sheet" subtitle="Assets, liabilities and equity position">
-      {/* Action toolbar — moved INSIDE children, not passed as prop */}
-      <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">
+            Balance Sheet
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {companySettings?.name || "Company"} — As of {asOfDate}
+          </p>
+        </div>
         <div className="flex items-center gap-2">
-          <label className="text-[11px] font-medium text-gray-600">As of Date:</label>
+          <button
+            onClick={exportToExcel}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            As of Date
+          </label>
           <input
             type="date"
             value={asOfDate}
@@ -275,255 +673,215 @@ const BalanceSheet: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setExpandAll((v) => !v)}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-          >
-            {expandAll ? "Collapse" : "Expand"} All
-          </button>
-          <button
-            type="button"
-            onClick={handleExportExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export Excel
-          </button>
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-          >
-            <Printer className="h-3.5 w-3.5" />
-            Print
-          </button>
+        {/* Format toggle */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Format
+          </label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+            {(["vertical", "horizontal"] as BSFormat[]).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFormat(f)}
+                className={`h-8 px-3 text-[11px] font-medium capitalize transition-colors ${
+                  format === f
+                    ? "bg-[#1557b0] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {f === "vertical" ? "Vertical (Schedule)" : "Horizontal (T-Format)"}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Comparative toggle */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Comparative
+          </label>
+          <label className="flex items-center gap-1.5 h-8 text-[12px] text-gray-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showComparative}
+              onChange={(e) => setShowComparative(e.target.checked)}
+              className="h-3.5 w-3.5 accent-[#1557b0]"
+            />
+            Show Prior Period
+          </label>
+        </div>
+
+        {showComparative && (
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Prior Date
+            </label>
+            <input
+              type="date"
+              value={priorDate}
+              onChange={(e) => setPriorDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            />
+          </div>
+        )}
+
+        {/* Common-size % */}
+        {format === "vertical" && (
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Common-Size
+            </label>
+            <label className="flex items-center gap-1.5 h-8 text-[12px] text-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showPct}
+                onChange={(e) => setShowPct(e.target.checked)}
+                className="h-3.5 w-3.5 accent-[#1557b0]"
+              />
+              % of Total Assets
+            </label>
+          </div>
+        )}
+
+        <button
+          onClick={expandAll}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50"
+        >
+          Expand All
+        </button>
+        <button
+          onClick={collapseAll}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50"
+        >
+          Collapse All
+        </button>
       </div>
 
-      {/* Balance indicator */}
+      {/* Balance check indicator */}
       <div
-        className={`mb-4 px-4 py-2.5 rounded-lg border flex items-center justify-between text-[12px] font-semibold ${
+        className={`mb-4 px-4 py-2 rounded-md border text-[12px] font-semibold flex items-center gap-2 ${
           isBalanced
             ? "bg-green-50 text-green-700 border-green-200"
             : "bg-red-50 text-red-700 border-red-200"
         }`}
       >
-        <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4" />
-          <span>
-            {isBalanced
-              ? "Balance Sheet is balanced — Assets = Liabilities + Equity"
-              : `Balance Sheet is OUT OF BALANCE — Difference: ${formatAmount(difference)}`}
-          </span>
-        </div>
-        <div className="flex items-center gap-4 text-[11px]">
-          <span>
-            Assets: <strong className="font-mono">{formatAmount(assets.total)}</strong>
-          </span>
-          <span>
-            Liab + Equity:{" "}
-            <strong className="font-mono">{formatAmount(liabilities.total + equity.total)}</strong>
-          </span>
-        </div>
+        {isBalanced
+          ? "✓ Balance Sheet is BALANCED (Assets = Liabilities + Equity)"
+          : `⚠ UNBALANCED — Difference: Rs. ${fmt(Math.abs(totalAssets - totalLiabilitiesAndEquity))}`}
+        <span className="ml-auto font-normal text-[11px] text-gray-500 flex gap-4">
+          <span>Assets: Rs. {fmt(totalAssets)}</span>
+          <span>Liabilities + Equity: Rs. {fmt(totalLiabilitiesAndEquity)}</span>
+        </span>
       </div>
 
-      {/* Two-column layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {/* ── Assets Column ── */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-          <div className="bg-[#1557b0] px-4 py-2.5">
-            <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">Assets</h2>
+      {/* Summary KPI cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        {[
+          { label: "Total Assets", value: totalAssets, color: "text-[#1557b0]" },
+          { label: "Total Liabilities", value: totalLiabilities, color: "text-red-600" },
+          { label: "Equity / Net Worth", value: totalEquity, color: "text-green-700" },
+          {
+            label: "Closing Stock",
+            value: closingStockValue,
+            color: "text-amber-700",
+          },
+        ].map((kpi) => (
+          <div
+            key={kpi.label}
+            className="bg-white border border-gray-200 rounded-lg p-3"
+          >
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              {kpi.label}
+            </p>
+            <p className={`text-[15px] font-bold font-mono mt-1 ${kpi.color}`}>
+              Rs. {fmt(kpi.value)}
+            </p>
+            {showComparative && kpi.label === "Total Assets" && (
+              <p className="text-[10px] text-gray-400 mt-0.5">
+                Prior: Rs. {fmt(priorTotalAssets)}
+              </p>
+            )}
           </div>
+        ))}
+      </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                    Code
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Account
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Amount
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Sub-Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {flatAssets.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
-                      No asset accounts found.
-                    </td>
-                  </tr>
-                ) : (
-                  flatAssets.map((line, idx) => (
-                    <BalanceSheetRow key={`asset-${line.accountId}-${idx}`} line={line} />
-                  ))
-                )}
-              </tbody>
-              <tfoot>
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td className="px-3 py-2.5" />
-                  <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">Total Assets</td>
-                  <td className="px-3 py-2.5" />
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                    {formatAmount(assets.total)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
+      {/* Main report */}
+      {format === "vertical" ? renderVertical() : renderHorizontal()}
 
-        {/* ── Liabilities & Equity Column ── */}
-        <div className="flex flex-col gap-4">
-          {/* Liabilities */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="bg-[#dc2626] px-4 py-2.5">
-              <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">
-                Liabilities
-              </h2>
+      {/* Sources & Application note */}
+      <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4">
+        <h3 className="text-[12px] font-semibold text-gray-800 mb-2 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-[#1557b0]" />
+          Sources &amp; Application of Funds (Summary)
+        </h3>
+        <div className="grid grid-cols-2 gap-4 text-[12px]">
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Sources of Funds
+            </p>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Equity Capital</span>
+                <span className="font-mono font-semibold">
+                  Rs. {fmt(totalEquity)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total Liabilities</span>
+                <span className="font-mono font-semibold">
+                  Rs. {fmt(totalLiabilities)}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-gray-200 pt-1 font-bold">
+                <span>Total Sources</span>
+                <span className="font-mono text-[#1557b0]">
+                  Rs. {fmt(totalLiabilitiesAndEquity)}
+                </span>
+              </div>
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                      Code
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                      Amount
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                      Sub-Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {flatLiabilities.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
-                        No liability accounts found.
-                      </td>
-                    </tr>
-                  ) : (
-                    flatLiabilities.map((line, idx) => (
-                      <BalanceSheetRow key={`liab-${line.accountId}-${idx}`} line={line} isCredit />
-                    ))
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Application of Funds
+            </p>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Fixed / Non-Current Assets</span>
+                <span className="font-mono font-semibold">
+                  Rs.{" "}
+                  {fmt(
+                    assetRoots
+                      .filter(
+                        (a) =>
+                          (a.name || "").toLowerCase().includes("fixed") ||
+                          (a.name || "").toLowerCase().includes("non-current") ||
+                          (a.name || "").toLowerCase().includes("property")
+                      )
+                      .reduce((s, a) => s + a.balance, 0)
                   )}
-                </tbody>
-                <tfoot>
-                  <tr className="bg-[#fef2f2] border-t-2 border-[#fecaca]">
-                    <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                      Total Liabilities
-                    </td>
-                    <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                      {formatAmount(liabilities.total)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Current Assets + Stock</span>
+                <span className="font-mono font-semibold">
+                  Rs. {fmt(totalAssets)}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-gray-200 pt-1 font-bold">
+                <span>Total Application</span>
+                <span className="font-mono text-[#1557b0]">
+                  Rs. {fmt(totalAssets)}
+                </span>
+              </div>
             </div>
-          </div>
-
-          {/* Equity */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="bg-[#059669] px-4 py-2.5">
-              <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">Equity</h2>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                      Code
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                      Amount
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                      Sub-Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {flatEquity.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
-                        No equity accounts found.
-                      </td>
-                    </tr>
-                  ) : (
-                    flatEquity.map((line, idx) => (
-                      <BalanceSheetRow
-                        key={`equity-${line.accountId}-${idx}`}
-                        line={line}
-                        isCredit
-                      />
-                    ))
-                  )}
-                </tbody>
-                <tfoot>
-                  <tr className="bg-[#f0fdf4] border-t-2 border-[#bbf7d0]">
-                    <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                      Total Equity
-                    </td>
-                    <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                      {formatAmount(equity.total)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
-
-          {/* Grand Total — Liabilities + Equity */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <table className="w-full">
-              <tbody>
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td className="px-3 py-3 text-[13px] font-bold text-gray-800">
-                    Total Liabilities &amp; Equity
-                  </td>
-                  <td className="px-3 py-3 text-right font-mono text-[13px] font-bold text-gray-800">
-                    {formatAmount(liabilities.total + equity.total)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
 
-      {/* Print styles */}
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; }
-          @page { size: A4 landscape; margin: 10mm; }
-        }
-      `}</style>
-    </ReportShell>
+      <p className="text-[10px] text-gray-400 mt-3">
+        Balances computed from posted vouchers up to {asOfDate} • Opening
+        balances included
+      </p>
+    </div>
   );
-};
-
-export default BalanceSheet;
+}

@@ -1,1011 +1,597 @@
+// src/pages/TrialBalance.tsx
 // @ts-nocheck
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { getDB } from "../lib/db";
-import { formatADToBS } from "../lib/nepaliDate";
-import { generateId } from "../lib/db";
+import { formatNumber } from "../lib/utils";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
 import {
-  Download,
-  Printer,
-  Search,
-  Calendar,
   ChevronDown,
-  ChevronUp,
-  RotateCcw,
   ChevronRight,
+  Download,
+  RefreshCw,
 } from "lucide-react";
 
-function money(v: number): string {
-  const abs = Math.abs(Number(v || 0));
-  const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return v < 0 ? `(${s})` : s;
-}
+// ─── Types ────────────────────────────────────────────────────────────────────
+type DisplayMode = "simple" | "columnar" | "comparative";
 
-function displayMoney(v: number): string {
-  if (!v || Math.abs(v) < 0.01) return "-";
-  return money(v);
-}
-
-interface TrialBalanceRow {
+interface TrialRow {
   id: string;
   code: string;
   name: string;
-  nameNepali?: string;
   type: string;
   level: string;
   isGroup: boolean;
+  depth: number;
   parentId?: string;
   openingDr: number;
   openingCr: number;
-  periodDr: number;
-  periodCr: number;
+  movDr: number;
+  movCr: number;
   closingDr: number;
   closingCr: number;
-  hasChildren?: boolean;
-  expanded?: boolean;
-  children?: TrialBalanceRow[];
+  // comparative (prior period)
+  priorClosingDr: number;
+  priorClosingCr: number;
+  // budget
+  budgetAmt: number;
+  children: TrialRow[];
 }
 
-const allColumns = [
-  { key: "account", label: "Account Name" },
-  { key: "openingDr", label: "Opening Dr" },
-  { key: "openingCr", label: "Opening Cr" },
-  { key: "periodDr", label: "Period Dr" },
-  { key: "periodCr", label: "Period Cr" },
-  { key: "closingDr", label: "Closing Dr" },
-  { key: "closingCr", label: "Closing Cr" },
-];
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmt = (n: number) =>
+  n === 0 ? "—" : Number(n).toLocaleString("en-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const TrialBalance: React.FC = () => {
-  const { accounts, vouchers, fiscalYears, currentFiscalYear, companySettings, costCenters } =
-    useStore();
-  const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate || "");
-  const [toDate, setToDate] = useState(currentFiscalYear?.endDate || "");
-  const [showZeroBalances, setShowZeroBalances] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState(0); // 0: Standard, 1: Condensed, 2: Vertical, 3: Comparative, 4: Cost Center
-  const [selectedCostCenter, setSelectedCostCenter] = useState("");
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+const thCls =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+const tdCls = "px-3 py-2 text-[12px] text-gray-700 border-b border-gray-100";
+const amtCls = `${tdCls} font-mono text-right`;
 
-  // Compute trial balance data
-  const computeTrialBalance = (accs: any[], vouchs: any[], fromAD: string, toAD: string) => {
-    const result = new Map();
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function TrialBalance() {
+  const { accounts, vouchers, budgets, currentFiscalYear } = useStore();
 
-    const filteredVouchers = vouchs.filter((v) => v.status !== "cancelled" && v.status !== "draft");
+  const [mode, setMode] = useState<DisplayMode>("columnar");
+  const [hideZero, setHideZero] = useState(true);
+  const [showBudget, setShowBudget] = useState(false);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [fromDate, setFromDate] = useState(
+    currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01"
+  );
+  const [toDate, setToDate] = useState(
+    currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31"
+  );
+  const [priorFrom, setPriorFrom] = useState("");
+  const [priorTo, setPriorTo] = useState("");
+  const [filterType, setFilterType] = useState("ALL");
 
-    const prevYearVouchers = filteredVouchers.filter((v) => new Date(v.date) < new Date(fromAD));
+  // ── Build voucher movement maps ──────────────────────────────────────────
+  const { currentMov, priorMov, openingBal } = useMemo(() => {
+    const cur: Record<string, { dr: number; cr: number }> = {};
+    const prior: Record<string, { dr: number; cr: number }> = {};
+    const opening: Record<string, { dr: number; cr: number }> = {};
 
-    const periodVouchers = filteredVouchers.filter(
-      (v) => new Date(v.date) >= new Date(fromAD) && new Date(v.date) <= new Date(toAD),
-    );
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date || "";
 
-    const processVoucherLines = (lines, isPrevYear = false) => {
-      lines.forEach((line) => {
-        const accId = line.accountId;
-        if (!result.has(accId)) {
-          result.set(accId, {
-            openingDr: 0,
-            openingCr: 0,
-            periodDr: 0,
-            periodCr: 0,
-            closingDr: 0,
-            closingCr: 0,
-          });
+      for (const line of v.lines || []) {
+        const aid = line.accountId;
+        if (!aid) continue;
+        const dr = Number(line.debit || 0);
+        const cr = Number(line.credit || 0);
+
+        // Opening: before fromDate
+        if (vDate < fromDate) {
+          if (!opening[aid]) opening[aid] = { dr: 0, cr: 0 };
+          opening[aid].dr += dr;
+          opening[aid].cr += cr;
         }
 
-        const entry = result.get(accId);
-        if (isPrevYear) {
-          entry.openingDr += line.debit || 0;
-          entry.openingCr += line.credit || 0;
-        } else {
-          entry.periodDr += line.debit || 0;
-          entry.periodCr += line.credit || 0;
+        // Current period
+        if (vDate >= fromDate && vDate <= toDate) {
+          if (!cur[aid]) cur[aid] = { dr: 0, cr: 0 };
+          cur[aid].dr += dr;
+          cur[aid].cr += cr;
         }
-      });
+
+        // Prior period
+        if (priorFrom && priorTo && vDate >= priorFrom && vDate <= priorTo) {
+          if (!prior[aid]) prior[aid] = { dr: 0, cr: 0 };
+          prior[aid].dr += dr;
+          prior[aid].cr += cr;
+        }
+      }
+    }
+    return { currentMov: cur, priorMov: prior, openingBal: opening };
+  }, [vouchers, fromDate, toDate, priorFrom, priorTo]);
+
+  // ── Build budget map ─────────────────────────────────────────────────────
+  const budgetMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const b of budgets || []) {
+      for (const item of b.items || []) {
+        const aid = item.accountId || item.ledgerId;
+        if (aid) map[aid] = (map[aid] || 0) + Number(item.amount || 0);
+      }
+    }
+    return map;
+  }, [budgets]);
+
+  // ── Build flat trial rows ─────────────────────────────────────────────────
+  const allRows = useMemo((): TrialRow[] => {
+    const rows: TrialRow[] = [];
+
+    const buildRow = (acc: any, depth: number): TrialRow => {
+      const ob = openingBal[acc.id] || { dr: 0, cr: 0 };
+      const cm = currentMov[acc.id] || { dr: 0, cr: 0 };
+      const pm = priorMov[acc.id] || { dr: 0, cr: 0 };
+
+      const openingNet = ob.dr - ob.cr;
+      const openingDr = openingNet >= 0 ? openingNet : 0;
+      const openingCr = openingNet < 0 ? -openingNet : 0;
+
+      const closingNet = openingNet + cm.dr - cm.cr;
+      const closingDr = closingNet >= 0 ? closingNet : 0;
+      const closingCr = closingNet < 0 ? -closingNet : 0;
+
+      const priorNet = pm.dr - pm.cr;
+      const priorClosingDr = priorNet >= 0 ? priorNet : 0;
+      const priorClosingCr = priorNet < 0 ? -priorNet : 0;
+
+      return {
+        id: acc.id,
+        code: acc.code || "",
+        name: acc.name || "",
+        type: acc.type || "",
+        level: acc.level || "ledger",
+        isGroup: !!acc.isGroup,
+        depth,
+        parentId: acc.parentId,
+        openingDr,
+        openingCr,
+        movDr: cm.dr,
+        movCr: cm.cr,
+        closingDr,
+        closingCr,
+        priorClosingDr,
+        priorClosingCr,
+        budgetAmt: budgetMap[acc.id] || 0,
+        children: [],
+      };
     };
 
-    // Initialize with opening balances
-    accs.forEach((acc) => {
-      result.set(acc.id, {
-        openingDr: acc.openingBalanceDr || 0,
-        openingCr: acc.openingBalanceCr || 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      });
-    });
+    // Build tree
+    const map: Record<string, TrialRow> = {};
+    const roots: TrialRow[] = [];
 
-    // Add previous year transactions to opening
-    prevYearVouchers.forEach((v) => {
-      if (v.lines) {
-        processVoucherLines(v.lines, true);
-      }
-    });
-
-    // Add period transactions
-    periodVouchers.forEach((v) => {
-      if (v.lines) {
-        processVoucherLines(v.lines, false);
-      }
-    });
-
-    // Calculate closing balances and handle groups
-    const allAccountsMap = new Map(accs.map((acc) => [acc.id, acc]));
-
-    accs.forEach((acc) => {
-      const entry = result.get(acc.id);
-      if (entry) {
-        entry.closingDr = entry.openingDr + entry.periodDr;
-        entry.closingCr = entry.openingCr + entry.periodCr;
-      }
-
-      if (acc.isGroup) {
-        let groupTotal = {
-          openingDr: 0,
-          openingCr: 0,
-          periodDr: 0,
-          periodCr: 0,
-          closingDr: 0,
-          closingCr: 0,
-        };
-
-        accs.forEach((childAcc) => {
-          if (childAcc.parentId === acc.id) {
-            const childEntry = result.get(childAcc.id);
-            if (childEntry) {
-              groupTotal.openingDr += childEntry.openingDr;
-              groupTotal.openingCr += childEntry.openingCr;
-              groupTotal.periodDr += childEntry.periodDr;
-              groupTotal.periodCr += childEntry.periodCr;
-              groupTotal.closingDr += childEntry.closingDr;
-              groupTotal.closingCr += childEntry.closingCr;
-            }
-          }
-        });
-
-        // Update group's values
-        if (entry) {
-          Object.assign(entry, groupTotal);
-        } else {
-          result.set(acc.id, groupTotal);
-        }
-      }
-    });
-
-    return result;
-  };
-
-  const trialBalanceData = useMemo(() => {
-    if (!currentFiscalYear) return new Map();
-    return computeTrialBalance(accounts, vouchers, fromDate, toDate);
-  }, [accounts, vouchers, fromDate, toDate]);
-
-  const previousYearData = useMemo(() => {
-    if (!currentFiscalYear) return new Map();
-    const prevStart = new Date(currentFiscalYear.startDate);
-    prevStart.setFullYear(prevStart.getFullYear() - 1);
-    const prevEnd = new Date(currentFiscalYear.endDate);
-    prevEnd.setFullYear(prevEnd.getFullYear() - 1);
-    return computeTrialBalance(
-      accounts,
-      vouchers,
-      prevStart.toISOString().split("T")[0],
-      prevEnd.toISOString().split("T")[0],
+    // Sort by type then code
+    const sorted = [...accounts].sort((a, b) =>
+      (a.type || "").localeCompare(b.type || "") || (a.code || "").localeCompare(b.code || "")
     );
-  }, [accounts, vouchers, currentFiscalYear]);
 
-  const filteredAccounts = useMemo(() => {
-    return accounts.filter(
-      (acc) =>
-        acc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        acc.code.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [accounts, searchTerm]);
+    for (const acc of sorted) {
+      const row = buildRow(acc, 0);
+      map[acc.id] = row;
+    }
 
-  // Build tree structure for standard view
-  const buildTree = (): TrialBalanceRow[] => {
-    const map = new Map<string, TrialBalanceRow>();
-
-    // For standard view tree we use all accounts to maintain hierarchy,
-    // but we can flag those that match the search term if needed later.
-    accounts.forEach((acc) => {
-      const data = trialBalanceData.get(acc.id) || {
-        openingDr: 0,
-        openingCr: 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      };
-      const row: TrialBalanceRow = {
-        id: acc.id,
-        code: acc.code,
-        name: acc.name,
-        nameNepali: acc.nameNepali,
-        type: acc.type,
-        level: acc.level,
-        isGroup: acc.isGroup,
-        parentId: acc.parentId,
-        openingDr: data.openingDr,
-        openingCr: data.openingCr,
-        periodDr: data.periodDr,
-        periodCr: data.periodCr,
-        closingDr: data.closingDr,
-        closingCr: data.closingCr,
-        hasChildren: accounts.some((child) => child.parentId === acc.id),
-        expanded: expandedGroups.has(acc.id),
-      };
-      map.set(acc.id, row);
-    });
-
-    // Build parent-child relationships
-    const rootNodes: TrialBalanceRow[] = [];
-    map.forEach((row) => {
-      if (!row.parentId) {
-        rootNodes.push(row);
+    for (const acc of sorted) {
+      const row = map[acc.id];
+      if (acc.parentId && map[acc.parentId]) {
+        map[acc.parentId].children.push(row);
       } else {
-        const parent = map.get(row.parentId);
-        if (parent) {
-          if (!parent.children) parent.children = [];
-          parent.children.push(row);
+        roots.push(row);
+      }
+    }
+
+    // Aggregate group totals bottom-up
+    const aggregate = (row: TrialRow) => {
+      for (const child of row.children) aggregate(child);
+      if (row.isGroup && row.children.length > 0) {
+        row.openingDr = row.children.reduce((s, c) => s + c.openingDr, 0);
+        row.openingCr = row.children.reduce((s, c) => s + c.openingCr, 0);
+        row.movDr = row.children.reduce((s, c) => s + c.movDr, 0);
+        row.movCr = row.children.reduce((s, c) => s + c.movCr, 0);
+        row.closingDr = row.children.reduce((s, c) => s + c.closingDr, 0);
+        row.closingCr = row.children.reduce((s, c) => s + c.closingCr, 0);
+        row.priorClosingDr = row.children.reduce((s, c) => s + c.priorClosingDr, 0);
+        row.priorClosingCr = row.children.reduce((s, c) => s + c.priorClosingCr, 0);
+      }
+    };
+    for (const r of roots) aggregate(r);
+
+    // Flatten with depth
+    const flatten = (row: TrialRow, depth: number): TrialRow[] => {
+      const withDepth = { ...row, depth };
+      const result: TrialRow[] = [withDepth];
+      if (expandedIds.has(row.id) || !row.isGroup) {
+        for (const child of row.children) {
+          result.push(...flatten(child, depth + 1));
         }
       }
+      return result;
+    };
+
+    for (const r of roots) rows.push(...flatten(r, 0));
+
+    return rows;
+  }, [accounts, openingBal, currentMov, priorMov, budgetMap, expandedIds]);
+
+  // ── Filter ───────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    return allRows.filter((r) => {
+      if (filterType !== "ALL" && r.type !== filterType) return false;
+      if (hideZero && r.closingDr === 0 && r.closingCr === 0 && !r.isGroup) return false;
+      return true;
     });
+  }, [allRows, filterType, hideZero]);
 
-    return rootNodes;
-  };
+  // ── Totals ───────────────────────────────────────────────────────────────
+  const totals = useMemo(() => {
+    const leafRows = filtered.filter((r) => !r.isGroup);
+    return {
+      openingDr: leafRows.reduce((s, r) => s + r.openingDr, 0),
+      openingCr: leafRows.reduce((s, r) => s + r.openingCr, 0),
+      movDr: leafRows.reduce((s, r) => s + r.movDr, 0),
+      movCr: leafRows.reduce((s, r) => s + r.movCr, 0),
+      closingDr: leafRows.reduce((s, r) => s + r.closingDr, 0),
+      closingCr: leafRows.reduce((s, r) => s + r.closingCr, 0),
+    };
+  }, [filtered]);
 
-  const renderTree = (nodes: TrialBalanceRow[], depth = 0) => {
-    return nodes
-      .map((node) => {
-        const hasBalance =
-          node.openingDr !== 0 ||
-          node.openingCr !== 0 ||
-          node.periodDr !== 0 ||
-          node.periodCr !== 0 ||
-          node.closingDr !== 0 ||
-          node.closingCr !== 0;
+  const isBalanced =
+    Math.abs(totals.closingDr - totals.closingCr) < 0.01;
 
-        if (!showZeroBalances && !hasBalance && !node.isGroup) {
-          return null;
-        }
-
-        // If search is active, skip rows that don't match (simple name match, tree logic may hide parents if not careful)
-        if (
-          searchTerm &&
-          !node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !node.code.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !node.isGroup
-        ) {
-          return null;
-        }
-
-        const isHidden = depth > 0 && !expandedGroups.has(node.parentId || "");
-
-        if (isHidden) return null;
-
-        return (
-          <React.Fragment key={node.id}>
-            <tr className="border-b border-gray-100 hover:bg-gray-50">
-              <td
-                className="px-3 py-2.5 text-[12px] text-gray-700"
-                style={{ paddingLeft: `${depth * 16 + 12}px` }}
-              >
-                <div className="flex items-center gap-1.5">
-                  {node.isGroup ? (
-                    <button
-                      onClick={() => toggleGroup(node.id)}
-                      className="text-gray-400 hover:text-gray-600 focus:outline-none"
-                    >
-                      {node.expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                    </button>
-                  ) : (
-                    <span className="w-3.5 inline-block" />
-                  )}
-                  <span className={node.isGroup ? "font-semibold text-gray-900" : ""}>
-                    {node.name}
-                  </span>
-                </div>
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.openingDr)}
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.openingCr)}
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.periodDr)}
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.periodCr)}
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.closingDr)}
-              </td>
-              <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                {displayMoney(node.closingCr)}
-              </td>
-            </tr>
-            {node.expanded && node.children && renderTree(node.children, depth + 1)}
-          </React.Fragment>
-        );
-      })
-      .filter(Boolean);
-  };
-
-  const toggleGroup = (id: string) => {
-    setExpandedGroups((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
+  // ── Toggle expand ─────────────────────────────────────────────────────────
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
-  };
-
-  const collapseAll = () => {
-    setExpandedGroups(new Set());
   };
 
   const expandAll = () => {
-    const allGroupIds = new Set<string>();
-    accounts.forEach((acc) => {
-      if (acc.isGroup) {
-        allGroupIds.add(acc.id);
-      }
-    });
-    setExpandedGroups(allGroupIds);
+    setExpandedIds(new Set(accounts.filter((a) => a.isGroup).map((a) => a.id)));
   };
+  const collapseAll = () => setExpandedIds(new Set());
 
+  // ── Export ────────────────────────────────────────────────────────────────
   const exportToExcel = () => {
-    // Implementation would depend on active tab
-    toast.success("Export functionality would go here");
+    const rows = filtered.map((r) => ({
+      Code: r.code,
+      Account: "  ".repeat(r.depth) + r.name,
+      Type: r.type,
+      "Opening Dr": r.openingDr,
+      "Opening Cr": r.openingCr,
+      "Movement Dr": r.movDr,
+      "Movement Cr": r.movCr,
+      "Closing Dr": r.closingDr,
+      "Closing Cr": r.closingCr,
+      ...(mode === "comparative"
+        ? { "Prior Dr": r.priorClosingDr, "Prior Cr": r.priorClosingCr }
+        : {}),
+      ...(showBudget ? { Budget: r.budgetAmt, Variance: r.closingDr - r.budgetAmt } : {}),
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Trial Balance");
+    XLSX.writeFile(wb, `TrialBalance_${fromDate}_to_${toDate}.xlsx`);
   };
 
-  const condensedData = useMemo(() => {
-    const debitTypes = ["asset", "expense"];
-    const creditTypes = ["liability", "equity", "income"];
-
-    const debitGroups = filteredAccounts
-      .filter((acc) => acc.isGroup && !acc.parentId && debitTypes.includes(acc.type))
-      .map((acc) => {
-        const data = trialBalanceData.get(acc.id) || {
-          openingDr: 0,
-          openingCr: 0,
-          periodDr: 0,
-          periodCr: 0,
-          closingDr: 0,
-          closingCr: 0,
-        };
-        return {
-          ...acc,
-          ...data,
-        };
-      });
-
-    const creditGroups = filteredAccounts
-      .filter((acc) => acc.isGroup && !acc.parentId && creditTypes.includes(acc.type))
-      .map((acc) => {
-        const data = trialBalanceData.get(acc.id) || {
-          openingDr: 0,
-          openingCr: 0,
-          periodDr: 0,
-          periodCr: 0,
-          closingDr: 0,
-          closingCr: 0,
-        };
-        return {
-          ...acc,
-          ...data,
-        };
-      });
-
-    return { debitGroups, creditGroups };
-  }, [filteredAccounts, trialBalanceData]);
-
-  const verticalData = useMemo(() => {
-    const typeOrder = ["asset", "liability", "equity", "income", "expense"];
-    const orderedAccounts = [...filteredAccounts].sort((a, b) => {
-      const typeIndexA = typeOrder.indexOf(a.type);
-      const typeIndexB = typeOrder.indexOf(b.type);
-      if (typeIndexA !== typeIndexB) return typeIndexA - typeIndexB;
-      return a.name.localeCompare(b.name);
-    });
-
-    return orderedAccounts.map((acc) => {
-      const data = trialBalanceData.get(acc.id) || {
-        openingDr: 0,
-        openingCr: 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      };
-      const netBalance = data.closingDr - data.closingCr;
-      return {
-        ...acc,
-        drBalance: data.closingDr,
-        crBalance: data.closingCr,
-        netBalance,
-      };
-    });
-  }, [filteredAccounts, trialBalanceData]);
-
-  const comparativeData = useMemo(() => {
-    return filteredAccounts.map((acc) => {
-      const currData = trialBalanceData.get(acc.id) || {
-        openingDr: 0,
-        openingCr: 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      };
-      const prevData = previousYearData.get(acc.id) || {
-        openingDr: 0,
-        openingCr: 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      };
-
-      return {
-        ...acc,
-        currDr: currData.closingDr,
-        currCr: currData.closingCr,
-        prevDr: prevData.closingDr,
-        prevCr: prevData.closingCr,
-        varianceDr: currData.closingDr - prevData.closingDr,
-        varianceCr: currData.closingCr - prevData.closingCr,
-      };
-    });
-  }, [filteredAccounts, trialBalanceData, previousYearData]);
-
-  const costCenterData = useMemo(() => {
-    // If cost center filtering is needed, implement here
-    // For now, just return standard data
-    return filteredAccounts.map((acc) => {
-      const data = trialBalanceData.get(acc.id) || {
-        openingDr: 0,
-        openingCr: 0,
-        periodDr: 0,
-        periodCr: 0,
-        closingDr: 0,
-        closingCr: 0,
-      };
-      return {
-        ...acc,
-        ...data,
-      };
-    });
-  }, [filteredAccounts, trialBalanceData]);
-
-  const grandTotal = useMemo(() => {
-    let totalOpeningDr = 0;
-    let totalOpeningCr = 0;
-    let totalPeriodDr = 0;
-    let totalPeriodCr = 0;
-    let totalClosingDr = 0;
-    let totalClosingCr = 0;
-
-    // Total calculation always uses the full accounts list for accuracy
-    accounts.forEach((acc) => {
-      // Avoid double counting by only summing parent-less nodes if they contain everything,
-      // or leaf nodes. Based on how computeTrialBalance calculates group totals,
-      // summing only root level items gives the grand total.
-      if (!acc.parentId) {
-        const data = trialBalanceData.get(acc.id) || {
-          openingDr: 0,
-          openingCr: 0,
-          periodDr: 0,
-          periodCr: 0,
-          closingDr: 0,
-          closingCr: 0,
-        };
-        totalOpeningDr += data.openingDr;
-        totalOpeningCr += data.openingCr;
-        totalPeriodDr += data.periodDr;
-        totalPeriodCr += data.periodCr;
-        totalClosingDr += data.closingDr;
-        totalClosingCr += data.closingCr;
-      }
-    });
-
-    return {
-      openingDr: totalOpeningDr,
-      openingCr: totalOpeningCr,
-      periodDr: totalPeriodDr,
-      periodCr: totalPeriodCr,
-      closingDr: totalClosingDr,
-      closingCr: totalClosingCr,
-    };
-  }, [accounts, trialBalanceData]);
-
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
-      <style>
-        {`
-          @media print {
-            .print-hidden { display: none !important; }
-            .print-only { display: block !important; }
-          }
-        `}
-      </style>
-
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-4 print-hidden">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              View and export standard, condensed, and comparative trial balance reports
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={exportToExcel}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-            >
-              <Download size={14} />
-              Export
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-            >
-              <Printer size={14} />
-              Print
-            </button>
-          </div>
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Verify debit = credit across all accounts
+          </p>
         </div>
-
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-4 print-hidden border-b border-gray-200 pb-4">
-          {["Standard", "Condensed", "Vertical", "Comparative", "Cost Center"].map(
-            (tabName, index) => (
-              <button
-                key={index}
-                className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors ${
-                  activeTab === index
-                    ? "bg-[#1557b0] text-white"
-                    : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                }`}
-                onClick={() => setActiveTab(index)}
-              >
-                {tabName}
-              </button>
-            ),
-          )}
-        </div>
-
-        {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 print-hidden">
-          <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">
-              Search Account
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search..."
-                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-              />
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5" />
-            </div>
-          </div>
-          {activeTab === 4 && (
-            <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                Cost Center
-              </label>
-              <select
-                value={selectedCostCenter}
-                onChange={(e) => setSelectedCostCenter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-              >
-                <option value="">All Cost Centers</option>
-                {costCenters.map((cc) => (
-                  <option key={cc.id} value={cc.id}>
-                    {cc.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4 mb-4 print-hidden">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showZeroBalances}
-              onChange={(e) => setShowZeroBalances(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-            />
-            <span className="text-[12px] font-medium text-gray-700">Show Zero Balances</span>
-          </label>
-
-          {activeTab === 0 && (
-            <>
-              <div className="h-4 w-px bg-gray-300" />
-              <button
-                onClick={expandAll}
-                className="flex items-center gap-1.5 text-[12px] font-medium text-[#1557b0] hover:text-[#0f4a96]"
-              >
-                <RotateCcw size={14} />
-                Expand All
-              </button>
-              <button
-                onClick={collapseAll}
-                className="flex items-center gap-1.5 text-[12px] font-medium text-[#1557b0] hover:text-[#0f4a96]"
-              >
-                <ChevronUp size={14} />
-                Collapse All
-              </button>
-            </>
-          )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={exportToExcel}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
         </div>
       </div>
 
-      {/* Standard View */}
-      {activeTab === 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-max border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Account Name
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Opening Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Opening Cr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Period Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Period Cr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Closing Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Closing Cr
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {renderTree(buildTree())}
-                <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
-                  <td className="px-3 py-2.5 text-gray-900">Grand Total</td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.openingDr)}
-                  </td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.openingCr)}
-                  </td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.periodDr)}
-                  </td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.periodCr)}
-                  </td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.closingDr)}
-                  </td>
-                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                    {displayMoney(grandTotal.closingCr)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      {/* Toolbar */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+        {/* Date range */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">From Date</label>
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">To Date</label>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
+        </div>
+
+        {/* Mode selector */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Display Mode</label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+            {(["simple", "columnar", "comparative"] as DisplayMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`h-8 px-3 text-[11px] font-medium transition-colors capitalize ${
+                  mode === m
+                    ? "bg-[#1557b0] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {m}
+              </button>
+            ))}
           </div>
         </div>
-      )}
 
-      {/* Condensed View */}
-      {activeTab === 1 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Debit Side */}
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-[13px] font-semibold text-gray-800">Assets & Expenses</h2>
+        {/* Comparative period — only when mode=comparative */}
+        {mode === "comparative" && (
+          <>
+            <div>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Prior From</label>
+              <input
+                type="date"
+                value={priorFrom}
+                onChange={(e) => setPriorFrom(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              />
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account Name
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {condensedData.debitGroups.map((group) => (
-                    <tr key={group.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
-                        {group.name}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(group.closingDr - group.closingCr)}
-                      </td>
-                    </tr>
-                  ))}
-                  <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
-                    <td className="px-3 py-2.5 text-gray-900">Total</td>
-                    <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                      {displayMoney(
-                        condensedData.debitGroups.reduce(
-                          (sum, g) => sum + (g.closingDr - g.closingCr),
-                          0,
-                        ),
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Prior To</label>
+              <input
+                type="date"
+                value={priorTo}
+                onChange={(e) => setPriorTo(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              />
             </div>
-          </div>
+          </>
+        )}
 
-          {/* Credit Side */}
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-[13px] font-semibold text-gray-800">
-                Liabilities, Equity & Income
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account Name
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {condensedData.creditGroups.map((group) => (
-                    <tr key={group.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
-                        {group.name}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(group.closingCr - group.closingDr)}
-                      </td>
-                    </tr>
-                  ))}
-                  <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
-                    <td className="px-3 py-2.5 text-gray-900">Total</td>
-                    <td className="px-3 py-2.5 text-gray-900 font-mono text-right">
-                      {displayMoney(
-                        condensedData.creditGroups.reduce(
-                          (sum, g) => sum + (g.closingCr - g.closingDr),
-                          0,
-                        ),
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {/* Type filter */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Type</label>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          >
+            <option value="ALL">All Types</option>
+            <option value="asset">Asset</option>
+            <option value="liability">Liability</option>
+            <option value="equity">Equity</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
         </div>
-      )}
 
-      {/* Vertical View */}
-      {activeTab === 2 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-max border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Account Name
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Dr Balance
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Cr Balance
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Net Balance
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {verticalData.map((acc) => (
-                  <tr key={acc.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{acc.name}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.drBalance)}
+        {/* Toggles */}
+        <label className="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer h-8">
+          <input
+            type="checkbox"
+            checked={hideZero}
+            onChange={(e) => setHideZero(e.target.checked)}
+            className="h-3.5 w-3.5 accent-[#1557b0]"
+          />
+          Hide Zero Accounts
+        </label>
+
+        <label className="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer h-8">
+          <input
+            type="checkbox"
+            checked={showBudget}
+            onChange={(e) => setShowBudget(e.target.checked)}
+            className="h-3.5 w-3.5 accent-[#1557b0]"
+          />
+          Budget Variance
+        </label>
+
+        {/* Expand / Collapse */}
+        <button
+          onClick={expandAll}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50"
+        >
+          Expand All
+        </button>
+        <button
+          onClick={collapseAll}
+          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50"
+        >
+          Collapse All
+        </button>
+      </div>
+
+      {/* Balance indicator */}
+      <div
+        className={`mb-4 px-4 py-2 rounded-md border text-[12px] font-semibold flex items-center gap-2 ${
+          isBalanced
+            ? "bg-green-50 text-green-700 border-green-200"
+            : "bg-red-50 text-red-700 border-red-200"
+        }`}
+      >
+        {isBalanced ? "✓ Trial Balance is BALANCED" : `⚠ UNBALANCED — Difference: ${fmt(Math.abs(totals.closingDr - totals.closingCr))}`}
+        <span className="ml-auto font-normal text-[11px] text-gray-500">
+          Total Dr: {fmt(totals.closingDr)} | Total Cr: {fmt(totals.closingCr)}
+        </span>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px]">
+            <thead>
+              <tr>
+                <th className={thCls} style={{ width: 80 }}>Code</th>
+                <th className={thCls}>Account Name</th>
+                {mode === "columnar" && (
+                  <>
+                    <th className={`${thCls} text-right`}>Opening Dr</th>
+                    <th className={`${thCls} text-right`}>Opening Cr</th>
+                    <th className={`${thCls} text-right`}>Movement Dr</th>
+                    <th className={`${thCls} text-right`}>Movement Cr</th>
+                  </>
+                )}
+                <th className={`${thCls} text-right`}>Closing Dr</th>
+                <th className={`${thCls} text-right`}>Closing Cr</th>
+                {mode === "comparative" && (
+                  <>
+                    <th className={`${thCls} text-right`} style={{ background: "#fff7ed" }}>Prior Dr</th>
+                    <th className={`${thCls} text-right`} style={{ background: "#fff7ed" }}>Prior Cr</th>
+                    <th className={`${thCls} text-right`} style={{ background: "#fff7ed" }}>Change Dr</th>
+                  </>
+                )}
+                {showBudget && (
+                  <>
+                    <th className={`${thCls} text-right`} style={{ background: "#f0f9ff" }}>Budget</th>
+                    <th className={`${thCls} text-right`} style={{ background: "#f0f9ff" }}>Variance</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row) => {
+                const isExpanded = expandedIds.has(row.id);
+                const indent = row.depth * 18;
+                const isGroupRow = row.isGroup;
+                const variance = row.closingDr - row.budgetAmt;
+                const change = row.closingDr - row.priorClosingDr;
+
+                return (
+                  <tr
+                    key={row.id}
+                    className={`${isGroupRow ? "bg-[#f9fafb]" : "hover:bg-gray-50"} cursor-default`}
+                  >
+                    <td className={`${tdCls} font-mono text-[11px] text-gray-500`}>{row.code}</td>
+                    <td className={tdCls}>
+                      <div
+                        className="flex items-center gap-1.5"
+                        style={{ paddingLeft: indent }}
+                      >
+                        {isGroupRow && row.children.length > 0 ? (
+                          <button
+                            onClick={() => toggleExpand(row.id)}
+                            className="text-gray-400 hover:text-gray-700 shrink-0"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="h-3.5 w-3.5" />
+                            ) : (
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        ) : (
+                          <span className="w-3.5 shrink-0" />
+                        )}
+                        <span className={isGroupRow ? "font-semibold text-gray-800" : "text-gray-700"}>
+                          {row.name}
+                        </span>
+                        <span className="text-[10px] text-gray-400 ml-1">{row.type}</span>
+                      </div>
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.crBalance)}
+                    {mode === "columnar" && (
+                      <>
+                        <td className={amtCls}>{row.openingDr > 0 ? fmt(row.openingDr) : "—"}</td>
+                        <td className={amtCls}>{row.openingCr > 0 ? fmt(row.openingCr) : "—"}</td>
+                        <td className={amtCls}>{row.movDr > 0 ? fmt(row.movDr) : "—"}</td>
+                        <td className={amtCls}>{row.movCr > 0 ? fmt(row.movCr) : "—"}</td>
+                      </>
+                    )}
+                    <td className={`${amtCls} ${isGroupRow ? "font-semibold" : ""}`}>
+                      {row.closingDr > 0 ? fmt(row.closingDr) : "—"}
                     </td>
-                    <td
-                      className={`px-3 py-2.5 text-[12px] font-mono text-right ${acc.netBalance < 0 ? "text-[#dc2626]" : acc.netBalance > 0 ? "text-[#059669]" : "text-gray-700"}`}
-                    >
-                      {displayMoney(Math.abs(acc.netBalance))}{" "}
-                      {acc.netBalance !== 0 ? (acc.netBalance > 0 ? "Dr" : "Cr") : ""}
+                    <td className={`${amtCls} ${isGroupRow ? "font-semibold" : ""}`}>
+                      {row.closingCr > 0 ? fmt(row.closingCr) : "—"}
                     </td>
+                    {mode === "comparative" && (
+                      <>
+                        <td className={amtCls} style={{ background: "#fffbeb" }}>
+                          {row.priorClosingDr > 0 ? fmt(row.priorClosingDr) : "—"}
+                        </td>
+                        <td className={amtCls} style={{ background: "#fffbeb" }}>
+                          {row.priorClosingCr > 0 ? fmt(row.priorClosingCr) : "—"}
+                        </td>
+                        <td
+                          className={`${amtCls} font-semibold`}
+                          style={{ background: "#fffbeb" }}
+                        >
+                          <span className={change >= 0 ? "text-green-700" : "text-red-600"}>
+                            {change !== 0 ? (change > 0 ? "+" : "") + fmt(change) : "—"}
+                          </span>
+                        </td>
+                      </>
+                    )}
+                    {showBudget && (
+                      <>
+                        <td className={amtCls} style={{ background: "#f0f9ff" }}>
+                          {row.budgetAmt > 0 ? fmt(row.budgetAmt) : "—"}
+                        </td>
+                        <td
+                          className={`${amtCls} font-semibold`}
+                          style={{ background: "#f0f9ff" }}
+                        >
+                          {row.budgetAmt > 0 ? (
+                            <span className={variance >= 0 ? "text-green-700" : "text-red-600"}>
+                              {(variance > 0 ? "+" : "") + fmt(variance)}
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </>
+                    )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                );
+              })}
+
+              {/* Grand total row */}
+              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                <td className={tdCls} colSpan={2}>
+                  <span className="font-bold text-gray-800">GRAND TOTAL</span>
+                </td>
+                {mode === "columnar" && (
+                  <>
+                    <td className={amtCls}>{fmt(totals.openingDr)}</td>
+                    <td className={amtCls}>{fmt(totals.openingCr)}</td>
+                    <td className={amtCls}>{fmt(totals.movDr)}</td>
+                    <td className={amtCls}>{fmt(totals.movCr)}</td>
+                  </>
+                )}
+                <td className={`${amtCls} text-[#1557b0]`}>{fmt(totals.closingDr)}</td>
+                <td className={`${amtCls} text-[#1557b0]`}>{fmt(totals.closingCr)}</td>
+                {mode === "comparative" && <td colSpan={3} />}
+                {showBudget && <td colSpan={2} />}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="py-16 text-center text-[12px] text-gray-500">
+            No accounts found for the selected period and filters.
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Comparative View */}
-      {activeTab === 3 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-max border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Account Name
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Curr Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Curr Cr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Prev Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Prev Cr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Var Dr
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Var Cr
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparativeData.map((acc) => (
-                  <tr key={acc.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{acc.name}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.currDr)}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.currCr)}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.prevDr)}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                      {displayMoney(acc.prevCr)}
-                    </td>
-                    <td
-                      className={`px-3 py-2.5 text-[12px] font-mono text-right ${Math.abs(acc.varianceDr) > 0.01 ? (acc.varianceDr > 0 ? "text-[#059669]" : "text-[#dc2626]") : "text-gray-700"}`}
-                    >
-                      {displayMoney(acc.varianceDr)}
-                    </td>
-                    <td
-                      className={`px-3 py-2.5 text-[12px] font-mono text-right ${Math.abs(acc.varianceCr) > 0.01 ? (acc.varianceCr > 0 ? "text-[#059669]" : "text-[#dc2626]") : "text-gray-700"}`}
-                    >
-                      {displayMoney(acc.varianceCr)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Cost Center View */}
-      {activeTab === 4 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-          {costCenterData.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account Code
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Account Name
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Opening Dr
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Opening Cr
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Period Dr
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Period Cr
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Closing Dr
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Closing Cr
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {costCenterData.map((acc) => (
-                    <tr key={acc.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{acc.code}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{acc.name}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.openingDr)}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.openingCr)}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.periodDr)}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.periodCr)}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.closingDr)}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
-                        {displayMoney(acc.closingCr)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-10 text-gray-500 text-[12px]">
-              No cost center data available
-            </div>
-          )}
-        </div>
-      )}
+      <p className="text-[10px] text-gray-400 mt-3">
+        Showing {filtered.length} accounts • Period: {fromDate} to {toDate}
+        {hideZero ? " • Zero-balance accounts hidden" : ""}
+      </p>
     </div>
   );
-};
-
-export default TrialBalance;
+}

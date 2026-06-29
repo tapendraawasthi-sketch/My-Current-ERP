@@ -923,27 +923,50 @@ export interface DBBudget {
 // ─── Fixed Asset ──────────────────────────────────────────────────────────────
 export interface DBFixedAsset {
   id: string;
-  code?: string;
   name: string;
-  category?: string;
-  purchaseDate?: string;
-  purchaseDateNepali?: string;
-  originalCost: number;
-  salvageValue?: number;
-  usefulLife?: number;
-  depreciationMethod?: string;
-  depreciationRate?: number;
-  currentBookValue?: number;
-  accumulatedDepreciation?: number;
-  assetAccountId?: string;
+  code?: string;
+  category: string;           // e.g. "Furniture", "Vehicle", "Computer", "Machinery"
+  purchaseDate: string;       // ISO date
+  purchaseCost: number;       // original cost
+  residualValue: number;      // scrap value at end of life
+  usefulLifeYears: number;    // expected useful life
+  depreciationMethod: "slm" | "wdv"; // Straight Line or Written Down Value
+  wdvRate?: number;           // % rate for WDV (Nepal IT Act rates)
+  assetAccountId?: string;    // linked GL account
   depreciationAccountId?: string;
+  accumulatedDepAccountId?: string;
   location?: string;
-  status?: string;
+  serialNo?: string;
+  supplier?: string;
+  isActive: boolean;
   disposalDate?: string;
-  disposalValue?: number;
-  notes?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  disposalAmount?: number;
+  disposalReason?: string;
+  createdAt: string;
+  updatedAt: string;
+  // Computed fields (not stored, calculated on read)
+  openingGrossBlock?: number;
+  additions?: number;
+  disposals?: number;
+  closingGrossBlock?: number;
+  openingAccumDepr?: number;
+  depreciationForYear?: number;
+  closingAccumDepr?: number;
+  netBookValue?: number;
+}
+
+export interface DBDepreciationEntry {
+  id: string;
+  assetId: string;
+  assetName: string;
+  date: string;
+  fiscalYear: string;
+  method: "slm" | "wdv";
+  openingNBV: number;         // net book value at start of period
+  depreciationAmount: number;
+  closingNBV: number;
+  voucherId?: string;         // linked journal voucher if auto-posted
+  createdAt: string;
 }
 
 // ─── Bank Reconciliation ──────────────────────────────────────────────────────
@@ -1079,6 +1102,7 @@ export class SutraERPDatabase extends Dexie {
   physicalStocks!: Table<DBPhysicalStock>;
   budgets!: Table<DBBudget>;
   fixedAssets!: Table<DBFixedAsset>;
+  depreciationLedger!: Table<DBDepreciationEntry>;
   bankReconciliations!: Table<DBBankReconciliation>;
   employees!: Table<DBEmployee>;
   payrollEntries!: Table<DBPayrollEntry>;
@@ -1111,7 +1135,8 @@ export class SutraERPDatabase extends Dexie {
   reorderLevels!: Table<any>;
   priceLevels!: Table<any>;
   hsCodes!: Table<any>;
-  batches!: Table<any>;
+  batches!: Table<DBBatch>;
+  serialNumbers!: Table<DBSerialNumber>;
   vatClassifications!: Table<any>;
   tdsNatureOfPayment!: Table<any>;
   employeeGroups!: Table<any>;
@@ -1124,6 +1149,7 @@ export class SutraERPDatabase extends Dexie {
   cheques!: Table<any>;
   depositSlips!: Table<any>;
   pdCheques!: Table<any>;
+  pdcRegister!: Table<any>;
   ePaymentBatches!: Table<any>;
   paymentAdvices!: Table<any>;
   branches!: Table<any>;
@@ -1137,6 +1163,18 @@ export class SutraERPDatabase extends Dexie {
   voucherAuditLogs!: Table<any>;
   salespersons!: Table<any>;
   loginHistory!: Table<any>;
+  employees!: Table<any>;
+  salaryStructures!: Table<any>;
+  payrollRuns!: Table<any>;
+  payrollEntries!: Table<any>;
+  fxGainLossEntries!: Table<DBFXGainLossEntry>;
+  costCentres!: Table<DBCostCentre>;
+  costCentreAllocations!: Table<DBCostCentreAllocation>;
+  approvalPolicies!: Table<DBApprovalPolicy>;
+  approvalRequests!: Table<DBApprovalRequest>;
+  approvalActions!: Table<DBApprovalAction>;
+  recurringTemplates!: Table<DBRecurringTemplate>;
+  recurringPostings!: Table<DBRecurringPosting>;
 
   constructor() {
     super("SutraERPDatabase");
@@ -1185,6 +1223,10 @@ export class SutraERPDatabase extends Dexie {
     });
 
     this.version(20).stores({
+      fixedAssets: "++id, name, category, purchaseDate, isActive",
+      depreciationLedger: "++id, assetId, date, fiscalYear",
+      batches: "++id, itemId, batchNo, expiryDate, isActive",
+      serialNumbers: "++id, itemId, serialNo, status, soldToPartyId",
       currencies: "id, code, name, isActive",
       recurringVouchers: "id, type, status, nextDueDate, createdAt",
       customFieldDefs: "id, entityType, fieldName, isActive, createdAt",
@@ -1224,8 +1266,23 @@ export class SutraERPDatabase extends Dexie {
       cheques: "id, chequeBookId, chequeNo, status, createdAt",
       depositSlips: "id, slipNo, bankAccountId, date, status, createdAt",
       pdCheques: "id, chequeNo, partyId, dueDate, status, createdAt",
+      pdcRegister: "++id, type, partyId, chequeDate, status",
       ePaymentBatches: "id, batchNo, bankAccountId, date, status, createdAt",
       paymentAdvices: "id, adviceNo, partyId, date, status, createdAt",
+      employees: "++id, employeeCode, name, department, designation, isActive",
+      salaryStructures: "++id, employeeId, effectiveFrom",
+      payrollRuns: "++id, month, year, status",
+      payrollEntries: "++id, payrollRunId, employeeId, month, year",
+      currencies: "++id, code, isActive",
+      exchangeRates: "++id, currencyCode, date",
+      fxGainLossEntries: "++id, date, currencyCode, voucherId",
+      costCentres: "++id, code, type, parentId, isActive",
+      costCentreAllocations: "++id, voucherId, costCentreId, date",
+      approvalPolicies: "++id, voucherType, isActive",
+      approvalRequests: "++id, voucherId, voucherType, status, createdAt",
+      approvalActions:  "++id, requestId, level, actionAt",
+      recurringTemplates: "++id, name, frequency, isActive, nextDueDate",
+      recurringPostings:  "++id, templateId, postedDate, voucherId",
     });
   }
 }
@@ -1348,3 +1405,323 @@ export async function seedPredefinedVoucherTypes(): Promise<void> {
 
   await database.voucherTypeMasters.bulkPut(predefined as any[]);
 }
+
+// ─── Batch & Serial Tracking ──────────────────────────────────────────────────
+export interface DBBatch {
+  id: string;
+  itemId: string;
+  itemName: string;
+  batchNo: string;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  purchaseDate: string;
+  purchaseRate: number;
+  openingQty: number;
+  currentQty: number;
+  warehouseId?: string;
+  supplierId?: string;
+  supplierBatchNo?: string;
+  isActive: boolean;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBSerialNumber {
+  id: string;
+  itemId: string;
+  itemName: string;
+  serialNo: string;
+  status: "available" | "sold" | "returned" | "damaged" | "reserved";
+  purchaseDate?: string;
+  purchaseRate?: number;
+  soldDate?: string;
+  soldToPartyId?: string;
+  soldToPartyName?: string;
+  invoiceId?: string;
+  invoiceNo?: string;
+  warehouseId?: string;
+  warrantyExpiry?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ─── PDC (Post-Dated Cheques) ─────────────────────────────────────────────────
+export interface DBPDCEntry {
+  id: string;
+  type: "received" | "issued";          // received from customer / issued to supplier
+  partyId: string;
+  partyName: string;
+  partyPan?: string;
+  bankName: string;
+  branchName?: string;
+  chequeNo: string;
+  chequeDate: string;                   // future date on the cheque
+  amount: number;
+  currency?: string;
+  status: "pending" | "deposited" | "dishonoured" | "cancelled" | "returned";
+  depositDate?: string;                 // when actually deposited to bank
+  dishonourDate?: string;
+  dishonourReason?: string;
+  bankAccountId?: string;               // our bank account to deposit into
+  linkedInvoiceId?: string;
+  linkedInvoiceNo?: string;
+  narration?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "cancelled";
+
+export interface DBApprovalRequest {
+  id?: number;
+  voucherId?: number;
+  voucherType: string;
+  voucherDate: string;
+  voucherAmount: number;
+  voucherNarration: string;
+  currentLevel: number;
+  totalLevels: number;
+  status: ApprovalStatus;
+  makerUserId: string;
+  makerName: string;
+  policyId: number;
+  rejectionReason?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBApprovalAction {
+  id?: number;
+  requestId: number;
+  level: number;
+  action: "approved" | "rejected" | "returned";
+  actionByUserId: string;
+  actionByName: string;
+  comments: string;
+  actionAt: string;
+  createdAt: string;
+}
+
+export type RecurringFrequency = "daily" | "weekly" | "fortnightly" | "monthly" | "quarterly" | "half-yearly" | "yearly";
+
+export interface DBRecurringLine {
+  accountId: string;
+  accountName: string;
+  debit: number;
+  credit: number;
+  costCentreId?: number;
+  narration: string;
+}
+
+export interface DBRecurringTemplate {
+  id?: number;
+  name: string;
+  description: string;
+  voucherType: string;          // "journal", "payment", "receipt", etc.
+  frequency: RecurringFrequency;
+  startDate: string;            // "YYYY-MM-DD"
+  endDate?: string;             // optional end date
+  nextDueDate: string;          // computed next posting date
+  lines: DBRecurringLine[];     // JSON-serialised
+  totalAmount: number;
+  isActive: boolean;
+  autoPost: boolean;            // if true, posts automatically without review
+  reminderDaysBefore: number;   // days before due date to show reminder
+  lastPostedDate?: string;
+  postingCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBRecurringPosting {
+  id?: number;
+  templateId: number;
+  templateName: string;
+  postedDate: string;
+  voucherId?: number;           // ID of the created voucher
+  status: "posted" | "skipped" | "failed";
+  notes: string;
+  createdAt: string;
+}
+
+// @ts-nocheck
+export interface DBEmployee {
+  id?: number;
+  employeeCode: string;
+  name: string;
+  department: string;
+  designation: string;
+  panNumber: string;
+  bankAccount: string;
+  bankName: string;
+  joiningDate: string;
+  isActive: boolean;
+  gender: "male" | "female" | "other";
+  maritalStatus: "single" | "married";
+  epfApplicable: boolean;
+  citApplicable: boolean;
+  ssfApplicable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBSalaryStructure {
+  id?: number;
+  employeeId: number;
+  effectiveFrom: string;
+  basicSalary: number;
+  houseRentAllowance: number;
+  medicalAllowance: number;
+  transportAllowance: number;
+  otherAllowances: number;
+  epfRate: number;        // default 10% employee, 10% employer
+  citRate: number;        // default 10%
+  ssfRate: number;        // default 1% employee, 3.33% employer (SSF mode)
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBPayrollRun {
+  id?: number;
+  month: number;          // 1–12
+  year: number;           // Gregorian or BS year
+  fiscalYear: string;
+  status: "draft" | "processed" | "approved" | "paid";
+  totalGross: number;
+  totalDeductions: number;
+  totalNetPay: number;
+  totalEmployerContribution: number;
+  processedAt?: string;
+  approvedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBPayrollEntry {
+  id?: number;
+  payrollRunId: number;
+  employeeId: number;
+  employeeName: string;
+  department: string;
+  month: number;
+  year: number;
+  // Earnings
+  basicSalary: number;
+  houseRentAllowance: number;
+  medicalAllowance: number;
+  transportAllowance: number;
+  otherAllowances: number;
+  overtimePay: number;
+  grossSalary: number;
+  // Deductions
+  epfEmployee: number;    // 10% of basic
+  citEmployee: number;    // 10% of basic (if opted)
+  ssfEmployee: number;    // 1% of gross (if SSF mode)
+  tdsAmount: number;      // progressive slab
+  otherDeductions: number;
+  totalDeductions: number;
+  netPay: number;
+  // Employer contributions
+  epfEmployer: number;    // 10% of basic
+  ssfEmployer: number;    // 3.33% of gross
+  // Annualised tax workings
+  annualisedGross: number;
+  taxableIncome: number;
+  annualTax: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBCurrency {
+  id?: number;
+  code: string;           // e.g. "USD", "EUR", "INR"
+  name: string;           // e.g. "US Dollar"
+  symbol: string;         // e.g. "$"
+  decimalPlaces: number;  // usually 2
+  isActive: boolean;
+  isBase: boolean;        // true for the company's home currency (NPR)
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBExchangeRate {
+  id?: number;
+  currencyCode: string;   // foreign currency code
+  date: string;           // "YYYY-MM-DD" – rate effective from this date
+  buyRate: number;        // bank buy rate (foreign → base)
+  sellRate: number;       // bank sell rate (base → foreign)
+  midRate: number;        // mid/official rate used for accounting
+  source: string;         // "manual" | "NRB" | "IRD"
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBFXGainLossEntry {
+  id?: number;
+  date: string;
+  currencyCode: string;
+  foreignAmount: number;
+  rateAtTransaction: number;
+  rateAtSettlement: number;       // for realized; 0 for unrealized
+  rateAtRevaluation: number;      // for unrealized period-end
+  baseAmountAtTransaction: number;
+  baseAmountAtSettlement: number;
+  gainLossAmount: number;         // positive = gain, negative = loss
+  type: "realized" | "unrealized";
+  voucherId?: number;
+  relatedAccountId: string;
+  narration: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBCostCentre {
+  id?: number;
+  code: string;
+  name: string;
+  type: "cost" | "profit" | "investment";
+  parentId?: number;           // for hierarchy (department → sub-department)
+  description: string;
+  managerId?: string;
+  budgetAmount: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBCostCentreAllocation {
+  id?: number;
+  voucherId: number;
+  voucherDate: string;
+  voucherType: string;
+  costCentreId: number;
+  costCentreName: string;
+  accountId: string;
+  accountName: string;
+  amount: number;
+  allocationPercent: number;    // if split across multiple centres
+  narration: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBApprovalLevel {
+  level: number;              // 1 = first checker, 2 = second, etc.
+  approverRole: string;       // e.g. "accountant", "manager", "director"
+  approverUserId?: string;    // optional: lock to specific user
+  isRequired: boolean;
+}
+
+export interface DBApprovalPolicy {
+  id?: number;
+  voucherType: string;        // "payment", "receipt", "journal", "purchase", "sales", "*"
+  minimumAmount: number;      // apply only if voucher amount ≥ this
+  levels: DBApprovalLevel[];  // JSON-serialised array
+  isActive: boolean;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+

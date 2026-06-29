@@ -1,1349 +1,493 @@
+// src/pages/BatchManagement.tsx
 // @ts-nocheck
-import React, { useState, useEffect, useMemo } from "react";
+// NEW PAGE — Batch & Serial Number Tracking
+// Batch tracking: required for pharma, food, chemicals (expiry dates)
+// Serial tracking: required for electronics, machinery (warranty, per-unit history)
+
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import {
-  Package,
-  AlertTriangle,
-  Calendar,
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Bell,
-  Lock,
-  Clock,
+  Plus, Download, Edit2, Trash2, X,
+  AlertTriangle, Package, Hash,
 } from "lucide-react";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
-const EXPIRED_BG = "#fee2e2";
-const NEAR_EXPIRY_BG = "#fef9c3";
-const OK_BG = "#dcfce7";
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmt = (n: number) =>
+  Number(n || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
-function money(v) {
-  const abs = Math.abs(Number(v || 0));
-  const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return v < 0 ? `(${s})` : s;
-}
+const inputCls =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white " +
+  "focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+const labelCls =
+  "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
+const thCls =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 " +
+  "uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+const tdCls =
+  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const amtCls = `${tdCls} font-mono text-right`;
 
-const TABS = [
-  { id: "master", label: "Batch Master" },
-  { id: "near_expiry", label: "Near-Expiry Dashboard" },
-  { id: "on_hold", label: "Batches On Hold" },
-  { id: "report", label: "Expiry Report" },
-  { id: "fifo", label: "FIFO Picker" },
-];
+// Days until expiry
+const daysUntilExpiry = (expiryDate: string): number => {
+  if (!expiryDate) return 9999;
+  const diff =
+    new Date(expiryDate).getTime() - new Date().getTime();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+};
 
+const emptyBatch = () => ({
+  itemId: "",
+  itemName: "",
+  batchNo: "",
+  manufacturingDate: "",
+  expiryDate: "",
+  purchaseDate: new Date().toISOString().split("T")[0],
+  purchaseRate: 0,
+  openingQty: 0,
+  currentQty: 0,
+  warehouseId: "",
+  supplierId: "",
+  supplierBatchNo: "",
+  isActive: true,
+  notes: "",
+});
+
+const emptySN = () => ({
+  itemId: "",
+  itemName: "",
+  serialNo: "",
+  status: "available" as const,
+  purchaseDate: new Date().toISOString().split("T")[0],
+  purchaseRate: 0,
+  warehouseId: "",
+  warrantyExpiry: "",
+  notes: "",
+});
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function BatchManagement() {
-  const { batches, items, warehouses, addVoucher, accounts, companySettings } = useStore();
-  const [activeTab, setActiveTab] = useState("master");
-  const [allBatches, setAllBatches] = useState([]);
-  const [filteredBatches, setFilteredBatches] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [form, setForm] = useState({
-    id: "",
-    batchName: "",
-    itemId: "",
-    mfgDate: "",
-    expiryDate: "",
-    mrp: 0,
-    purchaseRate: 0,
-    salesRate: 0,
-    godownId: "",
-    openingQty: 0,
-    isActive: true,
-    trackExpiry: false,
-    isOnHold: false,
-    holdReason: "",
-  });
-  const [writeOffModal, setWriteOffModal] = useState({ show: false, batch: null });
-  const [writeOffData, setWriteOffData] = useState({ date: "", reason: "" });
-  const [expiryFilters, setExpiryFilters] = useState({
-    itemGroupId: "",
-    itemId: "",
-    daysRange: 30,
-  });
-  const [reportData, setReportData] = useState([]);
-  const [reportFilters, setReportFilters] = useState({
-    fromDate: "",
-    toDate: "",
-    itemGroupId: "",
-  });
-  const [selectedItemForFifo, setSelectedItemForFifo] = useState("");
+  const store    = useStore() as any;
+  const items    = store.items    || [];
+  const parties  = store.parties  || [];
+  const warehouses = store.warehouses || [];
+  const batches  = store.batches  || [];
+  const serialNumbers = store.serialNumbers || [];
 
-  // Load batches from DB
+  const [activeTab, setActiveTab] = useState<"batch" | "serial">("batch");
+
+  // Batch state
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [editingBatchId, setEditingBatchId] = useState<string | null>(null);
+  const [batchForm, setBatchForm]           = useState(emptyBatch());
+  const [batchSearch, setBatchSearch]       = useState("");
+  const [filterExpiry, setFilterExpiry]     = useState("ALL");
+
+  // Serial state
+  const [showSNModal, setShowSNModal]   = useState(false);
+  const [editingSNId, setEditingSNId]   = useState<string | null>(null);
+  const [snForm, setSnForm]             = useState(emptySN());
+  const [snSearch, setSnSearch]         = useState("");
+  const [snStatusFilter, setSnStatusFilter] = useState("ALL");
+
+  // Load on mount
   useEffect(() => {
-    const db = getDB();
-    Promise.all([db.batches.toArray().catch(() => [])]).then(([batchData]) => {
-      setAllBatches(batchData);
-    });
+    if (store.loadBatches)       store.loadBatches();
+    if (store.loadSerialNumbers) store.loadSerialNumbers();
   }, []);
 
-  // Recompute filtered batches when allBatches or search term changes
-  useEffect(() => {
-    let result = allBatches;
+  // ── Auto-fill item name when itemId changes ────────────────────────────────
+  const handleBatchItemChange = (itemId: string) => {
+    const item = items.find((i: any) => i.id === itemId);
+    setBatchForm((f: any) => ({
+      ...f,
+      itemId,
+      itemName: item?.name || "",
+      purchaseRate: item?.purchaseRate || item?.rate || 0,
+    }));
+  };
 
-    if (searchTerm) {
-      result = result.filter(
-        (b) =>
-          b.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          b.itemId.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
+  const handleSNItemChange = (itemId: string) => {
+    const item = items.find((i: any) => i.id === itemId);
+    setSnForm((f: any) => ({
+      ...f,
+      itemId,
+      itemName: item?.name || "",
+      purchaseRate: item?.purchaseRate || item?.rate || 0,
+    }));
+  };
+
+  // ── Save batch ─────────────────────────────────────────────────────────────
+  const saveBatch = async () => {
+    if (!batchForm.itemId) { toast.error("Select an item"); return; }
+    if (!batchForm.batchNo.trim()) { toast.error("Batch number is required"); return; }
+    if (!batchForm.currentQty && batchForm.currentQty !== 0) {
+      toast.error("Quantity is required"); return;
     }
-
-    if (activeTab === "master") {
-      // For master tab, show all batches
-    } else if (activeTab === "near_expiry") {
-      // Filter for near-expiry batches
-      const days = expiryFilters.daysRange === "ALL" ? 9999 : expiryFilters.daysRange;
-      result = result.filter((b) => {
-        const daysToExp = daysToExpiry(b.expiryDate);
-        return daysToExp <= days && daysToExp >= 0;
-      });
-    } else if (activeTab === "on_hold") {
-      // Filter for held batches
-      result = result.filter((b) => b.isOnHold);
-    }
-
-    setFilteredBatches(result);
-  }, [allBatches, searchTerm, activeTab, expiryFilters]);
-
-  // Calculate days to expiry
-  const daysToExpiry = (expiryDate) => {
-    if (!expiryDate) return 9999;
-    const today = new Date();
-    const expiry = new Date(expiryDate);
-    return Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
-  };
-
-  // Determine status and color
-  const getStatusAndColor = (days) => {
-    if (days < 0) return { status: "EXPIRED", color: "#dc2626", bgColor: EXPIRED_BG };
-    if (days <= 30) return { status: "CRITICAL", color: "#d97706", bgColor: NEAR_EXPIRY_BG };
-    if (days <= 60) return { status: "NEAR EXPIRY", color: "#f59e0b", bgColor: NEAR_EXPIRY_BG };
-    if (days <= 90) return { status: "WATCH", color: "#eab308", bgColor: NEAR_EXPIRY_BG };
-    return { status: "OK", color: "#059669", bgColor: OK_BG };
-  };
-
-  // Handle form input changes
-  const handleInputChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Handle form submission
-  const handleSubmit = async () => {
-    const db = getDB();
-    const batchToSave = {
-      ...form,
-      id: form.id || generateId(),
-      createdAt: form.id ? undefined : new Date().toISOString(),
-    };
-
     try {
-      await db.batches.put(batchToSave);
-      setAllBatches((prev) => [...prev.filter((b) => b.id !== batchToSave.id), batchToSave]);
-      setShowForm(false);
-      setForm({
-        id: "",
-        batchName: "",
-        itemId: "",
-        mfgDate: "",
-        expiryDate: "",
-        mrp: 0,
-        purchaseRate: 0,
-        salesRate: 0,
-        godownId: "",
-        openingQty: 0,
-        isActive: true,
-        trackExpiry: false,
-        isOnHold: false,
-        holdReason: "",
-      });
-      toast.success(form.id ? "Batch updated successfully" : "Batch created successfully");
-    } catch (error) {
-      console.error("Error saving batch:", error);
+      const payload = {
+        ...batchForm,
+        openingQty: batchForm.openingQty || batchForm.currentQty,
+      };
+      if (editingBatchId) {
+        await store.updateBatch(editingBatchId, payload);
+        toast.success("Batch updated");
+      } else {
+        await store.addBatch(payload);
+        toast.success("Batch added");
+      }
+      setShowBatchModal(false);
+      setEditingBatchId(null);
+      setBatchForm(emptyBatch());
+    } catch {
       toast.error("Failed to save batch");
     }
   };
 
-  // Handle edit
-  const handleEdit = (batch) => {
-    setForm({
-      id: batch.id,
-      batchName: batch.batchName,
-      itemId: batch.itemId,
-      mfgDate: batch.mfgDate || "",
-      expiryDate: batch.expiryDate || "",
-      mrp: batch.mrp || 0,
-      purchaseRate: batch.purchaseRate || 0,
-      salesRate: batch.salesRate || 0,
-      godownId: batch.godownId || "",
-      openingQty: batch.openingQty || 0,
-      isActive: batch.isActive !== undefined ? batch.isActive : true,
-      trackExpiry: batch.trackExpiry || false,
-      isOnHold: batch.isOnHold || false,
-      holdReason: batch.holdReason || "",
+  // ── Save serial number ─────────────────────────────────────────────────────
+  const saveSerialNumber = async () => {
+    if (!snForm.itemId) { toast.error("Select an item"); return; }
+    if (!snForm.serialNo.trim()) { toast.error("Serial number is required"); return; }
+    // Check duplicate
+    const dup = serialNumbers.find(
+      (sn: any) => sn.serialNo === snForm.serialNo && sn.id !== editingSNId
+    );
+    if (dup) { toast.error("Serial number already exists"); return; }
+    try {
+      if (editingSNId) {
+        await store.updateSerialNumber(editingSNId, snForm);
+        toast.success("Serial number updated");
+      } else {
+        await store.addSerialNumber(snForm);
+        toast.success("Serial number added");
+      }
+      setShowSNModal(false);
+      setEditingSNId(null);
+      setSnForm(emptySN());
+    } catch {
+      toast.error("Failed to save serial number");
+    }
+  };
+
+  // ── Bulk import serial numbers ─────────────────────────────────────────────
+  const handleBulkImportSN = (itemId: string, serialNos: string[]) => {
+    const item = items.find((i: any) => i.id === itemId);
+    serialNos.forEach(async (sn) => {
+      if (!sn.trim()) return;
+      await store.addSerialNumber({
+        itemId,
+        itemName: item?.name || "",
+        serialNo: sn.trim(),
+        status: "available",
+        purchaseDate: new Date().toISOString().split("T")[0],
+        purchaseRate: item?.purchaseRate || 0,
+      });
     });
-    setShowForm(true);
+    toast.success(`${serialNos.length} serial numbers imported`);
   };
 
-  // Handle delete
-  const handleDelete = async (id) => {
-    const db = getDB();
-    try {
-      await db.batches.delete(id);
-      setAllBatches((prev) => prev.filter((b) => b.id !== id));
-      toast.success("Batch deleted successfully");
-    } catch (error) {
-      console.error("Error deleting batch:", error);
-      toast.error("Failed to delete batch");
-    }
+  // ── Filtered batches ───────────────────────────────────────────────────────
+  const filteredBatches = useMemo(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return batches.filter((b: any) => {
+      const q = batchSearch.toLowerCase();
+      const matchSearch =
+        !q ||
+        (b.batchNo || "").toLowerCase().includes(q) ||
+        (b.itemName || "").toLowerCase().includes(q) ||
+        (b.supplierBatchNo || "").toLowerCase().includes(q);
+
+      const days = daysUntilExpiry(b.expiryDate);
+      const matchExpiry =
+        filterExpiry === "ALL" ||
+        (filterExpiry === "expired"  && days <= 0) ||
+        (filterExpiry === "30days"   && days > 0 && days <= 30) ||
+        (filterExpiry === "90days"   && days > 0 && days <= 90) ||
+        (filterExpiry === "ok"       && days > 90);
+
+      return matchSearch && matchExpiry;
+    });
+  }, [batches, batchSearch, filterExpiry]);
+
+  // ── Filtered serial numbers ────────────────────────────────────────────────
+  const filteredSNs = useMemo(() => {
+    return serialNumbers.filter((sn: any) => {
+      const q = snSearch.toLowerCase();
+      const matchSearch =
+        !q ||
+        (sn.serialNo   || "").toLowerCase().includes(q) ||
+        (sn.itemName   || "").toLowerCase().includes(q) ||
+        (sn.soldToPartyName || "").toLowerCase().includes(q);
+      const matchStatus =
+        snStatusFilter === "ALL" || sn.status === snStatusFilter;
+      return matchSearch && matchStatus;
+    });
+  }, [serialNumbers, snSearch, snStatusFilter]);
+
+  // ── Export ─────────────────────────────────────────────────────────────────
+  const exportBatches = () => {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(
+        filteredBatches.map((b: any) => ({
+          "Batch No":      b.batchNo,
+          "Item":          b.itemName,
+          "Mfg Date":      b.manufacturingDate || "",
+          "Expiry Date":   b.expiryDate || "",
+          "Days to Expiry": b.expiryDate ? daysUntilExpiry(b.expiryDate) : "N/A",
+          "Purchase Date": b.purchaseDate,
+          "Purchase Rate": b.purchaseRate,
+          "Opening Qty":   b.openingQty,
+          "Current Qty":   b.currentQty,
+          "Value":         b.currentQty * b.purchaseRate,
+        }))
+      ),
+      "Batches"
+    );
+    XLSX.writeFile(wb, `BatchRegister_${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
-  // Handle hold/release
-  const handleHoldToggle = async (batchId, isHold, reason = "") => {
-    const db = getDB();
-    try {
-      await db.batches.update(batchId, { isOnHold: isHold, holdReason: reason });
-      setAllBatches((prev) =>
-        prev.map((b) => (b.id === batchId ? { ...b, isOnHold: isHold, holdReason: reason } : b)),
-      );
-      toast.success(isHold ? "Batch placed on hold" : "Batch released");
-    } catch (error) {
-      console.error("Error updating hold status:", error);
-      toast.error("Failed to update hold status");
-    }
+  const exportSNs = () => {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(
+        filteredSNs.map((sn: any) => ({
+          "Serial No":     sn.serialNo,
+          "Item":          sn.itemName,
+          "Status":        sn.status,
+          "Purchase Date": sn.purchaseDate || "",
+          "Purchase Rate": sn.purchaseRate || "",
+          "Sold Date":     sn.soldDate || "",
+          "Sold To":       sn.soldToPartyName || "",
+          "Invoice No":    sn.invoiceNo || "",
+          "Warranty Expiry": sn.warrantyExpiry || "",
+        }))
+      ),
+      "Serial Numbers"
+    );
+    XLSX.writeFile(wb, `SerialNumbers_${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
-  // Handle write-off submission
-  const handleWriteOffSubmit = async () => {
-    if (!writeOffData.date || !writeOffData.reason) {
-      toast.error("Please provide date and reason for write-off");
-      return;
-    }
+  // ── Batch summary stats ────────────────────────────────────────────────────
+  const batchStats = useMemo(() => ({
+    total:      batches.length,
+    expired:    batches.filter((b: any) => b.expiryDate && daysUntilExpiry(b.expiryDate) <= 0).length,
+    nearExpiry: batches.filter((b: any) => b.expiryDate && daysUntilExpiry(b.expiryDate) > 0 && daysUntilExpiry(b.expiryDate) <= 30).length,
+    totalValue: batches.reduce((s: number, b: any) => s + (b.currentQty || 0) * (b.purchaseRate || 0), 0),
+  }), [batches]);
 
-    const batch = writeOffModal.batch;
-    const item = items.find((i) => i.id === batch.itemId);
+  const snStats = useMemo(() => ({
+    total:     serialNumbers.length,
+    available: serialNumbers.filter((s: any) => s.status === "available").length,
+    sold:      serialNumbers.filter((s: any) => s.status === "sold").length,
+    damaged:   serialNumbers.filter((s: any) => s.status === "damaged").length,
+  }), [serialNumbers]);
 
-    if (!item) {
-      toast.error("Item not found for this batch");
-      return;
-    }
-
-    // Create a stock journal voucher for write-off
-    const writeOffVoucher = {
-      id: generateId(),
-      voucherNo: `WR-${generateId().slice(0, 6)}`,
-      date: writeOffData.date,
-      dateNepali: "", // Will be computed later
-      type: "stock-journal",
-      partyId: null,
-      lines: [
-        {
-          itemId: batch.itemId,
-          warehouseId: batch.godownId,
-          batchId: batch.id,
-          quantity: batch.openingQty,
-          rate: batch.purchaseRate,
-          amount: batch.openingQty * batch.purchaseRate,
-          type: "credit", // Remove stock
-          narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`,
-        },
-        {
-          itemId: batch.itemId,
-          warehouseId: batch.godownId,
-          batchId: batch.id,
-          quantity: batch.openingQty,
-          rate: batch.purchaseRate,
-          amount: batch.openingQty * batch.purchaseRate,
-          type: "debit", // Expense account
-          accountId: "EXPIRED_STOCK_WRITE_OFF_ACCOUNT_ID", // This needs to be a real account ID
-          narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`,
-        },
-      ],
-      subTotal: batch.openingQty * batch.purchaseRate,
-      grandTotal: batch.openingQty * batch.purchaseRate,
-      status: "posted",
-      narration: `Write-off expired batch ${batch.batchName}: ${writeOffData.reason}`,
-      createdAt: new Date().toISOString(),
-    };
-
-    try {
-      await addVoucher(writeOffVoucher);
-      await handleDelete(batch.id);
-      setWriteOffModal({ show: false, batch: null });
-      setWriteOffData({ date: "", reason: "" });
-      toast.success("Batch written off successfully");
-    } catch (error) {
-      console.error("Error writing off batch:", error);
-      toast.error("Failed to write off batch");
-    }
+  // Status badge colours
+  const snStatusColors: Record<string, string> = {
+    available: "bg-green-100 text-green-700",
+    sold:      "bg-gray-100 text-gray-700",
+    returned:  "bg-blue-100 text-blue-700",
+    damaged:   "bg-red-100 text-red-700",
+    reserved:  "bg-amber-100 text-amber-700",
   };
 
-  // Render batch master tab
-  const renderBatchMaster = () => (
-    <div style={{ padding: "20px", backgroundColor: BG_CARD, borderRadius: "8px", border: BORDER }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>Batch Master</h2>
-        <button
-          onClick={() => {
-            setForm({
-              id: "",
-              batchName: "",
-              itemId: "",
-              mfgDate: "",
-              expiryDate: "",
-              mrp: 0,
-              purchaseRate: 0,
-              salesRate: 0,
-              godownId: "",
-              openingQty: 0,
-              isActive: true,
-              trackExpiry: false,
-              isOnHold: false,
-              holdReason: "",
-            });
-            setShowForm(true);
-          }}
-          style={{
-            backgroundColor: "#1557b0",
-            color: "white",
-            border: BORDER,
-            padding: "8px 16px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "5px",
-          }}
-        >
-          <Plus size={16} />
-          Add Batch
+  // ─── Render ───────────────────────────────────────────────────────────────
+  return (
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">
+            Batch &amp; Serial Number Tracking
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Track inventory by batch/lot or individual serial number
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {activeTab === "batch" ? (
+            <>
+              <button onClick={exportBatches}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+                <Download className="h-3.5 w-3.5" /> Export
+              </button>
+              <button onClick={() => { setBatchForm(emptyBatch()); setEditingBatchId(null); setShowBatchModal(true); }}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5">
+                <Plus className="h-3.5 w-3.5" /> Add Batch
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={exportSNs}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+                <Download className="h-3.5 w-3.5" /> Export
+              </button>
+              <button onClick={() => { setSnForm(emptySN()); setEditingSNId(null); setShowSNModal(true); }}
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5">
+                <Plus className="h-3.5 w-3.5" /> Add Serial No.
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 mb-4">
+        <button onClick={() => setActiveTab("batch")}
+          className={`h-8 px-4 text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors ${
+            activeTab === "batch"
+              ? "bg-[#1557b0] text-white"
+              : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+          }`}>
+          <Package className="h-3.5 w-3.5" /> Batch / Lot Tracking
+        </button>
+        <button onClick={() => setActiveTab("serial")}
+          className={`h-8 px-4 text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors ${
+            activeTab === "serial"
+              ? "bg-[#1557b0] text-white"
+              : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+          }`}>
+          <Hash className="h-3.5 w-3.5" /> Serial Number Tracking
         </button>
       </div>
 
-      {showForm && (
-        <div
-          style={{
-            marginBottom: "20px",
-            padding: "15px",
-            backgroundColor: BG_DEEP,
-            borderRadius: "8px",
-            border: BORDER,
-          }}
-        >
-          <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "15px" }}>
-            {form.id ? "Edit Batch" : "Add New Batch"}
-          </h3>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "15px",
-            }}
-          >
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Batch Name *
-              </label>
-              <input
-                type="text"
-                value={form.batchName}
-                onChange={(e) => handleInputChange("batchName", e.target.value)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Item *
-              </label>
-              <select
-                value={form.itemId}
-                onChange={(e) => handleInputChange("itemId", e.target.value)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              >
-                <option value="">Select Item</option>
-                {items.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.code} - {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Mfg Date
-              </label>
-              <input
-                type="date"
-                value={form.mfgDate}
-                onChange={(e) => handleInputChange("mfgDate", e.target.value)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Expiry Date
-              </label>
-              <input
-                type="date"
-                value={form.expiryDate}
-                onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-                disabled={!form.trackExpiry}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Track Expiry
-              </label>
-              <input
-                type="checkbox"
-                checked={form.trackExpiry}
-                onChange={(e) => handleInputChange("trackExpiry", e.target.checked)}
-                style={{ marginRight: "5px" }}
-              />
-              Enable expiry tracking
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                MRP
-              </label>
-              <input
-                type="number"
-                value={form.mrp}
-                onChange={(e) => handleInputChange("mrp", parseFloat(e.target.value) || 0)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Purchase Rate
-              </label>
-              <input
-                type="number"
-                value={form.purchaseRate}
-                onChange={(e) => handleInputChange("purchaseRate", parseFloat(e.target.value) || 0)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Sales Rate
-              </label>
-              <input
-                type="number"
-                value={form.salesRate}
-                onChange={(e) => handleInputChange("salesRate", parseFloat(e.target.value) || 0)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Warehouse
-              </label>
-              <select
-                value={form.godownId}
-                onChange={(e) => handleInputChange("godownId", e.target.value)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              >
-                <option value="">Select Warehouse</option>
-                {warehouses.map((wh) => (
-                  <option key={wh.id} value={wh.id}>
-                    {wh.code} - {wh.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Opening Qty
-              </label>
-              <input
-                type="number"
-                value={form.openingQty}
-                onChange={(e) => handleInputChange("openingQty", parseInt(e.target.value) || 0)}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Active
-              </label>
-              <input
-                type="checkbox"
-                checked={form.isActive}
-                onChange={(e) => handleInputChange("isActive", e.target.checked)}
-                style={{ marginRight: "5px" }}
-              />
-              Is Active
-            </div>
-          </div>
-          <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
-            <button
-              onClick={handleSubmit}
-              style={{
-                backgroundColor: "#059669",
-                color: "white",
-                border: BORDER,
-                padding: "8px 16px",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              {form.id ? "Update" : "Save"} Batch
-            </button>
-            <button
-              onClick={() => setShowForm(false)}
-              style={{
-                backgroundColor: "#dc2626",
-                color: "white",
-                border: BORDER,
-                padding: "8px 16px",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginBottom: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <Search size={18} style={{ color: "#000000" }} />
-        <input
-          type="text"
-          placeholder="Search batches..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ padding: "8px", border: BORDER, borderRadius: "4px", width: "300px" }}
-        />
-      </div>
-
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-          <thead>
-            <tr style={{ backgroundColor: BG_HEADER }}>
-              <th style={{ border: BORDER, padding: "8px" }}>Batch No</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Item</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Mfg Date</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Expiry Date</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Days Remaining</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Status</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Qty</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Purchase Rate</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Value</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Warehouse</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBatches.map((batch) => {
-              const item = items.find((i) => i.id === batch.itemId);
-              const days = daysToExpiry(batch.expiryDate);
-              const { status, color, bgColor } = getStatusAndColor(days);
-              const value = (batch.openingQty || 0) * (batch.purchaseRate || 0);
-
-              return (
-                <tr key={batch.id} style={{ backgroundColor: bgColor }}>
-                  <td style={{ border: BORDER, padding: "8px" }}>{batch.batchName}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{item?.name || "N/A"}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{batch.mfgDate}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{batch.expiryDate}</td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>{days}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>
-                    <span
-                      style={{
-                        backgroundColor: color,
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "12px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {status}
-                    </span>
-                  </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    {batch.openingQty}
-                  </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    {money(batch.purchaseRate)}
-                  </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    {money(value)}
-                  </td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{batch.godownId}</td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                    {!batch.isOnHold ? (
-                      <button
-                        onClick={() => handleHoldToggle(batch.id, true)}
-                        style={{
-                          backgroundColor: "#d97706",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Hold
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleHoldToggle(batch.id, false)}
-                        style={{
-                          backgroundColor: "#059669",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Release
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleEdit(batch)}
-                      style={{
-                        backgroundColor: "#1557b0",
-                        color: "white",
-                        border: BORDER,
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "11px",
-                        marginRight: "5px",
-                      }}
-                    >
-                      <Edit size={12} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(batch.id)}
-                      style={{
-                        backgroundColor: "#dc2626",
-                        color: "white",
-                        border: BORDER,
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "11px",
-                      }}
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  // Render near-expiry dashboard
-  const renderNearExpiryDashboard = () => {
-    const expiringIn30 = allBatches.filter((b) => {
-      const days = daysToExpiry(b.expiryDate);
-      return days >= 0 && days <= 30;
-    });
-    const expiringIn60 = allBatches.filter((b) => {
-      const days = daysToExpiry(b.expiryDate);
-      return days >= 0 && days <= 60;
-    });
-    const expiringIn90 = allBatches.filter((b) => {
-      const days = daysToExpiry(b.expiryDate);
-      return days >= 0 && days <= 90;
-    });
-
-    const expired = allBatches.filter((b) => daysToExpiry(b.expiryDate) < 0);
-
-    const value30 = expiringIn30.reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-    const value60 = expiringIn60.reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-    const value90 = expiringIn90.reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-    const valueExpired = expired.reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-
-    return (
-      <div
-        style={{ padding: "20px", backgroundColor: BG_CARD, borderRadius: "8px", border: BORDER }}
-      >
-        <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}
-        >
-          Near-Expiry Dashboard
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "15px",
-            marginBottom: "20px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#fecaca",
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}>
-              {expired.length}
-            </div>
-            <div style={{ color: "#000000", marginTop: "5px" }}>Already Expired</div>
-            <div style={{ color: "#000000", fontWeight: "bold", marginTop: "5px" }}>
-              {money(valueExpired)}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: EXPIRED_BG,
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}>
-              {expiringIn30.length}
-            </div>
-            <div style={{ color: "#000000", marginTop: "5px" }}>Expiring in 30 Days</div>
-            <div style={{ color: "#000000", fontWeight: "bold", marginTop: "5px" }}>
-              {money(value30)}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: NEAR_EXPIRY_BG,
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#d97706" }}>
-              {expiringIn60.length}
-            </div>
-            <div style={{ color: "#000000", marginTop: "5px" }}>Expiring in 60 Days</div>
-            <div style={{ color: "#000000", fontWeight: "bold", marginTop: "5px" }}>
-              {money(value60)}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: NEAR_EXPIRY_BG,
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#f59e0b" }}>
-              {expiringIn90.length}
-            </div>
-            <div style={{ color: "#000000", marginTop: "5px" }}>Expiring in 90 Days</div>
-            <div style={{ color: "#000000", fontWeight: "bold", marginTop: "5px" }}>
-              {money(value90)}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: "15px", marginBottom: "20px", flexWrap: "wrap" }}>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-              Item Group
-            </label>
-            <select
-              value={expiryFilters.itemGroupId}
-              onChange={(e) => setExpiryFilters({ ...expiryFilters, itemGroupId: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            >
-              <option value="">All Groups</option>
-            </select>
-          </div>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-              Item
-            </label>
-            <select
-              value={expiryFilters.itemId}
-              onChange={(e) => setExpiryFilters({ ...expiryFilters, itemId: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            >
-              <option value="">All Items</option>
-              {items.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.code} - {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-              Days Filter
-            </label>
-            <select
-              value={expiryFilters.daysRange}
-              onChange={(e) => setExpiryFilters({ ...expiryFilters, daysRange: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            >
-              <option value={30}>30 Days</option>
-              <option value={60}>60 Days</option>
-              <option value={90}>90 Days</option>
-              <option value="ALL">All</option>
-            </select>
-          </div>
-        </div>
-
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-            <thead>
-              <tr style={{ backgroundColor: BG_HEADER }}>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Name</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Batch No</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Qty In Stock</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Expiry Date</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                  Days Remaining
-                </th>
-                <th style={{ border: BORDER, padding: "8px" }}>Value</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Status</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBatches.map((batch) => {
-                const item = items.find((i) => i.id === batch.itemId);
-                const days = daysToExpiry(batch.expiryDate);
-                const { status, color, bgColor } = getStatusAndColor(days);
-                const value = (batch.openingQty || 0) * (batch.purchaseRate || 0);
-
-                return (
-                  <tr key={batch.id} style={{ backgroundColor: bgColor }}>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item?.name || "N/A"}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.batchName}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {batch.openingQty}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.expiryDate}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>{days}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(value)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px" }}>
-                      <span
-                        style={{
-                          backgroundColor: color,
-                          color: "white",
-                          padding: "2px 6px",
-                          borderRadius: "12px",
-                          fontSize: "11px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {status}
-                      </span>
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                      <button
-                        onClick={() => handleHoldToggle(batch.id, true)}
-                        style={{
-                          backgroundColor: "#d97706",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Hold
-                      </button>
-                      <button
-                        onClick={() => setWriteOffModal({ show: true, batch })}
-                        style={{
-                          backgroundColor: "#dc2626",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                        }}
-                      >
-                        Write Off
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-  // Render on-hold tab
-  const renderOnHoldTab = () => {
-    const heldBatches = allBatches.filter((b) => b.isOnHold);
-
-    return (
-      <div
-        style={{ padding: "20px", backgroundColor: BG_CARD, borderRadius: "8px", border: BORDER }}
-      >
-        <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}
-        >
-          Batches On Hold
-        </h2>
-
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-            <thead>
-              <tr style={{ backgroundColor: BG_HEADER }}>
-                <th style={{ border: BORDER, padding: "8px" }}>Item</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Batch No</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Qty</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Expiry Date</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Hold Reason</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Hold Date</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {heldBatches.map((batch) => {
-                const item = items.find((i) => i.id === batch.itemId);
-
-                return (
-                  <tr key={batch.id}>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item?.name || "N/A"}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.batchName}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {batch.openingQty}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.expiryDate}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.holdReason}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>
-                      {batch.createdAt?.split("T")[0]}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                      <button
-                        onClick={() => handleHoldToggle(batch.id, false)}
-                        style={{
-                          backgroundColor: "#059669",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Release
-                      </button>
-                      <button
-                        onClick={() => setWriteOffModal({ show: true, batch })}
-                        style={{
-                          backgroundColor: "#dc2626",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Write Off
-                      </button>
-                      <button
-                        onClick={() => {}}
-                        style={{
-                          backgroundColor: "#1557b0",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                        }}
-                      >
-                        Return
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-  // Render expiry report
-  const renderExpiryReport = () => {
-    const runReport = () => {
-      let result = allBatches;
-
-      if (reportFilters.fromDate) {
-        result = result.filter((b) => new Date(b.expiryDate) >= new Date(reportFilters.fromDate));
-      }
-      if (reportFilters.toDate) {
-        result = result.filter((b) => new Date(b.expiryDate) <= new Date(reportFilters.toDate));
-      }
-      if (reportFilters.itemGroupId) {
-        result = result.filter((b) => {
-          const item = items.find((i) => i.id === b.itemId);
-          return item?.groupId === reportFilters.itemGroupId;
-        });
-      }
-
-      setReportData(result);
-    };
-
-    const exportExcel = () => {
-      if (reportData.length === 0) {
-        toast.error("No data to export");
-        return;
-      }
-
-      const ws = XLSX.utils.json_to_sheet(
-        reportData.map((b) => {
-          const item = items.find((i) => i.id === b.itemId);
-          const warehouse = warehouses.find((w) => w.id === b.godownId);
-          const days = daysToExpiry(b.expiryDate);
-          return {
-            "Item Code": item?.code || "N/A",
-            "Item Name": item?.name || "N/A",
-            "Batch No": b.batchName,
-            "Batch Qty": b.openingQty,
-            "MFG Date": b.mfgDate,
-            "Expiry Date": b.expiryDate,
-            "Days to Expiry": days,
-            "Purchase Rate": b.purchaseRate,
-            "Stock Value": (b.openingQty || 0) * (b.purchaseRate || 0),
-            Warehouse: warehouse?.name || "N/A",
-          };
-        }),
-      );
-
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Expiry Report");
-      XLSX.writeFile(wb, `Expiry_Report_${new Date().toISOString().split("T")[0]}.xlsx`);
-      toast.success("Exported to Excel successfully");
-    };
-
-    const totalNearExpiry = reportData
-      .filter((b) => daysToExpiry(b.expiryDate) >= 0 && daysToExpiry(b.expiryDate) <= 90)
-      .reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-
-    const totalExpired = reportData
-      .filter((b) => daysToExpiry(b.expiryDate) < 0)
-      .reduce((sum, b) => sum + b.openingQty * b.purchaseRate, 0);
-
-    return (
-      <div
-        style={{ padding: "20px", backgroundColor: BG_CARD, borderRadius: "8px", border: BORDER }}
-      >
-        <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}
-        >
-          Expiry Report
-        </h2>
-
-        <div style={{ display: "flex", gap: "15px", marginBottom: "20px", flexWrap: "wrap" }}>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-              Expiring Between
-            </label>
-            <input
-              type="date"
-              value={reportFilters.fromDate}
-              onChange={(e) => setReportFilters({ ...reportFilters, fromDate: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            />
-          </div>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>And</label>
-            <input
-              type="date"
-              value={reportFilters.toDate}
-              onChange={(e) => setReportFilters({ ...reportFilters, toDate: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            />
-          </div>
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-              Item Group
-            </label>
-            <select
-              value={reportFilters.itemGroupId}
-              onChange={(e) => setReportFilters({ ...reportFilters, itemGroupId: e.target.value })}
-              style={{ padding: "8px", border: BORDER, borderRadius: "4px" }}
-            >
-              <option value="">All Groups</option>
-            </select>
-          </div>
-          <button
-            onClick={runReport}
-            style={{
-              backgroundColor: "#1557b0",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              alignSelf: "flex-end",
-            }}
-          >
-            Run Report
-          </button>
-          <button
-            onClick={exportExcel}
-            style={{
-              backgroundColor: "#059669",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              alignSelf: "flex-end",
-            }}
-          >
-            Export Excel
-          </button>
-          <button
-            onClick={() => {}}
-            style={{
-              backgroundColor: "#1557b0",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              alignSelf: "flex-end",
-            }}
-          >
-            Print
-          </button>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: NEAR_EXPIRY_BG,
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-            }}
-          >
-            <div style={{ fontSize: "14px", fontWeight: "bold", color: "#000000" }}>
-              Total Near-Expiry Value
-            </div>
-            <div style={{ fontSize: "20px", fontWeight: "bold", color: "#d97706" }}>
-              {money(totalNearExpiry)}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: EXPIRED_BG,
-              padding: "15px",
-              borderRadius: "8px",
-              border: BORDER,
-            }}
-          >
-            <div style={{ fontSize: "14px", fontWeight: "bold", color: "#000000" }}>
-              Total Expired Value
-            </div>
-            <div style={{ fontSize: "20px", fontWeight: "bold", color: "#dc2626" }}>
-              {money(totalExpired)}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-            <thead>
-              <tr style={{ backgroundColor: BG_HEADER }}>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Code</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Name</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Batch No</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Batch Qty</th>
-                <th style={{ border: BORDER, padding: "8px" }}>MFG Date</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Expiry Date</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                  Days to Expiry
-                </th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                  Purchase Rate
-                </th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Stock Value</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Warehouse</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reportData.map((batch) => {
-                const item = items.find((i) => i.id === batch.itemId);
-                const warehouse = warehouses.find((w) => w.id === batch.godownId);
-                const days = daysToExpiry(batch.expiryDate);
-
-                return (
-                  <tr key={batch.id}>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item?.code || "N/A"}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item?.name || "N/A"}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.batchName}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {batch.openingQty}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.mfgDate}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{batch.expiryDate}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>{days}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(batch.purchaseRate)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(batch.openingQty * batch.purchaseRate)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{warehouse?.name || "N/A"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-  // Render FIFO picker
-  const renderFIFOPicker = () => {
-    const item = items.find((i) => i.id === selectedItemForFifo);
-    const relevantBatches = allBatches
-      .filter((b) => b.itemId === selectedItemForFifo)
-      .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-
-    return (
-      <div
-        style={{ padding: "20px", backgroundColor: BG_CARD, borderRadius: "8px", border: BORDER }}
-      >
-        <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}
-        >
-          FIFO Expiry Picker
-        </h2>
-
-        <div style={{ marginBottom: "20px" }}>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-            Select Item
-          </label>
-          <select
-            value={selectedItemForFifo}
-            onChange={(e) => setSelectedItemForFifo(e.target.value)}
-            style={{ padding: "8px", border: BORDER, borderRadius: "4px", width: "300px" }}
-          >
-            <option value="">Select an item to see FIFO picking order</option>
-            {items.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.code} - {item.name}
-              </option>
+      {/* ── BATCH TAB ──────────────────────────────────────────────────────── */}
+      {activeTab === "batch" && (
+        <>
+          {/* KPI */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            {[
+              { label: "Total Batches",  value: batchStats.total,      color: "text-gray-800",   isAmt: false },
+              { label: "Expired",        value: batchStats.expired,     color: "text-red-600",    isAmt: false },
+              { label: "Expiring (30d)", value: batchStats.nearExpiry,  color: "text-amber-700",  isAmt: false },
+              { label: "Total Value",    value: batchStats.totalValue,  color: "text-[#1557b0]",  isAmt: true  },
+            ].map((k) => (
+              <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                <p className={`font-bold font-mono mt-1 ${k.color} ${k.isAmt ? "text-[13px]" : "text-[20px]"}`}>
+                  {k.isAmt ? "Rs. " + fmt(k.value as number) : k.value}
+                </p>
+              </div>
             ))}
-          </select>
-        </div>
+          </div>
 
-        {selectedItemForFifo && (
-          <div>
-            <h3
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                color: "#000000",
-                marginBottom: "15px",
-              }}
-            >
-              FIFO Order for {item?.name || "Selected Item"}
-            </h3>
-
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                How many units do you want to sell?
-              </label>
-              <input
-                type="number"
-                placeholder="Enter quantity to pick"
-                style={{ padding: "8px", border: BORDER, borderRadius: "4px", width: "200px" }}
-              />
+          {/* Expiry alert */}
+          {(batchStats.expired > 0 || batchStats.nearExpiry > 0) && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex items-center gap-2 text-[12px] text-red-800">
+              <AlertTriangle className="h-4 w-4 shrink-0" />
+              {batchStats.expired > 0 && <span><strong>{batchStats.expired} batches have EXPIRED.</strong> </span>}
+              {batchStats.nearExpiry > 0 && <span><strong>{batchStats.nearExpiry} batches expiring within 30 days.</strong></span>}
             </div>
+          )}
 
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+          {/* Filters */}
+          <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+            <div className="flex-1 min-w-[180px]">
+              <label className={labelCls}>Search</label>
+              <input value={batchSearch} onChange={(e) => setBatchSearch(e.target.value)}
+                placeholder="Batch no, item name..."
+                className={inputCls} />
+            </div>
+            <div>
+              <label className={labelCls}>Expiry Status</label>
+              <select value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]">
+                <option value="ALL">All</option>
+                <option value="expired">Expired</option>
+                <option value="30days">Expiring in 30 days</option>
+                <option value="90days">Expiring in 90 days</option>
+                <option value="ok">OK (&gt;90 days)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Batch table */}
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full" style={{ minWidth: 1000 }}>
                 <thead>
-                  <tr style={{ backgroundColor: BG_HEADER }}>
-                    <th style={{ border: BORDER, padding: "8px" }}>Batch No</th>
-                    <th style={{ border: BORDER, padding: "8px" }}>Expiry Date</th>
-                    <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      Available Qty
-                    </th>
-                    <th style={{ border: BORDER, padding: "8px" }}>Status</th>
+                  <tr>
+                    <th className={thCls}>Batch No.</th>
+                    <th className={thCls}>Item</th>
+                    <th className={thCls}>Mfg. Date</th>
+                    <th className={thCls}>Expiry Date</th>
+                    <th className={thCls}>Days Left</th>
+                    <th className={thCls}>Purchase Date</th>
+                    <th className={`${thCls} text-right`}>Rate</th>
+                    <th className={`${thCls} text-right`}>Qty</th>
+                    <th className={`${thCls} text-right`}>Value</th>
+                    <th className={thCls}>Status</th>
+                    <th className={thCls}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {relevantBatches.map((batch) => {
-                    const days = daysToExpiry(batch.expiryDate);
-                    const { status, color } = getStatusAndColor(days);
-
+                  {filteredBatches.length === 0 && (
+                    <tr><td colSpan={11} className="px-4 py-10 text-center text-[12px] text-gray-400">
+                      No batches found. Add a batch to begin tracking.
+                    </td></tr>
+                  )}
+                  {filteredBatches.map((batch: any) => {
+                    const days = daysUntilExpiry(batch.expiryDate);
+                    const isExpired   = batch.expiryDate && days <= 0;
+                    const isNearExpiry = batch.expiryDate && days > 0 && days <= 30;
+                    const value = (batch.currentQty || 0) * (batch.purchaseRate || 0);
                     return (
-                      <tr key={batch.id}>
-                        <td style={{ border: BORDER, padding: "8px" }}>{batch.batchName}</td>
-                        <td style={{ border: BORDER, padding: "8px" }}>{batch.expiryDate}</td>
-                        <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                          {batch.openingQty}
+                      <tr key={batch.id} className={`hover:bg-gray-50 ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}>
+                        <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800 border-b border-gray-100">
+                          {batch.batchNo}
+                          {batch.supplierBatchNo && (
+                            <div className="text-[10px] text-gray-400">Supplier: {batch.supplierBatchNo}</div>
+                          )}
                         </td>
-                        <td style={{ border: BORDER, padding: "8px" }}>
-                          <span
-                            style={{
-                              backgroundColor: color,
-                              color: "white",
-                              padding: "2px 6px",
-                              borderRadius: "12px",
-                              fontSize: "11px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {status}
+                        <td className={tdCls}>{batch.itemName}</td>
+                        <td className={tdCls}>{batch.manufacturingDate || "—"}</td>
+                        <td className={`${tdCls} ${isExpired ? "text-red-600 font-semibold" : isNearExpiry ? "text-amber-700 font-semibold" : ""}`}>
+                          {batch.expiryDate || "—"}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
+                          {batch.expiryDate ? (
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                              isExpired    ? "bg-red-100 text-red-700"    :
+                              isNearExpiry ? "bg-amber-100 text-amber-700" :
+                              "bg-green-100 text-green-700"
+                            }`}>
+                              {isExpired ? "EXPIRED" : `${days}d`}
+                            </span>
+                          ) : "—"}
+                        </td>
+                        <td className={tdCls}>{batch.purchaseDate}</td>
+                        <td className={amtCls}>{fmt(batch.purchaseRate)}</td>
+                        <td className={`${amtCls} font-semibold ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}>
+                          {fmt(batch.currentQty)}
+                        </td>
+                        <td className={`${amtCls} text-[#1557b0] font-semibold`}>{fmt(value)}</td>
+                        <td className="px-3 py-2.5 border-b border-gray-100">
+                          <span className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${
+                            isExpired ? "bg-red-100 text-red-700" :
+                            (batch.currentQty || 0) <= 0 ? "bg-gray-100 text-gray-500" :
+                            "bg-green-100 text-green-700"
+                          }`}>
+                            {isExpired ? "Expired" : (batch.currentQty || 0) <= 0 ? "Empty" : "Active"}
                           </span>
+                        </td>
+                        <td className="px-3 py-2.5 border-b border-gray-100">
+                          <div className="flex gap-1">
+                            <button onClick={() => { setBatchForm({ ...batch }); setEditingBatchId(batch.id); setShowBatchModal(true); }}
+                              className="p-1.5 rounded hover:bg-gray-100 text-gray-500" title="Edit">
+                              <Edit2 className="h-3.5 w-3.5" />
+                            </button>
+                            <button onClick={async () => { if (confirm("Delete this batch?")) { await store.deleteBatch(batch.id); toast.success("Batch deleted"); } }}
+                              className="p-1.5 rounded hover:bg-red-50 text-red-500" title="Delete">
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1351,172 +495,325 @@ export default function BatchManagement() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </>
+      )}
 
-            <div
-              style={{
-                marginTop: "20px",
-                padding: "15px",
-                backgroundColor: BG_DEEP,
-                borderRadius: "8px",
-                border: BORDER,
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  color: "#000000",
-                  marginBottom: "10px",
-                }}
-              >
-                FIFO Consumption Plan
-              </h4>
-              <p style={{ color: "#000000" }}>
-                {relevantBatches.length > 0
-                  ? `When selling units from "${item?.name}", the system will prioritize batches by expiry date (earliest first).`
-                  : "No batches available for this item."}
-              </p>
-              {relevantBatches.slice(0, 3).map((batch, idx) => (
-                <p key={batch.id} style={{ color: "#000000", marginTop: "5px" }}>
-                  {idx + 1}. {batch.batchName} (exp: {batch.expiryDate})
-                </p>
-              ))}
+      {/* ── SERIAL NUMBER TAB ──────────────────────────────────────────────── */}
+      {activeTab === "serial" && (
+        <>
+          {/* KPI */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            {[
+              { label: "Total Units",  value: snStats.total,     color: "text-gray-800"  },
+              { label: "Available",    value: snStats.available,  color: "text-green-700" },
+              { label: "Sold",         value: snStats.sold,       color: "text-gray-600"  },
+              { label: "Damaged",      value: snStats.damaged,    color: "text-red-600"   },
+            ].map((k) => (
+              <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                <p className={`text-[20px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Filters */}
+          <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+            <div className="flex-1 min-w-[180px]">
+              <label className={labelCls}>Search</label>
+              <input value={snSearch} onChange={(e) => setSnSearch(e.target.value)}
+                placeholder="Serial no, item, customer..."
+                className={inputCls} />
+            </div>
+            <div>
+              <label className={labelCls}>Status</label>
+              <div className="flex rounded-md border border-gray-300 overflow-hidden">
+                {["ALL", "available", "sold", "returned", "damaged", "reserved"].map((s) => (
+                  <button key={s} onClick={() => setSnStatusFilter(s)}
+                    className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${
+                      snStatusFilter === s ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"
+                    }`}>
+                    {s === "ALL" ? "All" : s}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        )}
-      </div>
-    );
-  };
 
-  return (
-    <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
-        Batch Management
-      </h1>
-
-      {/* Tab Navigation */}
-      <div style={{ display: "flex", gap: "5px", marginBottom: "20px", borderBottom: BORDER }}>
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
-              color: activeTab === tab.id ? "#000000" : "#666",
-              border: BORDER,
-              padding: "10px 16px",
-              borderRadius: "4px 4px 0 0",
-              cursor: "pointer",
-              fontWeight: activeTab === tab.id ? "bold" : "normal",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
-      {activeTab === "master" && renderBatchMaster()}
-      {activeTab === "near_expiry" && renderNearExpiryDashboard()}
-      {activeTab === "on_hold" && renderOnHoldTab()}
-      {activeTab === "report" && renderExpiryReport()}
-      {activeTab === "fifo" && renderFIFOPicker()}
-
-      {/* Write-Off Modal */}
-      {writeOffModal.show && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: BG_CARD,
-              padding: "20px",
-              borderRadius: "8px",
-              border: BORDER,
-              width: "90%",
-              maxWidth: "500px",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: "#000000",
-                marginBottom: "15px",
-              }}
-            >
-              Write Off Batch: {writeOffModal.batch?.batchName}
-            </h2>
-
-            <div style={{ marginBottom: "15px" }}>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Write-Off Date
-              </label>
-              <input
-                type="date"
-                value={writeOffData.date}
-                onChange={(e) => setWriteOffData({ ...writeOffData, date: e.target.value })}
-                style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
-              />
+          {/* Serial number table */}
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full" style={{ minWidth: 900 }}>
+                <thead>
+                  <tr>
+                    <th className={thCls}>Serial No.</th>
+                    <th className={thCls}>Item</th>
+                    <th className={thCls}>Status</th>
+                    <th className={thCls}>Purchase Date</th>
+                    <th className={`${thCls} text-right`}>Purchase Rate</th>
+                    <th className={thCls}>Sold Date</th>
+                    <th className={thCls}>Sold To</th>
+                    <th className={thCls}>Invoice</th>
+                    <th className={thCls}>Warranty Expiry</th>
+                    <th className={thCls}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSNs.length === 0 && (
+                    <tr><td colSpan={10} className="px-4 py-10 text-center text-[12px] text-gray-400">
+                      No serial numbers found.
+                    </td></tr>
+                  )}
+                  {filteredSNs.map((sn: any) => (
+                    <tr key={sn.id} className="hover:bg-gray-50">
+                      <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800 border-b border-gray-100">
+                        {sn.serialNo}
+                      </td>
+                      <td className={tdCls}>{sn.itemName}</td>
+                      <td className="px-3 py-2.5 border-b border-gray-100">
+                        <span className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}>
+                          {sn.status}
+                        </span>
+                      </td>
+                      <td className={tdCls}>{sn.purchaseDate || "—"}</td>
+                      <td className={amtCls}>{sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}</td>
+                      <td className={tdCls}>{sn.soldDate || "—"}</td>
+                      <td className={tdCls}>{sn.soldToPartyName || "—"}</td>
+                      <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">
+                        {sn.invoiceNo || "—"}
+                      </td>
+                      <td className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}>
+                        {sn.warrantyExpiry || "—"}
+                        {sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 && " (Expired)"}
+                      </td>
+                      <td className="px-3 py-2.5 border-b border-gray-100">
+                        <div className="flex gap-1">
+                          <button onClick={() => { setSnForm({ ...sn }); setEditingSNId(sn.id); setShowSNModal(true); }}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-500" title="Edit">
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </button>
+                          <button onClick={async () => { if (confirm("Delete this serial number?")) { await store.deleteSerialNumber(sn.id); toast.success("Deleted"); } }}
+                            className="p-1.5 rounded hover:bg-red-50 text-red-500" title="Delete">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          </div>
+        </>
+      )}
 
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-                Reason for Write-Off
-              </label>
-              <textarea
-                value={writeOffData.reason}
-                onChange={(e) => setWriteOffData({ ...writeOffData, reason: e.target.value })}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  minHeight: "80px",
-                }}
-              />
+      {/* ── Batch Modal ────────────────────────────────────────────────────── */}
+      {showBatchModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+              <h3 className="text-[14px] font-semibold text-gray-800">
+                {editingBatchId ? "Edit Batch" : "Add Batch / Lot"}
+              </h3>
+              <button onClick={() => setShowBatchModal(false)} className="p-1 rounded hover:bg-gray-200 text-gray-500">
+                <X className="h-4 w-4" />
+              </button>
             </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-              <button
-                onClick={() => {
-                  setWriteOffModal({ show: false, batch: null });
-                  setWriteOffData({ date: "", reason: "" });
-                }}
-                style={{
-                  backgroundColor: "#dc2626",
-                  color: "white",
-                  border: BORDER,
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
+            <div className="p-4 overflow-y-auto space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2">
+                  <label className={labelCls}>Item *</label>
+                  <select className={inputCls} value={batchForm.itemId}
+                    onChange={(e) => handleBatchItemChange(e.target.value)}>
+                    <option value="">— Select Item —</option>
+                    {items.map((i: any) => (
+                      <option key={i.id} value={i.id}>{i.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Batch No. *</label>
+                  <input className={inputCls} value={batchForm.batchNo}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, batchNo: e.target.value }))}
+                    placeholder="e.g. BCH-2024-001" />
+                </div>
+                <div>
+                  <label className={labelCls}>Supplier Batch No.</label>
+                  <input className={inputCls} value={batchForm.supplierBatchNo}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, supplierBatchNo: e.target.value }))}
+                    placeholder="Supplier's batch reference" />
+                </div>
+                <div>
+                  <label className={labelCls}>Manufacturing Date</label>
+                  <input type="date" className={inputCls} value={batchForm.manufacturingDate}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, manufacturingDate: e.target.value }))} />
+                </div>
+                <div>
+                  <label className={labelCls}>Expiry Date</label>
+                  <input type="date" className={inputCls} value={batchForm.expiryDate}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, expiryDate: e.target.value }))} />
+                </div>
+                <div>
+                  <label className={labelCls}>Purchase Date *</label>
+                  <input type="date" className={inputCls} value={batchForm.purchaseDate}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, purchaseDate: e.target.value }))} />
+                </div>
+                <div>
+                  <label className={labelCls}>Purchase Rate (Rs.)</label>
+                  <input type="number" className={inputCls} value={batchForm.purchaseRate || ""}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, purchaseRate: Number(e.target.value) || 0 }))}
+                    min={0} placeholder="0.00" />
+                </div>
+                <div>
+                  <label className={labelCls}>Quantity *</label>
+                  <input type="number" className={inputCls} value={batchForm.currentQty || ""}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, currentQty: Number(e.target.value) || 0, openingQty: Number(e.target.value) || 0 }))}
+                    min={0} placeholder="0" />
+                </div>
+                <div>
+                  <label className={labelCls}>Warehouse</label>
+                  <select className={inputCls} value={batchForm.warehouseId}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, warehouseId: e.target.value }))}>
+                    <option value="">— Select Warehouse —</option>
+                    {warehouses.map((w: any) => (
+                      <option key={w.id} value={w.id}>{w.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className={labelCls}>Notes</label>
+                  <input className={inputCls} value={batchForm.notes}
+                    onChange={(e) => setBatchForm((f: any) => ({ ...f, notes: e.target.value }))}
+                    placeholder="Any additional notes..." />
+                </div>
+              </div>
+            </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
+              <button onClick={() => setShowBatchModal(false)}
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50">
                 Cancel
               </button>
-              <button
-                onClick={handleWriteOffSubmit}
-                style={{
-                  backgroundColor: "#059669",
-                  color: "white",
-                  border: BORDER,
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Confirm Write-Off
+              <button onClick={saveBatch}
+                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md">
+                {editingBatchId ? "Update Batch" : "Add Batch"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Serial Number Modal ────────────────────────────────────────────── */}
+      {showSNModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+              <h3 className="text-[14px] font-semibold text-gray-800">
+                {editingSNId ? "Edit Serial Number" : "Add Serial Number"}
+              </h3>
+              <button onClick={() => setShowSNModal(false)} className="p-1 rounded hover:bg-gray-200 text-gray-500">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2">
+                  <label className={labelCls}>Item *</label>
+                  <select className={inputCls} value={snForm.itemId}
+                    onChange={(e) => handleSNItemChange(e.target.value)}>
+                    <option value="">— Select Item —</option>
+                    {items.map((i: any) => (
+                      <option key={i.id} value={i.id}>{i.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Serial Number *</label>
+                  <input className={inputCls} value={snForm.serialNo}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, serialNo: e.target.value }))}
+                    placeholder="e.g. SN-2024-00001" />
+                </div>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select className={inputCls} value={snForm.status}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, status: e.target.value }))}>
+                    <option value="available">Available</option>
+                    <option value="sold">Sold</option>
+                    <option value="returned">Returned</option>
+                    <option value="damaged">Damaged</option>
+                    <option value="reserved">Reserved</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Purchase Date</label>
+                  <input type="date" className={inputCls} value={snForm.purchaseDate}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, purchaseDate: e.target.value }))} />
+                </div>
+                <div>
+                  <label className={labelCls}>Purchase Rate (Rs.)</label>
+                  <input type="number" className={inputCls} value={snForm.purchaseRate || ""}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, purchaseRate: Number(e.target.value) || 0 }))}
+                    min={0} placeholder="0.00" />
+                </div>
+                <div>
+                  <label className={labelCls}>Warranty Expiry</label>
+                  <input type="date" className={inputCls} value={snForm.warrantyExpiry}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, warrantyExpiry: e.target.value }))} />
+                </div>
+                <div>
+                  <label className={labelCls}>Warehouse</label>
+                  <select className={inputCls} value={snForm.warehouseId}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, warehouseId: e.target.value }))}>
+                    <option value="">— Select Warehouse —</option>
+                    {warehouses.map((w: any) => (
+                      <option key={w.id} value={w.id}>{w.name}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Sold details — only show when status = sold */}
+                {snForm.status === "sold" && (
+                  <>
+                    <div>
+                      <label className={labelCls}>Sold Date</label>
+                      <input type="date" className={inputCls} value={snForm.soldDate || ""}
+                        onChange={(e) => setSnForm((f: any) => ({ ...f, soldDate: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Sold To (Customer)</label>
+                      <select className={inputCls} value={snForm.soldToPartyId || ""}
+                        onChange={(e) => {
+                          const party = parties.find((p: any) => p.id === e.target.value);
+                          setSnForm((f: any) => ({ ...f, soldToPartyId: e.target.value, soldToPartyName: party?.name || "" }));
+                        }}>
+                        <option value="">— Select Customer —</option>
+                        {parties.filter((p: any) => p.type === "customer" || p.type === "both").map((p: any) => (
+                          <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-span-2">
+                      <label className={labelCls}>Invoice No.</label>
+                      <input className={inputCls} value={snForm.invoiceNo || ""}
+                        onChange={(e) => setSnForm((f: any) => ({ ...f, invoiceNo: e.target.value }))}
+                        placeholder="Link to invoice number" />
+                    </div>
+                  </>
+                )}
+                <div className="col-span-2">
+                  <label className={labelCls}>Notes</label>
+                  <input className={inputCls} value={snForm.notes || ""}
+                    onChange={(e) => setSnForm((f: any) => ({ ...f, notes: e.target.value }))}
+                    placeholder="Any additional notes..." />
+                </div>
+              </div>
+            </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
+              <button onClick={() => setShowSNModal(false)}
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50">
+                Cancel
+              </button>
+              <button onClick={saveSerialNumber}
+                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md">
+                {editingSNId ? "Update" : "Add Serial Number"}
               </button>
             </div>
           </div>
