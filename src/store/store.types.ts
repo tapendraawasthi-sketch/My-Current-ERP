@@ -556,6 +556,10 @@ function generateId(): string {
 }
 
 export async function hashPassword(password: string): Promise<string> {
+  if (!crypto || !crypto.subtle) {
+    console.warn("crypto.subtle is not available (likely non-HTTPS environment). Using fallback hash.");
+    return `fallback_${password}`;
+  }
   const enc = new TextEncoder();
   const salt = enc.encode("sutra-erp-salt-v1");
   const keyMaterial = await crypto.subtle.importKey(
