@@ -531,6 +531,9 @@ export interface DBCompanySettings {
   timezone?: string;
   createdAt?: string;
   updatedAt?: string;
+  lastLoginBy?: string;
+  lastLoginAt?: string;
+  lastLoginIp?: string;
 }
 
 // ─── User ─────────────────────────────────────────────────────────────────────
@@ -1042,7 +1045,8 @@ export interface DBAuditLog {
 
 // ─── Database Class ───────────────────────────────────────────────────────────
 
-const SCHEMA_VERSION = 18;
+// SCHEMA_VERSION retired — version blocks are now explicit in the constructor
+// const SCHEMA_VERSION = 18;
 
 export class SutraERPDatabase extends Dexie {
   accounts!: Table<DBAccount>;
@@ -1132,11 +1136,13 @@ export class SutraERPDatabase extends Dexie {
   cbmsQueue!: Table<any>;
   voucherAuditLogs!: Table<any>;
   salespersons!: Table<any>;
+  loginHistory!: Table<any>;
 
   constructor() {
     super("SutraERPDatabase");
 
-    this.version(SCHEMA_VERSION).stores({
+    // Version 18 — original schema (must stay for Dexie migration chain)
+    this.version(18).stores({
       accounts:
         "id, code, name, type, level, parentId, isGroup, isActive, createdAt",
       parties:
@@ -1205,6 +1211,11 @@ export class SutraERPDatabase extends Dexie {
         "id, month, year, employeeId, status, createdAt",
       auditLogs:
         "++id, timestamp, userId, action, entityType, entityId",
+    });
+
+    // Version 19 — adds loginHistory audit table (no data migration needed)
+    this.version(19).stores({
+      loginHistory: "++id, companyId, userId, loginAt, success",
     });
   }
 }

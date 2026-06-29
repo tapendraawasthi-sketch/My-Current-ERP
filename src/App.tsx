@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useStore } from "./store";
 import { Toaster } from "react-hot-toast";
@@ -51,15 +50,15 @@ import VatReports from "./pages/VatReports";
 import BillingInvoice from "./pages/BillingInvoice";
 import PartyStatement from "./pages/PartyStatement";
 
-// ─── Pages that already exist in the project ─────────────────────────────────
-import SignInForm from "./components/auth/SignInForm";
+// ─── Auth screens (Tally-style stage machine) ─────────────────────────────────
+import SignUpWizard from "./components/auth/SignUpWizard";
+import GatewayScreen from "./components/auth/GatewayScreen";
+import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
 
 const App: React.FC = () => {
   const {
     currentPage,
-    isDbReady,
-    isInitializing,
-    isAuthenticated,
+    authStage,
     initializeApp,
   } = useStore();
 
@@ -67,27 +66,47 @@ const App: React.FC = () => {
     initializeApp();
   }, []);
 
-  // ── Loading splash ────────────────────────────────────────────────────────
-  if (isInitializing || !isDbReady) {
+  // ── Auth Stage Machine — single source of truth for what renders ──────────
+
+  if (authStage === "checking") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f6fa]">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-[#1557b0] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[12px] text-gray-500 mt-1">Loading Sutra ERP…</p>
+          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>Loading Sutra ERP…</p>
         </div>
       </div>
     );
   }
 
-  // ── Auth gate ─────────────────────────────────────────────────────────────
-  if (!isAuthenticated) {
+  if (authStage === "no-company") {
     return (
       <>
         <Toaster position="top-right" />
-        <SignInForm />
+        <SignUpWizard />
       </>
     );
   }
+
+  if (authStage === "gateway") {
+    return (
+      <>
+        <Toaster position="top-right" />
+        <GatewayScreen />
+      </>
+    );
+  }
+
+  if (authStage === "company-login") {
+    return (
+      <>
+        <Toaster position="top-right" />
+        <CompanyLoginScreen />
+      </>
+    );
+  }
+
+  // authStage === "authenticated" — render the full app shell
 
   // ── Page resolver ─────────────────────────────────────────────────────────
   const renderPage = () => {

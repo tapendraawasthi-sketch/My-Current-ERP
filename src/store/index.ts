@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AppState, DEFAULT_ACCOUNTS, DEFAULT_WAREHOUSES, DEFAULT_UNITS, DEFAULT_FISCAL_YEAR, DEFAULT_CURRENCY, DEFAULT_SHORTCUTS, DEFAULT_TDS_RATES, StoreUser, CompanySettings, FiscalYear, hashPassword, verifyPassword, Notification, validateVoucherBalance } from "./store.types";
+import { AppState, AuthStage, DEFAULT_ACCOUNTS, DEFAULT_WAREHOUSES, DEFAULT_UNITS, DEFAULT_FISCAL_YEAR, DEFAULT_CURRENCY, DEFAULT_SHORTCUTS, DEFAULT_TDS_RATES, StoreUser, CompanySettings, FiscalYear, hashPassword, verifyPassword, Notification, validateVoucherBalance } from "./store.types";
 
 import { createAccountSlice } from "./slices/accountSlice";
 import { createInventorySlice } from "./slices/inventorySlice";
@@ -18,6 +18,10 @@ export const useStore = create<AppState>()((...a) => {
   return {
   isDbReady: false,
   isAuthenticated: false,
+  authStage: "checking" as AuthStage,
+  selectedCompanyId: null as string | null,
+  lastLoginInfo: null as { username: string; loginAt: string } | null,
+  loginFailedAttempts: 0,
   currentUser: null,
   accounts: [],
   parties: [],
@@ -115,134 +119,162 @@ export const useStore = create<AppState>()((...a) => {
   initializeApp: async () => {
     const { isInitializing, isDbReady } = get();
     if (isInitializing || isDbReady) return;
-    set({ isInitializing: true });
+    set({ isInitializing: true, authStage: "checking" as AuthStage });
 
     try {
       startCbmsQueueWorker();
       const db = getDB();
 
-    // Seed default data if empty
-    const accountCount = await db.accounts.count();
-    if (accountCount === 0) {
-      try {
-        const { seedNepalNASChartOfAccounts } = await import("../lib/seeders/nepalNasCoaSeeder");
-        await seedNepalNASChartOfAccounts(db as any);
-      } catch (err) {
-        console.error("Error seeding Nepal NAS Chart of Accounts:", err);
-        await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any); // Fallback
-      }
-    }
-
-    const warehouseCount = await db.warehouses.count();
-    if (warehouseCount === 0) {
-      await db.warehouses.bulkAdd(DEFAULT_WAREHOUSES as any);
-    }
-
-    const unitCount = await db.units.count();
-    if (unitCount === 0) {
-      await db.units.bulkAdd(DEFAULT_UNITS as any);
-    }
-
-    const fyCount = await db.fiscalYears.count();
-    if (fyCount === 0) {
-      await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as any);
-    }
-
-    const currencyCount = await db.currencies.count();
-    if (currencyCount === 0) {
-      await db.currencies.add(DEFAULT_CURRENCY as any);
-    }
-
-    const settingsCount = await db.companySettings.count();
-    if (settingsCount === 0) {
-      await db.companySettings.add({
-        id: "main",
-        name: "My Company",
-        companyNameEn: "My Company",
-        panNumber: "000000000",
-        currencySymbol: "Rs.",
-        address: "Kathmandu, Nepal",
-        phone: "",
-        email: "",
-        enableCostCenter: false,
-        enableBillWiseTracking: false,
-        enableBillWise: false,
-        enableBatchTracking: false,
-        tdsEnabled: false,
-        enableMultiCurrency: false,
-        cbmsEnabled: false,
-      } as any);
-    }
-
-    const userCount = await db.users.count();
-    if (userCount === 0) {
-      const hash = await hashPassword("admin123");
-      await db.users.add({
-        id: "user-admin",
-        username: "admin",
-        name: "Administrator",
-        email: "admin@company.com",
-        role: "admin",
-        passwordHash: hash,
-        isActive: true,
-      } as any);
-    } else if (crypto?.subtle) {
-      // Repair fallback_ hash stored when crypto.subtle was unavailable (HTTP env)
-      try {
-        const adminUser = await db.users.where("username").equals("admin").first() as any;
-        if (adminUser?.passwordHash?.startsWith("fallback_")) {
-          await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
+      // ── Seed default data if tables are empty ──────────────────────────────
+      const accountCount = await db.accounts.count();
+      if (accountCount === 0) {
+        try {
+          const { seedNepalNASChartOfAccounts } = await import("../lib/seeders/nepalNasCoaSeeder");
+          await seedNepalNASChartOfAccounts(db as any);
+        } catch (err) {
+          console.error("Error seeding Nepal NAS Chart of Accounts:", err);
+          await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any);
         }
-      } catch { /* non-critical */ }
+      }
+
+      const warehouseCount = await db.warehouses.count();
+      if (warehouseCount === 0) await db.warehouses.bulkAdd(DEFAULT_WAREHOUSES as any);
+
+      const unitCount = await db.units.count();
+      if (unitCount === 0) await db.units.bulkAdd(DEFAULT_UNITS as any);
+
+      const fyCount = await db.fiscalYears.count();
+      if (fyCount === 0) await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as any);
+
+      const currencyCount = await db.currencies.count();
+      if (currencyCount === 0) await db.currencies.add(DEFAULT_CURRENCY as any);
+
+      const shortcutCount = await db.shortcuts.count();
+      if (shortcutCount === 0) await db.shortcuts.bulkAdd(DEFAULT_SHORTCUTS as any);
+
+      const userCount = await db.users.count();
+      if (userCount === 0) {
+        const hash = await hashPassword("admin123");
+        await db.users.add({
+          id: "user-admin",
+          username: "admin",
+          name: "Administrator",
+          email: "admin@company.com",
+          role: "admin",
+          passwordHash: hash,
+          isActive: true,
+        } as any);
+      } else {
+        try {
+          const adminUser = await db.users.where("username").equals("admin").first() as any;
+          if (!adminUser) {
+            const hash = await hashPassword("admin123");
+            await db.users.put({
+              id: "user-admin", username: "admin", name: "Administrator",
+              email: "admin@company.com", role: "admin", passwordHash: hash, isActive: true,
+            } as any);
+          } else if (
+            adminUser.passwordHash?.startsWith("fallback_") ||
+            (!adminUser.passwordHash?.startsWith("pbkdf2v2_") && !adminUser.passwordHash?.startsWith("sha256v1_"))
+          ) {
+            await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
+          }
+        } catch { /* non-critical */ }
+      }
+
+      await migrateWorkflowFields();
+
+      // ── Stage gate: check if any company exists ────────────────────────────
+      const companyCount = await db.companySettings.count();
+
+      if (companyCount === 0) {
+        // Seed placeholder company then send to wizard
+        await db.companySettings.add({
+          id: "main",
+          name: "My Company",
+          companyNameEn: "My Company",
+          panNumber: "000000000",
+          currencySymbol: "Rs.",
+          address: "Kathmandu, Nepal",
+          phone: "", email: "",
+          enableCostCenter: false,
+          enableBillWiseTracking: false,
+          enableBillWise: false,
+          enableBatchTracking: false,
+          tdsEnabled: false,
+          enableMultiCurrency: false,
+          cbmsEnabled: false,
+        } as any);
+        set({ isDbReady: true, isInitializing: false, authStage: "no-company" as AuthStage });
+        return;
+      }
+
+      // ── Check for a valid existing session ────────────────────────────────
+      const sessionUserId = sessionStorage.getItem("sutra_user_id");
+      const sessionCompanyId = sessionStorage.getItem("sutra_company_id");
+
+      if (sessionUserId && sessionCompanyId) {
+        try {
+          const sessionUser = await db.users.get(sessionUserId) as any;
+          const sessionCompany = await db.companySettings.get(sessionCompanyId) as any;
+          if (sessionUser && sessionUser.isActive && sessionCompany) {
+            await get()._loadAllData();
+            set({
+              isDbReady: true,
+              isInitializing: false,
+              isAuthenticated: true,
+              currentUser: sessionUser as StoreUser,
+              selectedCompanyId: sessionCompanyId,
+              authStage: "authenticated" as AuthStage,
+            });
+            return;
+          }
+        } catch { /* session validation failed */ }
+        sessionStorage.removeItem("sutra_user_id");
+        sessionStorage.removeItem("sutra_company_id");
+      }
+
+      // ── No valid session → show Gateway (load ONLY companySettings) ────────
+      const settingsArr = await db.companySettings.toArray();
+      const company = settingsArr[0] as any;
+      const lastLoginInfo = (company?.lastLoginBy && company?.lastLoginAt)
+        ? { username: company.lastLoginBy, loginAt: company.lastLoginAt }
+        : null;
+
+      set({
+        isDbReady: true,
+        isInitializing: false,
+        companySettings: (settingsArr[0] as CompanySettings) || null,
+        lastLoginInfo,
+        authStage: "gateway" as AuthStage,
+      });
+
+    } catch (err) {
+      console.error("initializeApp failed:", err);
+      set({ isInitializing: false, isDbReady: true, authStage: "gateway" as AuthStage });
     }
+  },
 
-    const shortcutCount = await db.shortcuts.count();
-    if (shortcutCount === 0) {
-      await db.shortcuts.bulkAdd(DEFAULT_SHORTCUTS as any);
-    }
-
-    await migrateWorkflowFields();
-
-    // Load all data
-    const [ accounts, parties, items, vouchers, invoices, stockMovements,
+  // ── Internal helper: load ALL data tables after login ─────────────────────
+  _loadAllData: async () => {
+    const db = getDB();
+    const [
+      accounts, parties, items, vouchers, invoices, stockMovements,
       warehouses, units, costCenters, fiscalYears, deliveryChallans,
       goodsReceiptNotes, salesOrders, purchaseOrders, users, notifications,
       budgets, recurringVouchers, customFieldDefs, currencies,
       settingsArr,
       unitConversions, standardNarrations, billSundryMasters,
       saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
-      employees,
-      bankStatements,
-      tdsEntries,
-      tdsChallans,
-      stockJournals,
-      productions,
-      unassembles,
-      materialIssued,
-      materialReceived,
-      physicalStocks,
-      stockCategories,
-      voucherTypeMasters,
-      scenarios,
-      costCategories,
-      costCentreClasses,
-      reorderLevels,
-      priceLevels,
-      priceLists,
-      hsCodes,
-      batches,
-      vatClassifications,
-      tdsNatureOfPayment,
-      employeeGroups,
-      payHeads,
-      salaryDetails,
-      payrollUnits,
-      attendanceTypes,
-      ledgerExtensions,
-      // Banking module data
+      employees, bankStatements, tdsEntries, tdsChallans,
+      stockJournals, productions, unassembles, materialIssued, materialReceived, physicalStocks,
+      stockCategories, voucherTypeMasters, scenarios, costCategories, costCentreClasses,
+      reorderLevels, priceLevels, priceLists, hsCodes, batches, vatClassifications,
+      tdsNatureOfPayment, employeeGroups, payHeads, salaryDetails, payrollUnits,
+      attendanceTypes, ledgerExtensions,
       chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices,
-      // Version 13
-      branches, salesPersons, exchangeRates, followUpNotes, jobWorkOrders, reportSchedules, priceFloorPolicies, chequeBounceLogs,
+      branches, salesPersons, exchangeRates, followUpNotes, jobWorkOrders,
+      reportSchedules, priceFloorPolicies, chequeBounceLogs,
     ] = await Promise.all([
       db.accounts.toArray(),
       db.parties.toArray(),
@@ -259,7 +291,7 @@ export const useStore = create<AppState>()((...a) => {
       db.salesOrders.toArray(),
       db.purchaseOrders.toArray(),
       db.users.toArray(),
-      db.notifications.orderBy("timestamp").reverse().limit(50).toArray(),
+      db.notifications.orderBy("createdAt").reverse().limit(50).toArray(),
       db.budgets.toArray(),
       db.recurringVouchers.toArray(),
       db.customFieldDefs.toArray(),
@@ -302,7 +334,6 @@ export const useStore = create<AppState>()((...a) => {
       db.payrollUnits.toArray(),
       db.attendanceTypes.toArray(),
       db.ledgerExtensions.toArray(),
-      // Banking module data
       db.chequeBooks.toArray(),
       db.cheques.toArray(),
       db.depositSlips.toArray(),
@@ -319,9 +350,10 @@ export const useStore = create<AppState>()((...a) => {
       db.chequeBounceLogs.toArray().catch(() => []),
     ]);
 
-    const currentFiscalYear = (fiscalYears.find((fy: any) => fy.isCurrent || fy.isDefault) || fiscalYears[0]) as unknown as FiscalYear | undefined;
+    const currentFiscalYear = (
+      fiscalYears.find((fy: any) => fy.isCurrent || fy.isDefault) || fiscalYears[0]
+    ) as unknown as FiscalYear | undefined;
 
-    // Compute account balances from voucher lines
     const balanceMap: Record<string, number> = {};
     for (const v of vouchers) {
       if (v.status === "posted" && v.lines) {
@@ -332,106 +364,51 @@ export const useStore = create<AppState>()((...a) => {
         }
       }
     }
-
     const accountsWithBalance = accounts.map((a) => ({
       ...a,
       balance: (balanceMap[a.id] || 0) + (a.openingBalanceDr || 0) - (a.openingBalanceCr || 0),
     }));
 
-    // Check session
-    const sessionUserId = sessionStorage.getItem("sutra_user_id");
-    let sessionUser: StoreUser | null = null;
-    if (sessionUserId) {
-      sessionUser = (users.find((u) => u.id === sessionUserId) as StoreUser) || null;
-    }
-
     set({
-      isDbReady: true,
       accounts: accountsWithBalance,
-      parties,
-      items,
-      vouchers,
-      invoices,
-      stockMovements,
-      warehouses,
-      units,
-      costCenters,
-      fiscalYears: fiscalYears as unknown as FiscalYear[],
+      parties, items, vouchers, invoices, stockMovements, warehouses, units,
+      costCenters, fiscalYears: fiscalYears as unknown as FiscalYear[],
       currentFiscalYear: (currentFiscalYear as unknown as FiscalYear) || null,
-      deliveryChallans,
-      goodsReceiptNotes,
-      salesOrders,
-      purchaseOrders,
+      deliveryChallans, goodsReceiptNotes, salesOrders, purchaseOrders,
       users: users as StoreUser[],
       notifications: notifications as unknown as Notification[],
-      budgets,
-      recurringVouchers,
-      customFieldDefs,
-      currencies,
+      budgets, recurringVouchers, customFieldDefs, currencies,
       companySettings: (settingsArr[0] as CompanySettings) || null,
-      isAuthenticated: !!sessionUser,
-      currentUser: sessionUser,
-      unitConversions,
-      standardNarrations,
-      billSundryMasters,
-      saleTypes,
-      purchaseTypes,
-      taxCategories,
-      discountStructures,
-      itemGroups,
-      holidays,
-      employees,
-      bankStatements,
-      tdsEntries: tdsEntries as any[],
-      tdsChallans: tdsChallans as any[],
-      stockJournals: stockJournals as any[],
-      productions: productions as any[],
-      unassembles: unassembles as any[],
-      materialIssued: materialIssued as any[],
-      materialReceived: materialReceived as any[],
-      physicalStocks: physicalStocks as any[],
-      stockCategories: stockCategories as any[],
-      voucherTypeMasters: voucherTypeMasters as any[],
-      scenarios: scenarios as any[],
-      costCategories: costCategories as any[],
-      costCentreClasses: costCentreClasses as any[],
-      reorderLevels: reorderLevels as any[],
-      priceLevels: priceLevels as any[],
-      priceLists: priceLists as any[],
-      hsCodes: hsCodes as any[],
-      batches: batches as any[],
-      vatClassifications: vatClassifications as any[],
-      tdsNatureOfPayment: tdsNatureOfPayment as any[],
-      employeeGroups: employeeGroups as any[],
-      payHeads: payHeads as any[],
-      salaryDetails: salaryDetails as any[],
-      payrollUnits: payrollUnits as any[],
-      attendanceTypes: attendanceTypes as any[],
-      ledgerExtensions: ledgerExtensions as any[],
-      // Banking module data
-      chequeBooks: chequeBooks as any[],
-      cheques: cheques as any[],
-      depositSlips: depositSlips as any[],
-      pdCheques: pdCheques as any[],
-      ePaymentBatches: ePaymentBatches as any[],
-      paymentAdvices: paymentAdvices as any[],
-      branches: branches as any[],
-      salespersons: salesPersons as any[],
-      exchangeRates: exchangeRates as any[],
-      followUpNotes: followUpNotes as any[],
-      jobWorkOrders: jobWorkOrders as any[],
-      reportSchedules: reportSchedules as any[],
-      priceFloorPolicies: priceFloorPolicies as any[],
-      chequeBounceLogs: chequeBounceLogs as any[],
-      
-      journalEntries: vouchers, // vouchers array serves as journal entries for reconciliation
+      unitConversions, standardNarrations, billSundryMasters,
+      saleTypes, purchaseTypes, taxCategories, discountStructures, itemGroups, holidays,
+      employees, bankStatements,
+      tdsEntries: tdsEntries as any[], tdsChallans: tdsChallans as any[],
+      stockJournals: stockJournals as any[], productions: productions as any[],
+      unassembles: unassembles as any[], materialIssued: materialIssued as any[],
+      materialReceived: materialReceived as any[], physicalStocks: physicalStocks as any[],
+      stockCategories: stockCategories as any[], voucherTypeMasters: voucherTypeMasters as any[],
+      scenarios: scenarios as any[], costCategories: costCategories as any[],
+      costCentreClasses: costCentreClasses as any[], reorderLevels: reorderLevels as any[],
+      priceLevels: priceLevels as any[], priceLists: priceLists as any[],
+      hsCodes: hsCodes as any[], batches: batches as any[],
+      vatClassifications: vatClassifications as any[], tdsNatureOfPayment: tdsNatureOfPayment as any[],
+      employeeGroups: employeeGroups as any[], payHeads: payHeads as any[],
+      salaryDetails: salaryDetails as any[], payrollUnits: payrollUnits as any[],
+      attendanceTypes: attendanceTypes as any[], ledgerExtensions: ledgerExtensions as any[],
+      chequeBooks: chequeBooks as any[], cheques: cheques as any[],
+      depositSlips: depositSlips as any[], pdCheques: pdCheques as any[],
+      ePaymentBatches: ePaymentBatches as any[], paymentAdvices: paymentAdvices as any[],
+      branches: branches as any[], salespersons: salesPersons as any[],
+      exchangeRates: exchangeRates as any[], followUpNotes: followUpNotes as any[],
+      jobWorkOrders: jobWorkOrders as any[], reportSchedules: reportSchedules as any[],
+      priceFloorPolicies: priceFloorPolicies as any[], chequeBounceLogs: chequeBounceLogs as any[],
+      journalEntries: vouchers,
     });
 
     // Stock reorder notifications
-    const updatedItems = items;
-    for (const item of updatedItems) {
+    for (const item of items) {
       if (item.reorderLevel) {
-        const movements = stockMovements.filter((m) => m.itemId === item.id);
+        const movements = stockMovements.filter((m: any) => m.itemId === item.id);
         const totalIn = movements.reduce((s: number, m: any) => s + (m.qty > 0 ? m.qty : 0), 0);
         const totalOut = movements.reduce((s: number, m: any) => s + (m.qty < 0 ? Math.abs(m.qty) : 0), 0);
         const stock = (item.openingStock || 0) + totalIn - totalOut;
@@ -452,37 +429,106 @@ export const useStore = create<AppState>()((...a) => {
     await get().loadVoucherTypeMasters();
     try { await get().loadSalesPersons(); } catch (e) { console.warn("loadSalesPersons skipped:", e); }
     try { await get().loadPriceLists();   } catch (e) { console.warn("loadPriceLists skipped:",   e); }
-    } catch (err) {
-      console.error("initializeApp failed:", err);
-    } finally {
-      set({ isInitializing: false, isDbReady: true });
-    }
   },
 
   login: async (username: string, password: string): Promise<boolean> => {
     const db = getDB();
+    const { selectedCompanyId } = get();
+    const companyId = selectedCompanyId || "main";
+
     const user = await db.users.where("username").equals(username.trim()).first() as any;
-    if (!user) return false;
-    if (!user.isActive) return false;
+    if (!user || !user.isActive) {
+      set((s) => ({ loginFailedAttempts: s.loginFailedAttempts + 1 }));
+      try {
+        await (db as any).loginHistory.add({
+          companyId, userId: user?.id || null, username: username.trim(),
+          loginAt: new Date().toISOString(), success: false, userAgent: navigator.userAgent,
+        });
+      } catch { /* non-critical */ }
+      return false;
+    }
+
     const storedHash: string = user.passwordHash || "";
-    // verifyPassword is the single source of truth for all hash variants:
-    // empty hash, fallback_ (HTTP env), plain-text legacy, PBKDF2
     const valid = await verifyPassword(password, storedHash);
-    if (!valid) return false;
-    // Upgrade hash to real PBKDF2 whenever crypto.subtle is now available
-    // Covers: fallback_ (HTTP→HTTPS migration) and missing/empty hashes
+    if (!valid) {
+      set((s) => ({ loginFailedAttempts: s.loginFailedAttempts + 1 }));
+      try {
+        await (db as any).loginHistory.add({
+          companyId, userId: user.id, username: user.username,
+          loginAt: new Date().toISOString(), success: false, userAgent: navigator.userAgent,
+        });
+      } catch { /* non-critical */ }
+      return false;
+    }
+
+    // Upgrade legacy hash when crypto.subtle is available
     const needsUpgrade = !storedHash || storedHash.startsWith("fallback_");
     if (needsUpgrade && crypto?.subtle) {
       try { await db.users.update(user.id, { passwordHash: await hashPassword(password) }); } catch { /* ok */ }
     }
+
+    const loginAt = new Date().toISOString();
+
+    // Record successful login
+    try {
+      await (db as any).loginHistory.add({
+        companyId, userId: user.id, username: user.username,
+        loginAt, success: true, userAgent: navigator.userAgent,
+      });
+    } catch { /* non-critical */ }
+
+    // Update lastLoginBy / lastLoginAt on the company settings row
+    try {
+      await db.companySettings.update(companyId, {
+        lastLoginBy: user.username,
+        lastLoginAt: loginAt,
+      } as any);
+    } catch { /* non-critical */ }
+
+    // Persist session
     sessionStorage.setItem("sutra_user_id", user.id);
-    set({ isAuthenticated: true, currentUser: user as StoreUser, currentPage: "dashboard" });
+    sessionStorage.setItem("sutra_company_id", companyId);
+
+    // Load ALL data (deferred from initializeApp — only runs after authentication)
+    await get()._loadAllData();
+
+    set({
+      isAuthenticated: true,
+      currentUser: user as StoreUser,
+      currentPage: "dashboard",
+      authStage: "authenticated" as AuthStage,
+      loginFailedAttempts: 0,
+      lastLoginInfo: { username: user.username, loginAt },
+    });
+
     return true;
   },
 
   logout: () => {
     sessionStorage.removeItem("sutra_user_id");
-    set({ isAuthenticated: false, currentUser: null, currentPage: "gateway" });
+    sessionStorage.removeItem("sutra_company_id");
+    set({
+      isAuthenticated: false,
+      currentUser: null,
+      selectedCompanyId: null,
+      loginFailedAttempts: 0,
+      authStage: "gateway" as AuthStage,
+      // Clear heavy data to free memory (data reloads on next login)
+      accounts: [],
+      parties: [],
+      items: [],
+      vouchers: [],
+      invoices: [],
+      stockMovements: [],
+      deliveryChallans: [],
+      goodsReceiptNotes: [],
+      salesOrders: [],
+      purchaseOrders: [],
+      users: [],
+      budgets: [],
+      recurringVouchers: [],
+      journalEntries: [],
+    });
   },
 
   createCompanyAndAdmin: async ({ company, adminUser }) => {
@@ -498,7 +544,22 @@ export const useStore = create<AppState>()((...a) => {
       isActive: true,
     } as any);
     const settings = await db.companySettings.get("main");
-    set({ companySettings: settings as CompanySettings });
+    set({
+      companySettings: settings as CompanySettings,
+      authStage: "gateway" as AuthStage,
+    });
+  },
+
+  selectCompanyForLogin: (companyId: string) => {
+    set({ selectedCompanyId: companyId, authStage: "company-login" as AuthStage, loginFailedAttempts: 0 });
+  },
+
+  backToGateway: () => {
+    set({ selectedCompanyId: null, authStage: "gateway" as AuthStage, loginFailedAttempts: 0 });
+  },
+
+  setAuthStage: (stage: AuthStage) => {
+    set({ authStage: stage });
   },
 
   setCurrentPage: (page) => set({ currentPage: page }),
@@ -669,4 +730,3 @@ export async function postInvoiceStock(invoice: any, db: ReturnType<typeof getDB
   const updatedMovements = await db.stockMovements.toArray();
   set({ stockMovements: updatedMovements });
 }
-
