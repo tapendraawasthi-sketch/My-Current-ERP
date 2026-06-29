@@ -1,159 +1,218 @@
 import React from "react";
 import { useStore } from "../../store/useStore";
-import { NepaliDatePicker, Badge, Input } from "../ui";
-import { ADToBSString } from "../../lib/nepaliDate";
-import { formatVoucherDisplayDate, VOUCHER_TYPE_LABELS, getVoucherStatusColor } from "../../lib/voucherUtils";
+import { Badge } from "../ui";
+import NepaliDatePicker from "../ui/NepaliDatePicker";
+
+// ─── Badge Variant type safe values ──────────────────────────────────────────
+// BadgeVariant accepts: "success" | "warning" | "danger" | "info" | "default"
+// "outline" is NOT valid — replaced with "default" throughout
 
 interface VoucherHeaderProps {
-  voucherTypeName: string;
-  voucherNumber: string;
+  voucherNo?: string;
   date: string;
+  dateNepali?: string;
   onDateChange: (date: string) => void;
-  effectiveDate?: string;
-  onEffectiveDateChange?: (date: string) => void;
-  showEffectiveDate?: boolean;
-  referenceNumber?: string;
-  onReferenceNumberChange?: (val: string) => void;
-  showReferenceNumber?: boolean;
-  isOptional?: boolean;
-  isPostDated?: boolean;
-  isCancelled?: boolean;
-  isEdit?: boolean;
-  mode?: string;
+  onDateNepaliChange?: (date: string) => void;
+  status?: string;
+  type?: string;
+  narration?: string;
+  onNarrationChange?: (narration: string) => void;
+  referenceNo?: string;
+  onReferenceNoChange?: (ref: string) => void;
+  showNarration?: boolean;
+  showReference?: boolean;
+  showDateNepali?: boolean;
+  readOnly?: boolean;
+}
+
+function getStatusVariant(status?: string): "success" | "warning" | "danger" | "info" | "default" {
+  if (!status) return "default";
+  switch (status.toLowerCase()) {
+    case "posted":
+      return "success";
+    case "draft":
+      return "warning";
+    case "cancelled":
+    case "void":
+    case "rejected":
+      return "danger";
+    case "submitted":
+    case "under_review":
+    case "approved":
+      return "info";
+    default:
+      return "default";
+  }
+}
+
+function getTypeVariant(type?: string): "success" | "warning" | "danger" | "info" | "default" {
+  if (!type) return "default";
+  switch (type.toLowerCase()) {
+    case "sales-invoice":
+    case "sales_invoice":
+      return "success";
+    case "purchase-invoice":
+    case "purchase_invoice":
+      return "warning";
+    case "sales-return":
+    case "sales_return":
+    case "purchase-return":
+    case "purchase_return":
+      return "danger";
+    case "payment":
+    case "receipt":
+      return "info";
+    default:
+      return "default";
+  }
+}
+
+function formatTypeLabel(type?: string): string {
+  if (!type) return "";
+  return type
+    .replace(/-/g, " ")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function formatStatusLabel(status?: string): string {
+  if (!status) return "";
+  return status
+    .replace(/-/g, " ")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 const VoucherHeader: React.FC<VoucherHeaderProps> = ({
-  voucherTypeName,
-  voucherNumber,
+  voucherNo,
   date,
+  dateNepali,
   onDateChange,
-  effectiveDate,
-  onEffectiveDateChange,
-  showEffectiveDate,
-  referenceNumber,
-  onReferenceNumberChange,
-  showReferenceNumber,
-  isOptional,
-  isPostDated,
-  isCancelled,
-  isEdit,
-  mode
+  onDateNepaliChange,
+  status,
+  type,
+  narration,
+  onNarrationChange,
+  referenceNo,
+  onReferenceNoChange,
+  showNarration = true,
+  showReference = false,
+  showDateNepali = true,
+  readOnly = false,
 }) => {
-  const { companySettings, currentFiscalYear } = useStore();
-  
-  const companyName = companySettings?.name || "My Company";
-  const fiscalYearName = currentFiscalYear?.name || "Current Year";
-  
-  // Convert AD date to BS date
-  const bsDate = ADToBSString(date);
-  
   return (
-    <div className="bg-green-50 dark:bg-green-950 border-b border-green-200 dark:border-green-800 p-3">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* Left Section */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            {companyName}
-          </div>
-          
-          <div className="text-lg font-bold text-green-700 dark:text-green-300">
-            {voucherTypeName}
-          </div>
-          
-          {mode && (
-            <Badge variant="default" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
-              {mode}
+    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+      {/* Top row: voucher number, type badge, status badge */}
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {voucherNo && (
+            <span className="text-[12px] font-mono font-semibold text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+              {voucherNo}
+            </span>
+          )}
+
+          {type && (
+            <Badge variant={getTypeVariant(type)}>
+              {formatTypeLabel(type)}
             </Badge>
           )}
-          
-          <div className="flex gap-2">
-            {isOptional && (
-              <Badge variant="default" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200">
-                Optional
-              </Badge>
-            )}
-            
-            {isPostDated && (
-              <Badge variant="default" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200">
-                Post-Dated
-              </Badge>
-            )}
-            
-            {isCancelled && (
-              <Badge variant="default" className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">
-                Cancelled
-              </Badge>
-            )}
-            
-            {isEdit && (
-              <Badge variant="default" className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                Edit Mode
-              </Badge>
-            )}
-          </div>
-        </div>
-        
-        {/* Center Section */}
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-500 dark:text-gray-400">Voucher No:</label>
-            <span className="font-mono text-sm font-medium text-green-600 dark:text-green-300">
-              {voucherNumber}
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-500 dark:text-gray-400">Date:</label>
-            <div className="w-36 text-sm">
-              <NepaliDatePicker
-                value={date}
-                onChange={onDateChange}
-              />
-            </div>
-          </div>
-          
-          {showEffectiveDate && onEffectiveDateChange && (
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-gray-500 dark:text-gray-400">Eff. Date:</label>
-              <div className="w-36 text-sm">
-                <NepaliDatePicker
-                  value={effectiveDate || ""}
-                  onChange={onEffectiveDateChange}
-                />
-              </div>
-            </div>
-          )}
-          
-          {showReferenceNumber && onReferenceNumberChange && (
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-gray-500 dark:text-gray-400">Ref. No:</label>
-              <Input
-                value={referenceNumber || ""}
-                onChange={(val: any) => onReferenceNumberChange(val?.target ? val.target.value : val)}
-                className="w-32 text-sm"
-                placeholder="Reference no."
-              />
-            </div>
+
+          {status && (
+            <Badge variant={getStatusVariant(status)}>
+              {formatStatusLabel(status)}
+            </Badge>
           )}
         </div>
-        
-        {/* Right Section */}
-        <div className="flex items-center gap-4">
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {fiscalYearName}
-          </div>
-          
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            {bsDate}
-          </div>
-          
-          {isEdit && (
-            <div className="text-xs text-amber-600 dark:text-amber-400">
-              Editing
-            </div>
-          )}
-        </div>
+
+        {readOnly && (
+          <Badge variant="default">
+            Read Only
+          </Badge>
+        )}
       </div>
+
+      {/* Date fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* AD Date */}
+        <div>
+          <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+            Date (AD)
+          </label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => {
+              // e is a React.ChangeEvent<HTMLInputElement>, use e.target.value
+              onDateChange(e.target.value);
+            }}
+            disabled={readOnly}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full disabled:bg-gray-50 disabled:text-gray-400"
+          />
+        </div>
+
+        {/* BS Date */}
+        {showDateNepali && (
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              Date (BS)
+            </label>
+            {/* Wrap NepaliDatePicker in a div — className prop is NOT supported on NepaliDatePicker directly */}
+            <div className="w-full">
+              <NepaliDatePicker
+                value={dateNepali ?? ""}
+                onChange={(val: string) => {
+                  // val is a string — NOT an event object, use directly
+                  if (onDateNepaliChange) {
+                    onDateNepaliChange(val);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Reference No */}
+        {showReference && (
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              Reference No.
+            </label>
+            <input
+              type="text"
+              value={referenceNo ?? ""}
+              onChange={(e) => {
+                if (onReferenceNoChange) {
+                  onReferenceNoChange(e.target.value);
+                }
+              }}
+              disabled={readOnly}
+              placeholder="e.g. REF-001"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full disabled:bg-gray-50 disabled:text-gray-400"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Narration */}
+      {showNarration && (
+        <div className="mt-3">
+          <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+            Narration
+          </label>
+          <textarea
+            value={narration ?? ""}
+            onChange={(e) => {
+              if (onNarrationChange) {
+                onNarrationChange(e.target.value);
+              }
+            }}
+            disabled={readOnly}
+            rows={2}
+            placeholder="Enter narration or description…"
+            className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none disabled:bg-gray-50 disabled:text-gray-400"
+          />
+        </div>
+      )}
     </div>
   );
 };
