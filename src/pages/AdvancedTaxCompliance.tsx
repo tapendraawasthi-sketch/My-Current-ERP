@@ -40,8 +40,7 @@ function todayISO() {
 function monthsBetween(start: string, end: string) {
   const s = new Date(start);
   const e = new Date(end);
-  const months =
-    (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth()) + 1;
+  const months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth()) + 1;
   return Math.max(1, months || 1);
 }
 
@@ -232,8 +231,12 @@ export default function AdvancedTaxCompliance() {
     const tdsPaid = (vouchers || [])
       .filter(
         (v: any) =>
-          String(v.type || "").toLowerCase().includes("tds") ||
-          String(v.narration || "").toLowerCase().includes("tds"),
+          String(v.type || "")
+            .toLowerCase()
+            .includes("tds") ||
+          String(v.narration || "")
+            .toLowerCase()
+            .includes("tds"),
       )
       .reduce((s: number, v: any) => s + Number(v.tdsAmount || v.amount || v.grandTotal || 0), 0);
 
@@ -351,7 +354,11 @@ export default function AdvancedTaxCompliance() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
     toast.success("Advance tax payment voucher created");
     setShowAdvForm(false);
     setAdvAmount("");
@@ -395,7 +402,9 @@ export default function AdvancedTaxCompliance() {
   function printCertificates(rows: any[]) {
     const html = certificateHTML(rows);
     const w = window.open("", "_blank");
-    w.document.write(`<html><head><title>Salary Tax Certificates</title></head><body>${html}</body></html>`);
+    w.document.write(
+      `<html><head><title>Salary Tax Certificates</title></head><body>${html}</body></html>`,
+    );
     w.document.close();
     w.focus();
     w.print();
@@ -494,8 +503,10 @@ export default function AdvancedTaxCompliance() {
   }
 
   async function saveProperty() {
-    if (!propForm.propertyAddress || !propForm.ownerName) return toast.error("Address and owner required");
-    if (normalizePAN(propForm.ownerPan).length !== 9) return toast.error("Owner PAN must be 9 digits");
+    if (!propForm.propertyAddress || !propForm.ownerName)
+      return toast.error("Address and owner required");
+    if (normalizePAN(propForm.ownerPan).length !== 9)
+      return toast.error("Owner PAN must be 9 digits");
 
     const row = {
       id: generateId(),
@@ -506,7 +517,10 @@ export default function AdvancedTaxCompliance() {
       createdAt: new Date().toISOString(),
     };
 
-    await getDB().table("tdsPropertyRegister").put(row).catch(() => {});
+    await getDB()
+      .table("tdsPropertyRegister")
+      .put(row)
+      .catch(() => {});
     setProperties((p) => [...p, row]);
     setPropModal(false);
     setPropForm({
@@ -559,7 +573,11 @@ export default function AdvancedTaxCompliance() {
         lines: p.lines.map((l: any) => ({ id: generateId(), ...l })),
       };
       if (addVoucher) await addVoucher(voucher);
-      else await getDB().table("vouchers").put(voucher).catch(() => {});
+      else
+        await getDB()
+          .table("vouchers")
+          .put(voucher)
+          .catch(() => {});
     }
     toast.success(`${journalPreview.length} rent TDS journals posted`);
     setJournalPreview([]);
@@ -572,7 +590,9 @@ export default function AdvancedTaxCompliance() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Advanced Tax Compliance</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Nepal VAT, TDS, salary tax and advance tax workflows</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Nepal VAT, TDS, salary tax and advance tax workflows
+          </p>
         </div>
       </div>
 
@@ -582,8 +602,8 @@ export default function AdvancedTaxCompliance() {
             key={t}
             onClick={() => setActiveTab(t)}
             className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === t 
-                ? "border-[#1557b0] text-[#1557b0]" 
+              activeTab === t
+                ? "border-[#1557b0] text-[#1557b0]"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -598,36 +618,66 @@ export default function AdvancedTaxCompliance() {
             <h2 className="text-[14px] font-bold text-gray-800 mb-4">Advance Tax Computation</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">YTD Profit</div>
-                <div className="text-[14px] font-bold text-gray-800">NPR {money(advanceTax.ytdProfit)}</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                  YTD Profit
+                </div>
+                <div className="text-[14px] font-bold text-gray-800">
+                  NPR {money(advanceTax.ytdProfit)}
+                </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">Months Elapsed</div>
-                <div className="text-[14px] font-bold text-gray-800">{advanceTax.monthsElapsed}</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                  Months Elapsed
+                </div>
+                <div className="text-[14px] font-bold text-gray-800">
+                  {advanceTax.monthsElapsed}
+                </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">Est. Annual Profit</div>
-                <div className="text-[14px] font-bold text-gray-800">NPR {money(advanceTax.estimatedAnnualProfit)}</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                  Est. Annual Profit
+                </div>
+                <div className="text-[14px] font-bold text-gray-800">
+                  NPR {money(advanceTax.estimatedAnnualProfit)}
+                </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">Tax Rate</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                  Tax Rate
+                </div>
                 <div className="text-[14px] font-bold text-gray-800">25% (Corporate)</div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">Est. Annual Tax</div>
-                <div className="text-[14px] font-bold text-gray-800">NPR {money(advanceTax.estimatedAnnualTax)}</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                  Est. Annual Tax
+                </div>
+                <div className="text-[14px] font-bold text-gray-800">
+                  NPR {money(advanceTax.estimatedAnnualTax)}
+                </div>
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-100">
-                <div className="text-[11px] text-green-700 uppercase tracking-wide font-semibold mb-1">TDS Deducted at Source</div>
-                <div className="text-[14px] font-bold text-green-700">NPR {money(advanceTax.tdsPaid)}</div>
+                <div className="text-[11px] text-green-700 uppercase tracking-wide font-semibold mb-1">
+                  TDS Deducted at Source
+                </div>
+                <div className="text-[14px] font-bold text-green-700">
+                  NPR {money(advanceTax.tdsPaid)}
+                </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-                <div className="text-[11px] text-[#1557b0] uppercase tracking-wide font-semibold mb-1">Advance Tax Paid</div>
-                <div className="text-[14px] font-bold text-[#1557b0]">NPR {money(advanceTax.advanceTaxPaid)}</div>
+                <div className="text-[11px] text-[#1557b0] uppercase tracking-wide font-semibold mb-1">
+                  Advance Tax Paid
+                </div>
+                <div className="text-[14px] font-bold text-[#1557b0]">
+                  NPR {money(advanceTax.advanceTaxPaid)}
+                </div>
               </div>
               <div className="bg-amber-50 p-3 rounded-md border border-amber-100">
-                <div className="text-[11px] text-amber-700 uppercase tracking-wide font-semibold mb-1">Net Tax Payable</div>
-                <div className="text-[15px] font-bold text-amber-700">NPR {money(advanceTax.netTaxPayable)}</div>
+                <div className="text-[11px] text-amber-700 uppercase tracking-wide font-semibold mb-1">
+                  Net Tax Payable
+                </div>
+                <div className="text-[15px] font-bold text-amber-700">
+                  NPR {money(advanceTax.netTaxPayable)}
+                </div>
               </div>
             </div>
           </div>
@@ -635,8 +685,8 @@ export default function AdvancedTaxCompliance() {
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-bold text-gray-800">Installment Schedule</h2>
-              <button 
-                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm" 
+              <button
+                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm"
                 onClick={() => setShowAdvForm(!showAdvForm)}
               >
                 <Plus size={14} /> Create Advance Tax Payment Voucher
@@ -647,27 +697,56 @@ export default function AdvancedTaxCompliance() {
               <div className="mb-6 bg-gray-50 border border-gray-200 rounded-md p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Installment</label>
-                    <select className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm" value={advInstallment} onChange={(e) => setAdvInstallment(e.target.value)}>
+                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                      Installment
+                    </label>
+                    <select
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      value={advInstallment}
+                      onChange={(e) => setAdvInstallment(e.target.value)}
+                    >
                       <option>1st</option>
                       <option>2nd</option>
                       <option>3rd</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Amount</label>
-                    <input className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm" type="number" placeholder="Amount" value={advAmount} onChange={(e) => setAdvAmount(e.target.value)} />
+                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                      Amount
+                    </label>
+                    <input
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      type="number"
+                      placeholder="Amount"
+                      value={advAmount}
+                      onChange={(e) => setAdvAmount(e.target.value)}
+                    />
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
-                    <input className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm" type="date" value={advDate} onChange={(e) => setAdvDate(e.target.value)} />
+                    <input
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      type="date"
+                      value={advDate}
+                      onChange={(e) => setAdvDate(e.target.value)}
+                    />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">Bank Account</label>
-                    <select className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm" value={advBank} onChange={(e) => setAdvBank(e.target.value)}>
+                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                      Bank Account
+                    </label>
+                    <select
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      value={advBank}
+                      onChange={(e) => setAdvBank(e.target.value)}
+                    >
                       <option value="">Select Bank Account</option>
                       {accounts
-                        .filter((a: any) => String(a.name || "").toLowerCase().includes("bank"))
+                        .filter((a: any) =>
+                          String(a.name || "")
+                            .toLowerCase()
+                            .includes("bank"),
+                        )
                         .map((a: any) => (
                           <option key={a.id} value={a.id}>
                             {a.name}
@@ -677,7 +756,12 @@ export default function AdvancedTaxCompliance() {
                   </div>
                 </div>
                 <div className="flex justify-end pt-3 border-t border-gray-200">
-                  <button className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm" onClick={createAdvanceVoucher}>Save Voucher</button>
+                  <button
+                    className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm"
+                    onClick={createAdvanceVoucher}
+                  >
+                    Save Voucher
+                  </button>
                 </div>
               </div>
             )}
@@ -686,30 +770,59 @@ export default function AdvancedTaxCompliance() {
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Installment</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Due Date</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">% of Annual Tax</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Amount Due</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Paid</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Balance</th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Installment
+                    </th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Due Date
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      % of Annual Tax
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Amount Due
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Paid
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Balance
+                    </th>
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Status
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {advanceTax.installments.map((i: any) => (
-                    <tr key={i.no} className="bg-white hover:bg-gray-50 text-[12px] transition-colors">
+                    <tr
+                      key={i.no}
+                      className="bg-white hover:bg-gray-50 text-[12px] transition-colors"
+                    >
                       <td className="px-3 py-2.5 font-medium text-gray-800">{i.no}</td>
                       <td className="px-3 py-2.5 text-gray-600">{i.label}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{Math.round(i.pct * 100)}%</td>
-                      <td className="px-3 py-2.5 text-right text-gray-800">NPR {money(i.amountDue)}</td>
-                      <td className="px-3 py-2.5 text-right text-green-600 font-medium">NPR {money(i.paid)}</td>
-                      <td className="px-3 py-2.5 text-right font-medium text-amber-600">NPR {money(i.balance)}</td>
+                      <td className="px-3 py-2.5 text-right text-gray-600">
+                        {Math.round(i.pct * 100)}%
+                      </td>
+                      <td className="px-3 py-2.5 text-right text-gray-800">
+                        NPR {money(i.amountDue)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right text-green-600 font-medium">
+                        NPR {money(i.paid)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-medium text-amber-600">
+                        NPR {money(i.balance)}
+                      </td>
                       <td className="px-3 py-2.5 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${
-                          i.status === "Paid" ? "bg-green-50 text-green-700 border-green-200" : 
-                          i.status === "Due" ? "bg-red-50 text-red-700 border-red-200" : 
-                          "bg-amber-50 text-amber-700 border-amber-200"
-                        }`}>
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${
+                            i.status === "Paid"
+                              ? "bg-green-50 text-green-700 border-green-200"
+                              : i.status === "Due"
+                                ? "bg-red-50 text-red-700 border-red-200"
+                                : "bg-amber-50 text-amber-700 border-amber-200"
+                          }`}
+                        >
                           {i.status}
                         </span>
                       </td>
@@ -726,8 +839,8 @@ export default function AdvancedTaxCompliance() {
         <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-[14px] font-bold text-gray-800">Salary Tax Worksheet</h2>
-            <button 
-              className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm" 
+            <button
+              className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm"
               onClick={() => printCertificates(salaryRows)}
             >
               <Printer size={14} /> Generate All Certificates
@@ -757,7 +870,12 @@ export default function AdvancedTaxCompliance() {
                       "Monthly TDS",
                       "Action",
                     ].map((h, i) => (
-                      <th key={h} className={`px-2 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap ${i >= 2 && i < 15 ? 'text-right' : 'text-left'} ${i === 15 ? 'text-center' : ''}`}>{h}</th>
+                      <th
+                        key={h}
+                        className={`px-2 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap ${i >= 2 && i < 15 ? "text-right" : "text-left"} ${i === 15 ? "text-center" : ""}`}
+                      >
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
@@ -771,26 +889,61 @@ export default function AdvancedTaxCompliance() {
                       <React.Fragment key={emp.id}>
                         <tr className="bg-white hover:bg-gray-50 text-[12px] transition-colors group">
                           <td className="px-2 py-2 whitespace-nowrap">
-                            <button className="font-medium text-[#1557b0] hover:underline flex items-center gap-1" onClick={() => setExpandedEmp(open ? "" : emp.id)}>
-                              {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />} {emp.name}
+                            <button
+                              className="font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                              onClick={() => setExpandedEmp(open ? "" : emp.id)}
+                            >
+                              {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}{" "}
+                              {emp.name}
                             </button>
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap text-gray-600">{emp.panNumber || ""}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-800">NPR {money(worksheet.grossIncome)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">NPR {money(worksheet.ssaDeduction)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">NPR {money(worksheet.pfDeduction)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap font-medium text-gray-800">NPR {money(worksheet.taxableIncome)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(slabTax(1))}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(slabTax(10))}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(slabTax(20))}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(slabTax(30))}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(slabTax(36))}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">{money(worksheet.beforeRebate)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap text-green-600">{money(worksheet.rebate)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap font-bold text-gray-800">{money(worksheet.totalTax)}</td>
-                          <td className="px-2 py-2 text-right whitespace-nowrap font-bold text-[#1557b0]">{money(worksheet.monthlyTDS)}</td>
+                          <td className="px-2 py-2 whitespace-nowrap text-gray-600">
+                            {emp.panNumber || ""}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-800">
+                            NPR {money(worksheet.grossIncome)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">
+                            NPR {money(worksheet.ssaDeduction)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">
+                            NPR {money(worksheet.pfDeduction)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap font-medium text-gray-800">
+                            NPR {money(worksheet.taxableIncome)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(slabTax(1))}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(slabTax(10))}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(slabTax(20))}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(slabTax(30))}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(slabTax(36))}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
+                            {money(worksheet.beforeRebate)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap text-green-600">
+                            {money(worksheet.rebate)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap font-bold text-gray-800">
+                            {money(worksheet.totalTax)}
+                          </td>
+                          <td className="px-2 py-2 text-right whitespace-nowrap font-bold text-[#1557b0]">
+                            {money(worksheet.monthlyTDS)}
+                          </td>
                           <td className="px-2 py-2 text-center whitespace-nowrap">
-                            <button className="h-6 px-2 bg-[#1557b0]/10 text-[#1557b0] text-[10px] font-medium rounded hover:bg-[#1557b0]/20 transition-colors" onClick={() => printCertificates([{ emp, worksheet }])}>
+                            <button
+                              className="h-6 px-2 bg-[#1557b0]/10 text-[#1557b0] text-[10px] font-medium rounded hover:bg-[#1557b0]/20 transition-colors"
+                              onClick={() => printCertificates([{ emp, worksheet }])}
+                            >
                               Certificate
                             </button>
                           </td>
@@ -801,26 +954,57 @@ export default function AdvancedTaxCompliance() {
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-gray-200 p-4 rounded-md shadow-sm">
                                 <div>
                                   <h3 className="font-bold text-[13px] text-gray-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
-                                    <Calculator size={14} className="text-gray-500"/> Deductions Breakdown
+                                    <Calculator size={14} className="text-gray-500" /> Deductions
+                                    Breakdown
                                   </h3>
                                   <div className="space-y-2">
-                                    <div className="flex justify-between text-[12px]"><span className="text-gray-500">Annual Basic:</span> <span className="font-medium text-gray-800">NPR {money(worksheet.annualBasic)}</span></div>
-                                    <div className="flex justify-between text-[12px]"><span className="text-gray-500">Allowances:</span> <span className="font-medium text-gray-800">NPR {money(worksheet.annualAllowances)}</span></div>
-                                    <div className="flex justify-between text-[12px]"><span className="text-gray-500">Provident Fund (PF):</span> <span className="font-medium text-gray-800">NPR {money(worksheet.pfDeduction)}</span></div>
-                                    <div className="flex justify-between text-[12px]"><span className="text-gray-500">Social Security (SSA):</span> <span className="font-medium text-gray-800">NPR {money(worksheet.ssaDeduction)}</span></div>
+                                    <div className="flex justify-between text-[12px]">
+                                      <span className="text-gray-500">Annual Basic:</span>{" "}
+                                      <span className="font-medium text-gray-800">
+                                        NPR {money(worksheet.annualBasic)}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between text-[12px]">
+                                      <span className="text-gray-500">Allowances:</span>{" "}
+                                      <span className="font-medium text-gray-800">
+                                        NPR {money(worksheet.annualAllowances)}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between text-[12px]">
+                                      <span className="text-gray-500">Provident Fund (PF):</span>{" "}
+                                      <span className="font-medium text-gray-800">
+                                        NPR {money(worksheet.pfDeduction)}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between text-[12px]">
+                                      <span className="text-gray-500">Social Security (SSA):</span>{" "}
+                                      <span className="font-medium text-gray-800">
+                                        NPR {money(worksheet.ssaDeduction)}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                                 <div>
                                   <h3 className="font-bold text-[13px] text-gray-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
-                                    <FileSpreadsheet size={14} className="text-gray-500"/> Slab Breakdown
+                                    <FileSpreadsheet size={14} className="text-gray-500" /> Slab
+                                    Breakdown
                                   </h3>
                                   <div className="space-y-2">
                                     {worksheet.slabBreakdown.map((s: any, idx: number) => (
-                                      <div key={idx} className="flex justify-between items-center text-[12px]">
-                                        <span className="text-gray-600">{s.label} @ {s.rate}%</span>
+                                      <div
+                                        key={idx}
+                                        className="flex justify-between items-center text-[12px]"
+                                      >
+                                        <span className="text-gray-600">
+                                          {s.label} @ {s.rate}%
+                                        </span>
                                         <div className="flex gap-4">
-                                          <span className="text-gray-500 w-24 text-right">Inc: {money(s.income)}</span>
-                                          <span className="font-medium text-gray-800 w-24 text-right">Tax: {money(s.tax)}</span>
+                                          <span className="text-gray-500 w-24 text-right">
+                                            Inc: {money(s.income)}
+                                          </span>
+                                          <span className="font-medium text-gray-800 w-24 text-right">
+                                            Tax: {money(s.tax)}
+                                          </span>
                                         </div>
                                       </div>
                                     ))}
@@ -853,13 +1037,22 @@ export default function AdvancedTaxCompliance() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-bold text-gray-800">e-TDS Filing Export</h2>
               <div className="flex gap-2">
-                <button className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm" onClick={validateTDS}>
+                <button
+                  className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm"
+                  onClick={validateTDS}
+                >
                   <CheckCircle size={14} /> Validate
                 </button>
-                <button className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm" onClick={exportETDS}>
+                <button
+                  className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm"
+                  onClick={exportETDS}
+                >
                   <Download size={14} /> Export for IRD e-TDS Portal
                 </button>
-                <button className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm" onClick={printForm29}>
+                <button
+                  className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm"
+                  onClick={printForm29}
+                >
                   <Printer size={14} /> Print Form 29
                 </button>
               </div>
@@ -872,7 +1065,12 @@ export default function AdvancedTaxCompliance() {
                 </h3>
                 <ul className="list-disc pl-5 text-[12px]">
                   {tdsValidation.map((e, idx) => (
-                    <li key={idx} className={e.level === "Critical" ? "text-red-600 font-medium" : "text-amber-600"}>
+                    <li
+                      key={idx}
+                      className={
+                        e.level === "Critical" ? "text-red-600 font-medium" : "text-amber-600"
+                      }
+                    >
                       <span className="font-bold">{e.level}:</span> {e.msg}
                     </li>
                   ))}
@@ -884,20 +1082,41 @@ export default function AdvancedTaxCompliance() {
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    {["Section", "Party Name", "Party PAN", "Amount Paid", "TDS Rate", "TDS Amount", "Quarter", "Payment Date"].map((h, i) => (
-                      <th className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${[3,4,5].includes(i) ? 'text-right' : 'text-left'}`} key={h}>{h}</th>
+                    {[
+                      "Section",
+                      "Party Name",
+                      "Party PAN",
+                      "Amount Paid",
+                      "TDS Rate",
+                      "TDS Amount",
+                      "Quarter",
+                      "Payment Date",
+                    ].map((h, i) => (
+                      <th
+                        className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${[3, 4, 5].includes(i) ? "text-right" : "text-left"}`}
+                        key={h}
+                      >
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {tdsRows.map((r: any, idx: number) => (
-                    <tr key={idx} className="bg-white hover:bg-gray-50 text-[12px] transition-colors">
+                    <tr
+                      key={idx}
+                      className="bg-white hover:bg-gray-50 text-[12px] transition-colors"
+                    >
                       <td className="px-3 py-2.5 text-gray-800 font-medium">{r.sectionLabel}</td>
                       <td className="px-3 py-2.5 text-gray-600">{r.partyName}</td>
                       <td className="px-3 py-2.5 text-gray-600">{r.partyPan}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-800">NPR {money(r.amountPaid)}</td>
+                      <td className="px-3 py-2.5 text-right text-gray-800">
+                        NPR {money(r.amountPaid)}
+                      </td>
                       <td className="px-3 py-2.5 text-right text-gray-600">{r.tdsRate}%</td>
-                      <td className="px-3 py-2.5 text-right font-medium text-[#1557b0]">NPR {money(r.tdsAmount)}</td>
+                      <td className="px-3 py-2.5 text-right font-medium text-[#1557b0]">
+                        NPR {money(r.tdsAmount)}
+                      </td>
                       <td className="px-3 py-2.5 text-gray-600">{r.quarter}</td>
                       <td className="px-3 py-2.5 text-gray-600">{r.paymentDate}</td>
                     </tr>
@@ -915,28 +1134,42 @@ export default function AdvancedTaxCompliance() {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
-            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">Form 29 Annual Return Summary</h2>
+            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              Form 29 Annual Return Summary
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">Company</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
+                  Company
+                </div>
                 <div className="text-[13px] text-gray-800">{companySettings?.name || "N/A"}</div>
               </div>
               <div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">PAN</div>
-                <div className="text-[13px] text-gray-800">{companySettings?.panNumber || "N/A"}</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
+                  PAN
+                </div>
+                <div className="text-[13px] text-gray-800">
+                  {companySettings?.panNumber || "N/A"}
+                </div>
               </div>
               <div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">Fiscal Year</div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
+                  Fiscal Year
+                </div>
                 <div className="text-[13px] text-gray-800">{currentFiscalYear?.name || "N/A"}</div>
               </div>
             </div>
-            
+
             <div className="border border-gray-200 rounded-md overflow-hidden max-w-2xl">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Section</th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total TDS Deducted</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Section
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Total TDS Deducted
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -948,10 +1181,17 @@ export default function AdvancedTaxCompliance() {
                   ).map(([k, v]: any) => (
                     <tr key={k} className="bg-white hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-800">{k}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-right font-bold text-[#1557b0]">NPR {money(v)}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-right font-bold text-[#1557b0]">
+                        NPR {money(v)}
+                      </td>
                     </tr>
                   ))}
-                  {Object.keys(tdsRows.reduce((m: any, r: any) => { m[r.sectionLabel] = (m[r.sectionLabel] || 0) + Number(r.tdsAmount || 0); return m; }, {})).length === 0 && (
+                  {Object.keys(
+                    tdsRows.reduce((m: any, r: any) => {
+                      m[r.sectionLabel] = (m[r.sectionLabel] || 0) + Number(r.tdsAmount || 0);
+                      return m;
+                    }, {}),
+                  ).length === 0 && (
                     <tr>
                       <td colSpan={2} className="px-3 py-8 text-center text-[12px] text-gray-500">
                         No data available for Form 29 summary.
@@ -970,8 +1210,8 @@ export default function AdvancedTaxCompliance() {
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-bold text-gray-800">TDS Property Register</h2>
-              <button 
-                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm" 
+              <button
+                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm"
                 onClick={() => setPropModal(true)}
               >
                 <Plus size={14} /> Add Property
@@ -982,8 +1222,23 @@ export default function AdvancedTaxCompliance() {
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    {["Address", "Owner", "PAN", "Monthly Rent", "TDS %", "Monthly TDS", "Annual TDS", "Agreement Period", "Action"].map((h, i) => (
-                      <th className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${[3,4,5,6].includes(i) ? 'text-right' : 'text-left'}`} key={h}>{h}</th>
+                    {[
+                      "Address",
+                      "Owner",
+                      "PAN",
+                      "Monthly Rent",
+                      "TDS %",
+                      "Monthly TDS",
+                      "Annual TDS",
+                      "Agreement Period",
+                      "Action",
+                    ].map((h, i) => (
+                      <th
+                        className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${[3, 4, 5, 6].includes(i) ? "text-right" : "text-left"}`}
+                        key={h}
+                      >
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
@@ -991,21 +1246,37 @@ export default function AdvancedTaxCompliance() {
                   {properties.map((p: any) => {
                     const monthlyTDS = Number(p.monthlyRent || 0) * (Number(p.tdsRate || 10) / 100);
                     return (
-                      <tr key={p.id} className="bg-white hover:bg-gray-50 text-[12px] transition-colors">
-                        <td className="px-3 py-2.5 text-gray-800 font-medium">{p.propertyAddress}</td>
+                      <tr
+                        key={p.id}
+                        className="bg-white hover:bg-gray-50 text-[12px] transition-colors"
+                      >
+                        <td className="px-3 py-2.5 text-gray-800 font-medium">
+                          {p.propertyAddress}
+                        </td>
                         <td className="px-3 py-2.5 text-gray-600">{p.ownerName}</td>
                         <td className="px-3 py-2.5 text-gray-600">{p.ownerPan}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">NPR {money(p.monthlyRent)}</td>
+                        <td className="px-3 py-2.5 text-right text-gray-800">
+                          NPR {money(p.monthlyRent)}
+                        </td>
                         <td className="px-3 py-2.5 text-right text-gray-600">{p.tdsRate}%</td>
-                        <td className="px-3 py-2.5 text-right font-medium text-amber-600">NPR {money(monthlyTDS)}</td>
-                        <td className="px-3 py-2.5 text-right font-medium text-gray-800">NPR {money(monthlyTDS * 12)}</td>
-                        <td className="px-3 py-2.5 text-gray-600">{p.startDate} to {p.endDate || "Open"}</td>
+                        <td className="px-3 py-2.5 text-right font-medium text-amber-600">
+                          NPR {money(monthlyTDS)}
+                        </td>
+                        <td className="px-3 py-2.5 text-right font-medium text-gray-800">
+                          NPR {money(monthlyTDS * 12)}
+                        </td>
+                        <td className="px-3 py-2.5 text-gray-600">
+                          {p.startDate} to {p.endDate || "Open"}
+                        </td>
                         <td className="px-3 py-2.5">
                           <button
                             className="text-red-500 hover:text-red-700 transition-colors"
                             onClick={async () => {
                               if (window.confirm("Delete this property?")) {
-                                await getDB().table("tdsPropertyRegister").delete(p.id).catch(() => {});
+                                await getDB()
+                                  .table("tdsPropertyRegister")
+                                  .delete(p.id)
+                                  .catch(() => {});
                                 setProperties((rows) => rows.filter((x: any) => x.id !== p.id));
                               }
                             }}
@@ -1030,23 +1301,25 @@ export default function AdvancedTaxCompliance() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
-              <h2 className="text-[14px] font-bold text-gray-800 mb-4">Generate TDS Journal for Month</h2>
+              <h2 className="text-[14px] font-bold text-gray-800 mb-4">
+                Generate TDS Journal for Month
+              </h2>
               <div className="flex gap-2 mb-4">
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] max-w-[180px] shadow-sm" 
-                  type="month" 
-                  value={journalMonth} 
-                  onChange={(e) => setJournalMonth(e.target.value)} 
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] max-w-[180px] shadow-sm"
+                  type="month"
+                  value={journalMonth}
+                  onChange={(e) => setJournalMonth(e.target.value)}
                 />
-                <button 
-                  className="h-8 px-4 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm" 
+                <button
+                  className="h-8 px-4 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
                   onClick={buildPropertyJournals}
                 >
                   Preview Journals
                 </button>
                 {journalPreview.length > 0 && (
-                  <button 
-                    className="h-8 px-4 bg-[#059669] text-white text-[12px] font-medium rounded-md hover:bg-[#047857] transition-colors shadow-sm" 
+                  <button
+                    className="h-8 px-4 bg-[#059669] text-white text-[12px] font-medium rounded-md hover:bg-[#047857] transition-colors shadow-sm"
                     onClick={postPropertyJournals}
                   >
                     Confirm & Post All
@@ -1059,19 +1332,33 @@ export default function AdvancedTaxCompliance() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Property</th>
-                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rent</th>
-                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">TDS</th>
-                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Net Pay</th>
+                        <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Property
+                        </th>
+                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Rent
+                        </th>
+                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          TDS
+                        </th>
+                        <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Net Pay
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {journalPreview.map((j: any, idx: number) => (
                         <tr key={idx} className="bg-white text-[12px]">
                           <td className="px-3 py-2">{j.property.propertyAddress}</td>
-                          <td className="px-3 py-2 text-right text-gray-600">NPR {money(j.rent)}</td>
-                          <td className="px-3 py-2 text-right text-amber-600 font-medium">NPR {money(j.tds)}</td>
-                          <td className="px-3 py-2 text-right text-[#1557b0] font-medium">NPR {money(j.net)}</td>
+                          <td className="px-3 py-2 text-right text-gray-600">
+                            NPR {money(j.rent)}
+                          </td>
+                          <td className="px-3 py-2 text-right text-amber-600 font-medium">
+                            NPR {money(j.tds)}
+                          </td>
+                          <td className="px-3 py-2 text-right text-[#1557b0] font-medium">
+                            NPR {money(j.net)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1086,25 +1373,42 @@ export default function AdvancedTaxCompliance() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Property</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Annual TDS</th>
+                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Property
+                      </th>
+                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Annual TDS
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {properties.map((p: any) => {
-                      const annual = Number(p.monthlyRent || 0) * (Number(p.tdsRate || 10) / 100) * 12;
+                      const annual =
+                        Number(p.monthlyRent || 0) * (Number(p.tdsRate || 10) / 100) * 12;
                       return (
                         <tr key={p.id} className="bg-white text-[12px]">
                           <td className="px-3 py-2">{p.propertyAddress}</td>
-                          <td className="px-3 py-2 text-right font-medium text-gray-800">NPR {money(annual)}</td>
+                          <td className="px-3 py-2 text-right font-medium text-gray-800">
+                            NPR {money(annual)}
+                          </td>
                         </tr>
                       );
                     })}
                     {properties.length > 0 ? (
                       <tr className="bg-[#f5f6fa] border-t-2 border-gray-300">
-                        <td className="px-3 py-2 font-bold text-[12px] text-gray-800">Grand Total</td>
+                        <td className="px-3 py-2 font-bold text-[12px] text-gray-800">
+                          Grand Total
+                        </td>
                         <td className="px-3 py-2 text-right font-bold text-[12px] text-[#1557b0]">
-                          NPR {money(properties.reduce((s: number, p: any) => s + Number(p.monthlyRent || 0) * (Number(p.tdsRate || 10) / 100) * 12, 0))}
+                          NPR{" "}
+                          {money(
+                            properties.reduce(
+                              (s: number, p: any) =>
+                                s +
+                                Number(p.monthlyRent || 0) * (Number(p.tdsRate || 10) / 100) * 12,
+                              0,
+                            ),
+                          )}
                         </td>
                       </tr>
                     ) : (
@@ -1125,83 +1429,99 @@ export default function AdvancedTaxCompliance() {
       {propModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white border border-gray-200 shadow-lg rounded-md p-5 w-full max-w-xl">
-            <h2 className="text-[15px] font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">Add Rented Property</h2>
+            <h2 className="text-[15px] font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              Add Rented Property
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Property Address <span className="text-red-500">*</span></label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  placeholder="Property Address" 
-                  value={propForm.propertyAddress} 
-                  onChange={(e) => setPropForm({ ...propForm, propertyAddress: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Property Address <span className="text-red-500">*</span>
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  placeholder="Property Address"
+                  value={propForm.propertyAddress}
+                  onChange={(e) => setPropForm({ ...propForm, propertyAddress: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Owner Name <span className="text-red-500">*</span></label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  placeholder="Owner Name" 
-                  value={propForm.ownerName} 
-                  onChange={(e) => setPropForm({ ...propForm, ownerName: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Owner Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  placeholder="Owner Name"
+                  value={propForm.ownerName}
+                  onChange={(e) => setPropForm({ ...propForm, ownerName: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Owner PAN <span className="text-red-500">*</span></label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  placeholder="Owner PAN" 
-                  value={propForm.ownerPan} 
-                  onChange={(e) => setPropForm({ ...propForm, ownerPan: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Owner PAN <span className="text-red-500">*</span>
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  placeholder="Owner PAN"
+                  value={propForm.ownerPan}
+                  onChange={(e) => setPropForm({ ...propForm, ownerPan: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Monthly Rent (NPR)</label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  type="number" 
-                  placeholder="Monthly Rent NPR" 
-                  value={propForm.monthlyRent} 
-                  onChange={(e) => setPropForm({ ...propForm, monthlyRent: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Monthly Rent (NPR)
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  type="number"
+                  placeholder="Monthly Rent NPR"
+                  value={propForm.monthlyRent}
+                  onChange={(e) => setPropForm({ ...propForm, monthlyRent: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">TDS Rate %</label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  type="number" 
-                  placeholder="TDS Rate %" 
-                  value={propForm.tdsRate} 
-                  onChange={(e) => setPropForm({ ...propForm, tdsRate: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  TDS Rate %
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  type="number"
+                  placeholder="TDS Rate %"
+                  value={propForm.tdsRate}
+                  onChange={(e) => setPropForm({ ...propForm, tdsRate: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Start Date</label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  type="date" 
-                  value={propForm.startDate} 
-                  onChange={(e) => setPropForm({ ...propForm, startDate: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Start Date
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  type="date"
+                  value={propForm.startDate}
+                  onChange={(e) => setPropForm({ ...propForm, startDate: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">End Date (Optional)</label>
-                <input 
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full" 
-                  type="date" 
-                  value={propForm.endDate} 
-                  onChange={(e) => setPropForm({ ...propForm, endDate: e.target.value })} 
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  End Date (Optional)
+                </label>
+                <input
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  type="date"
+                  value={propForm.endDate}
+                  onChange={(e) => setPropForm({ ...propForm, endDate: e.target.value })}
                 />
               </div>
             </div>
             <div className="flex gap-2 justify-end pt-3 border-t border-gray-200">
-              <button 
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm" 
+              <button
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
                 onClick={() => setPropModal(false)}
               >
                 Cancel
               </button>
-              <button 
-                className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm" 
+              <button
+                className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm"
                 onClick={saveProperty}
               >
                 Save Property

@@ -235,7 +235,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
   const validate = () => {
     if (!date) return "Date is required.";
     if (!partyId) return `Select a ${type === "challan" ? "customer" : "supplier"}.`;
-    
+
     const p = parties.find((x) => x.id === partyId);
     if (p) {
       const partyAcc = accounts.find((a) => a.id === p.accountId);
@@ -384,8 +384,8 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
       "rw",
       [db.stockMovements, db.deliveryChallans, db.goodsReceiptNotes],
       async () => {
-        for (const mov of movementItems) {
-          await db.stockMovements.add(mov);
+        if (movementItems.length > 0) {
+          await db.stockMovements.bulkAdd(movementItems);
         }
         if (type === "challan") {
           await db.deliveryChallans.update(recordId, { inventoryPosted: true } as any);
@@ -781,4 +781,3 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
 };
 
 export default ChallanForm;
-

@@ -2,15 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
 import { DBBillSundry as DBBillSundryMaster } from "../lib/db";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  Save,
-  Search,
-  Receipt,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, X, Save, Search, Receipt } from "lucide-react";
 
 // ─── Empty form template ──────────────────────────────────────────────────────
 
@@ -50,20 +42,18 @@ export default function BillSundryMaster() {
     const q = search.toLowerCase().trim();
     if (!q) return billSundryMasters;
     return billSundryMasters.filter(
-      (bs) =>
-        bs.name.toLowerCase().includes(q) ||
-        (bs.alias ?? "").toLowerCase().includes(q)
+      (bs) => bs.name.toLowerCase().includes(q) || (bs.alias ?? "").toLowerCase().includes(q),
     );
   }, [billSundryMasters, search]);
 
   const deleteTarget = useMemo(
     () => billSundryMasters.find((bs) => bs.id === deleteTargetId) ?? null,
-    [billSundryMasters, deleteTargetId]
+    [billSundryMasters, deleteTargetId],
   );
 
   const activeAccounts = useMemo(
     () => (accounts ?? []).filter((a: any) => a.isActive !== false),
-    [accounts]
+    [accounts],
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -96,21 +86,19 @@ export default function BillSundryMaster() {
     setForm(emptyForm());
   };
 
-  const setField = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
-  ) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): string | null => {
     if (!form.name.trim()) return "Bill Sundry name is required.";
-    
+
     const dup = billSundryMasters.find(
-      (bs) => bs.name.toLowerCase() === form.name.trim().toLowerCase() && bs.id !== editingId
+      (bs) => bs.name.toLowerCase() === form.name.trim().toLowerCase() && bs.id !== editingId,
     );
     if (dup) return `Bill Sundry "${form.name.trim()}" already exists.`;
 
     if (form.defaultValue < 0) return "Default value cannot be negative.";
-    
+
     return null;
   };
 
@@ -213,13 +201,27 @@ export default function BillSundryMaster() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nature</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Head</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Default Value</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Type
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Nature
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Account Head
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Default Value
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -227,18 +229,19 @@ export default function BillSundryMaster() {
               <tr>
                 <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
                   <Receipt className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No bill sundries yet. Create your first bill sundry."}
+                  {search
+                    ? "No results found."
+                    : "No bill sundries yet. Create your first bill sundry."}
                 </td>
               </tr>
             ) : (
               filtered.map((bs) => (
-                <tr
-                  key={bs.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={bs.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700">
                     <div>{bs.name}</div>
-                    {bs.alias && <div className="text-[10px] text-gray-400 font-normal">Alias: {bs.alias}</div>}
+                    {bs.alias && (
+                      <div className="text-[10px] text-gray-400 font-normal">Alias: {bs.alias}</div>
+                    )}
                   </td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
                     {bs.type === "additive" ? (
@@ -248,9 +251,12 @@ export default function BillSundryMaster() {
                     )}
                   </td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
-                    {bs.nature.replace('_', ' ')}
+                    {bs.nature.replace("_", " ")}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[200px] truncate" title={getAccountName(bs.accountHeadId)}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[200px] truncate"
+                    title={getAccountName(bs.accountHeadId)}
+                  >
                     {getAccountName(bs.accountHeadId)}
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
@@ -317,13 +323,14 @@ export default function BillSundryMaster() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+
+            <form
+              onSubmit={handleSubmit}
+              className="flex-1 overflow-y-auto p-4 flex flex-col gap-4"
+            >
               <div className="grid grid-cols-2 gap-3 border-b border-gray-100 pb-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Name *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Name *</label>
                   <input
                     type="text"
                     value={form.name}
@@ -335,9 +342,7 @@ export default function BillSundryMaster() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Alias
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Alias</label>
                   <input
                     type="text"
                     value={form.alias}
@@ -377,9 +382,7 @@ export default function BillSundryMaster() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Default Value
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Default Value</label>
                   <input
                     type="number"
                     min={0}
@@ -414,7 +417,7 @@ export default function BillSundryMaster() {
                 <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                   Behavior & Costing
                 </span>
-                
+
                 <div className="flex flex-col gap-2 mt-1">
                   <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
                     <input
@@ -423,7 +426,9 @@ export default function BillSundryMaster() {
                       onChange={(e) => setField("affectsCostInSale", e.target.checked)}
                       className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                     />
-                    <span className="text-[12px] font-medium text-gray-700">Affects Cost of Goods Sold (COGS)</span>
+                    <span className="text-[12px] font-medium text-gray-700">
+                      Affects Cost of Goods Sold (COGS)
+                    </span>
                   </label>
 
                   <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
@@ -433,9 +438,11 @@ export default function BillSundryMaster() {
                       onChange={(e) => setField("affectsCostInPurchase", e.target.checked)}
                       className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                     />
-                    <span className="text-[12px] font-medium text-gray-700">Affects Cost of Goods Purchased (Landed Cost)</span>
+                    <span className="text-[12px] font-medium text-gray-700">
+                      Affects Cost of Goods Purchased (Landed Cost)
+                    </span>
                   </label>
-                  
+
                   <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
                     <input
                       type="checkbox"
@@ -479,8 +486,9 @@ export default function BillSundryMaster() {
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? 
-                This action cannot be undone.
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? This
+                action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

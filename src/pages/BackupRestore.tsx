@@ -46,12 +46,10 @@ const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
   "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const card =
-  "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
-const td =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -117,13 +115,10 @@ const tableAll = (db: any, name: string) => {
 };
 
 const tablePut = async (db: any, name: string, rows: any[]) => {
-  try {
-    if (!rows?.length) return;
-    const t = db?.table ? db.table(name) : db?.[name];
-    if (t?.bulkPut) await t.bulkPut(rows);
-  } catch (err) {
-    console.warn("bulkPut failed", name, err);
-  }
+  if (!rows?.length) return;
+  const t = db?.table ? db.table(name) : db?.[name];
+  if (!t?.bulkPut) throw new Error(`Table ${name} not found`);
+  await t.bulkPut(rows);
 };
 
 const tableClear = async (db: any, name: string) => {
@@ -355,7 +350,7 @@ export default function BackupRestore() {
         currentUser,
         "Backup Settings Updated",
         "Backup and restore preferences updated",
-        "Low"
+        "Low",
       );
       await tablePut(db, "auditLogs", [audit]);
     } catch {
@@ -408,7 +403,7 @@ export default function BackupRestore() {
             critical: CRITICAL_TABLES.includes(name),
             sample: data[0] || null,
           };
-        })
+        }),
       );
 
       const existing = rows.filter((r) => r.count > 0 || DEFAULT_TABLES.includes(r.name));
@@ -417,8 +412,10 @@ export default function BackupRestore() {
       if (!selectedTables.length) {
         setSelectedTables(
           existing
-            .filter((r) => settings.includeAuditLogs || !String(r.name).toLowerCase().includes("audit"))
-            .map((r) => r.name)
+            .filter(
+              (r) => settings.includeAuditLogs || !String(r.name).toLowerCase().includes("audit"),
+            )
+            .map((r) => r.name),
         );
       }
     } catch (err) {
@@ -431,7 +428,7 @@ export default function BackupRestore() {
 
   const selectedStats = useMemo(
     () => tableStats.filter((t) => selectedTables.includes(t.name)),
-    [tableStats, selectedTables]
+    [tableStats, selectedTables],
   );
 
   const totals = useMemo(() => {
@@ -449,7 +446,7 @@ export default function BackupRestore() {
 
   const toggleTable = (name: string) => {
     setSelectedTables((prev) =>
-      prev.includes(name) ? prev.filter((x) => x !== name) : [...prev, name]
+      prev.includes(name) ? prev.filter((x) => x !== name) : [...prev, name],
     );
   };
 
@@ -470,9 +467,9 @@ export default function BackupRestore() {
               "payHeads",
               "periodLocks",
               "securitySettings",
-            ].includes(t.name)
+            ].includes(t.name),
         )
-        .map((t) => t.name)
+        .map((t) => t.name),
     );
 
   const clearSelection = () => setSelectedTables([]);
@@ -506,7 +503,10 @@ export default function BackupRestore() {
       tables,
       metadata: {
         tableCount: Object.keys(tables).length,
-        rowCount: Object.values(tables).reduce((sum: number, arr: any) => sum + (arr?.length || 0), 0),
+        rowCount: Object.values(tables).reduce(
+          (sum: number, arr: any) => sum + (arr?.length || 0),
+          0,
+        ),
         generatedFrom: window.location.origin,
         userAgent: navigator.userAgent,
       },
@@ -547,7 +547,7 @@ export default function BackupRestore() {
           currentUser,
           "JSON Backup Downloaded",
           `${backup.metadata.tableCount} tables and ${backup.metadata.rowCount} rows exported`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -622,7 +622,7 @@ export default function BackupRestore() {
           currentUser,
           "Excel Backup Downloaded",
           `${backup.metadata.tableCount} tables and ${backup.metadata.rowCount} rows exported`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -818,9 +818,11 @@ export default function BackupRestore() {
       await tablePut(db, "auditLogs", [
         makeAuditRow(
           currentUser,
-          restoreMode === "replace" ? "Database Restored Replace Mode" : "Database Restored Merge Mode",
+          restoreMode === "replace"
+            ? "Database Restored Replace Mode"
+            : "Database Restored Merge Mode",
           `${names.length} tables and ${rowCount} rows restored from backup ${previewBackup.id || ""}`,
-          "High"
+          "High",
         ),
       ]);
 
@@ -889,7 +891,7 @@ export default function BackupRestore() {
       XLSX.utils.book_append_sheet(
         wb,
         XLSX.utils.json_to_sheet([{ id: "", name: "", createdAt: "" }]),
-        name.slice(0, 31)
+        name.slice(0, 31),
       );
     });
 
@@ -908,7 +910,9 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Selected Tables</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Selected Tables
+            </p>
             <p className="text-xl font-semibold mt-1">{totals.tables}</p>
           </div>
           <Database className="h-5 w-5 text-[#1557b0]" />
@@ -918,7 +922,9 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Selected Rows</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Selected Rows
+            </p>
             <p className="text-xl font-semibold mt-1">{totals.rows}</p>
           </div>
           <Archive className="h-5 w-5 text-[#1557b0]" />
@@ -928,7 +934,9 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Approx Size</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Approx Size
+            </p>
             <p className="text-xl font-semibold mt-1">{bytes(totals.size)}</p>
           </div>
           <FileArchive className="h-5 w-5 text-[#1557b0]" />
@@ -938,7 +946,9 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Total DB Rows</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Total DB Rows
+            </p>
             <p className="text-xl font-semibold mt-1">{totals.allRows}</p>
           </div>
           <ShieldCheck className="h-5 w-5 text-[#1557b0]" />
@@ -961,9 +971,15 @@ export default function BackupRestore() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <button className={btn2} onClick={selectAll}>Select All</button>
-          <button className={btn2} onClick={selectCore}>Core Only</button>
-          <button className={btn2} onClick={clearSelection}>Clear</button>
+          <button className={btn2} onClick={selectAll}>
+            Select All
+          </button>
+          <button className={btn2} onClick={selectCore}>
+            Core Only
+          </button>
+          <button className={btn2} onClick={clearSelection}>
+            Clear
+          </button>
           <button className={btn2} onClick={refreshStats} disabled={loading}>
             <RefreshCcw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -1162,27 +1178,37 @@ export default function BackupRestore() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Backup ID</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                Backup ID
+              </p>
               <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Tables</p>
-              <p className="text-[14px] font-semibold text-gray-800">{Object.keys(previewBackup.tables || {}).length}</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                Tables
+              </p>
+              <p className="text-[14px] font-semibold text-gray-800">
+                {Object.keys(previewBackup.tables || {}).length}
+              </p>
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Rows</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                Rows
+              </p>
               <p className="text-[14px] font-semibold text-gray-800">
                 {Object.values(previewBackup.tables || {}).reduce(
                   (sum: number, arr: any) => sum + (arr?.length || 0),
-                  0
+                  0,
                 )}
               </p>
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Issues</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                Issues
+              </p>
               <p className="text-[14px] font-semibold text-gray-800">{restoreIssues.length}</p>
             </div>
           </div>
@@ -1260,8 +1286,12 @@ export default function BackupRestore() {
             {backupHistory.map((h) => (
               <tr key={h.id} className="hover:bg-gray-50/50">
                 <td className={td}>
-                  <div className="font-medium text-gray-800">{String(h.createdAt).slice(0, 10)}</div>
-                  <div className="text-[10px] text-gray-400">{String(h.createdAt).slice(11, 19)}</div>
+                  <div className="font-medium text-gray-800">
+                    {String(h.createdAt).slice(0, 10)}
+                  </div>
+                  <div className="text-[10px] text-gray-400">
+                    {String(h.createdAt).slice(11, 19)}
+                  </div>
                 </td>
                 <td className={`${td} font-medium`}>{h.type}</td>
                 <td className={`${td} text-right font-medium`}>{h.tableCount || 0}</td>
@@ -1307,7 +1337,9 @@ export default function BackupRestore() {
           </label>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Reminder interval days</label>
+            <label className="text-[11px] font-medium text-gray-600 block mb-1">
+              Reminder interval days
+            </label>
             <input
               type="number"
               className={input}
@@ -1322,12 +1354,12 @@ export default function BackupRestore() {
             <input
               type="checkbox"
               checked={settings.includeAuditLogs}
-              onChange={(e) =>
-                setSettings((s) => ({ ...s, includeAuditLogs: e.target.checked }))
-              }
+              onChange={(e) => setSettings((s) => ({ ...s, includeAuditLogs: e.target.checked }))}
               className="h-4 w-4"
             />
-            <span className="text-[12px] font-medium text-gray-800">Include audit logs by default</span>
+            <span className="text-[12px] font-medium text-gray-800">
+              Include audit logs by default
+            </span>
           </label>
 
           <label className="flex items-center gap-2 border border-gray-200 rounded-md p-3 hover:bg-gray-50 cursor-pointer">
@@ -1337,11 +1369,15 @@ export default function BackupRestore() {
               onChange={(e) => setSettings((s) => ({ ...s, encryptLabel: e.target.checked }))}
               className="h-4 w-4"
             />
-            <span className="text-[12px] font-medium text-gray-800">Mark backups as confidential</span>
+            <span className="text-[12px] font-medium text-gray-800">
+              Mark backups as confidential
+            </span>
           </label>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Local history limit</label>
+            <label className="text-[11px] font-medium text-gray-600 block mb-1">
+              Local history limit
+            </label>
             <input
               type="number"
               className={input}
@@ -1369,8 +1405,8 @@ export default function BackupRestore() {
         <div>
           <p className="text-[12px] font-semibold">Recommended policy</p>
           <p className="text-[11px] mt-1 opacity-90">
-            Download a JSON backup daily, Excel backup monthly, and always before restore,
-            year-end close, bulk import, migration or database maintenance.
+            Download a JSON backup daily, Excel backup monthly, and always before restore, year-end
+            close, bulk import, migration or database maintenance.
           </p>
         </div>
       </div>
@@ -1432,7 +1468,8 @@ export default function BackupRestore() {
 
       {loading && (
         <div className={`${card} mb-4 flex items-center gap-2 text-[12px] text-gray-600`}>
-          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Processing database operation...
+          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Processing database
+          operation...
         </div>
       )}
 
@@ -1451,28 +1488,44 @@ export default function BackupRestore() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Backup ID</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  Backup ID
+                </p>
                 <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Created At</p>
-                <p className="text-[12px] font-medium text-gray-800">{String(previewBackup.createdAt).slice(0, 19)}</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  Created At
+                </p>
+                <p className="text-[12px] font-medium text-gray-800">
+                  {String(previewBackup.createdAt).slice(0, 19)}
+                </p>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Company</p>
-                <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.companyName || "-"}</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  Company
+                </p>
+                <p className="text-[12px] font-medium text-gray-800 truncate">
+                  {previewBackup.companyName || "-"}
+                </p>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Tables</p>
-                <p className="text-[12px] font-medium text-gray-800">{backupTablesPreview.length}</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  Tables
+                </p>
+                <p className="text-[12px] font-medium text-gray-800">
+                  {backupTablesPreview.length}
+                </p>
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">Restore Mode</label>
+              <label className="text-[11px] font-medium text-gray-600 block mb-1">
+                Restore Mode
+              </label>
               <select
                 className={input}
                 value={restoreMode}
@@ -1495,7 +1548,10 @@ export default function BackupRestore() {
                   </thead>
                   <tbody>
                     {backupTablesPreview.map((t) => (
-                      <tr key={t.name} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
+                      <tr
+                        key={t.name}
+                        className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50"
+                      >
                         <td className={`${td} font-medium`}>{t.name}</td>
                         <td className={`${td} text-right font-medium`}>{t.count}</td>
                         <td className={td}>
@@ -1533,9 +1589,14 @@ export default function BackupRestore() {
                     </thead>
                     <tbody>
                       {restoreIssues.map((i, idx) => (
-                        <tr key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
+                        <tr
+                          key={idx}
+                          className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50"
+                        >
                           <td className={td}>
-                            <span className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${severityClass(i.severity)}`}>
+                            <span
+                              className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${severityClass(i.severity)}`}
+                            >
                               {i.severity}
                             </span>
                           </td>
@@ -1548,7 +1609,7 @@ export default function BackupRestore() {
                 </div>
               </div>
             )}
-            
+
             <div>
               <label className="text-[11px] font-medium text-red-600 block mb-1">
                 Type <span className="font-bold">RESTORE</span> to confirm overwrite
@@ -1560,9 +1621,11 @@ export default function BackupRestore() {
                 placeholder="RESTORE"
               />
             </div>
-            
+
             <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-              <button className={btn2} onClick={() => setRestoreModal(false)}>Cancel</button>
+              <button className={btn2} onClick={() => setRestoreModal(false)}>
+                Cancel
+              </button>
               <button className={btnDanger} onClick={restoreBackup}>
                 <HardDriveUpload className="h-4 w-4" /> Restore Database
               </button>

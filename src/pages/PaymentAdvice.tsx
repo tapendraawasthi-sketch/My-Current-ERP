@@ -10,27 +10,27 @@ import { FileCheck, Send, Mail, Printer, Plus, Eye } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
 export default function PaymentAdvice() {
-  const { 
-    accounts, 
-    vouchers, 
-    parties, 
-    paymentAdvices, 
+  const {
+    accounts,
+    vouchers,
+    parties,
+    paymentAdvices,
     companySettings,
     savePaymentAdvice,
-    updatePaymentAdvice
+    updatePaymentAdvice,
   } = useStore();
 
   const [view, setView] = useState<"list" | "detail">("list");
   const [selectedAdvice, setSelectedAdvice] = useState<any>(null);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
   const [bulkGenerateOpen, setBulkGenerateOpen] = useState(false);
-  
+
   // Filters
   const [bankFilter, setBankFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  
+
   // Generation state
   const [selectedBank, setSelectedBank] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState({ from: "", to: "" });
@@ -38,12 +38,13 @@ export default function PaymentAdvice() {
   const [availableVouchers, setAvailableVouchers] = useState<any[]>([]);
 
   const bankAccounts = useMemo(() => {
-    return accounts.filter(a => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
+    return accounts.filter((a) => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
   }, [accounts]);
 
   const filteredAdvices = useMemo(() => {
-    return paymentAdvices.filter(a => {
-      const matchesBank = !bankFilter || vouchers.find(v => v.id === a.voucherId)?.bankAccountId === bankFilter;
+    return paymentAdvices.filter((a) => {
+      const matchesBank =
+        !bankFilter || vouchers.find((v) => v.id === a.voucherId)?.bankAccountId === bankFilter;
       const matchesDateFrom = !dateFrom || a.paymentDate >= dateFrom;
       const matchesDateTo = !dateTo || a.paymentDate <= dateTo;
       const matchesStatus = statusFilter === "ALL" || a.status === statusFilter.toLowerCase();
@@ -52,13 +53,14 @@ export default function PaymentAdvice() {
   }, [paymentAdvices, vouchers, bankFilter, dateFrom, dateTo, statusFilter]);
 
   const unadvisedVouchers = useMemo(() => {
-    const advisedVoucherIds = new Set(paymentAdvices.map(pa => pa.voucherId));
-    return vouchers.filter(v => 
-      v.type === "payment" && 
-      !advisedVoucherIds.has(v.id) &&
-      (!selectedBank || v.bankAccountId === selectedBank) &&
-      (!selectedDateRange.from || v.date >= selectedDateRange.from) &&
-      (!selectedDateRange.to || v.date <= selectedDateRange.to)
+    const advisedVoucherIds = new Set(paymentAdvices.map((pa) => pa.voucherId));
+    return vouchers.filter(
+      (v) =>
+        v.type === "payment" &&
+        !advisedVoucherIds.has(v.id) &&
+        (!selectedBank || v.bankAccountId === selectedBank) &&
+        (!selectedDateRange.from || v.date >= selectedDateRange.from) &&
+        (!selectedDateRange.to || v.date <= selectedDateRange.to),
     );
   }, [vouchers, paymentAdvices, selectedBank, selectedDateRange]);
 
@@ -72,12 +74,13 @@ export default function PaymentAdvice() {
     setBulkGenerateOpen(true);
     setSelectedVouchers([]);
     // For bulk, show all unadvised vouchers regardless of bank
-    const advisedVoucherIds = new Set(paymentAdvices.map(pa => pa.voucherId));
-    const allUnadvised = vouchers.filter(v => 
-      v.type === "payment" && 
-      !advisedVoucherIds.has(v.id) &&
-      (!selectedDateRange.from || v.date >= selectedDateRange.from) &&
-      (!selectedDateRange.to || v.date <= selectedDateRange.to)
+    const advisedVoucherIds = new Set(paymentAdvices.map((pa) => pa.voucherId));
+    const allUnadvised = vouchers.filter(
+      (v) =>
+        v.type === "payment" &&
+        !advisedVoucherIds.has(v.id) &&
+        (!selectedDateRange.from || v.date >= selectedDateRange.from) &&
+        (!selectedDateRange.to || v.date <= selectedDateRange.to),
     );
     setAvailableVouchers(allUnadvised);
   };
@@ -90,20 +93,24 @@ export default function PaymentAdvice() {
 
     try {
       for (const voucherId of selectedVouchers) {
-        const voucher = vouchers.find(v => v.id === voucherId);
+        const voucher = vouchers.find((v) => v.id === voucherId);
         if (!voucher) continue;
 
-        const party = parties.find(p => p.id === voucher.partyId);
+        const party = parties.find((p) => p.id === voucher.partyId);
         if (!party) continue;
 
         // Extract bill references from voucher lines
         const billDetails = voucher.lines
-          .filter(line => line.particulars && (line.particulars.includes("Bill") || line.particulars.includes("Inv")))
-          .map(line => ({
+          .filter(
+            (line) =>
+              line.particulars &&
+              (line.particulars.includes("Bill") || line.particulars.includes("Inv")),
+          )
+          .map((line) => ({
             billRef: line.particulars,
             billDate: voucher.date,
             billAmount: Math.abs(line.drAmount - line.crAmount),
-            adjustedAmount: Math.abs(line.drAmount - line.crAmount)
+            adjustedAmount: Math.abs(line.drAmount - line.crAmount),
           }));
 
         await savePaymentAdvice({
@@ -121,7 +128,7 @@ export default function PaymentAdvice() {
           totalAmount: voucher.grandTotal || 0,
           billDetails: JSON.stringify(billDetails),
           status: "draft",
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
         });
       }
 
@@ -140,14 +147,14 @@ export default function PaymentAdvice() {
 
   const handleMarkSent = async (adviceId: string) => {
     try {
-      await updatePaymentAdvice(adviceId, { 
-        status: "sent", 
-        sentAt: new Date().toISOString() 
+      await updatePaymentAdvice(adviceId, {
+        status: "sent",
+        sentAt: new Date().toISOString(),
       });
       toast.success("Payment advice marked as sent");
       // Refresh data
       const updated = [...paymentAdvices];
-      const index = updated.findIndex(pa => pa.id === adviceId);
+      const index = updated.findIndex((pa) => pa.id === adviceId);
       if (index !== -1) {
         updated[index] = { ...updated[index], status: "sent", sentAt: new Date().toISOString() };
         // In a real app, this would be handled by the store update
@@ -177,14 +184,14 @@ ${companySettings?.companyNameEn || "Your Company"}
 ${companySettings?.addressEn || "Your Address"}`;
 
       const mailtoLink = `mailto:${advice.partyEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
+      window.open(mailtoLink, "_blank");
 
       // Mark as emailed
-      await updatePaymentAdvice(advice.id, { 
-        status: "emailed", 
-        emailedAt: new Date().toISOString() 
+      await updatePaymentAdvice(advice.id, {
+        status: "emailed",
+        emailedAt: new Date().toISOString(),
       });
-      
+
       toast.success("Payment advice marked as emailed");
     } catch (error) {
       toast.error("Failed to send email");
@@ -198,10 +205,8 @@ ${companySettings?.addressEn || "Your Address"}`;
   };
 
   const toggleVoucherSelection = (voucherId: string) => {
-    setSelectedVouchers(prev => 
-      prev.includes(voucherId) 
-        ? prev.filter(id => id !== voucherId) 
-        : [...prev, voucherId]
+    setSelectedVouchers((prev) =>
+      prev.includes(voucherId) ? prev.filter((id) => id !== voucherId) : [...prev, voucherId],
     );
   };
 
@@ -209,13 +214,13 @@ ${companySettings?.addressEn || "Your Address"}`;
     if (selectedVouchers.length === availableVouchers.length) {
       setSelectedVouchers([]);
     } else {
-      setSelectedVouchers(availableVouchers.map(v => v.id));
+      setSelectedVouchers(availableVouchers.map((v) => v.id));
     }
   };
 
   if (view === "detail" && selectedAdvice) {
-    const voucher = vouchers.find(v => v.id === selectedAdvice.voucherId);
-    const party = parties.find(p => p.id === selectedAdvice.partyId);
+    const voucher = vouchers.find((v) => v.id === selectedAdvice.voucherId);
+    const party = parties.find((p) => p.id === selectedAdvice.partyId);
     let billDetails = [];
     try {
       billDetails = JSON.parse(selectedAdvice.billDetails || "[]");
@@ -225,15 +230,12 @@ ${companySettings?.addressEn || "Your Address"}`;
 
     return (
       <div className="flex flex-col h-full">
-        <ActionToolbar 
-          title="Payment Advice" 
-          icon={<FileCheck size={16} />}
-        >
+        <ActionToolbar title="Payment Advice" icon={<FileCheck size={16} />}>
           <Button size="sm" variant="outline" onClick={() => setView("list")}>
             Back to List
           </Button>
         </ActionToolbar>
-        
+
         <div className="flex-1 overflow-auto p-4">
           <div className="max-w-4xl mx-auto bg-white p-8 shadow-lg print:p-0 print:shadow-none">
             {/* Letterhead */}
@@ -244,11 +246,11 @@ ${companySettings?.addressEn || "Your Address"}`;
                 Phone: {companySettings?.phone} | Email: {companySettings?.email}
               </p>
             </div>
-            
+
             <div className="border-b-2 border-gray-800 py-4 mb-6">
               <h2 className="text-xl font-bold text-center">PAYMENT ADVICE / REMITTANCE ADVICE</h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
                 <h3 className="font-bold mb-2">To:</h3>
@@ -256,7 +258,7 @@ ${companySettings?.addressEn || "Your Address"}`;
                 <p>{party?.address}</p>
                 <p>Email: {party?.email}</p>
               </div>
-              
+
               <div>
                 <h3 className="font-bold mb-2">Our Reference:</h3>
                 <p>Voucher No: {selectedAdvice.voucherNo}</p>
@@ -271,7 +273,7 @@ ${companySettings?.addressEn || "Your Address"}`;
                 )}
               </div>
             </div>
-            
+
             <div className="mb-8">
               <h3 className="font-bold mb-4">Bills Settled:</h3>
               <table className="w-full border-collapse border border-gray-300">
@@ -288,42 +290,42 @@ ${companySettings?.addressEn || "Your Address"}`;
                     <tr key={index}>
                       <td className="border border-gray-300 p-2">{bill.billRef}</td>
                       <td className="border border-gray-300 p-2">{bill.billDate}</td>
-                      <td className="border border-gray-300 p-2 text-right">{formatNumber(bill.billAmount)}</td>
-                      <td className="border border-gray-300 p-2 text-right">{formatNumber(bill.adjustedAmount)}</td>
+                      <td className="border border-gray-300 p-2 text-right">
+                        {formatNumber(bill.billAmount)}
+                      </td>
+                      <td className="border border-gray-300 p-2 text-right">
+                        {formatNumber(bill.adjustedAmount)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            
+
             <div className="flex justify-end mb-8">
               <div className="text-right">
-                <p className="font-bold text-lg">Total Amount Paid: {formatNumber(selectedAdvice.totalAmount)}</p>
+                <p className="font-bold text-lg">
+                  Total Amount Paid: {formatNumber(selectedAdvice.totalAmount)}
+                </p>
               </div>
             </div>
-            
+
             <div className="mt-12 text-center print:text-left">
               <p>This is a computer-generated advice.</p>
             </div>
-            
+
             <div className="mt-8 flex flex-wrap gap-3 justify-center print:hidden">
               <Button onClick={() => handlePrintAdvice(selectedAdvice)}>
                 <Printer size={14} className="mr-1" />
                 Print
               </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => handleMarkSent(selectedAdvice.id)}
-              >
+
+              <Button variant="outline" onClick={() => handleMarkSent(selectedAdvice.id)}>
                 <Send size={14} className="mr-1" />
                 Mark as Sent
               </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => handleEmailAdvice(selectedAdvice)}
-              >
+
+              <Button variant="outline" onClick={() => handleEmailAdvice(selectedAdvice)}>
                 <Mail size={14} className="mr-1" />
                 Email
               </Button>
@@ -336,10 +338,7 @@ ${companySettings?.addressEn || "Your Address"}`;
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar 
-        title="Payment Advice" 
-        icon={<FileCheck size={16} />}
-      >
+      <ActionToolbar title="Payment Advice" icon={<FileCheck size={16} />}>
         <Button size="sm" onClick={handleGenerateAdvice}>
           <Plus size={14} className="mr-1" />
           Generate Advice
@@ -348,7 +347,7 @@ ${companySettings?.addressEn || "Your Address"}`;
           Bulk Generate
         </Button>
       </ActionToolbar>
-      
+
       <div className="flex-1 overflow-auto p-4">
         {/* Filter Bar */}
         <div className="mb-4 flex flex-wrap gap-3 items-end">
@@ -357,29 +356,21 @@ ${companySettings?.addressEn || "Your Address"}`;
               label="Bank Account"
               options={[
                 { value: "", label: "All Banks" },
-                ...bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))
+                ...bankAccounts.map((acc) => ({ value: acc.id, label: acc.name })),
               ]}
               value={bankFilter}
               onChange={setBankFilter}
             />
           </div>
-          
+
           <div className="w-32">
-            <NepaliDatePicker
-              label="From Date"
-              value={dateFrom}
-              onChange={setDateFrom}
-            />
+            <NepaliDatePicker label="From Date" value={dateFrom} onChange={setDateFrom} />
           </div>
-          
+
           <div className="w-32">
-            <NepaliDatePicker
-              label="To Date"
-              value={dateTo}
-              onChange={setDateTo}
-            />
+            <NepaliDatePicker label="To Date" value={dateTo} onChange={setDateTo} />
           </div>
-          
+
           <div className="w-32">
             <Select
               label="Status"
@@ -387,14 +378,14 @@ ${companySettings?.addressEn || "Your Address"}`;
                 { value: "ALL", label: "All" },
                 { value: "draft", label: "Draft" },
                 { value: "sent", label: "Sent" },
-                { value: "emailed", label: "Emailed" }
+                { value: "emailed", label: "Emailed" },
               ]}
               value={statusFilter}
               onChange={setStatusFilter}
             />
           </div>
         </div>
-        
+
         {/* Payment Advices Table */}
         <div className="bg-white border rounded-lg overflow-hidden">
           <table className="w-full">
@@ -417,10 +408,10 @@ ${companySettings?.addressEn || "Your Address"}`;
                   </td>
                 </tr>
               ) : (
-                filteredAdvices.map(advice => {
-                  const voucher = vouchers.find(v => v.id === advice.voucherId);
-                  const party = parties.find(p => p.id === advice.partyId);
-                  
+                filteredAdvices.map((advice) => {
+                  const voucher = vouchers.find((v) => v.id === advice.voucherId);
+                  const party = parties.find((p) => p.id === advice.partyId);
+
                   return (
                     <tr key={advice.id} className="border-t hover:bg-gray-50">
                       <td className="p-3">{advice.voucherNo}</td>
@@ -429,11 +420,13 @@ ${companySettings?.addressEn || "Your Address"}`;
                       <td className="p-3 text-right">{formatNumber(advice.totalAmount)}</td>
                       <td className="p-3">{advice.paymentMode}</td>
                       <td className="p-3">
-                        <Badge 
+                        <Badge
                           variant={
-                            advice.status === "draft" ? "warning" :
-                            advice.status === "sent" ? "info" :
-                            "success"
+                            advice.status === "draft"
+                              ? "warning"
+                              : advice.status === "sent"
+                                ? "info"
+                                : "success"
                           }
                         >
                           {advice.status.charAt(0).toUpperCase() + advice.status.slice(1)}
@@ -441,9 +434,9 @@ ${companySettings?.addressEn || "Your Address"}`;
                       </td>
                       <td className="p-3">
                         <div className="flex gap-2">
-                          <Button 
-                            size="xs" 
-                            variant="ghost" 
+                          <Button
+                            size="xs"
+                            variant="ghost"
                             onClick={() => handleViewAdvice(advice)}
                           >
                             <Eye size={12} className="mr-1" />
@@ -459,7 +452,7 @@ ${companySettings?.addressEn || "Your Address"}`;
           </table>
         </div>
       </div>
-      
+
       {/* Generate Advice Modal */}
       {(generateModalOpen || bulkGenerateOpen) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -469,50 +462,53 @@ ${companySettings?.addressEn || "Your Address"}`;
                 {bulkGenerateOpen ? "Bulk Generate Payment Advices" : "Generate Payment Advice"}
               </h3>
             </div>
-            
+
             <div className="p-4">
               {!bulkGenerateOpen && (
                 <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Select
                       label="Bank Account"
-                      options={bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))}
+                      options={bankAccounts.map((acc) => ({ value: acc.id, label: acc.name }))}
                       value={selectedBank}
                       onChange={setSelectedBank}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <NepaliDatePicker
                         label="From Date"
                         value={selectedDateRange.from}
-                        onChange={(val) => setSelectedDateRange(prev => ({ ...prev, from: val }))}
+                        onChange={(val) => setSelectedDateRange((prev) => ({ ...prev, from: val }))}
                       />
                     </div>
                     <div>
                       <NepaliDatePicker
                         label="To Date"
                         value={selectedDateRange.to}
-                        onChange={(val) => setSelectedDateRange(prev => ({ ...prev, to: val }))}
+                        onChange={(val) => setSelectedDateRange((prev) => ({ ...prev, to: val }))}
                       />
                     </div>
                   </div>
                 </div>
               )}
-              
+
               <p className="text-sm text-gray-600 mb-4">
                 Select payment vouchers to generate payment advices for
               </p>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="w-10 p-2">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedVouchers.length === availableVouchers.length && availableVouchers.length > 0}
+                        <input
+                          type="checkbox"
+                          checked={
+                            selectedVouchers.length === availableVouchers.length &&
+                            availableVouchers.length > 0
+                          }
                           onChange={toggleAllVouchers}
                         />
                       </th>
@@ -531,14 +527,14 @@ ${companySettings?.addressEn || "Your Address"}`;
                         </td>
                       </tr>
                     ) : (
-                      availableVouchers.map(voucher => {
-                        const party = parties.find(p => p.id === voucher.partyId);
-                        
+                      availableVouchers.map((voucher) => {
+                        const party = parties.find((p) => p.id === voucher.partyId);
+
                         return (
                           <tr key={voucher.id} className="border-t hover:bg-gray-50">
                             <td className="p-2">
-                              <input 
-                                type="checkbox" 
+                              <input
+                                type="checkbox"
                                 checked={selectedVouchers.includes(voucher.id)}
                                 onChange={() => toggleVoucherSelection(voucher.id)}
                               />
@@ -546,7 +542,9 @@ ${companySettings?.addressEn || "Your Address"}`;
                             <td className="p-2">{voucher.voucherNo}</td>
                             <td className="p-2">{voucher.date}</td>
                             <td className="p-2">{party?.name || "Unknown"}</td>
-                            <td className="p-2 text-right">{formatNumber(voucher.grandTotal || 0)}</td>
+                            <td className="p-2 text-right">
+                              {formatNumber(voucher.grandTotal || 0)}
+                            </td>
                             <td className="p-2">{voucher.paymentMode || "N/A"}</td>
                           </tr>
                         );
@@ -556,10 +554,10 @@ ${companySettings?.addressEn || "Your Address"}`;
                 </table>
               </div>
             </div>
-            
+
             <div className="p-4 border-t flex justify-end gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setGenerateModalOpen(false);
                   setBulkGenerateOpen(false);

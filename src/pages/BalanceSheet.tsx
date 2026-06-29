@@ -37,9 +37,7 @@ const ReportShell: React.FC<ReportShellProps> = ({ title, subtitle, children }) 
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          {subtitle && (
-            <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
         </div>
       </div>
       {children}
@@ -69,9 +67,7 @@ function buildTree(
     .filter(
       (a) =>
         a.type === type &&
-        (parentId === undefined
-          ? !a.parentId
-          : a.parentId === parentId) &&
+        (parentId === undefined ? !a.parentId : a.parentId === parentId) &&
         a.isActive !== false,
     )
     .map((account) => {
@@ -129,9 +125,7 @@ const BalanceSheetRow: React.FC<{
 
   return (
     <tr
-      className={`border-b border-gray-100 ${
-        line.isGroup ? "bg-[#f5f6fa]" : "hover:bg-gray-50"
-      }`}
+      className={`border-b border-gray-100 ${line.isGroup ? "bg-[#f5f6fa]" : "hover:bg-gray-50"}`}
     >
       <td className="px-3 py-2 text-[11px] font-mono text-gray-500 w-20">
         {line.accountCode || "—"}
@@ -140,9 +134,7 @@ const BalanceSheetRow: React.FC<{
         <span
           style={{ paddingLeft: `${indent}px` }}
           className={`text-[12px] ${
-            line.isGroup
-              ? "font-semibold text-gray-700"
-              : "font-normal text-gray-700"
+            line.isGroup ? "font-semibold text-gray-700" : "font-normal text-gray-700"
           }`}
         >
           {line.accountName}
@@ -161,12 +153,9 @@ const BalanceSheetRow: React.FC<{
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const BalanceSheet: React.FC = () => {
-  const { accounts, vouchers, invoices, currentFiscalYear, companySettings } =
-    useStore();
+  const { accounts, vouchers, invoices, currentFiscalYear, companySettings } = useStore();
 
-  const [asOfDate, setAsOfDate] = useState(
-    () => new Date().toISOString().split("T")[0],
-  );
+  const [asOfDate, setAsOfDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
   const [expandAll, setExpandAll] = useState(true);
 
@@ -194,10 +183,7 @@ const BalanceSheet: React.FC = () => {
   }, [accounts, vouchers, invoices]);
 
   const flatAssets = useMemo(() => flattenLines(assets.lines), [assets.lines]);
-  const flatLiabilities = useMemo(
-    () => flattenLines(liabilities.lines),
-    [liabilities.lines],
-  );
+  const flatLiabilities = useMemo(() => flattenLines(liabilities.lines), [liabilities.lines]);
   const flatEquity = useMemo(() => flattenLines(equity.lines), [equity.lines]);
 
   // ── Export to Excel ─────────────────────────────────────────────────────────
@@ -205,8 +191,7 @@ const BalanceSheet: React.FC = () => {
     try {
       const wb = XLSX.utils.book_new();
 
-      const companyName =
-        companySettings?.name || companySettings?.companyName || "Company";
+      const companyName = companySettings?.name || companySettings?.companyName || "Company";
       const fyName = currentFiscalYear?.name || "";
 
       const rows: any[][] = [
@@ -259,19 +244,11 @@ const BalanceSheet: React.FC = () => {
 
       rows.push(["", "TOTAL EQUITY", "", equity.total]);
       rows.push([]);
-      rows.push([
-        "",
-        "TOTAL LIABILITIES & EQUITY",
-        "",
-        liabilities.total + equity.total,
-      ]);
+      rows.push(["", "TOTAL LIABILITIES & EQUITY", "", liabilities.total + equity.total]);
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
       XLSX.utils.book_append_sheet(wb, ws, "Balance Sheet");
-      XLSX.writeFile(
-        wb,
-        `BalanceSheet_${asOfDate.replace(/-/g, "")}.xlsx`,
-      );
+      XLSX.writeFile(wb, `BalanceSheet_${asOfDate.replace(/-/g, "")}.xlsx`);
       toast.success("Balance Sheet exported to Excel.");
     } catch (err) {
       toast.error("Export failed.");
@@ -285,10 +262,7 @@ const BalanceSheet: React.FC = () => {
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
-    <ReportShell
-      title="Balance Sheet"
-      subtitle="Assets, liabilities and equity position"
-    >
+    <ReportShell title="Balance Sheet" subtitle="Assets, liabilities and equity position">
       {/* Action toolbar — moved INSIDE children, not passed as prop */}
       <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
         <div className="flex items-center gap-2">
@@ -350,9 +324,7 @@ const BalanceSheet: React.FC = () => {
           </span>
           <span>
             Liab + Equity:{" "}
-            <strong className="font-mono">
-              {formatAmount(liabilities.total + equity.total)}
-            </strong>
+            <strong className="font-mono">{formatAmount(liabilities.total + equity.total)}</strong>
           </span>
         </div>
       </div>
@@ -362,9 +334,7 @@ const BalanceSheet: React.FC = () => {
         {/* ── Assets Column ── */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div className="bg-[#1557b0] px-4 py-2.5">
-            <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">
-              Assets
-            </h2>
+            <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">Assets</h2>
           </div>
 
           <div className="overflow-x-auto">
@@ -388,10 +358,7 @@ const BalanceSheet: React.FC = () => {
               <tbody>
                 {flatAssets.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={4}
-                      className="px-3 py-8 text-center text-[12px] text-gray-400"
-                    >
+                    <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
                       No asset accounts found.
                     </td>
                   </tr>
@@ -404,9 +371,7 @@ const BalanceSheet: React.FC = () => {
               <tfoot>
                 <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
                   <td className="px-3 py-2.5" />
-                  <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                    Total Assets
-                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">Total Assets</td>
                   <td className="px-3 py-2.5" />
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
                     {formatAmount(assets.total)}
@@ -448,20 +413,13 @@ const BalanceSheet: React.FC = () => {
                 <tbody>
                   {flatLiabilities.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={4}
-                        className="px-3 py-8 text-center text-[12px] text-gray-400"
-                      >
+                      <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
                         No liability accounts found.
                       </td>
                     </tr>
                   ) : (
                     flatLiabilities.map((line, idx) => (
-                      <BalanceSheetRow
-                        key={`liab-${line.accountId}-${idx}`}
-                        line={line}
-                        isCredit
-                      />
+                      <BalanceSheetRow key={`liab-${line.accountId}-${idx}`} line={line} isCredit />
                     ))
                   )}
                 </tbody>
@@ -484,9 +442,7 @@ const BalanceSheet: React.FC = () => {
           {/* Equity */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
             <div className="bg-[#059669] px-4 py-2.5">
-              <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">
-                Equity
-              </h2>
+              <h2 className="text-[13px] font-bold text-white uppercase tracking-wide">Equity</h2>
             </div>
 
             <div className="overflow-x-auto">
@@ -510,10 +466,7 @@ const BalanceSheet: React.FC = () => {
                 <tbody>
                   {flatEquity.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={4}
-                        className="px-3 py-8 text-center text-[12px] text-gray-400"
-                      >
+                      <td colSpan={4} className="px-3 py-8 text-center text-[12px] text-gray-400">
                         No equity accounts found.
                       </td>
                     </tr>

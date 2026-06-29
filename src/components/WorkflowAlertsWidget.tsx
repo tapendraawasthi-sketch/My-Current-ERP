@@ -5,10 +5,7 @@ import { computePendingAlerts } from "../lib/workflowUtils";
 const WorkflowAlertsWidget: React.FC = () => {
   const { vouchers, setCurrentPage, setReportFilters } = useStore() as any;
 
-  const alerts = useMemo(
-    () => computePendingAlerts(vouchers || []),
-    [vouchers],
-  );
+  const alerts = useMemo(() => computePendingAlerts(vouchers || []), [vouchers]);
 
   const go = (page: string, filter?: any) => {
     setReportFilters?.(filter || {});
@@ -17,9 +14,7 @@ const WorkflowAlertsWidget: React.FC = () => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-md p-4">
-      <h3 className="text-[13px] font-semibold text-gray-800 mb-3">
-        Pending Document Alerts
-      </h3>
+      <h3 className="text-[13px] font-semibold text-gray-800 mb-3">Pending Document Alerts</h3>
 
       <div className="space-y-2 text-[12px]">
         <AlertRow
@@ -46,13 +41,7 @@ const WorkflowAlertsWidget: React.FC = () => {
   );
 };
 
-const AlertRow = ({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) => (
+const AlertRow = ({ label, onClick }: { label: string; onClick: () => void }) => (
   <button
     type="button"
     onClick={onClick}

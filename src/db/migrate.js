@@ -1,10 +1,10 @@
-import { pool } from './pool.js';
+import { pool } from "./pool.js";
 
 export async function runMigrations() {
   const client = await pool.connect();
-  console.log('Running database migrations...');
+  console.log("Running database migrations...");
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     // 1. Company Settings
     await client.query(`
@@ -51,7 +51,7 @@ export async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
-    
+
     // Insert default company settings if empty
     await client.query(`
       INSERT INTO company_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
@@ -147,8 +147,10 @@ export async function runMigrations() {
         fiscal_year_id INTEGER REFERENCES fiscal_years(id)
       );
     `);
-    
-    await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp DESC);`);
+
+    await client.query(
+      `CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp DESC);`,
+    );
     await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_logs(user_id);`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_module ON audit_logs(module);`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_logs(action);`);
@@ -234,7 +236,7 @@ export async function runMigrations() {
       (20, 'K', 'Lock Program', 'modal', 'LockProgramModal', 'admin', 'lock', true, 20)
       ON CONFLICT (key_combo) DO NOTHING;
     `);
-    
+
     // 6. Company Features
     await client.query(`
       CREATE TABLE IF NOT EXISTS company_features (
@@ -286,7 +288,7 @@ export async function runMigrations() {
         modified_at TIMESTAMP DEFAULT NOW()
       );
     `);
-    
+
     // Insert default row for company_features
     await client.query(`
       INSERT INTO company_features (id, company_id) VALUES (1, 1) ON CONFLICT (id) DO NOTHING;
@@ -348,11 +350,11 @@ export async function runMigrations() {
         SELECT setval('keyboard_shortcuts_id_seq', (SELECT MAX(id) FROM keyboard_shortcuts));
     `);
 
-    await client.query('COMMIT');
-    console.log('Database migrations completed successfully.');
+    await client.query("COMMIT");
+    console.log("Database migrations completed successfully.");
   } catch (err) {
-    await client.query('ROLLBACK');
-    console.error('Error running migrations:', err);
+    await client.query("ROLLBACK");
+    console.error("Error running migrations:", err);
     throw err;
   } finally {
     client.release();

@@ -38,7 +38,12 @@ const ReportShell: React.FC<ReportShellProps> = ({
         </div>
         <div className="flex items-center gap-2">
           {actionBarButtons.map((btn) => (
-            <button key={btn.label} onClick={btn.onClick} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md" type="button">
+            <button
+              key={btn.label}
+              onClick={btn.onClick}
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              type="button"
+            >
               {btn.label}
             </button>
           ))}
@@ -62,17 +67,26 @@ const ReportShell: React.FC<ReportShellProps> = ({
           <div className="flex items-center gap-3 flex-wrap">{toolbarLeft}</div>
           <div className="flex items-center gap-2">
             {onOptions && (
-              <button onClick={onOptions} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1">
+              <button
+                onClick={onOptions}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1"
+              >
                 <Settings className="w-3.5 h-3.5" /> Options
               </button>
             )}
             {onExport && (
-              <button onClick={onExport} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1">
+              <button
+                onClick={onExport}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1"
+              >
                 <Download className="w-3.5 h-3.5" /> Export
               </button>
             )}
             {onPrint && (
-              <button onClick={onPrint} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1">
+              <button
+                onClick={onPrint}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1"
+              >
                 <Printer className="w-3.5 h-3.5" /> Print
               </button>
             )}

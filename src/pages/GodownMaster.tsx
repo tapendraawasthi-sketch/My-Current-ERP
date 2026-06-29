@@ -90,12 +90,32 @@ const GodownMaster: React.FC = () => {
       </div>
 
       <div className="bg-white border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Input label="Godown Code" value={form.code} onChange={(v) => setForm({ ...form, code: v })} />
-        <Input label="Godown Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-        <Input label="Branch Company Code" value={form.branchCompanyCode} onChange={(v) => setForm({ ...form, branchCompanyCode: v })} />
+        <Input
+          label="Godown Code"
+          value={form.code}
+          onChange={(v) => setForm({ ...form, code: v })}
+        />
+        <Input
+          label="Godown Name"
+          value={form.name}
+          onChange={(v) => setForm({ ...form, name: v })}
+        />
+        <Input
+          label="Branch Company Code"
+          value={form.branchCompanyCode}
+          onChange={(v) => setForm({ ...form, branchCompanyCode: v })}
+        />
 
-        <Input label="Branch ID" value={form.branchId} onChange={(v) => setForm({ ...form, branchId: v })} />
-        <Input label="Branch Name" value={form.branchName} onChange={(v) => setForm({ ...form, branchName: v })} />
+        <Input
+          label="Branch ID"
+          value={form.branchId}
+          onChange={(v) => setForm({ ...form, branchId: v })}
+        />
+        <Input
+          label="Branch Name"
+          value={form.branchName}
+          onChange={(v) => setForm({ ...form, branchName: v })}
+        />
 
         <div>
           <label className="text-[11px] font-medium text-gray-600">Parent Godown</label>
@@ -113,7 +133,11 @@ const GodownMaster: React.FC = () => {
           </select>
         </div>
 
-        <Input label="Address" value={form.address} onChange={(v) => setForm({ ...form, address: v })} />
+        <Input
+          label="Address"
+          value={form.address}
+          onChange={(v) => setForm({ ...form, address: v })}
+        />
 
         <div>
           <label className="text-[11px] font-medium text-gray-600">Cost Center</label>
@@ -132,10 +156,26 @@ const GodownMaster: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-5 pt-6">
-          <Check label="Default" checked={form.isDefault} onChange={(v) => setForm({ ...form, isDefault: v })} />
-          <Check label="Active" checked={form.isActive} onChange={(v) => setForm({ ...form, isActive: v })} />
-          <Check label="Main Branch" checked={form.isMainBranch} onChange={(v) => setForm({ ...form, isMainBranch: v })} />
-          <Check label="Allow Negative" checked={form.allowNegativeStock} onChange={(v) => setForm({ ...form, allowNegativeStock: v })} />
+          <Check
+            label="Default"
+            checked={form.isDefault}
+            onChange={(v) => setForm({ ...form, isDefault: v })}
+          />
+          <Check
+            label="Active"
+            checked={form.isActive}
+            onChange={(v) => setForm({ ...form, isActive: v })}
+          />
+          <Check
+            label="Main Branch"
+            checked={form.isMainBranch}
+            onChange={(v) => setForm({ ...form, isMainBranch: v })}
+          />
+          <Check
+            label="Allow Negative"
+            checked={form.allowNegativeStock}
+            onChange={(v) => setForm({ ...form, allowNegativeStock: v })}
+          />
         </div>
 
         <div className="md:col-span-3 flex justify-end gap-2">
@@ -173,7 +213,11 @@ const GodownMaster: React.FC = () => {
             {(warehouses || []).map((w: DBWarehouse) => {
               const parent = warehouses.find((x: DBWarehouse) => x.id === w.parentId);
               return (
-                <tr key={w.id} onClick={() => edit(w)} className="border-t cursor-pointer hover:bg-yellow-50">
+                <tr
+                  key={w.id}
+                  onClick={() => edit(w)}
+                  className="border-t cursor-pointer hover:bg-yellow-50"
+                >
                   <td className="px-3 py-2 font-mono">{w.code}</td>
                   <td className="px-3 py-2 font-semibold">
                     <span style={{ paddingLeft: w.parentId ? 18 : 0 }}>

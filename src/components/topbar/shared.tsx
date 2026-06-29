@@ -85,9 +85,7 @@ export function ModalShell({
           </button>
         </div>
 
-        <div className="max-h-[68vh] overflow-auto p-4 text-[12px] text-gray-700">
-          {children}
-        </div>
+        <div className="max-h-[68vh] overflow-auto p-4 text-[12px] text-gray-700">{children}</div>
 
         {footer && (
           <div className="flex min-h-10 items-center justify-end gap-2 border-t border-gray-200 bg-[#f5f6fa] px-4 py-2">

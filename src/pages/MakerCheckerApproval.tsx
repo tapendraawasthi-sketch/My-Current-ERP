@@ -109,17 +109,24 @@ export default function MakerCheckerApproval() {
   };
 
   const pendingVouchers = useMemo(
-    () => filterVoucherList(vouchers.filter((v: any) => String(v?.status).toLowerCase() === "pending")),
+    () =>
+      filterVoucherList(vouchers.filter((v: any) => String(v?.status).toLowerCase() === "pending")),
     [vouchers, searchText, filterType],
   );
 
   const approvedVouchers = useMemo(
-    () => filterVoucherList(vouchers.filter((v: any) => String(v?.status).toLowerCase() === "approved")),
+    () =>
+      filterVoucherList(
+        vouchers.filter((v: any) => String(v?.status).toLowerCase() === "approved"),
+      ),
     [vouchers, searchText, filterType],
   );
 
   const rejectedVouchers = useMemo(
-    () => filterVoucherList(vouchers.filter((v: any) => String(v?.status).toLowerCase() === "rejected")),
+    () =>
+      filterVoucherList(
+        vouchers.filter((v: any) => String(v?.status).toLowerCase() === "rejected"),
+      ),
     [vouchers, searchText, filterType],
   );
 
@@ -220,7 +227,10 @@ export default function MakerCheckerApproval() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button type="button" className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+          <button
+            type="button"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+          >
             <Download className="h-3.5 w-3.5" />
             Download
           </button>
@@ -254,7 +264,9 @@ export default function MakerCheckerApproval() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Pending Approval</p>
-              <p className="text-[22px] font-semibold text-amber-700 mt-1">{pendingVouchers.length}</p>
+              <p className="text-[22px] font-semibold text-amber-700 mt-1">
+                {pendingVouchers.length}
+              </p>
             </div>
             <Clock className="h-7 w-7 text-amber-600" />
           </div>
@@ -274,7 +286,9 @@ export default function MakerCheckerApproval() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Rejected</p>
-              <p className="text-[22px] font-semibold text-red-700 mt-1">{rejectedVouchers.length}</p>
+              <p className="text-[22px] font-semibold text-red-700 mt-1">
+                {rejectedVouchers.length}
+              </p>
             </div>
             <XCircle className="h-7 w-7 text-red-600" />
           </div>
@@ -389,7 +403,11 @@ export default function MakerCheckerApproval() {
                     ) : activeTab === "approved" ? (
                       <div className="text-[11px] text-gray-500">
                         <div>Approved by {voucher?.approvedBy ?? "—"}</div>
-                        <div>{voucher?.approvedAt ? new Date(voucher.approvedAt).toLocaleString() : "—"}</div>
+                        <div>
+                          {voucher?.approvedAt
+                            ? new Date(voucher.approvedAt).toLocaleString()
+                            : "—"}
+                        </div>
                       </div>
                     ) : (
                       <div className="text-[11px] text-gray-500">
@@ -427,7 +445,9 @@ export default function MakerCheckerApproval() {
                 </div>
                 <div className="flex justify-between">
                   <span>Amount</span>
-                  <span className="font-mono">{formatAmount(getVoucherAmount(selectedVoucher))}</span>
+                  <span className="font-mono">
+                    {formatAmount(getVoucherAmount(selectedVoucher))}
+                  </span>
                 </div>
               </div>
               <textarea

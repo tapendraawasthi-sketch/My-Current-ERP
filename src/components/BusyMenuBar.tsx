@@ -22,12 +22,12 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Company",
     items: [
-      { label: "Gateway / Home",    page: "gateway"     },
-      { label: "Company Settings",  page: "settings"    },
-      { label: "Fiscal Year",       page: "fiscal-year" },
+      { label: "Gateway / Home", page: "gateway" },
+      { label: "Company Settings", page: "settings" },
+      { label: "Fiscal Year", page: "fiscal-year" },
       { separator: true, label: "" },
-      { label: "Backup / Restore",  page: "backup"      },
-      { label: "Audit Log",         page: "audit-log"   },
+      { label: "Backup / Restore", page: "backup" },
+      { label: "Audit Log", page: "audit-log" },
     ],
   },
 
@@ -39,28 +39,28 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       {
         label: "Accounts",
         children: [
-          { label: "Chart of Accounts", page: "accounts"      },
-          { label: "Cost Centers",       page: "cost-centers"  },
-          { label: "Budget Master",      page: "budget"        },
+          { label: "Chart of Accounts", page: "accounts" },
+          { label: "Cost Centers", page: "cost-centers" },
+          { label: "Budget Master", page: "budget" },
         ],
       },
       // Parties group
       {
         label: "Parties",
         children: [
-          { label: "Parties Directory",  page: "parties"       },
-          { label: "Sales Persons",      page: "sales-persons" },
+          { label: "Parties Directory", page: "parties" },
+          { label: "Sales Persons", page: "sales-persons" },
         ],
       },
       // Inventory group
       {
         label: "Inventory",
         children: [
-          { label: "Stock Items",        page: "item-master"   },
-          { label: "Warehouses",         page: "warehouses"    },
-          { label: "Units of Measure",   page: "units"         },
-          { label: "Unit Conversions",   page: "unit-conversion" },
-          { label: "Price Lists",        page: "price-lists"   },
+          { label: "Stock Items", page: "item-master" },
+          { label: "Warehouses", page: "warehouses" },
+          { label: "Units of Measure", page: "units" },
+          { label: "Unit Conversions", page: "unit-conversion" },
+          { label: "Price Lists", page: "price-lists" },
         ],
       },
       // Operations group
@@ -68,7 +68,7 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
         label: "Operations",
         children: [
           { label: "Standard Narrations", page: "standard-narration" },
-          { label: "Bill Sundries",       page: "bill-sundry"        },
+          { label: "Bill Sundries", page: "bill-sundry" },
         ],
       },
     ],
@@ -82,42 +82,42 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       {
         label: "Sales",
         children: [
-          { label: "Sales Voucher",         page: "sales"             },
-          { label: "Sales Return",          page: "sales-return"      },
-          { label: "Delivery Challan",      page: "delivery-challan"  },
-          { label: "Quotation / Estimate",  page: "quotation"         },
-          { label: "Sales Order",           page: "sales-order"       },
+          { label: "Sales Voucher", page: "sales" },
+          { label: "Sales Return", page: "sales-return" },
+          { label: "Delivery Challan", page: "delivery-challan" },
+          { label: "Quotation / Estimate", page: "quotation" },
+          { label: "Sales Order", page: "sales-order" },
         ],
       },
       // Purchase
       {
         label: "Purchase",
         children: [
-          { label: "Purchase Voucher",      page: "purchase"              },
-          { label: "Purchase Return",       page: "purchase-return"       },
-          { label: "Goods Receipt Note",    page: "goods-receipt"         },
-          { label: "Purchase Order",        page: "purchase-order"        },
+          { label: "Purchase Voucher", page: "purchase" },
+          { label: "Purchase Return", page: "purchase-return" },
+          { label: "Goods Receipt Note", page: "goods-receipt" },
+          { label: "Purchase Order", page: "purchase-order" },
         ],
       },
       // Inventory Movements
       {
         label: "Inventory",
         children: [
-          { label: "Stock Transfer",        page: "stock-transfer"    },
-          { label: "Stock Adjustment",      page: "stock-adjustment"  },
-          { label: "Physical Stock",        page: "physical-stock"    },
+          { label: "Stock Transfer", page: "stock-transfer" },
+          { label: "Stock Adjustment", page: "stock-adjustment" },
+          { label: "Physical Stock", page: "physical-stock" },
         ],
       },
       // Finance / Accounts
       {
         label: "Finance",
         children: [
-          { label: "Journal Voucher",       page: "journal"           },
-          { label: "Payment Voucher",       page: "payment"           },
-          { label: "Receipt Voucher",       page: "receipt"           },
-          { label: "Contra Voucher",        page: "contra"            },
-          { label: "Credit Note",           page: "credit-note"       },
-          { label: "Debit Note",            page: "debit-note"        },
+          { label: "Journal Voucher", page: "journal" },
+          { label: "Payment Voucher", page: "payment" },
+          { label: "Receipt Voucher", page: "receipt" },
+          { label: "Contra Voucher", page: "contra" },
+          { label: "Credit Note", page: "credit-note" },
+          { label: "Debit Note", page: "debit-note" },
         ],
       },
     ],
@@ -131,12 +131,12 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       {
         label: "Financial",
         children: [
-          { label: "Balance Sheet",         page: "balance-sheet"     },
-          { label: "Profit & Loss",         page: "profit-loss"       },
-          { label: "Trial Balance",         page: "trial-balance"     },
-          { label: "Cash Flow",             page: "cash-flow"         },
-          { label: "Day Book",              page: "day-book"          },
-          { label: "Ledger Report",         page: "ledger-report"     },
+          { label: "Balance Sheet", page: "balance-sheet" },
+          { label: "Profit & Loss", page: "profit-loss" },
+          { label: "Trial Balance", page: "trial-balance" },
+          { label: "Cash Flow", page: "cash-flow" },
+          { label: "Day Book", page: "day-book" },
+          { label: "Ledger Report", page: "ledger-report" },
         ],
       },
       // Party Reports
@@ -144,30 +144,30 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
         label: "Party",
         children: [
           { label: "Outstanding Receivables", page: "outstanding-receivables" },
-          { label: "Outstanding Payables",    page: "outstanding-payables"    },
-          { label: "Aging Report",            page: "aging-report"            },
-          { label: "Party Statement",         page: "party-statement"         },
-          { label: "Interest Calculation",    page: "interest-calculation"    },
+          { label: "Outstanding Payables", page: "outstanding-payables" },
+          { label: "Aging Report", page: "aging-report" },
+          { label: "Party Statement", page: "party-statement" },
+          { label: "Interest Calculation", page: "interest-calculation" },
         ],
       },
       // Inventory Reports
       {
         label: "Inventory",
         children: [
-          { label: "Stock Summary",           page: "stock-summary"           },
-          { label: "Stock Movement",          page: "stock-movement"          },
-          { label: "Reorder Level Report",    page: "reorder-report"          },
-          { label: "Godown-wise Stock",       page: "godown-stock"            },
+          { label: "Stock Summary", page: "stock-summary" },
+          { label: "Stock Movement", page: "stock-movement" },
+          { label: "Reorder Level Report", page: "reorder-report" },
+          { label: "Godown-wise Stock", page: "godown-stock" },
         ],
       },
       // GST Reports
       {
         label: "GST",
         children: [
-          { label: "GSTR-1",                  page: "gstr1"                   },
-          { label: "GSTR-2",                  page: "gstr2"                   },
-          { label: "GSTR-3B",                 page: "gstr3b"                  },
-          { label: "GST Summary",             page: "gst-summary"             },
+          { label: "GSTR-1", page: "gstr1" },
+          { label: "GSTR-2", page: "gstr2" },
+          { label: "GSTR-3B", page: "gstr3b" },
+          { label: "GST Summary", page: "gst-summary" },
         ],
       },
     ],
@@ -177,12 +177,12 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Utilities",
     items: [
-      { label: "Import / Export",   page: "import-export"   },
-      { label: "Data Cleanup",      page: "data-cleanup"    },
-      { label: "User Management",   page: "user-management" },
-      { label: "Workflow Rules",    page: "workflow"        },
+      { label: "Import / Export", page: "import-export" },
+      { label: "Data Cleanup", page: "data-cleanup" },
+      { label: "User Management", page: "user-management" },
+      { label: "Workflow Rules", page: "workflow" },
       { separator: true, label: "" },
-      { label: "About / Licence",   page: "about"           },
+      { label: "About / Licence", page: "about" },
     ],
   },
 ];
@@ -191,9 +191,9 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
 
 const BusyMenuBar: React.FC = () => {
   const { setCurrentPage } = useStore();
-  const [openMenu, setOpenMenu]     = useState<number | null>(null);
-  const [openSub, setOpenSub]       = useState<string | null>(null);
-  const barRef                      = useRef<HTMLDivElement>(null);
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [openSub, setOpenSub] = useState<string | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -211,6 +211,13 @@ const BusyMenuBar: React.FC = () => {
     setCurrentPage(page);
     setOpenMenu(null);
     setOpenSub(null);
+    setTimeout(() => {
+      const main = document.querySelector("main");
+      if (main) {
+        main.setAttribute("tabIndex", "-1");
+        main.focus();
+      }
+    }, 0);
   };
 
   const toggleMenu = (idx: number) => {
@@ -226,12 +233,7 @@ const BusyMenuBar: React.FC = () => {
   const renderItems = (items: MenuItem[], depth = 0) =>
     items.map((item, i) => {
       if (item.separator) {
-        return (
-          <div
-            key={`sep-${i}`}
-            className="my-1 border-t border-gray-200"
-          />
-        );
+        return <div key={`sep-${i}`} className="my-1 border-t border-gray-200" />;
       }
 
       if (item.children && item.children.length > 0) {
@@ -248,9 +250,7 @@ const BusyMenuBar: React.FC = () => {
             >
               <span>{item.label}</span>
               <svg
-                className={`w-3.5 h-3.5 ml-2 transition-transform ${
-                  isSubOpen ? "rotate-90" : ""
-                }`}
+                className={`w-3.5 h-3.5 ml-2 transition-transform ${isSubOpen ? "rotate-90" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

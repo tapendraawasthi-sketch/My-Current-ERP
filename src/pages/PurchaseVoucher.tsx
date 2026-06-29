@@ -104,9 +104,7 @@ function computeLine(line: PurchaseLine): PurchaseLine {
   };
 }
 
-function getStatusVariant(
-  status: string,
-): "success" | "warning" | "danger" | "info" | "default" {
+function getStatusVariant(status: string): "success" | "warning" | "danger" | "info" | "default" {
   switch (status) {
     case "posted":
       return "success";
@@ -183,12 +181,8 @@ const PurchaseVoucher: React.FC = () => {
   const [voucherDate, setVoucherDate] = useState(today());
   const [voucherDateNepali, setVoucherDateNepali] = useState("");
   const [partyId, setPartyId] = useState("");
-  const [warehouseId, setWarehouseId] = useState(
-    () => warehouses[0]?.id ?? "",
-  );
-  const [paymentMode, setPaymentMode] = useState<"credit" | "cash" | "bank">(
-    "credit",
-  );
+  const [warehouseId, setWarehouseId] = useState(() => warehouses[0]?.id ?? "");
+  const [paymentMode, setPaymentMode] = useState<"credit" | "cash" | "bank">("credit");
   const [narration, setNarration] = useState("");
   const [referenceNo, setReferenceNo] = useState("");
   const [referenceDate, setReferenceDate] = useState("");
@@ -212,26 +206,18 @@ const PurchaseVoucher: React.FC = () => {
 
   // ── Lookups ──────────────────────────────────────────────────────────────
   const suppliers = useMemo(
-    () =>
-      parties.filter((p) => p.type === "supplier" || p.type === "both"),
+    () => parties.filter((p) => p.type === "supplier" || p.type === "both"),
     [parties],
   );
 
-  const purchaseItems = useMemo(
-    () => items.filter((i) => i.isActive !== false),
-    [items],
-  );
+  const purchaseItems = useMemo(() => items.filter((i) => i.isActive !== false), [items]);
 
   // ── Totals ───────────────────────────────────────────────────────────────
   const totals = useMemo(() => {
     const subTotal = lines.reduce((s, l) => s + l.qty * l.rate, 0);
     const lineDiscount = lines.reduce((s, l) => s + l.discountAmount, 0);
-    const taxable = lines
-      .filter((l) => l.isTaxable)
-      .reduce((s, l) => s + l.netAmount, 0);
-    const exempt = lines
-      .filter((l) => !l.isTaxable)
-      .reduce((s, l) => s + l.netAmount, 0);
+    const taxable = lines.filter((l) => l.isTaxable).reduce((s, l) => s + l.netAmount, 0);
+    const exempt = lines.filter((l) => !l.isTaxable).reduce((s, l) => s + l.netAmount, 0);
     const vat = lines.reduce((s, l) => s + l.vatAmount, 0);
     const billDisc =
       billDiscountAmount > 0
@@ -282,11 +268,7 @@ const PurchaseVoucher: React.FC = () => {
               itemName: item.name,
               itemCode: item.code ?? item.sku ?? "",
               unit: item.unit ?? "PCS",
-              rate:
-                item.purchaseRate ??
-                item.costPrice ??
-                item.rate ??
-                0,
+              rate: item.purchaseRate ?? item.costPrice ?? item.rate ?? 0,
               isTaxable: item.isTaxable !== false,
               vatRate: item.vatRate ?? 13,
               costPrice: item.costPrice ?? 0,
@@ -330,13 +312,9 @@ const PurchaseVoucher: React.FC = () => {
       toast.error("Please select a supplier.");
       return;
     }
-    const invalidLine = lines.some(
-      (l) => !l.itemId || l.qty <= 0 || l.rate <= 0,
-    );
+    const invalidLine = lines.some((l) => !l.itemId || l.qty <= 0 || l.rate <= 0);
     if (invalidLine) {
-      toast.error(
-        "All lines must have a valid item, quantity, and rate.",
-      );
+      toast.error("All lines must have a valid item, quantity, and rate.");
       return;
     }
 
@@ -354,8 +332,7 @@ const PurchaseVoucher: React.FC = () => {
         partyPan: party?.pan ?? "",
         warehouseId: warehouseId || undefined,
         paymentMode,
-        paymentStatus:
-          paymentMode === "credit" ? "unpaid" : "paid",
+        paymentStatus: paymentMode === "credit" ? "unpaid" : "paid",
         subTotal: totals.subTotal,
         discountAmount: totals.lineDiscount + totals.billDisc,
         taxableAmount: totals.taxable,
@@ -411,16 +388,10 @@ const PurchaseVoucher: React.FC = () => {
           inv.type === "purchase-invoice" &&
           (statusFilter === "all" || inv.status === statusFilter) &&
           (searchTerm === "" ||
-            (inv.invoiceNo ?? "")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            (inv.partyName ?? "")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())),
+            (inv.invoiceNo ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (inv.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase())),
       )
-      .sort((a, b) =>
-        (b.createdAt ?? "").localeCompare(a.createdAt ?? ""),
-      );
+      .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
   }, [invoices, statusFilter, searchTerm]);
 
   // ── TDS section change handler ────────────────────────────────────────────
@@ -435,25 +406,18 @@ const PurchaseVoucher: React.FC = () => {
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-
       {/* Page Header — direct div, NOT ActionToolbar with children */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            Purchase Invoice
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Purchase Invoice</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Create and manage purchase invoices with TDS
           </p>
         </div>
         <div className="flex items-center gap-2">
           {/* Badge variant is "default" not "outline" */}
-          <Badge variant="default">
-            {companySettings?.name ?? "Company"}
-          </Badge>
-          {currentFiscalYear && (
-            <Badge variant="info">FY {currentFiscalYear.name}</Badge>
-          )}
+          <Badge variant="default">{companySettings?.name ?? "Company"}</Badge>
+          {currentFiscalYear && <Badge variant="info">FY {currentFiscalYear.name}</Badge>}
           <button
             type="button"
             onClick={() => setActiveTab("new")}
@@ -482,11 +446,9 @@ const PurchaseVoucher: React.FC = () => {
       {/* ── NEW INVOICE TAB ────────────────────────────────────────────────── */}
       {activeTab === "new" && (
         <div className="space-y-4">
-
           {/* Header fields */}
           <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-
               {/* Date AD */}
               <div>
                 <label className="text-[11px] font-medium text-gray-600 mb-1 block">
@@ -558,11 +520,7 @@ const PurchaseVoucher: React.FC = () => {
                 </label>
                 <select
                   value={paymentMode}
-                  onChange={(e) =>
-                    setPaymentMode(
-                      e.target.value as "credit" | "cash" | "bank",
-                    )
-                  }
+                  onChange={(e) => setPaymentMode(e.target.value as "credit" | "cash" | "bank")}
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 >
                   <option value="credit">Credit</option>
@@ -617,9 +575,7 @@ const PurchaseVoucher: React.FC = () => {
           {/* Line Items */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
-              <h3 className="text-[12px] font-semibold text-gray-700">
-                Line Items
-              </h3>
+              <h3 className="text-[12px] font-semibold text-gray-700">Line Items</h3>
               <button
                 type="button"
                 onClick={addLine}
@@ -671,9 +627,7 @@ const PurchaseVoucher: React.FC = () => {
                       <td className="px-2 py-1.5">
                         <select
                           value={line.itemId}
-                          onChange={(e) =>
-                            updateLine(line.id, "itemId", e.target.value)
-                          }
+                          onChange={(e) => updateLine(line.id, "itemId", e.target.value)}
                           className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                         >
                           <option value="">— Select Item —</option>
@@ -694,11 +648,7 @@ const PurchaseVoucher: React.FC = () => {
                             step={1}
                             value={line.qty}
                             onChange={(e) =>
-                              updateLine(
-                                line.id,
-                                "qty",
-                                parseFloat(e.target.value) || 0,
-                              )
+                              updateLine(line.id, "qty", parseFloat(e.target.value) || 0)
                             }
                             className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
                           />
@@ -710,9 +660,7 @@ const PurchaseVoucher: React.FC = () => {
                         <input
                           type="text"
                           value={line.unit}
-                          onChange={(e) =>
-                            updateLine(line.id, "unit", e.target.value)
-                          }
+                          onChange={(e) => updateLine(line.id, "unit", e.target.value)}
                           className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-center"
                         />
                       </td>
@@ -726,11 +674,7 @@ const PurchaseVoucher: React.FC = () => {
                             step={0.01}
                             value={line.rate}
                             onChange={(e) =>
-                              updateLine(
-                                line.id,
-                                "rate",
-                                parseFloat(e.target.value) || 0,
-                              )
+                              updateLine(line.id, "rate", parseFloat(e.target.value) || 0)
                             }
                             className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
                           />
@@ -768,13 +712,7 @@ const PurchaseVoucher: React.FC = () => {
                         <input
                           type="checkbox"
                           checked={line.isTaxable}
-                          onChange={(e) =>
-                            updateLine(
-                              line.id,
-                              "isTaxable",
-                              e.target.checked,
-                            )
-                          }
+                          onChange={(e) => updateLine(line.id, "isTaxable", e.target.checked)}
                           className="h-4 w-4 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]/20"
                         />
                       </td>
@@ -789,9 +727,7 @@ const PurchaseVoucher: React.FC = () => {
                         <input
                           type="text"
                           value={line.batchNo ?? ""}
-                          onChange={(e) =>
-                            updateLine(line.id, "batchNo", e.target.value)
-                          }
+                          onChange={(e) => updateLine(line.id, "batchNo", e.target.value)}
                           placeholder="Batch #"
                           className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                         />
@@ -816,7 +752,6 @@ const PurchaseVoucher: React.FC = () => {
             {/* Totals + TDS */}
             <div className="border-t border-gray-200 px-4 py-4">
               <div className="flex flex-col lg:flex-row gap-6 justify-between">
-
                 {/* TDS Section */}
                 <div className="flex-1 max-w-md">
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
@@ -834,9 +769,7 @@ const PurchaseVoucher: React.FC = () => {
                           }}
                           className="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500/20"
                         />
-                        <span className="text-[11px] font-medium text-amber-800">
-                          Enable TDS
-                        </span>
+                        <span className="text-[11px] font-medium text-amber-800">Enable TDS</span>
                       </label>
                     </div>
 
@@ -848,9 +781,7 @@ const PurchaseVoucher: React.FC = () => {
                           </label>
                           <select
                             value={tdsSection}
-                            onChange={(e) =>
-                              handleTdsSectionChange(e.target.value)
-                            }
+                            onChange={(e) => handleTdsSectionChange(e.target.value)}
                             className="h-8 px-2.5 text-[12px] border border-amber-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 w-full"
                           >
                             <option value="">— Select Section —</option>
@@ -875,11 +806,7 @@ const PurchaseVoucher: React.FC = () => {
                                 max={100}
                                 step={0.1}
                                 value={tdsRate}
-                                onChange={(e) =>
-                                  setTdsRate(
-                                    parseFloat(e.target.value) || 0,
-                                  )
-                                }
+                                onChange={(e) => setTdsRate(parseFloat(e.target.value) || 0)}
                                 className="h-8 px-2.5 text-[12px] border border-amber-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 w-full text-right"
                               />
                             </div>
@@ -890,8 +817,7 @@ const PurchaseVoucher: React.FC = () => {
                           <div className="mt-2 bg-white border border-amber-200 rounded p-2 space-y-1 text-[11px]">
                             <div className="flex justify-between text-amber-700">
                               <span>
-                                Section:{" "}
-                                {/* Access sectionCode not sectionId */}
+                                Section: {/* Access sectionCode not sectionId */}
                                 {currentTdsResult.sectionCode ?? "—"}
                               </span>
                               <span>{currentTdsResult.rate}%</span>
@@ -909,9 +835,7 @@ const PurchaseVoucher: React.FC = () => {
                             )}
                             <div className="flex justify-between font-semibold text-amber-800 border-t border-amber-100 pt-1">
                               <span>TDS Amount</span>
-                              <span className="font-mono">
-                                {money(currentTdsResult.tdsAmount)}
-                              </span>
+                              <span className="font-mono">{money(currentTdsResult.tdsAmount)}</span>
                             </div>
                             <div className="flex justify-between text-amber-700">
                               <span>Net Payable</span>
@@ -934,9 +858,7 @@ const PurchaseVoucher: React.FC = () => {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Line Discount</span>
-                    <span className="font-mono">
-                      ({money(totals.lineDiscount)})
-                    </span>
+                    <span className="font-mono">({money(totals.lineDiscount)})</span>
                   </div>
 
                   {/* Bill Discount — plain input; no className on AmountInput component */}
@@ -950,9 +872,7 @@ const PurchaseVoucher: React.FC = () => {
                         step={0.01}
                         value={billDiscountPercent}
                         onChange={(e) => {
-                          setBillDiscountPercent(
-                            parseFloat(e.target.value) || 0,
-                          );
+                          setBillDiscountPercent(parseFloat(e.target.value) || 0);
                           setBillDiscountAmount(0);
                         }}
                         className="h-7 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
@@ -976,9 +896,7 @@ const PurchaseVoucher: React.FC = () => {
                   {enableTds && totals.tdsAmount > 0 && (
                     <div className="flex justify-between text-amber-700">
                       <span>TDS Deduction</span>
-                      <span className="font-mono">
-                        ({money(totals.tdsAmount)})
-                      </span>
+                      <span className="font-mono">({money(totals.tdsAmount)})</span>
                     </div>
                   )}
 
@@ -991,17 +909,13 @@ const PurchaseVoucher: React.FC = () => {
 
                   <div className="flex justify-between font-bold text-gray-800 border-t border-gray-200 pt-2 text-[13px]">
                     <span>Grand Total</span>
-                    <span className="font-mono text-[#1557b0]">
-                      {money(totals.grandTotal)}
-                    </span>
+                    <span className="font-mono text-[#1557b0]">{money(totals.grandTotal)}</span>
                   </div>
 
                   {enableTds && totals.tdsAmount > 0 && (
                     <div className="flex justify-between font-semibold text-amber-700 border-t border-amber-100 pt-1.5">
                       <span>Net Payable (after TDS)</span>
-                      <span className="font-mono">
-                        {money(totals.netPayable)}
-                      </span>
+                      <span className="font-mono">{money(totals.netPayable)}</span>
                     </div>
                   )}
                 </div>
@@ -1111,10 +1025,7 @@ const PurchaseVoucher: React.FC = () => {
                 <tbody className="divide-y divide-gray-100">
                   {filteredInvoices.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={7}
-                        className="px-3 py-12 text-center text-[12px] text-gray-400"
-                      >
+                      <td colSpan={7} className="px-3 py-12 text-center text-[12px] text-gray-400">
                         No purchase invoices found.
                       </td>
                     </tr>
@@ -1147,9 +1058,7 @@ const PurchaseVoucher: React.FC = () => {
                           )}
                         </td>
                         <td className="px-3 py-2.5 text-center">
-                          <Badge variant={getStatusVariant(inv.status)}>
-                            {inv.status}
-                          </Badge>
+                          <Badge variant={getStatusVariant(inv.status)}>{inv.status}</Badge>
                         </td>
                         <td
                           className="px-3 py-2.5 text-center"
@@ -1222,9 +1131,7 @@ const PurchaseVoucher: React.FC = () => {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Payment Mode
                   </p>
-                  <p className="text-gray-800 capitalize">
-                    {selectedInvoice.paymentMode || "—"}
-                  </p>
+                  <p className="text-gray-800 capitalize">{selectedInvoice.paymentMode || "—"}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">

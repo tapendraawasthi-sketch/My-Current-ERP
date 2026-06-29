@@ -1,18 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
-import { 
-  ArrowLeftRight, 
-  ArrowUpFromLine, 
-  ArrowDownToLine, 
-  BookOpen, 
-  FileText, 
-  ShoppingCart, 
-  MoreHorizontal, 
-  ToggleLeft, 
-  Calendar, 
-  Wand2, 
-  Info, 
-  Check, 
-  Settings 
+import {
+  ArrowLeftRight,
+  ArrowUpFromLine,
+  ArrowDownToLine,
+  BookOpen,
+  FileText,
+  ShoppingCart,
+  MoreHorizontal,
+  ToggleLeft,
+  Calendar,
+  Wand2,
+  Info,
+  Check,
+  Settings,
 } from "lucide-react";
 
 interface VoucherRightBarProps {
@@ -42,7 +42,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
   onAccept,
   onConfigure,
   onChangeMode,
-  disabled
+  disabled,
 }) => {
   const [showOtherMenu, setShowOtherMenu] = useState(false);
   const otherMenuRef = useRef<HTMLDivElement>(null);
@@ -55,18 +55,18 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const getVoucherTypeIcon = (type: string) => {
     const icons: Record<string, React.ReactNode> = {
-      "contra": <ArrowLeftRight className="w-4 h-4" />,
-      "payment": <ArrowUpFromLine className="w-4 h-4" />,
-      "receipt": <ArrowDownToLine className="w-4 h-4" />,
-      "journal": <BookOpen className="w-4 h-4" />,
+      contra: <ArrowLeftRight className="w-4 h-4" />,
+      payment: <ArrowUpFromLine className="w-4 h-4" />,
+      receipt: <ArrowDownToLine className="w-4 h-4" />,
+      journal: <BookOpen className="w-4 h-4" />,
       "sales-invoice": <FileText className="w-4 h-4" />,
       "purchase-invoice": <ShoppingCart className="w-4 h-4" />,
     };
@@ -74,8 +74,9 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
   };
 
   const getButtonClasses = (isActive: boolean, isHighlighted: boolean = false) => {
-    let base = "w-full py-1 px-2 text-xs flex flex-col items-center justify-center transition-colors ";
-    
+    let base =
+      "w-full py-1 px-2 text-xs flex flex-col items-center justify-center transition-colors ";
+
     if (isActive) {
       base += "bg-[#1557b0] text-white ";
     } else if (isHighlighted) {
@@ -83,11 +84,11 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
     } else {
       base += "bg-[#1e2433] text-white hover:bg-[#273148] ";
     }
-    
+
     if (disabled) {
       base += "opacity-50 pointer-events-none ";
     }
-    
+
     return base;
   };
 
@@ -105,7 +106,9 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
   ];
 
   return (
-    <div className={`fixed top-1/2 right-0 transform -translate-y-1/2 w-24 bg-[#1e2433] text-white z-40 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div
+      className={`fixed top-1/2 right-0 transform -translate-y-1/2 w-24 bg-[#1e2433] text-white z-40 ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+    >
       <div className="flex flex-col items-center py-2">
         {/* Date [F2] */}
         <button className={getButtonClasses(false)}>
@@ -123,7 +126,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         <div className="w-full h-px bg-[#2d3748] my-1"></div>
 
         {/* Contra [F4] */}
-        <button 
+        <button
           className={getButtonClasses(currentVoucherType === "contra")}
           onClick={() => onChangeVoucherType("contra")}
         >
@@ -132,7 +135,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Payment [F5] */}
-        <button 
+        <button
           className={getButtonClasses(currentVoucherType === "payment")}
           onClick={() => onChangeVoucherType("payment")}
         >
@@ -141,7 +144,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Receipt [F6] */}
-        <button 
+        <button
           className={getButtonClasses(currentVoucherType === "receipt")}
           onClick={() => onChangeVoucherType("receipt")}
         >
@@ -150,8 +153,10 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Journal [F7] */}
-        <button 
-          className={getButtonClasses(currentVoucherType === "journal" || currentVoucherType === "journal-voucher")}
+        <button
+          className={getButtonClasses(
+            currentVoucherType === "journal" || currentVoucherType === "journal-voucher",
+          )}
           onClick={() => onChangeVoucherType("journal")}
         >
           <span className="text-[10px] text-[#d97706]">F7</span>
@@ -159,7 +164,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Sales [F8] */}
-        <button 
+        <button
           className={getButtonClasses(currentVoucherType === "sales-invoice")}
           onClick={() => onChangeVoucherType("sales-invoice")}
         >
@@ -168,7 +173,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Purchase [F9] */}
-        <button 
+        <button
           className={getButtonClasses(currentVoucherType === "purchase-invoice")}
           onClick={() => onChangeVoucherType("purchase-invoice")}
         >
@@ -178,7 +183,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
 
         {/* Other Vouchers [F10] */}
         <div className="relative" ref={otherMenuRef}>
-          <button 
+          <button
             className={getButtonClasses(false)}
             onClick={() => setShowOtherMenu(!showOtherMenu)}
           >
@@ -192,7 +197,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
               {otherVoucherOptions.map((option, index) => (
                 <button
                   key={index}
-                  className={`w-full px-3 py-2 text-left hover:bg-[#273148] flex justify-between items-center ${currentVoucherType === option.type ? 'bg-[#1557b0]' : ''}`}
+                  className={`w-full px-3 py-2 text-left hover:bg-[#273148] flex justify-between items-center ${currentVoucherType === option.type ? "bg-[#1557b0]" : ""}`}
                   onClick={() => {
                     onChangeVoucherType(option.type);
                     setShowOtherMenu(false);
@@ -210,46 +215,31 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         <div className="w-full h-px bg-[#2d3748] my-1"></div>
 
         {/* Change Mode [Ctrl+H] */}
-        <button 
-          className={getButtonClasses(false)}
-          onClick={onChangeMode}
-        >
+        <button className={getButtonClasses(false)} onClick={onChangeMode}>
           <span className="text-[10px] text-[#d97706]">Ctrl+H</span>
           <span>Change Mode</span>
         </button>
 
         {/* Optional [Ctrl+L] */}
-        <button 
-          className={getButtonClasses(false, isOptional)}
-          onClick={onToggleOptional}
-        >
+        <button className={getButtonClasses(false, isOptional)} onClick={onToggleOptional}>
           <span className="text-[10px] text-[#d97706]">Ctrl+L</span>
           <span>Optional</span>
         </button>
 
         {/* Post-Dated [Ctrl+T] */}
-        <button 
-          className={getButtonClasses(false, isPostDated)}
-          onClick={onTogglePostDated}
-        >
+        <button className={getButtonClasses(false, isPostDated)} onClick={onTogglePostDated}>
           <span className="text-[10px] text-[#d97706]">Ctrl+T</span>
           <span>Post-Dated</span>
         </button>
 
         {/* Autofill [Ctrl+F] */}
-        <button 
-          className={getButtonClasses(false)}
-          onClick={onAutofill}
-        >
+        <button className={getButtonClasses(false)} onClick={onAutofill}>
           <span className="text-[10px] text-[#d97706]">Ctrl+F</span>
           <span>Autofill</span>
         </button>
 
         {/* More Details [Ctrl+I] */}
-        <button 
-          className={getButtonClasses(false)}
-          onClick={onMoreDetails}
-        >
+        <button className={getButtonClasses(false)} onClick={onMoreDetails}>
           <span className="text-[10px] text-[#d97706]">Ctrl+I</span>
           <span>More Details</span>
         </button>
@@ -258,7 +248,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         <div className="w-full h-px bg-[#2d3748] my-1"></div>
 
         {/* Accept [Ctrl+A] */}
-        <button 
+        <button
           className="w-full py-1 px-2 text-xs flex flex-col items-center justify-center bg-[#1557b0] text-white hover:bg-[#0f4a96] transition-colors"
           onClick={onAccept}
         >
@@ -267,10 +257,7 @@ const VoucherRightBar: React.FC<VoucherRightBarProps> = ({
         </button>
 
         {/* Configure [F12] */}
-        <button 
-          className={getButtonClasses(false)}
-          onClick={onConfigure}
-        >
+        <button className={getButtonClasses(false)} onClick={onConfigure}>
           <span className="text-[10px] text-[#d97706]">F12</span>
           <span>Configure</span>
         </button>

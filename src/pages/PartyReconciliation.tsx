@@ -114,15 +114,24 @@ function isCustomerAccount(account: any): boolean {
 
 function isVendorAccount(account: any): boolean {
   const group = lower(account?.group ?? account?.groupName ?? account?.parentName);
-  return group.includes("creditor") || group.includes("sundry creditor") || group.includes("vendor") || group.includes("supplier");
+  return (
+    group.includes("creditor") ||
+    group.includes("sundry creditor") ||
+    group.includes("vendor") ||
+    group.includes("supplier")
+  );
 }
 
 function invoicePartyId(inv: any): string {
-  return text(inv?.partyId ?? inv?.accountId ?? inv?.ledgerId ?? inv?.customerId ?? inv?.supplierId);
+  return text(
+    inv?.partyId ?? inv?.accountId ?? inv?.ledgerId ?? inv?.customerId ?? inv?.supplierId,
+  );
 }
 
 function invoicePartyName(inv: any): string {
-  return text(inv?.partyName ?? inv?.accountName ?? inv?.ledgerName ?? inv?.customerName ?? inv?.supplierName);
+  return text(
+    inv?.partyName ?? inv?.accountName ?? inv?.ledgerName ?? inv?.customerName ?? inv?.supplierName,
+  );
 }
 
 function invoiceNo(inv: any): string {
@@ -155,7 +164,9 @@ function statusForInvoice(inv: any): "unpaid" | "partial" | "paid" {
 
 function computeOutstanding(accounts: any[], vouchers: any[], invoices: any[]): PartyOutstanding[] {
   try {
-    const partyAccounts = (accounts ?? []).filter((acc) => isCustomerAccount(acc) || isVendorAccount(acc));
+    const partyAccounts = (accounts ?? []).filter(
+      (acc) => isCustomerAccount(acc) || isVendorAccount(acc),
+    );
 
     const map = new Map<string, PartyOutstanding>();
 
@@ -187,9 +198,7 @@ function computeOutstanding(accounts: any[], vouchers: any[], invoices: any[]): 
       let party = pId ? map.get(pId) : undefined;
 
       if (!party && pName) {
-        party = Array.from(map.values()).find(
-          (x) => lower(x.partyName) === lower(pName),
-        );
+        party = Array.from(map.values()).find((x) => lower(x.partyName) === lower(pName));
       }
 
       if (!party && (pId || pName)) {
@@ -216,7 +225,9 @@ function computeOutstanding(accounts: any[], vouchers: any[], invoices: any[]): 
       const paidAmount = invoicePaid(inv);
       const balanceAmount = invoiceBalance(inv);
 
-      const baseDate = text(inv?.date ?? inv?.invoiceDate ?? new Date().toISOString().split("T")[0]);
+      const baseDate = text(
+        inv?.date ?? inv?.invoiceDate ?? new Date().toISOString().split("T")[0],
+      );
       const dueDate = text(inv?.dueDate) || addDays(baseDate, party.creditDays);
       const daysOverdue = Math.max(0, diffDays(dueDate, new Date()));
       const isOverdue = balanceAmount > 0 && daysOverdue > 0;
@@ -248,9 +259,7 @@ function computeOutstanding(accounts: any[], vouchers: any[], invoices: any[]): 
         let party = accountId ? map.get(accountId) : undefined;
 
         if (!party && accountName) {
-          party = Array.from(map.values()).find(
-            (x) => lower(x.partyName) === lower(accountName),
-          );
+          party = Array.from(map.values()).find((x) => lower(x.partyName) === lower(accountName));
         }
 
         if (!party) continue;
@@ -336,9 +345,11 @@ export default function PartyReconciliation() {
   const [selectedParty, setSelectedParty] = useState("");
   const [partyType, setPartyType] = useState<"ALL" | "customer" | "vendor">("ALL");
   const [searchText, setSearchText] = useState("");
-  const [activeTab, setActiveTab] = useState<"outstanding" | "reconcile" | "statement">("outstanding");
-  const [reconciliationEntries, setReconciliationEntries] = useState<ReconciliationEntry[]>(
-    () => readReconciliation(),
+  const [activeTab, setActiveTab] = useState<"outstanding" | "reconcile" | "statement">(
+    "outstanding",
+  );
+  const [reconciliationEntries, setReconciliationEntries] = useState<ReconciliationEntry[]>(() =>
+    readReconciliation(),
   );
   const [showAddEntry, setShowAddEntry] = useState(false);
   const [newEntry, setNewEntry] = useState<Partial<ReconciliationEntry>>({});
@@ -356,7 +367,11 @@ export default function PartyReconciliation() {
 
     return outstanding.filter((party) => {
       if (partyType !== "ALL" && party.partyType !== partyType) return false;
-      if (q && !party.partyName.toLowerCase().includes(q) && !party.panNo.toLowerCase().includes(q)) {
+      if (
+        q &&
+        !party.partyName.toLowerCase().includes(q) &&
+        !party.panNo.toLowerCase().includes(q)
+      ) {
         return false;
       }
       return true;
@@ -666,8 +681,7 @@ export default function PartyReconciliation() {
                             party.netBalance >= 0 ? "text-[#1557b0]" : "text-orange-700"
                           }`}
                         >
-                          {money(Math.abs(party.netBalance))}{" "}
-                          {party.netBalance >= 0 ? "Dr" : "Cr"}
+                          {money(Math.abs(party.netBalance))} {party.netBalance >= 0 ? "Dr" : "Cr"}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] text-right">
                           {party.overdueAmount > 0 ? (
@@ -722,7 +736,10 @@ export default function PartyReconciliation() {
                               <tbody>
                                 {party.invoices.length === 0 ? (
                                   <tr>
-                                    <td colSpan={8} className="px-3 py-4 text-center text-[12px] text-gray-400">
+                                    <td
+                                      colSpan={8}
+                                      className="px-3 py-4 text-center text-[12px] text-gray-400"
+                                    >
                                       No invoice breakdown available
                                     </td>
                                   </tr>
@@ -731,14 +748,22 @@ export default function PartyReconciliation() {
                                     <tr
                                       key={inv.invoiceId}
                                       className={`border-b border-gray-100 ${
-                                        inv.isOverdue ? "bg-red-50" : inv.status === "paid" ? "opacity-60" : ""
+                                        inv.isOverdue
+                                          ? "bg-red-50"
+                                          : inv.status === "paid"
+                                            ? "opacity-60"
+                                            : ""
                                       }`}
                                     >
                                       <td className="px-3 py-2 text-[12px] text-gray-700 font-mono">
                                         {inv.invoiceNo}
                                       </td>
-                                      <td className="px-3 py-2 text-[12px] text-gray-700">{inv.date}</td>
-                                      <td className="px-3 py-2 text-[12px] text-gray-700">{inv.dueDate}</td>
+                                      <td className="px-3 py-2 text-[12px] text-gray-700">
+                                        {inv.date}
+                                      </td>
+                                      <td className="px-3 py-2 text-[12px] text-gray-700">
+                                        {inv.dueDate}
+                                      </td>
                                       <td className="px-3 py-2 text-[12px] text-gray-700 font-mono text-right">
                                         {money(inv.originalAmount)}
                                       </td>
@@ -826,7 +851,9 @@ export default function PartyReconciliation() {
                   type="number"
                   placeholder="Party Balance"
                   value={newEntry.partyBalance ?? ""}
-                  onChange={(e) => setNewEntry({ ...newEntry, partyBalance: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setNewEntry({ ...newEntry, partyBalance: Number(e.target.value) })
+                  }
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right"
                 />
 
@@ -870,8 +897,20 @@ export default function PartyReconciliation() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  {["Date", "Party", "Description", "Our Balance", "Party Balance", "Difference", "Status", "Notes"].map((h) => (
-                    <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                  {[
+                    "Date",
+                    "Party",
+                    "Description",
+                    "Our Balance",
+                    "Party Balance",
+                    "Difference",
+                    "Status",
+                    "Notes",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                    >
                       {h}
                     </th>
                   ))}
@@ -890,11 +929,21 @@ export default function PartyReconciliation() {
                     return (
                       <tr key={entry.id} className="border-b border-gray-100">
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{entry.date}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{party?.partyName || entry.partyId}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{entry.description}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">{money(entry.ourBalance)}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">{money(entry.partyBalance)}</td>
-                        <td className={`px-3 py-2.5 text-[12px] font-mono text-right ${Math.abs(entry.difference) > 0 ? "text-red-700 font-semibold" : "text-green-700"}`}>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          {party?.partyName || entry.partyId}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          {entry.description}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
+                          {money(entry.ourBalance)}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
+                          {money(entry.partyBalance)}
+                        </td>
+                        <td
+                          className={`px-3 py-2.5 text-[12px] font-mono text-right ${Math.abs(entry.difference) > 0 ? "text-red-700 font-semibold" : "text-green-700"}`}
+                        >
                           {money(entry.difference)}
                         </td>
                         <td className="px-3 py-2.5">{reconciliationStatusBadge(entry.status)}</td>
@@ -972,11 +1021,16 @@ export default function PartyReconciliation() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    {["Date", "Type", "No", "Description", "Debit", "Credit", "Balance"].map((h) => (
-                      <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
-                        {h}
-                      </th>
-                    ))}
+                    {["Date", "Type", "No", "Description", "Debit", "Credit", "Balance"].map(
+                      (h) => (
+                        <th
+                          key={h}
+                          className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                        >
+                          {h}
+                        </th>
+                      ),
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -991,11 +1045,19 @@ export default function PartyReconciliation() {
                       <tr key={row.id} className="border-b border-gray-100">
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.date}</td>
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.type}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{row.no}</td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">
+                          {row.no}
+                        </td>
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.description}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">{row.debit ? money(row.debit) : "—"}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">{row.credit ? money(row.credit) : "—"}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">{money(row.balance)}</td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
+                          {row.debit ? money(row.debit) : "—"}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
+                          {row.credit ? money(row.credit) : "—"}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
+                          {money(row.balance)}
+                        </td>
                       </tr>
                     ))
                   )}
@@ -1005,7 +1067,9 @@ export default function PartyReconciliation() {
               <div className="mt-4 text-right text-[13px] font-semibold text-gray-800">
                 Closing Balance:{" "}
                 <span className="font-mono">
-                  {money(statementRows.length ? statementRows[statementRows.length - 1].balance : 0)}
+                  {money(
+                    statementRows.length ? statementRows[statementRows.length - 1].balance : 0,
+                  )}
                 </span>
               </div>
             </>

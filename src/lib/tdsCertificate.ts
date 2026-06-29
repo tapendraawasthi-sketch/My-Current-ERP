@@ -12,7 +12,7 @@ export function generateTDSCertificate(
     tdsType: string;
     tdsRate: number;
     tdsAmount: number;
-  }>
+  }>,
 ): Blob {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -41,11 +41,16 @@ export function generateTDSCertificate(
     startY: 60,
     head: [["#", "Period", "Nature of Payment", "Rate", "Gross Amount", "TDS Amount"]],
     body: tableData,
-    foot: [[
-      "", "", "", "Total",
-      `Rs. ${formatNumber(tdsEntries.reduce((s, e) => s + e.grossAmount, 0))}`,
-      `Rs. ${formatNumber(tdsEntries.reduce((s, e) => s + e.tdsAmount, 0))}`,
-    ]],
+    foot: [
+      [
+        "",
+        "",
+        "",
+        "Total",
+        `Rs. ${formatNumber(tdsEntries.reduce((s, e) => s + e.grossAmount, 0))}`,
+        `Rs. ${formatNumber(tdsEntries.reduce((s, e) => s + e.tdsAmount, 0))}`,
+      ],
+    ],
     theme: "grid",
     headStyles: { fillColor: [61, 107, 37], textColor: 255, fontSize: 8 },
     bodyStyles: { fontSize: 8 },

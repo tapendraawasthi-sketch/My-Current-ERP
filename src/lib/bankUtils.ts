@@ -33,18 +33,29 @@ export interface MatchResult {
 
 export function parseCSVBankStatement(
   csvText: string,
-  colMapping?: { date: number; description: number; debit: number; credit: number; balance: number }
+  colMapping?: {
+    date: number;
+    description: number;
+    debit: number;
+    credit: number;
+    balance: number;
+  },
 ): BankTransaction[] {
   const mapping = colMapping || { date: 0, description: 1, debit: 2, credit: 3, balance: 4 };
-  const lines = csvText.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = csvText
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
   if (lines.length < 2) return [];
 
   const transactions: BankTransaction[] = [];
-  const requiredCols = Math.max(mapping.date, mapping.description, mapping.debit, mapping.credit, mapping.balance) + 1;
+  const requiredCols =
+    Math.max(mapping.date, mapping.description, mapping.debit, mapping.credit, mapping.balance) + 1;
   for (let i = 1; i < lines.length; i++) {
     // Parse CSV properly: respect quoted fields that may contain commas
-    const cols = (lines[i].match(/("[^"]*"|[^,]+)(?=\s*,|\s*$)/g) || [])
-      .map((c) => c.replace(/^"|"$/g, "").trim());
+    const cols = (lines[i].match(/("[^"]*"|[^,]+)(?=\s*,|\s*$)/g) || []).map((c) =>
+      c.replace(/^"|"$/g, "").trim(),
+    );
     if (cols.length < requiredCols) continue;
     transactions.push({
       date: cols[mapping.date] || "",
@@ -66,7 +77,7 @@ export function parseCSVBankStatement(
  */
 export function autoMatchStatements(
   statementRows: BankTransaction[],
-  bookEntries: BookEntry[]
+  bookEntries: BookEntry[],
 ): MatchResult[] {
   const usedBookIds = new Set<string>();
 
@@ -87,13 +98,13 @@ export function autoMatchStatements(
 
       // Parse date difference in days
       const daysDiff = Math.abs(
-        (new Date(entry.date).getTime() - new Date(stmt.date).getTime()) / 86_400_000
+        (new Date(entry.date).getTime() - new Date(stmt.date).getTime()) / 86_400_000,
       );
 
       let confidence = 0;
       if (amountMatch && exactDateMatch) confidence = 0.95;
       else if (amountMatch && daysDiff <= 3) confidence = 0.75;
-      else if (nearAmountMatch && exactDateMatch) confidence = 0.50;
+      else if (nearAmountMatch && exactDateMatch) confidence = 0.5;
 
       if (confidence > bestConfidence) {
         bestConfidence = confidence;
@@ -101,7 +112,7 @@ export function autoMatchStatements(
       }
     }
 
-    if (bestMatch && bestConfidence >= 0.50) {
+    if (bestMatch && bestConfidence >= 0.5) {
       usedBookIds.add(bestMatch.id);
       return {
         statementId: stmt.reference || `${stmt.date}-${stmtAmount}`,
@@ -130,7 +141,7 @@ export function autoMatchStatements(
 // Legacy helper — kept for backward compatibility
 export function matchBankTransactions(
   bankTransactions: BankTransaction[],
-  voucherLines: any[]
+  voucherLines: any[],
 ): { matched: any[]; unmatched: any[] } {
   const matched: any[] = [];
   const unmatched: any[] = [];
@@ -138,7 +149,10 @@ export function matchBankTransactions(
   for (const bt of bankTransactions) {
     const amount = bt.credit || bt.debit;
     const match = voucherLines.find(
-      (vl) => !usedVoucherIds.has(vl.id) && Math.abs((vl.debit || vl.credit) - amount) < 0.01 && vl.date === bt.date
+      (vl) =>
+        !usedVoucherIds.has(vl.id) &&
+        Math.abs((vl.debit || vl.credit) - amount) < 0.01 &&
+        vl.date === bt.date,
     );
     if (match) {
       usedVoucherIds.add(match.id);

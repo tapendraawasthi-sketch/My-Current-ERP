@@ -3,7 +3,11 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherStatus } from "../lib/types";
-import { buildAccountTree, computeLedgerTotals, computeGroupTotals } from "../lib/reportingHierarchy";
+import {
+  buildAccountTree,
+  computeLedgerTotals,
+  computeGroupTotals,
+} from "../lib/reportingHierarchy";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
@@ -11,14 +15,14 @@ import { useScreenF12 } from "../hooks/useF12Config";
 const GroupSummaryReport: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("group-summary");
-  
+
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
   const [expandedGroups, setExpandedGroups] = useState<Map<string, boolean>>(new Map());
-  
+
   // Pending states for options modal
   const [pendingGroupId, setPendingGroupId] = useState(selectedGroupId);
   const [pendingStart, setPendingStart] = useState(startDate);
@@ -36,7 +40,7 @@ const GroupSummaryReport: React.FC = () => {
 
   // Get all groups for dropdown
   const groups = useMemo(() => {
-    return (accounts || []).filter(acc => acc.isGroup);
+    return (accounts || []).filter((acc) => acc.isGroup);
   }, [accounts]);
 
   // Set default group if not selected
@@ -50,18 +54,16 @@ const GroupSummaryReport: React.FC = () => {
   // Compute ledger totals for the selected date range
   const ledgerTotals = useMemo(() => {
     if (!vouchers || !accounts) return new Map();
-    
-    const relevantVouchers = vouchers.filter(v => 
-      v.status === "posted" && 
-      v.date >= startDate && 
-      v.date <= endDate
+
+    const relevantVouchers = vouchers.filter(
+      (v) => v.status === "posted" && v.date >= startDate && v.date <= endDate,
     );
 
     // Calculate period totals manually since computeLedgerTotals might not be sufficient
     const totals = new Map<string, any>();
-    
+
     // Initialize with opening balances
-    accounts.forEach(acc => {
+    accounts.forEach((acc) => {
       if (!acc.isGroup) {
         const openingBalance = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
         totals.set(acc.id, {
@@ -69,19 +71,20 @@ const GroupSummaryReport: React.FC = () => {
           openingBalance,
           periodDebit: 0,
           periodCredit: 0,
-          closingBalance: openingBalance
+          closingBalance: openingBalance,
         });
       }
     });
 
     // Calculate period movements
-    relevantVouchers.forEach(voucher => {
-      voucher.lines.forEach(line => {
+    relevantVouchers.forEach((voucher) => {
+      voucher.lines.forEach((line) => {
         if (totals.has(line.accountId)) {
           const current = totals.get(line.accountId);
           current.periodDebit += line.debit || 0;
           current.periodCredit += line.credit || 0;
-          current.closingBalance = current.openingBalance + current.periodDebit - current.periodCredit;
+          current.closingBalance =
+            current.openingBalance + current.periodDebit - current.periodCredit;
           totals.set(line.accountId, current);
         }
       });
@@ -99,7 +102,7 @@ const GroupSummaryReport: React.FC = () => {
 
   // Function to recursively build rows for the selected group
   const buildRows = (groupId: string, level: number = 0): any[] => {
-    const group = accounts.find(acc => acc.id === groupId);
+    const group = accounts.find((acc) => acc.id === groupId);
     if (!group || !group.isGroup) return [];
 
     // Create row for the group itself
@@ -109,11 +112,11 @@ const GroupSummaryReport: React.FC = () => {
       type: "group",
       level,
       isGroup: true,
-      isExpandable: true
+      isExpandable: true,
     };
 
     // Get children of this group
-    const children = (accounts || []).filter(acc => acc.parentId === groupId);
+    const children = (accounts || []).filter((acc) => acc.parentId === groupId);
 
     // Calculate totals for this group based on its children
     let totalOpening = 0;
@@ -124,7 +127,7 @@ const GroupSummaryReport: React.FC = () => {
     const childRows: any[] = [];
     const isExpanded = expandedGroups.get(groupId) !== false;
 
-    children.forEach(child => {
+    children.forEach((child) => {
       if (child.isGroup) {
         // Handle subgroup
         const subgroupRow = {
@@ -133,7 +136,7 @@ const GroupSummaryReport: React.FC = () => {
           type: "subgroup",
           level: level + 1,
           isGroup: true,
-          isExpandable: true
+          isExpandable: true,
         };
 
         // Calculate subgroup totals
@@ -142,8 +145,8 @@ const GroupSummaryReport: React.FC = () => {
         let subTotalCredit = 0;
         let subTotalClosing = 0;
 
-        const subChildren = (accounts || []).filter(acc => acc.parentId === child.id);
-        subChildren.forEach(ledger => {
+        const subChildren = (accounts || []).filter((acc) => acc.parentId === child.id);
+        subChildren.forEach((ledger) => {
           if (!ledger.isGroup) {
             const ledgerTotal = ledgerTotals.get(ledger.id);
             if (ledgerTotal) {
@@ -169,8 +172,8 @@ const GroupSummaryReport: React.FC = () => {
 
         // If subgroup is expanded, add its ledgers
         if (isExpanded && expandedGroups.get(child.id) !== false) {
-          const subChildren = (accounts || []).filter(acc => acc.parentId === child.id);
-          subChildren.forEach(ledger => {
+          const subChildren = (accounts || []).filter((acc) => acc.parentId === child.id);
+          subChildren.forEach((ledger) => {
             if (!ledger.isGroup) {
               const ledgerTotal = ledgerTotals.get(ledger.id);
               if (ledgerTotal) {
@@ -184,7 +187,7 @@ const GroupSummaryReport: React.FC = () => {
                   opening: ledgerTotal.openingBalance,
                   debit: ledgerTotal.periodDebit,
                   credit: ledgerTotal.periodCredit,
-                  closing: ledgerTotal.closingBalance
+                  closing: ledgerTotal.closingBalance,
                 };
                 childRows.push(ledgerRow);
 
@@ -211,7 +214,7 @@ const GroupSummaryReport: React.FC = () => {
             opening: ledgerTotal.openingBalance,
             debit: ledgerTotal.periodDebit,
             credit: ledgerTotal.periodCredit,
-            closing: ledgerTotal.closingBalance
+            closing: ledgerTotal.closingBalance,
           };
           childRows.push(ledgerRow);
 
@@ -246,7 +249,7 @@ const GroupSummaryReport: React.FC = () => {
 
   // Toggle group expansion
   const toggleGroup = (groupId: string) => {
-    setExpandedGroups(prev => {
+    setExpandedGroups((prev) => {
       const newMap = new Map(prev);
       newMap.set(groupId, !prev.get(groupId));
       return newMap;
@@ -266,42 +269,41 @@ const GroupSummaryReport: React.FC = () => {
         setPendingEnd(endDate);
         setOptionsOpen(true);
       }}
-      actionBarButtons={[
-        { label: "Print" },
-        { label: "Export" }
-      ]}
+      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
       toolbarLeft={
         <>
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            Select Group: 
-            <select 
-              value={selectedGroupId} 
-              onChange={e => setSelectedGroupId(e.target.value)}
+            Select Group:
+            <select
+              value={selectedGroupId}
+              onChange={(e) => setSelectedGroupId(e.target.value)}
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[220px]"
             >
-              {groups.map(group => (
-                <option key={group.id} value={group.id}>{group.name}</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
               ))}
             </select>
           </label>
-          
+
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            From: 
-            <input 
-              type="date" 
-              value={startDate} 
-              onChange={e => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From:
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            To: 
-            <input 
-              type="date" 
-              value={endDate} 
-              onChange={e => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To:
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
         </>
@@ -311,30 +313,41 @@ const GroupSummaryReport: React.FC = () => {
         <table className="w-full text-left whitespace-nowrap">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Name</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Opening</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Debit</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Credit</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Closing</th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Account Name
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                Opening
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                Debit
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                Credit
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                Closing
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {rows.map((row, index) => {
-              const paddingLeft = `${(row.level * 20) + 12}px`; // 12px base padding
+              const paddingLeft = `${row.level * 20 + 12}px`; // 12px base padding
               const isGroup = row.isGroup;
               const isExpandable = row.isExpandable;
-              
+
               let rowStyle = "bg-white hover:bg-gray-50 text-gray-700";
-              if (row.type === "group") rowStyle = "bg-[#f1f5f9] font-semibold text-gray-800 border-y border-gray-200";
+              if (row.type === "group")
+                rowStyle = "bg-[#f1f5f9] font-semibold text-gray-800 border-y border-gray-200";
               if (row.type === "subgroup") rowStyle = "bg-[#f8fafc] font-medium text-gray-800";
-              
+
               return (
-                <tr 
-                  key={row.id} 
+                <tr
+                  key={row.id}
                   className={`transition-colors ${rowStyle} ${isExpandable ? "cursor-pointer" : ""}`}
                   onClick={() => isExpandable && toggleGroup(row.id)}
                 >
-                  <td 
+                  <td
                     className="px-3 py-2.5 text-[12px] text-left flex items-center"
                     style={{ paddingLeft }}
                   >
@@ -347,26 +360,40 @@ const GroupSummaryReport: React.FC = () => {
                     )}
                     {row.name}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: row.opening >= 0 ? "#059669" : "#dc2626" }}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-right font-mono"
+                    style={{ color: row.opening >= 0 ? "#059669" : "#dc2626" }}
+                  >
                     {formatDrCr(row.opening)}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: row.debit > 0 ? "#1557b0" : "inherit" }}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-right font-mono"
+                    style={{ color: row.debit > 0 ? "#1557b0" : "inherit" }}
+                  >
                     {row.debit > 0 ? formatNumber(row.debit) : "—"}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: row.credit > 0 ? "#dc2626" : "inherit" }}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-right font-mono"
+                    style={{ color: row.credit > 0 ? "#dc2626" : "inherit" }}
+                  >
                     {row.credit > 0 ? formatNumber(row.credit) : "—"}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono" style={{ color: row.closing >= 0 ? "#059669" : "#dc2626" }}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-right font-mono"
+                    style={{ color: row.closing >= 0 ? "#059669" : "#dc2626" }}
+                  >
                     {formatDrCr(row.closing)}
                   </td>
                 </tr>
               );
             })}
-            
+
             {/* Grand total row */}
             {rows.length > 0 && (
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-left">GRAND TOTAL</td>
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-left">
+                  GRAND TOTAL
+                </td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
                   {formatDrCr(rows.reduce((sum, row) => sum + (row.opening || 0), 0))}
                 </td>
@@ -381,7 +408,7 @@ const GroupSummaryReport: React.FC = () => {
                 </td>
               </tr>
             )}
-            
+
             {rows.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-gray-500 text-[12px]">
@@ -392,7 +419,7 @@ const GroupSummaryReport: React.FC = () => {
           </tbody>
         </table>
       </div>
-      
+
       <ReportOptionsModal
         open={optionsOpen}
         title="Group Summary Report Options"
@@ -401,35 +428,37 @@ const GroupSummaryReport: React.FC = () => {
       >
         <div className="space-y-4">
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Group 
-            <select 
-              value={pendingGroupId} 
-              onChange={e => setPendingGroupId(e.target.value)}
+            Group
+            <select
+              value={pendingGroupId}
+              onChange={(e) => setPendingGroupId(e.target.value)}
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
-              {groups.map(group => (
-                <option key={group.id} value={group.id}>{group.name}</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
               ))}
             </select>
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date 
-            <input 
-              type="date" 
-              value={pendingStart} 
-              onChange={e => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From Date
+            <input
+              type="date"
+              value={pendingStart}
+              onChange={(e) => setPendingStart(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date 
-            <input 
-              type="date" 
-              value={pendingEnd} 
-              onChange={e => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To Date
+            <input
+              type="date"
+              value={pendingEnd}
+              onChange={(e) => setPendingEnd(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
         </div>

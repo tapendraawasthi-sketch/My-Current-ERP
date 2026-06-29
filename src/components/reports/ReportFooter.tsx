@@ -21,4 +21,3 @@ export const ReportFooter: React.FC<ReportFooterProps> = ({
     </div>
   );
 };
-

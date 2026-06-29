@@ -46,23 +46,34 @@ export default function SignInForm() {
 
   return (
     <div className="min-h-screen flex">
-      <div className="flex-1 p-12 flex flex-col justify-between hidden lg:flex" style={{ background: "#E4F1D9", color: "#1f2937" }}>
+      <div
+        className="flex-1 p-12 flex flex-col justify-between hidden lg:flex"
+        style={{ background: "#E4F1D9", color: "#1f2937" }}
+      >
         <div>
           <div className="flex items-center space-x-3 mb-12">
             <Building2 className="w-10 h-10" />
             <div>
-              <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#1f2937" }}>Sutra ERP</h1>
-              <p className="text-sm mt-1" style={{ color: "#1f2937" }}>Professional Accounting for Nepal</p>
+              <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#1f2937" }}>
+                Sutra ERP
+              </h1>
+              <p className="text-sm mt-1" style={{ color: "#1f2937" }}>
+                Professional Accounting for Nepal
+              </p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold mb-4" style={{ color: "#1f2937" }}>Why Choose Sutra ERP?</h2>
+            <h2 className="text-2xl font-semibold mb-4" style={{ color: "#1f2937" }}>
+              Why Choose Sutra ERP?
+            </h2>
 
             <div className="flex items-start space-x-3">
               <CheckCircle className="w-6 h-6 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold" style={{ color: "#1f2937" }}>Nepal-First Design</h3>
+                <h3 className="font-semibold" style={{ color: "#1f2937" }}>
+                  Nepal-First Design
+                </h3>
                 <p className="text-sm" style={{ color: "#1f2937" }}>
                   Built specifically for Nepali businesses with BS date support, VAT compliance, and
                   IRD integration
@@ -73,7 +84,9 @@ export default function SignInForm() {
             <div className="flex items-start space-x-3">
               <FileText className="w-6 h-6 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold" style={{ color: "#1f2937" }}>Complete Accounting</h3>
+                <h3 className="font-semibold" style={{ color: "#1f2937" }}>
+                  Complete Accounting
+                </h3>
                 <p className="text-sm" style={{ color: "#1f2937" }}>
                   Journal entries, invoicing, inventory management, multi-currency support, and
                   comprehensive reporting
@@ -84,7 +97,9 @@ export default function SignInForm() {
             <div className="flex items-start space-x-3">
               <Shield className="w-6 h-6 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold" style={{ color: "#1f2937" }}>Secure & Reliable</h3>
+                <h3 className="font-semibold" style={{ color: "#1f2937" }}>
+                  Secure & Reliable
+                </h3>
                 <p className="text-sm" style={{ color: "#1f2937" }}>
                   Role-based access control, audit logs, data encryption, and automated backups
                 </p>
@@ -101,13 +116,19 @@ export default function SignInForm() {
       <div className="flex-1 bg-[#E4F1D9] p-8 flex items-center justify-center">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold" style={{ color: "#1f2937" }}>Welcome Back</h2>
-            <p className="mt-2" style={{ color: "#1f2937" }}>Sign in to your account to continue</p>
+            <h2 className="text-3xl font-bold" style={{ color: "#1f2937" }}>
+              Welcome Back
+            </h2>
+            <p className="mt-2" style={{ color: "#1f2937" }}>
+              Sign in to your account to continue
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>Username</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>
+                Username
+              </label>
               <input
                 type="text"
                 value={formData.username}
@@ -120,7 +141,9 @@ export default function SignInForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>Password</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -173,7 +196,8 @@ export default function SignInForm() {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm" style={{ color: "#1f2937" }}
+                className="text-sm"
+                style={{ color: "#1f2937" }}
               >
                 Forgot Password?
               </button>

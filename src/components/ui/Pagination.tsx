@@ -78,11 +78,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button onClick={() => onPageChange(1)} disabled={page === 1} style={btnStyle()}>
           «
         </button>
-        <button
-          onClick={() => onPageChange(page - 1)}
-          disabled={page === 1}
-          style={btnStyle()}
-        >
+        <button onClick={() => onPageChange(page - 1)} disabled={page === 1} style={btnStyle()}>
           ‹
         </button>
 
@@ -92,11 +88,7 @@ const Pagination: React.FC<PaginationProps> = ({
           if (p > totalPages) p = totalPages - (4 - i);
           if (p < 1 || p > totalPages) return null;
           return (
-            <button
-              key={p}
-              onClick={() => onPageChange(p)}
-              style={btnStyle(p === page)}
-            >
+            <button key={p} onClick={() => onPageChange(p)} style={btnStyle(p === page)}>
               {p}
             </button>
           );

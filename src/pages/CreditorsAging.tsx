@@ -1,1 +1,4 @@
-import React from 'react'; export default function CreditorsAging() { return <div>CreditorsAging Under Construction</div>; }
+import React from "react";
+export default function CreditorsAging() {
+  return <div>CreditorsAging Under Construction</div>;
+}

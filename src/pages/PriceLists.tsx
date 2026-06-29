@@ -76,20 +76,17 @@ export default function PriceLists() {
       (pl) =>
         pl.name.toLowerCase().includes(q) ||
         pl.code.toLowerCase().includes(q) ||
-        (pl.description ?? "").toLowerCase().includes(q)
+        (pl.description ?? "").toLowerCase().includes(q),
     );
   }, [priceLists, search]);
 
   const deleteTarget = useMemo(
     () => priceLists.find((pl) => pl.id === deleteTargetId) ?? null,
-    [priceLists, deleteTargetId]
+    [priceLists, deleteTargetId],
   );
 
   // Stock items list for the line-item dropdown
-  const stockItems = useMemo(
-    () => (items ?? []).filter((i: any) => i.isActive !== false),
-    [items]
-  );
+  const stockItems = useMemo(() => (items ?? []).filter((i: any) => i.isActive !== false), [items]);
 
   // ── Form open / close ────────────────────────────────────────────────────────
 
@@ -116,9 +113,7 @@ export default function PriceLists() {
     setFormCurrency(pl.currency ?? "INR");
     setFormIsActive(pl.isActive);
     // Attach local _id keys for React reconciliation
-    setFormLines(
-      (pl.lines ?? []).map((l) => ({ ...l, _id: crypto.randomUUID() }))
-    );
+    setFormLines((pl.lines ?? []).map((l) => ({ ...l, _id: crypto.randomUUID() })));
     setShowForm(true);
   };
 
@@ -137,11 +132,7 @@ export default function PriceLists() {
     setFormLines((prev) => prev.filter((l) => l._id !== lid));
   };
 
-  const updateLine = (
-    lid: string,
-    field: keyof LineRow,
-    value: string | number
-  ) => {
+  const updateLine = (lid: string, field: keyof LineRow, value: string | number) => {
     setFormLines((prev) =>
       prev.map((l) => {
         if (l._id !== lid) return l;
@@ -155,7 +146,7 @@ export default function PriceLists() {
           };
         }
         return { ...l, [field]: value };
-      })
+      }),
     );
   };
 
@@ -166,16 +157,12 @@ export default function PriceLists() {
     if (!formCode.trim()) return "Code is required.";
 
     const dupCode = priceLists.find(
-      (pl) =>
-        pl.code.toLowerCase() === formCode.trim().toLowerCase() &&
-        pl.id !== editingId
+      (pl) => pl.code.toLowerCase() === formCode.trim().toLowerCase() && pl.id !== editingId,
     );
     if (dupCode) return `Code "${formCode.trim()}" is already in use.`;
 
     const dupName = priceLists.find(
-      (pl) =>
-        pl.name.toLowerCase() === formName.trim().toLowerCase() &&
-        pl.id !== editingId
+      (pl) => pl.name.toLowerCase() === formName.trim().toLowerCase() && pl.id !== editingId,
     );
     if (dupName) return `Price list "${formName.trim()}" already exists.`;
 
@@ -294,13 +281,27 @@ export default function PriceLists() {
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
               <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-10"></th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Description</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Curr</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Items</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Code
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Description
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Curr
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Items
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -308,7 +309,9 @@ export default function PriceLists() {
               <tr>
                 <td colSpan={8} className="px-3 py-10 text-center text-gray-500 text-[12px]">
                   <Tag className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No price lists yet. Create your first price list."}
+                  {search
+                    ? "No results found."
+                    : "No price lists yet. Create your first price list."}
                 </td>
               </tr>
             ) : (
@@ -455,9 +458,7 @@ export default function PriceLists() {
               {/* Header Info */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2 flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Price List Name *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Price List Name *</label>
                   <input
                     type="text"
                     value={formName}
@@ -470,9 +471,7 @@ export default function PriceLists() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Code *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Code *</label>
                   <input
                     type="text"
                     value={formCode}
@@ -485,9 +484,7 @@ export default function PriceLists() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Currency
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Currency</label>
                   <select
                     value={formCurrency}
                     onChange={(e) => setFormCurrency(e.target.value)}
@@ -503,9 +500,7 @@ export default function PriceLists() {
                 </div>
 
                 <div className="col-span-2 flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Description
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Description</label>
                   <input
                     type="text"
                     value={formDescription}
@@ -523,9 +518,7 @@ export default function PriceLists() {
                       onChange={(e) => setFormIsActive(e.target.checked)}
                       className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                     />
-                    <span className="text-[12px] font-medium text-gray-700">
-                      Active
-                    </span>
+                    <span className="text-[12px] font-medium text-gray-700">Active</span>
                   </label>
                 </div>
               </div>
@@ -574,9 +567,7 @@ export default function PriceLists() {
                             {stockItems.length > 0 ? (
                               <select
                                 value={line.itemId}
-                                onChange={(e) =>
-                                  updateLine(line._id, "itemId", e.target.value)
-                                }
+                                onChange={(e) => updateLine(line._id, "itemId", e.target.value)}
                                 className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
                               >
                                 <option value="">— Select item —</option>
@@ -590,9 +581,7 @@ export default function PriceLists() {
                               <input
                                 type="text"
                                 value={line.itemName}
-                                onChange={(e) =>
-                                  updateLine(line._id, "itemName", e.target.value)
-                                }
+                                onChange={(e) => updateLine(line._id, "itemName", e.target.value)}
                                 placeholder={`Item ${idx + 1}`}
                                 className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
                               />
@@ -616,9 +605,7 @@ export default function PriceLists() {
                               min={0}
                               step={0.01}
                               value={line.rate}
-                              onChange={(e) =>
-                                updateLine(line._id, "rate", Number(e.target.value))
-                              }
+                              onChange={(e) => updateLine(line._id, "rate", Number(e.target.value))}
                               className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
                             />
                           </td>
@@ -655,11 +642,7 @@ export default function PriceLists() {
                 className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
               >
                 <Save className="h-3.5 w-3.5" />
-                {saving
-                  ? "Saving..."
-                  : editingId
-                  ? "Save Changes"
-                  : "Add Price List"}
+                {saving ? "Saving..." : editingId ? "Save Changes" : "Add Price List"}
               </button>
             </div>
           </div>
@@ -671,19 +654,14 @@ export default function PriceLists() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800">
-                Delete Price List
-              </h2>
+              <h2 className="text-[14px] font-semibold text-gray-800">Delete Price List</h2>
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
                 Are you sure you want to delete{" "}
-                <span className="font-semibold text-gray-900">
-                  {deleteTarget.name}
-                </span>
-                ? This will remove all {(deleteTarget.lines ?? []).length} line
-                item{(deleteTarget.lines ?? []).length !== 1 ? "s" : ""} and
-                cannot be undone.
+                <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? This will
+                remove all {(deleteTarget.lines ?? []).length} line item
+                {(deleteTarget.lines ?? []).length !== 1 ? "s" : ""} and cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

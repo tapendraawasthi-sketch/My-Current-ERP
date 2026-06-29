@@ -1,4 +1,5 @@
 <!-- LOVABLE:BEGIN -->
+
 > [!IMPORTANT]
 > This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
 > published git history — force pushing, or rebasing/amending/squashing commits
@@ -7,6 +8,7 @@
 >
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
+
 <!-- LOVABLE:END -->
 
 ---
@@ -20,6 +22,7 @@ Colors: primary #1557b0 (hover #0f4a96), success #059669, warning #d97706, dange
 Typography: page title `text-[15px] font-semibold text-gray-800`; page subtitle `text-[11px] text-gray-500`; section/table header `text-[10px] font-semibold text-gray-500 uppercase tracking-wide`; form label `text-[11px] font-medium text-gray-600`; body/cell text `text-[12px]`; never use font-black, text-base, text-xl, tracking-widest, or uppercase on data/names/amounts.
 
 Standard page header (use for every list/report page, no exceptions):
+
 <div className="flex items-center justify-between mb-4">
   <div>
     <h1 className="text-[15px] font-semibold text-gray-800">{TITLE}</h1>
@@ -43,6 +46,7 @@ unbalanced → bg-red-50 text-red-700 border border-red-200
 Print: wrap on-screen filters/toolbars in `no-print`, wrap print-only headers in `print-only hidden`.
 
 Scope rules — do not deviate without being told:
+
 - Never read or edit anything under node_modules, dist, .git, .workspace, .tanstack.
 - src/components/StockItems.tsx, src/components/invoice/PurchaseInvoiceForm.tsx, and src/components/invoice/ReturnInvoiceForm.tsx are dead/unused files. Do not open or edit them.
 - The 'items' route renders src/pages/StockBook.tsx (not StockItems.tsx).

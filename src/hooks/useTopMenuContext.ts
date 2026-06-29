@@ -89,12 +89,11 @@ export function useTopMenuContext() {
   const currentPage = useStore((state) => state.currentPage);
 
   return useMemo(() => {
-    const context =
-      contextMap[currentPage] ?? {
-        label: "Current Screen",
-        exportEndpoint: "/api/export/generic",
-        printType: "generic",
-      };
+    const context = contextMap[currentPage] ?? {
+      label: "Current Screen",
+      exportEndpoint: "/api/export/generic",
+      printType: "generic",
+    };
 
     return {
       context,

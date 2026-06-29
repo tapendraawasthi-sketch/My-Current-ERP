@@ -38,9 +38,19 @@ export default function ExportMenu() {
     <>
       <TopMenuDropdown
         items={[
-          { key: "current", label: "Export Current Screen", shortcut: "E", locked: !perms.canExport },
+          {
+            key: "current",
+            label: "Export Current Screen",
+            shortcut: "E",
+            locked: !perms.canExport,
+          },
           { key: "masters", label: "Export Masters", shortcut: "M", locked: !perms.canExport },
-          { key: "transactions", label: "Export Transactions", shortcut: "T", locked: !perms.canExport },
+          {
+            key: "transactions",
+            label: "Export Transactions",
+            shortcut: "T",
+            locked: !perms.canExport,
+          },
           { key: "reports", label: "Export Reports", shortcut: "R", locked: !perms.canExport },
           { key: "format", label: "Format Settings", shortcut: "F" },
           { key: "logs", label: "Export Logs", shortcut: "L" },
@@ -194,10 +204,26 @@ function ExportCurrentModal({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="mt-3">
-        <ToggleRow label="Include Opening Balance" checked={includeOpening} onChange={setIncludeOpening} />
-        <ToggleRow label="Include Company Header" checked={includeHeader} onChange={setIncludeHeader} />
-        <ToggleRow label="Include Narration" checked={includeNarration} onChange={setIncludeNarration} />
-        <ToggleRow label="Password Protect" checked={passwordProtect} onChange={setPasswordProtect} />
+        <ToggleRow
+          label="Include Opening Balance"
+          checked={includeOpening}
+          onChange={setIncludeOpening}
+        />
+        <ToggleRow
+          label="Include Company Header"
+          checked={includeHeader}
+          onChange={setIncludeHeader}
+        />
+        <ToggleRow
+          label="Include Narration"
+          checked={includeNarration}
+          onChange={setIncludeNarration}
+        />
+        <ToggleRow
+          label="Password Protect"
+          checked={passwordProtect}
+          onChange={setPasswordProtect}
+        />
       </div>
 
       {passwordProtect && (
@@ -239,7 +265,10 @@ function ExportFilterModal({
   const [statusFilter, setStatusFilter] = useState("All");
 
   const runExport = async () => {
-    const fileName = normalizeFileName(`${title.replace(/\s+/g, "_")}_${new Date().toISOString().slice(0, 10)}`, format);
+    const fileName = normalizeFileName(
+      `${title.replace(/\s+/g, "_")}_${new Date().toISOString().slice(0, 10)}`,
+      format,
+    );
 
     try {
       const params = new URLSearchParams({
@@ -312,7 +341,12 @@ function ExportFilterModal({
           onChange={(value) => setFormat(value as ExportFormat)}
           options={["Excel (.xlsx)", "CSV", "PDF", "JSON", "XML"]}
         />
-        <SelectField label="Status" value={statusFilter} onChange={setStatusFilter} options={["All", "Active Only", "Modified After"]} />
+        <SelectField
+          label="Status"
+          value={statusFilter}
+          onChange={setStatusFilter}
+          options={["All", "Active Only", "Modified After"]}
+        />
         <Field label="From Date (BS)" value={fromDate} onChange={setFromDate} />
         <Field label="To Date (BS)" value={toDate} onChange={setToDate} />
 
@@ -322,7 +356,15 @@ function ExportFilterModal({
               label="Voucher Type"
               value={voucherType}
               onChange={setVoucherType}
-              options={["All", "Sales Invoice", "Purchase Invoice", "Receipt", "Payment", "Journal", "Contra"]}
+              options={[
+                "All",
+                "Sales Invoice",
+                "Purchase Invoice",
+                "Receipt",
+                "Payment",
+                "Journal",
+                "Contra",
+              ]}
             />
             <Field label="Ledger Name" value={ledgerName} onChange={setLedgerName} />
           </>
@@ -414,8 +456,16 @@ function FormatSettingsModal({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="mt-3">
-        <ToggleRow label="Include Company Header" checked={includeHeader} onChange={setIncludeHeader} />
-        <ToggleRow label="Include Narration" checked={includeNarration} onChange={setIncludeNarration} />
+        <ToggleRow
+          label="Include Company Header"
+          checked={includeHeader}
+          onChange={setIncludeHeader}
+        />
+        <ToggleRow
+          label="Include Narration"
+          checked={includeNarration}
+          onChange={setIncludeNarration}
+        />
       </div>
     </ModalShell>
   );
@@ -470,9 +520,11 @@ function useCurrentScreenSnapshot(): Record<string, unknown>[] {
   const invoices = useStore((state) => state.invoices);
 
   return useMemo(() => {
-    if (currentPage === "accounts" || currentPage === "ledgers") return accounts as unknown as Record<string, unknown>[];
+    if (currentPage === "accounts" || currentPage === "ledgers")
+      return accounts as unknown as Record<string, unknown>[];
     if (currentPage === "parties") return parties as unknown as Record<string, unknown>[];
-    if (currentPage === "items" || currentPage === "stock-summary") return items as unknown as Record<string, unknown>[];
+    if (currentPage === "items" || currentPage === "stock-summary")
+      return items as unknown as Record<string, unknown>[];
     if (currentPage === "vouchers") return vouchers as unknown as Record<string, unknown>[];
     if (currentPage.includes("invoice") || currentPage === "billing") {
       return invoices as unknown as Record<string, unknown>[];
@@ -505,7 +557,8 @@ function normalizeFileName(fileName: string, format: ExportFormat): string {
 }
 
 function getMimeForFormat(format: ExportFormat): string {
-  if (format === "Excel (.xlsx)") return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  if (format === "Excel (.xlsx)")
+    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   if (format === "CSV") return "text/csv";
   if (format === "PDF") return "application/pdf";
   if (format === "JSON") return "application/json";
@@ -539,16 +592,18 @@ function exportFallback(rows: Record<string, unknown>[], fileName: string, forma
 
   if (format === "XML") {
     const xml = `<?xml version="1.0" encoding="UTF-8"?><rows>${rows
-      .map((row) => `<row>${Object.entries(row).map(([key, value]) => `<${key}>${escapeXml(String(value ?? ""))}</${key}>`).join("")}</row>`)
+      .map(
+        (row) =>
+          `<row>${Object.entries(row)
+            .map(([key, value]) => `<${key}>${escapeXml(String(value ?? ""))}</${key}>`)
+            .join("")}</row>`,
+      )
       .join("")}</rows>`;
     downloadBlob(new Blob([xml], { type: "application/xml" }), fileName);
     return;
   }
 
-  downloadBlob(
-    new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" }),
-    fileName,
-  );
+  downloadBlob(new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" }), fileName);
 }
 
 function escapeXml(value: string): string {

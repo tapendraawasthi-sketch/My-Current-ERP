@@ -92,11 +92,7 @@ export interface PendingAlertSummary {
   deliveryChallansPendingBilling: number;
 }
 
-const PURCHASE_ORDER_TYPES = new Set([
-  "purchase-order",
-  "purchase_order",
-  "PURCHASE_ORDER",
-]);
+const PURCHASE_ORDER_TYPES = new Set(["purchase-order", "purchase_order", "PURCHASE_ORDER"]);
 
 const GRN_TYPES = new Set([
   "grn",
@@ -115,11 +111,7 @@ const PURCHASE_INVOICE_TYPES = new Set([
   "PURCHASE_INVOICE",
 ]);
 
-const SALES_ORDER_TYPES = new Set([
-  "sales-order",
-  "sales_order",
-  "SALES_ORDER",
-]);
+const SALES_ORDER_TYPES = new Set(["sales-order", "sales_order", "SALES_ORDER"]);
 
 const DELIVERY_CHALLAN_TYPES = new Set([
   "delivery-challan",
@@ -137,11 +129,7 @@ const SALES_INVOICE_TYPES = new Set([
   "SALES_INVOICE",
 ]);
 
-const REJECTION_OUT_TYPES = new Set([
-  "rejection-out",
-  "rejection_out",
-  "REJECTION_OUT",
-]);
+const REJECTION_OUT_TYPES = new Set(["rejection-out", "rejection_out", "REJECTION_OUT"]);
 
 function normType(type: string): string {
   return String(type || "").trim();
@@ -176,14 +164,7 @@ export function isRejectionOut(v: WorkflowVoucher) {
 }
 
 export function docNo(v: WorkflowVoucher): string {
-  return (
-    v.voucherNo ||
-    v.invoiceNo ||
-    v.orderNo ||
-    v.challanNo ||
-    v.grnNo ||
-    v.id
-  );
+  return v.voucherNo || v.invoiceNo || v.orderNo || v.challanNo || v.grnNo || v.id;
 }
 
 export function docRef(v: WorkflowVoucher): WorkflowDocRef {
@@ -229,10 +210,7 @@ export function addUnique<T>(arr: T[] | undefined, value: T): T[] {
   return Array.from(new Set([...(arr || []), value]));
 }
 
-export function addLinkedDocument(
-  voucher: WorkflowVoucher,
-  ref: WorkflowDocRef,
-): WorkflowDocRef[] {
+export function addLinkedDocument(voucher: WorkflowVoucher, ref: WorkflowDocRef): WorkflowDocRef[] {
   const existing = voucher.linkedDocuments || [];
   if (existing.some((d) => d.id === ref.id && d.type === ref.type)) return existing;
   return [...existing, ref];
@@ -266,18 +244,14 @@ export function computePurchaseOrderLineProgress(
   );
 
   const rejections = allVouchers.filter(
-    (v) =>
-      isRejectionOut(v) &&
-      (v.linkedPoIds || []).includes(po.id) &&
-      v.status !== "cancelled",
+    (v) => isRejectionOut(v) && (v.linkedPoIds || []).includes(po.id) && v.status !== "cancelled",
   );
 
   const receivedQty = grns.reduce((sum, grn) => {
     const qty = grn.lines
       .filter(
         (l) =>
-          l.itemId === poLine.itemId &&
-          (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
+          l.itemId === poLine.itemId && (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
       )
       .reduce((s, l) => s + lineAcceptedQty(l), 0);
 
@@ -288,8 +262,7 @@ export function computePurchaseOrderLineProgress(
     const qty = rej.lines
       .filter(
         (l) =>
-          l.itemId === poLine.itemId &&
-          (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
+          l.itemId === poLine.itemId && (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
       )
       .reduce((s, l) => s + lineQty(l), 0);
 
@@ -300,17 +273,14 @@ export function computePurchaseOrderLineProgress(
 
   const purchaseInvoices = allVouchers.filter(
     (v) =>
-      isPurchaseInvoice(v) &&
-      v.status !== "cancelled" &&
-      (v.linkedPoIds || []).includes(po.id),
+      isPurchaseInvoice(v) && v.status !== "cancelled" && (v.linkedPoIds || []).includes(po.id),
   );
 
   const billedQty = purchaseInvoices.reduce((sum, inv) => {
     const qty = inv.lines
       .filter(
         (l) =>
-          l.itemId === poLine.itemId &&
-          (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
+          l.itemId === poLine.itemId && (!l.sourceOrderLineId || l.sourceOrderLineId === poLine.id),
       )
       .reduce((s, l) => s + lineQty(l), 0);
 
@@ -525,17 +495,14 @@ export function computeSalesOrderLineProgress(
 
   const dcs = allVouchers.filter(
     (v) =>
-      isDeliveryChallan(v) &&
-      v.status !== "cancelled" &&
-      (v.linkedSoIds || []).includes(so.id),
+      isDeliveryChallan(v) && v.status !== "cancelled" && (v.linkedSoIds || []).includes(so.id),
   );
 
   const dispatchedQty = dcs.reduce((sum, dc) => {
     const qty = dc.lines
       .filter(
         (l) =>
-          l.itemId === soLine.itemId &&
-          (!l.sourceOrderLineId || l.sourceOrderLineId === soLine.id),
+          l.itemId === soLine.itemId && (!l.sourceOrderLineId || l.sourceOrderLineId === soLine.id),
       )
       .reduce((s, l) => s + lineQty(l), 0);
 
@@ -543,18 +510,14 @@ export function computeSalesOrderLineProgress(
   }, 0);
 
   const salesInvoices = allVouchers.filter(
-    (v) =>
-      isSalesInvoice(v) &&
-      v.status !== "cancelled" &&
-      (v.linkedSoIds || []).includes(so.id),
+    (v) => isSalesInvoice(v) && v.status !== "cancelled" && (v.linkedSoIds || []).includes(so.id),
   );
 
   const invoicedQty = salesInvoices.reduce((sum, inv) => {
     const qty = inv.lines
       .filter(
         (l) =>
-          l.itemId === soLine.itemId &&
-          (!l.sourceOrderLineId || l.sourceOrderLineId === soLine.id),
+          l.itemId === soLine.itemId && (!l.sourceOrderLineId || l.sourceOrderLineId === soLine.id),
       )
       .reduce((s, l) => s + lineQty(l), 0);
 
@@ -635,9 +598,7 @@ export function getDcsPendingBilling(
 ): WorkflowVoucher[] {
   const dcs = allVouchers.filter(
     (v) =>
-      isDeliveryChallan(v) &&
-      v.status !== "cancelled" &&
-      (!customerId || v.partyId === customerId),
+      isDeliveryChallan(v) && v.status !== "cancelled" && (!customerId || v.partyId === customerId),
   );
 
   return dcs.filter((dc) => {
@@ -646,9 +607,7 @@ export function getDcsPendingBilling(
     const invoicedQty = allVouchers
       .filter(
         (v) =>
-          isSalesInvoice(v) &&
-          v.status !== "cancelled" &&
-          (v.linkedDcIds || []).includes(dc.id),
+          isSalesInvoice(v) && v.status !== "cancelled" && (v.linkedDcIds || []).includes(dc.id),
       )
       .reduce((sum, inv) => {
         return (
@@ -677,9 +636,7 @@ export function buildSalesInvoiceLinesFromDcs(
       const alreadyInvoiced = allVouchers
         .filter(
           (v) =>
-            isSalesInvoice(v) &&
-            v.status !== "cancelled" &&
-            (v.linkedDcIds || []).includes(dc.id),
+            isSalesInvoice(v) && v.status !== "cancelled" && (v.linkedDcIds || []).includes(dc.id),
         )
         .reduce((sum, inv) => {
           return (

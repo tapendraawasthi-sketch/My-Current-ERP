@@ -491,4 +491,3 @@ function round2(value: number) {
 }
 
 export default CashFlowStatement;
-

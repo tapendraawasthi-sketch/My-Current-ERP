@@ -12,15 +12,7 @@ import { Search, Plus, Phone, Mail, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 import { validatePAN } from "../lib/taxUtils";
 
-const PROVINCES = [
-  "Koshi",
-  "Madhesh",
-  "Bagmati",
-  "Gandaki",
-  "Lumbini",
-  "Karnali",
-  "Sudurpashchim",
-];
+const PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
 
 const PartiesDirectory: React.FC = React.memo(() => {
   const { parties, addParty, updateParty } = useStore();
@@ -165,7 +157,9 @@ const PartiesDirectory: React.FC = React.memo(() => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-[#1f2937]">Parties Directory</h1>
-          <p className="text-[11px] text-[#1f2937] mt-0.5">Manage customers and suppliers accounts</p>
+          <p className="text-[11px] text-[#1f2937] mt-0.5">
+            Manage customers and suppliers accounts
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -215,8 +209,10 @@ const PartiesDirectory: React.FC = React.memo(() => {
               className="h-7 px-2 text-[11px] border border-[#d1d5db] rounded focus:outline-none"
             >
               <option value="ALL">All Provinces</option>
-              {PROVINCES.map(p => (
-                <option key={p} value={p}>{p}</option>
+              {PROVINCES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
               ))}
             </select>
           </div>
@@ -270,7 +266,17 @@ const PartiesDirectory: React.FC = React.memo(() => {
                     <td className="font-mono">{party.code || "-"}</td>
                     <td className="font-semibold text-[#1f2937]">{party.name}</td>
                     <td>
-                      <Badge variant={party.type === "customer" ? "info" : party.type === "supplier" ? "warning" : "default"}>{party.type}</Badge>
+                      <Badge
+                        variant={
+                          party.type === "customer"
+                            ? "info"
+                            : party.type === "supplier"
+                              ? "warning"
+                              : "default"
+                        }
+                      >
+                        {party.type}
+                      </Badge>
                     </td>
                     <td className="font-mono">{party.pan || "-"}</td>
                     <td>{party.province || "-"}</td>
@@ -311,7 +317,10 @@ const PartiesDirectory: React.FC = React.memo(() => {
           title={showAddModal ? "Add New Party" : "Edit Party Details"}
           size="md"
         >
-          <form onSubmit={handleSave} className="flex flex-col gap-4 text-xs font-semibold select-none">
+          <form
+            onSubmit={handleSave}
+            className="flex flex-col gap-4 text-xs font-semibold select-none"
+          >
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[#1f2937] font-semibold">Party Code</label>
@@ -499,4 +508,3 @@ const PartiesDirectory: React.FC = React.memo(() => {
 });
 
 export default PartiesDirectory;
-

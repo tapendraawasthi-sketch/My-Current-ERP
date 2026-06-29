@@ -3,14 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import {
-  Download,
-  FileSpreadsheet,
-  RefreshCw,
-  TrendingUp,
-  Eye,
-  X,
-} from "lucide-react";
+import { Download, FileSpreadsheet, RefreshCw, TrendingUp, Eye, X } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -126,18 +119,13 @@ const OutstandingReceivables: React.FC = () => {
       for (const rct of receipts as any[]) {
         if (!rct || rct.partyId !== inv.partyId) continue;
         for (const line of rct.lines ?? []) {
-          if (
-            line.billRefNo === inv.invoiceNo ||
-            line.billRefNo === inv.id
-          ) {
+          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
             allocatedAmount += Number(line.amount ?? 0);
           }
         }
       }
 
-      const outstanding = parseFloat(
-        (originalAmount - allocatedAmount).toFixed(2),
-      );
+      const outstanding = parseFloat((originalAmount - allocatedAmount).toFixed(2));
 
       // Skip fully paid
       if (outstanding <= 0.005) continue;
@@ -148,19 +136,11 @@ const OutstandingReceivables: React.FC = () => {
 
       const partyId = inv.partyId ?? "unknown";
       const partyName =
-        inv.partyName ??
-        parties.find((p: any) => p.id === partyId)?.name ??
-        "Unknown";
-      const partyPan =
-        inv.partyPan ??
-        parties.find((p: any) => p.id === partyId)?.pan;
+        inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
+      const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
 
       const paymentStatus =
-        allocatedAmount <= 0
-          ? "unpaid"
-          : allocatedAmount < originalAmount
-          ? "partial"
-          : "paid";
+        allocatedAmount <= 0 ? "unpaid" : allocatedAmount < originalAmount ? "partial" : "paid";
 
       rows.push({
         partyId,
@@ -199,8 +179,7 @@ const OutstandingReceivables: React.FC = () => {
   // ── Filter ────────────────────────────────────────────────────────────────
   const filteredRows = useMemo<ReceivableRow[]>(() => {
     return receivableRows.filter((r) => {
-      const matchStatus =
-        statusFilter === "all" || r.paymentStatus === statusFilter;
+      const matchStatus = statusFilter === "all" || r.paymentStatus === statusFilter;
       const matchParty = partyFilter === "" || r.partyId === partyFilter;
       const matchSearch =
         searchTerm === "" ||
@@ -212,15 +191,17 @@ const OutstandingReceivables: React.FC = () => {
   }, [receivableRows, statusFilter, partyFilter, searchTerm]);
 
   // ── Totals ────────────────────────────────────────────────────────────────
-  const totals = useMemo(() => ({
-    original: filteredRows.reduce((s, r) => s + r.originalAmount, 0),
-    paid: filteredRows.reduce((s, r) => s + r.paidAmount, 0),
-    outstanding: filteredRows.reduce((s, r) => s + r.outstandingAmount, 0),
-    overdue: filteredRows.filter((r) => r.daysOverdue > 0).reduce(
-      (s, r) => s + r.outstandingAmount,
-      0,
-    ),
-  }), [filteredRows]);
+  const totals = useMemo(
+    () => ({
+      original: filteredRows.reduce((s, r) => s + r.originalAmount, 0),
+      paid: filteredRows.reduce((s, r) => s + r.paidAmount, 0),
+      outstanding: filteredRows.reduce((s, r) => s + r.outstandingAmount, 0),
+      overdue: filteredRows
+        .filter((r) => r.daysOverdue > 0)
+        .reduce((s, r) => s + r.outstandingAmount, 0),
+    }),
+    [filteredRows],
+  );
 
   // ── Export ────────────────────────────────────────────────────────────────
   const handleExport = () => {
@@ -260,18 +241,7 @@ const OutstandingReceivables: React.FC = () => {
         headers,
         ...rows,
         [],
-        [
-          "TOTAL",
-          "",
-          "",
-          "",
-          "",
-          totals.original,
-          totals.paid,
-          totals.outstanding,
-          "",
-          "",
-        ],
+        ["TOTAL", "", "", "", "", totals.original, totals.paid, totals.outstanding, "", ""],
       ];
       const ws = XLSX.utils.aoa_to_sheet(wsData);
       XLSX.utils.book_append_sheet(wb, ws, "Outstanding Receivables");
@@ -451,12 +421,8 @@ const OutstandingReceivables: React.FC = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredRows.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={10}
-                      className="px-3 py-12 text-center text-[12px] text-gray-400"
-                    >
-                      No outstanding receivables found for the selected
-                      criteria.
+                    <td colSpan={10} className="px-3 py-12 text-center text-[12px] text-gray-400">
+                      No outstanding receivables found for the selected criteria.
                     </td>
                   </tr>
                 ) : (
@@ -471,9 +437,7 @@ const OutstandingReceivables: React.FC = () => {
                           {row.partyName}
                         </div>
                         {row.partyPan && (
-                          <div className="text-[10px] text-gray-500 font-mono">
-                            {row.partyPan}
-                          </div>
+                          <div className="text-[10px] text-gray-500 font-mono">{row.partyPan}</div>
                         )}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
@@ -530,10 +494,7 @@ const OutstandingReceivables: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td
-                      colSpan={4}
-                      className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
-                    >
+                    <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Total ({filteredRows.length} invoices)
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
@@ -582,17 +543,13 @@ const OutstandingReceivables: React.FC = () => {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Party
                   </p>
-                  <p className="text-gray-800 font-semibold">
-                    {selectedRow.partyName}
-                  </p>
+                  <p className="text-gray-800 font-semibold">{selectedRow.partyName}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     PAN
                   </p>
-                  <p className="text-gray-700 font-mono">
-                    {selectedRow.partyPan ?? "—"}
-                  </p>
+                  <p className="text-gray-700 font-mono">{selectedRow.partyPan ?? "—"}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">

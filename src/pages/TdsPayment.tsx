@@ -19,19 +19,19 @@ const PAYMENT_NATURES = [
   "Dividend",
   "Interest",
   "Royalty",
-  "Other"
+  "Other",
 ];
 
 export default function TdsPayment() {
   const { parties, tdsRates, addTdsEntry, addVoucher, currentFiscalYear, accounts } = useStore();
   const defaultAd = dateToAD(new Date());
-  
+
   const [date, setDate] = useState(defaultAd);
   const [partyId, setPartyId] = useState("");
   const [paymentNature, setPaymentNature] = useState("");
   const [grossAmount, setGrossAmount] = useState<number | "">("");
   const [expenseAccountId, setExpenseAccountId] = useState("");
-  
+
   const [section, setSection] = useState("");
   const [tdsRate, setTdsRate] = useState(0);
   const [threshold, setThreshold] = useState(0);
@@ -39,7 +39,9 @@ export default function TdsPayment() {
   // Auto-fill section & rate when payment nature changes
   useEffect(() => {
     if (paymentNature) {
-      const match = tdsRates.find((r: any) => r.natureOfPayment.toLowerCase().includes(paymentNature.toLowerCase()));
+      const match = tdsRates.find((r: any) =>
+        r.natureOfPayment.toLowerCase().includes(paymentNature.toLowerCase()),
+      );
       if (match) {
         setSection(match.section);
         setTdsRate(match.rate);
@@ -57,16 +59,27 @@ export default function TdsPayment() {
   }, [paymentNature, tdsRates]);
 
   const grossNum = typeof grossAmount === "number" ? grossAmount : 0;
-  
+
   // Compute TDS
   const { tdsAmount, netAmount, isBelowThreshold } = useMemo(() => {
     return computeWithholdingTDS(grossNum, tdsRate, threshold);
   }, [grossNum, tdsRate, threshold]);
 
-  const partyOptions = useMemo(() => parties.map(p => ({ value: p.id, label: p.name })), [parties]);
-  const natureOptions = useMemo(() => PAYMENT_NATURES.map(n => ({ value: n, label: n })), []);
-  
-  const expenseAccounts = useMemo(() => accounts.filter(a => a.type === "Expense" || a.type === "DirectExpense" || a.type === "IndirectExpense").map(a => ({ value: a.id, label: a.name })), [accounts]);
+  const partyOptions = useMemo(
+    () => parties.map((p) => ({ value: p.id, label: p.name })),
+    [parties],
+  );
+  const natureOptions = useMemo(() => PAYMENT_NATURES.map((n) => ({ value: n, label: n })), []);
+
+  const expenseAccounts = useMemo(
+    () =>
+      accounts
+        .filter(
+          (a) => a.type === "Expense" || a.type === "DirectExpense" || a.type === "IndirectExpense",
+        )
+        .map((a) => ({ value: a.id, label: a.name })),
+    [accounts],
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +88,7 @@ export default function TdsPayment() {
       return;
     }
 
-    const party = parties.find(p => p.id === partyId);
+    const party = parties.find((p) => p.id === partyId);
     if (!party) return;
 
     try {
@@ -100,7 +113,9 @@ export default function TdsPayment() {
       await addTdsEntry(tdsEntry);
 
       // 2. Create Journal Voucher
-      const tdsPayableAcc = accounts.find(a => a.id === "acc-tds-payable" || a.name.toLowerCase().includes("tds payable"));
+      const tdsPayableAcc = accounts.find(
+        (a) => a.id === "acc-tds-payable" || a.name.toLowerCase().includes("tds payable"),
+      );
       const tdsPayableId = tdsPayableAcc ? tdsPayableAcc.id : "acc-tds-payable";
 
       const lines: JournalEntryLine[] = [
@@ -108,14 +123,14 @@ export default function TdsPayment() {
           accountId: expenseAccountId,
           debit: grossNum,
           credit: 0,
-          narration: `Expense for ${paymentNature} to ${party.name}`
+          narration: `Expense for ${paymentNature} to ${party.name}`,
         },
         {
           accountId: party.id,
           debit: 0,
           credit: netAmount,
-          narration: `Net payable to ${party.name}`
-        }
+          narration: `Net payable to ${party.name}`,
+        },
       ];
 
       if (tdsAmount > 0) {
@@ -123,7 +138,7 @@ export default function TdsPayment() {
           accountId: tdsPayableId,
           debit: 0,
           credit: tdsAmount,
-          narration: `TDS deducted at ${tdsRate}% under section ${section}`
+          narration: `TDS deducted at ${tdsRate}% under section ${section}`,
         });
       }
 
@@ -138,7 +153,7 @@ export default function TdsPayment() {
         narration: `TDS Entry for ${paymentNature} - Section ${section}`,
         lines: lines,
         totalDebit: lines.reduce((sum, l) => sum + (l.debit || 0), 0),
-        totalCredit: lines.reduce((sum, l) => sum + (l.credit || 0), 0)
+        totalCredit: lines.reduce((sum, l) => sum + (l.credit || 0), 0),
       } as any);
 
       toast.success("TDS payment recorded successfully!");
@@ -146,7 +161,6 @@ export default function TdsPayment() {
       setPaymentNature("");
       setGrossAmount("");
       setExpenseAccountId("");
-      
     } catch (err: any) {
       toast.error(err.message || "Failed to save TDS entry.");
     }
@@ -160,7 +174,9 @@ export default function TdsPayment() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-[#000000]">TDS Entry Form</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">Record TDS payments and generate automated journals</p>
+              <p className="text-[11px] text-[#000000] mt-0.5">
+                Record TDS payments and generate automated journals
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -175,12 +191,8 @@ export default function TdsPayment() {
           <Card border padding="md">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="grid gap-4">
-                <NepaliDatePicker
-                  label="Date"
-                  value={date}
-                  onChange={setDate}
-                />
-                
+                <NepaliDatePicker label="Date" value={date} onChange={setDate} />
+
                 <Select
                   label="Party *"
                   value={partyId}
@@ -206,13 +218,17 @@ export default function TdsPayment() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] font-medium text-[#000000] block mb-1">Section</label>
+                    <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                      Section
+                    </label>
                     <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
                       {section || "-"}
                     </div>
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-[#000000] block mb-1">TDS Rate (%)</label>
+                    <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                      TDS Rate (%)
+                    </label>
                     <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
                       {tdsRate || 0}%
                     </div>
@@ -220,7 +236,9 @@ export default function TdsPayment() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-medium text-[#000000] block mb-1">Gross Amount *</label>
+                  <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                    Gross Amount *
+                  </label>
                   <input
                     type="number"
                     value={grossAmount}
@@ -238,18 +256,26 @@ export default function TdsPayment() {
             </div>
 
             <div className="mt-6 border-t border-[#9DC07A] pt-4 grid grid-cols-3 gap-4">
-               <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                 <div className="text-[10px] uppercase font-bold text-[#000000]">Gross Amount</div>
-                 <div className="text-[14px] font-bold text-[#000000]">Rs. {formatNumber(grossNum)}</div>
-               </div>
-               <div className="bg-red-50 p-3 rounded border border-red-200">
-                 <div className="text-[10px] uppercase font-bold text-red-700">TDS Amount ({tdsRate}%)</div>
-                 <div className="text-[14px] font-bold text-red-800">Rs. {formatNumber(tdsAmount)}</div>
-               </div>
-               <div className="bg-green-50 p-3 rounded border border-green-200">
-                 <div className="text-[10px] uppercase font-bold text-green-700">Net Payable</div>
-                 <div className="text-[14px] font-bold text-green-800">Rs. {formatNumber(netAmount)}</div>
-               </div>
+              <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+                <div className="text-[10px] uppercase font-bold text-[#000000]">Gross Amount</div>
+                <div className="text-[14px] font-bold text-[#000000]">
+                  Rs. {formatNumber(grossNum)}
+                </div>
+              </div>
+              <div className="bg-red-50 p-3 rounded border border-red-200">
+                <div className="text-[10px] uppercase font-bold text-red-700">
+                  TDS Amount ({tdsRate}%)
+                </div>
+                <div className="text-[14px] font-bold text-red-800">
+                  Rs. {formatNumber(tdsAmount)}
+                </div>
+              </div>
+              <div className="bg-green-50 p-3 rounded border border-green-200">
+                <div className="text-[10px] uppercase font-bold text-green-700">Net Payable</div>
+                <div className="text-[14px] font-bold text-green-800">
+                  Rs. {formatNumber(netAmount)}
+                </div>
+              </div>
             </div>
           </Card>
         </form>
@@ -257,4 +283,3 @@ export default function TdsPayment() {
     </div>
   );
 }
-

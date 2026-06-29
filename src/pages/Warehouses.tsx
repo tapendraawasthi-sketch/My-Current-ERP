@@ -3,10 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
 import { DBWarehouse } from "../lib/db";
-import {
-  Plus, Pencil, Trash2, X, Save,
-  CheckCircle, XCircle, Building2, Star
-} from "lucide-react";
+import { Plus, Pencil, Trash2, X, Save, CheckCircle, XCircle, Building2, Star } from "lucide-react";
 
 export default function Warehouses() {
   const { warehouses, addWarehouse, updateWarehouse, deleteWarehouse, loadWarehouses } = useStore();
@@ -68,9 +65,7 @@ export default function Warehouses() {
     }
     // Check duplicate code
     const duplicate = warehouses.find(
-      (w) =>
-        w.code === formData.code?.trim() &&
-        w.id !== editingWarehouse?.id
+      (w) => w.code === formData.code?.trim() && w.id !== editingWarehouse?.id,
     );
     if (duplicate) {
       toast.error(`Code "${formData.code}" is already used by "${duplicate.name}".`);
@@ -156,13 +151,27 @@ export default function Warehouses() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Address</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Default</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Neg. Stock</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Code
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Address
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Default
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Neg. Stock
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -266,7 +275,10 @@ export default function Warehouses() {
               </h2>
               <button
                 type="button"
-                onClick={() => { setShowForm(false); setEditingWarehouse(null); }}
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingWarehouse(null);
+                }}
                 className="text-gray-400 hover:text-gray-700 transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -275,9 +287,7 @@ export default function Warehouses() {
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Code *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Code *</label>
                   <input
                     type="text"
                     value={formData.code || ""}
@@ -288,9 +298,7 @@ export default function Warehouses() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Name *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Name *</label>
                   <input
                     type="text"
                     value={formData.name || ""}
@@ -303,9 +311,7 @@ export default function Warehouses() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Address
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Address</label>
                 <input
                   type="text"
                   value={formData.address || ""}
@@ -347,17 +353,24 @@ export default function Warehouses() {
                   <input
                     type="checkbox"
                     checked={!!formData.allowNegativeStock}
-                    onChange={(e) => setFormData({ ...formData, allowNegativeStock: e.target.checked })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, allowNegativeStock: e.target.checked })
+                    }
                     className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                   />
-                  <span className="text-[12px] font-medium text-gray-700">Allow Negative Stock</span>
+                  <span className="text-[12px] font-medium text-gray-700">
+                    Allow Negative Stock
+                  </span>
                 </label>
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-2">
                 <button
                   type="button"
-                  onClick={() => { setShowForm(false); setEditingWarehouse(null); }}
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingWarehouse(null);
+                  }}
                   className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
@@ -384,8 +397,8 @@ export default function Warehouses() {
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete{" "}
-                <strong>"{warehouseToDelete?.name}"</strong>? This action cannot be undone.
+                Are you sure you want to delete <strong>"{warehouseToDelete?.name}"</strong>? This
+                action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

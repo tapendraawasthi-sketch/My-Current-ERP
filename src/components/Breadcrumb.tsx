@@ -141,10 +141,7 @@ const Breadcrumb: React.FC = () => {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <nav
-      className="flex items-center gap-0 select-none"
-      aria-label="Breadcrumb"
-    >
+    <nav className="flex items-center gap-0 select-none" aria-label="Breadcrumb">
       <button
         type="button"
         onClick={() => setCurrentPage("dashboard")}
@@ -153,18 +150,14 @@ const Breadcrumb: React.FC = () => {
         <Home className="h-3.5 w-3.5" />
       </button>
 
-      {currentPage !== "dashboard" && (
-        <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />
-      )}
+      {currentPage !== "dashboard" && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
 
       {breadcrumbs.map((b, idx) => {
         if (idx === 0) return null;
         const isLast = idx === breadcrumbs.length - 1;
         return (
           <React.Fragment key={idx}>
-            {idx > 1 && (
-              <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />
-            )}
+            {idx > 1 && <ChevronRight className="h-3 w-3 text-gray-400 mx-1" />}
             {isLast ? (
               <span className="text-[12px] font-medium text-gray-800 truncate max-w-[120px] md:max-w-xs">
                 {b.label}

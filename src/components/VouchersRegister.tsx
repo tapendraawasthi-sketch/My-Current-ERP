@@ -168,12 +168,13 @@ const VouchersRegister: React.FC = () => {
   };
 
   const sums = useMemo(() => {
-    const dr = lines.reduce((s, l) => s + (l.debit || 0), 0);
-    const cr = lines.reduce((s, l) => s + (l.credit || 0), 0);
+    const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
+    const dr = lines.reduce((s, l) => s + round2(l.debit || 0), 0);
+    const cr = lines.reduce((s, l) => s + round2(l.credit || 0), 0);
     return {
-      debit: parseFloat(dr.toFixed(2)),
-      credit: parseFloat(cr.toFixed(2)),
-      balanced: Math.abs(dr - cr) < 0.01,
+      debit: round2(dr),
+      credit: round2(cr),
+      balanced: Math.abs(round2(dr) - round2(cr)) === 0,
     };
   }, [lines]);
 
@@ -497,7 +498,15 @@ const VouchersRegister: React.FC = () => {
           </div>
         </div>
 
-        <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(1); }} className="h-8 px-2 border rounded-md text-[12px] font-semibold text-[#1f2937] bg-white" style={{ borderColor: "var(--border)" }}>
+        <select
+          value={typeFilter}
+          onChange={(e) => {
+            setTypeFilter(e.target.value);
+            setPage(1);
+          }}
+          className="h-8 px-2 border rounded-md text-[12px] font-semibold text-[#1f2937] bg-white"
+          style={{ borderColor: "var(--border)" }}
+        >
           <option value="">All Types</option>
           <option value="journal">Journal</option>
           <option value="payment">Payment</option>
@@ -550,26 +559,29 @@ const VouchersRegister: React.FC = () => {
                     </td>
                     <td>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-[#1f2937] leading-tight">{v.dateNepali}</span>
+                        <span className="font-semibold text-[#1f2937] leading-tight">
+                          {v.dateNepali}
+                        </span>
                         <span className="text-[10px] font-medium text-[#1f2937] mt-0.5">
                           {v.date} (AD)
                         </span>
                       </div>
                     </td>
                     <td>
-                      <span className={`badge badge-${v.type?.replace(/-/g,'')}`}>{v.type?.replace(/-/g,' ').toUpperCase()}</span>
+                      <span className={`badge badge-${v.type?.replace(/-/g, "")}`}>
+                        {v.type?.replace(/-/g, " ").toUpperCase()}
+                      </span>
                     </td>
                     <td>
-                      <p className="text-[#1f2937] line-clamp-2 max-w-sm font-medium leading-relaxed" title={v.narration}>
+                      <p
+                        className="text-[#1f2937] line-clamp-2 max-w-sm font-medium leading-relaxed"
+                        title={v.narration}
+                      >
                         {v.narration}
                       </p>
                     </td>
-                    <td className="amt amt-dr">
-                      {formatCurrency(v.totalDebit || 0)}
-                    </td>
-                    <td className="amt amt-cr">
-                      {formatCurrency(v.totalCredit || 0)}
-                    </td>
+                    <td className="amt amt-dr">{formatCurrency(v.totalDebit || 0)}</td>
+                    <td className="amt amt-cr">{formatCurrency(v.totalCredit || 0)}</td>
                     <td>
                       <Badge
                         variant={
@@ -796,4 +808,3 @@ const VouchersRegister: React.FC = () => {
 };
 
 export default VouchersRegister;
-

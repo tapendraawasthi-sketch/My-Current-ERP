@@ -27,13 +27,8 @@ const emptyForm = (): Omit<DBUnitConversion, "id"> => ({
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function UnitConversionMaster() {
-  const {
-    unitConversions,
-    units,
-    addUnitConversion,
-    updateUnitConversion,
-    deleteUnitConversion,
-  } = useStore();
+  const { unitConversions, units, addUnitConversion, updateUnitConversion, deleteUnitConversion } =
+    useStore();
 
   // ── UI state ────────────────────────────────────────────────────────────────
   const [showForm, setShowForm] = useState(false);
@@ -48,20 +43,18 @@ export default function UnitConversionMaster() {
     const q = search.toLowerCase().trim();
     if (!q) return unitConversions;
     return unitConversions.filter(
-      (uc) =>
-        uc.mainUnit.toLowerCase().includes(q) ||
-        uc.subUnit.toLowerCase().includes(q)
+      (uc) => uc.mainUnit.toLowerCase().includes(q) || uc.subUnit.toLowerCase().includes(q),
     );
   }, [unitConversions, search]);
 
   const deleteTarget = useMemo(
     () => unitConversions.find((uc) => uc.id === deleteTargetId) ?? null,
-    [unitConversions, deleteTargetId]
+    [unitConversions, deleteTargetId],
   );
 
   const activeUnits = useMemo(
     () => (units ?? []).filter((u: DBUnit) => u.isActive !== false),
-    [units]
+    [units],
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -89,10 +82,8 @@ export default function UnitConversionMaster() {
     setForm(emptyForm());
   };
 
-  const setField = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
-  ) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): string | null => {
     if (!form.mainUnit) return "Main unit is required.";
@@ -102,10 +93,7 @@ export default function UnitConversionMaster() {
 
     // Check for duplicates
     const dup = unitConversions.find(
-      (uc) =>
-        uc.mainUnit === form.mainUnit &&
-        uc.subUnit === form.subUnit &&
-        uc.id !== editingId
+      (uc) => uc.mainUnit === form.mainUnit && uc.subUnit === form.subUnit && uc.id !== editingId,
     );
     if (dup) return `Conversion rule for ${form.mainUnit} to ${form.subUnit} already exists.`;
 
@@ -200,11 +188,21 @@ export default function UnitConversionMaster() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Main Unit</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Sub Unit</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Conv. Factor</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Main Unit
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Sub Unit
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Conv. Factor
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -212,21 +210,18 @@ export default function UnitConversionMaster() {
               <tr>
                 <td colSpan={5} className="px-3 py-10 text-center text-gray-500 text-[12px]">
                   <Scale className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No unit conversions yet. Create your first conversion rule."}
+                  {search
+                    ? "No results found."
+                    : "No unit conversions yet. Create your first conversion rule."}
                 </td>
               </tr>
             ) : (
               filtered.map((uc) => (
-                <tr
-                  key={uc.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={uc.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700">
                     {uc.mainUnit}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {uc.subUnit}
-                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{uc.subUnit}</td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                     <div className="flex items-center justify-end gap-1.5 text-gray-500">
                       <span>1 {uc.mainUnit}</span>
@@ -289,12 +284,10 @@ export default function UnitConversionMaster() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Main Unit *
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Main Unit *</label>
                 <select
                   value={form.mainUnit}
                   onChange={(e) => setField("mainUnit", e.target.value)}
@@ -315,9 +308,7 @@ export default function UnitConversionMaster() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Sub Unit *
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Sub Unit *</label>
                 <select
                   value={form.subUnit}
                   onChange={(e) => setField("subUnit", e.target.value)}
@@ -335,7 +326,7 @@ export default function UnitConversionMaster() {
 
               <div className="flex flex-col gap-1 mt-2">
                 <label className="text-[11px] font-medium text-gray-600">
-                  Conversion Factor (1 {form.mainUnit || 'Main'} = ? {form.subUnit || 'Sub'}) *
+                  Conversion Factor (1 {form.mainUnit || "Main"} = ? {form.subUnit || "Sub"}) *
                 </label>
                 <input
                   type="number"
@@ -393,8 +384,8 @@ export default function UnitConversionMaster() {
               <p className="text-[12px] text-gray-700 mb-4">
                 Are you sure you want to delete the conversion rule from{" "}
                 <span className="font-semibold text-gray-900">{deleteTarget.mainUnit}</span> to{" "}
-                <span className="font-semibold text-gray-900">{deleteTarget.subUnit}</span>? 
-                This action cannot be undone.
+                <span className="font-semibold text-gray-900">{deleteTarget.subUnit}</span>? This
+                action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

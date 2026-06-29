@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
@@ -30,8 +29,8 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
 
   const handleClose = () => {
     if (window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.")) {
-      try { 
-        window.close(); 
+      try {
+        window.close();
         window.location.href = "about:blank";
       } catch {}
     }
@@ -74,19 +73,31 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
         >
           S
         </div>
-        <span>Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})</span>
+        <span>
+          Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})
+        </span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 13 }}>
         {[
           { label: "—", onClick: onMinimize, title: "Minimize" },
-          { label: isFullscreen ? "❐" : "□", onClick: handleFullscreen, title: isFullscreen ? "Restore" : "Fullscreen" },
+          {
+            label: isFullscreen ? "❐" : "□",
+            onClick: handleFullscreen,
+            title: isFullscreen ? "Restore" : "Fullscreen",
+          },
           { label: "✕", onClick: handleClose, title: "Close" },
         ].map(({ label, onClick, title }) => (
           <span
             key={title}
             onClick={onClick}
             title={title}
-            style={{ cursor: "pointer", padding: "0 6px", lineHeight: "18px", display: "inline-block", borderRadius: 2 }}
+            style={{
+              cursor: "pointer",
+              padding: "0 6px",
+              lineHeight: "18px",
+              display: "inline-block",
+              borderRadius: 2,
+            }}
             onMouseEnter={(e) => btnHover(e, true)}
             onMouseLeave={(e) => btnHover(e, false)}
           >
@@ -106,11 +117,13 @@ export const StatusBar: React.FC = () => {
   const fy = currentFiscalYear?.name || "—";
   const [bsDate, setBsDate] = useState("");
 
-  useEffect(() => { setBsDate(getBSTodayLong()); }, []);
+  useEffect(() => {
+    setBsDate(getBSTodayLong());
+  }, []);
 
   const today = new Date();
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-  const dateStr = `${String(today.getDate()).padStart(2,"0")}-${String(today.getMonth()+1).padStart(2,"0")}-${today.getFullYear()}`;
+  const dateStr = `${String(today.getDate()).padStart(2, "0")}-${String(today.getMonth() + 1).padStart(2, "0")}-${today.getFullYear()}`;
 
   const cellStyle: React.CSSProperties = {
     display: "flex",
@@ -148,8 +161,27 @@ export const StatusBar: React.FC = () => {
         <div>State: Nepal</div>
         <div>Currency: रू</div>
       </div>
-      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, borderLeft: "1px solid #000000", padding: "0 12px", height: "100%" }}>
-        <div style={{ background: "#C9DEB5", color: "#000000", padding: "1px 5px", fontSize: 10, fontWeight: "bold", border: "1px solid #000000" }}>
+      <div
+        style={{
+          marginLeft: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          borderLeft: "1px solid #000000",
+          padding: "0 12px",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            background: "#C9DEB5",
+            color: "#000000",
+            padding: "1px 5px",
+            fontSize: 10,
+            fontWeight: "bold",
+            border: "1px solid #000000",
+          }}
+        >
           ACCOUNTING SOFTWARE
         </div>
         <span style={{ fontWeight: "bold" }}>{weekday}</span>
@@ -179,23 +211,34 @@ export const CommandHintBar: React.FC<{ hints?: string[] }> = ({
       fontSize: 11,
     }}
   >
-    {hints.map((h) => <span key={h}>[ {h} ]</span>)}
+    {hints.map((h) => (
+      <span key={h}>[ {h} ]</span>
+    ))}
   </div>
 );
 
 const fKeys = [
-  { key: "F1", label: "Help" }, { key: "F2", label: "Add Account" },
-  { key: "F3", label: "Add Item" }, { key: "F4", label: "Add Master" },
-  { key: "F5", label: "Add Voucher" }, { key: "F6", label: "Add Payment" },
-  { key: "F7", label: "Add Receipt" }, { key: "F8", label: "Add Journal" },
+  { key: "F1", label: "Help" },
+  { key: "F2", label: "Add Account" },
+  { key: "F3", label: "Add Item" },
+  { key: "F4", label: "Add Master" },
+  { key: "F5", label: "Add Voucher" },
+  { key: "F6", label: "Add Payment" },
+  { key: "F7", label: "Add Receipt" },
+  { key: "F8", label: "Add Journal" },
   { key: "F9", label: "Add Sales" },
 ];
 const quickKeys = [
-  { key: "B", label: "Balance Sheet" }, { key: "T", label: "Trial Balance" },
-  { key: "S", label: "Stock Status" }, { key: "A", label: "Acc. Summary" },
-  { key: "L", label: "Acc. Ledger" }, { key: "V", label: "VAT Report" },
-  { key: "D", label: "Day Book" }, { key: "G", label: "GST/VAT Summary" },
-  { key: "U", label: "Switch User" }, { key: "F", label: "Configuration" },
+  { key: "B", label: "Balance Sheet" },
+  { key: "T", label: "Trial Balance" },
+  { key: "S", label: "Stock Status" },
+  { key: "A", label: "Acc. Summary" },
+  { key: "L", label: "Acc. Ledger" },
+  { key: "V", label: "VAT Report" },
+  { key: "D", label: "Day Book" },
+  { key: "G", label: "GST/VAT Summary" },
+  { key: "U", label: "Switch User" },
+  { key: "F", label: "Configuration" },
   { key: "K", label: "Lock Program" },
 ];
 
@@ -203,23 +246,46 @@ export const ShortcutSidebar: React.FC<React.ComponentProps<typeof RightButtonBa
   return <RightButtonBar {...props} />;
 };
 
-export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({ title, variant = "tally" }) => (
-  <div className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""} style={variant === "tally" ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 } : {}}>
+export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({
+  title,
+  variant = "tally",
+}) => (
+  <div
+    className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""}
+    style={
+      variant === "tally"
+        ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 }
+        : {}
+    }
+  >
     <span
-      className={variant === "standard" ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border" : ""}
-      style={variant === "standard" ? {
-        background: '#D4EABD', color: '#000000', border: '1px solid #000000', borderRadius: '4px'
-      } : variant === "tally" ? {
-        display: "inline-block",
-        background: "#C9DEB5",
-        color: "#000000",
-        fontWeight: "bold",
-        fontSize: 13,
-        padding: "3px 18px",
-        textAlign: "center",
-        borderRadius: 4,
-        border: "1px solid #000000",
-      } : {}}
+      className={
+        variant === "standard"
+          ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border"
+          : ""
+      }
+      style={
+        variant === "standard"
+          ? {
+              background: "#D4EABD",
+              color: "#000000",
+              border: "1px solid #000000",
+              borderRadius: "4px",
+            }
+          : variant === "tally"
+            ? {
+                display: "inline-block",
+                background: "#C9DEB5",
+                color: "#000000",
+                fontWeight: "bold",
+                fontSize: 13,
+                padding: "3px 18px",
+                textAlign: "center",
+                borderRadius: 4,
+                border: "1px solid #000000",
+              }
+            : {}
+      }
     >
       {title}
     </span>
@@ -232,11 +298,7 @@ export const FormPanel: React.FC<{
   variant?: "tally" | "standard";
 }> = ({ children, style, variant = "tally" }) => (
   <div
-    className={
-      variant === "standard"
-        ? "bg-white border border-gray-200 rounded-md p-3"
-        : ""
-    }
+    className={variant === "standard" ? "bg-white border border-gray-200 rounded-md p-3" : ""}
     style={
       variant === "tally"
         ? {
@@ -252,25 +314,62 @@ export const FormPanel: React.FC<{
   </div>
 );
 
-export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-  <div style={{ border: "1px solid #000000", padding: "12px 10px 8px", position: "relative", marginTop: 10, borderRadius: 4, background: "#EBF5E2" }}>
-    <span style={{ position: "absolute", top: -8, left: 8, background: "#EBF5E2", padding: "0 4px", color: "#000000", fontSize: 11, fontWeight: "bold" }}>
+export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({
+  label,
+  children,
+}) => (
+  <div
+    style={{
+      border: "1px solid #000000",
+      padding: "12px 10px 8px",
+      position: "relative",
+      marginTop: 10,
+      borderRadius: 4,
+      background: "#EBF5E2",
+    }}
+  >
+    <span
+      style={{
+        position: "absolute",
+        top: -8,
+        left: 8,
+        background: "#EBF5E2",
+        padding: "0 4px",
+        color: "#000000",
+        fontSize: 11,
+        fontWeight: "bold",
+      }}
+    >
       {label}
     </span>
     {children}
   </div>
 );
 
-export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = ({
+  label,
+  children,
+}) => (
   <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 3 }}>
-    <span style={{ color: "#000000", minWidth: 130, textAlign: "right", paddingRight: 8, paddingTop: 2, flexShrink: 0 }}>
+    <span
+      style={{
+        color: "#000000",
+        minWidth: 130,
+        textAlign: "right",
+        paddingRight: 8,
+        paddingTop: 2,
+        flexShrink: 0,
+      }}
+    >
       {label}
     </span>
     <span style={{ flex: 1, color: "#000000" }}>{children}</span>
   </div>
 );
 
-export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { width?: string | number }> = (props) => (
+export const BusyInput: React.FC<
+  React.InputHTMLAttributes<HTMLInputElement> & { width?: string | number }
+> = (props) => (
   <input
     {...props}
     style={{
@@ -285,9 +384,9 @@ export const BusyInput: React.FC<React.InputHTMLAttributes<HTMLInputElement> & {
   />
 );
 
-export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { label: string; mnemonic?: string }> = ({
-  label, mnemonic, ...rest
-}) => {
+export const FlatBtn: React.FC<
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { label: string; mnemonic?: string }
+> = ({ label, mnemonic, ...rest }) => {
   const idx = mnemonic ? label.toLowerCase().indexOf(mnemonic.toLowerCase()) : -1;
   return (
     <button
@@ -310,7 +409,9 @@ export const FlatBtn: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
           <u>{label[idx]}</u>
           {label.slice(idx + 1)}
         </>
-      ) : label}
+      ) : (
+        label
+      )}
     </button>
   );
 };

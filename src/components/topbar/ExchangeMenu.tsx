@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { logAuditEvent } from "@/lib/auditLog";
-import { Field, ModalShell, PrimaryButton, SelectField, ToggleRow, TopMenuDropdown } from "./shared";
+import {
+  Field,
+  ModalShell,
+  PrimaryButton,
+  SelectField,
+  ToggleRow,
+  TopMenuDropdown,
+} from "./shared";
 
 type ExchangeModalKey = "sync" | "import" | "export" | "settings" | "logs";
 
@@ -71,7 +78,12 @@ function SyncModal({ onClose }: { onClose: () => void }) {
       footer={<PrimaryButton onClick={run}>Synchronise</PrimaryButton>}
     >
       <div className="grid gap-2">
-        <SelectField label="Sync Type" value={syncType} onChange={setSyncType} options={["Full", "Incremental"]} />
+        <SelectField
+          label="Sync Type"
+          value={syncType}
+          onChange={setSyncType}
+          options={["Full", "Incremental"]}
+        />
         <ToggleRow label="Ledgers" checked={ledgers} onChange={setLedgers} />
         <ToggleRow label="Stock Items" checked={items} onChange={setItems} />
         <ToggleRow label="Vouchers" checked={vouchers} onChange={setVouchers} />
@@ -125,7 +137,9 @@ function ConnectivityModal({ onClose }: { onClose: () => void }) {
 
       <div className="mt-4 rounded-md border border-gray-200 p-3">
         <div className="mb-2 text-[11px] font-semibold uppercase text-gray-500">Branch Mapping</div>
-        <div className="text-[12px] text-gray-500">Local branch → remote branch mapping will appear here.</div>
+        <div className="text-[12px] text-gray-500">
+          Local branch → remote branch mapping will appear here.
+        </div>
       </div>
     </ModalShell>
   );
@@ -137,13 +151,19 @@ function LogsModal({ onClose }: { onClose: () => void }) {
       <table className="w-full text-[12px]">
         <thead className="bg-[#f5f6fa]">
           <tr>
-            {["Date", "Direction", "Records Sent", "Records Received", "Failed", "Status", "User"].map(
-              (heading) => (
-                <th key={heading} className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
-                  {heading}
-                </th>
-              ),
-            )}
+            {[
+              "Date",
+              "Direction",
+              "Records Sent",
+              "Records Received",
+              "Failed",
+              "Status",
+              "User",
+            ].map((heading) => (
+              <th key={heading} className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                {heading}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

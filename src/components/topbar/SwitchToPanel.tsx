@@ -205,7 +205,9 @@ export default function SwitchToPanel({ onClose }: { onClose: () => void }) {
                         </div>
 
                         {item.shortcut && (
-                          <span className="font-mono text-[10px] text-gray-400">{item.shortcut}</span>
+                          <span className="font-mono text-[10px] text-gray-400">
+                            {item.shortcut}
+                          </span>
                         )}
                       </button>
                     );

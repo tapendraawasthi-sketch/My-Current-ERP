@@ -116,7 +116,13 @@ const PartyLedgerStatement: React.FC = () => {
   };
 
   const statementColumns = [
-    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
+    {
+      key: "date",
+      header: "Date",
+      render: (_: any, row: any) => (
+        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+      ),
+    },
     { key: "voucherNo", header: "Voucher No" },
     { key: "voucherType", header: "Type" },
     { key: "narration", header: "Narration", width: "40%" },
@@ -201,28 +207,46 @@ const PartyLedgerStatement: React.FC = () => {
       {selectedParty && statement ? (
         <>
           {/* Party Summary Header Panel */}
-          <div className="bg-white border rounded-lg p-4 mb-3 grid grid-cols-4 gap-4 animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="bg-white border rounded-lg p-4 mb-3 grid grid-cols-4 gap-4 animate-fadeIn"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div>
               <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Party</div>
               <div className="font-bold text-[13px] text-[#000000]">{selectedParty?.name}</div>
-              <div className="text-[11px] text-[#000000]">{selectedParty?.pan ? `PAN: ${selectedParty.pan}` : ""}</div>
+              <div className="text-[11px] text-[#000000]">
+                {selectedParty?.pan ? `PAN: ${selectedParty.pan}` : ""}
+              </div>
             </div>
             <div>
               <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Type</div>
-              <span className={`badge bg-[#D4EABD] text-[#000000] px-2 py-0.5 rounded text-[10px] font-semibold uppercase`}>{selectedParty?.type}</span>
+              <span
+                className={`badge bg-[#D4EABD] text-[#000000] px-2 py-0.5 rounded text-[10px] font-semibold uppercase`}
+              >
+                {selectedParty?.type}
+              </span>
             </div>
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Opening Balance</div>
+              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">
+                Opening Balance
+              </div>
               <div className="font-mono font-bold text-[14px] text-[#000000]">
                 {formatNumber(Math.abs(statement?.openingBalance || 0))}
               </div>
             </div>
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Closing Balance</div>
+              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">
+                Closing Balance
+              </div>
               {(() => {
-                const closingBalance = statement.closingType === "Dr" ? statement.closingBalance : -statement.closingBalance;
+                const closingBalance =
+                  statement.closingType === "Dr"
+                    ? statement.closingBalance
+                    : -statement.closingBalance;
                 return (
-                  <div className={`font-mono font-bold text-[14px] ${closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
+                  <div
+                    className={`font-mono font-bold text-[14px] ${closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+                  >
                     {formatNumber(Math.abs(closingBalance))} {closingBalance >= 0 ? "Dr" : "Cr"}
                   </div>
                 );
@@ -232,51 +256,80 @@ const PartyLedgerStatement: React.FC = () => {
 
           {/* Outstanding Summary Collapsible Card */}
           <Card border padding="sm" className="mb-4 no-print">
-            <div className="flex items-center justify-between cursor-pointer" onClick={() => setSummaryExpanded(!summaryExpanded)}>
+            <div
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => setSummaryExpanded(!summaryExpanded)}
+            >
               <div className="flex items-center gap-2">
-                <span className="font-bold text-[#000000] text-xs"> Outstanding Summary Analysis</span>
-                <span className="text-[10px] text-[#000000] font-semibold">(Click to {summaryExpanded ? "Collapse" : "Expand"})</span>
+                <span className="font-bold text-[#000000] text-xs">
+                  {" "}
+                  Outstanding Summary Analysis
+                </span>
+                <span className="text-[10px] text-[#000000] font-semibold">
+                  (Click to {summaryExpanded ? "Collapse" : "Expand"})
+                </span>
               </div>
-              <div className="text-[#000000] font-bold text-xs">
-                {summaryExpanded ? "▲" : "▼"}
-              </div>
+              <div className="text-[#000000] font-bold text-xs">{summaryExpanded ? "▲" : "▼"}</div>
             </div>
 
             {summaryExpanded && outstandingSummary && (
               <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-[#9DC07A] animate-fadeIn">
                 <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">Total Receivable / Payable</div>
+                  <div className="text-[10px] text-[#000000] font-bold uppercase">
+                    Total Receivable / Payable
+                  </div>
                   <div className="flex items-center gap-4 text-[11px] mt-0.5">
                     <div>
                       <span className="text-[#000000] mr-1">Receivable:</span>
-                      <strong className="text-green-700 font-mono">रू {formatNumber(outstandingSummary.totalReceivable)}</strong>
+                      <strong className="text-green-700 font-mono">
+                        रू {formatNumber(outstandingSummary.totalReceivable)}
+                      </strong>
                     </div>
                     <div>
                       <span className="text-[#000000] mr-1">Payable:</span>
-                      <strong className="text-red-600 font-mono">रू {formatNumber(outstandingSummary.totalPayable)}</strong>
+                      <strong className="text-red-600 font-mono">
+                        रू {formatNumber(outstandingSummary.totalPayable)}
+                      </strong>
                     </div>
                   </div>
                   <div className="text-[10px] text-[#000000] mt-1">
-                    Net Outstanding: <strong className={outstandingSummary.netOutstanding >= 0 ? "text-green-700 font-mono" : "text-red-600 font-mono"}>
-                      रू {formatNumber(Math.abs(outstandingSummary.netOutstanding))} {outstandingSummary.netOutstanding >= 0 ? "Dr" : "Cr"}
+                    Net Outstanding:{" "}
+                    <strong
+                      className={
+                        outstandingSummary.netOutstanding >= 0
+                          ? "text-green-700 font-mono"
+                          : "text-red-600 font-mono"
+                      }
+                    >
+                      रू {formatNumber(Math.abs(outstandingSummary.netOutstanding))}{" "}
+                      {outstandingSummary.netOutstanding >= 0 ? "Dr" : "Cr"}
                     </strong>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">Oldest Pending Bill</div>
+                  <div className="text-[10px] text-[#000000] font-bold uppercase">
+                    Oldest Pending Bill
+                  </div>
                   {outstandingSummary.oldestBillNo ? (
                     <div className="text-[11px] text-[#000000] mt-0.5">
-                      <strong>{outstandingSummary.oldestBillNo}</strong> dated <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
-                      <span className="text-red-600 font-semibold ml-2">({outstandingSummary.oldestDays} days old)</span>
+                      <strong>{outstandingSummary.oldestBillNo}</strong> dated{" "}
+                      <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
+                      <span className="text-red-600 font-semibold ml-2">
+                        ({outstandingSummary.oldestDays} days old)
+                      </span>
                     </div>
                   ) : (
-                    <div className="text-[11px] text-[#000000] italic mt-0.5">No pending bills.</div>
+                    <div className="text-[11px] text-[#000000] italic mt-0.5">
+                      No pending bills.
+                    </div>
                   )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">Credit Limit Utilization</div>
+                  <div className="text-[10px] text-[#000000] font-bold uppercase">
+                    Credit Limit Utilization
+                  </div>
                   {selectedParty.creditLimit && selectedParty.creditLimit > 0 ? (
                     <div className="mt-1">
                       <div className="flex justify-between text-[9px] text-[#000000] mb-1">
@@ -289,32 +342,73 @@ const PartyLedgerStatement: React.FC = () => {
                             creditLimitPercent > 90
                               ? "bg-red-600"
                               : creditLimitPercent > 50
-                              ? "bg-amber-500"
-                              : "bg-green-600"
+                                ? "bg-amber-500"
+                                : "bg-green-600"
                           }`}
                           style={{ width: `${creditLimitPercent}%` }}
                         ></div>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-[11px] text-[#000000] italic mt-0.5">No credit limit set.</div>
+                    <div className="text-[11px] text-[#000000] italic mt-0.5">
+                      No credit limit set.
+                    </div>
                   )}
                 </div>
               </div>
             )}
           </Card>
 
-          <div className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white animate-fadeIn"
+            style={{ borderColor: "var(--border)" }}
+          >
             <table className="data-table sticky-thead">
               <thead>
                 <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Date (BS)</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Voucher No</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">Type</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left" style={{ width: "40%" }}>Narration</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Debit</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Credit</th>
-                  <th scope="col" className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">Balance</th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                  >
+                    Date (BS)
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                  >
+                    Voucher No
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                    style={{ width: "40%" }}
+                  >
+                    Narration
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                  >
+                    Debit
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                  >
+                    Credit
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                  >
+                    Balance
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-150">
@@ -346,7 +440,9 @@ const PartyLedgerStatement: React.FC = () => {
                       <td className="px-3 py-2.5 text-[12px] text-[#000000] font-bold">
                         {row.voucherNo}
                         {row.invoiceRef && (
-                          <span className="ml-1 text-[10px] text-[#000000]">({row.invoiceRef})</span>
+                          <span className="ml-1 text-[10px] text-[#000000]">
+                            ({row.invoiceRef})
+                          </span>
                         )}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-[#000000]">{row.voucherType}</td>
@@ -398,4 +494,3 @@ const PartyLedgerStatement: React.FC = () => {
 };
 
 export default PartyLedgerStatement;
-

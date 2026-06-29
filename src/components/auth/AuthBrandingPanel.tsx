@@ -33,8 +33,8 @@ export default function AuthBrandingPanel() {
                 Nepal-First Design
               </h3>
               <p className="text-sm" style={{ color: "#1f2937" }}>
-                Built specifically for Nepali businesses with BS date support, VAT compliance,
-                and IRD integration
+                Built specifically for Nepali businesses with BS date support, VAT compliance, and
+                IRD integration
               </p>
             </div>
           </div>

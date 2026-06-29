@@ -10,20 +10,20 @@ import { Send, Plus, Eye, Download, Upload, FileText } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
 export default function EPayments() {
-  const { 
-    accounts, 
-    vouchers, 
-    parties, 
+  const {
+    accounts,
+    vouchers,
+    parties,
     ePaymentBatches,
     companySettings,
     saveEPaymentBatch,
-    updateEPaymentBatch
+    updateEPaymentBatch,
   } = useStore();
 
   const [view, setView] = useState<"list" | "form">("list");
   const [selectedBatch, setSelectedBatch] = useState<any>(null);
   const [editingBatch, setEditingBatch] = useState<any>(null);
-  
+
   // Form state
   const [bankAccountId, setBankAccountId] = useState("");
   const [paymentDate, setPaymentDate] = useState("");
@@ -36,12 +36,12 @@ export default function EPayments() {
   const [isProcessingResponse, setIsProcessingResponse] = useState(false);
 
   const bankAccounts = useMemo(() => {
-    return accounts.filter(a => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
+    return accounts.filter((a) => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
   }, [accounts]);
 
   const unbatchedVouchers = useMemo(() => {
     const batchedVoucherIds = new Set();
-    ePaymentBatches.forEach(batch => {
+    ePaymentBatches.forEach((batch) => {
       try {
         const entries = JSON.parse(batch.entries || "[]");
         entries.forEach((entry: any) => batchedVoucherIds.add(entry.voucherId));
@@ -49,46 +49,49 @@ export default function EPayments() {
         console.error("Error parsing batch entries:", e);
       }
     });
-    
-    return vouchers.filter(v => 
-      v.type === "payment" && 
-      (v.paymentMode?.toLowerCase() === "neft" || 
-       v.paymentMode?.toLowerCase() === "rtgs" || 
-       v.paymentMode?.toLowerCase() === "imps" || 
-       v.paymentMode?.toLowerCase() === "online" || 
-       v.paymentMode?.toLowerCase() === "e-payment") && 
-      !batchedVoucherIds.has(v.id)
+
+    return vouchers.filter(
+      (v) =>
+        v.type === "payment" &&
+        (v.paymentMode?.toLowerCase() === "neft" ||
+          v.paymentMode?.toLowerCase() === "rtgs" ||
+          v.paymentMode?.toLowerCase() === "imps" ||
+          v.paymentMode?.toLowerCase() === "online" ||
+          v.paymentMode?.toLowerCase() === "e-payment") &&
+        !batchedVoucherIds.has(v.id),
     );
   }, [vouchers, ePaymentBatches]);
 
   const selectedVoucherData = useMemo(() => {
-    return selectedVouchers.map(voucherId => {
-      const voucher = vouchers.find(v => v.id === voucherId);
-      if (!voucher) return null;
-      
-      const party = parties.find(p => p.id === voucher.partyId);
-      const amount = voucher.grandTotal || 0;
-      
-      // Determine payment type based on amount and threshold
-      let paymentType = "NEFT";
-      if (amount >= rtgsThreshold) {
-        paymentType = "RTGS";
-      } else if (enableImps && party?.bankAccountNo) {
-        paymentType = "IMPS";
-      }
-      
-      return {
-        voucherId: voucher.id,
-        voucherNo: voucher.voucherNo,
-        partyId: party?.id || "",
-        partyName: party?.name || "Unknown",
-        amount,
-        accountNo: party?.bankAccountNo || "",
-        ifscCode: party?.bankBranch || "",
-        bankName: party?.bankName || "",
-        paymentType
-      };
-    }).filter(Boolean);
+    return selectedVouchers
+      .map((voucherId) => {
+        const voucher = vouchers.find((v) => v.id === voucherId);
+        if (!voucher) return null;
+
+        const party = parties.find((p) => p.id === voucher.partyId);
+        const amount = voucher.grandTotal || 0;
+
+        // Determine payment type based on amount and threshold
+        let paymentType = "NEFT";
+        if (amount >= rtgsThreshold) {
+          paymentType = "RTGS";
+        } else if (enableImps && party?.bankAccountNo) {
+          paymentType = "IMPS";
+        }
+
+        return {
+          voucherId: voucher.id,
+          voucherNo: voucher.voucherNo,
+          partyId: party?.id || "",
+          partyName: party?.name || "Unknown",
+          amount,
+          accountNo: party?.bankAccountNo || "",
+          ifscCode: party?.bankBranch || "",
+          bankName: party?.bankName || "",
+          paymentType,
+        };
+      })
+      .filter(Boolean);
   }, [selectedVouchers, vouchers, parties, rtgsThreshold, enableImps]);
 
   const totalAmount = useMemo(() => {
@@ -97,10 +100,10 @@ export default function EPayments() {
 
   const handleNewBatch = () => {
     // Generate batch number
-    const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    const count = ePaymentBatches.filter(b => b.batchNo.startsWith(`EP-${today}`)).length + 1;
-    const batchNo = `EP-${today}-${count.toString().padStart(3, '0')}`;
-    
+    const today = new Date().toISOString().split("T")[0].replace(/-/g, "");
+    const count = ePaymentBatches.filter((b) => b.batchNo.startsWith(`EP-${today}`)).length + 1;
+    const batchNo = `EP-${today}-${count.toString().padStart(3, "0")}`;
+
     setEditingBatch({ batchNo });
     setBankAccountId("");
     setPaymentDate("");
@@ -118,10 +121,8 @@ export default function EPayments() {
   };
 
   const handleToggleVoucher = (voucherId: string) => {
-    setSelectedVouchers(prev => 
-      prev.includes(voucherId) 
-        ? prev.filter(id => id !== voucherId) 
-        : [...prev, voucherId]
+    setSelectedVouchers((prev) =>
+      prev.includes(voucherId) ? prev.filter((id) => id !== voucherId) : [...prev, voucherId],
     );
   };
 
@@ -129,7 +130,7 @@ export default function EPayments() {
     if (selectedVouchers.length === unbatchedVouchers.length) {
       setSelectedVouchers([]);
     } else {
-      setSelectedVouchers(unbatchedVouchers.map(v => v.id));
+      setSelectedVouchers(unbatchedVouchers.map((v) => v.id));
     }
   };
 
@@ -145,14 +146,12 @@ export default function EPayments() {
     }
 
     // Validate beneficiary details
-    const missingDetails = selectedVoucherData.filter(v => 
-      !v.accountNo || !v.ifscCode
-    );
-    
+    const missingDetails = selectedVoucherData.filter((v) => !v.accountNo || !v.ifscCode);
+
     if (missingDetails.length > 0) {
       toast.error(
-        `Missing beneficiary details for: ${missingDetails.map(v => v.partyName).join(", ")}. ` +
-        "Please update ledger master."
+        `Missing beneficiary details for: ${missingDetails.map((v) => v.partyName).join(", ")}. ` +
+          "Please update ledger master.",
       );
       return;
     }
@@ -164,23 +163,30 @@ export default function EPayments() {
 
       // Generate file content based on format
       if (fileFormat === "csv-standard") {
-        const headers = ["Beneficiary Name", "Account Number", "IFSC Code", "Bank Name", "Amount", "Payment Type", "Narration"];
-        const rows = selectedVoucherData.map(v => [
+        const headers = [
+          "Beneficiary Name",
+          "Account Number",
+          "IFSC Code",
+          "Bank Name",
+          "Amount",
+          "Payment Type",
+          "Narration",
+        ];
+        const rows = selectedVoucherData.map((v) => [
           `"${v.partyName}"`,
           `"${v.accountNo}"`,
           `"${v.ifscCode}"`,
           `"${v.bankName}"`,
           v.amount.toFixed(2),
           `"${v.paymentType}"`,
-          `"${narration || v.voucherNo}"`
+          `"${narration || v.voucherNo}"`,
         ]);
-        
-        fileContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
+
+        fileContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
         fileName = `epayment-${editingBatch.batchNo}.csv`;
         mimeType = "text/csv";
-      } 
-      else if (fileFormat === "text-fixed-width") {
-        const rows = selectedVoucherData.map(v => {
+      } else if (fileFormat === "text-fixed-width") {
+        const rows = selectedVoucherData.map((v) => {
           const name = v.partyName.substring(0, 30).padEnd(30);
           const account = v.accountNo.substring(0, 20).padEnd(20);
           const ifsc = v.ifscCode.substring(0, 11).padEnd(11);
@@ -188,22 +194,24 @@ export default function EPayments() {
           const type = v.paymentType.substring(0, 4).padEnd(4);
           return `${name}${account}${ifsc}${amount}${type}`;
         });
-        
+
         fileContent = rows.join("\n");
         fileName = `epayment-${editingBatch.batchNo}.txt`;
         mimeType = "text/plain";
-      } 
-      else if (fileFormat === "xml") {
-        const paymentsXml = selectedVoucherData.map(v => `
+      } else if (fileFormat === "xml") {
+        const paymentsXml = selectedVoucherData
+          .map(
+            (v) => `
   <payment>
     <beneficiary>${v.partyName}</beneficiary>
     <accountNo>${v.accountNo}</accountNo>
     <ifsc>${v.ifscCode}</ifsc>
     <amount>${v.amount.toFixed(2)}</amount>
     <type>${v.paymentType}</type>
-  </payment>`
-        ).join("");
-        
+  </payment>`,
+          )
+          .join("");
+
         fileContent = `<?xml version="1.0" encoding="UTF-8"?>
 <payments>
 ${paymentsXml}
@@ -224,7 +232,7 @@ ${paymentsXml}
         fileFormat,
         generatedFileContent: fileContent,
         status: "generated",
-        narration
+        narration,
       };
 
       let batchId;
@@ -253,9 +261,9 @@ ${paymentsXml}
 
   const handleMarkUploaded = async (batchId: string) => {
     try {
-      await updateEPaymentBatch(batchId, { 
-        status: "uploaded", 
-        uploadedAt: new Date().toISOString() 
+      await updateEPaymentBatch(batchId, {
+        status: "uploaded",
+        uploadedAt: new Date().toISOString(),
       });
       toast.success("Batch marked as uploaded");
     } catch (error) {
@@ -279,52 +287,52 @@ ${paymentsXml}
     setIsProcessingResponse(true);
     try {
       const text = await responseFile.text();
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-      
+      const lines = text.split("\n").filter((line) => line.trim() !== "");
+
       // Parse CSV response - assume format: Account No, Amount, Status, Error Reason
       const results: any[] = [];
-      for (let i = 1; i < lines.length; i++) { // Skip header
-        const cols = lines[i].split(',').map(col => col.trim());
+      for (let i = 1; i < lines.length; i++) {
+        // Skip header
+        const cols = lines[i].split(",").map((col) => col.trim());
         if (cols.length >= 3) {
           results.push({
             accountNo: cols[0],
             amount: parseFloat(cols[1]),
             status: cols[2],
-            errorReason: cols[3] || ""
+            errorReason: cols[3] || "",
           });
         }
       }
 
       // Update batch entries based on response
-      const batch = ePaymentBatches.find(b => b.id === batchId);
+      const batch = ePaymentBatches.find((b) => b.id === batchId);
       if (!batch) return;
 
       const entries = JSON.parse(batch.entries || "[]");
       const updatedEntries = entries.map((entry: any) => {
-        const result = results.find(r => 
-          r.accountNo === entry.accountNo && 
-          Math.abs(r.amount - entry.amount) < 0.01
+        const result = results.find(
+          (r) => r.accountNo === entry.accountNo && Math.abs(r.amount - entry.amount) < 0.01,
         );
-        
+
         if (result) {
           return {
             ...entry,
             status: result.status.toLowerCase() === "success" ? "success" : "failed",
-            errorReason: result.errorReason
+            errorReason: result.errorReason,
           };
         }
         return entry;
       });
 
-      await updateEPaymentBatch(batchId, { 
+      await updateEPaymentBatch(batchId, {
         entries: JSON.stringify(updatedEntries),
         status: "processed",
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString(),
       });
 
       const successCount = updatedEntries.filter((e: any) => e.status === "success").length;
       const failCount = updatedEntries.filter((e: any) => e.status === "failed").length;
-      
+
       toast.success(`Processed: ${successCount} successful, ${failCount} failed`);
       setResponseFile(null);
     } catch (error) {
@@ -336,50 +344,66 @@ ${paymentsXml}
 
   if (view === "form" && selectedBatch) {
     const entries = JSON.parse(selectedBatch.entries || "[]");
-    
+
     return (
       <div className="flex flex-col h-full">
-        <ActionToolbar 
-          title={`Batch: ${selectedBatch.batchNo}`} 
-          icon={<Send size={16} />}
-        >
+        <ActionToolbar title={`Batch: ${selectedBatch.batchNo}`} icon={<Send size={16} />}>
           <Button size="sm" variant="outline" onClick={() => setView("list")}>
             Back to List
           </Button>
         </ActionToolbar>
-        
+
         <div className="flex-1 overflow-auto p-4">
           <FormPanel title="Batch Details">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
-                <p><strong>Batch No:</strong> {selectedBatch.batchNo}</p>
-                <p><strong>Payment Date:</strong> {selectedBatch.paymentDate}</p>
+                <p>
+                  <strong>Batch No:</strong> {selectedBatch.batchNo}
+                </p>
+                <p>
+                  <strong>Payment Date:</strong> {selectedBatch.paymentDate}
+                </p>
               </div>
-              
+
               <div>
-                <p><strong>Bank Account:</strong> {bankAccounts.find(a => a.id === selectedBatch.bankAccountId)?.name}</p>
-                <p><strong>Total Amount:</strong> {formatNumber(selectedBatch.totalAmount)}</p>
+                <p>
+                  <strong>Bank Account:</strong>{" "}
+                  {bankAccounts.find((a) => a.id === selectedBatch.bankAccountId)?.name}
+                </p>
+                <p>
+                  <strong>Total Amount:</strong> {formatNumber(selectedBatch.totalAmount)}
+                </p>
               </div>
             </div>
-            
+
             <div className="mb-4">
-              <p><strong>Format:</strong> {selectedBatch.fileFormat}</p>
-              <p><strong>Status:</strong> 
-                <Badge 
+              <p>
+                <strong>Format:</strong> {selectedBatch.fileFormat}
+              </p>
+              <p>
+                <strong>Status:</strong>
+                <Badge
                   variant={
-                    selectedBatch.status === "draft" ? "warning" :
-                    selectedBatch.status === "generated" ? "info" :
-                    selectedBatch.status === "uploaded" ? "secondary" :
-                    "success"
+                    selectedBatch.status === "draft"
+                      ? "warning"
+                      : selectedBatch.status === "generated"
+                        ? "info"
+                        : selectedBatch.status === "uploaded"
+                          ? "secondary"
+                          : "success"
                   }
                 >
                   {selectedBatch.status.charAt(0).toUpperCase() + selectedBatch.status.slice(1)}
                 </Badge>
               </p>
-              {selectedBatch.narration && <p><strong>Narration:</strong> {selectedBatch.narration}</p>}
+              {selectedBatch.narration && (
+                <p>
+                  <strong>Narration:</strong> {selectedBatch.narration}
+                </p>
+              )}
             </div>
           </FormPanel>
-          
+
           <FormPanel title="Payment Entries">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -396,8 +420,8 @@ ${paymentsXml}
                 </thead>
                 <tbody>
                   {entries.map((entry: any, index: number) => (
-                    <tr 
-                      key={index} 
+                    <tr
+                      key={index}
                       className={`border-t ${entry.status === "failed" ? "bg-red-50" : ""}`}
                     >
                       <td className="p-2">{entry.voucherNo}</td>
@@ -407,11 +431,13 @@ ${paymentsXml}
                       <td className="p-2 text-right">{formatNumber(entry.amount)}</td>
                       <td className="p-2">{entry.paymentType}</td>
                       <td className="p-2">
-                        <Badge 
+                        <Badge
                           variant={
-                            entry.status === "success" ? "success" : 
-                            entry.status === "failed" ? "danger" : 
-                            "secondary"
+                            entry.status === "success"
+                              ? "success"
+                              : entry.status === "failed"
+                                ? "danger"
+                                : "secondary"
                           }
                         >
                           {entry.status}
@@ -426,20 +452,23 @@ ${paymentsXml}
               </table>
             </div>
           </FormPanel>
-          
+
           <div className="mt-6 flex gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 const link = document.createElement("a");
-                const blob = new Blob([selectedBatch.generatedFileContent || ""], { 
-                  type: selectedBatch.fileFormat === "csv-standard" ? "text/csv" : 
-                        selectedBatch.fileFormat === "text-fixed-width" ? "text/plain" : 
-                        "application/xml" 
+                const blob = new Blob([selectedBatch.generatedFileContent || ""], {
+                  type:
+                    selectedBatch.fileFormat === "csv-standard"
+                      ? "text/csv"
+                      : selectedBatch.fileFormat === "text-fixed-width"
+                        ? "text/plain"
+                        : "application/xml",
                 });
                 const url = URL.createObjectURL(blob);
                 link.href = url;
-                link.download = `epayment-${selectedBatch.batchNo}.${selectedBatch.fileFormat.split('-')[0]}`;
+                link.download = `epayment-${selectedBatch.batchNo}.${selectedBatch.fileFormat.split("-")[0]}`;
                 link.click();
                 URL.revokeObjectURL(url);
               }}
@@ -447,13 +476,11 @@ ${paymentsXml}
               <Download size={14} className="mr-1" />
               Download File
             </Button>
-            
+
             {selectedBatch.status === "generated" && (
-              <Button onClick={() => handleMarkUploaded(selectedBatch.id)}>
-                Mark as Uploaded
-              </Button>
+              <Button onClick={() => handleMarkUploaded(selectedBatch.id)}>Mark as Uploaded</Button>
             )}
-            
+
             {selectedBatch.status === "uploaded" && (
               <div className="flex gap-2">
                 <input
@@ -469,7 +496,7 @@ ${paymentsXml}
                 >
                   Import Response
                 </label>
-                <Button 
+                <Button
                   disabled={!responseFile || isProcessingResponse}
                   onClick={() => handleImportResponse(selectedBatch.id)}
                 >
@@ -486,27 +513,27 @@ ${paymentsXml}
   if (view === "form") {
     return (
       <div className="flex flex-col h-full">
-        <ActionToolbar 
-          title={editingBatch?.id ? `Edit Batch: ${editingBatch.batchNo}` : "New e-Payment Batch"} 
+        <ActionToolbar
+          title={editingBatch?.id ? `Edit Batch: ${editingBatch.batchNo}` : "New e-Payment Batch"}
           icon={<Send size={16} />}
         >
           <Button size="sm" variant="outline" onClick={() => setView("list")}>
             Back to List
           </Button>
         </ActionToolbar>
-        
+
         <div className="flex-1 overflow-auto p-4">
           <FormPanel title="Batch Information">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <Select
                   label="Bank Account"
-                  options={bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))}
+                  options={bankAccounts.map((acc) => ({ value: acc.id, label: acc.name }))}
                   value={bankAccountId}
                   onChange={setBankAccountId}
                 />
               </div>
-              
+
               <div>
                 <NepaliDatePicker
                   label="Payment Date"
@@ -514,20 +541,20 @@ ${paymentsXml}
                   onChange={setPaymentDate}
                 />
               </div>
-              
+
               <div>
                 <Select
                   label="File Format"
                   options={[
                     { value: "csv-standard", label: "CSV Standard" },
                     { value: "text-fixed-width", label: "Text Fixed Width" },
-                    { value: "xml", label: "XML" }
+                    { value: "xml", label: "XML" },
                   ]}
                   value={fileFormat}
                   onChange={setFileFormat}
                 />
               </div>
-              
+
               <div>
                 <input
                   type="text"
@@ -538,7 +565,7 @@ ${paymentsXml}
                 />
               </div>
             </div>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Narration</label>
               <textarea
@@ -550,7 +577,7 @@ ${paymentsXml}
               />
             </div>
           </FormPanel>
-          
+
           <FormPanel title="Payment Type Rules">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
@@ -566,7 +593,7 @@ ${paymentsXml}
                   Amounts ≥ this value will be marked as RTGS
                 </p>
               </div>
-              
+
               <div className="flex items-center pt-6">
                 <input
                   type="checkbox"
@@ -581,20 +608,23 @@ ${paymentsXml}
               </div>
             </div>
           </FormPanel>
-          
+
           <FormPanel title="Select Payment Vouchers">
             <p className="text-sm text-gray-600 mb-4">
               Select payment vouchers to include in this batch
             </p>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="w-10 p-2">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedVouchers.length === unbatchedVouchers.length && unbatchedVouchers.length > 0}
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedVouchers.length === unbatchedVouchers.length &&
+                          unbatchedVouchers.length > 0
+                        }
                         onChange={handleToggleAllVouchers}
                       />
                     </th>
@@ -615,26 +645,28 @@ ${paymentsXml}
                       </td>
                     </tr>
                   ) : (
-                    unbatchedVouchers.map(voucher => {
-                      const party = parties.find(p => p.id === voucher.partyId);
+                    unbatchedVouchers.map((voucher) => {
+                      const party = parties.find((p) => p.id === voucher.partyId);
                       const isSelected = selectedVouchers.includes(voucher.id);
                       const hasMissingDetails = !party?.bankAccountNo || !party?.bankBranch;
-                      
+
                       return (
-                        <tr 
-                          key={voucher.id} 
+                        <tr
+                          key={voucher.id}
                           className={`border-t ${hasMissingDetails ? "bg-red-50" : "hover:bg-gray-50"}`}
                         >
                           <td className="p-2">
-                            <input 
-                              type="checkbox" 
+                            <input
+                              type="checkbox"
                               checked={isSelected}
                               onChange={() => handleToggleVoucher(voucher.id)}
                             />
                           </td>
                           <td className="p-2">{voucher.date}</td>
                           <td className="p-2">{party?.name || "Unknown"}</td>
-                          <td className="p-2 text-right">{formatNumber(voucher.grandTotal || 0)}</td>
+                          <td className="p-2 text-right">
+                            {formatNumber(voucher.grandTotal || 0)}
+                          </td>
                           <td className="p-2">{party?.bankAccountNo || "—"}</td>
                           <td className="p-2">{party?.bankBranch || "—"}</td>
                           <td className="p-2">{party?.bankName || "—"}</td>
@@ -642,7 +674,12 @@ ${paymentsXml}
                             {hasMissingDetails ? (
                               <div className="flex items-center text-red-600">
                                 <span>Missing</span>
-                                <span className="ml-1 text-xs" title="Missing beneficiary details — update ledger master">⚠️</span>
+                                <span
+                                  className="ml-1 text-xs"
+                                  title="Missing beneficiary details — update ledger master"
+                                >
+                                  ⚠️
+                                </span>
                               </div>
                             ) : (
                               (() => {
@@ -660,27 +697,25 @@ ${paymentsXml}
                 </tbody>
               </table>
             </div>
-            
+
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-3 rounded">
                 <p className="text-xs text-gray-500">Selected Entries</p>
                 <p className="font-bold">{selectedVoucherData.length}</p>
               </div>
-              
+
               <div className="bg-blue-50 p-3 rounded border border-blue-200">
                 <p className="text-xs text-blue-600">Total Amount</p>
                 <p className="font-bold text-blue-800">{formatNumber(totalAmount)}</p>
               </div>
             </div>
           </FormPanel>
-          
+
           <div className="mt-6 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setView("list")}>
               Cancel
             </Button>
-            <Button onClick={handleGenerateFile}>
-              Generate File
-            </Button>
+            <Button onClick={handleGenerateFile}>Generate File</Button>
           </div>
         </div>
       </div>
@@ -689,10 +724,7 @@ ${paymentsXml}
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar 
-        title="e-Payments" 
-        icon={<Send size={16} />}
-      >
+      <ActionToolbar title="e-Payments" icon={<Send size={16} />}>
         <Button size="sm" onClick={handleNewBatch}>
           <Plus size={14} className="mr-1" />
           New Batch
@@ -702,7 +734,7 @@ ${paymentsXml}
           View Batches
         </Button>
       </ActionToolbar>
-      
+
       <div className="flex-1 overflow-auto p-4">
         {/* e-Payment Batches Table */}
         <div className="bg-white border rounded-lg overflow-hidden">
@@ -727,9 +759,9 @@ ${paymentsXml}
                   </td>
                 </tr>
               ) : (
-                ePaymentBatches.map(batch => {
-                  const bankAccount = accounts.find(a => a.id === batch.bankAccountId);
-                  
+                ePaymentBatches.map((batch) => {
+                  const bankAccount = accounts.find((a) => a.id === batch.bankAccountId);
+
                   return (
                     <tr key={batch.id} className="border-t hover:bg-gray-50">
                       <td className="p-3">{batch.batchNo}</td>
@@ -739,12 +771,15 @@ ${paymentsXml}
                       <td className="p-3 text-right">{formatNumber(batch.totalAmount)}</td>
                       <td className="p-3">{batch.fileFormat}</td>
                       <td className="p-3">
-                        <Badge 
+                        <Badge
                           variant={
-                            batch.status === "draft" ? "warning" :
-                            batch.status === "generated" ? "info" :
-                            batch.status === "uploaded" ? "secondary" :
-                            "success"
+                            batch.status === "draft"
+                              ? "warning"
+                              : batch.status === "generated"
+                                ? "info"
+                                : batch.status === "uploaded"
+                                  ? "secondary"
+                                  : "success"
                           }
                         >
                           {batch.status.charAt(0).toUpperCase() + batch.status.slice(1)}
@@ -752,29 +787,28 @@ ${paymentsXml}
                       </td>
                       <td className="p-3">
                         <div className="flex gap-2">
-                          <Button 
-                            size="xs" 
-                            variant="ghost" 
-                            onClick={() => handleViewBatch(batch)}
-                          >
+                          <Button size="xs" variant="ghost" onClick={() => handleViewBatch(batch)}>
                             <Eye size={12} className="mr-1" />
                             View
                           </Button>
-                          
+
                           {batch.generatedFileContent && (
-                            <Button 
-                              size="xs" 
-                              variant="ghost" 
+                            <Button
+                              size="xs"
+                              variant="ghost"
                               onClick={() => {
                                 const link = document.createElement("a");
-                                const blob = new Blob([batch.generatedFileContent], { 
-                                  type: batch.fileFormat === "csv-standard" ? "text/csv" : 
-                                        batch.fileFormat === "text-fixed-width" ? "text/plain" : 
-                                        "application/xml" 
+                                const blob = new Blob([batch.generatedFileContent], {
+                                  type:
+                                    batch.fileFormat === "csv-standard"
+                                      ? "text/csv"
+                                      : batch.fileFormat === "text-fixed-width"
+                                        ? "text/plain"
+                                        : "application/xml",
                                 });
                                 const url = URL.createObjectURL(blob);
                                 link.href = url;
-                                link.download = `epayment-${batch.batchNo}.${batch.fileFormat.split('-')[0]}`;
+                                link.download = `epayment-${batch.batchNo}.${batch.fileFormat.split("-")[0]}`;
                                 link.click();
                                 URL.revokeObjectURL(url);
                               }}
@@ -783,11 +817,11 @@ ${paymentsXml}
                               Download
                             </Button>
                           )}
-                          
+
                           {batch.status === "generated" && (
-                            <Button 
-                              size="xs" 
-                              variant="outline" 
+                            <Button
+                              size="xs"
+                              variant="outline"
                               onClick={() => handleMarkUploaded(batch.id)}
                             >
                               <Upload size={12} className="mr-1" />

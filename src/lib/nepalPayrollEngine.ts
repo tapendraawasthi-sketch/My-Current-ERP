@@ -293,18 +293,7 @@ const ONES = [
   "Nineteen",
 ];
 
-const TENS = [
-  "",
-  "",
-  "Twenty",
-  "Thirty",
-  "Forty",
-  "Fifty",
-  "Sixty",
-  "Seventy",
-  "Eighty",
-  "Ninety",
-];
+const TENS = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
 function belowThousandToWords(num: number): string {
   let n = Math.floor(num);

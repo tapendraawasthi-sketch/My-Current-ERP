@@ -9,11 +9,7 @@ import { ActionToolbar } from "../components/ui";
 import { Plus, Edit2, Trash2, Users } from "lucide-react";
 import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
-import {
-  Card,
-  Button,
-  ConfirmDialog,
-} from "../components/ui";
+import { Card, Button, ConfirmDialog } from "../components/ui";
 import { Employee } from "../lib/types";
 
 export default function EmployeeMaster() {
@@ -108,7 +104,7 @@ export default function EmployeeMaster() {
   const filteredEmployees = employees.filter(
     (e) =>
       e.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      e.designation.toLowerCase().includes(searchTerm.toLowerCase())
+      e.designation.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -118,11 +114,16 @@ export default function EmployeeMaster() {
           <h1 className="text-[15px] font-semibold text-[#000000] flex items-center gap-2">
             <Users className="w-5 h-5 text-[#1557b0]" /> Employee Master
           </h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">Manage staff, designations, and payroll details</p>
+          <p className="text-[11px] text-[#000000] mt-0.5">
+            Manage staff, designations, and payroll details
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {!showForm && (
-            <Button onClick={handleOpenAdd} className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-8 text-[12px]">
+            <Button
+              onClick={handleOpenAdd}
+              className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-8 text-[12px]"
+            >
               <Plus className="w-4 h-4 mr-1.5" /> Add Employee
             </Button>
           )}
@@ -144,13 +145,27 @@ export default function EmployeeMaster() {
             <table className="w-full">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-[#9DC07A]">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Name</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Designation</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Department</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">SSF</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Basic Salary</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Designation
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Department
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    SSF
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Basic Salary
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -163,24 +178,38 @@ export default function EmployeeMaster() {
                     <td className="px-3 py-2.5 text-[12px] text-[#000000]">{emp.designation}</td>
                     <td className="px-3 py-2.5 text-[12px] text-[#000000]">{emp.department}</td>
                     <td className="px-3 py-2.5">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${emp.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${emp.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                      >
                         {emp.status}
                       </span>
                     </td>
                     <td className="px-3 py-2.5">
                       {emp.ssf ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-[#D4EABD] text-[#000000]">SSF ENROLLED</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-[#D4EABD] text-[#000000]">
+                          SSF ENROLLED
+                        </span>
                       ) : (
                         <span className="text-[11px] text-[#000000]">N/A</span>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-mono text-right">{emp.basicSalary.toLocaleString()}</td>
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right">
+                      {emp.basicSalary.toLocaleString()}
+                    </td>
                     <td className="px-3 py-2.5 text-right">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => handleEdit(emp)} className="text-[#000000] hover:text-[#1557b0]" title="Edit">
+                        <button
+                          onClick={() => handleEdit(emp)}
+                          className="text-[#000000] hover:text-[#1557b0]"
+                          title="Edit"
+                        >
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDeleteClick(emp.id)} className="text-[#000000] hover:text-red-600" title="Delete">
+                        <button
+                          onClick={() => handleDeleteClick(emp.id)}
+                          className="text-[#000000] hover:text-red-600"
+                          title="Delete"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -205,19 +234,28 @@ export default function EmployeeMaster() {
               {selectedEmp ? "Edit Employee" : "Add Employee"}
             </h2>
             <div className="flex gap-2">
-              <Button variant="outline" className="h-7 text-[11px]" onClick={() => setShowForm(false)}>
+              <Button
+                variant="outline"
+                className="h-7 text-[11px]"
+                onClick={() => setShowForm(false)}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSave} className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-7 text-[11px]">
+              <Button
+                onClick={handleSave}
+                className="bg-[#3D6B25] hover:bg-[#2D5A1A] text-white h-7 text-[11px]"
+              >
                 Save Employee
               </Button>
             </div>
           </div>
-          
+
           <div className="p-4 space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="col-span-2">
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Full Name *</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Full Name *
+                </label>
                 <input
                   type="text"
                   value={formData.name}
@@ -227,7 +265,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Name (Nepali)</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Name (Nepali)
+                </label>
                 <input
                   type="text"
                   value={formData.nameNe}
@@ -237,7 +277,9 @@ export default function EmployeeMaster() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Designation *</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Designation *
+                </label>
                 <input
                   type="text"
                   value={formData.designation}
@@ -246,7 +288,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Department</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Department
+                </label>
                 <input
                   type="text"
                   value={formData.department}
@@ -258,7 +302,9 @@ export default function EmployeeMaster() {
                 <label className="block text-[11px] font-medium text-[#000000] mb-1">Status</label>
                 <select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as "active"|"inactive" })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, status: e.target.value as "active" | "inactive" })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0] bg-white"
                 >
                   <option value="active">Active</option>
@@ -266,10 +312,14 @@ export default function EmployeeMaster() {
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Employment Type</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Employment Type
+                </label>
                 <select
                   value={formData.employmentType}
-                  onChange={(e) => setFormData({ ...formData, employmentType: e.target.value as any })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, employmentType: e.target.value as any })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0] bg-white"
                 >
                   <option value="permanent">Permanent</option>
@@ -279,7 +329,9 @@ export default function EmployeeMaster() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Join Date (AD)</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Join Date (AD)
+                </label>
                 <input
                   type="date"
                   value={formData.dateOfJoining}
@@ -288,7 +340,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Join Date (BS)</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Join Date (BS)
+                </label>
                 <input
                   type="text"
                   placeholder="YYYY-MM-DD"
@@ -301,50 +355,82 @@ export default function EmployeeMaster() {
 
             <hr className="border-[#9DC07A]" />
             <h3 className="text-[12px] font-semibold text-[#1557b0]">Payroll & Allowances</h3>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Basic Salary</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Basic Salary
+                </label>
                 <input
                   type="number"
                   value={formData.basicSalary}
-                  onChange={(e) => setFormData({ ...formData, basicSalary: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, basicSalary: Number(e.target.value) })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">House Rent (HRA)</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  House Rent (HRA)
+                </label>
                 <input
                   type="number"
                   value={formData.allowances.houseRent}
-                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, houseRent: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      allowances: { ...formData.allowances, houseRent: Number(e.target.value) },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Transport Allow.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Transport Allow.
+                </label>
                 <input
                   type="number"
                   value={formData.allowances.transport}
-                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, transport: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      allowances: { ...formData.allowances, transport: Number(e.target.value) },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Medical Allow.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Medical Allow.
+                </label>
                 <input
                   type="number"
                   value={formData.allowances.medical}
-                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, medical: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      allowances: { ...formData.allowances, medical: Number(e.target.value) },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Dashain Allow.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Dashain Allow.
+                </label>
                 <input
                   type="number"
                   value={formData.allowances.dashain}
-                  onChange={(e) => setFormData({ ...formData, allowances: { ...formData.allowances, dashain: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      allowances: { ...formData.allowances, dashain: Number(e.target.value) },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
@@ -352,10 +438,12 @@ export default function EmployeeMaster() {
 
             <hr className="border-[#9DC07A]" />
             <h3 className="text-[12px] font-semibold text-[#1557b0]">Compliance & Banking</h3>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">PAN Number</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  PAN Number
+                </label>
                 <input
                   type="text"
                   maxLength={9}
@@ -365,7 +453,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Citizenship No.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Citizenship No.
+                </label>
                 <input
                   type="text"
                   value={formData.citizenshipNumber}
@@ -374,7 +464,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Bank Name</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Bank Name
+                </label>
                 <input
                   type="text"
                   value={formData.bankName}
@@ -383,7 +475,9 @@ export default function EmployeeMaster() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Bank Account No.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Bank Account No.
+                </label>
                 <input
                   type="text"
                   value={formData.bankAccount}
@@ -402,7 +496,9 @@ export default function EmployeeMaster() {
                   onChange={(e) => setFormData({ ...formData, ssf: e.target.checked })}
                   className="rounded border-[#9DC07A] text-[#1557b0] focus:ring-[#1557b0]"
                 />
-                <label htmlFor="ssf" className="text-[12px] font-medium text-[#000000]">Contributes to Social Security Fund (SSF)</label>
+                <label htmlFor="ssf" className="text-[12px] font-medium text-[#000000]">
+                  Contributes to Social Security Fund (SSF)
+                </label>
               </div>
               <div className="col-span-2">
                 <label className="block text-[11px] font-medium text-[#000000] mb-1">SSF No.</label>
@@ -410,25 +506,47 @@ export default function EmployeeMaster() {
                   type="text"
                   disabled={!formData.ssf}
                   value={formData.ssfContributorNumber}
-                  onChange={(e) => setFormData({ ...formData, ssfContributorNumber: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ssfContributorNumber: e.target.value })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] disabled:bg-[#EBF5E2]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Life Insurance Prem.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Life Insurance Prem.
+                </label>
                 <input
                   type="number"
                   value={formData.taxDeclarations.lifeInsurance}
-                  onChange={(e) => setFormData({ ...formData, taxDeclarations: { ...formData.taxDeclarations, lifeInsurance: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      taxDeclarations: {
+                        ...formData.taxDeclarations,
+                        lifeInsurance: Number(e.target.value),
+                      },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-[#000000] mb-1">Health Insurance Prem.</label>
+                <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                  Health Insurance Prem.
+                </label>
                 <input
                   type="number"
                   value={formData.taxDeclarations.healthInsurance}
-                  onChange={(e) => setFormData({ ...formData, taxDeclarations: { ...formData.taxDeclarations, healthInsurance: Number(e.target.value) } })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      taxDeclarations: {
+                        ...formData.taxDeclarations,
+                        healthInsurance: Number(e.target.value),
+                      },
+                    })
+                  }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0]"
                 />
               </div>
@@ -450,4 +568,3 @@ export default function EmployeeMaster() {
     </div>
   );
 }
-

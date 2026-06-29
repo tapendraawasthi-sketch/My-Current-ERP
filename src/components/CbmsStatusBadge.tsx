@@ -40,7 +40,7 @@ const CbmsStatusBadge: React.FC<CbmsStatusBadgeProps> = ({ invoice, onUpdated })
   const openModal = async () => {
     setOpen(true);
 
-    const qrString = invoice.cbmsQrString || invoice.cbmsQrCode || "";
+    const qrString = invoice.cbmsQrString || invoice.cbmsQrCode || invoice.cbmsIrn || "";
 
     if (qrString) {
       const dataUrl = await QRCode.toDataURL(qrString, {
@@ -85,9 +85,7 @@ const CbmsStatusBadge: React.FC<CbmsStatusBadgeProps> = ({ invoice, onUpdated })
         <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[15px] font-semibold text-gray-800">
-                CBMS Status
-              </h2>
+              <h2 className="text-[15px] font-semibold text-gray-800">CBMS Status</h2>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -99,30 +97,24 @@ const CbmsStatusBadge: React.FC<CbmsStatusBadgeProps> = ({ invoice, onUpdated })
 
             <div className="p-4 space-y-3 text-[12px]">
               <div>
-                <div className="text-gray-500 text-[10px] uppercase font-semibold">
-                  Invoice No.
-                </div>
+                <div className="text-gray-500 text-[10px] uppercase font-semibold">Invoice No.</div>
                 <div className="font-semibold">{invoice.invoiceNo}</div>
               </div>
 
               <div>
-                <div className="text-gray-500 text-[10px] uppercase font-semibold">
-                  Status
-                </div>
+                <div className="text-gray-500 text-[10px] uppercase font-semibold">Status</div>
                 <div className="mt-1">
-                  <span className={`px-2 py-0.5 rounded border text-[10px] font-semibold ${badgeClass}`}>
+                  <span
+                    className={`px-2 py-0.5 rounded border text-[10px] font-semibold ${badgeClass}`}
+                  >
                     {label}
                   </span>
                 </div>
               </div>
 
               <div>
-                <div className="text-gray-500 text-[10px] uppercase font-semibold">
-                  Full IRN
-                </div>
-                <div className="font-mono break-all">
-                  {invoice.cbmsIrn || "Not submitted"}
-                </div>
+                <div className="text-gray-500 text-[10px] uppercase font-semibold">Full IRN</div>
+                <div className="font-mono break-all">{invoice.cbmsIrn || "Not submitted"}</div>
               </div>
 
               <div>

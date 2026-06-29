@@ -9,16 +9,11 @@ function money(v: number) {
 const SalesOrderOutstanding: React.FC = () => {
   const { vouchers } = useStore() as any;
 
-  const rows = useMemo(
-    () => buildSalesOrderOutstandingReport(vouchers || []),
-    [vouchers],
-  );
+  const rows = useMemo(() => buildSalesOrderOutstandingReport(vouchers || []), [vouchers]);
 
   return (
     <div className="p-4">
-      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">
-        Sales Order Outstanding
-      </h1>
+      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">Sales Order Outstanding</h1>
 
       <div className="bg-white border rounded-md overflow-auto">
         <table className="w-full text-[12px]">
@@ -37,7 +32,9 @@ const SalesOrderOutstanding: React.FC = () => {
                 "Pending Value",
                 "Status",
               ].map((h) => (
-                <th key={h} className="px-3 py-2 text-left">{h}</th>
+                <th key={h} className="px-3 py-2 text-left">
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
@@ -56,13 +53,15 @@ const SalesOrderOutstanding: React.FC = () => {
                 <td className="px-3 py-2 text-right">{money(r.orderValue)}</td>
                 <td className="px-3 py-2 text-right">{money(r.pendingValue)}</td>
                 <td className="px-3 py-2">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                    r.workflowStatus === "closed"
-                      ? "bg-green-100 text-green-700"
-                      : r.workflowStatus === "partial"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-blue-100 text-blue-700"
-                  }`}>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                      r.workflowStatus === "closed"
+                        ? "bg-green-100 text-green-700"
+                        : r.workflowStatus === "partial"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-blue-100 text-blue-700"
+                    }`}
+                  >
                     {r.workflowStatus}
                   </span>
                 </td>

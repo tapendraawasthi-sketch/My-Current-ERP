@@ -2,8 +2,21 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useStore } from "../store/useStore";
 import { Badge, Button, Card, Select } from "../components/ui";
-import { FileText, ArrowLeftRight, ArrowUpFromLine, ArrowDownToLine, BookOpen, ShoppingCart, Loader2, X } from "lucide-react";
-import { VOUCHER_TYPE_LABELS, getVoucherGroupForType, getVoucherTypeShortcut } from "../lib/voucherUtils";
+import {
+  FileText,
+  ArrowLeftRight,
+  ArrowUpFromLine,
+  ArrowDownToLine,
+  BookOpen,
+  ShoppingCart,
+  Loader2,
+  X,
+} from "lucide-react";
+import {
+  VOUCHER_TYPE_LABELS,
+  getVoucherGroupForType,
+  getVoucherTypeShortcut,
+} from "../lib/voucherUtils";
 import toast from "react-hot-toast";
 
 // Lazy-load all voucher pages
@@ -25,7 +38,9 @@ const VoucherEntryHub: React.FC = () => {
   const { voucherTypeMasters } = useStore();
 
   // Get active voucher types from store
-  const activeVoucherTypes = voucherTypeMasters.filter(vtm => vtm.isActive).map(vtm => vtm.parentVoucherType);
+  const activeVoucherTypes = voucherTypeMasters
+    .filter((vtm) => vtm.isActive)
+    .map((vtm) => vtm.parentVoucherType);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -93,10 +108,10 @@ const VoucherEntryHub: React.FC = () => {
   // Get icon for voucher type
   const getVoucherIcon = (type: string) => {
     const icons: Record<string, React.ReactNode> = {
-      "contra": <ArrowLeftRight className="w-6 h-6" />,
-      "payment": <ArrowUpFromLine className="w-6 h-6" />,
-      "receipt": <ArrowDownToLine className="w-6 h-6" />,
-      "journal": <BookOpen className="w-6 h-6" />,
+      contra: <ArrowLeftRight className="w-6 h-6" />,
+      payment: <ArrowUpFromLine className="w-6 h-6" />,
+      receipt: <ArrowDownToLine className="w-6 h-6" />,
+      journal: <BookOpen className="w-6 h-6" />,
       "journal-voucher": <BookOpen className="w-6 h-6" />,
       "sales-invoice": <FileText className="w-6 h-6" />,
       "purchase-invoice": <ShoppingCart className="w-6 h-6" />,
@@ -114,9 +129,9 @@ const VoucherEntryHub: React.FC = () => {
       "purchase-order": <FileText className="w-6 h-6" />,
       "job-work-out-order": <FileText className="w-6 h-6" />,
       "job-work-in-order": <FileText className="w-6 h-6" />,
-      "payroll": <FileText className="w-6 h-6" />,
-      "attendance": <FileText className="w-6 h-6" />,
-      "memorandum": <FileText className="w-6 h-6" />,
+      payroll: <FileText className="w-6 h-6" />,
+      attendance: <FileText className="w-6 h-6" />,
+      memorandum: <FileText className="w-6 h-6" />,
       "reversing-journal": <FileText className="w-6 h-6" />,
     };
     return icons[type] || <FileText className="w-6 h-6" />;
@@ -125,22 +140,29 @@ const VoucherEntryHub: React.FC = () => {
   // Group voucher types by category
   const groupedVoucherTypes = {
     accounting: [
-      "contra", "payment", "receipt", "journal", "journal-voucher", 
-      "sales-invoice", "purchase-invoice", "credit-note", "debit-note"
+      "contra",
+      "payment",
+      "receipt",
+      "journal",
+      "journal-voucher",
+      "sales-invoice",
+      "purchase-invoice",
+      "credit-note",
+      "debit-note",
     ],
     inventory: [
-      "stock-journal", "physical-stock", "delivery-note", "receipt-note", 
-      "rejection-in", "rejection-out", "material-in", "material-out"
+      "stock-journal",
+      "physical-stock",
+      "delivery-note",
+      "receipt-note",
+      "rejection-in",
+      "rejection-out",
+      "material-in",
+      "material-out",
     ],
-    order: [
-      "sales-order", "purchase-order", "job-work-out-order", "job-work-in-order"
-    ],
-    payroll: [
-      "payroll", "attendance"
-    ],
-    other: [
-      "memorandum", "reversing-journal"
-    ]
+    order: ["sales-order", "purchase-order", "job-work-out-order", "job-work-in-order"],
+    payroll: ["payroll", "attendance"],
+    other: ["memorandum", "reversing-journal"],
   };
 
   const renderVoucherForm = () => {
@@ -171,14 +193,22 @@ const VoucherEntryHub: React.FC = () => {
       default:
         return (
           <Card className="flex flex-col items-center justify-center p-8 m-8">
-            <div className="mb-4 text-gray-500">
-              {getVoucherIcon(activeVoucherType)}
-            </div>
-            <h2 className="text-xl font-bold mb-2">{VOUCHER_TYPE_LABELS[activeVoucherType] || activeVoucherType}</h2>
+            <div className="mb-4 text-gray-500">{getVoucherIcon(activeVoucherType)}</div>
+            <h2 className="text-xl font-bold mb-2">
+              {VOUCHER_TYPE_LABELS[activeVoucherType] || activeVoucherType}
+            </h2>
             <p className="text-gray-600 mb-4 text-center">
-              This voucher type is being implemented. Use {activeVoucherType.includes("sales") ? "Sales Invoice" : "Journal Voucher"} for now.
+              This voucher type is being implemented. Use{" "}
+              {activeVoucherType.includes("sales") ? "Sales Invoice" : "Journal Voucher"} for now.
             </p>
-            <Button variant="outline" onClick={() => setActiveVoucherType(activeVoucherType.includes("sales") ? "sales-invoice" : "journal")}>
+            <Button
+              variant="outline"
+              onClick={() =>
+                setActiveVoucherType(
+                  activeVoucherType.includes("sales") ? "sales-invoice" : "journal",
+                )
+              }
+            >
               Go to Similar Voucher
             </Button>
           </Card>
@@ -193,9 +223,7 @@ const VoucherEntryHub: React.FC = () => {
         <div className="flex flex-wrap gap-1">
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "contra" 
-                ? "bg-green-600 text-white" 
-                : "hover:bg-gray-100"
+              activeVoucherType === "contra" ? "bg-green-600 text-white" : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("contra")}
           >
@@ -204,9 +232,7 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "payment" 
-                ? "bg-green-600 text-white" 
-                : "hover:bg-gray-100"
+              activeVoucherType === "payment" ? "bg-green-600 text-white" : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("payment")}
           >
@@ -215,9 +241,7 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "receipt" 
-                ? "bg-green-600 text-white" 
-                : "hover:bg-gray-100"
+              activeVoucherType === "receipt" ? "bg-green-600 text-white" : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("receipt")}
           >
@@ -226,9 +250,7 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "journal" 
-                ? "bg-green-600 text-white" 
-                : "hover:bg-gray-100"
+              activeVoucherType === "journal" ? "bg-green-600 text-white" : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("journal")}
           >
@@ -237,8 +259,8 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "sales-invoice" 
-                ? "bg-green-600 text-white" 
+              activeVoucherType === "sales-invoice"
+                ? "bg-green-600 text-white"
                 : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("sales-invoice")}
@@ -248,8 +270,8 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              activeVoucherType === "purchase-invoice" 
-                ? "bg-green-600 text-white" 
+              activeVoucherType === "purchase-invoice"
+                ? "bg-green-600 text-white"
                 : "hover:bg-gray-100"
             }`}
             onClick={() => setActiveVoucherType("purchase-invoice")}
@@ -259,9 +281,7 @@ const VoucherEntryHub: React.FC = () => {
           </button>
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
-              showVoucherPicker 
-                ? "bg-green-600 text-white" 
-                : "hover:bg-gray-100"
+              showVoucherPicker ? "bg-green-600 text-white" : "hover:bg-gray-100"
             }`}
             onClick={() => setShowVoucherPicker(true)}
           >
@@ -273,11 +293,13 @@ const VoucherEntryHub: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto">
-        <Suspense fallback={
-          <div className="flex items-center justify-center h-64">
-            <Loader2 className="animate-spin w-8 h-8 text-green-600" />
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-64">
+              <Loader2 className="animate-spin w-8 h-8 text-green-600" />
+            </div>
+          }
+        >
           {renderVoucherForm()}
         </Suspense>
       </div>
@@ -288,23 +310,19 @@ const VoucherEntryHub: React.FC = () => {
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold">All Voucher Types</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowVoucherPicker(false)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowVoucherPicker(false)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            
+
             <div className="p-4">
               {/* Accounting Vouchers */}
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-2 text-gray-700">Accounting Vouchers</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedVoucherTypes.accounting
-                    .filter(type => activeVoucherTypes.includes(type))
-                    .map(type => (
+                    .filter((type) => activeVoucherTypes.includes(type))
+                    .map((type) => (
                       <button
                         key={type}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
@@ -313,9 +331,7 @@ const VoucherEntryHub: React.FC = () => {
                           setShowVoucherPicker(false);
                         }}
                       >
-                        <div className="text-gray-500 mb-1">
-                          {getVoucherIcon(type)}
-                        </div>
+                        <div className="text-gray-500 mb-1">{getVoucherIcon(type)}</div>
                         <span className="text-sm text-center">{VOUCHER_TYPE_LABELS[type]}</span>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {getVoucherTypeShortcut(type)}
@@ -324,14 +340,14 @@ const VoucherEntryHub: React.FC = () => {
                     ))}
                 </div>
               </div>
-              
+
               {/* Inventory Vouchers */}
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-2 text-gray-700">Inventory Vouchers</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedVoucherTypes.inventory
-                    .filter(type => activeVoucherTypes.includes(type))
-                    .map(type => (
+                    .filter((type) => activeVoucherTypes.includes(type))
+                    .map((type) => (
                       <button
                         key={type}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
@@ -340,9 +356,7 @@ const VoucherEntryHub: React.FC = () => {
                           setShowVoucherPicker(false);
                         }}
                       >
-                        <div className="text-gray-500 mb-1">
-                          {getVoucherIcon(type)}
-                        </div>
+                        <div className="text-gray-500 mb-1">{getVoucherIcon(type)}</div>
                         <span className="text-sm text-center">{VOUCHER_TYPE_LABELS[type]}</span>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {getVoucherTypeShortcut(type)}
@@ -351,14 +365,14 @@ const VoucherEntryHub: React.FC = () => {
                     ))}
                 </div>
               </div>
-              
+
               {/* Order Vouchers */}
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-2 text-gray-700">Order Vouchers</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedVoucherTypes.order
-                    .filter(type => activeVoucherTypes.includes(type))
-                    .map(type => (
+                    .filter((type) => activeVoucherTypes.includes(type))
+                    .map((type) => (
                       <button
                         key={type}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
@@ -367,9 +381,7 @@ const VoucherEntryHub: React.FC = () => {
                           setShowVoucherPicker(false);
                         }}
                       >
-                        <div className="text-gray-500 mb-1">
-                          {getVoucherIcon(type)}
-                        </div>
+                        <div className="text-gray-500 mb-1">{getVoucherIcon(type)}</div>
                         <span className="text-sm text-center">{VOUCHER_TYPE_LABELS[type]}</span>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {getVoucherTypeShortcut(type)}
@@ -378,14 +390,14 @@ const VoucherEntryHub: React.FC = () => {
                     ))}
                 </div>
               </div>
-              
+
               {/* Payroll Vouchers */}
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-2 text-gray-700">Payroll Vouchers</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedVoucherTypes.payroll
-                    .filter(type => activeVoucherTypes.includes(type))
-                    .map(type => (
+                    .filter((type) => activeVoucherTypes.includes(type))
+                    .map((type) => (
                       <button
                         key={type}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
@@ -394,9 +406,7 @@ const VoucherEntryHub: React.FC = () => {
                           setShowVoucherPicker(false);
                         }}
                       >
-                        <div className="text-gray-500 mb-1">
-                          {getVoucherIcon(type)}
-                        </div>
+                        <div className="text-gray-500 mb-1">{getVoucherIcon(type)}</div>
                         <span className="text-sm text-center">{VOUCHER_TYPE_LABELS[type]}</span>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {getVoucherTypeShortcut(type)}
@@ -405,14 +415,14 @@ const VoucherEntryHub: React.FC = () => {
                     ))}
                 </div>
               </div>
-              
+
               {/* Other Vouchers */}
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-2 text-gray-700">Other Vouchers</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedVoucherTypes.other
-                    .filter(type => activeVoucherTypes.includes(type))
-                    .map(type => (
+                    .filter((type) => activeVoucherTypes.includes(type))
+                    .map((type) => (
                       <button
                         key={type}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
@@ -421,9 +431,7 @@ const VoucherEntryHub: React.FC = () => {
                           setShowVoucherPicker(false);
                         }}
                       >
-                        <div className="text-gray-500 mb-1">
-                          {getVoucherIcon(type)}
-                        </div>
+                        <div className="text-gray-500 mb-1">{getVoucherIcon(type)}</div>
                         <span className="text-sm text-center">{VOUCHER_TYPE_LABELS[type]}</span>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {getVoucherTypeShortcut(type)}
@@ -439,12 +447,8 @@ const VoucherEntryHub: React.FC = () => {
 
       {/* Bottom Status Bar */}
       <div className="bg-gray-100 border-t border-gray-200 p-2 text-sm text-gray-600 flex justify-between items-center sticky bottom-0">
-        <div>
-          Active: {VOUCHER_TYPE_LABELS[activeVoucherType] || activeVoucherType}
-        </div>
-        <div>
-          {getVoucherTypeShortcut(activeVoucherType)} | F10: All Vouchers
-        </div>
+        <div>Active: {VOUCHER_TYPE_LABELS[activeVoucherType] || activeVoucherType}</div>
+        <div>{getVoucherTypeShortcut(activeVoucherType)} | F10: All Vouchers</div>
       </div>
     </div>
   );

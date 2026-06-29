@@ -12,13 +12,97 @@ const NEPAL_PROVINCES = [
 ];
 
 const NEPAL_DISTRICTS: Record<string, string[]> = {
-  "Koshi Province (Province 1)": ["Taplejung","Panchthar","Ilam","Jhapa","Morang","Sunsari","Dhankuta","Terhathum","Sankhuwasabha","Bhojpur","Solukhumbu","Okhaldhunga","Khotang","Udayapur"],
-  "Madhesh Province": ["Saptari","Siraha","Dhanusha","Mahottari","Sarlahi","Rautahat","Bara","Parsa"],
-  "Bagmati Province": ["Sindhuli","Ramechhap","Dolakha","Sindhupalchok","Kavrepalanchok","Lalitpur","Bhaktapur","Kathmandu","Nuwakot","Rasuwa","Dhading","Makwanpur","Chitwan"],
-  "Gandaki Province": ["Gorkha","Manang","Mustang","Myagdi","Kaski","Lamjung","Tanahu","Nawalpur","Syangja","Parbat","Baglung"],
-  "Lumbini Province": ["Rupandehi","Kapilvastu","Arghakhanchi","Palpa","Nawalparasi (West)","Gulmi","Dang","Pyuthan","Rolpa","Rukum (East)","Banke","Bardiya"],
-  "Karnali Province": ["Dolpa","Mugu","Humla","Jumla","Kalikot","Dailekh","Jajarkot","Rukum (West)","Salyan","Surkhet"],
-  "Sudurpashchim Province": ["Bajura","Bajhang","Darchula","Baitadi","Dadeldhura","Doti","Achham","Kailali","Kanchanpur"],
+  "Koshi Province (Province 1)": [
+    "Taplejung",
+    "Panchthar",
+    "Ilam",
+    "Jhapa",
+    "Morang",
+    "Sunsari",
+    "Dhankuta",
+    "Terhathum",
+    "Sankhuwasabha",
+    "Bhojpur",
+    "Solukhumbu",
+    "Okhaldhunga",
+    "Khotang",
+    "Udayapur",
+  ],
+  "Madhesh Province": [
+    "Saptari",
+    "Siraha",
+    "Dhanusha",
+    "Mahottari",
+    "Sarlahi",
+    "Rautahat",
+    "Bara",
+    "Parsa",
+  ],
+  "Bagmati Province": [
+    "Sindhuli",
+    "Ramechhap",
+    "Dolakha",
+    "Sindhupalchok",
+    "Kavrepalanchok",
+    "Lalitpur",
+    "Bhaktapur",
+    "Kathmandu",
+    "Nuwakot",
+    "Rasuwa",
+    "Dhading",
+    "Makwanpur",
+    "Chitwan",
+  ],
+  "Gandaki Province": [
+    "Gorkha",
+    "Manang",
+    "Mustang",
+    "Myagdi",
+    "Kaski",
+    "Lamjung",
+    "Tanahu",
+    "Nawalpur",
+    "Syangja",
+    "Parbat",
+    "Baglung",
+  ],
+  "Lumbini Province": [
+    "Rupandehi",
+    "Kapilvastu",
+    "Arghakhanchi",
+    "Palpa",
+    "Nawalparasi (West)",
+    "Gulmi",
+    "Dang",
+    "Pyuthan",
+    "Rolpa",
+    "Rukum (East)",
+    "Banke",
+    "Bardiya",
+  ],
+  "Karnali Province": [
+    "Dolpa",
+    "Mugu",
+    "Humla",
+    "Jumla",
+    "Kalikot",
+    "Dailekh",
+    "Jajarkot",
+    "Rukum (West)",
+    "Salyan",
+    "Surkhet",
+  ],
+  "Sudurpashchim Province": [
+    "Bajura",
+    "Bajhang",
+    "Darchula",
+    "Baitadi",
+    "Dadeldhura",
+    "Doti",
+    "Achham",
+    "Kailali",
+    "Kanchanpur",
+  ],
 };
 
 interface Props {
@@ -28,9 +112,9 @@ interface Props {
 
 export default function Step1CompanyProfile({ data, onChange }: Props) {
   const handleProvinceChange = (value: string) => {
-    onChange({ ...data, province: value, district: '' });
+    onChange({ ...data, province: value, district: "" });
   };
-  const availableDistricts = data.province ? (NEPAL_DISTRICTS[data.province] || []) : [];
+  const availableDistricts = data.province ? NEPAL_DISTRICTS[data.province] || [] : [];
 
   return (
     <div className="space-y-6">
@@ -48,7 +132,7 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
             </label>
             <input
               type="text"
-              value={data.companyNameEn || ''}
+              value={data.companyNameEn || ""}
               onChange={(e) => onChange({ ...data, companyNameEn: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               required
@@ -62,7 +146,7 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
             </label>
             <input
               type="text"
-              value={data.companyNameNe || ''}
+              value={data.companyNameNe || ""}
               onChange={(e) => onChange({ ...data, companyNameNe: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               placeholder="कम्पनी नाम नेपालीमा प्रविष्ट गर्नुहोस्"
@@ -74,7 +158,7 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
               Business Type*
             </label>
             <select
-              value={data.businessType || ''}
+              value={data.businessType || ""}
               onChange={(e) => onChange({ ...data, businessType: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               required
@@ -93,14 +177,14 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
               Business Description
             </label>
             <textarea
-              value={data.businessDescription || ''}
+              value={data.businessDescription || ""}
               onChange={(e) => onChange({ ...data, businessDescription: e.target.value })}
               className="h-20 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full resize-none"
               placeholder="e.g. Trading company dealing in electronics and accessories"
               maxLength={200}
             />
             <p className="text-[10px] text-[#000000] mt-0.5">
-              {(data.businessDescription || '').length}/200 characters
+              {(data.businessDescription || "").length}/200 characters
             </p>
           </div>
         </div>
@@ -108,12 +192,10 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
         {/* Section 2 - Address */}
         <div className="space-y-4">
           <div>
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">
-              Address*
-            </label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Address*</label>
             <input
               type="text"
-              value={data.address || ''}
+              value={data.address || ""}
               onChange={(e) => onChange({ ...data, address: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               required
@@ -123,46 +205,50 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                Province*
-              </label>
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">Province*</label>
               <select
-                value={data.province || ''}
+                value={data.province || ""}
                 onChange={(e) => handleProvinceChange(e.target.value)}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 required
               >
                 <option value="">— Select Province —</option>
-                {NEPAL_PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
+                {NEPAL_PROVINCES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                District
-              </label>
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">District</label>
               <select
-                value={data.district || ''}
+                value={data.district || ""}
                 onChange={(e) => onChange({ ...data, district: e.target.value })}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={availableDistricts.length === 0}
               >
                 <option value="">
-                  {availableDistricts.length === 0 ? '— Select Province first —' : '— Select District —'}
+                  {availableDistricts.length === 0
+                    ? "— Select Province first —"
+                    : "— Select District —"}
                 </option>
-                {availableDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+                {availableDistricts.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                City*
-              </label>
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">City*</label>
               <input
                 type="text"
-                value={data.city || ''}
+                value={data.city || ""}
                 onChange={(e) => onChange({ ...data, city: e.target.value })}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 required
@@ -176,7 +262,7 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
               </label>
               <input
                 type="text"
-                value={data.wardNumber || ''}
+                value={data.wardNumber || ""}
                 onChange={(e) => onChange({ ...data, wardNumber: e.target.value })}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 placeholder="e.g. Ward 12"
@@ -189,12 +275,10 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                Phone*
-              </label>
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">Phone*</label>
               <input
                 type="text"
-                value={data.phone || ''}
+                value={data.phone || ""}
                 onChange={(e) => onChange({ ...data, phone: e.target.value })}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 required
@@ -203,12 +287,10 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                Mobile
-              </label>
+              <label className="block text-[11px] font-medium text-[#000000] mb-1">Mobile</label>
               <input
                 type="text"
-                value={data.mobile || ''}
+                value={data.mobile || ""}
                 onChange={(e) => onChange({ ...data, mobile: e.target.value })}
                 className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 placeholder="98XXXXXXXX"
@@ -217,12 +299,10 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">
-              Email*
-            </label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Email*</label>
             <input
               type="email"
-              value={data.email || ''}
+              value={data.email || ""}
               onChange={(e) => onChange({ ...data, email: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               required
@@ -231,12 +311,10 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">
-              Website
-            </label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">Website</label>
             <input
               type="url"
-              value={data.website || ''}
+              value={data.website || ""}
               onChange={(e) => onChange({ ...data, website: e.target.value })}
               className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               placeholder="https://www.yourcompany.com.np"
@@ -245,7 +323,9 @@ export default function Step1CompanyProfile({ data, onChange }: Props) {
         </div>
 
         <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded p-2 text-[11px] text-[#000000]">
-          <strong>Nepal Address Tip:</strong> For IRD/VAT invoices, your registered province and district must match your IRD registration. Make sure to select the correct province first, then your district.
+          <strong>Nepal Address Tip:</strong> For IRD/VAT invoices, your registered province and
+          district must match your IRD registration. Make sure to select the correct province first,
+          then your district.
         </div>
       </div>
     </div>

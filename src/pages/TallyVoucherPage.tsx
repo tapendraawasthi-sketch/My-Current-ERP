@@ -10,8 +10,8 @@ import TallyVoucherEntry from "../components/tally/TallyVoucherEntry";
 import "../styles/tally-green.css";
 
 // F12 CONFIG SYSTEM
-import { useF12Config } from '../hooks/useF12Config';
-import { type F12ScreenId } from '../lib/f12Types';
+import { useF12Config } from "../hooks/useF12Config";
+import { type F12ScreenId } from "../lib/f12Types";
 
 type TallyType = "journal" | "payment" | "receipt" | "contra";
 
@@ -39,11 +39,7 @@ const TallyVoucherPage: React.FC<{ type?: TallyType }> = ({ type }) => {
 
   return (
     <div className="h-[calc(100vh-44px)]">
-      <TallyVoucherEntry
-        key={resolved}
-        type={resolved}
-        onSwitchType={(t) => setCurrentPage(t)}
-      />
+      <TallyVoucherEntry key={resolved} type={resolved} onSwitchType={(t) => setCurrentPage(t)} />
     </div>
   );
 };

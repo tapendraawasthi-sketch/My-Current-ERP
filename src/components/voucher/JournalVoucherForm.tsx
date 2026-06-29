@@ -114,7 +114,12 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       return;
     }
     let isActive = true;
-    generateSerialNumber(VoucherType.JOURNAL, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+    generateSerialNumber(
+      VoucherType.JOURNAL,
+      undefined,
+      currentFiscalYear?.fiscalYearBS || "",
+      true,
+    )
       .then((num) => {
         if (isActive) setVoucherNoPreview(num);
       })
@@ -139,7 +144,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   }, [lines]);
 
   const hasValidLines = useMemo(() => {
-    return lines.some(l => l.accountId && (l.debit > 0 || l.credit > 0));
+    return lines.some((l) => l.accountId && (l.debit > 0 || l.credit > 0));
   }, [lines]);
 
   const balanceIndicator = useMemo(() => {
@@ -149,14 +154,21 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       return (
         <div className="bg-green-50 text-green-700 border border-green-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
-          <span>Balanced — Dr {symbol}{formatNumber(totals.debit)} = Cr {symbol}{formatNumber(totals.credit)}</span>
+          <span>
+            Balanced — Dr {symbol}
+            {formatNumber(totals.debit)} = Cr {symbol}
+            {formatNumber(totals.credit)}
+          </span>
         </div>
       );
     } else {
       return (
         <div className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
           <AlertCircle className="w-4 h-4" />
-          <span>Difference {symbol}{formatNumber(difference)}</span>
+          <span>
+            Difference {symbol}
+            {formatNumber(difference)}
+          </span>
         </div>
       );
     }
@@ -373,383 +385,383 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   const colCount = 7 + (enableCostCenter ? 1 : 0) + (enableBillWise ? 1 : 0);
 
   return (
-
-
     <div>
-
-
       <PillTitle title="Add Journal Voucher" />
 
-
       <FormPanel>
-
-
         <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
-      {isCancelled && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
-          <span className="text-5xl font-bold text-red-500/30 border-4 border-red-500/30 rounded-xl px-8 py-3 tracking-widest">
-            CANCELLED
-          </span>
-        </div>
-      )}
-
-      {/* Header bar */}
-      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleCancel}
-            className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
-            title="Back"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <div>
-            <h1 className="text-[13px] font-semibold text-[#000000]">Journal Voucher</h1>
-            {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{voucherNoPreview}</p>}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="info" size="sm">
-            JOURNAL
-          </Badge>
-          <Badge
-            variant={
-              existing?.status === VoucherStatus.POSTED
-                ? "success"
-                : existing?.status === VoucherStatus.CANCELLED
-                  ? "danger"
-                  : "default"
-            }
-            size="sm"
-          >
-            {(existing?.status || "NEW").toUpperCase()}
-          </Badge>
-        </div>
-      </div>
-
-      {/* Header section: 2 columns */}
-      <Card border padding="md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">
-                Voucher Type
+          {isCancelled && (
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
+              <span className="text-5xl font-bold text-red-500/30 border-4 border-red-500/30 rounded-xl px-8 py-3 tracking-widest">
+                CANCELLED
               </span>
-              <Badge variant="info" size="md">
-                Journal Voucher
+            </div>
+          )}
+
+          {/* Header bar */}
+          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleCancel}
+                className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+                title="Back"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <div>
+                <h1 className="text-[13px] font-semibold text-[#000000]">Journal Voucher</h1>
+                {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{voucherNoPreview}</p>}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="info" size="sm">
+                JOURNAL
+              </Badge>
+              <Badge
+                variant={
+                  existing?.status === VoucherStatus.POSTED
+                    ? "success"
+                    : existing?.status === VoucherStatus.CANCELLED
+                      ? "danger"
+                      : "default"
+                }
+                size="sm"
+              >
+                {(existing?.status || "NEW").toUpperCase()}
               </Badge>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">Voucher No</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
-                {voucherNoPreview}
-              </span>
-            </div>
-            <Input
-              label="Reference No"
-              value={referenceNo}
-              onChange={(v) => {
-                setReferenceNo(v);
-                markDirty();
-              }}
-              placeholder="Optional reference / document no"
-              disabled={readOnly}
-            />
           </div>
-          <div className="flex flex-col gap-3">
-            <div>
-              <NepaliDatePicker
-                label="Voucher Date (BS)"
-                value={date}
-                onChange={(v) => {
-                  setDate(v);
-                  markDirty();
-                }}
-                required
-                disabled={readOnly}
-              />
-              <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
-            </div>
-          </div>
-        </div>
 
-        {/* Narration */}
-        <div className="mt-4 flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-[#000000]">Narration</label>
-            {!readOnly && (
-              <div className="w-56">
-                <Select
-                  options={NARRATION_TEMPLATES.map((t) => ({ value: t, label: t }))}
-                  value=""
+          {/* Header section: 2 columns */}
+          <Card border padding="md">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">
+                    Voucher Type
+                  </span>
+                  <Badge variant="info" size="md">
+                    Journal Voucher
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">
+                    Voucher No
+                  </span>
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
+                    {voucherNoPreview}
+                  </span>
+                </div>
+                <Input
+                  label="Reference No"
+                  value={referenceNo}
                   onChange={(v) => {
-                    setNarration(v);
+                    setReferenceNo(v);
                     markDirty();
                   }}
-                  placeholder="Insert template…"
-                  searchable
+                  placeholder="Optional reference / document no"
+                  disabled={readOnly}
                 />
               </div>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <NepaliDatePicker
+                    label="Voucher Date (BS)"
+                    value={date}
+                    onChange={(v) => {
+                      setDate(v);
+                      markDirty();
+                    }}
+                    required
+                    disabled={readOnly}
+                  />
+                  <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Narration */}
+            <div className="mt-4 flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-[#000000]">Narration</label>
+                {!readOnly && (
+                  <div className="w-56">
+                    <Select
+                      options={NARRATION_TEMPLATES.map((t) => ({ value: t, label: t }))}
+                      value=""
+                      onChange={(v) => {
+                        setNarration(v);
+                        markDirty();
+                      }}
+                      placeholder="Insert template…"
+                      searchable
+                    />
+                  </div>
+                )}
+              </div>
+              <textarea
+                rows={2}
+                value={narration}
+                onChange={(e) => {
+                  setNarration(e.target.value);
+                  markDirty();
+                }}
+                disabled={readOnly}
+                placeholder="Describe this transaction…"
+                className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white disabled:bg-[#EBF5E2]"
+              />
+            </div>
+          </Card>
+
+          {/* Accounts grid */}
+          <Card title="Account Postings" padding="none">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left border-collapse">
+                <thead className="bg-[#EBF5E2] border-y border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold">
+                  <tr>
+                    <th className="px-2 py-2.5 w-10 text-center">#</th>
+                    <th className="px-2 py-2.5 min-w-[220px]">Account</th>
+                    <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
+                    {enableCostCenter && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
+                    {enableBillWise && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
+                    <th className="px-2 py-2.5 min-w-[140px]">Narration</th>
+                    <th className="text-right text-[10px] font-semibold text-[#1557b0] uppercase px-3 py-2 w-32">
+                      Debit
+                    </th>
+                    <th className="text-right text-[10px] font-semibold text-red-600 uppercase px-3 py-2 w-32">
+                      Credit
+                    </th>
+                    <th className="px-2 py-2.5 w-10 text-center"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-150">
+                  {lines.map((line, idx) => (
+                    <tr key={line.key} className="hover:bg-[#EBF5E2]/40 align-top">
+                      <td className="px-2 py-2 text-center text-[#000000] font-bold">{idx + 1}</td>
+                      <td className="px-2 py-2">
+                        <AccountSelect
+                          value={line.accountId}
+                          onChange={(v) => updateLine(idx, "accountId", v)}
+                          placeholder="Select account…"
+                          disabled={readOnly}
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <AccountSelect
+                          value={line.subledgerId}
+                          onChange={(v) => updateLine(idx, "subledgerId", v)}
+                          placeholder="Optional"
+                          disabled={readOnly}
+                        />
+                      </td>
+                      {enableCostCenter && (
+                        <td className="px-2 py-2">
+                          <Select
+                            options={costCenterOptions}
+                            value={line.costCenterId}
+                            onChange={(v) => updateLine(idx, "costCenterId", v)}
+                            placeholder="Optional"
+                            searchable
+                            disabled={readOnly}
+                          />
+                        </td>
+                      )}
+                      {enableBillWise && (
+                        <td className="px-2 py-2">
+                          <Input
+                            value={line.billRefNo}
+                            onChange={(v) => updateLine(idx, "billRefNo", v)}
+                            placeholder="Bill #"
+                            disabled={readOnly}
+                          />
+                        </td>
+                      )}
+                      <td className="px-2 py-2">
+                        <Input
+                          value={line.narration}
+                          onChange={(v) => updateLine(idx, "narration", v)}
+                          placeholder="Line memo"
+                          disabled={readOnly}
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <input
+                          ref={(el) => {
+                            debitRefs.current[line.key] = el;
+                          }}
+                          data-row={idx}
+                          type="number"
+                          value={line.debit === 0 ? "" : line.debit}
+                          onChange={(e) =>
+                            updateLine(idx, "debit", parseFloat(e.target.value) || 0)
+                          }
+                          onKeyDown={(e) => handleAmountKeyDown(e, idx, "debit")}
+                          placeholder="0.00"
+                          disabled={readOnly}
+                          className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <input
+                          ref={(el) => {
+                            creditRefs.current[line.key] = el;
+                          }}
+                          data-row={idx}
+                          type="number"
+                          value={line.credit === 0 ? "" : line.credit}
+                          onChange={(e) =>
+                            updateLine(idx, "credit", parseFloat(e.target.value) || 0)
+                          }
+                          onKeyDown={(e) => handleAmountKeyDown(e, idx, "credit")}
+                          placeholder="0.00"
+                          disabled={readOnly}
+                          className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
+                        />
+                      </td>
+                      <td className="px-2 py-2 text-center">
+                        {!readOnly && (
+                          <div className="flex items-center gap-1 justify-center">
+                            <button
+                              type="button"
+                              onClick={() => duplicateRow(idx)}
+                              title="Duplicate (Ctrl+D)"
+                              className="p-1 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeRow(idx)}
+                              title="Remove row"
+                              className="p-1 rounded text-[#000000] hover:text-red-600 hover:bg-red-50"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-[#EBF5E2] border-t border-[#9DC07A] font-bold">
+                  <tr>
+                    <td
+                      colSpan={colCount - 2}
+                      className="px-3 py-3 text-right uppercase tracking-wider text-[#000000] text-[11px]"
+                    >
+                      Totals
+                    </td>
+                    <td className="px-2 py-3 text-right font-mono text-[#000000]">
+                      {symbol} {formatNumber(totals.debit)}
+                    </td>
+                    <td className="px-2 py-3 text-right font-mono text-amber-700">
+                      {symbol} {formatNumber(totals.credit)}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {!readOnly && (
+              <div className="flex items-center justify-between p-3 border-t border-[#9DC07A]">
+                <button
+                  type="button"
+                  onClick={addRow}
+                  className="inline-flex items-center gap-1 text-[11px] text-[#1557b0] hover:text-[#0f4a96] font-medium py-1"
+                >
+                  <Plus className="h-3 w-3" /> Add Line
+                </button>
+                <span className="text-[11px] text-[#000000] font-semibold">
+                  {lines.length} rows · Shortcuts: Enter/Tab navigate · Ctrl+D duplicate · F12 save
+                  · Esc cancel
+                </span>
+              </div>
+            )}
+          </Card>
+
+          {/* Totals & status bar */}
+          <Card border padding="md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                    Total Debit
+                  </p>
+                  <p className="text-base font-bold text-[#000000] font-mono">
+                    {symbol} {formatNumber(totals.debit)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                    Total Credit
+                  </p>
+                  <p className="text-base font-bold text-amber-700 font-mono">
+                    {symbol} {formatNumber(totals.credit)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                    Difference
+                  </p>
+                  <p
+                    className={`text-base font-bold font-mono ${totals.balanced ? "text-green-600" : "text-red-600"}`}
+                  >
+                    {symbol} {formatNumber(Math.abs(totals.diff))}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center">{balanceIndicator}</div>
+            </div>
+          </Card>
+
+          {/* Action buttons */}
+          <div className="flex items-center justify-end gap-2.5 pb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCancel}
+              icon={<X className="h-4 w-4" />}
+            >
+              {readOnly ? "Close" : "Cancel"}
+            </Button>
+            {!readOnly && (
+              <>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  loading={saving}
+                  onClick={() => handleSave(VoucherStatus.DRAFT)}
+                  icon={<Save className="h-4 w-4" />}
+                >
+                  {isEdit ? "Update Draft" : "Save as Draft"}
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  loading={saving}
+                  disabled={!totals.balanced}
+                  onClick={() => handleSave(VoucherStatus.POSTED)}
+                  icon={<CheckCircle2 className="h-4 w-4" />}
+                >
+                  Post
+                </Button>
+              </>
             )}
           </div>
-          <textarea
-            rows={2}
-            value={narration}
-            onChange={(e) => {
-              setNarration(e.target.value);
-              markDirty();
-            }}
-            disabled={readOnly}
-            placeholder="Describe this transaction…"
-            className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white disabled:bg-[#EBF5E2]"
+
+          <ConfirmDialog
+            isOpen={confirmCancel}
+            onClose={() => setConfirmCancel(false)}
+            onConfirm={() => onCancel?.()}
+            title="Discard changes?"
+            message="You have unsaved changes. Are you sure you want to leave? All changes will be lost."
+            confirmText="Discard"
+            cancelText="Keep editing"
+            danger
           />
         </div>
-      </Card>
-
-      {/* Accounts grid */}
-      <Card title="Account Postings" padding="none">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border-collapse">
-            <thead className="bg-[#EBF5E2] border-y border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold">
-              <tr>
-                <th className="px-2 py-2.5 w-10 text-center">#</th>
-                <th className="px-2 py-2.5 min-w-[220px]">Account</th>
-                <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
-                {enableCostCenter && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
-                {enableBillWise && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
-                <th className="px-2 py-2.5 min-w-[140px]">Narration</th>
-                <th className="text-right text-[10px] font-semibold text-[#1557b0] uppercase px-3 py-2 w-32">
-                  Debit
-                </th>
-                <th className="text-right text-[10px] font-semibold text-red-600 uppercase px-3 py-2 w-32">
-                  Credit
-                </th>
-                <th className="px-2 py-2.5 w-10 text-center"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-150">
-              {lines.map((line, idx) => (
-                <tr key={line.key} className="hover:bg-[#EBF5E2]/40 align-top">
-                  <td className="px-2 py-2 text-center text-[#000000] font-bold">{idx + 1}</td>
-                  <td className="px-2 py-2">
-                    <AccountSelect
-                      value={line.accountId}
-                      onChange={(v) => updateLine(idx, "accountId", v)}
-                      placeholder="Select account…"
-                      disabled={readOnly}
-                    />
-                  </td>
-                  <td className="px-2 py-2">
-                    <AccountSelect
-                      value={line.subledgerId}
-                      onChange={(v) => updateLine(idx, "subledgerId", v)}
-                      placeholder="Optional"
-                      disabled={readOnly}
-                    />
-                  </td>
-                  {enableCostCenter && (
-                    <td className="px-2 py-2">
-                      <Select
-                        options={costCenterOptions}
-                        value={line.costCenterId}
-                        onChange={(v) => updateLine(idx, "costCenterId", v)}
-                        placeholder="Optional"
-                        searchable
-                        disabled={readOnly}
-                      />
-                    </td>
-                  )}
-                  {enableBillWise && (
-                    <td className="px-2 py-2">
-                      <Input
-                        value={line.billRefNo}
-                        onChange={(v) => updateLine(idx, "billRefNo", v)}
-                        placeholder="Bill #"
-                        disabled={readOnly}
-                      />
-                    </td>
-                  )}
-                  <td className="px-2 py-2">
-                    <Input
-                      value={line.narration}
-                      onChange={(v) => updateLine(idx, "narration", v)}
-                      placeholder="Line memo"
-                      disabled={readOnly}
-                    />
-                  </td>
-                  <td className="px-2 py-2">
-                    <input
-                      ref={(el) => {
-                        debitRefs.current[line.key] = el;
-                      }}
-                      data-row={idx}
-                      type="number"
-                      value={line.debit === 0 ? "" : line.debit}
-                      onChange={(e) => updateLine(idx, "debit", parseFloat(e.target.value) || 0)}
-                      onKeyDown={(e) => handleAmountKeyDown(e, idx, "debit")}
-                      placeholder="0.00"
-                      disabled={readOnly}
-                      className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
-                    />
-                  </td>
-                  <td className="px-2 py-2">
-                    <input
-                      ref={(el) => {
-                        creditRefs.current[line.key] = el;
-                      }}
-                      data-row={idx}
-                      type="number"
-                      value={line.credit === 0 ? "" : line.credit}
-                      onChange={(e) => updateLine(idx, "credit", parseFloat(e.target.value) || 0)}
-                      onKeyDown={(e) => handleAmountKeyDown(e, idx, "credit")}
-                      placeholder="0.00"
-                      disabled={readOnly}
-                      className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
-                    />
-                  </td>
-                  <td className="px-2 py-2 text-center">
-                    {!readOnly && (
-                      <div className="flex items-center gap-1 justify-center">
-                        <button
-                          type="button"
-                          onClick={() => duplicateRow(idx)}
-                          title="Duplicate (Ctrl+D)"
-                          className="p-1 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
-                        >
-                          <Copy className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => removeRow(idx)}
-                          title="Remove row"
-                          className="p-1 rounded text-[#000000] hover:text-red-600 hover:bg-red-50"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="bg-[#EBF5E2] border-t border-[#9DC07A] font-bold">
-              <tr>
-                <td
-                  colSpan={colCount - 2}
-                  className="px-3 py-3 text-right uppercase tracking-wider text-[#000000] text-[11px]"
-                >
-                  Totals
-                </td>
-                <td className="px-2 py-3 text-right font-mono text-[#000000]">
-                  {symbol} {formatNumber(totals.debit)}
-                </td>
-                <td className="px-2 py-3 text-right font-mono text-amber-700">
-                  {symbol} {formatNumber(totals.credit)}
-                </td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        {!readOnly && (
-          <div className="flex items-center justify-between p-3 border-t border-[#9DC07A]">
-            <button
-              type="button"
-              onClick={addRow}
-              className="inline-flex items-center gap-1 text-[11px] text-[#1557b0] hover:text-[#0f4a96] font-medium py-1"
-            >
-              <Plus className="h-3 w-3" /> Add Line
-            </button>
-            <span className="text-[11px] text-[#000000] font-semibold">
-              {lines.length} rows · Shortcuts: Enter/Tab navigate · Ctrl+D duplicate · F12 save ·
-              Esc cancel
-            </span>
-          </div>
-        )}
-      </Card>
-
-      {/* Totals & status bar */}
-      <Card border padding="md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
-                Total Debit
-              </p>
-              <p className="text-base font-bold text-[#000000] font-mono">
-                {symbol} {formatNumber(totals.debit)}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
-                Total Credit
-              </p>
-              <p className="text-base font-bold text-amber-700 font-mono">
-                {symbol} {formatNumber(totals.credit)}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
-                Difference
-              </p>
-              <p
-                className={`text-base font-bold font-mono ${totals.balanced ? "text-green-600" : "text-red-600"}`}
-              >
-                {symbol} {formatNumber(Math.abs(totals.diff))}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center">
-            {balanceIndicator}
-          </div>
-        </div>
-      </Card>
-
-      {/* Action buttons */}
-      <div className="flex items-center justify-end gap-2.5 pb-6">
-        <Button variant="outline" size="sm" onClick={handleCancel} icon={<X className="h-4 w-4" />}>
-          {readOnly ? "Close" : "Cancel"}
-        </Button>
-        {!readOnly && (
-          <>
-            <Button
-              variant="secondary"
-              size="sm"
-              loading={saving}
-              onClick={() => handleSave(VoucherStatus.DRAFT)}
-              icon={<Save className="h-4 w-4" />}
-            >
-              {isEdit ? "Update Draft" : "Save as Draft"}
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              loading={saving}
-              disabled={!totals.balanced}
-              onClick={() => handleSave(VoucherStatus.POSTED)}
-              icon={<CheckCircle2 className="h-4 w-4" />}
-            >
-              Post
-            </Button>
-          </>
-        )}
-      </div>
-
-      <ConfirmDialog
-        isOpen={confirmCancel}
-        onClose={() => setConfirmCancel(false)}
-        onConfirm={() => onCancel?.()}
-        title="Discard changes?"
-        message="You have unsaved changes. Are you sure you want to leave? All changes will be lost."
-        confirmText="Discard"
-        cancelText="Keep editing"
-        danger
-      />
-    </div>
-
       </FormPanel>
-
     </div>
   );
 };

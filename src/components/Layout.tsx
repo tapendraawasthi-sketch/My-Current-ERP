@@ -26,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   } = useStore();
 
   const { rawShortcuts } = useKeyboardShortcuts();
-  
+
   // Attach global F12 keyboard handler
   useF12Keyboard();
 
@@ -38,8 +38,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   });
 
   const [isMinimized, setIsMinimized] = useState(false);
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -127,8 +127,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       if (found.action_type === "help") return;
 
       const page =
-        ACTION_VALUE_TO_PAGE[actionValue] ||
-        ACTION_VALUE_TO_PAGE[actionValue.replace(/^\//, "")];
+        ACTION_VALUE_TO_PAGE[actionValue] || ACTION_VALUE_TO_PAGE[actionValue.replace(/^\//, "")];
 
       if (page) {
         setCurrentPage(page);
@@ -303,8 +302,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </h2>
 
             <p style={{ fontSize: 13, color: "#000000", marginBottom: 32, lineHeight: 1.6 }}>
-              Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company
-              support.
+              Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.
             </p>
 
             {[

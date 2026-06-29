@@ -16,7 +16,10 @@ import {
 } from "../lib/workflowUtils";
 
 function sumAmount(lines: WorkflowVoucherLine[]) {
-  return lines.reduce((s, l) => s + Number(l.amount || Number(l.qty || 0) * Number(l.rate || 0)), 0);
+  return lines.reduce(
+    (s, l) => s + Number(l.amount || Number(l.qty || 0) * Number(l.rate || 0)),
+    0,
+  );
 }
 
 function sumQty(lines: WorkflowVoucherLine[]) {
@@ -34,12 +37,12 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
+    const allVouchers: WorkflowVoucher[] =
+      (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const pos = allVouchers.filter((v) => args.poIds.includes(v.id));
 
     const lines =
-      args.lines ||
-      pos.flatMap((po) => buildGrnLinesFromPurchaseOrder(po, allVouchers));
+      args.lines || pos.flatMap((po) => buildGrnLinesFromPurchaseOrder(po, allVouchers));
 
     const grn: WorkflowVoucher = {
       id: crypto.randomUUID(),
@@ -80,7 +83,10 @@ export const createWorkflowActions = (set: any, get: any) => ({
       await db.vouchers.bulkPut(updates as any);
     });
 
-    set({ vouchers: await db.vouchers.toArray(), goodsReceiptNotes: await db.goodsReceiptNotes.toArray() });
+    set({
+      vouchers: await db.vouchers.toArray(),
+      goodsReceiptNotes: await db.goodsReceiptNotes.toArray(),
+    });
     return grn;
   },
 
@@ -90,16 +96,13 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
+    const allVouchers: WorkflowVoucher[] =
+      (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const grns = allVouchers.filter((v) => args.grnIds.includes(v.id));
 
-    const poIds = Array.from(
-      new Set(grns.flatMap((g) => g.linkedPoIds || [])),
-    );
+    const poIds = Array.from(new Set(grns.flatMap((g) => g.linkedPoIds || [])));
 
-    const lines =
-      args.lines ||
-      buildPurchaseInvoiceLinesFromGrns(grns, allVouchers);
+    const lines = args.lines || buildPurchaseInvoiceLinesFromGrns(grns, allVouchers);
 
     const invoice: WorkflowVoucher = {
       id: crypto.randomUUID(),
@@ -156,7 +159,10 @@ export const createWorkflowActions = (set: any, get: any) => ({
       await db.vouchers.bulkPut(updates as any);
     });
 
-    set({ vouchers: await db.vouchers.toArray(), goodsReceiptNotes: await db.goodsReceiptNotes.toArray() });
+    set({
+      vouchers: await db.vouchers.toArray(),
+      goodsReceiptNotes: await db.goodsReceiptNotes.toArray(),
+    });
     return invoice;
   },
 
@@ -166,12 +172,11 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
+    const allVouchers: WorkflowVoucher[] =
+      (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const sos = allVouchers.filter((v) => args.soIds.includes(v.id));
 
-    const lines =
-      args.lines ||
-      sos.flatMap((so) => buildDcLinesFromSalesOrder(so, allVouchers));
+    const lines = args.lines || sos.flatMap((so) => buildDcLinesFromSalesOrder(so, allVouchers));
 
     const dc: WorkflowVoucher = {
       id: crypto.randomUUID(),
@@ -208,7 +213,10 @@ export const createWorkflowActions = (set: any, get: any) => ({
       await db.vouchers.bulkPut(updates as any);
     });
 
-    set({ vouchers: await db.vouchers.toArray(), goodsReceiptNotes: await db.goodsReceiptNotes.toArray() });
+    set({
+      vouchers: await db.vouchers.toArray(),
+      goodsReceiptNotes: await db.goodsReceiptNotes.toArray(),
+    });
     return dc;
   },
 
@@ -218,16 +226,13 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines?: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
+    const allVouchers: WorkflowVoucher[] =
+      (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const dcs = allVouchers.filter((v) => args.dcIds.includes(v.id));
 
-    const soIds = Array.from(
-      new Set(dcs.flatMap((d) => d.linkedSoIds || [])),
-    );
+    const soIds = Array.from(new Set(dcs.flatMap((d) => d.linkedSoIds || [])));
 
-    const lines =
-      args.lines ||
-      buildSalesInvoiceLinesFromDcs(dcs, allVouchers);
+    const lines = args.lines || buildSalesInvoiceLinesFromDcs(dcs, allVouchers);
 
     const invoice: WorkflowVoucher = {
       id: crypto.randomUUID(),
@@ -284,7 +289,10 @@ export const createWorkflowActions = (set: any, get: any) => ({
       await db.vouchers.bulkPut(updates as any);
     });
 
-    set({ vouchers: await db.vouchers.toArray(), goodsReceiptNotes: await db.goodsReceiptNotes.toArray() });
+    set({
+      vouchers: await db.vouchers.toArray(),
+      goodsReceiptNotes: await db.goodsReceiptNotes.toArray(),
+    });
     return invoice;
   },
 
@@ -294,7 +302,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
     lines: WorkflowVoucherLine[];
   }) {
     const db = getDB();
-    const allVouchers: WorkflowVoucher[] = (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
+    const allVouchers: WorkflowVoucher[] =
+      (await db.vouchers.toArray()) as unknown as WorkflowVoucher[];
     const grn = allVouchers.find((v) => v.id === args.grnId);
 
     if (!grn) throw new Error("Linked GRN not found.");
@@ -348,7 +357,10 @@ export const createWorkflowActions = (set: any, get: any) => ({
       await db.vouchers.bulkPut(updates as any);
     });
 
-    set({ vouchers: await db.vouchers.toArray(), goodsReceiptNotes: await db.goodsReceiptNotes.toArray() });
+    set({
+      vouchers: await db.vouchers.toArray(),
+      goodsReceiptNotes: await db.goodsReceiptNotes.toArray(),
+    });
     return rejection;
   },
 });

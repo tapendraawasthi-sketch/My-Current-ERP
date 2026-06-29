@@ -129,7 +129,6 @@ export default function InvoicePrint({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4 print:p-0 print:relative print:bg-white print:block">
       <div className="bg-white w-full max-w-4xl rounded-lg shadow-xl overflow-hidden flex flex-col my-4 print:my-0 print:shadow-none print:rounded-none border border-[#9DC07A] print:border-0">
-        
         {/* On-screen Controls (Hidden in Print) */}
         <div className="no-print flex justify-between items-center px-4 py-3 bg-[#EBF5E2] border-b border-[#9DC07A] select-none">
           <div>
@@ -157,12 +156,15 @@ export default function InvoicePrint({
         {/* Printable Area */}
         <div className="p-8 bg-white print:p-0 text-[#000000] select-text overflow-x-auto print:overflow-visible">
           <div className="min-w-[650px] print:min-w-0">
-            
             {/* Professional Company Header */}
             <div className="flex justify-between items-start border-b-2 border-[#9DC07A] pb-4 mb-4">
               <div className="flex items-start gap-4">
                 {company.logo && (
-                  <img src={company.logo} alt="Company Logo" className="w-16 h-16 object-contain shrink-0" />
+                  <img
+                    src={company.logo}
+                    alt="Company Logo"
+                    className="w-16 h-16 object-contain shrink-0"
+                  />
                 )}
                 <div>
                   <h1 className="text-[18px] font-bold text-[#000000] leading-tight uppercase">
@@ -205,12 +207,16 @@ export default function InvoicePrint({
                   Buyer / Billed To:
                 </p>
                 <p className="text-[12px] font-bold text-[#000000]">{party.name}</p>
-                {party.address && <p className="text-[11px] text-[#000000] mt-0.5">{party.address}</p>}
+                {party.address && (
+                  <p className="text-[11px] text-[#000000] mt-0.5">{party.address}</p>
+                )}
                 {party.phone && <p className="text-[11px] text-[#000000]">Phone: {party.phone}</p>}
                 {party.pan && (
                   <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-[#9DC07A]">
                     <span className="text-[10px] font-semibold text-[#000000]">BUYER'S PAN:</span>
-                    <span className="text-[11px] font-mono font-bold text-[#000000]">{party.pan}</span>
+                    <span className="text-[11px] font-mono font-bold text-[#000000]">
+                      {party.pan}
+                    </span>
                   </div>
                 )}
               </div>
@@ -238,7 +244,9 @@ export default function InvoicePrint({
                   {invoice.paymentMode && (
                     <div className="flex justify-between">
                       <span className="text-[#000000]">Payment Mode:</span>
-                      <span className="font-semibold text-[#15803d] uppercase">{invoice.paymentMode}</span>
+                      <span className="font-semibold text-[#15803d] uppercase">
+                        {invoice.paymentMode}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -249,31 +257,71 @@ export default function InvoicePrint({
             <table className="w-full border-collapse border border-[#9DC07A] text-[11px] mb-6">
               <thead>
                 <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
-                  <th className="border border-[#9DC07A] p-2 text-center w-[30px] font-bold text-[#000000] uppercase">S.N.</th>
-                  <th className="border border-[#9DC07A] p-2 text-left font-bold text-[#000000] uppercase">Product Description</th>
-                  <th className="border border-[#9DC07A] p-2 text-center w-[60px] font-bold text-[#000000] uppercase">HSN</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[60px] font-bold text-[#000000] uppercase">Qty</th>
-                  <th className="border border-[#9DC07A] p-2 text-center w-[50px] font-bold text-[#000000] uppercase">Unit</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[80px] font-bold text-[#000000] uppercase">Rate</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">Disc</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[90px] font-bold text-[#000000] uppercase">Taxable Amt</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">VAT</th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[100px] font-bold text-[#000000] uppercase">Total</th>
+                  <th className="border border-[#9DC07A] p-2 text-center w-[30px] font-bold text-[#000000] uppercase">
+                    S.N.
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-left font-bold text-[#000000] uppercase">
+                    Product Description
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-center w-[60px] font-bold text-[#000000] uppercase">
+                    HSN
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[60px] font-bold text-[#000000] uppercase">
+                    Qty
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-center w-[50px] font-bold text-[#000000] uppercase">
+                    Unit
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[80px] font-bold text-[#000000] uppercase">
+                    Rate
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">
+                    Disc
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[90px] font-bold text-[#000000] uppercase">
+                    Taxable Amt
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">
+                    VAT
+                  </th>
+                  <th className="border border-[#9DC07A] p-2 text-right w-[100px] font-bold text-[#000000] uppercase">
+                    Total
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {invoice.items.map((item, index) => (
                   <tr key={item.id} className="border-b border-[#9DC07A]">
-                    <td className="border border-[#9DC07A] p-2 text-center font-mono">{index + 1}</td>
-                    <td className="border border-[#9DC07A] p-2 font-medium text-[#000000]">{item.name}</td>
-                    <td className="border border-[#9DC07A] p-2 text-center font-mono text-[#000000]">{item.hsn || "-"}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">{item.quantity}</td>
-                    <td className="border border-[#9DC07A] p-2 text-center text-[#000000]">{item.unit}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">{item.rate.toFixed(2)}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">{item.discount.toFixed(2)}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">{item.taxable.toFixed(2)}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">{item.vat.toFixed(2)}</td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono font-bold text-[#000000]">{item.total.toFixed(2)}</td>
+                    <td className="border border-[#9DC07A] p-2 text-center font-mono">
+                      {index + 1}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 font-medium text-[#000000]">
+                      {item.name}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-center font-mono text-[#000000]">
+                      {item.hsn || "-"}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                      {item.quantity}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-center text-[#000000]">
+                      {item.unit}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                      {item.rate.toFixed(2)}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">
+                      {item.discount.toFixed(2)}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                      {item.taxable.toFixed(2)}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">
+                      {item.vat.toFixed(2)}
+                    </td>
+                    <td className="border border-[#9DC07A] p-2 text-right font-mono font-bold text-[#000000]">
+                      {item.total.toFixed(2)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -281,24 +329,31 @@ export default function InvoicePrint({
 
             {/* Bottom Section: Terms vs. Totals */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              
               {/* Left Side: Remarks & Conditions */}
               <div className="space-y-4">
                 {/* Amount in Words */}
                 <div className="p-2.5 bg-[#EBF5E2] border border-[#9DC07A] rounded text-[11px]">
-                  <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-0.5">Amount in Words:</p>
-                  <p className="italic font-semibold text-[#000000]">{numberToWords(Math.floor(invoice.total))}</p>
+                  <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-0.5">
+                    Amount in Words:
+                  </p>
+                  <p className="italic font-semibold text-[#000000]">
+                    {numberToWords(Math.floor(invoice.total))}
+                  </p>
                 </div>
 
                 {/* Bank Details */}
                 {company.printBankDetails && (
                   <div className="p-2.5 border border-[#9DC07A] rounded text-[11px] bg-white">
-                    <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-1">Bank Payment Details:</p>
+                    <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-1">
+                      Bank Payment Details:
+                    </p>
                     <div className="grid grid-cols-3 gap-1">
                       <span className="text-[#000000]">Bank:</span>
                       <span className="col-span-2 font-medium text-[#000000]">Nepal Bank Ltd.</span>
                       <span className="text-[#000000]">Account:</span>
-                      <span className="col-span-2 font-mono font-bold text-[#000000]">00123456789</span>
+                      <span className="col-span-2 font-mono font-bold text-[#000000]">
+                        00123456789
+                      </span>
                       <span className="text-[#000000]">Branch:</span>
                       <span className="col-span-2 font-medium text-[#000000]">Kathmandu</span>
                     </div>
@@ -308,7 +363,9 @@ export default function InvoicePrint({
                 {/* Terms */}
                 {company.termsConditions && (
                   <div className="text-[10px] text-[#000000]">
-                    <p className="font-bold text-[#000000] uppercase tracking-wider text-[9px] mb-1">Terms & Conditions:</p>
+                    <p className="font-bold text-[#000000] uppercase tracking-wider text-[9px] mb-1">
+                      Terms & Conditions:
+                    </p>
                     <p className="whitespace-pre-line leading-relaxed">{company.termsConditions}</p>
                   </div>
                 )}
@@ -320,15 +377,21 @@ export default function InvoicePrint({
                   <div className="p-2.5 space-y-1.5 text-[11px]">
                     <div className="flex justify-between">
                       <span className="text-[#000000]">Subtotal:</span>
-                      <span className="font-mono font-semibold">Rs. {invoice.subtotal.toFixed(2)}</span>
+                      <span className="font-mono font-semibold">
+                        Rs. {invoice.subtotal.toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#000000]">Discount:</span>
-                      <span className="font-mono text-[#000000]">(-) Rs. {invoice.discount.toFixed(2)}</span>
+                      <span className="font-mono text-[#000000]">
+                        (-) Rs. {invoice.discount.toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between pt-1 border-t border-[#9DC07A]">
                       <span className="text-[#000000]">Taxable Value:</span>
-                      <span className="font-mono font-bold text-[#000000]">Rs. {invoice.taxable.toFixed(2)}</span>
+                      <span className="font-mono font-bold text-[#000000]">
+                        Rs. {invoice.taxable.toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#000000]">VAT (13%):</span>
@@ -336,8 +399,12 @@ export default function InvoicePrint({
                     </div>
                   </div>
                   <div className="bg-[#3D6B25] text-white px-3 py-2 flex justify-between items-center">
-                    <span className="text-[11px] font-bold uppercase tracking-wider">Grand Total:</span>
-                    <span className="font-mono text-[14px] font-bold">Rs. {invoice.total.toFixed(2)}</span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider">
+                      Grand Total:
+                    </span>
+                    <span className="font-mono text-[14px] font-bold">
+                      Rs. {invoice.total.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -362,12 +429,13 @@ export default function InvoicePrint({
             {/* Print Footer */}
             <div className="border-t border-[#9DC07A] pt-3 text-center text-[10px] text-[#000000] space-y-0.5 mt-8">
               <p>Thank you for your business!</p>
-              <p className="italic">This is a system generated tax invoice. No physical signature is required.</p>
+              <p className="italic">
+                This is a system generated tax invoice. No physical signature is required.
+              </p>
               {company.invoiceFooter && (
                 <p className="font-semibold text-[#000000] mt-1">{company.invoiceFooter}</p>
               )}
             </div>
-
           </div>
         </div>
       </div>
@@ -402,4 +470,3 @@ export default function InvoicePrint({
     </div>
   );
 }
-

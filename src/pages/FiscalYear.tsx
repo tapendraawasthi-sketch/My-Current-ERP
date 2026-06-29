@@ -8,7 +8,8 @@ import { useStore } from "../store/useStore";
 import { FiscalYear, FiscalYearStatus } from "../lib/types";
 
 export default function FiscalYear() {
-  const { fiscalYears, currentUser, addFiscalYear, setCurrentFiscalYear, closeFiscalYear } = useStore();
+  const { fiscalYears, currentUser, addFiscalYear, setCurrentFiscalYear, closeFiscalYear } =
+    useStore();
 
   const [showForm, setShowForm] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState<string | null>(null);
@@ -71,7 +72,14 @@ export default function FiscalYear() {
 
       await addFiscalYear(newFY);
       toast.success("New Fiscal Year Created Successfully");
-      setFormData({ name: "", startDate: "", endDate: "", fiscalYearBS: "", startDateBS: "", endDateBS: "" });
+      setFormData({
+        name: "",
+        startDate: "",
+        endDate: "",
+        fiscalYearBS: "",
+        startDateBS: "",
+        endDateBS: "",
+      });
       setShowForm(false);
     } catch (err: any) {
       toast.error(err?.message || "Failed to create fiscal year");
@@ -113,7 +121,9 @@ export default function FiscalYear() {
       future: "bg-amber-100 text-amber-700",
     };
     return (
-      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded ${classes[status] || "bg-[#EBF5E2] text-[#000000]"}`}>
+      <span
+        className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded ${classes[status] || "bg-[#EBF5E2] text-[#000000]"}`}
+      >
         {status}
       </span>
     );
@@ -140,12 +150,24 @@ export default function FiscalYear() {
         <table className="w-full">
           <thead className="bg-[#f5f6fa] border-b border-[#9DC07A]">
             <tr>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Label</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Start Date (AD)</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">End Date (AD)</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">BS Period</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                Label
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                Start Date (AD)
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                End Date (AD)
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                BS Period
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -188,7 +210,10 @@ export default function FiscalYear() {
       {/* CREATE FISCAL YEAR MODAL */}
       {showForm && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col" style={{ maxHeight: "90vh" }}>
+          <div
+            className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col"
+            style={{ maxHeight: "90vh" }}
+          >
             <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#f5f6fa] rounded-t-lg">
               <h2 className="text-[14px] font-semibold text-[#000000] flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-[#1557b0]" /> Create Fiscal Year
@@ -227,7 +252,9 @@ export default function FiscalYear() {
                       required
                     />
                     {formData.startDateBS && (
-                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">BS: {formData.startDateBS}</p>
+                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">
+                        BS: {formData.startDateBS}
+                      </p>
                     )}
                   </div>
 
@@ -239,13 +266,18 @@ export default function FiscalYear() {
                       required
                     />
                     {formData.endDateBS && (
-                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">BS: {formData.endDateBS}</p>
+                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">
+                        BS: {formData.endDateBS}
+                      </p>
                     )}
                   </div>
 
                   <div className="bg-[#D4EABD] text-[#000000] text-[11px] p-3 rounded border border-[#9DC07A] flex items-start gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                    <p>Fiscal year dates should not overlap. The new year will be marked as "future" until activated.</p>
+                    <p>
+                      Fiscal year dates should not overlap. The new year will be marked as "future"
+                      until activated.
+                    </p>
                   </div>
                 </div>
 
@@ -298,7 +330,8 @@ export default function FiscalYear() {
                 <li>Lock the year to prevent further changes.</li>
               </ul>
               <div className="bg-amber-50 border border-amber-200 text-amber-800 p-2 rounded font-bold flex gap-2 items-center">
-                <Lock className="w-4 h-4 shrink-0" /> This action is irreversible. Back up your data first.
+                <Lock className="w-4 h-4 shrink-0" /> This action is irreversible. Back up your data
+                first.
               </div>
             </div>
             <div className="flex justify-end gap-2 p-4 bg-[#EBF5E2] border-t border-[#9DC07A]">

@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { X, Search, Printer, FileEdit, Trash2 } from 'lucide-react';
-import { VoucherMeta } from '@/lib/tallyVoucher';
-import { formatMoney, formatDate } from '@/lib/tallyFormat';
+import React, { useState, useMemo } from "react";
+import { X, Search, Printer, FileEdit, Trash2 } from "lucide-react";
+import { VoucherMeta } from "@/lib/tallyVoucher";
+import { formatMoney, formatDate } from "@/lib/tallyFormat";
 
 interface Props {
   isOpen: boolean;
@@ -20,7 +20,7 @@ export const TallyVoucherList: React.FC<Props> = ({
   onPrint,
   onDelete,
 }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     if (!query.trim()) return vouchers;
@@ -30,7 +30,7 @@ export const TallyVoucherList: React.FC<Props> = ({
         v.voucherNumber.toLowerCase().includes(q) ||
         v.voucherType.toLowerCase().includes(q) ||
         v.reference?.toLowerCase().includes(q) ||
-        formatDate(v.date).includes(q)
+        formatDate(v.date).includes(q),
     );
   }, [vouchers, query]);
 
@@ -40,8 +40,12 @@ export const TallyVoucherList: React.FC<Props> = ({
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30">
       <div className="tally-popup w-[720px] rounded-sm max-h-[80vh] flex flex-col">
         <div className="tally-popup-title flex items-center justify-between">
-          <span className="flex items-center gap-1"><Search size={12} /> Voucher List (F10)</span>
-          <button onClick={onClose}><X size={14} /></button>
+          <span className="flex items-center gap-1">
+            <Search size={12} /> Voucher List (F10)
+          </span>
+          <button onClick={onClose}>
+            <X size={14} />
+          </button>
         </div>
         <div className="p-3">
           <input
@@ -72,19 +76,37 @@ export const TallyVoucherList: React.FC<Props> = ({
                     <td>{formatDate(v.date)}</td>
                     <td>{v.voucherNumber}</td>
                     <td>{v.voucherType}</td>
-                    <td>{v.reference || '-'}</td>
+                    <td>{v.reference || "-"}</td>
                     <td className="text-right">{formatMoney(v.totalDebit || v.totalCredit)}</td>
                     <td className="text-center">
-                      <button className="text-tally-600 hover:text-tally-800 mx-1" onClick={(e) => { e.stopPropagation(); onSelect(v.id); }}>
+                      <button
+                        className="text-tally-600 hover:text-tally-800 mx-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelect(v.id);
+                        }}
+                      >
                         <FileEdit size={14} />
                       </button>
                       {onPrint && (
-                        <button className="text-tally-600 hover:text-tally-800 mx-1" onClick={(e) => { e.stopPropagation(); onPrint(v.id); }}>
+                        <button
+                          className="text-tally-600 hover:text-tally-800 mx-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPrint(v.id);
+                          }}
+                        >
                           <Printer size={14} />
                         </button>
                       )}
                       {onDelete && (
-                        <button className="text-red-600 hover:text-red-800 mx-1" onClick={(e) => { e.stopPropagation(); onDelete(v.id); }}>
+                        <button
+                          className="text-red-600 hover:text-red-800 mx-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(v.id);
+                          }}
+                        >
                           <Trash2 size={14} />
                         </button>
                       )}
@@ -92,7 +114,11 @@ export const TallyVoucherList: React.FC<Props> = ({
                   </tr>
                 ))}
                 {filtered.length === 0 && (
-                  <tr><td colSpan={6} className="text-center text-tally-600 py-3">No vouchers found.</td></tr>
+                  <tr>
+                    <td colSpan={6} className="text-center text-tally-600 py-3">
+                      No vouchers found.
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

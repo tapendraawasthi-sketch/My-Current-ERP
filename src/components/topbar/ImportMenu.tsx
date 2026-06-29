@@ -120,7 +120,14 @@ export default function ImportMenu() {
         <ImportWizard
           title="Import Masters"
           endpoint="/api/import/masters"
-          importOptions={["Ledgers", "Stock Items", "Employees", "Cost Centers", "Customers", "Suppliers"]}
+          importOptions={[
+            "Ledgers",
+            "Stock Items",
+            "Employees",
+            "Cost Centers",
+            "Customers",
+            "Suppliers",
+          ]}
           accept=".xlsx,.csv"
           onClose={() => setActiveModal(null)}
         />
@@ -367,7 +374,9 @@ function ImportWizard({
           )}
 
           {step === 1 && <PrimaryButton onClick={() => setStep(2)}>Next</PrimaryButton>}
-          {step === 2 && <OutlineButton onClick={downloadTemplate}>Download Template</OutlineButton>}
+          {step === 2 && (
+            <OutlineButton onClick={downloadTemplate}>Download Template</OutlineButton>
+          )}
           {step === 3 && <PrimaryButton onClick={() => setStep(4)}>Preview</PrimaryButton>}
           {step === 4 && (
             <>
@@ -436,8 +445,12 @@ function ImportWizard({
             <table className="w-full text-[12px]">
               <thead className="bg-[#f5f6fa]">
                 <tr>
-                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">File Column</th>
-                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">System Field</th>
+                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                    File Column
+                  </th>
+                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                    System Field
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -492,11 +505,16 @@ function ImportWizard({
                 <tr>
                   <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">Row</th>
                   {systemFields.slice(0, 8).map((field) => (
-                    <th key={field} className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                    <th
+                      key={field}
+                      className="px-3 py-2 text-left text-[10px] uppercase text-gray-500"
+                    >
                       {field}
                     </th>
                   ))}
-                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">Errors</th>
+                  <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                    Errors
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -580,13 +598,20 @@ function ImportLogsModal({ onClose }: { onClose: () => void }) {
       <table className="w-full text-[12px]">
         <thead className="bg-[#f5f6fa]">
           <tr>
-            {["Date", "Imported By", "Type", "File Name", "Total", "Success", "Failed", "Status"].map(
-              (heading) => (
-                <th key={heading} className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
-                  {heading}
-                </th>
-              ),
-            )}
+            {[
+              "Date",
+              "Imported By",
+              "Type",
+              "File Name",
+              "Total",
+              "Success",
+              "Failed",
+              "Status",
+            ].map((heading) => (
+              <th key={heading} className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">
+                {heading}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

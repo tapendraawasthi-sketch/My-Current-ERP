@@ -10,8 +10,16 @@ import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
 
 export default function TdsReport() {
-  const { tdsEntries, updateTdsEntry, currentFiscalYear, companySettings, addTdsChallan, accounts, addVoucher } = useStore();
-  
+  const {
+    tdsEntries,
+    updateTdsEntry,
+    currentFiscalYear,
+    companySettings,
+    addTdsChallan,
+    accounts,
+    addVoucher,
+  } = useStore();
+
   const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.fiscalYearBS || "2081/2082");
   const [sectionFilter, setSectionFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -27,10 +35,13 @@ export default function TdsReport() {
   const [bankAccountId, setBankAccountId] = useState("");
 
   const filteredEntries = useMemo(() => {
-    return tdsEntries.filter(entry => {
+    return tdsEntries.filter((entry) => {
       const matchFY = entry.fiscalYearBS === fiscalYearBS;
       const matchSection = sectionFilter === "All" || entry.section === sectionFilter;
-      const matchStatus = statusFilter === "All" || entry.status === statusFilter || (!entry.status && statusFilter === "pending");
+      const matchStatus =
+        statusFilter === "All" ||
+        entry.status === statusFilter ||
+        (!entry.status && statusFilter === "pending");
       return matchFY && matchSection && matchStatus;
     });
   }, [tdsEntries, fiscalYearBS, sectionFilter, statusFilter]);
@@ -38,7 +49,7 @@ export default function TdsReport() {
   // Group by section
   const groupedBySection = useMemo(() => {
     const groups: Record<string, typeof filteredEntries> = {};
-    filteredEntries.forEach(entry => {
+    filteredEntries.forEach((entry) => {
       const sec = entry.section || "Other";
       if (!groups[sec]) groups[sec] = [];
       groups[sec].push(entry);
@@ -47,7 +58,7 @@ export default function TdsReport() {
   }, [filteredEntries]);
 
   const uniqueSections = useMemo(() => {
-    const secs = new Set(tdsEntries.map(e => e.section || "Other"));
+    const secs = new Set(tdsEntries.map((e) => e.section || "Other"));
     return ["All", ...Array.from(secs)];
   }, [tdsEntries]);
 
@@ -79,11 +90,13 @@ export default function TdsReport() {
       return;
     }
     try {
-      const entry = tdsEntries.find(e => e.id === challanEntryId);
+      const entry = tdsEntries.find((e) => e.id === challanEntryId);
       if (!entry) throw new Error("Entry not found");
-      
-      const tdsPayableId = accounts.find(a => a.name?.toLowerCase().includes("tds") && a.type === "liability")?.id || "acc-tds-payable";
-      const bankAcc = accounts.find(a => a.id === bankAccountId);
+
+      const tdsPayableId =
+        accounts.find((a) => a.name?.toLowerCase().includes("tds") && a.type === "liability")?.id ||
+        "acc-tds-payable";
+      const bankAcc = accounts.find((a) => a.id === bankAccountId);
 
       // 1. Create a payment voucher
       const paymentVoucher = {
@@ -95,14 +108,24 @@ export default function TdsReport() {
         narration: `TDS Deposit to IRD for ${entry.partyName}`,
         status: VoucherStatus.POSTED,
         lines: [
-          { accountId: tdsPayableId, accountName: "TDS Payable", debit: entry.tdsAmount, credit: 0 },
-          { accountId: bankAccountId, accountName: bankAcc?.name, debit: 0, credit: entry.tdsAmount }
+          {
+            accountId: tdsPayableId,
+            accountName: "TDS Payable",
+            debit: entry.tdsAmount,
+            credit: 0,
+          },
+          {
+            accountId: bankAccountId,
+            accountName: bankAcc?.name,
+            debit: 0,
+            credit: entry.tdsAmount,
+          },
         ],
         tdsChallanNo: challanNo,
         tdsChallanDateBS: challanDateBS,
         createdAt: new Date().toISOString(),
       };
-      
+
       await addVoucher(paymentVoucher);
 
       // 2. Add TDS Challan to Dexie
@@ -125,7 +148,7 @@ export default function TdsReport() {
       await updateTdsEntry(challanEntryId, {
         challanNumber: challanNo,
         status: "challanGenerated",
-        depositedAt: new Date().toISOString()
+        depositedAt: new Date().toISOString(),
       });
 
       toast.success("TDS Payment recorded and Challan generated successfully");
@@ -155,7 +178,9 @@ export default function TdsReport() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-[#000000]">TDS Register</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">Section-wise TDS records for Income Tax Act 2058</p>
+              <p className="text-[11px] text-[#000000] mt-0.5">
+                Section-wise TDS records for Income Tax Act 2058
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -174,7 +199,7 @@ export default function TdsReport() {
                 <input
                   type="text"
                   value={fiscalYearBS}
-                  onChange={e => setFiscalYearBS(e.target.value)}
+                  onChange={(e) => setFiscalYearBS(e.target.value)}
                   className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
                 />
               </div>
@@ -182,7 +207,7 @@ export default function TdsReport() {
                 label="Section"
                 value={sectionFilter}
                 onChange={setSectionFilter}
-                options={uniqueSections.map(s => ({ value: s, label: s }))}
+                options={uniqueSections.map((s) => ({ value: s, label: s }))}
               />
               <Select
                 label="Status"
@@ -191,7 +216,7 @@ export default function TdsReport() {
                 options={[
                   { value: "All", label: "All Status" },
                   { value: "pending", label: "Pending" },
-                  { value: "challanGenerated", label: "Challan Generated" }
+                  { value: "challanGenerated", label: "Challan Generated" },
                 ]}
               />
             </div>
@@ -203,7 +228,7 @@ export default function TdsReport() {
                 No TDS entries found for the selected filters.
               </div>
             ) : (
-              Object.keys(groupedBySection).map(sec => {
+              Object.keys(groupedBySection).map((sec) => {
                 const entries = groupedBySection[sec];
                 const secGross = entries.reduce((acc, e) => acc + e.grossAmount, 0);
                 const secTds = entries.reduce((acc, e) => acc + e.tdsAmount, 0);
@@ -221,38 +246,82 @@ export default function TdsReport() {
                       <table className="w-full text-left whitespace-nowrap">
                         <thead className="bg-[#f5f6fa] border-b border-gray-200">
                           <tr>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date (BS)</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">PAN</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Payment Nature</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Gross Amount</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">TDS Rate</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">TDS Amount</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">Net Paid</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Challan No</th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-center">Action</th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              Date (BS)
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              Party
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              PAN
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              Payment Nature
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                              Gross Amount
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                              TDS Rate
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                              TDS Amount
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+                              Net Paid
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              Status
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              Challan No
+                            </th>
+                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-center">
+                              Action
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 bg-white">
                           {entries.map((entry) => (
                             <tr key={entry.id} className="hover:bg-[#EBF5E2]/50">
-                              <td className="px-3 py-2 text-[12px] text-[#000000]">{entry.dateBS}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-medium">{entry.partyName}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">{entry.partyPAN || "-"}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000]">{entry.paymentNature}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">Rs.{formatNumber(entry.grossAmount)}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">{entry.tdsRate}%</td>
-                              <td className="px-3 py-2 text-[12px] text-red-600 font-mono font-bold text-right">Rs.{formatNumber(entry.tdsAmount)}</td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">Rs.{formatNumber(entry.netAmount)}</td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000]">
+                                {entry.dateBS}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-medium">
+                                {entry.partyName}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">
+                                {entry.partyPAN || "-"}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000]">
+                                {entry.paymentNature}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
+                                Rs.{formatNumber(entry.grossAmount)}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
+                                {entry.tdsRate}%
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-red-600 font-mono font-bold text-right">
+                                Rs.{formatNumber(entry.tdsAmount)}
+                              </td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
+                                Rs.{formatNumber(entry.netAmount)}
+                              </td>
                               <td className="px-3 py-2 text-[12px]">
-                                <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${
-                                  entry.status === 'challanGenerated' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                                }`}>
+                                <span
+                                  className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${
+                                    entry.status === "challanGenerated"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-amber-100 text-amber-700"
+                                  }`}
+                                >
                                   {entry.status || "pending"}
                                 </span>
                               </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">{entry.challanNumber || "-"}</td>
+                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">
+                                {entry.challanNumber || "-"}
+                              </td>
                               <td className="px-3 py-2 text-[12px] text-center">
                                 {(!entry.status || entry.status === "pending") && (
                                   <button
@@ -268,11 +337,22 @@ export default function TdsReport() {
                         </tbody>
                         <tfoot className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
                           <tr>
-                            <td colSpan={4} className="px-3 py-2 text-[12px] font-bold text-[#000000] text-right">Section {sec} Total</td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-[#000000] font-mono text-right">Rs.{formatNumber(secGross)}</td>
+                            <td
+                              colSpan={4}
+                              className="px-3 py-2 text-[12px] font-bold text-[#000000] text-right"
+                            >
+                              Section {sec} Total
+                            </td>
+                            <td className="px-3 py-2 text-[12px] font-bold text-[#000000] font-mono text-right">
+                              Rs.{formatNumber(secGross)}
+                            </td>
                             <td></td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-red-700 font-mono text-right">Rs.{formatNumber(secTds)}</td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-green-700 font-mono text-right">Rs.{formatNumber(secNet)}</td>
+                            <td className="px-3 py-2 text-[12px] font-bold text-red-700 font-mono text-right">
+                              Rs.{formatNumber(secTds)}
+                            </td>
+                            <td className="px-3 py-2 text-[12px] font-bold text-green-700 font-mono text-right">
+                              Rs.{formatNumber(secNet)}
+                            </td>
                             <td colSpan={3}></td>
                           </tr>
                         </tfoot>
@@ -286,21 +366,30 @@ export default function TdsReport() {
 
           {filteredEntries.length > 0 && (
             <div className="mt-4 bg-white border border-[#9DC07A] rounded-md p-4 grid grid-cols-3 gap-4">
-               <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                 <div className="text-[10px] uppercase font-bold text-[#000000]">Total Gross Amount</div>
-                 <div className="text-[16px] font-bold text-[#000000]">Rs. {formatNumber(totalGross)}</div>
-               </div>
-               <div className="bg-red-50 p-3 rounded border border-red-200">
-                 <div className="text-[10px] uppercase font-bold text-red-700">Total TDS Deducted</div>
-                 <div className="text-[16px] font-bold text-red-800">Rs. {formatNumber(totalTds)}</div>
-               </div>
-               <div className="bg-green-50 p-3 rounded border border-green-200">
-                 <div className="text-[10px] uppercase font-bold text-green-700">Total Net Paid</div>
-                 <div className="text-[16px] font-bold text-green-800">Rs. {formatNumber(totalNet)}</div>
-               </div>
+              <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
+                <div className="text-[10px] uppercase font-bold text-[#000000]">
+                  Total Gross Amount
+                </div>
+                <div className="text-[16px] font-bold text-[#000000]">
+                  Rs. {formatNumber(totalGross)}
+                </div>
+              </div>
+              <div className="bg-red-50 p-3 rounded border border-red-200">
+                <div className="text-[10px] uppercase font-bold text-red-700">
+                  Total TDS Deducted
+                </div>
+                <div className="text-[16px] font-bold text-red-800">
+                  Rs. {formatNumber(totalTds)}
+                </div>
+              </div>
+              <div className="bg-green-50 p-3 rounded border border-green-200">
+                <div className="text-[10px] uppercase font-bold text-green-700">Total Net Paid</div>
+                <div className="text-[16px] font-bold text-green-800">
+                  Rs. {formatNumber(totalNet)}
+                </div>
+              </div>
             </div>
           )}
-
         </div>
       </FormPanel>
 
@@ -333,7 +422,9 @@ export default function TdsReport() {
                   />
                 </div>
                 <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-[#000000]">Challan Date (BS) *</label>
+                  <label className="text-[11px] font-medium text-[#000000]">
+                    Challan Date (BS) *
+                  </label>
                   <input
                     type="text"
                     value={challanDateBS}
@@ -343,36 +434,77 @@ export default function TdsReport() {
                   />
                 </div>
                 <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-[#000000]">Payment Bank Account *</label>
+                  <label className="text-[11px] font-medium text-[#000000]">
+                    Payment Bank Account *
+                  </label>
                   <select
                     value={bankAccountId}
                     onChange={(e) => setBankAccountId(e.target.value)}
                     className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
                   >
                     <option value="">Select Bank Account</option>
-                    {accounts.filter(a => a.type === "bank" || a.type === "cash" || a.group?.toLowerCase().includes("bank")).map(a => (
-                      <option key={a.id} value={a.id}>{a.name}</option>
-                    ))}
+                    {accounts
+                      .filter(
+                        (a) =>
+                          a.type === "bank" ||
+                          a.type === "cash" ||
+                          a.group?.toLowerCase().includes("bank"),
+                      )
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">Depositing Bank Name</label>
-                    <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="e.g. Nabil Bank" />
+                    <label className="text-[11px] font-medium text-[#000000]">
+                      Depositing Bank Name
+                    </label>
+                    <input
+                      type="text"
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                      placeholder="e.g. Nabil Bank"
+                    />
                   </div>
                   <div className="grid gap-1">
                     <label className="text-[11px] font-medium text-[#000000]">Bank Branch</label>
-                    <input type="text" value={bankBranch} onChange={e => setBankBranch(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="e.g. Kathmandu" />
+                    <input
+                      type="text"
+                      value={bankBranch}
+                      onChange={(e) => setBankBranch(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                      placeholder="e.g. Kathmandu"
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">Period From (BS) *</label>
-                    <input type="text" value={fromBS} onChange={e => setFromBS(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="YYYY-MM-DD" />
+                    <label className="text-[11px] font-medium text-[#000000]">
+                      Period From (BS) *
+                    </label>
+                    <input
+                      type="text"
+                      value={fromBS}
+                      onChange={(e) => setFromBS(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                      placeholder="YYYY-MM-DD"
+                    />
                   </div>
                   <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">Period To (BS) *</label>
-                    <input type="text" value={toBS} onChange={e => setToBS(e.target.value)} className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white" placeholder="YYYY-MM-DD" />
+                    <label className="text-[11px] font-medium text-[#000000]">
+                      Period To (BS) *
+                    </label>
+                    <input
+                      type="text"
+                      value={toBS}
+                      onChange={(e) => setToBS(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                      placeholder="YYYY-MM-DD"
+                    />
                   </div>
                 </div>
               </div>
@@ -399,4 +531,3 @@ export default function TdsReport() {
     </div>
   );
 }
-

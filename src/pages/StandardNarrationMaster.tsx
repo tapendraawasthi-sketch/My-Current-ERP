@@ -2,15 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
 import { DBStandardNarration } from "../lib/db";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  Save,
-  Search,
-  MessageSquare,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, X, Save, Search, MessageSquare } from "lucide-react";
 
 // ─── Empty form template ──────────────────────────────────────────────────────
 
@@ -43,15 +35,13 @@ export default function StandardNarrationMaster() {
     const q = search.toLowerCase().trim();
     if (!q) return standardNarrations;
     return standardNarrations.filter(
-      (sn) =>
-        sn.narration.toLowerCase().includes(q) ||
-        sn.voucherType.toLowerCase().includes(q)
+      (sn) => sn.narration.toLowerCase().includes(q) || sn.voucherType.toLowerCase().includes(q),
     );
   }, [standardNarrations, search]);
 
   const deleteTarget = useMemo(
     () => standardNarrations.find((sn) => sn.id === deleteTargetId) ?? null,
-    [standardNarrations, deleteTargetId]
+    [standardNarrations, deleteTargetId],
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -78,10 +68,8 @@ export default function StandardNarrationMaster() {
     setForm(emptyForm());
   };
 
-  const setField = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
-  ) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): string | null => {
     if (!form.narration.trim()) return "Narration text is required.";
@@ -175,10 +163,18 @@ export default function StandardNarrationMaster() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">Voucher Type</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration Text</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">
+                Voucher Type
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Narration Text
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -186,19 +182,21 @@ export default function StandardNarrationMaster() {
               <tr>
                 <td colSpan={4} className="px-3 py-10 text-center text-gray-500 text-[12px]">
                   <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No standard narrations yet. Create your first template."}
+                  {search
+                    ? "No results found."
+                    : "No standard narrations yet. Create your first template."}
                 </td>
               </tr>
             ) : (
               filtered.map((sn) => (
-                <tr
-                  key={sn.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={sn.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700 capitalize">
                     {sn.voucherType === "all" ? "All Vouchers" : sn.voucherType}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-xl truncate" title={sn.narration}>
+                  <td
+                    className="px-3 py-2.5 text-[12px] text-gray-700 max-w-xl truncate"
+                    title={sn.narration}
+                  >
                     {sn.narration}
                   </td>
                   <td className="px-3 py-2.5 text-center">
@@ -255,12 +253,10 @@ export default function StandardNarrationMaster() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Voucher Type
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Voucher Type</label>
                 <select
                   value={form.voucherType}
                   onChange={(e) => setField("voucherType", e.target.value)}
@@ -280,9 +276,7 @@ export default function StandardNarrationMaster() {
               </div>
 
               <div className="flex flex-col gap-1 mt-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Narration Text *
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Narration Text *</label>
                 <textarea
                   value={form.narration}
                   onChange={(e) => setField("narration", e.target.value)}
@@ -335,7 +329,8 @@ export default function StandardNarrationMaster() {
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete this narration template? This action cannot be undone.
+                Are you sure you want to delete this narration template? This action cannot be
+                undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

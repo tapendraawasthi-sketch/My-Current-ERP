@@ -1,9 +1,9 @@
 // ─── Auth Stage Machine ────────────────────────────────────────────────────────
 export type AuthStage =
-  | "checking"       // initializeApp() is running — show spinner
-  | "no-company"     // Dexie has zero companySettings — show SignUpWizard
-  | "gateway"        // Company exists, no valid session — show GatewayScreen
-  | "company-login"  // User picked a company, not yet logged in — show CompanyLoginScreen
+  | "checking" // initializeApp() is running — show spinner
+  | "no-company" // Dexie has zero companySettings — show SignUpWizard
+  | "gateway" // Company exists, no valid session — show GatewayScreen
+  | "company-login" // User picked a company, not yet logged in — show CompanyLoginScreen
   | "authenticated"; // Valid credentials entered — show full app shell
 
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -23,16 +23,14 @@ const round2 = (value: number | string | null | undefined) =>
   Math.round((Number(value) || 0) * 100) / 100;
 
 export const validateVoucherBalance = (lines: any[]) => {
-  const totalDebit = round2(
-    (lines ?? []).reduce((sum, line) => sum + Number(line.debit || 0), 0)
-  );
+  const totalDebit = round2((lines ?? []).reduce((sum, line) => sum + Number(line.debit || 0), 0));
   const totalCredit = round2(
-    (lines ?? []).reduce((sum, line) => sum + Number(line.credit || 0), 0)
+    (lines ?? []).reduce((sum, line) => sum + Number(line.credit || 0), 0),
   );
 
   if (Math.abs(totalDebit - totalCredit) >= 0.01) {
     throw new Error(
-      `Unbalanced voucher: Debit ${totalDebit} does not equal Credit ${totalCredit}.`
+      `Unbalanced voucher: Debit ${totalDebit} does not equal Credit ${totalCredit}.`,
     );
   }
 
@@ -43,17 +41,12 @@ export const validateVoucherBalance = (lines: any[]) => {
   return { totalDebit, totalCredit };
 };
 
-export const assertDateInFiscalYear = (
-  date: string,
-  fiscalYear: FiscalYear | null | undefined
-) => {
+export const assertDateInFiscalYear = (date: string, fiscalYear: FiscalYear | null | undefined) => {
   if (!fiscalYear) {
     throw new Error("No active fiscal year selected.");
   }
   if (date < fiscalYear.startDate || date > fiscalYear.endDate) {
-    throw new Error(
-      `Date ${date} is outside the current fiscal year (${fiscalYear.name}).`
-    );
+    throw new Error(`Date ${date} is outside the current fiscal year (${fiscalYear.name}).`);
   }
 };
 
@@ -99,7 +92,7 @@ export interface CompanySettings {
   defaultCashAccount?: string;
   defaultBankAccount?: string;
   defaultCostCenter?: string;
-  
+
   // Nepal e-Invoicing / CBMS
   cbmsEnabled?: boolean;
   cbmsApiUrl?: string;
@@ -148,46 +141,425 @@ export interface ReportFilters {
 
 // ─── Default seeds ─────────────────────────────────────────────────────────────
 export const DEFAULT_SHORTCUTS = [
-  { key_combo: "Ctrl+N", label: "New Voucher", action_type: "navigate", action_value: "journal", category: "Transactions", is_active: true },
-  { key_combo: "Ctrl+I", label: "New Invoice", action_type: "navigate", action_value: "billing", category: "Transactions", is_active: true },
-  { key_combo: "F2", label: "Save", action_type: "save", action_value: "save", category: "General", is_active: true },
-  { key_combo: "F5", label: "List View", action_type: "navigate", action_value: "vouchers", category: "General", is_active: true },
-  { key_combo: "Ctrl+/", label: "Search", action_type: "search", action_value: "search", category: "General", is_active: true },
-  { key_combo: "?", label: "Shortcuts Help", action_type: "help", action_value: "shortcuts", category: "General", is_active: true },
-  { key_combo: "Ctrl+B", label: "Balance Sheet", action_type: "report", action_value: "balance-sheet", category: "Reports", is_active: true },
-  { key_combo: "Ctrl+T", label: "Trial Balance", action_type: "report", action_value: "trial-balance", category: "Reports", is_active: true },
+  {
+    key_combo: "Ctrl+N",
+    label: "New Voucher",
+    action_type: "navigate",
+    action_value: "journal",
+    category: "Transactions",
+    is_active: true,
+  },
+  {
+    key_combo: "Ctrl+I",
+    label: "New Invoice",
+    action_type: "navigate",
+    action_value: "billing",
+    category: "Transactions",
+    is_active: true,
+  },
+  {
+    key_combo: "F2",
+    label: "Save",
+    action_type: "save",
+    action_value: "save",
+    category: "General",
+    is_active: true,
+  },
+  {
+    key_combo: "F5",
+    label: "List View",
+    action_type: "navigate",
+    action_value: "vouchers",
+    category: "General",
+    is_active: true,
+  },
+  {
+    key_combo: "Ctrl+/",
+    label: "Search",
+    action_type: "search",
+    action_value: "search",
+    category: "General",
+    is_active: true,
+  },
+  {
+    key_combo: "?",
+    label: "Shortcuts Help",
+    action_type: "help",
+    action_value: "shortcuts",
+    category: "General",
+    is_active: true,
+  },
+  {
+    key_combo: "Ctrl+B",
+    label: "Balance Sheet",
+    action_type: "report",
+    action_value: "balance-sheet",
+    category: "Reports",
+    is_active: true,
+  },
+  {
+    key_combo: "Ctrl+T",
+    label: "Trial Balance",
+    action_type: "report",
+    action_value: "trial-balance",
+    category: "Reports",
+    is_active: true,
+  },
 ];
 
 export const DEFAULT_ACCOUNTS = [
   // Assets
-  { id: "grp-assets", code: "1000", name: "Assets", type: "asset", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "grp-current-assets", code: "1100", name: "Current Assets", type: "asset", level: "subgroup", parentId: "grp-assets", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "grp-bank-accounts", code: "1101", name: "Bank Accounts", type: "asset", level: "subgroup", parentId: "grp-current-assets", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "grp-sundry-debtors", code: "1200", name: "Sundry Debtors", type: "asset", level: "subgroup", parentId: "grp-current-assets", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "acc-cash", code: "1101", name: "Cash in Hand", type: "asset", level: "ledger", parentId: "grp-current-assets", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true, group: "Current Assets" },
-  { id: "acc-sundry-debtors", code: "1201", name: "Sundry Debtors", type: "asset", level: "ledger", parentId: "grp-sundry-debtors", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
+  {
+    id: "grp-assets",
+    code: "1000",
+    name: "Assets",
+    type: "asset",
+    level: "group",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "grp-current-assets",
+    code: "1100",
+    name: "Current Assets",
+    type: "asset",
+    level: "subgroup",
+    parentId: "grp-assets",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "grp-bank-accounts",
+    code: "1101",
+    name: "Bank Accounts",
+    type: "asset",
+    level: "subgroup",
+    parentId: "grp-current-assets",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "grp-sundry-debtors",
+    code: "1200",
+    name: "Sundry Debtors",
+    type: "asset",
+    level: "subgroup",
+    parentId: "grp-current-assets",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "acc-cash",
+    code: "1101",
+    name: "Cash in Hand",
+    type: "asset",
+    level: "ledger",
+    parentId: "grp-current-assets",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+    group: "Current Assets",
+  },
+  {
+    id: "acc-sundry-debtors",
+    code: "1201",
+    name: "Sundry Debtors",
+    type: "asset",
+    level: "ledger",
+    parentId: "grp-sundry-debtors",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
   // Liabilities
-  { id: "grp-liabilities", code: "2000", name: "Liabilities", type: "liability", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "grp-current-liabilities", code: "2100", name: "Current Liabilities", type: "liability", level: "subgroup", parentId: "grp-liabilities", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "grp-sundry-creditors", code: "2101", name: "Sundry Creditors", type: "liability", level: "subgroup", parentId: "grp-current-liabilities", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "acc-sundry-creditors", code: "2101", name: "Sundry Creditors", type: "liability", level: "ledger", parentId: "grp-sundry-creditors", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-vat-payable", code: "2201", name: "VAT Payable", type: "liability", level: "ledger", parentId: "grp-current-liabilities", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-tds-payable", code: "2202", name: "TDS Payable", type: "liability", level: "ledger", parentId: "grp-current-liabilities", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
+  {
+    id: "grp-liabilities",
+    code: "2000",
+    name: "Liabilities",
+    type: "liability",
+    level: "group",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "grp-current-liabilities",
+    code: "2100",
+    name: "Current Liabilities",
+    type: "liability",
+    level: "subgroup",
+    parentId: "grp-liabilities",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "grp-sundry-creditors",
+    code: "2101",
+    name: "Sundry Creditors",
+    type: "liability",
+    level: "subgroup",
+    parentId: "grp-current-liabilities",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "acc-sundry-creditors",
+    code: "2101",
+    name: "Sundry Creditors",
+    type: "liability",
+    level: "ledger",
+    parentId: "grp-sundry-creditors",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-vat-payable",
+    code: "2201",
+    name: "VAT Payable",
+    type: "liability",
+    level: "ledger",
+    parentId: "grp-current-liabilities",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-tds-payable",
+    code: "2202",
+    name: "TDS Payable",
+    type: "liability",
+    level: "ledger",
+    parentId: "grp-current-liabilities",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
   // Equity
-  { id: "grp-equity", code: "3000", name: "Equity", type: "equity", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-capital", code: "3001", name: "Capital Account", type: "equity", level: "ledger", parentId: "grp-equity", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-retained", code: "3002", name: "Retained Earnings", type: "equity", level: "ledger", parentId: "grp-equity", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
+  {
+    id: "grp-equity",
+    code: "3000",
+    name: "Equity",
+    type: "equity",
+    level: "group",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-capital",
+    code: "3001",
+    name: "Capital Account",
+    type: "equity",
+    level: "ledger",
+    parentId: "grp-equity",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-retained",
+    code: "3002",
+    name: "Retained Earnings",
+    type: "equity",
+    level: "ledger",
+    parentId: "grp-equity",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
   // Income
-  { id: "grp-income", code: "4000", name: "Income", type: "income", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "grp-sales", code: "4100", name: "Sales Accounts", type: "income", level: "subgroup", parentId: "grp-income", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "acc-sales", code: "4101", name: "Sales", type: "income", level: "ledger", parentId: "grp-sales", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-sales-return", code: "4102", name: "Sales Return", type: "income", level: "ledger", parentId: "grp-sales", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceCr: 0, isSystemAccount: true },
+  {
+    id: "grp-income",
+    code: "4000",
+    name: "Income",
+    type: "income",
+    level: "group",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "grp-sales",
+    code: "4100",
+    name: "Sales Accounts",
+    type: "income",
+    level: "subgroup",
+    parentId: "grp-income",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "acc-sales",
+    code: "4101",
+    name: "Sales",
+    type: "income",
+    level: "ledger",
+    parentId: "grp-sales",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-sales-return",
+    code: "4102",
+    name: "Sales Return",
+    type: "income",
+    level: "ledger",
+    parentId: "grp-sales",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
   // Expenses
-  { id: "grp-expenses", code: "5000", name: "Expenses", type: "expense", level: "group", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "grp-purchase", code: "5100", name: "Purchase Accounts", type: "expense", level: "subgroup", parentId: "grp-expenses", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
-  { id: "acc-purchase", code: "5101", name: "Purchases", type: "expense", level: "ledger", parentId: "grp-purchase", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-purchase-return", code: "5102", name: "Purchase Return", type: "expense", level: "ledger", parentId: "grp-purchase", isGroup: false, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0, isSystemAccount: true },
-  { id: "acc-indirect-expenses", code: "5200", name: "Indirect Expenses", type: "expense", level: "subgroup", parentId: "grp-expenses", isGroup: true, isActive: true, balance: 0, openingBalance: 0, openingBalanceDr: 0, openingBalanceCr: 0 },
+  {
+    id: "grp-expenses",
+    code: "5000",
+    name: "Expenses",
+    type: "expense",
+    level: "group",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "grp-purchase",
+    code: "5100",
+    name: "Purchase Accounts",
+    type: "expense",
+    level: "subgroup",
+    parentId: "grp-expenses",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
+  {
+    id: "acc-purchase",
+    code: "5101",
+    name: "Purchases",
+    type: "expense",
+    level: "ledger",
+    parentId: "grp-purchase",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-purchase-return",
+    code: "5102",
+    name: "Purchase Return",
+    type: "expense",
+    level: "ledger",
+    parentId: "grp-purchase",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-indirect-expenses",
+    code: "5200",
+    name: "Indirect Expenses",
+    type: "expense",
+    level: "subgroup",
+    parentId: "grp-expenses",
+    isGroup: true,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+  },
 ];
 
 export const DEFAULT_WAREHOUSES = [
@@ -223,11 +595,7 @@ export const DEFAULT_CURRENCY = {
 };
 
 // ─── Store interface ───────────────────────────────────────────────────────────
-import type {
-  DBWarehouse,
-  DBStockMovement,
-  DBStockTransferVoucher,
-} from "../lib/db";
+import type { DBWarehouse, DBStockMovement, DBStockTransferVoucher } from "../lib/db";
 
 const transferNo = (n: number) => `TRF-${String(n).padStart(4, "0")}`;
 
@@ -245,7 +613,7 @@ export interface MultiGodownStoreSlice {
     transfer: Omit<
       DBStockTransferVoucher,
       "id" | "transferNo" | "createdAt" | "updatedAt" | "status"
-    >
+    >,
   ) => Promise<DBStockTransferVoucher>;
 }
 export interface AppState extends MultiGodownStoreSlice {
@@ -372,7 +740,10 @@ export interface AppState extends MultiGodownStoreSlice {
   initializeApp: () => Promise<void>;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
-  createCompanyAndAdmin: (data: { company: Partial<CompanySettings>; adminUser: Partial<StoreUser> }) => Promise<void>;
+  createCompanyAndAdmin: (data: {
+    company: Partial<CompanySettings>;
+    adminUser: Partial<StoreUser>;
+  }) => Promise<void>;
   selectCompanyForLogin: (companyId: string) => void;
   backToGateway: () => void;
   setAuthStage: (stage: AuthStage) => void;
@@ -388,7 +759,7 @@ export interface AppState extends MultiGodownStoreSlice {
   updateParty: (id: string, updates: Partial<any>) => Promise<void>;
   // Items
   addItem: (item: Partial<any>) => Promise<any>;
-  updateItem: (item: any) => Promise<void>;
+  updateItem: (item: any) => Promise<any>;
   // Vouchers
   addVoucher: (voucher: Partial<any>) => Promise<any>;
   updateVoucher: (id: string, updates: Partial<any>) => Promise<void>;
@@ -543,7 +914,13 @@ export interface AppState extends MultiGodownStoreSlice {
   updatePDCheque: (id: string, data: Partial<any>) => Promise<void>;
   convertPDCToBank: (pdcId: string, journalData: any) => Promise<void>;
   saveEPaymentBatch: (data: Partial<any>) => Promise<string>;
-  addAuditLog: (params: { action: string; resourceType: string; resourceId?: string; before?: unknown; after?: unknown; }) => Promise<void>;
+  addAuditLog: (params: {
+    action: string;
+    resourceType: string;
+    resourceId?: string;
+    before?: unknown;
+    after?: unknown;
+  }) => Promise<void>;
   updateEPaymentBatch: (id: string, data: Partial<any>) => Promise<void>;
   savePaymentAdvice: (data: Partial<any>) => Promise<string>;
   updatePaymentAdvice: (id: string, data: Partial<any>) => Promise<void>;
@@ -577,68 +954,104 @@ function generateId(): string {
 // Used as a deterministic fallback when crypto.subtle is unavailable.
 function _sha256Hex(message: string): string {
   const K = [
-    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
-    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
-    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
-    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
-    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
-    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2,
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
   ];
 
   function safeAdd(x: number, y: number): number {
     const lsw = (x & 0xffff) + (y & 0xffff);
     return (((x >> 16) + (y >> 16) + (lsw >> 16)) << 16) | (lsw & 0xffff);
   }
-  function rotr(n: number, x: number): number { return (x >>> n) | (x << (32 - n)); }
+  function rotr(n: number, x: number): number {
+    return (x >>> n) | (x << (32 - n));
+  }
 
   // UTF-8 encode the message
   const msgBytes: number[] = [];
   for (let i = 0; i < message.length; i++) {
     const c = message.charCodeAt(i);
-    if (c < 0x80) { msgBytes.push(c); }
-    else if (c < 0x800) { msgBytes.push((c >> 6) | 0xc0, (c & 0x3f) | 0x80); }
-    else { msgBytes.push((c >> 12) | 0xe0, ((c >> 6) & 0x3f) | 0x80, (c & 0x3f) | 0x80); }
+    if (c < 0x80) {
+      msgBytes.push(c);
+    } else if (c < 0x800) {
+      msgBytes.push((c >> 6) | 0xc0, (c & 0x3f) | 0x80);
+    } else {
+      msgBytes.push((c >> 12) | 0xe0, ((c >> 6) & 0x3f) | 0x80, (c & 0x3f) | 0x80);
+    }
   }
 
   // SHA-256 padding
   const bitLen = msgBytes.length * 8;
   msgBytes.push(0x80);
-  while ((msgBytes.length % 64) !== 56) msgBytes.push(0);
+  while (msgBytes.length % 64 !== 56) msgBytes.push(0);
   // Append big-endian 64-bit bit length
   for (let i = 7; i >= 0; i--) msgBytes.push((bitLen / Math.pow(2, i * 8)) & 0xff);
 
-  let h0=0x6a09e667, h1=0xbb67ae85, h2=0x3c6ef372, h3=0xa54ff53a;
-  let h4=0x510e527f, h5=0x9b05688c, h6=0x1f83d9ab, h7=0x5be0cd19;
+  let h0 = 0x6a09e667,
+    h1 = 0xbb67ae85,
+    h2 = 0x3c6ef372,
+    h3 = 0xa54ff53a;
+  let h4 = 0x510e527f,
+    h5 = 0x9b05688c,
+    h6 = 0x1f83d9ab,
+    h7 = 0x5be0cd19;
 
   for (let i = 0; i < msgBytes.length; i += 64) {
     const w: number[] = new Array(64);
     for (let j = 0; j < 16; j++) {
-      w[j] = ((msgBytes[i+j*4]<<24)|(msgBytes[i+j*4+1]<<16)|(msgBytes[i+j*4+2]<<8)|msgBytes[i+j*4+3]) >>> 0;
+      w[j] =
+        ((msgBytes[i + j * 4] << 24) |
+          (msgBytes[i + j * 4 + 1] << 16) |
+          (msgBytes[i + j * 4 + 2] << 8) |
+          msgBytes[i + j * 4 + 3]) >>>
+        0;
     }
     for (let j = 16; j < 64; j++) {
-      const s0 = rotr(7,w[j-15]) ^ rotr(18,w[j-15]) ^ (w[j-15]>>>3);
-      const s1 = rotr(17,w[j-2])  ^ rotr(19,w[j-2])  ^ (w[j-2]>>>10);
-      w[j] = safeAdd(safeAdd(w[j-16], s0), safeAdd(w[j-7], s1));
+      const s0 = rotr(7, w[j - 15]) ^ rotr(18, w[j - 15]) ^ (w[j - 15] >>> 3);
+      const s1 = rotr(17, w[j - 2]) ^ rotr(19, w[j - 2]) ^ (w[j - 2] >>> 10);
+      w[j] = safeAdd(safeAdd(w[j - 16], s0), safeAdd(w[j - 7], s1));
     }
-    let a=h0, b=h1, c=h2, d=h3, e=h4, f=h5, g=h6, h=h7;
+    let a = h0,
+      b = h1,
+      c = h2,
+      d = h3,
+      e = h4,
+      f = h5,
+      g = h6,
+      h = h7;
     for (let j = 0; j < 64; j++) {
-      const S1   = rotr(6,e)  ^ rotr(11,e) ^ rotr(25,e);
-      const ch   = (e & f) ^ (~e & g);
+      const S1 = rotr(6, e) ^ rotr(11, e) ^ rotr(25, e);
+      const ch = (e & f) ^ (~e & g);
       const temp1 = safeAdd(safeAdd(h, S1), safeAdd(ch, safeAdd(K[j], w[j])));
-      const S0   = rotr(2,a)  ^ rotr(9,a)  ^ rotr(13,a);
-      const maj  = (a & b) ^ (a & c) ^ (b & c);
+      const S0 = rotr(2, a) ^ rotr(9, a) ^ rotr(13, a);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
       const temp2 = safeAdd(S0, maj);
-      h=g; g=f; f=e; e=safeAdd(d,temp1);
-      d=c; c=b; b=a; a=safeAdd(temp1,temp2);
+      h = g;
+      g = f;
+      f = e;
+      e = safeAdd(d, temp1);
+      d = c;
+      c = b;
+      b = a;
+      a = safeAdd(temp1, temp2);
     }
-    h0=safeAdd(h0,a); h1=safeAdd(h1,b); h2=safeAdd(h2,c); h3=safeAdd(h3,d);
-    h4=safeAdd(h4,e); h5=safeAdd(h5,f); h6=safeAdd(h6,g); h7=safeAdd(h7,h);
+    h0 = safeAdd(h0, a);
+    h1 = safeAdd(h1, b);
+    h2 = safeAdd(h2, c);
+    h3 = safeAdd(h3, d);
+    h4 = safeAdd(h4, e);
+    h5 = safeAdd(h5, f);
+    h6 = safeAdd(h6, g);
+    h7 = safeAdd(h7, h);
   }
 
-  return [h0,h1,h2,h3,h4,h5,h6,h7]
-    .map(v => (v >>> 0).toString(16).padStart(8, "0"))
+  return [h0, h1, h2, h3, h4, h5, h6, h7]
+    .map((v) => (v >>> 0).toString(16).padStart(8, "0"))
     .join("");
 }
 
@@ -659,14 +1072,23 @@ export async function hashPassword(password: string): Promise<string> {
     try {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"],
       );
       const hashBuffer = await crypto.subtle.deriveBits(
         { name: "PBKDF2", salt: enc.encode(SALT_V2), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
+        keyMaterial,
+        256,
       );
-      return "pbkdf2v2_" + Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
+      return (
+        "pbkdf2v2_" +
+        Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("")
+      );
     } catch {
       // crypto.subtle threw (rare, e.g. iframe sandbox) — fall through to pure-JS
     }
@@ -710,16 +1132,26 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     try {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"],
       );
       const hashBuffer = await crypto.subtle.deriveBits(
         { name: "PBKDF2", salt: enc.encode(SALT_V2), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
+        keyMaterial,
+        256,
       );
-      const computed = "pbkdf2v2_" + Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
+      const computed =
+        "pbkdf2v2_" +
+        Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
       return computed === hash;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }
 
   // ── New SHA-256 v1 (HTTP-safe) ────────────────────────────────────────────
@@ -738,16 +1170,24 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     try {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"],
       );
       const hashBuffer = await crypto.subtle.deriveBits(
         { name: "PBKDF2", salt: enc.encode(SALT_V1), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
+        keyMaterial,
+        256,
       );
       const computed = Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, "0")).join("");
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
       return computed === hash;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }
 
   // ── Plain-text legacy (very old dev seeds) ────────────────────────────────

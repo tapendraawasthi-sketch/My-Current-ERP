@@ -33,12 +33,12 @@ const renderCell = (row?: TFormatRow, isAmount = false) => {
     .filter(Boolean)
     .join(" ");
 
-  const style = row.indent
-    ? { paddingLeft: `${12 + row.indent * 14}px` }
-    : undefined;
+  const style = row.indent ? { paddingLeft: `${12 + row.indent * 14}px` } : undefined;
 
-  const displayValue = isAmount 
-    ? (row.amount != null && row.amount !== '' ? row.amount : '–')
+  const displayValue = isAmount
+    ? row.amount != null && row.amount !== ""
+      ? row.amount
+      : "–"
     : row.label;
 
   return (
@@ -91,24 +91,24 @@ const TFormatReport: React.FC<TFormatReportProps> = ({
               {renderCell(
                 leftTotal
                   ? { id: "left-total", label: "Total", amount: leftTotal, isTotal: true }
-                  : undefined
+                  : undefined,
               )}
               {renderCell(
                 leftTotal
                   ? { id: "left-total-amt", label: "", amount: leftTotal, isTotal: true }
                   : undefined,
-                true
+                true,
               )}
               {renderCell(
                 rightTotal
                   ? { id: "right-total", label: "Total", amount: rightTotal, isTotal: true }
-                  : undefined
+                  : undefined,
               )}
               {renderCell(
                 rightTotal
                   ? { id: "right-total-amt", label: "", amount: rightTotal, isTotal: true }
                   : undefined,
-                true
+                true,
               )}
             </tr>
           )}

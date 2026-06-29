@@ -10,6 +10,7 @@ interface Props {
 
 export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) {
   const currentUser = useStore((state) => state.currentUser);
+  const updateUser = useStore((state) => state.updateUser);
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -43,7 +44,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
 
   const strength = getPasswordStrength(formData.newPassword);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.newPassword.length < 6) {
@@ -61,9 +62,14 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
       return;
     }
 
-    alert("Password changed successfully");
-    setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    onClose();
+    try {
+      await updateUser(userId, { password: formData.newPassword });
+      alert("Password changed successfully");
+      setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      onClose();
+    } catch (err) {
+      alert("Failed to change password");
+    }
   };
 
   return (

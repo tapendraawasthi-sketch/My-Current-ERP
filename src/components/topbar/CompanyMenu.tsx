@@ -15,15 +15,7 @@ import {
   TopMenuDropdown,
 } from "./shared";
 
-const PROVINCES = [
-  "Koshi",
-  "Madhesh",
-  "Bagmati",
-  "Gandaki",
-  "Lumbini",
-  "Karnali",
-  "Sudurpashchim",
-];
+const PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
 
 type CompanyModalKey =
   | "select"
@@ -232,7 +224,12 @@ function SelectCompanyModal({
   return (
     <ModalShell title="Select Company" onClose={onClose} width="max-w-3xl">
       <div className="mb-3">
-        <Field label="Search Company" value={search} onChange={setSearch} placeholder="Type company name..." />
+        <Field
+          label="Search Company"
+          value={search}
+          onChange={setSearch}
+          placeholder="Type company name..."
+        />
       </div>
 
       <table className="w-full border-collapse text-[12px]">
@@ -444,7 +441,11 @@ function CompanyFormModal({
         <Field label="PAN Number" value={pan} onChange={setPan} required />
         <Field label="VAT Registration Number" value={vat} onChange={setVat} />
         <Field label="Fiscal Year Beginning (BS)" value={fyBeginning} onChange={setFyBeginning} />
-        <Field label="Books Beginning Date (BS)" value={booksBeginning} onChange={setBooksBeginning} />
+        <Field
+          label="Books Beginning Date (BS)"
+          value={booksBeginning}
+          onChange={setBooksBeginning}
+        />
         <Field label="Base Currency" value={currency} onChange={setCurrency} />
       </div>
     </ModalShell>
@@ -517,7 +518,12 @@ function SecurityModal({ onClose }: { onClose: () => void }) {
       <ToggleRow label="Enable Security" checked={enabled} onChange={setEnabled} />
       <Field label="Minimum Password Length" value={minLen} onChange={setMinLen} type="number" />
       <Field label="Password Expiry Days" value={expiry} onChange={setExpiry} type="number" />
-      <Field label="Max Failed Login Attempts" value={attempts} onChange={setAttempts} type="number" />
+      <Field
+        label="Max Failed Login Attempts"
+        value={attempts}
+        onChange={setAttempts}
+        type="number"
+      />
       <ToggleRow label="Two-Factor Authentication" checked={twoFactor} onChange={setTwoFactor} />
     </ModalShell>
   );
@@ -548,7 +554,10 @@ function RolesModal({ onClose }: { onClose: () => void }) {
           <tr className="bg-[#f5f6fa]">
             <th className="px-3 py-2 text-left text-[10px] uppercase text-gray-500">Module</th>
             {permissionLevels.map((permission) => (
-              <th key={permission} className="px-3 py-2 text-center text-[10px] uppercase text-gray-500">
+              <th
+                key={permission}
+                className="px-3 py-2 text-center text-[10px] uppercase text-gray-500"
+              >
                 {permission}
               </th>
             ))}
@@ -660,7 +669,13 @@ function FeaturesModal({ onClose, companyId }: { onClose: () => void; companyId?
   const [activeTab, setActiveTab] = useState("Accounting");
 
   const featureMap: Record<string, string[]> = {
-    Accounting: ["Bill-wise Details", "Cost Centers", "Budgets", "Multi-currency", "Interest Calculation"],
+    Accounting: [
+      "Bill-wise Details",
+      "Cost Centers",
+      "Budgets",
+      "Multi-currency",
+      "Interest Calculation",
+    ],
     Inventory: ["Stock Items", "Batches", "Expiry Dates", "Godowns/Warehouses", "Reorder Levels"],
     Taxation: ["VAT (13%)", "TDS/TCS", "Withholding Tax"],
     Payroll: ["Employee Masters", "Salary Structures", "Attendance", "Payslip"],

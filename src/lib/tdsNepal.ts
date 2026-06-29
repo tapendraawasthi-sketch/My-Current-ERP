@@ -351,9 +351,7 @@ export function computeSalaryTdsAnnual(taxableAnnualSalary: number): number {
   return round2(tax);
 }
 
-export function calculateNepalTds(
-  input: NepalTdsCalculationInput,
-): NepalTdsCalculationResult {
+export function calculateNepalTds(input: NepalTdsCalculationInput): NepalTdsCalculationResult {
   const rateDef = getNepalTdsRate(input.sectionId);
 
   if (!rateDef) {

@@ -1,17 +1,26 @@
-import React, { useState, useCallback } from 'react';
-import toast from 'react-hot-toast';
-import TallyVoucherShell from './TallyVoucherShell';
-import TallyAccountSelect from './TallyAccountSelect';
-import TallyVoucherPrint from './TallyVoucherPrint';
-import TallyVoucherList from './TallyVoucherList';
-import { Voucher, VoucherLine, blankVoucher, blankLine, recalcTotals, isBalanced } from '@/lib/tallyVoucher';
-import { formatMoney, parseMoney } from '@/lib/tallyFormat';
-import { useStore } from '@/store/useStore';
+import React, { useState, useCallback } from "react";
+import toast from "react-hot-toast";
+import TallyVoucherShell from "./TallyVoucherShell";
+import TallyAccountSelect from "./TallyAccountSelect";
+import TallyVoucherPrint from "./TallyVoucherPrint";
+import TallyVoucherList from "./TallyVoucherList";
+import {
+  Voucher,
+  VoucherLine,
+  blankVoucher,
+  blankLine,
+  recalcTotals,
+  isBalanced,
+} from "@/lib/tallyVoucher";
+import { formatMoney, parseMoney } from "@/lib/tallyFormat";
+import { useStore } from "@/store/useStore";
 
 export const TallyJournalVoucher: React.FC = () => {
-  const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher('Journal'));
+  const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher("Journal"));
   const [selectedRow, setSelectedRow] = useState(0);
-  const [selectedCol, setSelectedCol] = useState<'account' | 'debit' | 'credit' | 'narration'>('account');
+  const [selectedCol, setSelectedCol] = useState<"account" | "debit" | "credit" | "narration">(
+    "account",
+  );
   const [showPrint, setShowPrint] = useState(false);
   const [showList, setShowList] = useState(false);
 
@@ -44,11 +53,11 @@ export const TallyJournalVoucher: React.FC = () => {
 
   const handleAccept = useCallback(async () => {
     if (!isBalanced(voucher.lines)) {
-      toast.error('Debit and Credit totals must be equal.');
+      toast.error("Debit and Credit totals must be equal.");
       return;
     }
     if (voucher.lines.some((l) => !l.accountId)) {
-      toast.error('Please select an account for every row.');
+      toast.error("Please select an account for every row.");
       return;
     }
     if (voucher.id) {
@@ -56,37 +65,45 @@ export const TallyJournalVoucher: React.FC = () => {
     } else {
       await addVoucher(voucher);
     }
-    toast.success('Journal voucher saved.');
-    setVoucher(blankVoucher('Journal'));
+    toast.success("Journal voucher saved.");
+    setVoucher(blankVoucher("Journal"));
     setSelectedRow(0);
   }, [voucher, updateVoucher, addVoucher]);
 
   const handleCancel = useCallback(() => {
-    setVoucher(blankVoucher('Journal'));
+    setVoucher(blankVoucher("Journal"));
     setSelectedRow(0);
-    setSelectedCol('account');
+    setSelectedCol("account");
   }, []);
 
-  const handleSelect = useCallback((id: string) => {
-    const loaded = vouchers.find(v => v.id === id);
-    if (loaded) {
-      setVoucher(loaded);
-      setShowList(false);
-      setSelectedRow(0);
-    }
-  }, [vouchers]);
+  const handleSelect = useCallback(
+    (id: string) => {
+      const loaded = vouchers.find((v) => v.id === id);
+      if (loaded) {
+        setVoucher(loaded);
+        setShowList(false);
+        setSelectedRow(0);
+      }
+    },
+    [vouchers],
+  );
 
   const moveNext = useCallback(() => {
-    const cols: Array<'account' | 'debit' | 'credit' | 'narration'> = ['account', 'debit', 'credit', 'narration'];
+    const cols: Array<"account" | "debit" | "credit" | "narration"> = [
+      "account",
+      "debit",
+      "credit",
+      "narration",
+    ];
     const colIdx = cols.indexOf(selectedCol);
     if (colIdx < cols.length - 1) {
       setSelectedCol(cols[colIdx + 1]);
     } else if (selectedRow < voucher.lines.length - 1) {
       setSelectedRow((r) => r + 1);
-      setSelectedCol('account');
+      setSelectedCol("account");
     } else {
       addRow();
-      setSelectedCol('account');
+      setSelectedCol("account");
     }
   }, [selectedCol, selectedRow, voucher.lines.length, addRow]);
 
@@ -107,12 +124,14 @@ export const TallyJournalVoucher: React.FC = () => {
       onAccept={handleAccept}
       onCancel={handleCancel}
       onF2={() => document.querySelector<HTMLInputElement>('input[type="date"]')?.focus()}
-      onF3={() => toast('F3: Company selection is handled by global header.')}
+      onF3={() => toast("F3: Company selection is handled by global header.")}
       onF10={() => setShowList(true)}
-      onF12={() => toast('F12: Configuration panel not implemented yet.')}
-      onAltC={() => { /* handled by account select */ }}
+      onF12={() => toast("F12: Configuration panel not implemented yet.")}
+      onAltC={() => {
+        /* handled by account select */
+      }}
       onDuplicate={duplicateRow}
-      onToggleMode={() => toast('Journal voucher always uses double-entry mode.')}
+      onToggleMode={() => toast("Journal voucher always uses double-entry mode.")}
       modeLabel="Double Entry"
     >
       <div className="overflow-auto">
@@ -128,42 +147,77 @@ export const TallyJournalVoucher: React.FC = () => {
           </thead>
           <tbody>
             {voucher.lines.map((line, idx) => (
-              <tr key={line.id} className={selectedRow === idx ? 'selected' : ''} onClick={() => setSelectedRow(idx)}>
+              <tr
+                key={line.id}
+                className={selectedRow === idx ? "selected" : ""}
+                onClick={() => setSelectedRow(idx)}
+              >
                 <td>{idx + 1}</td>
-                <td className={selectedRow === idx && selectedCol === 'account' ? 'bg-yellow-100' : ''}>
+                <td
+                  className={
+                    selectedRow === idx && selectedCol === "account" ? "bg-yellow-100" : ""
+                  }
+                >
                   <TallyAccountSelect
                     value={line.accountId}
                     onChange={(id, name) => updateLine(idx, { accountId: id, accountName: name })}
-                    autoFocus={selectedRow === idx && selectedCol === 'account'}
+                    autoFocus={selectedRow === idx && selectedCol === "account"}
                   />
                 </td>
-                <td className={selectedRow === idx && selectedCol === 'debit' ? 'bg-yellow-100' : ''}>
+                <td
+                  className={selectedRow === idx && selectedCol === "debit" ? "bg-yellow-100" : ""}
+                >
                   <input
                     className="tally-input text-right"
                     placeholder="0.00"
-                    value={line.debit ? formatMoney(line.debit) : ''}
-                    onChange={(e) => updateLine(idx, { debit: parseMoney(e.target.value), credit: 0 })}
-                    onFocus={() => { setSelectedRow(idx); setSelectedCol('debit'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Tab') moveNext(); }}
+                    value={line.debit ? formatMoney(line.debit) : ""}
+                    onChange={(e) =>
+                      updateLine(idx, { debit: parseMoney(e.target.value), credit: 0 })
+                    }
+                    onFocus={() => {
+                      setSelectedRow(idx);
+                      setSelectedCol("debit");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === "Tab") moveNext();
+                    }}
                   />
                 </td>
-                <td className={selectedRow === idx && selectedCol === 'credit' ? 'bg-yellow-100' : ''}>
+                <td
+                  className={selectedRow === idx && selectedCol === "credit" ? "bg-yellow-100" : ""}
+                >
                   <input
                     className="tally-input text-right"
                     placeholder="0.00"
-                    value={line.credit ? formatMoney(line.credit) : ''}
-                    onChange={(e) => updateLine(idx, { credit: parseMoney(e.target.value), debit: 0 })}
-                    onFocus={() => { setSelectedRow(idx); setSelectedCol('credit'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Tab') moveNext(); }}
+                    value={line.credit ? formatMoney(line.credit) : ""}
+                    onChange={(e) =>
+                      updateLine(idx, { credit: parseMoney(e.target.value), debit: 0 })
+                    }
+                    onFocus={() => {
+                      setSelectedRow(idx);
+                      setSelectedCol("credit");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === "Tab") moveNext();
+                    }}
                   />
                 </td>
-                <td className={selectedRow === idx && selectedCol === 'narration' ? 'bg-yellow-100' : ''}>
+                <td
+                  className={
+                    selectedRow === idx && selectedCol === "narration" ? "bg-yellow-100" : ""
+                  }
+                >
                   <input
                     className="tally-input"
-                    value={line.narration || ''}
+                    value={line.narration || ""}
                     onChange={(e) => updateLine(idx, { narration: e.target.value })}
-                    onFocus={() => { setSelectedRow(idx); setSelectedCol('narration'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Tab') moveNext(); }}
+                    onFocus={() => {
+                      setSelectedRow(idx);
+                      setSelectedCol("narration");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === "Tab") moveNext();
+                    }}
                   />
                 </td>
               </tr>
@@ -179,10 +233,13 @@ export const TallyJournalVoucher: React.FC = () => {
         onClose={() => setShowList(false)}
         onSelect={handleSelect}
         onPrint={(id) => {
-          const v = vouchers.find(v => v.id === id);
-          if (v) { setVoucher(v); setShowPrint(true); }
+          const v = vouchers.find((v) => v.id === id);
+          if (v) {
+            setVoucher(v);
+            setShowPrint(true);
+          }
         }}
-        onDelete={(id) => cancelVoucher(id, 'Deleted from UI')}
+        onDelete={(id) => cancelVoucher(id, "Deleted from UI")}
       />
     </TallyVoucherShell>
   );

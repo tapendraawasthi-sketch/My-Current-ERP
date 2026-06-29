@@ -4,9 +4,19 @@ import { useStore } from "../store";
 import toast from "react-hot-toast";
 import { DBSalesPerson } from "../lib/db";
 import {
-  Plus, Pencil, Trash2, X, Save,
-  Search, User, Phone, Mail, Percent,
-  CheckCircle, XCircle, Users,
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Save,
+  Search,
+  User,
+  Phone,
+  Mail,
+  Percent,
+  CheckCircle,
+  XCircle,
+  Users,
 } from "lucide-react";
 
 // ─── Empty form template ──────────────────────────────────────────────────────
@@ -23,12 +33,7 @@ const emptyForm = (): Omit<DBSalesPerson, "id"> => ({
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SalesPersons() {
-  const {
-    salesPersons,
-    addSalesPerson,
-    updateSalesPerson,
-    deleteSalesPerson,
-  } = useStore();
+  const { salesPersons, addSalesPerson, updateSalesPerson, deleteSalesPerson } = useStore();
 
   // ── UI state ────────────────────────────────────────────────────────────────
   const [showForm, setShowForm] = useState(false);
@@ -47,13 +52,13 @@ export default function SalesPersons() {
         sp.name.toLowerCase().includes(q) ||
         sp.code.toLowerCase().includes(q) ||
         (sp.email ?? "").toLowerCase().includes(q) ||
-        (sp.phone ?? "").includes(q)
+        (sp.phone ?? "").includes(q),
     );
   }, [salesPersons, search]);
 
   const deleteTarget = useMemo(
     () => salesPersons.find((sp) => sp.id === deleteTargetId) ?? null,
-    [salesPersons, deleteTargetId]
+    [salesPersons, deleteTargetId],
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -83,26 +88,20 @@ export default function SalesPersons() {
     setForm(emptyForm());
   };
 
-  const setField = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
-  ) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): string | null => {
     if (!form.name.trim()) return "Name is required.";
     if (!form.code.trim()) return "Code is required.";
 
     const dupCode = salesPersons.find(
-      (sp) =>
-        sp.code.toLowerCase() === form.code.trim().toLowerCase() &&
-        sp.id !== editingId
+      (sp) => sp.code.toLowerCase() === form.code.trim().toLowerCase() && sp.id !== editingId,
     );
     if (dupCode) return `Code "${form.code.trim()}" is already in use.`;
 
     const dupName = salesPersons.find(
-      (sp) =>
-        sp.name.toLowerCase() === form.name.trim().toLowerCase() &&
-        sp.id !== editingId
+      (sp) => sp.name.toLowerCase() === form.name.trim().toLowerCase() && sp.id !== editingId,
     );
     if (dupName) return `Sales person "${form.name.trim()}" already exists.`;
 
@@ -212,13 +211,27 @@ export default function SalesPersons() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Comm. %</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Code
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Phone
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Email
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Comm. %
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -226,34 +239,29 @@ export default function SalesPersons() {
               <tr>
                 <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
                   <Users className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search ? "No results found." : "No sales persons yet. Create your first sales person."}
+                  {search
+                    ? "No results found."
+                    : "No sales persons yet. Create your first sales person."}
                 </td>
               </tr>
             ) : (
               filtered.map((sp) => (
-                <tr
-                  key={sp.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={sp.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-3 py-2.5 font-mono text-[12px] text-gray-700">
                     {sp.code || "—"}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
-                    {sp.name}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {sp.phone || "—"}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {sp.email || "—"}
-                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">{sp.name}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{sp.phone || "—"}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{sp.email || "—"}</td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                     {sp.commissionRate != null ? (
                       <span className="flex items-center justify-end gap-1">
                         {sp.commissionRate}
                         <Percent className="w-3 h-3 text-gray-400" />
                       </span>
-                    ) : "—"}
+                    ) : (
+                      "—"
+                    )}
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     <span
@@ -309,13 +317,11 @@ export default function SalesPersons() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Code *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Code *</label>
                   <input
                     type="text"
                     value={form.code}
@@ -327,9 +333,7 @@ export default function SalesPersons() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Full Name *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Full Name *</label>
                   <div className="relative">
                     <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                     <input
@@ -347,9 +351,7 @@ export default function SalesPersons() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Phone
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Phone</label>
                   <div className="relative">
                     <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                     <input
@@ -362,9 +364,7 @@ export default function SalesPersons() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Email
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Email</label>
                   <div className="relative">
                     <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                     <input
@@ -379,9 +379,7 @@ export default function SalesPersons() {
               </div>
 
               <div className="flex flex-col gap-1 w-1/2 pr-1.5">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Commission Rate (%)
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Commission Rate (%)</label>
                 <div className="relative">
                   <Percent className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                   <input
@@ -440,8 +438,8 @@ export default function SalesPersons() {
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">
                 Are you sure you want to delete{" "}
-                <span className="font-semibold text-gray-900">"{deleteTarget.name}"</span>? 
-                This action cannot be undone.
+                <span className="font-semibold text-gray-900">"{deleteTarget.name}"</span>? This
+                action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button

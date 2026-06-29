@@ -57,9 +57,7 @@ export function useGlobalSearch(query: string): {
 
     const matchAccounts = accounts
       .filter(
-        (a) =>
-          !a.isGroup &&
-          (a.name.toLowerCase().includes(q) || a.code.toLowerCase().includes(q))
+        (a) => !a.isGroup && (a.name.toLowerCase().includes(q) || a.code.toLowerCase().includes(q)),
       )
       .slice(0, 5);
 
@@ -68,7 +66,7 @@ export function useGlobalSearch(query: string): {
         (p) =>
           p.name.toLowerCase().includes(q) ||
           (p.pan && p.pan.toLowerCase().includes(q)) ||
-          (p.code && p.code.toLowerCase().includes(q))
+          (p.code && p.code.toLowerCase().includes(q)),
       )
       .slice(0, 5);
 
@@ -76,7 +74,7 @@ export function useGlobalSearch(query: string): {
       .filter(
         (v) =>
           v.voucherNo.toLowerCase().includes(q) ||
-          (v.narration && v.narration.toLowerCase().includes(q))
+          (v.narration && v.narration.toLowerCase().includes(q)),
       )
       .slice(0, 5);
 
@@ -84,22 +82,16 @@ export function useGlobalSearch(query: string): {
       .filter(
         (inv) =>
           (inv.invoiceNo && inv.invoiceNo.toLowerCase().includes(q)) ||
-          inv.partyName.toLowerCase().includes(q)
+          inv.partyName.toLowerCase().includes(q),
       )
       .slice(0, 5);
 
     const matchItems = items
-      .filter(
-        (i) =>
-          i.name.toLowerCase().includes(q) ||
-          i.code.toLowerCase().includes(q)
-      )
+      .filter((i) => i.name.toLowerCase().includes(q) || i.code.toLowerCase().includes(q))
       .slice(0, 5);
 
     const matchPages = ALL_PAGES.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.path.toLowerCase().includes(q)
+      (p) => p.name.toLowerCase().includes(q) || p.path.toLowerCase().includes(q),
     ).slice(0, 5);
 
     return {

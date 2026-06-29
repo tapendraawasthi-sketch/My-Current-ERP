@@ -3,28 +3,43 @@ import { AccountType } from "./types";
 import { getDB } from "./db";
 
 export function isDebitNature(type: AccountType | string): boolean {
-  return type === AccountType.ASSET || type === AccountType.EXPENSE ||
-    type === "asset" || type === "expense";
+  return (
+    type === AccountType.ASSET ||
+    type === AccountType.EXPENSE ||
+    type === "asset" ||
+    type === "expense"
+  );
 }
 
 export async function generateSerialNumber(
   voucherType: string,
   seriesId?: string,
   fiscalYearBS?: string,
-  preview = false
+  preview = false,
 ): Promise<string> {
   const prefixes: Record<string, string> = {
-    journal: "JV", "journal-voucher": "JV",
-    payment: "PV", "payment-voucher": "PV",
-    receipt: "RV", "receipt-voucher": "RV",
-    contra: "CV", "contra-voucher": "CV",
-    "sales-invoice": "SI", "sales_invoice": "SI",
-    "purchase-invoice": "PI", "purchase_invoice": "PI",
-    "sales-return": "SR", "sales_return": "SR",
-    "purchase-return": "PR", "purchase_return": "PR",
-    "debit-note": "DN", "credit-note": "CN",
-    "delivery-challan": "DC", "goods-receipt-note": "GRN",
-    "sales-order": "SO", "purchase-order": "PO",
+    journal: "JV",
+    "journal-voucher": "JV",
+    payment: "PV",
+    "payment-voucher": "PV",
+    receipt: "RV",
+    "receipt-voucher": "RV",
+    contra: "CV",
+    "contra-voucher": "CV",
+    "sales-invoice": "SI",
+    sales_invoice: "SI",
+    "purchase-invoice": "PI",
+    purchase_invoice: "PI",
+    "sales-return": "SR",
+    sales_return: "SR",
+    "purchase-return": "PR",
+    purchase_return: "PR",
+    "debit-note": "DN",
+    "credit-note": "CN",
+    "delivery-challan": "DC",
+    "goods-receipt-note": "GRN",
+    "sales-order": "SO",
+    "purchase-order": "PO",
   };
   const prefix = prefixes[voucherType] || "VCH";
   try {
@@ -45,9 +60,14 @@ export async function generateSerialNumber(
 // Synchronous version for contexts that can't await
 export function generateSerialNumberSync(voucherType: string): string {
   const prefixes: Record<string, string> = {
-    journal: "JV", payment: "PV", receipt: "RV", contra: "CV",
-    "sales-invoice": "SI", "purchase-invoice": "PI",
-    "sales-return": "SR", "purchase-return": "PR",
+    journal: "JV",
+    payment: "PV",
+    receipt: "RV",
+    contra: "CV",
+    "sales-invoice": "SI",
+    "purchase-invoice": "PI",
+    "sales-return": "SR",
+    "purchase-return": "PR",
   };
   const prefix = prefixes[voucherType] || "VCH";
   return `${prefix}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
@@ -65,7 +85,9 @@ export interface DoubleEntryValidation {
   totalCredit: number;
 }
 
-export function validateDoubleEntry(lines: Array<{ debit?: number; credit?: number }>): DoubleEntryValidation {
+export function validateDoubleEntry(
+  lines: Array<{ debit?: number; credit?: number }>,
+): DoubleEntryValidation {
   const totalDebit = lines.reduce((s, l) => s + (Number(l.debit) || 0), 0);
   const totalCredit = lines.reduce((s, l) => s + (Number(l.credit) || 0), 0);
   const difference = Math.abs(totalDebit - totalCredit);
@@ -80,7 +102,7 @@ export function validateDoubleEntry(lines: Array<{ debit?: number; credit?: numb
 export function computeOutstandingReceivables(
   parties: any[],
   invoices: any[],
-  vouchers: any[]
+  vouchers: any[],
 ): { totalAmount: number; parties: Array<{ partyId: string; name: string; amount: number }> } {
   const partyBalances: Record<string, number> = {};
 
@@ -111,12 +133,11 @@ export function computeLedgerBalance(
   vouchers: any[],
   openingBalance = 0,
   openingBalanceDr = 0,
-  openingBalanceCr = 0
+  openingBalanceCr = 0,
 ): number {
   // Use Dr/Cr split if provided, otherwise fall back to single openingBalance
-  let balance = (openingBalanceDr || openingBalanceCr)
-    ? openingBalanceDr - openingBalanceCr
-    : openingBalance;
+  let balance =
+    openingBalanceDr || openingBalanceCr ? openingBalanceDr - openingBalanceCr : openingBalance;
   for (const v of vouchers) {
     if (v.status !== "posted") continue;
     for (const line of v.lines || []) {
@@ -132,7 +153,7 @@ export const generateVoucherNo = (type = "journal") => generateSerialNumberSync(
 
 export function computeTrialBalance(
   accounts: any[],
-  vouchers: any[]
+  vouchers: any[],
 ): { rows: any[]; totalDebit: number; totalCredit: number } {
   const balances: Record<string, { debit: number; credit: number }> = {};
   for (const v of vouchers) {
@@ -170,7 +191,7 @@ export function computeTrialBalance(
 export function calculateNextDueDate(
   startDate: string,
   frequency: string,
-  dayOfMonth?: number
+  dayOfMonth?: number,
 ): string {
   const base = new Date(startDate);
   if (isNaN(base.getTime())) return new Date().toISOString().split("T")[0];
@@ -183,17 +204,30 @@ export function calculateNextDueDate(
   const advance = (d: Date): Date => {
     const n = new Date(d);
     switch (frequency) {
-      case "daily":        n.setDate(n.getDate() + 1); break;
-      case "weekly":       n.setDate(n.getDate() + 7); break;
-      case "fortnightly":  n.setDate(n.getDate() + 14); break;
+      case "daily":
+        n.setDate(n.getDate() + 1);
+        break;
+      case "weekly":
+        n.setDate(n.getDate() + 7);
+        break;
+      case "fortnightly":
+        n.setDate(n.getDate() + 14);
+        break;
       case "monthly":
         n.setMonth(n.getMonth() + 1);
         if (dayOfMonth) n.setDate(Math.min(dayOfMonth, daysInMonth(n.getFullYear(), n.getMonth())));
         break;
-      case "quarterly":    n.setMonth(n.getMonth() + 3); break;
-      case "half_yearly":  n.setMonth(n.getMonth() + 6); break;
-      case "yearly":       n.setFullYear(n.getFullYear() + 1); break;
-      default:             n.setMonth(n.getMonth() + 1);
+      case "quarterly":
+        n.setMonth(n.getMonth() + 3);
+        break;
+      case "half_yearly":
+        n.setMonth(n.getMonth() + 6);
+        break;
+      case "yearly":
+        n.setFullYear(n.getFullYear() + 1);
+        break;
+      default:
+        n.setMonth(n.getMonth() + 1);
     }
     return n;
   };
@@ -214,18 +248,25 @@ export function computeProfitLoss(
   accounts: any[],
   vouchers: any[],
   startDate?: string,
-  endDate?: string
-): { incomeRows: any[]; expenseRows: any[]; totalIncome: number; totalExpense: number; netProfit: number } {
+  endDate?: string,
+): {
+  incomeRows: any[];
+  expenseRows: any[];
+  totalIncome: number;
+  totalExpense: number;
+  netProfit: number;
+} {
   const filtered = vouchers.filter(
     (v) =>
       v.status === "posted" &&
       (!startDate || v.date >= startDate) &&
-      (!endDate || v.date <= endDate)
+      (!endDate || v.date <= endDate),
   );
   const balances: Record<string, number> = {};
   for (const v of filtered) {
     for (const line of v.lines || []) {
-      balances[line.accountId] = (balances[line.accountId] || 0) + (line.credit || 0) - (line.debit || 0);
+      balances[line.accountId] =
+        (balances[line.accountId] || 0) + (line.credit || 0) - (line.debit || 0);
     }
   }
   const incomeRows = accounts
@@ -238,28 +279,47 @@ export function computeProfitLoss(
     .filter((r) => r.amount !== 0);
   const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
   const totalExpense = expenseRows.reduce((s, r) => s + r.amount, 0);
-  return { incomeRows, expenseRows, totalIncome, totalExpense, netProfit: totalIncome - totalExpense };
+  return {
+    incomeRows,
+    expenseRows,
+    totalIncome,
+    totalExpense,
+    netProfit: totalIncome - totalExpense,
+  };
 }
 
 export function computeBalanceSheet(
   accounts: any[],
   vouchers: any[],
-  asOfDate?: string
-): { assets: any[]; liabilities: any[]; equity: any[]; totalAssets: number; totalLiabEquity: number } {
-  const filtered = vouchers.filter((v) => v.status === "posted" && (!asOfDate || v.date <= asOfDate));
+  asOfDate?: string,
+): {
+  assets: any[];
+  liabilities: any[];
+  equity: any[];
+  totalAssets: number;
+  totalLiabEquity: number;
+} {
+  const filtered = vouchers.filter(
+    (v) => v.status === "posted" && (!asOfDate || v.date <= asOfDate),
+  );
   const balances: Record<string, number> = {};
   for (const acc of accounts) {
     if (!acc.isGroup) balances[acc.id] = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
   }
   for (const v of filtered) {
     for (const line of v.lines || []) {
-      balances[line.accountId] = (balances[line.accountId] || 0) + (line.debit || 0) - (line.credit || 0);
+      balances[line.accountId] =
+        (balances[line.accountId] || 0) + (line.debit || 0) - (line.credit || 0);
     }
   }
   const pick = (type: string, negate: boolean) =>
     accounts
       .filter((a) => !a.isGroup && a.type === type)
-      .map((a) => ({ id: a.id, name: a.name, amount: negate ? -(balances[a.id] || 0) : (balances[a.id] || 0) }))
+      .map((a) => ({
+        id: a.id,
+        name: a.name,
+        amount: negate ? -(balances[a.id] || 0) : balances[a.id] || 0,
+      }))
       .filter((i) => Math.abs(i.amount) > 0.01);
   const assets = pick("asset", false);
   const liabilities = pick("liability", true);
@@ -269,11 +329,16 @@ export function computeBalanceSheet(
   // (Assets = Liabilities + Equity + Retained Earnings)
   const pl = computeProfitLoss(accounts, filtered);
   if (Math.abs(pl.netProfit) > 0.01) {
-    equity.push({ id: '__retained_earnings', name: 'Profit & Loss (Current Period)', amount: pl.netProfit });
+    equity.push({
+      id: "__retained_earnings",
+      name: "Profit & Loss (Current Period)",
+      amount: pl.netProfit,
+    });
   }
 
   const totalAssets = assets.reduce((s, r) => s + r.amount, 0);
-  const totalLiabEquity = liabilities.reduce((s, r) => s + r.amount, 0) + equity.reduce((s, r) => s + r.amount, 0);
+  const totalLiabEquity =
+    liabilities.reduce((s, r) => s + r.amount, 0) + equity.reduce((s, r) => s + r.amount, 0);
   return { assets, liabilities, equity, totalAssets, totalLiabEquity };
 }
 
@@ -281,29 +346,43 @@ export function computeCashFlow(
   accounts: any[],
   vouchers: any[],
   startDate?: string,
-  endDate?: string
+  endDate?: string,
 ): { operating: number; investing: number; financing: number; netChange: number; rows: any[] } {
   const filtered = vouchers.filter(
     (v) =>
       v.status === "posted" &&
       (!startDate || v.date >= startDate) &&
-      (!endDate || v.date <= endDate)
+      (!endDate || v.date <= endDate),
   );
-  let operating = 0, investing = 0, financing = 0;
+  let operating = 0,
+    investing = 0,
+    financing = 0;
   const rows: any[] = [];
 
   // Helper to classify by account group rather than just type
   const isCashOrBank = (acc: any) => {
-    const g = (acc.group || acc.accountGroup || '').toLowerCase();
-    return g === 'cash' || g === 'bank' || g === 'cash-in-hand' || g === 'bank accounts' || g === 'bank account';
+    const g = (acc.group || acc.accountGroup || "").toLowerCase();
+    return (
+      g === "cash" ||
+      g === "bank" ||
+      g === "cash-in-hand" ||
+      g === "bank accounts" ||
+      g === "bank account"
+    );
   };
   const isFixedAsset = (acc: any) => {
-    const g = (acc.group || acc.accountGroup || '').toLowerCase();
-    return g === 'fixed assets' || g === 'fixed-assets' || g === 'investments';
+    const g = (acc.group || acc.accountGroup || "").toLowerCase();
+    return g === "fixed assets" || g === "fixed-assets" || g === "investments";
   };
   const isLongTermLiability = (acc: any) => {
-    const g = (acc.group || acc.accountGroup || '').toLowerCase();
-    return g === 'loans (liability)' || g === 'secured loans' || g === 'unsecured loans' || g === 'share capital' || g === 'capital account';
+    const g = (acc.group || acc.accountGroup || "").toLowerCase();
+    return (
+      g === "loans (liability)" ||
+      g === "secured loans" ||
+      g === "unsecured loans" ||
+      g === "share capital" ||
+      g === "capital account"
+    );
   };
 
   for (const v of filtered) {
@@ -315,35 +394,40 @@ export function computeCashFlow(
       // Skip cash/bank accounts — they are the "cash" being measured
       if (isCashOrBank(acc)) continue;
 
-      let category: 'operating' | 'investing' | 'financing' = 'operating';
+      let category: "operating" | "investing" | "financing" = "operating";
 
       if (acc.type === "expense" || acc.type === "income" || acc.type === "revenue") {
         // Income & expense are operating activities
         operating += net;
-        category = 'operating';
+        category = "operating";
       } else if (acc.type === "asset") {
         if (isFixedAsset(acc)) {
           // Fixed assets / investments → Investing
           investing -= net;
-          category = 'investing';
+          category = "investing";
         } else {
           // Current assets (receivables, inventory) → Operating (working capital)
           operating -= net;
-          category = 'operating';
+          category = "operating";
         }
       } else if (acc.type === "liability" || acc.type === "equity") {
         if (isLongTermLiability(acc) || acc.type === "equity") {
           // Long-term loans, capital → Financing
           financing += net;
-          category = 'financing';
+          category = "financing";
         } else {
           // Current liabilities (payables, duties) → Operating
           operating += net;
-          category = 'operating';
+          category = "operating";
         }
       }
 
-      rows.push({ date: v.date, description: line.narration || v.narration || acc.name, amount: net, category });
+      rows.push({
+        date: v.date,
+        description: line.narration || v.narration || acc.name,
+        amount: net,
+        category,
+      });
     }
   }
   return { operating, investing, financing, netChange: operating + investing + financing, rows };
@@ -351,7 +435,7 @@ export function computeCashFlow(
 
 export function computeOutstandingPayables(
   parties: any[],
-  invoices: any[]
+  invoices: any[],
 ): { totalAmount: number; parties: Array<{ partyId: string; name: string; amount: number }> } {
   const partyBalances: Record<string, number> = {};
   for (const inv of invoices) {
@@ -389,7 +473,7 @@ export function computeAgingReport(
   invoices: any[],
   parties: any[],
   asOfDate?: string,
-  partyType?: string
+  partyType?: string,
 ): any[] {
   const today = asOfDate ? new Date(asOfDate) : new Date();
   return invoices
@@ -406,10 +490,15 @@ export function computeAgingReport(
       const daysOverdue = Math.floor((today.getTime() - due.getTime()) / 86400000);
       const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
       const bucket =
-        daysOverdue <= 0 ? "Not Due" :
-        daysOverdue <= 30 ? "1-30" :
-        daysOverdue <= 60 ? "31-60" :
-        daysOverdue <= 90 ? "61-90" : "90+";
+        daysOverdue <= 0
+          ? "Not Due"
+          : daysOverdue <= 30
+            ? "1-30"
+            : daysOverdue <= 60
+              ? "31-60"
+              : daysOverdue <= 90
+                ? "61-90"
+                : "90+";
       return {
         invoiceId: inv.id,
         invoiceNo: inv.invoiceNo,
@@ -431,12 +520,13 @@ export function computePartyStatement(
   vouchers: any[],
   invoices: any[],
   startDate?: string,
-  endDate?: string
+  endDate?: string,
 ): { rows: any[]; openingBalance: number; closingBalance: number } {
   if (!party) return { rows: [], openingBalance: 0, closingBalance: 0 };
   const partyAccount = accounts.find((a) => a.partyId === party.id || a.name === party.name);
   if (!partyAccount) return { rows: [], openingBalance: 0, closingBalance: 0 };
-  const openingBalance = (partyAccount.openingBalanceDr || 0) - (partyAccount.openingBalanceCr || 0);
+  const openingBalance =
+    (partyAccount.openingBalanceDr || 0) - (partyAccount.openingBalanceCr || 0);
   const rows: any[] = [];
   let runningBalance = openingBalance;
   const relevantVouchers = vouchers
@@ -445,7 +535,7 @@ export function computePartyStatement(
         v.status === "posted" &&
         (!startDate || v.date >= startDate) &&
         (!endDate || v.date <= endDate) &&
-        v.lines?.some((l: any) => l.accountId === partyAccount?.id)
+        v.lines?.some((l: any) => l.accountId === partyAccount?.id),
     )
     .sort((a, b) => a.date.localeCompare(b.date));
   for (const v of relevantVouchers) {
@@ -469,7 +559,7 @@ export function computePartyStatement(
 
 export function computeOutstandingAnalysis(
   parties: any[],
-  invoices: any[]
+  invoices: any[],
 ): { receivables: any; payables: any } {
   const receivables = computeOutstandingReceivables(parties, invoices, []);
   const payables = computeOutstandingPayables(parties, invoices);
@@ -479,13 +569,19 @@ export function computeOutstandingAnalysis(
 export function computeRatios(
   balanceSheet: any,
   profitLoss: any,
-  _accounts?: any[]
+  _accounts?: any[],
 ): Record<string, number> {
   if (!balanceSheet || !profitLoss) return {};
   // Note: These sum ALL assets/liabilities. For a true current ratio, the balance sheet
   // would need to distinguish current vs fixed. Using totals as a working approximation.
-  const totalAssetsVal = (balanceSheet.assets || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
-  const totalLiabVal = (balanceSheet.liabilities || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
+  const totalAssetsVal = (balanceSheet.assets || []).reduce(
+    (s: number, a: any) => s + (a.amount || 0),
+    0,
+  );
+  const totalLiabVal = (balanceSheet.liabilities || []).reduce(
+    (s: number, a: any) => s + (a.amount || 0),
+    0,
+  );
   const netProfit = profitLoss.netProfit || 0;
   const totalAssets = balanceSheet.totalAssets || 0;
   return {

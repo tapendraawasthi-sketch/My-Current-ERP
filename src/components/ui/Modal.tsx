@@ -16,14 +16,7 @@ const SIZES: Record<string, string> = {
   xl: "max-w-5xl",
 };
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  size = "md",
-  footer,
-}) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = "md", footer }) => {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

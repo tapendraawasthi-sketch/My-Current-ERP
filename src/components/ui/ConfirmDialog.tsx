@@ -58,7 +58,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         justifyContent: "center",
         padding: 16,
       }}
-      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
     >
       <div
         style={{
@@ -74,13 +76,28 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {title}
         </h3>
         {(message || description) && (
-          <p style={{ fontSize: 12, color: "#000000", marginBottom: requireReason ? 12 : 20, lineHeight: 1.5 }}>
+          <p
+            style={{
+              fontSize: 12,
+              color: "#000000",
+              marginBottom: requireReason ? 12 : 20,
+              lineHeight: 1.5,
+            }}
+          >
             {message || description}
           </p>
         )}
         {requireReason && (
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#000000", display: "block", marginBottom: 4 }}>
+            <label
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#000000",
+                display: "block",
+                marginBottom: 4,
+              }}
+            >
               {reasonLabel} *
             </label>
             <textarea
@@ -107,9 +124,14 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           <button
             onClick={handleClose}
             style={{
-              height: 32, padding: "0 16px", fontSize: 12,
-              background: "#EBF5E2", border: "1px solid #000000",
-              borderRadius: 4, cursor: "pointer", color: "#000000",
+              height: 32,
+              padding: "0 16px",
+              fontSize: 12,
+              background: "#EBF5E2",
+              border: "1px solid #000000",
+              borderRadius: 4,
+              cursor: "pointer",
+              color: "#000000",
             }}
           >
             {cancelText}
@@ -118,10 +140,14 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={handleConfirm}
             disabled={requireReason && !reason.trim()}
             style={{
-              height: 32, padding: "0 16px", fontSize: 12, fontWeight: 700,
+              height: 32,
+              padding: "0 16px",
+              fontSize: 12,
+              fontWeight: 700,
               background: danger ? "#fee2e2" : "#C9DEB5",
               border: `1px solid ${danger ? "#dc2626" : "#000000"}`,
-              borderRadius: 4, cursor: "pointer",
+              borderRadius: 4,
+              cursor: "pointer",
               color: danger ? "#dc2626" : "#000000",
               opacity: requireReason && !reason.trim() ? 0.5 : 1,
             }}

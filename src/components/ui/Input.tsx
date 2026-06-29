@@ -61,9 +61,7 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className={`flex flex-col gap-0.5 ${className}`}>
       {label && (
-        <label
-          style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}
-        >
+        <label style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}>
           {label}
           {required && <span style={{ color: "#000000", marginLeft: 2 }}>*</span>}
         </label>
@@ -118,9 +116,7 @@ const Input: React.FC<InputProps> = ({
           </span>
         )}
       </div>
-      {hint && (
-        <span style={{ fontSize: 10, color: "#000000", opacity: 0.6 }}>{hint}</span>
-      )}
+      {hint && <span style={{ fontSize: 10, color: "#000000", opacity: 0.6 }}>{hint}</span>}
     </div>
   );
 };

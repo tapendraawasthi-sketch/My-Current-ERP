@@ -1,4 +1,13 @@
-import { StoreUser, CompanySettings, Notification, FiscalYear, DEFAULT_CURRENCY, DEFAULT_TDS_RATES, hashPassword, verifyPassword } from '../store.types';
+import {
+  StoreUser,
+  CompanySettings,
+  Notification,
+  FiscalYear,
+  DEFAULT_CURRENCY,
+  DEFAULT_TDS_RATES,
+  hashPassword,
+  verifyPassword,
+} from "../store.types";
 import { StateCreator } from "zustand";
 import type { AppState } from "../store.types";
 import { getDB, generateId } from "../../lib/db";
@@ -8,7 +17,6 @@ import { validateVoucherBalance, assertDateInFiscalYear } from "../store.types";
 import toast from "react-hot-toast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
-
 
 export const createSettingsSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Employees ─────────────────────────────────────────────────────────────
@@ -88,9 +96,7 @@ export const createSettingsSlice: StateCreator<AppState, [], [], any> = (set, ge
     const db = getDB();
     db.notifications.update(id, { read: true }).catch(() => {});
     set((s) => ({
-      notifications: s.notifications.map((n) =>
-        n.id === id ? { ...n, read: true } : n
-      ),
+      notifications: s.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
     }));
   },
 
@@ -141,13 +147,27 @@ export const createSettingsSlice: StateCreator<AppState, [], [], any> = (set, ge
       db.companySettings.clear(),
     ]);
     set({
-      accounts: [], parties: [], items: [], vouchers: [], invoices: [],
-      stockMovements: [], warehouses: [],
-  stockTransfers: [], units: [], costCenters: [],
-      fiscalYears: [], currentFiscalYear: null, deliveryChallans: [],
-      goodsReceiptNotes: [], salesOrders: [], purchaseOrders: [],
-      notifications: [], budgets: [], recurringVouchers: [],
-      companySettings: null, isDbReady: false,
+      accounts: [],
+      parties: [],
+      items: [],
+      vouchers: [],
+      invoices: [],
+      stockMovements: [],
+      warehouses: [],
+      stockTransfers: [],
+      units: [],
+      costCenters: [],
+      fiscalYears: [],
+      currentFiscalYear: null,
+      deliveryChallans: [],
+      goodsReceiptNotes: [],
+      salesOrders: [],
+      purchaseOrders: [],
+      notifications: [],
+      budgets: [],
+      recurringVouchers: [],
+      companySettings: null,
+      isDbReady: false,
     });
     await get().initializeApp();
   },

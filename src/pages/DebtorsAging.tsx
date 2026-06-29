@@ -4,7 +4,17 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { Download, Printer, AlertTriangle, FileText, ChevronDown, ChevronUp, Users, Clock, AlertCircle } from "lucide-react";
+import {
+  Download,
+  Printer,
+  AlertTriangle,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  Users,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -13,12 +23,16 @@ function money(v: number): string {
 }
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
-const tableHeadClass = "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const tableHeadClass =
+  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
-const primaryBtn = "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
-const outlineBtn = "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
-const inputClass = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+const primaryBtn =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+const outlineBtn =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
+const inputClass =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -116,7 +130,9 @@ export default function DebtorsAging() {
           p.type === "debtor" ||
           p.type === "both" ||
           !p.type ||
-          String(p.type || "").toLowerCase().includes("customer"),
+          String(p.type || "")
+            .toLowerCase()
+            .includes("customer"),
       )
       .map((party) => {
         const bills = getPartyBillwiseOutstanding(party.id, "sales", invoices, vouchers, parties);
@@ -143,7 +159,8 @@ export default function DebtorsAging() {
           .filter((b) => b.daysOverdue > 180)
           .reduce((s, b) => s + b.balance, 0);
 
-        const overLimit = total > Number(party.creditLimit || 0) && Number(party.creditLimit || 0) > 0;
+        const overLimit =
+          total > Number(party.creditLimit || 0) && Number(party.creditLimit || 0) > 0;
 
         return {
           party,
@@ -170,7 +187,13 @@ export default function DebtorsAging() {
     return agingData.filter((r) => {
       if (partyGroup !== "All" && String(r.party.type || "") !== partyGroup) return false;
       if (min > 0 && r.total < min) return false;
-      if (q && !String(r.party.name || "").toLowerCase().includes(q)) return false;
+      if (
+        q &&
+        !String(r.party.name || "")
+          .toLowerCase()
+          .includes(q)
+      )
+        return false;
       return true;
     });
   }, [agingData, partyGroup, minAmount, search]);
@@ -178,16 +201,21 @@ export default function DebtorsAging() {
   const summary = useMemo(() => {
     const totalOutstanding = filteredRows.reduce((s, r) => s + r.total, 0);
     const current = filteredRows.reduce((s, r) => {
-      const currentBills = r.bills.filter((b) => b.daysOverdue === 0).reduce((x, b) => x + b.balance, 0);
+      const currentBills = r.bills
+        .filter((b) => b.daysOverdue === 0)
+        .reduce((x, b) => x + b.balance, 0);
       return s + currentBills;
     }, 0);
     const overdue = filteredRows.reduce((s, r) => {
-      const overdueBills = r.bills.filter((b) => b.daysOverdue > 0).reduce((x, b) => x + b.balance, 0);
+      const overdueBills = r.bills
+        .filter((b) => b.daysOverdue > 0)
+        .reduce((x, b) => x + b.balance, 0);
       return s + overdueBills;
     }, 0);
 
     const paidInvoices = (invoices || []).filter(
-      (i) => isSalesType(i.type) && i.status === "posted" && i.paymentStatus === "paid" && i.paidDate,
+      (i) =>
+        isSalesType(i.type) && i.status === "posted" && i.paymentStatus === "paid" && i.paidDate,
     );
 
     const avgDays =
@@ -218,7 +246,8 @@ export default function DebtorsAging() {
   }, [filteredRows, invoices]);
 
   async function createInterestJournalForParty(row: any) {
-    if (!row.interest || row.interest <= 0) return toast.error("No interest to post for this party");
+    if (!row.interest || row.interest <= 0)
+      return toast.error("No interest to post for this party");
 
     const voucher = {
       id: generateId(),
@@ -247,7 +276,11 @@ export default function DebtorsAging() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     toast.success(`Interest journal posted for ${row.party.name}`);
   }
@@ -257,7 +290,12 @@ export default function DebtorsAging() {
     const total = rows.reduce((s, r) => s + r.interest, 0);
 
     if (!rows.length) return toast.error("No overdue interest found");
-    if (!confirm(`Will create ${rows.length} journal entries for NPR ${money(total)} total interest. Proceed?`)) return;
+    if (
+      !confirm(
+        `Will create ${rows.length} journal entries for NPR ${money(total)} total interest. Proceed?`,
+      )
+    )
+      return;
 
     for (let i = 0; i < rows.length; i++) {
       toast(`Posting ${i + 1}/${rows.length}: ${rows[i].party.name}`);
@@ -353,31 +391,60 @@ export default function DebtorsAging() {
       <div className="no-print grid grid-cols-1 md:grid-cols-5 gap-3 mb-6 bg-white p-3 rounded-md border border-gray-200 shadow-sm">
         <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">As of Date</label>
-          <input className={inputClass} type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
+          <input
+            className={inputClass}
+            type="date"
+            value={asOfDate}
+            onChange={(e) => setAsOfDate(e.target.value)}
+          />
         </div>
 
         <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">Party Group</label>
-          <select className={inputClass} value={partyGroup} onChange={(e) => setPartyGroup(e.target.value)}>
+          <select
+            className={inputClass}
+            value={partyGroup}
+            onChange={(e) => setPartyGroup(e.target.value)}
+          >
             {partyTypes.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Min. Outstanding (NPR)</label>
-          <input className={inputClass} type="number" placeholder="0.00" value={minAmount} onChange={(e) => setMinAmount(e.target.value)} />
+          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+            Min. Outstanding (NPR)
+          </label>
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="0.00"
+            value={minAmount}
+            onChange={(e) => setMinAmount(e.target.value)}
+          />
         </div>
 
         <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">Search Party</label>
-          <input className={inputClass} placeholder="Search name..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input
+            className={inputClass}
+            placeholder="Search name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <div className="flex items-center">
           <label className="flex items-center gap-2 cursor-pointer mt-5">
-            <input type="checkbox" className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]" checked={showInterest} onChange={(e) => setShowInterest(e.target.checked)} />
+            <input
+              type="checkbox"
+              className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+              checked={showInterest}
+              onChange={(e) => setShowInterest(e.target.checked)}
+            />
             <span className="text-[12px] font-medium text-gray-700">Calculate Interest</span>
           </label>
         </div>
@@ -385,49 +452,68 @@ export default function DebtorsAging() {
 
       <div className="no-print grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5 mb-1"><FileText size={14}/> Total Outstanding</div>
-          <div className="text-[20px] font-bold text-gray-800">NPR {money(summary.totalOutstanding)}</div>
+          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+            <FileText size={14} /> Total Outstanding
+          </div>
+          <div className="text-[20px] font-bold text-gray-800">
+            NPR {money(summary.totalOutstanding)}
+          </div>
         </div>
 
         <div className="bg-green-50/50 border border-green-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-green-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><CheckCircle size={14}/> Current (Not Due)</div>
+          <div className="text-[11px] font-medium text-green-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+            <CheckCircle size={14} /> Current (Not Due)
+          </div>
           <div className="text-[20px] font-bold text-green-800">NPR {money(summary.current)}</div>
         </div>
 
         <div className="bg-red-50/50 border border-red-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><AlertTriangle size={14}/> Overdue Total</div>
+          <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+            <AlertTriangle size={14} /> Overdue Total
+          </div>
           <div className="text-[20px] font-bold text-red-800">NPR {money(summary.overdue)}</div>
         </div>
 
         <div className="bg-amber-50/50 border border-amber-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-amber-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><Clock size={14}/> Average Collection</div>
+          <div className="text-[11px] font-medium text-amber-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+            <Clock size={14} /> Average Collection
+          </div>
           <div className="text-[20px] font-bold text-amber-800">{money(summary.avgDays)} Days</div>
         </div>
       </div>
 
       <div className="no-print mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-           {summary.overLimitCount > 0 && (
-             <span className="bg-red-50 text-red-700 border border-red-200 rounded-full px-3 py-1 text-[11px] font-semibold flex items-center gap-1.5">
-               <AlertCircle size={14}/> {summary.overLimitCount} Part{summary.overLimitCount === 1 ? 'y' : 'ies'} Over Limit
-             </span>
-           )}
+          {summary.overLimitCount > 0 && (
+            <span className="bg-red-50 text-red-700 border border-red-200 rounded-full px-3 py-1 text-[11px] font-semibold flex items-center gap-1.5">
+              <AlertCircle size={14} /> {summary.overLimitCount} Part
+              {summary.overLimitCount === 1 ? "y" : "ies"} Over Limit
+            </span>
+          )}
         </div>
-        
+
         {showInterest && summary.totalInterest > 0 && (
-           <button className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm" onClick={bulkInterestJournals}>
-             Generate Interest Journals for All
-           </button>
+          <button
+            className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm"
+            onClick={bulkInterestJournals}
+          >
+            Generate Interest Journals for All
+          </button>
         )}
       </div>
 
       <div id="print-area" className={cardClass}>
         <div className="hidden print:block mb-6 text-center">
-          <h1 className="text-[18px] font-bold text-gray-900">{companySettings?.name || "Company Name"}</h1>
+          <h1 className="text-[18px] font-bold text-gray-900">
+            {companySettings?.name || "Company Name"}
+          </h1>
           <div className="text-[12px] text-gray-600">
-            {companySettings?.address || "Company Address"} | PAN: {companySettings?.panNumber || "N/A"}
+            {companySettings?.address || "Company Address"} | PAN:{" "}
+            {companySettings?.panNumber || "N/A"}
           </div>
-          <h2 className="text-[14px] font-bold mt-4 uppercase tracking-wider text-gray-800 border-b border-gray-300 pb-2 inline-block">Debtors Aging Report</h2>
+          <h2 className="text-[14px] font-bold mt-4 uppercase tracking-wider text-gray-800 border-b border-gray-300 pb-2 inline-block">
+            Debtors Aging Report
+          </h2>
           <div className="text-[11px] text-gray-500 mt-1">As of: {asOfDate}</div>
         </div>
 
@@ -449,7 +535,12 @@ export default function DebtorsAging() {
                   "Over Limit",
                   "Action",
                 ].map((h) => (
-                  <th key={h} className={h === "Action" ? `${tableHeadClass} no-print` : tableHeadClass}>{h}</th>
+                  <th
+                    key={h}
+                    className={h === "Action" ? `${tableHeadClass} no-print` : tableHeadClass}
+                  >
+                    {h}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -460,36 +551,65 @@ export default function DebtorsAging() {
 
                 return (
                   <React.Fragment key={r.party.id}>
-                    <tr className={`bg-white hover:bg-gray-50 ${r.overLimit ? "bg-red-50/20" : ""}`}>
+                    <tr
+                      className={`bg-white hover:bg-gray-50 ${r.overLimit ? "bg-red-50/20" : ""}`}
+                    >
                       <td className={tableCellClass}>
                         <button
                           className="font-medium text-[#1557b0] hover:underline no-print flex items-center gap-1.5"
                           onClick={() => setExpandedPartyId(expanded ? "" : r.party.id)}
                         >
-                          {expanded ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                          {expanded ? (
+                            <ChevronUp size={14} className="text-gray-400" />
+                          ) : (
+                            <ChevronDown size={14} className="text-gray-400" />
+                          )}
                           {r.party.name}
                         </button>
                         <span className="hidden print:inline font-medium">{r.party.name}</span>
                       </td>
-                      <td className={tableCellClass}>{r.party.panNumber || r.party.vatNumber || <span className="text-gray-400">-</span>}</td>
-                      <td className={tableCellClass}>{r.party.creditLimit > 0 ? money(r.party.creditLimit) : <span className="text-gray-400">-</span>}</td>
-                      <td className={`${tableCellClass} font-semibold text-gray-900`}>{money(r.total)}</td>
+                      <td className={tableCellClass}>
+                        {r.party.panNumber || r.party.vatNumber || (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className={tableCellClass}>
+                        {r.party.creditLimit > 0 ? (
+                          money(r.party.creditLimit)
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className={`${tableCellClass} font-semibold text-gray-900`}>
+                        {money(r.total)}
+                      </td>
                       <td className={tableCellClass}>{money(r.d30)}</td>
                       <td className={tableCellClass}>{money(r.d60)}</td>
                       <td className={tableCellClass}>{money(r.d90)}</td>
                       <td className={tableCellClass}>{money(r.d180)}</td>
                       <td className={tableCellClass}>{money(r.d180plus)}</td>
-                      {showInterest && <td className={`${tableCellClass} font-medium ${r.interest > 0 ? "text-amber-600" : ""}`}>{money(r.interest)}</td>}
+                      {showInterest && (
+                        <td
+                          className={`${tableCellClass} font-medium ${r.interest > 0 ? "text-amber-600" : ""}`}
+                        >
+                          {money(r.interest)}
+                        </td>
+                      )}
                       <td className={tableCellClass}>
                         {r.overLimit ? (
-                           <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">Yes</span>
+                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+                            Yes
+                          </span>
                         ) : (
-                           <span className="text-gray-400 font-medium">No</span>
+                          <span className="text-gray-400 font-medium">No</span>
                         )}
                       </td>
                       <td className={`${tableCellClass} no-print`}>
                         {showInterest && r.interest > 0 && (
-                          <button className="text-[11px] font-medium text-[#1557b0] hover:underline" onClick={() => createInterestJournalForParty(r)}>
+                          <button
+                            className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                            onClick={() => createInterestJournalForParty(r)}
+                          >
                             Post Interest
                           </button>
                         )}
@@ -498,11 +618,14 @@ export default function DebtorsAging() {
 
                     {expanded && (
                       <tr className="bg-blue-50/30">
-                        <td colSpan={showInterest ? 12 : 11} className="p-4 border-b border-gray-200">
+                        <td
+                          colSpan={showInterest ? 12 : 11}
+                          className="p-4 border-b border-gray-200"
+                        >
                           <div className="bg-white border border-indigo-100 rounded shadow-sm overflow-hidden">
-                             <div className="bg-indigo-50/50 px-3 py-2 border-b border-indigo-100 font-semibold text-[12px] text-indigo-900 flex items-center gap-2">
-                               <FileText size={14}/> Bill-wise Outstanding for {r.party.name}
-                             </div>
+                            <div className="bg-indigo-50/50 px-3 py-2 border-b border-indigo-100 font-semibold text-[12px] text-indigo-900 flex items-center gap-2">
+                              <FileText size={14} /> Bill-wise Outstanding for {r.party.name}
+                            </div>
                             <table className="w-full border-collapse">
                               <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
@@ -516,34 +639,68 @@ export default function DebtorsAging() {
                                     "Days Overdue",
                                     ...(showInterest ? ["Interest (NPR)"] : []),
                                   ].map((h) => (
-                                    <th key={h} className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                                    <th
+                                      key={h}
+                                      className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
+                                    >
+                                      {h}
+                                    </th>
                                   ))}
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-gray-100">
                                 {r.bills.map((b) => (
                                   <tr key={b.id} className="hover:bg-gray-50">
-                                    <td className="px-3 py-2 text-[11px] font-mono font-medium">{b.invoiceNo}</td>
-                                    <td className="px-3 py-2 text-[11px] text-gray-600">{b.invoiceDate}</td>
-                                    <td className="px-3 py-2 text-[11px] text-gray-600">{b.dueDate}</td>
-                                    <td className="px-3 py-2 text-[11px] text-gray-800">{money(b.grandTotal)}</td>
-                                    <td className="px-3 py-2 text-[11px] text-gray-600">{money(b.paid)}</td>
-                                    <td className="px-3 py-2 text-[11px] font-semibold text-gray-900">{money(b.balance)}</td>
-                                    <td className="px-3 py-2 text-[11px]">
-                                       {b.daysOverdue > 0 ? (
-                                         <span className="text-red-600 font-medium">{b.daysOverdue} Days</span>
-                                       ) : (
-                                         <span className="text-green-600 font-medium">Not Due</span>
-                                       )}
+                                    <td className="px-3 py-2 text-[11px] font-mono font-medium">
+                                      {b.invoiceNo}
                                     </td>
-                                    {showInterest && <td className="px-3 py-2 text-[11px] text-amber-600 font-medium">{money(b.interest)}</td>}
+                                    <td className="px-3 py-2 text-[11px] text-gray-600">
+                                      {b.invoiceDate}
+                                    </td>
+                                    <td className="px-3 py-2 text-[11px] text-gray-600">
+                                      {b.dueDate}
+                                    </td>
+                                    <td className="px-3 py-2 text-[11px] text-gray-800">
+                                      {money(b.grandTotal)}
+                                    </td>
+                                    <td className="px-3 py-2 text-[11px] text-gray-600">
+                                      {money(b.paid)}
+                                    </td>
+                                    <td className="px-3 py-2 text-[11px] font-semibold text-gray-900">
+                                      {money(b.balance)}
+                                    </td>
+                                    <td className="px-3 py-2 text-[11px]">
+                                      {b.daysOverdue > 0 ? (
+                                        <span className="text-red-600 font-medium">
+                                          {b.daysOverdue} Days
+                                        </span>
+                                      ) : (
+                                        <span className="text-green-600 font-medium">Not Due</span>
+                                      )}
+                                    </td>
+                                    {showInterest && (
+                                      <td className="px-3 py-2 text-[11px] text-amber-600 font-medium">
+                                        {money(b.interest)}
+                                      </td>
+                                    )}
                                   </tr>
                                 ))}
                                 <tr className="bg-indigo-50/30">
-                                  <td className="px-3 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide" colSpan={5}>Subtotal Balance</td>
-                                  <td className="px-3 py-2 text-[11px] font-bold text-gray-900">{money(r.total)}</td>
+                                  <td
+                                    className="px-3 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide"
+                                    colSpan={5}
+                                  >
+                                    Subtotal Balance
+                                  </td>
+                                  <td className="px-3 py-2 text-[11px] font-bold text-gray-900">
+                                    {money(r.total)}
+                                  </td>
                                   <td className="px-3 py-2 text-[11px]"></td>
-                                  {showInterest && <td className="px-3 py-2 text-[11px] font-bold text-amber-700">{money(r.interest)}</td>}
+                                  {showInterest && (
+                                    <td className="px-3 py-2 text-[11px] font-bold text-amber-700">
+                                      {money(r.interest)}
+                                    </td>
+                                  )}
                                 </tr>
                               </tbody>
                             </table>
@@ -557,14 +714,35 @@ export default function DebtorsAging() {
 
               {filteredRows.length > 0 && (
                 <tr className="bg-gray-100/80 border-t-2 border-gray-300">
-                  <td className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`} colSpan={3}>Grand Total</td>
-                  <td className={`${tableCellClass} font-bold text-gray-900`}>{money(summary.totalOutstanding)}</td>
-                  <td className={`${tableCellClass} font-bold text-gray-700`}>{money(summary.d30)}</td>
-                  <td className={`${tableCellClass} font-bold text-gray-700`}>{money(summary.d60)}</td>
-                  <td className={`${tableCellClass} font-bold text-gray-700`}>{money(summary.d90)}</td>
-                  <td className={`${tableCellClass} font-bold text-gray-700`}>{money(summary.d180)}</td>
-                  <td className={`${tableCellClass} font-bold text-gray-700`}>{money(summary.d180plus)}</td>
-                  {showInterest && <td className={`${tableCellClass} font-bold text-amber-700`}>{money(summary.totalInterest)}</td>}
+                  <td
+                    className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                    colSpan={3}
+                  >
+                    Grand Total
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-900`}>
+                    {money(summary.totalOutstanding)}
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-700`}>
+                    {money(summary.d30)}
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-700`}>
+                    {money(summary.d60)}
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-700`}>
+                    {money(summary.d90)}
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-700`}>
+                    {money(summary.d180)}
+                  </td>
+                  <td className={`${tableCellClass} font-bold text-gray-700`}>
+                    {money(summary.d180plus)}
+                  </td>
+                  {showInterest && (
+                    <td className={`${tableCellClass} font-bold text-amber-700`}>
+                      {money(summary.totalInterest)}
+                    </td>
+                  )}
                   <td className={tableCellClass}></td>
                   <td className={`${tableCellClass} no-print`}></td>
                 </tr>
@@ -572,8 +750,11 @@ export default function DebtorsAging() {
 
               {!filteredRows.length && (
                 <tr>
-                  <td colSpan={showInterest ? 12 : 11} className="text-center p-10 text-gray-500 text-[12px] bg-gray-50/50 border-t border-gray-100">
-                     No outstanding receivables found matching the criteria.
+                  <td
+                    colSpan={showInterest ? 12 : 11}
+                    className="text-center p-10 text-gray-500 text-[12px] bg-gray-50/50 border-t border-gray-100"
+                  >
+                    No outstanding receivables found matching the criteria.
                   </td>
                 </tr>
               )}

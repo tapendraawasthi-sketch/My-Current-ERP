@@ -9,16 +9,11 @@ function money(v: number) {
 const PurchaseOrderOutstanding: React.FC = () => {
   const { vouchers } = useStore() as any;
 
-  const rows = useMemo(
-    () => buildPurchaseOrderOutstandingReport(vouchers || []),
-    [vouchers],
-  );
+  const rows = useMemo(() => buildPurchaseOrderOutstandingReport(vouchers || []), [vouchers]);
 
   return (
     <div className="p-4">
-      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">
-        Purchase Order Outstanding
-      </h1>
+      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">Purchase Order Outstanding</h1>
 
       <div className="bg-white border rounded-md overflow-auto">
         <table className="w-full text-[12px]">
@@ -38,7 +33,9 @@ const PurchaseOrderOutstanding: React.FC = () => {
                 "Pending Value",
                 "Status",
               ].map((h) => (
-                <th key={h} className="px-3 py-2 text-left">{h}</th>
+                <th key={h} className="px-3 py-2 text-left">
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>

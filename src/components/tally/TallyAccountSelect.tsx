@@ -1,47 +1,51 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Search, Plus } from 'lucide-react';
-import { useStore } from '@/store/useStore';
-import QuickCreateAccountModal from '../ui/QuickCreateAccountModal';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { Search, Plus } from "lucide-react";
+import { useStore } from "@/store/useStore";
+import QuickCreateAccountModal from "../ui/QuickCreateAccountModal";
 
 interface Props {
   value: string;
   onChange: (accountId: string, accountName: string) => void;
   placeholder?: string;
   autoFocus?: boolean;
-  groupFilter?: 'cash' | 'bank' | 'all';
+  groupFilter?: "cash" | "bank" | "all";
   onCreate?: (name: string) => void;
 }
 
 export const TallyAccountSelect: React.FC<Props> = ({
   value,
   onChange,
-  placeholder = 'Select Account',
+  placeholder = "Select Account",
   autoFocus,
-  groupFilter = 'all',
+  groupFilter = "all",
   onCreate,
 }) => {
   const { accounts } = useStore();
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
     let list = accounts || [];
-    if (groupFilter === 'cash') list = list.filter((a) => a.group === 'Cash' || a.name.toLowerCase().includes('cash'));
-    if (groupFilter === 'bank') list = list.filter((a) => a.group === 'Bank' || a.name.toLowerCase().includes('bank'));
+    if (groupFilter === "cash")
+      list = list.filter((a) => a.group === "Cash" || a.name.toLowerCase().includes("cash"));
+    if (groupFilter === "bank")
+      list = list.filter((a) => a.group === "Bank" || a.name.toLowerCase().includes("bank"));
     if (!query.trim()) return list;
     const q = query.toLowerCase();
-    return list.filter((a) => a.name.toLowerCase().includes(q) || a.group?.toLowerCase().includes(q));
+    return list.filter(
+      (a) => a.name.toLowerCase().includes(q) || a.group?.toLowerCase().includes(q),
+    );
   }, [accounts, query, groupFilter]);
 
   useEffect(() => {
     const listener = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
-    document.addEventListener('mousedown', listener);
-    return () => document.removeEventListener('mousedown', listener);
+    document.addEventListener("mousedown", listener);
+    return () => document.removeEventListener("mousedown", listener);
   }, []);
 
   useEffect(() => {
@@ -49,12 +53,12 @@ export const TallyAccountSelect: React.FC<Props> = ({
   }, [autoFocus]);
 
   const selectedName = useMemo(() => {
-    return (accounts || []).find((a) => a.id === value)?.name || '';
+    return (accounts || []).find((a) => a.id === value)?.name || "";
   }, [accounts, value]);
 
   const handleSelect = (a: { id: string; name: string }) => {
     onChange(a.id, a.name);
-    setQuery('');
+    setQuery("");
     setOpen(false);
   };
 
@@ -84,12 +88,12 @@ export const TallyAccountSelect: React.FC<Props> = ({
           setQuery(selectedName);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Alt' && e.key.toLowerCase() === 'c') {
+          if (e.key === "Alt" && e.key.toLowerCase() === "c") {
             e.preventDefault();
             handleQuickCreate();
           }
-          if (e.key === 'Escape') setOpen(false);
-          if (e.key === 'ArrowDown' && filtered.length) {
+          if (e.key === "Escape") setOpen(false);
+          if (e.key === "ArrowDown" && filtered.length) {
             e.preventDefault();
             // focus first list item handled by list itself
           }
@@ -98,15 +102,22 @@ export const TallyAccountSelect: React.FC<Props> = ({
       {open && (
         <div className="tally-popup absolute z-50 mt-1 w-full max-h-64 overflow-auto rounded-sm shadow-lg">
           <div className="tally-popup-title flex items-center justify-between">
-            <span className="flex items-center gap-1"><Search size={12} /> Select Account</span>
-            <button className="tally-btn text-xs flex items-center gap-1" onClick={handleQuickCreate}>
+            <span className="flex items-center gap-1">
+              <Search size={12} /> Select Account
+            </span>
+            <button
+              className="tally-btn text-xs flex items-center gap-1"
+              onClick={handleQuickCreate}
+            >
               <Plus size={12} /> Alt+C New
             </button>
           </div>
           {filtered.length === 0 ? (
             <div className="p-2 text-xs text-tally-600">
               No accounts found.
-              <button className="tally-btn ml-2 text-xs" onClick={handleQuickCreate}>Create</button>
+              <button className="tally-btn ml-2 text-xs" onClick={handleQuickCreate}>
+                Create
+              </button>
             </div>
           ) : (
             <ul className="text-sm">

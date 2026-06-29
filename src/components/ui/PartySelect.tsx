@@ -84,9 +84,7 @@ const PartySelect: React.FC<PartySelectProps> = ({
           className="w-full h-8 px-2.5 text-left text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-[#EBF5E2] disabled:cursor-not-allowed"
         >
           <span className="truncate">
-            {selectedParty
-              ? `${getPrefix(selectedParty.type)} ${selectedParty.name}`
-              : placeholder}
+            {selectedParty ? `${getPrefix(selectedParty.type)} ${selectedParty.name}` : placeholder}
           </span>
           <ChevronDown className="h-3 w-3 text-[#000000] shrink-0 ml-1" />
         </button>

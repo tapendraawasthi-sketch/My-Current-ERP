@@ -12,7 +12,7 @@ export const DualDate: React.FC<DualDateProps> = ({ date, dateNepali, className 
   if (!date) return <span className="text-[#000000]">—</span>;
 
   const bsDateStr = dateNepali || formatBSDate(date);
-  
+
   return (
     <div className={`flex flex-col leading-tight ${className}`}>
       <span className="text-[12px] font-medium text-[#000000]">{bsDateStr}</span>
@@ -20,4 +20,3 @@ export const DualDate: React.FC<DualDateProps> = ({ date, dateNepali, className 
     </div>
   );
 };
-

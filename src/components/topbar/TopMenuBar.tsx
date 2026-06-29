@@ -184,10 +184,7 @@ export default function TopMenuBar() {
 
   const companyName = useMemo(() => {
     const name =
-      activeCompany?.name ||
-      companySettings?.companyNameEn ||
-      companySettings?.name ||
-      "Sutra ERP";
+      activeCompany?.name || companySettings?.companyNameEn || companySettings?.name || "Sutra ERP";
 
     return name.length > 20 ? `${name.slice(0, 20)}…` : name;
   }, [activeCompany?.name, companySettings?.companyNameEn, companySettings?.name]);

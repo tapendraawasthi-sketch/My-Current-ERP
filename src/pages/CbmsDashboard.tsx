@@ -58,7 +58,8 @@ const CbmsDashboard: React.FC = () => {
       todaySubmitted: todayInvoices.filter((i: any) => i.cbmsSubmitted).length,
       todayPending: todayInvoices.filter((i: any) => !i.cbmsSubmitted).length,
       monthSubmitted: monthInvoices.filter((i: any) => i.cbmsSubmitted).length,
-      failedCount: salesInvoices.filter((i: any) => i.cbmsStatus === "failed" || i.cbmsError).length,
+      failedCount: salesInvoices.filter((i: any) => i.cbmsStatus === "failed" || i.cbmsError)
+        .length,
     };
   }, [salesInvoices, today, thisMonth]);
 
@@ -93,10 +94,8 @@ const CbmsDashboard: React.FC = () => {
     setBulkRunning(true);
     setProgress({ done: 0, total: pendingInvoices.length });
 
-    const result = await cbmsService.bulkSubmit(
-      pendingInvoices,
-      companySettings,
-      (done, total) => setProgress({ done, total }),
+    const result = await cbmsService.bulkSubmit(pendingInvoices, companySettings, (done, total) =>
+      setProgress({ done, total }),
     );
 
     setBulkRunning(false);
@@ -130,9 +129,7 @@ const CbmsDashboard: React.FC = () => {
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            CBMS Dashboard
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">CBMS Dashboard</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Nepal IRD e-Invoicing submission monitor
           </p>
@@ -153,25 +150,19 @@ const CbmsDashboard: React.FC = () => {
             onClick={handleSubmitAllPending}
             className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
           >
-            {bulkRunning
-              ? `Submitting ${progress.done}/${progress.total}`
-              : "Submit All Pending"}
+            {bulkRunning ? `Submitting ${progress.done}/${progress.total}` : "Submit All Pending"}
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">
-            Today Submitted
-          </div>
+          <div className="text-[10px] uppercase font-semibold text-gray-500">Today Submitted</div>
           <div className="text-[22px] font-bold">{summary.todaySubmitted}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">
-            Today Pending
-          </div>
+          <div className="text-[10px] uppercase font-semibold text-gray-500">Today Pending</div>
           <div className="text-[22px] font-bold">{summary.todayPending}</div>
         </div>
 
@@ -183,12 +174,8 @@ const CbmsDashboard: React.FC = () => {
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">
-            Failed Count
-          </div>
-          <div className="text-[22px] font-bold text-red-600">
-            {summary.failedCount}
-          </div>
+          <div className="text-[10px] uppercase font-semibold text-gray-500">Failed Count</div>
+          <div className="text-[22px] font-bold text-red-600">{summary.failedCount}</div>
         </div>
       </div>
 
@@ -210,9 +197,7 @@ const CbmsDashboard: React.FC = () => {
 
       <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-wrap gap-3">
         <div>
-          <label className="text-[11px] font-medium text-gray-600 block mb-1">
-            From Date
-          </label>
+          <label className="text-[11px] font-medium text-gray-600 block mb-1">From Date</label>
           <input
             type="date"
             value={fromDate}
@@ -222,9 +207,7 @@ const CbmsDashboard: React.FC = () => {
         </div>
 
         <div>
-          <label className="text-[11px] font-medium text-gray-600 block mb-1">
-            To Date
-          </label>
+          <label className="text-[11px] font-medium text-gray-600 block mb-1">To Date</label>
           <input
             type="date"
             value={toDate}
@@ -234,9 +217,7 @@ const CbmsDashboard: React.FC = () => {
         </div>
 
         <div>
-          <label className="text-[11px] font-medium text-gray-600 block mb-1">
-            Status
-          </label>
+          <label className="text-[11px] font-medium text-gray-600 block mb-1">Status</label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as any)}
@@ -288,10 +269,7 @@ const CbmsDashboard: React.FC = () => {
                   })}
                 </td>
                 <td className="px-3 py-2">
-                  <CbmsStatusBadge
-                    invoice={invoice}
-                    onUpdated={() => initializeApp?.()}
-                  />
+                  <CbmsStatusBadge invoice={invoice} onUpdated={() => initializeApp?.()} />
                 </td>
               </tr>
             ))}

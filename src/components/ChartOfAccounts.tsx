@@ -248,12 +248,13 @@ const ChartOfAccounts: React.FC = React.memo(() => {
   };
 
   const groupsOnlyList = useMemo(() => {
-    return accounts
-      .filter((a) => a.isGroup)
-      .sort((a, b) => a.name.localeCompare(b.name));
+    return accounts.filter((a) => a.isGroup).sort((a, b) => a.name.localeCompare(b.name));
   }, [accounts]);
 
-  const parentAccount = useMemo(() => (parentId ? accounts.find((a) => a.id === parentId) : null), [accounts, parentId]);
+  const parentAccount = useMemo(
+    () => (parentId ? accounts.find((a) => a.id === parentId) : null),
+    [accounts, parentId],
+  );
   const isBankAccount = useMemo(() => {
     if (!parentAccount) return false;
     const pName = (parentAccount.name || "").toLowerCase();
@@ -265,8 +266,14 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     const pName = (parentAccount.name || "").toLowerCase();
     const pGroup = (parentAccount.group || "").toLowerCase();
     return (
-      pName.includes("debtor") || pName.includes("creditor") || pName.includes("receivable") || pName.includes("payable") ||
-      pGroup.includes("debtor") || pGroup.includes("creditor") || pGroup.includes("receivable") || pGroup.includes("payable")
+      pName.includes("debtor") ||
+      pName.includes("creditor") ||
+      pName.includes("receivable") ||
+      pName.includes("payable") ||
+      pGroup.includes("debtor") ||
+      pGroup.includes("creditor") ||
+      pGroup.includes("receivable") ||
+      pGroup.includes("payable")
     );
   }, [parentAccount]);
 
@@ -292,9 +299,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
         .filter(
           (a) =>
             a.type === currentType &&
-            (pId === undefined
-              ? !a.parentId || !accountMap.has(a.parentId)
-              : a.parentId === pId),
+            (pId === undefined ? !a.parentId || !accountMap.has(a.parentId) : a.parentId === pId),
         )
         .map((a) => {
           const children = getSubNodes(a.id, currentType, currentDepth + 1);
@@ -502,7 +507,11 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     setIsGroup(!!acc.isGroup);
     setOpeningBalance(acc.openingBalance || 0);
     setOpeningType(acc.openingBalanceDr && acc.openingBalanceDr > 0 ? "Dr" : "Cr");
-    setOpeningBalanceDate(acc.openingBalanceDate || currentFiscalYear?.startDate || new Date().toISOString().split("T")[0]);
+    setOpeningBalanceDate(
+      acc.openingBalanceDate ||
+        currentFiscalYear?.startDate ||
+        new Date().toISOString().split("T")[0],
+    );
     setBillByBill(!!(acc as any).billByBill);
     setBankDetails((acc as any).bankDetails || {});
     setCreditLimit((acc as any).creditLimit || 0);
@@ -525,18 +534,33 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     openingBalanceDr: openingType === "Dr" ? openingBalance : 0,
     openingBalanceCr: openingType === "Cr" ? openingBalance : 0,
     openingBalanceDate: openingBalanceDate || new Date().toISOString().split("T")[0],
-    billByBill: !["group", "subgroup"].includes(level) && (type === AccountType.ASSET || type === AccountType.LIABILITY) ? billByBill : false,
+    billByBill:
+      !["group", "subgroup"].includes(level) &&
+      (type === AccountType.ASSET || type === AccountType.LIABILITY)
+        ? billByBill
+        : false,
     bankDetails: isBankAccount && !["group", "subgroup"].includes(level) ? bankDetails : undefined,
-    creditLimit: isDebtorCreditor && !["group", "subgroup"].includes(level) ? (creditLimit || 0) : undefined,
-    creditPeriod: isDebtorCreditor && !["group", "subgroup"].includes(level) ? (creditPeriod || 0) : undefined,
+    creditLimit:
+      isDebtorCreditor && !["group", "subgroup"].includes(level) ? creditLimit || 0 : undefined,
+    creditPeriod:
+      isDebtorCreditor && !["group", "subgroup"].includes(level) ? creditPeriod || 0 : undefined,
   });
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) { toast.error("Account name is required."); return; }
-    if (!code.trim()) { toast.error("Account code is required."); return; }
+    if (!name.trim()) {
+      toast.error("Account name is required.");
+      return;
+    }
+    if (!code.trim()) {
+      toast.error("Account code is required.");
+      return;
+    }
     const codeMatch = accounts.find((a) => a.code === code.trim());
-    if (codeMatch) { toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`); return; }
+    if (codeMatch) {
+      toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`);
+      return;
+    }
     if (level !== AccountLevel.GROUP && !parentId) {
       toast.error("A parent group is required for this account level.");
       return;
@@ -555,9 +579,15 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     e.preventDefault();
     if (!selectedNode || !selectedNode.rowObject) return;
     const accId = selectedNode.rowObject.id;
-    if (!name.trim()) { toast.error("Account name is required."); return; }
+    if (!name.trim()) {
+      toast.error("Account name is required.");
+      return;
+    }
     const codeMatch = accounts.find((a) => a.code === code.trim() && a.id !== accId);
-    if (codeMatch) { toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`); return; }
+    if (codeMatch) {
+      toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`);
+      return;
+    }
     if (level !== AccountLevel.GROUP && !parentId) {
       toast.error("A parent group is required for this account level.");
       return;
@@ -588,7 +618,18 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
   // ─── EXPORT / IMPORT ──────────────────────────────────────────────────────────
   const handleExportToExcel = () => {
-    const headers = ["Code", "Account Name", "Alias", "Nepali Name", "Type", "Level", "Balance", "Status", "System Account", "Bill By Bill"];
+    const headers = [
+      "Code",
+      "Account Name",
+      "Alias",
+      "Nepali Name",
+      "Type",
+      "Level",
+      "Balance",
+      "Status",
+      "System Account",
+      "Bill By Bill",
+    ];
     const rows: any[] = [];
     const visit = (node: TreeNode, indent = "") => {
       rows.push([
@@ -616,9 +657,39 @@ const ChartOfAccounts: React.FC = React.memo(() => {
   };
 
   const handleDownloadTemplate = () => {
-    const headers = ["Account_Code", "Account_Name", "Nepali_Name", "Alias", "Type", "Level", "Parent_Code", "Opening_Balance", "Dr_Cr"];
-    const example1 = ["1111", "Everest Bank Account", "एभरेष्ट बैंक खाता", "EBL", "asset", "ledger", "1100", "75000", "Dr"];
-    const example2 = ["5208", "Stationery Expenses", "स्टेशनरी खर्च", "", "expense", "ledger", "5200", "0", "Dr"];
+    const headers = [
+      "Account_Code",
+      "Account_Name",
+      "Nepali_Name",
+      "Alias",
+      "Type",
+      "Level",
+      "Parent_Code",
+      "Opening_Balance",
+      "Dr_Cr",
+    ];
+    const example1 = [
+      "1111",
+      "Everest Bank Account",
+      "एभरेष्ट बैंक खाता",
+      "EBL",
+      "asset",
+      "ledger",
+      "1100",
+      "75000",
+      "Dr",
+    ];
+    const example2 = [
+      "5208",
+      "Stationery Expenses",
+      "स्टेशनरी खर्च",
+      "",
+      "expense",
+      "ledger",
+      "5200",
+      "0",
+      "Dr",
+    ];
     const ws = XLSX.utils.aoa_to_sheet([headers, example1, example2]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "COA Import Template");
@@ -634,10 +705,17 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       try {
         const text = event.target?.result as string;
         if (!text) return;
-        const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-        if (lines.length <= 1) { toast.error("No data rows found in file."); return; }
+        const lines = text
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (lines.length <= 1) {
+          toast.error("No data rows found in file.");
+          return;
+        }
         let successCount = 0;
         let failCount = 0;
+        const tempAccounts: any[] = [...accounts];
         for (let i = 1; i < lines.length; i++) {
           const row = lines[i]
             .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
@@ -652,7 +730,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           const pCodeOrId = row[6] || undefined;
           const oBalance = parseFloat(row[7]) || 0;
           const balDrCr = (row[8] || "Dr").trim();
-          if (!accCode || !accName) { failCount++; continue; }
+          if (!accCode || !accName) {
+            failCount++;
+            continue;
+          }
           let resolvedParentId: string | undefined;
           if (pCodeOrId) {
             const parentDef = tempAccounts.find((a) => a.id === pCodeOrId || a.code === pCodeOrId);
@@ -671,7 +752,8 @@ const ChartOfAccounts: React.FC = React.memo(() => {
             openingBalance: oBalance,
             openingBalanceDr: balDrCr.toLowerCase() === "dr" ? oBalance : 0,
             openingBalanceCr: balDrCr.toLowerCase() === "cr" ? oBalance : 0,
-            openingBalanceDate: currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
+            openingBalanceDate:
+              currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
             billByBill: false,
           });
           tempAccounts.push(newAcc);
@@ -701,7 +783,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       setSelectedIds({});
     } else {
       const dict: Record<string, boolean> = {};
-      flattenedRows.forEach((row) => { if (!row.id.startsWith("root-")) dict[row.id] = true; });
+      flattenedRows.forEach((row) => {
+        if (!row.id.startsWith("root-")) dict[row.id] = true;
+      });
       setSelectedIds(dict);
     }
   };
@@ -742,14 +826,19 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
   // ─── COMPUTED ─────────────────────────────────────────────────────────────────
   const isSearchActive = useMemo(() => searchTerm.trim().length > 0, [searchTerm]);
-  const filteredAccounts = useMemo(() => (isSearchActive ? searchResults : flattenedRows), [isSearchActive, searchResults, flattenedRows]);
+  const filteredAccounts = useMemo(
+    () => (isSearchActive ? searchResults : flattenedRows),
+    [isSearchActive, searchResults, flattenedRows],
+  );
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
     return filteredAccounts.slice(start, start + pageSize);
   }, [filteredAccounts, page, pageSize]);
   const totalPages = Math.max(1, Math.ceil(filteredAccounts.length / pageSize));
 
-  useEffect(() => { setPage(1); }, [searchTerm, activeTab]);
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, activeTab]);
 
   // ─── SHARED LEDGER FORM JSX ───────────────────────────────────────────────────
   const renderLedgerForm = (onSubmit: (e: React.FormEvent) => void, formId: string) => (
@@ -788,7 +877,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
 
       {/* Under (Parent) */}
       <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 flex flex-col gap-2">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">Under (Parent Group)</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
+          Under (Parent Group)
+        </span>
         <Select
           label=""
           options={accounts
@@ -823,7 +914,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           required
         />
         <div className="flex flex-col gap-1 justify-end pb-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800 mb-1">Status</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800 mb-1">
+            Status
+          </span>
           <label className="inline-flex items-center gap-2 cursor-pointer border border-gray-300 bg-white rounded-md px-3 py-2">
             <input
               type="checkbox"
@@ -862,7 +955,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       {/* Opening Balance — ledger/subledger only */}
       {!["group", "subgroup"].includes(level) && (
         <div className="rounded-lg border border-gray-300 bg-gray-200/40 p-3 flex flex-col gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">Opening Balance</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
+            Opening Balance
+          </span>
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Amount"
@@ -906,55 +1001,32 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           </div>
         </div>
       )}
-    
+
       {/* ── TASK 1.6: Bill-by-Bill toggle for ASSET / LIABILITY ledgers ── */}
-      {!["group", "subgroup"].includes(level) && (type === AccountType.ASSET || type === AccountType.LIABILITY) && (
-        <div className="rounded-lg border border-gray-300 bg-gray-50 p-3">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              id="billByBill"
-              checked={billByBill}
-              onChange={(e) => setBillByBill(e.target.checked)}
-              className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-            />
-            <div>
-              <span className="text-[12px] font-semibold text-gray-800">
-                Maintain Bill-by-Bill Details
-              </span>
-              <p className="text-[10px] text-gray-800 mt-0.5">
-                Track individual invoice references for this ledger (recommended for
-                Sundry Debtors and Sundry Creditors accounts)
-              </p>
-            </div>
-          </label>
-        </div>
-      )}
-    
-      {/* ── TASK 1.6: Bill-by-Bill toggle for ASSET / LIABILITY ledgers ── */}
-      {!["group", "subgroup"].includes(level) && (type === AccountType.ASSET || type === AccountType.LIABILITY) && (
-        <div className="rounded-lg border border-gray-300 bg-gray-50 p-3">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              id="billByBill"
-              checked={billByBill}
-              onChange={(e) => setBillByBill(e.target.checked)}
-              className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-            />
-            <div>
-              <span className="text-[12px] font-semibold text-gray-800">
-                Maintain Bill-by-Bill Details
-              </span>
-              <p className="text-[10px] text-gray-800 mt-0.5">
-                Track individual invoice references for this ledger (recommended for
-                Sundry Debtors and Sundry Creditors accounts)
-              </p>
-            </div>
-          </label>
-        </div>
-      )}
-    
+      {!["group", "subgroup"].includes(level) &&
+        (type === AccountType.ASSET || type === AccountType.LIABILITY) && (
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="billByBill"
+                checked={billByBill}
+                onChange={(e) => setBillByBill(e.target.checked)}
+                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+              />
+              <div>
+                <span className="text-[12px] font-semibold text-gray-800">
+                  Maintain Bill-by-Bill Details
+                </span>
+                <p className="text-[10px] text-gray-800 mt-0.5">
+                  Track individual invoice references for this ledger (recommended for Sundry
+                  Debtors and Sundry Creditors accounts)
+                </p>
+              </div>
+            </label>
+          </div>
+        )}
+
       {/* Task 2.2: Bank Details — only for bank-type ledgers */}
       {isBankAccount && !["group", "subgroup"].includes(level) && (
         <div className="border border-gray-300 rounded-lg p-4 space-y-3 bg-gray-50">
@@ -1049,16 +1121,14 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       <PillTitle title="Chart of Accounts" />
       <FormPanel>
         <div className="flex flex-col gap-4 animate-fadeIn select-none pb-12">
-
           {/* ── TOP TOOLBAR ─────────────────────────────────────────────────────── */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
               <p className="text-[11px] text-gray-800 mt-0.5">
-                {viewMode === "groups" 
-                  ? `${groupsOnlyList.length} account groups · ${groupsOnlyList.filter(a=>!a.parentId).length} primary`
-                  : `${accounts.length} accounts · ${accounts.filter((a) => a.isGroup).length} groups · ${accounts.filter((a) => !a.isGroup).length} ledgers`
-                }
+                {viewMode === "groups"
+                  ? `${groupsOnlyList.length} account groups · ${groupsOnlyList.filter((a) => !a.parentId).length} primary`
+                  : `${accounts.length} accounts · ${accounts.filter((a) => a.isGroup).length} groups · ${accounts.filter((a) => !a.isGroup).length} ledgers`}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -1131,43 +1201,53 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               />
             </div>
             <div className="flex items-center gap-1 border border-gray-300 rounded-md bg-white p-0.5">
-              {(["ALL", "asset", "liability", "equity", "income", "expense"] as const).map((tab) => {
-                const cfg = tab !== "ALL" ? TYPE_CONFIG[tab as AccountType] : null;
-                const isActive2 = activeTab === tab;
-                return (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveTab(tab)}
-                    className={`h-7 px-3 text-[11px] font-semibold rounded transition-colors flex items-center gap-1.5 ${
-                      isActive2
-                        ? "bg-[#1557b0] text-white shadow-sm"
-                        : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
-                    }`}
-                  >
-                    {cfg && isActive2 && (
-                      <span className={`inline-block h-1.5 w-1.5 rounded-full bg-white opacity-80`} />
-                    )}
-                    {cfg && !isActive2 && (
-                      <span className={`inline-block h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                    )}
-                    {tab === "ALL" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </button>
-                );
-              })}
+              {(["ALL", "asset", "liability", "equity", "income", "expense"] as const).map(
+                (tab) => {
+                  const cfg = tab !== "ALL" ? TYPE_CONFIG[tab as AccountType] : null;
+                  const isActive2 = activeTab === tab;
+                  return (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setActiveTab(tab)}
+                      className={`h-7 px-3 text-[11px] font-semibold rounded transition-colors flex items-center gap-1.5 ${
+                        isActive2
+                          ? "bg-[#1557b0] text-white shadow-sm"
+                          : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                      }`}
+                    >
+                      {cfg && isActive2 && (
+                        <span
+                          className={`inline-block h-1.5 w-1.5 rounded-full bg-white opacity-80`}
+                        />
+                      )}
+                      {cfg && !isActive2 && (
+                        <span className={`inline-block h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+                      )}
+                      {tab === "ALL" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                  );
+                },
+              )}
             </div>
             <div className="ml-auto flex items-center gap-1 text-[10.5px] text-gray-800 font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+N</kbd> New
-              &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">Ctrl+E</kbd> Edit
-              &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">Del</kbd> Delete
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
+                Ctrl+N
+              </kbd>{" "}
+              New &nbsp;&nbsp;
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
+                Ctrl+E
+              </kbd>{" "}
+              Edit &nbsp;&nbsp;
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
+                Del
+              </kbd>{" "}
+              Delete
             </div>
           </div>
 
           {/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */}
           <div className="flex flex-col lg:flex-row gap-4 items-start">
-
             {/* ── ACCOUNTS TABLE ────────────────────────────────────────────────── */}
             <div className="flex-1 w-full flex flex-col gap-3">
               <div className="rounded-xl border border-gray-300 bg-white overflow-hidden shadow-sm">
@@ -1189,9 +1269,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                          {groupsOnlyList.map(account => {
+                          {groupsOnlyList.map((account) => {
                             const parent = account.parentId
-                              ? accounts.find(a => a.id === account.parentId)
+                              ? accounts.find((a) => a.id === account.parentId)
                               : null;
                             const isPrimary = !account.parentId;
                             return (
@@ -1219,7 +1299,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                           })}
                           {groupsOnlyList.length === 0 && (
                             <tr>
-                              <td colSpan={3} className="text-center py-10 text-[11px] text-gray-800">
+                              <td
+                                colSpan={3}
+                                className="text-center py-10 text-[11px] text-gray-800"
+                              >
                                 No account groups found.
                               </td>
                             </tr>
@@ -1231,127 +1314,392 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                         <span>|</span>
                         <span>Total Groups : {groupsOnlyList.length}</span>
                         <span>|</span>
-                        <span>Primary : {groupsOnlyList.filter(a => !a.parentId).length}</span>
+                        <span>Primary : {groupsOnlyList.filter((a) => !a.parentId).length}</span>
                         <span>|</span>
-                        <span>Sub-Groups : {groupsOnlyList.filter(a => !!a.parentId).length}</span>
+                        <span>
+                          Sub-Groups : {groupsOnlyList.filter((a) => !!a.parentId).length}
+                        </span>
                       </div>
                     </>
                   ) : (
-                  <table className="w-full text-xs border-collapse">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-300">
-                        <th className="w-10 px-3 py-2.5 text-center">
-                          <button
-                            type="button"
-                            onClick={selectAllFlattened}
-                            className="text-gray-800 hover:text-gray-800"
-                            title="Select all"
-                          >
-                            {getActiveSelectedList().length > 0 &&
-                            getActiveSelectedList().length ===
-                              flattenedRows.filter((r) => !r.id.startsWith("root-")).length ? (
-                              <CheckSquare className="h-4 w-4 text-gray-800" />
-                            ) : (
-                              <Square className="h-4 w-4" />
-                            )}
-                          </button>
-                        </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
-                          Code
-                        </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px]">
-                          Account Name
-                        </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-28">
-                          Type
-                        </th>
-                        <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
-                          Level
-                        </th>
-                        <th className="px-3 py-2.5 text-right font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-40">
-                          Closing Balance
-                        </th>
-                        <th className="px-3 py-2.5 text-center font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-20">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {/* ── SEARCH MODE ── */}
-                      {isSearchActive ? (
-                        paginatedData.length === 0 ? (
-                          <tr>
-                            <td colSpan={7} className="text-center py-14 text-gray-800 text-xs font-medium">
-                              <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                              No accounts match your search.
-                            </td>
-                          </tr>
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-300">
+                          <th className="w-10 px-3 py-2.5 text-center">
+                            <button
+                              type="button"
+                              onClick={selectAllFlattened}
+                              className="text-gray-800 hover:text-gray-800"
+                              title="Select all"
+                            >
+                              {getActiveSelectedList().length > 0 &&
+                              getActiveSelectedList().length ===
+                                flattenedRows.filter((r) => !r.id.startsWith("root-")).length ? (
+                                <CheckSquare className="h-4 w-4 text-gray-800" />
+                              ) : (
+                                <Square className="h-4 w-4" />
+                              )}
+                            </button>
+                          </th>
+                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
+                            Code
+                          </th>
+                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px]">
+                            Account Name
+                          </th>
+                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-28">
+                            Type
+                          </th>
+                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
+                            Level
+                          </th>
+                          <th className="px-3 py-2.5 text-right font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-40">
+                            Closing Balance
+                          </th>
+                          <th className="px-3 py-2.5 text-center font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-20">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {/* ── SEARCH MODE ── */}
+                        {isSearchActive ? (
+                          paginatedData.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={7}
+                                className="text-center py-14 text-gray-800 text-xs font-medium"
+                              >
+                                <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                                No accounts match your search.
+                              </td>
+                            </tr>
+                          ) : (
+                            (paginatedData as Account[]).map((row) => {
+                              const cfg = TYPE_CONFIG[row.type];
+                              const isSelected = !!selectedIds[row.id];
+                              return (
+                                <tr
+                                  key={row.id}
+                                  onClick={() =>
+                                    setSelectedNode({
+                                      id: row.id,
+                                      name: row.name,
+                                      nameNepali: row.nameNepali,
+                                      code: row.code,
+                                      type: row.type,
+                                      level: row.level,
+                                      depth: 1,
+                                      isActive: row.isActive,
+                                      isGroup: row.isGroup,
+                                      isSystemAccount: !!row.isSystemAccount,
+                                      balance: row.balance || 0,
+                                      rowObject: row,
+                                      children: [],
+                                    })
+                                  }
+                                  className={`cursor-pointer transition-colors hover:bg-gray-200/30 ${selectedNode?.id === row.id ? "bg-gray-200/50" : ""}`}
+                                >
+                                  <td
+                                    className="px-3 py-2.5 text-center"
+                                    onClick={(e) => handleToggleSelectRow(row.id, e)}
+                                  >
+                                    {isSelected ? (
+                                      <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
+                                    ) : (
+                                      <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />
+                                    )}
+                                  </td>
+                                  <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-semibold">
+                                    {row.code}
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <div className="flex items-center gap-1.5">
+                                      {!row.isActive && (
+                                        <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-500 border border-red-100">
+                                          Inactive
+                                        </span>
+                                      )}
+                                      {row.isSystemAccount && (
+                                        <Lock className="h-3 w-3 text-amber-400 shrink-0" />
+                                      )}
+                                      {row.billByBill && (
+                                        <span
+                                          className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-[#1557b0] border border-blue-100"
+                                          title="Bill-by-Bill Tracking Enabled"
+                                        >
+                                          B/B
+                                        </span>
+                                      )}
+                                      <span
+                                        className={`font-semibold text-gray-800 ${!row.isActive ? "opacity-50" : ""}`}
+                                      >
+                                        {row.name}
+                                      </span>
+                                      {row.nameNepali && (
+                                        <span className="text-[10px] text-gray-800 ml-1">
+                                          · {row.nameNepali}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <span
+                                      className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
+                                    >
+                                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+                                      {cfg.label}
+                                    </span>
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <span className="text-[10px] font-medium text-gray-800 bg-gray-50 border border-gray-300 rounded px-2 py-0.5">
+                                      {LEVEL_LABELS[row.level] || row.level}
+                                    </span>
+                                  </td>
+                                  <td
+                                    className={`px-3 py-2.5 text-right font-mono text-[11px] font-bold ${row.balance < 0 ? "text-red-600" : "text-gray-800"}`}
+                                  >
+                                    {formatDrCrBalance(row.balance || 0, row.type)}
+                                  </td>
+                                  <td
+                                    className="px-3 py-2.5 text-center"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <div className="flex items-center justify-center gap-0.5">
+                                      <button
+                                        onClick={() => handleOpenEditModal(row)}
+                                        className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition"
+                                        title="Edit"
+                                      >
+                                        <Edit2 className="h-3.5 w-3.5" />
+                                      </button>
+                                      {!row.isSystemAccount && (
+                                        <button
+                                          onClick={() => setConfirmDeleteAccount(row)}
+                                          className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition"
+                                          title="Delete"
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )
                         ) : (
-                          (paginatedData as Account[]).map((row) => {
+                          /* ── TREE MODE ── */
+                          (paginatedData as TreeNode[]).map((row) => {
+                            const isVirtualRoot = row.level === "root";
                             const cfg = TYPE_CONFIG[row.type];
                             const isSelected = !!selectedIds[row.id];
+
+                            // ── ROOT ROW ──
+                            if (isVirtualRoot) {
+                              return (
+                                <tr
+                                  key={row.id}
+                                  onClick={() => setSelectedNode(row)}
+                                  className={`cursor-pointer border-l-4 ${cfg.border} ${cfg.bg} hover:brightness-95 transition-all`}
+                                >
+                                  <td className="px-3 py-3 text-center w-10" />
+                                  <td className="px-3 py-3 font-mono text-[11px] text-gray-800 font-medium">
+                                    —
+                                  </td>
+                                  <td className="px-3 py-3" colSpan={1}>
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={(e) => toggleExpand(row.id, e)}
+                                        className="p-0.5 rounded hover:bg-black/5 transition"
+                                      >
+                                        {expandedNodes[row.id] ? (
+                                          <ChevronDown className={`h-4 w-4 ${cfg.text}`} />
+                                        ) : (
+                                          <ChevronRight className={`h-4 w-4 ${cfg.text}`} />
+                                        )}
+                                      </button>
+                                      <span
+                                        className={`text-[12px] font-bold uppercase tracking-wide ${cfg.text}`}
+                                      >
+                                        {row.name}
+                                      </span>
+                                      <span
+                                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
+                                      >
+                                        {row.children.length} groups
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-3 py-3">
+                                    <span
+                                      className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
+                                    >
+                                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+                                      {cfg.label}
+                                    </span>
+                                  </td>
+                                  <td className="px-3 py-3">
+                                    <span className="text-[10px] font-medium text-gray-800 bg-white/60 border border-gray-300 rounded px-2 py-0.5">
+                                      Primary
+                                    </span>
+                                  </td>
+                                  <td
+                                    className={`px-3 py-3 text-right font-mono text-[11px] font-bold ${cfg.text}`}
+                                  >
+                                    {formatDrCrBalance(row.balance, row.type)}
+                                  </td>
+                                  <td className="px-3 py-3 text-center w-20" />
+                                </tr>
+                              );
+                            }
+
+                            // ── GROUP / LEDGER ROW ──
+                            const depthPad = (row.depth - 1) * 20 + 8;
+                            const isGroupRow = row.isGroup;
                             return (
                               <tr
                                 key={row.id}
-                                onClick={() =>
-                                  setSelectedNode({
-                                    id: row.id,
-                                    name: row.name,
-                                    nameNepali: row.nameNepali,
-                                    code: row.code,
-                                    type: row.type,
-                                    level: row.level,
-                                    depth: 1,
-                                    isActive: row.isActive,
-                                    isGroup: row.isGroup,
-                                    isSystemAccount: !!row.isSystemAccount,
-                                    balance: row.balance || 0,
-                                    rowObject: row,
-                                    children: [],
-                                  })
-                                }
-                                className={`cursor-pointer transition-colors hover:bg-gray-200/30 ${selectedNode?.id === row.id ? "bg-gray-200/50" : ""}`}
+                                onClick={() => setSelectedNode(row)}
+                                className={`cursor-pointer transition-colors
+                                ${selectedNode?.id === row.id ? "bg-gray-200/60 ring-1 ring-inset ring-blue-200" : ""}
+                                ${isGroupRow ? "bg-gray-50/70 hover:bg-gray-50/60" : "bg-white hover:bg-gray-50/50"}
+                                ${!row.isActive ? "opacity-60" : ""}
+                              `}
                               >
-                                <td className="px-3 py-2.5 text-center" onClick={(e) => handleToggleSelectRow(row.id, e)}>
-                                  {isSelected
-                                    ? <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
-                                    : <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />}
+                                {/* Checkbox */}
+                                <td
+                                  className="px-3 py-2.5 text-center w-10"
+                                  onClick={(e) => handleToggleSelectRow(row.id, e)}
+                                >
+                                  {isSelected ? (
+                                    <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
+                                  ) : (
+                                    <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />
+                                  )}
                                 </td>
-                                <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-semibold">{row.code}</td>
+
+                                {/* Code */}
+                                <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-medium">
+                                  {row.code || "—"}
+                                </td>
+
+                                {/* Name with indent */}
                                 <td className="px-3 py-2.5">
-                                  <div className="flex items-center gap-1.5">
-                                    {!row.isActive && (
-                                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-500 border border-red-100">Inactive</span>
+                                  <div
+                                    className="flex items-center gap-1.5"
+                                    style={{ paddingLeft: `${depthPad}px` }}
+                                  >
+                                    {/* Expand/collapse or leaf spacer */}
+                                    {isGroupRow ? (
+                                      <button
+                                        type="button"
+                                        onClick={(e) => toggleExpand(row.id, e)}
+                                        className="p-0.5 rounded hover:bg-gray-50/70 text-gray-800 hover:text-gray-800 transition shrink-0"
+                                        title={expandedNodes[row.id] ? "Collapse" : "Expand"}
+                                      >
+                                        {expandedNodes[row.id] ? (
+                                          <ChevronDown className="h-3.5 w-3.5" />
+                                        ) : (
+                                          <ChevronRight className="h-3.5 w-3.5" />
+                                        )}
+                                      </button>
+                                    ) : (
+                                      <span className="w-5 shrink-0" />
                                     )}
-                                    {row.isSystemAccount && <Lock className="h-3 w-3 text-amber-400 shrink-0" />}
-                                    {row.billByBill && <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-[#1557b0] border border-blue-100" title="Bill-by-Bill Tracking Enabled">B/B</span>}
-                                    <span className={`font-semibold text-gray-800 ${!row.isActive ? "opacity-50" : ""}`}>{row.name}</span>
-                                    {row.nameNepali && (
-                                      <span className="text-[10px] text-gray-800 ml-1">· {row.nameNepali}</span>
+
+                                    {/* Icon */}
+                                    {isGroupRow ? (
+                                      <FolderOpen className="h-3.5 w-3.5 text-gray-800 shrink-0" />
+                                    ) : (
+                                      <BookOpen className="h-3 w-3 text-gray-800 shrink-0" />
                                     )}
+
+                                    {/* Name */}
+                                    <div className="flex flex-col leading-tight min-w-0">
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span
+                                          className={`leading-tight ${isGroupRow ? "font-semibold text-gray-800" : "font-medium text-gray-800"} text-[12px]`}
+                                        >
+                                          {row.name}
+                                        </span>
+                                        {row.isSystemAccount && (
+                                          <Lock
+                                            className="h-2.5 w-2.5 text-amber-400 shrink-0"
+                                            title="System account — protected"
+                                          />
+                                        )}
+                                        {!row.isActive && (
+                                          <span className="text-[9px] font-bold px-1 py-0 rounded bg-red-50 text-red-400 border border-red-100">
+                                            INACTIVE
+                                          </span>
+                                        )}
+                                        {row.billByBill && (
+                                          <span
+                                            className="text-[9px] font-bold uppercase px-1 py-0 rounded bg-blue-50 text-[#1557b0] border border-blue-100"
+                                            title="Bill-by-Bill Tracking Enabled"
+                                          >
+                                            B/B
+                                          </span>
+                                        )}
+                                      </div>
+                                      {row.nameNepali && (
+                                        <span className="text-[10px] text-gray-800 mt-0.5">
+                                          {row.nameNepali}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
                                 </td>
+
+                                {/* Type badge */}
                                 <td className="px-3 py-2.5">
-                                  <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}>
+                                  <span
+                                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
+                                  >
                                     <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
                                     {cfg.label}
                                   </span>
                                 </td>
+
+                                {/* Level */}
                                 <td className="px-3 py-2.5">
-                                  <span className="text-[10px] font-medium text-gray-800 bg-gray-50 border border-gray-300 rounded px-2 py-0.5">
+                                  <span
+                                    className={`text-[10px] font-medium px-2 py-0.5 rounded border ${isGroupRow ? "bg-gray-50 text-gray-800 border-gray-300" : "bg-white text-gray-800 border-gray-300"}`}
+                                  >
                                     {LEVEL_LABELS[row.level] || row.level}
                                   </span>
                                 </td>
-                                <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-bold ${row.balance < 0 ? "text-red-600" : "text-gray-800"}`}>
-                                  {formatDrCrBalance(row.balance || 0, row.type)}
+
+                                {/* Balance */}
+                                <td
+                                  className={`px-3 py-2.5 text-right font-mono text-[11px] font-semibold ${row.balance < 0 ? "text-red-600" : isGroupRow ? "text-gray-800" : "text-gray-800"}`}
+                                >
+                                  {formatDrCrBalance(row.balance, row.type)}
                                 </td>
-                                <td className="px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
+
+                                {/* Actions */}
+                                <td
+                                  className="px-3 py-2.5 text-center w-20"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
                                   <div className="flex items-center justify-center gap-0.5">
-                                    <button onClick={() => handleOpenEditModal(row)} className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition" title="Edit">
+                                    <button
+                                      onClick={() => handleOpenEditModal(row.rowObject)}
+                                      className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition"
+                                      title="Edit account (Ctrl+E)"
+                                    >
                                       <Edit2 className="h-3.5 w-3.5" />
                                     </button>
                                     {!row.isSystemAccount && (
-                                      <button onClick={() => setConfirmDeleteAccount(row)} className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition" title="Delete">
+                                      <button
+                                        onClick={() =>
+                                          setConfirmDeleteAccount(row.rowObject || null)
+                                        }
+                                        className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition"
+                                        title="Delete account"
+                                      >
                                         <Trash2 className="h-3.5 w-3.5" />
                                       </button>
                                     )}
@@ -1360,179 +1708,9 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                               </tr>
                             );
                           })
-                        )
-                      ) : (
-                        /* ── TREE MODE ── */
-                        (paginatedData as TreeNode[]).map((row) => {
-                          const isVirtualRoot = row.level === "root";
-                          const cfg = TYPE_CONFIG[row.type];
-                          const isSelected = !!selectedIds[row.id];
-
-                          // ── ROOT ROW ──
-                          if (isVirtualRoot) {
-                            return (
-                              <tr
-                                key={row.id}
-                                onClick={() => setSelectedNode(row)}
-                                className={`cursor-pointer border-l-4 ${cfg.border} ${cfg.bg} hover:brightness-95 transition-all`}
-                              >
-                                <td className="px-3 py-3 text-center w-10" />
-                                <td className="px-3 py-3 font-mono text-[11px] text-gray-800 font-medium">—</td>
-                                <td className="px-3 py-3" colSpan={1}>
-                                  <div className="flex items-center gap-2">
-                                    <button
-                                      type="button"
-                                      onClick={(e) => toggleExpand(row.id, e)}
-                                      className="p-0.5 rounded hover:bg-black/5 transition"
-                                    >
-                                      {expandedNodes[row.id]
-                                        ? <ChevronDown className={`h-4 w-4 ${cfg.text}`} />
-                                        : <ChevronRight className={`h-4 w-4 ${cfg.text}`} />}
-                                    </button>
-                                    <span className={`text-[12px] font-bold uppercase tracking-wide ${cfg.text}`}>
-                                      {row.name}
-                                    </span>
-                                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}>
-                                      {row.children.length} groups
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="px-3 py-3">
-                                  <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}>
-                                    <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                                    {cfg.label}
-                                  </span>
-                                </td>
-                                <td className="px-3 py-3">
-                                  <span className="text-[10px] font-medium text-gray-800 bg-white/60 border border-gray-300 rounded px-2 py-0.5">Primary</span>
-                                </td>
-                                <td className={`px-3 py-3 text-right font-mono text-[11px] font-bold ${cfg.text}`}>
-                                  {formatDrCrBalance(row.balance, row.type)}
-                                </td>
-                                <td className="px-3 py-3 text-center w-20" />
-                              </tr>
-                            );
-                          }
-
-                          // ── GROUP / LEDGER ROW ──
-                          const depthPad = (row.depth - 1) * 20 + 8;
-                          const isGroupRow = row.isGroup;
-                          return (
-                            <tr
-                              key={row.id}
-                              onClick={() => setSelectedNode(row)}
-                              className={`cursor-pointer transition-colors
-                                ${selectedNode?.id === row.id ? "bg-gray-200/60 ring-1 ring-inset ring-blue-200" : ""}
-                                ${isGroupRow ? "bg-gray-50/70 hover:bg-gray-50/60" : "bg-white hover:bg-gray-50/50"}
-                                ${!row.isActive ? "opacity-60" : ""}
-                              `}
-                            >
-                              {/* Checkbox */}
-                              <td className="px-3 py-2.5 text-center w-10" onClick={(e) => handleToggleSelectRow(row.id, e)}>
-                                {isSelected
-                                  ? <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
-                                  : <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />}
-                              </td>
-
-                              {/* Code */}
-                              <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-medium">
-                                {row.code || "—"}
-                              </td>
-
-                              {/* Name with indent */}
-                              <td className="px-3 py-2.5">
-                                <div className="flex items-center gap-1.5" style={{ paddingLeft: `${depthPad}px` }}>
-                                  {/* Expand/collapse or leaf spacer */}
-                                  {isGroupRow ? (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => toggleExpand(row.id, e)}
-                                      className="p-0.5 rounded hover:bg-gray-50/70 text-gray-800 hover:text-gray-800 transition shrink-0"
-                                      title={expandedNodes[row.id] ? "Collapse" : "Expand"}
-                                    >
-                                      {expandedNodes[row.id]
-                                        ? <ChevronDown className="h-3.5 w-3.5" />
-                                        : <ChevronRight className="h-3.5 w-3.5" />}
-                                    </button>
-                                  ) : (
-                                    <span className="w-5 shrink-0" />
-                                  )}
-
-                                  {/* Icon */}
-                                  {isGroupRow
-                                    ? <FolderOpen className="h-3.5 w-3.5 text-gray-800 shrink-0" />
-                                    : <BookOpen className="h-3 w-3 text-gray-800 shrink-0" />}
-
-                                  {/* Name */}
-                                  <div className="flex flex-col leading-tight min-w-0">
-                                    <div className="flex items-center gap-1.5 flex-wrap">
-                                      <span className={`leading-tight ${isGroupRow ? "font-semibold text-gray-800" : "font-medium text-gray-800"} text-[12px]`}>
-                                        {row.name}
-                                      </span>
-                                      {row.isSystemAccount && (
-                                        <Lock className="h-2.5 w-2.5 text-amber-400 shrink-0" title="System account — protected" />
-                                      )}
-                                      {!row.isActive && (
-                                        <span className="text-[9px] font-bold px-1 py-0 rounded bg-red-50 text-red-400 border border-red-100">INACTIVE</span>
-                                      )}
-                                      {row.billByBill && (
-                                        <span className="text-[9px] font-bold uppercase px-1 py-0 rounded bg-blue-50 text-[#1557b0] border border-blue-100" title="Bill-by-Bill Tracking Enabled">B/B</span>
-                                      )}
-                                    </div>
-                                    {row.nameNepali && (
-                                      <span className="text-[10px] text-gray-800 mt-0.5">{row.nameNepali}</span>
-                                    )}
-                                  </div>
-                                </div>
-                              </td>
-
-                              {/* Type badge */}
-                              <td className="px-3 py-2.5">
-                                <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}>
-                                  <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                                  {cfg.label}
-                                </span>
-                              </td>
-
-                              {/* Level */}
-                              <td className="px-3 py-2.5">
-                                <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${isGroupRow ? "bg-gray-50 text-gray-800 border-gray-300" : "bg-white text-gray-800 border-gray-300"}`}>
-                                  {LEVEL_LABELS[row.level] || row.level}
-                                </span>
-                              </td>
-
-                              {/* Balance */}
-                              <td className={`px-3 py-2.5 text-right font-mono text-[11px] font-semibold ${row.balance < 0 ? "text-red-600" : isGroupRow ? "text-gray-800" : "text-gray-800"}`}>
-                                {formatDrCrBalance(row.balance, row.type)}
-                              </td>
-
-                              {/* Actions */}
-                              <td className="px-3 py-2.5 text-center w-20" onClick={(e) => e.stopPropagation()}>
-                                <div className="flex items-center justify-center gap-0.5">
-                                  <button
-                                    onClick={() => handleOpenEditModal(row.rowObject)}
-                                    className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition"
-                                    title="Edit account (Ctrl+E)"
-                                  >
-                                    <Edit2 className="h-3.5 w-3.5" />
-                                  </button>
-                                  {!row.isSystemAccount && (
-                                    <button
-                                      onClick={() => setConfirmDeleteAccount(row.rowObject || null)}
-                                      className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition"
-                                      title="Delete account"
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                    </button>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
+                        )}
+                      </tbody>
+                    </table>
                   )}
                 </div>
                 {viewMode === "tree" && (
@@ -1542,7 +1720,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                     totalRecords={filteredAccounts.length}
                     pageSize={pageSize}
                     onPageChange={setPage}
-                    onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+                    onPageSizeChange={(s) => {
+                      setPageSize(s);
+                      setPage(1);
+                    }}
                   />
                 )}
               </div>
@@ -1553,20 +1734,33 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                   <div className="flex items-center gap-2 text-xs">
                     <CheckSquare className="h-4 w-4 text-gray-800" />
                     <span className="font-semibold">
-                      {getActiveSelectedList().length} account{getActiveSelectedList().length > 1 ? "s" : ""} selected
+                      {getActiveSelectedList().length} account
+                      {getActiveSelectedList().length > 1 ? "s" : ""} selected
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="default" size="sm" onClick={() => setSelectedIds({})}
-                      className="bg-transparent text-gray-800 border-gray-300 hover:bg-gray-50 text-xs">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setSelectedIds({})}
+                      className="bg-transparent text-gray-800 border-gray-300 hover:bg-gray-50 text-xs"
+                    >
                       Clear
                     </Button>
-                    <Button variant="default" size="sm" onClick={handleBulkDeactivate}
-                      className="bg-transparent text-red-400 border-red-800/60 hover:bg-red-900/20 text-xs">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleBulkDeactivate}
+                      className="bg-transparent text-red-400 border-red-800/60 hover:bg-red-900/20 text-xs"
+                    >
                       Deactivate
                     </Button>
-                    <Button variant="primary" size="sm" onClick={handleBulkActivate}
-                      className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-xs">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleBulkActivate}
+                      className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-xs"
+                    >
                       Activate
                     </Button>
                   </div>
@@ -1579,12 +1773,18 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               <div className="w-full lg:w-72 shrink-0 sticky top-6">
                 <div className="rounded-xl border border-gray-300 bg-white shadow-sm overflow-hidden">
                   {/* Panel header */}
-                  <div className={`px-4 py-3 border-b border-gray-300 flex items-center justify-between ${TYPE_CONFIG[selectedNode.type].bg}`}>
+                  <div
+                    className={`px-4 py-3 border-b border-gray-300 flex items-center justify-between ${TYPE_CONFIG[selectedNode.type].bg}`}
+                  >
                     <div className="flex items-center gap-2">
-                      {selectedNode.isGroup
-                        ? <FolderOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
-                        : <BookOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />}
-                      <span className={`text-[11px] font-bold uppercase tracking-wide ${TYPE_CONFIG[selectedNode.type].text}`}>
+                      {selectedNode.isGroup ? (
+                        <FolderOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
+                      ) : (
+                        <BookOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
+                      )}
+                      <span
+                        className={`text-[11px] font-bold uppercase tracking-wide ${TYPE_CONFIG[selectedNode.type].text}`}
+                      >
                         Account Details
                       </span>
                     </div>
@@ -1599,15 +1799,21 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                   <div className="p-4 flex flex-col gap-4">
                     {/* Account title block */}
                     <div>
-                      <p className="text-[13px] font-bold text-gray-800 leading-snug">{selectedNode.name}</p>
+                      <p className="text-[13px] font-bold text-gray-800 leading-snug">
+                        {selectedNode.name}
+                      </p>
                       {selectedNode.nameNepali && (
-                        <p className="text-[11px] text-gray-800 mt-0.5">{selectedNode.nameNepali}</p>
+                        <p className="text-[11px] text-gray-800 mt-0.5">
+                          {selectedNode.nameNepali}
+                        </p>
                       )}
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         <span className="font-mono text-[10px] bg-gray-50 text-gray-800 px-2 py-0.5 rounded border border-gray-300 font-semibold">
                           {selectedNode.code || "—"}
                         </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${TYPE_CONFIG[selectedNode.type].badge}`}>
+                        <span
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${TYPE_CONFIG[selectedNode.type].badge}`}
+                        >
                           {TYPE_CONFIG[selectedNode.type].label}
                         </span>
                         <span className="text-[10px] font-medium text-gray-800 bg-gray-50 border border-gray-300 rounded px-2 py-0.5">
@@ -1619,19 +1825,31 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                     {/* Status */}
                     <div className="flex items-center justify-between text-xs border border-gray-300 rounded-lg px-3 py-2 bg-gray-50">
                       <span className="text-gray-800 font-medium">Status</span>
-                      <span className={`flex items-center gap-1.5 font-semibold text-[11px] ${selectedNode.isActive ? "text-emerald-600" : "text-red-500"}`}>
-                        <span className={`h-2 w-2 rounded-full ${selectedNode.isActive ? "bg-emerald-400" : "bg-red-400"}`} />
+                      <span
+                        className={`flex items-center gap-1.5 font-semibold text-[11px] ${selectedNode.isActive ? "text-emerald-600" : "text-red-500"}`}
+                      >
+                        <span
+                          className={`h-2 w-2 rounded-full ${selectedNode.isActive ? "bg-emerald-400" : "bg-red-400"}`}
+                        />
                         {selectedNode.isActive ? "Active" : "Inactive"}
                       </span>
                     </div>
 
                     {/* Balance */}
-                    <div className={`rounded-lg border p-3 ${TYPE_CONFIG[selectedNode.type].bg} border-opacity-40`}>
-                      <p className="text-[10px] font-semibold text-gray-800 uppercase tracking-wider mb-1">Closing Balance</p>
-                      <p className={`text-[15px] font-bold font-mono leading-tight ${TYPE_CONFIG[selectedNode.type].text}`}>
+                    <div
+                      className={`rounded-lg border p-3 ${TYPE_CONFIG[selectedNode.type].bg} border-opacity-40`}
+                    >
+                      <p className="text-[10px] font-semibold text-gray-800 uppercase tracking-wider mb-1">
+                        Closing Balance
+                      </p>
+                      <p
+                        className={`text-[15px] font-bold font-mono leading-tight ${TYPE_CONFIG[selectedNode.type].text}`}
+                      >
                         {formatDrCrBalance(selectedNode.balance, selectedNode.type)}
                       </p>
-                      <p className="text-[10px] text-gray-800 mt-1 font-medium">As per posted vouchers</p>
+                      <p className="text-[10px] text-gray-800 mt-1 font-medium">
+                        As per posted vouchers
+                      </p>
                     </div>
 
                     {/* Voucher stats */}
@@ -1639,18 +1857,24 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                       <div className="flex flex-col gap-1.5 text-[11px]">
                         <div className="flex items-center justify-between py-1.5 border-b border-gray-300">
                           <span className="text-gray-800 font-medium">Voucher entries</span>
-                          <span className="font-mono font-semibold text-gray-800">{detailPanelData.transactionsCount}</span>
+                          <span className="font-mono font-semibold text-gray-800">
+                            {detailPanelData.transactionsCount}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between py-1.5 border-b border-gray-300">
                           <span className="text-gray-800 font-medium">Last transaction</span>
-                          <span className="font-semibold text-gray-800">{detailPanelData.lastTxDate || "—"}</span>
+                          <span className="font-semibold text-gray-800">
+                            {detailPanelData.lastTxDate || "—"}
+                          </span>
                         </div>
                       </div>
                     )}
 
                     {/* Quick actions */}
                     <div className="flex flex-col gap-2 pt-1">
-                      <p className="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Quick Actions</p>
+                      <p className="text-[10px] font-bold text-gray-800 uppercase tracking-wider">
+                        Quick Actions
+                      </p>
                       <button
                         onClick={() => handleOpenEditModal(selectedNode.rowObject)}
                         className="w-full px-3 py-2 bg-[#1557b0] hover:bg-[#0f4a96] text-white rounded-lg font-semibold text-[11px] text-left flex items-center justify-between transition"
@@ -1659,7 +1883,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                         <Edit2 className="h-3.5 w-3.5" />
                       </button>
                       <button
-                        onClick={() => { setCurrentPage("reports"); setReportFilters({ selectedReport: "trial-balance" }); }}
+                        onClick={() => {
+                          setCurrentPage("reports");
+                          setReportFilters({ selectedReport: "trial-balance" });
+                        }}
                         className="w-full px-3 py-2 bg-gray-50 border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
                       >
                         <span>View Trial Balance</span>
@@ -1688,8 +1915,12 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           size="md"
           footer={
             <div className="flex justify-end gap-2">
-              <Button variant="default" size="sm" onClick={() => setAddModalOpen(false)}>Cancel</Button>
-              <Button variant="primary" size="sm" type="submit" form="add-ledger-form">Create Account</Button>
+              <Button variant="default" size="sm" onClick={() => setAddModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" size="sm" type="submit" form="add-ledger-form">
+                Create Account
+              </Button>
             </div>
           }
         >
@@ -1708,16 +1939,25 @@ const ChartOfAccounts: React.FC = React.memo(() => {
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => { setConfirmDeleteAccount(selectedNode.rowObject || null); setEditModalOpen(false); }}
+                  onClick={() => {
+                    setConfirmDeleteAccount(selectedNode.rowObject || null);
+                    setEditModalOpen(false);
+                  }}
                   className="text-red-600 hover:bg-red-50 border-red-200"
                   icon={<Trash2 className="h-3.5 w-3.5" />}
                 >
                   Delete
                 </Button>
-              ) : <span />}
+              ) : (
+                <span />
+              )}
               <div className="flex gap-2">
-                <Button variant="default" size="sm" onClick={() => setEditModalOpen(false)}>Cancel</Button>
-                <Button variant="primary" size="sm" type="submit" form="edit-ledger-form">Save Changes</Button>
+                <Button variant="default" size="sm" onClick={() => setEditModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" size="sm" type="submit" form="edit-ledger-form">
+                  Save Changes
+                </Button>
               </div>
             </div>
           }
@@ -1733,18 +1973,23 @@ const ChartOfAccounts: React.FC = React.memo(() => {
           size="md"
           footer={
             <div className="flex justify-end gap-2">
-              <Button variant="default" size="sm" onClick={() => setImportModalOpen(false)}>Close</Button>
+              <Button variant="default" size="sm" onClick={() => setImportModalOpen(false)}>
+                Close
+              </Button>
             </div>
           }
         >
           <div className="flex flex-col gap-4 text-xs">
             <p className="text-gray-800 leading-relaxed">
-              Import accounts from a CSV file. Download the template first to ensure correct column mapping.
+              Import accounts from a CSV file. Download the template first to ensure correct column
+              mapping.
             </p>
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 flex items-center justify-between gap-3">
               <div>
                 <p className="font-semibold text-gray-800 text-[11px]">Import Template (CSV)</p>
-                <p className="text-[10px] text-gray-800 mt-0.5">Pre-formatted columns for correct import</p>
+                <p className="text-[10px] text-gray-800 mt-0.5">
+                  Pre-formatted columns for correct import
+                </p>
               </div>
               <Button
                 variant="default"
@@ -1768,7 +2013,10 @@ const ChartOfAccounts: React.FC = React.memo(() => {
               </div>
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
                 className="px-4 py-1.5 bg-gray-200 hover:bg-gray-200 text-gray-800 rounded-lg font-semibold text-[11px] transition"
               >
                 Select File

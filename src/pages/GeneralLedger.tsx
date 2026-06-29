@@ -43,7 +43,9 @@ function money(value: number): string {
 }
 
 function bsToNum(bs: string): number {
-  const [y, m, d] = String(bs || "").split("-").map(Number);
+  const [y, m, d] = String(bs || "")
+    .split("-")
+    .map(Number);
   return y * 10000 + m * 100 + d;
 }
 
@@ -146,7 +148,10 @@ const GeneralLedger: React.FC = () => {
 
           const opposite = voucher.lines
             .filter((l) => l.accountId !== account.id)
-            .map((l) => l.accountName || accountList.find((a) => a.id === l.accountId)?.name || l.accountId)
+            .map(
+              (l) =>
+                l.accountName || accountList.find((a) => a.id === l.accountId)?.name || l.accountId,
+            )
             .join(", ");
 
           const row = {
@@ -230,13 +235,9 @@ const GeneralLedger: React.FC = () => {
     XLSX.writeFile(wb, `${account.name}_Ledger.xlsx`);
   };
 
-  const openingIndicator = account
-    ? balanceIndicator(account, ledgerData.openingSigned)
-    : "Dr";
+  const openingIndicator = account ? balanceIndicator(account, ledgerData.openingSigned) : "Dr";
 
-  const closingIndicator = account
-    ? balanceIndicator(account, ledgerData.closingSigned)
-    : "Dr";
+  const closingIndicator = account ? balanceIndicator(account, ledgerData.closingSigned) : "Dr";
 
   return (
     <ColumnReportShell
@@ -344,9 +345,21 @@ const GeneralLedger: React.FC = () => {
               {show("particulars") && <Td>{row.opposite}</Td>}
               {show("narration") && <Td className="text-gray-600">{row.voucher.narration}</Td>}
               {isPartyLedger && show("billRef") && <Td>{row.billRef}</Td>}
-              {show("debit") && <Td right className="font-mono">{row.debit ? money(row.debit) : ""}</Td>}
-              {show("credit") && <Td right className="font-mono">{row.credit ? money(row.credit) : ""}</Td>}
-              {show("running") && <Td right className="font-mono font-semibold">{money(row.runningAbs)}</Td>}
+              {show("debit") && (
+                <Td right className="font-mono">
+                  {row.debit ? money(row.debit) : ""}
+                </Td>
+              )}
+              {show("credit") && (
+                <Td right className="font-mono">
+                  {row.credit ? money(row.credit) : ""}
+                </Td>
+              )}
+              {show("running") && (
+                <Td right className="font-mono font-semibold">
+                  {money(row.runningAbs)}
+                </Td>
+              )}
               {show("indicator") && (
                 <Td className={row.indicator === "Cr" ? "italic text-gray-700" : ""}>
                   {row.indicator}
@@ -372,7 +385,9 @@ const GeneralLedger: React.FC = () => {
 };
 
 const Th: React.FC<{ children: React.ReactNode; right?: boolean }> = ({ children, right }) => (
-  <th className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 ${right ? "text-right" : "text-left"}`}>
+  <th
+    className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 ${right ? "text-right" : "text-left"}`}
+  >
     {children}
   </th>
 );
@@ -382,7 +397,9 @@ const Td: React.FC<{ children: React.ReactNode; right?: boolean; className?: str
   right,
   className,
 }) => (
-  <td className={`px-3 py-1.5 text-[12px] border-r border-gray-100 align-top ${right ? "text-right" : "text-left"} ${className || ""}`}>
+  <td
+    className={`px-3 py-1.5 text-[12px] border-r border-gray-100 align-top ${right ? "text-right" : "text-left"} ${className || ""}`}
+  >
     {children}
   </td>
 );

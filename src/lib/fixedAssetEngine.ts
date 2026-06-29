@@ -109,7 +109,7 @@ export function computeMonthlyDepreciation(asset: FixedAsset): number {
 export function runMonthlyDepreciation(
   companyId: string,
   period: string,
-  postedBy: string
+  postedBy: string,
 ): DepreciationEntry[] {
   const assets = loadAssets(companyId);
   const entries: DepreciationEntry[] = [];
@@ -144,9 +144,8 @@ export function runMonthlyDepreciation(
     entries.push(entry);
 
     // Update asset
-    asset.accumulatedDepreciation = Math.round(
-      (asset.accumulatedDepreciation + depreciation) * 100
-    ) / 100;
+    asset.accumulatedDepreciation =
+      Math.round((asset.accumulatedDepreciation + depreciation) * 100) / 100;
     asset.bookValue = bookValueAfter;
     saveAsset(asset);
   }
@@ -179,9 +178,14 @@ export function loadDepreciationHistory(assetId: string): DepreciationEntry[] {
 
 // ─── 7. getAssetSchedule ─────────────────────────────────────────────────────
 export function getAssetSchedule(
-  asset: FixedAsset
+  asset: FixedAsset,
 ): { year: number; openingValue: number; depreciation: number; closingValue: number }[] {
-  const schedule: { year: number; openingValue: number; depreciation: number; closingValue: number }[] = [];
+  const schedule: {
+    year: number;
+    openingValue: number;
+    depreciation: number;
+    closingValue: number;
+  }[] = [];
   if (asset.depreciationMethod === "none") return schedule;
 
   let bookValue = asset.bookValue;
@@ -196,9 +200,7 @@ export function getAssetSchedule(
 
     if (asset.depreciationMethod === "straight_line") {
       const annualRate =
-        asset.usefulLifeYears > 0
-          ? (asset.totalCost - salvage) / asset.usefulLifeYears
-          : 0;
+        asset.usefulLifeYears > 0 ? (asset.totalCost - salvage) / asset.usefulLifeYears : 0;
       annualDepr = annualRate;
     } else if (asset.depreciationMethod === "diminishing_balance") {
       annualDepr = bookValue * (asset.depreciationRate / 100);
@@ -223,7 +225,7 @@ export function disposeAsset(
   disposalDate: string,
   disposalAmount: number,
   reason: string,
-  companyId: string
+  companyId: string,
 ): void {
   try {
     const raw = localStorage.getItem(ASSETS_KEY);
@@ -241,9 +243,7 @@ export function disposeAsset(
 }
 
 // ─── 9. getAssetSummaryByCategory ────────────────────────────────────────────
-export function getAssetSummaryByCategory(
-  companyId: string
-): {
+export function getAssetSummaryByCategory(companyId: string): {
   category: string;
   count: number;
   totalCost: number;

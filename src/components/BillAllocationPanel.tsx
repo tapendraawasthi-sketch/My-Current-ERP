@@ -62,22 +62,8 @@ function computeOutstanding(
     const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
     if (originalAmount <= 0) continue;
 
-    // Compute payments already allocated to this invoice
-    let paidAmount = Number(inv.paidAmount ?? 0);
-    for (const pmt of payments) {
-      if (!pmt || pmt.partyId !== partyId) continue;
-      const lines = pmt.lines ?? [];
-      for (const line of lines) {
-        if (
-          line.billRefNo === inv.invoiceNo ||
-          line.billRefNo === inv.id
-        ) {
-          paidAmount += Number(line.amount ?? 0);
-        }
-      }
-    }
-
-    const balance = originalAmount - paidAmount;
+    // Use only the invoice's tracked paidAmount
+    const balance = originalAmount - Number(inv.paidAmount ?? 0);
     if (balance <= 0.005) continue;
 
     const dueDate = inv.dueDate ? new Date(inv.dueDate) : null;
@@ -151,18 +137,14 @@ export function BillAllocationPanel({
   const [overrides, setOverrides] = useState<Map<string, number>>(new Map());
   const [fifoApplied, setFifoApplied] = useState(false);
 
-  const invoiceType =
-    direction === "receivable" ? "sales-invoice" : "purchase-invoice";
-  const paymentType =
-    direction === "receivable" ? "receipt" : "payment";
+  const invoiceType = direction === "receivable" ? "sales-invoice" : "purchase-invoice";
+  const paymentType = direction === "receivable" ? "receipt" : "payment";
 
-  // Fix: use getDB() with useLiveQuery — default import from db module
-  const db = getDB();
-
+  // Fix: use getDB() with useLiveQuery inside the callbacks to avoid stale closures
   const invoices = useLiveQuery(
     () =>
-      db.invoices
-        .where("type")
+      getDB()
+        .invoices.where("type")
         .equals(invoiceType)
         .and((v: any) => v.partyId === partyId)
         .toArray(),
@@ -171,8 +153,8 @@ export function BillAllocationPanel({
 
   const paymentVouchers = useLiveQuery(
     () =>
-      db.vouchers
-        .where("type")
+      getDB()
+        .vouchers.where("type")
         .equals(paymentType)
         .and((v: any) => v.partyId === partyId)
         .toArray(),
@@ -192,11 +174,7 @@ export function BillAllocationPanel({
 
   // ── Restore initial allocations ───────────────────────────────────────────
   useEffect(() => {
-    if (
-      initialAllocations &&
-      initialAllocations.length > 0 &&
-      !fifoApplied
-    ) {
+    if (initialAllocations && initialAllocations.length > 0 && !fifoApplied) {
       const m = new Map<string, number>();
       for (const a of initialAllocations) {
         if (a.billRefType === "against-ref") {
@@ -300,9 +278,7 @@ export function BillAllocationPanel({
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       {/* Header */}
       <div className="bg-indigo-50 border-b border-indigo-100 px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
-        <div className="text-[12px] font-semibold text-indigo-800">
-          Bill Allocation
-        </div>
+        <div className="text-[12px] font-semibold text-indigo-800">Bill Allocation</div>
         <button
           type="button"
           onClick={applyFIFO}
@@ -317,8 +293,7 @@ export function BillAllocationPanel({
       {/* Status bar */}
       <div className="bg-gray-50 px-4 py-2 flex flex-wrap gap-4 text-[12px] border-b border-gray-200">
         <span>
-          Received:{" "}
-          <strong className="text-green-700">{fmt(amountReceived)}</strong>
+          Received: <strong className="text-green-700">{fmt(amountReceived)}</strong>
         </span>
         <span>
           Allocated:{" "}
@@ -343,8 +318,7 @@ export function BillAllocationPanel({
       {/* Table */}
       {outstandingBills.length === 0 ? (
         <div className="px-4 py-6 text-center text-[12px] text-gray-500">
-          No outstanding bills for this party. Amount will be posted as{" "}
-          <strong>advance</strong>.
+          No outstanding bills for this party. Amount will be posted as <strong>advance</strong>.
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -374,24 +348,17 @@ export function BillAllocationPanel({
             <tbody className="divide-y divide-gray-100">
               {currentAllocations.map((alloc) => {
                 const bill = alloc.billRecord;
-                const isOverAlloc =
-                  alloc.amount > bill.balanceAmount + 0.005;
-                const dueDateStr = bill.dueDate
-                  ? bill.dueDate.toLocaleDateString("en-NP")
-                  : "—";
+                const isOverAlloc = alloc.amount > bill.balanceAmount + 0.005;
+                const dueDateStr = bill.dueDate ? bill.dueDate.toLocaleDateString("en-NP") : "—";
                 return (
                   <tr key={bill.billNo} className="hover:bg-gray-50">
                     <td className="px-3 py-2.5 font-mono text-[11px] text-blue-600">
                       {bill.billNo}
                     </td>
-                    <td className="px-3 py-2.5 text-gray-700">
-                      {dueDateStr}
-                    </td>
+                    <td className="px-3 py-2.5 text-gray-700">{dueDateStr}</td>
                     <td className="px-3 py-2.5 text-right">
                       {bill.daysOverdue > 0 ? (
-                        <span className="text-red-600 font-semibold">
-                          {bill.daysOverdue}
-                        </span>
+                        <span className="text-red-600 font-semibold">{bill.daysOverdue}</span>
                       ) : (
                         <span className="text-green-500">Not due</span>
                       )}
@@ -410,21 +377,17 @@ export function BillAllocationPanel({
                         step={0.01}
                         value={alloc.amount || ""}
                         placeholder="0.00"
-                        onChange={(e) =>
-                          updateOverride(bill.billNo, e.target.value)
-                        }
+                        onChange={(e) => updateOverride(bill.billNo, e.target.value)}
                         className={`w-36 text-right px-2 py-1 border rounded text-[12px] focus:outline-none focus:ring-2 ${
                           isOverAlloc
                             ? "border-red-400 focus:ring-red-300 bg-red-50"
                             : alloc.amount > 0
-                            ? "border-green-400 focus:ring-green-300 bg-green-50"
-                            : "border-gray-300 focus:ring-[#1557b0]/20 bg-white"
+                              ? "border-green-400 focus:ring-green-300 bg-green-50"
+                              : "border-gray-300 focus:ring-[#1557b0]/20 bg-white"
                         }`}
                       />
                       {isOverAlloc && (
-                        <div className="text-[10px] text-red-500 mt-0.5">
-                          Exceeds outstanding
-                        </div>
+                        <div className="text-[10px] text-red-500 mt-0.5">Exceeds outstanding</div>
                       )}
                     </td>
                   </tr>
@@ -439,8 +402,8 @@ export function BillAllocationPanel({
       {unallocated > 0.005 && (
         <div className="px-4 py-2 bg-orange-50 border-t border-orange-100 text-[11px] text-orange-700 flex items-center gap-1.5">
           <AlertCircle size={12} />
-          Rs. {unallocated.toFixed(2)} will be posted as{" "}
-          <strong>advance</strong> for future bill adjustment.
+          Rs. {unallocated.toFixed(2)} will be posted as <strong>advance</strong> for future bill
+          adjustment.
         </div>
       )}
     </div>

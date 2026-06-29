@@ -156,23 +156,15 @@ export function mapGroupToNepalFormat(groupName: string): NepalGroupMapping {
     return { section: "non-current-liability", sortOrder: 110 };
   }
 
-  if (
-    g.includes("debenture") ||
-    g.includes("bond")
-  ) {
+  if (g.includes("debenture") || g.includes("bond")) {
     return { section: "non-current-liability", sortOrder: 120 };
   }
 
-  if (
-    g.includes("deferred tax liability")
-  ) {
+  if (g.includes("deferred tax liability")) {
     return { section: "non-current-liability", sortOrder: 130 };
   }
 
-  if (
-    g.includes("unsecured loans") ||
-    g.includes("unsecured loan")
-  ) {
+  if (g.includes("unsecured loans") || g.includes("unsecured loan")) {
     return { section: "non-current-liability", sortOrder: 140 };
   }
 
@@ -237,17 +229,11 @@ export function mapGroupToNepalFormat(groupName: string): NepalGroupMapping {
   // =========================
   // NON-CURRENT ASSETS
   // =========================
-  if (
-    g.includes("capital work in progress") ||
-    g.includes("capital wip")
-  ) {
+  if (g.includes("capital work in progress") || g.includes("capital wip")) {
     return { section: "non-current-asset", sortOrder: 320 };
   }
 
-  if (
-    g.includes("long term investment") ||
-    g.includes("long-term investment")
-  ) {
+  if (g.includes("long term investment") || g.includes("long-term investment")) {
     return { section: "non-current-asset", sortOrder: 330 };
   }
 
@@ -399,10 +385,7 @@ function getChildren(accounts: DBAccount[], parentId?: string): DBAccount[] {
 
 function getDescendants(accounts: DBAccount[], parentId: string): DBAccount[] {
   const children = getChildren(accounts, parentId);
-  return children.flatMap((child) => [
-    child,
-    ...getDescendants(accounts, child.id),
-  ]);
+  return children.flatMap((child) => [child, ...getDescendants(accounts, child.id)]);
 }
 
 function getAccountBalance(
@@ -470,7 +453,9 @@ function buildSectionLines(
           label: ledger.name,
           labelNepali: ledger.nameNepali,
           currentYear: Number(totalsRound((currentTotals[ledger.id] || 0) * sign * deductionSign)),
-          previousYear: Number(totalsRound((previousTotals[ledger.id] || 0) * sign * deductionSign)),
+          previousYear: Number(
+            totalsRound((previousTotals[ledger.id] || 0) * sign * deductionSign),
+          ),
           indent: 1,
         }))
         .filter((x) => x.currentYear !== 0 || x.previousYear !== 0);
@@ -577,9 +562,7 @@ export function buildBalanceSheetData(args: {
   const totalFixedAssets = total(fixedAssets);
   const totalNonCurrentAssets = total(nonCurrentAssets);
   const totalCurrentAssets = total(currentAssets);
-  const totalAssets = totalsRound(
-    totalFixedAssets + totalNonCurrentAssets + totalCurrentAssets,
-  );
+  const totalAssets = totalsRound(totalFixedAssets + totalNonCurrentAssets + totalCurrentAssets);
 
   return {
     equity,
@@ -617,11 +600,17 @@ export function buildProfitLossData(args: {
   closingStockPrevious?: number;
 }): ProfitLossData {
   const currentTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.currentVouchers, { endDate: args.toDate, startDate: args.fromDate }),
+    computeLedgerTotals(args.accounts, args.currentVouchers, {
+      endDate: args.toDate,
+      startDate: args.fromDate,
+    }),
   );
 
   const previousTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.previousVouchers, { endDate: args.previousToDate, startDate: args.previousFromDate }),
+    computeLedgerTotals(args.accounts, args.previousVouchers, {
+      endDate: args.previousToDate,
+      startDate: args.previousFromDate,
+    }),
   );
 
   const revenue = buildSectionLines(
@@ -640,13 +629,10 @@ export function buildProfitLossData(args: {
     { accountType: ["income"], invertSign: true },
   );
 
-  const cogs = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "cogs",
-    { accountType: ["expense"], invertSign: false },
-  );
+  const cogs = buildSectionLines(args.accounts, currentTotals, previousTotals, "cogs", {
+    accountType: ["expense"],
+    invertSign: false,
+  });
 
   const indirectExpenses = buildSectionLines(
     args.accounts,
@@ -656,9 +642,7 @@ export function buildProfitLossData(args: {
     { accountType: ["expense"], invertSign: false },
   );
 
-  const taxExpenses = indirectExpenses.filter((x) =>
-    normalize(x.label).includes("tax"),
-  );
+  const taxExpenses = indirectExpenses.filter((x) => normalize(x.label).includes("tax"));
 
   const revenueTotal = total(revenue);
   const otherIncomeTotal = total(otherIncome);
@@ -675,10 +659,7 @@ export function buildProfitLossData(args: {
   const totalIncome = totalsRound(revenueTotal + otherIncomeTotal);
   const profitBeforeTax = totalsRound(totalIncome - totalExpenses);
 
-  const incomeTaxProvision = taxExpenses.reduce(
-    (sum, row) => sum + row.currentYear,
-    0,
-  );
+  const incomeTaxProvision = taxExpenses.reduce((sum, row) => sum + row.currentYear, 0);
 
   const netProfitAfterTax = totalsRound(profitBeforeTax - incomeTaxProvision);
 

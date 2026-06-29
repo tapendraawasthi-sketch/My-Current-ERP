@@ -5,7 +5,13 @@ import toast from "react-hot-toast";
 import { generateId } from "../lib/db";
 
 const AttendanceTypeMaster: React.FC = () => {
-  const { attendanceTypes, addAttendanceType, updateAttendanceType, deleteAttendanceType, payrollUnits } = useStore();
+  const {
+    attendanceTypes,
+    addAttendanceType,
+    updateAttendanceType,
+    deleteAttendanceType,
+    payrollUnits,
+  } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,10 +31,30 @@ const AttendanceTypeMaster: React.FC = () => {
     if ((attendanceTypes || []).length === 0 && !seedDone) {
       setSeedDone(true);
       const seedData = [
-        { name: "Present", attendanceType: "attendance_leave_with_pay", periodType: "daily", isActive: true },
-        { name: "Absent", attendanceType: "leave_without_pay", periodType: "daily", isActive: true },
-        { name: "Paid Leave", attendanceType: "attendance_leave_with_pay", periodType: "daily", isActive: true },
-        { name: "Unpaid Leave", attendanceType: "leave_without_pay", periodType: "daily", isActive: true },
+        {
+          name: "Present",
+          attendanceType: "attendance_leave_with_pay",
+          periodType: "daily",
+          isActive: true,
+        },
+        {
+          name: "Absent",
+          attendanceType: "leave_without_pay",
+          periodType: "daily",
+          isActive: true,
+        },
+        {
+          name: "Paid Leave",
+          attendanceType: "attendance_leave_with_pay",
+          periodType: "daily",
+          isActive: true,
+        },
+        {
+          name: "Unpaid Leave",
+          attendanceType: "leave_without_pay",
+          periodType: "daily",
+          isActive: true,
+        },
         { name: "Overtime", attendanceType: "overtime", periodType: "hourly", isActive: true },
       ];
 
@@ -42,7 +68,7 @@ const AttendanceTypeMaster: React.FC = () => {
   const filteredTypes = (attendanceTypes || []).filter(
     (type) =>
       type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      type.attendanceType.toLowerCase().includes(searchTerm.toLowerCase())
+      type.attendanceType.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
@@ -112,35 +138,52 @@ const AttendanceTypeMaster: React.FC = () => {
   };
 
   const getPeriodTypeLabel = (type: string) => {
-    switch(type) {
-      case "daily": return "Daily";
-      case "hourly": return "Hourly";
-      case "shift": return "Shift";
-      case "unit_based": return "Unit Based";
-      default: return type;
+    switch (type) {
+      case "daily":
+        return "Daily";
+      case "hourly":
+        return "Hourly";
+      case "shift":
+        return "Shift";
+      case "unit_based":
+        return "Unit Based";
+      default:
+        return type;
     }
   };
 
   const getDisplayTypeLabel = (type: string) => {
-    switch(type) {
-      case "attendance_leave_with_pay": return "Paid Leave";
-      case "leave_without_pay": return "Unpaid Leave";
-      case "production": return "Production";
-      case "user_defined": return "User Defined";
-      case "overtime": return "Overtime";
-      default: return type;
+    switch (type) {
+      case "attendance_leave_with_pay":
+        return "Paid Leave";
+      case "leave_without_pay":
+        return "Unpaid Leave";
+      case "production":
+        return "Production";
+      case "user_defined":
+        return "User Defined";
+      case "overtime":
+        return "Overtime";
+      default:
+        return type;
     }
   };
 
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* List Panel */}
-      <div className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-1/2 xl:w-2/3 border-r border-gray-200" : "w-full"}`}>
+      <div
+        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-1/2 xl:w-2/3 border-r border-gray-200" : "w-full"}`}
+      >
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Attendance / Production Type Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Manage types for daily attendance and production tracking</p>
+              <h1 className="text-[15px] font-semibold text-gray-800">
+                Attendance / Production Type Master
+              </h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Manage types for daily attendance and production tracking
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -170,12 +213,24 @@ const AttendanceTypeMaster: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Period Type</th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    #
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Type
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Period Type
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -187,17 +242,30 @@ const AttendanceTypeMaster: React.FC = () => {
                   </tr>
                 ) : (
                   filteredTypes.map((type, index) => {
-                    const parentType = (attendanceTypes || []).find(t => t.id === type.underTypeId);
+                    const parentType = (attendanceTypes || []).find(
+                      (t) => t.id === type.underTypeId,
+                    );
                     return (
                       <tr key={type.id} className="hover:bg-gray-50">
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
                         <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
-                          {type.name}{parentType && <span className="text-gray-400 font-normal ml-1">({parentType.name})</span>}
+                          {type.name}
+                          {parentType && (
+                            <span className="text-gray-400 font-normal ml-1">
+                              ({parentType.name})
+                            </span>
+                          )}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{getDisplayTypeLabel(type.attendanceType)}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{getPeriodTypeLabel(type.periodType)}</td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          {getDisplayTypeLabel(type.attendanceType)}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          {getPeriodTypeLabel(type.periodType)}
+                        </td>
                         <td className="px-3 py-2.5 text-[12px] text-center">
-                          <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${type.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${type.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                          >
                             {type.isActive ? "Active" : "Inactive"}
                           </span>
                         </td>
@@ -236,8 +304,8 @@ const AttendanceTypeMaster: React.FC = () => {
             <h3 className="text-[13px] font-semibold text-gray-800">
               {selected ? "Alter Attendance Type" : "Create Attendance Type"}
             </h3>
-            <button 
-              onClick={resetForm} 
+            <button
+              onClick={resetForm}
               className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
@@ -246,7 +314,9 @@ const AttendanceTypeMaster: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Name <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Name <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -266,15 +336,19 @@ const AttendanceTypeMaster: React.FC = () => {
               >
                 <option value="">-- None --</option>
                 {(attendanceTypes || [])
-                  .filter(t => !selected || t.id !== selected.id) // Exclude self to prevent circular reference
-                  .map(type => (
-                    <option key={type.id} value={type.id}>{type.name}</option>
+                  .filter((t) => !selected || t.id !== selected.id) // Exclude self to prevent circular reference
+                  .map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                    </option>
                   ))}
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Attendance Type <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Attendance Type <span className="text-red-500">*</span>
+              </label>
               <select
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.attendanceType}
@@ -290,7 +364,9 @@ const AttendanceTypeMaster: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Period Type</label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Period Type
+              </label>
               <select
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.periodType}
@@ -305,15 +381,19 @@ const AttendanceTypeMaster: React.FC = () => {
 
             {(form.periodType === "unit_based" || form.periodType === "hourly") && (
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Payroll Unit</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Payroll Unit
+                </label>
                 <select
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                   value={form.payrollUnitId}
                   onChange={(e) => setForm({ ...form, payrollUnitId: e.target.value })}
                 >
                   <option value="">-- None --</option>
-                  {(payrollUnits || []).map(unit => (
-                    <option key={unit.id} value={unit.id}>{unit.symbol} - {unit.formalName}</option>
+                  {(payrollUnits || []).map((unit) => (
+                    <option key={unit.id} value={unit.id}>
+                      {unit.symbol} - {unit.formalName}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -328,7 +408,10 @@ const AttendanceTypeMaster: React.FC = () => {
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActive" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="isActive"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Is Active
                 </label>
               </div>
@@ -336,7 +419,7 @@ const AttendanceTypeMaster: React.FC = () => {
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button 
+            <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
               onClick={resetForm}
             >

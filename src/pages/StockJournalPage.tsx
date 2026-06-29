@@ -211,7 +211,13 @@ const StockJournalPage: React.FC = () => {
       header: "Journal No",
       render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
-    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
+    {
+      key: "date",
+      header: "Date",
+      render: (_: any, row: any) => (
+        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+      ),
+    },
     {
       key: "narration",
       header: "Narration",
@@ -312,10 +318,7 @@ const StockJournalPage: React.FC = () => {
             {lines.map((line, index) => {
               const item = items.find((it) => it.id === line.itemId);
               return (
-                <div
-                  key={line.id}
-                  className="form-row"
-                >
+                <div key={line.id} className="form-row">
                   <div className="md:col-span-2">
                     <ItemSelect
                       label={`Item ${index + 1}`}
@@ -396,8 +399,22 @@ const StockJournalPage: React.FC = () => {
             </div>
           </div>
           <div className="actions pt-4 border-t border-gray-100 mt-4">
-            <button className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md" onClick={handleCreate} disabled={saving}>Save Stock Journal</button>
-            <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50" onClick={() => { setMode('list'); resetForm(); }}>Cancel</button>
+            <button
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              onClick={handleCreate}
+              disabled={saving}
+            >
+              Save Stock Journal
+            </button>
+            <button
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              onClick={() => {
+                setMode("list");
+                resetForm();
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

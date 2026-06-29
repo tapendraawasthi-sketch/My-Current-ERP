@@ -40,12 +40,10 @@ const btnDanger =
   "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
   "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]";
-const card =
-  "bg-white border border-gray-200 rounded-lg p-4 text-gray-800 shadow-sm";
+const card = "bg-white border border-gray-200 rounded-lg p-4 text-gray-800 shadow-sm";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 text-gray-500";
-const td =
-  "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-800";
+const td = "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-800";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -61,13 +59,10 @@ const tableAll = (db: any, name: string) => {
 };
 
 const tablePut = async (db: any, name: string, rows: any[]) => {
-  try {
-    if (!rows?.length) return;
-    const t = db?.table ? db.table(name) : db?.[name];
-    if (t?.bulkPut) await t.bulkPut(rows);
-  } catch (err) {
-    console.warn("bulkPut failed", name, err);
-  }
+  if (!rows?.length) return;
+  const t = db?.table ? db.table(name) : db?.[name];
+  if (!t?.bulkPut) throw new Error(`Table ${name} not found`);
+  await t.bulkPut(rows);
 };
 
 const tableDelete = async (db: any, name: string, id: any) => {
@@ -90,7 +85,13 @@ const readFileArrayBuffer = (file: File) =>
 const cleanAmount = (v: any) => {
   if (v === null || v === undefined || v === "") return 0;
   if (typeof v === "number") return v;
-  return Number(String(v).replace(/,/g, "").replace(/[^\d.-]/g, "")) || 0;
+  return (
+    Number(
+      String(v)
+        .replace(/,/g, "")
+        .replace(/[^\d.-]/g, ""),
+    ) || 0
+  );
 };
 
 const normalizeDate = (v: any) => {
@@ -129,7 +130,7 @@ const normalizeDate = (v: any) => {
 const findCol = (row: any, names: string[]) => {
   const keys = Object.keys(row || {});
   const found = keys.find((k) =>
-    names.some((n) => String(k).toLowerCase().replace(/\s+/g, "").includes(n))
+    names.some((n) => String(k).toLowerCase().replace(/\s+/g, "").includes(n)),
   );
   return found ? row[found] : "";
 };
@@ -141,9 +142,7 @@ const accountName = (accounts: any[], id: string) =>
   "-";
 
 const isBankAccount = (a: any) => {
-  const hay = [a.name, a.group, a.groupName, a.type, a.nature]
-    .join(" ")
-    .toLowerCase();
+  const hay = [a.name, a.group, a.groupName, a.type, a.nature].join(" ").toLowerCase();
 
   return (
     hay.includes("bank") ||
@@ -157,7 +156,11 @@ const lineAmountForBank = (voucher: any, bankAccountId: string) => {
   const lines = voucher.lines || voucher.entries || [];
   const bankLine =
     lines.find((l: any) => l.accountId === bankAccountId) ||
-    lines.find((l: any) => String(l.accountId || "").toLowerCase().includes("bank"));
+    lines.find((l: any) =>
+      String(l.accountId || "")
+        .toLowerCase()
+        .includes("bank"),
+    );
 
   if (!bankLine) return 0;
 
@@ -184,23 +187,18 @@ const dateDiffDays = (a: string, b: string) => {
 
 const normalizeStatementRow = (r: any, bankAccountId: string, batchId: string, idx: number) => {
   const date =
-    normalizeDate(findCol(r, ["date", "valuedate", "transactiondate", "txndate"])) ||
-    todayISO();
+    normalizeDate(findCol(r, ["date", "valuedate", "transactiondate", "txndate"])) || todayISO();
 
-  const narration =
-    String(
-      findCol(r, ["description", "particular", "narration", "remarks", "details"]) || ""
-    ).trim();
+  const narration = String(
+    findCol(r, ["description", "particular", "narration", "remarks", "details"]) || "",
+  ).trim();
 
-  const refNo =
-    String(
-      findCol(r, ["ref", "cheque", "instrument", "utr", "voucher", "transactionid", "txn"])
-    ).trim();
+  const refNo = String(
+    findCol(r, ["ref", "cheque", "instrument", "utr", "voucher", "transactionid", "txn"]),
+  ).trim();
 
-  const debit =
-    cleanAmount(findCol(r, ["debit", "withdrawal", "withdraw", "dr", "paid"])) || 0;
-  const credit =
-    cleanAmount(findCol(r, ["credit", "deposit", "cr", "receipt", "received"])) || 0;
+  const debit = cleanAmount(findCol(r, ["debit", "withdrawal", "withdraw", "dr", "paid"])) || 0;
+  const credit = cleanAmount(findCol(r, ["credit", "deposit", "cr", "receipt", "received"])) || 0;
 
   let amount = credit - debit;
 
@@ -208,9 +206,10 @@ const normalizeStatementRow = (r: any, bankAccountId: string, batchId: string, i
   const typeCol = String(findCol(r, ["type", "drcr", "crdr"])).toLowerCase();
 
   if (!debit && !credit && amountCol) {
-    amount = typeCol.includes("dr") || typeCol.includes("debit") || typeCol.includes("withdraw")
-      ? -Math.abs(amountCol)
-      : Math.abs(amountCol);
+    amount =
+      typeCol.includes("dr") || typeCol.includes("debit") || typeCol.includes("withdraw")
+        ? -Math.abs(amountCol)
+        : Math.abs(amountCol);
   }
 
   const balance = cleanAmount(findCol(r, ["balance", "closingbalance", "runningbalance"]));
@@ -396,8 +395,14 @@ export default function BankStatementImport() {
 
       setAccounts(dbAccounts?.length ? dbAccounts : storeAccounts);
       setVouchers(dbVouchers?.length ? dbVouchers : storeVouchers);
-      setStatementRows((dbRows || []).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))));
-      setBatches((dbBatches || []).sort((a, b) => String(b.importedAt || "").localeCompare(String(a.importedAt || ""))));
+      setStatementRows(
+        (dbRows || []).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))),
+      );
+      setBatches(
+        (dbBatches || []).sort((a, b) =>
+          String(b.importedAt || "").localeCompare(String(a.importedAt || "")),
+        ),
+      );
     } catch (err) {
       console.error(err);
       toast.error("Could not load bank statement data");
@@ -406,10 +411,7 @@ export default function BankStatementImport() {
     }
   };
 
-  const bankAccounts = useMemo(
-    () => accounts.filter(isBankAccount),
-    [accounts]
-  );
+  const bankAccounts = useMemo(() => accounts.filter(isBankAccount), [accounts]);
 
   const filteredRows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -421,14 +423,7 @@ export default function BankStatementImport() {
 
       if (!q) return true;
 
-      return [
-        r.date,
-        r.narration,
-        r.refNo,
-        r.status,
-        r.matchedVoucherNo,
-        r.matchReason,
-      ]
+      return [r.date, r.narration, r.refNo, r.status, r.matchedVoucherNo, r.matchReason]
         .join(" ")
         .toLowerCase()
         .includes(q);
@@ -441,7 +436,9 @@ export default function BankStatementImport() {
     const payments = rows.reduce((sum, r) => sum + Number(r.debit || 0), 0);
     const matched = rows.filter((r) => r.status === "Matched").length;
     const probable = rows.filter((r) => r.status === "Probable").length;
-    const unmatched = rows.filter((r) => !["Matched", "Probable", "Reconciled"].includes(r.status)).length;
+    const unmatched = rows.filter(
+      (r) => !["Matched", "Probable", "Reconciled"].includes(r.status),
+    ).length;
     const reconciled = rows.filter((r) => r.status === "Reconciled").length;
 
     return {
@@ -529,7 +526,7 @@ export default function BankStatementImport() {
           currentUser,
           "Bank Statement Imported",
           `${batch.rowCount} rows imported for ${batch.bankAccountName}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -565,9 +562,7 @@ export default function BankStatementImport() {
       const matchedRows = candidates.map((r) => matchStatementRow(r, vouchers, selectedBankId));
       await tablePut(db, "bankStatementRows", matchedRows);
 
-      setStatementRows((prev) =>
-        prev.map((r) => matchedRows.find((m) => m.id === r.id) || r)
-      );
+      setStatementRows((prev) => prev.map((r) => matchedRows.find((m) => m.id === r.id) || r));
 
       toast.success("Auto-match completed");
     } catch (err) {
@@ -592,8 +587,7 @@ export default function BankStatementImport() {
         reconciledBy: currentUser?.id || "",
       };
 
-      const voucher =
-        vouchers.find((v) => v.id === row.matchedVoucherId) || {};
+      const voucher = vouchers.find((v) => v.id === row.matchedVoucherId) || {};
 
       const updatedVoucher = {
         ...voucher,
@@ -610,7 +604,7 @@ export default function BankStatementImport() {
           currentUser,
           "Bank Row Reconciled",
           `${row.date} ${row.refNo || ""} ${money(Math.abs(row.amount || 0))}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -750,7 +744,7 @@ export default function BankStatementImport() {
           currentUser,
           "Voucher Created From Bank Statement",
           `${voucher.voucherNo} ${money(amt)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -790,7 +784,7 @@ export default function BankStatementImport() {
           currentUser,
           "Bank Statement Batch Deleted",
           `${batch.bankAccountName} ${batch.rowCount} rows`,
-          "High"
+          "High",
         ),
       ]);
 
@@ -823,9 +817,9 @@ export default function BankStatementImport() {
           MatchedVoucherNo: r.matchedVoucherNo,
           MatchScore: r.matchScore,
           MatchReason: r.matchReason,
-        }))
+        })),
       ),
-      "Statement Rows"
+      "Statement Rows",
     );
 
     XLSX.utils.book_append_sheet(
@@ -839,9 +833,9 @@ export default function BankStatementImport() {
           ProbableCount: b.probableCount,
           TotalDebit: b.totalDebit,
           TotalCredit: b.totalCredit,
-        }))
+        })),
       ),
-      "Batches"
+      "Batches",
     );
 
     XLSX.writeFile(wb, `Bank_Statement_Reconciliation_${todayISO()}.xlsx`);
@@ -863,7 +857,7 @@ export default function BankStatementImport() {
           Balance: 0,
         },
       ]),
-      "Bank Statement"
+      "Bank Statement",
     );
 
     XLSX.writeFile(wb, `Bank_Statement_Template_${todayISO()}.xlsx`);
@@ -897,7 +891,11 @@ export default function BankStatementImport() {
 
       <div className={card}>
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Net</p>
-        <p className={`text-[15px] font-bold ${stats.net >= 0 ? "text-emerald-600" : "text-red-600"}`}>{money(stats.net)}</p>
+        <p
+          className={`text-[15px] font-bold ${stats.net >= 0 ? "text-emerald-600" : "text-red-600"}`}
+        >
+          {money(stats.net)}
+        </p>
       </div>
 
       <div className={card}>
@@ -911,7 +909,9 @@ export default function BankStatementImport() {
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Reconciled</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          Reconciled
+        </p>
         <p className="text-[15px] font-bold text-emerald-600">{stats.reconciled}</p>
       </div>
     </div>
@@ -921,7 +921,9 @@ export default function BankStatementImport() {
     <div className={card}>
       <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Bank Account</label>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Bank Account
+          </label>
           <select
             className={input}
             value={selectedBankId}
@@ -937,7 +939,9 @@ export default function BankStatementImport() {
         </div>
 
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Batch</label>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Batch
+          </label>
           <select
             className={input}
             value={selectedBatchId}
@@ -955,7 +959,9 @@ export default function BankStatementImport() {
         </div>
 
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Status</label>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Status
+          </label>
           <select
             className={input}
             value={statusFilter}
@@ -968,7 +974,9 @@ export default function BankStatementImport() {
         </div>
 
         <div className="md:col-span-2">
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Search</label>
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            Search
+          </label>
           <div className="relative">
             <Search className="h-4 w-4 absolute left-2.5 top-2 text-gray-400" />
             <input
@@ -981,11 +989,14 @@ export default function BankStatementImport() {
         </div>
 
         <div className="flex items-end">
-          <button className={btn2} onClick={() => {
-            setQuery("");
-            setStatusFilter("All");
-            setSelectedBatchId("All");
-          }}>
+          <button
+            className={btn2}
+            onClick={() => {
+              setQuery("");
+              setStatusFilter("All");
+              setSelectedBatchId("All");
+            }}
+          >
             <RefreshCcw className="h-3.5 w-3.5" />
             Reset
           </button>
@@ -1081,7 +1092,9 @@ export default function BankStatementImport() {
                   <td className={td}>
                     {r.matchedVoucherId ? (
                       <div>
-                        <div className="font-semibold text-gray-800">{r.matchedVoucherNo || r.matchedVoucherId}</div>
+                        <div className="font-semibold text-gray-800">
+                          {r.matchedVoucherNo || r.matchedVoucherId}
+                        </div>
                         <div className="text-[10px] text-gray-500">
                           Score {r.matchScore || 0} • {r.matchReason || "-"}
                         </div>
@@ -1094,7 +1107,7 @@ export default function BankStatementImport() {
                   <td className={td}>
                     <span
                       className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
-                        r.status
+                        r.status,
                       )}`}
                     >
                       {r.status}
@@ -1198,14 +1211,22 @@ export default function BankStatementImport() {
               <tr key={b.id} className="hover:bg-gray-50">
                 <td className={td}>
                   <div className="font-medium">{String(b.importedAt).slice(0, 10)}</div>
-                  <div className="text-[10px] text-gray-400">{String(b.importedAt).slice(11, 19)}</div>
+                  <div className="text-[10px] text-gray-400">
+                    {String(b.importedAt).slice(11, 19)}
+                  </div>
                 </td>
                 <td className={`${td} font-semibold`}>{b.bankAccountName}</td>
                 <td className={`${td} text-right font-medium`}>{b.rowCount}</td>
-                <td className={`${td} text-right font-medium text-emerald-600`}>{b.matchedCount}</td>
+                <td className={`${td} text-right font-medium text-emerald-600`}>
+                  {b.matchedCount}
+                </td>
                 <td className={`${td} text-right font-medium text-amber-600`}>{b.probableCount}</td>
-                <td className={`${td} text-right text-red-600 font-medium`}>{money(b.totalDebit)}</td>
-                <td className={`${td} text-right text-emerald-600 font-medium`}>{money(b.totalCredit)}</td>
+                <td className={`${td} text-right text-red-600 font-medium`}>
+                  {money(b.totalDebit)}
+                </td>
+                <td className={`${td} text-right text-emerald-600 font-medium`}>
+                  {money(b.totalCredit)}
+                </td>
                 <td className={`${td} text-center`}>
                   <button className={btnDanger} onClick={() => deleteBatch(b)}>
                     <Trash2 className="h-3.5 w-3.5" />
@@ -1229,7 +1250,12 @@ export default function BankStatementImport() {
   );
 
   const renderPreviewModal = () => (
-    <Modal open={modalType === "preview"} title="Import Preview" onClose={() => setModalType("")} max="max-w-6xl">
+    <Modal
+      open={modalType === "preview"}
+      title="Import Preview"
+      onClose={() => setModalType("")}
+      max="max-w-6xl"
+    >
       <div className="space-y-4">
         <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div className="overflow-auto max-h-[58vh]">
@@ -1275,7 +1301,7 @@ export default function BankStatementImport() {
                     <td className={td}>
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
-                          r.status
+                          r.status,
                         )}`}
                       >
                         {r.status}
@@ -1292,11 +1318,13 @@ export default function BankStatementImport() {
           <div className="text-[12px] font-medium text-gray-700 mt-1">
             Rows: <span className="font-bold">{previewRows.length}</span>
             {" • "}
-            Matched: <span className="font-bold text-emerald-600">
+            Matched:{" "}
+            <span className="font-bold text-emerald-600">
               {previewRows.filter((r) => r.status === "Matched").length}
             </span>
             {" • "}
-            Probable: <span className="font-bold text-amber-600">
+            Probable:{" "}
+            <span className="font-bold text-amber-600">
               {previewRows.filter((r) => r.status === "Probable").length}
             </span>
           </div>
@@ -1316,27 +1344,39 @@ export default function BankStatementImport() {
   );
 
   const renderRowModal = () => (
-    <Modal open={modalType === "row"} title="Bank Statement Row Details" onClose={() => setModalType("")}>
+    <Modal
+      open={modalType === "row"}
+      title="Bank Statement Row Details"
+      onClose={() => setModalType("")}
+    >
       {selectedRow && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Date
+              </p>
               <p className="font-semibold text-gray-800">{selectedRow.date}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Debit</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Debit
+              </p>
               <p className="font-semibold text-red-600">{money(selectedRow.debit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Credit</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Credit
+              </p>
               <p className="font-semibold text-emerald-600">{money(selectedRow.credit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Status
+              </p>
               <span
                 className={`inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
-                  selectedRow.status
+                  selectedRow.status,
                 )}`}
               >
                 {selectedRow.status}
@@ -1345,7 +1385,9 @@ export default function BankStatementImport() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Narration
+            </p>
             <p className="font-medium text-[12px] text-gray-800">{selectedRow.narration || "-"}</p>
           </div>
 
@@ -1360,7 +1402,9 @@ export default function BankStatementImport() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Raw Imported Data</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              Raw Imported Data
+            </p>
             <pre className="text-[10px] bg-white border border-gray-200 p-3 rounded-lg overflow-auto max-h-64">
               {JSON.stringify(selectedRow.raw || selectedRow, null, 2)}
             </pre>
@@ -1371,7 +1415,11 @@ export default function BankStatementImport() {
   );
 
   const renderVoucherModal = () => (
-    <Modal open={modalType === "voucher"} title="Create Voucher From Bank Row" onClose={() => setModalType("")}>
+    <Modal
+      open={modalType === "voucher"}
+      title="Create Voucher From Bank Row"
+      onClose={() => setModalType("")}
+    >
       {selectedRow && (
         <div className="space-y-4">
           <div className="p-3 rounded-lg border border-blue-200 bg-blue-50 text-blue-800">
@@ -1385,7 +1433,9 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Voucher Type</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Voucher Type
+            </label>
             <select
               className={input}
               value={voucherForm.type}
@@ -1399,8 +1449,14 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Bank Account</label>
-            <input className={`${input} bg-gray-100`} value={accountName(accounts, selectedBankId)} disabled />
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Bank Account
+            </label>
+            <input
+              className={`${input} bg-gray-100`}
+              value={accountName(accounts, selectedBankId)}
+              disabled
+            />
           </div>
 
           <div>
@@ -1424,7 +1480,9 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">Narration</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Narration
+            </label>
             <textarea
               className={`${input} h-auto py-2`}
               rows={3}
@@ -1457,7 +1515,8 @@ export default function BankStatementImport() {
             Bank Statement Import
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            Import Excel/CSV bank statements, auto-match vouchers, reconcile and create missing vouchers.
+            Import Excel/CSV bank statements, auto-match vouchers, reconcile and create missing
+            vouchers.
           </p>
         </div>
 

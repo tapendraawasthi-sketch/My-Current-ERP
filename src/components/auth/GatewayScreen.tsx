@@ -39,10 +39,7 @@ export default function GatewayScreen() {
         <div className="w-full max-w-md">
           {/* Heading */}
           <div className="mb-8">
-            <h2
-              className="text-2xl font-bold tracking-tight"
-              style={{ color: "#1f2937" }}
-            >
+            <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#1f2937" }}>
               Select a Company
             </h2>
             <p className="text-sm mt-1" style={{ color: "#1f2937" }}>

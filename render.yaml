@@ -3,7 +3,7 @@ services:
     name: sutra-erp
     env: node
     plan: free
-    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    buildCommand: npm ci && npm run build
     startCommand: node serve.mjs
     healthCheckPath: /health
     envVars:
@@ -12,9 +12,9 @@ services:
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        sync: false   # Set this in Render dashboard → Environment → DATABASE_URL
+        sync: false # Set this in Render dashboard → Environment → DATABASE_URL
       - key: ALLOWED_ORIGINS
-        sync: false   # Set to your Vercel URL if using separate frontend, e.g. https://my-erp.vercel.app
+        sync: false # Set to your Vercel URL if using separate frontend, e.g. https://my-erp.vercel.app
 databases:
   - name: sutra-erp-db
     plan: free

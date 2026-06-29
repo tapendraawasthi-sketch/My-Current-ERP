@@ -11,13 +11,13 @@ interface Props {
 const computeDiff = (oldObj: any, newObj: any) => {
   const changes: any[] = [];
   if (!oldObj || !newObj) return changes;
-  
+
   const allKeys = new Set([...Object.keys(oldObj), ...Object.keys(newObj)]);
   allKeys.forEach((key) => {
     if (key === "updatedAt" || key === "createdAt" || key === "id") return;
     const oldVal = oldObj[key];
     const newVal = newObj[key];
-    
+
     if (oldVal === undefined && newVal !== undefined) {
       changes.push({ field: key, oldValue: null, newValue: newVal, changeType: "added" });
     } else if (newVal === undefined && oldVal !== undefined) {
@@ -67,7 +67,9 @@ export const AuditHistoryPanel: React.FC<Props> = ({ entityId }) => {
         }
 
         // Sort by timestamp ascending
-        rows.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        rows.sort(
+          (a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        );
 
         setHistory(rows);
       } catch (err) {
@@ -117,28 +119,39 @@ export const AuditHistoryPanel: React.FC<Props> = ({ entityId }) => {
                 <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                   <p className="text-[11px] font-semibold text-blue-700">SUMMARY</p>
                   <p className="text-[12px] text-gray-700">
-                    Created by <span className="font-medium">{firstEvent?.userName || firstEvent?.user || "System"}</span> on{" "}
-                    {firstEvent ? new Date(firstEvent.timestamp).toLocaleDateString() : "—"}
+                    Created by{" "}
+                    <span className="font-medium">
+                      {firstEvent?.userName || firstEvent?.user || "System"}
+                    </span>{" "}
+                    on {firstEvent ? new Date(firstEvent.timestamp).toLocaleDateString() : "—"}
                   </p>
                   {lastEvent && lastEvent !== firstEvent && (
                     <p className="text-[12px] text-gray-700">
-                      Last modified by <span className="font-medium">{lastEvent.userName || lastEvent?.user || "System"}</span> on{" "}
-                      {new Date(lastEvent.timestamp).toLocaleDateString()}
+                      Last modified by{" "}
+                      <span className="font-medium">
+                        {lastEvent.userName || lastEvent?.user || "System"}
+                      </span>{" "}
+                      on {new Date(lastEvent.timestamp).toLocaleDateString()}
                     </p>
                   )}
                 </div>
 
                 <div className="relative pl-6 border-l-2 border-gray-200 space-y-6">
                   {history.map((event, index) => {
-                    const diffs = event.before && event.after ? computeDiff(event.before, event.after) : [];
+                    const diffs =
+                      event.before && event.after ? computeDiff(event.before, event.after) : [];
                     return (
                       <div key={index} className="relative">
                         <div className="absolute -left-9 top-1 w-4 h-4 rounded-full bg-[#1557b0] border-4 border-white"></div>
                         <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-gray-500">{new Date(event.timestamp).toLocaleString()}</span>
-                              <span className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${actionClass(event.action)}`}>
+                              <span className="text-[11px] text-gray-500">
+                                {new Date(event.timestamp).toLocaleString()}
+                              </span>
+                              <span
+                                className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${actionClass(event.action)}`}
+                              >
                                 {event.action}
                               </span>
                             </div>
@@ -146,33 +159,47 @@ export const AuditHistoryPanel: React.FC<Props> = ({ entityId }) => {
                               <User className="h-3 w-3" /> {event.userName || event.user}
                             </span>
                           </div>
-                          <p className="text-[12px] text-gray-700 mt-1">{event.narration || event.description}</p>
+                          <p className="text-[12px] text-gray-700 mt-1">
+                            {event.narration || event.description}
+                          </p>
                           {diffs.length > 0 && (
                             <div className="mt-2 bg-gray-50 rounded border border-gray-200 overflow-hidden">
                               <table className="w-full text-[11px]">
                                 <thead>
                                   <tr className="bg-gray-100">
-                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-gray-500 uppercase w-1/4">Field</th>
-                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-red-500 uppercase w-[37.5%]">Before</th>
-                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-emerald-600 uppercase w-[37.5%]">After</th>
+                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-gray-500 uppercase w-1/4">
+                                      Field
+                                    </th>
+                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-red-500 uppercase w-[37.5%]">
+                                      Before
+                                    </th>
+                                    <th className="text-left px-2 py-1 text-[10px] font-semibold text-emerald-600 uppercase w-[37.5%]">
+                                      After
+                                    </th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {diffs.map((d, i) => (
                                     <tr key={i} className="border-t border-gray-200">
-                                      <td className="px-2 py-1 font-medium text-gray-700 capitalize">{d.field.replace(/_/g, " ")}</td>
+                                      <td className="px-2 py-1 font-medium text-gray-700 capitalize">
+                                        {d.field.replace(/_/g, " ")}
+                                      </td>
                                       <td className="px-2 py-1">
                                         {d.changeType === "added" ? (
                                           <span className="text-gray-400 italic">—</span>
                                         ) : (
-                                          <span className="text-red-600 line-through opacity-70">{formatDiffValue(d.oldValue)}</span>
+                                          <span className="text-red-600 line-through opacity-70">
+                                            {formatDiffValue(d.oldValue)}
+                                          </span>
                                         )}
                                       </td>
                                       <td className="px-2 py-1">
                                         {d.changeType === "removed" ? (
                                           <span className="text-gray-400 italic">—</span>
                                         ) : (
-                                          <span className="text-emerald-700 font-medium">{formatDiffValue(d.newValue)}</span>
+                                          <span className="text-emerald-700 font-medium">
+                                            {formatDiffValue(d.newValue)}
+                                          </span>
                                         )}
                                       </td>
                                     </tr>

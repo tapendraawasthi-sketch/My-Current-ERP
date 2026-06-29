@@ -76,7 +76,13 @@ const PaymentVoucher: React.FC = () => {
       header: "Voucher No",
       render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
-    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
+    {
+      key: "date",
+      header: "Date",
+      render: (_: any, row: any) => (
+        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+      ),
+    },
     { key: "partyName", header: "Paid To", render: (v: string) => v || "—" },
     {
       key: "narration",
@@ -121,67 +127,62 @@ const PaymentVoucher: React.FC = () => {
   ];
 
   return (
-
-
     <div style={{ background: "#fffbe6", padding: 12 }}>
-
-
       <PillTitle title="Add Payment Voucher" />
 
-
       <FormPanel>
-
-
         <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
-      <ActionToolbar title="Payment Vouchers" subtitle="Cash and bank payments" />
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
-        <div>
-          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <Wallet className="h-5 w-5 text-red-600" />
-            <span>PAYMENT VOUCHERS</span>
-          </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
-            Money paid out — expenses, suppliers & transfers
-          </p>
+          <ActionToolbar title="Payment Vouchers" subtitle="Cash and bank payments" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
+            <div>
+              <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
+                <Wallet className="h-5 w-5 text-red-600" />
+                <span>PAYMENT VOUCHERS</span>
+              </h2>
+              <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
+                Money paid out — expenses, suppliers & transfers
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={openNew}
+              icon={<Plus className="h-4 w-4" />}
+            >
+              New Payment Voucher
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
+            <NepaliDatePicker label="From Date" value={fromDate} onChange={setFromDate} />
+            <NepaliDatePicker label="To Date" value={toDate} onChange={setToDate} />
+            <Select
+              label="Status"
+              options={[
+                { value: "ALL", label: "All Statuses" },
+                { value: VoucherStatus.DRAFT, label: "Draft" },
+                { value: VoucherStatus.POSTED, label: "Posted" },
+                { value: VoucherStatus.CANCELLED, label: "Cancelled" },
+              ]}
+              value={statusFilter}
+              onChange={setStatusFilter}
+            />
+          </div>
+
+          <SearchableTable
+            columns={columns}
+            data={filtered}
+            searchFields={["voucherNo", "narration", "partyName", "referenceNo"]}
+            rowKey="id"
+            onRowClick={openEdit}
+            emptyMessage="No payment vouchers found. Create your first entry."
+            placeholder="Search voucher no, payee or narration…"
+            stickyHeader
+          />
         </div>
-        <Button variant="primary" size="sm" onClick={openNew} icon={<Plus className="h-4 w-4" />}>
-          New Payment Voucher
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
-        <NepaliDatePicker label="From Date" value={fromDate} onChange={setFromDate} />
-        <NepaliDatePicker label="To Date" value={toDate} onChange={setToDate} />
-        <Select
-          label="Status"
-          options={[
-            { value: "ALL", label: "All Statuses" },
-            { value: VoucherStatus.DRAFT, label: "Draft" },
-            { value: VoucherStatus.POSTED, label: "Posted" },
-            { value: VoucherStatus.CANCELLED, label: "Cancelled" },
-          ]}
-          value={statusFilter}
-          onChange={setStatusFilter}
-        />
-      </div>
-
-      <SearchableTable
-        columns={columns}
-        data={filtered}
-        searchFields={["voucherNo", "narration", "partyName", "referenceNo"]}
-        rowKey="id"
-        onRowClick={openEdit}
-        emptyMessage="No payment vouchers found. Create your first entry."
-        placeholder="Search voucher no, payee or narration…"
-        stickyHeader
-      />
-    </div>
-
       </FormPanel>
-
     </div>
   );
 };
 
 export default PaymentVoucher;
-

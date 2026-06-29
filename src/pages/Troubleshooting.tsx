@@ -11,7 +11,7 @@ export default function Troubleshooting() {
       const db = getDB();
       const tables = db.tables;
       const newStats: Record<string, number> = {};
-      
+
       for (const table of tables) {
         newStats[table.name] = await table.count();
       }
@@ -28,7 +28,11 @@ export default function Troubleshooting() {
   }, []);
 
   const handleClearCache = () => {
-    if (window.confirm("Are you sure you want to clear local storage and reload? This will log you out.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to clear local storage and reload? This will log you out.",
+      )
+    ) {
       localStorage.clear();
       sessionStorage.clear();
       window.location.reload();
@@ -47,13 +51,13 @@ export default function Troubleshooting() {
       <div className="bg-white rounded-md border border-gray-200 p-4 mb-6">
         <h2 className="text-[13px] font-semibold text-gray-800 mb-3">System Actions</h2>
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={handleClearCache}
             className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
           >
             Clear Cache & Reload
           </button>
-          <button 
+          <button
             onClick={fetchStats}
             className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
           >
@@ -68,12 +72,19 @@ export default function Troubleshooting() {
           <div className="text-[12px] text-gray-500">Loading database statistics...</div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {Object.entries(stats).sort((a, b) => b[1] - a[1]).map(([table, count]) => (
-              <div key={table} className="bg-gray-50 p-3 rounded border border-gray-100 flex flex-col">
-                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide truncate">{table}</span>
-                <span className="text-[15px] font-semibold text-gray-800 mt-1">{count}</span>
-              </div>
-            ))}
+            {Object.entries(stats)
+              .sort((a, b) => b[1] - a[1])
+              .map(([table, count]) => (
+                <div
+                  key={table}
+                  className="bg-gray-50 p-3 rounded border border-gray-100 flex flex-col"
+                >
+                  <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide truncate">
+                    {table}
+                  </span>
+                  <span className="text-[15px] font-semibold text-gray-800 mt-1">{count}</span>
+                </div>
+              ))}
           </div>
         )}
       </div>

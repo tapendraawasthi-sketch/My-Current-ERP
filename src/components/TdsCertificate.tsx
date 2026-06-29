@@ -68,12 +68,8 @@ const TdsCertificate: React.FC<TdsCertificateProps> = ({
 
       <div className="tds-certificate mx-auto bg-white border border-black p-8 max-w-[210mm] min-h-[297mm]">
         <div className="text-center border-b border-black pb-4 mb-4">
-          <h1 className="text-[18px] font-bold">
-            Certificate of Tax Deduction at Source
-          </h1>
-          <h2 className="text-[17px] font-bold mt-1">
-            स्रोतमा कर कट्टी प्रमाण-पत्र
-          </h2>
+          <h1 className="text-[18px] font-bold">Certificate of Tax Deduction at Source</h1>
+          <h2 className="text-[17px] font-bold mt-1">स्रोतमा कर कट्टी प्रमाण-पत्र</h2>
           <p className="text-[12px] mt-2">
             Fiscal Year / आर्थिक वर्ष: <strong>{fiscalYearBS}</strong>
           </p>
@@ -84,19 +80,33 @@ const TdsCertificate: React.FC<TdsCertificateProps> = ({
             <h3 className="font-bold text-[13px] mb-2">
               Deductor Details / कर कट्टी गर्नेको विवरण
             </h3>
-            <p><strong>Name:</strong> {company.name}</p>
-            {company.nameNepali && <p><strong>नाम:</strong> {company.nameNepali}</p>}
-            <p><strong>PAN:</strong> {company.panNumber || "—"}</p>
-            <p><strong>Address:</strong> {company.address || "—"}</p>
+            <p>
+              <strong>Name:</strong> {company.name}
+            </p>
+            {company.nameNepali && (
+              <p>
+                <strong>नाम:</strong> {company.nameNepali}
+              </p>
+            )}
+            <p>
+              <strong>PAN:</strong> {company.panNumber || "—"}
+            </p>
+            <p>
+              <strong>Address:</strong> {company.address || "—"}
+            </p>
           </div>
 
           <div className="border border-black p-3">
-            <h3 className="font-bold text-[13px] mb-2">
-              Deductee Details / कर कट्टी हुनेको विवरण
-            </h3>
-            <p><strong>Name:</strong> {deductee.name}</p>
-            <p><strong>PAN:</strong> {deductee.pan || "—"}</p>
-            <p><strong>Address:</strong> {deductee.address || "—"}</p>
+            <h3 className="font-bold text-[13px] mb-2">Deductee Details / कर कट्टी हुनेको विवरण</h3>
+            <p>
+              <strong>Name:</strong> {deductee.name}
+            </p>
+            <p>
+              <strong>PAN:</strong> {deductee.pan || "—"}
+            </p>
+            <p>
+              <strong>Address:</strong> {deductee.address || "—"}
+            </p>
           </div>
         </div>
 
@@ -128,9 +138,7 @@ const TdsCertificate: React.FC<TdsCertificateProps> = ({
                   <td className="border border-black px-2 py-1 text-right">
                     {money(payment.grossAmount)}
                   </td>
-                  <td className="border border-black px-2 py-1 text-right">
-                    {payment.tdsRate}%
-                  </td>
+                  <td className="border border-black px-2 py-1 text-right">{payment.tdsRate}%</td>
                   <td className="border border-black px-2 py-1 text-right">
                     {money(payment.tdsAmount)}
                   </td>
@@ -155,23 +163,30 @@ const TdsCertificate: React.FC<TdsCertificateProps> = ({
 
         <div className="text-[12px] leading-6 mb-10">
           This is to certify that tax deducted at source amounting to{" "}
-          <strong>Rs. {money(totalTds)}</strong> has been deducted from payments
-          made to the deductee during the fiscal year{" "}
-          <strong>{fiscalYearBS}</strong>.
+          <strong>Rs. {money(totalTds)}</strong> has been deducted from payments made to the
+          deductee during the fiscal year <strong>{fiscalYearBS}</strong>.
         </div>
 
         <div className="grid grid-cols-2 gap-10 text-[12px] mt-16">
           <div>
             <div className="border-t border-black pt-2">
-              <p><strong>Authorized Person:</strong> {authorizedPersonName}</p>
-              <p><strong>Designation:</strong> {authorizedPersonDesignation}</p>
-              <p><strong>Date:</strong> {certificateDateBS}</p>
+              <p>
+                <strong>Authorized Person:</strong> {authorizedPersonName}
+              </p>
+              <p>
+                <strong>Designation:</strong> {authorizedPersonDesignation}
+              </p>
+              <p>
+                <strong>Date:</strong> {certificateDateBS}
+              </p>
             </div>
           </div>
 
           <div>
             <div className="border-t border-black pt-2">
-              <p><strong>Signature & Seal</strong></p>
+              <p>
+                <strong>Signature & Seal</strong>
+              </p>
               <p>हस्ताक्षर तथा छाप</p>
             </div>
           </div>

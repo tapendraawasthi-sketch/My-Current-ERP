@@ -42,9 +42,7 @@ export const buildAccountTree = (accounts: any[]) => {
     }
   });
 
-  const roots = Array.from(nodesById.values()).filter(
-    (node) => node.isGroup && !node.parentId
-  );
+  const roots = Array.from(nodesById.values()).filter((node) => node.isGroup && !node.parentId);
 
   return { roots, nodesById };
 };
@@ -52,7 +50,7 @@ export const buildAccountTree = (accounts: any[]) => {
 export const computeLedgerTotals = (
   accounts: any[],
   vouchers: any[],
-  options: { startDate?: string; endDate?: string; includeOpening?: boolean } = {}
+  options: { startDate?: string; endDate?: string; includeOpening?: boolean } = {},
 ) => {
   const { startDate, endDate, includeOpening = true } = options;
   const totals = new Map<string, LedgerTotals>();
@@ -76,7 +74,7 @@ export const computeLedgerTotals = (
     (v) =>
       v.status === VoucherStatus.POSTED &&
       (!startDate || v.date >= startDate) &&
-      (!endDate || v.date <= endDate)
+      (!endDate || v.date <= endDate),
   );
 
   for (const v of posted) {
@@ -114,7 +112,7 @@ export const computeLedgerTotals = (
 
 export const computeGroupTotals = (
   tree: ReturnType<typeof buildAccountTree>,
-  ledgerTotals: Map<string, LedgerTotals>
+  ledgerTotals: Map<string, LedgerTotals>,
 ) => {
   const totals = new Map<string, GroupTotals>();
 
@@ -158,7 +156,7 @@ export const computeGroupTotals = (
 export const getLedgerEntries = (
   ledgerId: string,
   vouchers: any[],
-  options: { startDate?: string; endDate?: string } = {}
+  options: { startDate?: string; endDate?: string } = {},
 ) => {
   const { startDate, endDate } = options;
   return vouchers
@@ -166,7 +164,7 @@ export const getLedgerEntries = (
       (v) =>
         v.status === VoucherStatus.POSTED &&
         (!startDate || v.date >= startDate) &&
-        (!endDate || v.date <= endDate)
+        (!endDate || v.date <= endDate),
     )
     .flatMap((v) =>
       (v.lines || [])
@@ -179,7 +177,7 @@ export const getLedgerEntries = (
           credit: Number(line.credit) || 0,
           voucherId: v.id,
           voucherType: v.type,
-        }))
+        })),
     )
     .sort((a, b) => a.date.localeCompare(b.date));
 };
@@ -192,15 +190,12 @@ export const groupEntriesByMonth = (entries: any[]) => {
 
   entries.forEach((entry) => {
     const monthKey = entry.date.slice(0, 7);
-    const bucket =
-      map.get(monthKey) || { monthKey, debit: 0, credit: 0, entries: [] };
+    const bucket = map.get(monthKey) || { monthKey, debit: 0, credit: 0, entries: [] };
     bucket.debit += entry.debit;
     bucket.credit += entry.credit;
     bucket.entries.push(entry);
     map.set(monthKey, bucket);
   });
 
-  return Array.from(map.values()).sort((a, b) =>
-    a.monthKey.localeCompare(b.monthKey)
-  );
+  return Array.from(map.values()).sort((a, b) => a.monthKey.localeCompare(b.monthKey));
 };

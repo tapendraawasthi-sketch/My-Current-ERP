@@ -12,14 +12,8 @@ function money(value: number) {
 }
 
 const StockTransfer: React.FC = () => {
-  const {
-    warehouses,
-    items,
-    stockMovements,
-    saveStockTransfer,
-    getNextTransferNo,
-    currentUser,
-  } = useStore() as any;
+  const { warehouses, items, stockMovements, saveStockTransfer, getNextTransferNo, currentUser } =
+    useStore() as any;
 
   const [transferNo, setTransferNo] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -118,15 +112,9 @@ const StockTransfer: React.FC = () => {
     setLines((prev) => prev.filter((line) => line.id !== id));
   };
 
-  const totalQty = useMemo(
-    () => lines.reduce((s, l) => s + Number(l.qty || 0), 0),
-    [lines],
-  );
+  const totalQty = useMemo(() => lines.reduce((s, l) => s + Number(l.qty || 0), 0), [lines]);
 
-  const totalAmount = useMemo(
-    () => lines.reduce((s, l) => s + Number(l.amount || 0), 0),
-    [lines],
-  );
+  const totalAmount = useMemo(() => lines.reduce((s, l) => s + Number(l.amount || 0), 0), [lines]);
 
   const save = async () => {
     if (!fromWarehouse || !toWarehouse) {
@@ -192,7 +180,10 @@ const StockTransfer: React.FC = () => {
           <button onClick={print} className="h-8 px-3 border rounded-md text-[12px]">
             Print
           </button>
-          <button onClick={save} className="h-8 px-3 bg-[#1557b0] text-white rounded-md text-[12px]">
+          <button
+            onClick={save}
+            className="h-8 px-3 bg-[#1557b0] text-white rounded-md text-[12px]"
+          >
             Save Transfer
           </button>
         </div>
@@ -206,7 +197,12 @@ const StockTransfer: React.FC = () => {
       <div className="bg-white border rounded-md p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <Field label="Transfer No." value={transferNo} readOnly />
         <Field label="AD Date" value={date} onChange={setDate} type="date" />
-        <Field label="BS Date" value={dateNepali} onChange={setDateNepali} placeholder="2081-04-15" />
+        <Field
+          label="BS Date"
+          value={dateNepali}
+          onChange={setDateNepali}
+          placeholder="2081-04-15"
+        />
         <Field label="Authorized By" value={authorizedBy} onChange={setAuthorizedBy} />
 
         <SelectWarehouse
@@ -234,7 +230,8 @@ const StockTransfer: React.FC = () => {
 
         {isInterBranch && (
           <div className="md:col-span-4 bg-amber-50 border border-amber-200 text-amber-700 rounded-md p-2 text-[12px]">
-            Inter-branch transfer detected. Accounting entries will be created for Branch Transfer Receivable / Payable.
+            Inter-branch transfer detected. Accounting entries will be created for Branch Transfer
+            Receivable / Payable.
           </div>
         )}
       </div>
@@ -255,9 +252,7 @@ const StockTransfer: React.FC = () => {
           <tbody>
             {lines.map((line) => {
               const available =
-                line.itemId && fromWarehouseId
-                  ? getAvailableQty(line.itemId, fromWarehouseId)
-                  : 0;
+                line.itemId && fromWarehouseId ? getAvailableQty(line.itemId, fromWarehouseId) : 0;
 
               return (
                 <tr key={line.id} className="border-t">
@@ -285,9 +280,7 @@ const StockTransfer: React.FC = () => {
                     />
                   </td>
 
-                  <td className="px-3 py-2 text-right font-mono">
-                    {available}
-                  </td>
+                  <td className="px-3 py-2 text-right font-mono">{available}</td>
 
                   <td className="px-3 py-2">
                     <input
@@ -307,9 +300,7 @@ const StockTransfer: React.FC = () => {
                     />
                   </td>
 
-                  <td className="px-3 py-2 text-right font-mono">
-                    {money(line.amount)}
-                  </td>
+                  <td className="px-3 py-2 text-right font-mono">{money(line.amount)}</td>
 
                   <td className="px-3 py-2 text-center no-print">
                     <button onClick={() => removeLine(line.id)} className="text-red-600">
@@ -323,7 +314,9 @@ const StockTransfer: React.FC = () => {
 
           <tfoot>
             <tr className="bg-[#eef2ff] font-bold">
-              <td colSpan={3} className="px-3 py-2 text-right">Total</td>
+              <td colSpan={3} className="px-3 py-2 text-right">
+                Total
+              </td>
               <td className="px-3 py-2 text-right font-mono">{totalQty}</td>
               <td />
               <td className="px-3 py-2 text-right font-mono">{money(totalAmount)}</td>

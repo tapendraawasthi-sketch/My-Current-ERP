@@ -17,11 +17,7 @@ function money(value: number): string {
   return value < 0 ? `(${text})` : text;
 }
 
-const NepalStatementTable: React.FC<Props> = ({
-  rows,
-  currentYearLabel,
-  previousYearLabel,
-}) => {
+const NepalStatementTable: React.FC<Props> = ({ rows, currentYearLabel, previousYearLabel }) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const toggle = (id: string) => {
@@ -57,29 +53,22 @@ const NepalStatementTable: React.FC<Props> = ({
                 <span className="w-5 no-print" />
               )}
 
-              <span className={row.isDeduction ? "text-red-700" : ""}>
-                {row.label}
-              </span>
+              <span className={row.isDeduction ? "text-red-700" : ""}>{row.label}</span>
 
               {row.labelNepali && (
-                <span className="text-[10px] text-gray-500">
-                  / {row.labelNepali}
-                </span>
+                <span className="text-[10px] text-gray-500">/ {row.labelNepali}</span>
               )}
             </div>
           </td>
 
-          <td className="px-3 py-2.5 text-[12px] text-right font-mono">
-            {money(row.currentYear)}
-          </td>
+          <td className="px-3 py-2.5 text-[12px] text-right font-mono">{money(row.currentYear)}</td>
 
           <td className="px-3 py-2.5 text-[12px] text-right font-mono">
             {money(row.previousYear)}
           </td>
         </tr>
 
-        {expanded[row.id] &&
-          row.children?.map((childRow) => renderRow(childRow, true))}
+        {expanded[row.id] && row.children?.map((childRow) => renderRow(childRow, true))}
       </React.Fragment>
     );
   };

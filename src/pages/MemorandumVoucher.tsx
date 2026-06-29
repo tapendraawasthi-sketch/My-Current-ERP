@@ -1,31 +1,59 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Input, Select, NepaliDatePicker, Badge, ActionToolbar, AmountInput } from "../components/ui";
-import { Plus, X, Save, Printer, Copy, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
+import {
+  Card,
+  Button,
+  Input,
+  Select,
+  NepaliDatePicker,
+  Badge,
+  ActionToolbar,
+  AmountInput,
+} from "../components/ui";
+import {
+  Plus,
+  X,
+  Save,
+  Printer,
+  Copy,
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  CheckCircle,
+  Trash2,
+} from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
+import {
+  calculateVoucherTotals,
+  validateVoucherDate,
+  formatVoucherDisplayDate,
+} from "../lib/voucherUtils";
 import toast from "react-hot-toast";
 
 const MemorandumVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
-  
-  const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
-  const [effectiveDate, setEffectiveDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
+
+  const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [effectiveDate, setEffectiveDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
   const [voucherNumber, setVoucherNumber] = useState<string>("Loading...");
   const [referenceNo, setReferenceNo] = useState<string>("");
   const [narration, setNarration] = useState<string>("");
-  const [lines, setLines] = useState<Array<any>>([{ 
-    key: Math.random().toString(36).substring(7),
-    accountId: "", 
-    debit: 0, 
-    credit: 0, 
-    narration: "",
-    costCenterId: ""
-  }]);
+  const [lines, setLines] = useState<Array<any>>([
+    {
+      key: Math.random().toString(36).substring(7),
+      accountId: "",
+      debit: 0,
+      credit: 0,
+      narration: "",
+      costCenterId: "",
+    },
+  ]);
   const [dirty, setDirty] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [showConfirmCancel, setShowConfirmCancel] = useState<boolean>(false);
@@ -33,7 +61,11 @@ const MemorandumVoucher: React.FC = () => {
   useEffect(() => {
     const generateNumber = async () => {
       try {
-        const number = await generateSerialNumber(VoucherType.MEMORANDUM, undefined, currentFiscalYear?.fiscalYearBS);
+        const number = await generateSerialNumber(
+          VoucherType.MEMORANDUM,
+          undefined,
+          currentFiscalYear?.fiscalYearBS,
+        );
         setVoucherNumber(number);
       } catch (error) {
         setVoucherNumber("MV-" + Date.now());
@@ -43,7 +75,7 @@ const MemorandumVoucher: React.FC = () => {
   }, []);
 
   const accountOptions = useMemo(() => {
-    return accounts.map(acc => ({ value: acc.id, label: acc.name }));
+    return accounts.map((acc) => ({ value: acc.id, label: acc.name }));
   }, [accounts]);
 
   const costCenterOptions = useMemo(() => {
@@ -51,11 +83,11 @@ const MemorandumVoucher: React.FC = () => {
   }, []);
 
   const totals = useMemo(() => {
-    const mappedLines = lines.map(line => ({
+    const mappedLines = lines.map((line) => ({
       debit: line.debit || 0,
       credit: line.credit || 0,
       amount: Math.max(line.debit || 0, line.credit || 0),
-      taxAmount: 0
+      taxAmount: 0,
     }));
     return calculateVoucherTotals(mappedLines);
   }, [lines]);
@@ -67,7 +99,7 @@ const MemorandumVoucher: React.FC = () => {
       return;
     }
 
-    const validLines = lines.filter(line => line.accountId);
+    const validLines = lines.filter((line) => line.accountId);
     if (validLines.length < 2) {
       toast.error("At least 2 ledger entries required");
       return;
@@ -103,17 +135,21 @@ const MemorandumVoucher: React.FC = () => {
         paidAmount: 0,
         paymentStatus: "non-accounting",
         isNonAccounting: true,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await addVoucher(voucher);
       toast.success(`Memorandum saved — ${voucherNumber} (not posted to books)`);
-      
+
       // Reset form
       resetForm();
-      
+
       // Generate new voucher number
-      const newNumber = await generateSerialNumber(VoucherType.MEMORANDUM, undefined, currentFiscalYear?.fiscalYearBS);
+      const newNumber = await generateSerialNumber(
+        VoucherType.MEMORANDUM,
+        undefined,
+        currentFiscalYear?.fiscalYearBS,
+      );
       setVoucherNumber(newNumber);
     } catch (error) {
       toast.error(error.message || "Failed to save memorandum");
@@ -124,18 +160,20 @@ const MemorandumVoucher: React.FC = () => {
   };
 
   const resetForm = () => {
-    setDate(new Date().toISOString().split('T')[0]);
-    setEffectiveDate(new Date().toISOString().split('T')[0]);
+    setDate(new Date().toISOString().split("T")[0]);
+    setEffectiveDate(new Date().toISOString().split("T")[0]);
     setReferenceNo("");
     setNarration("");
-    setLines([{ 
-      key: Math.random().toString(36).substring(7),
-      accountId: "", 
-      debit: 0, 
-      credit: 0, 
-      narration: "",
-      costCenterId: ""
-    }]);
+    setLines([
+      {
+        key: Math.random().toString(36).substring(7),
+        accountId: "",
+        debit: 0,
+        credit: 0,
+        narration: "",
+        costCenterId: "",
+      },
+    ]);
     setDirty(false);
   };
 
@@ -153,7 +191,7 @@ const MemorandumVoucher: React.FC = () => {
   };
 
   const updateLine = useCallback((index: number, field: string, value: any) => {
-    setLines(prev => {
+    setLines((prev) => {
       const newLines = [...prev];
       const line = { ...newLines[index] };
       line[field] = value;
@@ -168,28 +206,34 @@ const MemorandumVoucher: React.FC = () => {
       toast.error("Maximum 50 lines allowed");
       return;
     }
-    setLines(prev => [...prev, { 
-      key: Math.random().toString(36).substring(7),
-      accountId: "", 
-      debit: 0, 
-      credit: 0, 
-      narration: "",
-      costCenterId: ""
-    }]);
+    setLines((prev) => [
+      ...prev,
+      {
+        key: Math.random().toString(36).substring(7),
+        accountId: "",
+        debit: 0,
+        credit: 0,
+        narration: "",
+        costCenterId: "",
+      },
+    ]);
     setDirty(true);
   }, [lines.length]);
 
-  const removeLine = useCallback((index: number) => {
-    if (lines.length <= 1) {
-      toast.error("At least one line is required");
-      return;
-    }
-    setLines(prev => prev.filter((_, i) => i !== index));
-    setDirty(true);
-  }, [lines.length]);
+  const removeLine = useCallback(
+    (index: number) => {
+      if (lines.length <= 1) {
+        toast.error("At least one line is required");
+        return;
+      }
+      setLines((prev) => prev.filter((_, i) => i !== index));
+      setDirty(true);
+    },
+    [lines.length],
+  );
 
   const swapDrCr = useCallback((index: number) => {
-    setLines(prev => {
+    setLines((prev) => {
       const newLines = [...prev];
       const line = { ...newLines[index] };
       const temp = line.debit;
@@ -208,7 +252,8 @@ const MemorandumVoucher: React.FC = () => {
         <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 mr-2 flex-shrink-0" />
         <div>
           <p className="text-sm font-medium text-amber-800">
-            ⚠ Memorandum vouchers do not affect books of accounts. They can be converted to regular vouchers later.
+            ⚠ Memorandum vouchers do not affect books of accounts. They can be converted to regular
+            vouchers later.
           </p>
         </div>
       </div>
@@ -221,14 +266,10 @@ const MemorandumVoucher: React.FC = () => {
             Non-Accounting
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="text-sm font-medium">No: {voucherNumber}</div>
-          <NepaliDatePicker
-            value={date}
-            onChange={setDate}
-            className="w-36"
-          />
+          <NepaliDatePicker value={date} onChange={setDate} className="w-36" />
           <Input
             placeholder="Ref No."
             value={referenceNo}
@@ -236,7 +277,7 @@ const MemorandumVoucher: React.FC = () => {
             className="w-32"
           />
         </div>
-        
+
         <Button
           variant="secondary"
           onClick={handleSave}
@@ -245,9 +286,25 @@ const MemorandumVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
@@ -266,13 +323,27 @@ const MemorandumVoucher: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ledger</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Narration</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Swap</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Del</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  #
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ledger
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Debit
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Credit
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Narration
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Swap
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Del
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -336,7 +407,7 @@ const MemorandumVoucher: React.FC = () => {
             </tbody>
           </table>
         </div>
-        
+
         <div className="p-4">
           <Button
             variant="outline"
@@ -362,8 +433,10 @@ const MemorandumVoucher: React.FC = () => {
           </div>
           <div className="flex justify-between pt-2 border-t border-gray-200">
             <span>Status:</span>
-            <span className={`font-medium ${totals.isBalanced ? 'text-green-600' : 'text-red-600'}`}>
-              {totals.isBalanced ? 'Balanced' : `Unbalanced (${formatNumber(totals.difference)})`}
+            <span
+              className={`font-medium ${totals.isBalanced ? "text-green-600" : "text-red-600"}`}
+            >
+              {totals.isBalanced ? "Balanced" : `Unbalanced (${formatNumber(totals.difference)})`}
             </span>
           </div>
         </div>
@@ -395,7 +468,7 @@ const MemorandumVoucher: React.FC = () => {
         >
           Discard
         </Button>
-        
+
         <Button
           variant="secondary"
           onClick={handleSave}
@@ -404,9 +477,25 @@ const MemorandumVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
@@ -431,16 +520,10 @@ const MemorandumVoucher: React.FC = () => {
               You have unsaved changes. Are you sure you want to discard them?
             </p>
             <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirmCancel(false)}
-              >
+              <Button variant="outline" onClick={() => setShowConfirmCancel(false)}>
                 Cancel
               </Button>
-              <Button
-                variant="destructive"
-                onClick={confirmCancel}
-              >
+              <Button variant="destructive" onClick={confirmCancel}>
                 Discard Changes
               </Button>
             </div>

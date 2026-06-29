@@ -6,20 +6,28 @@ import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
 import toast from "react-hot-toast";
-import { CalendarClock, Plus, RefreshCw, DollarSign, AlertTriangle, Clock, Calendar } from "lucide-react";
+import {
+  CalendarClock,
+  Plus,
+  RefreshCw,
+  DollarSign,
+  AlertTriangle,
+  Clock,
+  Calendar,
+} from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
 export default function PDCSummary() {
-  const { 
-    parties, 
-    vouchers, 
-    pdCheques, 
-    accounts, 
+  const {
+    parties,
+    vouchers,
+    pdCheques,
+    accounts,
     companySettings,
     currentUser,
     savePDCheque,
     updatePDCheque,
-    convertPDCToBank
+    convertPDCToBank,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<"received" | "issued">("received");
@@ -30,13 +38,13 @@ export default function PDCSummary() {
     dateFrom: "",
     dateTo: "",
     statuses: [] as string[],
-    types: [] as string[]
+    types: [] as string[],
   });
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"issued" | "received">("received");
   const [convertModalOpen, setConvertModalOpen] = useState(false);
   const [convertingPDC, setConvertingPDC] = useState<any>(null);
-  
+
   // Add PDC form state
   const [formState, setFormState] = useState({
     chequeNo: "",
@@ -48,22 +56,22 @@ export default function PDCSummary() {
     bankAccountId: "",
     voucherId: "",
     holdingAccountId: "",
-    narration: ""
+    narration: "",
   });
 
   // Auto-update PDC statuses on mount
   useEffect(() => {
     const updatePDCStatuses = async () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().split("T")[0];
       const now = new Date();
-      
+
       for (const pdc of pdCheques) {
         const chequeDate = new Date(pdc.chequeDate);
         const timeDiff = chequeDate.getTime() - now.getTime();
         const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        
+
         let newStatus = null;
-        
+
         if (daysDiff < 0 && (pdc.status === "pending" || pdc.status === "due")) {
           newStatus = "overdue";
         } else if (daysDiff === 0 && pdc.status === "pending") {
@@ -71,64 +79,79 @@ export default function PDCSummary() {
         } else if (daysDiff > 0 && pdc.status === "due") {
           newStatus = "pending"; // If date passed and was due, go back to pending
         }
-        
+
         if (newStatus) {
           await updatePDCheque(pdc.id, { status: newStatus });
         }
       }
     };
-    
+
     updatePDCStatuses();
   }, []);
 
   // Apply filters
   const filteredPDCs = useMemo(() => {
-    return pdCheques.filter(pdc => {
+    return pdCheques.filter((pdc) => {
       const matchesType = filters.types.length === 0 || filters.types.includes(pdc.type);
       const matchesParty = !filters.partyId || pdc.partyId === filters.partyId;
-      const matchesBank = !filters.bankName || pdc.bankName.toLowerCase().includes(filters.bankName.toLowerCase());
+      const matchesBank =
+        !filters.bankName || pdc.bankName.toLowerCase().includes(filters.bankName.toLowerCase());
       const matchesDateFrom = !filters.dateFrom || pdc.chequeDate >= filters.dateFrom;
       const matchesDateTo = !filters.dateTo || pdc.chequeDate <= filters.dateTo;
       const matchesStatus = filters.statuses.length === 0 || filters.statuses.includes(pdc.status);
-      
-      return matchesType && matchesParty && matchesBank && matchesDateFrom && matchesDateTo && matchesStatus;
+
+      return (
+        matchesType &&
+        matchesParty &&
+        matchesBank &&
+        matchesDateFrom &&
+        matchesDateTo &&
+        matchesStatus
+      );
     });
   }, [pdCheques, filters]);
 
   // Separate into received and issued
-  const receivedPDCs = useMemo(() => filteredPDCs.filter(p => p.type === "received"), [filteredPDCs]);
-  const issuedPDCs = useMemo(() => filteredPDCs.filter(p => p.type === "issued"), [filteredPDCs]);
+  const receivedPDCs = useMemo(
+    () => filteredPDCs.filter((p) => p.type === "received"),
+    [filteredPDCs],
+  );
+  const issuedPDCs = useMemo(() => filteredPDCs.filter((p) => p.type === "issued"), [filteredPDCs]);
 
   // Calculate summary stats
   const summaryStats = useMemo(() => {
     const totalReceived = receivedPDCs.reduce((sum, p) => sum + p.amount, 0);
     const totalIssued = issuedPDCs.reduce((sum, p) => sum + p.amount, 0);
-    
+
     const today = new Date();
     const thisWeekEnd = new Date(today);
     thisWeekEnd.setDate(thisWeekEnd.getDate() + 7);
-    
-    const dueThisWeek = pdCheques.filter(p => {
+
+    const dueThisWeek = pdCheques.filter((p) => {
       const chequeDate = new Date(p.chequeDate);
-      return chequeDate >= today && chequeDate <= thisWeekEnd && (p.status === "pending" || p.status === "due");
+      return (
+        chequeDate >= today &&
+        chequeDate <= thisWeekEnd &&
+        (p.status === "pending" || p.status === "due")
+      );
     });
-    
-    const overdue = pdCheques.filter(p => {
+
+    const overdue = pdCheques.filter((p) => {
       const chequeDate = new Date(p.chequeDate);
       return chequeDate < today && p.status === "overdue";
     });
-    
+
     return {
       received: { count: receivedPDCs.length, amount: totalReceived },
       issued: { count: issuedPDCs.length, amount: totalIssued },
-      dueThisWeek: { 
-        count: dueThisWeek.length, 
-        amount: dueThisWeek.reduce((sum, p) => sum + p.amount, 0) 
+      dueThisWeek: {
+        count: dueThisWeek.length,
+        amount: dueThisWeek.reduce((sum, p) => sum + p.amount, 0),
       },
-      overdue: { 
-        count: overdue.length, 
-        amount: overdue.reduce((sum, p) => sum + p.amount, 0) 
-      }
+      overdue: {
+        count: overdue.length,
+        amount: overdue.reduce((sum, p) => sum + p.amount, 0),
+      },
     };
   }, [receivedPDCs, issuedPDCs, pdCheques]);
 
@@ -143,22 +166,22 @@ export default function PDCSummary() {
     monthEnd.setMonth(monthEnd.getMonth() + 1);
     const nextMonthEnd = new Date(today);
     nextMonthEnd.setMonth(nextMonthEnd.getMonth() + 2);
-    
+
     const groups = {
       dueToday: [] as any[],
       dueThisWeek: [] as any[],
       dueThisMonth: [] as any[],
       dueNextMonth: [] as any[],
-      beyondNextMonth: [] as any[]
+      beyondNextMonth: [] as any[],
     };
-    
+
     const currentPDCs = activeTab === "received" ? receivedPDCs : issuedPDCs;
-    
-    currentPDCs.forEach(pdc => {
+
+    currentPDCs.forEach((pdc) => {
       const chequeDate = new Date(pdc.chequeDate);
       const timeDiff = chequeDate.getTime() - today.getTime();
       const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      
+
       if (daysDiff === 0) {
         groups.dueToday.push(pdc);
       } else if (daysDiff > 0 && daysDiff <= 7) {
@@ -171,20 +194,28 @@ export default function PDCSummary() {
         groups.beyondNextMonth.push(pdc);
       }
     });
-    
+
     return groups;
   }, [activeTab, receivedPDCs, issuedPDCs]);
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "pending": return "info";
-      case "due": return "warning";
-      case "overdue": return "danger";
-      case "presented": return "secondary";
-      case "cleared": return "success";
-      case "bounced": return "destructive";
-      case "cancelled": return "outline";
-      default: return "default";
+      case "pending":
+        return "info";
+      case "due":
+        return "warning";
+      case "overdue":
+        return "danger";
+      case "presented":
+        return "secondary";
+      case "cleared":
+        return "success";
+      case "bounced":
+        return "destructive";
+      case "cancelled":
+        return "outline";
+      default:
+        return "default";
     }
   };
 
@@ -193,13 +224,17 @@ export default function PDCSummary() {
     const cheque = new Date(chequeDate);
     const timeDiff = cheque.getTime() - today.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    
+
     if (daysDiff > 0) {
       return { days: daysDiff, label: `In ${daysDiff} days`, color: "text-green-600" };
     } else if (daysDiff === 0) {
       return { days: 0, label: "Due Today", color: "text-orange-600" };
     } else {
-      return { days: Math.abs(daysDiff), label: `Overdue by ${Math.abs(daysDiff)} days`, color: "text-red-600" };
+      return {
+        days: Math.abs(daysDiff),
+        label: `Overdue by ${Math.abs(daysDiff)} days`,
+        color: "text-red-600",
+      };
     }
   };
 
@@ -214,19 +249,19 @@ export default function PDCSummary() {
       bankAccountId: "",
       voucherId: "",
       holdingAccountId: "",
-      narration: ""
+      narration: "",
     });
     setAddModalOpen(true);
   };
 
   const handleSavePDC = async () => {
     try {
-      const party = parties.find(p => p.id === formState.partyId);
+      const party = parties.find((p) => p.id === formState.partyId);
       if (!party) {
         toast.error("Invalid party selected");
         return;
       }
-      
+
       const newPDC = {
         type: modalType,
         chequeNo: formState.chequeNo,
@@ -239,13 +274,13 @@ export default function PDCSummary() {
         amount: formState.amount,
         bankAccountId: formState.bankAccountId,
         voucherId: formState.voucherId || undefined,
-        voucherNo: vouchers.find(v => v.id === formState.voucherId)?.voucherNo || undefined,
+        voucherNo: vouchers.find((v) => v.id === formState.voucherId)?.voucherNo || undefined,
         holdingAccountId: formState.holdingAccountId || undefined,
         status: "pending",
         narration: formState.narration,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-      
+
       await savePDCheque(newPDC);
       toast.success("PDC saved successfully");
       setAddModalOpen(false);
@@ -256,10 +291,10 @@ export default function PDCSummary() {
 
   const handleConvertPDC = async () => {
     if (!convertingPDC) return;
-    
+
     try {
-      const today = new Date().toISOString().split('T')[0];
-      
+      const today = new Date().toISOString().split("T")[0];
+
       const journalData = {
         type: "journal",
         date: today,
@@ -269,27 +304,27 @@ export default function PDCSummary() {
           {
             id: generateId(),
             accountId: convertingPDC.bankAccountId,
-            accountName: accounts.find(a => a.id === convertingPDC.bankAccountId)?.name || "",
+            accountName: accounts.find((a) => a.id === convertingPDC.bankAccountId)?.name || "",
             drAmount: convertingPDC.amount,
             crAmount: 0,
-            particulars: ""
+            particulars: "",
           },
           {
             id: generateId(),
             accountId: convertingPDC.holdingAccountId || "",
-            accountName: accounts.find(a => a.id === convertingPDC.holdingAccountId)?.name || "",
+            accountName: accounts.find((a) => a.id === convertingPDC.holdingAccountId)?.name || "",
             drAmount: 0,
             crAmount: convertingPDC.amount,
-            particulars: ""
-          }
+            particulars: "",
+          },
         ],
         status: "posted",
         grandTotal: convertingPDC.amount,
         totalCredit: convertingPDC.amount,
         totalDebit: convertingPDC.amount,
-        voucherNo: `JV-PDC-${convertingPDC.chequeNo}`
+        voucherNo: `JV-PDC-${convertingPDC.chequeNo}`,
       };
-      
+
       await convertPDCToBank(convertingPDC.id, journalData);
       toast.success("PDC converted to bank entry successfully");
       setConvertModalOpen(false);
@@ -300,15 +335,15 @@ export default function PDCSummary() {
   };
 
   const handleFilterChange = (field: string, value: any) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const exportToCSV = () => {
     const currentPDCs = activeTab === "received" ? receivedPDCs : issuedPDCs;
-    
+
     const headers = [
       "Cheque No",
       "Cheque Date",
@@ -317,10 +352,10 @@ export default function PDCSummary() {
       "Branch",
       "Amount",
       "Status",
-      "Days Until Maturity"
+      "Days Until Maturity",
     ];
-    
-    const rows = currentPDCs.map(pdc => {
+
+    const rows = currentPDCs.map((pdc) => {
       const maturity = getDaysUntilMaturity(pdc.chequeDate);
       return [
         pdc.chequeNo,
@@ -330,16 +365,19 @@ export default function PDCSummary() {
         pdc.bankBranch,
         pdc.amount,
         pdc.status,
-        maturity.label
+        maturity.label,
       ].join(",");
     });
-    
+
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `pdc-summary-${activeTab}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute(
+      "download",
+      `pdc-summary-${activeTab}-${new Date().toISOString().split("T")[0]}.csv`,
+    );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -347,28 +385,38 @@ export default function PDCSummary() {
   };
 
   const bankAccounts = useMemo(() => {
-    return accounts.filter(a => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
+    return accounts.filter((a) => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
   }, [accounts]);
 
   const pdcHoldingAccounts = useMemo(() => {
-    return accounts.filter(a => 
-      a.name.toLowerCase().includes("pdc") || 
-      a.group === "Current Assets" || 
-      a.group === "Current Liabilities"
+    return accounts.filter(
+      (a) =>
+        a.name.toLowerCase().includes("pdc") ||
+        a.group === "Current Assets" ||
+        a.group === "Current Liabilities",
     );
   }, [accounts]);
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar 
-        title="PDC Summary" 
-        icon={<CalendarClock size={16} />}
-      >
-        <Button size="sm" onClick={() => { setModalType("received"); handleAddPDC(); }}>
+      <ActionToolbar title="PDC Summary" icon={<CalendarClock size={16} />}>
+        <Button
+          size="sm"
+          onClick={() => {
+            setModalType("received");
+            handleAddPDC();
+          }}
+        >
           <Plus size={14} className="mr-1" />
           Add PDC Received
         </Button>
-        <Button size="sm" onClick={() => { setModalType("issued"); handleAddPDC(); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            setModalType("issued");
+            handleAddPDC();
+          }}
+        >
           <Plus size={14} className="mr-1" />
           Add PDC Issued
         </Button>
@@ -380,11 +428,11 @@ export default function PDCSummary() {
           Export CSV
         </Button>
       </ActionToolbar>
-      
+
       <div className="flex-1 overflow-auto p-4">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div 
+          <div
             className="bg-white p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
             onClick={() => handleFilterChange("types", ["received"])}
           >
@@ -395,12 +443,14 @@ export default function PDCSummary() {
               <div>
                 <p className="text-sm font-medium text-gray-500">PDCs Received</p>
                 <p className="text-2xl font-bold">{summaryStats.received.count}</p>
-                <p className="text-sm text-gray-600">{formatNumber(summaryStats.received.amount)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatNumber(summaryStats.received.amount)}
+                </p>
               </div>
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="bg-white p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
             onClick={() => handleFilterChange("types", ["issued"])}
           >
@@ -415,8 +465,8 @@ export default function PDCSummary() {
               </div>
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="bg-white p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
             onClick={() => {
               handleFilterChange("statuses", ["due"]);
@@ -430,12 +480,14 @@ export default function PDCSummary() {
               <div>
                 <p className="text-sm font-medium text-gray-500">Due This Week</p>
                 <p className="text-2xl font-bold">{summaryStats.dueThisWeek.count}</p>
-                <p className="text-sm text-gray-600">{formatNumber(summaryStats.dueThisWeek.amount)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatNumber(summaryStats.dueThisWeek.amount)}
+                </p>
               </div>
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="bg-white p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
             onClick={() => {
               handleFilterChange("statuses", ["overdue"]);
@@ -454,7 +506,7 @@ export default function PDCSummary() {
             </div>
           </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="border-b border-gray-200 mb-4">
           <nav className="-mb-px flex space-x-8">
@@ -480,19 +532,19 @@ export default function PDCSummary() {
             </button>
           </nav>
         </div>
-        
+
         {/* Filters */}
         <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Select
             label="Party"
             options={[
               { value: "", label: "All Parties" },
-              ...parties.map(p => ({ value: p.id, label: p.name }))
+              ...parties.map((p) => ({ value: p.id, label: p.name })),
             ]}
             value={filters.partyId}
             onChange={(val) => handleFilterChange("partyId", val)}
           />
-          
+
           <input
             type="text"
             placeholder="Bank Name"
@@ -500,7 +552,7 @@ export default function PDCSummary() {
             onChange={(e) => handleFilterChange("bankName", e.target.value)}
             className="p-2 border rounded text-sm"
           />
-          
+
           <div className="grid grid-cols-2 gap-2">
             <NepaliDatePicker
               label="From"
@@ -513,7 +565,7 @@ export default function PDCSummary() {
               onChange={(val) => handleFilterChange("dateTo", val)}
             />
           </div>
-          
+
           <Select
             label="Status"
             options={[
@@ -523,32 +575,39 @@ export default function PDCSummary() {
               { value: "presented", label: "Presented" },
               { value: "cleared", label: "Cleared" },
               { value: "bounced", label: "Bounced" },
-              { value: "cancelled", label: "Cancelled" }
+              { value: "cancelled", label: "Cancelled" },
             ]}
             value={filters.statuses}
             onChange={(val) => handleFilterChange("statuses", val)}
             multiple
           />
         </div>
-        
+
         {/* Bucket View */}
         {bucketView ? (
           <div className="space-y-6">
             {Object.entries(bucketGroups).map(([bucket, pdcList]) => {
               if (pdcList.length === 0) return null;
-              
-              const bucketName = 
-                bucket === "dueToday" ? "Due Today" :
-                bucket === "dueThisWeek" ? "Due This Week" :
-                bucket === "dueThisMonth" ? "Due This Month" :
-                bucket === "dueNextMonth" ? "Due Next Month" : "Beyond Next Month";
-              
+
+              const bucketName =
+                bucket === "dueToday"
+                  ? "Due Today"
+                  : bucket === "dueThisWeek"
+                    ? "Due This Week"
+                    : bucket === "dueThisMonth"
+                      ? "Due This Month"
+                      : bucket === "dueNextMonth"
+                        ? "Due Next Month"
+                        : "Beyond Next Month";
+
               const totalAmount = pdcList.reduce((sum, p) => sum + p.amount, 0);
-              
+
               return (
                 <div key={bucket} className="border rounded-lg overflow-hidden">
                   <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                    <h3 className="font-medium">{bucketName} ({pdcList.length})</h3>
+                    <h3 className="font-medium">
+                      {bucketName} ({pdcList.length})
+                    </h3>
                     <span className="text-sm font-medium">{formatNumber(totalAmount)}</span>
                   </div>
                   <div className="overflow-x-auto">
@@ -565,9 +624,9 @@ export default function PDCSummary() {
                         </tr>
                       </thead>
                       <tbody>
-                        {pdcList.map(pdc => {
+                        {pdcList.map((pdc) => {
                           const maturity = getDaysUntilMaturity(pdc.chequeDate);
-                          
+
                           return (
                             <tr key={pdc.id} className="border-t hover:bg-gray-50">
                               <td className="p-3">{pdc.chequeNo}</td>
@@ -576,7 +635,7 @@ export default function PDCSummary() {
                               <td className="p-3">{pdc.bankName}</td>
                               <td className="p-3 text-right">{formatNumber(pdc.amount)}</td>
                               <td className="p-3">
-                                <Badge 
+                                <Badge
                                   variant={getStatusVariant(pdc.status)}
                                   className={pdc.status === "due" ? "animate-pulse" : ""}
                                 >
@@ -584,18 +643,19 @@ export default function PDCSummary() {
                                 </Badge>
                               </td>
                               <td className="p-3">
-                                {activeTab === "received" && (pdc.status === "due" || pdc.status === "overdue") && (
-                                  <Button 
-                                    size="xs" 
-                                    variant="outline" 
-                                    onClick={() => {
-                                      setConvertingPDC(pdc);
-                                      setConvertModalOpen(true);
-                                    }}
-                                  >
-                                    Convert
-                                  </Button>
-                                )}
+                                {activeTab === "received" &&
+                                  (pdc.status === "due" || pdc.status === "overdue") && (
+                                    <Button
+                                      size="xs"
+                                      variant="outline"
+                                      onClick={() => {
+                                        setConvertingPDC(pdc);
+                                        setConvertModalOpen(true);
+                                      }}
+                                    >
+                                      Convert
+                                    </Button>
+                                  )}
                               </td>
                             </tr>
                           );
@@ -632,7 +692,7 @@ export default function PDCSummary() {
                     </td>
                   </tr>
                 )}
-                
+
                 {activeTab === "issued" && issuedPDCs.length === 0 && (
                   <tr>
                     <td colSpan={9} className="p-4 text-center text-gray-500">
@@ -640,10 +700,10 @@ export default function PDCSummary() {
                     </td>
                   </tr>
                 )}
-                
-                {(activeTab === "received" ? receivedPDCs : issuedPDCs).map(pdc => {
+
+                {(activeTab === "received" ? receivedPDCs : issuedPDCs).map((pdc) => {
                   const maturity = getDaysUntilMaturity(pdc.chequeDate);
-                  
+
                   return (
                     <tr key={pdc.id} className="border-t hover:bg-gray-50">
                       <td className="p-3">{pdc.chequeNo}</td>
@@ -652,11 +712,9 @@ export default function PDCSummary() {
                       <td className="p-3">{pdc.bankName}</td>
                       <td className="p-3">{pdc.bankBranch}</td>
                       <td className="p-3 text-right">{formatNumber(pdc.amount)}</td>
-                      <td className={`p-3 ${maturity.color}`}>
-                        {maturity.label}
-                      </td>
+                      <td className={`p-3 ${maturity.color}`}>{maturity.label}</td>
                       <td className="p-3">
-                        <Badge 
+                        <Badge
                           variant={getStatusVariant(pdc.status)}
                           className={pdc.status === "due" ? "animate-pulse" : ""}
                         >
@@ -664,18 +722,19 @@ export default function PDCSummary() {
                         </Badge>
                       </td>
                       <td className="p-3">
-                        {activeTab === "received" && (pdc.status === "due" || pdc.status === "overdue") && (
-                          <Button 
-                            size="xs" 
-                            variant="outline" 
-                            onClick={() => {
-                              setConvertingPDC(pdc);
-                              setConvertModalOpen(true);
-                            }}
-                          >
-                            Convert
-                          </Button>
-                        )}
+                        {activeTab === "received" &&
+                          (pdc.status === "due" || pdc.status === "overdue") && (
+                            <Button
+                              size="xs"
+                              variant="outline"
+                              onClick={() => {
+                                setConvertingPDC(pdc);
+                                setConvertModalOpen(true);
+                              }}
+                            >
+                              Convert
+                            </Button>
+                          )}
                       </td>
                     </tr>
                   );
@@ -685,7 +744,7 @@ export default function PDCSummary() {
           </div>
         )}
       </div>
-      
+
       {/* Add PDC Modal */}
       {addModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -695,7 +754,7 @@ export default function PDCSummary() {
                 Add PDC {modalType === "received" ? "Received" : "Issued"}
               </h3>
             </div>
-            
+
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Type</label>
@@ -706,111 +765,117 @@ export default function PDCSummary() {
                   className="w-full p-2 border rounded text-sm bg-gray-100"
                 />
               </div>
-              
+
               <div>
                 <input
                   type="text"
                   placeholder="Cheque No"
                   value={formState.chequeNo}
-                  onChange={(e) => setFormState(prev => ({ ...prev, chequeNo: e.target.value }))}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, chequeNo: e.target.value }))}
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <NepaliDatePicker
                   label="Cheque Date"
                   value={formState.chequeDate}
-                  onChange={(val) => setFormState(prev => ({ ...prev, chequeDate: val }))}
+                  onChange={(val) => setFormState((prev) => ({ ...prev, chequeDate: val }))}
                 />
               </div>
-              
+
               <div>
                 <Select
                   label="Party"
-                  options={parties.map(p => ({ value: p.id, label: p.name }))}
+                  options={parties.map((p) => ({ value: p.id, label: p.name }))}
                   value={formState.partyId}
-                  onChange={(val) => setFormState(prev => ({ ...prev, partyId: val }))}
+                  onChange={(val) => setFormState((prev) => ({ ...prev, partyId: val }))}
                 />
               </div>
-              
+
               <div>
                 <input
                   type="text"
                   placeholder="Bank Name"
                   value={formState.bankName}
-                  onChange={(e) => setFormState(prev => ({ ...prev, bankName: e.target.value }))}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, bankName: e.target.value }))}
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <input
                   type="text"
                   placeholder="Bank Branch"
                   value={formState.bankBranch}
-                  onChange={(e) => setFormState(prev => ({ ...prev, bankBranch: e.target.value }))}
+                  onChange={(e) =>
+                    setFormState((prev) => ({ ...prev, bankBranch: e.target.value }))
+                  }
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <input
                   type="number"
                   placeholder="Amount"
                   value={formState.amount || ""}
-                  onChange={(e) => setFormState(prev => ({ ...prev, amount: Number(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormState((prev) => ({ ...prev, amount: Number(e.target.value) }))
+                  }
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <Select
                   label="Our Bank Account"
-                  options={bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))}
+                  options={bankAccounts.map((acc) => ({ value: acc.id, label: acc.name }))}
                   value={formState.bankAccountId}
-                  onChange={(val) => setFormState(prev => ({ ...prev, bankAccountId: val }))}
+                  onChange={(val) => setFormState((prev) => ({ ...prev, bankAccountId: val }))}
                 />
               </div>
-              
+
               <div className="md:col-span-2">
                 <input
                   type="text"
                   placeholder="Associated Voucher No (Optional)"
                   value={formState.voucherId}
-                  onChange={(e) => setFormState(prev => ({ ...prev, voucherId: e.target.value }))}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, voucherId: e.target.value }))}
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <Select
                   label="Holding Account"
-                  options={pdcHoldingAccounts.map(acc => ({ value: acc.id, label: acc.name }))}
+                  options={pdcHoldingAccounts.map((acc) => ({ value: acc.id, label: acc.name }))}
                   value={formState.holdingAccountId}
-                  onChange={(val) => setFormState(prev => ({ ...prev, holdingAccountId: val }))}
+                  onChange={(val) => setFormState((prev) => ({ ...prev, holdingAccountId: val }))}
                 />
               </div>
-              
+
               <div className="md:col-span-2">
                 <textarea
                   placeholder="Narration"
                   value={formState.narration}
-                  onChange={(e) => setFormState(prev => ({ ...prev, narration: e.target.value }))}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, narration: e.target.value }))}
                   className="w-full p-2 border rounded text-sm"
                   rows={2}
                 />
               </div>
             </div>
-            
+
             <div className="p-4 border-t flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setAddModalOpen(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setAddModalOpen(false)}>
+                Cancel
+              </Button>
               <Button onClick={handleSavePDC}>Save</Button>
             </div>
           </div>
         </div>
       )}
-      
+
       {/* Convert PDC Modal */}
       {convertModalOpen && convertingPDC && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -818,19 +883,23 @@ export default function PDCSummary() {
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">Convert PDC to Bank Entry</h3>
             </div>
-            
+
             <div className="p-4">
               <p className="mb-4">
-                Convert cheque <strong>#{convertingPDC.chequeNo}</strong> from <strong>{convertingPDC.partyName}</strong> to bank entry?
+                Convert cheque <strong>#{convertingPDC.chequeNo}</strong> from{" "}
+                <strong>{convertingPDC.partyName}</strong> to bank entry?
               </p>
-              
+
               <p className="text-sm text-gray-600">
-                This will create a journal entry moving the amount from the PDC holding account to the bank account.
+                This will create a journal entry moving the amount from the PDC holding account to
+                the bank account.
               </p>
             </div>
-            
+
             <div className="p-4 border-t flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setConvertModalOpen(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setConvertModalOpen(false)}>
+                Cancel
+              </Button>
               <Button onClick={handleConvertPDC}>Confirm Conversion</Button>
             </div>
           </div>

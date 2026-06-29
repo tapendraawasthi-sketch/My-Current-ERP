@@ -6,11 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    tsconfigPaths(),
-  ],
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -30,14 +26,17 @@ export default defineConfig({
         "jsonwebtoken",
         "pg-dump-restore",
         "@aws-sdk/client-s3",
-        "@aws-sdk/lib-storage"
+        "@aws-sdk/lib-storage",
       ],
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react";
-          if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts")) return "ui";
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom"))
+            return "react";
+          if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts"))
+            return "ui";
           if (id.includes("node_modules/dexie")) return "db";
-          if (id.includes("node_modules/jspdf") || id.includes("node_modules/jspdf-autotable")) return "pdf";
+          if (id.includes("node_modules/jspdf") || id.includes("node_modules/jspdf-autotable"))
+            return "pdf";
           if (id.includes("node_modules/xlsx")) return "xlsx";
           if (id.includes("node_modules/@tanstack")) return "tanstack";
         },

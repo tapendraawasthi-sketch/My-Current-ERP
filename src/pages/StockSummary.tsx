@@ -2,13 +2,17 @@
 // src/pages/StockSummary.tsx
 // Stock Summary with proper WA / FIFO valuation, group accordion, grand total, Excel export
 // ─────────────────────────────────────────────────────────────────────────────
-import React, { useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
-import toast from 'react-hot-toast';
-import { ChevronDown, ChevronRight, Download, TrendingUp } from 'lucide-react';
-import { useStore } from '../store/useStore';
-import { formatNumber } from '../lib/utils';
-import { computeAllItemSummaries, type ValuationMethod, type StockSummaryRow } from '../lib/inventoryValuation';
+import React, { useMemo, useState } from "react";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
+import { ChevronDown, ChevronRight, Download, TrendingUp } from "lucide-react";
+import { useStore } from "../store/useStore";
+import { formatNumber } from "../lib/utils";
+import {
+  computeAllItemSummaries,
+  type ValuationMethod,
+  type StockSummaryRow,
+} from "../lib/inventoryValuation";
 
 // ─────────────────────────────────────────────────────────────────────────────
 const AmtCell = ({ v }: { v: number }) => (
@@ -24,23 +28,22 @@ const QtyCell = ({ v }: { v: number }) => (
 
 // ─────────────────────────────────────────────────────────────────────────────
 const StockSummary: React.FC = () => {
-  const { items, stockMovements, currentFiscalYear, itemGroups, warehouses, companySettings } = useStore();
+  const { items, stockMovements, currentFiscalYear, itemGroups, warehouses, companySettings } =
+    useStore();
 
-  const [method,          setMethod]          = useState<ValuationMethod>('weighted-average');
-  const [fromDate,        setFromDate]        = useState(currentFiscalYear?.startDate ?? '');
-  const [toDate,          setToDate]          = useState(currentFiscalYear?.endDate   ?? '');
-  const [groupFilter,     setGroupFilter]     = useState('');
-  const [warehouseFilter, setWarehouseFilter] = useState('');
-  const [showZeroStock,   setShowZeroStock]   = useState(false);
+  const [method, setMethod] = useState<ValuationMethod>("weighted-average");
+  const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate ?? "");
+  const [toDate, setToDate] = useState(currentFiscalYear?.endDate ?? "");
+  const [groupFilter, setGroupFilter] = useState("");
+  const [warehouseFilter, setWarehouseFilter] = useState("");
+  const [showZeroStock, setShowZeroStock] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
   // ── Build summary rows ───────────────────────────────────────────────────
   const summaryRows: StockSummaryRow[] = useMemo(() => {
     if (!items?.length) return [];
-    const allItems = groupFilter
-      ? items.filter((i) => i.groupId === groupFilter)
-      : items;
-    const productItems = allItems.filter((i) => i.type !== 'service');
+    const allItems = groupFilter ? items.filter((i) => i.groupId === groupFilter) : items;
+    const productItems = allItems.filter((i) => i.type !== "service");
     return computeAllItemSummaries(
       method,
       stockMovements ?? [],
@@ -48,9 +51,19 @@ const StockSummary: React.FC = () => {
       itemGroups ?? [],
       fromDate,
       toDate,
-      warehouseFilter || null
+      warehouseFilter || null,
     ).filter((r) => showZeroStock || r.closingQty !== 0 || r.inQty !== 0 || r.outQty !== 0);
-  }, [items, stockMovements, itemGroups, method, fromDate, toDate, groupFilter, warehouseFilter, showZeroStock]);
+  }, [
+    items,
+    stockMovements,
+    itemGroups,
+    method,
+    fromDate,
+    toDate,
+    groupFilter,
+    warehouseFilter,
+    showZeroStock,
+  ]);
 
   // ── Group by item group ──────────────────────────────────────────────────
   const grouped = useMemo(() => {
@@ -63,16 +76,19 @@ const StockSummary: React.FC = () => {
   }, [summaryRows]);
 
   // ── Grand totals ─────────────────────────────────────────────────────────
-  const grand = useMemo(() => ({
-    openingQty:   summaryRows.reduce((s, r) => s + r.openingQty,   0),
-    openingValue: summaryRows.reduce((s, r) => s + r.openingValue, 0),
-    inQty:        summaryRows.reduce((s, r) => s + r.inQty,        0),
-    inValue:      summaryRows.reduce((s, r) => s + r.inValue,      0),
-    outQty:       summaryRows.reduce((s, r) => s + r.outQty,       0),
-    outValue:     summaryRows.reduce((s, r) => s + r.outValue,     0),
-    closingQty:   summaryRows.reduce((s, r) => s + r.closingQty,   0),
-    closingValue: summaryRows.reduce((s, r) => s + r.closingValue, 0),
-  }), [summaryRows]);
+  const grand = useMemo(
+    () => ({
+      openingQty: summaryRows.reduce((s, r) => s + r.openingQty, 0),
+      openingValue: summaryRows.reduce((s, r) => s + r.openingValue, 0),
+      inQty: summaryRows.reduce((s, r) => s + r.inQty, 0),
+      inValue: summaryRows.reduce((s, r) => s + r.inValue, 0),
+      outQty: summaryRows.reduce((s, r) => s + r.outQty, 0),
+      outValue: summaryRows.reduce((s, r) => s + r.outValue, 0),
+      closingQty: summaryRows.reduce((s, r) => s + r.closingQty, 0),
+      closingValue: summaryRows.reduce((s, r) => s + r.closingValue, 0),
+    }),
+    [summaryRows],
+  );
 
   // ── Toggle group collapse ────────────────────────────────────────────────
   const toggleGroup = (gid: string) => {
@@ -86,42 +102,42 @@ const StockSummary: React.FC = () => {
   // ── Export ───────────────────────────────────────────────────────────────
   const handleExport = () => {
     const rows = summaryRows.map((r) => ({
-      'Item Group':      r.groupName,
-      'Item Name':       r.itemName,
-      'Unit':            r.unit,
-      'Opening Qty':     r.openingQty,
-      'Opening Value':   r.openingValue,
-      'Inward Qty':      r.inQty,
-      'Inward Value':    r.inValue,
-      'Outward Qty':     r.outQty,
-      'Outward Value':   r.outValue,
-      'Closing Qty':     r.closingQty,
-      'Closing Rate':    r.closingRate,
-      'Closing Value':   r.closingValue,
+      "Item Group": r.groupName,
+      "Item Name": r.itemName,
+      Unit: r.unit,
+      "Opening Qty": r.openingQty,
+      "Opening Value": r.openingValue,
+      "Inward Qty": r.inQty,
+      "Inward Value": r.inValue,
+      "Outward Qty": r.outQty,
+      "Outward Value": r.outValue,
+      "Closing Qty": r.closingQty,
+      "Closing Rate": r.closingRate,
+      "Closing Value": r.closingValue,
     }));
     // Append grand total
     rows.push({
-      'Item Group':      'GRAND TOTAL',
-      'Item Name':       '',
-      'Unit':            '',
-      'Opening Qty':     grand.openingQty,
-      'Opening Value':   grand.openingValue,
-      'Inward Qty':      grand.inQty,
-      'Inward Value':    grand.inValue,
-      'Outward Qty':     grand.outQty,
-      'Outward Value':   grand.outValue,
-      'Closing Qty':     grand.closingQty,
-      'Closing Rate':    0,
-      'Closing Value':   grand.closingValue,
+      "Item Group": "GRAND TOTAL",
+      "Item Name": "",
+      Unit: "",
+      "Opening Qty": grand.openingQty,
+      "Opening Value": grand.openingValue,
+      "Inward Qty": grand.inQty,
+      "Inward Value": grand.inValue,
+      "Outward Qty": grand.outQty,
+      "Outward Value": grand.outValue,
+      "Closing Qty": grand.closingQty,
+      "Closing Rate": 0,
+      "Closing Value": grand.closingValue,
     });
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Stock Summary');
+    XLSX.utils.book_append_sheet(wb, ws, "Stock Summary");
     XLSX.writeFile(wb, `stock-summary-${fromDate}-to-${toDate}.xlsx`);
-    toast.success('Exported to Excel');
+    toast.success("Exported to Excel");
   };
 
-  const methodLabel = method === 'fifo' ? 'FIFO' : 'Weighted Average';
+  const methodLabel = method === "fifo" ? "FIFO" : "Weighted Average";
 
   return (
     <div className="page-wrapper">
@@ -136,14 +152,14 @@ const StockSummary: React.FC = () => {
         </div>
         <div className="page-toolbar-right">
           <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === 'weighted-average' ? 'bg-[#C9DEB5]' : 'bg-[#EBF5E2] hover:bg-[#D4EABD]'}`}
-            onClick={() => setMethod('weighted-average')}
+            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === "weighted-average" ? "bg-[#C9DEB5]" : "bg-[#EBF5E2] hover:bg-[#D4EABD]"}`}
+            onClick={() => setMethod("weighted-average")}
           >
             Weighted Avg
           </button>
           <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === 'fifo' ? 'bg-[#C9DEB5]' : 'bg-[#EBF5E2] hover:bg-[#D4EABD]'}`}
-            onClick={() => setMethod('fifo')}
+            className={`px-3 py-1 text-[11px] font-bold uppercase border border-black rounded ${method === "fifo" ? "bg-[#C9DEB5]" : "bg-[#EBF5E2] hover:bg-[#D4EABD]"}`}
+            onClick={() => setMethod("fifo")}
           >
             FIFO
           </button>
@@ -160,43 +176,69 @@ const StockSummary: React.FC = () => {
       <div className="flex flex-wrap items-center gap-3 px-4 py-2 bg-[#EBF5E2] border-b border-black">
         <label className="flex items-center gap-1.5 text-[11px]">
           From:
-          <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]" />
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
+          />
         </label>
         <label className="flex items-center gap-1.5 text-[11px]">
           To:
-          <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]" />
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
+          />
         </label>
-        <select value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}
-          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[160px]">
+        <select
+          value={groupFilter}
+          onChange={(e) => setGroupFilter(e.target.value)}
+          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[160px]"
+        >
           <option value="">All Item Groups</option>
-          {(itemGroups ?? []).map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+          {(itemGroups ?? []).map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
         </select>
-        <select value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}
-          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[140px]">
+        <select
+          value={warehouseFilter}
+          onChange={(e) => setWarehouseFilter(e.target.value)}
+          className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[140px]"
+        >
           <option value="">All Warehouses</option>
-          {(warehouses ?? []).map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+          {(warehouses ?? []).map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
         </select>
         <label className="flex items-center gap-1.5 text-[11px] cursor-pointer">
-          <input type="checkbox" checked={showZeroStock} onChange={(e) => setShowZeroStock(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={showZeroStock}
+            onChange={(e) => setShowZeroStock(e.target.checked)}
+          />
           Show zero stock
         </label>
-        <div className="ml-auto text-[11px] text-gray-600">
-          {summaryRows.length} items
-        </div>
+        <div className="ml-auto text-[11px] text-gray-600">{summaryRows.length} items</div>
       </div>
 
       {/* ── KPI cards ── */}
       <div className="grid grid-cols-4 gap-px bg-black border-b border-black">
         {[
-          { label: 'Opening Value',   val: grand.openingValue  },
-          { label: 'Inward Value',    val: grand.inValue       },
-          { label: 'Outward Value',   val: grand.outValue      },
-          { label: 'Closing Value',   val: grand.closingValue  },
+          { label: "Opening Value", val: grand.openingValue },
+          { label: "Inward Value", val: grand.inValue },
+          { label: "Outward Value", val: grand.outValue },
+          { label: "Closing Value", val: grand.closingValue },
         ].map((k) => (
           <div key={k.label} className="bg-[#EBF5E2] px-4 py-2">
-            <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">{k.label}</div>
+            <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">
+              {k.label}
+            </div>
             <div className="text-[15px] font-bold font-mono">Rs. {formatNumber(k.val)}</div>
           </div>
         ))}
@@ -212,8 +254,12 @@ const StockSummary: React.FC = () => {
           <table className="data-table w-full" style={{ minWidth: 1050 }}>
             <thead>
               <tr>
-                <th className="px-3 py-2 text-left" style={{ width: 220 }}>Item</th>
-                <th className="px-3 py-2 text-center" style={{ width: 50 }}>Unit</th>
+                <th className="px-3 py-2 text-left" style={{ width: 220 }}>
+                  Item
+                </th>
+                <th className="px-3 py-2 text-center" style={{ width: 50 }}>
+                  Unit
+                </th>
                 {/* Opening */}
                 <th className="px-3 py-2 text-right bg-[#EBF5E2]">Op. Qty</th>
                 <th className="px-3 py-2 text-right bg-[#EBF5E2]">Op. Value</th>
@@ -244,7 +290,16 @@ const StockSummary: React.FC = () => {
                     closingQty: acc.closingQty + r.closingQty,
                     closingValue: acc.closingValue + r.closingValue,
                   }),
-                  { openingQty: 0, openingValue: 0, inQty: 0, inValue: 0, outQty: 0, outValue: 0, closingQty: 0, closingValue: 0 }
+                  {
+                    openingQty: 0,
+                    openingValue: 0,
+                    inQty: 0,
+                    inValue: 0,
+                    outQty: 0,
+                    outValue: 0,
+                    closingQty: 0,
+                    closingValue: 0,
+                  },
                 );
                 return (
                   <React.Fragment key={groupId}>
@@ -255,8 +310,15 @@ const StockSummary: React.FC = () => {
                     >
                       <td className="px-3 py-1.5" colSpan={2}>
                         <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide">
-                          {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                          {name} <span className="font-normal text-gray-600 ml-1">({rows.length} items)</span>
+                          {isCollapsed ? (
+                            <ChevronRight className="h-3.5 w-3.5" />
+                          ) : (
+                            <ChevronDown className="h-3.5 w-3.5" />
+                          )}
+                          {name}{" "}
+                          <span className="font-normal text-gray-600 ml-1">
+                            ({rows.length} items)
+                          </span>
                         </div>
                       </td>
                       <QtyCell v={sub.openingQty} />
@@ -272,27 +334,34 @@ const StockSummary: React.FC = () => {
                       </td>
                     </tr>
                     {/* Item rows */}
-                    {!isCollapsed && rows.map((r, i) => (
-                      <tr key={r.itemId} className={i % 2 === 0 ? 'bg-white' : 'bg-[#EBF5E2]'}>
-                        <td className="px-3 py-1.5 pl-8 text-[12px]">{r.itemName}</td>
-                        <td className="px-3 py-1.5 text-center text-[11px] text-gray-500">{r.unit}</td>
-                        <QtyCell v={r.openingQty} />
-                        <AmtCell v={r.openingValue} />
-                        <QtyCell v={r.inQty} />
-                        <AmtCell v={r.inValue} />
-                        <QtyCell v={r.outQty} />
-                        <AmtCell v={r.outValue} />
-                        <td className={`px-3 py-1.5 text-right font-mono text-[12px] font-bold ${r.closingQty < 0 ? 'text-red-700' : ''}`}>
-                          {formatNumber(r.closingQty)}
-                        </td>
-                        <td className="px-3 py-1.5 text-right font-mono text-[11px]">
-                          {formatNumber(r.closingRate)}
-                        </td>
-                        <td className={`px-3 py-1.5 text-right font-mono text-[12px] font-semibold ${r.closingQty < 0 ? 'text-red-700' : ''}`}>
-                          {formatNumber(r.closingValue)}
-                        </td>
-                      </tr>
-                    ))}
+                    {!isCollapsed &&
+                      rows.map((r, i) => (
+                        <tr key={r.itemId} className={i % 2 === 0 ? "bg-white" : "bg-[#EBF5E2]"}>
+                          <td className="px-3 py-1.5 pl-8 text-[12px]">{r.itemName}</td>
+                          <td className="px-3 py-1.5 text-center text-[11px] text-gray-500">
+                            {r.unit}
+                          </td>
+                          <QtyCell v={r.openingQty} />
+                          <AmtCell v={r.openingValue} />
+                          <QtyCell v={r.inQty} />
+                          <AmtCell v={r.inValue} />
+                          <QtyCell v={r.outQty} />
+                          <AmtCell v={r.outValue} />
+                          <td
+                            className={`px-3 py-1.5 text-right font-mono text-[12px] font-bold ${r.closingQty < 0 ? "text-red-700" : ""}`}
+                          >
+                            {formatNumber(r.closingQty)}
+                          </td>
+                          <td className="px-3 py-1.5 text-right font-mono text-[11px]">
+                            {formatNumber(r.closingRate)}
+                          </td>
+                          <td
+                            className={`px-3 py-1.5 text-right font-mono text-[12px] font-semibold ${r.closingQty < 0 ? "text-red-700" : ""}`}
+                          >
+                            {formatNumber(r.closingValue)}
+                          </td>
+                        </tr>
+                      ))}
                   </React.Fragment>
                 );
               })}
@@ -300,14 +369,28 @@ const StockSummary: React.FC = () => {
             {/* Grand total footer */}
             <tfoot>
               <tr className="border-t-2 border-black bg-[#C9DEB5] font-bold">
-                <td colSpan={2} className="px-3 py-2 text-[12px] uppercase">Grand Total</td>
+                <td colSpan={2} className="px-3 py-2 text-[12px] uppercase">
+                  Grand Total
+                </td>
                 <td className="px-3 py-2 text-right font-mono">{formatNumber(grand.openingQty)}</td>
-                <td className="px-3 py-2 text-right font-mono">Rs. {formatNumber(grand.openingValue)}</td>
-                <td className="px-3 py-2 text-right font-mono text-green-700">{formatNumber(grand.inQty)}</td>
-                <td className="px-3 py-2 text-right font-mono text-green-700">Rs. {formatNumber(grand.inValue)}</td>
-                <td className="px-3 py-2 text-right font-mono text-red-700">{formatNumber(grand.outQty)}</td>
-                <td className="px-3 py-2 text-right font-mono text-red-700">Rs. {formatNumber(grand.outValue)}</td>
-                <td className="px-3 py-2 text-right font-mono text-[14px]">{formatNumber(grand.closingQty)}</td>
+                <td className="px-3 py-2 text-right font-mono">
+                  Rs. {formatNumber(grand.openingValue)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-green-700">
+                  {formatNumber(grand.inQty)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-green-700">
+                  Rs. {formatNumber(grand.inValue)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-red-700">
+                  {formatNumber(grand.outQty)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-red-700">
+                  Rs. {formatNumber(grand.outValue)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-[14px]">
+                  {formatNumber(grand.closingQty)}
+                </td>
                 <td />
                 <td className="px-3 py-2 text-right font-mono text-[14px] text-[#1557b0]">
                   Rs. {formatNumber(grand.closingValue)}

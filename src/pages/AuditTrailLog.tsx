@@ -367,17 +367,15 @@ export default function AuditTrailLog() {
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">
                         {formatTimestamp(log.timestamp)}
                       </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{log.userName}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {log.userName}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${getActionColor(log.action)}`}>
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${getActionColor(log.action)}`}
+                        >
                           {log.action}
                         </span>
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-600">
-                        {log.module}
-                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-600">{log.module}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">
                         {log.recordNo}
                       </td>
@@ -402,9 +400,7 @@ export default function AuditTrailLog() {
                           "—"
                         )}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {log.ipAddress}
-                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{log.ipAddress}</td>
                     </tr>
 
                     {isExpanded && (

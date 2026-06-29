@@ -1,9 +1,9 @@
-import { pool } from '../db/pool.js';
-import nodemailer from 'nodemailer';
+import { pool } from "../db/pool.js";
+import nodemailer from "nodemailer";
 
 export const getSettings = async (req, res, next) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM company_settings WHERE id = 1');
+    const { rows } = await pool.query("SELECT * FROM company_settings WHERE id = 1");
     if (rows.length === 0) {
       return res.json({}); // Provide empty object, frontend falls back to defaults or we can insert one.
     }
@@ -16,27 +16,58 @@ export const getSettings = async (req, res, next) => {
 export const updateSettings = async (req, res, next) => {
   try {
     const {
-      company_name, company_name_nepali, address, city, district, province,
-      country, phone, mobile, email, website, pan_number, vat_number,
-      registration_number, fiscal_year_type, currency_symbol, currency_code,
-      date_format, language, decimal_places, enable_vat, vat_rate,
-      enable_tds, tds_rate, invoice_prefix, receipt_prefix, voucher_prefix,
-      smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from,
-      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month, logo_url
+      company_name,
+      company_name_nepali,
+      address,
+      city,
+      district,
+      province,
+      country,
+      phone,
+      mobile,
+      email,
+      website,
+      pan_number,
+      vat_number,
+      registration_number,
+      fiscal_year_type,
+      currency_symbol,
+      currency_code,
+      date_format,
+      language,
+      decimal_places,
+      enable_vat,
+      vat_rate,
+      enable_tds,
+      tds_rate,
+      invoice_prefix,
+      receipt_prefix,
+      voucher_prefix,
+      smtp_host,
+      smtp_port,
+      smtp_user,
+      smtp_pass,
+      smtp_from,
+      theme_color,
+      enable_nepali_date,
+      show_both_dates,
+      financial_year_start_month,
+      logo_url,
     } = req.body;
 
     // Validation
     if (pan_number && (pan_number.length !== 9 || !/^\d+$/.test(pan_number))) {
-      return res.status(400).json({ success: false, error: 'PAN number must be exactly 9 digits' });
+      return res.status(400).json({ success: false, error: "PAN number must be exactly 9 digits" });
     }
     if (vat_rate < 0 || vat_rate > 100) {
-      return res.status(400).json({ success: false, error: 'VAT rate must be between 0 and 100' });
+      return res.status(400).json({ success: false, error: "VAT rate must be between 0 and 100" });
     }
     if (email && !/\S+@\S+\.\S+/.test(email)) {
-      return res.status(400).json({ success: false, error: 'Invalid email format' });
+      return res.status(400).json({ success: false, error: "Invalid email format" });
     }
 
-    const { rows } = await pool.query(`
+    const { rows } = await pool.query(
+      `
       UPDATE company_settings SET
         company_name = COALESCE($1, company_name),
         company_name_nepali = COALESCE($2, company_name_nepali),
@@ -77,15 +108,47 @@ export const updateSettings = async (req, res, next) => {
         logo_url = COALESCE($37, logo_url),
         updated_at = NOW()
       WHERE id = 1 RETURNING *
-    `, [
-      company_name, company_name_nepali, address, city, district, province,
-      country, phone, mobile, email, website, pan_number, vat_number,
-      registration_number, fiscal_year_type, currency_symbol, currency_code,
-      date_format, language, decimal_places, enable_vat, vat_rate,
-      enable_tds, tds_rate, invoice_prefix, receipt_prefix, voucher_prefix,
-      smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from,
-      theme_color, enable_nepali_date, show_both_dates, financial_year_start_month, logo_url
-    ]);
+    `,
+      [
+        company_name,
+        company_name_nepali,
+        address,
+        city,
+        district,
+        province,
+        country,
+        phone,
+        mobile,
+        email,
+        website,
+        pan_number,
+        vat_number,
+        registration_number,
+        fiscal_year_type,
+        currency_symbol,
+        currency_code,
+        date_format,
+        language,
+        decimal_places,
+        enable_vat,
+        vat_rate,
+        enable_tds,
+        tds_rate,
+        invoice_prefix,
+        receipt_prefix,
+        voucher_prefix,
+        smtp_host,
+        smtp_port,
+        smtp_user,
+        smtp_pass,
+        smtp_from,
+        theme_color,
+        enable_nepali_date,
+        show_both_dates,
+        financial_year_start_month,
+        logo_url,
+      ],
+    );
 
     res.json({ success: true, data: rows[0] });
   } catch (err) {
@@ -96,14 +159,16 @@ export const updateSettings = async (req, res, next) => {
 export const uploadLogo = async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No logo file provided' });
+      return res.status(400).json({ success: false, error: "No logo file provided" });
     }
     // Store as base64 data URL so it persists through Render redeploys
-    const base64 = req.file.buffer.toString('base64');
-    const mimeType = req.file.mimetype || 'image/png';
+    const base64 = req.file.buffer.toString("base64");
+    const mimeType = req.file.mimetype || "image/png";
     const dataUrl = `data:${mimeType};base64,${base64}`;
-    
-    await pool.query('UPDATE company_settings SET logo_url = $1, updated_at = NOW() WHERE id = 1', [dataUrl]);
+
+    await pool.query("UPDATE company_settings SET logo_url = $1, updated_at = NOW() WHERE id = 1", [
+      dataUrl,
+    ]);
     res.json({ success: true, data: { logoUrl: dataUrl } });
   } catch (err) {
     next(err);
@@ -112,14 +177,18 @@ export const uploadLogo = async (req, res, next) => {
 
 export const testEmail = async (req, res, next) => {
   try {
-    const { rows } = await pool.query('SELECT smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from, email FROM company_settings WHERE id = 1');
+    const { rows } = await pool.query(
+      "SELECT smtp_host, smtp_port, smtp_user, smtp_pass, smtp_from, email FROM company_settings WHERE id = 1",
+    );
     if (rows.length === 0) {
-      return res.status(400).json({ success: false, error: 'SMTP settings not found' });
+      return res.status(400).json({ success: false, error: "SMTP settings not found" });
     }
     const settings = rows[0];
 
     if (!settings.smtp_host || !settings.smtp_user) {
-      return res.status(400).json({ success: false, error: 'SMTP host and user must be configured first' });
+      return res
+        .status(400)
+        .json({ success: false, error: "SMTP host and user must be configured first" });
     }
 
     const transporter = nodemailer.createTransport({
@@ -135,11 +204,14 @@ export const testEmail = async (req, res, next) => {
     await transporter.sendMail({
       from: settings.smtp_from || settings.smtp_user,
       to: settings.email || settings.smtp_user,
-      subject: 'Test Email from Sutra ERP',
-      text: 'This is a test email to verify your SMTP configuration is correct.',
+      subject: "Test Email from Sutra ERP",
+      text: "This is a test email to verify your SMTP configuration is correct.",
     });
 
-    res.json({ success: true, message: `Test email sent successfully to ${settings.email || settings.smtp_user}` });
+    res.json({
+      success: true,
+      message: `Test email sent successfully to ${settings.email || settings.smtp_user}`,
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: `SMTP Error: ${err.message}` });
   }

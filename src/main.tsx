@@ -25,5 +25,5 @@ createRoot(container).render(
         </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

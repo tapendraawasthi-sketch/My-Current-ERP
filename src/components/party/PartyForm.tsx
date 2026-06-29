@@ -69,17 +69,15 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
     accounts,
     addParty,
     updateParty,
-    priceLists,      // string[] or PriceList[] – use what's in your store
-    salesPersons,    // string[] or SalesPerson[] – use what's in your store
+    priceLists, // string[] or PriceList[] – use what's in your store
+    salesPersons, // string[] or SalesPerson[] – use what's in your store
   } = useStore();
 
   const isEdit = Boolean(partyId);
   const existing = isEdit ? parties.find((p) => p.id === partyId) : null;
 
   // ── Basic ─────────────────────────────────────────────────────────────────
-  const [partyType, setPartyType] = useState<PartyType>(
-    existing?.partyType ?? "customer"
-  );
+  const [partyType, setPartyType] = useState<PartyType>(existing?.partyType ?? "customer");
   const [name, setName] = useState(existing?.name ?? "");
   const [alias, setAlias] = useState(existing?.alias ?? "");
   const [code, setCode] = useState(existing?.code ?? "");
@@ -98,13 +96,11 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
   const [contacts, setContacts] = useState<ContactRow[]>(
     existing?.contacts?.length
       ? existing.contacts.map((c: any) => ({ id: crypto.randomUUID(), ...c }))
-      : [emptyContact()]
+      : [emptyContact()],
   );
 
   const updateContact = (id: string, field: keyof ContactRow, value: string) => {
-    setContacts((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-    );
+    setContacts((prev) => prev.map((c) => (c.id === id ? { ...c, [field]: value } : c)));
   };
 
   const addContactRow = () => setContacts((prev) => [...prev, emptyContact()]);
@@ -121,13 +117,11 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
   const [banks, setBanks] = useState<BankRow[]>(
     existing?.bankAccounts?.length
       ? existing.bankAccounts.map((b: any) => ({ id: crypto.randomUUID(), ...b }))
-      : [emptyBank()]
+      : [emptyBank()],
   );
 
   const updateBank = (id: string, field: keyof BankRow, value: string) => {
-    setBanks((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, [field]: value } : b))
-    );
+    setBanks((prev) => prev.map((b) => (b.id === id ? { ...b, [field]: value } : b)));
   };
 
   const addBankRow = () => setBanks((prev) => [...prev, emptyBank()]);
@@ -141,32 +135,22 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
   };
 
   // ── Financial / Ledger ────────────────────────────────────────────────────
-  const [creditLimit, setCreditLimit] = useState<number>(
-    existing?.creditLimit ?? 0
-  );
-  const [creditPeriod, setCreditPeriod] = useState<number>(
-    existing?.creditPeriod ?? 0
-  );
+  const [creditLimit, setCreditLimit] = useState<number>(existing?.creditLimit ?? 0);
+  const [creditPeriod, setCreditPeriod] = useState<number>(existing?.creditPeriod ?? 0);
   const [ledgerId, setLedgerId] = useState<string>(existing?.ledgerId ?? "");
 
   // ── Sales-person & Price-list (Task 3.3) ─────────────────────────────────
-  const [salesPersonId, setSalesPersonId] = useState<string>(
-    existing?.salesPersonId ?? ""
-  );
-  const [priceListId, setPriceListId] = useState<string>(
-    existing?.priceListId ?? ""
-  );
+  const [salesPersonId, setSalesPersonId] = useState<string>(existing?.salesPersonId ?? "");
+  const [priceListId, setPriceListId] = useState<string>(existing?.priceListId ?? "");
 
   // ── TDS / Tax ─────────────────────────────────────────────────────────────
-  const [tdsApplicable, setTdsApplicable] = useState<boolean>(
-    existing?.tdsApplicable ?? false
-  );
+  const [tdsApplicable, setTdsApplicable] = useState<boolean>(existing?.tdsApplicable ?? false);
   const [tdsRate, setTdsRate] = useState<number>(existing?.tdsRate ?? 0);
 
   // ── Tab state ─────────────────────────────────────────────────────────────
-  const [activeTab, setActiveTab] = useState<
-    "basic" | "contact" | "bank" | "financial" | "tax"
-  >("basic");
+  const [activeTab, setActiveTab] = useState<"basic" | "contact" | "bank" | "financial" | "tax">(
+    "basic",
+  );
 
   // ── Derived account lists ─────────────────────────────────────────────────
   const debtorAccounts = useMemo(
@@ -174,10 +158,9 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
       accounts.filter(
         (a) =>
           a.level === "ledger" &&
-          (a.name.toLowerCase().includes("debtor") ||
-            a.name.toLowerCase().includes("receivable"))
+          (a.name.toLowerCase().includes("debtor") || a.name.toLowerCase().includes("receivable")),
       ),
-    [accounts]
+    [accounts],
   );
 
   const creditorAccounts = useMemo(
@@ -185,10 +168,9 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
       accounts.filter(
         (a) =>
           a.level === "ledger" &&
-          (a.name.toLowerCase().includes("creditor") ||
-            a.name.toLowerCase().includes("payable"))
+          (a.name.toLowerCase().includes("creditor") || a.name.toLowerCase().includes("payable")),
       ),
-    [accounts]
+    [accounts],
   );
 
   // Auto-select ledger based on party type
@@ -206,14 +188,10 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
   const validate = (): string | null => {
     if (!name.trim()) return "Party name is required.";
     if (!code.trim()) return "Party code is required.";
-    const dupCode = parties.find(
-      (p) => p.code === code.trim() && p.id !== partyId
-    );
+    const dupCode = parties.find((p) => p.code === code.trim() && p.id !== partyId);
     if (dupCode) return `Code "${code}" is already in use.`;
     const dupName = parties.find(
-      (p) =>
-        p.name.toLowerCase() === name.trim().toLowerCase() &&
-        p.id !== partyId
+      (p) => p.name.toLowerCase() === name.trim().toLowerCase() && p.id !== partyId,
     );
     if (dupName) return `Party "${name}" already exists.`;
     return null;
@@ -283,7 +261,6 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col">
-
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center gap-3">
@@ -299,10 +276,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
@@ -327,7 +301,6 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
         {/* Scrollable Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
           <div className="p-6 space-y-5">
-
             {/* ── BASIC TAB ─────────────────────────────────────────── */}
             {activeTab === "basic" && (
               <div className="space-y-4">
@@ -337,26 +310,21 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                     Party Type *
                   </label>
                   <div className="flex gap-4">
-                    {(["customer", "supplier", "both"] as PartyType[]).map(
-                      (pt) => (
-                        <label
-                          key={pt}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <input
-                            type="radio"
-                            name="partyType"
-                            value={pt}
-                            checked={partyType === pt}
-                            onChange={() => setPartyType(pt)}
-                            className="accent-[#1557b0]"
-                          />
-                          <span className="text-[12px] font-medium text-gray-700 capitalize">
-                            {pt}
-                          </span>
-                        </label>
-                      )
-                    )}
+                    {(["customer", "supplier", "both"] as PartyType[]).map((pt) => (
+                      <label key={pt} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="partyType"
+                          value={pt}
+                          checked={partyType === pt}
+                          onChange={() => setPartyType(pt)}
+                          className="accent-[#1557b0]"
+                        />
+                        <span className="text-[12px] font-medium text-gray-700 capitalize">
+                          {pt}
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
@@ -420,9 +388,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
 
                   {/* PAN */}
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      PAN
-                    </label>
+                    <label className="block text-[11px] font-medium text-gray-600 mb-1">PAN</label>
                     <input
                       type="text"
                       value={pan}
@@ -449,9 +415,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
 
                   {/* City */}
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      City
-                    </label>
+                    <label className="block text-[11px] font-medium text-gray-600 mb-1">City</label>
                     <input
                       type="text"
                       value={city}
@@ -565,9 +529,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                             <input
                               type="text"
                               value={c.name}
-                              onChange={(e) =>
-                                updateContact(c.id, "name", e.target.value)
-                              }
+                              onChange={(e) => updateContact(c.id, "name", e.target.value)}
                               placeholder="Contact name"
                               className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                             />
@@ -581,9 +543,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                           <input
                             type="text"
                             value={c.designation}
-                            onChange={(e) =>
-                              updateContact(c.id, "designation", e.target.value)
-                            }
+                            onChange={(e) => updateContact(c.id, "designation", e.target.value)}
                             placeholder="e.g. Manager"
                             className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                           />
@@ -598,9 +558,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                             <input
                               type="tel"
                               value={c.phone}
-                              onChange={(e) =>
-                                updateContact(c.id, "phone", e.target.value)
-                              }
+                              onChange={(e) => updateContact(c.id, "phone", e.target.value)}
                               placeholder="+91 98XXXXXXXX"
                               className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                             />
@@ -616,9 +574,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                             <input
                               type="email"
                               value={c.email}
-                              onChange={(e) =>
-                                updateContact(c.id, "email", e.target.value)
-                              }
+                              onChange={(e) => updateContact(c.id, "email", e.target.value)}
                               placeholder="contact@example.com"
                               className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                             />
@@ -650,10 +606,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
 
                 <div className="space-y-3">
                   {banks.map((b, idx) => (
-                    <div
-                      key={b.id}
-                      className="border border-gray-200 rounded-lg p-4 bg-[#f5f6fa]"
-                    >
+                    <div key={b.id} className="border border-gray-200 rounded-lg p-4 bg-[#f5f6fa]">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-[10px] font-semibold text-gray-500 uppercase">
                           Bank Account {idx + 1}
@@ -676,9 +629,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                           <input
                             type="text"
                             value={b.bankName}
-                            onChange={(e) =>
-                              updateBank(b.id, "bankName", e.target.value)
-                            }
+                            onChange={(e) => updateBank(b.id, "bankName", e.target.value)}
                             placeholder="e.g. State Bank of India"
                             className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                           />
@@ -690,9 +641,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                           </label>
                           <select
                             value={b.accountType}
-                            onChange={(e) =>
-                              updateBank(b.id, "accountType", e.target.value)
-                            }
+                            onChange={(e) => updateBank(b.id, "accountType", e.target.value)}
                             className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                           >
                             <option value="savings">Savings</option>
@@ -711,9 +660,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                             <input
                               type="text"
                               value={b.accountNo}
-                              onChange={(e) =>
-                                updateBank(b.id, "accountNo", e.target.value)
-                              }
+                              onChange={(e) => updateBank(b.id, "accountNo", e.target.value)}
                               placeholder="Account number"
                               className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                             />
@@ -727,9 +674,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                           <input
                             type="text"
                             value={b.ifsc}
-                            onChange={(e) =>
-                              updateBank(b.id, "ifsc", e.target.value.toUpperCase())
-                            }
+                            onChange={(e) => updateBank(b.id, "ifsc", e.target.value.toUpperCase())}
                             placeholder="e.g. SBIN0001234"
                             maxLength={11}
                             className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
@@ -745,9 +690,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                             <input
                               type="text"
                               value={b.branch}
-                              onChange={(e) =>
-                                updateBank(b.id, "branch", e.target.value)
-                              }
+                              onChange={(e) => updateBank(b.id, "branch", e.target.value)}
                               placeholder="Branch name / address"
                               className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
                             />
@@ -801,9 +744,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                       type="number"
                       min={0}
                       value={creditLimit}
-                      onChange={(e) =>
-                        setCreditLimit(Number(e.target.value))
-                      }
+                      onChange={(e) => setCreditLimit(Number(e.target.value))}
                       className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
                     />
                   </div>
@@ -817,9 +758,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                       type="number"
                       min={0}
                       value={creditPeriod}
-                      onChange={(e) =>
-                        setCreditPeriod(Number(e.target.value))
-                      }
+                      onChange={(e) => setCreditPeriod(Number(e.target.value))}
                       className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
                     />
                   </div>
@@ -836,10 +775,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                     >
                       <option value="">— None —</option>
                       {(salesPersons ?? []).map((sp: any) => (
-                        <option
-                          key={sp.id ?? sp}
-                          value={sp.id ?? sp}
-                        >
+                        <option key={sp.id ?? sp} value={sp.id ?? sp}>
                           {sp.name ?? sp}
                         </option>
                       ))}
@@ -858,10 +794,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                     >
                       <option value="">— Default —</option>
                       {(priceLists ?? []).map((pl: any) => (
-                        <option
-                          key={pl.id ?? pl}
-                          value={pl.id ?? pl}
-                        >
+                        <option key={pl.id ?? pl} value={pl.id ?? pl}>
                           {pl.name ?? pl}
                         </option>
                       ))}
@@ -898,9 +831,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                           max={100}
                           step={0.01}
                           value={tdsRate}
-                          onChange={(e) =>
-                            setTdsRate(Number(e.target.value))
-                          }
+                          onChange={(e) => setTdsRate(Number(e.target.value))}
                           className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                         />
                       </div>
@@ -909,7 +840,6 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
                 )}
               </div>
             )}
-
           </div>
         </form>
 
@@ -932,7 +862,6 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
             {isEdit ? "Update Party" : "Save Party"}
           </button>
         </div>
-
       </div>
     </div>
   );

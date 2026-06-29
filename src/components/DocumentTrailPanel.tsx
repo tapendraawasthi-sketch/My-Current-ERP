@@ -9,7 +9,7 @@ interface Props {
 
 const DocumentTrailPanel: React.FC<Props> = ({ voucher, vouchers, onOpen }) => {
   const trail = useMemo(
-    () => buildDocumentTrail(voucher, vouchers || []),
+    () => (voucher ? buildDocumentTrail(voucher, vouchers || []) : []),
     [voucher, vouchers],
   );
 
@@ -17,9 +17,7 @@ const DocumentTrailPanel: React.FC<Props> = ({ voucher, vouchers, onOpen }) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-md p-3">
-      <h3 className="text-[12px] font-semibold text-gray-800 mb-2">
-        Document Trail
-      </h3>
+      <h3 className="text-[12px] font-semibold text-gray-800 mb-2">Document Trail</h3>
 
       <div className="flex flex-wrap items-center gap-2 text-[12px]">
         {trail.map((doc, index) => (

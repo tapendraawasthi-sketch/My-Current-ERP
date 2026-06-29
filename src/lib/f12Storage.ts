@@ -1,13 +1,13 @@
 // src/lib/f12Storage.ts
 // F12 Configuration System — localStorage persistence layer
 
-import { type F12ValueMap, type F12ScreenId, getDefaultValues } from './f12Types';
+import { type F12ValueMap, type F12ScreenId, getDefaultValues } from "./f12Types";
 
-export const STORAGE_KEY_PREFIX = 'sutra_f12__';
+export const STORAGE_KEY_PREFIX = "sutra_f12__";
 
 function buildKey(companyId: string, screenId: string): string {
   // Safe key: replace any non-alphanumeric chars with underscore
-  const safe = (s: string) => s.replace(/[^a-zA-Z0-9]/g, '_');
+  const safe = (s: string) => s.replace(/[^a-zA-Z0-9]/g, "_");
   return `${STORAGE_KEY_PREFIX}${safe(companyId)}__${safe(screenId)}`;
 }
 
@@ -33,11 +33,7 @@ export function loadF12Values(companyId: string, screenId: F12ScreenId): F12Valu
  * Save F12 values for a given company + screen.
  * Automatically strips out default values to keep the storage payload small.
  */
-export function saveF12Values(
-  companyId: string,
-  screenId: F12ScreenId,
-  values: F12ValueMap,
-): void {
+export function saveF12Values(companyId: string, screenId: F12ScreenId, values: F12ValueMap): void {
   try {
     const defaults = getDefaultValues(screenId);
     const overridesToSave: F12ValueMap = {};
@@ -50,7 +46,7 @@ export function saveF12Values(
     }
 
     const storageKey = buildKey(companyId, screenId);
-    
+
     // If there are no overrides, clear the key entirely to save space
     if (Object.keys(overridesToSave).length === 0) {
       localStorage.removeItem(storageKey);
@@ -58,7 +54,7 @@ export function saveF12Values(
       localStorage.setItem(storageKey, JSON.stringify(overridesToSave));
     }
   } catch (e) {
-    console.error('[F12] Failed to save config:', e);
+    console.error("[F12] Failed to save config:", e);
   }
 }
 
@@ -70,7 +66,7 @@ export function resetF12Values(companyId: string, screenId: F12ScreenId): void {
   try {
     localStorage.removeItem(buildKey(companyId, screenId));
   } catch (e) {
-    console.error('[F12] Failed to reset config:', e);
+    console.error("[F12] Failed to reset config:", e);
   }
 }
 

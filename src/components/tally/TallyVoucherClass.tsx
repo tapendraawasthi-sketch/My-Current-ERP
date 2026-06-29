@@ -6,10 +6,10 @@
  * auto-selects Cash-in-Hand).  Classes are stored in memory (store) and
  * shown as a quick-select strip at the top of Payment / Receipt vouchers.
  */
-import React, { useState } from 'react';
-import { Plus, Trash2, X, Zap } from 'lucide-react';
-import type { VoucherClass, TallyType } from '@/lib/tallyVoucher';
-import { cryptoRandomId } from '@/lib/tallyVoucher';
+import React, { useState } from "react";
+import { Plus, Trash2, X, Zap } from "lucide-react";
+import type { VoucherClass, TallyType } from "@/lib/tallyVoucher";
+import { cryptoRandomId } from "@/lib/tallyVoucher";
 
 // ─── Strip (rendered inside voucher entry) ────────────────────────────────────
 interface StripProps {
@@ -18,22 +18,18 @@ interface StripProps {
   onSelect: (cls: VoucherClass) => void;
 }
 
-export const VoucherClassStrip: React.FC<StripProps> = ({
-  classes,
-  activeId,
-  onSelect,
-}) => {
+export const VoucherClassStrip: React.FC<StripProps> = ({ classes, activeId, onSelect }) => {
   if (!classes.length) return null;
   return (
     <div className="flex items-center gap-1 px-3 py-1 bg-[var(--t-muted)] border-b border-[var(--t-line-soft)]">
-      <Zap size={12} className="mr-1 shrink-0" style={{ color: 'var(--t-accent)' }} />
+      <Zap size={12} className="mr-1 shrink-0" style={{ color: "var(--t-accent)" }} />
       <span className="tally-label mr-2">Class:</span>
       {classes.map((cls) => (
         <button
           key={cls.id}
           type="button"
-          className={`tally-hint ${cls.id === activeId ? 'tally-btn-primary' : ''}`}
-          style={{ fontSize: 11, padding: '1px 8px' }}
+          className={`tally-hint ${cls.id === activeId ? "tally-btn-primary" : ""}`}
+          style={{ fontSize: 11, padding: "1px 8px" }}
           onClick={() => onSelect(cls)}
           title={`Pre-fill: ${cls.defaultAccountName}`}
         >
@@ -61,8 +57,8 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
   onClose,
 }) => {
   const [list, setList] = useState<VoucherClass[]>(classes);
-  const [name, setName] = useState('');
-  const [accountId, setAccountId] = useState('');
+  const [name, setName] = useState("");
+  const [accountId, setAccountId] = useState("");
 
   const ledgers = accounts.filter((a) => !a.isGroup && a.isActive !== false);
   const selectedAcct = ledgers.find((a) => a.id === accountId);
@@ -77,8 +73,8 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
       defaultAccountName: selectedAcct?.name || accountId,
     };
     setList((p) => [...p, newCls]);
-    setName('');
-    setAccountId('');
+    setName("");
+    setAccountId("");
   };
 
   const removeCls = (id: string) => setList((p) => p.filter((c) => c.id !== id));
@@ -90,7 +86,9 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
           <span className="flex items-center gap-2">
             <Zap size={14} /> Voucher Classes — {voucherType}
           </span>
-          <button onClick={onClose}><X size={16} /></button>
+          <button onClick={onClose}>
+            <X size={16} />
+          </button>
         </div>
 
         <div className="tally-modal-body">
@@ -110,7 +108,9 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
             >
               <option value="">Select default ledger…</option>
               {ledgers.map((a) => (
-                <option key={a.id} value={a.id}>{a.name}</option>
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
               ))}
             </select>
             <button
@@ -125,7 +125,7 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
 
           {/* Existing classes */}
           {list.length === 0 ? (
-            <p style={{ fontSize: 12, color: 'gray', textAlign: 'center', padding: 16 }}>
+            <p style={{ fontSize: 12, color: "gray", textAlign: "center", padding: 16 }}>
               No classes yet. Add one above.
             </p>
           ) : (
@@ -142,7 +142,7 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
                   <tr key={cls.id}>
                     <td>{cls.name}</td>
                     <td>{cls.defaultAccountName}</td>
-                    <td style={{ textAlign: 'center' }}>
+                    <td style={{ textAlign: "center" }}>
                       <button
                         type="button"
                         className="tally-btn tally-btn-danger py-0.5 px-2"
@@ -159,11 +159,16 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
         </div>
 
         <div className="flex justify-end gap-2 p-3 border-t border-[#9DC07A]">
-          <button type="button" className="tally-btn" onClick={onClose}>Cancel</button>
+          <button type="button" className="tally-btn" onClick={onClose}>
+            Cancel
+          </button>
           <button
             type="button"
             className="tally-btn tally-btn-primary"
-            onClick={() => { onSave(list); onClose(); }}
+            onClick={() => {
+              onSave(list);
+              onClose();
+            }}
           >
             Save Classes
           </button>

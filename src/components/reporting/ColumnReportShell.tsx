@@ -64,8 +64,8 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
 }) => {
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
 
-  const [visibleKeys, setVisibleKeys] = useState<string[]>(
-    () => columns.filter((c) => c.visible !== false).map((c) => c.key),
+  const [visibleKeys, setVisibleKeys] = useState<string[]>(() =>
+    columns.filter((c) => c.visible !== false).map((c) => c.key),
   );
 
   useEffect(() => {
@@ -104,11 +104,7 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
   }, [pageSize, totalRows]);
 
   const rowHeightClass =
-    rowHeight === "compact"
-      ? "h-7"
-      : rowHeight === "comfortable"
-        ? "h-11"
-        : "h-9";
+    rowHeight === "compact" ? "h-7" : rowHeight === "comfortable" ? "h-11" : "h-9";
 
   return (
     <div
@@ -121,9 +117,7 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
       <div className="no-print bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between gap-3">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          {subtitle && (
-            <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
         </div>
 
         <div className="flex items-center gap-2">
@@ -281,11 +275,7 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
       </div>
 
       {/* Report body */}
-      <div
-        className={`flex-1 overflow-auto column-report-body ${rowHeightClass}`}
-      >
-        {children}
-      </div>
+      <div className={`flex-1 overflow-auto column-report-body ${rowHeightClass}`}>{children}</div>
     </div>
   );
 };

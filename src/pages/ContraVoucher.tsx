@@ -605,4 +605,3 @@ const ContraVoucher: React.FC = () => {
 };
 
 export default ContraVoucher;
-

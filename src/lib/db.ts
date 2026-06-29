@@ -1143,74 +1143,40 @@ export class SutraERPDatabase extends Dexie {
 
     // Version 18 — original schema (must stay for Dexie migration chain)
     this.version(18).stores({
-      accounts:
-        "id, code, name, type, level, parentId, isGroup, isActive, createdAt",
-      parties:
-        "id, code, name, type, pan, isActive, createdAt",
-      items:
-        "id, code, sku, barcode, name, category, group, unit, isActive, createdAt",
-      vouchers:
-        "id, voucherNo, date, type, status, partyId, createdAt",
-      invoices:
-        "id, invoiceNo, date, type, status, partyId, paymentStatus, cbmsStatus, createdAt",
-      stockMovements:
-        "id, date, type, itemId, warehouseId, referenceId, referenceType, createdAt",
-      warehouses:
-        "id, code, name, isActive, createdAt",
-      stockTransfers:
-        "id, transferNo, date, fromWarehouseId, toWarehouseId, status, createdAt",
-      units:
-        "id, code, name, isActive, createdAt",
-      unitConversions:
-        "id, fromUnitId, toUnitId, itemId, isActive, createdAt",
-      costCenters:
-        "id, code, name, type, parentId, isActive, createdAt",
-      fiscalYears:
-        "id, name, startDate, endDate, status, isDefault, createdAt",
-      companySettings:
-        "id",
-      users:
-        "id, username, name, role, isActive, createdAt",
-      notifications:
-        "id, type, read, userId, createdAt",
-      shortcuts:
-        "++id, key_combo, category, is_active",
-      posSessions:
-        "id, date, userId, status, openedAt, createdAt",
-      posHolds:
-        "id, name, userId, createdAt",
-      priceLists:
-        "id, name, type, isActive, validFrom, validTo, createdAt",
-      billSundries:
-        "id, code, name, type, isActive, createdAt",
-      standardNarrations:
-        "id, narration, voucherType, isActive, sortOrder, createdAt",
-      salesPersons:
-        "id, code, name, isActive, createdAt",
-      purchaseOrders:
-        "id, poNo, date, partyId, status, createdAt",
-      salesOrders:
-        "id, soNo, date, partyId, status, createdAt",
-      quotations:
-        "id, quotationNo, date, partyId, status, createdAt",
-      deliveryChallans:
-        "id, dcNo, date, partyId, status, linkedSoId, createdAt",
-      goodsReceiptNotes:
-        "id, grnNo, date, partyId, status, linkedPoId, createdAt",
-      physicalStocks:
-        "id, stockNo, date, warehouseId, status, createdAt",
-      budgets:
-        "id, name, fiscalYearId, type, status, createdAt",
-      fixedAssets:
-        "id, code, name, category, status, purchaseDate, createdAt",
-      bankReconciliations:
-        "id, bankAccountId, statementDate, status, createdAt",
-      employees:
-        "id, code, name, department, isActive, createdAt",
-      payrollEntries:
-        "id, month, year, employeeId, status, createdAt",
-      auditLogs:
-        "++id, timestamp, userId, action, entityType, entityId",
+      accounts: "id, code, name, type, level, parentId, isGroup, isActive, createdAt",
+      parties: "id, code, name, type, pan, isActive, createdAt",
+      items: "id, code, sku, barcode, name, category, group, unit, isActive, createdAt",
+      vouchers: "id, voucherNo, date, type, status, partyId, createdAt",
+      invoices: "id, invoiceNo, date, type, status, partyId, paymentStatus, cbmsStatus, createdAt",
+      stockMovements: "id, date, type, itemId, warehouseId, referenceId, referenceType, createdAt",
+      warehouses: "id, code, name, isActive, createdAt",
+      stockTransfers: "id, transferNo, date, fromWarehouseId, toWarehouseId, status, createdAt",
+      units: "id, code, name, isActive, createdAt",
+      unitConversions: "id, fromUnitId, toUnitId, itemId, isActive, createdAt",
+      costCenters: "id, code, name, type, parentId, isActive, createdAt",
+      fiscalYears: "id, name, startDate, endDate, status, isDefault, createdAt",
+      companySettings: "id",
+      users: "id, username, name, role, isActive, createdAt",
+      notifications: "id, type, read, userId, createdAt",
+      shortcuts: "++id, key_combo, category, is_active",
+      posSessions: "id, date, userId, status, openedAt, createdAt",
+      posHolds: "id, name, userId, createdAt",
+      priceLists: "id, name, type, isActive, validFrom, validTo, createdAt",
+      billSundries: "id, code, name, type, isActive, createdAt",
+      standardNarrations: "id, narration, voucherType, isActive, sortOrder, createdAt",
+      salesPersons: "id, code, name, isActive, createdAt",
+      purchaseOrders: "id, poNo, date, partyId, status, createdAt",
+      salesOrders: "id, soNo, date, partyId, status, createdAt",
+      quotations: "id, quotationNo, date, partyId, status, createdAt",
+      deliveryChallans: "id, dcNo, date, partyId, status, linkedSoId, createdAt",
+      goodsReceiptNotes: "id, grnNo, date, partyId, status, linkedPoId, createdAt",
+      physicalStocks: "id, stockNo, date, warehouseId, status, createdAt",
+      budgets: "id, name, fiscalYearId, type, status, createdAt",
+      fixedAssets: "id, code, name, category, status, purchaseDate, createdAt",
+      bankReconciliations: "id, bankAccountId, statementDate, status, createdAt",
+      employees: "id, code, name, department, isActive, createdAt",
+      payrollEntries: "id, month, year, employeeId, status, createdAt",
+      auditLogs: "++id, timestamp, userId, action, entityType, entityId",
     });
 
     // Version 19 — adds loginHistory audit table (no data migration needed)
@@ -1219,47 +1185,47 @@ export class SutraERPDatabase extends Dexie {
     });
 
     this.version(20).stores({
-      currencies:           "id, code, name, isActive",
-      recurringVouchers:    "id, type, status, nextDueDate, createdAt",
-      customFieldDefs:      "id, entityType, fieldName, isActive, createdAt",
-      billSundryMasters:    "id, code, name, type, isActive, createdAt",
-      saleTypes:            "id, name, isActive, createdAt",
-      purchaseTypes:        "id, name, isActive, createdAt",
-      taxCategories:        "id, name, rate, isActive, createdAt",
-      discountStructures:   "id, name, type, isActive, createdAt",
-      itemGroups:           "id, name, parentId, isActive, createdAt",
-      holidays:             "id, name, date, createdAt",
-      bankStatements:       "id, bankAccountId, date, createdAt",
-      tdsEntries:           "id, date, partyId, section, createdAt",
-      tdsChallans:          "id, challanNo, date, quarter, createdAt",
-      stockJournals:        "id, journalNo, date, status, createdAt",
-      productions:          "id, productionNo, date, status, createdAt",
-      unassembles:          "id, unassembleNo, date, status, createdAt",
-      materialIssued:       "id, issueNo, date, status, createdAt",
-      materialReceived:     "id, receiveNo, date, status, createdAt",
-      stockCategories:      "id, name, parentId, isActive, createdAt",
-      voucherTypeMasters:   "id, name, type, isActive, createdAt",
-      scenarios:            "id, name, isActive, createdAt",
-      costCategories:       "id, name, isActive, createdAt",
-      costCentreClasses:    "id, name, isActive, createdAt",
-      reorderLevels:        "id, itemId, warehouseId, reorderQty, createdAt",
-      priceLevels:          "id, name, isActive, createdAt",
-      hsCodes:              "id, code, description, createdAt",
-      batches:              "id, batchNo, itemId, expiryDate, createdAt",
-      vatClassifications:   "id, name, rate, isActive, createdAt",
-      tdsNatureOfPayment:   "id, name, section, rate, isActive, createdAt",
-      employeeGroups:       "id, name, isActive, createdAt",
-      payHeads:             "id, name, type, isActive, createdAt",
-      salaryDetails:        "id, employeeId, effectiveDate, createdAt",
-      payrollUnits:         "id, name, type, createdAt",
-      attendanceTypes:      "id, name, code, isActive, createdAt",
-      ledgerExtensions:     "id, accountId, createdAt",
-      chequeBooks:          "id, bankAccountId, startLeaf, endLeaf, status, createdAt",
-      cheques:              "id, chequeBookId, chequeNo, status, createdAt",
-      depositSlips:         "id, slipNo, bankAccountId, date, status, createdAt",
-      pdCheques:            "id, chequeNo, partyId, dueDate, status, createdAt",
-      ePaymentBatches:      "id, batchNo, bankAccountId, date, status, createdAt",
-      paymentAdvices:       "id, adviceNo, partyId, date, status, createdAt",
+      currencies: "id, code, name, isActive",
+      recurringVouchers: "id, type, status, nextDueDate, createdAt",
+      customFieldDefs: "id, entityType, fieldName, isActive, createdAt",
+      billSundryMasters: "id, code, name, type, isActive, createdAt",
+      saleTypes: "id, name, isActive, createdAt",
+      purchaseTypes: "id, name, isActive, createdAt",
+      taxCategories: "id, name, rate, isActive, createdAt",
+      discountStructures: "id, name, type, isActive, createdAt",
+      itemGroups: "id, name, parentId, isActive, createdAt",
+      holidays: "id, name, date, createdAt",
+      bankStatements: "id, bankAccountId, date, createdAt",
+      tdsEntries: "id, date, partyId, section, createdAt",
+      tdsChallans: "id, challanNo, date, quarter, createdAt",
+      stockJournals: "id, journalNo, date, status, createdAt",
+      productions: "id, productionNo, date, status, createdAt",
+      unassembles: "id, unassembleNo, date, status, createdAt",
+      materialIssued: "id, issueNo, date, status, createdAt",
+      materialReceived: "id, receiveNo, date, status, createdAt",
+      stockCategories: "id, name, parentId, isActive, createdAt",
+      voucherTypeMasters: "id, name, type, isActive, createdAt",
+      scenarios: "id, name, isActive, createdAt",
+      costCategories: "id, name, isActive, createdAt",
+      costCentreClasses: "id, name, isActive, createdAt",
+      reorderLevels: "id, itemId, warehouseId, reorderQty, createdAt",
+      priceLevels: "id, name, isActive, createdAt",
+      hsCodes: "id, code, description, createdAt",
+      batches: "id, batchNo, itemId, expiryDate, createdAt",
+      vatClassifications: "id, name, rate, isActive, createdAt",
+      tdsNatureOfPayment: "id, name, section, rate, isActive, createdAt",
+      employeeGroups: "id, name, isActive, createdAt",
+      payHeads: "id, name, type, isActive, createdAt",
+      salaryDetails: "id, employeeId, effectiveDate, createdAt",
+      payrollUnits: "id, name, type, createdAt",
+      attendanceTypes: "id, name, code, isActive, createdAt",
+      ledgerExtensions: "id, accountId, createdAt",
+      chequeBooks: "id, bankAccountId, startLeaf, endLeaf, status, createdAt",
+      cheques: "id, chequeBookId, chequeNo, status, createdAt",
+      depositSlips: "id, slipNo, bankAccountId, date, status, createdAt",
+      pdCheques: "id, chequeNo, partyId, dueDate, status, createdAt",
+      ePaymentBatches: "id, batchNo, bankAccountId, date, status, createdAt",
+      paymentAdvices: "id, adviceNo, partyId, date, status, createdAt",
     });
   }
 }
@@ -1288,16 +1254,96 @@ export async function seedPredefinedVoucherTypes(): Promise<void> {
   if (existing > 0) return; // already seeded
 
   const predefined = [
-    { id: "vt-sales-invoice",    name: "Sales Invoice",    type: "sales-invoice",    isPredefined: true, isActive: true, prefix: "SI", numbering: "auto" },
-    { id: "vt-purchase-invoice", name: "Purchase Invoice", type: "purchase-invoice", isPredefined: true, isActive: true, prefix: "PI", numbering: "auto" },
-    { id: "vt-sales-return",     name: "Sales Return",     type: "sales-return",     isPredefined: true, isActive: true, prefix: "SR", numbering: "auto" },
-    { id: "vt-purchase-return",  name: "Purchase Return",  type: "purchase-return",  isPredefined: true, isActive: true, prefix: "PR", numbering: "auto" },
-    { id: "vt-receipt",          name: "Receipt",          type: "receipt",          isPredefined: true, isActive: true, prefix: "RC", numbering: "auto" },
-    { id: "vt-payment",          name: "Payment",          type: "payment",          isPredefined: true, isActive: true, prefix: "PV", numbering: "auto" },
-    { id: "vt-journal",          name: "Journal",          type: "journal",          isPredefined: true, isActive: true, prefix: "JV", numbering: "auto" },
-    { id: "vt-contra",           name: "Contra",           type: "contra",           isPredefined: true, isActive: true, prefix: "CV", numbering: "auto" },
-    { id: "vt-debit-note",       name: "Debit Note",       type: "debit-note",       isPredefined: true, isActive: true, prefix: "DN", numbering: "auto" },
-    { id: "vt-credit-note",      name: "Credit Note",      type: "credit-note",      isPredefined: true, isActive: true, prefix: "CN", numbering: "auto" },
+    {
+      id: "vt-sales-invoice",
+      name: "Sales Invoice",
+      type: "sales-invoice",
+      isPredefined: true,
+      isActive: true,
+      prefix: "SI",
+      numbering: "auto",
+    },
+    {
+      id: "vt-purchase-invoice",
+      name: "Purchase Invoice",
+      type: "purchase-invoice",
+      isPredefined: true,
+      isActive: true,
+      prefix: "PI",
+      numbering: "auto",
+    },
+    {
+      id: "vt-sales-return",
+      name: "Sales Return",
+      type: "sales-return",
+      isPredefined: true,
+      isActive: true,
+      prefix: "SR",
+      numbering: "auto",
+    },
+    {
+      id: "vt-purchase-return",
+      name: "Purchase Return",
+      type: "purchase-return",
+      isPredefined: true,
+      isActive: true,
+      prefix: "PR",
+      numbering: "auto",
+    },
+    {
+      id: "vt-receipt",
+      name: "Receipt",
+      type: "receipt",
+      isPredefined: true,
+      isActive: true,
+      prefix: "RC",
+      numbering: "auto",
+    },
+    {
+      id: "vt-payment",
+      name: "Payment",
+      type: "payment",
+      isPredefined: true,
+      isActive: true,
+      prefix: "PV",
+      numbering: "auto",
+    },
+    {
+      id: "vt-journal",
+      name: "Journal",
+      type: "journal",
+      isPredefined: true,
+      isActive: true,
+      prefix: "JV",
+      numbering: "auto",
+    },
+    {
+      id: "vt-contra",
+      name: "Contra",
+      type: "contra",
+      isPredefined: true,
+      isActive: true,
+      prefix: "CV",
+      numbering: "auto",
+    },
+    {
+      id: "vt-debit-note",
+      name: "Debit Note",
+      type: "debit-note",
+      isPredefined: true,
+      isActive: true,
+      prefix: "DN",
+      numbering: "auto",
+    },
+    {
+      id: "vt-credit-note",
+      name: "Credit Note",
+      type: "credit-note",
+      isPredefined: true,
+      isActive: true,
+      prefix: "CN",
+      numbering: "auto",
+    },
   ];
 
   await database.voucherTypeMasters.bulkPut(predefined as any[]);

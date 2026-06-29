@@ -191,9 +191,7 @@ export function getNearExpiryBatches(
     .map(withStatus)
     .filter(
       (batch) =>
-        batch.currentQty > 0 &&
-        batch.daysToExpiry >= 0 &&
-        batch.daysToExpiry <= daysThreshold,
+        batch.currentQty > 0 && batch.daysToExpiry >= 0 && batch.daysToExpiry <= daysThreshold,
     )
     .sort((a, b) => a.daysToExpiry - b.daysToExpiry);
 }

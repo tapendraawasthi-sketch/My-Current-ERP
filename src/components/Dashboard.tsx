@@ -4,77 +4,89 @@ import { useStore } from "../store/useStore";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { formatADToBS } from "../lib/nepaliDate";
 import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
-import { Bell, AlertTriangle, Clock, TrendingDown, CheckCircle, XCircle, Package, RefreshCw } from "lucide-react";
+import {
+  Bell,
+  AlertTriangle,
+  Clock,
+  TrendingDown,
+  CheckCircle,
+  XCircle,
+  Package,
+  RefreshCw,
+} from "lucide-react";
 import { getDB } from "../lib/db";
 
 const Dashboard: React.FC = () => {
-  const isDbReady = useStore(state => state.isDbReady);
-  const accounts = useStore(state => state.accounts);
-  const vouchers = useStore(state => state.vouchers);
-  const invoices = useStore(state => state.invoices);
-  const items = useStore(state => state.items);
-  const parties = useStore(state => state.parties);
-  const warehouses = useStore(state => state.warehouses);
-  const fiscalYears = useStore(state => state.fiscalYears);
-  const companySettings = useStore(state => state.companySettings);
-  const stockMovements = useStore(state => state.stockMovements);
-  const setCurrentPage = useStore(state => state.setCurrentPage);
+  const isDbReady = useStore((state) => state.isDbReady);
+  const accounts = useStore((state) => state.accounts);
+  const vouchers = useStore((state) => state.vouchers);
+  const invoices = useStore((state) => state.invoices);
+  const items = useStore((state) => state.items);
+  const parties = useStore((state) => state.parties);
+  const warehouses = useStore((state) => state.warehouses);
+  const fiscalYears = useStore((state) => state.fiscalYears);
+  const companySettings = useStore((state) => state.companySettings);
+  const stockMovements = useStore((state) => state.stockMovements);
+  const setCurrentPage = useStore((state) => state.setCurrentPage);
 
   // Existing dashboard computations
-  const today = new Date().toISOString().split('T')[0];
-  const currentFiscalYear = fiscalYears.find(fy => fy.status === 'open');
+  const today = new Date().toISOString().split("T")[0];
+  const currentFiscalYear = fiscalYears.find((fy) => fy.status === "open");
 
   // Today's vouchers
   const todaysVouchers = useMemo(() => {
-    return vouchers.filter(v => v.date === today && v.status === VoucherStatus.POSTED);
+    return vouchers.filter((v) => v.date === today && v.status === VoucherStatus.POSTED);
   }, [vouchers, today]);
 
   // Today's invoices
   const todaysInvoices = useMemo(() => {
-    return invoices.filter(inv => inv.date === today && inv.status === VoucherStatus.POSTED);
+    return invoices.filter((inv) => inv.date === today && inv.status === VoucherStatus.POSTED);
   }, [invoices, today]);
 
   // Today's receipts
   const todaysReceipts = useMemo(() => {
-    return vouchers.filter(v => 
-      v.date === today && 
-      v.status === VoucherStatus.POSTED && 
-      (v.type === 'receipt' || v.type === 'RECEIPT')
+    return vouchers.filter(
+      (v) =>
+        v.date === today &&
+        v.status === VoucherStatus.POSTED &&
+        (v.type === "receipt" || v.type === "RECEIPT"),
     );
   }, [vouchers, today]);
 
   // Today's purchase invoices
   const todaysPurchases = useMemo(() => {
-    return invoices.filter(inv => 
-      inv.date === today && 
-      inv.status === VoucherStatus.POSTED && 
-      (inv.type === 'purchase-invoice' || inv.type === 'PURCHASE_INVOICE')
+    return invoices.filter(
+      (inv) =>
+        inv.date === today &&
+        inv.status === VoucherStatus.POSTED &&
+        (inv.type === "purchase-invoice" || inv.type === "PURCHASE_INVOICE"),
     );
   }, [invoices, today]);
 
   // Outstanding receivables
   const outstandingReceivables = useMemo(() => {
     return invoices
-      .filter(inv => 
-        (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
-        inv.status === "posted" &&
-        (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial")
+      .filter(
+        (inv) =>
+          (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
+          inv.status === "posted" &&
+          (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial"),
       )
-      .reduce((sum, inv) => sum + (inv.grandTotal || 0), 0);
+      .reduce((sum, inv) => sum + ((inv.grandTotal || 0) - (inv.paidAmount || 0)), 0);
   }, [invoices]);
 
   // Cash & Bank balance
   const cashBankBalance = useMemo(() => {
-    const cashAccounts = accounts.filter(acc => 
-      acc.type === 'cash' || acc.name.toLowerCase().includes('cash')
+    const cashAccounts = accounts.filter(
+      (acc) => acc.type === "cash" || acc.name.toLowerCase().includes("cash"),
     );
-    const bankAccounts = accounts.filter(acc => 
-      acc.type === 'bank' || acc.name.toLowerCase().includes('bank')
+    const bankAccounts = accounts.filter(
+      (acc) => acc.type === "bank" || acc.name.toLowerCase().includes("bank"),
     );
-    
+
     const cashBalance = cashAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
     const bankBalance = bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
-    
+
     return cashBalance + bankBalance;
   }, [accounts]);
 
@@ -84,16 +96,17 @@ const Dashboard: React.FC = () => {
       const qty = Number(move.quantity || move.qty || 0);
       const rate = Number(move.rate || move.costRate || 0);
       const type = String(move.type || move.movementType || "").toLowerCase();
-      return (type === "in" || type === "purchase") ? sum + (qty * rate) : sum - (qty * rate);
+      return type === "in" || type === "purchase" || type === "opening"
+        ? sum + qty * rate
+        : sum - qty * (move.costRate || move.rate || 0);
     }, 0);
   }, [stockMovements]);
 
   // VAT liability (simplified)
   const vatLiability = useMemo(() => {
     // Simplified calculation - in reality this would be more complex
-    const salesInvoices = invoices.filter(inv => 
-      inv.type === VoucherType.SALES_INVOICE && 
-      inv.status === "posted"
+    const salesInvoices = invoices.filter(
+      (inv) => inv.type === VoucherType.SALES_INVOICE && inv.status === "posted",
     );
     return salesInvoices.reduce((sum, inv) => sum + (inv.vatAmount || 0), 0);
   }, [invoices]);
@@ -101,14 +114,16 @@ const Dashboard: React.FC = () => {
   // Alerts computation
   const alerts = useMemo(() => {
     const alertList = [];
-    const today = new Date().toISOString().split('T')[0];
-    
+    const today = new Date().toISOString().split("T")[0];
+
     // ALERT 1: Overdue receivables (outstanding > 30 days with no payment)
-    const overdueInvoices = (invoices || []).filter(inv => 
-      (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
-      inv.status === "posted" &&
-      (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial") &&
-      inv.dueDate && inv.dueDate < today
+    const overdueInvoices = (invoices || []).filter(
+      (inv) =>
+        (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
+        inv.status === "posted" &&
+        (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial") &&
+        inv.dueDate &&
+        inv.dueDate < today,
     );
     if (overdueInvoices.length > 0) {
       const overdueAmount = overdueInvoices.reduce((s, inv) => s + (inv.grandTotal || 0), 0);
@@ -117,22 +132,22 @@ const Dashboard: React.FC = () => {
         type: "danger",
         icon: "AlertTriangle",
         title: `${overdueInvoices.length} Overdue Invoices`,
-        message: `Rs. ${overdueAmount.toLocaleString("en-IN", {maximumFractionDigits:0})} outstanding beyond due date`,
+        message: `Rs. ${overdueAmount.toLocaleString("en-IN", { maximumFractionDigits: 0 })} outstanding beyond due date`,
         action: "VIEW OUTSTANDING",
-        actionPage: "outstanding-receivables"
+        actionPage: "outstanding-receivables",
       });
     }
-    
+
     // ALERT 2: Stock below reorder level
-    const reorderAlerts = (items || []).filter(item => {
+    const reorderAlerts = (items || []).filter((item) => {
       const reorderQty = item.reorderLevel || item.minStockLevel || 0;
       if (reorderQty <= 0) return false;
       const currentStock = (stockMovements || [])
-        .filter(m => m.itemId === item.id)
+        .filter((m) => m.itemId === item.id)
         .reduce((s, m) => {
           const qty = Number(m.quantity || m.qty || 0);
           const t = String(m.type || m.movementType || "").toLowerCase();
-          return (t === "in" || t === "purchase") ? s + qty : s - qty;
+          return t === "in" || t === "purchase" ? s + qty : s - qty;
         }, 0);
       return currentStock <= reorderQty;
     });
@@ -142,18 +157,27 @@ const Dashboard: React.FC = () => {
         type: "warning",
         icon: "Package",
         title: `${reorderAlerts.length} Items Below Reorder Level`,
-        message: `${reorderAlerts.slice(0,3).map(i=>i.name).join(", ")}${reorderAlerts.length > 3 ? " and more..." : ""}`,
+        message: `${reorderAlerts
+          .slice(0, 3)
+          .map((i) => i.name)
+          .join(", ")}${reorderAlerts.length > 3 ? " and more..." : ""}`,
         action: "VIEW STOCK",
-        actionPage: "stock-summary"
+        actionPage: "stock-summary",
       });
     }
-    
+
     // ALERT 3: PDC cheques due in next 3 days
     const threeDaysLater = new Date();
     threeDaysLater.setDate(threeDaysLater.getDate() + 3);
-    const threeDaysStr = threeDaysLater.toISOString().split('T')[0];
-    const duePDC = (vouchers || []).filter(v => 
-      v.type === "receipt" && v.pdc && v.pdcDate && v.pdcDate <= threeDaysStr && v.pdcDate >= today && v.status === "posted"
+    const threeDaysStr = threeDaysLater.toISOString().split("T")[0];
+    const duePDC = (vouchers || []).filter(
+      (v) =>
+        v.type === "receipt" &&
+        v.pdc &&
+        v.pdcDate &&
+        v.pdcDate <= threeDaysStr &&
+        v.pdcDate >= today &&
+        v.status === "posted",
     );
     if (duePDC.length > 0) {
       alertList.push({
@@ -161,14 +185,14 @@ const Dashboard: React.FC = () => {
         type: "info",
         icon: "Clock",
         title: `${duePDC.length} PDC Cheques Due for Deposit`,
-        message: `Cheques worth Rs. ${duePDC.reduce((s,v)=>s+(v.amount||0),0).toLocaleString()} due by ${threeDaysStr}`,
+        message: `Cheques worth Rs. ${duePDC.reduce((s, v) => s + (v.amount || 0), 0).toLocaleString()} due by ${threeDaysStr}`,
         action: "VIEW PDC",
-        actionPage: "pdc-summary"
+        actionPage: "pdc-summary",
       });
     }
-    
+
     // ALERT 4: Vouchers pending approval > 24 hours
-    const pendingApproval = (vouchers || []).filter(v => {
+    const pendingApproval = (vouchers || []).filter((v) => {
       if (v.status !== "pending_approval") return false;
       const createdAt = new Date(v.createdAt || v.date);
       const hoursOld = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60);
@@ -182,14 +206,17 @@ const Dashboard: React.FC = () => {
         title: `${pendingApproval.length} Vouchers Pending Approval (>24h)`,
         message: "Vouchers are waiting for approval for more than 24 hours",
         action: "APPROVE NOW",
-        actionPage: "maker-checker"
+        actionPage: "maker-checker",
       });
     }
-    
+
     // ALERT 5: Near-expiry batches (load from state if available)
     const nearExpiryBatches = []; // Will be populated from DB if batches are loaded
     // Check batches in useStore if batches array exists
-    if (typeof (window as any).__erpBatchAlertCount === "number" && (window as any).__erpBatchAlertCount > 0) {
+    if (
+      typeof (window as any).__erpBatchAlertCount === "number" &&
+      (window as any).__erpBatchAlertCount > 0
+    ) {
       alertList.push({
         id: "batch-expiry",
         type: "danger",
@@ -197,10 +224,10 @@ const Dashboard: React.FC = () => {
         title: `Batches Expiring Within 30 Days`,
         message: "Review near-expiry stock before losses occur",
         action: "VIEW BATCHES",
-        actionPage: "batch-management"
+        actionPage: "batch-management",
       });
     }
-    
+
     return alertList;
   }, [invoices, items, stockMovements, vouchers]);
 
@@ -219,7 +246,7 @@ const Dashboard: React.FC = () => {
           <h1 className="text-[15px] font-semibold text-gray-800">Dashboard</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Business overview for {todayBS}</p>
         </div>
-        <button 
+        <button
           className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
           onClick={() => window.location.reload()}
         >
@@ -229,36 +256,44 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Stats Strip */}
-      <div style={{ 
-        backgroundColor: '#D4EABD', 
-        border: '1px solid #000', 
-        borderTop: '1px solid #000', 
-        borderBottom: '1px solid #000',
-        padding: '8px 12px',
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '20px',
-        fontSize: '12px',
-        fontFamily: 'monospace'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <div
+        style={{
+          backgroundColor: "#D4EABD",
+          border: "1px solid #000",
+          borderTop: "1px solid #000",
+          borderBottom: "1px solid #000",
+          padding: "8px 12px",
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "10px",
+          marginBottom: "20px",
+          fontSize: "12px",
+          fontFamily: "monospace",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <span>📋</span>
           <span>Vouchers Today: {todaysVouchers.length}</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <span>🧾</span>
           <span>Invoices Today: {todaysInvoices.length}</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <span>💰</span>
-          <span>Collection Today: {formatNumber(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0))}</span>
+          <span>
+            Collection Today:{" "}
+            {formatNumber(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0))}
+          </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <span>🛒</span>
-          <span>Purchases Today: {formatNumber(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}</span>
+          <span>
+            Purchases Today:{" "}
+            {formatNumber(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
+          </span>
         </div>
       </div>
 
@@ -336,9 +371,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Stock Position</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatNumber(stockValue)}
-              </p>
+              <p className="text-[18px] font-bold text-gray-800 mt-1">{formatNumber(stockValue)}</p>
             </div>
             <div className="bg-purple-100 p-2 rounded-md">
               <Package className="h-5 w-5 text-purple-600" />
@@ -353,7 +386,7 @@ const Dashboard: React.FC = () => {
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Active Parties</p>
               <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {parties.filter(p => p.isActive).length}
+                {parties.filter((p) => p.isActive).length}
               </p>
             </div>
             <div className="bg-indigo-100 p-2 rounded-md">
@@ -365,118 +398,126 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Alerts & Notifications Section */}
-      <div style={{ marginTop: '30px' }}>
-        <div style={{ 
-          backgroundColor: '#D4EABD', 
-          border: '1px solid #000', 
-          padding: '10px 15px', 
-          borderRadius: '4px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          marginBottom: '15px'
-        }}>
-          <Bell size={16} style={{ color: '#000000' }} />
-          <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#000000' }}>⚡ ALERTS & ACTION REQUIRED</span>
+      <div style={{ marginTop: "30px" }}>
+        <div
+          style={{
+            backgroundColor: "#D4EABD",
+            border: "1px solid #000",
+            padding: "10px 15px",
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "15px",
+          }}
+        >
+          <Bell size={16} style={{ color: "#000000" }} />
+          <span style={{ fontSize: "13px", fontWeight: "bold", color: "#000000" }}>
+            ⚡ ALERTS & ACTION REQUIRED
+          </span>
         </div>
-        
+
         {alerts.length === 0 ? (
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px', 
-            padding: '15px', 
-            backgroundColor: '#dcfce7', 
-            border: '1px solid #059669',
-            borderRadius: '4px',
-            color: '#059669',
-            fontWeight: 'bold'
-          }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "15px",
+              backgroundColor: "#dcfce7",
+              border: "1px solid #059669",
+              borderRadius: "4px",
+              color: "#059669",
+              fontWeight: "bold",
+            }}
+          >
             <CheckCircle size={16} />
             <span>All clear — no pending alerts</span>
           </div>
         ) : (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', 
-            gap: '15px' 
-          }}>
-            {alerts.map(alert => {
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+              gap: "15px",
+            }}
+          >
+            {alerts.map((alert) => {
               let bgColor, borderColor, iconColor;
-              switch(alert.type) {
-                case 'danger':
-                  bgColor = '#fee2e2';
-                  borderColor = '#dc2626';
-                  iconColor = '#dc2626';
+              switch (alert.type) {
+                case "danger":
+                  bgColor = "#fee2e2";
+                  borderColor = "#dc2626";
+                  iconColor = "#dc2626";
                   break;
-                case 'warning':
-                  bgColor = '#fef9c3';
-                  borderColor = '#d97706';
-                  iconColor = '#d97706';
+                case "warning":
+                  bgColor = "#fef9c3";
+                  borderColor = "#d97706";
+                  iconColor = "#d97706";
                   break;
-                case 'info':
-                  bgColor = '#dbeafe';
-                  borderColor = '#1557b0';
-                  iconColor = '#1557b0';
+                case "info":
+                  bgColor = "#dbeafe";
+                  borderColor = "#1557b0";
+                  iconColor = "#1557b0";
                   break;
                 default:
-                  bgColor = '#f0f0f0';
-                  borderColor = '#666';
-                  iconColor = '#666';
+                  bgColor = "#f0f0f0";
+                  borderColor = "#666";
+                  iconColor = "#666";
               }
-              
+
               let IconComponent;
-              switch(alert.icon) {
-                case 'AlertTriangle':
+              switch (alert.icon) {
+                case "AlertTriangle":
                   IconComponent = AlertTriangle;
                   break;
-                case 'Clock':
+                case "Clock":
                   IconComponent = Clock;
                   break;
-                case 'Package':
+                case "Package":
                   IconComponent = Package;
                   break;
-                case 'CheckCircle':
+                case "CheckCircle":
                   IconComponent = CheckCircle;
                   break;
-                case 'XCircle':
+                case "XCircle":
                   IconComponent = XCircle;
                   break;
                 default:
                   IconComponent = Bell;
               }
-              
+
               return (
-                <div 
+                <div
                   key={alert.id}
-                  style={{ 
-                    backgroundColor: bgColor, 
-                    border: `1px solid ${borderColor}`, 
-                    borderRadius: '6px',
-                    padding: '12px',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    borderLeft: '4px solid',
-                    borderLeftColor: borderColor
+                  style={{
+                    backgroundColor: bgColor,
+                    border: `1px solid ${borderColor}`,
+                    borderRadius: "6px",
+                    padding: "12px",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    borderLeft: "4px solid",
+                    borderLeftColor: borderColor,
                   }}
                 >
                   <div style={{ color: iconColor }}>
                     <IconComponent size={20} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{alert.title}</div>
-                    <div style={{ fontSize: '12px', marginBottom: '8px' }}>{alert.message}</div>
+                    <div style={{ fontWeight: "bold", marginBottom: "4px" }}>{alert.title}</div>
+                    <div style={{ fontSize: "12px", marginBottom: "8px" }}>{alert.message}</div>
                     <button
                       onClick={() => handleAlertAction(alert)}
                       style={{
                         backgroundColor: borderColor,
-                        color: 'white',
-                        border: 'none',
-                        padding: '4px 10px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        cursor: 'pointer'
+                        color: "white",
+                        border: "none",
+                        padding: "4px 10px",
+                        borderRadius: "4px",
+                        fontSize: "11px",
+                        cursor: "pointer",
                       }}
                     >
                       {alert.action}

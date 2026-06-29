@@ -73,9 +73,7 @@ function formatVoucherType(type: string): string {
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 }
 
-function getTypeColor(
-  type: string,
-): { bg: string; text: string; border: string } {
+function getTypeColor(type: string): { bg: string; text: string; border: string } {
   const t = (type ?? "").toLowerCase();
   if (t.includes("sales") || t.includes("receipt"))
     return {
@@ -111,18 +109,13 @@ function getTypeColor(
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const DayBook: React.FC = () => {
-  const { vouchers, invoices, accounts, companySettings, currentFiscalYear } =
-    useStore();
+  const { vouchers, invoices, accounts, companySettings, currentFiscalYear } = useStore();
 
   const [selectedDate, setSelectedDate] = useState(todayISO());
   const [typeFilter, setTypeFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedEntry, setSelectedEntry] = useState<DayBookEntry | null>(
-    null,
-  );
-  const [viewMode, setViewMode] = useState<"condensed" | "detailed">(
-    "condensed",
-  );
+  const [selectedEntry, setSelectedEntry] = useState<DayBookEntry | null>(null);
+  const [viewMode, setViewMode] = useState<"condensed" | "detailed">("condensed");
 
   // ── Build day book entries from vouchers ────────────────────────────────
   const dayBookEntries = useMemo<DayBookEntry[]>(() => {
@@ -172,14 +165,10 @@ const DayBook: React.FC = () => {
 
     for (const inv of dayInvoices) {
       // Avoid duplicates if invoice already has a corresponding voucher
-      const alreadyAdded = entries.some(
-        (e) => e.id === inv.id || e.id === inv.accountingVoucherId,
-      );
+      const alreadyAdded = entries.some((e) => e.id === inv.id || e.id === inv.accountingVoucherId);
       if (alreadyAdded) continue;
 
-      const isDebit =
-        (inv.type ?? "").includes("purchase") ||
-        (inv.type ?? "").includes("return");
+      const isDebit = (inv.type ?? "").includes("purchase") || (inv.type ?? "").includes("return");
 
       entries.push({
         id: inv.id as string,
@@ -206,31 +195,20 @@ const DayBook: React.FC = () => {
   // ── Filter ───────────────────────────────────────────────────────────────
   const filteredEntries = useMemo<DayBookEntry[]>(() => {
     return dayBookEntries.filter((entry) => {
-      const matchType =
-        typeFilter === "all" || entry.type === typeFilter;
+      const matchType = typeFilter === "all" || entry.type === typeFilter;
       const matchSearch =
         searchTerm === "" ||
         entry.voucherNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (entry.narration ?? "")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        (entry.partyName ?? "")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+        (entry.narration ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (entry.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase());
       return matchType && matchSearch;
     });
   }, [dayBookEntries, typeFilter, searchTerm]);
 
   // ── Summary ──────────────────────────────────────────────────────────────
   const summary = useMemo<DaySummary>(() => {
-    const totalDebit = filteredEntries.reduce(
-      (s, e) => s + e.debit,
-      0,
-    );
-    const totalCredit = filteredEntries.reduce(
-      (s, e) => s + e.credit,
-      0,
-    );
+    const totalDebit = filteredEntries.reduce((s, e) => s + e.debit, 0);
+    const totalCredit = filteredEntries.reduce((s, e) => s + e.credit, 0);
     const byType: Record<string, number> = {};
     for (const e of filteredEntries) {
       byType[e.type] = (byType[e.type] ?? 0) + 1;
@@ -262,19 +240,9 @@ const DayBook: React.FC = () => {
   // ── Export Excel ─────────────────────────────────────────────────────────
   const handleExportExcel = useCallback(() => {
     try {
-      const companyName =
-        companySettings?.name ||
-        companySettings?.companyName ||
-        "Company";
+      const companyName = companySettings?.name || companySettings?.companyName || "Company";
 
-      const headers = [
-        "Voucher No.",
-        "Type",
-        "Narration",
-        "Party",
-        "Debit (Rs.)",
-        "Credit (Rs.)",
-      ];
+      const headers = ["Voucher No.", "Type", "Narration", "Party", "Debit (Rs.)", "Credit (Rs.)"];
 
       const rows = filteredEntries.map((e: DayBookEntry) => [
         e.voucherNo,
@@ -294,14 +262,7 @@ const DayBook: React.FC = () => {
         headers,
         ...rows,
         [],
-        [
-          "TOTAL",
-          "",
-          "",
-          "",
-          summary.totalDebit,
-          summary.totalCredit,
-        ],
+        ["TOTAL", "", "", "", summary.totalDebit, summary.totalCredit],
       ];
 
       const ws = XLSX.utils.aoa_to_sheet(wsData);
@@ -424,9 +385,7 @@ const DayBook: React.FC = () => {
             type="button"
             onClick={() => setViewMode("detailed")}
             className={`h-8 px-3 text-[11px] font-medium transition-colors ${
-              viewMode === "detailed"
-                ? "bg-[#1557b0] text-white"
-                : "text-gray-600 hover:bg-gray-50"
+              viewMode === "detailed" ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             Detailed
@@ -441,9 +400,7 @@ const DayBook: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Vouchers
             </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5">
-              {summary.totalVouchers}
-            </p>
+            <p className="text-[18px] font-bold text-gray-800 mt-0.5">{summary.totalVouchers}</p>
           </div>
           <BookOpen className="h-7 w-7 text-[#1557b0] opacity-20" />
         </div>
@@ -476,9 +433,7 @@ const DayBook: React.FC = () => {
       {/* Main Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <h3 className="text-[12px] font-semibold text-gray-700">
-            Day Book — {selectedDate}
-          </h3>
+          <h3 className="text-[12px] font-semibold text-gray-700">Day Book — {selectedDate}</h3>
           <p className="text-[11px] text-gray-500">
             {filteredEntries.length} entr
             {filteredEntries.length === 1 ? "y" : "ies"}
@@ -516,10 +471,7 @@ const DayBook: React.FC = () => {
             <tbody className="divide-y divide-gray-100">
               {filteredEntries.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="px-3 py-16 text-center text-[12px] text-gray-400"
-                  >
+                  <td colSpan={7} className="px-3 py-16 text-center text-[12px] text-gray-400">
                     <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-20" />
                     No vouchers recorded on {selectedDate}.
                   </td>
@@ -552,23 +504,15 @@ const DayBook: React.FC = () => {
 
                           {/* Narration — cast to ReactNode string */}
                           <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[240px]">
-                            <span
-                              className="block truncate"
-                              title={String(entry.narration)}
-                            >
+                            <span className="block truncate" title={String(entry.narration)}>
                               {String(entry.narration || "—")}
                             </span>
                           </td>
 
                           {/* Party */}
                           <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[140px]">
-                            <span
-                              className="block truncate"
-                              title={String(entry.partyName ?? "")}
-                            >
-                              {entry.partyName
-                                ? String(entry.partyName)
-                                : "—"}
+                            <span className="block truncate" title={String(entry.partyName ?? "")}>
+                              {entry.partyName ? String(entry.partyName) : "—"}
                             </span>
                           </td>
 
@@ -612,25 +556,16 @@ const DayBook: React.FC = () => {
                                   ↳
                                 </td>
                                 <td className="px-3 py-1.5" />
-                                <td
-                                  colSpan={2}
-                                  className="px-3 py-1.5 text-[11px] text-gray-500"
-                                >
+                                <td colSpan={2} className="px-3 py-1.5 text-[11px] text-gray-500">
                                   {/* Cast accountName to string — fixes 'unknown' ReactNode error */}
-                                  {line.accountName
-                                    ? String(line.accountName)
-                                    : "—"}
-                                  {line.narration
-                                    ? ` — ${String(line.narration)}`
-                                    : ""}
+                                  {line.accountName ? String(line.accountName) : "—"}
+                                  {line.narration ? ` — ${String(line.narration)}` : ""}
                                 </td>
                                 <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500">
                                   {line.debit > 0 ? money(line.debit) : "—"}
                                 </td>
                                 <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500">
-                                  {line.credit > 0
-                                    ? money(line.credit)
-                                    : "—"}
+                                  {line.credit > 0 ? money(line.credit) : "—"}
                                 </td>
                                 <td />
                               </tr>
@@ -647,10 +582,7 @@ const DayBook: React.FC = () => {
             {filteredEntries.length > 0 && (
               <tfoot>
                 <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td
-                    colSpan={4}
-                    className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
-                  >
+                  <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                     Total ({summary.totalVouchers} vouchers)
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
@@ -663,25 +595,16 @@ const DayBook: React.FC = () => {
                 </tr>
 
                 {/* Balance check row */}
-                {Math.abs(summary.totalDebit - summary.totalCredit) >
-                  0.01 && (
+                {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
                   <tr className="bg-red-50 border-t border-red-200">
-                    <td
-                      colSpan={4}
-                      className="px-3 py-2 text-[11px] font-semibold text-red-700"
-                    >
+                    <td colSpan={4} className="px-3 py-2 text-[11px] font-semibold text-red-700">
                       ⚠ Imbalance detected
                     </td>
                     <td
                       colSpan={3}
                       className="px-3 py-2 text-right font-mono text-[11px] font-bold text-red-700"
                     >
-                      Difference:{" "}
-                      {money(
-                        Math.abs(
-                          summary.totalDebit - summary.totalCredit,
-                        ),
-                      )}
+                      Difference: {money(Math.abs(summary.totalDebit - summary.totalCredit))}
                     </td>
                   </tr>
                 )}
@@ -698,30 +621,26 @@ const DayBook: React.FC = () => {
             Vouchers by Type
           </h4>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(summary.byType).map(
-              ([type, count]: [string, number]) => {
-                const color = getTypeColor(type);
-                return (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() =>
-                      setTypeFilter(typeFilter === type ? "all" : type)
-                    }
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold transition-colors ${
-                      typeFilter === type
-                        ? `${color.bg} ${color.text} ${color.border} ring-2 ring-offset-1 ring-current`
-                        : `${color.bg} ${color.text} ${color.border}`
-                    }`}
-                  >
-                    {formatVoucherType(type)}
-                    <span className="bg-white/60 rounded-full px-1.5 py-0.5 text-[10px] font-bold">
-                      {String(count)}
-                    </span>
-                  </button>
-                );
-              },
-            )}
+            {Object.entries(summary.byType).map(([type, count]: [string, number]) => {
+              const color = getTypeColor(type);
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setTypeFilter(typeFilter === type ? "all" : type)}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold transition-colors ${
+                    typeFilter === type
+                      ? `${color.bg} ${color.text} ${color.border} ring-2 ring-offset-1 ring-current`
+                      : `${color.bg} ${color.text} ${color.border}`
+                  }`}
+                >
+                  {formatVoucherType(type)}
+                  <span className="bg-white/60 rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+                    {String(count)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -777,18 +696,14 @@ const DayBook: React.FC = () => {
                     Party
                   </p>
                   <p className="text-gray-800">
-                    {selectedEntry.partyName
-                      ? String(selectedEntry.partyName)
-                      : "—"}
+                    {selectedEntry.partyName ? String(selectedEntry.partyName) : "—"}
                   </p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Narration
                   </p>
-                  <p className="text-gray-800">
-                    {String(selectedEntry.narration || "—")}
-                  </p>
+                  <p className="text-gray-800">{String(selectedEntry.narration || "—")}</p>
                 </div>
               </div>
 
@@ -820,9 +735,7 @@ const DayBook: React.FC = () => {
                             <tr key={idx} className="hover:bg-gray-50">
                               <td className="px-3 py-2 text-gray-700">
                                 {/* Explicit string cast — fixes 'unknown' assignable to ReactNode */}
-                                {line.accountName
-                                  ? String(line.accountName)
-                                  : "—"}
+                                {line.accountName ? String(line.accountName) : "—"}
                                 {line.narration && (
                                   <span className="block text-[10px] text-gray-400">
                                     {String(line.narration)}
@@ -841,9 +754,7 @@ const DayBook: React.FC = () => {
                       </tbody>
                       <tfoot>
                         <tr className="bg-[#f5f6fa] border-t border-gray-200">
-                          <td className="px-3 py-2 font-bold text-[12px] text-gray-700">
-                            Total
-                          </td>
+                          <td className="px-3 py-2 font-bold text-[12px] text-gray-700">Total</td>
                           <td className="px-3 py-2 text-right font-mono font-bold text-[12px] text-[#1557b0]">
                             {money(selectedEntry.debit)}
                           </td>
@@ -865,9 +776,7 @@ const DayBook: React.FC = () => {
                       Debit
                     </p>
                     <p className="text-[#1557b0] font-mono font-bold">
-                      {selectedEntry.debit > 0
-                        ? money(selectedEntry.debit)
-                        : "—"}
+                      {selectedEntry.debit > 0 ? money(selectedEntry.debit) : "—"}
                     </p>
                   </div>
                   <div>
@@ -875,9 +784,7 @@ const DayBook: React.FC = () => {
                       Credit
                     </p>
                     <p className="text-gray-800 font-mono font-bold">
-                      {selectedEntry.credit > 0
-                        ? money(selectedEntry.credit)
-                        : "—"}
+                      {selectedEntry.credit > 0 ? money(selectedEntry.credit) : "—"}
                     </p>
                   </div>
                 </div>
@@ -888,9 +795,7 @@ const DayBook: React.FC = () => {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Created By
                   </p>
-                  <p className="text-[12px] text-gray-700">
-                    {String(selectedEntry.createdByName)}
-                  </p>
+                  <p className="text-[12px] text-gray-700">{String(selectedEntry.createdByName)}</p>
                 </div>
               )}
             </div>

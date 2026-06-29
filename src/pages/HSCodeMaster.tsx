@@ -22,7 +22,7 @@ const HSCodeMaster: React.FC = () => {
   const filteredCodes = (hsCodes || []).filter(
     (code) =>
       code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      code.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      code.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
@@ -55,10 +55,10 @@ const HSCodeMaster: React.FC = () => {
 
   const handleExemptedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       exempted: checked,
-      vatRate: checked ? "0" : prev.vatRate
+      vatRate: checked ? "0" : prev.vatRate,
     }));
   };
 
@@ -113,12 +113,18 @@ const HSCodeMaster: React.FC = () => {
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* List Panel */}
-      <div className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}>
+      <div
+        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}
+      >
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">HS Code Master (Nepal Customs / IRD)</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Manage customs classifications and tax rates</p>
+              <h1 className="text-[15px] font-semibold text-gray-800">
+                HS Code Master (Nepal Customs / IRD)
+              </h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Manage customs classifications and tax rates
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -136,7 +142,8 @@ const HSCodeMaster: React.FC = () => {
 
           <div className="mb-4">
             <p className="text-[11px] italic text-gray-600 bg-gray-100 py-1.5 px-3 rounded inline-block">
-              Nepal HS Codes (6-8 digits) are used for customs classification. VAT rate is either 0% or 13% (Nepal VAT Act).
+              Nepal HS Codes (6-8 digits) are used for customs classification. VAT rate is either 0%
+              or 13% (Nepal VAT Act).
             </p>
           </div>
 
@@ -154,13 +161,27 @@ const HSCodeMaster: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">HS Code</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Description</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">VAT Rate</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Exempted</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    #
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    HS Code
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Description
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    VAT Rate
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Exempted
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -174,12 +195,20 @@ const HSCodeMaster: React.FC = () => {
                   filteredCodes.map((code, index) => (
                     <tr key={code.id} className="hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono font-medium">{code.code}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono font-medium">
+                        {code.code}
+                      </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{code.description}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{getVatRateLabel(code.vatRate)}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{code.exempted ? "Yes" : "No"}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {getVatRateLabel(code.vatRate)}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {code.exempted ? "Yes" : "No"}
+                      </td>
                       <td className="px-3 py-2.5 text-[12px]">
-                        <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${code.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        <span
+                          className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${code.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                        >
                           {code.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
@@ -217,8 +246,8 @@ const HSCodeMaster: React.FC = () => {
             <h3 className="text-[13px] font-semibold text-gray-800">
               {selected ? "Alter HS Code" : "Create HS Code"}
             </h3>
-            <button 
-              onClick={resetForm} 
+            <button
+              onClick={resetForm}
               className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
@@ -227,19 +256,23 @@ const HSCodeMaster: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">HS Code <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                HS Code <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 className="h-8 px-2.5 text-[12px] font-mono border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.code}
-                onChange={(e) => setForm({ ...form, code: e.target.value.replace(/\D/g, '') })}
+                onChange={(e) => setForm({ ...form, code: e.target.value.replace(/\D/g, "") })}
                 placeholder="Enter 6-8 digit code"
                 autoFocus
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Description <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Description <span className="text-red-500">*</span>
+              </label>
               <textarea
                 className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full min-h-[60px] resize-y"
                 value={form.description}
@@ -252,7 +285,7 @@ const HSCodeMaster: React.FC = () => {
               <div>
                 <label className="text-[11px] font-medium text-gray-600 mb-1 block">VAT Rate</label>
                 <select
-                  className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full ${form.exempted ? 'bg-gray-100 text-gray-500' : 'bg-white'}`}
+                  className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full ${form.exempted ? "bg-gray-100 text-gray-500" : "bg-white"}`}
                   value={form.vatRate}
                   onChange={(e) => setForm({ ...form, vatRate: e.target.value })}
                   disabled={form.exempted}
@@ -262,7 +295,9 @@ const HSCodeMaster: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Customs Duty Rate %</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Customs Duty Rate %
+                </label>
                 <input
                   type="number"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -277,7 +312,9 @@ const HSCodeMaster: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Effective Date</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Effective Date
+                </label>
                 <input
                   type="date"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -296,7 +333,10 @@ const HSCodeMaster: React.FC = () => {
                   checked={form.exempted}
                   onChange={handleExemptedChange}
                 />
-                <label htmlFor="exempted" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="exempted"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Exempted from VAT
                 </label>
               </div>
@@ -308,7 +348,10 @@ const HSCodeMaster: React.FC = () => {
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActive" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="isActive"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Is Active
                 </label>
               </div>
@@ -316,7 +359,7 @@ const HSCodeMaster: React.FC = () => {
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button 
+            <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
               onClick={resetForm}
             >

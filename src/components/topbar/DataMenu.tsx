@@ -107,9 +107,15 @@ function BackupModal({ onClose }: { onClose: () => void }) {
       <div className="grid gap-3">
         <Field label="Backup Location" value={location} onChange={setLocation} />
         <Field label="Backup File Name" value={fileName} onChange={() => undefined} disabled />
-        <ToggleRow label="Include Attachments" checked={includeAttachments} onChange={setIncludeAttachments} />
+        <ToggleRow
+          label="Include Attachments"
+          checked={includeAttachments}
+          onChange={setIncludeAttachments}
+        />
         <ToggleRow label="Encrypt Backup" checked={encryptBackup} onChange={setEncryptBackup} />
-        {encryptBackup && <Field label="Backup Password" value={password} onChange={setPassword} type="password" />}
+        {encryptBackup && (
+          <Field label="Backup Password" value={password} onChange={setPassword} type="password" />
+        )}
         <ToggleRow label="Compress" checked={compress} onChange={setCompress} />
 
         {progress > 0 && (
@@ -210,7 +216,11 @@ function SplitModal({ onClose }: { onClose: () => void }) {
       <div className="grid gap-3">
         <Field label="Split From Date (BS)" value={splitDate} onChange={setSplitDate} />
         <Field label="New Company Name for Old Data" value={oldCompany} onChange={setOldCompany} />
-        <Field label="New Company Name for Current Data" value={newCompany} onChange={setNewCompany} />
+        <Field
+          label="New Company Name for Current Data"
+          value={newCompany}
+          onChange={setNewCompany}
+        />
         <ToggleRow label="Backup Before Split" checked={backup} onChange={setBackup} />
       </div>
 
@@ -289,7 +299,10 @@ function CloudBackupModal({ onClose }: { onClose: () => void }) {
           <div key={name} className="rounded-md border border-gray-200 p-3">
             <div className="font-semibold text-gray-800">{name}</div>
             <div className="mt-1 text-[11px] text-gray-500">Last backup: —</div>
-            <button type="button" className="mt-3 h-7 rounded border border-gray-300 px-2 text-[11px]">
+            <button
+              type="button"
+              className="mt-3 h-7 rounded border border-gray-300 px-2 text-[11px]"
+            >
               Connect
             </button>
           </div>
@@ -309,7 +322,9 @@ function CloudBackupModal({ onClose }: { onClose: () => void }) {
         <div className="border-b border-gray-200 bg-[#f5f6fa] px-3 py-2 text-[10px] font-semibold uppercase text-gray-500">
           Backup History
         </div>
-        <div className="px-3 py-8 text-center text-[12px] text-gray-500">No backup history found.</div>
+        <div className="px-3 py-8 text-center text-[12px] text-gray-500">
+          No backup history found.
+        </div>
       </div>
     </ModalShell>
   );

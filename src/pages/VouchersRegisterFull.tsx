@@ -1,23 +1,37 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Input, Select, Badge, NepaliDatePicker, Pagination, ActionToolbar } from "../components/ui";
+import {
+  Card,
+  Button,
+  Input,
+  Select,
+  Badge,
+  NepaliDatePicker,
+  Pagination,
+  ActionToolbar,
+} from "../components/ui";
 import { Eye, Edit, Download, Printer, Filter, X, Calendar, FileText } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
-import { VOUCHER_TYPE_LABELS, getVoucherStatusColor, formatVoucherDisplayDate, getVoucherGroupForType } from "../lib/voucherUtils";
+import {
+  VOUCHER_TYPE_LABELS,
+  getVoucherStatusColor,
+  formatVoucherDisplayDate,
+  getVoucherGroupForType,
+} from "../lib/voucherUtils";
 import { VoucherType } from "../lib/types";
 import toast from "react-hot-toast";
 
 const VouchersRegisterFull: React.FC = () => {
   const { vouchers, invoices, companySettings, currentFiscalYear, parties } = useStore();
-  
+
   const [dateFrom, setDateFrom] = useState<string>(() => {
     const date = new Date();
     date.setDate(1);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   });
-  const [dateTo, setDateTo] = useState<string>(() => new Date().toISOString().split('T')[0]);
+  const [dateTo, setDateTo] = useState<string>(() => new Date().toISOString().split("T")[0]);
   const [voucherTypeFilter, setVoucherTypeFilter] = useState<string>("all");
   const [groupFilter, setGroupFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -27,7 +41,7 @@ const VouchersRegisterFull: React.FC = () => {
   const [pageSize] = useState<number>(25);
 
   const allTransactions = useMemo(() => {
-    const voucherRows = (vouchers || []).map(v => ({
+    const voucherRows = (vouchers || []).map((v) => ({
       id: v.id,
       voucherNo: v.voucherNo,
       date: v.date,
@@ -44,8 +58,8 @@ const VouchersRegisterFull: React.FC = () => {
       narration: v.narration || "",
       group: getVoucherGroupForType(v.type),
     }));
-    
-    const invoiceRows = (invoices || []).map(inv => ({
+
+    const invoiceRows = (invoices || []).map((inv) => ({
       id: inv.id,
       voucherNo: inv.invoiceNo || inv.voucherNo,
       date: inv.date,
@@ -55,34 +69,35 @@ const VouchersRegisterFull: React.FC = () => {
       partyId: inv.partyId || "",
       partyName: inv.partyName || "",
       amount: inv.grandTotal || 0,
-      debit: inv.type?.includes("purchase") ? (inv.grandTotal || 0) : 0,
-      credit: inv.type?.includes("sales") ? (inv.grandTotal || 0) : 0,
+      debit: inv.type?.includes("purchase") ? inv.grandTotal || 0 : 0,
+      credit: inv.type?.includes("sales") ? inv.grandTotal || 0 : 0,
       status: inv.status || "posted",
       isOptional: false,
       narration: inv.narration || "",
       group: getVoucherGroupForType(inv.type),
     }));
-    
+
     return [...voucherRows, ...invoiceRows].sort((a, b) => b.date.localeCompare(a.date));
   }, [vouchers, invoices]);
 
   const filteredDataBeforePagination = useMemo(() => {
-    return allTransactions.filter(transaction => {
+    return allTransactions.filter((transaction) => {
       // Date filter
       if (transaction.date < dateFrom || transaction.date > dateTo) return false;
-      
+
       // Type filter
       if (voucherTypeFilter !== "all" && transaction.type !== voucherTypeFilter) return false;
-      
+
       // Group filter
       if (groupFilter !== "all" && transaction.group !== groupFilter) return false;
-      
+
       // Status filter
       if (statusFilter !== "all" && transaction.status !== statusFilter) return false;
-      
+
       // Party filter
-      if (partyFilter && !transaction.partyName.toLowerCase().includes(partyFilter.toLowerCase())) return false;
-      
+      if (partyFilter && !transaction.partyName.toLowerCase().includes(partyFilter.toLowerCase()))
+        return false;
+
       // Search text filter
       if (searchText) {
         const searchLower = searchText.toLowerCase();
@@ -94,10 +109,19 @@ const VouchersRegisterFull: React.FC = () => {
           return false;
         }
       }
-      
+
       return true;
     });
-  }, [allTransactions, dateFrom, dateTo, voucherTypeFilter, groupFilter, statusFilter, partyFilter, searchText]);
+  }, [
+    allTransactions,
+    dateFrom,
+    dateTo,
+    voucherTypeFilter,
+    groupFilter,
+    statusFilter,
+    partyFilter,
+    searchText,
+  ]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
@@ -109,18 +133,18 @@ const VouchersRegisterFull: React.FC = () => {
     const totalDebit = filteredDataBeforePagination.reduce((sum, t) => sum + t.debit, 0);
     const totalCredit = filteredDataBeforePagination.reduce((sum, t) => sum + t.credit, 0);
     const totalAmount = filteredDataBeforePagination.reduce((sum, t) => sum + t.amount, 0);
-    
+
     const byType: Record<string, number> = {};
-    filteredDataBeforePagination.forEach(t => {
+    filteredDataBeforePagination.forEach((t) => {
       byType[t.typeName] = (byType[t.typeName] || 0) + 1;
     });
-    
+
     return {
       totalVouchers,
       totalDebit,
       totalCredit,
       totalAmount,
-      byType
+      byType,
     };
   }, [filteredDataBeforePagination]);
 
@@ -129,7 +153,7 @@ const VouchersRegisterFull: React.FC = () => {
   const handleExport = () => {
     const csvContent = [
       ["Date", "Voucher No", "Type", "Party", "Debit", "Credit", "Amount", "Status", "Narration"],
-      ...filteredDataBeforePagination.map(r => [
+      ...filteredDataBeforePagination.map((r) => [
         r.dateNepali,
         r.voucherNo,
         r.typeName,
@@ -138,10 +162,12 @@ const VouchersRegisterFull: React.FC = () => {
         r.credit,
         r.amount,
         r.status,
-        r.narration
-      ])
-    ].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
-    
+        r.narration,
+      ]),
+    ]
+      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+
     const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -155,9 +181,9 @@ const VouchersRegisterFull: React.FC = () => {
     setDateFrom(() => {
       const date = new Date();
       date.setDate(1);
-      return date.toISOString().split('T')[0];
+      return date.toISOString().split("T")[0];
     });
-    setDateTo(new Date().toISOString().split('T')[0]);
+    setDateTo(new Date().toISOString().split("T")[0]);
     setVoucherTypeFilter("all");
     setGroupFilter("all");
     setStatusFilter("all");
@@ -171,12 +197,12 @@ const VouchersRegisterFull: React.FC = () => {
     inventory: "bg-green-100 text-green-700",
     order: "bg-orange-100 text-orange-700",
     payroll: "bg-purple-100 text-purple-700",
-    other: "bg-gray-100 text-gray-700"
+    other: "bg-gray-100 text-gray-700",
   };
 
   const voucherTypeOptions = Object.entries(VOUCHER_TYPE_LABELS).map(([value, label]) => ({
     value,
-    label
+    label,
   }));
 
   return (
@@ -188,24 +214,12 @@ const VouchersRegisterFull: React.FC = () => {
       {/* Date Range and Export */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-2">
-          <NepaliDatePicker
-            value={dateFrom}
-            onChange={setDateFrom}
-            className="w-36"
-          />
+          <NepaliDatePicker value={dateFrom} onChange={setDateFrom} className="w-36" />
           <span className="text-gray-500">to</span>
-          <NepaliDatePicker
-            value={dateTo}
-            onChange={setDateTo}
-            className="w-36"
-          />
+          <NepaliDatePicker value={dateTo} onChange={setDateTo} className="w-36" />
         </div>
-        
-        <Button
-          variant="outline"
-          onClick={handleExport}
-          className="flex items-center gap-2"
-        >
+
+        <Button variant="outline" onClick={handleExport} className="flex items-center gap-2">
           <Download className="w-4 h-4" />
           Export
         </Button>
@@ -229,7 +243,7 @@ const VouchersRegisterFull: React.FC = () => {
               { value: "inventory", label: "Inventory" },
               { value: "order", label: "Order" },
               { value: "payroll", label: "Payroll" },
-              { value: "other", label: "Other" }
+              { value: "other", label: "Other" },
             ]}
             placeholder="Select Group"
           />
@@ -241,7 +255,7 @@ const VouchersRegisterFull: React.FC = () => {
               { value: "posted", label: "Posted" },
               { value: "draft", label: "Draft" },
               { value: "cancelled", label: "Cancelled" },
-              { value: "optional", label: "Optional" }
+              { value: "optional", label: "Optional" },
             ]}
             placeholder="Select Status"
           />
@@ -255,11 +269,7 @@ const VouchersRegisterFull: React.FC = () => {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <Button
-            variant="outline"
-            onClick={clearFilters}
-            className="flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={clearFilters} className="flex items-center gap-2">
             <X className="w-4 h-4" />
             Clear
           </Button>
@@ -274,15 +284,21 @@ const VouchersRegisterFull: React.FC = () => {
         </Card>
         <Card className="p-4">
           <div className="text-sm text-gray-500">Total Debit</div>
-          <div className="text-2xl font-bold text-green-600">Rs. {formatNumber(summaryStats.totalDebit)}</div>
+          <div className="text-2xl font-bold text-green-600">
+            Rs. {formatNumber(summaryStats.totalDebit)}
+          </div>
         </Card>
         <Card className="p-4">
           <div className="text-sm text-gray-500">Total Credit</div>
-          <div className="text-2xl font-bold text-green-600">Rs. {formatNumber(summaryStats.totalCredit)}</div>
+          <div className="text-2xl font-bold text-green-600">
+            Rs. {formatNumber(summaryStats.totalCredit)}
+          </div>
         </Card>
         <Card className="p-4">
           <div className="text-sm text-gray-500">Net</div>
-          <div className="text-2xl font-bold text-blue-600">Rs. {formatNumber(summaryStats.totalCredit - summaryStats.totalDebit)}</div>
+          <div className="text-2xl font-bold text-blue-600">
+            Rs. {formatNumber(summaryStats.totalCredit - summaryStats.totalDebit)}
+          </div>
         </Card>
       </div>
 
@@ -292,22 +308,43 @@ const VouchersRegisterFull: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Voucher No</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Party</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Voucher No
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Party
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Debit
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Credit
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedData.length > 0 ? (
-                paginatedData.map(transaction => (
+                paginatedData.map((transaction) => (
                   <tr key={transaction.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500" title={transaction.date}>
+                    <td
+                      className="px-4 py-2 whitespace-nowrap text-sm text-gray-500"
+                      title={transaction.date}
+                    >
                       {transaction.dateNepali}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -331,7 +368,10 @@ const VouchersRegisterFull: React.FC = () => {
                       {formatNumber(transaction.amount)}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap">
-                      <Badge variant="outline" className={getVoucherStatusColor(transaction.status)}>
+                      <Badge
+                        variant="outline"
+                        className={getVoucherStatusColor(transaction.status)}
+                      >
                         {transaction.status}
                       </Badge>
                     </td>
@@ -364,13 +404,9 @@ const VouchersRegisterFull: React.FC = () => {
             </tbody>
           </table>
         </div>
-        
+
         <div className="p-4 border-t border-gray-200">
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
       </Card>
     </div>

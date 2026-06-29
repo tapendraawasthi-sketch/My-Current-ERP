@@ -1,10 +1,10 @@
-import { pool } from '../db/pool.js';
+import { pool } from "../db/pool.js";
 
 export const getAuditLogs = async (req, res, next) => {
   try {
     const { module, action, startDate, endDate, limit = 50, offset = 0 } = req.query;
-    
-    let queryText = 'SELECT * FROM audit_logs WHERE 1=1';
+
+    let queryText = "SELECT * FROM audit_logs WHERE 1=1";
     const params = [];
     let paramIdx = 1;
 
@@ -30,9 +30,9 @@ export const getAuditLogs = async (req, res, next) => {
     params.push(offset);
 
     const { rows } = await pool.query(queryText, params);
-    
+
     // Get total count for pagination
-    let countQueryText = 'SELECT COUNT(*) FROM audit_logs WHERE 1=1';
+    let countQueryText = "SELECT COUNT(*) FROM audit_logs WHERE 1=1";
     const countParams = [];
     let countParamIdx = 1;
     if (module) {
@@ -51,7 +51,7 @@ export const getAuditLogs = async (req, res, next) => {
       countQueryText += ` AND timestamp <= $${countParamIdx++}`;
       countParams.push(endDate);
     }
-    
+
     const countRes = await pool.query(countQueryText, countParams);
     const total = parseInt(countRes.rows[0].count, 10);
 
@@ -67,40 +67,43 @@ export const purgeAuditLogs = async (req, res, next) => {
 
     // Validate date format to prevent injection
     if (!/^\d{4}-\d{2}-\d{2}$/.test(beforeDate)) {
-      return res.status(400).json({ success: false, error: 'Invalid date format. Use YYYY-MM-DD' });
+      return res.status(400).json({ success: false, error: "Invalid date format. Use YYYY-MM-DD" });
     }
 
     // Count rows to be deleted
     const countRes = await pool.query(
-      'SELECT COUNT(*) FROM audit_logs WHERE timestamp::date < $1::date',
-      [beforeDate]
+      "SELECT COUNT(*) FROM audit_logs WHERE timestamp::date < $1::date",
+      [beforeDate],
     );
     const deleteCount = parseInt(countRes.rows[0].count, 10);
 
     // Insert purge marker before deleting
-    const purgedBy = req.user?.username || 'System';
-    await pool.query(`
+    const purgedBy = req.user?.username || "System";
+    await pool.query(
+      `
       INSERT INTO audit_logs (username, user_role, action, module, description, status)
       VALUES ($1, $2, $3, $4, $5, $6)
-    `, [
-      purgedBy,
-      req.user?.role || 'admin',
-      'Old Audit Logs Purged',
-      'Audit Log',
-      `${deleteCount} audit rows before ${beforeDate} purged by ${purgedBy}`,
-      'success'
-    ]);
+    `,
+      [
+        purgedBy,
+        req.user?.role || "admin",
+        "Old Audit Logs Purged",
+        "Audit Log",
+        `${deleteCount} audit rows before ${beforeDate} purged by ${purgedBy}`,
+        "success",
+      ],
+    );
 
     // Delete old rows
     const deleteRes = await pool.query(
-      'DELETE FROM audit_logs WHERE timestamp::date < $1::date AND action != $2',
-      [beforeDate, 'Old Audit Logs Purged']
+      "DELETE FROM audit_logs WHERE timestamp::date < $1::date AND action != $2",
+      [beforeDate, "Old Audit Logs Purged"],
     );
 
     res.json({
       success: true,
       deletedCount: deleteRes.rowCount,
-      message: `${deleteRes.rowCount} rows purged before ${beforeDate}`
+      message: `${deleteRes.rowCount} rows purged before ${beforeDate}`,
     });
   } catch (err) {
     next(err);

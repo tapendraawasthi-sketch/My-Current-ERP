@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { useStore } from '../store/useStore';
-import { useTallyKeyboard } from '../hooks/useTallyKeyboard';
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useStore } from "../store/useStore";
+import { useTallyKeyboard } from "../hooks/useTallyKeyboard";
 
 interface CompanyFeatures {
   show_more_features: boolean;
@@ -64,27 +64,27 @@ const defaultState: CompanyFeatures = {
   use_discount_column_in_invoices: false,
   use_separate_actual_billed_qty: false,
   enable_gst: false,
-  gst_registration_type: '',
-  gstin: '',
-  gst_applicable_from: '',
+  gst_registration_type: "",
+  gstin: "",
+  gst_applicable_from: "",
   enable_tds: false,
-  tan_number: '',
-  tds_applicable_from: '',
+  tan_number: "",
+  tds_applicable_from: "",
   enable_tcs: false,
-  tcs_applicable_from: '',
+  tcs_applicable_from: "",
   enable_vat: false,
-  vat_registration_number: '',
-  vat_applicable_from: '',
+  vat_registration_number: "",
+  vat_applicable_from: "",
   enable_excise: false,
-  excise_registration_number: '',
+  excise_registration_number: "",
   enable_service_tax: false,
-  service_tax_registration_number: '',
+  service_tax_registration_number: "",
   enable_browser_access_for_reports: false,
   enable_remote_access_sync: false,
   maintain_payroll: false,
   enable_payroll_statutory: false,
-  pf_registration_number: '',
-  esi_registration_number: '',
+  pf_registration_number: "",
+  esi_registration_number: "",
   enable_multiple_addresses: false,
   mark_modified_vouchers: false,
   mailing_details_in_local_language: false,
@@ -95,19 +95,19 @@ const F11CompanyFeatures = () => {
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>('accounting');
+  const [activeSection, setActiveSection] = useState<string>("accounting");
   const { setCurrentPage, companySettings } = useStore();
 
   const fetchFeatures = async () => {
     try {
-      const response = await fetch('/api/company-features');
-      if (!response.ok) throw new Error('Failed to fetch features');
+      const response = await fetch("/api/company-features");
+      if (!response.ok) throw new Error("Failed to fetch features");
       const data = await response.json();
       if (data.success) {
-        setFeatures(prev => ({ ...prev, ...data.data }));
+        setFeatures((prev) => ({ ...prev, ...data.data }));
       }
     } catch (error) {
-      toast.error('Error loading company features');
+      toast.error("Error loading company features");
     } finally {
       setIsLoading(false);
     }
@@ -118,32 +118,32 @@ const F11CompanyFeatures = () => {
   }, []);
 
   const handleToggle = (field: keyof CompanyFeatures, value: boolean) => {
-    setFeatures(prev => {
+    setFeatures((prev) => {
       let newState = { ...prev, [field]: value };
 
       // Handle auto-dependencies
-      if (field === 'show_all_features' && value) {
+      if (field === "show_all_features" && value) {
         newState.show_more_features = true;
       }
-      if (field === 'show_more_features' && !value) {
+      if (field === "show_more_features" && !value) {
         newState.show_all_features = false;
       }
-      if (field === 'maintain_accounts' && !value) {
+      if (field === "maintain_accounts" && !value) {
         newState.enable_bill_wise_entry = false;
         newState.enable_cost_centres = false;
         newState.enable_interest_calculation = false;
       }
-      if (field === 'maintain_inventory' && !value) {
+      if (field === "maintain_inventory" && !value) {
         newState.enable_batches = false;
         newState.maintain_expiry_date_for_batches = false;
         newState.enable_job_order_processing = false;
         newState.enable_cost_tracking = false;
         newState.enable_multiple_price_levels = false;
       }
-      if (field === 'enable_batches' && !value) {
+      if (field === "enable_batches" && !value) {
         newState.maintain_expiry_date_for_batches = false;
       }
-      if (field === 'maintain_payroll' && !value) {
+      if (field === "maintain_payroll" && !value) {
         newState.enable_payroll_statutory = false;
       }
 
@@ -153,9 +153,9 @@ const F11CompanyFeatures = () => {
   };
 
   const handleTextChange = (field: keyof CompanyFeatures, value: string) => {
-    setFeatures(prev => ({
+    setFeatures((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setIsDirty(true);
   };
@@ -164,20 +164,20 @@ const F11CompanyFeatures = () => {
     if (isSaving) return;
     setIsSaving(true);
     try {
-      const res = await fetch('/api/company-features', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/company-features", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(features),
       });
       const json = await res.json();
       if (json.success) {
-        toast.success('Company features saved successfully. (Ctrl+A)');
+        toast.success("Company features saved successfully. (Ctrl+A)");
         setIsDirty(false);
       } else {
-        toast.error(json.error || 'Failed to save company features.');
+        toast.error(json.error || "Failed to save company features.");
       }
     } catch (err) {
-      toast.error('Network error. Could not save.');
+      toast.error("Network error. Could not save.");
     } finally {
       setIsSaving(false);
     }
@@ -187,36 +187,57 @@ const F11CompanyFeatures = () => {
     onCtrlA: handleSave,
     onEscape: () => {
       if (isDirty) {
-        if (window.confirm('Unsaved changes. Discard and exit?')) {
-          setCurrentPage('gateway');
+        if (window.confirm("Unsaved changes. Discard and exit?")) {
+          setCurrentPage("gateway");
         }
       } else {
-        setCurrentPage('gateway');
+        setCurrentPage("gateway");
       }
-    }
+    },
   });
 
-  const FeatureRow = ({ label, description, field, value, onToggle, disabled = false, disabledReason = '', visible = true }) => {
+  const FeatureRow = ({
+    label,
+    description,
+    field,
+    value,
+    onToggle,
+    disabled = false,
+    disabledReason = "",
+    visible = true,
+  }) => {
     if (!visible) return null;
 
     return (
-      <div style={{ borderBottom: '1px solid #ccc', padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          borderBottom: "1px solid #ccc",
+          padding: "6px 12px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <div style={{ fontWeight: disabled ? 'normal' : 'bold' }}>{label}</div>
-          <div style={{ fontSize: 11, color: '#555' }}>{description}</div>
+          <div style={{ fontWeight: disabled ? "normal" : "bold" }}>{label}</div>
+          <div style={{ fontSize: 11, color: "#555" }}>{description}</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {disabled && <span title={disabledReason} style={{ fontSize: 12 }}>🔒</span>}
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          {disabled && (
+            <span title={disabledReason} style={{ fontSize: 12 }}>
+              🔒
+            </span>
+          )}
           <span
             onClick={!disabled ? () => onToggle(field, true) : undefined}
             style={{
-              padding: '2px 8px',
-              background: value ? '#4A7A30' : '#C9DEB5',
-              color: value ? '#fff' : '#000',
-              border: value ? 'none' : '1px solid #888',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              pointerEvents: disabled ? 'none' : 'auto',
-              opacity: disabled ? 0.5 : 1
+              padding: "2px 8px",
+              background: value ? "#4A7A30" : "#C9DEB5",
+              color: value ? "#fff" : "#000",
+              border: value ? "none" : "1px solid #888",
+              cursor: disabled ? "not-allowed" : "pointer",
+              pointerEvents: disabled ? "none" : "auto",
+              opacity: disabled ? 0.5 : 1,
             }}
           >
             Yes
@@ -224,13 +245,13 @@ const F11CompanyFeatures = () => {
           <span
             onClick={!disabled ? () => onToggle(field, false) : undefined}
             style={{
-              padding: '2px 8px',
-              background: !value ? '#4A7A30' : '#C9DEB5',
-              color: !value ? '#fff' : '#000',
-              border: !value ? 'none' : '1px solid #888',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              pointerEvents: disabled ? 'none' : 'auto',
-              opacity: disabled ? 0.5 : 1
+              padding: "2px 8px",
+              background: !value ? "#4A7A30" : "#C9DEB5",
+              color: !value ? "#fff" : "#000",
+              border: !value ? "none" : "1px solid #888",
+              cursor: disabled ? "not-allowed" : "pointer",
+              pointerEvents: disabled ? "none" : "auto",
+              opacity: disabled ? 0.5 : 1,
             }}
           >
             No
@@ -240,16 +261,30 @@ const F11CompanyFeatures = () => {
     );
   };
 
-  if (isLoading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#C9DEB5', fontFamily:'monospace' }}>
-      <span>Loading Company Features...</span>
-    </div>
-  );
+  if (isLoading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          background: "#C9DEB5",
+          fontFamily: "monospace",
+        }}
+      >
+        <span>Loading Company Features...</span>
+      </div>
+    );
 
   // Taxation Section
   const TaxationSection = () => (
     <>
-      <div style={{ background:'#4A7A30', color:'#fff', padding:'4px 12px', fontWeight:'bold' }}>Taxation Features</div>
+      <div
+        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+      >
+        Taxation Features
+      </div>
       <FeatureRow
         label="Enable Goods and Services Tax (GST)"
         description="GST invoices, GSTR-1, GSTR-3B, HSN/SAC, e-way bill, e-invoice, ITC tracking"
@@ -262,12 +297,27 @@ const F11CompanyFeatures = () => {
       />
       {features.enable_gst && (
         <>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>Registration Type:</label>
             <select
               value={features.gst_registration_type}
-              onChange={(e) => handleTextChange('gst_registration_type', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("gst_registration_type", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             >
               <option value="">--Select--</option>
               <option value="Regular">Regular</option>
@@ -277,24 +327,54 @@ const F11CompanyFeatures = () => {
               <option value="Consumer">Consumer</option>
             </select>
           </div>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>GSTIN/UIN:</label>
             <input
               type="text"
               maxLength={15}
               value={features.gstin}
-              onChange={(e) => handleTextChange('gstin', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("gstin", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
-            <span style={{ fontSize: 11, color: '#555' }}>e.g. 27ABCDE1234F1Z5</span>
+            <span style={{ fontSize: 11, color: "#555" }}>e.g. 27ABCDE1234F1Z5</span>
           </div>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>Applicable From:</label>
             <input
               type="date"
               value={features.gst_applicable_from}
-              onChange={(e) => handleTextChange('gst_applicable_from', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("gst_applicable_from", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
           </div>
         </>
@@ -311,24 +391,54 @@ const F11CompanyFeatures = () => {
       />
       {features.enable_tds && (
         <>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>TAN Number:</label>
             <input
               type="text"
               maxLength={10}
               value={features.tan_number}
-              onChange={(e) => handleTextChange('tan_number', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("tan_number", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
-            <span style={{ fontSize: 11, color: '#555' }}>e.g. AAAA00000A</span>
+            <span style={{ fontSize: 11, color: "#555" }}>e.g. AAAA00000A</span>
           </div>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>Applicable From:</label>
             <input
               type="date"
               value={features.tds_applicable_from}
-              onChange={(e) => handleTextChange('tds_applicable_from', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("tds_applicable_from", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
           </div>
         </>
@@ -344,13 +454,28 @@ const F11CompanyFeatures = () => {
         visible={features.show_more_features}
       />
       {features.enable_tcs && (
-        <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+        <div
+          style={{
+            padding: "4px 12px 4px 28px",
+            borderBottom: "1px solid #e0e0e0",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <label>Applicable From:</label>
           <input
             type="date"
             value={features.tcs_applicable_from}
-            onChange={(e) => handleTextChange('tcs_applicable_from', e.target.value)}
-            style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+            onChange={(e) => handleTextChange("tcs_applicable_from", e.target.value)}
+            style={{
+              border: "1px solid #000",
+              background: "#fff",
+              padding: "2px 6px",
+              fontFamily: "monospace",
+              fontSize: 13,
+              width: 200,
+            }}
           />
         </div>
       )}
@@ -366,22 +491,52 @@ const F11CompanyFeatures = () => {
       />
       {features.enable_vat && (
         <>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>VAT Registration No.:</label>
             <input
               type="text"
               value={features.vat_registration_number}
-              onChange={(e) => handleTextChange('vat_registration_number', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("vat_registration_number", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
           </div>
-          <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
             <label>Applicable From:</label>
             <input
               type="date"
               value={features.vat_applicable_from}
-              onChange={(e) => handleTextChange('vat_applicable_from', e.target.value)}
-              style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+              onChange={(e) => handleTextChange("vat_applicable_from", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
             />
           </div>
         </>
@@ -397,13 +552,28 @@ const F11CompanyFeatures = () => {
         visible={features.show_all_features}
       />
       {features.enable_excise && (
-        <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+        <div
+          style={{
+            padding: "4px 12px 4px 28px",
+            borderBottom: "1px solid #e0e0e0",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <label>Excise Reg. No.:</label>
           <input
             type="text"
             value={features.excise_registration_number}
-            onChange={(e) => handleTextChange('excise_registration_number', e.target.value)}
-            style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+            onChange={(e) => handleTextChange("excise_registration_number", e.target.value)}
+            style={{
+              border: "1px solid #000",
+              background: "#fff",
+              padding: "2px 6px",
+              fontFamily: "monospace",
+              fontSize: 13,
+              width: 200,
+            }}
           />
         </div>
       )}
@@ -418,13 +588,28 @@ const F11CompanyFeatures = () => {
         visible={features.show_all_features}
       />
       {features.enable_service_tax && (
-        <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+        <div
+          style={{
+            padding: "4px 12px 4px 28px",
+            borderBottom: "1px solid #e0e0e0",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <label>Service Tax Reg. No.:</label>
           <input
             type="text"
             value={features.service_tax_registration_number}
-            onChange={(e) => handleTextChange('service_tax_registration_number', e.target.value)}
-            style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+            onChange={(e) => handleTextChange("service_tax_registration_number", e.target.value)}
+            style={{
+              border: "1px solid #000",
+              background: "#fff",
+              padding: "2px 6px",
+              fontFamily: "monospace",
+              fontSize: 13,
+              width: 200,
+            }}
           />
         </div>
       )}
@@ -434,9 +619,13 @@ const F11CompanyFeatures = () => {
   // Online Access Section
   const OnlineAccessSection = () => (
     <>
-      <div style={{ background:'#4A7A30', color:'#fff', padding:'4px 12px', fontWeight:'bold' }}>Online Access Features</div>
+      <div
+        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+      >
+        Online Access Features
+      </div>
       {!features.show_more_features ? (
-        <div style={{ padding:'8px 12px', color:'#555', fontStyle:'italic' }}>
+        <div style={{ padding: "8px 12px", color: "#555", fontStyle: "italic" }}>
           Enable 'Show more features' to access Online Access settings.
         </div>
       ) : (
@@ -465,9 +654,13 @@ const F11CompanyFeatures = () => {
   // Payroll Section
   const PayrollSection = () => (
     <>
-      <div style={{ background:'#4A7A30', color:'#fff', padding:'4px 12px', fontWeight:'bold' }}>Payroll Features</div>
+      <div
+        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+      >
+        Payroll Features
+      </div>
       {!features.show_more_features ? (
-        <div style={{ padding:'8px 12px', color:'#555', fontStyle:'italic' }}>
+        <div style={{ padding: "8px 12px", color: "#555", fontStyle: "italic" }}>
           Enable 'Show more features' to access Payroll settings.
         </div>
       ) : (
@@ -495,22 +688,52 @@ const F11CompanyFeatures = () => {
               />
               {features.enable_payroll_statutory && (
                 <>
-                  <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+                  <div
+                    style={{
+                      padding: "4px 12px 4px 28px",
+                      borderBottom: "1px solid #e0e0e0",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
                     <label>PF Registration No.:</label>
                     <input
                       type="text"
                       value={features.pf_registration_number}
-                      onChange={(e) => handleTextChange('pf_registration_number', e.target.value)}
-                      style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+                      onChange={(e) => handleTextChange("pf_registration_number", e.target.value)}
+                      style={{
+                        border: "1px solid #000",
+                        background: "#fff",
+                        padding: "2px 6px",
+                        fontFamily: "monospace",
+                        fontSize: 13,
+                        width: 200,
+                      }}
                     />
                   </div>
-                  <div style={{ padding:'4px 12px 4px 28px', borderBottom:'1px solid #e0e0e0', display:'flex', alignItems:'center', gap:12 }}>
+                  <div
+                    style={{
+                      padding: "4px 12px 4px 28px",
+                      borderBottom: "1px solid #e0e0e0",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
                     <label>ESI Registration No.:</label>
                     <input
                       type="text"
                       value={features.esi_registration_number}
-                      onChange={(e) => handleTextChange('esi_registration_number', e.target.value)}
-                      style={{ border:'1px solid #000', background:'#fff', padding:'2px 6px', fontFamily:'monospace', fontSize:13, width:200 }}
+                      onChange={(e) => handleTextChange("esi_registration_number", e.target.value)}
+                      style={{
+                        border: "1px solid #000",
+                        background: "#fff",
+                        padding: "2px 6px",
+                        fontFamily: "monospace",
+                        fontSize: 13,
+                        width: 200,
+                      }}
                     />
                   </div>
                 </>
@@ -525,9 +748,13 @@ const F11CompanyFeatures = () => {
   // Others Section
   const OthersSection = () => (
     <>
-      <div style={{ background:'#4A7A30', color:'#fff', padding:'4px 12px', fontWeight:'bold' }}>Other Features</div>
+      <div
+        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+      >
+        Other Features
+      </div>
       {!features.show_more_features ? (
-        <div style={{ padding:'8px 12px', color:'#555', fontStyle:'italic' }}>
+        <div style={{ padding: "8px 12px", color: "#555", fontStyle: "italic" }}>
           Enable 'Show more features' to access these settings.
         </div>
       ) : (
@@ -562,37 +789,63 @@ const F11CompanyFeatures = () => {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#C9DEB5', fontFamily: 'monospace', fontSize: 13, color: '#000' }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        background: "#C9DEB5",
+        fontFamily: "monospace",
+        fontSize: 13,
+        color: "#000",
+      }}
+    >
       {/* Header */}
-      <div style={{ background: '#4A7A30', color: '#fff', padding: '6px 12px', display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 14, fontWeight: 'bold' }}>Company Features Alteration</div>
-        <div>{companySettings?.company_name || 'Company'}</div>
+      <div
+        style={{
+          background: "#4A7A30",
+          color: "#fff",
+          padding: "6px 12px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: "bold" }}>Company Features Alteration</div>
+        <div>{companySettings?.company_name || "Company"}</div>
       </div>
 
       {/* Show More/All Toggles */}
-      <div style={{ background: '#D4EABD', padding: '4px 12px', borderBottom: '1px solid #000', display: 'flex', gap: '24px' }}>
+      <div
+        style={{
+          background: "#D4EABD",
+          padding: "4px 12px",
+          borderBottom: "1px solid #000",
+          display: "flex",
+          gap: "24px",
+        }}
+      >
         <div>
           <span>Show more features </span>
           <span
-            onClick={() => handleToggle('show_more_features', true)}
+            onClick={() => handleToggle("show_more_features", true)}
             style={{
-              padding: '2px 8px',
-              background: features.show_more_features ? '#4A7A30' : '#C9DEB5',
-              color: features.show_more_features ? '#fff' : '#000',
-              border: features.show_more_features ? 'none' : '1px solid #888',
-              cursor: 'pointer'
+              padding: "2px 8px",
+              background: features.show_more_features ? "#4A7A30" : "#C9DEB5",
+              color: features.show_more_features ? "#fff" : "#000",
+              border: features.show_more_features ? "none" : "1px solid #888",
+              cursor: "pointer",
             }}
           >
             Yes
           </span>
           <span
-            onClick={() => handleToggle('show_more_features', false)}
+            onClick={() => handleToggle("show_more_features", false)}
             style={{
-              padding: '2px 8px',
-              background: !features.show_more_features ? '#4A7A30' : '#C9DEB5',
-              color: !features.show_more_features ? '#fff' : '#000',
-              border: !features.show_more_features ? 'none' : '1px solid #888',
-              cursor: 'pointer'
+              padding: "2px 8px",
+              background: !features.show_more_features ? "#4A7A30" : "#C9DEB5",
+              color: !features.show_more_features ? "#fff" : "#000",
+              border: !features.show_more_features ? "none" : "1px solid #888",
+              cursor: "pointer",
             }}
           >
             No
@@ -601,25 +854,25 @@ const F11CompanyFeatures = () => {
         <div>
           <span>Show all features </span>
           <span
-            onClick={() => handleToggle('show_all_features', true)}
+            onClick={() => handleToggle("show_all_features", true)}
             style={{
-              padding: '2px 8px',
-              background: features.show_all_features ? '#4A7A30' : '#C9DEB5',
-              color: features.show_all_features ? '#fff' : '#000',
-              border: features.show_all_features ? 'none' : '1px solid #888',
-              cursor: 'pointer'
+              padding: "2px 8px",
+              background: features.show_all_features ? "#4A7A30" : "#C9DEB5",
+              color: features.show_all_features ? "#fff" : "#000",
+              border: features.show_all_features ? "none" : "1px solid #888",
+              cursor: "pointer",
             }}
           >
             Yes
           </span>
           <span
-            onClick={() => handleToggle('show_all_features', false)}
+            onClick={() => handleToggle("show_all_features", false)}
             style={{
-              padding: '2px 8px',
-              background: !features.show_all_features ? '#4A7A30' : '#C9DEB5',
-              color: !features.show_all_features ? '#fff' : '#000',
-              border: !features.show_all_features ? 'none' : '1px solid #888',
-              cursor: 'pointer'
+              padding: "2px 8px",
+              background: !features.show_all_features ? "#4A7A30" : "#C9DEB5",
+              color: !features.show_all_features ? "#fff" : "#000",
+              border: !features.show_all_features ? "none" : "1px solid #888",
+              cursor: "pointer",
             }}
           >
             No
@@ -628,35 +881,44 @@ const F11CompanyFeatures = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ background: '#D4EABD', borderBottom: '1px solid #000', display: 'flex' }}>
-        {['accounting', 'inventory', 'taxation', 'online', 'payroll', 'others'].map(tab => (
+      <div style={{ background: "#D4EABD", borderBottom: "1px solid #000", display: "flex" }}>
+        {["accounting", "inventory", "taxation", "online", "payroll", "others"].map((tab) => (
           <div
             key={tab}
             onClick={() => setActiveSection(tab)}
             style={{
-              padding: '4px 16px',
-              cursor: 'pointer',
-              borderRight: '1px solid #888',
-              background: activeSection === tab ? '#4A7A30' : 'transparent',
-              color: activeSection === tab ? '#fff' : '#000',
+              padding: "4px 16px",
+              cursor: "pointer",
+              borderRight: "1px solid #888",
+              background: activeSection === tab ? "#4A7A30" : "transparent",
+              color: activeSection === tab ? "#fff" : "#000",
             }}
             onMouseEnter={(e) => {
-              if (activeSection !== tab) e.currentTarget.style.background = '#C0D8A8';
+              if (activeSection !== tab) e.currentTarget.style.background = "#C0D8A8";
             }}
             onMouseLeave={(e) => {
-              if (activeSection !== tab) e.currentTarget.style.background = 'transparent';
+              if (activeSection !== tab) e.currentTarget.style.background = "transparent";
             }}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1).replace('_', ' ')}
+            {tab.charAt(0).toUpperCase() + tab.slice(1).replace("_", " ")}
           </div>
         ))}
       </div>
 
       {/* Content Area */}
-      <div style={{ overflowY: 'auto', flex: 1, padding: 0 }}>
-        {activeSection === 'accounting' && (
+      <div style={{ overflowY: "auto", flex: 1, padding: 0 }}>
+        {activeSection === "accounting" && (
           <>
-            <div style={{ background: '#4A7A30', color: '#fff', padding: '4px 12px', fontWeight: 'bold' }}>Accounting Features</div>
+            <div
+              style={{
+                background: "#4A7A30",
+                color: "#fff",
+                padding: "4px 12px",
+                fontWeight: "bold",
+              }}
+            >
+              Accounting Features
+            </div>
             <FeatureRow
               label="Maintain Accounts"
               description="Enable ledger creation, vouchers, and financial reports"
@@ -698,9 +960,18 @@ const F11CompanyFeatures = () => {
           </>
         )}
 
-        {activeSection === 'inventory' && (
+        {activeSection === "inventory" && (
           <>
-            <div style={{ background: '#4A7A30', color: '#fff', padding: '4px 12px', fontWeight: 'bold' }}>Inventory Features</div>
+            <div
+              style={{
+                background: "#4A7A30",
+                color: "#fff",
+                padding: "4px 12px",
+                fontWeight: "bold",
+              }}
+            >
+              Inventory Features
+            </div>
             <FeatureRow
               label="Maintain Inventory"
               description="Enable stock items, godowns, inventory vouchers, and stock reports"
@@ -792,36 +1063,58 @@ const F11CompanyFeatures = () => {
           </>
         )}
 
-        {activeSection === 'taxation' && TaxationSection()}
-        {activeSection === 'online' && OnlineAccessSection()}
-        {activeSection === 'payroll' && PayrollSection()}
-        {activeSection === 'others' && OthersSection()}
+        {activeSection === "taxation" && TaxationSection()}
+        {activeSection === "online" && OnlineAccessSection()}
+        {activeSection === "payroll" && PayrollSection()}
+        {activeSection === "others" && OthersSection()}
       </div>
 
       {/* Bottom Action Bar */}
-      <div style={{ borderTop:'2px solid #4A7A30', background:'#D4EABD', padding:'6px 12px', display:'flex', alignItems:'center', gap:16, flexShrink:0 }}>
+      <div
+        style={{
+          borderTop: "2px solid #4A7A30",
+          background: "#D4EABD",
+          padding: "6px 12px",
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          flexShrink: 0,
+        }}
+      >
         <button
           onClick={handleSave}
           disabled={!isDirty || isSaving}
           style={{
-            background: isDirty ? '#4A7A30' : '#aaa',
-            color:'#fff', border:'none', padding:'4px 16px',
-            fontFamily:'monospace', fontSize:13, cursor: isDirty ? 'pointer' : 'not-allowed'
+            background: isDirty ? "#4A7A30" : "#aaa",
+            color: "#fff",
+            border: "none",
+            padding: "4px 16px",
+            fontFamily: "monospace",
+            fontSize: 13,
+            cursor: isDirty ? "pointer" : "not-allowed",
           }}
         >
-          {isSaving ? 'Saving...' : '✔ Ctrl+A  Accept / Save'}
+          {isSaving ? "Saving..." : "✔ Ctrl+A  Accept / Save"}
         </button>
         <button
           onClick={() => {
-            if (isDirty && !window.confirm('Discard unsaved changes?')) return;
-            setCurrentPage('gateway');
+            if (isDirty && !window.confirm("Discard unsaved changes?")) return;
+            setCurrentPage("gateway");
           }}
-          style={{ background:'#888', color:'#fff', border:'none', padding:'4px 16px', fontFamily:'monospace', fontSize:13, cursor:'pointer' }}
+          style={{
+            background: "#888",
+            color: "#fff",
+            border: "none",
+            padding: "4px 16px",
+            fontFamily: "monospace",
+            fontSize: 13,
+            cursor: "pointer",
+          }}
         >
-          Esc  Exit
+          Esc Exit
         </button>
-        <span style={{ marginLeft:'auto', color:'#555', fontSize:11 }}>
-          {isDirty ? '⚠ Unsaved changes' : '✓ All changes saved'}
+        <span style={{ marginLeft: "auto", color: "#555", fontSize: 11 }}>
+          {isDirty ? "⚠ Unsaved changes" : "✓ All changes saved"}
         </span>
       </div>
     </div>

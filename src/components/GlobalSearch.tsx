@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Search, X, FileText, Users, Receipt, Package, Menu, TrendingUp } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { useGlobalSearch } from "../hooks/useGlobalSearch";
@@ -48,64 +48,25 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, selectedIndex, results]);
 
-  const getTotalResults = () => {
-    return (
-      results.accounts.length +
-      results.parties.length +
-      results.vouchers.length +
-      results.invoices.length +
-      results.items.length +
-      results.pages.length
-    );
-  };
+  const flatResults = useMemo(() => {
+    const list: Array<{ category: string; item: any }> = [];
+    results.accounts.forEach((a) => list.push({ category: "accounts", item: a }));
+    results.parties.forEach((p) => list.push({ category: "parties", item: p }));
+    results.vouchers.forEach((v) => list.push({ category: "vouchers", item: v }));
+    results.invoices.forEach((i) => list.push({ category: "billing", item: i }));
+    results.items.forEach((i) => list.push({ category: "items", item: i }));
+    results.pages.forEach((p) => list.push({ category: "page", item: p }));
+    return list;
+  }, [results]);
+
+  const getTotalResults = () => flatResults.length;
 
   const handleSelect = (index: number) => {
-    let currentIndex = 0;
+    const selected = flatResults[index];
+    if (!selected) return;
 
-    // Check accounts
-    if (index < currentIndex + results.accounts.length) {
-      setCurrentPage("accounts");
-      onClose();
-      return;
-    }
-    currentIndex += results.accounts.length;
-
-    // Check parties
-    if (index < currentIndex + results.parties.length) {
-      setCurrentPage("parties");
-      onClose();
-      return;
-    }
-    currentIndex += results.parties.length;
-
-    // Check vouchers
-    if (index < currentIndex + results.vouchers.length) {
-      setCurrentPage("vouchers");
-      onClose();
-      return;
-    }
-    currentIndex += results.vouchers.length;
-
-    // Check invoices
-    if (index < currentIndex + results.invoices.length) {
-      setCurrentPage("billing");
-      onClose();
-      return;
-    }
-    currentIndex += results.invoices.length;
-
-    // Check items
-    if (index < currentIndex + results.items.length) {
-      setCurrentPage("items");
-      onClose();
-      return;
-    }
-    currentIndex += results.items.length;
-
-    // Check pages
-    if (index < currentIndex + results.pages.length) {
-      const item = results.pages[index - currentIndex];
-      const page = item.path.replace(/^\//, "");
+    if (selected.category === "page") {
+      const page = selected.item.path.replace(/^\//, "");
       const mappedPage =
         page === "chart-of-accounts"
           ? "accounts"
@@ -125,9 +86,10 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                         ? "aging-report"
                         : page;
       setCurrentPage(mappedPage);
-      onClose();
-      return;
+    } else {
+      setCurrentPage(selected.category);
     }
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -138,7 +100,10 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-20">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[600px] overflow-hidden">
         {/* Search Input Container */}
-        <div className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2 border-b animate-fadeIn"
+          style={{ borderColor: "var(--border)" }}
+        >
           <Search className="h-4 w-4 text-[#1f2937] shrink-0" />
           <input
             ref={inputRef}
@@ -149,8 +114,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
             autoFocus
             className="flex-1 bg-transparent text-[13px] text-[#1f2937] placeholder-gray-400 outline-none"
           />
-          <kbd className="text-[10px] bg-[#f9fafb] border border-[#d1d5db] rounded px-1.5 py-0.5 text-[#1f2937] font-mono">ESC</kbd>
-          <button onClick={onClose} className="text-[#1f2937] hover:text-[#1f2937] ml-2 cursor-pointer">
+          <kbd className="text-[10px] bg-[#f9fafb] border border-[#d1d5db] rounded px-1.5 py-0.5 text-[#1f2937] font-mono">
+            ESC
+          </kbd>
+          <button
+            onClick={onClose}
+            className="text-[#1f2937] hover:text-[#1f2937] ml-2 cursor-pointer"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -317,7 +287,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           {/* Items */}
           {results.items.length > 0 && (
             <div className="border-b border-[#d1d5db]">
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1f2937] bg-[#f9fafb]">ITEMS</div>
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1f2937] bg-[#f9fafb]">
+                ITEMS
+              </div>
               {results.items.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (
@@ -343,7 +315,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           {/* Pages */}
           {results.pages.length > 0 && (
             <div>
-              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1f2937] bg-[#f9fafb]">PAGES</div>
+              <div className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1f2937] bg-[#f9fafb]">
+                PAGES
+              </div>
               {results.pages.map((item, idx) => {
                 const itemIndex = currentIndex++;
                 return (

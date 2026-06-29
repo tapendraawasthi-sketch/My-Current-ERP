@@ -154,10 +154,8 @@ export function diffObjects(
       } else if (newVal === undefined) {
         changes.push(`REMOVED "${key}": ${JSON.stringify(oldVal)}`);
       } else {
-        const oldStr =
-          typeof oldVal === "object" ? JSON.stringify(oldVal) : String(oldVal);
-        const newStr =
-          typeof newVal === "object" ? JSON.stringify(newVal) : String(newVal);
+        const oldStr = typeof oldVal === "object" ? JSON.stringify(oldVal) : String(oldVal);
+        const newStr = typeof newVal === "object" ? JSON.stringify(newVal) : String(newVal);
         if (oldStr.length > 100 || newStr.length > 100) {
           changes.push(`CHANGED "${key}"`);
         } else {
@@ -167,9 +165,7 @@ export function diffObjects(
     }
   }
 
-  return changes.length > 0
-    ? changes.join("; ")
-    : "No visible changes detected";
+  return changes.length > 0 ? changes.join("; ") : "No visible changes detected";
 }
 
 // ─── Create Audit Entry ────────────────────────────────────────────────────────
@@ -182,9 +178,7 @@ export function createAuditEntry(input: AuditEntryInput): Omit<DBAuditLog, "id">
   const oldJson = input.oldValue ? JSON.stringify(input.oldValue) : undefined;
   const newJson = input.newValue ? JSON.stringify(input.newValue) : undefined;
 
-  const changeDesc =
-    input.changeDescription ||
-    diffObjects(input.oldValue, input.newValue);
+  const changeDesc = input.changeDescription || diffObjects(input.oldValue, input.newValue);
 
   // Build checksum chain for tamper detection
   const rawEntry = JSON.stringify({

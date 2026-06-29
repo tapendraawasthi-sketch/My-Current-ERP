@@ -23,7 +23,7 @@ export interface StockSummaryRow {
 export function computeStockPosition(
   movements: any[],
   itemId: string,
-  warehouseId: string | null
+  warehouseId: string | null,
 ): StockPosition {
   let qty = 0;
   let value = 0;
@@ -47,7 +47,7 @@ export function computeStockPosition(
 export function getCurrentStock(
   itemId: string,
   warehouseId: string | null | undefined,
-  movements: any[]
+  movements: any[],
 ): number {
   return computeStockPosition(movements, itemId, warehouseId || null).qty;
 }
@@ -55,7 +55,7 @@ export function getCurrentStock(
 export function computeAllStockPositions(
   movements: any[],
   items: any[],
-  warehouses: any[]
+  warehouses: any[],
 ): StockPosition[] {
   return (items || []).filter(Boolean).map((item) => {
     const pos = computeStockPosition(movements, item.id, null);
@@ -75,13 +75,9 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
   return (items || []).filter(Boolean).map((item) => {
     const opening = item.openingStock || 0;
     const itemMovs = (movements || []).filter((m) => m && m.itemId === item.id);
-    const inQty = itemMovs
-      .filter((m) => Number(m.qty) > 0)
-      .reduce((s, m) => s + Number(m.qty), 0);
+    const inQty = itemMovs.filter((m) => Number(m.qty) > 0).reduce((s, m) => s + Number(m.qty), 0);
     const outQty = Math.abs(
-      itemMovs
-        .filter((m) => Number(m.qty) < 0)
-        .reduce((s, m) => s + Number(m.qty), 0)
+      itemMovs.filter((m) => Number(m.qty) < 0).reduce((s, m) => s + Number(m.qty), 0),
     );
     const closing = opening + inQty - outQty;
     // Weighted average: combine opening stock value + inward movement values
@@ -103,18 +99,15 @@ export function calculateStockSummary(items: any[], movements: any[]): StockSumm
       outQty: Math.round(outQty * 10000) / 10000,
       closingQty: Math.round(closing * 10000) / 10000,
       closingValue: Math.round(value * 100) / 100,
-      avgRate: closing !== 0
-        ? Math.round((value / closing) * 100) / 100
-        : Math.round(weightedAvgRate * 100) / 100,
+      avgRate:
+        closing !== 0
+          ? Math.round((value / closing) * 100) / 100
+          : Math.round(weightedAvgRate * 100) / 100,
     };
   });
 }
 
-export function getLowStockItems(
-  movements: any[],
-  items: any[],
-  _warehouses?: any[]
-): any[] {
+export function getLowStockItems(movements: any[], items: any[], _warehouses?: any[]): any[] {
   return (items || [])
     .filter((item) => {
       if (!item || !item.reorderLevel) return false;
@@ -134,7 +127,7 @@ export function getStockValuationSummary(
   items: any[],
   _warehouses?: any[],
   _method?: string,
-  _asOfDate?: string
+  _asOfDate?: string,
 ): any[] {
   return calculateStockSummary(items, movements).map((row) => ({
     ...row,

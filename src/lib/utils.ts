@@ -18,7 +18,7 @@ export function formatNumber(value: number | string | undefined | null, decimals
 export function formatCurrency(
   value: number | string | undefined | null,
   symbol = "Rs.",
-  decimals = 2
+  decimals = 2,
 ): string {
   return `${symbol} ${formatNumber(value, decimals)}`;
 }
@@ -30,12 +30,38 @@ export function round2(num: number | string | undefined | null): number {
 export function numberToWords(num: number, currency = "Rupees"): string {
   if (!num || isNaN(num)) return `Zero ${currency} Only`;
   const ones = [
-    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
-    "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
-    "Seventeen", "Eighteen", "Nineteen",
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
   ];
   const tens = [
-    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety",
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
   ];
 
   function convertHundreds(n: number): string {
@@ -43,9 +69,7 @@ export function numberToWords(num: number, currency = "Rupees"): string {
     if (n < 20) return ones[n];
     if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
     return (
-      ones[Math.floor(n / 100)] +
-      " Hundred" +
-      (n % 100 !== 0 ? " " + convertHundreds(n % 100) : "")
+      ones[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertHundreds(n % 100) : "")
     );
   }
 

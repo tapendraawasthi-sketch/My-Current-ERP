@@ -1,5 +1,20 @@
-import { generateNextVoucherNo, reloadAccounts, generateNextInvoiceNo, postInvoiceJournal, postInvoiceStock } from '../index';
-import { StoreUser, CompanySettings, Notification, FiscalYear, DEFAULT_CURRENCY, DEFAULT_TDS_RATES, hashPassword, verifyPassword } from '../store.types';
+import {
+  generateNextVoucherNo,
+  reloadAccounts,
+  generateNextInvoiceNo,
+  postInvoiceJournal,
+  postInvoiceStock,
+} from "../index";
+import {
+  StoreUser,
+  CompanySettings,
+  Notification,
+  FiscalYear,
+  DEFAULT_CURRENCY,
+  DEFAULT_TDS_RATES,
+  hashPassword,
+  verifyPassword,
+} from "../store.types";
 import { StateCreator } from "zustand";
 import type { AppState } from "../store.types";
 import { getDB, generateId } from "../../lib/db";
@@ -9,7 +24,6 @@ import { validateVoucherBalance, assertDateInFiscalYear } from "../store.types";
 import toast from "react-hot-toast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
-
 
 export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Vouchers ─────────────────────────────────────────────────────────────
@@ -27,6 +41,8 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
       const voucherNo = await generateNextVoucherNo(type, db);
 
       const newVoucher = {
+        status: voucher.status || "draft",
+        lines: voucher.lines || [],
         ...voucher,
         id,
         voucherNo,
@@ -51,7 +67,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
       }
 
       await reloadAccounts(db, set);
-      
+
       set((s) => ({ vouchers: [newVoucher, ...s.vouchers] }));
       return newVoucher;
     });
@@ -75,7 +91,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
       if (original.status === "cancelled") throw new Error("Voucher is already cancelled");
 
       const reversalVoucherId = generateId();
-      
+
       if (original.lines && original.status === "posted") {
         const reversalLines = original.lines.map((line: any) => ({
           ...line,
@@ -111,16 +127,20 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         }
       }
 
-      await db.vouchers.update(id, { 
-        status: "cancelled", 
+      await db.vouchers.update(id, {
+        status: "cancelled",
         cancellationReason: reason,
-        reversalVoucherId 
+        reversalVoucherId,
       });
 
       await reloadAccounts(db, set);
-      
+
       const allVouchers = await db.vouchers.toArray();
-      set({ vouchers: allVouchers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) });
+      set({
+        vouchers: allVouchers.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        ),
+      });
     });
   },
 
@@ -134,12 +154,18 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const type = invoice.type || "sales-invoice";
 
     return db.transaction(
-      "rw", 
-      [db.invoices, db.vouchers, db.stockMovements, db.accounts], 
+      "rw",
+      [db.invoices, db.vouchers, db.stockMovements, db.accounts],
       async () => {
         const invoiceNo = await generateNextInvoiceNo(type, db);
-        const newInvoice = { ...invoice, id, invoiceNo };
-        
+        const newInvoice = {
+          status: invoice.status || "draft",
+          lines: invoice.lines || [],
+          ...invoice,
+          id,
+          invoiceNo,
+        };
+
         await db.invoices.add(newInvoice as any);
 
         if ((newInvoice as any).status === "posted") {
@@ -148,10 +174,14 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         }
 
         const allInvoices = await db.invoices.toArray();
-        set({ invoices: allInvoices.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) });
-        
+        set({
+          invoices: allInvoices.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+        });
+
         return newInvoice;
-      }
+      },
     );
   },
 
@@ -165,96 +195,104 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
   cancelInvoice: async (id, reason) => {
     const db = getDB();
-    
-    return db.transaction("rw", [db.invoices, db.vouchers, db.stockMovements, db.accounts], async () => {
-      const invoice = await db.invoices.get(id);
-      if (!invoice) throw new Error("Invoice not found");
-      if (invoice.status === "cancelled") throw new Error("Invoice is already cancelled");
 
-      await db.invoices.update(id, {
-        status: "cancelled",
-        cancellationReason: reason,
-        paymentStatus: "cancelled",
-      });
+    return db.transaction(
+      "rw",
+      [db.invoices, db.vouchers, db.stockMovements, db.accounts],
+      async () => {
+        const invoice = await db.invoices.get(id);
+        if (!invoice) throw new Error("Invoice not found");
+        if (invoice.status === "cancelled") throw new Error("Invoice is already cancelled");
 
-      // Reverse stock movements
-      const movements = await db.stockMovements.where("referenceId").equals(id).toArray();
-      for (const mov of movements) {
-        const reversalMovement = {
-          ...mov,
-          id: generateId(),
-          qty: -(mov.qty || 0),
-          amount: -(mov.amount || 0),
-          narration: `Reversal of ${mov.referenceNo}: ${reason}`,
-          referenceType: "reversal"
-        };
-        await db.stockMovements.add(reversalMovement as any);
-      }
+        await db.invoices.update(id, {
+          status: "cancelled",
+          cancellationReason: reason,
+          paymentStatus: "cancelled",
+        });
 
-      // Reverse journal entry if posted
-      if (invoice.status === "posted") {
-        const jnlId = `jnl-${invoice.id}`;
-        const originalVoucher = await db.vouchers.get(jnlId);
-        if (originalVoucher && originalVoucher.status === "posted") {
-          const reversalLines = (originalVoucher.lines || []).map((line: any) => ({
-            ...line,
+        // Reverse stock movements
+        const movements = await db.stockMovements.where("referenceId").equals(id).toArray();
+        for (const mov of movements) {
+          const reversalMovement = {
+            ...mov,
             id: generateId(),
-            debit: Number(line.credit || 0),
-            credit: Number(line.debit || 0),
-          }));
-
-          const reversalVoucher = {
-            id: generateId(),
-            voucherNo: await generateNextVoucherNo("reversal", db),
-            date: new Date().toISOString().split("T")[0],
-            type: "reversal",
-            status: "posted",
-            narration: `Reversal of ${originalVoucher.voucherNo}: ${reason}`,
-            lines: reversalLines,
-            totalDebit: originalVoucher.totalDebit,
-            totalCredit: originalVoucher.totalCredit,
-            grandTotal: originalVoucher.grandTotal,
+            qty: -(mov.qty || 0),
+            amount: -(mov.amount || 0),
+            narration: `Reversal of ${mov.referenceNo}: ${reason}`,
+            referenceType: "reversal",
           };
-          
-          await db.vouchers.add(reversalVoucher as any);
-          await db.vouchers.update(jnlId, {
-            status: "cancelled",
-            cancellationReason: reason,
-            reversalVoucherId: reversalVoucher.id
-          });
+          await db.stockMovements.add(reversalMovement as any);
+        }
 
-          for (const line of reversalLines) {
-            if (line.accountId) {
-              const acc = await db.accounts.get(line.accountId);
-              if (acc) {
-                await db.accounts.update(line.accountId, {
-                  balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
-                });
+        // Reverse journal entry if posted
+        if (invoice.status === "posted") {
+          const jnlId = `jnl-${invoice.id}`;
+          const originalVoucher = await db.vouchers.get(jnlId);
+          if (originalVoucher && originalVoucher.status === "posted") {
+            const reversalLines = (originalVoucher.lines || []).map((line: any) => ({
+              ...line,
+              id: generateId(),
+              debit: Number(line.credit || 0),
+              credit: Number(line.debit || 0),
+            }));
+
+            const reversalVoucher = {
+              id: generateId(),
+              voucherNo: await generateNextVoucherNo("reversal", db),
+              date: new Date().toISOString().split("T")[0],
+              type: "reversal",
+              status: "posted",
+              narration: `Reversal of ${originalVoucher.voucherNo}: ${reason}`,
+              lines: reversalLines,
+              totalDebit: originalVoucher.totalDebit,
+              totalCredit: originalVoucher.totalCredit,
+              grandTotal: originalVoucher.grandTotal,
+            };
+
+            await db.vouchers.add(reversalVoucher as any);
+            await db.vouchers.update(jnlId, {
+              status: "cancelled",
+              cancellationReason: reason,
+              reversalVoucherId: reversalVoucher.id,
+            });
+
+            for (const line of reversalLines) {
+              if (line.accountId) {
+                const acc = await db.accounts.get(line.accountId);
+                if (acc) {
+                  await db.accounts.update(line.accountId, {
+                    balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
+                  });
+                }
               }
             }
           }
         }
-      }
 
-      await reloadAccounts(db, set);
-      
-      const updatedInvoices = await db.invoices.toArray();
-      const updatedMovements = await db.stockMovements.toArray();
-      const updatedVouchers = await db.vouchers.toArray();
+        await reloadAccounts(db, set);
 
-      set({
-        invoices: updatedInvoices.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-        stockMovements: updatedMovements,
-        vouchers: updatedVouchers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-      });
-    });
+        const updatedInvoices = await db.invoices.toArray();
+        const updatedMovements = await db.stockMovements.toArray();
+        const updatedVouchers = await db.vouchers.toArray();
+
+        set({
+          invoices: updatedInvoices.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+          stockMovements: updatedMovements,
+          vouchers: updatedVouchers.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+        });
+      },
+    );
   },
 
   // ── Recurring Vouchers ─────────────────────────────────────────────────────
   addRecurringVoucher: async (data) => {
     const { currentFiscalYear } = get();
     assertDateInFiscalYear(data.startDate, currentFiscalYear);
-    
+
     const db = getDB();
     const record = {
       ...data,
@@ -348,14 +386,15 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
   // ── Banking Module Actions ──────────────────────────────────────────────────
   loadBankingData: async () => {
     const db = getDB();
-    const [chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices] = await Promise.all([
-      db.chequeBooks.toArray(),
-      db.cheques.toArray(),
-      db.depositSlips.toArray(),
-      db.pdCheques.toArray(),
-      db.ePaymentBatches.toArray(),
-      db.paymentAdvices.toArray(),
-    ]);
+    const [chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices] =
+      await Promise.all([
+        db.chequeBooks.toArray(),
+        db.cheques.toArray(),
+        db.depositSlips.toArray(),
+        db.pdCheques.toArray(),
+        db.ePaymentBatches.toArray(),
+        db.paymentAdvices.toArray(),
+      ]);
     set({ chequeBooks, cheques, depositSlips, pdCheques, ePaymentBatches, paymentAdvices });
   },
 
@@ -396,11 +435,24 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
   markChequePrinted: async (chequeIds, userId) => {
     const db = getDB();
     const now = new Date().toISOString();
-    await Promise.all(chequeIds.map(id => db.cheques.update(id, { isPrinted: true, printedAt: now, printedBy: userId || "system" })));
-    await Promise.all(chequeIds.map(id => db.auditLogs.add({
-      id: generateId(), timestamp: now, userId: userId || "system",
-      action: "CHEQUE_PRINTED", module: "banking", recordId: id, recordType: "cheque"
-    })));
+    await Promise.all(
+      chequeIds.map((id) =>
+        db.cheques.update(id, { isPrinted: true, printedAt: now, printedBy: userId || "system" }),
+      ),
+    );
+    await Promise.all(
+      chequeIds.map((id) =>
+        db.auditLogs.add({
+          id: generateId(),
+          timestamp: now,
+          userId: userId || "system",
+          action: "CHEQUE_PRINTED",
+          module: "banking",
+          recordId: id,
+          recordType: "cheque",
+        }),
+      ),
+    );
     const all = await db.cheques.toArray();
     set({ cheques: all });
   },
@@ -427,8 +479,13 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const now = new Date().toISOString();
     await db.depositSlips.update(slipId, { status: "deposited", depositedAt: now });
     await db.auditLogs.add({
-      id: generateId(), timestamp: now, userId: "system",
-      action: "DEPOSIT_CONFIRMED", module: "banking", recordId: slipId, recordType: "depositSlip"
+      id: generateId(),
+      timestamp: now,
+      userId: "system",
+      action: "DEPOSIT_CONFIRMED",
+      module: "banking",
+      recordId: slipId,
+      recordType: "depositSlip",
     });
     const all = await db.depositSlips.toArray();
     set({ depositSlips: all });
@@ -456,12 +513,24 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const now = new Date().toISOString();
     const vId = generateId();
     await db.vouchers.add({ ...journalData, id: vId, createdAt: now } as any);
-    await db.pdCheques.update(pdcId, { status: "presented", convertedAt: now, convertedVoucherId: vId });
-    await db.auditLogs.add({
-      id: generateId(), timestamp: now, userId: "system",
-      action: "PDC_CONVERTED", module: "banking", recordId: pdcId, recordType: "pdCheque"
+    await db.pdCheques.update(pdcId, {
+      status: "presented",
+      convertedAt: now,
+      convertedVoucherId: vId,
     });
-    const [allPDC, allVouchers] = await Promise.all([db.pdCheques.toArray(), db.vouchers.toArray()]);
+    await db.auditLogs.add({
+      id: generateId(),
+      timestamp: now,
+      userId: "system",
+      action: "PDC_CONVERTED",
+      module: "banking",
+      recordId: pdcId,
+      recordType: "pdCheque",
+    });
+    const [allPDC, allVouchers] = await Promise.all([
+      db.pdCheques.toArray(),
+      db.vouchers.toArray(),
+    ]);
     set({ pdCheques: allPDC, vouchers: allVouchers });
   },
 
@@ -533,7 +602,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
   updateBranch: async (id: string, data: any) => {
     const db = getDB();
     await db.branches.update(id, data);
-    set((s: any) => ({ branches: s.branches.map((b: any) => b.id === id ? { ...b, ...data } : b) }));
+    set((s: any) => ({
+      branches: s.branches.map((b: any) => (b.id === id ? { ...b, ...data } : b)),
+    }));
   },
   deleteBranch: async (id: string) => {
     const db = getDB();
@@ -551,7 +622,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
   updateSalesperson: async (id: string, data: any) => {
     const db = getDB();
     await db.salesPersons.update(id, data);
-    set((s: any) => ({ salespersons: s.salespersons.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
+    set((s: any) => ({
+      salespersons: s.salespersons.map((x: any) => (x.id === id ? { ...x, ...data } : x)),
+    }));
   },
   deleteSalesperson: async (id: string) => {
     const db = getDB();
@@ -569,7 +642,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
   updateExchangeRate: async (id: string, data: any) => {
     const db = getDB();
     await db.exchangeRates.update(id, data);
-    set((s: any) => ({ exchangeRates: s.exchangeRates.map((x: any) => x.id === id ? { ...x, ...data } : x) }));
+    set((s: any) => ({
+      exchangeRates: s.exchangeRates.map((x: any) => (x.id === id ? { ...x, ...data } : x)),
+    }));
   },
   deleteExchangeRate: async (id: string) => {
     const db = getDB();

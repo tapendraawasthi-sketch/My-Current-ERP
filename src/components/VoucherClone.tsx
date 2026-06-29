@@ -22,7 +22,7 @@ const VoucherClone: React.FC<VoucherCloneProps> = ({ voucher, onClone }) => {
       date: new Date().toISOString().split("T")[0],
       status: "draft",
       voucherNo: "",
-      lines: (voucher.lines || []).map(l => ({...l, id: generateId()}))
+      lines: (voucher.lines || []).map((l) => ({ ...l, id: generateId() })),
     };
 
     onClone(cloned);
@@ -34,7 +34,7 @@ const VoucherClone: React.FC<VoucherCloneProps> = ({ voucher, onClone }) => {
   }
 
   return (
-    <button 
+    <button
       type="button"
       className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
       onClick={handleClone}

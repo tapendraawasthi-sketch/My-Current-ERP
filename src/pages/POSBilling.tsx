@@ -35,7 +35,7 @@ import {
   Clock,
   LogOut,
   X,
-  CreditCard as CardIcon
+  CreditCard as CardIcon,
 } from "lucide-react";
 
 const money = (v: any) =>
@@ -52,12 +52,10 @@ const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
   "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const card =
-  "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
-const td =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -73,13 +71,10 @@ const tableAll = (db: any, name: string) => {
 };
 
 const tablePut = async (db: any, name: string, rows: any[]) => {
-  try {
-    if (!rows?.length) return;
-    const t = db?.table ? db.table(name) : db?.[name];
-    if (t?.bulkPut) await t.bulkPut(rows);
-  } catch (err) {
-    console.warn("bulkPut failed", name, err);
-  }
+  if (!rows?.length) return;
+  const t = db?.table ? db.table(name) : db?.[name];
+  if (!t?.bulkPut) throw new Error(`Table ${name} not found`);
+  await t.bulkPut(rows);
 };
 
 const tableDelete = async (db: any, name: string, id: any) => {
@@ -92,10 +87,7 @@ const tableDelete = async (db: any, name: string, id: any) => {
 };
 
 const itemName = (items: any[], id: string) =>
-  items.find((i) => i.id === id)?.name ||
-  items.find((i) => i.itemId === id)?.name ||
-  id ||
-  "-";
+  items.find((i) => i.id === id)?.name || items.find((i) => i.itemId === id)?.name || id || "-";
 
 const partyName = (parties: any[], id: string) =>
   parties.find((p) => p.id === id)?.name ||
@@ -112,27 +104,23 @@ const findAccount = (accounts: any[], keywords: string[]) => {
   return (
     accounts.find((a) =>
       words.some((w) =>
-        [a.name, a.group, a.groupName, a.type, a.nature]
-          .join(" ")
-          .toLowerCase()
-          .includes(w)
-      )
+        [a.name, a.group, a.groupName, a.type, a.nature].join(" ").toLowerCase().includes(w),
+      ),
     ) || {}
   );
 };
 
-const normalizePAN = (v: any) => String(v || "").replace(/\D/g, "").slice(0, 9);
+const normalizePAN = (v: any) =>
+  String(v || "")
+    .replace(/\D/g, "")
+    .slice(0, 9);
 
 const stockForItem = (stockMovements: any[], itemId: string, warehouseId = "") => {
   return (stockMovements || [])
     .filter((m) => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId))
     .reduce(
-      (sum, m) =>
-        sum +
-        Number(m.qtyIn || m.inQty || 0) -
-        Number(m.qtyOut || m.outQty || 0) +
-        Number(m.qty || 0),
-      0
+      (sum, m) => sum + Number(m.qtyIn || m.inQty || 0) - Number(m.qtyOut || m.outQty || 0),
+      0,
     );
 };
 
@@ -216,7 +204,9 @@ const Modal = ({ open, title, children, onClose, max = "max-w-5xl" }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className={`bg-white rounded-lg shadow-xl w-full ${max} max-h-[90vh] overflow-hidden flex flex-col`}>
+      <div
+        className={`bg-white rounded-lg shadow-xl w-full ${max} max-h-[90vh] overflow-hidden flex flex-col`}
+      >
         <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
           <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
@@ -316,13 +306,14 @@ export default function POSBilling() {
       setStockMovements(stockRows || []);
       setInvoices(dbInvoices || []);
       setHolds(dbHolds || []);
-      setSessions((dbSessions || []).sort((a, b) => String(b.openedAt || "").localeCompare(String(a.openedAt || ""))));
+      setSessions(
+        (dbSessions || []).sort((a, b) =>
+          String(b.openedAt || "").localeCompare(String(a.openedAt || "")),
+        ),
+      );
 
       const open = (dbSessions || []).find(
-        (s) =>
-          s.status === "Open" &&
-          (!s.userId || !currentUser?.id || s.userId === currentUser.id) &&
-          s.date === todayISO()
+        (s) => s.status === "Open" && s.userId === currentUser?.id && s.date === todayISO(),
       );
 
       setCurrentSession(open || null);
@@ -341,13 +332,11 @@ export default function POSBilling() {
       "All",
       ...Array.from(
         new Set(
-          items
-            .map((i) => i.category || i.group || i.groupName || i.itemGroup)
-            .filter(Boolean)
-        )
+          items.map((i) => i.category || i.group || i.groupName || i.itemGroup).filter(Boolean),
+        ),
       ).sort(),
     ],
-    [items]
+    [items],
   );
 
   const filteredItems = useMemo(() => {
@@ -358,15 +347,7 @@ export default function POSBilling() {
         if (categoryFilter !== "All" && cat !== categoryFilter) return false;
         if (!q) return true;
 
-        return [
-          i.name,
-          i.code,
-          i.barcode,
-          i.sku,
-          i.hsnCode,
-          cat,
-          i.description,
-        ]
+        return [i.name, i.code, i.barcode, i.sku, i.hsnCode, cat, i.description]
           .join(" ")
           .toLowerCase()
           .includes(q);
@@ -381,7 +362,8 @@ export default function POSBilling() {
 
     const billPercentDiscount =
       taxableBeforeBillDiscount * (Number(billDiscountPercent || 0) / 100);
-    const billDiscount = billPercentDiscount + Number(billDiscountAmount || 0);
+    const billDiscount =
+      Number(billDiscountPercent || 0) > 0 ? billPercentDiscount : Number(billDiscountAmount || 0);
 
     const taxableBase = Math.max(0, taxableBeforeBillDiscount - billDiscount);
 
@@ -390,7 +372,8 @@ export default function POSBilling() {
 
     const vat = cart.reduce((sum, l) => {
       const x = lineNet(l);
-      return sum + (l.taxable ? x.vat * taxableRatio : 0);
+      const reducedTaxable = l.taxable ? x.taxable * taxableRatio : 0;
+      return sum + reducedTaxable * 0.13;
     }, 0);
 
     const subTotal = taxableBase;
@@ -422,21 +405,38 @@ export default function POSBilling() {
       invoices.filter(
         (inv) =>
           String(inv.date || inv.invoiceDate || "").slice(0, 10) === todayISO() &&
-          String(inv.sourceType || inv.channel || "").toLowerCase().includes("pos")
+          String(inv.sourceType || inv.channel || "")
+            .toLowerCase()
+            .includes("pos"),
       ),
-    [invoices]
+    [invoices],
   );
 
   const dayStats = useMemo(() => {
     const totalSales = todaySales.reduce(
       (sum, inv) => sum + Number(inv.grandTotal || inv.total || 0),
-      0
+      0,
     );
-    const cash = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.cash || inv.cash || 0), 0);
-    const card = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.card || inv.card || 0), 0);
-    const wallet = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.wallet || inv.wallet || 0), 0);
-    const bank = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.bank || inv.bank || 0), 0);
-    const credit = todaySales.reduce((sum, inv) => sum + Number(inv.payments?.credit || inv.credit || 0), 0);
+    const cash = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.payments?.cash || inv.cash || 0),
+      0,
+    );
+    const card = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.payments?.card || inv.card || 0),
+      0,
+    );
+    const wallet = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.payments?.wallet || inv.wallet || 0),
+      0,
+    );
+    const bank = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.payments?.bank || inv.bank || 0),
+      0,
+    );
+    const credit = todaySales.reduce(
+      (sum, inv) => sum + Number(inv.payments?.credit || inv.credit || 0),
+      0,
+    );
 
     return {
       bills: todaySales.length,
@@ -464,7 +464,9 @@ export default function POSBilling() {
         return prev;
       }
 
-      const rate = Number(item.sellingPrice || item.salePrice || item.mrp || item.rate || item.price || 0) || 0;
+      const rate =
+        Number(item.sellingPrice || item.salePrice || item.mrp || item.rate || item.price || 0) ||
+        0;
 
       const row = {
         id: existing?.id || generateId(),
@@ -477,7 +479,9 @@ export default function POSBilling() {
         rate: existing?.rate ?? rate,
         discountPercent: existing?.discountPercent || 0,
         discountAmount: existing?.discountAmount || 0,
-        taxable: existing?.taxable ?? (item.taxable !== false && item.vatExempt !== true && item.taxRate !== 0),
+        taxable:
+          existing?.taxable ??
+          (item.taxable !== false && item.vatExempt !== true && item.taxRate !== 0),
         warehouseId,
         available,
       };
@@ -502,7 +506,7 @@ export default function POSBilling() {
         String(i.barcode || "").toLowerCase() === q ||
         String(i.code || "").toLowerCase() === q ||
         String(i.sku || "").toLowerCase() === q ||
-        String(i.name || "").toLowerCase() === q
+        String(i.name || "").toLowerCase() === q,
     );
 
     if (!item) {
@@ -521,10 +525,7 @@ export default function POSBilling() {
         const next = {
           ...l,
           [key]:
-            key === "qty" ||
-            key === "rate" ||
-            key === "discountPercent" ||
-            key === "discountAmount"
+            key === "qty" || key === "rate" || key === "discountPercent" || key === "discountAmount"
               ? Number(value || 0)
               : value,
         };
@@ -538,7 +539,7 @@ export default function POSBilling() {
           }
         }
         return next;
-      })
+      }),
     );
   };
 
@@ -608,7 +609,7 @@ export default function POSBilling() {
 
   const buildInvoice = () => {
     const party = parties.find((p) => p.id === partyId) || {};
-    const invoiceNo = `POS-${saleDate.split("-").join("")}-${String(Date.now()).slice(-5)}`;
+    const invoiceNo = `POS-${saleDate.split("-").join("")}-${String(Date.now()).slice(-8)}${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
     const lines = cart.map((l) => {
       const x = lineNet(l);
@@ -656,12 +657,12 @@ export default function POSBilling() {
         Number(payment.cash || 0) > 0
           ? "Cash"
           : Number(payment.card || 0) > 0
-          ? "Card"
-          : Number(payment.wallet || 0) > 0
-          ? "Wallet"
-          : Number(payment.bank || 0) > 0
-          ? "Bank"
-          : "Credit",
+            ? "Card"
+            : Number(payment.wallet || 0) > 0
+              ? "Wallet"
+              : Number(payment.bank || 0) > 0
+                ? "Bank"
+                : "Credit",
       status: "paid",
       fiscalYearId: fiscalYear?.id || "",
       posSessionId: currentSession?.id || "",
@@ -784,7 +785,6 @@ export default function POSBilling() {
         warehouseId: l.warehouseId || warehouseId,
         qtyIn: 0,
         qtyOut: Number(l.qty || 0),
-        qty: -Number(l.qty || 0),
         rate: Number(l.rate || 0),
         value: Number(l.taxableAmount || 0),
         sourceType: "POS",
@@ -802,15 +802,19 @@ export default function POSBilling() {
           currentUser,
           "POS Sale Saved",
           `${invoice.invoiceNo} ${money(invoice.grandTotal)} ${invoice.paymentMode}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
       if (store.addInvoice) {
-        try { store.addInvoice(invoice); } catch {}
+        try {
+          store.addInvoice(invoice);
+        } catch {}
       }
       if (store.addVoucher) {
-        try { store.addVoucher(voucher); } catch {}
+        try {
+          store.addVoucher(voucher);
+        } catch {}
       }
 
       setInvoices((prev) => [invoice, ...prev]);
@@ -852,7 +856,7 @@ export default function POSBilling() {
           currentUser,
           "POS Session Opened",
           `Opening cash ${money(row.openingCash)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -890,7 +894,7 @@ export default function POSBilling() {
           currentUser,
           "POS Session Closed",
           `Closing cash ${money(row.closingCash)}, variance ${money(row.variance)}`,
-          Math.abs(variance) > 1 ? "High" : "Medium"
+          Math.abs(variance) > 1 ? "High" : "Medium",
         ),
       ]);
 
@@ -999,9 +1003,9 @@ export default function POSBilling() {
           Bank: inv.payments?.bank || 0,
           Credit: inv.payments?.credit || 0,
           Cashier: inv.createdByName,
-        }))
+        })),
       ),
-      "POS Sales"
+      "POS Sales",
     );
 
     XLSX.utils.book_append_sheet(
@@ -1016,13 +1020,12 @@ export default function POSBilling() {
         { Metric: "Credit", Value: dayStats.credit },
         { Metric: "Expected Cash", Value: dayStats.expectedCash },
       ]),
-      "Summary"
+      "Summary",
     );
 
     XLSX.writeFile(wb, `POS_Day_Report_${todayISO()}.xlsx`);
     toast.success("POS day report exported");
   };
-
 
   const printReceipt = (invoice = receiptData) => {
     if (!invoice) {
@@ -1075,7 +1078,7 @@ export default function POSBilling() {
                         <td class="right">${Number(l.rate || 0).toFixed(2)}</td>
                         <td class="right">${Number(l.lineTotal || 0).toFixed(2)}</td>
                       </tr>
-                    `
+                    `,
                   )
                   .join("")}
               </tbody>
@@ -1173,7 +1176,9 @@ export default function POSBilling() {
           <div className={card}>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Sale Date</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Sale Date
+                </label>
                 <input
                   type="date"
                   className={input}
@@ -1183,7 +1188,9 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Warehouse</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Warehouse
+                </label>
                 <select
                   className={input}
                   value={warehouseId}
@@ -1198,7 +1205,9 @@ export default function POSBilling() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Customer</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Customer
+                </label>
                 <select
                   className={input}
                   value={partyId}
@@ -1214,7 +1223,9 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Held Bills</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Held Bills
+                </label>
                 <button className={`${btn2} w-full`} onClick={() => setActiveTab("Held Bills")}>
                   <PauseCircle className="h-4 w-4" />
                   {holds.length} Held
@@ -1226,7 +1237,9 @@ export default function POSBilling() {
           <div className={card}>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Barcode / Item Code</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Barcode / Item Code
+                </label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Barcode className="h-4 w-4 absolute left-2.5 top-2 text-gray-500" />
@@ -1250,7 +1263,9 @@ export default function POSBilling() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Search Item</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Search Item
+                </label>
                 <div className="relative">
                   <Search className="h-4 w-4 absolute left-2.5 top-2 text-gray-500" />
                   <input
@@ -1263,7 +1278,9 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">Category</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                  Category
+                </label>
                 <select
                   className={input}
                   value={categoryFilter}
@@ -1280,7 +1297,9 @@ export default function POSBilling() {
           <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3">
             {filteredItems.map((i) => {
               const stock = stockForItem(stockMovements, i.id, warehouseId);
-              const price = Number(i.sellingPrice || i.salePrice || i.mrp || i.rate || i.price || 0);
+              const price = Number(
+                i.sellingPrice || i.salePrice || i.mrp || i.rate || i.price || 0,
+              );
 
               return (
                 <button
@@ -1288,8 +1307,12 @@ export default function POSBilling() {
                   onClick={() => addToCart(i, 1)}
                   className="bg-white border border-gray-200 rounded-lg p-3 text-left hover:border-[#1557b0] hover:shadow-sm transition-colors"
                 >
-                  <div className="font-semibold text-[13px] text-gray-800 line-clamp-2 min-h-[40px] leading-tight">{i.name}</div>
-                  <div className="text-[11px] text-gray-500 mt-1">{i.code || i.sku || i.barcode || "-"}</div>
+                  <div className="font-semibold text-[13px] text-gray-800 line-clamp-2 min-h-[40px] leading-tight">
+                    {i.name}
+                  </div>
+                  <div className="text-[11px] text-gray-500 mt-1">
+                    {i.code || i.sku || i.barcode || "-"}
+                  </div>
                   <div className="flex justify-between items-end mt-2">
                     <span className="text-[14px] font-bold text-[#1557b0]">{money(price)}</span>
                     <span
@@ -1320,7 +1343,10 @@ export default function POSBilling() {
                 Cart
               </h3>
 
-              <button className="text-gray-400 hover:text-red-600 p-1.5 rounded" onClick={clearCart}>
+              <button
+                className="text-gray-400 hover:text-red-600 p-1.5 rounded"
+                onClick={clearCart}
+              >
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -1333,7 +1359,9 @@ export default function POSBilling() {
                   <div key={l.id} className="border border-gray-200 rounded-md p-2 bg-gray-50">
                     <div className="flex justify-between gap-2">
                       <div>
-                        <p className="font-semibold text-[12px] leading-tight text-gray-800">{l.name}</p>
+                        <p className="font-semibold text-[12px] leading-tight text-gray-800">
+                          {l.name}
+                        </p>
                         <p className="text-[10px] text-gray-500">
                           {l.code || "-"} • {l.unit || "PCS"}
                         </p>
@@ -1349,11 +1377,15 @@ export default function POSBilling() {
 
                     <div className="grid grid-cols-3 gap-2 mt-2">
                       <div>
-                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">Qty</label>
+                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">
+                          Qty
+                        </label>
                         <div className="flex h-7 bg-white rounded border border-gray-300 overflow-hidden">
                           <button
                             className="px-1.5 hover:bg-gray-100 text-gray-600"
-                            onClick={() => updateCartLine(l.id, "qty", Math.max(1, Number(l.qty || 0) - 1))}
+                            onClick={() =>
+                              updateCartLine(l.id, "qty", Math.max(1, Number(l.qty || 0) - 1))
+                            }
                           >
                             <Minus className="h-3 w-3" />
                           </button>
@@ -1373,7 +1405,9 @@ export default function POSBilling() {
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">Rate</label>
+                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">
+                          Rate
+                        </label>
                         <input
                           type="number"
                           className={`${input} h-7 px-1.5`}
@@ -1383,7 +1417,9 @@ export default function POSBilling() {
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">Disc %</label>
+                        <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">
+                          Disc %
+                        </label>
                         <input
                           type="number"
                           className={`${input} h-7 px-1.5`}
@@ -1432,12 +1468,16 @@ export default function POSBilling() {
 
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Line Discount</span>
-                <span className="font-semibold text-gray-800">{money(cartSummary.lineDiscount)}</span>
+                <span className="font-semibold text-gray-800">
+                  {money(cartSummary.lineDiscount)}
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 my-2">
                 <div>
-                  <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Bill Disc %</label>
+                  <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                    Bill Disc %
+                  </label>
                   <input
                     type="number"
                     className={`${input} h-7`}
@@ -1447,7 +1487,9 @@ export default function POSBilling() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Bill Disc Amt</label>
+                  <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                    Bill Disc Amt
+                  </label>
                   <input
                     type="number"
                     className={`${input} h-7`}
@@ -1481,26 +1523,43 @@ export default function POSBilling() {
             </h3>
 
             <div className="grid grid-cols-5 gap-2 mb-3">
-              <button className={`${btn2} p-0 flex items-center justify-center`} onClick={() => quickSetPayment("cash")}>
+              <button
+                className={`${btn2} p-0 flex items-center justify-center`}
+                onClick={() => quickSetPayment("cash")}
+              >
                 <Banknote className="h-4 w-4" />
               </button>
-              <button className={`${btn2} p-0 flex items-center justify-center`} onClick={() => quickSetPayment("card")}>
+              <button
+                className={`${btn2} p-0 flex items-center justify-center`}
+                onClick={() => quickSetPayment("card")}
+              >
                 <CreditCard className="h-4 w-4" />
               </button>
-              <button className={`${btn2} p-0 flex items-center justify-center`} onClick={() => quickSetPayment("wallet")}>
+              <button
+                className={`${btn2} p-0 flex items-center justify-center`}
+                onClick={() => quickSetPayment("wallet")}
+              >
                 <QrCode className="h-4 w-4" />
               </button>
-              <button className={`${btn2} p-0 flex items-center justify-center`} onClick={() => quickSetPayment("bank")}>
+              <button
+                className={`${btn2} p-0 flex items-center justify-center`}
+                onClick={() => quickSetPayment("bank")}
+              >
                 <WalletCards className="h-4 w-4" />
               </button>
-              <button className={`${btn2} p-0 flex items-center justify-center`} onClick={() => quickSetPayment("credit")}>
+              <button
+                className={`${btn2} p-0 flex items-center justify-center`}
+                onClick={() => quickSetPayment("credit")}
+              >
                 <User className="h-4 w-4" />
               </button>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Cash</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Cash
+                </label>
                 <input
                   type="number"
                   className={`${input} h-7`}
@@ -1510,7 +1569,9 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Card</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Card
+                </label>
                 <input
                   type="number"
                   className={`${input} h-7`}
@@ -1520,17 +1581,23 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Wallet</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Wallet
+                </label>
                 <input
                   type="number"
                   className={`${input} h-7`}
                   value={payment.wallet}
-                  onChange={(e) => setPayment((p) => ({ ...p, wallet: Number(e.target.value || 0) }))}
+                  onChange={(e) =>
+                    setPayment((p) => ({ ...p, wallet: Number(e.target.value || 0) }))
+                  }
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Bank</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Bank
+                </label>
                 <input
                   type="number"
                   className={`${input} h-7`}
@@ -1540,17 +1607,23 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Credit</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Credit
+                </label>
                 <input
                   type="number"
                   className={`${input} h-7`}
                   value={payment.credit}
-                  onChange={(e) => setPayment((p) => ({ ...p, credit: Number(e.target.value || 0) }))}
+                  onChange={(e) =>
+                    setPayment((p) => ({ ...p, credit: Number(e.target.value || 0) }))
+                  }
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Ref No</label>
+                <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                  Ref No
+                </label>
                 <input
                   className={`${input} h-7`}
                   value={payment.referenceNo}
@@ -1567,7 +1640,9 @@ export default function POSBilling() {
 
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Balance</span>
-                <span className={`font-bold ${cartSummary.balance > 0 ? "text-red-600" : "text-emerald-600"}`}>
+                <span
+                  className={`font-bold ${cartSummary.balance > 0 ? "text-red-600" : "text-emerald-600"}`}
+                >
                   {money(cartSummary.balance)}
                 </span>
               </div>
@@ -1584,7 +1659,11 @@ export default function POSBilling() {
                 Hold
               </button>
 
-              <button className={`${btn} bg-[#059669] hover:bg-[#047857]`} onClick={saveSale} disabled={loading}>
+              <button
+                className={`${btn} bg-[#059669] hover:bg-[#047857]`}
+                onClick={saveSale}
+                disabled={loading}
+              >
                 <Receipt className="h-4 w-4" />
                 Save Bill
               </button>
@@ -1683,7 +1762,9 @@ export default function POSBilling() {
         </div>
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Card/Wallet/Bank</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+            Card/Wallet/Bank
+          </p>
           <p className="text-xl font-bold text-gray-800 mt-1">
             {money(dayStats.card + dayStats.wallet + dayStats.bank)}
           </p>
@@ -1724,22 +1805,32 @@ export default function POSBilling() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Opening Cash</p>
-            <p className="text-lg font-bold text-gray-800 mt-1">{money(currentSession?.openingCash || 0)}</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Opening Cash
+            </p>
+            <p className="text-lg font-bold text-gray-800 mt-1">
+              {money(currentSession?.openingCash || 0)}
+            </p>
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cash Sales</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Cash Sales
+            </p>
             <p className="text-lg font-bold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expected Cash</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Expected Cash
+            </p>
             <p className="text-lg font-bold text-gray-800 mt-1">{money(dayStats.expectedCash)}</p>
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Open Session</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Open Session
+            </p>
             <p className="text-lg font-bold text-gray-800 mt-1">{currentSession ? "Yes" : "No"}</p>
           </div>
         </div>
@@ -1766,12 +1857,24 @@ export default function POSBilling() {
               <tr key={inv.id} className="hover:bg-gray-50">
                 <td className={`${td} font-bold text-gray-800`}>{inv.invoiceNo || inv.number}</td>
                 <td className={td}>{inv.partyName || partyName(parties, inv.partyId)}</td>
-                <td className={`${td} text-right font-bold text-gray-800`}>{money(inv.grandTotal || inv.total)}</td>
-                <td className={`${td} text-right text-gray-600`}>{money(inv.payments?.cash || 0)}</td>
-                <td className={`${td} text-right text-gray-600`}>{money(inv.payments?.card || 0)}</td>
-                <td className={`${td} text-right text-gray-600`}>{money(inv.payments?.wallet || 0)}</td>
-                <td className={`${td} text-right text-gray-600`}>{money(inv.payments?.bank || 0)}</td>
-                <td className={`${td} text-right text-gray-600`}>{money(inv.payments?.credit || 0)}</td>
+                <td className={`${td} text-right font-bold text-gray-800`}>
+                  {money(inv.grandTotal || inv.total)}
+                </td>
+                <td className={`${td} text-right text-gray-600`}>
+                  {money(inv.payments?.cash || 0)}
+                </td>
+                <td className={`${td} text-right text-gray-600`}>
+                  {money(inv.payments?.card || 0)}
+                </td>
+                <td className={`${td} text-right text-gray-600`}>
+                  {money(inv.payments?.wallet || 0)}
+                </td>
+                <td className={`${td} text-right text-gray-600`}>
+                  {money(inv.payments?.bank || 0)}
+                </td>
+                <td className={`${td} text-right text-gray-600`}>
+                  {money(inv.payments?.credit || 0)}
+                </td>
                 <td className={`${td} text-center`}>
                   <button
                     className="p-1.5 rounded-md hover:bg-blue-50 text-[#1557b0]"
@@ -1833,8 +1936,12 @@ export default function POSBilling() {
                 <td className={td}>{s.closedAt ? String(s.closedAt).slice(11, 19) : "-"}</td>
                 <td className={`${td} text-right text-gray-600`}>{money(s.openingCash)}</td>
                 <td className={`${td} text-right text-gray-600`}>{money(s.expectedCash)}</td>
-                <td className={`${td} text-right text-gray-600`}>{s.closedAt ? money(s.closingCash) : "-"}</td>
-                <td className={`${td} text-right font-bold ${Math.abs(Number(s.variance || 0)) > 1 ? "text-red-600" : "text-emerald-600"}`}>
+                <td className={`${td} text-right text-gray-600`}>
+                  {s.closedAt ? money(s.closingCash) : "-"}
+                </td>
+                <td
+                  className={`${td} text-right font-bold ${Math.abs(Number(s.variance || 0)) > 1 ? "text-red-600" : "text-emerald-600"}`}
+                >
                   {s.closedAt ? money(s.variance) : "-"}
                 </td>
                 <td className={td}>
@@ -1865,7 +1972,12 @@ export default function POSBilling() {
   );
 
   const renderReceiptModal = () => (
-    <Modal open={modalType === "receipt"} title="POS Receipt" onClose={() => setModalType("")} max="max-w-md">
+    <Modal
+      open={modalType === "receipt"}
+      title="POS Receipt"
+      onClose={() => setModalType("")}
+      max="max-w-md"
+    >
       {receiptData && (
         <div className="space-y-4">
           <div className="border border-gray-200 rounded-lg p-4 bg-white">
@@ -1873,7 +1985,9 @@ export default function POSBilling() {
               <h3 className="font-bold text-[15px] text-gray-800">
                 {companySettings?.name || companySettings?.companyName || "Company"}
               </h3>
-              <p className="text-[11px] font-medium text-gray-500">{companySettings?.address || ""}</p>
+              <p className="text-[11px] font-medium text-gray-500">
+                {companySettings?.address || ""}
+              </p>
               <p className="text-[11px] font-medium text-gray-500">
                 PAN: {normalizePAN(companySettings?.pan || companySettings?.vatNo || "") || "-"}
               </p>
@@ -1910,7 +2024,9 @@ export default function POSBilling() {
                     <span>
                       {Number(l.qty || 0).toFixed(2)} × {Number(l.rate || 0).toFixed(2)}
                     </span>
-                    <span className="font-semibold text-gray-800">{Number(l.lineTotal || 0).toFixed(2)}</span>
+                    <span className="font-semibold text-gray-800">
+                      {Number(l.lineTotal || 0).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -1966,7 +2082,8 @@ export default function POSBilling() {
             POS Mode
           </h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
-            Fast retail billing with barcode scan, VAT receipt, split payments, hold bills and day close.
+            Fast retail billing with barcode scan, VAT receipt, split payments, hold bills and day
+            close.
           </p>
         </div>
 
@@ -2031,7 +2148,12 @@ export default function POSBilling() {
       {activeTab === "Day Close" && renderDayClose()}
       {activeTab === "Session History" && renderSessionHistory()}
 
-      <Modal open={modalType === "openSession"} title="Open POS Session" onClose={() => setModalType("")} max="max-w-md">
+      <Modal
+        open={modalType === "openSession"}
+        title="Open POS Session"
+        onClose={() => setModalType("")}
+        max="max-w-md"
+      >
         <div className="space-y-4">
           <div className="p-3 rounded-md border border-blue-200 bg-blue-50 text-blue-800">
             <p className="text-[13px] font-bold">Opening Cash</p>
@@ -2041,7 +2163,9 @@ export default function POSBilling() {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Opening Cash</label>
+            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+              Opening Cash
+            </label>
             <input
               type="number"
               className={input}
@@ -2063,7 +2187,12 @@ export default function POSBilling() {
         </div>
       </Modal>
 
-      <Modal open={modalType === "closeSession"} title="Close POS Session" onClose={() => setModalType("")} max="max-w-md">
+      <Modal
+        open={modalType === "closeSession"}
+        title="Close POS Session"
+        onClose={() => setModalType("")}
+        max="max-w-md"
+      >
         <div className="space-y-4">
           <div className="p-3 rounded-md border border-amber-200 bg-amber-50 text-amber-800">
             <p className="text-[13px] font-bold">Cash Reconciliation</p>
@@ -2074,22 +2203,36 @@ export default function POSBilling() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Opening Cash</p>
-              <p className="text-[14px] font-bold text-gray-800 mt-0.5">{money(currentSession?.openingCash || 0)}</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Opening Cash
+              </p>
+              <p className="text-[14px] font-bold text-gray-800 mt-0.5">
+                {money(currentSession?.openingCash || 0)}
+              </p>
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cash Sales</p>
-              <p className="text-[14px] font-bold text-emerald-600 mt-0.5">{money(dayStats.cash)}</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Cash Sales
+              </p>
+              <p className="text-[14px] font-bold text-emerald-600 mt-0.5">
+                {money(dayStats.cash)}
+              </p>
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Expected Cash</p>
-              <p className="text-[14px] font-bold text-gray-800 mt-0.5">{money(dayStats.expectedCash)}</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Expected Cash
+              </p>
+              <p className="text-[14px] font-bold text-gray-800 mt-0.5">
+                {money(dayStats.expectedCash)}
+              </p>
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Variance</p>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Variance
+              </p>
               <p
                 className={`text-[14px] font-bold mt-0.5 ${
                   Math.abs(Number(closingCash || 0) - Number(dayStats.expectedCash || 0)) > 1
@@ -2103,7 +2246,9 @@ export default function POSBilling() {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Actual Closing Cash</label>
+            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+              Actual Closing Cash
+            </label>
             <input
               type="number"
               className={input}
@@ -2125,10 +2270,17 @@ export default function POSBilling() {
         </div>
       </Modal>
 
-      <Modal open={modalType === "hold"} title="Hold Current Bill" onClose={() => setModalType("")} max="max-w-md">
+      <Modal
+        open={modalType === "hold"}
+        title="Hold Current Bill"
+        onClose={() => setModalType("")}
+        max="max-w-md"
+      >
         <div className="space-y-4">
           <div>
-            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">Hold Name</label>
+            <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide block mb-1">
+              Hold Name
+            </label>
             <input
               className={input}
               value={holdName}

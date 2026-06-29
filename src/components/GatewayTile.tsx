@@ -19,7 +19,8 @@ const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, subtitle, onCli
         padding: "10px 12px",
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        fontFamily:
+          "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       }}
     >
       <div

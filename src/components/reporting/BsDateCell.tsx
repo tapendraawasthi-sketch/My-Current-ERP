@@ -32,12 +32,8 @@ const BsDateCell: React.FC<BsDateCellProps> = ({ adDate, bsDate, className }) =>
 
   return (
     <div className={className}>
-      <div className="text-[12px] font-semibold text-gray-800 leading-tight">
-        {displayBS}
-      </div>
-      <div className="text-[10px] text-gray-500 leading-tight mt-0.5">
-        {adDate}
-      </div>
+      <div className="text-[12px] font-semibold text-gray-800 leading-tight">{displayBS}</div>
+      <div className="text-[10px] text-gray-500 leading-tight mt-0.5">{adDate}</div>
     </div>
   );
 };

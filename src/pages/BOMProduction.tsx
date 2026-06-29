@@ -3,7 +3,19 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import toast from "react-hot-toast";
-import { Plus, Edit2, Trash2, Save, CheckCircle, AlertTriangle, FileText, Factory, Wrench, BarChart2, Package } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  CheckCircle,
+  AlertTriangle,
+  FileText,
+  Factory,
+  Wrench,
+  BarChart2,
+  Package,
+} from "lucide-react";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -12,12 +24,16 @@ function money(v: number): string {
 }
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
-const tableHeadClass = "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const tableHeadClass =
+  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
-const primaryBtn = "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
-const outlineBtn = "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
-const inputClass = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+const primaryBtn =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+const outlineBtn =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
+const inputClass =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -36,28 +52,75 @@ function stockForItem(itemId: string, stockMovements: any[]) {
 
 function statusBadge(status: string) {
   const s = String(status || "").toLowerCase();
-  if (s === "completed") return <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase tracking-wide">Completed</span>;
-  if (s === "cancelled") return <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold uppercase tracking-wide">Cancelled</span>;
-  if (s === "in-process") return <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold uppercase tracking-wide">In-Process</span>;
-  if (s === "released") return <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase tracking-wide">Released</span>;
-  if (s === "draft") return <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">Draft</span>;
-  if (s === "active") return <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold uppercase tracking-wide">Active</span>;
-  if (s === "obsolete") return <span className="px-2 py-0.5 bg-gray-200 text-gray-600 border border-gray-300 rounded text-[10px] font-semibold uppercase tracking-wide">Obsolete</span>;
-  return <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">{status || "Unknown"}</span>;
+  if (s === "completed")
+    return (
+      <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Completed
+      </span>
+    );
+  if (s === "cancelled")
+    return (
+      <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Cancelled
+      </span>
+    );
+  if (s === "in-process")
+    return (
+      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        In-Process
+      </span>
+    );
+  if (s === "released")
+    return (
+      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Released
+      </span>
+    );
+  if (s === "draft")
+    return (
+      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Draft
+      </span>
+    );
+  if (s === "active")
+    return (
+      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Active
+      </span>
+    );
+  if (s === "obsolete")
+    return (
+      <span className="px-2 py-0.5 bg-gray-200 text-gray-600 border border-gray-300 rounded text-[10px] font-semibold uppercase tracking-wide">
+        Obsolete
+      </span>
+    );
+  return (
+    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+      {status || "Unknown"}
+    </span>
+  );
 }
 
 function Modal({ open, title, children, onClose, wide = false }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full ${wide ? "max-w-6xl" : "max-w-3xl"} flex flex-col max-h-[90vh]`}>
+    <div
+      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full ${wide ? "max-w-6xl" : "max-w-3xl"} flex flex-col max-h-[90vh]`}
+      >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
           <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl leading-none">&times;</button>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-xl leading-none"
+          >
+            &times;
+          </button>
         </div>
-        <div className="p-5 overflow-y-auto">
-          {children}
-        </div>
+        <div className="p-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
@@ -125,9 +188,18 @@ export default function BOMProduction() {
 
   useEffect(() => {
     const db = getDB();
-    db.table("boms").toArray().catch(() => []).then(setBoms);
-    db.table("productionOrders").toArray().catch(() => []).then(setProductionOrders);
-    db.table("jobWorkOrders").toArray().catch(() => []).then(setJobWorkOrders);
+    db.table("boms")
+      .toArray()
+      .catch(() => [])
+      .then(setBoms);
+    db.table("productionOrders")
+      .toArray()
+      .catch(() => [])
+      .then(setProductionOrders);
+    db.table("jobWorkOrders")
+      .toArray()
+      .catch(() => [])
+      .then(setJobWorkOrders);
   }, []);
 
   const totalStandardCost = useMemo(() => {
@@ -236,7 +308,10 @@ export default function BOMProduction() {
       updatedAt: new Date().toISOString(),
     };
 
-    await getDB().table("boms").put(row).catch(() => {});
+    await getDB()
+      .table("boms")
+      .put(row)
+      .catch(() => {});
     setBoms((rows) => rows.filter((x) => x.id !== row.id).concat(row));
     setBomModal(false);
     toast.success("BOM saved");
@@ -244,13 +319,17 @@ export default function BOMProduction() {
 
   async function deleteBom(id: string) {
     if (!confirm("Delete this BOM?")) return;
-    await getDB().table("boms").delete(id).catch(() => {});
+    await getDB()
+      .table("boms")
+      .delete(id)
+      .catch(() => {});
     setBoms((rows) => rows.filter((x) => x.id !== id));
     toast.success("BOM deleted");
   }
 
   function generateOrderNo() {
-    const fy = currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || new Date().getFullYear();
+    const fy =
+      currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || new Date().getFullYear();
     return `PO-${String(fy).slice(0, 4)}-${String(productionOrders.length + 1).padStart(4, "0")}`;
   }
 
@@ -266,7 +345,8 @@ export default function BOMProduction() {
   async function createPO() {
     if (!poForm.finishedProductId) return toast.error("Select finished product");
     if (!poForm.bomId) return toast.error("Select BOM");
-    if (Number(poForm.plannedQty || 0) <= 0) return toast.error("Planned quantity must be greater than zero");
+    if (Number(poForm.plannedQty || 0) <= 0)
+      return toast.error("Planned quantity must be greater than zero");
 
     const row = {
       id: generateId(),
@@ -282,7 +362,10 @@ export default function BOMProduction() {
       createdAt: new Date().toISOString(),
     };
 
-    await getDB().table("productionOrders").put(row).catch(() => {});
+    await getDB()
+      .table("productionOrders")
+      .put(row)
+      .catch(() => {});
     setProductionOrders((rows) => [...rows, row]);
 
     setPoForm({
@@ -306,7 +389,10 @@ export default function BOMProduction() {
       updatedAt: new Date().toISOString(),
     };
 
-    await getDB().table("productionOrders").put(row).catch(() => {});
+    await getDB()
+      .table("productionOrders")
+      .put(row)
+      .catch(() => {});
     setProductionOrders((rows) => rows.map((x) => (x.id === po.id ? row : x)));
     setSelectedPO(row);
   }
@@ -317,9 +403,7 @@ export default function BOMProduction() {
 
     return (bom.components || []).map((c) => {
       const required =
-        (Number(c.qty || 0) *
-          (1 + Number(c.wastage || 0) / 100) *
-          Number(po.plannedQty || 0)) /
+        (Number(c.qty || 0) * (1 + Number(c.wastage || 0) / 100) * Number(po.plannedQty || 0)) /
         Number(bom.outputQty || 1);
 
       const available = stockForItem(c.itemId, stockMovements);
@@ -363,7 +447,11 @@ export default function BOMProduction() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     await updatePOStatus(po, "In-Process", {
       issuedAt: new Date().toISOString(),
@@ -430,7 +518,12 @@ export default function BOMProduction() {
       narration: `Production Cost Transfer for ${p.po.orderNo}`,
       productionOrderId: p.po.id,
       lines: [
-        { id: generateId(), accountName: "Finished Goods Inventory", debit: p.standardCost, credit: 0 },
+        {
+          id: generateId(),
+          accountName: "Finished Goods Inventory",
+          debit: p.standardCost,
+          credit: 0,
+        },
         { id: generateId(), accountName: "Work in Process", debit: 0, credit: p.standardCost },
         ...(Math.abs(p.variance) > 0.01
           ? [
@@ -449,8 +542,14 @@ export default function BOMProduction() {
       await addVoucher(fgVoucher);
       await addVoucher(costVoucher);
     } else {
-      await getDB().table("vouchers").put(fgVoucher).catch(() => {});
-      await getDB().table("vouchers").put(costVoucher).catch(() => {});
+      await getDB()
+        .table("vouchers")
+        .put(fgVoucher)
+        .catch(() => {});
+      await getDB()
+        .table("vouchers")
+        .put(costVoucher)
+        .catch(() => {});
     }
 
     await updatePOStatus(p.po, "Completed", {
@@ -526,7 +625,10 @@ export default function BOMProduction() {
       createdAt: new Date().toISOString(),
     };
 
-    await getDB().table("jobWorkOrders").add(row).catch(() => {});
+    await getDB()
+      .table("jobWorkOrders")
+      .add(row)
+      .catch(() => {});
     setJobWorkOrders((rows) => [...rows, row]);
 
     setJobForm({
@@ -555,7 +657,10 @@ export default function BOMProduction() {
       returnedAt: new Date().toISOString(),
     };
 
-    await getDB().table("jobWorkOrders").put(row).catch(() => {});
+    await getDB()
+      .table("jobWorkOrders")
+      .put(row)
+      .catch(() => {});
     setJobWorkOrders((rows) => rows.map((j) => (j.id === row.id ? row : j)));
 
     toast.success("Job work marked returned");
@@ -662,27 +767,45 @@ export default function BOMProduction() {
                     "Version",
                     "Status",
                     "Actions",
-                  ].map((h) => <th className={tableHeadClass} key={h}>{h}</th>)}
+                  ].map((h) => (
+                    <th className={tableHeadClass} key={h}>
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {boms.map((b) => (
                   <tr key={b.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{b.name}</td>
-                    <td className={tableCellClass}>{items.find((i) => i.id === b.finishedProductId)?.name || b.finishedProductId}</td>
+                    <td className={tableCellClass}>
+                      {items.find((i) => i.id === b.finishedProductId)?.name || b.finishedProductId}
+                    </td>
                     <td className={tableCellClass}>{b.outputQty}</td>
                     <td className={tableCellClass}>
-                       <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-semibold">{(b.components || []).length} items</span>
+                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        {(b.components || []).length} items
+                      </span>
                     </td>
-                    <td className={`${tableCellClass} font-semibold text-gray-900`}>NPR {money(b.totalStandardCost)}</td>
+                    <td className={`${tableCellClass} font-semibold text-gray-900`}>
+                      NPR {money(b.totalStandardCost)}
+                    </td>
                     <td className={tableCellClass}>v{b.version}</td>
                     <td className={tableCellClass}>{statusBadge(b.status)}</td>
                     <td className={tableCellClass}>
                       <div className="flex items-center gap-3">
-                        <button onClick={() => openBom(b)} className="text-gray-500 hover:text-[#1557b0]" title="Edit">
+                        <button
+                          onClick={() => openBom(b)}
+                          className="text-gray-500 hover:text-[#1557b0]"
+                          title="Edit"
+                        >
                           <Edit2 size={14} />
                         </button>
-                        <button onClick={() => deleteBom(b.id)} className="text-gray-400 hover:text-red-600" title="Delete">
+                        <button
+                          onClick={() => deleteBom(b.id)}
+                          className="text-gray-400 hover:text-red-600"
+                          title="Delete"
+                        >
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -691,7 +814,10 @@ export default function BOMProduction() {
                 ))}
                 {!boms.length && (
                   <tr>
-                    <td colSpan={8} className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50">
+                    <td
+                      colSpan={8}
+                      className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50"
+                    >
                       No Bills of Materials found. Click "Create BOM" to get started.
                     </td>
                   </tr>
@@ -705,72 +831,138 @@ export default function BOMProduction() {
       {activeTab === "Production Orders" && (
         <div className="space-y-4">
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">Create Production Order</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">
+              Create Production Order
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Order No.</label>
-                <input className={inputClass} placeholder="Auto-generated if empty" value={poForm.orderNo} onChange={(e) => setPoForm({ ...poForm, orderNo: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Order No.
+                </label>
+                <input
+                  className={inputClass}
+                  placeholder="Auto-generated if empty"
+                  value={poForm.orderNo}
+                  onChange={(e) => setPoForm({ ...poForm, orderNo: e.target.value })}
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Finished Product</label>
-                <select className={inputClass} value={poForm.finishedProductId} onChange={(e) => onPOProductChange(e.target.value)}>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Finished Product
+                </label>
+                <select
+                  className={inputClass}
+                  value={poForm.finishedProductId}
+                  onChange={(e) => onPOProductChange(e.target.value)}
+                >
                   <option value="">Select Finished Product</option>
-                  {items.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+                  {items.map((i) => (
+                    <option key={i.id} value={i.id}>
+                      {i.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">BOM Version</label>
-                <select className={inputClass} value={poForm.bomId} onChange={(e) => setPoForm({ ...poForm, bomId: e.target.value })}>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  BOM Version
+                </label>
+                <select
+                  className={inputClass}
+                  value={poForm.bomId}
+                  onChange={(e) => setPoForm({ ...poForm, bomId: e.target.value })}
+                >
                   <option value="">Select BOM</option>
                   {boms
-                    .filter((b) => !poForm.finishedProductId || b.finishedProductId === poForm.finishedProductId)
+                    .filter(
+                      (b) =>
+                        !poForm.finishedProductId ||
+                        b.finishedProductId === poForm.finishedProductId,
+                    )
                     .map((b) => (
-                      <option key={b.id} value={b.id}>{b.name} v{b.version}</option>
+                      <option key={b.id} value={b.id}>
+                        {b.name} v{b.version}
+                      </option>
                     ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Planned Quantity</label>
-                <input className={inputClass} type="number" value={poForm.plannedQty} onChange={(e) => setPoForm({ ...poForm, plannedQty: Number(e.target.value) })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Planned Quantity
+                </label>
+                <input
+                  className={inputClass}
+                  type="number"
+                  value={poForm.plannedQty}
+                  onChange={(e) => setPoForm({ ...poForm, plannedQty: Number(e.target.value) })}
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Start Date</label>
-                <input className={inputClass} type="date" value={poForm.startDate} onChange={(e) => setPoForm({ ...poForm, startDate: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Start Date
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={poForm.startDate}
+                  onChange={(e) => setPoForm({ ...poForm, startDate: e.target.value })}
+                />
               </div>
 
               <div>
                 <label className="block text-[11px] font-medium text-gray-600 mb-1">End Date</label>
-                <input className={inputClass} type="date" value={poForm.endDate} onChange={(e) => setPoForm({ ...poForm, endDate: e.target.value })} />
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={poForm.endDate}
+                  onChange={(e) => setPoForm({ ...poForm, endDate: e.target.value })}
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Destination Warehouse</label>
-                <select className={inputClass} value={poForm.warehouseId} onChange={(e) => setPoForm({ ...poForm, warehouseId: e.target.value })}>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Destination Warehouse
+                </label>
+                <select
+                  className={inputClass}
+                  value={poForm.warehouseId}
+                  onChange={(e) => setPoForm({ ...poForm, warehouseId: e.target.value })}
+                >
                   <option value="">Select Warehouse</option>
-                  {warehouses.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+                  {warehouses.map((w) => (
+                    <option key={w.id} value={w.id}>
+                      {w.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <button className={primaryBtn} onClick={createPO}>Create Order</button>
+                <button className={primaryBtn} onClick={createPO}>
+                  Create Order
+                </button>
               </div>
             </div>
 
             {poForm.bomId && Number(poForm.plannedQty || 0) > 0 && (
               <div className="mt-5 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
                 <div className="font-semibold text-[13px] text-indigo-900 mb-3 flex items-center gap-2">
-                  <Package size={16}/> Material Availability Check
+                  <Package size={16} /> Material Availability Check
                 </div>
                 <div className="overflow-x-auto rounded border border-indigo-100 bg-white shadow-sm">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
-                        {["Component", "Required", "Available", "Sufficient"].map((h) => <th key={h} className={tableHeadClass}>{h}</th>)}
+                        {["Component", "Required", "Available", "Sufficient"].map((h) => (
+                          <th key={h} className={tableHeadClass}>
+                            {h}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -781,9 +973,13 @@ export default function BOMProduction() {
                           <td className={tableCellClass}>{money(m.available)}</td>
                           <td className={tableCellClass}>
                             {m.sufficient ? (
-                               <span className="flex items-center gap-1 text-green-600 font-semibold text-[11px] uppercase"><CheckCircle size={12}/> Yes</span>
+                              <span className="flex items-center gap-1 text-green-600 font-semibold text-[11px] uppercase">
+                                <CheckCircle size={12} /> Yes
+                              </span>
                             ) : (
-                               <span className="flex items-center gap-1 text-red-600 font-semibold text-[11px] uppercase"><AlertTriangle size={12}/> No</span>
+                              <span className="flex items-center gap-1 text-red-600 font-semibold text-[11px] uppercase">
+                                <AlertTriangle size={12} /> No
+                              </span>
                             )}
                           </td>
                         </tr>
@@ -795,8 +991,15 @@ export default function BOMProduction() {
                 {materialAvailability({ ...poForm }).some((m) => !m.sufficient) && (
                   <div className="mt-3 text-[12px] text-amber-700 bg-amber-50 p-2 border border-amber-200 rounded flex items-center gap-2">
                     <AlertTriangle size={14} className="text-amber-600 shrink-0" />
-                    Insufficient material found. 
-                    <button className="underline font-medium hover:text-amber-900 transition-colors" onClick={() => toast("Purchase requisition workflow can be opened from Purchase Management.")}>
+                    Insufficient material found.
+                    <button
+                      className="underline font-medium hover:text-amber-900 transition-colors"
+                      onClick={() =>
+                        toast(
+                          "Purchase requisition workflow can be opened from Purchase Management.",
+                        )
+                      }
+                    >
                       Create Purchase Requisition
                     </button>
                   </div>
@@ -820,7 +1023,11 @@ export default function BOMProduction() {
                       "Warehouse",
                       "Status",
                       "Actions",
-                    ].map((h) => <th className={tableHeadClass} key={h}>{h}</th>)}
+                    ].map((h) => (
+                      <th className={tableHeadClass} key={h}>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -828,31 +1035,57 @@ export default function BOMProduction() {
                     const bom = boms.find((b) => b.id === po.bomId);
                     return (
                       <tr key={po.id} className="bg-white hover:bg-gray-50">
-                        <td className={`${tableCellClass} font-mono font-medium text-gray-800`}>{po.orderNo}</td>
-                        <td className={`${tableCellClass} font-medium`}>{items.find((i) => i.id === po.finishedProductId)?.name}</td>
+                        <td className={`${tableCellClass} font-mono font-medium text-gray-800`}>
+                          {po.orderNo}
+                        </td>
+                        <td className={`${tableCellClass} font-medium`}>
+                          {items.find((i) => i.id === po.finishedProductId)?.name}
+                        </td>
                         <td className={tableCellClass}>v{bom?.version}</td>
                         <td className={tableCellClass}>{po.plannedQty}</td>
-                        <td className={`${tableCellClass} font-semibold ${po.actualQty > 0 ? "text-green-700" : ""}`}>{po.actualQty || <span className="text-gray-400 font-normal">-</span>}</td>
-                        <td className={tableCellClass}>
-                           <div className="flex flex-col gap-0.5 text-[10px]">
-                              <span>S: {po.startDate}</span>
-                              <span className="text-gray-500">E: {po.endDate}</span>
-                           </div>
+                        <td
+                          className={`${tableCellClass} font-semibold ${po.actualQty > 0 ? "text-green-700" : ""}`}
+                        >
+                          {po.actualQty || <span className="text-gray-400 font-normal">-</span>}
                         </td>
-                        <td className={tableCellClass}>{warehouses.find((w) => w.id === po.warehouseId)?.name || <span className="text-gray-400">-</span>}</td>
+                        <td className={tableCellClass}>
+                          <div className="flex flex-col gap-0.5 text-[10px]">
+                            <span>S: {po.startDate}</span>
+                            <span className="text-gray-500">E: {po.endDate}</span>
+                          </div>
+                        </td>
+                        <td className={tableCellClass}>
+                          {warehouses.find((w) => w.id === po.warehouseId)?.name || (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
                         <td className={tableCellClass}>{statusBadge(po.status)}</td>
                         <td className={tableCellClass}>
                           {po.status === "Planned" && (
-                            <button className={outlineBtn} onClick={() => updatePOStatus(po, "Released")}>Release Order</button>
+                            <button
+                              className={outlineBtn}
+                              onClick={() => updatePOStatus(po, "Released")}
+                            >
+                              Release Order
+                            </button>
                           )}
                           {po.status === "Released" && (
-                            <button className={primaryBtn} onClick={() => { setSelectedPO(po); previewIssue(po); }}>
+                            <button
+                              className={primaryBtn}
+                              onClick={() => {
+                                setSelectedPO(po);
+                                previewIssue(po);
+                              }}
+                            >
                               Issue Materials
                             </button>
                           )}
                           {po.status === "In-Process" && (
-                            <button className="h-8 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm" onClick={() => setSelectedPO(po)}>
-                               Complete Production
+                            <button
+                              className="h-8 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                              onClick={() => setSelectedPO(po)}
+                            >
+                              Complete Production
                             </button>
                           )}
                         </td>
@@ -861,7 +1094,10 @@ export default function BOMProduction() {
                   })}
                   {!productionOrders.length && (
                     <tr>
-                      <td colSpan={10} className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50">
+                      <td
+                        colSpan={10}
+                        className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50"
+                      >
                         No production orders found.
                       </td>
                     </tr>
@@ -873,13 +1109,19 @@ export default function BOMProduction() {
 
           {selectedPO && selectedPO.status === "Released" && materialPreview.length > 0 && (
             <div className={`${cardClass} bg-indigo-50/30 border-indigo-100 shadow-md`}>
-              <h2 className="text-[14px] font-semibold text-indigo-900 mb-3 border-b border-indigo-100 pb-2">Material Issue Preview: {selectedPO.orderNo}</h2>
+              <h2 className="text-[14px] font-semibold text-indigo-900 mb-3 border-b border-indigo-100 pb-2">
+                Material Issue Preview: {selectedPO.orderNo}
+              </h2>
 
               <div className="overflow-x-auto rounded border border-indigo-100 bg-white shadow-sm mb-4">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
-                      {["Component", "Required", "Available", "Sufficient"].map((h) => <th className={tableHeadClass} key={h}>{h}</th>)}
+                      {["Component", "Required", "Available", "Sufficient"].map((h) => (
+                        <th className={tableHeadClass} key={h}>
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -890,9 +1132,13 @@ export default function BOMProduction() {
                         <td className={tableCellClass}>{money(m.available)}</td>
                         <td className={tableCellClass}>
                           {m.sufficient ? (
-                             <span className="text-green-600 font-semibold text-[11px] uppercase flex items-center gap-1"><CheckCircle size={12}/> Yes</span>
+                            <span className="text-green-600 font-semibold text-[11px] uppercase flex items-center gap-1">
+                              <CheckCircle size={12} /> Yes
+                            </span>
                           ) : (
-                             <span className="text-red-600 font-semibold text-[11px] uppercase flex items-center gap-1"><AlertTriangle size={12}/> No</span>
+                            <span className="text-red-600 font-semibold text-[11px] uppercase flex items-center gap-1">
+                              <AlertTriangle size={12} /> No
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -902,22 +1148,35 @@ export default function BOMProduction() {
               </div>
 
               <div className="flex justify-end">
-                 <button className={primaryBtn} onClick={() => confirmIssue(selectedPO)}>
-                   Confirm & Issue Materials
-                 </button>
+                <button className={primaryBtn} onClick={() => confirmIssue(selectedPO)}>
+                  Confirm & Issue Materials
+                </button>
               </div>
             </div>
           )}
 
           {selectedPO && selectedPO.status === "In-Process" && (
             <div className={`${cardClass} bg-emerald-50/30 border-emerald-100 shadow-md`}>
-              <h2 className="text-[14px] font-semibold text-emerald-900 mb-3 border-b border-emerald-100 pb-2">Complete Production: {selectedPO.orderNo}</h2>
+              <h2 className="text-[14px] font-semibold text-emerald-900 mb-3 border-b border-emerald-100 pb-2">
+                Complete Production: {selectedPO.orderNo}
+              </h2>
               <div className="flex items-end gap-3 mb-4">
                 <div>
-                  <label className="block text-[11px] font-medium text-emerald-800 mb-1">Actual Qty Produced</label>
-                  <input className={inputClass} type="number" placeholder="Actual Qty" value={actualQty} onChange={(e) => setActualQty(e.target.value)} />
+                  <label className="block text-[11px] font-medium text-emerald-800 mb-1">
+                    Actual Qty Produced
+                  </label>
+                  <input
+                    className={inputClass}
+                    type="number"
+                    placeholder="Actual Qty"
+                    value={actualQty}
+                    onChange={(e) => setActualQty(e.target.value)}
+                  />
                 </div>
-                <button className="h-8 px-4 bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-[12px] font-medium rounded-md transition-colors" onClick={() => previewComplete(selectedPO)}>
+                <button
+                  className="h-8 px-4 bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-[12px] font-medium rounded-md transition-colors"
+                  onClick={() => previewComplete(selectedPO)}
+                >
                   Preview Completion
                 </button>
               </div>
@@ -926,25 +1185,35 @@ export default function BOMProduction() {
                 <div className="border border-emerald-200 rounded-md p-4 bg-white shadow-sm">
                   <div className="flex items-center gap-6 mb-4 text-[12px]">
                     <div className="flex flex-col">
-                       <span className="text-gray-500 font-medium">Standard Cost</span>
-                       <span className="text-gray-900 font-bold text-[14px]">NPR {money(completionPreview.standardCost)}</span>
+                      <span className="text-gray-500 font-medium">Standard Cost</span>
+                      <span className="text-gray-900 font-bold text-[14px]">
+                        NPR {money(completionPreview.standardCost)}
+                      </span>
                     </div>
                     <div className="w-px h-8 bg-gray-200"></div>
                     <div className="flex flex-col">
-                       <span className="text-gray-500 font-medium">Actual Cost (Issued)</span>
-                       <span className="text-gray-900 font-bold text-[14px]">NPR {money(completionPreview.issuedCost)}</span>
+                      <span className="text-gray-500 font-medium">Actual Cost (Issued)</span>
+                      <span className="text-gray-900 font-bold text-[14px]">
+                        NPR {money(completionPreview.issuedCost)}
+                      </span>
                     </div>
                     <div className="w-px h-8 bg-gray-200"></div>
                     <div className="flex flex-col">
-                       <span className="text-gray-500 font-medium">Variance</span>
-                       <span className={`font-bold text-[14px] ${completionPreview.variance > 0 ? "text-red-600" : "text-green-600"}`}>
-                          NPR {money(completionPreview.variance)} {completionPreview.variance > 0 ? "(Adverse)" : "(Favorable)"}
-                       </span>
+                      <span className="text-gray-500 font-medium">Variance</span>
+                      <span
+                        className={`font-bold text-[14px] ${completionPreview.variance > 0 ? "text-red-600" : "text-green-600"}`}
+                      >
+                        NPR {money(completionPreview.variance)}{" "}
+                        {completionPreview.variance > 0 ? "(Adverse)" : "(Favorable)"}
+                      </span>
                     </div>
                   </div>
                   <div className="flex justify-end pt-3 border-t border-gray-100">
-                    <button className="h-8 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm" onClick={confirmComplete}>
-                      <CheckCircle size={14}/> Confirm Complete Production
+                    <button
+                      className="h-8 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      onClick={confirmComplete}
+                    >
+                      <CheckCircle size={14} /> Confirm Complete Production
                     </button>
                   </div>
                 </div>
@@ -957,88 +1226,172 @@ export default function BOMProduction() {
       {activeTab === "Job Work" && (
         <div className="space-y-4">
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">Job Work Out</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">
+              Job Work Out
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end mb-4">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Job Worker / Contractor</label>
-                <select className={inputClass} value={jobForm.jobWorkerId} onChange={(e) => setJobForm({ ...jobForm, jobWorkerId: e.target.value })}>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Job Worker / Contractor
+                </label>
+                <select
+                  className={inputClass}
+                  value={jobForm.jobWorkerId}
+                  onChange={(e) => setJobForm({ ...jobForm, jobWorkerId: e.target.value })}
+                >
                   <option value="">Select Job Worker</option>
                   {parties
-                    .filter((p) => String(p.type || "").includes("job-worker") || String(p.type || "").includes("contractor"))
-                    .map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    .filter(
+                      (p) =>
+                        String(p.type || "").includes("job-worker") ||
+                        String(p.type || "").includes("contractor"),
+                    )
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Date Sent</label>
-                <input className={inputClass} type="date" value={jobForm.dateSent} onChange={(e) => setJobForm({ ...jobForm, dateSent: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Date Sent
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={jobForm.dateSent}
+                  onChange={(e) => setJobForm({ ...jobForm, dateSent: e.target.value })}
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Expected Return</label>
-                <input className={inputClass} type="date" value={jobForm.expectedReturn} onChange={(e) => setJobForm({ ...jobForm, expectedReturn: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Expected Return
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={jobForm.expectedReturn}
+                  onChange={(e) => setJobForm({ ...jobForm, expectedReturn: e.target.value })}
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Processing Charges (Est.)</label>
-                <input className={inputClass} type="number" placeholder="Charges" value={jobForm.processingCharges} onChange={(e) => setJobForm({ ...jobForm, processingCharges: Number(e.target.value) })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Processing Charges (Est.)
+                </label>
+                <input
+                  className={inputClass}
+                  type="number"
+                  placeholder="Charges"
+                  value={jobForm.processingCharges}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, processingCharges: Number(e.target.value) })
+                  }
+                />
               </div>
             </div>
 
             <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-4">
-               <div className="flex justify-between items-center mb-3">
-                 <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide">Materials Sent</h3>
-                 <button className={outlineBtn} onClick={addJobMaterial}>
-                   <Plus size={14} className="text-[#1557b0]" /> Add Material
-                 </button>
-               </div>
-               
-               <div className="space-y-2">
-                 {(jobForm.materials || []).map((m, idx) => (
-                  <div key={m.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center bg-white p-2 border border-gray-200 rounded shadow-sm">
-                    <select className={inputClass} value={m.itemId} onChange={(e) => updateJobMaterial(idx, { itemId: e.target.value })}>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide">
+                  Materials Sent
+                </h3>
+                <button className={outlineBtn} onClick={addJobMaterial}>
+                  <Plus size={14} className="text-[#1557b0]" /> Add Material
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {(jobForm.materials || []).map((m, idx) => (
+                  <div
+                    key={m.id}
+                    className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center bg-white p-2 border border-gray-200 rounded shadow-sm"
+                  >
+                    <select
+                      className={inputClass}
+                      value={m.itemId}
+                      onChange={(e) => updateJobMaterial(idx, { itemId: e.target.value })}
+                    >
                       <option value="">Select Item</option>
-                      {items.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+                      {items.map((i) => (
+                        <option key={i.id} value={i.id}>
+                          {i.name}
+                        </option>
+                      ))}
                     </select>
                     <div className="relative">
-                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">Qty:</span>
-                       <input className={`${inputClass} pl-8`} type="number" value={m.qty} onChange={(e) => updateJobMaterial(idx, { qty: Number(e.target.value) })} />
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
+                        Qty:
+                      </span>
+                      <input
+                        className={`${inputClass} pl-8`}
+                        type="number"
+                        value={m.qty}
+                        onChange={(e) => updateJobMaterial(idx, { qty: Number(e.target.value) })}
+                      />
                     </div>
-                    <input className={`${inputClass} bg-gray-50 text-gray-500`} value={m.unit} readOnly placeholder="Unit" />
+                    <input
+                      className={`${inputClass} bg-gray-50 text-gray-500`}
+                      value={m.unit}
+                      readOnly
+                      placeholder="Unit"
+                    />
                     <div className="relative">
-                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">Rate:</span>
-                       <input className={`${inputClass} pl-9`} type="number" value={m.rate} onChange={(e) => updateJobMaterial(idx, { rate: Number(e.target.value) })} />
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
+                        Rate:
+                      </span>
+                      <input
+                        className={`${inputClass} pl-9`}
+                        type="number"
+                        value={m.rate}
+                        onChange={(e) => updateJobMaterial(idx, { rate: Number(e.target.value) })}
+                      />
                     </div>
                     <div className="flex justify-end">
-                       <button className="text-gray-400 hover:text-red-600 transition-colors" onClick={() => removeJobMaterial(idx)} title="Remove">
-                         <Trash2 size={16} />
-                       </button>
+                      <button
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        onClick={() => removeJobMaterial(idx)}
+                        title="Remove"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </div>
-                 ))}
-                 {(!jobForm.materials || jobForm.materials.length === 0) && (
-                    <div className="text-center p-4 border border-dashed border-gray-300 rounded bg-white text-[12px] text-gray-500">
-                       No materials added yet.
-                    </div>
-                 )}
-               </div>
+                ))}
+                {(!jobForm.materials || jobForm.materials.length === 0) && (
+                  <div className="text-center p-4 border border-dashed border-gray-300 rounded bg-white text-[12px] text-gray-500">
+                    No materials added yet.
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex justify-end">
-               <button className={primaryBtn} onClick={saveJobOut}>
-                 <Save size={14} /> Save Job Work Out
-               </button>
+              <button className={primaryBtn} onClick={saveJobOut}>
+                <Save size={14} /> Save Job Work Out
+              </button>
             </div>
           </div>
 
           <div className={`${cardClass} bg-green-50/30 border-green-100`}>
-            <h2 className="text-[14px] font-semibold text-green-900 mb-4 border-b border-green-100 pb-2">Job Work In (Receive)</h2>
+            <h2 className="text-[14px] font-semibold text-green-900 mb-4 border-b border-green-100 pb-2">
+              Job Work In (Receive)
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
               <div>
-                <label className="block text-[11px] font-medium text-green-800 mb-1">Select Open Job</label>
-                <select className={inputClass} value={returnJobId} onChange={(e) => setReturnJobId(e.target.value)}>
+                <label className="block text-[11px] font-medium text-green-800 mb-1">
+                  Select Open Job
+                </label>
+                <select
+                  className={inputClass}
+                  value={returnJobId}
+                  onChange={(e) => setReturnJobId(e.target.value)}
+                >
                   <option value="">-- Open Jobs --</option>
                   {jobWorkOrders
                     .filter((j) => j.status === "open")
@@ -1051,39 +1404,79 @@ export default function BOMProduction() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-green-800 mb-1">Finished Goods Received</label>
-                <select className={inputClass} value={returnItemId} onChange={(e) => setReturnItemId(e.target.value)}>
+                <label className="block text-[11px] font-medium text-green-800 mb-1">
+                  Finished Goods Received
+                </label>
+                <select
+                  className={inputClass}
+                  value={returnItemId}
+                  onChange={(e) => setReturnItemId(e.target.value)}
+                >
                   <option value="">-- Select Item --</option>
-                  {items.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+                  {items.map((i) => (
+                    <option key={i.id} value={i.id}>
+                      {i.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-green-800 mb-1">Qty Received</label>
-                <input className={inputClass} type="number" placeholder="0" value={returnQty} onChange={(e) => setReturnQty(e.target.value)} />
+                <label className="block text-[11px] font-medium text-green-800 mb-1">
+                  Qty Received
+                </label>
+                <input
+                  className={inputClass}
+                  type="number"
+                  placeholder="0"
+                  value={returnQty}
+                  onChange={(e) => setReturnQty(e.target.value)}
+                />
               </div>
-              
+
               <div>
-                <label className="block text-[11px] font-medium text-green-800 mb-1">Actual Processing Charges Paid</label>
+                <label className="block text-[11px] font-medium text-green-800 mb-1">
+                  Actual Processing Charges Paid
+                </label>
                 <div className="flex gap-2">
-                   <input className={inputClass} type="number" placeholder="0.00" value={returnCharges} onChange={(e) => setReturnCharges(e.target.value)} />
-                   <button className="h-8 px-4 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-md transition-colors whitespace-nowrap" onClick={markJobReturn}>
-                     Mark Received
-                   </button>
+                  <input
+                    className={inputClass}
+                    type="number"
+                    placeholder="0.00"
+                    value={returnCharges}
+                    onChange={(e) => setReturnCharges(e.target.value)}
+                  />
+                  <button
+                    className="h-8 px-4 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-md transition-colors whitespace-nowrap"
+                    onClick={markJobReturn}
+                  >
+                    Mark Received
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">Outstanding Job Work</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">
+              Outstanding Job Work
+            </h2>
 
             <div className="overflow-x-auto rounded-md border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    {["Worker", "Materials Sent", "Date Sent", "Expected Return", "Days Outstanding", "Action"].map((h) => (
-                      <th className={tableHeadClass} key={h}>{h}</th>
+                    {[
+                      "Worker",
+                      "Materials Sent",
+                      "Date Sent",
+                      "Expected Return",
+                      "Days Outstanding",
+                      "Action",
+                    ].map((h) => (
+                      <th className={tableHeadClass} key={h}>
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
@@ -1092,33 +1485,55 @@ export default function BOMProduction() {
                     .filter((j) => j.status === "open")
                     .map((j) => {
                       const overdue = todayISO() > j.expectedReturn;
-                      const days = Math.max(0, Math.floor((Date.now() - new Date(j.dateSent).getTime()) / 86400000));
+                      const days = Math.max(
+                        0,
+                        Math.floor((Date.now() - new Date(j.dateSent).getTime()) / 86400000),
+                      );
 
                       return (
-                        <tr key={j.id} className={`bg-white hover:bg-gray-50 ${overdue ? "bg-red-50/30" : ""}`}>
-                          <td className={`${tableCellClass} font-medium`}>{parties.find((p) => p.id === j.jobWorkerId)?.name}</td>
+                        <tr
+                          key={j.id}
+                          className={`bg-white hover:bg-gray-50 ${overdue ? "bg-red-50/30" : ""}`}
+                        >
+                          <td className={`${tableCellClass} font-medium`}>
+                            {parties.find((p) => p.id === j.jobWorkerId)?.name}
+                          </td>
                           <td className={tableCellClass}>
-                             <span className="text-[11px] text-gray-600 truncate max-w-[200px] block" title={(j.materials || []).map((m) => m.itemName).join(", ")}>
-                               {(j.materials || []).map((m) => m.itemName).join(", ")}
-                             </span>
+                            <span
+                              className="text-[11px] text-gray-600 truncate max-w-[200px] block"
+                              title={(j.materials || []).map((m) => m.itemName).join(", ")}
+                            >
+                              {(j.materials || []).map((m) => m.itemName).join(", ")}
+                            </span>
                           </td>
                           <td className={tableCellClass}>{j.dateSent}</td>
                           <td className={tableCellClass}>
-                            <span className={overdue ? "text-red-600 font-semibold" : ""}>{j.expectedReturn}</span>
+                            <span className={overdue ? "text-red-600 font-semibold" : ""}>
+                              {j.expectedReturn}
+                            </span>
                           </td>
                           <td className={tableCellClass}>
                             {days > 0 ? (
-                               <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${overdue ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}`}>{days} Days</span>
+                              <span
+                                className={`px-2 py-0.5 rounded text-[10px] font-bold ${overdue ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}`}
+                              >
+                                {days} Days
+                              </span>
                             ) : (
-                               <span className="text-gray-400">-</span>
+                              <span className="text-gray-400">-</span>
                             )}
                           </td>
                           <td className={tableCellClass}>
-                            <button className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1" onClick={() => {
-                               setReturnJobId(j.id);
-                               document.querySelector('.bg-green-50\\/30')?.scrollIntoView({behavior: 'smooth'});
-                            }}>
-                              <CheckCircle size={12}/> Receive
+                            <button
+                              className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                              onClick={() => {
+                                setReturnJobId(j.id);
+                                document
+                                  .querySelector(".bg-green-50\\/30")
+                                  ?.scrollIntoView({ behavior: "smooth" });
+                              }}
+                            >
+                              <CheckCircle size={12} /> Receive
                             </button>
                           </td>
                         </tr>
@@ -1126,7 +1541,10 @@ export default function BOMProduction() {
                     })}
                   {!jobWorkOrders.filter((j) => j.status === "open").length && (
                     <tr>
-                      <td colSpan={6} className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50">
+                      <td
+                        colSpan={6}
+                        className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50"
+                      >
                         No outstanding job work records.
                       </td>
                     </tr>
@@ -1141,12 +1559,22 @@ export default function BOMProduction() {
       {activeTab === "Production Cost Sheet" && (
         <div className={cardClass}>
           <div className="mb-6 max-w-md">
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Completed Production Order</label>
-            <select className={inputClass} value={selectedCostPO} onChange={(e) => setSelectedCostPO(e.target.value)}>
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              Select Completed Production Order
+            </label>
+            <select
+              className={inputClass}
+              value={selectedCostPO}
+              onChange={(e) => setSelectedCostPO(e.target.value)}
+            >
               <option value="">-- Choose Order --</option>
               {productionOrders
                 .filter((p) => p.status === "Completed")
-                .map((p) => <option key={p.id} value={p.id}>{p.orderNo}</option>)}
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.orderNo}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -1167,7 +1595,11 @@ export default function BOMProduction() {
                         "Std Cost",
                         "Actual Cost",
                         "Total Variance",
-                      ].map((h) => <th className={tableHeadClass} key={h}>{h}</th>)}
+                      ].map((h) => (
+                        <th className={tableHeadClass} key={h}>
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -1176,14 +1608,24 @@ export default function BOMProduction() {
                         <td className={`${tableCellClass} font-medium`}>{r.component}</td>
                         <td className={tableCellClass}>{money(r.stdQty)}</td>
                         <td className={tableCellClass}>{money(r.actualQty)}</td>
-                        <td className={`${tableCellClass} ${r.qtyVar !== 0 ? (r.qtyVar > 0 ? "text-red-600" : "text-green-600") : ""}`}>{money(r.qtyVar)}</td>
+                        <td
+                          className={`${tableCellClass} ${r.qtyVar !== 0 ? (r.qtyVar > 0 ? "text-red-600" : "text-green-600") : ""}`}
+                        >
+                          {money(r.qtyVar)}
+                        </td>
                         <td className={tableCellClass}>{money(r.stdRate)}</td>
                         <td className={tableCellClass}>{money(r.actualRate)}</td>
-                        <td className={`${tableCellClass} ${r.rateVar !== 0 ? (r.rateVar > 0 ? "text-red-600" : "text-green-600") : ""}`}>{money(r.rateVar)}</td>
+                        <td
+                          className={`${tableCellClass} ${r.rateVar !== 0 ? (r.rateVar > 0 ? "text-red-600" : "text-green-600") : ""}`}
+                        >
+                          {money(r.rateVar)}
+                        </td>
                         <td className={tableCellClass}>{money(r.stdCost)}</td>
                         <td className={tableCellClass}>{money(r.actualCost)}</td>
-                        <td className={`${tableCellClass} font-semibold ${r.variance > 0 ? "text-red-600" : "text-green-600"}`}>
-                           {money(r.variance)}
+                        <td
+                          className={`${tableCellClass} font-semibold ${r.variance > 0 ? "text-red-600" : "text-green-600"}`}
+                        >
+                          {money(r.variance)}
                         </td>
                       </tr>
                     ))}
@@ -1193,92 +1635,154 @@ export default function BOMProduction() {
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex gap-8">
-                   <div className="flex flex-col">
-                      <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Total Standard Cost</span>
-                      <span className="text-[16px] font-bold text-gray-800">NPR {money(costSheet.standardCost)}</span>
-                   </div>
-                   <div className="flex flex-col">
-                      <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Total Actual Cost</span>
-                      <span className="text-[16px] font-bold text-gray-800">NPR {money(costSheet.actualCost)}</span>
-                   </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                      Total Standard Cost
+                    </span>
+                    <span className="text-[16px] font-bold text-gray-800">
+                      NPR {money(costSheet.standardCost)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                      Total Actual Cost
+                    </span>
+                    <span className="text-[16px] font-bold text-gray-800">
+                      NPR {money(costSheet.actualCost)}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-col text-right">
-                   <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Net Variance</span>
-                   <span className={`text-[18px] font-black ${costSheet.variance > 0 ? "text-red-600" : "text-green-600"}`}>
-                     NPR {money(costSheet.variance)} 
-                     <span className="text-[12px] font-semibold ml-2 bg-white px-2 py-0.5 rounded border border-current">
-                       {costSheet.variance > 0 ? "Adverse" : "Favorable"}
-                     </span>
-                   </span>
+                  <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                    Net Variance
+                  </span>
+                  <span
+                    className={`text-[18px] font-black ${costSheet.variance > 0 ? "text-red-600" : "text-green-600"}`}
+                  >
+                    NPR {money(costSheet.variance)}
+                    <span className="text-[12px] font-semibold ml-2 bg-white px-2 py-0.5 rounded border border-current">
+                      {costSheet.variance > 0 ? "Adverse" : "Favorable"}
+                    </span>
+                  </span>
                 </div>
               </div>
             </div>
           ) : (
-             <div className="p-10 border border-dashed border-gray-300 rounded-lg bg-gray-50 flex flex-col items-center justify-center text-gray-500 text-center">
-               <BarChart2 size={32} className="mb-3 text-gray-400" />
-               <p className="text-[13px] font-medium text-gray-700">No Cost Sheet Selected</p>
-               <p className="text-[11px] mt-1 max-w-sm">Select a completed production order above to view its detailed cost and variance analysis.</p>
+            <div className="p-10 border border-dashed border-gray-300 rounded-lg bg-gray-50 flex flex-col items-center justify-center text-gray-500 text-center">
+              <BarChart2 size={32} className="mb-3 text-gray-400" />
+              <p className="text-[13px] font-medium text-gray-700">No Cost Sheet Selected</p>
+              <p className="text-[11px] mt-1 max-w-sm">
+                Select a completed production order above to view its detailed cost and variance
+                analysis.
+              </p>
             </div>
           )}
         </div>
       )}
 
       {/* MODALS */}
-      <Modal open={bomModal} title={editingBom ? "Edit Bill of Materials" : "Create Bill of Materials"} onClose={() => setBomModal(false)} wide>
+      <Modal
+        open={bomModal}
+        title={editingBom ? "Edit Bill of Materials" : "Create Bill of Materials"}
+        onClose={() => setBomModal(false)}
+        wide
+      >
         <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-4">
-           <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide mb-3">Master Details</h3>
-           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-             <div className="md:col-span-2">
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Finished Product</label>
-               <select className={inputClass} value={bomForm.finishedProductId} onChange={(e) => setBomForm({ ...bomForm, finishedProductId: e.target.value })}>
-                 <option value="">Select Finished Product</option>
-                 {items
-                   .filter((i) => i.type !== "raw-material")
-                   .map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
-               </select>
-             </div>
-             <div className="md:col-span-2">
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">BOM Name (Optional)</label>
-               <input className={inputClass} placeholder="e.g. Standard Recipe v1" value={bomForm.name} onChange={(e) => setBomForm({ ...bomForm, name: e.target.value })} />
-             </div>
-             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Output Qty (Batch Size)</label>
-               <input className={inputClass} type="number" value={bomForm.outputQty} onChange={(e) => setBomForm({ ...bomForm, outputQty: Number(e.target.value) })} />
-             </div>
-             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Version</label>
-               <input className={inputClass} value={bomForm.version} onChange={(e) => setBomForm({ ...bomForm, version: e.target.value })} />
-             </div>
-             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Status</label>
-               <select className={inputClass} value={bomForm.status} onChange={(e) => setBomForm({ ...bomForm, status: e.target.value })}>
-                 <option>Draft</option>
-                 <option>Active</option>
-                 <option>Obsolete</option>
-               </select>
-             </div>
-             <div className="md:col-span-4">
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Notes / Instructions</label>
-               <textarea className={`${inputClass} h-auto py-2`} rows={2} placeholder="Production instructions, routing notes, etc." value={bomForm.notes} onChange={(e) => setBomForm({ ...bomForm, notes: e.target.value })} />
-             </div>
-           </div>
+          <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide mb-3">
+            Master Details
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="md:col-span-2">
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Finished Product
+              </label>
+              <select
+                className={inputClass}
+                value={bomForm.finishedProductId}
+                onChange={(e) => setBomForm({ ...bomForm, finishedProductId: e.target.value })}
+              >
+                <option value="">Select Finished Product</option>
+                {items
+                  .filter((i) => i.type !== "raw-material")
+                  .map((i) => (
+                    <option key={i.id} value={i.id}>
+                      {i.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                BOM Name (Optional)
+              </label>
+              <input
+                className={inputClass}
+                placeholder="e.g. Standard Recipe v1"
+                value={bomForm.name}
+                onChange={(e) => setBomForm({ ...bomForm, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Output Qty (Batch Size)
+              </label>
+              <input
+                className={inputClass}
+                type="number"
+                value={bomForm.outputQty}
+                onChange={(e) => setBomForm({ ...bomForm, outputQty: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Version</label>
+              <input
+                className={inputClass}
+                value={bomForm.version}
+                onChange={(e) => setBomForm({ ...bomForm, version: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Status</label>
+              <select
+                className={inputClass}
+                value={bomForm.status}
+                onChange={(e) => setBomForm({ ...bomForm, status: e.target.value })}
+              >
+                <option>Draft</option>
+                <option>Active</option>
+                <option>Obsolete</option>
+              </select>
+            </div>
+            <div className="md:col-span-4">
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Notes / Instructions
+              </label>
+              <textarea
+                className={`${inputClass} h-auto py-2`}
+                rows={2}
+                placeholder="Production instructions, routing notes, etc."
+                value={bomForm.notes}
+                onChange={(e) => setBomForm({ ...bomForm, notes: e.target.value })}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 bg-blue-50/50 p-3 rounded-md border border-blue-100">
-           <div className="flex items-center gap-3">
-             <h3 className="text-[13px] font-semibold text-blue-900">Components / Raw Materials</h3>
-           </div>
-           <div className="flex gap-2">
-             <button className={outlineBtn} onClick={addBomComponent}>
-                <Plus size={14} className="text-[#1557b0]" /> Add Component
-             </button>
-             <button className={outlineBtn} onClick={calculateRollup}>
-                <BarChart2 size={14} className="text-emerald-600" /> Cost Roll-up
-             </button>
-             <button className={primaryBtn} onClick={saveBom}>
-               <Save size={14} /> Save BOM
-             </button>
-           </div>
+          <div className="flex items-center gap-3">
+            <h3 className="text-[13px] font-semibold text-blue-900">Components / Raw Materials</h3>
+          </div>
+          <div className="flex gap-2">
+            <button className={outlineBtn} onClick={addBomComponent}>
+              <Plus size={14} className="text-[#1557b0]" /> Add Component
+            </button>
+            <button className={outlineBtn} onClick={calculateRollup}>
+              <BarChart2 size={14} className="text-emerald-600" /> Cost Roll-up
+            </button>
+            <button className={primaryBtn} onClick={saveBom}>
+              <Save size={14} /> Save BOM
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto rounded-md border border-gray-200">
@@ -1295,7 +1799,11 @@ export default function BOMProduction() {
                   "Std Rate (NPR)",
                   "Line Cost",
                   "Action",
-                ].map((h) => <th key={h} className={tableHeadClass}>{h}</th>)}
+                ].map((h) => (
+                  <th key={h} className={tableHeadClass}>
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -1306,47 +1814,91 @@ export default function BOMProduction() {
                 return (
                   <tr key={c.id || idx} className="bg-white hover:bg-gray-50">
                     <td className={tableCellClass}>
-                      <select className={`${inputClass} w-32`} value={c.itemId} onChange={(e) => updateBomComponent(idx, { itemId: e.target.value })}>
+                      <select
+                        className={`${inputClass} w-32`}
+                        value={c.itemId}
+                        onChange={(e) => updateBomComponent(idx, { itemId: e.target.value })}
+                      >
                         <option value="">-- Item --</option>
-                        {items.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+                        {items.map((i) => (
+                          <option key={i.id} value={i.id}>
+                            {i.name}
+                          </option>
+                        ))}
                       </select>
                     </td>
-                    <td className={`${tableCellClass} font-medium`}>{c.itemName || <span className="text-gray-400 italic">Select item</span>}</td>
+                    <td className={`${tableCellClass} font-medium`}>
+                      {c.itemName || <span className="text-gray-400 italic">Select item</span>}
+                    </td>
                     <td className={tableCellClass}>{c.unit}</td>
                     <td className={tableCellClass}>
-                      <input className={`${inputClass} w-20 font-semibold text-center`} type="number" value={c.qty} onChange={(e) => updateBomComponent(idx, { qty: Number(e.target.value) })} />
+                      <input
+                        className={`${inputClass} w-20 font-semibold text-center`}
+                        type="number"
+                        value={c.qty}
+                        onChange={(e) => updateBomComponent(idx, { qty: Number(e.target.value) })}
+                      />
                     </td>
                     <td className={tableCellClass}>
-                      <input className={`${inputClass} w-16 text-center`} type="number" value={c.wastage} onChange={(e) => updateBomComponent(idx, { wastage: Number(e.target.value) })} />
+                      <input
+                        className={`${inputClass} w-16 text-center`}
+                        type="number"
+                        value={c.wastage}
+                        onChange={(e) =>
+                          updateBomComponent(idx, { wastage: Number(e.target.value) })
+                        }
+                      />
                     </td>
-                    <td className={`${tableCellClass} font-medium text-indigo-700`}>{money(netQty)}</td>
-                    <td className={tableCellClass}>
-                      <input className={`${inputClass} w-24`} type="number" value={c.rate} onChange={(e) => updateBomComponent(idx, { rate: Number(e.target.value) })} />
+                    <td className={`${tableCellClass} font-medium text-indigo-700`}>
+                      {money(netQty)}
                     </td>
-                    <td className={`${tableCellClass} font-semibold text-gray-900`}>{money(lineCost)}</td>
                     <td className={tableCellClass}>
-                      <button className="text-gray-400 hover:text-red-600 transition-colors p-1" onClick={() => removeBomComponent(idx)} title="Remove Component">
-                        <Trash2 size={16}/>
+                      <input
+                        className={`${inputClass} w-24`}
+                        type="number"
+                        value={c.rate}
+                        onChange={(e) => updateBomComponent(idx, { rate: Number(e.target.value) })}
+                      />
+                    </td>
+                    <td className={`${tableCellClass} font-semibold text-gray-900`}>
+                      {money(lineCost)}
+                    </td>
+                    <td className={tableCellClass}>
+                      <button
+                        className="text-gray-400 hover:text-red-600 transition-colors p-1"
+                        onClick={() => removeBomComponent(idx)}
+                        title="Remove Component"
+                      >
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
                 );
               })}
-              
+
               {(!bomForm.components || bomForm.components.length === 0) && (
-                 <tr>
-                    <td colSpan={9} className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50 border-b border-gray-100">
-                       No components added. Click "Add Component" above.
-                    </td>
-                 </tr>
+                <tr>
+                  <td
+                    colSpan={9}
+                    className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50 border-b border-gray-100"
+                  >
+                    No components added. Click "Add Component" above.
+                  </td>
+                </tr>
               )}
 
               <tr className="bg-blue-50/30">
-                <td className={`${tableCellClass} font-bold text-right text-gray-700 uppercase tracking-wide`} colSpan={7}>
-                   Total Standard Cost:
+                <td
+                  className={`${tableCellClass} font-bold text-right text-gray-700 uppercase tracking-wide`}
+                  colSpan={7}
+                >
+                  Total Standard Cost:
                 </td>
-                <td className={`${tableCellClass} font-bold text-[14px] text-[#1557b0]`} colSpan={2}>
-                   NPR {money(totalStandardCost)}
+                <td
+                  className={`${tableCellClass} font-bold text-[14px] text-[#1557b0]`}
+                  colSpan={2}
+                >
+                  NPR {money(totalStandardCost)}
                 </td>
               </tr>
             </tbody>

@@ -32,14 +32,7 @@ export const ScreenContext = createContext<ScreenContextValue>({
   setReportType: noop,
 });
 
-const voucherPages = new Set([
-  "journal",
-  "payment",
-  "receipt",
-  "contra",
-  "sales",
-  "purchase",
-]);
+const voucherPages = new Set(["journal", "payment", "receipt", "contra", "sales", "purchase"]);
 
 const reportPages = new Set([
   "trial-balance",
@@ -56,11 +49,7 @@ const reportPages = new Set([
   "budget-vs-actual",
 ]);
 
-const inventoryPages = new Set([
-  "stock-summary",
-  "inventory-report",
-  "stock-book",
-]);
+const inventoryPages = new Set(["stock-summary", "inventory-report", "stock-book"]);
 
 const masterPages = new Set([
   "master-control-centre",

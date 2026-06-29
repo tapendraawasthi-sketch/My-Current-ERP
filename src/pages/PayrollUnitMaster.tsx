@@ -29,7 +29,13 @@ const PayrollUnitMaster: React.FC = () => {
       const seedData = [
         { symbol: "Days", formalName: "Days", isCompound: false, decimalPlaces: 0, isActive: true },
         { symbol: "Hrs", formalName: "Hours", isCompound: false, decimalPlaces: 0, isActive: true },
-        { symbol: "Pcs", formalName: "Pieces", isCompound: false, decimalPlaces: 0, isActive: true },
+        {
+          symbol: "Pcs",
+          formalName: "Pieces",
+          isCompound: false,
+          decimalPlaces: 0,
+          isActive: true,
+        },
       ];
 
       seedData.forEach(async (item) => {
@@ -42,7 +48,7 @@ const PayrollUnitMaster: React.FC = () => {
   const filteredUnits = (payrollUnits || []).filter(
     (unit) =>
       unit.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      unit.formalName.toLowerCase().includes(searchTerm.toLowerCase())
+      unit.formalName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
@@ -118,12 +124,16 @@ const PayrollUnitMaster: React.FC = () => {
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* List Panel */}
-      <div className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 xl:w-3/4 border-r border-gray-200" : "w-full"}`}>
+      <div
+        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 xl:w-3/4 border-r border-gray-200" : "w-full"}`}
+      >
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-gray-800">Payroll Unit Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Manage measurement units for attendance and production</p>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Manage measurement units for attendance and production
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -153,13 +163,27 @@ const PayrollUnitMaster: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Symbol</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Formal Name</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Decimals</th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    #
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Symbol
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Formal Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Type
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Decimals
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -173,12 +197,20 @@ const PayrollUnitMaster: React.FC = () => {
                   filteredUnits.map((unit, index) => (
                     <tr key={unit.id} className="hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{unit.symbol}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
+                        {unit.symbol}
+                      </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{unit.formalName}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{unit.isCompound ? "Compound" : "Simple"}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{unit.isCompound ? "-" : unit.decimalPlaces}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {unit.isCompound ? "Compound" : "Simple"}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {unit.isCompound ? "-" : unit.decimalPlaces}
+                      </td>
                       <td className="px-3 py-2.5 text-[12px] text-center">
-                        <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${unit.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        <span
+                          className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${unit.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                        >
                           {unit.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
@@ -216,8 +248,8 @@ const PayrollUnitMaster: React.FC = () => {
             <h3 className="text-[13px] font-semibold text-gray-800">
               {selected ? "Alter Payroll Unit" : "Create Payroll Unit"}
             </h3>
-            <button 
-              onClick={resetForm} 
+            <button
+              onClick={resetForm}
               className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
@@ -226,7 +258,9 @@ const PayrollUnitMaster: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Symbol <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Symbol <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -238,7 +272,9 @@ const PayrollUnitMaster: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Formal Name <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Formal Name <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -276,12 +312,16 @@ const PayrollUnitMaster: React.FC = () => {
 
             {!form.isCompound ? (
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Decimal Places</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Decimal Places
+                </label>
                 <input
                   type="number"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                   value={form.decimalPlaces}
-                  onChange={(e) => setForm({ ...form, decimalPlaces: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setForm({ ...form, decimalPlaces: parseInt(e.target.value) || 0 })
+                  }
                   min="0"
                   max="4"
                 />
@@ -290,7 +330,9 @@ const PayrollUnitMaster: React.FC = () => {
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3 flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] font-medium text-gray-600 mb-1 block">First Unit</label>
+                    <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                      First Unit
+                    </label>
                     <input
                       type="text"
                       className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -300,7 +342,9 @@ const PayrollUnitMaster: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-gray-600 mb-1 block">Second Unit</label>
+                    <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                      Second Unit
+                    </label>
                     <input
                       type="text"
                       className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -311,20 +355,26 @@ const PayrollUnitMaster: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium text-gray-600 mb-1 block">Conversion Factor</label>
+                  <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                    Conversion Factor
+                  </label>
                   <input
                     type="number"
                     className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                     value={form.conversionFactor}
-                    onChange={(e) => setForm({ ...form, conversionFactor: parseFloat(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setForm({ ...form, conversionFactor: parseFloat(e.target.value) || 0 })
+                    }
                     min="0"
                     step="any"
                     placeholder="e.g. 8"
                   />
                 </div>
-                
+
                 <div className="text-center text-[11px] text-gray-600 bg-white border border-gray-200 rounded py-1.5 font-medium">
-                  1 <span className="text-[#1557b0]">{form.firstUnit || "[Unit 1]"}</span> = {form.conversionFactor || 0} <span className="text-[#1557b0]">{form.secondUnit || "[Unit 2]"}</span>
+                  1 <span className="text-[#1557b0]">{form.firstUnit || "[Unit 1]"}</span> ={" "}
+                  {form.conversionFactor || 0}{" "}
+                  <span className="text-[#1557b0]">{form.secondUnit || "[Unit 2]"}</span>
                 </div>
               </div>
             )}
@@ -338,7 +388,10 @@ const PayrollUnitMaster: React.FC = () => {
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActive" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="isActive"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Is Active
                 </label>
               </div>
@@ -346,7 +399,7 @@ const PayrollUnitMaster: React.FC = () => {
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button 
+            <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
               onClick={resetForm}
             >

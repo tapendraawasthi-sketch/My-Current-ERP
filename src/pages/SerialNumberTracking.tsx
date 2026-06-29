@@ -125,14 +125,15 @@ function statusClass(status: SerialRecord["status"]): string {
   }
 }
 
-function getWarrantyStatus(serial: SerialRecord): { text: string; color: "gray" | "red" | "amber" | "green" } {
+function getWarrantyStatus(serial: SerialRecord): {
+  text: string;
+  color: "gray" | "red" | "amber" | "green";
+} {
   if (serial.status !== "sold" || !serial.warrantyExpiry) {
     return { text: "N/A", color: "gray" };
   }
 
-  const daysLeft = Math.floor(
-    (new Date(serial.warrantyExpiry).getTime() - Date.now()) / 86400000,
-  );
+  const daysLeft = Math.floor((new Date(serial.warrantyExpiry).getTime() - Date.now()) / 86400000);
 
   if (daysLeft < 0) return { text: "Expired", color: "red" };
   if (daysLeft <= 30) return { text: `${daysLeft} days left`, color: "amber" };
@@ -159,7 +160,9 @@ export default function SerialNumberTracking() {
   const companyId = store.currentCompany?.id ?? "default";
 
   const [serials, setSerials] = useState<SerialRecord[]>([]);
-  const [activeTab, setActiveTab] = useState<"all" | "in_stock" | "sold" | "warranty" | "search">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "in_stock" | "sold" | "warranty" | "search">(
+    "all",
+  );
   const [searchSerial, setSearchSerial] = useState("");
   const [filterItem, setFilterItem] = useState("ALL");
   const [filterStatus, setFilterStatus] = useState("ALL");
@@ -326,7 +329,9 @@ export default function SerialNumberTracking() {
   };
 
   const renderStatus = (status: SerialRecord["status"]) => (
-    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${statusClass(status)}`}>
+    <span
+      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${statusClass(status)}`}
+    >
       {formatStatus(status)}
     </span>
   );
@@ -372,9 +377,7 @@ export default function SerialNumberTracking() {
                   <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono font-medium">
                     {serial.serialNo}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {serial.itemName}
-                  </td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.itemName}</td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700">
                     {formatDate(serial.purchaseDate)}
                   </td>
@@ -577,22 +580,20 @@ export default function SerialNumberTracking() {
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">
                         {serial.serialNo}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {serial.itemName}
-                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.itemName}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">
                         {serial.customerName}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {serial.saleDate}
-                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{serial.saleDate}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">
                         {serial.warrantyMonths}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">
                         {serial.warrantyExpiry || "—"}
                       </td>
-                      <td className={`px-3 py-2.5 text-[12px] ${warrantyTextClass(warranty.color)}`}>
+                      <td
+                        className={`px-3 py-2.5 text-[12px] ${warrantyTextClass(warranty.color)}`}
+                      >
                         {warranty.text}
                       </td>
                       <td className="px-3 py-2.5">{renderStatus(serial.status)}</td>
@@ -731,7 +732,9 @@ export default function SerialNumberTracking() {
                   onChange={(e) => updateForm("serialNo", e.target.value)}
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full font-mono"
                 />
-                {errors.serialNo && <p className="text-[11px] text-red-600 mt-1">{errors.serialNo}</p>}
+                {errors.serialNo && (
+                  <p className="text-[11px] text-red-600 mt-1">{errors.serialNo}</p>
+                )}
               </div>
 
               <div>
@@ -743,7 +746,9 @@ export default function SerialNumberTracking() {
                   onChange={(e) => updateForm("itemName", e.target.value)}
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
                 />
-                {errors.itemName && <p className="text-[11px] text-red-600 mt-1">{errors.itemName}</p>}
+                {errors.itemName && (
+                  <p className="text-[11px] text-red-600 mt-1">{errors.itemName}</p>
+                )}
               </div>
 
               {[
@@ -762,7 +767,10 @@ export default function SerialNumberTracking() {
                     type={type}
                     value={(form as any)[key]}
                     onChange={(e) =>
-                      updateForm(key as keyof Omit<SerialRecord, "id" | "companyId">, type === "number" ? Number(e.target.value) : e.target.value)
+                      updateForm(
+                        key as keyof Omit<SerialRecord, "id" | "companyId">,
+                        type === "number" ? Number(e.target.value) : e.target.value,
+                      )
                     }
                     className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
                   />
@@ -770,9 +778,7 @@ export default function SerialNumberTracking() {
               ))}
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                  Status
-                </label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Status</label>
                 <select
                   value={form.status}
                   onChange={(e) => updateForm("status", e.target.value as SerialRecord["status"])}
@@ -798,7 +804,9 @@ export default function SerialNumberTracking() {
                       onChange={(e) => updateForm("saleDate", e.target.value)}
                       className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
                     />
-                    {errors.saleDate && <p className="text-[11px] text-red-600 mt-1">{errors.saleDate}</p>}
+                    {errors.saleDate && (
+                      <p className="text-[11px] text-red-600 mt-1">{errors.saleDate}</p>
+                    )}
                   </div>
 
                   <div>
@@ -822,7 +830,9 @@ export default function SerialNumberTracking() {
                       onChange={(e) => updateForm("saleRate", Number(e.target.value))}
                       className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
                     />
-                    {errors.saleRate && <p className="text-[11px] text-red-600 mt-1">{errors.saleRate}</p>}
+                    {errors.saleRate && (
+                      <p className="text-[11px] text-red-600 mt-1">{errors.saleRate}</p>
+                    )}
                   </div>
 
                   <div>
@@ -834,15 +844,15 @@ export default function SerialNumberTracking() {
                       onChange={(e) => updateForm("customerName", e.target.value)}
                       className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
                     />
-                    {errors.customerName && <p className="text-[11px] text-red-600 mt-1">{errors.customerName}</p>}
+                    {errors.customerName && (
+                      <p className="text-[11px] text-red-600 mt-1">{errors.customerName}</p>
+                    )}
                   </div>
                 </>
               )}
 
               <div className="col-span-2">
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                  Notes
-                </label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">Notes</label>
                 <textarea
                   value={form.notes}
                   onChange={(e) => updateForm("notes", e.target.value)}
@@ -887,8 +897,12 @@ export default function SerialNumberTracking() {
             <div className="p-4">
               <div className="flex justify-between mb-4">
                 <div>
-                  <p className="text-[15px] font-semibold text-gray-800">{selectedSerial.itemName}</p>
-                  <p className="text-[12px] text-gray-500">Location: {selectedSerial.location || "—"}</p>
+                  <p className="text-[15px] font-semibold text-gray-800">
+                    {selectedSerial.itemName}
+                  </p>
+                  <p className="text-[12px] text-gray-500">
+                    Location: {selectedSerial.location || "—"}
+                  </p>
                 </div>
                 {renderStatus(selectedSerial.status)}
               </div>

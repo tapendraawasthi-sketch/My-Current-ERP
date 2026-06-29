@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 
 with open('src/store/index.ts', 'r', encoding='utf-8') as f:
     content = f.read()
@@ -10,7 +10,7 @@ imports = '''import type {
   DBStockTransferVoucher,
 } from "../lib/db";
 
-const transferNo = (n: number) => TRF-;
+const transferNo = (n: number) => `TRF-${String(n).padStart(4, "0")}`;
 
 export interface MultiGodownStoreSlice {
   warehouses: DBWarehouse[];
@@ -149,7 +149,7 @@ actions = '''
         date: voucher.date,
         dateNepali: voucher.dateNepali,
         type: "journal",
-        narration: Inter-branch stock transfer :  to ,
+        narration: `Inter-branch stock transfer ${voucher.transferNo}: ${voucher.fromBranchName} to ${voucher.toBranchName}`,
         totalDebit: voucher.totalAmount,
         totalCredit: voucher.totalAmount,
         lines: [

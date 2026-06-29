@@ -58,8 +58,7 @@ export default function Units() {
     // Check duplicate code
     const duplicate = units.find(
       (u) =>
-        u.code?.toLowerCase() === formData.code?.trim().toLowerCase() &&
-        u.id !== editingUnit?.id
+        u.code?.toLowerCase() === formData.code?.trim().toLowerCase() && u.id !== editingUnit?.id,
     );
     if (duplicate) {
       toast.error(`Code "${formData.code}" is already used by "${duplicate.name}".`);
@@ -207,9 +206,7 @@ export default function Units() {
                   <td className="px-3 py-2.5 font-mono text-[11px] text-gray-700">
                     {unit.code || "—"}
                   </td>
-                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">
-                    {unit.name}
-                  </td>
+                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">{unit.name}</td>
                   <td className="px-3 py-2.5">
                     <span className="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded text-[11px] font-mono text-gray-700">
                       {unit.symbol || "—"}
@@ -278,9 +275,7 @@ export default function Units() {
             <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Code *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Code *</label>
                   <input
                     type="text"
                     value={formData.code || ""}
@@ -294,9 +289,7 @@ export default function Units() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Symbol *
-                  </label>
+                  <label className="text-[11px] font-medium text-gray-600">Symbol *</label>
                   <input
                     type="text"
                     value={formData.symbol || ""}
@@ -310,9 +303,7 @@ export default function Units() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Name *
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Name *</label>
                 <input
                   type="text"
                   value={formData.name || ""}
@@ -324,9 +315,7 @@ export default function Units() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">
-                  Decimal Places
-                </label>
+                <label className="text-[11px] font-medium text-gray-600">Decimal Places</label>
                 <select
                   value={formData.decimalPlaces ?? 2}
                   onChange={(e) =>

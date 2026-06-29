@@ -2,19 +2,36 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Button, Input, Select, ActionToolbar } from "../components/ui";
-import { Plus, Edit2, Trash2, X, Save, Settings, ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  Save,
+  Settings,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { VOUCHER_TYPE_LABELS, getVoucherGroupForType } from "../lib/voucherUtils";
 
 const VoucherTypeMaster: React.FC = () => {
-  const { voucherTypeMasters, addVoucherTypeMaster, updateVoucherTypeMaster, deleteVoucherTypeMaster, loadVoucherTypeMasters } = useStore();
-  
+  const {
+    voucherTypeMasters,
+    addVoucherTypeMaster,
+    updateVoucherTypeMaster,
+    deleteVoucherTypeMaster,
+    loadVoucherTypeMasters,
+  } = useStore();
+
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeGroupFilter, setActiveGroupFilter] = useState("all");
   const [showAdvanced, setShowAdvanced] = useState(false);
-  
+
   const [form, setForm] = useState({
     name: "",
     alias: "",
@@ -51,33 +68,35 @@ const VoucherTypeMaster: React.FC = () => {
   }, []);
 
   const filteredVoucherTypes = useMemo(() => {
-    return voucherTypeMasters.filter(vtm => {
-      const matchesSearch = 
-        vtm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vtm.abbreviation?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vtm.parentVoucherType.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesGroup = activeGroupFilter === "all" || vtm.voucherGroup === activeGroupFilter;
-      
-      return matchesSearch && matchesGroup;
-    }).sort((a, b) => {
-      if (a.isPredefined && !b.isPredefined) return -1;
-      if (!a.isPredefined && b.isPredefined) return 1;
-      return a.name.localeCompare(b.name);
-    });
+    return voucherTypeMasters
+      .filter((vtm) => {
+        const matchesSearch =
+          vtm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vtm.abbreviation?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vtm.parentVoucherType.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesGroup = activeGroupFilter === "all" || vtm.voucherGroup === activeGroupFilter;
+
+        return matchesSearch && matchesGroup;
+      })
+      .sort((a, b) => {
+        if (a.isPredefined && !b.isPredefined) return -1;
+        if (!a.isPredefined && b.isPredefined) return 1;
+        return a.name.localeCompare(b.name);
+      });
   }, [voucherTypeMasters, searchTerm, activeGroupFilter]);
 
   const activeCount = useMemo(() => {
-    return filteredVoucherTypes.filter(vtm => vtm.isActive).length;
+    return filteredVoucherTypes.filter((vtm) => vtm.isActive).length;
   }, [filteredVoucherTypes]);
 
   const handleFormChange = (field: string, value: any) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    
+    setForm((prev) => ({ ...prev, [field]: value }));
+
     // Auto-update voucherGroup when parentVoucherType changes
     if (field === "parentVoucherType") {
       const group = getVoucherGroupForType(value);
-      setForm(prev => ({ ...prev, voucherGroup: group }));
+      setForm((prev) => ({ ...prev, voucherGroup: group }));
     }
   };
 
@@ -121,44 +140,44 @@ const VoucherTypeMaster: React.FC = () => {
       toast.error("Voucher type name is required");
       return;
     }
-    
+
     if (!form.parentVoucherType) {
       toast.error("Parent voucher type is required");
       return;
     }
-    
+
     try {
       // Auto-set voucher group based on parent type
       const voucherGroup = getVoucherGroupForType(form.parentVoucherType);
       const formData = { ...form, voucherGroup };
-      
+
       if (selected && selected.isPredefined) {
         // For predefined types, only allow specific fields to be updated
         const allowedFields = [
-          "isActive", 
-          "printAfterSaving", 
-          "useForPOS", 
-          "defaultPrintTitle", 
-          "defaultBankLedgerId", 
-          "defaultJurisdiction", 
-          "declarationText", 
-          "allowCommonNarration", 
-          "allowLedgerNarration", 
-          "whatsAppAfterSaving"
+          "isActive",
+          "printAfterSaving",
+          "useForPOS",
+          "defaultPrintTitle",
+          "defaultBankLedgerId",
+          "defaultJurisdiction",
+          "declarationText",
+          "allowCommonNarration",
+          "allowLedgerNarration",
+          "whatsAppAfterSaving",
         ];
-        
+
         const filteredData: any = {};
-        allowedFields.forEach(field => {
+        allowedFields.forEach((field) => {
           filteredData[field] = formData[field];
         });
-        
+
         await updateVoucherTypeMaster(selected.id, filteredData);
       } else if (selected) {
         await updateVoucherTypeMaster(selected.id, formData);
       } else {
         await addVoucherTypeMaster(formData);
       }
-      
+
       toast.success("Voucher type saved successfully");
       resetForm();
     } catch (error) {
@@ -191,7 +210,7 @@ const VoucherTypeMaster: React.FC = () => {
     if (!window.confirm(`Are you sure you want to delete voucher type "${name}"?`)) {
       return;
     }
-    
+
     try {
       await deleteVoucherTypeMaster(id);
       toast.success("Voucher type deleted successfully");
@@ -204,7 +223,9 @@ const VoucherTypeMaster: React.FC = () => {
     try {
       const updatedRecord = { ...record, isActive: !record.isActive };
       await updateVoucherTypeMaster(record.id, { isActive: !record.isActive });
-      toast.success(`Voucher type ${updatedRecord.isActive ? "activated" : "deactivated"} successfully`);
+      toast.success(
+        `Voucher type ${updatedRecord.isActive ? "activated" : "deactivated"} successfully`,
+      );
     } catch (error) {
       toast.error(error.message || "Failed to update voucher type status");
     }
@@ -212,7 +233,7 @@ const VoucherTypeMaster: React.FC = () => {
 
   const voucherTypeOptions = Object.entries(VOUCHER_TYPE_LABELS).map(([value, label]) => ({
     value,
-    label
+    label,
   }));
 
   const groupColors: Record<string, string> = {
@@ -220,7 +241,7 @@ const VoucherTypeMaster: React.FC = () => {
     inventory: "bg-green-100 text-green-700",
     order: "bg-orange-100 text-orange-700",
     payroll: "bg-purple-100 text-purple-700",
-    other: "bg-gray-100 text-gray-700"
+    other: "bg-gray-100 text-gray-700",
   };
 
   return (
@@ -233,10 +254,10 @@ const VoucherTypeMaster: React.FC = () => {
             Voucher Type Master
           </h1>
         </div>
-        
+
         <ActionToolbar className="mb-4">
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => {
               resetForm();
               setShowForm(true);
@@ -246,7 +267,7 @@ const VoucherTypeMaster: React.FC = () => {
             <Plus className="w-4 h-4" />
             New Voucher Type
           </Button>
-          
+
           <Input
             placeholder="Search voucher types..."
             value={searchTerm}
@@ -254,24 +275,24 @@ const VoucherTypeMaster: React.FC = () => {
             className="max-w-xs"
           />
         </ActionToolbar>
-        
+
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             className={`px-3 py-1 rounded-full text-sm ${
-              activeGroupFilter === "all" 
-                ? "bg-green-600 text-white" 
+              activeGroupFilter === "all"
+                ? "bg-green-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveGroupFilter("all")}
           >
             All
           </button>
-          {["accounting", "inventory", "order", "payroll", "other"].map(group => (
+          {["accounting", "inventory", "order", "payroll", "other"].map((group) => (
             <button
               key={group}
               className={`px-3 py-1 rounded-full text-sm capitalize ${
-                activeGroupFilter === group 
-                  ? "bg-green-600 text-white" 
+                activeGroupFilter === group
+                  ? "bg-green-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
               onClick={() => setActiveGroupFilter(group)}
@@ -280,7 +301,7 @@ const VoucherTypeMaster: React.FC = () => {
             </button>
           ))}
         </div>
-        
+
         <p className="text-sm text-gray-600">
           {filteredVoucherTypes.length} Voucher Types ({activeCount} active)
         </p>
@@ -293,13 +314,13 @@ const VoucherTypeMaster: React.FC = () => {
             <h2 className="text-lg font-semibold mb-4">
               {selected ? "Edit Voucher Type" : "New Voucher Type"}
             </h2>
-            
+
             {selected?.isPredefined && (
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md mb-4 text-sm text-yellow-700">
                 (Predefined type — some fields restricted)
               </div>
             )}
-            
+
             {/* Basic Details Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
@@ -313,11 +334,9 @@ const VoucherTypeMaster: React.FC = () => {
                   placeholder="Enter voucher type name"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Alias
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Alias</label>
                 <Input
                   value={form.alias}
                   onChange={(e) => handleFormChange("alias", e.target.value)}
@@ -325,11 +344,9 @@ const VoucherTypeMaster: React.FC = () => {
                   placeholder="Enter alias"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Abbreviation
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                 <Input
                   value={form.abbreviation}
                   onChange={(e) => handleFormChange("abbreviation", e.target.value.slice(0, 5))}
@@ -338,7 +355,7 @@ const VoucherTypeMaster: React.FC = () => {
                   maxLength={5}
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Type of Voucher / Parent*
@@ -351,7 +368,7 @@ const VoucherTypeMaster: React.FC = () => {
                   placeholder="Select parent type"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Voucher Group
@@ -363,32 +380,30 @@ const VoucherTypeMaster: React.FC = () => {
                   className="bg-gray-100"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Active
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Active</label>
                 <Select
                   value={form.isActive ? "true" : "false"}
                   onChange={(value) => handleFormChange("isActive", value === "true")}
                   options={[
                     { value: "true", label: "Yes" },
-                    { value: "false", label: "No" }
+                    { value: "false", label: "No" },
                   ]}
                 />
               </div>
             </div>
-            
+
             {/* Numbering Section */}
             <div className="border-t pt-4 mb-4">
-              <div 
+              <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setShowAdvanced(!showAdvanced)}
               >
                 <h3 className="font-medium text-gray-900">Numbering</h3>
                 {showAdvanced ? <ChevronUp /> : <ChevronDown />}
               </div>
-              
+
               {showAdvanced && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
@@ -402,12 +417,13 @@ const VoucherTypeMaster: React.FC = () => {
                         { value: "automatic", label: "Automatic" },
                         { value: "manual", label: "Manual" },
                         { value: "multi-user-automatic", label: "Multi-User Automatic" },
-                        { value: "none", label: "None" }
+                        { value: "none", label: "None" },
                       ]}
                     />
                   </div>
-                  
-                  {(form.numberingMethod === "automatic" || form.numberingMethod === "multi-user-automatic") && (
+
+                  {(form.numberingMethod === "automatic" ||
+                    form.numberingMethod === "multi-user-automatic") && (
                     <>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -416,10 +432,12 @@ const VoucherTypeMaster: React.FC = () => {
                         <Input
                           type="number"
                           value={form.startingNumber}
-                          onChange={(e) => handleFormChange("startingNumber", parseInt(e.target.value) || 1)}
+                          onChange={(e) =>
+                            handleFormChange("startingNumber", parseInt(e.target.value) || 1)
+                          }
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Prefix
@@ -430,7 +448,7 @@ const VoucherTypeMaster: React.FC = () => {
                           placeholder="e.g., SI-"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Suffix
@@ -443,7 +461,7 @@ const VoucherTypeMaster: React.FC = () => {
                       </div>
                     </>
                   )}
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Restart Numbering
@@ -456,11 +474,11 @@ const VoucherTypeMaster: React.FC = () => {
                         { value: "daily", label: "Daily" },
                         { value: "monthly", label: "Monthly" },
                         { value: "yearly", label: "Financial Year" },
-                        { value: "financial-year", label: "Financial Year" }
+                        { value: "financial-year", label: "Financial Year" },
                       ]}
                     />
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -472,7 +490,7 @@ const VoucherTypeMaster: React.FC = () => {
                       Prevent Duplicate Numbers
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -484,7 +502,7 @@ const VoucherTypeMaster: React.FC = () => {
                       Allow Manual Override
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -492,20 +510,18 @@ const VoucherTypeMaster: React.FC = () => {
                       onChange={(e) => handleFormChange("warnOnDuplicate", e.target.checked)}
                       className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                     />
-                    <label className="text-sm font-medium text-gray-700">
-                      Warn on Duplicate
-                    </label>
+                    <label className="text-sm font-medium text-gray-700">Warn on Duplicate</label>
                   </div>
                 </div>
               )}
             </div>
-            
+
             {/* Behavior Section */}
             <div className="border-t pt-4 mb-4">
               <div className="flex items-center justify-between cursor-pointer">
                 <h3 className="font-medium text-gray-900">Behavior</h3>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div className="flex items-center space-x-2">
                   <input
@@ -514,11 +530,9 @@ const VoucherTypeMaster: React.FC = () => {
                     onChange={(e) => handleFormChange("useEffectiveDate", e.target.checked)}
                     className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
-                  <label className="text-sm font-medium text-gray-700">
-                    Use Effective Dates
-                  </label>
+                  <label className="text-sm font-medium text-gray-700">Use Effective Dates</label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -530,7 +544,7 @@ const VoucherTypeMaster: React.FC = () => {
                     Allow Zero Value Transactions
                   </label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -542,7 +556,7 @@ const VoucherTypeMaster: React.FC = () => {
                     Make Optional by Default
                   </label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -554,7 +568,7 @@ const VoucherTypeMaster: React.FC = () => {
                     Allow Common Narration
                   </label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -568,11 +582,11 @@ const VoucherTypeMaster: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Printing Section */}
             <div className="border-t pt-4 mb-4">
               <h3 className="font-medium text-gray-900 mb-2">Printing</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-2">
                   <input
@@ -581,11 +595,9 @@ const VoucherTypeMaster: React.FC = () => {
                     onChange={(e) => handleFormChange("printAfterSaving", e.target.checked)}
                     className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
-                  <label className="text-sm font-medium text-gray-700">
-                    Print After Saving
-                  </label>
+                  <label className="text-sm font-medium text-gray-700">Print After Saving</label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -594,11 +606,9 @@ const VoucherTypeMaster: React.FC = () => {
                     disabled={form.parentVoucherType !== "sales-invoice"}
                     className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
-                  <label className="text-sm font-medium text-gray-700">
-                    Use for POS Invoicing
-                  </label>
+                  <label className="text-sm font-medium text-gray-700">Use for POS Invoicing</label>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Default Print Title
@@ -609,7 +619,7 @@ const VoucherTypeMaster: React.FC = () => {
                     placeholder="e.g., Sales Invoice"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Default Jurisdiction
@@ -620,7 +630,7 @@ const VoucherTypeMaster: React.FC = () => {
                     placeholder="e.g., Nepal"
                   />
                 </div>
-                
+
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Declaration Text
@@ -635,11 +645,11 @@ const VoucherTypeMaster: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Sharing Section */}
             <div className="border-t pt-4 mb-4">
               <h3 className="font-medium text-gray-900 mb-2">Sharing</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-2">
                   <input
@@ -652,7 +662,7 @@ const VoucherTypeMaster: React.FC = () => {
                     Send via WhatsApp After Saving
                   </label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -666,22 +676,14 @@ const VoucherTypeMaster: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Form Buttons */}
             <div className="flex space-x-2 pt-4 border-t">
-              <Button 
-                variant="primary" 
-                onClick={handleSubmit}
-                className="flex items-center gap-2"
-              >
+              <Button variant="primary" onClick={handleSubmit} className="flex items-center gap-2">
                 <Save className="w-4 h-4" />
                 Save
               </Button>
-              <Button 
-                variant="secondary" 
-                onClick={resetForm}
-                className="flex items-center gap-2"
-              >
+              <Button variant="secondary" onClick={resetForm} className="flex items-center gap-2">
                 <X className="w-4 h-4" />
                 Cancel
               </Button>
@@ -696,14 +698,30 @@ const VoucherTypeMaster: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Group</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Abbr</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  #
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Parent Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Group
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Abbr
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Method
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Active
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -722,9 +740,13 @@ const VoucherTypeMaster: React.FC = () => {
                       {vtm.voucherGroup}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{vtm.abbreviation}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {vtm.numberingMethod.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {vtm.abbreviation}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {vtm.numberingMethod
+                      .replace(/-/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={vtm.isActive ? "success" : "destructive"}>
@@ -740,15 +762,23 @@ const VoucherTypeMaster: React.FC = () => {
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      
+
                       <button
                         onClick={() => toggleActive(vtm)}
-                        className={vtm.isActive ? "text-red-600 hover:text-red-900" : "text-green-600 hover:text-green-900"}
+                        className={
+                          vtm.isActive
+                            ? "text-red-600 hover:text-red-900"
+                            : "text-green-600 hover:text-green-900"
+                        }
                         title={vtm.isActive ? "Deactivate" : "Activate"}
                       >
-                        {vtm.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {vtm.isActive ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
                       </button>
-                      
+
                       {vtm.isPredefined ? (
                         <button
                           disabled
@@ -773,10 +803,11 @@ const VoucherTypeMaster: React.FC = () => {
             </tbody>
           </table>
         </div>
-        
+
         {filteredVoucherTypes.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            No voucher types found. Create your first voucher type using the "New Voucher Type" button.
+            No voucher types found. Create your first voucher type using the "New Voucher Type"
+            button.
           </div>
         )}
       </Card>

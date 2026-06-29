@@ -10,7 +10,7 @@ import { computeOutstandingReceivables } from "../lib/accounting";
 import { computeAllStockPositions } from "../lib/stockUtils";
 import { isAdminOrOwner, isAccountantOrAdmin } from "../lib/permissions";
 import { PaymentStatus, VoucherStatus, VoucherType } from "../lib/types";
-import { useScreenF12 } from '../hooks/useF12Config';
+import { useScreenF12 } from "../hooks/useF12Config";
 
 type PermissionScope = "all" | "accounting" | "admin";
 
@@ -50,10 +50,10 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "Sale Types", page: "sale-types", permission: "accounting" },
     { label: "Purchase Types", page: "purchase-types", permission: "accounting" },
   ],
-  
+
   TRANSACTIONS: [
     { label: "New Sales Invoice", page: "billing", permission: "accounting" },
-    { label: "New Purchase Invoice", page: "purchase-register", permission: "accounting" },
+    { label: "New Purchase Invoice", page: "purchase", permission: "accounting" },
     { label: "New Receipt", page: "receipt", permission: "accounting" },
     { label: "New Payment", page: "payment", permission: "accounting" },
     { label: "New Journal", page: "journal", permission: "accounting" },
@@ -66,7 +66,7 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "Scenarios", page: "scenarios", permission: "accounting" },
     { label: "Warehouses", page: "warehouses", permission: "accounting" },
   ],
-  
+
   REPORTS: [
     { label: "Balance Sheet", page: "balance-sheet", permission: "accounting" },
     { label: "Profit & Loss", page: "profit-loss", permission: "accounting" },
@@ -87,7 +87,7 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "Vouchers Log", page: "vouchers-log", permission: "accounting" },
     { label: "Aging Report", page: "aging-report", permission: "accounting" },
   ],
-  
+
   BANKING: [
     { label: "Banking Hub", page: "banking-hub", permission: "accounting" },
     { label: "Cheque Printing", page: "cheque-printing", permission: "accounting" },
@@ -95,13 +95,16 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
     { label: "Deposit Slip", page: "deposit-slip", permission: "accounting" },
     { label: "Payment Advice", page: "payment-advice", permission: "accounting" },
     { label: "Bank Reconciliation", page: "bank-reconciliation", permission: "accounting" },
-    { label: "Auto Bank Reconciliation", page: "auto-bank-reconciliation", permission: "accounting" },
+    {
+      label: "Auto Bank Reconciliation",
+      page: "auto-bank-reconciliation",
+      permission: "accounting",
+    },
     { label: "e-Payments", page: "e-payments", permission: "accounting" },
     { label: "PDC Summary", page: "pdc-summary", permission: "accounting" },
   ],
-  
+
   UTILITIES: [
-    { label: "Day Book", page: "day-book", permission: "accounting" },
     { label: "Data Export/Import", page: "data-export-import", permission: "accounting" },
     { label: "Backup & Restore", page: "backup", permission: "admin" },
     { label: "Audit Log", page: "audit-log", permission: "admin" },
@@ -117,7 +120,7 @@ const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
 
 const QUICK_ACTIONS: GatewayMenuItem[] = [
   { label: "New Sales Invoice", page: "billing", permission: "accounting" },
-  { label: "New Purchase Invoice", page: "purchase-register", permission: "accounting" },
+  { label: "New Purchase Invoice", page: "purchase", permission: "accounting" },
   { label: "New Receipt", page: "receipt", permission: "accounting" },
   { label: "New Payment", page: "payment", permission: "accounting" },
   { label: "New Journal", page: "journal", permission: "accounting" },
@@ -128,7 +131,7 @@ const QUICK_ACTIONS: GatewayMenuItem[] = [
 
 const Gateway: React.FC = () => {
   // Register this screen with F12 system
-  const getConfig = useScreenF12('global');
+  const getConfig = useScreenF12("global");
 
   const {
     currentUser,
@@ -149,8 +152,7 @@ const Gateway: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  
-  
+
   const mastersRef = useRef<HTMLDivElement>(null);
   const transactionsRef = useRef<HTMLDivElement>(null);
   const reportsRef = useRef<HTMLDivElement>(null);
@@ -211,50 +213,87 @@ const Gateway: React.FC = () => {
   };
 
   const stockPositions = useMemo(() => {
-    try { return computeAllStockPositions(stockMovements, items); } catch { return []; }
+    try {
+      return computeAllStockPositions(stockMovements, items);
+    } catch {
+      return [];
+    }
   }, [stockMovements, items]);
   const snapshot = useMemo(() => {
     const today = todayISO();
     const postedVouchers = (vouchers || []).filter((v: any) => v.status === "posted");
 
     // Cash balance from cash accounts
-    const cashAccounts = (accounts || []).filter((a: any) => a.name?.toLowerCase().includes("cash"));
+    const cashAccounts = (accounts || []).filter((a: any) =>
+      a.name?.toLowerCase().includes("cash"),
+    );
     const cashBalance = cashAccounts.reduce((sum: number, a: any) => sum + (a.balance || 0), 0);
 
     // Bank balance from bank accounts
-    const bankAccounts = (accounts || []).filter((a: any) =>
-      a.type === "bank" || a.name?.toLowerCase().includes("bank")
+    const bankAccounts = (accounts || []).filter(
+      (a: any) => a.type === "bank" || a.name?.toLowerCase().includes("bank"),
     );
     const bankBalance = bankAccounts.reduce((sum: number, a: any) => sum + (a.balance || 0), 0);
 
     // Receivables from unpaid/partial sales invoices
     const receivables = (invoices || [])
-      .filter((i: any) => (i.type === "sales-invoice" || i.type === "sales_invoice") && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+      .filter(
+        (i: any) =>
+          (i.type === "sales-invoice" || i.type === "sales_invoice") &&
+          i.status === "posted" &&
+          (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"),
+      )
       .reduce((sum: number, i: any) => sum + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0);
 
     // Payables from unpaid/partial purchase invoices
     const payables = (invoices || [])
-      .filter((i: any) => (i.type === "purchase-invoice" || i.type === "purchase_invoice") && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+      .filter(
+        (i: any) =>
+          (i.type === "purchase-invoice" || i.type === "purchase_invoice") &&
+          i.status === "posted" &&
+          (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"),
+      )
       .reduce((sum: number, i: any) => sum + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0);
 
     // Today's sales
     const todaysSales = (invoices || [])
-      .filter((i: any) => i.date === today && (i.type === "sales-invoice" || i.type === "sales_invoice") && i.status === "posted")
+      .filter(
+        (i: any) =>
+          i.date === today &&
+          (i.type === "sales-invoice" || i.type === "sales_invoice") &&
+          i.status === "posted",
+      )
       .reduce((sum: number, i: any) => sum + (i.grandTotal || 0), 0);
 
     // Today's purchases
     const todaysPurchases = (invoices || [])
-      .filter((i: any) => i.date === today && (i.type === "purchase-invoice" || i.type === "purchase_invoice") && i.status === "posted")
+      .filter(
+        (i: any) =>
+          i.date === today &&
+          (i.type === "purchase-invoice" || i.type === "purchase_invoice") &&
+          i.status === "posted",
+      )
       .reduce((sum: number, i: any) => sum + (i.grandTotal || 0), 0);
 
     // Stock value
     const stockValue = stockPositions.reduce((sum: number, sp: any) => sum + (sp.value || 0), 0);
 
-    return { cashBalance, bankBalance, receivables, payables, todaysSales, todaysPurchases, vatPayable: 0, stockValue };
+    return {
+      cashBalance,
+      bankBalance,
+      receivables,
+      payables,
+      todaysSales,
+      todaysPurchases,
+      vatPayable: 0,
+      stockValue,
+    };
   }, [vouchers, accounts, invoices, stockPositions]);
 
-  const companyName = companySettings?.companyNameEn || companySettings?.name || "No company configured";
-  const fiscalYearLabel = currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "No active fiscal year";
+  const companyName =
+    companySettings?.companyNameEn || companySettings?.name || "No company configured";
+  const fiscalYearLabel =
+    currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "No active fiscal year";
 
   const sectionRefs: Record<string, React.RefObject<HTMLDivElement>> = {
     MASTERS: mastersRef,
@@ -286,7 +325,7 @@ const Gateway: React.FC = () => {
 
     const allItems: { section: string; item: GatewayMenuItem }[] = [];
     Object.entries(MENU_SECTIONS).forEach(([section, items]) => {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (canSee(item) && item.label.toLowerCase().includes(searchQuery.toLowerCase())) {
           allItems.push({ section, item });
         }
@@ -303,9 +342,11 @@ const Gateway: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold text-gray-800">{companyName}</h1>
-            <p className="text-sm text-gray-500">{fiscalYearLabel} • {getBSTodayLong()}</p>
+            <p className="text-sm text-gray-500">
+              {fiscalYearLabel} • {getBSTodayLong()}
+            </p>
           </div>
-          
+
           <div className="relative">
             <input
               type="text"
@@ -369,14 +410,46 @@ const Gateway: React.FC = () => {
           <div className="max-w-7xl mx-auto space-y-8">
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50">
-              <GatewayTile label="Cash Balance" value={money(snapshot.cashBalance)} onClick={() => navigate("Cash Book", "cash-book")} />
-              <GatewayTile label="Bank Balance" value={money(snapshot.bankBalance)} onClick={() => navigate("Bank Book", "bank-book")} />
-              <GatewayTile label="Total Receivables" value={money(snapshot.receivables)} onClick={() => navigate("Aging Report", "aging-report")} />
-              <GatewayTile label="Total Payables" value={money(snapshot.payables)} onClick={() => navigate("Bill-wise Pending", "bill-wise-pending")} />
-              <GatewayTile label="Today's Sales" value={money(snapshot.todaysSales)} onClick={() => navigate("Sales Invoice", "billing")} />
-              <GatewayTile label="Today's Purchases" value={money(snapshot.todaysPurchases)} onClick={() => navigate("Purchase Register", "purchase-register")} />
-              <GatewayTile label="VAT Payable" value={money(snapshot.vatPayable)} onClick={() => navigate("VAT Reports", "vat-reports")} />
-              <GatewayTile label="Stock Value" value={money(snapshot.stockValue)} onClick={() => navigate("Stock Summary", "stock-summary")} />
+              <GatewayTile
+                label="Cash Balance"
+                value={money(snapshot.cashBalance)}
+                onClick={() => navigate("Cash Book", "cash-book")}
+              />
+              <GatewayTile
+                label="Bank Balance"
+                value={money(snapshot.bankBalance)}
+                onClick={() => navigate("Bank Book", "bank-book")}
+              />
+              <GatewayTile
+                label="Total Receivables"
+                value={money(snapshot.receivables)}
+                onClick={() => navigate("Aging Report", "aging-report")}
+              />
+              <GatewayTile
+                label="Total Payables"
+                value={money(snapshot.payables)}
+                onClick={() => navigate("Bill-wise Pending", "bill-wise-pending")}
+              />
+              <GatewayTile
+                label="Today's Sales"
+                value={money(snapshot.todaysSales)}
+                onClick={() => navigate("Sales Invoice", "billing")}
+              />
+              <GatewayTile
+                label="Today's Purchases"
+                value={money(snapshot.todaysPurchases)}
+                onClick={() => navigate("Purchase Register", "purchase-register")}
+              />
+              <GatewayTile
+                label="VAT Payable"
+                value={money(snapshot.vatPayable)}
+                onClick={() => navigate("VAT Reports", "vat-reports")}
+              />
+              <GatewayTile
+                label="Stock Value"
+                value={money(snapshot.stockValue)}
+                onClick={() => navigate("Stock Summary", "stock-summary")}
+              />
             </div>
 
             {/* Navigation Sections */}
@@ -391,7 +464,9 @@ const Gateway: React.FC = () => {
                         key={section}
                         onClick={() => setActiveSection(activeSection === section ? null : section)}
                         className={`w-full text-left px-3 py-2 rounded flex justify-between items-center ${
-                          activeSection === section ? "bg-[#eef2ff] text-[#1557b0] font-medium" : "hover:bg-gray-50 text-gray-700"
+                          activeSection === section
+                            ? "bg-[#eef2ff] text-[#1557b0] font-medium"
+                            : "hover:bg-gray-50 text-gray-700"
                         }`}
                       >
                         {section}
@@ -439,9 +514,12 @@ const Gateway: React.FC = () => {
                     {Object.entries(MENU_SECTIONS).map(([section, items]) => {
                       const visibleItems = items.filter(canSee);
                       if (visibleItems.length === 0) return null;
-                      
+
                       return (
-                        <div key={section} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                        <div
+                          key={section}
+                          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+                        >
                           <h2 className="text-lg font-bold text-gray-800 mb-4">{section}</h2>
                           <div className="space-y-2">
                             {visibleItems.map((item, idx) => (

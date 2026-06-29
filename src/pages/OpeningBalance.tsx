@@ -24,7 +24,7 @@ import {
   Trash2,
   Upload,
   XCircle,
-  X
+  X,
 } from "lucide-react";
 
 const money = (v: any) =>
@@ -41,12 +41,10 @@ const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
   "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const card =
-  "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
-const td =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -62,13 +60,10 @@ const tableAll = (db: any, name: string) => {
 };
 
 const tablePut = async (db: any, name: string, rows: any[]) => {
-  try {
-    if (!rows?.length) return;
-    const t = db?.table ? db.table(name) : db?.[name];
-    if (t?.bulkPut) await t.bulkPut(rows);
-  } catch (err) {
-    console.warn("bulkPut failed", name, err);
-  }
+  if (!rows?.length) return;
+  const t = db?.table ? db.table(name) : db?.[name];
+  if (!t?.bulkPut) throw new Error(`Table ${name} not found`);
+  await t.bulkPut(rows);
 };
 
 const tableDelete = async (db: any, name: string, id: any) => {
@@ -81,13 +76,19 @@ const tableDelete = async (db: any, name: string, id: any) => {
 };
 
 const accountName = (accounts: any[], id: string) =>
-  accounts.find((a) => a.id === id)?.name || accounts.find((a) => a.accountId === id)?.name || id || "-";
+  accounts.find((a) => a.id === id)?.name ||
+  accounts.find((a) => a.accountId === id)?.name ||
+  id ||
+  "-";
 
 const itemName = (items: any[], id: string) =>
   items.find((i) => i.id === id)?.name || items.find((i) => i.itemId === id)?.name || id || "-";
 
 const warehouseName = (warehouses: any[], id: string) =>
-  warehouses.find((w) => w.id === id)?.name || warehouses.find((w) => w.warehouseId === id)?.name || id || "-";
+  warehouses.find((w) => w.id === id)?.name ||
+  warehouses.find((w) => w.warehouseId === id)?.name ||
+  id ||
+  "-";
 
 const isAssetGroup = (a: any) => {
   const g = String(a.group || a.groupName || a.type || a.nature || "").toLowerCase();
@@ -263,17 +264,21 @@ export default function OpeningBalance() {
       setLedgerRows(
         allOpenings
           .filter((r) => !r.type || r.type === "ledger")
-          .map((r) => normalizeOpeningRow(r, "ledger"))
+          .map((r) => normalizeOpeningRow(r, "ledger")),
       );
 
       setStockRows(
-        (dbOpeningStock?.length ? dbOpeningStock : allOpenings.filter((r) => r.type === "stock"))
-          .map((r) => normalizeOpeningRow(r, "stock"))
+        (dbOpeningStock?.length
+          ? dbOpeningStock
+          : allOpenings.filter((r) => r.type === "stock")
+        ).map((r) => normalizeOpeningRow(r, "stock")),
       );
 
       setBillRows(
-        (dbBillWiseOpening?.length ? dbBillWiseOpening : allOpenings.filter((r) => r.type === "bill"))
-          .map((r) => normalizeOpeningRow(r, "bill"))
+        (dbBillWiseOpening?.length
+          ? dbBillWiseOpening
+          : allOpenings.filter((r) => r.type === "bill")
+        ).map((r) => normalizeOpeningRow(r, "bill")),
       );
     } catch (err) {
       console.error(err);
@@ -287,14 +292,10 @@ export default function OpeningBalance() {
     () => [
       "All",
       ...Array.from(
-        new Set(
-          accounts
-            .map((a) => a.group || a.groupName || a.type || a.nature)
-            .filter(Boolean)
-        )
+        new Set(accounts.map((a) => a.group || a.groupName || a.type || a.nature).filter(Boolean)),
       ).sort(),
     ],
-    [accounts]
+    [accounts],
   );
 
   const filteredAccounts = useMemo(() => {
@@ -508,7 +509,10 @@ export default function OpeningBalance() {
 
     const row = normalizeOpeningRow(
       {
-        id: selectedRow?.id || ledgerRows.find((r) => r.accountId === ledgerForm.accountId)?.id || generateId(),
+        id:
+          selectedRow?.id ||
+          ledgerRows.find((r) => r.accountId === ledgerForm.accountId)?.id ||
+          generateId(),
         type: "ledger",
         accountId: ledgerForm.accountId,
         value: Number(ledgerForm.value || 0),
@@ -517,7 +521,7 @@ export default function OpeningBalance() {
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
       },
-      "ledger"
+      "ledger",
     );
 
     try {
@@ -528,11 +532,14 @@ export default function OpeningBalance() {
           currentUser,
           "Ledger Opening Saved",
           `${accountName(accounts, row.accountId)} ${row.drCr} ${money(row.value)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
-      setLedgerRows((prev) => [row, ...prev.filter((r) => r.id !== row.id && r.accountId !== row.accountId)]);
+      setLedgerRows((prev) => [
+        row,
+        ...prev.filter((r) => r.id !== row.id && r.accountId !== row.accountId),
+      ]);
       setModalType("");
       toast.success("Ledger opening saved");
     } catch (err) {
@@ -547,7 +554,8 @@ export default function OpeningBalance() {
       return;
     }
 
-    const computedValue = Number(stockForm.value || 0) || Number(stockForm.qty || 0) * Number(stockForm.rate || 0);
+    const computedValue =
+      Number(stockForm.value || 0) || Number(stockForm.qty || 0) * Number(stockForm.rate || 0);
 
     const row = normalizeOpeningRow(
       {
@@ -563,7 +571,7 @@ export default function OpeningBalance() {
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
       },
-      "stock"
+      "stock",
     );
 
     try {
@@ -594,7 +602,7 @@ export default function OpeningBalance() {
           currentUser,
           "Stock Opening Saved",
           `${itemName(items, row.itemId)} Qty ${row.qty} Value ${money(row.value)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -627,7 +635,7 @@ export default function OpeningBalance() {
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
       },
-      "bill"
+      "bill",
     );
 
     try {
@@ -639,7 +647,7 @@ export default function OpeningBalance() {
           currentUser,
           "Bill-wise Opening Saved",
           `${accountName(accounts, row.accountId)} Bill ${row.billNo} ${row.drCr} ${money(row.value)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -730,7 +738,7 @@ export default function OpeningBalance() {
           currentUser,
           "Opening Voucher Posted",
           `Opening voucher ${voucher.voucherNo} posted with ${lines.length} lines`,
-          "High"
+          "High",
         ),
       ]);
 
@@ -761,9 +769,9 @@ export default function OpeningBalance() {
           DrCr: r.drCr,
           Amount: r.value,
           Narration: r.narration,
-        }))
+        })),
       ),
-      "Ledger Opening"
+      "Ledger Opening",
     );
 
     XLSX.utils.book_append_sheet(
@@ -779,9 +787,9 @@ export default function OpeningBalance() {
           Rate: r.rate,
           Value: r.value,
           Narration: r.narration,
-        }))
+        })),
       ),
-      "Stock Opening"
+      "Stock Opening",
     );
 
     XLSX.utils.book_append_sheet(
@@ -796,9 +804,9 @@ export default function OpeningBalance() {
           DrCr: r.drCr,
           Amount: r.value,
           Narration: r.narration,
-        }))
+        })),
       ),
-      "Billwise Opening"
+      "Billwise Opening",
     );
 
     XLSX.utils.book_append_sheet(
@@ -811,7 +819,7 @@ export default function OpeningBalance() {
         { Metric: "Bill Debit", Value: summary.billDr },
         { Metric: "Bill Credit", Value: summary.billCr },
       ]),
-      "Summary"
+      "Summary",
     );
 
     XLSX.writeFile(wb, `Opening_Balance_${todayISO()}.xlsx`);
@@ -832,7 +840,7 @@ export default function OpeningBalance() {
           Narration: "Opening cash balance",
         },
       ]),
-      "Ledger Opening"
+      "Ledger Opening",
     );
 
     XLSX.utils.book_append_sheet(
@@ -850,7 +858,7 @@ export default function OpeningBalance() {
           Narration: "Opening stock",
         },
       ]),
-      "Stock Opening"
+      "Stock Opening",
     );
 
     XLSX.utils.book_append_sheet(
@@ -867,7 +875,7 @@ export default function OpeningBalance() {
           Narration: "Opening bill",
         },
       ]),
-      "Billwise Opening"
+      "Billwise Opening",
     );
 
     XLSX.writeFile(wb, `Opening_Balance_Template_${todayISO()}.xlsx`);
@@ -889,13 +897,15 @@ export default function OpeningBalance() {
             type: "ledger",
             accountId:
               r.AccountId ||
-              accounts.find((a) => String(a.name).toLowerCase() === String(r.AccountName).toLowerCase())?.id ||
+              accounts.find(
+                (a) => String(a.name).toLowerCase() === String(r.AccountName).toLowerCase(),
+              )?.id ||
               "",
             drCr: r.DrCr || "Dr",
             value: Number(r.Amount || r.Value || 0),
             narration: r.Narration || "",
             raw: r,
-          })
+          }),
         );
       }
 
@@ -906,11 +916,14 @@ export default function OpeningBalance() {
             type: "stock",
             itemId:
               r.ItemId ||
-              items.find((i) => String(i.name).toLowerCase() === String(r.ItemName).toLowerCase())?.id ||
+              items.find((i) => String(i.name).toLowerCase() === String(r.ItemName).toLowerCase())
+                ?.id ||
               "",
             warehouseId:
               r.WarehouseId ||
-              warehouses.find((w) => String(w.name).toLowerCase() === String(r.WarehouseName).toLowerCase())?.id ||
+              warehouses.find(
+                (w) => String(w.name).toLowerCase() === String(r.WarehouseName).toLowerCase(),
+              )?.id ||
               warehouses[0]?.id ||
               "",
             batchNo: r.BatchNo || "",
@@ -919,7 +932,7 @@ export default function OpeningBalance() {
             value: Number(r.Value || 0),
             narration: r.Narration || "",
             raw: r,
-          })
+          }),
         );
       }
 
@@ -930,7 +943,9 @@ export default function OpeningBalance() {
             type: "bill",
             accountId:
               r.AccountId ||
-              accounts.find((a) => String(a.name).toLowerCase() === String(r.AccountName).toLowerCase())?.id ||
+              accounts.find(
+                (a) => String(a.name).toLowerCase() === String(r.AccountName).toLowerCase(),
+              )?.id ||
               "",
             billNo: r.BillNo || "",
             billDate: r.BillDate || todayISO(),
@@ -939,7 +954,7 @@ export default function OpeningBalance() {
             value: Number(r.Amount || r.Value || 0),
             narration: r.Narration || "",
             raw: r,
-          })
+          }),
         );
       }
 
@@ -984,8 +999,8 @@ export default function OpeningBalance() {
               fiscalYearId: storeFiscalYear?.id || "",
               createdAt: nowISO(),
             },
-            "ledger"
-          )
+            "ledger",
+          ),
         );
 
       const s = importPreview
@@ -999,8 +1014,8 @@ export default function OpeningBalance() {
               createdAt: nowISO(),
               value: Number(r.value || 0) || Number(r.qty || 0) * Number(r.rate || 0),
             },
-            "stock"
-          )
+            "stock",
+          ),
         );
 
       const b = importPreview
@@ -1013,8 +1028,8 @@ export default function OpeningBalance() {
               fiscalYearId: storeFiscalYear?.id || "",
               createdAt: nowISO(),
             },
-            "bill"
-          )
+            "bill",
+          ),
         );
 
       await tablePut(db, "openingBalances", [...l, ...s, ...b]);
@@ -1039,7 +1054,7 @@ export default function OpeningBalance() {
           sourceType: "openingBalance",
           sourceId: r.id,
           createdAt: nowISO(),
-        }))
+        })),
       );
 
       await tablePut(db, "auditLogs", [
@@ -1047,7 +1062,7 @@ export default function OpeningBalance() {
           currentUser,
           "Opening Balance Imported",
           `${importPreview.length} rows imported from Excel`,
-          "High"
+          "High",
         ),
       ]);
 
@@ -1069,7 +1084,9 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Ledger Debit</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Ledger Debit
+            </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerDr)}</p>
           </div>
           <ArrowDownToLine className="h-5 w-5 text-[#1557b0]" />
@@ -1079,7 +1096,9 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Ledger Credit</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Ledger Credit
+            </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerCr)}</p>
           </div>
           <ArrowUpDown className="h-5 w-5 text-[#1557b0]" />
@@ -1089,8 +1108,12 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Difference</p>
-            <p className={`text-xl font-semibold mt-1 ${Math.abs(summary.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}`}>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Difference
+            </p>
+            <p
+              className={`text-xl font-semibold mt-1 ${Math.abs(summary.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}`}
+            >
               {money(summary.diff)}
             </p>
           </div>
@@ -1105,7 +1128,9 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Stock Value</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Stock Value
+            </p>
             <p className="text-xl font-semibold mt-1">{money(summary.stockValue)}</p>
           </div>
           <Package className="h-5 w-5 text-[#1557b0]" />
@@ -1147,7 +1172,9 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="md:col-span-2">
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Search Account</label>
+            <label className="text-[11px] font-medium text-gray-600 block mb-1">
+              Search Account
+            </label>
             <div className="relative">
               <Search className="h-4 w-4 absolute left-2.5 top-2 text-gray-400" />
               <input
@@ -1160,7 +1187,11 @@ export default function OpeningBalance() {
           </div>
           <div>
             <label className="text-[11px] font-medium text-gray-600 block mb-1">Group</label>
-            <select className={input} value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
+            <select
+              className={input}
+              value={groupFilter}
+              onChange={(e) => setGroupFilter(e.target.value)}
+            >
               {accountGroups.map((g) => (
                 <option key={g}>{g}</option>
               ))}
@@ -1237,10 +1268,14 @@ export default function OpeningBalance() {
             </tbody>
             <tfoot>
               <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
-                <td className={`${td} font-semibold`} colSpan={2}>Total</td>
+                <td className={`${td} font-semibold`} colSpan={2}>
+                  Total
+                </td>
                 <td className={`${td} text-right font-semibold`}>{money(summary.ledgerDr)}</td>
                 <td className={`${td} text-right font-semibold`}>{money(summary.ledgerCr)}</td>
-                <td className={`${td} font-semibold`} colSpan={3}>Difference: {money(summary.diff)}</td>
+                <td className={`${td} font-semibold`} colSpan={3}>
+                  Difference: {money(summary.diff)}
+                </td>
               </tr>
             </tfoot>
           </table>
@@ -1288,7 +1323,9 @@ export default function OpeningBalance() {
                   <td className={`${td} font-medium text-gray-800`}>{itemName(items, r.itemId)}</td>
                   <td className={td}>{warehouseName(warehouses, r.warehouseId)}</td>
                   <td className={td}>{r.batchNo || "-"}</td>
-                  <td className={`${td} text-right font-medium`}>{Number(r.qty || 0).toFixed(2)}</td>
+                  <td className={`${td} text-right font-medium`}>
+                    {Number(r.qty || 0).toFixed(2)}
+                  </td>
                   <td className={`${td} text-right`}>{money(r.rate)}</td>
                   <td className={`${td} text-right font-medium`}>{money(r.value)}</td>
                   <td className={td}>{r.narration || "-"}</td>
@@ -1320,7 +1357,9 @@ export default function OpeningBalance() {
             </tbody>
             <tfoot>
               <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
-                <td className={`${td} font-semibold`} colSpan={5}>Total Stock Value</td>
+                <td className={`${td} font-semibold`} colSpan={5}>
+                  Total Stock Value
+                </td>
                 <td className={`${td} text-right font-semibold`}>{money(summary.stockValue)}</td>
                 <td colSpan={2} className={td}></td>
               </tr>
@@ -1367,7 +1406,9 @@ export default function OpeningBalance() {
             <tbody>
               {billRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className={`${td} font-medium text-gray-800`}>{accountName(accounts, r.accountId)}</td>
+                  <td className={`${td} font-medium text-gray-800`}>
+                    {accountName(accounts, r.accountId)}
+                  </td>
                   <td className={td}>{r.billNo}</td>
                   <td className={td}>{r.billDate || "-"}</td>
                   <td className={td}>{r.dueDate || "-"}</td>
@@ -1412,7 +1453,9 @@ export default function OpeningBalance() {
             </tbody>
             <tfoot>
               <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
-                <td className={`${td} font-semibold`} colSpan={5}>Bill-wise Totals</td>
+                <td className={`${td} font-semibold`} colSpan={5}>
+                  Bill-wise Totals
+                </td>
                 <td className={`${td} text-right font-semibold`}>
                   Dr {money(summary.billDr)} / Cr {money(summary.billCr)}
                 </td>
@@ -1434,7 +1477,8 @@ export default function OpeningBalance() {
               <CheckCircle2 className="h-4 w-4 text-gray-500" /> Validation & Control Summary
             </h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
-              Review balance difference, missing mappings and valuation inconsistencies before posting.
+              Review balance difference, missing mappings and valuation inconsistencies before
+              posting.
             </p>
           </div>
           <button className={btn2} onClick={loadData}>
@@ -1460,7 +1504,10 @@ export default function OpeningBalance() {
               ["Bill Debit", money(summary.billDr)],
               ["Bill Credit", money(summary.billCr)],
             ].map(([k, v]) => (
-              <div key={k} className="flex justify-between border-b border-gray-100 py-2 last:border-0">
+              <div
+                key={k}
+                className="flex justify-between border-b border-gray-100 py-2 last:border-0"
+              >
                 <span className="text-[12px] text-gray-600 font-medium">{k}</span>
                 <span className="text-[12px] font-semibold text-gray-800">{v}</span>
               </div>
@@ -1480,13 +1527,17 @@ export default function OpeningBalance() {
                   i.severity === "High"
                     ? "border-red-200 bg-red-50 text-red-800"
                     : i.severity === "Warning"
-                    ? "border-amber-200 bg-amber-50 text-amber-800"
-                    : "border-blue-200 bg-blue-50 text-blue-800"
+                      ? "border-amber-200 bg-amber-50 text-amber-800"
+                      : "border-blue-200 bg-blue-50 text-blue-800"
                 }`}
               >
                 <div className="flex justify-between gap-2">
-                  <span className="font-semibold text-[11px] uppercase tracking-wide">{i.area}</span>
-                  <span className="font-semibold text-[11px] uppercase tracking-wide">{i.severity}</span>
+                  <span className="font-semibold text-[11px] uppercase tracking-wide">
+                    {i.area}
+                  </span>
+                  <span className="font-semibold text-[11px] uppercase tracking-wide">
+                    {i.severity}
+                  </span>
                 </div>
                 <p className="text-[12px] mt-1">{i.message}</p>
               </div>
@@ -1513,9 +1564,7 @@ export default function OpeningBalance() {
             Manage ledger, stock, and bill-wise opening balances for the fiscal year.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {renderToolbar()}
-        </div>
+        <div className="flex items-center gap-2">{renderToolbar()}</div>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-200 pb-2">
@@ -1554,23 +1603,44 @@ export default function OpeningBalance() {
         {activeTab === "Validation" && renderValidation()}
       </div>
 
-      <Modal open={modalType === "ledger"} title={selectedRow ? "Edit Ledger Opening" : "Add Ledger Opening"} onClose={() => setModalType("")}>
+      <Modal
+        open={modalType === "ledger"}
+        title={selectedRow ? "Edit Ledger Opening" : "Add Ledger Opening"}
+        onClose={() => setModalType("")}
+      >
         <div className="space-y-4">
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Account</label>
-            <select className={input} value={ledgerForm.accountId} onChange={e => setLedgerForm({...ledgerForm, accountId: e.target.value})}>
+            <select
+              className={input}
+              value={ledgerForm.accountId}
+              onChange={(e) => setLedgerForm({ ...ledgerForm, accountId: e.target.value })}
+            >
               <option value="">Select Account...</option>
-              {accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Amount</label>
-              <input type="number" className={input} value={ledgerForm.value || ""} onChange={e => setLedgerForm({...ledgerForm, value: Number(e.target.value)})} />
+              <input
+                type="number"
+                className={input}
+                value={ledgerForm.value || ""}
+                onChange={(e) => setLedgerForm({ ...ledgerForm, value: Number(e.target.value) })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Dr / Cr</label>
-              <select className={input} value={ledgerForm.drCr} onChange={e => setLedgerForm({...ledgerForm, drCr: e.target.value})}>
+              <select
+                className={input}
+                value={ledgerForm.drCr}
+                onChange={(e) => setLedgerForm({ ...ledgerForm, drCr: e.target.value })}
+              >
                 <option value="Dr">Dr</option>
                 <option value="Cr">Cr</option>
               </select>
@@ -1578,93 +1648,185 @@ export default function OpeningBalance() {
           </div>
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-            <input className={input} value={ledgerForm.narration} onChange={e => setLedgerForm({...ledgerForm, narration: e.target.value})} />
+            <input
+              className={input}
+              value={ledgerForm.narration}
+              onChange={(e) => setLedgerForm({ ...ledgerForm, narration: e.target.value })}
+            />
           </div>
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-            <button className={btn2} onClick={() => setModalType("")}>Cancel</button>
-            <button className={btn} onClick={saveLedgerOpening}><Save className="h-3 w-3" /> Save Opening</button>
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+            <button className={btn} onClick={saveLedgerOpening}>
+              <Save className="h-3 w-3" /> Save Opening
+            </button>
           </div>
         </div>
       </Modal>
 
-      <Modal open={modalType === "stock"} title={selectedRow ? "Edit Stock Opening" : "Add Stock Opening"} onClose={() => setModalType("")}>
+      <Modal
+        open={modalType === "stock"}
+        title={selectedRow ? "Edit Stock Opening" : "Add Stock Opening"}
+        onClose={() => setModalType("")}
+      >
         <div className="space-y-4">
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Item</label>
-            <select className={input} value={stockForm.itemId} onChange={e => setStockForm({...stockForm, itemId: e.target.value})}>
+            <select
+              className={input}
+              value={stockForm.itemId}
+              onChange={(e) => setStockForm({ ...stockForm, itemId: e.target.value })}
+            >
               <option value="">Select Item...</option>
-              {items.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+              {items.map((i) => (
+                <option key={i.id} value={i.id}>
+                  {i.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Warehouse</label>
-              <select className={input} value={stockForm.warehouseId} onChange={e => setStockForm({...stockForm, warehouseId: e.target.value})}>
+              <select
+                className={input}
+                value={stockForm.warehouseId}
+                onChange={(e) => setStockForm({ ...stockForm, warehouseId: e.target.value })}
+              >
                 <option value="">Select Warehouse...</option>
-                {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
+                {warehouses.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Batch No</label>
-              <input className={input} value={stockForm.batchNo} onChange={e => setStockForm({...stockForm, batchNo: e.target.value})} />
+              <input
+                className={input}
+                value={stockForm.batchNo}
+                onChange={(e) => setStockForm({ ...stockForm, batchNo: e.target.value })}
+              />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Quantity</label>
-              <input type="number" className={input} value={stockForm.qty || ""} onChange={e => setStockForm({...stockForm, qty: Number(e.target.value)})} />
+              <input
+                type="number"
+                className={input}
+                value={stockForm.qty || ""}
+                onChange={(e) => setStockForm({ ...stockForm, qty: Number(e.target.value) })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Rate</label>
-              <input type="number" className={input} value={stockForm.rate || ""} onChange={e => setStockForm({...stockForm, rate: Number(e.target.value)})} />
+              <input
+                type="number"
+                className={input}
+                value={stockForm.rate || ""}
+                onChange={(e) => setStockForm({ ...stockForm, rate: Number(e.target.value) })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Value</label>
-              <input type="number" className={input} value={stockForm.value || ""} onChange={e => setStockForm({...stockForm, value: Number(e.target.value)})} />
+              <input
+                type="number"
+                className={input}
+                value={stockForm.value || ""}
+                onChange={(e) => setStockForm({ ...stockForm, value: Number(e.target.value) })}
+              />
             </div>
           </div>
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-            <input className={input} value={stockForm.narration} onChange={e => setStockForm({...stockForm, narration: e.target.value})} />
+            <input
+              className={input}
+              value={stockForm.narration}
+              onChange={(e) => setStockForm({ ...stockForm, narration: e.target.value })}
+            />
           </div>
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-            <button className={btn2} onClick={() => setModalType("")}>Cancel</button>
-            <button className={btn} onClick={saveStockOpening}><Save className="h-3 w-3" /> Save Opening</button>
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+            <button className={btn} onClick={saveStockOpening}>
+              <Save className="h-3 w-3" /> Save Opening
+            </button>
           </div>
         </div>
       </Modal>
 
-      <Modal open={modalType === "bill"} title={selectedRow ? "Edit Bill Opening" : "Add Bill Opening"} onClose={() => setModalType("")}>
+      <Modal
+        open={modalType === "bill"}
+        title={selectedRow ? "Edit Bill Opening" : "Add Bill Opening"}
+        onClose={() => setModalType("")}
+      >
         <div className="space-y-4">
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Party / Account</label>
-            <select className={input} value={billForm.accountId} onChange={e => setBillForm({...billForm, accountId: e.target.value})}>
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              Party / Account
+            </label>
+            <select
+              className={input}
+              value={billForm.accountId}
+              onChange={(e) => setBillForm({ ...billForm, accountId: e.target.value })}
+            >
               <option value="">Select Account...</option>
-              {accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Bill No</label>
-              <input className={input} value={billForm.billNo} onChange={e => setBillForm({...billForm, billNo: e.target.value})} />
+              <input
+                className={input}
+                value={billForm.billNo}
+                onChange={(e) => setBillForm({ ...billForm, billNo: e.target.value })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Bill Date</label>
-              <input type="date" className={input} value={billForm.billDate} onChange={e => setBillForm({...billForm, billDate: e.target.value})} />
+              <input
+                type="date"
+                className={input}
+                value={billForm.billDate}
+                onChange={(e) => setBillForm({ ...billForm, billDate: e.target.value })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Due Date</label>
-              <input type="date" className={input} value={billForm.dueDate} onChange={e => setBillForm({...billForm, dueDate: e.target.value})} />
+              <input
+                type="date"
+                className={input}
+                value={billForm.dueDate}
+                onChange={(e) => setBillForm({ ...billForm, dueDate: e.target.value })}
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Amount</label>
-              <input type="number" className={input} value={billForm.value || ""} onChange={e => setBillForm({...billForm, value: Number(e.target.value)})} />
+              <input
+                type="number"
+                className={input}
+                value={billForm.value || ""}
+                onChange={(e) => setBillForm({ ...billForm, value: Number(e.target.value) })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Dr / Cr</label>
-              <select className={input} value={billForm.drCr} onChange={e => setBillForm({...billForm, drCr: e.target.value})}>
+              <select
+                className={input}
+                value={billForm.drCr}
+                onChange={(e) => setBillForm({ ...billForm, drCr: e.target.value })}
+              >
                 <option value="Dr">Dr</option>
                 <option value="Cr">Cr</option>
               </select>
@@ -1672,16 +1834,28 @@ export default function OpeningBalance() {
           </div>
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-            <input className={input} value={billForm.narration} onChange={e => setBillForm({...billForm, narration: e.target.value})} />
+            <input
+              className={input}
+              value={billForm.narration}
+              onChange={(e) => setBillForm({ ...billForm, narration: e.target.value })}
+            />
           </div>
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-            <button className={btn2} onClick={() => setModalType("")}>Cancel</button>
-            <button className={btn} onClick={saveBillOpening}><Save className="h-3 w-3" /> Save Opening</button>
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+            <button className={btn} onClick={saveBillOpening}>
+              <Save className="h-3 w-3" /> Save Opening
+            </button>
           </div>
         </div>
       </Modal>
 
-      <Modal open={modalType === "import"} title="Preview Excel Import" onClose={() => setModalType("")}>
+      <Modal
+        open={modalType === "import"}
+        title="Preview Excel Import"
+        onClose={() => setModalType("")}
+      >
         <div className="space-y-4">
           <div className="p-3 rounded-md border border-blue-200 bg-blue-50 text-blue-800 flex gap-2 items-start">
             <Info className="h-4 w-4 shrink-0 mt-0.5" />
@@ -1713,7 +1887,10 @@ export default function OpeningBalance() {
                     const ok = r.type === "stock" ? !!r.itemId : !!r.accountId;
 
                     return (
-                      <tr key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
+                      <tr
+                        key={idx}
+                        className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50"
+                      >
                         <td className={td}>
                           <span className="inline-flex px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-[10px] font-medium uppercase text-gray-600">
                             {r.type}
@@ -1729,9 +1906,7 @@ export default function OpeningBalance() {
                         <td className={`${td} text-right font-medium`}>
                           {r.type === "stock" ? Number(r.qty || 0).toFixed(2) : "-"}
                         </td>
-                        <td className={`${td} text-right font-semibold`}>
-                          {money(r.value || 0)}
-                        </td>
+                        <td className={`${td} text-right font-semibold`}>{money(r.value || 0)}</td>
                         <td className={td}>
                           {ok ? (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
@@ -1760,14 +1935,14 @@ export default function OpeningBalance() {
 
           <div className="flex flex-wrap justify-between items-center gap-3 pt-2 border-t border-gray-200">
             <div className="text-[12px] text-gray-600">
-              Total rows: <span className="font-semibold text-gray-800">{importPreview.length}</span>
+              Total rows:{" "}
+              <span className="font-semibold text-gray-800">{importPreview.length}</span>
               <span className="mx-2 text-gray-300">|</span>
               Invalid rows:{" "}
               <span className="font-semibold text-red-600">
                 {
-                  importPreview.filter((r) =>
-                    r.type === "stock" ? !r.itemId : !r.accountId
-                  ).length
+                  importPreview.filter((r) => (r.type === "stock" ? !r.itemId : !r.accountId))
+                    .length
                 }
               </span>
             </div>

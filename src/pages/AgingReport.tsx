@@ -126,7 +126,8 @@ const AgingReport: React.FC = () => {
       const bucket = bucketAmount(days, balance);
 
       const partyId = inv.partyId ?? "unknown";
-      const partyName = inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
+      const partyName =
+        inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
       const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
 
       const existing = partyMap.get(partyId) ?? {
@@ -147,9 +148,7 @@ const AgingReport: React.FC = () => {
       partyMap.set(partyId, existing);
     }
 
-    return Array.from(partyMap.values()).sort(
-      (a, b) => b.buckets.total - a.buckets.total,
-    );
+    return Array.from(partyMap.values()).sort((a, b) => b.buckets.total - a.buckets.total);
   }, [invoices, payments, asOfDate, parties, direction]);
 
   // ── Filter ────────────────────────────────────────────────────────────────
@@ -157,9 +156,7 @@ const AgingReport: React.FC = () => {
     if (!searchTerm.trim()) return agingRows;
     const q = searchTerm.toLowerCase();
     return agingRows.filter(
-      (r) =>
-        r.partyName.toLowerCase().includes(q) ||
-        (r.partyPan ?? "").toLowerCase().includes(q),
+      (r) => r.partyName.toLowerCase().includes(q) || (r.partyPan ?? "").toLowerCase().includes(q),
     );
   }, [agingRows, searchTerm]);
 
@@ -240,13 +237,9 @@ const AgingReport: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            Aging Report
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Aging Report</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            Outstanding{" "}
-            {direction === "receivable" ? "receivables" : "payables"} by age
-            bucket
+            Outstanding {direction === "receivable" ? "receivables" : "payables"} by age bucket
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -355,15 +348,9 @@ const AgingReport: React.FC = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredRows.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={8}
-                      className="px-3 py-12 text-center text-[12px] text-gray-400"
-                    >
-                      No outstanding{" "}
-                      {direction === "receivable"
-                        ? "receivables"
-                        : "payables"}{" "}
-                      as of {asOfDate}.
+                    <td colSpan={8} className="px-3 py-12 text-center text-[12px] text-gray-400">
+                      No outstanding {direction === "receivable" ? "receivables" : "payables"} as of{" "}
+                      {asOfDate}.
                     </td>
                   </tr>
                 ) : (
@@ -376,29 +363,19 @@ const AgingReport: React.FC = () => {
                         {row.partyPan ?? "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] text-green-700">
-                        {row.buckets.current > 0
-                          ? money(row.buckets.current)
-                          : "—"}
+                        {row.buckets.current > 0 ? money(row.buckets.current) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] text-amber-600">
-                        {row.buckets.days1to30 > 0
-                          ? money(row.buckets.days1to30)
-                          : "—"}
+                        {row.buckets.days1to30 > 0 ? money(row.buckets.days1to30) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] text-orange-600">
-                        {row.buckets.days31to60 > 0
-                          ? money(row.buckets.days31to60)
-                          : "—"}
+                        {row.buckets.days31to60 > 0 ? money(row.buckets.days31to60) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] text-red-500">
-                        {row.buckets.days61to90 > 0
-                          ? money(row.buckets.days61to90)
-                          : "—"}
+                        {row.buckets.days61to90 > 0 ? money(row.buckets.days61to90) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-700">
-                        {row.buckets.over90 > 0
-                          ? money(row.buckets.over90)
-                          : "—"}
+                        {row.buckets.over90 > 0 ? money(row.buckets.over90) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
                         {money(row.buckets.total)}
@@ -411,10 +388,7 @@ const AgingReport: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td
-                      colSpan={2}
-                      className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
-                    >
+                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Grand Total ({filteredRows.length} parties)
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-green-700">

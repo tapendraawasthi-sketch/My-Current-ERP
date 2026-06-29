@@ -1050,7 +1050,7 @@ export interface StockJournalEntry {
   refNo?: string;
   narration?: string;
   items: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
 
@@ -1061,7 +1061,7 @@ export interface ProductionEntry {
   narration?: string;
   finishedGoods: StockJournalItem[];
   rawMaterials: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
 
@@ -1072,7 +1072,7 @@ export interface UnassembleEntry {
   narration?: string;
   finishedGoods: StockJournalItem[];
   components: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
 
@@ -1083,7 +1083,7 @@ export interface MaterialIssuedEntry {
   refNo?: string;
   narration?: string;
   items: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
 
@@ -1094,7 +1094,7 @@ export interface MaterialReceivedEntry {
   refNo?: string;
   narration?: string;
   items: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
 
@@ -1104,7 +1104,6 @@ export interface PhysicalStockEntry {
   refNo?: string;
   narration?: string;
   items: StockJournalItem[];
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   createdAt: string;
 }
-

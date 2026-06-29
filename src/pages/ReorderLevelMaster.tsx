@@ -4,7 +4,15 @@ import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "react-hot-toast";
 
 const ReorderLevelMaster: React.FC = () => {
-  const { reorderLevels, addReorderLevel, updateReorderLevel, deleteReorderLevel, items, warehouses, parties } = useStore();
+  const {
+    reorderLevels,
+    addReorderLevel,
+    updateReorderLevel,
+    deleteReorderLevel,
+    items,
+    warehouses,
+    parties,
+  } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,11 +29,11 @@ const ReorderLevelMaster: React.FC = () => {
   });
 
   const filteredLevels = (reorderLevels || []).filter((level) => {
-    const item = (items || []).find(i => i.id === level.itemId);
-    const warehouse = (warehouses || []).find(w => w.id === level.godownId);
+    const item = (items || []).find((i) => i.id === level.itemId);
+    const warehouse = (warehouses || []).find((w) => w.id === level.godownId);
     return (
-      (item?.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (warehouse?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      item?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      warehouse?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -99,21 +107,26 @@ const ReorderLevelMaster: React.FC = () => {
     }
   };
 
-  const supplierOptions = (parties || []).filter(party => 
-    party.type?.toLowerCase().includes("supplier") || 
-    party.partyType?.toLowerCase().includes("supplier") || 
-    party.type?.toLowerCase() === "both"
+  const supplierOptions = (parties || []).filter(
+    (party) =>
+      party.type?.toLowerCase().includes("supplier") ||
+      party.partyType?.toLowerCase().includes("supplier") ||
+      party.type?.toLowerCase() === "both",
   );
 
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* List Panel */}
-      <div className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}>
+      <div
+        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}
+      >
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-gray-800">Reorder Level Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Manage stock item reorder levels and minimum quantities</p>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Manage stock item reorder levels and minimum quantities
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -143,14 +156,30 @@ const ReorderLevelMaster: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item Name</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Godown</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Reorder Qty</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Min Order Qty</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Lead Time (Days)</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    #
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Item Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Godown
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Reorder Qty
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Min Order Qty
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Lead Time (Days)
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -162,18 +191,32 @@ const ReorderLevelMaster: React.FC = () => {
                   </tr>
                 ) : (
                   filteredLevels.map((level, index) => {
-                    const item = (items || []).find(i => i.id === level.itemId);
-                    const warehouse = level.godownId ? (warehouses || []).find(w => w.id === level.godownId) : null;
+                    const item = (items || []).find((i) => i.id === level.itemId);
+                    const warehouse = level.godownId
+                      ? (warehouses || []).find((w) => w.id === level.godownId)
+                      : null;
                     return (
                       <tr key={level.id} className="hover:bg-gray-50">
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{item?.name || "-"}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{warehouse?.name || "All Godowns"}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right pr-6">{level.reorderQty}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right pr-6">{level.minOrderQty}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-center">{level.leadTimeDays}</td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
+                          {item?.name || "-"}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          {warehouse?.name || "All Godowns"}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right pr-6">
+                          {level.reorderQty}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right pr-6">
+                          {level.minOrderQty}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 text-center">
+                          {level.leadTimeDays}
+                        </td>
                         <td className="px-3 py-2.5 text-[12px]">
-                          <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${level.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${level.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                          >
                             {level.isActive ? "Active" : "Inactive"}
                           </span>
                         </td>
@@ -212,8 +255,8 @@ const ReorderLevelMaster: React.FC = () => {
             <h3 className="text-[13px] font-semibold text-gray-800">
               {selected ? "Alter Reorder Level" : "Create Reorder Level"}
             </h3>
-            <button 
-              onClick={resetForm} 
+            <button
+              onClick={resetForm}
               className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
@@ -222,7 +265,9 @@ const ReorderLevelMaster: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Stock Item <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Stock Item <span className="text-red-500">*</span>
+              </label>
               <select
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.itemId}
@@ -230,45 +275,59 @@ const ReorderLevelMaster: React.FC = () => {
                 autoFocus
               >
                 <option value="">-- Select Item --</option>
-                {(items || []).map(item => (
-                  <option key={item.id} value={item.id}>{item.name}</option>
+                {(items || []).map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Godown / Location</label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Godown / Location
+              </label>
               <select
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.godownId}
                 onChange={(e) => setForm({ ...form, godownId: e.target.value })}
               >
                 <option value="">All Godowns</option>
-                {(warehouses || []).map(wh => (
-                  <option key={wh.id} value={wh.id}>{wh.name}</option>
+                {(warehouses || []).map((wh) => (
+                  <option key={wh.id} value={wh.id}>
+                    {wh.name}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Reorder Quantity <span className="text-red-500">*</span></label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Reorder Quantity <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="number"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                   value={form.reorderQty}
-                  onChange={(e) => setForm({ ...form, reorderQty: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setForm({ ...form, reorderQty: parseFloat(e.target.value) || 0 })
+                  }
                   min="0"
                   step="any"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Min Order Quantity</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Min Order Quantity
+                </label>
                 <input
                   type="number"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                   value={form.minOrderQty}
-                  onChange={(e) => setForm({ ...form, minOrderQty: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setForm({ ...form, minOrderQty: parseFloat(e.target.value) || 0 })
+                  }
                   min="0"
                   step="any"
                 />
@@ -277,12 +336,16 @@ const ReorderLevelMaster: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">Lead Time (Days)</label>
+                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                  Lead Time (Days)
+                </label>
                 <input
                   type="number"
                   className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                   value={form.leadTimeDays}
-                  onChange={(e) => setForm({ ...form, leadTimeDays: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setForm({ ...form, leadTimeDays: parseInt(e.target.value) || 0 })
+                  }
                   min="0"
                 />
               </div>
@@ -301,15 +364,19 @@ const ReorderLevelMaster: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Preferred Supplier</label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Preferred Supplier
+              </label>
               <select
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
                 value={form.preferredSupplierId}
                 onChange={(e) => setForm({ ...form, preferredSupplierId: e.target.value })}
               >
                 <option value="">-- None --</option>
-                {supplierOptions.map(supplier => (
-                  <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
+                {supplierOptions.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -323,7 +390,10 @@ const ReorderLevelMaster: React.FC = () => {
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActive" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="isActive"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Is Active
                 </label>
               </div>
@@ -331,7 +401,7 @@ const ReorderLevelMaster: React.FC = () => {
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button 
+            <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
               onClick={resetForm}
             >

@@ -152,22 +152,22 @@ const CARRIER_PREFIXES: Array<{ prefix: string; carrier: MobileCarrier }> = [
   { prefix: "9800", carrier: "NTC CDMA" },
   { prefix: "9801", carrier: "NTC CDMA" },
   { prefix: "9802", carrier: "NTC CDMA" },
-  { prefix: "985",  carrier: "NTC CDMA" },
-  { prefix: "984",  carrier: "NTC" },
-  { prefix: "986",  carrier: "NTC" },
-  { prefix: "974",  carrier: "Ncell" },
-  { prefix: "975",  carrier: "Ncell" },
-  { prefix: "980",  carrier: "Ncell" },
-  { prefix: "981",  carrier: "Ncell" },
-  { prefix: "982",  carrier: "Ncell" },
-  { prefix: "961",  carrier: "Smart Telecom" },
-  { prefix: "962",  carrier: "Smart Telecom" },
-  { prefix: "963",  carrier: "Smart Telecom" },
-  { prefix: "960",  carrier: "UTL" },
-  { prefix: "972",  carrier: "UTL" },
-  { prefix: "98",   carrier: "NTC" },
-  { prefix: "97",   carrier: "Ncell" },
-  { prefix: "96",   carrier: "Smart Telecom" },
+  { prefix: "985", carrier: "NTC CDMA" },
+  { prefix: "984", carrier: "NTC" },
+  { prefix: "986", carrier: "NTC" },
+  { prefix: "974", carrier: "Ncell" },
+  { prefix: "975", carrier: "Ncell" },
+  { prefix: "980", carrier: "Ncell" },
+  { prefix: "981", carrier: "Ncell" },
+  { prefix: "982", carrier: "Ncell" },
+  { prefix: "961", carrier: "Smart Telecom" },
+  { prefix: "962", carrier: "Smart Telecom" },
+  { prefix: "963", carrier: "Smart Telecom" },
+  { prefix: "960", carrier: "UTL" },
+  { prefix: "972", carrier: "UTL" },
+  { prefix: "98", carrier: "NTC" },
+  { prefix: "97", carrier: "Ncell" },
+  { prefix: "96", carrier: "Smart Telecom" },
 ];
 
 /**
@@ -219,13 +219,13 @@ export interface NepalProvince {
 }
 
 export const NEPAL_PROVINCES: NepalProvince[] = [
-  { id: 1, name: "Koshi Province",       nepali: "कोशी प्रदेश",        headquarter: "Biratnagar"   },
-  { id: 2, name: "Madhesh Province",     nepali: "मधेश प्रदेश",        headquarter: "Janakpur"     },
-  { id: 3, name: "Bagmati Province",     nepali: "बागमती प्रदेश",       headquarter: "Hetauda"      },
-  { id: 4, name: "Gandaki Province",     nepali: "गण्डकी प्रदेश",       headquarter: "Pokhara"      },
-  { id: 5, name: "Lumbini Province",     nepali: "लुम्बिनी प्रदेश",      headquarter: "Deukhuri"     },
-  { id: 6, name: "Karnali Province",     nepali: "कर्णाली प्रदेश",       headquarter: "Birendranagar"},
-  { id: 7, name: "Sudurpashchim Province",nepali:"सुदूरपश्चिम प्रदेश",   headquarter: "Dhangadhi"    },
+  { id: 1, name: "Koshi Province", nepali: "कोशी प्रदेश", headquarter: "Biratnagar" },
+  { id: 2, name: "Madhesh Province", nepali: "मधेश प्रदेश", headquarter: "Janakpur" },
+  { id: 3, name: "Bagmati Province", nepali: "बागमती प्रदेश", headquarter: "Hetauda" },
+  { id: 4, name: "Gandaki Province", nepali: "गण्डकी प्रदेश", headquarter: "Pokhara" },
+  { id: 5, name: "Lumbini Province", nepali: "लुम्बिनी प्रदेश", headquarter: "Deukhuri" },
+  { id: 6, name: "Karnali Province", nepali: "कर्णाली प्रदेश", headquarter: "Birendranagar" },
+  { id: 7, name: "Sudurpashchim Province", nepali: "सुदूरपश्चिम प्रदेश", headquarter: "Dhangadhi" },
 ];
 
 export interface NepalDistrict {
@@ -237,95 +237,95 @@ export interface NepalDistrict {
 
 export const NEPAL_DISTRICTS: NepalDistrict[] = [
   // Province 1 – Koshi
-  { id: 1,  provinceId: 1, name: "Bhojpur",      nepali: "भोजपुर"     },
-  { id: 2,  provinceId: 1, name: "Dhankuta",     nepali: "धनकुटा"     },
-  { id: 3,  provinceId: 1, name: "Ilam",         nepali: "इलाम"       },
-  { id: 4,  provinceId: 1, name: "Jhapa",        nepali: "झापा"       },
-  { id: 5,  provinceId: 1, name: "Khotang",      nepali: "खोटाङ"      },
-  { id: 6,  provinceId: 1, name: "Morang",       nepali: "मोरङ"       },
-  { id: 7,  provinceId: 1, name: "Okhaldhunga",  nepali: "ओखलढुङ्गा"  },
-  { id: 8,  provinceId: 1, name: "Panchthar",    nepali: "पाँचथर"     },
-  { id: 9,  provinceId: 1, name: "Sankhuwasabha",nepali: "सङ्खुवासभा"  },
-  { id: 10, provinceId: 1, name: "Solukhumbu",   nepali: "सोलुखुम्बु"  },
-  { id: 11, provinceId: 1, name: "Sunsari",      nepali: "सुनसरी"     },
-  { id: 12, provinceId: 1, name: "Taplejung",    nepali: "ताप्लेजुङ"   },
-  { id: 13, provinceId: 1, name: "Terhathum",    nepali: "तेह्रथुम"    },
-  { id: 14, provinceId: 1, name: "Udayapur",     nepali: "उदयपुर"     },
+  { id: 1, provinceId: 1, name: "Bhojpur", nepali: "भोजपुर" },
+  { id: 2, provinceId: 1, name: "Dhankuta", nepali: "धनकुटा" },
+  { id: 3, provinceId: 1, name: "Ilam", nepali: "इलाम" },
+  { id: 4, provinceId: 1, name: "Jhapa", nepali: "झापा" },
+  { id: 5, provinceId: 1, name: "Khotang", nepali: "खोटाङ" },
+  { id: 6, provinceId: 1, name: "Morang", nepali: "मोरङ" },
+  { id: 7, provinceId: 1, name: "Okhaldhunga", nepali: "ओखलढुङ्गा" },
+  { id: 8, provinceId: 1, name: "Panchthar", nepali: "पाँचथर" },
+  { id: 9, provinceId: 1, name: "Sankhuwasabha", nepali: "सङ्खुवासभा" },
+  { id: 10, provinceId: 1, name: "Solukhumbu", nepali: "सोलुखुम्बु" },
+  { id: 11, provinceId: 1, name: "Sunsari", nepali: "सुनसरी" },
+  { id: 12, provinceId: 1, name: "Taplejung", nepali: "ताप्लेजुङ" },
+  { id: 13, provinceId: 1, name: "Terhathum", nepali: "तेह्रथुम" },
+  { id: 14, provinceId: 1, name: "Udayapur", nepali: "उदयपुर" },
 
   // Province 2 – Madhesh
-  { id: 15, provinceId: 2, name: "Bara",          nepali: "बारा"       },
-  { id: 16, provinceId: 2, name: "Dhanusha",      nepali: "धनुषा"      },
-  { id: 17, provinceId: 2, name: "Mahottari",     nepali: "महोत्तरी"   },
-  { id: 18, provinceId: 2, name: "Parsa",         nepali: "पर्सा"      },
-  { id: 19, provinceId: 2, name: "Rautahat",      nepali: "रौतहट"      },
-  { id: 20, provinceId: 2, name: "Saptari",       nepali: "सप्तरी"     },
-  { id: 21, provinceId: 2, name: "Sarlahi",       nepali: "सर्लाही"    },
-  { id: 22, provinceId: 2, name: "Siraha",        nepali: "सिराहा"     },
+  { id: 15, provinceId: 2, name: "Bara", nepali: "बारा" },
+  { id: 16, provinceId: 2, name: "Dhanusha", nepali: "धनुषा" },
+  { id: 17, provinceId: 2, name: "Mahottari", nepali: "महोत्तरी" },
+  { id: 18, provinceId: 2, name: "Parsa", nepali: "पर्सा" },
+  { id: 19, provinceId: 2, name: "Rautahat", nepali: "रौतहट" },
+  { id: 20, provinceId: 2, name: "Saptari", nepali: "सप्तरी" },
+  { id: 21, provinceId: 2, name: "Sarlahi", nepali: "सर्लाही" },
+  { id: 22, provinceId: 2, name: "Siraha", nepali: "सिराहा" },
 
   // Province 3 – Bagmati
-  { id: 23, provinceId: 3, name: "Bhaktapur",     nepali: "भक्तपुर"    },
-  { id: 24, provinceId: 3, name: "Chitwan",       nepali: "चितवन"      },
-  { id: 25, provinceId: 3, name: "Dhading",       nepali: "धादिङ"      },
-  { id: 26, provinceId: 3, name: "Dolakha",       nepali: "दोलखा"      },
-  { id: 27, provinceId: 3, name: "Kathmandu",     nepali: "काठमाडौँ"   },
-  { id: 28, provinceId: 3, name: "Kavrepalanchok", nepali:"काभ्रेपलाञ्चोक"},
-  { id: 29, provinceId: 3, name: "Lalitpur",      nepali: "ललितपुर"    },
-  { id: 30, provinceId: 3, name: "Makwanpur",     nepali: "मकवानपुर"   },
-  { id: 31, provinceId: 3, name: "Nuwakot",       nepali: "नुवाकोट"    },
-  { id: 32, provinceId: 3, name: "Ramechhap",     nepali: "रामेछाप"    },
-  { id: 33, provinceId: 3, name: "Rasuwa",        nepali: "रसुवा"      },
-  { id: 34, provinceId: 3, name: "Sindhuli",      nepali: "सिन्धुली"   },
-  { id: 35, provinceId: 3, name: "Sindhupalchok", nepali: "सिन्धुपाल्चोक"},
+  { id: 23, provinceId: 3, name: "Bhaktapur", nepali: "भक्तपुर" },
+  { id: 24, provinceId: 3, name: "Chitwan", nepali: "चितवन" },
+  { id: 25, provinceId: 3, name: "Dhading", nepali: "धादिङ" },
+  { id: 26, provinceId: 3, name: "Dolakha", nepali: "दोलखा" },
+  { id: 27, provinceId: 3, name: "Kathmandu", nepali: "काठमाडौँ" },
+  { id: 28, provinceId: 3, name: "Kavrepalanchok", nepali: "काभ्रेपलाञ्चोक" },
+  { id: 29, provinceId: 3, name: "Lalitpur", nepali: "ललितपुर" },
+  { id: 30, provinceId: 3, name: "Makwanpur", nepali: "मकवानपुर" },
+  { id: 31, provinceId: 3, name: "Nuwakot", nepali: "नुवाकोट" },
+  { id: 32, provinceId: 3, name: "Ramechhap", nepali: "रामेछाप" },
+  { id: 33, provinceId: 3, name: "Rasuwa", nepali: "रसुवा" },
+  { id: 34, provinceId: 3, name: "Sindhuli", nepali: "सिन्धुली" },
+  { id: 35, provinceId: 3, name: "Sindhupalchok", nepali: "सिन्धुपाल्चोक" },
 
   // Province 4 – Gandaki
-  { id: 36, provinceId: 4, name: "Baglung",       nepali: "बागलुङ"     },
-  { id: 37, provinceId: 4, name: "Gorkha",        nepali: "गोरखा"      },
-  { id: 38, provinceId: 4, name: "Kaski",         nepali: "कास्की"     },
-  { id: 39, provinceId: 4, name: "Lamjung",       nepali: "लमजुङ"      },
-  { id: 40, provinceId: 4, name: "Manang",        nepali: "मनाङ"       },
-  { id: 41, provinceId: 4, name: "Mustang",       nepali: "मुस्ताङ"    },
-  { id: 42, provinceId: 4, name: "Myagdi",        nepali: "म्याग्दी"   },
-  { id: 43, provinceId: 4, name: "Nawalpur",      nepali: "नवलपुर"     },
-  { id: 44, provinceId: 4, name: "Parbat",        nepali: "पर्वत"      },
-  { id: 45, provinceId: 4, name: "Syangja",       nepali: "स्याङ्जा"   },
-  { id: 46, provinceId: 4, name: "Tanahun",       nepali: "तनहुँ"      },
+  { id: 36, provinceId: 4, name: "Baglung", nepali: "बागलुङ" },
+  { id: 37, provinceId: 4, name: "Gorkha", nepali: "गोरखा" },
+  { id: 38, provinceId: 4, name: "Kaski", nepali: "कास्की" },
+  { id: 39, provinceId: 4, name: "Lamjung", nepali: "लमजुङ" },
+  { id: 40, provinceId: 4, name: "Manang", nepali: "मनाङ" },
+  { id: 41, provinceId: 4, name: "Mustang", nepali: "मुस्ताङ" },
+  { id: 42, provinceId: 4, name: "Myagdi", nepali: "म्याग्दी" },
+  { id: 43, provinceId: 4, name: "Nawalpur", nepali: "नवलपुर" },
+  { id: 44, provinceId: 4, name: "Parbat", nepali: "पर्वत" },
+  { id: 45, provinceId: 4, name: "Syangja", nepali: "स्याङ्जा" },
+  { id: 46, provinceId: 4, name: "Tanahun", nepali: "तनहुँ" },
 
   // Province 5 – Lumbini
-  { id: 47, provinceId: 5, name: "Arghakhanchi",  nepali: "अर्घाखाँची"  },
-  { id: 48, provinceId: 5, name: "Banke",         nepali: "बाँके"      },
-  { id: 49, provinceId: 5, name: "Bardiya",       nepali: "बर्दिया"    },
-  { id: 50, provinceId: 5, name: "Dang",          nepali: "दाङ"        },
+  { id: 47, provinceId: 5, name: "Arghakhanchi", nepali: "अर्घाखाँची" },
+  { id: 48, provinceId: 5, name: "Banke", nepali: "बाँके" },
+  { id: 49, provinceId: 5, name: "Bardiya", nepali: "बर्दिया" },
+  { id: 50, provinceId: 5, name: "Dang", nepali: "दाङ" },
   { id: 51, provinceId: 5, name: "Eastern Rukum", nepali: "रुकुम पूर्वी" },
-  { id: 52, provinceId: 5, name: "Gulmi",         nepali: "गुल्मी"     },
-  { id: 53, provinceId: 5, name: "Kapilvastu",    nepali: "कपिलवस्तु"  },
-  { id: 54, provinceId: 5, name: "Nawalparasi East",nepali:"नवलपरासी पूर्व"},
-  { id: 55, provinceId: 5, name: "Palpa",         nepali: "पाल्पा"     },
-  { id: 56, provinceId: 5, name: "Pyuthan",       nepali: "प्युठान"    },
-  { id: 57, provinceId: 5, name: "Rolpa",         nepali: "रोल्पा"     },
-  { id: 58, provinceId: 5, name: "Rupandehi",     nepali: "रुपन्देही"  },
+  { id: 52, provinceId: 5, name: "Gulmi", nepali: "गुल्मी" },
+  { id: 53, provinceId: 5, name: "Kapilvastu", nepali: "कपिलवस्तु" },
+  { id: 54, provinceId: 5, name: "Nawalparasi East", nepali: "नवलपरासी पूर्व" },
+  { id: 55, provinceId: 5, name: "Palpa", nepali: "पाल्पा" },
+  { id: 56, provinceId: 5, name: "Pyuthan", nepali: "प्युठान" },
+  { id: 57, provinceId: 5, name: "Rolpa", nepali: "रोल्पा" },
+  { id: 58, provinceId: 5, name: "Rupandehi", nepali: "रुपन्देही" },
 
   // Province 6 – Karnali
-  { id: 59, provinceId: 6, name: "Dailekh",       nepali: "दैलेख"      },
-  { id: 60, provinceId: 6, name: "Dolpa",         nepali: "डोल्पा"     },
-  { id: 61, provinceId: 6, name: "Humla",         nepali: "हुम्ला"     },
-  { id: 62, provinceId: 6, name: "Jajarkot",      nepali: "जाजरकोट"    },
-  { id: 63, provinceId: 6, name: "Jumla",         nepali: "जुम्ला"     },
-  { id: 64, provinceId: 6, name: "Kalikot",       nepali: "कालिकोट"    },
-  { id: 65, provinceId: 6, name: "Mugu",          nepali: "मुगु"       },
-  { id: 66, provinceId: 6, name: "Rukum West",    nepali: "रुकुम पश्चिम"},
-  { id: 67, provinceId: 6, name: "Salyan",        nepali: "सल्यान"     },
-  { id: 68, provinceId: 6, name: "Surkhet",       nepali: "सुर्खेत"    },
+  { id: 59, provinceId: 6, name: "Dailekh", nepali: "दैलेख" },
+  { id: 60, provinceId: 6, name: "Dolpa", nepali: "डोल्पा" },
+  { id: 61, provinceId: 6, name: "Humla", nepali: "हुम्ला" },
+  { id: 62, provinceId: 6, name: "Jajarkot", nepali: "जाजरकोट" },
+  { id: 63, provinceId: 6, name: "Jumla", nepali: "जुम्ला" },
+  { id: 64, provinceId: 6, name: "Kalikot", nepali: "कालिकोट" },
+  { id: 65, provinceId: 6, name: "Mugu", nepali: "मुगु" },
+  { id: 66, provinceId: 6, name: "Rukum West", nepali: "रुकुम पश्चिम" },
+  { id: 67, provinceId: 6, name: "Salyan", nepali: "सल्यान" },
+  { id: 68, provinceId: 6, name: "Surkhet", nepali: "सुर्खेत" },
 
   // Province 7 – Sudurpashchim
-  { id: 69, provinceId: 7, name: "Achham",        nepali: "अछाम"       },
-  { id: 70, provinceId: 7, name: "Baitadi",       nepali: "बैतडी"      },
-  { id: 71, provinceId: 7, name: "Bajhang",       nepali: "बझाङ"       },
-  { id: 72, provinceId: 7, name: "Bajura",        nepali: "बाजुरा"     },
-  { id: 73, provinceId: 7, name: "Dadeldhura",    nepali: "डडेल्धुरा"  },
-  { id: 74, provinceId: 7, name: "Darchula",      nepali: "दार्चुला"   },
-  { id: 75, provinceId: 7, name: "Doti",          nepali: "डोटी"       },
-  { id: 76, provinceId: 7, name: "Kailali",       nepali: "कैलाली"     },
-  { id: 77, provinceId: 7, name: "Kanchanpur",    nepali: "कञ्चनपुर"   },
+  { id: 69, provinceId: 7, name: "Achham", nepali: "अछाम" },
+  { id: 70, provinceId: 7, name: "Baitadi", nepali: "बैतडी" },
+  { id: 71, provinceId: 7, name: "Bajhang", nepali: "बझाङ" },
+  { id: 72, provinceId: 7, name: "Bajura", nepali: "बाजुरा" },
+  { id: 73, provinceId: 7, name: "Dadeldhura", nepali: "डडेल्धुरा" },
+  { id: 74, provinceId: 7, name: "Darchula", nepali: "दार्चुला" },
+  { id: 75, provinceId: 7, name: "Doti", nepali: "डोटी" },
+  { id: 76, provinceId: 7, name: "Kailali", nepali: "कैलाली" },
+  { id: 77, provinceId: 7, name: "Kanchanpur", nepali: "कञ्चनपुर" },
 ];
 
 /** Filter districts by province */
@@ -336,9 +336,9 @@ export function getDistrictsByProvince(provinceId: number): NepalDistrict[] {
 export interface NepalAddress {
   provinceId: number;
   districtId: number;
-  municipality: string;     // Municipality / VDC name
-  wardNo: string;           // Ward number (1–32)
-  tole: string;             // Street / Tole
+  municipality: string; // Municipality / VDC name
+  wardNo: string; // Ward number (1–32)
+  tole: string; // Street / Tole
 }
 
 export interface AddressValidationResult {
@@ -398,7 +398,7 @@ export function formatNepalAddress(address: NepalAddress): string {
  */
 export interface IRDVATReturnPayload {
   panNo: string;
-  taxPeriod: string;       // e.g. "2081/04" = Shrawan 2081
+  taxPeriod: string; // e.g. "2081/04" = Shrawan 2081
   taxableSupplies: number;
   vatCollected: number;
   taxableExpenditure: number;
@@ -415,10 +415,10 @@ export function buildIRDVATReturnPayload(params: {
 }): IRDVATReturnPayload {
   const rate = (params.vatRate ?? 13) / 100;
   const taxableSupplies = parseFloat((params.salesTotal / (1 + rate)).toFixed(2));
-  const vatCollected    = parseFloat((params.salesTotal - taxableSupplies).toFixed(2));
+  const vatCollected = parseFloat((params.salesTotal - taxableSupplies).toFixed(2));
   const taxableExpenditure = parseFloat((params.purchaseTotal / (1 + rate)).toFixed(2));
-  const vatPaid            = parseFloat((params.purchaseTotal - taxableExpenditure).toFixed(2));
-  const netVatPayable      = parseFloat((vatCollected - vatPaid).toFixed(2));
+  const vatPaid = parseFloat((params.purchaseTotal - taxableExpenditure).toFixed(2));
+  const netVatPayable = parseFloat((vatCollected - vatPaid).toFixed(2));
 
   return {
     panNo: normalizePAN(params.panNo),

@@ -11,14 +11,14 @@ import { useScreenF12 } from "../hooks/useF12Config";
 const OutstandingPayables: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("outstanding-payables");
-  
+
   const { invoices, parties, companySettings } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [view, setView] = useState<"payables" | "ageing">("payables");
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedPartyId, setSelectedPartyId] = useState("");
   const [ageFrom, setAgeFrom] = useState<"dueDate" | "invoiceDate">("dueDate"); // Due Date vs Invoice Date toggle
-  
+
   // Pending states for options modal
   const [pendingAsOnDate, setPendingAsOnDate] = useState(asOnDate);
   const [pendingSelectedPartyId, setPendingSelectedPartyId] = useState(selectedPartyId);
@@ -42,7 +42,7 @@ const OutstandingPayables: React.FC = () => {
   // Get unique parties with outstanding payables
   const outstandingParties = useMemo(() => {
     const uniquePartyIds = new Set();
-    (invoices || []).forEach(inv => {
+    (invoices || []).forEach((inv) => {
       if (
         inv.type === "purchase-invoice" &&
         inv.status === "posted" &&
@@ -52,9 +52,9 @@ const OutstandingPayables: React.FC = () => {
         uniquePartyIds.add(inv.partyId);
       }
     });
-    
-    return Array.from(uniquePartyIds).map(id => {
-      const party = parties.find(p => p.id === id);
+
+    return Array.from(uniquePartyIds).map((id) => {
+      const party = parties.find((p) => p.id === id);
       return { id, name: party?.name || "Unknown" };
     });
   }, [invoices, parties]);
@@ -63,15 +63,16 @@ const OutstandingPayables: React.FC = () => {
   const payablesData = useMemo(() => {
     if (!invoices) return [];
 
-    let filteredInvoices = invoices.filter(inv => 
-      inv.type === "purchase-invoice" &&
-      inv.status === "posted" &&
-      inv.paymentStatus !== "paid" &&
-      new Date(inv.date) <= new Date(asOnDate)
+    let filteredInvoices = invoices.filter(
+      (inv) =>
+        inv.type === "purchase-invoice" &&
+        inv.status === "posted" &&
+        inv.paymentStatus !== "paid" &&
+        new Date(inv.date) <= new Date(asOnDate),
     );
 
     if (selectedPartyId) {
-      filteredInvoices = filteredInvoices.filter(inv => inv.partyId === selectedPartyId);
+      filteredInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
     }
 
     // Sort by party then by date
@@ -86,15 +87,15 @@ const OutstandingPayables: React.FC = () => {
     let currentParty = null;
     let partyTotalPending = 0;
 
-    filteredInvoices.forEach(inv => {
+    filteredInvoices.forEach((inv) => {
       // Skip if party doesn't match filter
       if (selectedPartyId && inv.partyId !== selectedPartyId) return;
 
       const paidAmount = inv.paidAmount || 0;
       const pending = (inv.grandTotal || 0) - paidAmount;
-      
+
       // Calculate overdue days
-      const comparisonDate = ageFrom === "dueDate" ? (inv.dueDate || inv.date) : inv.date;
+      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
       const overdueDays = Math.max(0, daysBetween(comparisonDate, asOnDate));
 
       // Calculate priority
@@ -120,7 +121,7 @@ const OutstandingPayables: React.FC = () => {
           pending: partyTotalPending,
           overdueDays: "",
           priority: "",
-          isSubtotal: true
+          isSubtotal: true,
         });
         partyTotalPending = 0;
       }
@@ -137,7 +138,7 @@ const OutstandingPayables: React.FC = () => {
         paidAmount,
         pending,
         overdueDays,
-        priority
+        priority,
       });
 
       partyTotalPending += pending;
@@ -156,7 +157,7 @@ const OutstandingPayables: React.FC = () => {
         pending: partyTotalPending,
         overdueDays: "",
         priority: "",
-        isSubtotal: true
+        isSubtotal: true,
       });
     }
 
@@ -167,23 +168,24 @@ const OutstandingPayables: React.FC = () => {
   const ageingData = useMemo(() => {
     if (!invoices) return [];
 
-    let filteredInvoices = invoices.filter(inv => 
-      inv.type === "purchase-invoice" &&
-      inv.status === "posted" &&
-      inv.paymentStatus !== "paid" &&
-      new Date(inv.date) <= new Date(asOnDate)
+    let filteredInvoices = invoices.filter(
+      (inv) =>
+        inv.type === "purchase-invoice" &&
+        inv.status === "posted" &&
+        inv.paymentStatus !== "paid" &&
+        new Date(inv.date) <= new Date(asOnDate),
     );
 
     if (selectedPartyId) {
-      filteredInvoices = filteredInvoices.filter(inv => inv.partyId === selectedPartyId);
+      filteredInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
     }
 
     // Group by party
     const partyMap: Record<string, any> = {};
-    filteredInvoices.forEach(inv => {
+    filteredInvoices.forEach((inv) => {
       const partyId = inv.partyId;
       if (!partyMap[partyId]) {
-        const party = parties.find(p => p.id === partyId);
+        const party = parties.find((p) => p.id === partyId);
         partyMap[partyId] = {
           partyId,
           supplier: party?.name || "Unknown",
@@ -192,18 +194,19 @@ const OutstandingPayables: React.FC = () => {
           b1to30: 0,
           b31to60: 0,
           b61to90: 0,
-          b90plus: 0
+          b90plus: 0,
         };
       }
 
       const paidAmount = inv.paidAmount || 0;
       const pending = (inv.grandTotal || 0) - paidAmount;
-      const comparisonDate = ageFrom === "dueDate" ? (inv.dueDate || inv.date) : inv.date;
+      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
       const days = daysBetween(comparisonDate, asOnDate);
 
       partyMap[partyId].total += pending;
 
-      if (days < 0) { // Not due yet
+      if (days < 0) {
+        // Not due yet
         partyMap[partyId].current += pending;
       } else if (days <= 30) {
         partyMap[partyId].b1to30 += pending;
@@ -229,7 +232,7 @@ const OutstandingPayables: React.FC = () => {
         b31to60: result.reduce((sum, party) => sum + party.b31to60, 0),
         b61to90: result.reduce((sum, party) => sum + party.b61to90, 0),
         b90plus: result.reduce((sum, party) => sum + party.b90plus, 0),
-        isTotal: true
+        isTotal: true,
       };
       return [...result, grandTotal];
     }
@@ -239,16 +242,17 @@ const OutstandingPayables: React.FC = () => {
 
   // Compute summary stats
   const summaryStats = useMemo(() => {
-    const filteredInvoices = (invoices || []).filter(inv => 
-      inv.type === "purchase-invoice" &&
-      inv.status === "posted" &&
-      inv.paymentStatus !== "paid" &&
-      new Date(inv.date) <= new Date(asOnDate)
+    const filteredInvoices = (invoices || []).filter(
+      (inv) =>
+        inv.type === "purchase-invoice" &&
+        inv.status === "posted" &&
+        inv.paymentStatus !== "paid" &&
+        new Date(inv.date) <= new Date(asOnDate),
     );
 
     let relevantInvoices = filteredInvoices;
     if (selectedPartyId) {
-      relevantInvoices = filteredInvoices.filter(inv => inv.partyId === selectedPartyId);
+      relevantInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
     }
 
     let totalOutstanding = 0;
@@ -259,13 +263,13 @@ const OutstandingPayables: React.FC = () => {
     const weekFromNow = new Date(today);
     weekFromNow.setDate(today.getDate() + 7);
 
-    relevantInvoices.forEach(inv => {
+    relevantInvoices.forEach((inv) => {
       const paidAmount = inv.paidAmount || 0;
       const pending = (inv.grandTotal || 0) - paidAmount;
       totalOutstanding += pending;
 
       // Calculate overdue days
-      const comparisonDate = ageFrom === "dueDate" ? (inv.dueDate || inv.date) : inv.date;
+      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
       const overdueDays = Math.max(0, daysBetween(comparisonDate, asOnDate));
 
       if (overdueDays > 0) {
@@ -308,17 +312,33 @@ const OutstandingPayables: React.FC = () => {
       } else if (value <= 60) {
         return <span className="text-red-600 font-semibold">{value}</span>;
       } else {
-        return <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[10px] font-bold">{value}</span>;
+        return (
+          <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[10px] font-bold">
+            {value}
+          </span>
+        );
       }
     }
 
     if (columnKey === "priority") {
       if (value === "URGENT") {
-        return <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#dc2626] text-[#dc2626] bg-white">URGENT</span>;
+        return (
+          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#dc2626] text-[#dc2626] bg-white">
+            URGENT
+          </span>
+        );
       } else if (value === "HIGH") {
-        return <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#d97706] text-[#d97706] bg-white">HIGH</span>;
+        return (
+          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#d97706] text-[#d97706] bg-white">
+            HIGH
+          </span>
+        );
       } else if (value === "MEDIUM") {
-        return <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#1557b0] text-[#1557b0] bg-white">MEDIUM</span>;
+        return (
+          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#1557b0] text-[#1557b0] bg-white">
+            MEDIUM
+          </span>
+        );
       }
       return value;
     }
@@ -361,30 +381,29 @@ const OutstandingPayables: React.FC = () => {
         setPendingAgeFrom(ageFrom);
         setOptionsOpen(true);
       }}
-      actionBarButtons={[
-        { label: "Print" },
-        { label: "Export" }
-      ]}
+      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
       toolbarLeft={
         <>
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            As On: 
-            <input 
-              type="date" 
-              value={asOnDate} 
-              onChange={e => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            As On:
+            <input
+              type="date"
+              value={asOnDate}
+              onChange={(e) => setAsOnDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <select
             value={selectedPartyId}
-            onChange={e => setSelectedPartyId(e.target.value)}
+            onChange={(e) => setSelectedPartyId(e.target.value)}
             className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[200px]"
           >
             <option value="">All Suppliers</option>
-            {outstandingParties.map(party => (
-              <option key={party.id} value={party.id}>{party.name}</option>
+            {outstandingParties.map((party) => (
+              <option key={party.id} value={party.id}>
+                {party.name}
+              </option>
             ))}
           </select>
         </>
@@ -409,22 +428,34 @@ const OutstandingPayables: React.FC = () => {
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-4 mb-4 text-[12px]">
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Total Outstanding</div>
-          <div className="text-[14px] font-mono font-bold text-gray-800">Rs. {formatNumber(summaryStats.totalOutstanding)}</div>
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            Total Outstanding
+          </div>
+          <div className="text-[14px] font-mono font-bold text-gray-800">
+            Rs. {formatNumber(summaryStats.totalOutstanding)}
+          </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Overdue Amount</div>
-          <div className="text-[14px] font-mono font-bold text-red-600">Rs. {formatNumber(summaryStats.overdueAmount)}</div>
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            Overdue Amount
+          </div>
+          <div className="text-[14px] font-mono font-bold text-red-600">
+            Rs. {formatNumber(summaryStats.overdueAmount)}
+          </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Due for Payment This Week</div>
-          <div className="text-[14px] font-mono font-bold text-amber-600">Rs. {formatNumber(summaryStats.dueThisWeek)}</div>
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            Due for Payment This Week
+          </div>
+          <div className="text-[14px] font-mono font-bold text-amber-600">
+            Rs. {formatNumber(summaryStats.dueThisWeek)}
+          </div>
         </div>
       </div>
-      
+
       <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
         {view === "payables" ? (
-          <ReportGrid 
+          <ReportGrid
             columns={[
               { key: "supplier", label: "Supplier" },
               { key: "invoiceNo", label: "Bill No" },
@@ -434,14 +465,16 @@ const OutstandingPayables: React.FC = () => {
               { key: "paidAmount", label: "Paid", align: "right" },
               { key: "pending", label: "Pending", align: "right" },
               { key: "priority", label: "Priority" },
-              { key: "overdueDays", label: "Overdue Days", align: "right" }
-            ]} 
-            data={payablesData} 
-            getRowClassName={(row) => row.isSubtotal ? "bg-[#f8fafc] border-y border-gray-200" : ""}
+              { key: "overdueDays", label: "Overdue Days", align: "right" },
+            ]}
+            data={payablesData}
+            getRowClassName={(row) =>
+              row.isSubtotal ? "bg-[#f8fafc] border-y border-gray-200" : ""
+            }
             renderCell={renderPayablesCell}
           />
         ) : (
-          <ReportGrid 
+          <ReportGrid
             columns={[
               { key: "supplier", label: "Supplier" },
               { key: "total", label: "Total Outstanding", align: "right" },
@@ -449,15 +482,17 @@ const OutstandingPayables: React.FC = () => {
               { key: "b1to30", label: "1-30 Days", align: "right" },
               { key: "b31to60", label: "31-60 Days", align: "right" },
               { key: "b61to90", label: "61-90 Days", align: "right" },
-              { key: "b90plus", label: ">90 Days", align: "right" }
-            ]} 
-            data={ageingData} 
-            getRowClassName={(row) => row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""}
+              { key: "b90plus", label: ">90 Days", align: "right" },
+            ]}
+            data={ageingData}
+            getRowClassName={(row) =>
+              row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""
+            }
             renderCell={renderAgeingCell}
           />
         )}
       </div>
-      
+
       <ReportOptionsModal
         open={optionsOpen}
         title="Outstanding Payables Options"
@@ -466,34 +501,36 @@ const OutstandingPayables: React.FC = () => {
       >
         <div className="space-y-4">
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            As On Date 
-            <input 
-              type="date" 
-              value={pendingAsOnDate} 
-              onChange={e => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            As On Date
+            <input
+              type="date"
+              value={pendingAsOnDate}
+              onChange={(e) => setPendingAsOnDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Supplier Filter 
+            Supplier Filter
             <select
               value={pendingSelectedPartyId}
-              onChange={e => setPendingSelectedPartyId(e.target.value)}
+              onChange={(e) => setPendingSelectedPartyId(e.target.value)}
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
               <option value="">All Suppliers</option>
-              {outstandingParties.map(party => (
-                <option key={party.id} value={party.id}>{party.name}</option>
+              {outstandingParties.map((party) => (
+                <option key={party.id} value={party.id}>
+                  {party.name}
+                </option>
               ))}
             </select>
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Calculate Ageing From 
+            Calculate Ageing From
             <select
               value={pendingAgeFrom}
-              onChange={e => setPendingAgeFrom(e.target.value)}
+              onChange={(e) => setPendingAgeFrom(e.target.value)}
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
               <option value="dueDate">Due Date</option>

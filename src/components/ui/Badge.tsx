@@ -1,7 +1,16 @@
 // src/components/ui/Badge.tsx
 import React from "react";
 
-type BadgeVariant = "default" | "success" | "warning" | "danger" | "info" | "primary" | "secondary" | "outline" | "destructive";
+type BadgeVariant =
+  | "default"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "destructive";
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -12,15 +21,15 @@ interface BadgeProps {
 }
 
 const VARIANT_STYLES: Record<BadgeVariant, React.CSSProperties> = {
-  default:   { background: "#D4EABD", color: "#000000", borderColor: "#9DC07A" },
-  success:   { background: "#dcfce7", color: "#166534", borderColor: "#16a34a" },
-  warning:   { background: "#fef9c3", color: "#854d0e", borderColor: "#ca8a04" },
-  danger:    { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
-  info:      { background: "#dbeafe", color: "#1e3a8a", borderColor: "#3b82f6" },
-  primary:   { background: "#D4EABD", color: "#000000", borderColor: "#000000" },
+  default: { background: "#D4EABD", color: "#000000", borderColor: "#9DC07A" },
+  success: { background: "#dcfce7", color: "#166534", borderColor: "#16a34a" },
+  warning: { background: "#fef9c3", color: "#854d0e", borderColor: "#ca8a04" },
+  danger: { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
+  info: { background: "#dbeafe", color: "#1e3a8a", borderColor: "#3b82f6" },
+  primary: { background: "#D4EABD", color: "#000000", borderColor: "#000000" },
   secondary: { background: "#f1f5f9", color: "#475569", borderColor: "#cbd5e1" },
-  outline:      { background: "transparent", color: "#475569", borderColor: "#cbd5e1" },
-  destructive:  { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
+  outline: { background: "transparent", color: "#475569", borderColor: "#cbd5e1" },
+  destructive: { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
 };
 
 const Badge: React.FC<BadgeProps> = ({

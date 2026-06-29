@@ -119,9 +119,7 @@ export async function logAudit(
       timestamp: new Date().toISOString(),
       ipAddress: "local",
       deviceInfo:
-        typeof navigator !== "undefined"
-          ? navigator.userAgent.substring(0, 100)
-          : "unknown",
+        typeof navigator !== "undefined" ? navigator.userAgent.substring(0, 100) : "unknown",
     };
 
     try {
@@ -241,9 +239,7 @@ export function getDiffSummary(
     const afterValue = after[key];
 
     if (JSON.stringify(beforeValue) !== JSON.stringify(afterValue)) {
-      changes.push(
-        `${key} from ${JSON.stringify(beforeValue)} to ${JSON.stringify(afterValue)}`,
-      );
+      changes.push(`${key} from ${JSON.stringify(beforeValue)} to ${JSON.stringify(afterValue)}`);
     }
   }
 

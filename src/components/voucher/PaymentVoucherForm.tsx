@@ -40,13 +40,13 @@ import { formatNumber } from "@/lib/utils";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { generateSerialNumber } from "@/lib/accounting";
 import { generateVoucherPDF } from "@/lib/printUtils";
-import { 
-  VoucherType, 
-  VoucherStatus, 
-  PaymentMode, 
-  InvoiceStatus, 
-  AccountType, 
-  PaymentStatus 
+import {
+  VoucherType,
+  VoucherStatus,
+  PaymentMode,
+  InvoiceStatus,
+  AccountType,
+  PaymentStatus,
 } from "@/lib/types";
 import { calculateNepalTds, getApplicableNepalTdsRates } from "@/lib/tdsNepal";
 import toast from "react-hot-toast";
@@ -125,7 +125,10 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     [accounts],
   );
   const tdsPayableId = useMemo(
-    () => accounts.find(a => a.name?.toLowerCase().includes("tds") && a.type === AccountType.LIABILITY)?.id || "acc-tds-payable",
+    () =>
+      accounts.find(
+        (a) => a.name?.toLowerCase().includes("tds") && a.type === AccountType.LIABILITY,
+      )?.id || "acc-tds-payable",
     [accounts],
   );
 
@@ -249,7 +252,12 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       return;
     }
     let isActive = true;
-    generateSerialNumber(VoucherType.PAYMENT, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+    generateSerialNumber(
+      VoucherType.PAYMENT,
+      undefined,
+      currentFiscalYear?.fiscalYearBS || "",
+      true,
+    )
       .then((num) => {
         if (isActive) setVoucherNoPreview(num);
       })
@@ -264,10 +272,10 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
   // ---- totals ----
   const totals = useMemo(() => {
     const gross = round2(lines.reduce((s, l) => s + (Number(l.amount) || 0), 0));
-    
+
     let tds = 0;
     let net = gross;
-    
+
     if (party?.subjectToTds && tdsSection) {
       const breakdown = calculateNepalTds({
         sectionId: tdsSection,
@@ -280,7 +288,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         net = breakdown.netPayable;
       }
     }
-    
+
     return { gross, tds, net };
   }, [lines, party, tdsSection]);
 
@@ -406,14 +414,15 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       });
     }
 
-    const payloadTdsRate = party?.subjectToTds && tdsSection
-      ? calculateNepalTds({
-          sectionId: tdsSection,
-          grossAmount: totals.gross,
-          personType: party.personType || "entity",
-          residency: party.residency || "resident",
-        }).rate
-      : 0;
+    const payloadTdsRate =
+      party?.subjectToTds && tdsSection
+        ? calculateNepalTds({
+            sectionId: tdsSection,
+            grossAmount: totals.gross,
+            personType: party.personType || "entity",
+            residency: party.residency || "resident",
+          }).rate
+        : 0;
 
     return {
       date,
@@ -581,7 +590,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
           <h2 className="text-lg font-bold text-[#000000]">Payment Voucher Saved</h2>
           <p className="text-xs text-[#000000] mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(totals.net)} paid via{" "}
-            {payMode ? payMode.toUpperCase() : 'CASH'}
+            {payMode ? payMode.toUpperCase() : "CASH"}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -1044,7 +1053,9 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
             {party?.subjectToTds && (
               <>
                 <div className="mt-2 mb-2">
-                  <label className="text-[10px] font-semibold text-[#000000] uppercase">TDS Section</label>
+                  <label className="text-[10px] font-semibold text-[#000000] uppercase">
+                    TDS Section
+                  </label>
                   <select
                     value={tdsSection}
                     onChange={(e) => {
@@ -1055,8 +1066,10 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                     className="w-full mt-1 h-7 px-2 border border-[#9DC07A] rounded text-[#000000] bg-white"
                   >
                     <option value="">-- Select TDS Section --</option>
-                    {tdsOptions.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    {tdsOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -1155,4 +1168,3 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
 };
 
 export default PaymentVoucherForm;
-

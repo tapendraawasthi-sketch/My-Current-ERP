@@ -52,9 +52,7 @@ const Card: React.FC<CardProps> = ({
             {title && (
               <span style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{title}</span>
             )}
-            {subtitle && (
-              <p style={{ fontSize: 11, color: "#000000", marginTop: 2 }}>{subtitle}</p>
-            )}
+            {subtitle && <p style={{ fontSize: 11, color: "#000000", marginTop: 2 }}>{subtitle}</p>}
           </div>
           {action && <div>{action}</div>}
         </div>

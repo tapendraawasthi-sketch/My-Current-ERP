@@ -1,42 +1,78 @@
-const fs = require('fs');
-let content = fs.readFileSync('src/components/BusyShell.tsx', 'utf8');
+const { Project, SyntaxKind } = require("ts-morph");
 
-// Title Bar
-content = content.replace(/background: "#1f2a44"/g, 'background: "#0d1b2a"');
-// Logo box S
-content = content.replace(/background: "#1557b0"/g, 'background: "#2563eb"');
+const project = new Project();
+const sourceFile = project.addSourceFileAtPath("src/components/BusyShell.tsx");
 
-// Status Bar
-content = content.replace(/background: "#e0e0e0"/g, 'background: "#0d1b2a"');
-content = content.replace(/borderTop: "1px solid #a0a0a0"/g, 'borderTop: "1px solid #1b3a5c"');
-content = content.replace(/borderRight: "1px solid #a0a0a0"/g, 'borderRight: "1px solid #1b3a5c"');
-content = content.replace(/borderLeft: "1px solid #a0a0a0"/g, 'borderLeft: "1px solid #1b3a5c"');
-content = content.replace(/color: "#1557b0"/g, 'color: "#60a5fa"');
-content = content.replace(/color: "#555"/g, 'color: "#94a3b8"');
-content = content.replace(/background: "#cc0000"/g, 'background: "#f08a2c"');
+// Handle complex object replacements first
+sourceFile.getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression).forEach((obj) => {
+  const props = obj.getProperties();
+  const hasPropWithValue = (name, val) =>
+    props.some(
+      (p) =>
+        p.isKind(SyntaxKind.PropertyAssignment) &&
+        p.getName() === name &&
+        p.getInitializerIfKind(SyntaxKind.StringLiteral)?.getLiteralValue() === val,
+    );
 
-// Command Hint Bar
-content = content.replace(/background: "#d8d8d8"/g, 'background: "#162a46"');
-content = content.replace(/borderTop: "1px solid #bbb"/g, 'borderTop: "1px solid #1b3a5c"');
-content = content.replace(/color: "#444"/g, 'color: "#94a3b8"');
+  if (hasPropWithValue("background", "#c8d4e0") && hasPropWithValue("textAlign", "center")) {
+    obj.getProperty("background").getInitializer().setLiteralValue("#162a46");
+    if (!obj.getProperty("color")) {
+      obj.addPropertyAssignment({ name: "color", initializer: '"#ffffff"' });
+    }
+  }
 
-// Shortcut Sidebar
-content = content.replace(/background: "#f0f0f0"/g, 'background: "#0d1b2a"');
-content = content.replace(/background: "#c8d4e0", textAlign: "center"/g, 'background: "#162a46", color: "#ffffff", textAlign: "center"');
-content = content.replace(/borderBottom: "1px solid #a0a0a0"/g, 'borderBottom: "1px solid #1b3a5c"');
-content = content.replace(/borderBottom: "1px solid #d0d0d0"/g, 'borderBottom: "1px solid #1b3a5c"');
-content = content.replace(/background: "#e8e8e8"/g, 'background: "#0d1b2a"');
-content = content.replace(/= "#d0e0f5"/g, '= "#1b3a5c"');
-content = content.replace(/= "#e8e8e8"/g, '= "#0d1b2a"');
-content = content.replace(/color: "#8b1a1a"/g, 'color: "#f08a2c"');
-content = content.replace(/color: "#000"/g, 'color: "#ffffff"');
+  if (
+    hasPropWithValue("border", "1px solid #808080") &&
+    hasPropWithValue("background", "#fff") &&
+    hasPropWithValue("color", "#000")
+  ) {
+    obj.getProperty("border").getInitializer().setLiteralValue("1px solid #1b3a5c");
+    obj.getProperty("background").getInitializer().setLiteralValue("#162a46");
+    obj.getProperty("color").getInitializer().setLiteralValue("#ffffff");
+  }
+});
 
-// FormPanel
-content = content.replace(/background: "#e8e4f0"/g, 'background: "#0d1b2a"');
-content = content.replace(/border: "1px solid #a89cc4"/g, 'border: "1px solid #1b3a5c"');
+// Handle simple string replacements in Jsx contexts
+sourceFile.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach((strNode) => {
+  const val = strNode.getLiteralValue();
+  const parent = strNode.getParent();
+  const isInsideJsx =
+    strNode.getFirstAncestorByKind(SyntaxKind.JsxElement) ||
+    strNode.getFirstAncestorByKind(SyntaxKind.JsxSelfClosingElement);
 
-// BusyInput
-content = content.replace(/border: "1px solid #808080", background: "#fff", color: "#000"/g, 'border: "1px solid #1b3a5c", background: "#162a46", color: "#ffffff"');
+  if (isInsideJsx) {
+    if (parent.isKind(SyntaxKind.PropertyAssignment)) {
+      const propName = parent.getName();
+      if (val === "#1f2a44" && propName === "background") strNode.setLiteralValue("#0d1b2a");
+      else if (val === "#1557b0" && propName === "background") strNode.setLiteralValue("#2563eb");
+      else if (val === "#e0e0e0" && propName === "background") strNode.setLiteralValue("#0d1b2a");
+      else if (
+        val === "1px solid #a0a0a0" &&
+        ["borderTop", "borderRight", "borderLeft", "borderBottom"].includes(propName)
+      )
+        strNode.setLiteralValue("1px solid #1b3a5c");
+      else if (val === "#1557b0" && propName === "color") strNode.setLiteralValue("#60a5fa");
+      else if (val === "#555" && propName === "color") strNode.setLiteralValue("#94a3b8");
+      else if (val === "#cc0000" && propName === "background") strNode.setLiteralValue("#f08a2c");
+      else if (val === "#d8d8d8" && propName === "background") strNode.setLiteralValue("#162a46");
+      else if (val === "1px solid #bbb" && propName === "borderTop")
+        strNode.setLiteralValue("1px solid #1b3a5c");
+      else if (val === "#444" && propName === "color") strNode.setLiteralValue("#94a3b8");
+      else if (val === "#f0f0f0" && propName === "background") strNode.setLiteralValue("#0d1b2a");
+      else if (val === "1px solid #d0d0d0" && propName === "borderBottom")
+        strNode.setLiteralValue("1px solid #1b3a5c");
+      else if (val === "#e8e8e8" && propName === "background") strNode.setLiteralValue("#0d1b2a");
+      else if (val === "#8b1a1a" && propName === "color") strNode.setLiteralValue("#f08a2c");
+      else if (val === "#000" && propName === "color") strNode.setLiteralValue("#ffffff");
+      else if (val === "#e8e4f0" && propName === "background") strNode.setLiteralValue("#0d1b2a");
+      else if (val === "1px solid #a89cc4" && propName === "border")
+        strNode.setLiteralValue("1px solid #1b3a5c");
+    } else if (parent.isKind(SyntaxKind.ConditionalExpression)) {
+      if (val === "#d0e0f5") strNode.setLiteralValue("#1b3a5c");
+      else if (val === "#e8e8e8") strNode.setLiteralValue("#0d1b2a");
+    }
+  }
+});
 
-fs.writeFileSync('src/components/BusyShell.tsx', content);
-console.log('Updated BusyShell.tsx');
+sourceFile.saveSync();
+console.log("Updated BusyShell.tsx via AST");

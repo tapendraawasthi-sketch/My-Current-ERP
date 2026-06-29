@@ -1,20 +1,47 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Input, Select, NepaliDatePicker, Badge, ActionToolbar, AmountInput } from "../components/ui";
-import { Plus, X, Save, Printer, Copy, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
+import {
+  Card,
+  Button,
+  Input,
+  Select,
+  NepaliDatePicker,
+  Badge,
+  ActionToolbar,
+  AmountInput,
+} from "../components/ui";
+import {
+  Plus,
+  X,
+  Save,
+  Printer,
+  Copy,
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  CheckCircle,
+  Trash2,
+} from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
+import {
+  calculateVoucherTotals,
+  validateVoucherDate,
+  formatVoucherDisplayDate,
+} from "../lib/voucherUtils";
 import toast from "react-hot-toast";
 
 const SalesOrderVoucher: React.FC = () => {
-  const { accounts, items, parties, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
-  
-  const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
-  const [effectiveDate, setEffectiveDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
+  const { accounts, items, parties, vouchers, companySettings, currentFiscalYear, addVoucher } =
+    useStore();
+
+  const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [effectiveDate, setEffectiveDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
   const [voucherNumber, setVoucherNumber] = useState<string>("Loading...");
   const [referenceNo, setReferenceNo] = useState<string>("");
   const [partyId, setPartyId] = useState<string>("");
@@ -26,12 +53,12 @@ const SalesOrderVoucher: React.FC = () => {
   const [dirty, setDirty] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [showConfirmCancel, setShowConfirmCancel] = useState<boolean>(false);
-  
+
   // Additional state for sales order
   const [orderDueDate, setOrderDueDate] = useState<string>(() => {
     const date = new Date();
     date.setDate(date.getDate() + 7);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   });
   const [buyerPoNumber, setBuyerPoNumber] = useState<string>("");
   const [buyerPoDate, setBuyerPoDate] = useState<string>("");
@@ -40,7 +67,11 @@ const SalesOrderVoucher: React.FC = () => {
   useEffect(() => {
     const generateNumber = async () => {
       try {
-        const number = await generateSerialNumber(VoucherType.SALES_ORDER, undefined, currentFiscalYear?.fiscalYearBS);
+        const number = await generateSerialNumber(
+          VoucherType.SALES_ORDER,
+          undefined,
+          currentFiscalYear?.fiscalYearBS,
+        );
         setVoucherNumber(number);
       } catch (error) {
         setVoucherNumber("SO-" + Date.now());
@@ -51,28 +82,28 @@ const SalesOrderVoucher: React.FC = () => {
 
   const partyOptions = useMemo(() => {
     return parties
-      .filter(party => party.type === "customer" || party.type === "both")
-      .map(party => ({ value: party.id, label: party.name }));
+      .filter((party) => party.type === "customer" || party.type === "both")
+      .map((party) => ({ value: party.id, label: party.name }));
   }, [parties]);
 
   const itemOptions = useMemo(() => {
     return items
-      .filter(item => item.isActive)
-      .map(item => ({ value: item.id, label: `${item.code} - ${item.name}` }));
+      .filter((item) => item.isActive)
+      .map((item) => ({ value: item.id, label: `${item.code} - ${item.name}` }));
   }, [items]);
 
   const salesLedgerOptions = useMemo(() => {
     return accounts
-      .filter(acc => acc.type === "income" || acc.group?.toLowerCase().includes("Sales"))
-      .map(acc => ({ value: acc.id, label: acc.name }));
+      .filter((acc) => acc.type === "income" || acc.group?.toLowerCase().includes("Sales"))
+      .map((acc) => ({ value: acc.id, label: acc.name }));
   }, [accounts]);
 
   const totals = useMemo(() => {
-    const mappedLines = lines.map(line => ({
+    const mappedLines = lines.map((line) => ({
       debit: 0,
       credit: line.totalAmount || 0,
       amount: line.totalAmount || 0,
-      taxAmount: line.taxAmount || 0
+      taxAmount: line.taxAmount || 0,
     }));
     return calculateVoucherTotals(mappedLines);
   }, [lines]);
@@ -108,59 +139,70 @@ const SalesOrderVoucher: React.FC = () => {
       amount: 0,
       totalAmount: 0,
       godownId: "",
-      narration: ""
+      narration: "",
     };
   }
 
-  const updateLine = useCallback((index: number, field: string, value: any) => {
-    setLines(prev => {
-      const newLines = [...prev];
-      const line = { ...newLines[index] };
-      
-      if (field === "itemId") {
-        const item = items.find(i => i.id === value);
-        if (item) {
-          line.itemId = value;
-          line.itemName = item.name;
-          line.unit = item.unit || "";
-          line.rate = item.salesRate || 0;
-          line.taxRate = item.vatRate || 0;
+  const updateLine = useCallback(
+    (index: number, field: string, value: any) => {
+      setLines((prev) => {
+        const newLines = [...prev];
+        const line = { ...newLines[index] };
+
+        if (field === "itemId") {
+          const item = items.find((i) => i.id === value);
+          if (item) {
+            line.itemId = value;
+            line.itemName = item.name;
+            line.unit = item.unit || "";
+            line.rate = item.salesRate || 0;
+            line.taxRate = item.vatRate || 0;
+          }
+        } else {
+          line[field] = value;
         }
-      } else {
-        line[field] = value;
-      }
-      
-      // Recalculate amounts if relevant fields change
-      if (field === "quantity" || field === "rate" || field === "discount" || field === "taxRate") {
-        line.discountAmount = (line.rate * line.quantity * line.discount) / 100;
-        line.amount = (line.rate * line.quantity) - line.discountAmount;
-        line.taxAmount = (line.amount * line.taxRate) / 100;
-        line.totalAmount = line.amount + line.taxAmount;
-      }
-      
-      newLines[index] = line;
-      setDirty(true);
-      return newLines;
-    });
-  }, [items]);
+
+        // Recalculate amounts if relevant fields change
+        if (
+          field === "quantity" ||
+          field === "rate" ||
+          field === "discount" ||
+          field === "taxRate"
+        ) {
+          line.discountAmount = (line.rate * line.quantity * line.discount) / 100;
+          line.amount = line.rate * line.quantity - line.discountAmount;
+          line.taxAmount = (line.amount * line.taxRate) / 100;
+          line.totalAmount = line.amount + line.taxAmount;
+        }
+
+        newLines[index] = line;
+        setDirty(true);
+        return newLines;
+      });
+    },
+    [items],
+  );
 
   const addLine = useCallback(() => {
     if (lines.length >= 50) {
       toast.error("Maximum 50 lines allowed");
       return;
     }
-    setLines(prev => [...prev, emptyLine()]);
+    setLines((prev) => [...prev, emptyLine()]);
     setDirty(true);
   }, [lines.length]);
 
-  const removeLine = useCallback((index: number) => {
-    if (lines.length <= 1) {
-      toast.error("At least one line is required");
-      return;
-    }
-    setLines(prev => prev.filter((_, i) => i !== index));
-    setDirty(true);
-  }, [lines.length]);
+  const removeLine = useCallback(
+    (index: number) => {
+      if (lines.length <= 1) {
+        toast.error("At least one line is required");
+        return;
+      }
+      setLines((prev) => prev.filter((_, i) => i !== index));
+      setDirty(true);
+    },
+    [lines.length],
+  );
 
   const handleSave = async () => {
     const validation = validateVoucherDate(date, currentFiscalYear);
@@ -179,7 +221,7 @@ const SalesOrderVoucher: React.FC = () => {
       return;
     }
 
-    const hasValidLine = lines.some(line => line.itemId && line.quantity > 0);
+    const hasValidLine = lines.some((line) => line.itemId && line.quantity > 0);
     if (!hasValidLine) {
       toast.error("Please add at least one item");
       return;
@@ -191,10 +233,9 @@ const SalesOrderVoucher: React.FC = () => {
     }
 
     // Check for duplicate buyer PO number
-    const existingOrders = vouchers.filter(v => 
-      v.type === VoucherType.SALES_ORDER && 
-      v.buyerPoNumber === buyerPoNumber && 
-      v.buyerPoNumber
+    const existingOrders = vouchers.filter(
+      (v) =>
+        v.type === VoucherType.SALES_ORDER && v.buyerPoNumber === buyerPoNumber && v.buyerPoNumber,
     );
     if (existingOrders.length > 0) {
       toast.warning("Duplicate buyer PO number detected");
@@ -203,7 +244,7 @@ const SalesOrderVoucher: React.FC = () => {
     setSaving(true);
 
     try {
-      const party = parties.find(p => p.id === partyId);
+      const party = parties.find((p) => p.id === partyId);
       const voucher = {
         id: "sord-" + Date.now(),
         type: VoucherType.SALES_ORDER,
@@ -229,17 +270,21 @@ const SalesOrderVoucher: React.FC = () => {
         buyerPoDate: buyerPoDate,
         deliveryLocation: deliveryLocation,
         isOrderVoucher: true,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await addVoucher(voucher);
       toast.success(`Sales order saved successfully — ${voucherNumber}`);
-      
+
       // Reset form
       resetForm();
-      
+
       // Generate new voucher number
-      const newNumber = await generateSerialNumber(VoucherType.SALES_ORDER, undefined, currentFiscalYear?.fiscalYearBS);
+      const newNumber = await generateSerialNumber(
+        VoucherType.SALES_ORDER,
+        undefined,
+        currentFiscalYear?.fiscalYearBS,
+      );
       setVoucherNumber(newNumber);
     } catch (error) {
       toast.error(error.message || "Failed to save sales order");
@@ -250,23 +295,23 @@ const SalesOrderVoucher: React.FC = () => {
   };
 
   const resetForm = () => {
-    setDate(new Date().toISOString().split('T')[0]);
-    setEffectiveDate(new Date().toISOString().split('T')[0]);
+    setDate(new Date().toISOString().split("T")[0]);
+    setEffectiveDate(new Date().toISOString().split("T")[0]);
     setReferenceNo("");
     setPartyId("");
     setSalesLedgerId(salesLedgerOptions[0]?.value || "");
     setNarration("");
     setRoundOff(0);
     setLines([emptyLine()]);
-    
+
     // Reset order-specific fields
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 7);
-    setOrderDueDate(tomorrow.toISOString().split('T')[0]);
+    setOrderDueDate(tomorrow.toISOString().split("T")[0]);
     setBuyerPoNumber("");
     setBuyerPoDate("");
     setDeliveryLocation("");
-    
+
     setDirty(false);
   };
 
@@ -288,7 +333,8 @@ const SalesOrderVoucher: React.FC = () => {
       {/* Informational Banner */}
       <div className="bg-blue-50 border border-blue-200 p-3 rounded-md mb-4">
         <p className="text-sm text-blue-700">
-          Sales Orders do not affect books of accounts. They are fulfilled via Delivery Notes or Sales Invoices.
+          Sales Orders do not affect books of accounts. They are fulfilled via Delivery Notes or
+          Sales Invoices.
         </p>
       </div>
 
@@ -300,14 +346,10 @@ const SalesOrderVoucher: React.FC = () => {
             Non-Accounting
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="text-sm font-medium">No: {voucherNumber}</div>
-          <NepaliDatePicker
-            value={date}
-            onChange={setDate}
-            className="w-36"
-          />
+          <NepaliDatePicker value={date} onChange={setDate} className="w-36" />
           <Input
             placeholder="Ref No."
             value={referenceNo}
@@ -315,7 +357,7 @@ const SalesOrderVoucher: React.FC = () => {
             className="w-32"
           />
         </div>
-        
+
         <Button
           variant="primary"
           onClick={handleSave}
@@ -324,9 +366,25 @@ const SalesOrderVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
@@ -351,7 +409,7 @@ const SalesOrderVoucher: React.FC = () => {
               placeholder="Select customer"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Sales Ledger *</label>
             <Select
@@ -361,16 +419,12 @@ const SalesOrderVoucher: React.FC = () => {
               placeholder="Select sales account"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Order Due Date *</label>
-            <NepaliDatePicker
-              value={orderDueDate}
-              onChange={setOrderDueDate}
-              className="w-full"
-            />
+            <NepaliDatePicker value={orderDueDate} onChange={setOrderDueDate} className="w-full" />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Buyer PO Number</label>
             <Input
@@ -379,18 +433,16 @@ const SalesOrderVoucher: React.FC = () => {
               placeholder="Enter buyer's PO number"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Buyer PO Date</label>
-            <NepaliDatePicker
-              value={buyerPoDate}
-              onChange={setBuyerPoDate}
-              className="w-full"
-            />
+            <NepaliDatePicker value={buyerPoDate} onChange={setBuyerPoDate} className="w-full" />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Location</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Delivery Location
+            </label>
             <Input
               value={deliveryLocation}
               onChange={(e) => setDeliveryLocation(e.target.value)}
@@ -406,17 +458,39 @@ const SalesOrderVoucher: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Disc%</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tax% (est.)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tax (est.)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Del</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  #
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Item
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Qty
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Unit
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Rate
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Disc%
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Tax% (est.)
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Tax (est.)
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Del
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -486,7 +560,7 @@ const SalesOrderVoucher: React.FC = () => {
             </tbody>
           </table>
         </div>
-        
+
         <div className="p-4">
           <Button
             variant="outline"
@@ -520,11 +594,7 @@ const SalesOrderVoucher: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>Round Off:</span>
-            <AmountInput
-              value={roundOff}
-              onChange={setRoundOff}
-              className="w-24 text-right"
-            />
+            <AmountInput value={roundOff} onChange={setRoundOff} className="w-24 text-right" />
           </div>
           <div className="flex justify-between pt-2 border-t border-gray-200">
             <span className="font-bold">Grand Total:</span>
@@ -559,7 +629,7 @@ const SalesOrderVoucher: React.FC = () => {
         >
           Discard
         </Button>
-        
+
         <Button
           variant="primary"
           onClick={handleSave}
@@ -568,9 +638,25 @@ const SalesOrderVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
@@ -595,16 +681,10 @@ const SalesOrderVoucher: React.FC = () => {
               You have unsaved changes. Are you sure you want to discard them?
             </p>
             <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirmCancel(false)}
-              >
+              <Button variant="outline" onClick={() => setShowConfirmCancel(false)}>
                 Cancel
               </Button>
-              <Button
-                variant="destructive"
-                onClick={confirmCancel}
-              >
+              <Button variant="destructive" onClick={confirmCancel}>
                 Discard Changes
               </Button>
             </div>

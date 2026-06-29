@@ -165,7 +165,9 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
             <div className="text-right">
               <p className="text-sm">
                 <span className="font-semibold">Date: </span>
-                <span className="text-[#000000]">{new Date(voucher.date).toLocaleDateString()}</span>
+                <span className="text-[#000000]">
+                  {new Date(voucher.date).toLocaleDateString()}
+                </span>
               </p>
             </div>
           </div>
@@ -222,7 +224,9 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
           <div className="mb-6">
             <p className="text-sm">
               <span className="font-semibold">Narration: </span>
-              <span className="text-[#000000]">{voucher.narration || "Being the payment made"}</span>
+              <span className="text-[#000000]">
+                {voucher.narration || "Being the payment made"}
+              </span>
             </p>
           </div>
 

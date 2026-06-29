@@ -142,10 +142,12 @@ const BillingInvoice: React.FC = () => {
       header: "Invoice No",
       render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
     },
-    { 
-      key: "date", 
-      header: "Date", 
-      render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> 
+    {
+      key: "date",
+      header: "Date",
+      render: (_: any, row: any) => (
+        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+      ),
     },
     { key: "partyName", header: "Party", render: (v: string) => v || "—" },
     {
@@ -315,4 +317,3 @@ const BillingInvoice: React.FC = () => {
 };
 
 export default BillingInvoice;
-

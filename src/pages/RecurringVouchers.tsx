@@ -44,12 +44,10 @@ const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
   "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const card =
-  "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
-const td =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -65,13 +63,10 @@ const tableAll = (db: any, name: string) => {
 };
 
 const tablePut = async (db: any, name: string, rows: any[]) => {
-  try {
-    if (!rows?.length) return;
-    const t = db?.table ? db.table(name) : db?.[name];
-    if (t?.bulkPut) await t.bulkPut(rows);
-  } catch (err) {
-    console.warn("bulkPut failed", name, err);
-  }
+  if (!rows?.length) return;
+  const t = db?.table ? db.table(name) : db?.[name];
+  if (!t?.bulkPut) throw new Error(`Table ${name} not found`);
+  await t.bulkPut(rows);
 };
 
 const tableDelete = async (db: any, name: string, id: any) => {
@@ -263,12 +258,7 @@ export default function RecurringVouchers() {
     setLoading(true);
     try {
       const db = getDB();
-      const [
-        dbAccounts,
-        dbCostCenters,
-        dbTemplates,
-        dbRunHistory,
-      ] = await Promise.all([
+      const [dbAccounts, dbCostCenters, dbTemplates, dbRunHistory] = await Promise.all([
         tableAll(db, "accounts"),
         tableAll(db, "costCenters"),
         tableAll(db, "recurringVouchers"),
@@ -278,7 +268,11 @@ export default function RecurringVouchers() {
       setAccounts(dbAccounts?.length ? dbAccounts : storeAccounts);
       setCostCenters(dbCostCenters?.length ? dbCostCenters : storeCostCenters);
       setTemplates((dbTemplates || []).map(normalizeTemplate));
-      setRunHistory((dbRunHistory || []).sort((a, b) => String(b.runAt || "").localeCompare(String(a.runAt || ""))));
+      setRunHistory(
+        (dbRunHistory || []).sort((a, b) =>
+          String(b.runAt || "").localeCompare(String(a.runAt || "")),
+        ),
+      );
     } catch (err) {
       console.error(err);
       toast.error("Could not load recurring vouchers");
@@ -287,10 +281,7 @@ export default function RecurringVouchers() {
     }
   };
 
-  const dueTemplates = useMemo(
-    () => templates.filter((t) => isDue(t, todayISO())),
-    [templates]
-  );
+  const dueTemplates = useMemo(() => templates.filter((t) => isDue(t, todayISO())), [templates]);
 
   const filteredTemplates = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -407,7 +398,7 @@ export default function RecurringVouchers() {
     }
 
     const cleanLines = (form.lines || []).filter(
-      (l) => l.accountId && (Number(l.debit || 0) > 0 || Number(l.credit || 0) > 0)
+      (l) => l.accountId && (Number(l.debit || 0) > 0 || Number(l.credit || 0) > 0),
     );
 
     if (cleanLines.length < 2) {
@@ -453,7 +444,7 @@ export default function RecurringVouchers() {
           currentUser,
           selected ? "Recurring Template Updated" : "Recurring Template Created",
           `${row.name} ${row.frequency} ${money(voucherTotal(row.lines).dr)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -493,7 +484,7 @@ export default function RecurringVouchers() {
           currentUser,
           nextStatus === "Active" ? "Recurring Template Activated" : "Recurring Template Paused",
           `${row.name} marked ${nextStatus}`,
-          "Medium"
+          "Medium",
         ),
       ]);
       setTemplates((prev) => prev.map((x) => (x.id === row.id ? row : x)));
@@ -579,7 +570,7 @@ export default function RecurringVouchers() {
           currentUser,
           "Recurring Voucher Generated",
           `${t.name} generated voucher ${voucher.voucherNo} for ${money(total.dr)}`,
-          "Medium"
+          "Medium",
         ),
       ]);
 
@@ -657,9 +648,9 @@ export default function RecurringVouchers() {
           Status: t.status,
           Amount: voucherTotal(t.lines).dr,
           Narration: t.narration,
-        }))
+        })),
       ),
-      "Templates"
+      "Templates",
     );
 
     XLSX.utils.book_append_sheet(
@@ -675,10 +666,10 @@ export default function RecurringVouchers() {
             Credit: l.credit,
             CostCenterId: l.costCenterId,
             Narration: l.narration,
-          }))
-        )
+          })),
+        ),
       ),
-      "Template Lines"
+      "Template Lines",
     );
 
     XLSX.utils.book_append_sheet(
@@ -693,9 +684,9 @@ export default function RecurringVouchers() {
           Amount: h.amount,
           Status: h.status,
           Mode: h.mode,
-        }))
+        })),
       ),
-      "Run History"
+      "Run History",
     );
 
     XLSX.writeFile(wb, `Recurring_Vouchers_${todayISO()}.xlsx`);
@@ -729,8 +720,12 @@ export default function RecurringVouchers() {
         <p className="text-xl font-semibold mt-1 text-gray-800">{stats.runs}</p>
       </div>
       <div className={card}>
-        <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Active Value</p>
-        <p className="text-[14px] font-semibold mt-2 text-gray-800 truncate">{money(stats.monthlyValue)}</p>
+        <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+          Active Value
+        </p>
+        <p className="text-[14px] font-semibold mt-2 text-gray-800 truncate">
+          {money(stats.monthlyValue)}
+        </p>
       </div>
     </div>
   );
@@ -752,7 +747,11 @@ export default function RecurringVouchers() {
         </div>
         <div>
           <label className="text-[11px] font-medium text-gray-600 block mb-1">Status</label>
-          <select className={input} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select
+            className={input}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             {["All", "Active", "Paused", "Expired", "Failed"].map((s) => (
               <option key={s}>{s}</option>
             ))}
@@ -760,8 +759,21 @@ export default function RecurringVouchers() {
         </div>
         <div>
           <label className="text-[11px] font-medium text-gray-600 block mb-1">Frequency</label>
-          <select className={input} value={frequencyFilter} onChange={(e) => setFrequencyFilter(e.target.value)}>
-            {["All", "Daily", "Weekly", "Fortnightly", "Monthly", "Quarterly", "Half Yearly", "Yearly"].map((s) => (
+          <select
+            className={input}
+            value={frequencyFilter}
+            onChange={(e) => setFrequencyFilter(e.target.value)}
+          >
+            {[
+              "All",
+              "Daily",
+              "Weekly",
+              "Fortnightly",
+              "Monthly",
+              "Quarterly",
+              "Half Yearly",
+              "Yearly",
+            ].map((s) => (
               <option key={s}>{s}</option>
             ))}
           </select>
@@ -825,10 +837,14 @@ export default function RecurringVouchers() {
                     <td className={`${td} capitalize`}>{t.voucherType}</td>
                     <td className={td}>
                       <div className="font-medium text-gray-800">{t.frequency}</div>
-                      <div className="text-[10px] text-gray-500 mt-0.5">Every {t.interval || 1} period(s)</div>
+                      <div className="text-[10px] text-gray-500 mt-0.5">
+                        Every {t.interval || 1} period(s)
+                      </div>
                     </td>
                     <td className={td}>
-                      <span className={due ? "text-red-600 font-medium" : ""}>{t.nextDate || "-"}</span>
+                      <span className={due ? "text-red-600 font-medium" : ""}>
+                        {t.nextDate || "-"}
+                      </span>
                     </td>
                     <td className={td}>{t.lastRunDate || "-"}</td>
                     <td className={`${td} text-right font-medium`}>
@@ -847,7 +863,9 @@ export default function RecurringVouchers() {
                       </span>
                     </td>
                     <td className={td}>
-                      <div className="text-[11px] font-medium">{t.autoPost ? "Auto Post" : "Manual"}</div>
+                      <div className="text-[11px] font-medium">
+                        {t.autoPost ? "Auto Post" : "Manual"}
+                      </div>
                       <div className="text-[10px] text-gray-500 mt-0.5">
                         {t.requireApproval ? "Draft approval" : "Direct post"}
                       </div>
@@ -890,7 +908,11 @@ export default function RecurringVouchers() {
                           onClick={() => toggleStatus(t)}
                           title={t.status === "Active" ? "Pause" : "Activate"}
                         >
-                          {t.status === "Active" ? <PauseCircle className="h-4 w-4" /> : <PlayCircle className="h-4 w-4" />}
+                          {t.status === "Active" ? (
+                            <PauseCircle className="h-4 w-4" />
+                          ) : (
+                            <PlayCircle className="h-4 w-4" />
+                          )}
                         </button>
                         <button
                           className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
@@ -933,7 +955,12 @@ export default function RecurringVouchers() {
           <div className="flex flex-wrap gap-2 items-end">
             <div>
               <label className="text-[11px] font-medium text-gray-600 block mb-1">Run Date</label>
-              <input type="date" className={input} value={runDate} onChange={(e) => setRunDate(e.target.value)} />
+              <input
+                type="date"
+                className={input}
+                value={runDate}
+                onChange={(e) => setRunDate(e.target.value)}
+              />
             </div>
             <button className={btn2} onClick={previewDue}>
               <Eye className="h-3 w-3" /> Preview Due
@@ -951,21 +978,35 @@ export default function RecurringVouchers() {
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Due Templates</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Due Templates
+            </p>
             <p className="text-xl font-semibold mt-1 text-gray-800">
               {templates.filter((t) => isDue(t, runDate)).length}
             </p>
           </div>
           <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Due Amount</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Due Amount
+            </p>
             <p className="text-xl font-semibold mt-1 text-gray-800">
-              {money(templates.filter((t) => isDue(t, runDate)).reduce((sum, t) => sum + voucherTotal(t.lines).dr, 0))}
+              {money(
+                templates
+                  .filter((t) => isDue(t, runDate))
+                  .reduce((sum, t) => sum + voucherTotal(t.lines).dr, 0),
+              )}
             </p>
           </div>
           <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Unbalanced</p>
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+              Unbalanced
+            </p>
             <p className="text-xl font-semibold mt-1 text-red-600">
-              {templates.filter((t) => isDue(t, runDate)).filter((t) => Math.abs(voucherTotal(t.lines).diff) > 0.01).length}
+              {
+                templates
+                  .filter((t) => isDue(t, runDate))
+                  .filter((t) => Math.abs(voucherTotal(t.lines).diff) > 0.01).length
+              }
             </p>
           </div>
         </div>
@@ -984,33 +1025,35 @@ export default function RecurringVouchers() {
             </tr>
           </thead>
           <tbody>
-            {templates.filter((t) => isDue(t, runDate)).map((t) => {
-              const total = voucherTotal(t.lines);
-              return (
-                <tr key={t.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className={`${td} font-medium text-gray-800`}>{t.name}</td>
-                  <td className={td}>{t.frequency}</td>
-                  <td className={td}>{t.nextDate}</td>
-                  <td className={`${td} text-right font-medium`}>{money(total.dr)}</td>
-                  <td className={td}>
-                    {Math.abs(total.diff) <= 0.01 ? (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
-                        <CheckCircle2 className="h-3 w-3" /> Balanced
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-red-50 text-red-700 border-red-200">
-                        <AlertTriangle className="h-3 w-3" /> Diff {money(total.diff)}
-                      </span>
-                    )}
-                  </td>
-                  <td className={`${td} text-center`}>
-                    <button className={btn2} onClick={() => runTemplate(t, runDate, "manual")}>
-                      <PlayCircle className="h-3 w-3" /> Run
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {templates
+              .filter((t) => isDue(t, runDate))
+              .map((t) => {
+                const total = voucherTotal(t.lines);
+                return (
+                  <tr key={t.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                    <td className={`${td} font-medium text-gray-800`}>{t.name}</td>
+                    <td className={td}>{t.frequency}</td>
+                    <td className={td}>{t.nextDate}</td>
+                    <td className={`${td} text-right font-medium`}>{money(total.dr)}</td>
+                    <td className={td}>
+                      {Math.abs(total.diff) <= 0.01 ? (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
+                          <CheckCircle2 className="h-3 w-3" /> Balanced
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-red-50 text-red-700 border-red-200">
+                          <AlertTriangle className="h-3 w-3" /> Diff {money(total.diff)}
+                        </span>
+                      )}
+                    </td>
+                    <td className={`${td} text-center`}>
+                      <button className={btn2} onClick={() => runTemplate(t, runDate, "manual")}>
+                        <PlayCircle className="h-3 w-3" /> Run
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             {!templates.filter((t) => isDue(t, runDate)).length && (
               <tr>
                 <td colSpan={6} className="p-8 text-center text-[12px] text-gray-500">
@@ -1066,7 +1109,9 @@ export default function RecurringVouchers() {
                 <td className={`${td} font-medium text-gray-800`}>{h.templateName}</td>
                 <td className={td}>{h.voucherNo}</td>
                 <td className={`${td} text-right font-medium`}>{money(h.amount)}</td>
-                <td className={td}><span className="capitalize">{h.mode || "-"}</span></td>
+                <td className={td}>
+                  <span className="capitalize">{h.mode || "-"}</span>
+                </td>
                 <td className={td}>
                   <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
                     <CheckCircle2 className="h-3 w-3" /> {h.status || "Success"}
@@ -1099,7 +1144,9 @@ export default function RecurringVouchers() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">Template Name</label>
+              <label className="text-[11px] font-medium text-gray-600 block mb-1">
+                Template Name
+              </label>
               <input
                 className={input}
                 value={form.name}
@@ -1108,16 +1155,30 @@ export default function RecurringVouchers() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">Voucher Type</label>
-              <select className={input} value={form.voucherType} onChange={(e) => setForm((f) => ({ ...f, voucherType: e.target.value }))}>
-                {["journal", "payment", "receipt", "contra", "debit_note", "credit_note"].map((v) => (
-                  <option key={v} value={v}>{v}</option>
-                ))}
+              <label className="text-[11px] font-medium text-gray-600 block mb-1">
+                Voucher Type
+              </label>
+              <select
+                className={input}
+                value={form.voucherType}
+                onChange={(e) => setForm((f) => ({ ...f, voucherType: e.target.value }))}
+              >
+                {["journal", "payment", "receipt", "contra", "debit_note", "credit_note"].map(
+                  (v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ),
+                )}
               </select>
             </div>
             <div>
               <label className="text-[11px] font-medium text-gray-600 block mb-1">Status</label>
-              <select className={input} value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}>
+              <select
+                className={input}
+                value={form.status}
+                onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+              >
                 {["Active", "Paused", "Expired", "Failed"].map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -1125,15 +1186,27 @@ export default function RecurringVouchers() {
             </div>
             <div>
               <label className="text-[11px] font-medium text-gray-600 block mb-1">Frequency</label>
-              <select className={input} value={form.frequency} onChange={(e) => {
+              <select
+                className={input}
+                value={form.frequency}
+                onChange={(e) => {
                   const frequency = e.target.value;
                   setForm((f) => ({
                     ...f,
                     frequency,
                     nextDate: f.nextDate || f.startDate || todayISO(),
                   }));
-                }}>
-                {["Daily", "Weekly", "Fortnightly", "Monthly", "Quarterly", "Half Yearly", "Yearly"].map((s) => (
+                }}
+              >
+                {[
+                  "Daily",
+                  "Weekly",
+                  "Fortnightly",
+                  "Monthly",
+                  "Quarterly",
+                  "Half Yearly",
+                  "Yearly",
+                ].map((s) => (
                   <option key={s}>{s}</option>
                 ))}
               </select>
@@ -1153,30 +1226,56 @@ export default function RecurringVouchers() {
                 type="date"
                 className={input}
                 value={form.startDate}
-                onChange={(e) => setForm((f) => ({
+                onChange={(e) =>
+                  setForm((f) => ({
                     ...f,
                     startDate: e.target.value,
                     nextDate: f.nextDate || e.target.value,
-                  }))}
+                  }))
+                }
               />
             </div>
             <div>
               <label className="text-[11px] font-medium text-gray-600 block mb-1">End Date</label>
-              <input type="date" className={input} value={form.endDate} onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))} />
+              <input
+                type="date"
+                className={input}
+                value={form.endDate}
+                onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))}
+              />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">Next Run Date</label>
-              <input type="date" className={input} value={form.nextDate} onChange={(e) => setForm((f) => ({ ...f, nextDate: e.target.value }))} />
+              <label className="text-[11px] font-medium text-gray-600 block mb-1">
+                Next Run Date
+              </label>
+              <input
+                type="date"
+                className={input}
+                value={form.nextDate}
+                onChange={(e) => setForm((f) => ({ ...f, nextDate: e.target.value }))}
+              />
             </div>
-            
+
             <div className="flex items-center gap-2 border border-gray-200 rounded-md p-2 bg-gray-50 md:col-span-3">
               <label className="flex items-center gap-2 cursor-pointer mr-4">
-                <input type="checkbox" checked={form.autoPost} onChange={(e) => setForm((f) => ({ ...f, autoPost: e.target.checked }))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
+                <input
+                  type="checkbox"
+                  checked={form.autoPost}
+                  onChange={(e) => setForm((f) => ({ ...f, autoPost: e.target.checked }))}
+                  className="rounded text-[#1557b0] focus:ring-[#1557b0]"
+                />
                 <span className="text-[12px] font-medium text-gray-700">Auto-post when due</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.requireApproval} onChange={(e) => setForm((f) => ({ ...f, requireApproval: e.target.checked }))} className="rounded text-[#1557b0] focus:ring-[#1557b0]" />
-                <span className="text-[12px] font-medium text-gray-700">Create as draft / approval required</span>
+                <input
+                  type="checkbox"
+                  checked={form.requireApproval}
+                  onChange={(e) => setForm((f) => ({ ...f, requireApproval: e.target.checked }))}
+                  className="rounded text-[#1557b0] focus:ring-[#1557b0]"
+                />
+                <span className="text-[12px] font-medium text-gray-700">
+                  Create as draft / approval required
+                </span>
               </label>
             </div>
 
@@ -1195,7 +1294,10 @@ export default function RecurringVouchers() {
           <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
             <div className="flex justify-between items-center px-3 py-2 bg-[#f5f6fa] border-b border-gray-200">
               <h4 className="text-[12px] font-semibold text-gray-800">Voucher Lines</h4>
-              <button className="text-[11px] text-[#1557b0] font-medium hover:underline flex items-center gap-1" onClick={addLine}>
+              <button
+                className="text-[11px] text-[#1557b0] font-medium hover:underline flex items-center gap-1"
+                onClick={addLine}
+              >
                 <Plus className="h-3 w-3" /> Add Line
               </button>
             </div>
@@ -1216,32 +1318,64 @@ export default function RecurringVouchers() {
                   {(form.lines || []).map((l, idx) => (
                     <tr key={l.id || idx} className="border-b border-gray-100">
                       <td className={`${td} p-1.5`}>
-                        <select className={input} value={l.accountId} onChange={(e) => updateLine(idx, "accountId", e.target.value)}>
+                        <select
+                          className={input}
+                          value={l.accountId}
+                          onChange={(e) => updateLine(idx, "accountId", e.target.value)}
+                        >
                           <option value="">Select account...</option>
                           {accounts.map((a) => (
-                            <option key={a.id} value={a.id}>{a.name}</option>
+                            <option key={a.id} value={a.id}>
+                              {a.name}
+                            </option>
                           ))}
                         </select>
                       </td>
                       <td className={`${td} p-1.5`}>
-                        <input type="number" className={`${input} text-right`} placeholder="0.00" value={l.debit || ""} onChange={(e) => updateLine(idx, "debit", e.target.value)} />
+                        <input
+                          type="number"
+                          className={`${input} text-right`}
+                          placeholder="0.00"
+                          value={l.debit || ""}
+                          onChange={(e) => updateLine(idx, "debit", e.target.value)}
+                        />
                       </td>
                       <td className={`${td} p-1.5`}>
-                        <input type="number" className={`${input} text-right`} placeholder="0.00" value={l.credit || ""} onChange={(e) => updateLine(idx, "credit", e.target.value)} />
+                        <input
+                          type="number"
+                          className={`${input} text-right`}
+                          placeholder="0.00"
+                          value={l.credit || ""}
+                          onChange={(e) => updateLine(idx, "credit", e.target.value)}
+                        />
                       </td>
                       <td className={`${td} p-1.5`}>
-                        <select className={input} value={l.costCenterId} onChange={(e) => updateLine(idx, "costCenterId", e.target.value)}>
+                        <select
+                          className={input}
+                          value={l.costCenterId}
+                          onChange={(e) => updateLine(idx, "costCenterId", e.target.value)}
+                        >
                           <option value="">None</option>
                           {costCenters.map((c) => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
+                            <option key={c.id} value={c.id}>
+                              {c.name}
+                            </option>
                           ))}
                         </select>
                       </td>
                       <td className={`${td} p-1.5`}>
-                        <input className={input} value={l.narration} onChange={(e) => updateLine(idx, "narration", e.target.value)} placeholder="Line narration" />
+                        <input
+                          className={input}
+                          value={l.narration}
+                          onChange={(e) => updateLine(idx, "narration", e.target.value)}
+                          placeholder="Line narration"
+                        />
                       </td>
                       <td className={`${td} text-center p-1.5`}>
-                        <button className="p-1.5 rounded-md text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors" onClick={() => removeLine(idx)}>
+                        <button
+                          className="p-1.5 rounded-md text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          onClick={() => removeLine(idx)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </td>
@@ -1253,16 +1387,41 @@ export default function RecurringVouchers() {
             <div className="bg-[#f5f6fa] px-3 py-2 border-t border-gray-200 flex justify-between items-center text-[12px]">
               <span className="font-medium text-gray-600">Totals:</span>
               <div className="flex gap-4 font-semibold text-gray-800">
-                <span>Dr: <span className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}>{money(total.dr)}</span></span>
-                <span>Cr: <span className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}>{money(total.cr)}</span></span>
-                <span className="ml-4">Diff: <span className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}>{money(total.diff)}</span></span>
+                <span>
+                  Dr:{" "}
+                  <span
+                    className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}
+                  >
+                    {money(total.dr)}
+                  </span>
+                </span>
+                <span>
+                  Cr:{" "}
+                  <span
+                    className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}
+                  >
+                    {money(total.cr)}
+                  </span>
+                </span>
+                <span className="ml-4">
+                  Diff:{" "}
+                  <span
+                    className={Math.abs(total.diff) > 0.01 ? "text-red-600" : "text-emerald-600"}
+                  >
+                    {money(total.diff)}
+                  </span>
+                </span>
               </div>
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-            <button className={btn2} onClick={() => setModalType("")}>Cancel</button>
-            <button className={btn} onClick={saveTemplate}><Save className="h-3 w-3" /> Save Template</button>
+            <button className={btn2} onClick={() => setModalType("")}>
+              Cancel
+            </button>
+            <button className={btn} onClick={saveTemplate}>
+              <Save className="h-3 w-3" /> Save Template
+            </button>
           </div>
         </div>
       </Modal>
@@ -1274,23 +1433,35 @@ export default function RecurringVouchers() {
     const total = voucherTotal(selected.lines || []);
 
     return (
-      <Modal open={modalType === "view"} title="Recurring Voucher Details" onClose={() => setModalType("")}>
+      <Modal
+        open={modalType === "view"}
+        title="Recurring Voucher Details"
+        onClose={() => setModalType("")}
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Template</p>
+              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                Template
+              </p>
               <p className="text-[13px] font-semibold mt-1 text-gray-800">{selected.name}</p>
             </div>
             <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Frequency</p>
+              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                Frequency
+              </p>
               <p className="text-[13px] font-semibold mt-1 text-gray-800">{selected.frequency}</p>
             </div>
             <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Next Run</p>
+              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                Next Run
+              </p>
               <p className="text-[13px] font-semibold mt-1 text-gray-800">{selected.nextDate}</p>
             </div>
             <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-3">
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">Amount</p>
+              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                Amount
+              </p>
               <p className="text-[13px] font-semibold mt-1 text-gray-800">{money(total.dr)}</p>
             </div>
           </div>
@@ -1308,9 +1479,15 @@ export default function RecurringVouchers() {
               <tbody>
                 {(selected.lines || []).map((l: any) => (
                   <tr key={l.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                    <td className={`${td} font-medium text-gray-800`}>{accountName(accounts, l.accountId)}</td>
-                    <td className={`${td} text-right font-medium`}>{l.debit ? money(l.debit) : "-"}</td>
-                    <td className={`${td} text-right font-medium`}>{l.credit ? money(l.credit) : "-"}</td>
+                    <td className={`${td} font-medium text-gray-800`}>
+                      {accountName(accounts, l.accountId)}
+                    </td>
+                    <td className={`${td} text-right font-medium`}>
+                      {l.debit ? money(l.debit) : "-"}
+                    </td>
+                    <td className={`${td} text-right font-medium`}>
+                      {l.credit ? money(l.credit) : "-"}
+                    </td>
                     <td className={td}>{l.narration || "-"}</td>
                   </tr>
                 ))}
@@ -1319,7 +1496,9 @@ export default function RecurringVouchers() {
           </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-            <button className={btn2} onClick={() => setModalType("")}>Close</button>
+            <button className={btn2} onClick={() => setModalType("")}>
+              Close
+            </button>
             <button className={btn} onClick={() => runTemplate(selected, todayISO(), "force")}>
               <PlayCircle className="h-3 w-3" /> Generate Now
             </button>
@@ -1330,9 +1509,15 @@ export default function RecurringVouchers() {
   };
 
   const renderPreviewModal = () => (
-    <Modal open={modalType === "preview"} title="Due Voucher Preview" onClose={() => setModalType("")}>
+    <Modal
+      open={modalType === "preview"}
+      title="Due Voucher Preview"
+      onClose={() => setModalType("")}
+    >
       <div className="space-y-4">
-        <p className="text-[12px] text-gray-600">Review {previewRows.length} templates scheduled for {runDate}.</p>
+        <p className="text-[12px] text-gray-600">
+          Review {previewRows.length} templates scheduled for {runDate}.
+        </p>
         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white max-h-96 overflow-y-auto">
           <table className="w-full text-left border-collapse whitespace-nowrap min-w-[850px]">
             <thead className="bg-[#f5f6fa] sticky top-0 shadow-sm z-10">
@@ -1378,7 +1563,9 @@ export default function RecurringVouchers() {
         </div>
 
         <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2">
-          <button className={btn2} onClick={() => setModalType("")}>Cancel</button>
+          <button className={btn2} onClick={() => setModalType("")}>
+            Cancel
+          </button>
           <button className={btn} onClick={runDueTemplates} disabled={!previewRows.length}>
             <PlayCircle className="h-3 w-3" /> Generate Due
           </button>
@@ -1432,8 +1619,11 @@ export default function RecurringVouchers() {
       </div>
 
       {loading && (
-        <div className={`${card} mb-4 flex items-center gap-2 text-[12px] text-gray-600 font-medium`}>
-          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Processing recurring voucher operation...
+        <div
+          className={`${card} mb-4 flex items-center gap-2 text-[12px] text-gray-600 font-medium`}
+        >
+          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Processing recurring
+          voucher operation...
         </div>
       )}
 

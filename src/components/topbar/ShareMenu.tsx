@@ -140,7 +140,12 @@ function EmailModal({ onClose }: { onClose: () => void }) {
         <Field label="CC" value={cc} onChange={setCc} />
         <Field label="BCC" value={bcc} onChange={setBcc} />
         <Field label="Subject" value={subject} onChange={setSubject} />
-        <SelectField label="Attachment Format" value={format} onChange={setFormat} options={["PDF", "Excel"]} />
+        <SelectField
+          label="Attachment Format"
+          value={format}
+          onChange={setFormat}
+          options={["PDF", "Excel"]}
+        />
 
         <label className="flex flex-col gap-1">
           <span className="text-[11px] font-medium text-gray-600">Message</span>
@@ -169,7 +174,9 @@ function WhatsAppModal({ onClose }: { onClose: () => void }) {
   );
 
   useEffect(() => {
-    setMessage(`Dear ${name || "Customer"}, please find your ${context.label} from ${companyName}.`);
+    setMessage(
+      `Dear ${name || "Customer"}, please find your ${context.label} from ${companyName}.`,
+    );
   }, [companyName, context.label, name]);
 
   const openWhatsApp = () => {
@@ -330,18 +337,30 @@ function ShareLinkModal({ onClose }: { onClose: () => void }) {
           onChange={setExpiry}
           options={["1 day", "3 days", "7 days", "30 days", "No Expiry"]}
         />
-        <ToggleRow label="Password Protect" checked={passwordProtect} onChange={setPasswordProtect} />
-        {passwordProtect && <Field label="Password" value={password} onChange={setPassword} type="password" />}
+        <ToggleRow
+          label="Password Protect"
+          checked={passwordProtect}
+          onChange={setPasswordProtect}
+        />
+        {passwordProtect && (
+          <Field label="Password" value={password} onChange={setPassword} type="password" />
+        )}
         <ToggleRow label="Allow Download" checked={allowDownload} onChange={setAllowDownload} />
         <ToggleRow label="View Only" checked={viewOnly} onChange={setViewOnly} />
 
         {generatedLink && (
           <div className="rounded-md border border-green-200 bg-green-50 p-3">
-            <div className="mb-1 text-[11px] font-semibold uppercase text-green-700">Generated Link</div>
+            <div className="mb-1 text-[11px] font-semibold uppercase text-green-700">
+              Generated Link
+            </div>
             <div className="break-all font-mono text-[12px] text-green-800">{generatedLink}</div>
 
             {qrDataUrl && (
-              <img src={qrDataUrl} alt="Share QR Code" className="mt-3 h-40 w-40 border border-green-200 bg-white p-2" />
+              <img
+                src={qrDataUrl}
+                alt="Share QR Code"
+                className="mt-3 h-40 w-40 border border-green-200 bg-white p-2"
+              />
             )}
 
             <button

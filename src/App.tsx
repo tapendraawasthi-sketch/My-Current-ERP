@@ -56,11 +56,7 @@ import GatewayScreen from "./components/auth/GatewayScreen";
 import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
 
 const App: React.FC = () => {
-  const {
-    currentPage,
-    authStage,
-    initializeApp,
-  } = useStore();
+  const { currentPage, authStage, initializeApp } = useStore();
 
   useEffect(() => {
     initializeApp();
@@ -70,10 +66,15 @@ const App: React.FC = () => {
 
   if (authStage === "checking") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "#E4F1D9" }}
+      >
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-[#1557b0] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>Loading Sutra ERP…</p>
+          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>
+            Loading Sutra ERP…
+          </p>
         </div>
       </div>
     );
@@ -111,80 +112,128 @@ const App: React.FC = () => {
   // ── Page resolver ─────────────────────────────────────────────────────────
   const renderPage = () => {
     switch (currentPage) {
-
       // ── Masters ──────────────────────────────────────────────────────────
-      case "accounts":          return <ChartOfAccounts />;
-      case "cost-centers":      return <CostCenters />;
-      case "budget":            return <BudgetMaster />;
-      case "parties":           return <Parties />;
-      case "item-master":       return <StockBook />;
-      case "warehouses":        return <Warehouses />;
-      case "units":             return <Units />;
-      case "unit-conversion":   return <UnitConversionMaster />;
+      case "accounts":
+        return <ChartOfAccounts />;
+      case "cost-centers":
+        return <CostCenters />;
+      case "budget":
+        return <BudgetMaster />;
+      case "parties":
+        return <Parties />;
+      case "item-master":
+        return <StockBook />;
+      case "warehouses":
+        return <Warehouses />;
+      case "units":
+        return <Units />;
+      case "unit-conversion":
+        return <UnitConversionMaster />;
 
       // ── Phase 4 masters ───────────────────────────────────────────────────
-      case "sales-persons":     return <SalesPersons />;
-      case "price-lists":       return <PriceLists />;
-      case "standard-narration":return <StandardNarrationMaster />;
-      case "bill-sundry":       return <BillSundryMaster />;
+      case "sales-persons":
+        return <SalesPersons />;
+      case "price-lists":
+        return <PriceLists />;
+      case "standard-narration":
+        return <StandardNarrationMaster />;
+      case "bill-sundry":
+        return <BillSundryMaster />;
 
       // ── Sales transactions ────────────────────────────────────────────────
-      case "sales":             return <SalesVoucher />;
-      case "sales-return":      return <BillingInvoice />;
-      case "delivery-challan":  return <DeliveryChallan />;
-      case "quotation":         return <Quotation />;
-      case "sales-order":       return <SalesOrder />;
+      case "billing":
+        return <BillingInvoice />;
+      case "sales":
+        return <SalesVoucher />;
+      case "sales-return":
+        return <BillingInvoice />;
+      case "delivery-challan":
+        return <DeliveryChallan />;
+      case "quotation":
+        return <Quotation />;
+      case "sales-order":
+        return <SalesOrder />;
 
       // ── Purchase transactions ─────────────────────────────────────────────
-      case "purchase":          return <PurchaseVoucher />;
-      case "purchase-return":   return <BillingInvoice />;
-      case "goods-receipt":     return <GoodsReceiptNote />;
-      case "purchase-order":    return <PurchaseOrder />;
+      case "purchase":
+        return <PurchaseVoucher />;
+      case "purchase-return":
+        return <BillingInvoice />;
+      case "goods-receipt":
+        return <GoodsReceiptNote />;
+      case "purchase-order":
+        return <PurchaseOrder />;
 
       // ── Inventory transactions ────────────────────────────────────────────
-      case "stock-transfer":    return <StockTransfer />;
-      case "physical-stock":    return <PhysicalStockPage />;
+      case "stock-transfer":
+        return <StockTransfer />;
+      case "physical-stock":
+        return <PhysicalStockPage />;
 
       // ── Finance / Accounts ────────────────────────────────────────────────
-      case "journal":           return <JournalEntries />;
-      case "payment":           return <PaymentVoucher />;
-      case "receipt":           return <ReceiptVoucher />;
-      case "contra":            return <ContraVoucher />;
-      case "debit-note":        return <DebitNoteVoucher />;
-      case "credit-note":       return <CreditNoteVoucher />;
+      case "journal":
+        return <JournalEntries />;
+      case "payment":
+        return <PaymentVoucher />;
+      case "receipt":
+        return <ReceiptVoucher />;
+      case "contra":
+        return <ContraVoucher />;
+      case "debit-note":
+        return <DebitNoteVoucher />;
+      case "credit-note":
+        return <CreditNoteVoucher />;
 
       // ── Financial reports ─────────────────────────────────────────────────
-      case "balance-sheet":     return <BalanceSheet />;
-      case "profit-loss":       return <ProfitLoss />;
-      case "trial-balance":     return <TrialBalance />;
-      case "day-book":          return <DayBook />;
-      case "cash-flow":         return <CashFlowStatement />;
-      case "ledger-report":     return <GeneralLedger />;
-      case "ledger":            return <GeneralLedger />;
+      case "balance-sheet":
+        return <BalanceSheet />;
+      case "profit-loss":
+        return <ProfitLoss />;
+      case "trial-balance":
+        return <TrialBalance />;
+      case "day-book":
+        return <DayBook />;
+      case "cash-flow":
+        return <CashFlowStatement />;
+      case "ledger-report":
+        return <GeneralLedger />;
+      case "ledger":
+        return <GeneralLedger />;
 
       // ── GST / VAT reports ─────────────────────────────────────────────────
-      case "vat-reports":       return <VatReports />;
+      case "vat-reports":
+        return <VatReports />;
       case "gstr1":
       case "gstr2":
       case "gstr3b":
-      case "gst-summary":       return <VatReports />;
+      case "gst-summary":
+        return <VatReports />;
 
       // ── Party reports ─────────────────────────────────────────────────────
-      case "outstanding-receivables": return <OutstandingReceivables />;
-      case "outstanding-payables":    return <OutstandingPayables />;
-      case "aging-report":            return <AgingReport />;
-      case "party-statement":         return <PartyStatement />;
-      case "interest-calculation":    return <InterestCalculation />;
+      case "outstanding-receivables":
+        return <OutstandingReceivables />;
+      case "outstanding-payables":
+        return <OutstandingPayables />;
+      case "aging-report":
+        return <AgingReport />;
+      case "party-statement":
+        return <PartyStatement />;
+      case "interest-calculation":
+        return <InterestCalculation />;
 
       // ── Inventory reports ─────────────────────────────────────────────────
-      case "stock-summary":     return <StockSummary />;
+      case "stock-summary":
+        return <StockSummary />;
 
       // ── Company / utilities ───────────────────────────────────────────────
-      case "fiscal-year":       return <FiscalYear />;
-      case "audit-log":         return <AuditLog />;
+      case "fiscal-year":
+        return <FiscalYear />;
+      case "audit-log":
+        return <AuditLog />;
 
       // ── Dashboard / fallback ──────────────────────────────────────────────
-      default:                  return <Dashboard />;
+      default:
+        return <Dashboard />;
     }
   };
 
@@ -194,9 +243,7 @@ const App: React.FC = () => {
       <Toaster position="top-right" />
       <Layout>
         <div className="flex flex-col h-full">
-          <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">
-            {renderPage()}
-          </main>
+          <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">{renderPage()}</main>
         </div>
       </Layout>
     </>

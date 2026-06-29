@@ -89,14 +89,16 @@ export function computeInvoiceVAT(lines: LineForVAT[], vatRate = 13): VATComputa
 }
 
 // Used by OrderForm
-export function computeVAT(lines: Array<{
-  qty: number;
-  rate: number;
-  discount?: number;
-  isTaxable?: boolean;
-  vatRate?: number;
-  itemName?: string;
-}>): VATComputation {
+export function computeVAT(
+  lines: Array<{
+    qty: number;
+    rate: number;
+    discount?: number;
+    isTaxable?: boolean;
+    vatRate?: number;
+    itemName?: string;
+  }>,
+): VATComputation {
   return computeInvoiceVAT(
     lines.map((l) => ({
       qty: l.qty,
@@ -104,7 +106,7 @@ export function computeVAT(lines: Array<{
       discount: l.discount || 0,
       vatExempt: l.isTaxable === false,
       vatRate: l.vatRate,
-    }))
+    })),
   );
 }
 
@@ -126,7 +128,7 @@ export function computeTDS(amount: number, rate: number): number {
 export function computeWithholdingTDS(
   grossAmount: number,
   rate: number,
-  threshold: number = 0
+  threshold: number = 0,
 ): { tdsAmount: number; netAmount: number; isBelowThreshold: boolean } {
   const gross = Number(grossAmount) || 0;
   const r = Number(rate) || 0;
@@ -175,25 +177,34 @@ export function computeVatAnnexA(
   _vouchers: any[],
   _accounts: any[],
   startDate: string,
-  endDate: string
+  endDate: string,
 ): AnnexResult {
   if (!Array.isArray(invoices)) return emptyAnnex();
 
   const salesInvoices = invoices.filter(
     (inv) =>
       (inv.status === "posted" || inv.status === "POSTED") &&
-      (inv.type === "sales-invoice" || inv.type === "sales_invoice" || inv.type === "sales-return" || inv.type === "sales_return") &&
-      isBetween(inv.date, startDate, endDate)
+      (inv.type === "sales-invoice" ||
+        inv.type === "sales_invoice" ||
+        inv.type === "sales-return" ||
+        inv.type === "sales_return") &&
+      isBetween(inv.date, startDate, endDate),
   );
 
-  let taxable = 0, vat = 0, exempt = 0, total = 0;
+  let taxable = 0,
+    vat = 0,
+    exempt = 0,
+    total = 0;
   const rows: AnnexRow[] = salesInvoices.map((inv, idx) => {
-    const sign = (inv.type === "sales-return" || inv.type === "sales_return") ? -1 : 1;
+    const sign = inv.type === "sales-return" || inv.type === "sales_return" ? -1 : 1;
     const t = round2(Number(inv.taxableAmount) || 0) * sign;
     const v = round2(Number(inv.vatAmount) || 0) * sign;
     const e = round2(Number(inv.exemptAmount) || 0) * sign;
-    const tot = round2(Number(inv.grandTotal) || (t + v + e)) * sign;
-    taxable += t; vat += v; exempt += e; total += tot;
+    const tot = round2(Number(inv.grandTotal) || t + v + e) * sign;
+    taxable += t;
+    vat += v;
+    exempt += e;
+    total += tot;
     return {
       sn: idx + 1,
       billNo: inv.invoiceNo || inv.id,
@@ -227,25 +238,34 @@ export function computeVatAnnexB(
   _vouchers: any[],
   _accounts: any[],
   startDate: string,
-  endDate: string
+  endDate: string,
 ): AnnexResult {
   if (!Array.isArray(invoices)) return emptyAnnex();
 
   const purchaseInvoices = invoices.filter(
     (inv) =>
       (inv.status === "posted" || inv.status === "POSTED") &&
-      (inv.type === "purchase-invoice" || inv.type === "purchase_invoice" || inv.type === "purchase-return" || inv.type === "purchase_return") &&
-      isBetween(inv.date, startDate, endDate)
+      (inv.type === "purchase-invoice" ||
+        inv.type === "purchase_invoice" ||
+        inv.type === "purchase-return" ||
+        inv.type === "purchase_return") &&
+      isBetween(inv.date, startDate, endDate),
   );
 
-  let taxable = 0, vat = 0, exempt = 0, total = 0;
+  let taxable = 0,
+    vat = 0,
+    exempt = 0,
+    total = 0;
   const rows: AnnexRow[] = purchaseInvoices.map((inv, idx) => {
-    const sign = (inv.type === "purchase-return" || inv.type === "purchase_return") ? -1 : 1;
+    const sign = inv.type === "purchase-return" || inv.type === "purchase_return" ? -1 : 1;
     const t = round2(Number(inv.taxableAmount) || 0) * sign;
     const v = round2(Number(inv.vatAmount) || 0) * sign;
     const e = round2(Number(inv.exemptAmount) || 0) * sign;
-    const tot = round2(Number(inv.grandTotal) || (t + v + e)) * sign;
-    taxable += t; vat += v; exempt += e; total += tot;
+    const tot = round2(Number(inv.grandTotal) || t + v + e) * sign;
+    taxable += t;
+    vat += v;
+    exempt += e;
+    total += tot;
     return {
       sn: idx + 1,
       billNo: inv.invoiceNo || inv.id,
@@ -274,27 +294,29 @@ export function computeVatAnnexB(
 }
 
 // Annex C — Import invoices
-export function computeVatAnnexC(
-  invoices: any[],
-  startDate: string,
-  endDate: string
-): AnnexResult {
+export function computeVatAnnexC(invoices: any[], startDate: string, endDate: string): AnnexResult {
   if (!Array.isArray(invoices)) return emptyAnnex();
 
   const importInvoices = invoices.filter(
     (inv) =>
       (inv.type === "import-invoice" || inv.type === "import") &&
       inv.status !== "cancelled" &&
-      isBetween(inv.date, startDate, endDate)
+      isBetween(inv.date, startDate, endDate),
   );
 
-  let taxable = 0, vat = 0, exempt = 0, total = 0;
+  let taxable = 0,
+    vat = 0,
+    exempt = 0,
+    total = 0;
   const rows: AnnexRow[] = importInvoices.map((inv, idx) => {
     const t = round2(Number(inv.taxableAmount) || 0);
     const v = round2(Number(inv.vatAmount) || 0);
     const e = round2(Number(inv.exemptAmount) || 0);
     const tot = round2(Number(inv.grandTotal) || t + v + e);
-    taxable += t; vat += v; exempt += e; total += tot;
+    taxable += t;
+    vat += v;
+    exempt += e;
+    total += tot;
     return {
       sn: idx + 1,
       billNo: inv.invoiceNo || inv.id,
@@ -327,7 +349,7 @@ export function computeVAT3Return(
   annexA: AnnexResult,
   annexB: AnnexResult,
   _startDate?: string,
-  _endDate?: string
+  _endDate?: string,
 ): {
   salesVat: number;
   purchaseVat: number;

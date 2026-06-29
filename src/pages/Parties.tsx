@@ -86,13 +86,27 @@ export default function Parties() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Code</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">PAN / VAT</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Contact</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Balance</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Code
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Type
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                PAN / VAT
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Contact
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Balance
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -111,16 +125,22 @@ export default function Parties() {
                   <td className="px-3 py-2.5 font-mono text-[11px] text-gray-700">
                     {p.code || "—"}
                   </td>
-                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">
-                    {p.name}
-                  </td>
+                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">{p.name}</td>
                   <td className="px-3 py-2.5">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                      p.type === PartyType.CUSTOMER ? "bg-blue-100 text-blue-700 border border-blue-200" :
-                      p.type === PartyType.SUPPLIER ? "bg-purple-100 text-purple-700 border border-purple-200" :
-                      "bg-gray-100 text-gray-700 border border-gray-200"
-                    }`}>
-                      {p.type === PartyType.CUSTOMER ? "Customer" : p.type === PartyType.SUPPLIER ? "Supplier" : "Both"}
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        p.type === PartyType.CUSTOMER
+                          ? "bg-blue-100 text-blue-700 border border-blue-200"
+                          : p.type === PartyType.SUPPLIER
+                            ? "bg-purple-100 text-purple-700 border border-purple-200"
+                            : "bg-gray-100 text-gray-700 border border-gray-200"
+                      }`}
+                    >
+                      {p.type === PartyType.CUSTOMER
+                        ? "Customer"
+                        : p.type === PartyType.SUPPLIER
+                          ? "Supplier"
+                          : "Both"}
                     </span>
                   </td>
                   <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">
@@ -130,7 +150,10 @@ export default function Parties() {
                     {p.phone || p.email || "—"}
                   </td>
                   <td className="px-3 py-2.5 text-[12px] text-right font-mono font-medium text-gray-700">
-                    {Number(p.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {Number(p.balance || 0).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                   <td className="px-3 py-2.5">
                     <div className="flex items-center justify-center gap-2">
@@ -168,10 +191,7 @@ export default function Parties() {
               </button>
             </div>
             <div className="p-4">
-              <PartyForm
-                partyId={editingParty?.id}
-                onClose={() => setShowForm(false)}
-              />
+              <PartyForm partyId={editingParty?.id} onClose={() => setShowForm(false)} />
             </div>
           </div>
         </div>

@@ -3,7 +3,11 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherStatus } from "../lib/types";
-import { buildAccountTree, computeLedgerTotals, computeGroupTotals } from "../lib/reportingHierarchy";
+import {
+  buildAccountTree,
+  computeLedgerTotals,
+  computeGroupTotals,
+} from "../lib/reportingHierarchy";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 
@@ -12,7 +16,7 @@ const FundsFlowStatement: React.FC = () => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
-  
+
   // Pending states for options modal
   const [pendingStart, setPendingStart] = useState(startDate);
   const [pendingEnd, setPendingEnd] = useState(endDate);
@@ -25,20 +29,28 @@ const FundsFlowStatement: React.FC = () => {
 
   // Compute funds flow data
   const fundsFlowData = useMemo(() => {
-    if (!vouchers || !accounts) return {
-      sources: [],
-      applications: [],
-      netIncreaseInWC: 0,
-      scheduleOfWorkingCapital: []
-    };
+    if (!vouchers || !accounts)
+      return {
+        sources: [],
+        applications: [],
+        netIncreaseInWC: 0,
+        scheduleOfWorkingCapital: [],
+      };
 
     // Define current asset and liability groups
     const currentAssetGroups = [
-      "Cash-in-Hand", "Bank Accounts", "Sundry Debtors", "Stock-in-Hand", 
-      "Loans & Advances (Asset)", "Deposits (Asset)"
+      "Cash-in-Hand",
+      "Bank Accounts",
+      "Sundry Debtors",
+      "Stock-in-Hand",
+      "Loans & Advances (Asset)",
+      "Deposits (Asset)",
     ];
     const currentLiabilityGroups = [
-      "Sundry Creditors", "Duties & Taxes", "Provisions", "Current Liabilities"
+      "Sundry Creditors",
+      "Duties & Taxes",
+      "Provisions",
+      "Current Liabilities",
     ];
     const fixedAssetGroups = ["Fixed Assets"];
     const loanGroups = ["Loans (Liability)", "Long-term Loans"];
@@ -46,15 +58,15 @@ const FundsFlowStatement: React.FC = () => {
 
     // Helper function to check if an account belongs to a group
     const isInGroup = (accountId: string, groupNames: string[]): boolean => {
-      const account = accounts.find(acc => acc.id === accountId);
+      const account = accounts.find((acc) => acc.id === accountId);
       if (!account) return false;
-      
+
       // Check direct parent group
       if (account.parentId) {
-        const parent = accounts.find(acc => acc.id === account.parentId);
+        const parent = accounts.find((acc) => acc.id === account.parentId);
         if (parent && groupNames.includes(parent.name)) return true;
       }
-      
+
       // Check if account name matches group
       return groupNames.includes(account.name);
     };
@@ -64,98 +76,112 @@ const FundsFlowStatement: React.FC = () => {
 
     // Calculate opening and closing balances for working capital items
     const scheduleOfWorkingCapital = [];
-    const totalOpeningWC = currentAssetGroups.reduce((sum, groupName) => {
-      const groupAccounts = accounts.filter(acc => 
-        acc.name === groupName || acc.parentId === accounts.find(g => g.name === groupName)?.id
-      );
-      
-      let openingBal = 0;
-      let closingBal = 0;
-      
-      groupAccounts.forEach(acc => {
-        const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
-        const closing = (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
-        openingBal += opening;
-        closingBal += closing;
-      });
-      
-      scheduleOfWorkingCapital.push({
-        item: groupName,
-        opening: openingBal,
-        closing: closingBal,
-        increase: closingBal > openingBal ? closingBal - openingBal : 0,
-        decrease: closingBal < openingBal ? openingBal - closingBal : 0
-      });
-      
-      return sum + openingBal;
-    }, 0) - currentLiabilityGroups.reduce((sum, groupName) => {
-      const groupAccounts = accounts.filter(acc => 
-        acc.name === groupName || acc.parentId === accounts.find(g => g.name === groupName)?.id
-      );
-      
-      let openingBal = 0;
-      let closingBal = 0;
-      
-      groupAccounts.forEach(acc => {
-        const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
-        const closing = (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
-        openingBal += opening;
-        closingBal += closing;
-      });
-      
-      scheduleOfWorkingCapital.push({
-        item: groupName,
-        opening: -openingBal, // Liability should be negative
-        closing: -closingBal, // Liability should be negative
-        increase: closingBal > openingBal ? closingBal - openingBal : 0, // This would actually be a decrease in WC
-        decrease: closingBal < openingBal ? openingBal - closingBal : 0 // This would actually be an increase in WC
-      });
-      
-      return sum + openingBal;
-    }, 0);
+    const totalOpeningWC =
+      currentAssetGroups.reduce((sum, groupName) => {
+        const groupAccounts = accounts.filter(
+          (acc) =>
+            acc.name === groupName ||
+            acc.parentId === accounts.find((g) => g.name === groupName)?.id,
+        );
+
+        let openingBal = 0;
+        let closingBal = 0;
+
+        groupAccounts.forEach((acc) => {
+          const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
+          const closing =
+            (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
+          openingBal += opening;
+          closingBal += closing;
+        });
+
+        scheduleOfWorkingCapital.push({
+          item: groupName,
+          opening: openingBal,
+          closing: closingBal,
+          increase: closingBal > openingBal ? closingBal - openingBal : 0,
+          decrease: closingBal < openingBal ? openingBal - closingBal : 0,
+        });
+
+        return sum + openingBal;
+      }, 0) -
+      currentLiabilityGroups.reduce((sum, groupName) => {
+        const groupAccounts = accounts.filter(
+          (acc) =>
+            acc.name === groupName ||
+            acc.parentId === accounts.find((g) => g.name === groupName)?.id,
+        );
+
+        let openingBal = 0;
+        let closingBal = 0;
+
+        groupAccounts.forEach((acc) => {
+          const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
+          const closing =
+            (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
+          openingBal += opening;
+          closingBal += closing;
+        });
+
+        scheduleOfWorkingCapital.push({
+          item: groupName,
+          opening: -openingBal, // Liability should be negative
+          closing: -closingBal, // Liability should be negative
+          increase: closingBal > openingBal ? closingBal - openingBal : 0, // This would actually be a decrease in WC
+          decrease: closingBal < openingBal ? openingBal - closingBal : 0, // This would actually be an increase in WC
+        });
+
+        return sum + openingBal;
+      }, 0);
 
     // Recalculate properly for schedule
-    const scheduleWithCalculations = [...currentAssetGroups, ...currentLiabilityGroups].map(groupName => {
-      const groupAccounts = accounts.filter(acc => 
-        acc.name === groupName || acc.parentId === accounts.find(g => g.name === groupName)?.id
-      );
-      
-      let openingBal = 0;
-      let closingBal = 0;
-      
-      groupAccounts.forEach(acc => {
-        const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
-        const closing = (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
-        openingBal += opening;
-        closingBal += closing;
-      });
-      
-      // For liabilities, we want the opposite sign for WC calculation
-      const isLiability = currentLiabilityGroups.includes(groupName);
-      const openingWc = isLiability ? -openingBal : openingBal;
-      const closingWc = isLiability ? -closingBal : closingBal;
-      
-      const diff = closingWc - openingWc;
-      const increase = diff > 0 ? diff : 0;
-      const decrease = diff < 0 ? Math.abs(diff) : 0;
-      
-      return {
-        item: groupName,
-        opening: openingWc,
-        closing: closingWc,
-        increase,
-        decrease
-      };
-    });
+    const scheduleWithCalculations = [...currentAssetGroups, ...currentLiabilityGroups].map(
+      (groupName) => {
+        const groupAccounts = accounts.filter(
+          (acc) =>
+            acc.name === groupName ||
+            acc.parentId === accounts.find((g) => g.name === groupName)?.id,
+        );
+
+        let openingBal = 0;
+        let closingBal = 0;
+
+        groupAccounts.forEach((acc) => {
+          const opening = (acc.openingBalanceDr || 0) - (acc.openingBalanceCr || 0);
+          const closing =
+            (ledgerTotals[acc.id]?.balanceDr || 0) - (ledgerTotals[acc.id]?.balanceCr || 0);
+          openingBal += opening;
+          closingBal += closing;
+        });
+
+        // For liabilities, we want the opposite sign for WC calculation
+        const isLiability = currentLiabilityGroups.includes(groupName);
+        const openingWc = isLiability ? -openingBal : openingBal;
+        const closingWc = isLiability ? -closingBal : closingBal;
+
+        const diff = closingWc - openingWc;
+        const increase = diff > 0 ? diff : 0;
+        const decrease = diff < 0 ? Math.abs(diff) : 0;
+
+        return {
+          item: groupName,
+          opening: openingWc,
+          closing: closingWc,
+          increase,
+          decrease,
+        };
+      },
+    );
 
     // Calculate net change in working capital
-    const netChangeInWC = scheduleWithCalculations.reduce((sum, item) => sum + (item.closing - item.opening), 0);
+    const netChangeInWC = scheduleWithCalculations.reduce(
+      (sum, item) => sum + (item.closing - item.opening),
+      0,
+    );
 
     // Compute sources and applications
-    const relevantVouchers = vouchers.filter(v => 
-      v.status === "posted" && 
-      v.date >= startDate && 
-      v.date <= endDate
+    const relevantVouchers = vouchers.filter(
+      (v) => v.status === "posted" && v.date >= startDate && v.date <= endDate,
     );
 
     // Sources of funds
@@ -171,22 +197,22 @@ const FundsFlowStatement: React.FC = () => {
     let drawings = 0;
     let investmentsMade = 0;
 
-    relevantVouchers.forEach(voucher => {
+    relevantVouchers.forEach((voucher) => {
       // Calculate net profit by looking at income and expense accounts
-      voucher.lines.forEach(line => {
-        const account = accounts.find(acc => acc.id === line.accountId);
+      voucher.lines.forEach((line) => {
+        const account = accounts.find((acc) => acc.id === line.accountId);
         if (account) {
           if (account.type === "income" && line.credit > 0) {
             netProfit += line.credit;
           } else if (account.type === "expense" && line.debit > 0) {
             netProfit -= line.debit;
           }
-          
+
           // Check for depreciation (commonly named accounts)
           if (account.name.toLowerCase().includes("depreciation") && line.debit > 0) {
             depreciation += line.debit;
           }
-          
+
           // Fixed assets transactions
           if (isInGroup(account.id, fixedAssetGroups)) {
             if (line.credit > 0) {
@@ -195,7 +221,7 @@ const FundsFlowStatement: React.FC = () => {
               purchaseOfFixedAssets += line.debit;
             }
           }
-          
+
           // Loan transactions
           if (isInGroup(account.id, loanGroups)) {
             if (line.credit > 0) {
@@ -204,7 +230,7 @@ const FundsFlowStatement: React.FC = () => {
               repaymentOfLoans += line.debit;
             }
           }
-          
+
           // Capital/equity transactions
           if (isInGroup(account.id, capitalGroups)) {
             if (line.credit > 0) {
@@ -213,7 +239,7 @@ const FundsFlowStatement: React.FC = () => {
               drawings += line.debit;
             }
           }
-          
+
           // Investment transactions (if there are specific investment accounts)
           if (account.name.toLowerCase().includes("investment") && line.debit > 0) {
             investmentsMade += line.debit;
@@ -227,7 +253,11 @@ const FundsFlowStatement: React.FC = () => {
       { id: "net-profit", label: "Net Profit for the Period", amount: Math.max(0, netProfit) },
       { id: "depreciation", label: "Add: Depreciation", amount: depreciation },
       { id: "sale-fixed-assets", label: "Sale of Fixed Assets", amount: saleOfFixedAssets },
-      { id: "long-term-loans-raised", label: "Long-term Loans Raised", amount: longTermLoansRaised },
+      {
+        id: "long-term-loans-raised",
+        label: "Long-term Loans Raised",
+        amount: longTermLoansRaised,
+      },
       { id: "capital-introduced", label: "Capital Introduced", amount: capitalIntroduced },
     ];
 
@@ -235,7 +265,11 @@ const FundsFlowStatement: React.FC = () => {
 
     // Applications of funds
     const applications = [
-      { id: "purchase-fixed-assets", label: "Purchase of Fixed Assets", amount: purchaseOfFixedAssets },
+      {
+        id: "purchase-fixed-assets",
+        label: "Purchase of Fixed Assets",
+        amount: purchaseOfFixedAssets,
+      },
       { id: "repayment-loans", label: "Repayment of Long-term Loans", amount: repaymentOfLoans },
       { id: "drawings", label: "Drawings", amount: drawings },
       { id: "investments-made", label: "Investments Made", amount: investmentsMade },
@@ -251,11 +285,19 @@ const FundsFlowStatement: React.FC = () => {
     if (netIncreaseInWC > 0) {
       // Working capital increased - this is an application of funds
       netIncreaseInWcApplication = netIncreaseInWC;
-      applications.push({ id: "net-increase-wc", label: "Net Increase in Working Capital", amount: netIncreaseInWC });
+      applications.push({
+        id: "net-increase-wc",
+        label: "Net Increase in Working Capital",
+        amount: netIncreaseInWC,
+      });
     } else {
       // Working capital decreased - this is a source of funds
       netIncreaseInWcSource = Math.abs(netIncreaseInWC);
-      sources.push({ id: "net-decrease-wc", label: "Net Decrease in Working Capital", amount: Math.abs(netIncreaseInWC) });
+      sources.push({
+        id: "net-decrease-wc",
+        label: "Net Decrease in Working Capital",
+        amount: Math.abs(netIncreaseInWC),
+      });
     }
 
     const finalTotalSources = totalSources + netIncreaseInWcSource;
@@ -267,7 +309,7 @@ const FundsFlowStatement: React.FC = () => {
       netIncreaseInWC,
       scheduleOfWorkingCapital: scheduleWithCalculations,
       totalSources: finalTotalSources,
-      totalApplications: finalTotalApplications
+      totalApplications: finalTotalApplications,
     };
   }, [vouchers, accounts, startDate, endDate]);
 
@@ -283,29 +325,26 @@ const FundsFlowStatement: React.FC = () => {
         setPendingEnd(endDate);
         setOptionsOpen(true);
       }}
-      actionBarButtons={[
-        { label: "Print" },
-        { label: "Export" }
-      ]}
+      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
       toolbarLeft={
         <>
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            From: 
-            <input 
-              type="date" 
-              value={startDate} 
-              onChange={e => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From:
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            To: 
-            <input 
-              type="date" 
-              value={endDate} 
-              onChange={e => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To:
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
         </>
@@ -316,22 +355,33 @@ const FundsFlowStatement: React.FC = () => {
         <table className="w-full text-left whitespace-nowrap">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">SOURCES OF FUNDS</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">Amount (Rs.)</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">APPLICATIONS OF FUNDS</th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">Amount (Rs.)</th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+                SOURCES OF FUNDS
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
+                Amount (Rs.)
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+                APPLICATIONS OF FUNDS
+              </th>
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">
+                Amount (Rs.)
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* Sources and Applications rows */}
             {(() => {
-              const maxRows = Math.max(fundsFlowData.sources.length, fundsFlowData.applications.length);
+              const maxRows = Math.max(
+                fundsFlowData.sources.length,
+                fundsFlowData.applications.length,
+              );
               const rows = [];
-              
+
               for (let i = 0; i < maxRows; i++) {
                 const source = fundsFlowData.sources[i];
                 const application = fundsFlowData.applications[i];
-                
+
                 rows.push(
                   <tr key={i} className="hover:bg-gray-50 transition-colors">
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 border-r border-gray-200">
@@ -344,89 +394,161 @@ const FundsFlowStatement: React.FC = () => {
                       {application ? application.label : ""}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-right">
-                      {application && application.amount !== 0 ? formatNumber(application.amount) : ""}
+                      {application && application.amount !== 0
+                        ? formatNumber(application.amount)
+                        : ""}
                     </td>
-                  </tr>
+                  </tr>,
                 );
               }
-              
+
               return rows;
             })()}
-            
+
             {/* Totals */}
             <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">TOTAL SOURCES</td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[#c7d2fe]">{formatNumber(fundsFlowData.totalSources)}</td>
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">TOTAL APPLICATIONS</td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">{formatNumber(fundsFlowData.totalApplications)}</td>
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+                TOTAL SOURCES
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[#c7d2fe]">
+                {formatNumber(fundsFlowData.totalSources)}
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+                TOTAL APPLICATIONS
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+                {formatNumber(fundsFlowData.totalApplications)}
+              </td>
             </tr>
-            
+
             {/* Verification row */}
-            <tr className={`border-t border-gray-200 ${fundsFlowData.totalSources === fundsFlowData.totalApplications ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
-              <td colSpan={4} className="px-3 py-3 text-[12px] font-bold text-center border-t border-gray-200">
-                {fundsFlowData.totalSources === fundsFlowData.totalApplications 
-                  ? "✓ FUND FLOW STATEMENT BALANCES" 
+            <tr
+              className={`border-t border-gray-200 ${fundsFlowData.totalSources === fundsFlowData.totalApplications ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+            >
+              <td
+                colSpan={4}
+                className="px-3 py-3 text-[12px] font-bold text-center border-t border-gray-200"
+              >
+                {fundsFlowData.totalSources === fundsFlowData.totalApplications
+                  ? "✓ FUND FLOW STATEMENT BALANCES"
                   : "⚠️ FUND FLOW STATEMENT DOES NOT BALANCE"}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      
+
       {/* Schedule of Changes in Working Capital */}
       <div className="mb-6">
-        <h3 className="text-[13px] font-semibold text-gray-800 mb-3 px-1">Schedule of Changes in Working Capital</h3>
+        <h3 className="text-[13px] font-semibold text-gray-800 mb-3 px-1">
+          Schedule of Changes in Working Capital
+        </h3>
         <div className="overflow-x-auto border border-gray-200 rounded-md bg-white">
           <table className="w-full text-left whitespace-nowrap">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">Item</th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">Opening (Rs.)</th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">Closing (Rs.)</th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">Increase (Rs.)</th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[140px]">Decrease (Rs.)</th>
+                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+                  Item
+                </th>
+                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                  Opening (Rs.)
+                </th>
+                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                  Closing (Rs.)
+                </th>
+                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                  Increase (Rs.)
+                </th>
+                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[140px]">
+                  Decrease (Rs.)
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {fundsFlowData.scheduleOfWorkingCapital.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 border-r border-gray-200">{item.item}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">{item.opening !== 0 ? formatNumber(item.opening) : "-"}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">{item.closing !== 0 ? formatNumber(item.closing) : "-"}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">{item.increase !== 0 ? formatNumber(item.increase) : "-"}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right">{item.decrease !== 0 ? formatNumber(item.decrease) : "-"}</td>
+                  <td className="px-3 py-2.5 text-[12px] text-gray-700 border-r border-gray-200">
+                    {item.item}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">
+                    {item.opening !== 0 ? formatNumber(item.opening) : "-"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">
+                    {item.closing !== 0 ? formatNumber(item.closing) : "-"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-mono text-right border-r border-gray-200">
+                    {item.increase !== 0 ? formatNumber(item.increase) : "-"}
+                  </td>
+                  <td className="px-3 py-2.5 text-[12px] font-mono text-right">
+                    {item.decrease !== 0 ? formatNumber(item.decrease) : "-"}
+                  </td>
                 </tr>
               ))}
-              
+
               {/* Totals row */}
               <tr className="bg-[#f8fafc] border-t-2 border-gray-200">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-gray-200">TOTAL</td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
-                  {formatNumber(fundsFlowData.scheduleOfWorkingCapital.reduce((sum, item) => sum + item.opening, 0))}
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-gray-200">
+                  TOTAL
                 </td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
-                  {formatNumber(fundsFlowData.scheduleOfWorkingCapital.reduce((sum, item) => sum + item.closing, 0))}
+                  {formatNumber(
+                    fundsFlowData.scheduleOfWorkingCapital.reduce(
+                      (sum, item) => sum + item.opening,
+                      0,
+                    ),
+                  )}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
-                  {formatNumber(fundsFlowData.scheduleOfWorkingCapital.reduce((sum, item) => sum + item.increase, 0))}
+                  {formatNumber(
+                    fundsFlowData.scheduleOfWorkingCapital.reduce(
+                      (sum, item) => sum + item.closing,
+                      0,
+                    ),
+                  )}
+                </td>
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
+                  {formatNumber(
+                    fundsFlowData.scheduleOfWorkingCapital.reduce(
+                      (sum, item) => sum + item.increase,
+                      0,
+                    ),
+                  )}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
-                  {formatNumber(fundsFlowData.scheduleOfWorkingCapital.reduce((sum, item) => sum + item.decrease, 0))}
+                  {formatNumber(
+                    fundsFlowData.scheduleOfWorkingCapital.reduce(
+                      (sum, item) => sum + item.decrease,
+                      0,
+                    ),
+                  )}
                 </td>
               </tr>
-              
+
               {/* Net Change row */}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">NET CHANGE IN WORKING CAPITAL</td>
-                <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
-                  {formatNumber(fundsFlowData.scheduleOfWorkingCapital.reduce((sum, item) => sum + (item.closing - item.opening), 0))}
+                <td
+                  colSpan={2}
+                  className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]"
+                >
+                  NET CHANGE IN WORKING CAPITAL
+                </td>
+                <td
+                  colSpan={3}
+                  className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right"
+                >
+                  {formatNumber(
+                    fundsFlowData.scheduleOfWorkingCapital.reduce(
+                      (sum, item) => sum + (item.closing - item.opening),
+                      0,
+                    ),
+                  )}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      
+
       <ReportOptionsModal
         open={optionsOpen}
         title="Funds Flow Statement Options"
@@ -435,22 +557,22 @@ const FundsFlowStatement: React.FC = () => {
       >
         <div className="space-y-4">
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date 
-            <input 
-              type="date" 
-              value={pendingStart} 
-              onChange={e => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From Date
+            <input
+              type="date"
+              value={pendingStart}
+              onChange={(e) => setPendingStart(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date 
-            <input 
-              type="date" 
-              value={pendingEnd} 
-              onChange={e => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To Date
+            <input
+              type="date"
+              value={pendingEnd}
+              onChange={(e) => setPendingEnd(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
         </div>

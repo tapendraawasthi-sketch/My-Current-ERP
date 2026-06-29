@@ -137,10 +137,10 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
 
         if (mIndex >= 0 && mIndex < 9) {
           fromDate = `01 Baisakh ${fyYear}`;
-          toDate = `31 Chaitra ${fyYear + 1}`;
+          toDate = `30 Chaitra ${fyYear}`;
         } else {
           fromDate = `01 Baisakh ${fyYear - 1}`;
-          toDate = `31 Chaitra ${fyYear}`;
+          toDate = `30 Chaitra ${fyYear}`;
         }
         break;
     }
@@ -152,8 +152,18 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
     try {
       const bs = adToBS(date);
       const months = [
-        "Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin",
-        "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra",
+        "Baisakh",
+        "Jestha",
+        "Ashadh",
+        "Shrawan",
+        "Bhadra",
+        "Ashwin",
+        "Kartik",
+        "Mangsir",
+        "Poush",
+        "Magh",
+        "Falgun",
+        "Chaitra",
       ];
       const day = bs.day.toString().padStart(2, "0");
       const month = months[bs.month - 1];

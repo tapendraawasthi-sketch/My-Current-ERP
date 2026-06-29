@@ -7,10 +7,7 @@ export interface CBMSResponse {
   error?: string;
 }
 
-export async function submitToCBMS(
-  invoice: any,
-  companySettings: any
-): Promise<CBMSResponse> {
+export async function submitToCBMS(invoice: any, companySettings: any): Promise<CBMSResponse> {
   try {
     const apiUrl = companySettings?.cbmsApiUrl || "https://cbms.ird.gov.np/api";
     const apiKey = companySettings?.cbmsApiKey || "";

@@ -70,33 +70,15 @@ export interface PartySummary {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 /** Invoice voucher types that create receivable bills */
-const SALES_TYPES = new Set([
-  "sales_invoice",
-  "SALES_INVOICE",
-  "sales-invoice",
-]);
+const SALES_TYPES = new Set(["sales_invoice", "SALES_INVOICE", "sales-invoice"]);
 
 /** Invoice voucher types that create payable bills */
-const PURCHASE_TYPES = new Set([
-  "purchase_invoice",
-  "PURCHASE_INVOICE",
-  "purchase-invoice",
-]);
+const PURCHASE_TYPES = new Set(["purchase_invoice", "PURCHASE_INVOICE", "purchase-invoice"]);
 
 /** Payment voucher types that reduce outstanding (from customer = receipt; to supplier = payment) */
-const RECEIPT_TYPES = new Set([
-  "receipt",
-  "RECEIPT",
-  "receipt_voucher",
-  "RECEIPT_VOUCHER",
-]);
+const RECEIPT_TYPES = new Set(["receipt", "RECEIPT", "receipt_voucher", "RECEIPT_VOUCHER"]);
 
-const PAYMENT_TYPES = new Set([
-  "payment",
-  "PAYMENT",
-  "payment_voucher",
-  "PAYMENT_VOUCHER",
-]);
+const PAYMENT_TYPES = new Set(["payment", "PAYMENT", "payment_voucher", "PAYMENT_VOUCHER"]);
 
 export const AGING_BUCKETS: AgingBucket[] = [
   "not-due",
@@ -171,38 +153,34 @@ export function computeBillWiseOutstanding(
   allInvoices: VoucherRecord[],
   allVouchers: VoucherRecord[],
   asAtDate: Date = new Date(),
-  direction: "receivable" | "payable" | "both" = "receivable"
+  direction: "receivable" | "payable" | "both" = "receivable",
 ): BillRecord[] {
   // ── Step 1: Determine which invoice types are relevant ──────────────────────
   const relevantInvoiceTypes =
     direction === "receivable"
       ? SALES_TYPES
       : direction === "payable"
-      ? PURCHASE_TYPES
-      : new Set([...SALES_TYPES, ...PURCHASE_TYPES]);
+        ? PURCHASE_TYPES
+        : new Set([...SALES_TYPES, ...PURCHASE_TYPES]);
 
   const relevantPaymentTypes =
     direction === "receivable"
       ? RECEIPT_TYPES
       : direction === "payable"
-      ? PAYMENT_TYPES
-      : new Set([...RECEIPT_TYPES, ...PAYMENT_TYPES]);
+        ? PAYMENT_TYPES
+        : new Set([...RECEIPT_TYPES, ...PAYMENT_TYPES]);
 
   // ── Step 2: Filter records by party and date ────────────────────────────────
-  const filterParty = (v: VoucherRecord) =>
-    !partyId || v.partyId === partyId;
+  const filterParty = (v: VoucherRecord) => !partyId || v.partyId === partyId;
 
-  const filterDate = (v: VoucherRecord) =>
-    toDate(v.date).getTime() <= asAtDate.getTime();
+  const filterDate = (v: VoucherRecord) => toDate(v.date).getTime() <= asAtDate.getTime();
 
   const invoices = allInvoices.filter(
-    (v) =>
-      relevantInvoiceTypes.has(v.type) && filterParty(v) && filterDate(v)
+    (v) => relevantInvoiceTypes.has(v.type) && filterParty(v) && filterDate(v),
   );
 
   const paymentVouchers = allVouchers.filter(
-    (v) =>
-      relevantPaymentTypes.has(v.type) && filterParty(v) && filterDate(v)
+    (v) => relevantPaymentTypes.has(v.type) && filterParty(v) && filterDate(v),
   );
 
   // ── Step 3: Build bill ledger from "new-ref" allocations in invoices ─────────
@@ -280,16 +258,10 @@ export function computeBillWiseOutstanding(
         // Reduce the referenced bill
         const bill = billLedger.get(alloc.billRefNo);
         if (bill) {
-          bill.paidAmount = Math.min(
-            bill.paidAmount + alloc.amount,
-            bill.originalAmount
-          );
+          bill.paidAmount = Math.min(bill.paidAmount + alloc.amount, bill.originalAmount);
         }
         // If the bill isn't found (race/data issue), the amount is silently ignored.
-      } else if (
-        alloc.billRefType === "advance" ||
-        alloc.billRefType === "on-account"
-      ) {
+      } else if (alloc.billRefType === "advance" || alloc.billRefType === "on-account") {
         // Accumulate into the party's credit pool
         const pid = pv.partyId;
         advancePool.set(pid, (advancePool.get(pid) ?? 0) + alloc.amount);
@@ -321,7 +293,10 @@ export function computeBillWiseOutstanding(
 
   // ── Step 6: Apply advance pool to oldest bills (FIFO auto-allocation) ──────
   // Group bills by party and sort oldest first
-  const billsByParty = new Map<string, typeof billLedger extends Map<any, infer V> ? V[] : never[]>();
+  const billsByParty = new Map<
+    string,
+    typeof billLedger extends Map<any, infer V> ? V[] : never[]
+  >();
 
   for (const bill of billLedger.values()) {
     const arr = billsByParty.get(bill.partyId) ?? [];
@@ -356,9 +331,7 @@ export function computeBillWiseOutstanding(
     if (balance < 0.005) continue; // fully paid, skip (handle float noise)
 
     const effectiveDueDate = bill.dueDate;
-    const daysOverdue = effectiveDueDate
-      ? daysBetween(effectiveDueDate, asAtDate)
-      : 0;
+    const daysOverdue = effectiveDueDate ? daysBetween(effectiveDueDate, asAtDate) : 0;
     const agingBucket = getAgingBucket(daysOverdue);
 
     results.push({
@@ -386,7 +359,7 @@ export function computeBillWiseOutstanding(
 /** Aggregate bill records into a per-party summary. */
 export function buildPartySummaries(
   bills: BillRecord[],
-  partiesMap: Map<string, { name: string; creditDays?: number }>
+  partiesMap: Map<string, { name: string; creditDays?: number }>,
 ): PartySummary[] {
   const summaryMap = new Map<string, PartySummary>();
 
@@ -416,17 +389,12 @@ export function buildPartySummaries(
       s.overdueAmount += bill.balanceAmount;
     }
 
-    if (
-      s.oldestBillDate === null ||
-      bill.invoiceDate.getTime() < s.oldestBillDate.getTime()
-    ) {
+    if (s.oldestBillDate === null || bill.invoiceDate.getTime() < s.oldestBillDate.getTime()) {
       s.oldestBillDate = bill.invoiceDate;
     }
   }
 
-  return Array.from(summaryMap.values()).sort(
-    (a, b) => b.overdueAmount - a.overdueAmount
-  );
+  return Array.from(summaryMap.values()).sort((a, b) => b.overdueAmount - a.overdueAmount);
 }
 
 // ─── Interest Calculation ─────────────────────────────────────────────────────
@@ -450,7 +418,7 @@ export function computeInterestOnOverdue(
   bills: BillRecord[],
   defaultRate: number,
   partyRates: Map<string, number> = new Map(),
-  compound = false
+  compound = false,
 ): InterestRecord[] {
   return bills
     .filter((b) => b.daysOverdue > 0 && b.balanceAmount > 0)
@@ -462,8 +430,7 @@ export function computeInterestOnOverdue(
       if (compound) {
         // Monthly compounding: A = P(1 + r/12)^(months) - P
         const months = bill.daysOverdue / 30.4375;
-        interest =
-          bill.balanceAmount * (Math.pow(1 + rate / 100 / 12, months) - 1);
+        interest = bill.balanceAmount * (Math.pow(1 + rate / 100 / 12, months) - 1);
       } else {
         // Simple interest: I = P × R × T
         interest = bill.balanceAmount * (rate / 100) * years;
@@ -493,7 +460,7 @@ export interface AllocationSuggestion {
  */
 export function suggestFIFOAllocation(
   amountReceived: number,
-  outstandingBills: BillRecord[]
+  outstandingBills: BillRecord[],
 ): {
   allocations: AllocationSuggestion[];
   unallocated: number;
@@ -540,7 +507,7 @@ export interface AgingReportSummary {
 
 export function buildAgingReport(
   bills: BillRecord[],
-  partiesMap: Map<string, { name: string }>
+  partiesMap: Map<string, { name: string }>,
 ): AgingReportSummary {
   const rowMap = new Map<string, AgingReportRow>();
 
@@ -561,9 +528,7 @@ export function buildAgingReport(
     row.total += bill.balanceAmount;
   }
 
-  const rows = Array.from(rowMap.values()).sort(
-    (a, b) => b.total - a.total
-  );
+  const rows = Array.from(rowMap.values()).sort((a, b) => b.total - a.total);
 
   const totals = emptyAgingBreakdown();
   let grandTotal = 0;

@@ -4,30 +4,30 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface BookEntry {
-  id: string;          // "{voucherId}-{lineIndex}"
-  date: string;        // YYYY-MM-DD (AD)
+  id: string; // "{voucherId}-{lineIndex}"
+  date: string; // YYYY-MM-DD (AD)
   amount: number;
   description: string; // voucher narration
   voucherId: string;
   voucherNo: string;
-  type: 'debit' | 'credit'; // debit = money IN to bank acct, credit = money OUT
-  refNo?: string;      // cheque number / reference
+  type: "debit" | "credit"; // debit = money IN to bank acct, credit = money OUT
+  refNo?: string; // cheque number / reference
   partyName?: string;
 }
 
 export interface StatementEntry {
   id: string;
-  date: string;        // YYYY-MM-DD (AD)
+  date: string; // YYYY-MM-DD (AD)
   description: string;
   refNo?: string;
-  debit: number;       // money going OUT of account (withdrawal)
-  credit: number;      // money coming IN (deposit)
+  debit: number; // money going OUT of account (withdrawal)
+  credit: number; // money coming IN (deposit)
   balance: number;
   bankFormat?: string;
 }
 
-export type MatchConfidence = 'HIGH' | 'MEDIUM' | 'LOW';
-export type MatchStatus = 'matched' | 'unmatched' | 'partial';
+export type MatchConfidence = "HIGH" | "MEDIUM" | "LOW";
+export type MatchStatus = "matched" | "unmatched" | "partial";
 
 export interface MatchPair {
   bookEntry: BookEntry;
@@ -61,12 +61,12 @@ function containsWord(haystack: string, needle: string): boolean {
 /** Extract a likely cheque/ref number from a string (3–12 digits or alphanums) */
 function extractRef(text: string): string {
   const m = text.match(/\b([A-Z]{0,3}\d{3,12})\b/i);
-  return m ? m[1].toUpperCase() : '';
+  return m ? m[1].toUpperCase() : "";
 }
 
-function getStatementAmount(stmt: StatementEntry): { amount: number; type: 'debit' | 'credit' } {
-  if (stmt.credit > 0) return { amount: stmt.credit, type: 'credit' };
-  return { amount: stmt.debit, type: 'debit' };
+function getStatementAmount(stmt: StatementEntry): { amount: number; type: "debit" | "credit" } {
+  if (stmt.credit > 0) return { amount: stmt.credit, type: "credit" };
+  return { amount: stmt.debit, type: "debit" };
 }
 
 // ─── Matching Engine ──────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ function getStatementAmount(stmt: StatementEntry): { amount: number; type: 'debi
  */
 export function runMatchingEngine(
   bookEntries: BookEntry[],
-  statementEntries: StatementEntry[]
+  statementEntries: StatementEntry[],
 ): MatchingResult {
   const usedBookIds = new Set<string>();
   const usedStmtIds = new Set<string>();
@@ -96,7 +96,7 @@ export function runMatchingEngine(
     if (usedStmtIds.has(stmt.id)) continue;
     const { amount: stmtAmt, type: stmtType } = getStatementAmount(stmt);
     // Book type opposite to statement type (book debit ↔ stmt credit)
-    const bookType = stmtType === 'credit' ? 'debit' : 'credit';
+    const bookType = stmtType === "credit" ? "debit" : "credit";
 
     for (const book of bookEntries) {
       if (usedBookIds.has(book.id)) continue;
@@ -107,9 +107,9 @@ export function runMatchingEngine(
       matched.push({
         bookEntry: book,
         statementEntry: stmt,
-        confidence: 'HIGH',
-        matchReason: 'Exact amount + exact date',
-        status: 'matched',
+        confidence: "HIGH",
+        matchReason: "Exact amount + exact date",
+        status: "matched",
       });
       usedBookIds.add(book.id);
       usedStmtIds.add(stmt.id);
@@ -122,7 +122,7 @@ export function runMatchingEngine(
   for (const stmt of statementEntries) {
     if (usedStmtIds.has(stmt.id)) continue;
     const { amount: stmtAmt, type: stmtType } = getStatementAmount(stmt);
-    const bookType = stmtType === 'credit' ? 'debit' : 'credit';
+    const bookType = stmtType === "credit" ? "debit" : "credit";
     const stmtRef = extractRef(stmt.refNo || stmt.description);
 
     if (!stmtRef) continue;
@@ -143,9 +143,9 @@ export function runMatchingEngine(
       matched.push({
         bookEntry: book,
         statementEntry: stmt,
-        confidence: 'HIGH',
+        confidence: "HIGH",
         matchReason: `Amount + ref/cheque match (${stmtRef})`,
-        status: 'matched',
+        status: "matched",
       });
       usedBookIds.add(book.id);
       usedStmtIds.add(stmt.id);
@@ -157,7 +157,7 @@ export function runMatchingEngine(
   for (const stmt of statementEntries) {
     if (usedStmtIds.has(stmt.id)) continue;
     const { amount: stmtAmt, type: stmtType } = getStatementAmount(stmt);
-    const bookType = stmtType === 'credit' ? 'debit' : 'credit';
+    const bookType = stmtType === "credit" ? "debit" : "credit";
 
     for (const book of bookEntries) {
       if (usedBookIds.has(book.id)) continue;
@@ -168,9 +168,9 @@ export function runMatchingEngine(
       matched.push({
         bookEntry: book,
         statementEntry: stmt,
-        confidence: 'MEDIUM',
+        confidence: "MEDIUM",
         matchReason: `Amount match + date within ±2 days (book: ${book.date}, stmt: ${stmt.date})`,
-        status: 'partial',
+        status: "partial",
       });
       usedBookIds.add(book.id);
       usedStmtIds.add(stmt.id);
@@ -182,7 +182,7 @@ export function runMatchingEngine(
   for (const stmt of statementEntries) {
     if (usedStmtIds.has(stmt.id)) continue;
     const { amount: stmtAmt, type: stmtType } = getStatementAmount(stmt);
-    const bookType = stmtType === 'credit' ? 'debit' : 'credit';
+    const bookType = stmtType === "credit" ? "debit" : "credit";
 
     for (const book of bookEntries) {
       if (usedBookIds.has(book.id)) continue;
@@ -199,9 +199,9 @@ export function runMatchingEngine(
       matched.push({
         bookEntry: book,
         statementEntry: stmt,
-        confidence: 'MEDIUM',
-        matchReason: 'Amount match + party/narration in bank description',
-        status: 'partial',
+        confidence: "MEDIUM",
+        matchReason: "Amount match + party/narration in bank description",
+        status: "partial",
       });
       usedBookIds.add(book.id);
       usedStmtIds.add(stmt.id);
@@ -210,24 +210,21 @@ export function runMatchingEngine(
   }
 
   // ── Collect unmatched ──────────────────────────────────────────────────────
-  const unmatchedBook = bookEntries.filter(b => !usedBookIds.has(b.id));
-  const unmatchedStatement = statementEntries.filter(s => !usedStmtIds.has(s.id));
+  const unmatchedBook = bookEntries.filter((b) => !usedBookIds.has(b.id));
+  const unmatchedStatement = statementEntries.filter((s) => !usedStmtIds.has(s.id));
 
   return { matched, unmatchedBook, unmatchedStatement };
 }
 
 // ─── Manual Match Helper ──────────────────────────────────────────────────────
 
-export function createManualMatch(
-  book: BookEntry,
-  stmt: StatementEntry
-): MatchPair {
+export function createManualMatch(book: BookEntry, stmt: StatementEntry): MatchPair {
   return {
     bookEntry: book,
     statementEntry: stmt,
-    confidence: 'HIGH',
-    matchReason: 'Manually matched by user',
-    status: 'matched',
+    confidence: "HIGH",
+    matchReason: "Manually matched by user",
+    status: "matched",
   };
 }
 
@@ -247,7 +244,7 @@ export function computeReconciliationSummary(
   bookEntries: BookEntry[],
   unmatchedBook: BookEntry[],
   statementEntries: StatementEntry[],
-  bookRunningBalance: number
+  bookRunningBalance: number,
 ): ReconciliationSummary {
   // Statement closing balance = last entry's balance field (if available)
   const sorted = [...statementEntries].sort((a, b) => a.date.localeCompare(b.date));
@@ -256,16 +253,16 @@ export function computeReconciliationSummary(
 
   // Uncleared cheques = book credit entries (payments) not yet in statement
   const unclearedCheques = unmatchedBook
-    .filter(b => b.type === 'credit')
-    .map(b => ({ entry: b, amount: b.amount }));
+    .filter((b) => b.type === "credit")
+    .map((b) => ({ entry: b, amount: b.amount }));
 
   // Deposits in transit = book debit entries (receipts) not yet in statement
   const depositsInTransit = unmatchedBook
-    .filter(b => b.type === 'debit')
-    .map(b => ({ entry: b, amount: b.amount }));
+    .filter((b) => b.type === "debit")
+    .map((b) => ({ entry: b, amount: b.amount }));
 
   const totalUncleared = unclearedCheques.reduce((s, x) => s + x.amount, 0);
-  const totalTransit   = depositsInTransit.reduce((s, x) => s + x.amount, 0);
+  const totalTransit = depositsInTransit.reduce((s, x) => s + x.amount, 0);
 
   // Standard bank reconciliation formula:
   // Adjusted Bank Balance = Statement Balance - Uncleared Cheques + Deposits in Transit

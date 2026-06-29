@@ -3,13 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import {
-  Calculator,
-  FileSpreadsheet,
-  RefreshCw,
-  Download,
-  TrendingUp,
-} from "lucide-react";
+import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -64,17 +58,14 @@ const InterestCalculation: React.FC = () => {
   const [asOfDate, setAsOfDate] = useState(todayISO());
   const [interestRate, setInterestRate] = useState(18); // % per annum
   const [minDaysOverdue, setMinDaysOverdue] = useState(30);
-  const [direction, setDirection] = useState<"receivable" | "payable">(
-    "receivable",
-  );
+  const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
   const [generatingVoucher, setGeneratingVoucher] = useState(false);
 
   // Fix: use getDB() default import — not named { db }
   const db = getDB();
 
-  const invoiceType =
-    direction === "receivable" ? "sales-invoice" : "purchase-invoice";
+  const invoiceType = direction === "receivable" ? "sales-invoice" : "purchase-invoice";
   const paymentType = direction === "receivable" ? "receipt" : "payment";
 
   // Fix: useLiveQuery from "dexie-react-hooks" — correct package import
@@ -95,8 +86,7 @@ const InterestCalculation: React.FC = () => {
     const rows: InterestRow[] = [];
 
     for (const inv of invoices as any[]) {
-      if (!inv || inv.status === "cancelled" || inv.status === "draft")
-        continue;
+      if (!inv || inv.status === "cancelled" || inv.status === "draft") continue;
 
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
@@ -106,10 +96,7 @@ const InterestCalculation: React.FC = () => {
       for (const pmt of payments as any[]) {
         if (!pmt || pmt.partyId !== inv.partyId) continue;
         for (const line of pmt.lines ?? []) {
-          if (
-            line.billRefNo === inv.invoiceNo ||
-            line.billRefNo === inv.id
-          ) {
+          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
             paidAmount += Number(line.amount ?? 0);
           }
         }
@@ -126,18 +113,12 @@ const InterestCalculation: React.FC = () => {
 
       // Daily interest = (outstanding × annualRate%) / 365
       const dailyRate = interestRate / 100 / 365;
-      const interestAmount = parseFloat(
-        (outstanding * dailyRate * daysOverdue).toFixed(2),
-      );
+      const interestAmount = parseFloat((outstanding * dailyRate * daysOverdue).toFixed(2));
 
       const partyId = inv.partyId ?? "unknown";
       const partyName =
-        inv.partyName ??
-        parties.find((p: any) => p.id === partyId)?.name ??
-        "Unknown";
-      const partyPan =
-        inv.partyPan ??
-        parties.find((p: any) => p.id === partyId)?.pan;
+        inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
+      const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
 
       rows.push({
         partyId,
@@ -151,9 +132,7 @@ const InterestCalculation: React.FC = () => {
         daysOverdue,
         interestRate,
         interestAmount,
-        totalWithInterest: parseFloat(
-          (outstanding + interestAmount).toFixed(2),
-        ),
+        totalWithInterest: parseFloat((outstanding + interestAmount).toFixed(2)),
       });
     }
 
@@ -221,19 +200,7 @@ const InterestCalculation: React.FC = () => {
         headers,
         ...rows,
         [],
-        [
-          "TOTAL",
-          "",
-          "",
-          "",
-          "",
-          "",
-          totals.outstanding,
-          "",
-          "",
-          totals.interest,
-          totals.total,
-        ],
+        ["TOTAL", "", "", "", "", "", totals.outstanding, "", "", totals.interest, totals.total],
       ];
       const ws = XLSX.utils.aoa_to_sheet(wsData);
       XLSX.utils.book_append_sheet(wb, ws, "Interest Calculation");
@@ -264,9 +231,7 @@ const InterestCalculation: React.FC = () => {
       // Find interest income account
       const allAccounts = await db.accounts.toArray();
       const interestAccount = allAccounts.find(
-        (a: any) =>
-          (a.name ?? "").toLowerCase().includes("interest") &&
-          a.type === "income",
+        (a: any) => (a.name ?? "").toLowerCase().includes("interest") && a.type === "income",
       );
 
       const voucher: any = {
@@ -289,8 +254,7 @@ const InterestCalculation: React.FC = () => {
           },
           {
             accountId: interestAccount?.id ?? "",
-            accountName:
-              interestAccount?.name ?? "Interest Income",
+            accountName: interestAccount?.name ?? "Interest Income",
             debit: 0,
             credit: r.interestAmount,
             narration: `Interest income from ${r.partyName}`,
@@ -301,9 +265,7 @@ const InterestCalculation: React.FC = () => {
       };
 
       await db.vouchers.add(voucher);
-      toast.success(
-        `Interest voucher ${voucherNo} created for Rs. ${money(totalInterest)}.`,
-      );
+      toast.success(`Interest voucher ${voucherNo} created for Rs. ${money(totalInterest)}.`);
     } catch (err: any) {
       toast.error(err?.message ?? "Failed to generate vouchers.");
     } finally {
@@ -361,14 +323,10 @@ const InterestCalculation: React.FC = () => {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-              Direction
-            </label>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">Direction</label>
             <select
               value={direction}
-              onChange={(e) =>
-                setDirection(e.target.value as "receivable" | "payable")
-              }
+              onChange={(e) => setDirection(e.target.value as "receivable" | "payable")}
               className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
             >
               <option value="receivable">Receivables (Sales)</option>
@@ -377,9 +335,7 @@ const InterestCalculation: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-              As of Date
-            </label>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">As of Date</label>
             <input
               type="date"
               value={asOfDate}
@@ -398,9 +354,7 @@ const InterestCalculation: React.FC = () => {
               max={100}
               step={0.1}
               value={interestRate}
-              onChange={(e) =>
-                setInterestRate(parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
               className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
             />
           </div>
@@ -414,9 +368,7 @@ const InterestCalculation: React.FC = () => {
               min={0}
               step={1}
               value={minDaysOverdue}
-              onChange={(e) =>
-                setMinDaysOverdue(parseInt(e.target.value) || 0)
-              }
+              onChange={(e) => setMinDaysOverdue(parseInt(e.target.value) || 0)}
               className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
             />
           </div>
@@ -501,10 +453,7 @@ const InterestCalculation: React.FC = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredRows.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={7}
-                      className="px-3 py-12 text-center text-[12px] text-gray-400"
-                    >
+                    <td colSpan={7} className="px-3 py-12 text-center text-[12px] text-gray-400">
                       No overdue invoices found for the selected criteria.
                     </td>
                   </tr>
@@ -536,10 +485,10 @@ const InterestCalculation: React.FC = () => {
                             row.daysOverdue > 90
                               ? "text-red-700"
                               : row.daysOverdue > 60
-                              ? "text-red-500"
-                              : row.daysOverdue > 30
-                              ? "text-orange-600"
-                              : "text-amber-600"
+                                ? "text-red-500"
+                                : row.daysOverdue > 30
+                                  ? "text-orange-600"
+                                  : "text-amber-600"
                           }`}
                         >
                           {row.daysOverdue}
@@ -559,10 +508,7 @@ const InterestCalculation: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td
-                      colSpan={3}
-                      className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
-                    >
+                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Total ({filteredRows.length} invoices)
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">

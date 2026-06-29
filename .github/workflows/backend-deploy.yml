@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        
+
       - name: Trigger Render Deploy Hook
         run: |
           if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then

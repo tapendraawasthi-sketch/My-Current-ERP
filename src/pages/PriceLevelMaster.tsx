@@ -18,7 +18,7 @@ const PriceLevelMaster: React.FC = () => {
   const filteredLevels = (priceLevels || []).filter(
     (level) =>
       level.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      level.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      level.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
@@ -80,12 +80,16 @@ const PriceLevelMaster: React.FC = () => {
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* List Panel */}
-      <div className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}>
+      <div
+        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-2/3 border-r border-gray-200" : "w-full"}`}
+      >
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-gray-800">Price Level Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">Manage item price levels for different customers</p>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Manage item price levels for different customers
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -115,11 +119,21 @@ const PriceLevelMaster: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Description</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Actions</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    #
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Description
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -133,10 +147,16 @@ const PriceLevelMaster: React.FC = () => {
                   filteredLevels.map((level, index) => (
                     <tr key={level.id} className="hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{level.name}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{level.description || "-"}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
+                        {level.name}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {level.description || "-"}
+                      </td>
                       <td className="px-3 py-2.5 text-[12px]">
-                        <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${level.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        <span
+                          className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${level.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                        >
                           {level.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
@@ -174,8 +194,8 @@ const PriceLevelMaster: React.FC = () => {
             <h3 className="text-[13px] font-semibold text-gray-800">
               {selected ? "Alter Price Level" : "Create Price Level"}
             </h3>
-            <button 
-              onClick={resetForm} 
+            <button
+              onClick={resetForm}
               className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
@@ -184,7 +204,9 @@ const PriceLevelMaster: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Price Level Name <span className="text-red-500">*</span></label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Price Level Name <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
@@ -196,7 +218,9 @@ const PriceLevelMaster: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Description</label>
+              <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                Description
+              </label>
               <textarea
                 className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full min-h-[80px] resize-y"
                 value={form.description}
@@ -214,7 +238,10 @@ const PriceLevelMaster: React.FC = () => {
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActive" className="text-[12px] text-gray-700 cursor-pointer select-none">
+                <label
+                  htmlFor="isActive"
+                  className="text-[12px] text-gray-700 cursor-pointer select-none"
+                >
                   Is Active
                 </label>
               </div>
@@ -222,7 +249,7 @@ const PriceLevelMaster: React.FC = () => {
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button 
+            <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
               onClick={resetForm}
             >

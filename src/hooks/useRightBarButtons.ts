@@ -85,13 +85,13 @@ export const useRightBarButtons = (): RightBarButton[] => {
         action: run("Switch Company", () => setCurrentPage("settings")),
       },
       {
-        id: 'f11-features',
-        label: 'Features',
-        shortcut: 'F11',
-        group: 'Navigation',
+        id: "f11-features",
+        label: "Features",
+        shortcut: "F11",
+        group: "Navigation",
         visible: true,
         enabled: true,
-        action: () => setCurrentPage('f11-company-features'),
+        action: () => setCurrentPage("f11-company-features"),
       },
       {
         id: "gateway-configure",
@@ -214,9 +214,7 @@ export const useRightBarButtons = (): RightBarButton[] => {
         group: "Voucher Tools",
         visible: true,
         enabled: true,
-        action: run("Change Voucher Mode", () =>
-          toast.success("Toggle Single/Double entry mode"),
-        ),
+        action: run("Change Voucher Mode", () => toast.success("Toggle Single/Double entry mode")),
       },
       {
         id: "voucher-optional",
@@ -271,9 +269,7 @@ export const useRightBarButtons = (): RightBarButton[] => {
         group: "Voucher Tools",
         visible: true,
         enabled: true,
-        action: run("Open More Voucher Details", () =>
-          toast.success("Additional voucher details"),
-        ),
+        action: run("Open More Voucher Details", () => toast.success("Additional voucher details")),
       },
       {
         id: "voucher-change-date",
@@ -282,9 +278,7 @@ export const useRightBarButtons = (): RightBarButton[] => {
         group: "Voucher Tools",
         visible: true,
         enabled: true,
-        action: run("Change Voucher Date", () =>
-          toast.success("Change voucher date (BS/AD)"),
-        ),
+        action: run("Change Voucher Date", () => toast.success("Change voucher date (BS/AD)")),
       },
       {
         id: "voucher-switch-company",
@@ -429,9 +423,7 @@ export const useRightBarButtons = (): RightBarButton[] => {
         group: "Report Tools",
         visible: true,
         enabled: true,
-        action: run("Basis Of Values", () =>
-          toast.success("Basis: Actuals / Budget / Variance"),
-        ),
+        action: run("Basis Of Values", () => toast.success("Basis: Actuals / Budget / Variance")),
       },
       {
         id: "report-filter",
@@ -513,9 +505,7 @@ export const useRightBarButtons = (): RightBarButton[] => {
         group: "Tools",
         visible: true,
         enabled: true,
-        action: run("Master Language", () =>
-          toast.success("Display language: English / Nepali"),
-        ),
+        action: run("Master Language", () => toast.success("Display language: English / Nepali")),
       },
       {
         id: "master-input-lang",

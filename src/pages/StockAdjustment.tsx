@@ -6,12 +6,7 @@ import { computeStockPosition } from "../lib/godownStockUtils";
 import { Save, Plus, Trash2 } from "lucide-react";
 
 export default function StockAdjustment() {
-  const {
-    warehouses,
-    items,
-    stockMovements,
-    currentUser,
-  } = useStore() as any;
+  const { warehouses, items, stockMovements, currentUser } = useStore() as any;
 
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [warehouseId, setWarehouseId] = useState("");
@@ -31,14 +26,14 @@ export default function StockAdjustment() {
 
   const getSystemQty = (itemId: string, wid: string) => {
     const movements = (stockMovements || []).filter(
-      (m: any) => m.itemId === itemId && m.warehouseId === wid && m.date <= date
+      (m: any) => m.itemId === itemId && m.warehouseId === wid && m.date <= date,
     );
     return computeStockPosition(movements, "weighted-average").qty;
   };
 
   const getWeightedRate = (itemId: string, wid: string) => {
     const movements = (stockMovements || []).filter(
-      (m: any) => m.itemId === itemId && m.warehouseId === wid && m.date <= date
+      (m: any) => m.itemId === itemId && m.warehouseId === wid && m.date <= date,
     );
     return computeStockPosition(movements, "weighted-average").avgRate;
   };
@@ -56,7 +51,7 @@ export default function StockAdjustment() {
         }
 
         return next;
-      })
+      }),
     );
   };
 
@@ -95,31 +90,33 @@ export default function StockAdjustment() {
     const adjustmentId = crypto.randomUUID();
     const ts = new Date().toISOString();
 
-    const movements = validLines.map((line) => {
-      const difference = Number(line.adjustedQty) - Number(line.systemQty);
-      if (difference === 0) return null;
+    const movements = validLines
+      .map((line) => {
+        const difference = Number(line.adjustedQty) - Number(line.systemQty);
+        if (difference === 0) return null;
 
-      const item = items?.find((i: any) => i.id === line.itemId);
-      
-      return {
-        id: crypto.randomUUID(),
-        date,
-        dateNepali: "", // Assuming standard handling elsewhere
-        itemId: line.itemId,
-        itemName: item?.name || "",
-        warehouseId: warehouse.id,
-        warehouseName: warehouse.name,
-        type: difference > 0 ? "in" : "out",
-        qty: Math.abs(difference),
-        rate: line.rate,
-        value: Math.abs(difference) * line.rate,
-        referenceType: "adjustment",
-        referenceId: adjustmentId,
-        voucherNo: "ADJ-" + Date.now().toString().slice(-6),
-        narration: reason,
-        createdAt: ts,
-      };
-    }).filter(Boolean);
+        const item = items?.find((i: any) => i.id === line.itemId);
+
+        return {
+          id: crypto.randomUUID(),
+          date,
+          dateNepali: "", // Assuming standard handling elsewhere
+          itemId: line.itemId,
+          itemName: item?.name || "",
+          warehouseId: warehouse.id,
+          warehouseName: warehouse.name,
+          type: difference > 0 ? "in" : "out",
+          qty: Math.abs(difference),
+          rate: line.rate,
+          value: Math.abs(difference) * line.rate,
+          referenceType: "adjustment",
+          referenceId: adjustmentId,
+          voucherNo: "ADJ-" + Date.now().toString().slice(-6),
+          narration: reason,
+          createdAt: ts,
+        };
+      })
+      .filter(Boolean);
 
     if (movements.length === 0) {
       toast.success("No adjustments needed (quantities match).");
@@ -133,11 +130,11 @@ export default function StockAdjustment() {
         }
       });
       toast.success("Stock adjustment saved successfully");
-      
+
       // Reset form
       setReason("");
       setLines([{ id: crypto.randomUUID(), itemId: "", systemQty: 0, adjustedQty: 0, rate: 0 }]);
-      
+
       // Trigger store refresh for stockMovements
       const allMovements = await db.stockMovements.toArray();
       useStore.setState({ stockMovements: allMovements });
@@ -172,24 +169,30 @@ export default function StockAdjustment() {
           />
         </div>
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Warehouse / Godown</label>
+          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+            Warehouse / Godown
+          </label>
           <select
             value={warehouseId}
             onChange={(e) => {
               setWarehouseId(e.target.value);
               // reset lines qty when warehouse changes
-              setLines(lines.map(l => ({ ...l, systemQty: 0, adjustedQty: 0 })));
+              setLines(lines.map((l) => ({ ...l, systemQty: 0, adjustedQty: 0 })));
             }}
             className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           >
             <option value="">-- Select Godown --</option>
             {warehouses?.map((w: DBWarehouse) => (
-              <option key={w.id} value={w.id}>{w.name}</option>
+              <option key={w.id} value={w.id}>
+                {w.name}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Reason / Narration</label>
+          <label className="block text-[11px] font-medium text-gray-600 mb-1">
+            Reason / Narration
+          </label>
           <input
             type="text"
             value={reason}
@@ -204,12 +207,24 @@ export default function StockAdjustment() {
         <table className="w-full">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">#</th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Item</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">System Qty</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">Adjusted Qty</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">Difference</th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">Action</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                #
+              </th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Item
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                System Qty
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                Adjusted Qty
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                Difference
+              </th>
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -226,7 +241,9 @@ export default function StockAdjustment() {
                     >
                       <option value="">-- Select Item --</option>
                       {items?.map((i: any) => (
-                        <option key={i.id} value={i.id}>{i.name}</option>
+                        <option key={i.id} value={i.id}>
+                          {i.name}
+                        </option>
                       ))}
                     </select>
                   </td>
@@ -241,11 +258,17 @@ export default function StockAdjustment() {
                       className="w-full h-7 px-2 text-[12px] text-right font-mono border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]"
                     />
                   </td>
-                  <td className={`px-3 py-2 text-[12px] text-right font-mono ${diff > 0 ? "text-green-600" : diff < 0 ? "text-red-600" : "text-gray-500"}`}>
-                    {diff > 0 ? "+" : ""}{diff.toFixed(2)}
+                  <td
+                    className={`px-3 py-2 text-[12px] text-right font-mono ${diff > 0 ? "text-green-600" : diff < 0 ? "text-red-600" : "text-gray-500"}`}
+                  >
+                    {diff > 0 ? "+" : ""}
+                    {diff.toFixed(2)}
                   </td>
                   <td className="px-3 py-2 text-center">
-                    <button onClick={() => removeLine(line.id)} className="text-gray-400 hover:text-red-600">
+                    <button
+                      onClick={() => removeLine(line.id)}
+                      className="text-gray-400 hover:text-red-600"
+                    >
                       <Trash2 size={14} />
                     </button>
                   </td>
@@ -255,7 +278,10 @@ export default function StockAdjustment() {
           </tbody>
         </table>
         <div className="p-2 bg-gray-50 border-t border-gray-200">
-          <button onClick={addLine} className="flex items-center gap-1 text-[12px] text-[#1557b0] hover:underline px-2 py-1">
+          <button
+            onClick={addLine}
+            className="flex items-center gap-1 text-[12px] text-[#1557b0] hover:underline px-2 py-1"
+          >
             <Plus size={14} /> Add Row
           </button>
         </div>

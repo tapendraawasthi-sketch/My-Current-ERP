@@ -56,10 +56,7 @@ export async function savePeriodLock(
   return savedLock;
 }
 
-export async function getPeriodLocks(
-  companyId: string,
-  fiscalYear: string,
-): Promise<PeriodLock[]> {
+export async function getPeriodLocks(companyId: string, fiscalYear: string): Promise<PeriodLock[]> {
   try {
     return readLocks()
       .filter((lock) => lock.companyId === companyId && lock.fiscalYear === fiscalYear)

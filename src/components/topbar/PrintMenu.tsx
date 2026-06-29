@@ -68,7 +68,9 @@ function PrintCurrentModal({ onClose }: { onClose: () => void }) {
       width="max-w-5xl"
       footer={
         <>
-          <OutlineButton onClick={() => toast.success("✓ PDF export queued")}>Export to PDF</OutlineButton>
+          <OutlineButton onClick={() => toast.success("✓ PDF export queued")}>
+            Export to PDF
+          </OutlineButton>
           <PrimaryButton onClick={() => window.print()}>Print</PrimaryButton>
         </>
       }
@@ -161,7 +163,12 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <SelectField label="Page Size" value={pageSize} onChange={setPageSize} options={["A4", "Letter", "A5"]} />
+        <SelectField
+          label="Page Size"
+          value={pageSize}
+          onChange={setPageSize}
+          options={["A4", "Letter", "A5"]}
+        />
         <SelectField
           label="Orientation"
           value={orientation}
@@ -172,7 +179,11 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
 
       <div className="mt-4">
         <ToggleRow label="Include Company Logo" checked={includeLogo} onChange={setIncludeLogo} />
-        <ToggleRow label="Include Company Address" checked={includeAddress} onChange={setIncludeAddress} />
+        <ToggleRow
+          label="Include Company Address"
+          checked={includeAddress}
+          onChange={setIncludeAddress}
+        />
         <ToggleRow label="Include PAN" checked={includePan} onChange={setIncludePan} />
         <ToggleRow label="Include Signature Line" checked={signature} onChange={setSignature} />
         <ToggleRow label="Include Terms & Conditions" checked={terms} onChange={setTerms} />
@@ -182,14 +193,18 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
 
       {activeTab === "Invoice" && (
         <div className="mt-4 rounded-md border border-gray-200 p-3">
-          <div className="mb-2 text-[11px] font-semibold uppercase text-gray-500">Invoice Format</div>
+          <div className="mb-2 text-[11px] font-semibold uppercase text-gray-500">
+            Invoice Format
+          </div>
           <div className="grid gap-2 md:grid-cols-4">
-            {["Standard Tax Invoice", "Simplified Invoice", "Retail Bill", "Thermal 80mm"].map((format) => (
-              <label key={format} className="rounded border border-gray-200 p-2 text-[11px]">
-                <input type="radio" name="invoiceFormat" className="mr-2 accent-[#1557b0]" />
-                {format}
-              </label>
-            ))}
+            {["Standard Tax Invoice", "Simplified Invoice", "Retail Bill", "Thermal 80mm"].map(
+              (format) => (
+                <label key={format} className="rounded border border-gray-200 p-2 text-[11px]">
+                  <input type="radio" name="invoiceFormat" className="mr-2 accent-[#1557b0]" />
+                  {format}
+                </label>
+              ),
+            )}
           </div>
         </div>
       )}
@@ -219,8 +234,18 @@ function PrinterSettingsModal({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="mt-3 grid gap-3 md:grid-cols-2">
-        <SelectField label="Paper Size" value={paperSize} onChange={setPaperSize} options={["A4", "Letter", "A5"]} />
-        <SelectField label="Margins" value={margin} onChange={setMargin} options={["None", "Narrow", "Normal", "Wide"]} />
+        <SelectField
+          label="Paper Size"
+          value={paperSize}
+          onChange={setPaperSize}
+          options={["A4", "Letter", "A5"]}
+        />
+        <SelectField
+          label="Margins"
+          value={margin}
+          onChange={setMargin}
+          options={["None", "Narrow", "Normal", "Wide"]}
+        />
       </div>
     </ModalShell>
   );

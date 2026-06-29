@@ -11,19 +11,20 @@ import { useScreenF12 } from "../hooks/useF12Config";
 const MovementAnalysis: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("movement-analysis");
-  
+
   const { items, stockMovements, companySettings, currentFiscalYear, itemGroups } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
   const [selectedGroupId, setSelectedGroupId] = useState("");
   const [showOnlyWithMovement, setShowOnlyWithMovement] = useState(true);
-  
+
   // Pending states for options modal
   const [pendingStart, setPendingStart] = useState(startDate);
   const [pendingEnd, setPendingEnd] = useState(endDate);
   const [pendingSelectedGroupId, setPendingSelectedGroupId] = useState(selectedGroupId);
-  const [pendingShowOnlyWithMovement, setPendingShowOnlyWithMovement] = useState(showOnlyWithMovement);
+  const [pendingShowOnlyWithMovement, setPendingShowOnlyWithMovement] =
+    useState(showOnlyWithMovement);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
@@ -34,10 +35,10 @@ const MovementAnalysis: React.FC = () => {
   };
 
   // Get unique groups for dropdown
-  const groups = useMemo(() => [
-    { id: "", name: "All Groups" },
-    ...(itemGroups || [])
-  ], [itemGroups]);
+  const groups = useMemo(
+    () => [{ id: "", name: "All Groups" }, ...(itemGroups || [])],
+    [itemGroups],
+  );
 
   // Compute movement analysis data
   const analysisData = useMemo(() => {
@@ -47,7 +48,7 @@ const MovementAnalysis: React.FC = () => {
     const itemMap = new Map();
 
     // Initialize all items
-    items.forEach(item => {
+    items.forEach((item) => {
       if (selectedGroupId && item.groupId !== selectedGroupId) return;
 
       itemMap.set(item.id, {
@@ -62,17 +63,16 @@ const MovementAnalysis: React.FC = () => {
         productionQty: 0,
         consumptionQty: 0,
         openingQty: item.openingQty || 0,
-        openingValue: (item.openingQty || 0) * (item.openingRate || item.rate || 0)
+        openingValue: (item.openingQty || 0) * (item.openingRate || item.rate || 0),
       });
     });
 
     // Process movements
-    const filteredMovements = (stockMovements || []).filter(m => 
-      m.date >= startDate && 
-      m.date <= endDate
+    const filteredMovements = (stockMovements || []).filter(
+      (m) => m.date >= startDate && m.date <= endDate,
     );
 
-    filteredMovements.forEach(m => {
+    filteredMovements.forEach((m) => {
       const itemData = itemMap.get(m.itemId);
       if (!itemData) return;
 
@@ -97,17 +97,22 @@ const MovementAnalysis: React.FC = () => {
     });
 
     // Calculate closing quantities and values
-    itemMap.forEach(itemData => {
-      const closingQty = itemData.openingQty + 
-                         itemData.purchaseQty + 
-                         itemData.transferInQty + 
-                         itemData.productionQty - 
-                         itemData.salesQty - 
-                         itemData.transferOutQty - 
-                         itemData.consumptionQty;
+    itemMap.forEach((itemData) => {
+      const closingQty =
+        itemData.openingQty +
+        itemData.purchaseQty +
+        itemData.transferInQty +
+        itemData.productionQty -
+        itemData.salesQty -
+        itemData.transferOutQty -
+        itemData.consumptionQty;
 
       // Calculate weighted average rate for closing value
-      const totalQty = itemData.openingQty + itemData.purchaseQty + itemData.transferInQty + itemData.productionQty;
+      const totalQty =
+        itemData.openingQty +
+        itemData.purchaseQty +
+        itemData.transferInQty +
+        itemData.productionQty;
       const totalValue = itemData.openingValue + itemData.purchaseValue;
       const avgRate = totalQty > 0 ? totalValue / totalQty : 0;
       const closingValue = closingQty * avgRate;
@@ -116,13 +121,15 @@ const MovementAnalysis: React.FC = () => {
       itemData.closingValue = closingValue;
 
       // Only add to results if movement is required
-      if (!showOnlyWithMovement || 
-          itemData.purchaseQty > 0 || 
-          itemData.salesQty > 0 || 
-          itemData.transferInQty > 0 || 
-          itemData.transferOutQty > 0 || 
-          itemData.productionQty > 0 || 
-          itemData.consumptionQty > 0) {
+      if (
+        !showOnlyWithMovement ||
+        itemData.purchaseQty > 0 ||
+        itemData.salesQty > 0 ||
+        itemData.transferInQty > 0 ||
+        itemData.transferOutQty > 0 ||
+        itemData.productionQty > 0 ||
+        itemData.consumptionQty > 0
+      ) {
         result.push(itemData);
       }
     });
@@ -138,7 +145,7 @@ const MovementAnalysis: React.FC = () => {
       productionQty: result.reduce((sum, item) => sum + item.productionQty, 0),
       consumptionQty: result.reduce((sum, item) => sum + item.consumptionQty, 0),
       closingQty: result.reduce((sum, item) => sum + item.closingQty, 0),
-      closingValue: result.reduce((sum, item) => sum + item.closingValue, 0)
+      closingValue: result.reduce((sum, item) => sum + item.closingValue, 0),
     };
 
     if (result.length > 0) {
@@ -156,7 +163,7 @@ const MovementAnalysis: React.FC = () => {
         consumptionQty: totals.consumptionQty,
         closingQty: totals.closingQty,
         closingValue: totals.closingValue,
-        isTotal: true
+        isTotal: true,
       });
     }
 
@@ -168,21 +175,49 @@ const MovementAnalysis: React.FC = () => {
       if (columnKey === "itemName") {
         return <span className="font-bold text-gray-800">{value}</span>;
       }
-      if (["purchaseQty", "purchaseValue", "salesQty", "salesValue", "transferInQty", "transferOutQty", "productionQty", "consumptionQty", "closingQty", "closingValue"].includes(columnKey)) {
+      if (
+        [
+          "purchaseQty",
+          "purchaseValue",
+          "salesQty",
+          "salesValue",
+          "transferInQty",
+          "transferOutQty",
+          "productionQty",
+          "consumptionQty",
+          "closingQty",
+          "closingValue",
+        ].includes(columnKey)
+      ) {
         if (value === 0) return "";
         return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
       }
       return "";
     }
 
-    if (["purchaseQty", "purchaseValue", "salesQty", "salesValue", "transferInQty", "transferOutQty", "productionQty", "consumptionQty", "closingQty", "closingValue"].includes(columnKey)) {
+    if (
+      [
+        "purchaseQty",
+        "purchaseValue",
+        "salesQty",
+        "salesValue",
+        "transferInQty",
+        "transferOutQty",
+        "productionQty",
+        "consumptionQty",
+        "closingQty",
+        "closingValue",
+      ].includes(columnKey)
+    ) {
       if (value === 0) return <span className="text-gray-300">—</span>;
-      
+
       let colorClass = "text-gray-700";
       // Slightly highlight inward/outward columns
-      if (["purchaseQty", "purchaseValue", "transferInQty", "productionQty"].includes(columnKey)) colorClass = "text-[#1557b0]";
-      if (["salesQty", "salesValue", "transferOutQty", "consumptionQty"].includes(columnKey)) colorClass = "text-[#d97706]";
-      
+      if (["purchaseQty", "purchaseValue", "transferInQty", "productionQty"].includes(columnKey))
+        colorClass = "text-[#1557b0]";
+      if (["salesQty", "salesValue", "transferOutQty", "consumptionQty"].includes(columnKey))
+        colorClass = "text-[#d97706]";
+
       // Warn negative closing
       if (["closingQty", "closingValue"].includes(columnKey) && value < 0) {
         colorClass = "text-red-600 font-bold";
@@ -208,47 +243,46 @@ const MovementAnalysis: React.FC = () => {
         setPendingShowOnlyWithMovement(showOnlyWithMovement);
         setOptionsOpen(true);
       }}
-      actionBarButtons={[
-        { label: "Print" },
-        { label: "Export" }
-      ]}
+      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
       toolbarLeft={
         <div className="flex items-center gap-1.5 flex-wrap">
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            From: 
-            <input 
-              type="date" 
-              value={startDate} 
-              onChange={e => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From:
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 ml-1">
-            To: 
-            <input 
-              type="date" 
-              value={endDate} 
-              onChange={e => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To:
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <select
             value={selectedGroupId}
-            onChange={e => setSelectedGroupId(e.target.value)}
+            onChange={(e) => setSelectedGroupId(e.target.value)}
             className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[150px]"
           >
-            {groups.map(group => (
-              <option key={group.id} value={group.id}>{group.name}</option>
+            {groups.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.name}
+              </option>
             ))}
           </select>
-          
+
           <label className="text-[12px] font-medium text-gray-700 flex items-center gap-1.5 ml-2 cursor-pointer">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={showOnlyWithMovement}
-              onChange={e => setShowOnlyWithMovement(e.target.checked)}
+              onChange={(e) => setShowOnlyWithMovement(e.target.checked)}
               className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
             />
             Only with movement
@@ -257,7 +291,7 @@ const MovementAnalysis: React.FC = () => {
       }
     >
       <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
-        <ReportGrid 
+        <ReportGrid
           columns={[
             { key: "itemName", label: "Item Name" },
             { key: "purchaseQty", label: "Purchase Qty", align: "right" },
@@ -269,14 +303,14 @@ const MovementAnalysis: React.FC = () => {
             { key: "productionQty", label: "Prod In", align: "right" },
             { key: "consumptionQty", label: "Consump Out", align: "right" },
             { key: "closingQty", label: "Closing Qty", align: "right" },
-            { key: "closingValue", label: "Closing Value", align: "right" }
-          ]} 
-          data={analysisData.rows} 
-          getRowClassName={(row) => row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""}
+            { key: "closingValue", label: "Closing Value", align: "right" },
+          ]}
+          data={analysisData.rows}
+          getRowClassName={(row) => (row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : "")}
           renderCell={renderCell}
         />
       </div>
-      
+
       <ReportOptionsModal
         open={optionsOpen}
         title="Movement Analysis Options"
@@ -285,43 +319,45 @@ const MovementAnalysis: React.FC = () => {
       >
         <div className="space-y-4">
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date 
-            <input 
-              type="date" 
-              value={pendingStart} 
-              onChange={e => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            From Date
+            <input
+              type="date"
+              value={pendingStart}
+              onChange={(e) => setPendingStart(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date 
-            <input 
-              type="date" 
-              value={pendingEnd} 
-              onChange={e => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" 
+            To Date
+            <input
+              type="date"
+              value={pendingEnd}
+              onChange={(e) => setPendingEnd(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </label>
-          
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Item Group 
+            Item Group
             <select
               value={pendingSelectedGroupId}
-              onChange={e => setPendingSelectedGroupId(e.target.value)}
+              onChange={(e) => setPendingSelectedGroupId(e.target.value)}
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
-              {groups.map(group => (
-                <option key={group.id} value={group.id}>{group.name}</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
               ))}
             </select>
           </label>
-          
+
           <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer pt-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={pendingShowOnlyWithMovement}
-              onChange={e => setPendingShowOnlyWithMovement(e.target.checked)}
+              onChange={(e) => setPendingShowOnlyWithMovement(e.target.checked)}
               className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
             />
             Show only items with movement

@@ -1,17 +1,24 @@
-import React, { useState, useCallback } from 'react';
-import toast from 'react-hot-toast';
-import TallyVoucherShell from './TallyVoucherShell';
-import TallyAccountSelect from './TallyAccountSelect';
-import TallyBankAllocation from './TallyBankAllocation';
-import TallyCashDenomination from './TallyCashDenomination';
-import TallyVoucherPrint from './TallyVoucherPrint';
-import TallyVoucherList from './TallyVoucherList';
-import { Voucher, VoucherLine, blankVoucher, blankLine, recalcTotals, isBalanced } from '@/lib/tallyVoucher';
-import { formatMoney, parseMoney } from '@/lib/tallyFormat';
-import { useStore } from '@/store/useStore';
+import React, { useState, useCallback } from "react";
+import toast from "react-hot-toast";
+import TallyVoucherShell from "./TallyVoucherShell";
+import TallyAccountSelect from "./TallyAccountSelect";
+import TallyBankAllocation from "./TallyBankAllocation";
+import TallyCashDenomination from "./TallyCashDenomination";
+import TallyVoucherPrint from "./TallyVoucherPrint";
+import TallyVoucherList from "./TallyVoucherList";
+import {
+  Voucher,
+  VoucherLine,
+  blankVoucher,
+  blankLine,
+  recalcTotals,
+  isBalanced,
+} from "@/lib/tallyVoucher";
+import { formatMoney, parseMoney } from "@/lib/tallyFormat";
+import { useStore } from "@/store/useStore";
 
 export const TallyContraVoucher: React.FC = () => {
-  const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher('Contra'));
+  const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher("Contra"));
   const [selectedRow, setSelectedRow] = useState(0);
   const [showBank, setShowBank] = useState(false);
   const [showCash, setShowCash] = useState(false);
@@ -22,8 +29,8 @@ export const TallyContraVoucher: React.FC = () => {
 
   const { addVoucher, updateVoucher, vouchers, cancelVoucher } = useStore();
 
-  const isBankAccount = (name: string) => name.toLowerCase().includes('bank');
-  const isCashAccount = (name: string) => name.toLowerCase().includes('cash');
+  const isBankAccount = (name: string) => name.toLowerCase().includes("bank");
+  const isCashAccount = (name: string) => name.toLowerCase().includes("cash");
 
   const updateLine = useCallback((idx: number, patch: Partial<VoucherLine>) => {
     setVoucher((prev) => {
@@ -51,7 +58,7 @@ export const TallyContraVoucher: React.FC = () => {
 
   const handleAccept = useCallback(async () => {
     if (!isBalanced(voucher.lines)) {
-      toast.error('Debit and Credit totals must be equal.');
+      toast.error("Debit and Credit totals must be equal.");
       return;
     }
     if (voucher.id) {
@@ -59,20 +66,27 @@ export const TallyContraVoucher: React.FC = () => {
     } else {
       await addVoucher(voucher);
     }
-    toast.success('Contra voucher saved.');
-    setVoucher(blankVoucher('Contra'));
+    toast.success("Contra voucher saved.");
+    setVoucher(blankVoucher("Contra"));
     setSelectedRow(0);
   }, [voucher, updateVoucher, addVoucher]);
 
   const handleCancel = useCallback(() => {
-    setVoucher(blankVoucher('Contra'));
+    setVoucher(blankVoucher("Contra"));
     setSelectedRow(0);
   }, []);
 
-  const handleSelect = useCallback((id: string) => {
-    const loaded = vouchers.find(v => v.id === id);
-    if (loaded) { setVoucher(loaded); setShowList(false); setSelectedRow(0); }
-  }, [vouchers]);
+  const handleSelect = useCallback(
+    (id: string) => {
+      const loaded = vouchers.find((v) => v.id === id);
+      if (loaded) {
+        setVoucher(loaded);
+        setShowList(false);
+        setSelectedRow(0);
+      }
+    },
+    [vouchers],
+  );
 
   return (
     <TallyVoucherShell
@@ -91,9 +105,9 @@ export const TallyContraVoucher: React.FC = () => {
       onAccept={handleAccept}
       onCancel={handleCancel}
       onF10={() => setShowList(true)}
-      onF12={() => toast('F12: Configuration panel not implemented yet.')}
+      onF12={() => toast("F12: Configuration panel not implemented yet.")}
       onDuplicate={duplicateRow}
-      onToggleMode={() => toast('Contra voucher always uses double-entry mode.')}
+      onToggleMode={() => toast("Contra voucher always uses double-entry mode.")}
       modeLabel="Double Entry"
     >
       <div className="overflow-auto">
@@ -109,35 +123,53 @@ export const TallyContraVoucher: React.FC = () => {
           </thead>
           <tbody>
             {voucher.lines.map((line, idx) => (
-              <tr key={line.id} className={selectedRow === idx ? 'selected' : ''} onClick={() => setSelectedRow(idx)}>
+              <tr
+                key={line.id}
+                className={selectedRow === idx ? "selected" : ""}
+                onClick={() => setSelectedRow(idx)}
+              >
                 <td>{idx + 1}</td>
                 <td>
                   <TallyAccountSelect
                     value={line.accountId}
-                    onChange={(id, name) => updateLine(idx, { accountId: id, accountName: name, isBank: isBankAccount(name), isCash: isCashAccount(name) })}
+                    onChange={(id, name) =>
+                      updateLine(idx, {
+                        accountId: id,
+                        accountName: name,
+                        isBank: isBankAccount(name),
+                        isCash: isCashAccount(name),
+                      })
+                    }
                   />
                 </td>
                 <td>
                   <input
                     className="tally-input text-right"
                     placeholder="0.00"
-                    value={line.debit ? formatMoney(line.debit) : ''}
-                    onChange={(e) => updateLine(idx, { debit: parseMoney(e.target.value), credit: 0 })}
+                    value={line.debit ? formatMoney(line.debit) : ""}
+                    onChange={(e) =>
+                      updateLine(idx, { debit: parseMoney(e.target.value), credit: 0 })
+                    }
                   />
                 </td>
                 <td>
                   <input
                     className="tally-input text-right"
                     placeholder="0.00"
-                    value={line.credit ? formatMoney(line.credit) : ''}
-                    onChange={(e) => updateLine(idx, { credit: parseMoney(e.target.value), debit: 0 })}
+                    value={line.credit ? formatMoney(line.credit) : ""}
+                    onChange={(e) =>
+                      updateLine(idx, { credit: parseMoney(e.target.value), debit: 0 })
+                    }
                   />
                 </td>
                 <td className="text-center">
                   {line.isBank && (
                     <button
                       className="tally-btn text-xs py-0.5 px-2"
-                      onClick={() => { setBankLineIdx(idx); setShowBank(true); }}
+                      onClick={() => {
+                        setBankLineIdx(idx);
+                        setShowBank(true);
+                      }}
                     >
                       Bank
                     </button>
@@ -145,7 +177,10 @@ export const TallyContraVoucher: React.FC = () => {
                   {line.isCash && (
                     <button
                       className="tally-btn text-xs py-0.5 px-2"
-                      onClick={() => { setCashLineIdx(idx); setShowCash(true); }}
+                      onClick={() => {
+                        setCashLineIdx(idx);
+                        setShowCash(true);
+                      }}
                     >
                       Cash
                     </button>
@@ -158,7 +193,9 @@ export const TallyContraVoucher: React.FC = () => {
       </div>
 
       <div className="mt-2">
-        <button className="tally-btn text-xs" onClick={addRow}>+ Add Row</button>
+        <button className="tally-btn text-xs" onClick={addRow}>
+          + Add Row
+        </button>
       </div>
 
       {showBank && bankLineIdx !== null && (
@@ -167,17 +204,26 @@ export const TallyContraVoucher: React.FC = () => {
           amount={Math.max(voucher.lines[bankLineIdx].debit, voucher.lines[bankLineIdx].credit)}
           existing={voucher.lines[bankLineIdx].bankAllocation}
           onClose={() => setShowBank(false)}
-          onSave={(alloc) => { updateLine(bankLineIdx, { bankAllocation: alloc }); setShowBank(false); }}
+          onSave={(alloc) => {
+            updateLine(bankLineIdx, { bankAllocation: alloc });
+            setShowBank(false);
+          }}
         />
       )}
 
       {showCash && cashLineIdx !== null && (
         <TallyCashDenomination
           isOpen={showCash}
-          targetAmount={Math.max(voucher.lines[cashLineIdx].debit, voucher.lines[cashLineIdx].credit)}
+          targetAmount={Math.max(
+            voucher.lines[cashLineIdx].debit,
+            voucher.lines[cashLineIdx].credit,
+          )}
           existing={voucher.lines[cashLineIdx].cashDenominations}
           onClose={() => setShowCash(false)}
-          onSave={(denoms) => { updateLine(cashLineIdx, { cashDenominations: denoms }); setShowCash(false); }}
+          onSave={(denoms) => {
+            updateLine(cashLineIdx, { cashDenominations: denoms });
+            setShowCash(false);
+          }}
         />
       )}
 
@@ -187,8 +233,14 @@ export const TallyContraVoucher: React.FC = () => {
         vouchers={vouchers || []}
         onClose={() => setShowList(false)}
         onSelect={handleSelect}
-        onPrint={(id) => { const v = vouchers.find(v => v.id === id); if (v) { setVoucher(v); setShowPrint(true); } }}
-        onDelete={(id) => cancelVoucher(id, 'Deleted from UI')}
+        onPrint={(id) => {
+          const v = vouchers.find((v) => v.id === id);
+          if (v) {
+            setVoucher(v);
+            setShowPrint(true);
+          }
+        }}
+        onDelete={(id) => cancelVoucher(id, "Deleted from UI")}
       />
     </TallyVoucherShell>
   );

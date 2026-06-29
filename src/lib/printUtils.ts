@@ -7,10 +7,10 @@
 // Legacy jsPDF exports kept at the bottom for backward-compat.
 // ============================================================
 
-import QRCode from 'qrcode';
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { formatNumber } from './utils';
+import QRCode from "qrcode";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { formatNumber } from "./utils";
 
 // ─────────────────────────────────────────────────────────────
 // 1.  TYPE DEFINITIONS
@@ -42,8 +42,8 @@ export interface CompanySettings {
 
 export interface DBInvoice {
   invoiceNo: string;
-  date: string;          // AD date string
-  dateNepali?: string;   // BS date string
+  date: string; // AD date string
+  dateNepali?: string; // BS date string
   partyName?: string;
   partyPan?: string;
   partyAddress?: string;
@@ -56,9 +56,9 @@ export interface DBInvoice {
   vatAmount: number;
   grandTotal: number;
   cbmsIrn?: string;
-  qrCode?: string;       // pre-generated QR data URL (optional)
+  qrCode?: string; // pre-generated QR data URL (optional)
   cbmsSubmitted?: boolean;
-  status?: 'ACTIVE' | 'CANCELLED' | 'DRAFT';
+  status?: "ACTIVE" | "CANCELLED" | "DRAFT";
   companySettings?: CompanySettings;
 }
 
@@ -95,13 +95,13 @@ export interface PrintOptions {
 }
 
 export type PrintDocumentType =
-  | 'tax-invoice'
-  | 'simplified-invoice'
-  | 'purchase-voucher'
-  | 'delivery-challan'
-  | 'thermal-receipt'
-  | 'voucher'
-  | 'payslip';
+  | "tax-invoice"
+  | "simplified-invoice"
+  | "purchase-voucher"
+  | "delivery-challan"
+  | "thermal-receipt"
+  | "voucher"
+  | "payslip";
 
 // ─────────────────────────────────────────────────────────────
 // 2.  NEPAL-SPECIFIC UTILITIES
@@ -109,11 +109,11 @@ export type PrintDocumentType =
 
 /** Format number in Nepal lakh-crore system: 1,00,000 not 100,000 */
 export function fmtNPR(amount: number, decimals = 2): string {
-  if (amount === null || amount === undefined || isNaN(amount)) return '0.00';
+  if (amount === null || amount === undefined || isNaN(amount)) return "0.00";
   const isNeg = amount < 0;
   const abs = Math.abs(amount);
   const fixed = abs.toFixed(decimals);
-  const [intStr, decStr] = fixed.split('.');
+  const [intStr, decStr] = fixed.split(".");
 
   let result: string;
   if (intStr.length <= 3) {
@@ -121,52 +121,82 @@ export function fmtNPR(amount: number, decimals = 2): string {
   } else {
     const last3 = intStr.slice(-3);
     const rest = intStr.slice(0, -3);
-    let groups = '';
+    let groups = "";
     for (let i = rest.length; i > 0; i -= 2) {
       const start = Math.max(0, i - 2);
       const seg = rest.slice(start, i);
-      groups = seg + (groups ? ',' + groups : '');
+      groups = seg + (groups ? "," + groups : "");
     }
-    result = groups + ',' + last3;
+    result = groups + "," + last3;
   }
 
-  const full = isNeg ? '-' + result : result;
-  return decimals > 0 ? full + '.' + decStr : full;
+  const full = isNeg ? "-" + result : result;
+  return decimals > 0 ? full + "." + decStr : full;
 }
 
 const ONES = [
-  '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
-  'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
-  'Seventeen', 'Eighteen', 'Nineteen',
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
 ];
-const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+const TENS = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
 function numToWords(n: number): string {
-  if (n === 0) return '';
+  if (n === 0) return "";
   if (n < 20) return ONES[n];
-  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? ' ' + ONES[n % 10] : '');
-  if (n < 1000) return ONES[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + numToWords(n % 100) : '');
-  if (n < 100000) return numToWords(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + numToWords(n % 1000) : '');
-  if (n < 10000000) return numToWords(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + numToWords(n % 100000) : '');
-  return numToWords(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + numToWords(n % 10000000) : '');
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? " " + ONES[n % 10] : "");
+  if (n < 1000)
+    return ONES[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " " + numToWords(n % 100) : "");
+  if (n < 100000)
+    return (
+      numToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + numToWords(n % 1000) : "")
+    );
+  if (n < 10000000)
+    return (
+      numToWords(Math.floor(n / 100000)) +
+      " Lakh" +
+      (n % 100000 ? " " + numToWords(n % 100000) : "")
+    );
+  return (
+    numToWords(Math.floor(n / 10000000)) +
+    " Crore" +
+    (n % 10000000 ? " " + numToWords(n % 10000000) : "")
+  );
 }
 
 export function amountInWords(amount: number): string {
   const rounded = Math.round(Math.abs(amount) * 100) / 100;
   const intPart = Math.floor(rounded);
   const paise = Math.round((rounded - intPart) * 100);
-  const words = numToWords(intPart) || 'Zero';
+  const words = numToWords(intPart) || "Zero";
   let result = `Rupees ${words}`;
   if (paise > 0) result += ` and ${numToWords(paise)} Paisa`;
-  return result + ' Only';
+  return result + " Only";
 }
 
 async function buildQR(text?: string, size = 96): Promise<string> {
-  if (!text) return '';
+  if (!text) return "";
   try {
-    return await QRCode.toDataURL(text, { width: size, margin: 1, errorCorrectionLevel: 'M' });
+    return await QRCode.toDataURL(text, { width: size, margin: 1, errorCorrectionLevel: "M" });
   } catch {
-    return '';
+    return "";
   }
 }
 
@@ -191,12 +221,13 @@ function watermarkCSS(text: string, color: string): string {
 
 function resolveWatermark(invoice: DBInvoice, opts: PrintOptions): { css: string; cls: string } {
   const forced = opts.showWatermark && opts.watermarkText;
-  if (forced) return { css: watermarkCSS(opts.watermarkText!, '#a00'), cls: 'watermark' };
-  if (invoice.status === 'CANCELLED') return { css: watermarkCSS('CANCELLED', '#cc0000'), cls: 'watermark' };
-  if (invoice.status === 'DRAFT') return { css: watermarkCSS('DRAFT', '#888'), cls: 'watermark' };
+  if (forced) return { css: watermarkCSS(opts.watermarkText!, "#a00"), cls: "watermark" };
+  if (invoice.status === "CANCELLED")
+    return { css: watermarkCSS("CANCELLED", "#cc0000"), cls: "watermark" };
+  if (invoice.status === "DRAFT") return { css: watermarkCSS("DRAFT", "#888"), cls: "watermark" };
   if (!invoice.cbmsSubmitted && invoice.cbmsIrn)
-    return { css: watermarkCSS('CBMS PENDING', '#b8860b'), cls: 'watermark' };
-  return { css: '', cls: '' };
+    return { css: watermarkCSS("CBMS PENDING", "#b8860b"), cls: "watermark" };
+  return { css: "", cls: "" };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -345,15 +376,13 @@ const A4_BASE_CSS = `
 async function taxInvoiceHTML(
   invoice: DBInvoice,
   opts: PrintOptions,
-  simplified = false
+  simplified = false,
 ): Promise<string> {
-  const cs = invoice.companySettings || {} as CompanySettings;
+  const cs = invoice.companySettings || ({} as CompanySettings);
   const qrSrc = invoice.qrCode || (await buildQR(invoice.cbmsIrn || invoice.invoiceNo, 120));
   const { css: wmCss, cls: wmCls } = resolveWatermark(invoice, opts);
 
-  const title = simplified
-    ? 'SIMPLIFIED TAX INVOICE / सरलीकृत कर चलान'
-    : 'TAX INVOICE / कर चलान';
+  const title = simplified ? "SIMPLIFIED TAX INVOICE / सरलीकृत कर चलान" : "TAX INVOICE / कर चलान";
 
   const logoHtml = cs.logo
     ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />`
@@ -364,21 +393,23 @@ async function taxInvoiceHTML(
     : '<div style="width:70pt;height:70pt;border:1px solid #ccc;"></div>';
 
   const linesHTML = (invoice.lines || [])
-    .map((l, i) => `
+    .map(
+      (l, i) => `
     <tr>
       <td class="text-center">${i + 1}</td>
-      <td>${l.itemName || ''}</td>
-      <td class="text-center">${l.hsnCode || ''}</td>
-      <td class="text-center">${l.unit || 'Pcs'}</td>
+      <td>${l.itemName || ""}</td>
+      <td class="text-center">${l.hsnCode || ""}</td>
+      <td class="text-center">${l.unit || "Pcs"}</td>
       <td class="text-right mono">${l.qty}</td>
       <td class="text-right mono">${fmtNPR(l.rate)}</td>
-      <td class="text-right mono">${l.discountPct ? l.discountPct + '%' : '-'}</td>
+      <td class="text-right mono">${l.discountPct ? l.discountPct + "%" : "-"}</td>
       <td class="text-right mono">${fmtNPR(l.taxableAmount)}</td>
-      <td class="text-center">${l.vatRate !== undefined ? l.vatRate + '%' : '13%'}</td>
+      <td class="text-center">${l.vatRate !== undefined ? l.vatRate + "%" : "13%"}</td>
       <td class="text-right mono">${fmtNPR(l.vatAmount)}</td>
       <td class="text-right mono bold">${fmtNPR(l.totalAmount)}</td>
-    </tr>`)
-    .join('');
+    </tr>`,
+    )
+    .join("");
 
   const grandTotal = invoice.grandTotal || 0;
 
@@ -386,11 +417,11 @@ async function taxInvoiceHTML(
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>${simplified ? 'Simplified Tax Invoice' : 'Tax Invoice'} - ${invoice.invoiceNo}</title>
+<title>${simplified ? "Simplified Tax Invoice" : "Tax Invoice"} - ${invoice.invoiceNo}</title>
 <style>
 ${A4_BASE_CSS}
 ${wmCss}
-${simplified ? '.invoice-title { border-color: #444; }' : ''}
+${simplified ? ".invoice-title { border-color: #444; }" : ""}
 .items-table { margin: 5pt 0; }
 .items-table th:nth-child(1) { width: 24pt; }
 .items-table th:nth-child(3) { width: 40pt; }
@@ -409,16 +440,16 @@ ${simplified ? '.invoice-title { border-color: #444; }' : ''}
 <div class="header-grid">
   <div>${logoHtml}</div>
   <div class="company-center">
-    ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ''}
-    <div class="company-name-en">${cs.name || ''}</div>
+    ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
+    <div class="company-name-en">${cs.name || ""}</div>
     <div class="pan-vat-line">
-      PAN No.: <strong>${cs.panNumber || '—'}</strong>
-      &nbsp;|&nbsp; VAT Reg. No.: <strong>${cs.vatNumber || '—'}</strong>
+      PAN No.: <strong>${cs.panNumber || "—"}</strong>
+      &nbsp;|&nbsp; VAT Reg. No.: <strong>${cs.vatNumber || "—"}</strong>
     </div>
     <div style="font-size:8pt; margin-top:2pt;">
-      ${cs.address || ''}
-      ${cs.phone ? ' | Ph: ' + cs.phone : ''}
-      ${cs.email ? ' | ' + cs.email : ''}
+      ${cs.address || ""}
+      ${cs.phone ? " | Ph: " + cs.phone : ""}
+      ${cs.email ? " | " + cs.email : ""}
     </div>
     <div style="margin-top:5pt;">
       <span class="invoice-title">${title}</span>
@@ -433,17 +464,17 @@ ${simplified ? '.invoice-title { border-color: #444; }' : ''}
 <div class="bill-grid">
   <div class="bill-box">
     <div class="bill-box-title">Bill To / खरिदकर्ताको विवरण</div>
-    <div><strong>${invoice.partyName || ''}</strong></div>
-    ${invoice.partyAddress ? `<div>${invoice.partyAddress}</div>` : ''}
-    ${!simplified && invoice.partyPan ? `<div>PAN: <strong>${invoice.partyPan}</strong></div>` : ''}
-    ${invoice.partyVatNo ? `<div>VAT No.: ${invoice.partyVatNo}</div>` : ''}
+    <div><strong>${invoice.partyName || ""}</strong></div>
+    ${invoice.partyAddress ? `<div>${invoice.partyAddress}</div>` : ""}
+    ${!simplified && invoice.partyPan ? `<div>PAN: <strong>${invoice.partyPan}</strong></div>` : ""}
+    ${invoice.partyVatNo ? `<div>VAT No.: ${invoice.partyVatNo}</div>` : ""}
   </div>
   <div class="bill-box">
     <div class="bill-box-title">Invoice Details / बिल विवरण</div>
     <div>Invoice No.: <strong>${invoice.invoiceNo}</strong></div>
-    <div>Date (BS): <strong>${invoice.dateNepali || '—'}</strong></div>
-    <div>Date (AD): ${invoice.date || ''}</div>
-    ${invoice.cbmsIrn ? `<div>IRN: <strong>${invoice.cbmsIrn}</strong></div>` : ''}
+    <div>Date (BS): <strong>${invoice.dateNepali || "—"}</strong></div>
+    <div>Date (AD): ${invoice.date || ""}</div>
+    ${invoice.cbmsIrn ? `<div>IRN: <strong>${invoice.cbmsIrn}</strong></div>` : ""}
   </div>
 </div>
 
@@ -472,13 +503,17 @@ ${simplified ? '.invoice-title { border-color: #444; }' : ''}
 <!-- SUMMARY -->
 <div class="summary-box">
   <div class="summary-row"><span>Sub Total:</span><span class="mono">Rs. ${fmtNPR(invoice.subTotal || 0)}</span></div>
-  ${(invoice.discountAmount || 0) > 0
-    ? `<div class="summary-row"><span>Discount:</span><span class="mono">Rs. ${fmtNPR(invoice.discountAmount || 0)}</span></div>`
-    : ''}
+  ${
+    (invoice.discountAmount || 0) > 0
+      ? `<div class="summary-row"><span>Discount:</span><span class="mono">Rs. ${fmtNPR(invoice.discountAmount || 0)}</span></div>`
+      : ""
+  }
   <div class="summary-row"><span>Taxable Amount:</span><span class="mono">Rs. ${fmtNPR(invoice.taxableAmount)}</span></div>
-  ${(invoice.exemptAmount || 0) > 0
-    ? `<div class="summary-row"><span>Exempt Amount:</span><span class="mono">Rs. ${fmtNPR(invoice.exemptAmount || 0)}</span></div>`
-    : ''}
+  ${
+    (invoice.exemptAmount || 0) > 0
+      ? `<div class="summary-row"><span>Exempt Amount:</span><span class="mono">Rs. ${fmtNPR(invoice.exemptAmount || 0)}</span></div>`
+      : ""
+  }
   <div class="summary-row"><span>VAT @ 13%:</span><span class="mono">Rs. ${fmtNPR(invoice.vatAmount)}</span></div>
   <div class="summary-row summary-grand">
     <span>GRAND TOTAL:</span>
@@ -509,7 +544,9 @@ ${simplified ? '.invoice-title { border-color: #444; }' : ''}
 </div>
 
 <!-- IRN + QR FOOTER -->
-${invoice.cbmsIrn ? `
+${
+  invoice.cbmsIrn
+    ? `
 <div class="irn-footer" style="margin-top:10pt;">
   <table border="0" style="border:none; width:100%;">
     <tr>
@@ -518,11 +555,13 @@ ${invoice.cbmsIrn ? `
         <div style="font-size:7pt; margin-top:2pt;">Verified at <strong>cbms.ird.gov.np</strong></div>
       </td>
       <td style="border:none; text-align:right; vertical-align:middle; padding:0;">
-        ${qrSrc ? `<img src="${qrSrc}" class="qr-sm" alt="QR" />` : ''}
+        ${qrSrc ? `<img src="${qrSrc}" class="qr-sm" alt="QR" />` : ""}
       </td>
     </tr>
   </table>
-</div>` : ''}
+</div>`
+    : ""
+}
 
 <script>
   window.onload = function() {
@@ -538,19 +577,21 @@ ${invoice.cbmsIrn ? `
 // ─────────────────────────────────────────────────────────────
 
 async function deliveryChallanHTML(dc: DeliveryChallan, _opts: PrintOptions): Promise<string> {
-  const cs = dc.companySettings || {} as CompanySettings;
+  const cs = dc.companySettings || ({} as CompanySettings);
 
   const linesHTML = (dc.lines || [])
-    .map((l, i) => `
+    .map(
+      (l, i) => `
     <tr>
       <td class="text-center">${i + 1}</td>
-      <td>${l.itemName || ''}</td>
-      <td class="text-center">${l.hsnCode || ''}</td>
-      <td class="text-center">${l.unit || ''}</td>
+      <td>${l.itemName || ""}</td>
+      <td class="text-center">${l.hsnCode || ""}</td>
+      <td class="text-center">${l.unit || ""}</td>
       <td class="text-right">${l.qty}</td>
-      <td>${l.remarks || ''}</td>
-    </tr>`)
-    .join('');
+      <td>${l.remarks || ""}</td>
+    </tr>`,
+    )
+    .join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -563,12 +604,12 @@ ${A4_BASE_CSS}
 </head>
 <body>
 <div class="header-grid" style="grid-template-columns: 80pt 1fr 80pt;">
-  <div>${cs.logo ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />` : ''}</div>
+  <div>${cs.logo ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />` : ""}</div>
   <div class="company-center">
-    ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ''}
-    <div class="company-name-en">${cs.name || ''}</div>
-    <div class="pan-vat-line">PAN: ${cs.panNumber || '—'}</div>
-    <div style="font-size:8pt;">${cs.address || ''}${cs.phone ? ' | Ph: ' + cs.phone : ''}</div>
+    ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
+    <div class="company-name-en">${cs.name || ""}</div>
+    <div class="pan-vat-line">PAN: ${cs.panNumber || "—"}</div>
+    <div style="font-size:8pt;">${cs.address || ""}${cs.phone ? " | Ph: " + cs.phone : ""}</div>
     <div style="margin-top:5pt;">
       <span class="invoice-title">DELIVERY CHALLAN / डेलिभरी चलान</span>
     </div>
@@ -581,16 +622,16 @@ ${A4_BASE_CSS}
 <div class="bill-grid">
   <div class="bill-box">
     <div class="bill-box-title">Deliver To</div>
-    <div><strong>${dc.partyName || ''}</strong></div>
-    ${dc.partyAddress ? `<div>${dc.partyAddress}</div>` : ''}
+    <div><strong>${dc.partyName || ""}</strong></div>
+    ${dc.partyAddress ? `<div>${dc.partyAddress}</div>` : ""}
   </div>
   <div class="bill-box">
     <div class="bill-box-title">Challan Details</div>
     <div>DC No.: <strong>${dc.dcNo}</strong></div>
-    <div>Date (BS): <strong>${dc.dateNepali || '—'}</strong></div>
-    <div>Date (AD): ${dc.date || ''}</div>
-    ${dc.vehicleNo ? `<div>Vehicle No.: ${dc.vehicleNo}</div>` : ''}
-    ${dc.fromGodown ? `<div>From Godown: ${dc.fromGodown}</div>` : ''}
+    <div>Date (BS): <strong>${dc.dateNepali || "—"}</strong></div>
+    <div>Date (AD): ${dc.date || ""}</div>
+    ${dc.vehicleNo ? `<div>Vehicle No.: ${dc.vehicleNo}</div>` : ""}
+    ${dc.fromGodown ? `<div>From Godown: ${dc.fromGodown}</div>` : ""}
   </div>
 </div>
 
@@ -608,12 +649,13 @@ ${A4_BASE_CSS}
   <tbody>
     ${linesHTML}
     <!-- Blank rows for hand-writing -->
-    ${Array.from({ length: Math.max(0, 5 - (dc.lines?.length || 0)) }).map(() =>
-      `<tr><td>&nbsp;</td><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>`).join('')}
+    ${Array.from({ length: Math.max(0, 5 - (dc.lines?.length || 0)) })
+      .map(() => `<tr><td>&nbsp;</td><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>`)
+      .join("")}
   </tbody>
 </table>
 
-${dc.remarks ? `<div style="margin-top:6pt; font-size:8.5pt;"><strong>Remarks:</strong> ${dc.remarks}</div>` : ''}
+${dc.remarks ? `<div style="margin-top:6pt; font-size:8.5pt;"><strong>Remarks:</strong> ${dc.remarks}</div>` : ""}
 
 <div class="sig-row" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:10pt; margin-top:30pt;">
   <div class="sig-box">
@@ -626,7 +668,7 @@ ${dc.remarks ? `<div style="margin-top:6pt; font-size:8.5pt;"><strong>Remarks:</
   </div>
   <div class="sig-box">
     <div class="sig-line"></div>
-    <div>Vehicle No.<br/>${dc.vehicleNo || '____________'}</div>
+    <div>Vehicle No.<br/>${dc.vehicleNo || "____________"}</div>
   </div>
   <div class="sig-box">
     <div class="sig-line"></div>
@@ -648,19 +690,21 @@ ${dc.remarks ? `<div style="margin-top:6pt; font-size:8.5pt;"><strong>Remarks:</
 // ─────────────────────────────────────────────────────────────
 
 async function voucherHTML(voucher: AccountingVoucher, _opts: PrintOptions): Promise<string> {
-  const cs = voucher.companySettings || {} as CompanySettings;
-  const vType = (voucher.type || 'Journal').toUpperCase();
+  const cs = voucher.companySettings || ({} as CompanySettings);
+  const vType = (voucher.type || "Journal").toUpperCase();
 
   const linesHTML = (voucher.lines || [])
-    .map((l, i) => `
+    .map(
+      (l, i) => `
     <tr>
       <td class="text-center">${i + 1}</td>
-      <td>${l.accountName || ''}</td>
-      <td>${l.narration || ''}</td>
-      <td class="text-right mono">${l.debit > 0 ? 'Rs. ' + fmtNPR(l.debit) : '—'}</td>
-      <td class="text-right mono">${l.credit > 0 ? 'Rs. ' + fmtNPR(l.credit) : '—'}</td>
-    </tr>`)
-    .join('');
+      <td>${l.accountName || ""}</td>
+      <td>${l.narration || ""}</td>
+      <td class="text-right mono">${l.debit > 0 ? "Rs. " + fmtNPR(l.debit) : "—"}</td>
+      <td class="text-right mono">${l.credit > 0 ? "Rs. " + fmtNPR(l.credit) : "—"}</td>
+    </tr>`,
+    )
+    .join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -674,9 +718,9 @@ tfoot td { background: #e8f5e9; font-weight: bold; }
 </head>
 <body>
 <div class="company-center" style="margin-bottom:8pt;">
-  ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ''}
-  <div class="company-name-en">${cs.name || ''}</div>
-  <div style="font-size:8pt;">${cs.address || ''}${cs.phone ? ' | Ph: ' + cs.phone : ''}</div>
+  ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
+  <div class="company-name-en">${cs.name || ""}</div>
+  <div style="font-size:8pt;">${cs.address || ""}${cs.phone ? " | Ph: " + cs.phone : ""}</div>
   <div style="margin-top:5pt;"><span class="invoice-title">${vType} VOUCHER</span></div>
 </div>
 
@@ -685,11 +729,11 @@ tfoot td { background: #e8f5e9; font-weight: bold; }
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:6pt; margin:6pt 0;">
   <div>
     <div>Voucher No.: <strong>${voucher.voucherNo}</strong></div>
-    <div>Date (BS): <strong>${voucher.dateNepali || '—'}</strong></div>
-    <div>Date (AD): ${voucher.date || ''}</div>
+    <div>Date (BS): <strong>${voucher.dateNepali || "—"}</strong></div>
+    <div>Date (AD): ${voucher.date || ""}</div>
   </div>
   <div>
-    <div>PAN: ${cs.panNumber || '—'}</div>
+    <div>PAN: ${cs.panNumber || "—"}</div>
   </div>
 </div>
 
@@ -714,10 +758,14 @@ tfoot td { background: #e8f5e9; font-weight: bold; }
   </tfoot>
 </table>
 
-${voucher.narration ? `
+${
+  voucher.narration
+    ? `
 <div style="margin-top:8pt; padding:5pt; border:1px solid #ccc; border-radius:2pt; font-size:8.5pt;">
   <strong>Narration:</strong> ${voucher.narration}
-</div>` : ''}
+</div>`
+    : ""
+}
 
 <div class="sig-row" style="margin-top:30pt;">
   <div class="sig-box"><div class="sig-line"></div>Prepared By</div>
@@ -734,24 +782,26 @@ ${voucher.narration ? `
 // ─────────────────────────────────────────────────────────────
 
 async function thermalReceiptHTML(invoice: DBInvoice, _opts: PrintOptions): Promise<string> {
-  const cs = invoice.companySettings || {} as CompanySettings;
+  const cs = invoice.companySettings || ({} as CompanySettings);
   const qrSrc = invoice.qrCode || (await buildQR(invoice.cbmsIrn || invoice.invoiceNo, 80));
 
-  const SEP1 = '================================';
-  const SEP2 = '--------------------------------';
+  const SEP1 = "================================";
+  const SEP2 = "--------------------------------";
 
-  const linesHTML = (invoice.lines || []).map(l => {
-    const name = l.itemName || '';
-    const qty = String(l.qty);
-    const rate = fmtNPR(l.rate, 0);
-    const total = fmtNPR(l.totalAmount, 0);
-    return `<tr>
+  const linesHTML = (invoice.lines || [])
+    .map((l) => {
+      const name = l.itemName || "";
+      const qty = String(l.qty);
+      const rate = fmtNPR(l.rate, 0);
+      const total = fmtNPR(l.totalAmount, 0);
+      return `<tr>
       <td style="padding:1pt 2pt;">${name}</td>
       <td style="text-align:center;padding:1pt 2pt;">${qty}</td>
       <td style="text-align:right;padding:1pt 2pt;">${rate}</td>
       <td style="text-align:right;padding:1pt 2pt;">${total}</td>
     </tr>`;
-  }).join('');
+    })
+    .join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -789,17 +839,17 @@ async function thermalReceiptHTML(invoice: DBInvoice, _opts: PrintOptions): Prom
 </style>
 </head>
 <body>
-<div class="center bold" style="font-size:11pt;">${cs.name || 'Company'}</div>
-${cs.nameNepali ? `<div class="center" style="font-size:9pt;">${cs.nameNepali}</div>` : ''}
-<div class="center" style="font-size:7.5pt;">${cs.address || ''}</div>
-${cs.phone ? `<div class="center" style="font-size:7.5pt;">Ph: ${cs.phone}</div>` : ''}
-<div class="center" style="font-size:7.5pt;">PAN: ${cs.panNumber || '—'} | VAT: ${cs.vatNumber || '—'}</div>
+<div class="center bold" style="font-size:11pt;">${cs.name || "Company"}</div>
+${cs.nameNepali ? `<div class="center" style="font-size:9pt;">${cs.nameNepali}</div>` : ""}
+<div class="center" style="font-size:7.5pt;">${cs.address || ""}</div>
+${cs.phone ? `<div class="center" style="font-size:7.5pt;">Ph: ${cs.phone}</div>` : ""}
+<div class="center" style="font-size:7.5pt;">PAN: ${cs.panNumber || "—"} | VAT: ${cs.vatNumber || "—"}</div>
 
 <div class="center sep">${SEP1}</div>
 
-<div style="font-size:7.5pt;">Date (BS): ${invoice.dateNepali || '—'} | ${invoice.date || ''}</div>
+<div style="font-size:7.5pt;">Date (BS): ${invoice.dateNepali || "—"} | ${invoice.date || ""}</div>
 <div style="font-size:7.5pt;">Receipt No.: <strong>${invoice.invoiceNo}</strong></div>
-${invoice.partyName ? `<div style="font-size:7.5pt;">Customer: ${invoice.partyName}</div>` : ''}
+${invoice.partyName ? `<div style="font-size:7.5pt;">Customer: ${invoice.partyName}</div>` : ""}
 
 <div class="center sep">${SEP2}</div>
 
@@ -818,9 +868,11 @@ ${invoice.partyName ? `<div style="font-size:7.5pt;">Customer: ${invoice.partyNa
 <div class="center sep">${SEP2}</div>
 
 <div class="total-row"><span>Taxable:</span><span>Rs. ${fmtNPR(invoice.taxableAmount)}</span></div>
-${(invoice.exemptAmount || 0) > 0
-  ? `<div class="total-row"><span>Exempt:</span><span>Rs. ${fmtNPR(invoice.exemptAmount || 0)}</span></div>`
-  : ''}
+${
+  (invoice.exemptAmount || 0) > 0
+    ? `<div class="total-row"><span>Exempt:</span><span>Rs. ${fmtNPR(invoice.exemptAmount || 0)}</span></div>`
+    : ""
+}
 <div class="total-row"><span>VAT 13%:</span><span>Rs. ${fmtNPR(invoice.vatAmount)}</span></div>
 <div class="grand-row"><span>GRAND TOTAL:</span><span>Rs. ${fmtNPR(invoice.grandTotal)}</span></div>
 
@@ -830,10 +882,14 @@ ${(invoice.exemptAmount || 0) > 0
 
 <div class="center sep">${SEP1}</div>
 
-${qrSrc ? `<div class="qr-center"><img src="${qrSrc}" style="width:60pt;height:60pt;" alt="QR" /></div>` : ''}
+${qrSrc ? `<div class="qr-center"><img src="${qrSrc}" style="width:60pt;height:60pt;" alt="QR" /></div>` : ""}
 
-${invoice.cbmsIrn ? `<div class="center" style="font-size:7pt; word-break:break-all;">IRN: ${invoice.cbmsIrn}</div>
-<div class="center" style="font-size:7pt;">cbms.ird.gov.np</div>` : ''}
+${
+  invoice.cbmsIrn
+    ? `<div class="center" style="font-size:7pt; word-break:break-all;">IRN: ${invoice.cbmsIrn}</div>
+<div class="center" style="font-size:7pt;">cbms.ird.gov.np</div>`
+    : ""
+}
 
 <div class="center sep">${SEP1}</div>
 <div class="thankyou">Thank you! Come again.</div>
@@ -856,8 +912,9 @@ async function purchaseVoucherHTML(invoice: DBInvoice, opts: PrintOptions): Prom
     status: invoice.status,
   };
   const html = await taxInvoiceHTML(modified, opts, false);
-  return html.replace('TAX INVOICE / कर चलान', 'PURCHASE INVOICE / खरिद बिल')
-             .replace('<title>Tax Invoice', '<title>Purchase Invoice');
+  return html
+    .replace("TAX INVOICE / कर चलान", "PURCHASE INVOICE / खरिद बिल")
+    .replace("<title>Tax Invoice", "<title>Purchase Invoice");
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -867,35 +924,35 @@ async function purchaseVoucherHTML(invoice: DBInvoice, opts: PrintOptions): Prom
 export async function printDocument(
   type: PrintDocumentType,
   data: DBInvoice | DeliveryChallan | AccountingVoucher,
-  options: PrintOptions = {}
+  options: PrintOptions = {},
 ): Promise<void> {
-  let html = '';
+  let html = "";
 
   switch (type) {
-    case 'tax-invoice':
+    case "tax-invoice":
       html = await taxInvoiceHTML(data as DBInvoice, options, false);
       break;
-    case 'simplified-invoice':
+    case "simplified-invoice":
       html = await taxInvoiceHTML(data as DBInvoice, options, true);
       break;
-    case 'purchase-voucher':
+    case "purchase-voucher":
       html = await purchaseVoucherHTML(data as DBInvoice, options);
       break;
-    case 'delivery-challan':
+    case "delivery-challan":
       html = await deliveryChallanHTML(data as DeliveryChallan, options);
       break;
-    case 'thermal-receipt':
+    case "thermal-receipt":
       html = await thermalReceiptHTML(data as DBInvoice, options);
       break;
-    case 'voucher':
+    case "voucher":
       html = await voucherHTML(data as AccountingVoucher, options);
       break;
-    case 'payslip':
+    case "payslip":
       // Stub – extend with payslip template as needed
       html = await voucherHTML(data as AccountingVoucher, options);
       break;
     default:
-      console.warn('printDocument: unknown type', type);
+      console.warn("printDocument: unknown type", type);
       return;
   }
 
@@ -907,9 +964,13 @@ export async function printDocument(
   }
 
   for (let c = 0; c < copies; c++) {
-    const popup = window.open('', '_blank', 'width=960,height=720,scrollbars=yes,menubar=no,toolbar=no');
+    const popup = window.open(
+      "",
+      "_blank",
+      "width=960,height=720,scrollbars=yes,menubar=no,toolbar=no",
+    );
     if (!popup) {
-      alert('Please allow popups for this page to enable printing.');
+      alert("Please allow popups for this page to enable printing.");
       return;
     }
     popup.document.open();
@@ -927,23 +988,23 @@ export async function generateInvoicePDF(
   invoice: any,
   companySettings: any,
   party: any,
-  _items?: any[]
+  _items?: any[],
 ): Promise<Blob> {
   // Delegate to new HTML print system and return a dummy blob so
   // callers that do URL.createObjectURL() still get something,
   // while also opening the proper print dialog.
   const inv: DBInvoice = {
-    invoiceNo: invoice.invoiceNo || '',
-    date: invoice.date || '',
-    dateNepali: invoice.dateNepali || '',
-    partyName: party?.name || invoice.partyName || '',
-    partyPan: party?.pan || invoice.partyPan || '',
-    partyAddress: party?.address || invoice.partyAddress || '',
-    partyVatNo: party?.vatNo || invoice.partyVatNo || '',
+    invoiceNo: invoice.invoiceNo || "",
+    date: invoice.date || "",
+    dateNepali: invoice.dateNepali || "",
+    partyName: party?.name || invoice.partyName || "",
+    partyPan: party?.pan || invoice.partyPan || "",
+    partyAddress: party?.address || invoice.partyAddress || "",
+    partyVatNo: party?.vatNo || invoice.partyVatNo || "",
     lines: (invoice.lines || []).map((l: any) => ({
-      itemName: l.itemName || '',
-      hsnCode: l.hsnCode || '',
-      unit: l.unit || 'Pcs',
+      itemName: l.itemName || "",
+      hsnCode: l.hsnCode || "",
+      unit: l.unit || "Pcs",
       qty: Number(l.qty) || 0,
       rate: Number(l.rate) || 0,
       discountPct: Number(l.discountPercent || l.discountPct) || 0,
@@ -958,104 +1019,100 @@ export async function generateInvoicePDF(
     exemptAmount: Number(invoice.exemptAmount) || 0,
     vatAmount: Number(invoice.vatAmount) || 0,
     grandTotal: Number(invoice.grandTotal) || 0,
-    cbmsIrn: invoice.cbmsIrn || '',
-    status: invoice.status || 'ACTIVE',
+    cbmsIrn: invoice.cbmsIrn || "",
+    status: invoice.status || "ACTIVE",
     companySettings: {
-      name: companySettings?.companyNameEn || companySettings?.name || '',
-      nameNepali: companySettings?.companyNameNp || companySettings?.nameNepali || '',
-      address: companySettings?.address || '',
-      panNumber: companySettings?.panNumber || '',
-      vatNumber: companySettings?.vatNumber || '',
-      phone: companySettings?.phone || '',
-      email: companySettings?.email || '',
-      logo: companySettings?.logo || '',
+      name: companySettings?.companyNameEn || companySettings?.name || "",
+      nameNepali: companySettings?.companyNameNp || companySettings?.nameNepali || "",
+      address: companySettings?.address || "",
+      panNumber: companySettings?.panNumber || "",
+      vatNumber: companySettings?.vatNumber || "",
+      phone: companySettings?.phone || "",
+      email: companySettings?.email || "",
+      logo: companySettings?.logo || "",
     },
   };
-  await printDocument('tax-invoice', inv, {});
+  await printDocument("tax-invoice", inv, {});
   // Return a minimal valid Blob so existing code doesn't crash
-  return new Blob([''], { type: 'application/pdf' });
+  return new Blob([""], { type: "application/pdf" });
 }
 
-export function generateVoucherPDF(
-  voucher: any,
-  companySettings: any,
-  _accounts?: any[]
-): Blob {
+export function generateVoucherPDF(voucher: any, companySettings: any, _accounts?: any[]): Blob {
   const v: AccountingVoucher = {
-    voucherNo: voucher.voucherNo || '',
-    type: voucher.type || 'Journal',
-    date: voucher.date || '',
-    dateNepali: voucher.dateNepali || '',
-    narration: voucher.narration || '',
+    voucherNo: voucher.voucherNo || "",
+    type: voucher.type || "Journal",
+    date: voucher.date || "",
+    dateNepali: voucher.dateNepali || "",
+    narration: voucher.narration || "",
     totalDebit: Number(voucher.totalDebit) || 0,
     totalCredit: Number(voucher.totalCredit) || 0,
     lines: (voucher.lines || []).map((l: any) => ({
-      accountName: l.accountName || '',
-      narration: l.narration || '',
+      accountName: l.accountName || "",
+      narration: l.narration || "",
       debit: Number(l.debit) || 0,
       credit: Number(l.credit) || 0,
     })),
     companySettings: {
-      name: companySettings?.companyNameEn || companySettings?.name || '',
-      nameNepali: companySettings?.nameNepali || '',
-      address: companySettings?.address || '',
-      panNumber: companySettings?.panNumber || '',
+      name: companySettings?.companyNameEn || companySettings?.name || "",
+      nameNepali: companySettings?.nameNepali || "",
+      address: companySettings?.address || "",
+      panNumber: companySettings?.panNumber || "",
     },
   };
   // Fire-and-forget (can't await in sync function)
-  printDocument('voucher', v, {}).catch(console.error);
-  return new Blob([''], { type: 'application/pdf' });
+  printDocument("voucher", v, {}).catch(console.error);
+  return new Blob([""], { type: "application/pdf" });
 }
 
 export function generatePartyStatementPDF(
   party: any,
   statement: any,
   companySettings: any,
-  options?: { startDate?: string; endDate?: string }
+  options?: { startDate?: string; endDate?: string },
 ): Blob {
   // Build a synthetic voucher-style document for the statement
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const companyName = companySettings?.companyNameEn || companySettings?.name || 'Company';
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const companyName = companySettings?.companyNameEn || companySettings?.name || "Company";
   const pageW = doc.internal.pageSize.getWidth();
 
   doc.setFontSize(13);
-  doc.setFont('helvetica', 'bold');
-  doc.text(companyName, pageW / 2, 15, { align: 'center' });
+  doc.setFont("helvetica", "bold");
+  doc.text(companyName, pageW / 2, 15, { align: "center" });
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text(companySettings?.address || '', pageW / 2, 21, { align: 'center' });
+  doc.setFont("helvetica", "normal");
+  doc.text(companySettings?.address || "", pageW / 2, 21, { align: "center" });
   doc.setFontSize(11);
-  doc.setFont('helvetica', 'bold');
-  doc.text('PARTY LEDGER STATEMENT', pageW / 2, 30, { align: 'center' });
+  doc.setFont("helvetica", "bold");
+  doc.text("PARTY LEDGER STATEMENT", pageW / 2, 30, { align: "center" });
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Party: ${party?.name || ''}`, 14, 40);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Party: ${party?.name || ""}`, 14, 40);
   if (options?.startDate) {
-    doc.text(`Period: ${options.startDate} to ${options.endDate || ''}`, 14, 46);
+    doc.text(`Period: ${options.startDate} to ${options.endDate || ""}`, 14, 46);
   }
 
   const rows = (statement?.rows || []).map((r: any) => [
-    r.date || '',
-    r.voucherNo || '',
-    r.narration || '',
-    r.debit > 0 ? 'Rs. ' + formatNumber(r.debit) : '—',
-    r.credit > 0 ? 'Rs. ' + formatNumber(r.credit) : '—',
-    'Rs. ' + formatNumber(r.balance),
+    r.date || "",
+    r.voucherNo || "",
+    r.narration || "",
+    r.debit > 0 ? "Rs. " + formatNumber(r.debit) : "—",
+    r.credit > 0 ? "Rs. " + formatNumber(r.credit) : "—",
+    "Rs. " + formatNumber(r.balance),
   ]);
 
   autoTable(doc, {
     startY: 52,
-    head: [['Date', 'Voucher No', 'Narration', 'Debit', 'Credit', 'Balance']],
+    head: [["Date", "Voucher No", "Narration", "Debit", "Credit", "Balance"]],
     body: rows,
-    theme: 'grid',
+    theme: "grid",
     headStyles: { fillColor: [30, 92, 30], textColor: 255, fontSize: 7 },
     bodyStyles: { fontSize: 7 },
   });
 
   const finalY = (doc as any).lastAutoTable?.finalY || 100;
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont("helvetica", "bold");
   doc.text(`Closing Balance: Rs. ${formatNumber(statement?.closingBalance || 0)}`, 14, finalY + 8);
 
-  return doc.output('blob');
+  return doc.output("blob");
 }

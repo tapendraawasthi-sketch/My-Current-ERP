@@ -1,5 +1,14 @@
-import { DBSalesPerson, DBPriceList } from '../../lib/db';
-import { StoreUser, CompanySettings, Notification, FiscalYear, DEFAULT_CURRENCY, DEFAULT_TDS_RATES, hashPassword, verifyPassword } from '../store.types';
+import { DBSalesPerson, DBPriceList } from "../../lib/db";
+import {
+  StoreUser,
+  CompanySettings,
+  Notification,
+  FiscalYear,
+  DEFAULT_CURRENCY,
+  DEFAULT_TDS_RATES,
+  hashPassword,
+  verifyPassword,
+} from "../store.types";
 import { StateCreator } from "zustand";
 import type { AppState } from "../store.types";
 import { getDB, generateId } from "../../lib/db";
@@ -10,19 +19,30 @@ import toast from "react-hot-toast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
 
-
 export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Accounts ──────────────────────────────────────────────────────────────
   addAccount: async (account) => {
     const db = getDB();
     // Bug 29 fix: prevent duplicate account names (case-insensitive)
     const existingAccounts = get().accounts;
-    const nameLC = (account.name || '').toLowerCase().trim();
-    if (nameLC && existingAccounts.some((a) => a.name?.toLowerCase().trim() === nameLC && !a.isGroup === !account.isGroup)) {
+    const nameLC = (account.name || "").toLowerCase().trim();
+    if (
+      nameLC &&
+      existingAccounts.some(
+        (a) => a.name?.toLowerCase().trim() === nameLC && !a.isGroup === !account.isGroup,
+      )
+    ) {
       throw new Error(`Account with name "${account.name}" already exists.`);
     }
     const id = account.id || `acc-${generateId()}`;
-    const newAcc = { ...account, id, balance: 0, openingBalance: account.openingBalance || 0, openingBalanceDr: account.openingBalanceDr || 0, openingBalanceCr: account.openingBalanceCr || 0 };
+    const newAcc = {
+      ...account,
+      id,
+      balance: 0,
+      openingBalance: account.openingBalance || 0,
+      openingBalanceDr: account.openingBalanceDr || 0,
+      openingBalanceCr: account.openingBalanceCr || 0,
+    };
     await db.accounts.add(newAcc as any);
     set((s) => ({ accounts: [...s.accounts, newAcc] }));
     return newAcc;
@@ -81,7 +101,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateUnitConversion: async (id, data) => {
     const db = getDB();
     await db.unitConversions.update(id, data);
-    set((s) => ({ unitConversions: s.unitConversions.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      unitConversions: s.unitConversions.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteUnitConversion: async (id) => {
     const db = getDB();
@@ -100,7 +122,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateStandardNarration: async (id, data) => {
     const db = getDB();
     await db.standardNarrations.update(id, data);
-    set((s) => ({ standardNarrations: s.standardNarrations.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      standardNarrations: s.standardNarrations.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteStandardNarration: async (id) => {
     const db = getDB();
@@ -119,7 +143,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateBillSundryMaster: async (id, data) => {
     const db = getDB();
     await db.billSundryMasters.update(id, data);
-    set((s) => ({ billSundryMasters: s.billSundryMasters.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      billSundryMasters: s.billSundryMasters.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteBillSundryMaster: async (id) => {
     const db = getDB();
@@ -157,7 +183,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updatePurchaseType: async (id, data) => {
     const db = getDB();
     await db.purchaseTypes.update(id, data);
-    set((s) => ({ purchaseTypes: s.purchaseTypes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      purchaseTypes: s.purchaseTypes.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deletePurchaseType: async (id) => {
     const db = getDB();
@@ -176,7 +204,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateTaxCategory: async (id, data) => {
     const db = getDB();
     await db.taxCategories.update(id, data);
-    set((s) => ({ taxCategories: s.taxCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      taxCategories: s.taxCategories.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteTaxCategory: async (id) => {
     const db = getDB();
@@ -195,7 +225,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateDiscountStructure: async (id, data) => {
     const db = getDB();
     await db.discountStructures.update(id, data);
-    set((s) => ({ discountStructures: s.discountStructures.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      discountStructures: s.discountStructures.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteDiscountStructure: async (id) => {
     const db = getDB();
@@ -253,7 +285,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateStockCategory: async (id, data) => {
     const db = getDB();
     await db.stockCategories.update(id, data);
-    set((s) => ({ stockCategories: s.stockCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      stockCategories: s.stockCategories.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteStockCategory: async (id) => {
     const db = getDB();
@@ -266,164 +300,164 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
     try {
       const { seedPredefinedVoucherTypes, getDB } = await import("../../lib/db");
       await seedPredefinedVoucherTypes();
-      
+
       const db = await getDB();
       const records = await db.voucherTypeMasters.toArray();
-      
+
       // Sort: predefined types first, then user-defined, both sorted by name
       const sortedRecords = [...records].sort((a, b) => {
         if (a.isPredefined && !b.isPredefined) return -1;
         if (!a.isPredefined && b.isPredefined) return 1;
         return a.name.localeCompare(b.name);
       });
-      
+
       set({ voucherTypeMasters: sortedRecords });
     } catch (error) {
       console.error("Error loading voucher type masters:", error);
     }
   },
-  
+
   addVoucherTypeMaster: async (data: Partial<any>) => {
     if (!data.name) {
       throw new Error("Voucher type name is required");
     }
-    
+
     if (!data.parentVoucherType) {
       throw new Error("Parent voucher type is required");
     }
-    
+
     const state = get();
     const existingByName = state.voucherTypeMasters.find(
-      vtm => vtm.name.toLowerCase() === data.name?.toLowerCase()
+      (vtm) => vtm.name.toLowerCase() === data.name?.toLowerCase(),
     );
-    
+
     if (existingByName) {
       throw new Error(`Voucher type with name "${data.name}" already exists`);
     }
-    
+
     const { getDB } = await import("../../lib/db");
     const db = await getDB();
-    
+
     const newRecord: any = {
       ...data,
       id: `vtm-${crypto.randomUUID()}`,
       createdAt: new Date().toISOString(),
     };
-    
+
     await db.voucherTypeMasters.add(newRecord);
     await get().loadVoucherTypeMasters();
-    
+
     return newRecord;
   },
-  
+
   updateVoucherTypeMaster: async (id: string, data: Partial<any>) => {
     const state = get();
-    const existing = state.voucherTypeMasters.find(vtm => vtm.id === id);
-    
+    const existing = state.voucherTypeMasters.find((vtm) => vtm.id === id);
+
     if (!existing) {
       throw new Error("Voucher type master not found");
     }
-    
+
     const { getDB } = await import("../../lib/db");
     const db = await getDB();
-    
+
     let updateData = { ...data };
-    
+
     if (existing.isPredefined) {
       // For predefined types, only allow specific fields to be updated
       const allowedFields = [
-        "isActive", 
-        "printAfterSaving", 
-        "useForPOS", 
-        "defaultPrintTitle", 
-        "defaultBankLedgerId", 
-        "defaultJurisdiction", 
-        "declarationText", 
-        "allowCommonNarration", 
-        "allowLedgerNarration", 
-        "whatsAppAfterSaving"
+        "isActive",
+        "printAfterSaving",
+        "useForPOS",
+        "defaultPrintTitle",
+        "defaultBankLedgerId",
+        "defaultJurisdiction",
+        "declarationText",
+        "allowCommonNarration",
+        "allowLedgerNarration",
+        "whatsAppAfterSaving",
       ];
-      
+
       const filteredUpdateData: Partial<any> = {};
-      allowedFields.forEach(field => {
+      allowedFields.forEach((field) => {
         if (field in updateData) {
           filteredUpdateData[field] = updateData[field];
         }
       });
-      
+
       updateData = filteredUpdateData;
     }
-    
+
     const recordToUpdate = {
       ...existing,
       ...updateData,
       modifiedAt: new Date().toISOString(),
     };
-    
+
     await db.voucherTypeMasters.update(id, recordToUpdate);
     await get().loadVoucherTypeMasters();
   },
-  
+
   deleteVoucherTypeMaster: async (id: string) => {
     const state = get();
-    const record = state.voucherTypeMasters.find(vtm => vtm.id === id);
-    
+    const record = state.voucherTypeMasters.find((vtm) => vtm.id === id);
+
     if (!record) {
       throw new Error("Voucher type master not found");
     }
-    
+
     if (record.isPredefined) {
       throw new Error("Cannot delete predefined voucher types");
     }
-    
+
     const { getDB } = await import("../../lib/db");
     const db = await getDB();
-    
+
     // Check if any vouchers use this voucher type
     const voucherCount = await db.vouchers.where({ voucherTypeId: id }).count();
     if (voucherCount > 0) {
       throw new Error("Cannot delete: vouchers exist using this type");
     }
-    
+
     await db.voucherTypeMasters.delete(id);
     await get().loadVoucherTypeMasters();
   },
-  
+
   addVoucherAuditLog: async (log: Omit<any, "id">) => {
     const { getDB } = await import("../../lib/db");
     const db = await getDB();
-    
+
     const newLog: any = {
       ...log,
       id: `al-${crypto.randomUUID()}`,
     };
-    
+
     await db.voucherAuditLogs.add(newLog);
-    
+
     const currentState = get();
     const updatedLogs = [...currentState.voucherAuditLogs, newLog];
-    
+
     // Keep only the last 1000 logs in memory
     if (updatedLogs.length > 1000) {
       updatedLogs.splice(0, updatedLogs.length - 1000);
     }
-    
+
     set({ voucherAuditLogs: updatedLogs });
   },
-  
+
   loadVoucherAuditLogs: async (voucherId?: string) => {
     const { getDB } = await import("../../lib/db");
     const db = await getDB();
-    
+
     let logs: any[];
-    
+
     if (voucherId) {
       logs = await db.voucherAuditLogs.where({ voucherId }).sortBy("timestamp");
       logs.reverse(); // Sort descending by timestamp
     } else {
       logs = await db.voucherAuditLogs.orderBy("timestamp").reverse().limit(200).toArray();
     }
-    
+
     set({ voucherAuditLogs: logs });
   },
 
@@ -457,7 +491,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateCostCategory: async (id, data) => {
     const db = getDB();
     await db.costCategories.update(id, data);
-    set((s) => ({ costCategories: s.costCategories.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      costCategories: s.costCategories.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteCostCategory: async (id) => {
     const db = getDB();
@@ -476,7 +512,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateCostCentreClass: async (id, data) => {
     const db = getDB();
     await db.costCentreClasses.update(id, data);
-    set((s) => ({ costCentreClasses: s.costCentreClasses.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      costCentreClasses: s.costCentreClasses.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteCostCentreClass: async (id) => {
     const db = getDB();
@@ -495,7 +533,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateReorderLevel: async (id, data) => {
     const db = getDB();
     await db.reorderLevels.update(id, data);
-    set((s) => ({ reorderLevels: s.reorderLevels.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      reorderLevels: s.reorderLevels.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteReorderLevel: async (id) => {
     const db = getDB();
@@ -535,7 +575,10 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   addSalesPerson: async (data) => {
     try {
       const db = getDB();
-      const record: DBSalesPerson = { ...data, id: (data as any).id || generateId() } as DBSalesPerson;
+      const record: DBSalesPerson = {
+        ...data,
+        id: (data as any).id || generateId(),
+      } as DBSalesPerson;
       await db.salesPersons.add(record as any);
       set((state) => ({ salesPersons: [...state.salesPersons, record] }));
     } catch (e) {
@@ -548,9 +591,7 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
       const db = getDB();
       await db.salesPersons.put(data as any);
       set((state) => ({
-        salesPersons: state.salesPersons.map((sp) =>
-          sp.id === data.id ? data : sp
-        ),
+        salesPersons: state.salesPersons.map((sp) => (sp.id === data.id ? data : sp)),
       }));
     } catch (e) {
       console.error("updateSalesPerson:", e);
@@ -596,9 +637,7 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
       const db = getDB();
       await db.priceLists.put(data as any);
       set((state) => ({
-        priceLists: state.priceLists.map((pl) =>
-          pl.id === data.id ? data : pl
-        ),
+        priceLists: state.priceLists.map((pl) => (pl.id === data.id ? data : pl)),
       }));
     } catch (e) {
       console.error("updatePriceList:", e);
@@ -667,7 +706,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateVATClassification: async (id, data) => {
     const db = getDB();
     await db.vatClassifications.update(id, data);
-    set((s) => ({ vatClassifications: s.vatClassifications.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      vatClassifications: s.vatClassifications.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteVATClassification: async (id) => {
     const db = getDB();
@@ -686,7 +727,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateTDSNatureOfPayment: async (id, data) => {
     const db = getDB();
     await db.tdsNatureOfPayment.update(id, data);
-    set((s) => ({ tdsNatureOfPayment: s.tdsNatureOfPayment.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      tdsNatureOfPayment: s.tdsNatureOfPayment.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteTDSNatureOfPayment: async (id) => {
     const db = getDB();
@@ -705,7 +748,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateEmployeeGroup: async (id, data) => {
     const db = getDB();
     await db.employeeGroups.update(id, data);
-    set((s) => ({ employeeGroups: s.employeeGroups.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      employeeGroups: s.employeeGroups.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteEmployeeGroup: async (id) => {
     const db = getDB();
@@ -743,7 +788,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateSalaryDetail: async (id, data) => {
     const db = getDB();
     await db.salaryDetails.update(id, data);
-    set((s) => ({ salaryDetails: s.salaryDetails.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      salaryDetails: s.salaryDetails.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteSalaryDetail: async (id) => {
     const db = getDB();
@@ -762,7 +809,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updatePayrollUnit: async (id, data) => {
     const db = getDB();
     await db.payrollUnits.update(id, data);
-    set((s) => ({ payrollUnits: s.payrollUnits.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      payrollUnits: s.payrollUnits.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deletePayrollUnit: async (id) => {
     const db = getDB();
@@ -781,7 +830,9 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   updateAttendanceType: async (id, data) => {
     const db = getDB();
     await db.attendanceTypes.update(id, data);
-    set((s) => ({ attendanceTypes: s.attendanceTypes.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+    set((s) => ({
+      attendanceTypes: s.attendanceTypes.map((r) => (r.id === id ? { ...r, ...data } : r)),
+    }));
   },
   deleteAttendanceType: async (id) => {
     const db = getDB();
@@ -801,7 +852,11 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
     set((s) => {
       const exists = s.ledgerExtensions.find((e: any) => e.id === id);
       if (exists) {
-        return { ledgerExtensions: s.ledgerExtensions.map((e: any) => e.id === id ? { ...e, ...data } : e) };
+        return {
+          ledgerExtensions: s.ledgerExtensions.map((e: any) =>
+            e.id === id ? { ...e, ...data } : e,
+          ),
+        };
       }
       return { ledgerExtensions: [...s.ledgerExtensions, { id, ...data }] };
     });

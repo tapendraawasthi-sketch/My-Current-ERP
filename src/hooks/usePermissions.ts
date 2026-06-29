@@ -1,9 +1,9 @@
 // src/hooks/usePermissions.ts
 // @ts-nocheck
-import { useCallback } from 'react';
-import { usePermissionsStore } from '../store/permissionsStore';
-import { ScreenId, ScreenAction, VoucherScreenId } from '../lib/permissions';
-import { useStore } from '../store';
+import { useCallback } from "react";
+import { usePermissionsStore } from "../store/permissionsStore";
+import { ScreenId, ScreenAction, VoucherScreenId } from "../lib/permissions";
+import { useStore } from "../store";
 
 // ─── Return type ──────────────────────────────────────────────────────────────
 
@@ -66,7 +66,7 @@ export interface UsePermissionsReturn {
   pendingCount: number;
 
   /** Raw permission object (for advanced use) */
-  rawPermissions: ReturnType<typeof usePermissionsStore.getState>['permissions'];
+  rawPermissions: ReturnType<typeof usePermissionsStore.getState>["permissions"];
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ export function usePermissions(): UsePermissionsReturn {
   const { permissions, isLoaded, pendingApprovalCount } = usePermissionsStore();
   const { currentUser } = useStore();
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === "admin";
 
   // ── can ────────────────────────────────────────────────────────────────────
   const can = useCallback(
@@ -86,7 +86,7 @@ export function usePermissions(): UsePermissionsReturn {
       if (!sp) return false;
       return Boolean(sp[action]);
     },
-    [permissions, isAdmin]
+    [permissions, isAdmin],
   );
 
   // ── maxAmount ──────────────────────────────────────────────────────────────
@@ -96,14 +96,14 @@ export function usePermissions(): UsePermissionsReturn {
       if (!permissions) return 0;
       return permissions.voucherAmountLimits?.[voucherScreen]?.maxAmountPerVoucher ?? 0;
     },
-    [permissions, isAdmin]
+    [permissions, isAdmin],
   );
 
   // ── checkVoucherDate ───────────────────────────────────────────────────────
   const checkVoucherDate = useCallback(
     (dateISO: string, _voucherScreen: VoucherScreenId): DateCheckResult => {
-      if (isAdmin) return { allowed: true, reason: '' };
-      if (!permissions) return { allowed: false, reason: 'Permissions not loaded.' };
+      if (isAdmin) return { allowed: true, reason: "" };
+      if (!permissions) return { allowed: false, reason: "Permissions not loaded." };
 
       const { dateRestrictions } = permissions;
       const today = new Date();
@@ -116,10 +116,10 @@ export function usePermissions(): UsePermissionsReturn {
         if (!dateRestrictions.allowFutureDate) {
           return {
             allowed: false,
-            reason: 'Future-dated voucher entry is not permitted for your account.',
+            reason: "Future-dated voucher entry is not permitted for your account.",
           };
         }
-        return { allowed: true, reason: '' };
+        return { allowed: true, reason: "" };
       }
 
       // Back date check
@@ -127,7 +127,7 @@ export function usePermissions(): UsePermissionsReturn {
         if (!dateRestrictions.allowBackDate) {
           return {
             allowed: false,
-            reason: 'Back-dated entry is not permitted for your account.',
+            reason: "Back-dated entry is not permitted for your account.",
           };
         }
         const diffDays = Math.floor((today.getTime() - vDate.getTime()) / 86_400_000);
@@ -139,20 +139,20 @@ export function usePermissions(): UsePermissionsReturn {
         }
       }
 
-      return { allowed: true, reason: '' };
+      return { allowed: true, reason: "" };
     },
-    [permissions, isAdmin]
+    [permissions, isAdmin],
   );
 
   // ── checkVoucherAmount ─────────────────────────────────────────────────────
   const checkVoucherAmount = useCallback(
     (amount: number, voucherScreen: VoucherScreenId): AmountCheckResult => {
-      if (isAdmin) return { allowed: true, exceeded: false, limit: 0, message: '' };
+      if (isAdmin) return { allowed: true, exceeded: false, limit: 0, message: "" };
       const limit = maxAmount(voucherScreen);
-      if (limit === 0) return { allowed: true, exceeded: false, limit: 0, message: '' };
+      if (limit === 0) return { allowed: true, exceeded: false, limit: 0, message: "" };
       if (amount > limit) {
-        const fmtLimit = `Rs. ${limit.toLocaleString('en-IN')}`;
-        const fmtAmt  = `Rs. ${amount.toLocaleString('en-IN')}`;
+        const fmtLimit = `Rs. ${limit.toLocaleString("en-IN")}`;
+        const fmtAmt = `Rs. ${amount.toLocaleString("en-IN")}`;
         return {
           allowed: false,
           exceeded: true,
@@ -160,9 +160,9 @@ export function usePermissions(): UsePermissionsReturn {
           message: `Your authorization limit is ${fmtLimit}. This voucher (${fmtAmt}) will be sent for manager approval.`,
         };
       }
-      return { allowed: true, exceeded: false, limit, message: '' };
+      return { allowed: true, exceeded: false, limit, message: "" };
     },
-    [maxAmount, isAdmin]
+    [maxAmount, isAdmin],
   );
 
   // ── canAlterVoucher ────────────────────────────────────────────────────────
@@ -178,7 +178,7 @@ export function usePermissions(): UsePermissionsReturn {
       const diffDays = Math.floor((now.getTime() - posted.getTime()) / 86_400_000);
       return diffDays <= ar.canAlterWithinDays;
     },
-    [permissions, isAdmin]
+    [permissions, isAdmin],
   );
 
   // ── canCancelVoucher ───────────────────────────────────────────────────────

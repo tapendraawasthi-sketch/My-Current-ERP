@@ -100,11 +100,17 @@ function computeLine(line: SalesLine): SalesLine {
 
 function getStatusVariant(status: string): "success" | "warning" | "danger" | "info" | "default" {
   switch (status) {
-    case "posted": return "success";
-    case "draft": return "warning";
-    case "cancelled": return "danger";
-    case "submitted": case "under_review": return "info";
-    default: return "default";
+    case "posted":
+      return "success";
+    case "draft":
+      return "warning";
+    case "cancelled":
+      return "danger";
+    case "submitted":
+    case "under_review":
+      return "info";
+    default:
+      return "default";
   }
 }
 
@@ -147,13 +153,10 @@ const SalesVoucher: React.FC = () => {
   // ── Party & Item lookups ──────────────────────────────────────────────────
   const customers = useMemo(
     () => parties.filter((p) => p.type === "customer" || p.type === "both"),
-    [parties]
+    [parties],
   );
 
-  const salesItems = useMemo(
-    () => items.filter((i) => i.isActive !== false),
-    [items]
-  );
+  const salesItems = useMemo(() => items.filter((i) => i.isActive !== false), [items]);
 
   // ── Line calculations ──────────────────────────────────────────────────────
   const totals = useMemo(() => {
@@ -203,7 +206,7 @@ const SalesVoucher: React.FC = () => {
           }
         }
         return computeLine(updated);
-      })
+      }),
     );
   };
 
@@ -307,7 +310,7 @@ const SalesVoucher: React.FC = () => {
           (statusFilter === "all" || inv.status === statusFilter) &&
           (searchTerm === "" ||
             (inv.invoiceNo ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (inv.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase()))
+            (inv.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase())),
       )
       .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
   }, [invoices, statusFilter, searchTerm]);
@@ -315,25 +318,16 @@ const SalesVoucher: React.FC = () => {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-
       {/* ── Page Header — NO ActionToolbar, NO children prop ── */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Sales Invoice</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Create and manage sales invoices
-          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">Create and manage sales invoices</p>
         </div>
         <div className="flex items-center gap-2">
           {/* Badge variant uses "default" not "outline" */}
-          <Badge variant="default">
-            {(companySettings?.name ?? "Company")}
-          </Badge>
-          {currentFiscalYear && (
-            <Badge variant="info">
-              FY {currentFiscalYear.name}
-            </Badge>
-          )}
+          <Badge variant="default">{companySettings?.name ?? "Company"}</Badge>
+          {currentFiscalYear && <Badge variant="info">FY {currentFiscalYear.name}</Badge>}
           <button
             type="button"
             onClick={() => setActiveTab("new")}
@@ -362,11 +356,9 @@ const SalesVoucher: React.FC = () => {
       {/* ── NEW INVOICE TAB ─────────────────────────────────────────────────── */}
       {activeTab === "new" && (
         <div className="space-y-4">
-
           {/* Header fields */}
           <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-
               {/* Date (AD) */}
               <div>
                 <label className="text-[11px] font-medium text-gray-600 mb-1 block">
@@ -596,7 +588,7 @@ const SalesVoucher: React.FC = () => {
                               updateLine(
                                 line.id,
                                 "discountPercent",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
@@ -614,9 +606,7 @@ const SalesVoucher: React.FC = () => {
                         <input
                           type="checkbox"
                           checked={line.isTaxable}
-                          onChange={(e) =>
-                            updateLine(line.id, "isTaxable", e.target.checked)
-                          }
+                          onChange={(e) => updateLine(line.id, "isTaxable", e.target.checked)}
                           className="h-4 w-4 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]/20"
                         />
                       </td>
@@ -694,9 +684,7 @@ const SalesVoucher: React.FC = () => {
                   )}
                   <div className="flex justify-between font-bold text-gray-800 border-t border-gray-200 pt-2 text-[14px]">
                     <span>Grand Total</span>
-                    <span className="font-mono text-[#1557b0]">
-                      {money(totals.grandTotal)}
-                    </span>
+                    <span className="font-mono text-[#1557b0]">{money(totals.grandTotal)}</span>
                   </div>
                 </div>
               </div>
@@ -802,10 +790,7 @@ const SalesVoucher: React.FC = () => {
                 <tbody className="divide-y divide-gray-100">
                   {filteredInvoices.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={6}
-                        className="px-3 py-12 text-center text-[12px] text-gray-400"
-                      >
+                      <td colSpan={6} className="px-3 py-12 text-center text-[12px] text-gray-400">
                         No sales invoices found.
                       </td>
                     </tr>
@@ -829,9 +814,7 @@ const SalesVoucher: React.FC = () => {
                           {money(inv.grandTotal ?? 0)}
                         </td>
                         <td className="px-3 py-2.5 text-center">
-                          <Badge variant={getStatusVariant(inv.status)}>
-                            {inv.status}
-                          </Badge>
+                          <Badge variant={getStatusVariant(inv.status)}>{inv.status}</Badge>
                         </td>
                         <td
                           className="px-3 py-2.5 text-center"
@@ -904,9 +887,7 @@ const SalesVoucher: React.FC = () => {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Payment Mode
                   </p>
-                  <p className="text-gray-800 capitalize">
-                    {selectedInvoice.paymentMode || "—"}
-                  </p>
+                  <p className="text-gray-800 capitalize">{selectedInvoice.paymentMode || "—"}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">

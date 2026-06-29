@@ -164,7 +164,13 @@ const VouchersLog: React.FC = () => {
       header: "Voucher No",
       sortable: true,
     },
-    { key: "date", header: "Date", render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} /> },
+    {
+      key: "date",
+      header: "Date",
+      render: (_: any, row: any) => (
+        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+      ),
+    },
     {
       key: "type",
       header: "Type",
@@ -373,4 +379,3 @@ const VouchersLog: React.FC = () => {
 };
 
 export default VouchersLog;
-

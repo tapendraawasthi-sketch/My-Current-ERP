@@ -181,8 +181,7 @@ const InvoiceHub: React.FC = () => {
       // Direct TDS withhold deduction
       tdsDeductionVal = (taxableVal + exemptVal) * (tdsRate / 100);
     }
-
-    const netBeforeRound = grossVal - tdsDeductionVal;
+    const netBeforeRound = grossVal;
     const grandTotalVal = Math.round(netBeforeRound);
     const roundOffVal = grandTotalVal - netBeforeRound;
 
@@ -682,7 +681,9 @@ const InvoiceHub: React.FC = () => {
             {
               key: "date",
               header: "Date",
-              render: (_: any, row: any) => <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+              render: (_: any, row: any) => (
+                <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
+              ),
             },
             {
               key: "partyName",
@@ -970,4 +971,3 @@ const InvoiceHub: React.FC = () => {
 };
 
 export default InvoiceHub;
-

@@ -16,7 +16,7 @@ import {
   FileText,
   CalendarDays,
   Settings,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 
 function money(v: number): string {
@@ -26,12 +26,16 @@ function money(v: number): string {
 }
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
-const tableHeadClass = "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const tableHeadClass =
+  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
-const primaryBtn = "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
-const outlineBtn = "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
-const inputClass = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+const primaryBtn =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
+const outlineBtn =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
+const inputClass =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -83,15 +87,21 @@ function approximateNextFYDates(currentFY: any) {
 function Modal({ open, title, children, onClose }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-w-xl">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
           <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl leading-none">&times;</button>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-xl leading-none"
+          >
+            &times;
+          </button>
         </div>
-        <div className="p-5">
-          {children}
-        </div>
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );
@@ -164,11 +174,14 @@ export default function YearEndProcess() {
     const negativeStockItems = (items || []).filter((item) => {
       const stock = (stockMovements || [])
         .filter((m) => m.itemId === item.id)
-        .reduce((a, m) => {
-          const qty = Number(m.quantity || m.qty || 0);
-          const type = String(m.type || "").toLowerCase();
-          return type === "in" || type === "purchase" || type.includes("in") ? a + qty : a - qty;
-        }, Number(item.currentStock || 0));
+        .reduce(
+          (a, m) => {
+            const qty = Number(m.quantity || m.qty || 0);
+            const type = String(m.type || "").toLowerCase();
+            return type === "in" || type === "purchase" || type.includes("in") ? a + qty : a - qty;
+          },
+          Number(item.currentStock || 0),
+        );
 
       return stock < 0;
     });
@@ -378,9 +391,7 @@ export default function YearEndProcess() {
       type: "journal",
       status: "posted",
       date: currentFiscalYear?.endDate || todayISO(),
-      narration:
-        manualJournalForm.narration ||
-        `Year-end adjustment - ${manualJournalType}`,
+      narration: manualJournalForm.narration || `Year-end adjustment - ${manualJournalType}`,
       amount,
       grandTotal: amount,
       lines: [
@@ -402,7 +413,11 @@ export default function YearEndProcess() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     setAdjustmentStatus((s) => ({ ...s, [manualJournalType]: "Posted" }));
     setManualJournalModal(false);
@@ -419,11 +434,17 @@ export default function YearEndProcess() {
     if (gratuityAmount <= 0) return toast.error("No gratuity amount computed");
 
     const expAcc =
-      accounts.find((a) => String(a.name || "").toLowerCase().includes("gratuity expense")) ||
-      accounts.find((a) => a.type === "expense");
+      accounts.find((a) =>
+        String(a.name || "")
+          .toLowerCase()
+          .includes("gratuity expense"),
+      ) || accounts.find((a) => a.type === "expense");
     const payAcc =
-      accounts.find((a) => String(a.name || "").toLowerCase().includes("gratuity payable")) ||
-      accounts.find((a) => a.type === "liability");
+      accounts.find((a) =>
+        String(a.name || "")
+          .toLowerCase()
+          .includes("gratuity payable"),
+      ) || accounts.find((a) => a.type === "liability");
 
     if (!expAcc || !payAcc) return toast.error("Gratuity Expense or Payable account not found");
 
@@ -454,7 +475,11 @@ export default function YearEndProcess() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     setAdjustmentStatus((s) => ({ ...s, gratuity: "Posted" }));
     toast.success("Gratuity provision posted");
@@ -466,8 +491,11 @@ export default function YearEndProcess() {
 
   async function postClosingEntries() {
     const retained =
-      accounts.find((a) => String(a.name || "").toLowerCase().includes("retained")) ||
-      accounts.find((a) => a.type === "equity");
+      accounts.find((a) =>
+        String(a.name || "")
+          .toLowerCase()
+          .includes("retained"),
+      ) || accounts.find((a) => a.type === "equity");
 
     if (!retained) return toast.error("Retained Earnings account not found");
 
@@ -523,7 +551,11 @@ export default function YearEndProcess() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     setClosingPosted(true);
     toast.success("P&L closing entries posted");
@@ -583,8 +615,14 @@ export default function YearEndProcess() {
       createdAt: new Date().toISOString(),
     };
 
-    await db.table("fiscalYears").add(newFY).catch(() => {});
-    await db.table("fiscalYears").update(currentFiscalYear.id, { isCurrent: false }).catch(() => {});
+    await db
+      .table("fiscalYears")
+      .add(newFY)
+      .catch(() => {});
+    await db
+      .table("fiscalYears")
+      .update(currentFiscalYear.id, { isCurrent: false })
+      .catch(() => {});
 
     for (const acc of balanceSheetRollover) {
       const nextAccount = {
@@ -596,7 +634,10 @@ export default function YearEndProcess() {
         balance: acc.closingBalance,
         createdAt: new Date().toISOString(),
       };
-      await db.table("accounts").put(nextAccount).catch(() => {});
+      await db
+        .table("accounts")
+        .put(nextAccount)
+        .catch(() => {});
     }
 
     toast.success(`New fiscal year ${newFYForm.name} is now active. Opening balances transferred.`);
@@ -624,7 +665,8 @@ export default function YearEndProcess() {
             <Shield size={18} className="text-[#1557b0]" /> Year-End Process
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            Guided fiscal year closing, P&L transfer, locking and new year opening for {currentFiscalYear?.name || "current year"}.
+            Guided fiscal year closing, P&L transfer, locking and new year opening for{" "}
+            {currentFiscalYear?.name || "current year"}.
           </p>
         </div>
       </div>
@@ -635,20 +677,31 @@ export default function YearEndProcess() {
           const current = currentStep === s.n;
           return (
             <React.Fragment key={s.n}>
-              <div className="flex flex-col items-center flex-shrink-0 cursor-pointer" onClick={() => setCurrentStep(s.n)}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold mb-1.5 transition-colors ${
-                  completed ? "bg-green-500 text-white shadow-sm" 
-                  : current ? "bg-[#1557b0] text-white shadow-md ring-4 ring-blue-100" 
-                  : "bg-white border-2 border-gray-200 text-gray-400"
-                }`}>
+              <div
+                className="flex flex-col items-center flex-shrink-0 cursor-pointer"
+                onClick={() => setCurrentStep(s.n)}
+              >
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold mb-1.5 transition-colors ${
+                    completed
+                      ? "bg-green-500 text-white shadow-sm"
+                      : current
+                        ? "bg-[#1557b0] text-white shadow-md ring-4 ring-blue-100"
+                        : "bg-white border-2 border-gray-200 text-gray-400"
+                  }`}
+                >
                   {completed ? <CheckCircle size={16} /> : s.n}
                 </div>
-                <div className={`text-[11px] font-medium ${current ? "text-[#1557b0]" : completed ? "text-green-700" : "text-gray-400"}`}>
+                <div
+                  className={`text-[11px] font-medium ${current ? "text-[#1557b0]" : completed ? "text-green-700" : "text-gray-400"}`}
+                >
                   {s.label}
                 </div>
               </div>
               {idx < steps.length - 1 && (
-                <div className={`w-12 md:w-20 lg:w-32 h-[2px] mx-2 -mt-4 transition-colors ${completed ? "bg-green-500" : "bg-gray-200"}`} />
+                <div
+                  className={`w-12 md:w-20 lg:w-32 h-[2px] mx-2 -mt-4 transition-colors ${completed ? "bg-green-500" : "bg-gray-200"}`}
+                />
               )}
             </React.Fragment>
           );
@@ -664,16 +717,17 @@ export default function YearEndProcess() {
             </button>
           </div>
 
-          <p className="text-[11px] text-gray-500 mb-6">Verify that your books are balanced and ready to close. Automated checks analyze your data, while manual checks require your confirmation.</p>
+          <p className="text-[11px] text-gray-500 mb-6">
+            Verify that your books are balanced and ready to close. Automated checks analyze your
+            data, while manual checks require your confirmation.
+          </p>
 
           <div className="space-y-2 mb-6">
             {checks.map((c) => (
               <div
                 key={c.id}
                 className={`flex items-start gap-3 p-3 rounded-md border ${
-                  c.pass
-                    ? "border-green-200 bg-green-50"
-                    : "border-red-200 bg-red-50"
+                  c.pass ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
                 }`}
               >
                 <div className="mt-0.5">
@@ -684,11 +738,23 @@ export default function YearEndProcess() {
                   )}
                 </div>
                 <div className="flex-1">
-                   <div className={`text-[12px] font-medium ${c.pass ? "text-green-800" : "text-red-800"}`}>
-                     {c.label}
-                     {!c.automated && <span className="ml-2 text-[9px] uppercase tracking-wide bg-white/50 px-1.5 py-0.5 rounded border border-current opacity-70">Manual</span>}
-                   </div>
-                   {c.note && <div className={`text-[11px] mt-0.5 ${c.pass ? "text-green-600" : "text-red-600 font-semibold"}`}>{c.note}</div>}
+                  <div
+                    className={`text-[12px] font-medium ${c.pass ? "text-green-800" : "text-red-800"}`}
+                  >
+                    {c.label}
+                    {!c.automated && (
+                      <span className="ml-2 text-[9px] uppercase tracking-wide bg-white/50 px-1.5 py-0.5 rounded border border-current opacity-70">
+                        Manual
+                      </span>
+                    )}
+                  </div>
+                  {c.note && (
+                    <div
+                      className={`text-[11px] mt-0.5 ${c.pass ? "text-green-600" : "text-red-600 font-semibold"}`}
+                    >
+                      {c.note}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -696,30 +762,36 @@ export default function YearEndProcess() {
 
           <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
             <div>
-               <div className="text-[14px] font-bold text-gray-800">
-                 {passedCount} of {totalCount} checks passed
-               </div>
-               {failedAutomated && (
-                 <div className="mt-1 text-[11px] text-red-600 flex items-center gap-1.5 font-medium">
-                   <AlertTriangle size={14} /> Some automated checks failed. Admin can override to proceed.
-                 </div>
-               )}
+              <div className="text-[14px] font-bold text-gray-800">
+                {passedCount} of {totalCount} checks passed
+              </div>
+              {failedAutomated && (
+                <div className="mt-1 text-[11px] text-red-600 flex items-center gap-1.5 font-medium">
+                  <AlertTriangle size={14} /> Some automated checks failed. Admin can override to
+                  proceed.
+                </div>
+              )}
             </div>
-            
+
             <div className="flex flex-col items-end gap-2">
-               {currentUser?.role === "admin" && failedAutomated && (
-                 <label className="text-[11px] flex items-center gap-2 cursor-pointer">
-                   <input type="checkbox" className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]" checked={manualOverride} onChange={(e) => setManualOverride(e.target.checked)} />
-                   Admin Override
-                 </label>
-               )}
-               <button
-                 className={primaryBtn}
-                 disabled={failedAutomated && !(currentUser?.role === "admin" && manualOverride)}
-                 onClick={() => setCurrentStep(2)}
-               >
-                 Proceed to Adjustments <ArrowRight size={14} />
-               </button>
+              {currentUser?.role === "admin" && failedAutomated && (
+                <label className="text-[11px] flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    checked={manualOverride}
+                    onChange={(e) => setManualOverride(e.target.checked)}
+                  />
+                  Admin Override
+                </label>
+              )}
+              <button
+                className={primaryBtn}
+                disabled={failedAutomated && !(currentUser?.role === "admin" && manualOverride)}
+                onClick={() => setCurrentStep(2)}
+              >
+                Proceed to Adjustments <ArrowRight size={14} />
+              </button>
             </div>
           </div>
         </div>
@@ -728,22 +800,32 @@ export default function YearEndProcess() {
       {currentStep === 2 && (
         <div className={`${cardClass} max-w-5xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-4">
-             <h2 className="text-[14px] font-semibold text-gray-800">Year-End Adjustments</h2>
-             <p className="text-[11px] text-gray-500 mt-0.5">Post required year-end adjustment entries for provisions, depreciation, and closing values.</p>
+            <h2 className="text-[14px] font-semibold text-gray-800">Year-End Adjustments</h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Post required year-end adjustment entries for provisions, depreciation, and closing
+              values.
+            </p>
           </div>
 
           <div className="mb-6 p-4 rounded-md border border-indigo-200 bg-indigo-50 flex items-center justify-between">
             <div>
-               <div className="text-[13px] font-semibold text-indigo-900 flex items-center gap-2">
-                 <FileText size={16}/> Computed Gratuity Provision
-               </div>
-               <div className="text-[11px] text-indigo-700 mt-1">Automatically computed based on basic salary of active employees.</div>
+              <div className="text-[13px] font-semibold text-indigo-900 flex items-center gap-2">
+                <FileText size={16} /> Computed Gratuity Provision
+              </div>
+              <div className="text-[11px] text-indigo-700 mt-1">
+                Automatically computed based on basic salary of active employees.
+              </div>
             </div>
             <div className="flex items-center gap-4">
-               <div className="text-[18px] font-bold text-indigo-900">NPR {money(gratuityAmount)}</div>
-               <button className="h-8 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap" onClick={postGratuityJournal}>
-                 Post Journal
-               </button>
+              <div className="text-[18px] font-bold text-indigo-900">
+                NPR {money(gratuityAmount)}
+              </div>
+              <button
+                className="h-8 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap"
+                onClick={postGratuityJournal}
+              >
+                Post Journal
+              </button>
             </div>
           </div>
 
@@ -752,7 +834,9 @@ export default function YearEndProcess() {
               <thead>
                 <tr>
                   {["Adjustment Type", "Description", "Source", "Status", "Actions"].map((h) => (
-                    <th key={h} className={tableHeadClass}>{h}</th>
+                    <th key={h} className={tableHeadClass}>
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -762,41 +846,46 @@ export default function YearEndProcess() {
                     <td className={`${tableCellClass} font-medium`}>{a.label}</td>
                     <td className={tableCellClass}>{a.description}</td>
                     <td className={tableCellClass}>
-                       <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] uppercase tracking-wide border border-gray-200">
-                         {a.source}
-                       </span>
+                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] uppercase tracking-wide border border-gray-200">
+                        {a.source}
+                      </span>
                     </td>
                     <td className={tableCellClass}>
-                       {adjustmentStatus[a.type] === "Posted" ? (
-                         <span className="text-green-600 font-semibold flex items-center gap-1"><CheckCircle size={12}/> Posted</span>
-                       ) : adjustmentStatus[a.type] === "Skipped" ? (
-                         <span className="text-gray-500 italic">Skipped</span>
-                       ) : (
-                         <span className="text-amber-600 font-medium">Pending</span>
-                       )}
+                      {adjustmentStatus[a.type] === "Posted" ? (
+                        <span className="text-green-600 font-semibold flex items-center gap-1">
+                          <CheckCircle size={12} /> Posted
+                        </span>
+                      ) : adjustmentStatus[a.type] === "Skipped" ? (
+                        <span className="text-gray-500 italic">Skipped</span>
+                      ) : (
+                        <span className="text-amber-600 font-medium">Pending</span>
+                      )}
                     </td>
                     <td className={tableCellClass}>
                       <div className="flex items-center gap-3">
-                         {a.type !== "gratuity" && (
-                           <button
-                             className="text-[11px] font-medium text-[#1557b0] hover:underline"
-                             onClick={() => {
-                               setManualJournalType(a.type);
-                               setManualJournalForm({
-                                 debitAccountId: "",
-                                 creditAccountId: "",
-                                 amount: "",
-                                 narration: a.label,
-                               });
-                               setManualJournalModal(true);
-                             }}
-                           >
-                             Post Entry
-                           </button>
-                         )}
-                         <button className="text-[11px] text-gray-400 hover:text-gray-700 underline" onClick={() => skipAdjustment(a.type)}>
-                           Skip
-                         </button>
+                        {a.type !== "gratuity" && (
+                          <button
+                            className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                            onClick={() => {
+                              setManualJournalType(a.type);
+                              setManualJournalForm({
+                                debitAccountId: "",
+                                creditAccountId: "",
+                                amount: "",
+                                narration: a.label,
+                              });
+                              setManualJournalModal(true);
+                            }}
+                          >
+                            Post Entry
+                          </button>
+                        )}
+                        <button
+                          className="text-[11px] text-gray-400 hover:text-gray-700 underline"
+                          onClick={() => skipAdjustment(a.type)}
+                        >
+                          Skip
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -806,16 +895,27 @@ export default function YearEndProcess() {
           </div>
 
           <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
-             <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer">
-               <input type="checkbox" className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]" checked={allEntriesPosted} onChange={(e) => setAllEntriesPosted(e.target.checked)} />
-               I confirm all necessary year-end adjustment entries have been posted.
-             </label>
-             <div className="flex gap-2">
-               <button className={outlineBtn} onClick={() => setCurrentStep(1)}>Back</button>
-               <button className={primaryBtn} disabled={!allEntriesPosted} onClick={() => setCurrentStep(3)}>
-                 Proceed to Close P&L <ArrowRight size={14} />
-               </button>
-             </div>
+            <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                checked={allEntriesPosted}
+                onChange={(e) => setAllEntriesPosted(e.target.checked)}
+              />
+              I confirm all necessary year-end adjustment entries have been posted.
+            </label>
+            <div className="flex gap-2">
+              <button className={outlineBtn} onClick={() => setCurrentStep(1)}>
+                Back
+              </button>
+              <button
+                className={primaryBtn}
+                disabled={!allEntriesPosted}
+                onClick={() => setCurrentStep(3)}
+              >
+                Proceed to Close P&L <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -823,30 +923,51 @@ export default function YearEndProcess() {
       {currentStep === 3 && (
         <div className={`${cardClass} max-w-4xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-             <h2 className="text-[14px] font-semibold text-gray-800">Close Profit & Loss</h2>
-             <p className="text-[11px] text-gray-500 mt-0.5">Transfer all income and expense balances to Retained Earnings to clear them for the next fiscal year.</p>
+            <h2 className="text-[14px] font-semibold text-gray-800">Close Profit & Loss</h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Transfer all income and expense balances to Retained Earnings to clear them for the
+              next fiscal year.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
-              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">Total Income</div>
-              <div className="text-[18px] font-bold text-gray-900">NPR {money(plSummary.totalIncome)}</div>
+              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
+                Total Income
+              </div>
+              <div className="text-[18px] font-bold text-gray-900">
+                NPR {money(plSummary.totalIncome)}
+              </div>
             </div>
             <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
-              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">Total Expenses</div>
-              <div className="text-[18px] font-bold text-gray-900">NPR {money(plSummary.totalExpenses)}</div>
+              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
+                Total Expenses
+              </div>
+              <div className="text-[18px] font-bold text-gray-900">
+                NPR {money(plSummary.totalExpenses)}
+              </div>
             </div>
-            <div className={`border rounded-md p-4 shadow-sm flex flex-col items-center justify-center text-center ${plSummary.netProfit >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
-              <div className={`text-[11px] uppercase tracking-wide font-bold mb-1 ${plSummary.netProfit >= 0 ? "text-green-800" : "text-red-800"}`}>Net Profit / (Loss)</div>
-              <div className={`text-[20px] font-bold ${plSummary.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}>
+            <div
+              className={`border rounded-md p-4 shadow-sm flex flex-col items-center justify-center text-center ${plSummary.netProfit >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}
+            >
+              <div
+                className={`text-[11px] uppercase tracking-wide font-bold mb-1 ${plSummary.netProfit >= 0 ? "text-green-800" : "text-red-800"}`}
+              >
+                Net Profit / (Loss)
+              </div>
+              <div
+                className={`text-[20px] font-bold ${plSummary.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}
+              >
                 NPR {money(plSummary.netProfit)}
               </div>
             </div>
           </div>
 
           <h3 className="text-[13px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
-             Closing Entries Journal Preview
-             <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{closingPreview.incomeLines.length + closingPreview.expenseLines.length + 1} lines</span>
+            Closing Entries Journal Preview
+            <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              {closingPreview.incomeLines.length + closingPreview.expenseLines.length + 1} lines
+            </span>
           </h3>
 
           <div className="overflow-x-auto rounded-md border border-gray-200 mb-6 max-h-80">
@@ -854,7 +975,12 @@ export default function YearEndProcess() {
               <thead className="sticky top-0 bg-[#f5f6fa]">
                 <tr>
                   {["Account", "Debit", "Credit"].map((h) => (
-                    <th key={h} className={h === "Account" ? tableHeadClass : `${tableHeadClass} text-right`}>{h}</th>
+                    <th
+                      key={h}
+                      className={h === "Account" ? tableHeadClass : `${tableHeadClass} text-right`}
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -862,9 +988,11 @@ export default function YearEndProcess() {
                 {closingPreview.incomeLines.map((x) => (
                   <tr key={x.account.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} text-gray-600`}>
-                       <span className="text-gray-400 mr-1 text-[10px]">Dr</span> {x.account.name}
+                      <span className="text-gray-400 mr-1 text-[10px]">Dr</span> {x.account.name}
                     </td>
-                    <td className={`${tableCellClass} text-right font-medium`}>{money(Math.abs(x.account.balance || 0))}</td>
+                    <td className={`${tableCellClass} text-right font-medium`}>
+                      {money(Math.abs(x.account.balance || 0))}
+                    </td>
                     <td className={`${tableCellClass} text-right text-gray-400`}>0.00</td>
                   </tr>
                 ))}
@@ -872,19 +1000,28 @@ export default function YearEndProcess() {
                 {closingPreview.expenseLines.map((x) => (
                   <tr key={x.account.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} text-gray-600 pl-6`}>
-                       <span className="text-gray-400 mr-1 text-[10px]">Cr</span> {x.account.name}
+                      <span className="text-gray-400 mr-1 text-[10px]">Cr</span> {x.account.name}
                     </td>
                     <td className={`${tableCellClass} text-right text-gray-400`}>0.00</td>
-                    <td className={`${tableCellClass} text-right font-medium`}>{money(Math.abs(x.account.balance || 0))}</td>
+                    <td className={`${tableCellClass} text-right font-medium`}>
+                      {money(Math.abs(x.account.balance || 0))}
+                    </td>
                   </tr>
                 ))}
 
                 <tr className="bg-indigo-50 border-t-2 border-indigo-100">
                   <td className={`${tableCellClass} font-bold text-indigo-900 pl-6`}>
-                    <span className="text-indigo-400 mr-1 text-[10px]">{plSummary.netProfit >= 0 ? "Cr" : "Dr"}</span> Retained Earnings
+                    <span className="text-indigo-400 mr-1 text-[10px]">
+                      {plSummary.netProfit >= 0 ? "Cr" : "Dr"}
+                    </span>{" "}
+                    Retained Earnings
                   </td>
-                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>{plSummary.netProfit < 0 ? money(Math.abs(plSummary.netProfit)) : "0.00"}</td>
-                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>{plSummary.netProfit >= 0 ? money(plSummary.netProfit) : "0.00"}</td>
+                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>
+                    {plSummary.netProfit < 0 ? money(Math.abs(plSummary.netProfit)) : "0.00"}
+                  </td>
+                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>
+                    {plSummary.netProfit >= 0 ? money(plSummary.netProfit) : "0.00"}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -892,21 +1029,28 @@ export default function YearEndProcess() {
 
           {closingPosted && (
             <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 text-green-800 rounded-md text-[12px] font-medium mb-6">
-              <CheckCircle size={16}/> P&L closed. Income and expense accounts now show zero balance.
+              <CheckCircle size={16} /> P&L closed. Income and expense accounts now show zero
+              balance.
             </div>
           )}
 
           <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
-             <button className={outlineBtn} onClick={() => setCurrentStep(2)}>Back</button>
-             <div className="flex gap-2">
-               <button className={outlineBtn} onClick={postClosingEntries} disabled={closingPosted}>
-                 <CheckCircle size={14} className={closingPosted ? "text-green-500" : ""}/> 
-                 {closingPosted ? "Entries Posted" : "Post Closing Entries"}
-               </button>
-               <button className={primaryBtn} disabled={!closingPosted} onClick={() => setCurrentStep(4)}>
-                 Proceed to Lock Year <ArrowRight size={14} />
-               </button>
-             </div>
+            <button className={outlineBtn} onClick={() => setCurrentStep(2)}>
+              Back
+            </button>
+            <div className="flex gap-2">
+              <button className={outlineBtn} onClick={postClosingEntries} disabled={closingPosted}>
+                <CheckCircle size={14} className={closingPosted ? "text-green-500" : ""} />
+                {closingPosted ? "Entries Posted" : "Post Closing Entries"}
+              </button>
+              <button
+                className={primaryBtn}
+                disabled={!closingPosted}
+                onClick={() => setCurrentStep(4)}
+              >
+                Proceed to Lock Year <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -914,38 +1058,52 @@ export default function YearEndProcess() {
       {currentStep === 4 && (
         <div className={`${cardClass} max-w-3xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-             <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2"><Lock size={16}/> Lock the Fiscal Year</h2>
-             <p className="text-[11px] text-gray-500 mt-0.5">Secure the current fiscal year to prevent any further modifications.</p>
+            <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+              <Lock size={16} /> Lock the Fiscal Year
+            </h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Secure the current fiscal year to prevent any further modifications.
+            </p>
           </div>
 
           <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 text-red-800 rounded-md text-[12px] mb-6">
-            <AlertTriangle size={20} className="text-red-600 flex-shrink-0 mt-0.5"/>
+            <AlertTriangle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
             <div>
               <b className="block mb-1">Critical Warning</b>
-              Once locked, no vouchers can be entered, edited, or deleted for this fiscal year. This action is irreversible without the Master Admin PIN.
+              Once locked, no vouchers can be entered, edited, or deleted for this fiscal year. This
+              action is irreversible without the Master Admin PIN.
             </div>
           </div>
 
           <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
-             <h3 className="text-[11px] uppercase tracking-wide font-semibold text-gray-500 mb-3 border-b border-gray-200 pb-2">Fiscal Year Summary</h3>
-             <div className="grid grid-cols-2 gap-y-3 text-[12px]">
-                <div className="text-gray-500">Name</div>
-                <div className="font-medium text-gray-900">{currentFiscalYear?.name}</div>
-                
-                <div className="text-gray-500">Period</div>
-                <div className="font-medium text-gray-900">{currentFiscalYear?.startDate} to {currentFiscalYear?.endDate}</div>
-                
-                <div className="text-gray-500">Total Vouchers</div>
-                <div className="font-medium text-gray-900">{fyVoucherCount}</div>
-                
-                <div className="text-gray-500">Net Profit</div>
-                <div className="font-bold text-[#1557b0]">NPR {money(plSummary.netProfit)}</div>
-             </div>
+            <h3 className="text-[11px] uppercase tracking-wide font-semibold text-gray-500 mb-3 border-b border-gray-200 pb-2">
+              Fiscal Year Summary
+            </h3>
+            <div className="grid grid-cols-2 gap-y-3 text-[12px]">
+              <div className="text-gray-500">Name</div>
+              <div className="font-medium text-gray-900">{currentFiscalYear?.name}</div>
+
+              <div className="text-gray-500">Period</div>
+              <div className="font-medium text-gray-900">
+                {currentFiscalYear?.startDate} to {currentFiscalYear?.endDate}
+              </div>
+
+              <div className="text-gray-500">Total Vouchers</div>
+              <div className="font-medium text-gray-900">{fyVoucherCount}</div>
+
+              <div className="text-gray-500">Net Profit</div>
+              <div className="font-bold text-[#1557b0]">NPR {money(plSummary.netProfit)}</div>
+            </div>
           </div>
 
           <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
-            <button className={outlineBtn} onClick={() => setCurrentStep(3)}>Back</button>
-            <button className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm" onClick={() => setLockModal(true)}>
+            <button className={outlineBtn} onClick={() => setCurrentStep(3)}>
+              Back
+            </button>
+            <button
+              className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+              onClick={() => setLockModal(true)}
+            >
               <Lock size={14} /> Lock {currentFiscalYear?.name}
             </button>
           </div>
@@ -955,39 +1113,80 @@ export default function YearEndProcess() {
       {currentStep === 5 && (
         <div className={`${cardClass} max-w-5xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-             <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2"><CalendarDays size={16}/> Activate Next Fiscal Year</h2>
-             <p className="text-[11px] text-gray-500 mt-0.5">Define the dates for the new fiscal year and roll over closing balances as opening balances.</p>
+            <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+              <CalendarDays size={16} /> Activate Next Fiscal Year
+            </h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Define the dates for the new fiscal year and roll over closing balances as opening
+              balances.
+            </p>
           </div>
 
           <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
-            <h3 className="text-[12px] font-semibold text-gray-800 mb-3 flex items-center gap-2"><Settings size={14}/> New Fiscal Year Settings</h3>
+            <h3 className="text-[12px] font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Settings size={14} /> New Fiscal Year Settings
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">FY Name (BS)</label>
-                <input className={inputClass} value={newFYForm.name} onChange={(e) => setNewFYForm({ ...newFYForm, name: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  FY Name (BS)
+                </label>
+                <input
+                  className={inputClass}
+                  value={newFYForm.name}
+                  onChange={(e) => setNewFYForm({ ...newFYForm, name: e.target.value })}
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Start Date (BS)</label>
-                <input className={inputClass} value={newFYForm.startBS} onChange={(e) => setNewFYForm({ ...newFYForm, startBS: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Start Date (BS)
+                </label>
+                <input
+                  className={inputClass}
+                  value={newFYForm.startBS}
+                  onChange={(e) => setNewFYForm({ ...newFYForm, startBS: e.target.value })}
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">End Date (BS)</label>
-                <input className={inputClass} value={newFYForm.endBS} onChange={(e) => setNewFYForm({ ...newFYForm, endBS: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  End Date (BS)
+                </label>
+                <input
+                  className={inputClass}
+                  value={newFYForm.endBS}
+                  onChange={(e) => setNewFYForm({ ...newFYForm, endBS: e.target.value })}
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Start Date (AD)</label>
-                <input className={inputClass} type="date" value={newFYForm.startAD} onChange={(e) => setNewFYForm({ ...newFYForm, startAD: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Start Date (AD)
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={newFYForm.startAD}
+                  onChange={(e) => setNewFYForm({ ...newFYForm, startAD: e.target.value })}
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">End Date (AD)</label>
-                <input className={inputClass} type="date" value={newFYForm.endAD} onChange={(e) => setNewFYForm({ ...newFYForm, endAD: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  End Date (AD)
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={newFYForm.endAD}
+                  onChange={(e) => setNewFYForm({ ...newFYForm, endAD: e.target.value })}
+                />
               </div>
             </div>
           </div>
 
           <h3 className="text-[13px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
-             Balance Sheet Roll-over Preview
-             <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{balanceSheetRollover.length} accounts</span>
+            Balance Sheet Roll-over Preview
+            <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              {balanceSheetRollover.length} accounts
+            </span>
           </h3>
 
           <div className="overflow-x-auto rounded-md border border-gray-200 mb-6 max-h-[400px]">
@@ -995,7 +1194,14 @@ export default function YearEndProcess() {
               <thead className="sticky top-0 bg-[#f5f6fa]">
                 <tr>
                   {["Account Name", "Closing Balance", "New Opening Balance"].map((h) => (
-                    <th key={h} className={h === "Account Name" ? tableHeadClass : `${tableHeadClass} text-right`}>{h}</th>
+                    <th
+                      key={h}
+                      className={
+                        h === "Account Name" ? tableHeadClass : `${tableHeadClass} text-right`
+                      }
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -1003,9 +1209,13 @@ export default function YearEndProcess() {
                 {balanceSheetRollover.map((a) => (
                   <tr key={a.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{a.name}</td>
-                    <td className={`${tableCellClass} text-right text-gray-500`}>NPR {money(a.closingBalance)}</td>
+                    <td className={`${tableCellClass} text-right text-gray-500`}>
+                      NPR {money(a.closingBalance)}
+                    </td>
                     <td className={`${tableCellClass} text-right font-medium text-[#1557b0]`}>
-                      {a.openingDr > 0 ? `Dr NPR ${money(a.openingDr)}` : `Cr NPR ${money(a.openingCr)}`}
+                      {a.openingDr > 0
+                        ? `Dr NPR ${money(a.openingDr)}`
+                        : `Cr NPR ${money(a.openingCr)}`}
                     </td>
                   </tr>
                 ))}
@@ -1015,43 +1225,90 @@ export default function YearEndProcess() {
 
           <div className="flex justify-end p-4 bg-indigo-50 border border-indigo-100 rounded-md">
             <button className={primaryBtn} onClick={createNewFiscalYear}>
-               <CheckCircle size={14}/> Create New FY & Roll Balances
+              <CheckCircle size={14} /> Create New FY & Roll Balances
             </button>
           </div>
         </div>
       )}
 
-      <Modal open={manualJournalModal} title="Post Year-End Adjustment" onClose={() => setManualJournalModal(false)}>
+      <Modal
+        open={manualJournalModal}
+        title="Post Year-End Adjustment"
+        onClose={() => setManualJournalModal(false)}
+      >
         <div className="space-y-4">
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Debit Account</label>
-            <select className={inputClass} value={manualJournalForm.debitAccountId} onChange={(e) => setManualJournalForm({ ...manualJournalForm, debitAccountId: e.target.value })}>
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              Debit Account
+            </label>
+            <select
+              className={inputClass}
+              value={manualJournalForm.debitAccountId}
+              onChange={(e) =>
+                setManualJournalForm({ ...manualJournalForm, debitAccountId: e.target.value })
+              }
+            >
               <option value="">Select Account...</option>
-              {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Credit Account</label>
-            <select className={inputClass} value={manualJournalForm.creditAccountId} onChange={(e) => setManualJournalForm({ ...manualJournalForm, creditAccountId: e.target.value })}>
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              Credit Account
+            </label>
+            <select
+              className={inputClass}
+              value={manualJournalForm.creditAccountId}
+              onChange={(e) =>
+                setManualJournalForm({ ...manualJournalForm, creditAccountId: e.target.value })
+              }
+            >
               <option value="">Select Account...</option>
-              {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </select>
           </div>
 
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Amount (NPR)</label>
-            <input className={inputClass} type="number" placeholder="0.00" value={manualJournalForm.amount} onChange={(e) => setManualJournalForm({ ...manualJournalForm, amount: e.target.value })} />
+            <input
+              className={inputClass}
+              type="number"
+              placeholder="0.00"
+              value={manualJournalForm.amount}
+              onChange={(e) =>
+                setManualJournalForm({ ...manualJournalForm, amount: e.target.value })
+              }
+            />
           </div>
 
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-            <textarea className={`${inputClass} py-2 min-h-[80px]`} placeholder="Description..." value={manualJournalForm.narration} onChange={(e) => setManualJournalForm({ ...manualJournalForm, narration: e.target.value })} />
+            <textarea
+              className={`${inputClass} py-2 min-h-[80px]`}
+              placeholder="Description..."
+              value={manualJournalForm.narration}
+              onChange={(e) =>
+                setManualJournalForm({ ...manualJournalForm, narration: e.target.value })
+              }
+            />
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-2">
-            <button className={outlineBtn} onClick={() => setManualJournalModal(false)}>Cancel</button>
-            <button className={primaryBtn} onClick={postManualAdjustment}>Post Journal</button>
+            <button className={outlineBtn} onClick={() => setManualJournalModal(false)}>
+              Cancel
+            </button>
+            <button className={primaryBtn} onClick={postManualAdjustment}>
+              Post Journal
+            </button>
           </div>
         </div>
       </Modal>
@@ -1059,30 +1316,46 @@ export default function YearEndProcess() {
       <Modal open={lockModal} title="Confirm Fiscal Year Lock" onClose={() => setLockModal(false)}>
         <div className="space-y-4">
           <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-md text-[12px]">
-            Please type the fiscal year name exactly to confirm: <b className="font-mono bg-white px-1.5 py-0.5 rounded border border-red-200 ml-1">{currentFiscalYear?.name}</b>
+            Please type the fiscal year name exactly to confirm:{" "}
+            <b className="font-mono bg-white px-1.5 py-0.5 rounded border border-red-200 ml-1">
+              {currentFiscalYear?.name}
+            </b>
           </div>
 
           <div>
-            <input 
-              className={`${inputClass} font-mono`} 
+            <input
+              className={`${inputClass} font-mono`}
               placeholder={currentFiscalYear?.name}
-              value={lockConfirmName} 
-              onChange={(e) => setLockConfirmName(e.target.value)} 
+              value={lockConfirmName}
+              onChange={(e) => setLockConfirmName(e.target.value)}
             />
           </div>
 
           {currentUser?.role === "admin" && requiredPin && (
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Admin PIN Required</label>
-              <input className={inputClass} type="password" placeholder="Enter PIN" value={adminPin} onChange={(e) => setAdminPin(e.target.value)} />
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Admin PIN Required
+              </label>
+              <input
+                className={inputClass}
+                type="password"
+                placeholder="Enter PIN"
+                value={adminPin}
+                onChange={(e) => setAdminPin(e.target.value)}
+              />
             </div>
           )}
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-2">
-            <button className={outlineBtn} onClick={() => setLockModal(false)}>Cancel</button>
+            <button className={outlineBtn} onClick={() => setLockModal(false)}>
+              Cancel
+            </button>
             <button
               className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={lockConfirmName !== currentFiscalYear?.name || (currentUser?.role === "admin" && requiredPin && adminPin !== requiredPin)}
+              disabled={
+                lockConfirmName !== currentFiscalYear?.name ||
+                (currentUser?.role === "admin" && requiredPin && adminPin !== requiredPin)
+              }
               onClick={confirmLockFY}
             >
               Confirm Lock

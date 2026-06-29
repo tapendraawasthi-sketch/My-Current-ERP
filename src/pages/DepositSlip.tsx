@@ -21,15 +21,15 @@ interface Instrument {
 }
 
 export default function DepositSlip() {
-  const { 
-    accounts, 
-    vouchers, 
-    parties, 
-    depositSlips, 
+  const {
+    accounts,
+    vouchers,
+    parties,
+    depositSlips,
     companySettings,
     saveDepositSlip,
     updateDepositSlip,
-    markDepositConfirmed
+    markDepositConfirmed,
   } = useStore();
 
   const [view, setView] = useState<"list" | "form">("list");
@@ -38,7 +38,7 @@ export default function DepositSlip() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [printPreview, setPrintPreview] = useState(false);
-  
+
   // Form state
   const [slipNo, setSlipNo] = useState("");
   const [bankAccountId, setBankAccountId] = useState("");
@@ -49,13 +49,13 @@ export default function DepositSlip() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const bankAccounts = useMemo(() => {
-    return accounts.filter(a => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
+    return accounts.filter((a) => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
   }, [accounts]);
 
   const undepositedVouchers = useMemo(() => {
     // Get all receipt vouchers with cheque payment mode that haven't been included in a non-reversed deposit slip
     const depositedVoucherIds = new Set();
-    depositSlips.forEach(slip => {
+    depositSlips.forEach((slip) => {
       if (slip.status !== "reversed") {
         try {
           const instruments = JSON.parse(slip.instruments || "[]");
@@ -65,16 +65,17 @@ export default function DepositSlip() {
         }
       }
     });
-    
-    return vouchers.filter(v => 
-      v.type === "receipt" && 
-      (v.paymentMode === "cheque" || v.paymentMode === "Cheque") && 
-      !depositedVoucherIds.has(v.id)
+
+    return vouchers.filter(
+      (v) =>
+        v.type === "receipt" &&
+        (v.paymentMode === "cheque" || v.paymentMode === "Cheque") &&
+        !depositedVoucherIds.has(v.id),
     );
   }, [vouchers, depositSlips]);
 
   const filteredSlips = useMemo(() => {
-    return depositSlips.filter(s => {
+    return depositSlips.filter((s) => {
       const matchesBank = !bankFilter || s.bankAccountId === bankFilter;
       const matchesDateFrom = !dateFrom || s.depositDate >= dateFrom;
       const matchesDateTo = !dateTo || s.depositDate <= dateTo;
@@ -92,11 +93,11 @@ export default function DepositSlip() {
 
   const handleNewSlip = () => {
     // Generate slip number
-    const today = new Date().toISOString().split('T')[0];
-    const formattedDate = today.replace(/-/g, '');
-    const count = depositSlips.filter(s => s.slipNo.startsWith(`DS-${formattedDate}`)).length + 1;
-    const newSlipNo = `DS-${formattedDate}-${count.toString().padStart(3, '0')}`;
-    
+    const today = new Date().toISOString().split("T")[0];
+    const formattedDate = today.replace(/-/g, "");
+    const count = depositSlips.filter((s) => s.slipNo.startsWith(`DS-${formattedDate}`)).length + 1;
+    const newSlipNo = `DS-${formattedDate}-${count.toString().padStart(3, "0")}`;
+
     setSlipNo(newSlipNo);
     setBankAccountId("");
     setDepositDate("");
@@ -112,14 +113,14 @@ export default function DepositSlip() {
     setBankAccountId(slip.bankAccountId);
     setDepositDate(slip.depositDate);
     setNarration(slip.narration || "");
-    
+
     try {
       const instruments = JSON.parse(slip.instruments || "[]");
       setSelectedInstruments(instruments);
     } catch (e) {
       setSelectedInstruments([]);
     }
-    
+
     setCashAmount(slip.cashAmount || 0);
     setEditingId(slip.id);
     setView("form");
@@ -142,7 +143,7 @@ export default function DepositSlip() {
         cashAmount,
         chequeAmount,
         status: "draft",
-        narration
+        narration,
       };
 
       if (editingId) {
@@ -177,7 +178,7 @@ export default function DepositSlip() {
         cashAmount,
         chequeAmount,
         status: "draft", // Will be changed to deposited by markDepositConfirmed
-        narration
+        narration,
       };
 
       let slipId;
@@ -233,10 +234,10 @@ export default function DepositSlip() {
   };
 
   const toggleInstrumentSelection = (instrument: Instrument) => {
-    setSelectedInstruments(prev => {
-      const exists = prev.some(i => i.voucherId === instrument.voucherId);
+    setSelectedInstruments((prev) => {
+      const exists = prev.some((i) => i.voucherId === instrument.voucherId);
       if (exists) {
-        return prev.filter(i => i.voucherId !== instrument.voucherId);
+        return prev.filter((i) => i.voucherId !== instrument.voucherId);
       } else {
         return [...prev, instrument];
       }
@@ -247,24 +248,24 @@ export default function DepositSlip() {
     if (selectedInstruments.length === undepositedVouchers.length) {
       setSelectedInstruments([]);
     } else {
-      const instruments = undepositedVouchers.map(v => ({
+      const instruments = undepositedVouchers.map((v) => ({
         voucherId: v.id,
         voucherNo: v.voucherNo,
         instrumentNo: v.chequeNo || v.narration || "N/A",
         drawerName: v.partyName || "Unknown",
-        drawerBankName: parties.find(p => p.id === v.partyId)?.bankName || "Unknown",
-        drawerBankBranch: parties.find(p => p.id === v.partyId)?.bankBranch || "Unknown",
+        drawerBankName: parties.find((p) => p.id === v.partyId)?.bankName || "Unknown",
+        drawerBankBranch: parties.find((p) => p.id === v.partyId)?.bankBranch || "Unknown",
         instrumentDate: v.date,
-        amount: v.grandTotal || 0
+        amount: v.grandTotal || 0,
       }));
       setSelectedInstruments(instruments);
     }
   };
 
   if (printPreview && selectedSlip) {
-    const bankAccount = accounts.find(a => a.id === selectedSlip.bankAccountId);
+    const bankAccount = accounts.find((a) => a.id === selectedSlip.bankAccountId);
     const instruments = JSON.parse(selectedSlip.instruments || "[]");
-    
+
     return (
       <div className="print-only">
         <div className="max-w-4xl mx-auto p-8">
@@ -272,22 +273,30 @@ export default function DepositSlip() {
             <h1 className="text-2xl font-bold">{companySettings?.companyNameEn}</h1>
             <p className="text-sm text-gray-600">{companySettings?.addressEn}</p>
           </div>
-          
+
           <div className="border-b-2 border-gray-800 pb-4 mb-6">
             <h2 className="text-xl font-bold text-center">DEPOSIT SLIP</h2>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
-              <p><strong>Slip No:</strong> {selectedSlip.slipNo}</p>
-              <p><strong>Deposit Date:</strong> {selectedSlip.depositDate}</p>
+              <p>
+                <strong>Slip No:</strong> {selectedSlip.slipNo}
+              </p>
+              <p>
+                <strong>Deposit Date:</strong> {selectedSlip.depositDate}
+              </p>
             </div>
             <div>
-              <p><strong>Bank Account:</strong> {bankAccount?.name}</p>
-              <p><strong>Status:</strong> {selectedSlip.status}</p>
+              <p>
+                <strong>Bank Account:</strong> {bankAccount?.name}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedSlip.status}
+              </p>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <table className="w-full border-collapse border border-gray-800">
               <thead>
@@ -306,27 +315,39 @@ export default function DepositSlip() {
                     <td className="border border-gray-800 p-2">{inst.drawerName}</td>
                     <td className="border border-gray-800 p-2">{inst.drawerBankName}</td>
                     <td className="border border-gray-800 p-2">{inst.drawerBankBranch}</td>
-                    <td className="border border-gray-800 p-2 text-right">{formatNumber(inst.amount)}</td>
+                    <td className="border border-gray-800 p-2 text-right">
+                      {formatNumber(inst.amount)}
+                    </td>
                   </tr>
                 ))}
                 <tr>
-                  <td colSpan={4} className="border border-gray-800 p-2 text-right font-bold">Cash Amount</td>
-                  <td className="border border-gray-800 p-2 text-right">{formatNumber(selectedSlip.cashAmount || 0)}</td>
+                  <td colSpan={4} className="border border-gray-800 p-2 text-right font-bold">
+                    Cash Amount
+                  </td>
+                  <td className="border border-gray-800 p-2 text-right">
+                    {formatNumber(selectedSlip.cashAmount || 0)}
+                  </td>
                 </tr>
                 <tr>
-                  <td colSpan={4} className="border border-gray-800 p-2 text-right font-bold">Total Amount</td>
-                  <td className="border border-gray-800 p-2 text-right">{formatNumber(selectedSlip.totalAmount)}</td>
+                  <td colSpan={4} className="border border-gray-800 p-2 text-right font-bold">
+                    Total Amount
+                  </td>
+                  <td className="border border-gray-800 p-2 text-right">
+                    {formatNumber(selectedSlip.totalAmount)}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          
+
           {selectedSlip.narration && (
             <div className="mb-6">
-              <p><strong>Narration:</strong> {selectedSlip.narration}</p>
+              <p>
+                <strong>Narration:</strong> {selectedSlip.narration}
+              </p>
             </div>
           )}
-          
+
           <div className="flex justify-between mt-12">
             <div className="text-center">
               <p>Prepared By</p>
@@ -342,7 +363,7 @@ export default function DepositSlip() {
             </div>
           </div>
         </div>
-        
+
         <style jsx>{`
           @media print {
             .print-only {
@@ -360,27 +381,27 @@ export default function DepositSlip() {
   if (view === "form") {
     return (
       <div className="flex flex-col h-full">
-        <ActionToolbar 
-          title={editingId ? "Edit Deposit Slip" : "New Deposit Slip"} 
+        <ActionToolbar
+          title={editingId ? "Edit Deposit Slip" : "New Deposit Slip"}
           icon={<Building2 size={16} />}
         >
           <Button size="sm" variant="outline" onClick={() => setView("list")}>
             Back to List
           </Button>
         </ActionToolbar>
-        
+
         <div className="flex-1 overflow-auto p-4">
           <FormPanel title="Deposit Slip Details">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <Select
                   label="Bank Account"
-                  options={bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))}
+                  options={bankAccounts.map((acc) => ({ value: acc.id, label: acc.name }))}
                   value={bankAccountId}
                   onChange={setBankAccountId}
                 />
               </div>
-              
+
               <div>
                 <NepaliDatePicker
                   label="Deposit Date"
@@ -388,7 +409,7 @@ export default function DepositSlip() {
                   onChange={setDepositDate}
                 />
               </div>
-              
+
               <div>
                 <input
                   type="text"
@@ -398,7 +419,7 @@ export default function DepositSlip() {
                   className="w-full p-2 border rounded text-sm"
                 />
               </div>
-              
+
               <div>
                 <input
                   type="number"
@@ -410,7 +431,7 @@ export default function DepositSlip() {
                 />
               </div>
             </div>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Narration</label>
               <textarea
@@ -422,20 +443,23 @@ export default function DepositSlip() {
               />
             </div>
           </FormPanel>
-          
+
           <FormPanel title="Select Instruments to Deposit">
             <p className="text-sm text-gray-600 mb-4">
               Select cheques/cash from un-deposited receipt vouchers
             </p>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="w-10 p-2">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedInstruments.length === undepositedVouchers.length && undepositedVouchers.length > 0}
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedInstruments.length === undepositedVouchers.length &&
+                          undepositedVouchers.length > 0
+                        }
                         onChange={toggleAllInstruments}
                       />
                     </th>
@@ -455,26 +479,28 @@ export default function DepositSlip() {
                       </td>
                     </tr>
                   ) : (
-                    undepositedVouchers.map(v => {
-                      const isSelected = selectedInstruments.some(i => i.voucherId === v.id);
-                      const party = parties.find(p => p.id === v.partyId);
-                      
+                    undepositedVouchers.map((v) => {
+                      const isSelected = selectedInstruments.some((i) => i.voucherId === v.id);
+                      const party = parties.find((p) => p.id === v.partyId);
+
                       return (
                         <tr key={v.id} className="border-t hover:bg-gray-50">
                           <td className="p-2">
-                            <input 
-                              type="checkbox" 
+                            <input
+                              type="checkbox"
                               checked={isSelected}
-                              onChange={() => toggleInstrumentSelection({
-                                voucherId: v.id,
-                                voucherNo: v.voucherNo,
-                                instrumentNo: v.chequeNo || v.narration || "N/A",
-                                drawerName: v.partyName || "Unknown",
-                                drawerBankName: party?.bankName || "Unknown",
-                                drawerBankBranch: party?.bankBranch || "Unknown",
-                                instrumentDate: v.date,
-                                amount: v.grandTotal || 0
-                              })}
+                              onChange={() =>
+                                toggleInstrumentSelection({
+                                  voucherId: v.id,
+                                  voucherNo: v.voucherNo,
+                                  instrumentNo: v.chequeNo || v.narration || "N/A",
+                                  drawerName: v.partyName || "Unknown",
+                                  drawerBankName: party?.bankName || "Unknown",
+                                  drawerBankBranch: party?.bankBranch || "Unknown",
+                                  instrumentDate: v.date,
+                                  amount: v.grandTotal || 0,
+                                })
+                              }
                             />
                           </td>
                           <td className="p-2">{v.date}</td>
@@ -490,30 +516,30 @@ export default function DepositSlip() {
                 </tbody>
               </table>
             </div>
-            
+
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-3 rounded">
                 <p className="text-xs text-gray-500">Selected Instruments</p>
                 <p className="font-bold">{selectedInstruments.length}</p>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded">
                 <p className="text-xs text-gray-500">Cheque Amount</p>
                 <p className="font-bold">{formatNumber(chequeAmount)}</p>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded">
                 <p className="text-xs text-gray-500">Cash Amount</p>
                 <p className="font-bold">{formatNumber(cashAmount)}</p>
               </div>
-              
+
               <div className="bg-blue-50 p-3 rounded border border-blue-200">
                 <p className="text-xs text-blue-600">Grand Total</p>
                 <p className="font-bold text-blue-800">{formatNumber(totalAmount)}</p>
               </div>
             </div>
           </FormPanel>
-          
+
           <div className="mt-6 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setView("list")}>
               Cancel
@@ -521,9 +547,7 @@ export default function DepositSlip() {
             <Button variant="outline" onClick={handleSaveDraft}>
               Save as Draft
             </Button>
-            <Button onClick={handleConfirmDeposit}>
-              Confirm Deposit
-            </Button>
+            <Button onClick={handleConfirmDeposit}>Confirm Deposit</Button>
           </div>
         </div>
       </div>
@@ -532,10 +556,7 @@ export default function DepositSlip() {
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar 
-        title="Deposit Slip" 
-        icon={<Building2 size={16} />}
-      >
+      <ActionToolbar title="Deposit Slip" icon={<Building2 size={16} />}>
         <Button size="sm" onClick={handleNewSlip}>
           <Plus size={14} className="mr-1" />
           New Deposit Slip
@@ -545,7 +566,7 @@ export default function DepositSlip() {
           View All Slips
         </Button>
       </ActionToolbar>
-      
+
       <div className="flex-1 overflow-auto p-4">
         {/* Filter Bar */}
         <div className="mb-4 flex flex-wrap gap-3 items-end">
@@ -554,30 +575,22 @@ export default function DepositSlip() {
               label="Bank Account"
               options={[
                 { value: "", label: "All Banks" },
-                ...bankAccounts.map(acc => ({ value: acc.id, label: acc.name }))
+                ...bankAccounts.map((acc) => ({ value: acc.id, label: acc.name })),
               ]}
               value={bankFilter}
               onChange={setBankFilter}
             />
           </div>
-          
+
           <div className="w-32">
-            <NepaliDatePicker
-              label="From Date"
-              value={dateFrom}
-              onChange={setDateFrom}
-            />
+            <NepaliDatePicker label="From Date" value={dateFrom} onChange={setDateFrom} />
           </div>
-          
+
           <div className="w-32">
-            <NepaliDatePicker
-              label="To Date"
-              value={dateTo}
-              onChange={setDateTo}
-            />
+            <NepaliDatePicker label="To Date" value={dateTo} onChange={setDateTo} />
           </div>
         </div>
-        
+
         {/* Deposit Slips Table */}
         <div className="bg-white border rounded-lg overflow-hidden">
           <table className="w-full">
@@ -601,23 +614,27 @@ export default function DepositSlip() {
                   </td>
                 </tr>
               ) : (
-                filteredSlips.map(slip => {
-                  const bankAccount = accounts.find(a => a.id === slip.bankAccountId);
-                  
+                filteredSlips.map((slip) => {
+                  const bankAccount = accounts.find((a) => a.id === slip.bankAccountId);
+
                   return (
                     <tr key={slip.id} className="border-t hover:bg-gray-50">
                       <td className="p-3">{slip.slipNo}</td>
                       <td className="p-3">{slip.depositDate}</td>
                       <td className="p-3">{bankAccount?.name || "Unknown"}</td>
                       <td className="p-3 text-right">{formatNumber(slip.totalAmount)}</td>
-                      <td className="p-3 text-right">{formatNumber(slip.chequeAmount || (slip.totalAmount - slip.cashAmount))}</td>
+                      <td className="p-3 text-right">
+                        {formatNumber(slip.chequeAmount || slip.totalAmount - slip.cashAmount)}
+                      </td>
                       <td className="p-3 text-right">{formatNumber(slip.cashAmount)}</td>
                       <td className="p-3">
-                        <Badge 
+                        <Badge
                           variant={
-                            slip.status === "draft" ? "warning" :
-                            slip.status === "deposited" ? "success" :
-                            "destructive"
+                            slip.status === "draft"
+                              ? "warning"
+                              : slip.status === "deposited"
+                                ? "success"
+                                : "destructive"
                           }
                         >
                           {slip.status.charAt(0).toUpperCase() + slip.status.slice(1)}
@@ -625,41 +642,33 @@ export default function DepositSlip() {
                       </td>
                       <td className="p-3">
                         <div className="flex gap-2">
-                          <Button 
-                            size="xs" 
-                            variant="ghost" 
-                            onClick={() => handleEditSlip(slip)}
-                          >
+                          <Button size="xs" variant="ghost" onClick={() => handleEditSlip(slip)}>
                             Edit
                           </Button>
-                          
+
                           {slip.status === "draft" && (
-                            <Button 
-                              size="xs" 
-                              variant="outline" 
+                            <Button
+                              size="xs"
+                              variant="outline"
                               onClick={() => handleMarkDeposited(slip.id)}
                             >
                               <Check size={12} className="mr-1" />
                               Confirm
                             </Button>
                           )}
-                          
+
                           {slip.status === "deposited" && (
-                            <Button 
-                              size="xs" 
-                              variant="outline" 
+                            <Button
+                              size="xs"
+                              variant="outline"
                               onClick={() => handleReverseSlip(slip.id)}
                             >
                               <RotateCcw size={12} className="mr-1" />
                               Reverse
                             </Button>
                           )}
-                          
-                          <Button 
-                            size="xs" 
-                            variant="ghost" 
-                            onClick={() => handlePrint(slip)}
-                          >
+
+                          <Button size="xs" variant="ghost" onClick={() => handlePrint(slip)}>
                             Print
                           </Button>
                         </div>

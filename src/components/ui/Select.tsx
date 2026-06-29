@@ -78,9 +78,7 @@ const Select: React.FC<SelectProps> = ({
     );
   }
 
-  const filtered = options.filter((o) =>
-    o.label.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = options.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()));
   const selected = options.find((o) => o.value === value);
 
   return (

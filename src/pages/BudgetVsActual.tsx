@@ -6,8 +6,18 @@ import * as xlsx from "xlsx";
 import { AccountGroup } from "../lib/types";
 
 const BS_MONTHS = [
-  "Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin",
-  "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"
+  "Baisakh",
+  "Jestha",
+  "Ashadh",
+  "Shrawan",
+  "Bhadra",
+  "Ashwin",
+  "Kartik",
+  "Mangsir",
+  "Poush",
+  "Magh",
+  "Falgun",
+  "Chaitra",
 ];
 
 export default function BudgetVsActual() {
@@ -19,44 +29,57 @@ export default function BudgetVsActual() {
     if (!currentFiscalYear) return [];
 
     // Filter budgets
-    let relevantBudgets = budgets.filter(b => b.fiscalYearBS === currentFiscalYear.name);
+    let relevantBudgets = budgets.filter((b) => b.fiscalYearBS === currentFiscalYear.name);
     if (selectedCostCenterId) {
-      relevantBudgets = relevantBudgets.filter(b => !b.costCenterId || b.costCenterId === selectedCostCenterId);
+      relevantBudgets = relevantBudgets.filter(
+        (b) => !b.costCenterId || b.costCenterId === selectedCostCenterId,
+      );
     }
     if (selectedMonth) {
-      relevantBudgets = relevantBudgets.filter(b => b.month === selectedMonth);
+      relevantBudgets = relevantBudgets.filter((b) => b.month === selectedMonth);
     }
 
     // Filter vouchers
-    let relevantVouchers = vouchers.filter(v => v.status === "POSTED" && v.dateNepali?.startsWith(currentFiscalYear.name));
+    let relevantVouchers = vouchers.filter(
+      (v) => v.status === "POSTED" && v.dateNepali?.startsWith(currentFiscalYear.name),
+    );
     if (selectedMonth) {
-      relevantVouchers = relevantVouchers.filter(v => v.dateNepali?.substring(5, 7) === selectedMonth);
+      relevantVouchers = relevantVouchers.filter(
+        (v) => v.dateNepali?.substring(5, 7) === selectedMonth,
+      );
     }
 
     // Map account -> { budget, actual, costCenterId }
-    const accountTotals: Record<string, { accountId: string, accountName: string, budgeted: number, actual: number }> = {};
+    const accountTotals: Record<
+      string,
+      { accountId: string; accountName: string; budgeted: number; actual: number }
+    > = {};
 
-    relevantBudgets.forEach(b => {
+    relevantBudgets.forEach((b) => {
       if (!accountTotals[b.accountId]) {
         accountTotals[b.accountId] = {
           accountId: b.accountId,
-          accountName: accounts.find(a => a.id === b.accountId)?.name || "Unknown",
+          accountName: accounts.find((a) => a.id === b.accountId)?.name || "Unknown",
           budgeted: 0,
-          actual: 0
+          actual: 0,
         };
       }
       accountTotals[b.accountId].budgeted += b.budgetedAmount;
     });
 
-    relevantVouchers.forEach(v => {
-      v.lines.forEach(l => {
+    relevantVouchers.forEach((v) => {
+      v.lines.forEach((l) => {
         if (!selectedCostCenterId || l.costCenterId === selectedCostCenterId) {
-          const acc = accounts.find(a => a.id === l.accountId);
+          const acc = accounts.find((a) => a.id === l.accountId);
           if (!acc) return;
           // Determine nature
-          const isIncome = ["Direct Incomes", "Indirect Incomes", "Sales Accounts"].includes(acc.group || "");
-          const isExpense = ["Direct Expenses", "Indirect Expenses", "Purchase Accounts"].includes(acc.group || "");
-          
+          const isIncome = ["Direct Incomes", "Indirect Incomes", "Sales Accounts"].includes(
+            acc.group || "",
+          );
+          const isExpense = ["Direct Expenses", "Indirect Expenses", "Purchase Accounts"].includes(
+            acc.group || "",
+          );
+
           let amount = 0;
           if (isIncome) amount = l.credit - l.debit;
           else if (isExpense) amount = l.debit - l.credit;
@@ -69,7 +92,7 @@ export default function BudgetVsActual() {
                 accountId: l.accountId,
                 accountName: acc.name,
                 budgeted: 0,
-                actual: 0
+                actual: 0,
               };
             }
             accountTotals[l.accountId].actual += amount;
@@ -78,37 +101,45 @@ export default function BudgetVsActual() {
       });
     });
 
-    return Object.values(accountTotals).map(row => {
-      const varianceRs = row.budgeted - row.actual;
-      const variancePct = row.budgeted > 0 ? (varianceRs / row.budgeted) * 100 : (row.actual > 0 ? -100 : 0);
-      return { ...row, varianceRs, variancePct };
-    }).sort((a, b) => a.accountName.localeCompare(b.accountName));
-
+    return Object.values(accountTotals)
+      .map((row) => {
+        const varianceRs = row.budgeted - row.actual;
+        const variancePct =
+          row.budgeted > 0 ? (varianceRs / row.budgeted) * 100 : row.actual > 0 ? -100 : 0;
+        return { ...row, varianceRs, variancePct };
+      })
+      .sort((a, b) => a.accountName.localeCompare(b.accountName));
   }, [budgets, vouchers, accounts, currentFiscalYear, selectedCostCenterId, selectedMonth]);
 
   const totals = useMemo(() => {
-    return reportData.reduce((acc, row) => ({
-      budgeted: acc.budgeted + row.budgeted,
-      actual: acc.actual + row.actual,
-      varianceRs: acc.varianceRs + row.varianceRs
-    }), { budgeted: 0, actual: 0, varianceRs: 0 });
+    return reportData.reduce(
+      (acc, row) => ({
+        budgeted: acc.budgeted + row.budgeted,
+        actual: acc.actual + row.actual,
+        varianceRs: acc.varianceRs + row.varianceRs,
+      }),
+      { budgeted: 0, actual: 0, varianceRs: 0 },
+    );
   }, [reportData]);
 
   const exportExcel = () => {
-    const data = reportData.map(r => ({
-      "Account": r.accountName,
+    const data = reportData.map((r) => ({
+      Account: r.accountName,
       "Budget (Rs.)": r.budgeted,
       "Actual (Rs.)": r.actual,
       "Variance (Rs.)": r.varianceRs,
-      "Variance %": r.variancePct.toFixed(2) + "%"
+      "Variance %": r.variancePct.toFixed(2) + "%",
     }));
-    
+
     data.push({
-      "Account": "TOTAL",
+      Account: "TOTAL",
       "Budget (Rs.)": totals.budgeted,
       "Actual (Rs.)": totals.actual,
       "Variance (Rs.)": totals.varianceRs,
-      "Variance %": totals.budgeted > 0 ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(2) + "%" : "0.00%"
+      "Variance %":
+        totals.budgeted > 0
+          ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(2) + "%"
+          : "0.00%",
     });
 
     const ws = xlsx.utils.json_to_sheet(data);
@@ -122,9 +153,14 @@ export default function BudgetVsActual() {
       <div className="flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-[15px] font-semibold text-[#000000]">Budget vs Actual</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">Compare allocated budgets against real-time ledger expenses</p>
+          <p className="text-[11px] text-[#000000] mt-0.5">
+            Compare allocated budgets against real-time ledger expenses
+          </p>
         </div>
-        <button onClick={exportExcel} className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-1.5 shadow-sm">
+        <button
+          onClick={exportExcel}
+          className="h-8 px-3 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded-md hover:bg-[#EBF5E2] flex items-center gap-1.5 shadow-sm"
+        >
           <Download className="w-4 h-4" /> Export Excel
         </button>
       </div>
@@ -132,22 +168,42 @@ export default function BudgetVsActual() {
       <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] flex-1 flex flex-col overflow-hidden">
         <div className="p-4 border-b border-[#9DC07A] bg-[#EBF5E2] shrink-0 flex gap-4 items-end">
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">Cost Center Filter</label>
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">
+              Cost Center Filter
+            </label>
             <div className="relative">
               <Filter className="w-3.5 h-3.5 text-[#000000] absolute left-2.5 top-2.5" />
-              <select value={selectedCostCenterId} onChange={e => setSelectedCostCenterId(e.target.value)} className="w-full h-8 pl-8 pr-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]">
+              <select
+                value={selectedCostCenterId}
+                onChange={(e) => setSelectedCostCenterId(e.target.value)}
+                className="w-full h-8 pl-8 pr-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]"
+              >
                 <option value="">-- All Cost Centers --</option>
-                {costCenters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {costCenters.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-[#000000] mb-1">Month Filter</label>
-            <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]">
+            <label className="block text-[11px] font-medium text-[#000000] mb-1">
+              Month Filter
+            </label>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]"
+            >
               <option value="">-- All Months (Annual) --</option>
               {BS_MONTHS.map((m, idx) => {
                 const mm = String(idx + 1).padStart(2, "0");
-                return <option key={mm} value={mm}>{m}</option>;
+                return (
+                  <option key={mm} value={mm}>
+                    {m}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -157,11 +213,21 @@ export default function BudgetVsActual() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#f5f6fa] border-b border-[#9DC07A] sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">Account Name</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Budget (Rs.)</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Actual (Rs.)</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Variance (Rs.)</th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">Variance %</th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                  Account Name
+                </th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">
+                  Budget (Rs.)
+                </th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">
+                  Actual (Rs.)
+                </th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">
+                  Variance (Rs.)
+                </th>
+                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">
+                  Variance %
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -170,20 +236,34 @@ export default function BudgetVsActual() {
                   <td colSpan={5} className="px-4 py-12 text-center">
                     <Target className="w-12 h-12 text-[#000000] mx-auto mb-3" />
                     <p className="text-[13px] font-medium text-[#000000]">No Data Available</p>
-                    <p className="text-[11px] text-[#000000] mt-1">Adjust filters or configure budgets to see comparison.</p>
+                    <p className="text-[11px] text-[#000000] mt-1">
+                      Adjust filters or configure budgets to see comparison.
+                    </p>
                   </td>
                 </tr>
               ) : (
                 reportData.map((row, i) => (
                   <tr key={i} className="hover:bg-[#EBF5E2] transition-colors">
-                    <td className="px-4 py-2.5 text-[12px] font-medium text-[#000000]">{row.accountName}</td>
-                    <td className="px-4 py-2.5 text-[12px] font-mono text-right text-[#000000]">{row.budgeted.toLocaleString()}</td>
-                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-[#000000]">{row.actual.toLocaleString()}</td>
-                    <td className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
-                      {row.varianceRs > 0 ? "+" : ""}{row.varianceRs.toLocaleString()}
+                    <td className="px-4 py-2.5 text-[12px] font-medium text-[#000000]">
+                      {row.accountName}
                     </td>
-                    <td className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.variancePct < 0 ? "text-red-600" : "text-green-600"}`}>
-                      {row.variancePct > 0 ? "+" : ""}{row.variancePct.toFixed(1)}%
+                    <td className="px-4 py-2.5 text-[12px] font-mono text-right text-[#000000]">
+                      {row.budgeted.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-[#000000]">
+                      {row.actual.toLocaleString()}
+                    </td>
+                    <td
+                      className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}
+                    >
+                      {row.varianceRs > 0 ? "+" : ""}
+                      {row.varianceRs.toLocaleString()}
+                    </td>
+                    <td
+                      className={`px-4 py-2.5 text-[12px] font-mono text-right font-bold ${row.variancePct < 0 ? "text-red-600" : "text-green-600"}`}
+                    >
+                      {row.variancePct > 0 ? "+" : ""}
+                      {row.variancePct.toFixed(1)}%
                     </td>
                   </tr>
                 ))
@@ -192,14 +272,27 @@ export default function BudgetVsActual() {
             {reportData.length > 0 && (
               <tfoot className="sticky bottom-0 bg-[#D4EABD] border-t-2 border-[#9DC07A]">
                 <tr>
-                  <td className="px-4 py-3 text-[12px] font-bold text-[#000000] uppercase tracking-wide">Grand Total</td>
-                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-[#000000] text-right">{totals.budgeted.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-[#000000] text-right">{totals.actual.toLocaleString()}</td>
-                  <td className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
-                    {totals.varianceRs > 0 ? "+" : ""}{totals.varianceRs.toLocaleString()}
+                  <td className="px-4 py-3 text-[12px] font-bold text-[#000000] uppercase tracking-wide">
+                    Grand Total
                   </td>
-                  <td className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}>
-                    {totals.budgeted > 0 ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(1) + "%" : "0.0%"}
+                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-[#000000] text-right">
+                    {totals.budgeted.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3 text-[13px] font-mono font-bold text-[#000000] text-right">
+                    {totals.actual.toLocaleString()}
+                  </td>
+                  <td
+                    className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}
+                  >
+                    {totals.varianceRs > 0 ? "+" : ""}
+                    {totals.varianceRs.toLocaleString()}
+                  </td>
+                  <td
+                    className={`px-4 py-3 text-[13px] font-mono font-bold text-right ${totals.varianceRs < 0 ? "text-red-600" : "text-green-600"}`}
+                  >
+                    {totals.budgeted > 0
+                      ? ((totals.varianceRs / totals.budgeted) * 100).toFixed(1) + "%"
+                      : "0.0%"}
                   </td>
                 </tr>
               </tfoot>
@@ -210,4 +303,3 @@ export default function BudgetVsActual() {
     </div>
   );
 }
-

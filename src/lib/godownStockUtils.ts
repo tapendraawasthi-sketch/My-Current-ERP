@@ -1,7 +1,4 @@
-import type {
-  DBStockMovement,
-  DBWarehouse,
-} from "./db";
+import type { DBStockMovement, DBWarehouse } from "./db";
 
 // Local string-based alias matching the actual usage across this file
 type StockValuationMethod = "fifo" | "lifo" | "weighted-average" | string;
@@ -104,9 +101,7 @@ export function getMovementsAsAt(
  * Weighted average stock calculation per item/godown.
  * This is the recommended default for Nepal ERP valuation.
  */
-export function computeWeightedAveragePosition(
-  movements: DBStockMovement[],
-): StockPosition {
+export function computeWeightedAveragePosition(movements: DBStockMovement[]): StockPosition {
   let qty = 0;
   let value = 0;
   let itemId = "";
@@ -293,12 +288,12 @@ export function computeGodownMatrix(args: {
   const columnTotals = warehouseIds.reduce<Record<string, { qty: number; value: number }>>(
     (acc, warehouseId) => {
       acc[warehouseId] = {
-        qty: round2(positions
-          .filter((p) => p.warehouseId === warehouseId)
-          .reduce((s, p) => s + p.qty, 0)),
-        value: round2(positions
-          .filter((p) => p.warehouseId === warehouseId)
-          .reduce((s, p) => s + p.value, 0)),
+        qty: round2(
+          positions.filter((p) => p.warehouseId === warehouseId).reduce((s, p) => s + p.qty, 0),
+        ),
+        value: round2(
+          positions.filter((p) => p.warehouseId === warehouseId).reduce((s, p) => s + p.value, 0),
+        ),
       };
       return acc;
     },
@@ -320,9 +315,7 @@ export function computeGodownValuationRows(args: {
 }): GodownValuationRow[] {
   const method = args.method || "weighted-average";
 
-  const keys = Array.from(
-    new Set(args.movements.map((m) => `${m.itemId}::${m.warehouseId}`)),
-  );
+  const keys = Array.from(new Set(args.movements.map((m) => `${m.itemId}::${m.warehouseId}`)));
 
   return keys.map((key) => {
     const [itemId, warehouseId] = key.split("::");

@@ -111,33 +111,19 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
             </span>
           )}
 
-          {type && (
-            <Badge variant={getTypeVariant(type)}>
-              {formatTypeLabel(type)}
-            </Badge>
-          )}
+          {type && <Badge variant={getTypeVariant(type)}>{formatTypeLabel(type)}</Badge>}
 
-          {status && (
-            <Badge variant={getStatusVariant(status)}>
-              {formatStatusLabel(status)}
-            </Badge>
-          )}
+          {status && <Badge variant={getStatusVariant(status)}>{formatStatusLabel(status)}</Badge>}
         </div>
 
-        {readOnly && (
-          <Badge variant="default">
-            Read Only
-          </Badge>
-        )}
+        {readOnly && <Badge variant="default">Read Only</Badge>}
       </div>
 
       {/* Date fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* AD Date */}
         <div>
-          <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-            Date (AD)
-          </label>
+          <label className="text-[11px] font-medium text-gray-600 mb-1 block">Date (AD)</label>
           <input
             type="date"
             value={date}
@@ -153,9 +139,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
         {/* BS Date */}
         {showDateNepali && (
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-              Date (BS)
-            </label>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">Date (BS)</label>
             {/* Wrap NepaliDatePicker in a div — className prop is NOT supported on NepaliDatePicker directly */}
             <div className="w-full">
               <NepaliDatePicker
@@ -196,9 +180,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
       {/* Narration */}
       {showNarration && (
         <div className="mt-3">
-          <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-            Narration
-          </label>
+          <label className="text-[11px] font-medium text-gray-600 mb-1 block">Narration</label>
           <textarea
             value={narration ?? ""}
             onChange={(e) => {

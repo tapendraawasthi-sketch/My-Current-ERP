@@ -1,20 +1,57 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Input, Select, NepaliDatePicker, Badge, ActionToolbar, AmountInput } from "../components/ui";
-import { Plus, X, Save, Printer, Copy, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Trash2, FileText, RefreshCw } from "lucide-react";
+import {
+  Card,
+  Button,
+  Input,
+  Select,
+  NepaliDatePicker,
+  Badge,
+  ActionToolbar,
+  AmountInput,
+} from "../components/ui";
+import {
+  Plus,
+  X,
+  Save,
+  Printer,
+  Copy,
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  CheckCircle,
+  Trash2,
+  FileText,
+  RefreshCw,
+} from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import { calculateVoucherTotals, validateVoucherDate, formatVoucherDisplayDate } from "../lib/voucherUtils";
+import {
+  calculateVoucherTotals,
+  validateVoucherDate,
+  formatVoucherDisplayDate,
+} from "../lib/voucherUtils";
 import toast from "react-hot-toast";
 
 const CreditNoteVoucher: React.FC = () => {
-  const { accounts, items, parties, vouchers, invoices, companySettings, currentFiscalYear, addVoucher } = useStore();
-  
-  const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
-  const [effectiveDate, setEffectiveDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
+  const {
+    accounts,
+    items,
+    parties,
+    vouchers,
+    invoices,
+    companySettings,
+    currentFiscalYear,
+    addVoucher,
+  } = useStore();
+
+  const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [effectiveDate, setEffectiveDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
   const [voucherNumber, setVoucherNumber] = useState<string>("Loading...");
   const [referenceNo, setReferenceNo] = useState<string>("");
   const [partyId, setPartyId] = useState<string>("");
@@ -31,7 +68,11 @@ const CreditNoteVoucher: React.FC = () => {
   useEffect(() => {
     const generateNumber = async () => {
       try {
-        const number = await generateSerialNumber(VoucherType.CREDIT_NOTE, undefined, currentFiscalYear?.fiscalYearBS);
+        const number = await generateSerialNumber(
+          VoucherType.CREDIT_NOTE,
+          undefined,
+          currentFiscalYear?.fiscalYearBS,
+        );
         setVoucherNumber(number);
       } catch (error) {
         setVoucherNumber("CN-" + Date.now());
@@ -42,34 +83,33 @@ const CreditNoteVoucher: React.FC = () => {
 
   const partyOptions = useMemo(() => {
     return parties
-      .filter(party => party.type === "customer" || party.type === "both")
-      .map(party => ({ value: party.id, label: party.name }));
+      .filter((party) => party.type === "customer" || party.type === "both")
+      .map((party) => ({ value: party.id, label: party.name }));
   }, [parties]);
 
   const originalInvoiceOptions = useMemo(() => {
     return invoices
-      .filter(inv => 
-        inv.type === VoucherType.SALES_INVOICE && 
-        (inv.partyId === partyId || !partyId)
+      .filter(
+        (inv) => inv.type === VoucherType.SALES_INVOICE && (inv.partyId === partyId || !partyId),
       )
-      .map(inv => ({ 
-        value: inv.id, 
-        label: `${inv.invoiceNo || inv.voucherNo} — Rs.${formatNumber(inv.grandTotal || 0)}` 
+      .map((inv) => ({
+        value: inv.id,
+        label: `${inv.invoiceNo || inv.voucherNo} — Rs.${formatNumber(inv.grandTotal || 0)}`,
       }));
   }, [invoices, partyId]);
 
   const itemOptions = useMemo(() => {
     return items
-      .filter(item => item.isActive)
-      .map(item => ({ value: item.id, label: `${item.code} - ${item.name}` }));
+      .filter((item) => item.isActive)
+      .map((item) => ({ value: item.id, label: `${item.code} - ${item.name}` }));
   }, [items]);
 
   const totals = useMemo(() => {
-    const mappedLines = lines.map(line => ({
+    const mappedLines = lines.map((line) => ({
       debit: 0,
       credit: line.totalAmount || 0,
       amount: line.totalAmount || 0,
-      taxAmount: line.taxAmount || 0
+      taxAmount: line.taxAmount || 0,
     }));
     return calculateVoucherTotals(mappedLines);
   }, [lines]);
@@ -93,31 +133,32 @@ const CreditNoteVoucher: React.FC = () => {
   // When original invoice changes, populate lines
   useEffect(() => {
     if (originalInvoiceId) {
-      const originalInvoice = invoices.find(inv => inv.id === originalInvoiceId);
+      const originalInvoice = invoices.find((inv) => inv.id === originalInvoiceId);
       if (originalInvoice) {
         setOriginalInvoiceNo(originalInvoice.voucherNo || originalInvoice.invoiceNo || "");
         setPartyId(originalInvoice.partyId);
         setPartyName(originalInvoice.partyName || "");
-        
+
         // Populate lines from original invoice
-        const newLines = originalInvoice.lines?.map((line: any) => ({
-          key: Math.random().toString(36).substring(7),
-          itemId: line.itemId,
-          itemName: line.itemName,
-          quantity: line.quantity, // Start with full quantity, user can reduce
-          unit: line.unit,
-          rate: line.rate,
-          discount: line.discount || 0,
-          discountAmount: line.discountAmount || 0,
-          taxRate: line.taxRate || 0,
-          taxAmount: line.taxAmount || 0,
-          amount: line.amount || 0,
-          totalAmount: line.totalAmount || 0,
-          godownId: line.godownId || "",
-          narration: line.narration || "",
-          originalQuantity: line.quantity // Store original for comparison
-        })) || [];
-        
+        const newLines =
+          originalInvoice.lines?.map((line: any) => ({
+            key: Math.random().toString(36).substring(7),
+            itemId: line.itemId,
+            itemName: line.itemName,
+            quantity: line.quantity, // Start with full quantity, user can reduce
+            unit: line.unit,
+            rate: line.rate,
+            discount: line.discount || 0,
+            discountAmount: line.discountAmount || 0,
+            taxRate: line.taxRate || 0,
+            taxAmount: line.taxAmount || 0,
+            amount: line.amount || 0,
+            totalAmount: line.totalAmount || 0,
+            godownId: line.godownId || "",
+            narration: line.narration || "",
+            originalQuantity: line.quantity, // Store original for comparison
+          })) || [];
+
         setLines(newLines);
       }
     } else {
@@ -141,59 +182,70 @@ const CreditNoteVoucher: React.FC = () => {
       totalAmount: 0,
       godownId: "",
       narration: "",
-      originalQuantity: 0
+      originalQuantity: 0,
     };
   }
 
-  const updateLine = useCallback((index: number, field: string, value: any) => {
-    setLines(prev => {
-      const newLines = [...prev];
-      const line = { ...newLines[index] };
-      
-      if (field === "itemId") {
-        const item = items.find(i => i.id === value);
-        if (item) {
-          line.itemId = value;
-          line.itemName = item.name;
-          line.unit = item.unit || "";
-          line.rate = item.salesRate || 0;
-          line.taxRate = item.vatRate || 0;
+  const updateLine = useCallback(
+    (index: number, field: string, value: any) => {
+      setLines((prev) => {
+        const newLines = [...prev];
+        const line = { ...newLines[index] };
+
+        if (field === "itemId") {
+          const item = items.find((i) => i.id === value);
+          if (item) {
+            line.itemId = value;
+            line.itemName = item.name;
+            line.unit = item.unit || "";
+            line.rate = item.salesRate || 0;
+            line.taxRate = item.vatRate || 0;
+          }
+        } else {
+          line[field] = value;
         }
-      } else {
-        line[field] = value;
-      }
-      
-      // Recalculate amounts if relevant fields change
-      if (field === "quantity" || field === "rate" || field === "discount" || field === "taxRate") {
-        line.discountAmount = (line.rate * line.quantity * line.discount) / 100;
-        line.amount = (line.rate * line.quantity) - line.discountAmount;
-        line.taxAmount = (line.amount * line.taxRate) / 100;
-        line.totalAmount = line.amount + line.taxAmount;
-      }
-      
-      newLines[index] = line;
-      setDirty(true);
-      return newLines;
-    });
-  }, [items]);
+
+        // Recalculate amounts if relevant fields change
+        if (
+          field === "quantity" ||
+          field === "rate" ||
+          field === "discount" ||
+          field === "taxRate"
+        ) {
+          line.discountAmount = (line.rate * line.quantity * line.discount) / 100;
+          line.amount = line.rate * line.quantity - line.discountAmount;
+          line.taxAmount = (line.amount * line.taxRate) / 100;
+          line.totalAmount = line.amount + line.taxAmount;
+        }
+
+        newLines[index] = line;
+        setDirty(true);
+        return newLines;
+      });
+    },
+    [items],
+  );
 
   const addLine = useCallback(() => {
     if (lines.length >= 50) {
       toast.error("Maximum 50 lines allowed");
       return;
     }
-    setLines(prev => [...prev, emptyLine()]);
+    setLines((prev) => [...prev, emptyLine()]);
     setDirty(true);
   }, [lines.length]);
 
-  const removeLine = useCallback((index: number) => {
-    if (lines.length <= 0) {
-      toast.error("At least one line is required");
-      return;
-    }
-    setLines(prev => prev.filter((_, i) => i !== index));
-    setDirty(true);
-  }, [lines.length]);
+  const removeLine = useCallback(
+    (index: number) => {
+      if (lines.length <= 0) {
+        toast.error("At least one line is required");
+        return;
+      }
+      setLines((prev) => prev.filter((_, i) => i !== index));
+      setDirty(true);
+    },
+    [lines.length],
+  );
 
   const handleSave = async () => {
     const validation = validateVoucherDate(date, currentFiscalYear);
@@ -212,7 +264,7 @@ const CreditNoteVoucher: React.FC = () => {
       return;
     }
 
-    const hasValidLine = lines.some(line => line.itemId && line.quantity > 0);
+    const hasValidLine = lines.some((line) => line.itemId && line.quantity > 0);
     if (!hasValidLine) {
       toast.error("Please add at least one item");
       return;
@@ -248,17 +300,21 @@ const CreditNoteVoucher: React.FC = () => {
         grandTotal: grandTotal,
         paidAmount: 0,
         paymentStatus: "credited",
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await addVoucher(voucher);
       toast.success(`Credit note saved successfully — ${voucherNumber}`);
-      
+
       // Reset form
       resetForm();
-      
+
       // Generate new voucher number
-      const newNumber = await generateSerialNumber(VoucherType.CREDIT_NOTE, undefined, currentFiscalYear?.fiscalYearBS);
+      const newNumber = await generateSerialNumber(
+        VoucherType.CREDIT_NOTE,
+        undefined,
+        currentFiscalYear?.fiscalYearBS,
+      );
       setVoucherNumber(newNumber);
     } catch (error) {
       toast.error(error.message || "Failed to save credit note");
@@ -269,8 +325,8 @@ const CreditNoteVoucher: React.FC = () => {
   };
 
   const resetForm = () => {
-    setDate(new Date().toISOString().split('T')[0]);
-    setEffectiveDate(new Date().toISOString().split('T')[0]);
+    setDate(new Date().toISOString().split("T")[0]);
+    setEffectiveDate(new Date().toISOString().split("T")[0]);
     setReferenceNo("");
     setPartyId("");
     setPartyName("");
@@ -303,14 +359,10 @@ const CreditNoteVoucher: React.FC = () => {
             {isInventoryReturn ? "With Return" : "Without Return"}
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="text-sm font-medium">No: {voucherNumber}</div>
-          <NepaliDatePicker
-            value={date}
-            onChange={setDate}
-            className="w-36"
-          />
+          <NepaliDatePicker value={date} onChange={setDate} className="w-36" />
           <Input
             placeholder="Ref No."
             value={referenceNo}
@@ -318,7 +370,7 @@ const CreditNoteVoucher: React.FC = () => {
             className="w-32"
           />
         </div>
-        
+
         <Button
           variant="primary"
           onClick={handleSave}
@@ -327,9 +379,25 @@ const CreditNoteVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
@@ -354,9 +422,11 @@ const CreditNoteVoucher: React.FC = () => {
               placeholder="Select customer"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Original Invoice *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Original Invoice *
+            </label>
             <Select
               value={originalInvoiceId}
               onChange={setOriginalInvoiceId}
@@ -364,16 +434,18 @@ const CreditNoteVoucher: React.FC = () => {
               placeholder="Select original invoice"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Original Invoice No.</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Original Invoice No.
+            </label>
             <Input
               value={originalInvoiceNo}
               onChange={(e) => setOriginalInvoiceNo(e.target.value)}
               placeholder="Enter invoice no."
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Credit Reason *</label>
             <Select
@@ -385,12 +457,12 @@ const CreditNoteVoucher: React.FC = () => {
                 { value: "rate-difference", label: "Rate Difference" },
                 { value: "damaged-goods", label: "Damaged Goods" },
                 { value: "service-cancellation", label: "Service Cancellation" },
-                { value: "other", label: "Other" }
+                { value: "other", label: "Other" },
               ]}
               placeholder="Select reason"
             />
           </div>
-          
+
           <div className="md:col-span-2">
             <div className="flex items-center">
               <input
@@ -414,25 +486,52 @@ const CreditNoteVoucher: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Return Qty</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Disc%</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tax%</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tax</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Del</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    #
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Item
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Return Qty
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Unit
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rate
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Disc%
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tax%
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tax
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Del
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {lines.map((line, index) => {
                   const isOverReturn = line.quantity > (line.originalQuantity || 0);
                   return (
-                    <tr key={line.key} className={`hover:bg-gray-50 ${isOverReturn ? 'bg-red-50' : ''}`}>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
+                    <tr
+                      key={line.key}
+                      className={`hover:bg-gray-50 ${isOverReturn ? "bg-red-50" : ""}`}
+                    >
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {index + 1}
+                      </td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         <Select
                           value={line.itemId}
@@ -456,7 +555,9 @@ const CreditNoteVoucher: React.FC = () => {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{line.unit}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {line.unit}
+                      </td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         <AmountInput
                           value={line.rate}
@@ -503,7 +604,7 @@ const CreditNoteVoucher: React.FC = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className="p-4">
             <Button
               variant="outline"
@@ -569,7 +670,7 @@ const CreditNoteVoucher: React.FC = () => {
         >
           Discard
         </Button>
-        
+
         <Button
           variant="primary"
           onClick={handleSave}
@@ -578,9 +679,25 @@ const CreditNoteVoucher: React.FC = () => {
         >
           {saving ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>

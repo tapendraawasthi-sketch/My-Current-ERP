@@ -120,7 +120,10 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     [accounts],
   );
   const tdsReceivableId = useMemo(
-    () => accounts.find(a => a.name?.toLowerCase().includes("tds") && a.type === AccountType.LIABILITY)?.id || "acc-tds-payable",
+    () =>
+      accounts.find(
+        (a) => a.name?.toLowerCase().includes("tds") && a.type === AccountType.LIABILITY,
+      )?.id || "acc-tds-payable",
     [accounts],
   );
 
@@ -245,7 +248,12 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       return;
     }
     let isActive = true;
-    generateSerialNumber(VoucherType.RECEIPT, undefined, currentFiscalYear?.fiscalYearBS || "", true)
+    generateSerialNumber(
+      VoucherType.RECEIPT,
+      undefined,
+      currentFiscalYear?.fiscalYearBS || "",
+      true,
+    )
       .then((num) => {
         if (isActive) setVoucherNoPreview(num);
       })

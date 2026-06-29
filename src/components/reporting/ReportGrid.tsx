@@ -14,12 +14,7 @@ interface ReportGridProps {
   getRowClassName?: (row: any) => string;
 }
 
-const ReportGrid: React.FC<ReportGridProps> = ({
-  columns,
-  data,
-  onRowClick,
-  getRowClassName,
-}) => {
+const ReportGrid: React.FC<ReportGridProps> = ({ columns, data, onRowClick, getRowClassName }) => {
   return (
     <div className="overflow-x-auto w-full border border-gray-200 rounded-md bg-white">
       <table className="w-full text-left whitespace-nowrap">
@@ -32,8 +27,8 @@ const ReportGrid: React.FC<ReportGridProps> = ({
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"
-                    ? "text-center"
-                    : "text-left"
+                      ? "text-center"
+                      : "text-left"
                 }`}
               >
                 {col.label}
@@ -68,11 +63,15 @@ const ReportGrid: React.FC<ReportGridProps> = ({
                         isAmount
                           ? "text-right font-mono"
                           : col.align === "center"
-                          ? "text-center"
-                          : "text-left"
+                            ? "text-center"
+                            : "text-left"
                       } ${isSummary ? "font-bold text-gray-800" : ""}`}
                     >
-                      {col.render ? col.render(row[col.key], row) : (row[col.key] !== undefined && row[col.key] !== "" ? row[col.key] : "—")}
+                      {col.render
+                        ? col.render(row[col.key], row)
+                        : row[col.key] !== undefined && row[col.key] !== ""
+                          ? row[col.key]
+                          : "—"}
                     </td>
                   );
                 })}

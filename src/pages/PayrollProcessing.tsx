@@ -172,8 +172,7 @@ const blankEmployee: Employee = {
 export default function PayrollProcessing() {
   const store = useStore() as any;
   const companyId = store.currentCompany?.id ?? "default";
-  const companyName =
-    store.currentCompany?.name ?? store.companySettings?.name ?? "Company Name";
+  const companyName = store.currentCompany?.name ?? store.companySettings?.name ?? "Company Name";
 
   const [employees, setEmployees] = useState<Employee[]>(() => loadEmployees(companyId));
   const [selectedMonth, setSelectedMonth] = useState(1);
@@ -181,9 +180,9 @@ export default function PayrollProcessing() {
   const [workingDays, setWorkingDays] = useState(26);
   const [payrollResults, setPayrollResults] = useState<PayrollResult[]>([]);
   const [payrollProcessed, setPayrollProcessed] = useState(false);
-  const [activeTab, setActiveTab] = useState<
-    "employees" | "process" | "summary" | "payslips"
-  >("employees");
+  const [activeTab, setActiveTab] = useState<"employees" | "process" | "summary" | "payslips">(
+    "employees",
+  );
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [attendanceOverrides, setAttendanceOverrides] = useState<
@@ -193,15 +192,9 @@ export default function PayrollProcessing() {
   const [otherDeductions, setOtherDeductions] = useState<Record<string, number>>({});
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
 
-  const activeEmployees = useMemo(
-    () => employees.filter((emp) => emp.isActive),
-    [employees],
-  );
+  const activeEmployees = useMemo(() => employees.filter((emp) => emp.isActive), [employees]);
 
-  const payrollSummary = useMemo(
-    () => getPayrollSummary(payrollResults),
-    [payrollResults],
-  );
+  const payrollSummary = useMemo(() => getPayrollSummary(payrollResults), [payrollResults]);
 
   const refreshEmployees = () => {
     setEmployees(loadEmployees(companyId));
@@ -343,15 +336,13 @@ export default function PayrollProcessing() {
 
     const earningsRows = slip.earnings
       .map(
-        (x) =>
-          `<tr><td>${x.label}</td><td style="text-align:right;">${money(x.amount)}</td></tr>`,
+        (x) => `<tr><td>${x.label}</td><td style="text-align:right;">${money(x.amount)}</td></tr>`,
       )
       .join("");
 
     const deductionsRows = slip.deductions
       .map(
-        (x) =>
-          `<tr><td>${x.label}</td><td style="text-align:right;">${money(x.amount)}</td></tr>`,
+        (x) => `<tr><td>${x.label}</td><td style="text-align:right;">${money(x.amount)}</td></tr>`,
       )
       .join("");
 
@@ -617,7 +608,9 @@ export default function PayrollProcessing() {
               ) : (
                 employees.map((emp) => (
                   <tr key={emp.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">{emp.name}</td>
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
+                      {emp.name}
+                    </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{emp.designation}</td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{emp.department}</td>
                     <td className="px-3 py-2.5 font-mono text-right text-[12px] text-gray-700">
@@ -712,7 +705,9 @@ export default function PayrollProcessing() {
                       <input
                         type="number"
                         value={att.presentDays}
-                        onChange={(e) => updateAttendance(emp.id, { presentDays: Number(e.target.value) })}
+                        onChange={(e) =>
+                          updateAttendance(emp.id, { presentDays: Number(e.target.value) })
+                        }
                         className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20"
                       />
                     </td>
@@ -720,7 +715,9 @@ export default function PayrollProcessing() {
                       <input
                         type="number"
                         value={att.workingDays}
-                        onChange={(e) => updateAttendance(emp.id, { workingDays: Number(e.target.value) })}
+                        onChange={(e) =>
+                          updateAttendance(emp.id, { workingDays: Number(e.target.value) })
+                        }
                         className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20"
                       />
                     </td>
@@ -728,7 +725,9 @@ export default function PayrollProcessing() {
                       <input
                         type="number"
                         value={att.overtimeHours}
-                        onChange={(e) => updateAttendance(emp.id, { overtimeHours: Number(e.target.value) })}
+                        onChange={(e) =>
+                          updateAttendance(emp.id, { overtimeHours: Number(e.target.value) })
+                        }
                         className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20"
                       />
                     </td>
@@ -736,7 +735,12 @@ export default function PayrollProcessing() {
                       <input
                         type="number"
                         value={advanceDeductions[emp.id] ?? 0}
-                        onChange={(e) => setAdvanceDeductions({ ...advanceDeductions, [emp.id]: Number(e.target.value) })}
+                        onChange={(e) =>
+                          setAdvanceDeductions({
+                            ...advanceDeductions,
+                            [emp.id]: Number(e.target.value),
+                          })
+                        }
                         className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-28 text-right"
                       />
                     </td>
@@ -744,7 +748,12 @@ export default function PayrollProcessing() {
                       <input
                         type="number"
                         value={otherDeductions[emp.id] ?? 0}
-                        onChange={(e) => setOtherDeductions({ ...otherDeductions, [emp.id]: Number(e.target.value) })}
+                        onChange={(e) =>
+                          setOtherDeductions({
+                            ...otherDeductions,
+                            [emp.id]: Number(e.target.value),
+                          })
+                        }
                         className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-28 text-right"
                       />
                     </td>
@@ -801,11 +810,21 @@ export default function PayrollProcessing() {
                         <ChevronRight className="h-3.5 w-3.5" />
                         {r.employeeName}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(r.grossEarnings)}</td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(r.employeePF)}</td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(r.employeeSSF)}</td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(r.incomeTax)}</td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(r.totalDeductions)}</td>
+                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                        {money(r.grossEarnings)}
+                      </td>
+                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                        {money(r.employeePF)}
+                      </td>
+                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                        {money(r.employeeSSF)}
+                      </td>
+                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                        {money(r.incomeTax)}
+                      </td>
+                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                        {money(r.totalDeductions)}
+                      </td>
                       <td className="px-3 py-2.5 font-mono text-right text-[12px] font-semibold text-[#1557b0]">
                         {money(r.netSalary)}
                       </td>
@@ -872,12 +891,24 @@ export default function PayrollProcessing() {
 
                 <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
                   <td className="px-3 py-2.5 text-[12px]">Total</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalGrossEarnings)}</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalEmployeePF)}</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalEmployeeSSF)}</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalIncomeTax)}</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalDeductions)}</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">{money(payrollSummary.totalNetSalary)}</td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalGrossEarnings)}
+                  </td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalEmployeePF)}
+                  </td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalEmployeeSSF)}
+                  </td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalIncomeTax)}
+                  </td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalDeductions)}
+                  </td>
+                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                    {money(payrollSummary.totalNetSalary)}
+                  </td>
                   <td />
                 </tr>
               </tbody>
@@ -896,7 +927,10 @@ export default function PayrollProcessing() {
               ["Total Allowances", totalAllowancesAmount],
               ["Total OT", totalOT],
             ].map(([label, value]) => (
-              <div key={String(label)} className="flex justify-between py-2 text-[12px] border-b border-gray-100">
+              <div
+                key={String(label)}
+                className="flex justify-between py-2 text-[12px] border-b border-gray-100"
+              >
                 <span className="text-gray-700">{label}</span>
                 <span className="font-mono text-gray-800">{money(Number(value))}</span>
               </div>
@@ -916,7 +950,10 @@ export default function PayrollProcessing() {
               ["Total Net Salary", payrollSummary.totalNetSalary],
               ["Total Employer Cost", payrollSummary.totalEmployerCost],
             ].map(([label, value]) => (
-              <div key={String(label)} className="flex justify-between py-2 text-[12px] border-b border-gray-100">
+              <div
+                key={String(label)}
+                className="flex justify-between py-2 text-[12px] border-b border-gray-100"
+              >
                 <span className="text-gray-700">{label}</span>
                 <span className="font-mono text-gray-800">{money(Number(value))}</span>
               </div>
@@ -939,7 +976,9 @@ export default function PayrollProcessing() {
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-3xl shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="px-4 py-3 border-b border-gray-200">
               <h2 className="text-[14px] font-semibold text-gray-800">
-                {employees.some((e) => e.id === editingEmployee.id) ? "Edit Employee" : "Add Employee"}
+                {employees.some((e) => e.id === editingEmployee.id)
+                  ? "Edit Employee"
+                  : "Add Employee"}
               </h2>
             </div>
 

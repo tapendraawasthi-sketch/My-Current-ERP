@@ -14,11 +14,7 @@ export interface PayrollLine {
   netSalary: number;
 }
 
-export function computePayroll(
-  employees: any[],
-  month: number,
-  year: number
-): PayrollLine[] {
+export function computePayroll(employees: any[], month: number, year: number): PayrollLine[] {
   return employees.map((emp) => {
     const basic = emp.basicSalary || 0;
     const allowances = (emp.allowances || []).reduce((s: number, a: any) => s + (a.amount || 0), 0);
@@ -30,7 +26,7 @@ export function computePayroll(
 
     // SSF: 11% employee, 20% employer on basic
     const ssfEmployee = Math.round(basic * 0.11 * 100) / 100;
-    const ssfEmployer = Math.round(basic * 0.20 * 100) / 100;
+    const ssfEmployer = Math.round(basic * 0.2 * 100) / 100;
     const ssf = ssfEmployee + ssfEmployer;
 
     // TDS: Nepal simplified slabs
@@ -38,9 +34,9 @@ export function computePayroll(
     const annualGross = gross * 12;
     let annualTax = 0;
     if (annualGross > 800000) {
-      annualTax = 600000 * 0.01 + 200000 * 0.10 + (annualGross - 800000) * 0.15;
+      annualTax = 600000 * 0.01 + 200000 * 0.1 + (annualGross - 800000) * 0.15;
     } else if (annualGross > 600000) {
-      annualTax = 600000 * 0.01 + (annualGross - 600000) * 0.10;
+      annualTax = 600000 * 0.01 + (annualGross - 600000) * 0.1;
     } else {
       annualTax = annualGross * 0.01;
     }
@@ -91,7 +87,7 @@ export function computeNepalPayroll(
   bsYear: number,
   bsMonth: number, // 1–12
   paidDays: number,
-  workingDays: number
+  workingDays: number,
 ): NepalPayrollResult {
   const safePaidDays = Math.max(0, Number(paidDays) || 0);
   const safeWorkingDays = Math.max(1, Number(workingDays) || 1);
@@ -102,25 +98,27 @@ export function computeNepalPayroll(
   const effectiveBasic = basicSalary + gradePay;
 
   const empAllowances = emp.allowances || {};
-  const houseRent  = Math.round((empAllowances.houseRent  || 0) * ratio * 100) / 100;
-  const transport  = Math.round((empAllowances.transport  || 0) * ratio * 100) / 100;
-  const medical    = Math.round((empAllowances.medical    || 0) * ratio * 100) / 100;
+  const houseRent = Math.round((empAllowances.houseRent || 0) * ratio * 100) / 100;
+  const transport = Math.round((empAllowances.transport || 0) * ratio * 100) / 100;
+  const medical = Math.round((empAllowances.medical || 0) * ratio * 100) / 100;
   // Dashain bonus (Asoj = month 6 in BS calendar) — one month basic, not pro-rated
-  const dashain    = bsMonth === 6 ? (emp.basicSalary || 0) : 0;
+  const dashain = bsMonth === 6 ? emp.basicSalary || 0 : 0;
 
-  const grossSalary = Math.round((effectiveBasic + houseRent + transport + medical + dashain) * 100) / 100;
+  const grossSalary =
+    Math.round((effectiveBasic + houseRent + transport + medical + dashain) * 100) / 100;
 
   // SSF (Social Security Fund) — applicable if emp.ssf === true
   const ssfEmployee = emp.ssf ? Math.round(effectiveBasic * 0.11 * 100) / 100 : 0;
-  const ssfEmployer = emp.ssf ? Math.round(effectiveBasic * 0.20 * 100) / 100 : 0;
+  const ssfEmployer = emp.ssf ? Math.round(effectiveBasic * 0.2 * 100) / 100 : 0;
 
   // Taxable income = gross – SSF employee contribution – approved declarations (annual)
   const taxDecl = emp.taxDeclarations || {};
-  const annualDeclarations = ((taxDecl.lifeInsurance || 0) + (taxDecl.healthInsurance || 0));
+  const annualDeclarations = (taxDecl.lifeInsurance || 0) + (taxDecl.healthInsurance || 0);
   // Compute annual gross from regular salary (without dashain) + add dashain once
-  const regularMonthlyGross = Math.round((effectiveBasic + houseRent + transport + medical) * 100) / 100;
+  const regularMonthlyGross =
+    Math.round((effectiveBasic + houseRent + transport + medical) * 100) / 100;
   const annualGross = regularMonthlyGross * 12 + dashain;
-  const annualSSF   = ssfEmployee * 12;
+  const annualSSF = ssfEmployee * 12;
   const annualTaxable = Math.max(0, annualGross - annualSSF - annualDeclarations);
 
   // Nepal income tax slabs (Individual, FY 2080/81):
@@ -131,13 +129,18 @@ export function computeNepalPayroll(
   // Above 2,000,000  → 36%
   let annualTax = 0;
   if (annualTaxable > 2_000_000) {
-    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + 300_000 * 0.20 + 900_000 * 0.30 + (annualTaxable - 2_000_000) * 0.36;
+    annualTax =
+      600_000 * 0.01 +
+      200_000 * 0.1 +
+      300_000 * 0.2 +
+      900_000 * 0.3 +
+      (annualTaxable - 2_000_000) * 0.36;
   } else if (annualTaxable > 1_100_000) {
-    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + 300_000 * 0.20 + (annualTaxable - 1_100_000) * 0.30;
+    annualTax = 600_000 * 0.01 + 200_000 * 0.1 + 300_000 * 0.2 + (annualTaxable - 1_100_000) * 0.3;
   } else if (annualTaxable > 800_000) {
-    annualTax = 600_000 * 0.01 + 200_000 * 0.10 + (annualTaxable - 800_000) * 0.20;
+    annualTax = 600_000 * 0.01 + 200_000 * 0.1 + (annualTaxable - 800_000) * 0.2;
   } else if (annualTaxable > 600_000) {
-    annualTax = 600_000 * 0.01 + (annualTaxable - 600_000) * 0.10;
+    annualTax = 600_000 * 0.01 + (annualTaxable - 600_000) * 0.1;
   } else {
     annualTax = annualTaxable * 0.01;
   }

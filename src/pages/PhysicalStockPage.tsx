@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useStore } from '../store';
-import { PhysicalStockEntry, StockJournalItem } from '../lib/types';
-import SearchableTable from '../components/ui/SearchableTable';
+import React, { useState } from "react";
+import { useStore } from "../store";
+import { PhysicalStockEntry, StockJournalItem } from "../lib/types";
+import SearchableTable from "../components/ui/SearchableTable";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
-  itemId: '',
-  itemName: '',
+  itemId: "",
+  itemName: "",
   qty: 0,
   rate: 0,
   amount: 0,
@@ -18,10 +18,10 @@ export default function PhysicalStockPage() {
   const [entry, setEntry] = useState<PhysicalStockEntry>({
     id: crypto.randomUUID(),
     date: new Date().toISOString().slice(0, 10),
-    narration: '',
-    refNo: '',
+    narration: "",
+    refNo: "",
     items: [emptyItem()],
-    status: 'DRAFT',
+    status: "DRAFT",
     createdAt: new Date().toISOString(),
   });
 
@@ -36,15 +36,15 @@ export default function PhysicalStockPage() {
   };
 
   const handleSave = () => {
-    addPhysicalStock({ ...entry, status: 'POSTED' });
+    addPhysicalStock({ ...entry, status: "POSTED" });
     setShowForm(false);
     setEntry({
       id: crypto.randomUUID(),
       date: new Date().toISOString().slice(0, 10),
-      narration: '',
-      refNo: '',
+      narration: "",
+      refNo: "",
       items: [emptyItem()],
-      status: 'DRAFT',
+      status: "DRAFT",
       createdAt: new Date().toISOString(),
     });
   };
@@ -54,26 +54,33 @@ export default function PhysicalStockPage() {
       <div className="page-header">
         <div>
           <h2 className="text-[15px] font-semibold text-gray-800">Physical Stock</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">Total Entries: {physicalStocks?.length || 0}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Total Entries: {physicalStocks?.length || 0}
+          </p>
         </div>
-        <button className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md" onClick={() => setShowForm(true)}>New Entry</button>
+        <button
+          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+          onClick={() => setShowForm(true)}
+        >
+          New Entry
+        </button>
       </div>
 
       {!showForm && (
         <div className="table-card">
           <SearchableTable
             data={physicalStocks || []}
-            searchFields={['date', 'refNo', 'status']}
+            searchFields={["date", "refNo", "status"]}
             rowKey="id"
             columns={[
-              { key: 'date', header: 'Date' },
-              { key: 'refNo', header: 'Ref No' },
-              { 
-                key: 'status', 
-                header: 'Status',
+              { key: "date", header: "Date" },
+              { key: "refNo", header: "Ref No" },
+              {
+                key: "status",
+                header: "Status",
                 render: (val: string) => (
-                  <span className={`badge ${val ? val.toLowerCase() : ''}`}>{val}</span>
-                )
+                  <span className={`badge ${val ? val.toLowerCase() : ""}`}>{val}</span>
+                ),
               },
             ]}
           />
@@ -86,32 +93,85 @@ export default function PhysicalStockPage() {
           <div className="form-grid">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" type="date" value={entry.date} onChange={(e) => setEntry({ ...entry, date: e.target.value })} />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                type="date"
+                value={entry.date}
+                onChange={(e) => setEntry({ ...entry, date: e.target.value })}
+              />
             </div>
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Ref No</label>
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" placeholder="Ref No" value={entry.refNo} onChange={(e) => setEntry({ ...entry, refNo: e.target.value })} />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                placeholder="Ref No"
+                value={entry.refNo}
+                onChange={(e) => setEntry({ ...entry, refNo: e.target.value })}
+              />
             </div>
             <div className="col-span-2">
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" placeholder="Narration" value={entry.narration} onChange={(e) => setEntry({ ...entry, narration: e.target.value })} />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                placeholder="Narration"
+                value={entry.narration}
+                onChange={(e) => setEntry({ ...entry, narration: e.target.value })}
+              />
             </div>
           </div>
 
           <h4 className="section-title mt-4">Items</h4>
           {entry.items.map((row, i) => (
             <div key={row.id} className="form-row">
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" placeholder="Item" value={row.itemName} onChange={(e) => updateItem(i, 'itemName', e.target.value)} />
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" type="number" placeholder="Qty" value={row.qty || ''} onChange={(e) => updateItem(i, 'qty', Number(e.target.value))} />
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]" type="number" placeholder="Rate" value={row.rate || ''} onChange={(e) => updateItem(i, 'rate', Number(e.target.value))} />
-              <input className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[#f5f6fa] cursor-not-allowed" type="number" placeholder="Amount" readOnly value={row.amount || ''} />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                placeholder="Item"
+                value={row.itemName}
+                onChange={(e) => updateItem(i, "itemName", e.target.value)}
+              />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                type="number"
+                placeholder="Qty"
+                value={row.qty || ""}
+                onChange={(e) => updateItem(i, "qty", Number(e.target.value))}
+              />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                type="number"
+                placeholder="Rate"
+                value={row.rate || ""}
+                onChange={(e) => updateItem(i, "rate", Number(e.target.value))}
+              />
+              <input
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[#f5f6fa] cursor-not-allowed"
+                type="number"
+                placeholder="Amount"
+                readOnly
+                value={row.amount || ""}
+              />
             </div>
           ))}
-          <button className="mt-2 h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50" onClick={addRow}>+ Add Row</button>
+          <button
+            className="mt-2 h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            onClick={addRow}
+          >
+            + Add Row
+          </button>
 
           <div className="actions pt-4 border-t border-gray-100 mt-4">
-            <button className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md" onClick={handleSave}>Save Entry</button>
-            <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50" onClick={() => setShowForm(false)}>Cancel</button>
+            <button
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              onClick={handleSave}
+            >
+              Save Entry
+            </button>
+            <button
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}

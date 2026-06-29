@@ -30,10 +30,7 @@ function Table<T = any>({
         <thead>
           <tr>
             {columns.map((col) => (
-              <th
-                key={col.key}
-                style={{ width: col.width, textAlign: col.align || "left" }}
-              >
+              <th key={col.key} style={{ width: col.width, textAlign: col.align || "left" }}>
                 {col.header}
               </th>
             ))}
@@ -58,9 +55,7 @@ function Table<T = any>({
               >
                 {columns.map((col) => (
                   <td key={col.key} style={{ textAlign: col.align || "left" }}>
-                    {col.render
-                      ? col.render(row[col.key], row)
-                      : row[col.key] ?? "—"}
+                    {col.render ? col.render(row[col.key], row) : (row[col.key] ?? "—")}
                   </td>
                 ))}
               </tr>

@@ -70,7 +70,9 @@ export default function HelpMenu() {
       {activeModal === "docs" && <HelpDocsModal onClose={() => setActiveModal(null)} />}
       {activeModal === "updates" && <UpdatesModal onClose={() => setActiveModal(null)} />}
       {activeModal === "troubleshoot" && <TroubleshootModal onClose={() => setActiveModal(null)} />}
-      {activeModal === "settings" && <ApplicationSettingsModal onClose={() => setActiveModal(null)} />}
+      {activeModal === "settings" && (
+        <ApplicationSettingsModal onClose={() => setActiveModal(null)} />
+      )}
       {activeModal === "addons" && <AddonsModal onClose={() => setActiveModal(null)} />}
       {activeModal === "support" && <ContactSupportModal onClose={() => setActiveModal(null)} />}
       {activeModal === "about" && <AboutModal onClose={() => setActiveModal(null)} />}
@@ -105,13 +107,7 @@ function HelpDocsModal({ onClose }: { onClose: () => void }) {
     },
     {
       title: "Reports",
-      cards: [
-        "Trial Balance",
-        "Profit & Loss",
-        "Balance Sheet",
-        "Ledger Report",
-        "Stock Summary",
-      ],
+      cards: ["Trial Balance", "Profit & Loss", "Balance Sheet", "Ledger Report", "Stock Summary"],
     },
     {
       title: "VAT Returns (Nepal IRD)",
@@ -159,7 +155,12 @@ function HelpDocsModal({ onClose }: { onClose: () => void }) {
   return (
     <ModalShell title="Help Docs" onClose={onClose} width="max-w-4xl">
       <div className="mb-3">
-        <Field label="Search Help" value={search} onChange={setSearch} placeholder="Search help topics..." />
+        <Field
+          label="Search Help"
+          value={search}
+          onChange={setSearch}
+          placeholder="Search help topics..."
+        />
       </div>
 
       <div className="grid gap-3">
@@ -170,7 +171,10 @@ function HelpDocsModal({ onClose }: { onClose: () => void }) {
             </div>
             <div className="grid gap-2 p-3 md:grid-cols-2">
               {section.cards.map((card) => (
-                <div key={card} className="rounded border border-gray-100 bg-white p-2 text-[12px] text-gray-700">
+                <div
+                  key={card}
+                  className="rounded border border-gray-100 bg-white p-2 text-[12px] text-gray-700"
+                >
                   {card}
                 </div>
               ))}
@@ -207,14 +211,22 @@ function UpdatesModal({ onClose }: { onClose: () => void }) {
     <ModalShell
       title="Check for Updates"
       onClose={onClose}
-      footer={<PrimaryButton onClick={check} disabled={checking}>{checking ? "Checking..." : "Check Now"}</PrimaryButton>}
+      footer={
+        <PrimaryButton onClick={check} disabled={checking}>
+          {checking ? "Checking..." : "Check Now"}
+        </PrimaryButton>
+      }
     >
       <div className="rounded-md border border-gray-200 bg-[#f5f6fa] p-4 text-[12px] text-gray-700">
         Sutra ERP periodically checks for application updates, compliance updates, and Nepal IRD
         rule changes.
       </div>
 
-      {result && <div className="mt-3 rounded-md border border-green-200 bg-green-50 p-3 text-[12px] text-green-700">{result}</div>}
+      {result && (
+        <div className="mt-3 rounded-md border border-green-200 bg-green-50 p-3 text-[12px] text-green-700">
+          {result}
+        </div>
+      )}
     </ModalShell>
   );
 }
@@ -373,7 +385,15 @@ function TroubleshootModal({ onClose }: { onClose: () => void }) {
 function ApplicationSettingsModal({ onClose }: { onClose: () => void }) {
   const saved = readAppSettings();
 
-  const tabs = ["General", "Display", "Date & Number", "Email", "Print", "Security", "Notifications"];
+  const tabs = [
+    "General",
+    "Display",
+    "Date & Number",
+    "Email",
+    "Print",
+    "Security",
+    "Notifications",
+  ];
   const [activeTab, setActiveTab] = useState("General");
 
   const [language, setLanguage] = useState(saved.language);
@@ -435,8 +455,18 @@ function ApplicationSettingsModal({ onClose }: { onClose: () => void }) {
 
       {activeTab === "General" && (
         <div className="grid gap-3 md:grid-cols-2">
-          <SelectField label="App Language" value={language} onChange={setLanguage} options={["English", "Nepali"]} />
-          <SelectField label="Auto-save Interval" value={autoSave} onChange={setAutoSave} options={["Off", "1 minute", "5 minutes", "10 minutes"]} />
+          <SelectField
+            label="App Language"
+            value={language}
+            onChange={setLanguage}
+            options={["English", "Nepali"]}
+          />
+          <SelectField
+            label="Auto-save Interval"
+            value={autoSave}
+            onChange={setAutoSave}
+            options={["Off", "1 minute", "5 minutes", "10 minutes"]}
+          />
         </div>
       )}
 
@@ -446,14 +476,33 @@ function ApplicationSettingsModal({ onClose }: { onClose: () => void }) {
 
       {activeTab === "Date & Number" && (
         <div className="grid gap-3 md:grid-cols-2">
-          <SelectField label="Primary Date Format" value={dateFormat} onChange={setDateFormat} options={["BS", "AD"]} />
-          <SelectField label="Number Format" value={numberFormat} onChange={setNumberFormat} options={["1,00,000", "100,000"]} />
-          <SelectField label="Decimal Places" value={decimalPlaces} onChange={setDecimalPlaces} options={["0", "2", "3", "4"]} />
+          <SelectField
+            label="Primary Date Format"
+            value={dateFormat}
+            onChange={setDateFormat}
+            options={["BS", "AD"]}
+          />
+          <SelectField
+            label="Number Format"
+            value={numberFormat}
+            onChange={setNumberFormat}
+            options={["1,00,000", "100,000"]}
+          />
+          <SelectField
+            label="Decimal Places"
+            value={decimalPlaces}
+            onChange={setDecimalPlaces}
+            options={["0", "2", "3", "4"]}
+          />
         </div>
       )}
 
       {activeTab === "Notifications" && (
-        <ToggleRow label="Enable Notifications" checked={notifications} onChange={setNotifications} />
+        <ToggleRow
+          label="Enable Notifications"
+          checked={notifications}
+          onChange={setNotifications}
+        />
       )}
 
       {!["General", "Display", "Date & Number", "Notifications"].includes(activeTab) && (
@@ -477,7 +526,10 @@ function AddonsModal({ onClose }: { onClose: () => void }) {
     <ModalShell title="Add-On / Extensions" onClose={onClose}>
       <div className="grid gap-2">
         {addons.map((addon) => (
-          <div key={addon} className="flex items-center justify-between rounded border border-gray-200 p-3">
+          <div
+            key={addon}
+            className="flex items-center justify-between rounded border border-gray-200 p-3"
+          >
             <span className="text-[12px] font-medium text-gray-800">{addon}</span>
             <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-gray-600">
               Coming Soon
@@ -546,7 +598,12 @@ function ContactSupportModal({ onClose }: { onClose: () => void }) {
     >
       <div className="grid gap-3 md:grid-cols-2">
         <Field label="Subject" value={subject} onChange={setSubject} />
-        <SelectField label="Priority" value={priority} onChange={setPriority} options={["Low", "Normal", "High", "Urgent"]} />
+        <SelectField
+          label="Priority"
+          value={priority}
+          onChange={setPriority}
+          options={["Low", "Normal", "High", "Urgent"]}
+        />
       </div>
 
       <label className="mt-3 flex flex-col gap-1">
@@ -630,13 +687,27 @@ function AboutModal({ onClose }: { onClose: () => void }) {
       <div className="rounded-md border border-gray-200 bg-[#f5f6fa] p-4 text-[12px]">
         <div className="mb-2 text-[15px] font-semibold text-gray-800">{appInfo.appName}</div>
         <div className="grid gap-1">
-          <div><strong>Version:</strong> {appInfo.version}</div>
-          <div><strong>Build Number:</strong> {appInfo.build}</div>
-          <div><strong>License Status:</strong> {appInfo.license}</div>
-          <div><strong>Registered User:</strong> {appInfo.registeredUser}</div>
-          <div><strong>Company:</strong> {appInfo.company}</div>
-          <div><strong>Database Version:</strong> {appInfo.databaseVersion}</div>
-          <div><strong>Node Environment:</strong> {appInfo.environment}</div>
+          <div>
+            <strong>Version:</strong> {appInfo.version}
+          </div>
+          <div>
+            <strong>Build Number:</strong> {appInfo.build}
+          </div>
+          <div>
+            <strong>License Status:</strong> {appInfo.license}
+          </div>
+          <div>
+            <strong>Registered User:</strong> {appInfo.registeredUser}
+          </div>
+          <div>
+            <strong>Company:</strong> {appInfo.company}
+          </div>
+          <div>
+            <strong>Database Version:</strong> {appInfo.databaseVersion}
+          </div>
+          <div>
+            <strong>Node Environment:</strong> {appInfo.environment}
+          </div>
         </div>
 
         <div className="mt-4 border-t border-gray-200 pt-3 text-[11px] text-gray-500">

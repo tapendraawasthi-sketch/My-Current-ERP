@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRightBarButtons, type RightBarButton } from "../hooks/useRightBarButtons";
-import { useF12Config } from '../hooks/useF12Config';
+import { useF12Config } from "../hooks/useF12Config";
 
 const normalizeShortcut = (shortcut: string) =>
   shortcut.replace(/\s+/g, "").replace("Control+", "Ctrl+").replace("Escape", "Esc");
 
 const formatShortcutLabel = (shortcut: string): string => {
   return shortcut
-    .replace('Control+', 'C+')
-    .replace('Ctrl+', 'C+')
-    .replace('Alt+', 'A+')
-    .replace('Shift+', 'S+')
-    .replace('Escape', 'Esc');
+    .replace("Control+", "C+")
+    .replace("Ctrl+", "C+")
+    .replace("Alt+", "A+")
+    .replace("Shift+", "S+")
+    .replace("Escape", "Esc");
 };
 
 const isInputElement = (el: Element | null): boolean => {
@@ -47,12 +47,12 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isInputElement(document.activeElement)) return;
 
-      const combo = normalizeShortcut(`${e.ctrlKey ? "Ctrl+" : ""}${
-        e.altKey ? "Alt+" : ""
-      }${e.shiftKey ? "Shift+" : ""}${e.key}`);
+      const combo = normalizeShortcut(
+        `${e.ctrlKey ? "Ctrl+" : ""}${e.altKey ? "Alt+" : ""}${e.shiftKey ? "Shift+" : ""}${e.key}`,
+      );
 
       const button = visibleButtons.find(
-        (b) => b.shortcut && normalizeShortcut(b.shortcut) === combo
+        (b) => b.shortcut && normalizeShortcut(b.shortcut) === combo,
       );
 
       if (button) {
@@ -79,11 +79,11 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
       <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest shadow-sm">
         Quick Actions
       </div>
-      
+
       {visibleButtons.map((button) => {
         const isHovered = hoveredId === button.id;
         const isActive = button.active;
-        
+
         let bgClass = "bg-[#1e2433]";
         if (isActive) bgClass = "bg-[#1557b0]";
         else if (isHovered && button.enabled) bgClass = "bg-[#273148]";
@@ -103,14 +103,12 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
             aria-label={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ""}`}
           >
             <span
-              className={`w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden ${isActive ? 'text-blue-200' : 'text-[#d97706]'}`}
+              className={`w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden ${isActive ? "text-blue-200" : "text-[#d97706]"}`}
               title={button.shortcut}
             >
-              {button.shortcut ? formatShortcutLabel(button.shortcut) : ''}
+              {button.shortcut ? formatShortcutLabel(button.shortcut) : ""}
             </span>
-            <span className="flex-1 text-[11px] truncate pr-1">
-              {button.label}
-            </span>
+            <span className="flex-1 text-[11px] truncate pr-1">{button.label}</span>
           </button>
         );
       })}
@@ -127,7 +125,9 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         title="F12: Open screen configuration settings"
         aria-label="Open screen configuration settings"
       >
-        <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? 'text-blue-200' : 'text-[#d97706]'}`}>
+        <span
+          className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}
+        >
           F12
         </span>
         <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">

@@ -4,7 +4,17 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { Download, Printer, Plus, Save, Trash2, Building, ArrowRightLeft, PieChart, FileText } from "lucide-react";
+import {
+  Download,
+  Printer,
+  Plus,
+  Save,
+  Trash2,
+  Building,
+  ArrowRightLeft,
+  PieChart,
+  FileText,
+} from "lucide-react";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -13,12 +23,16 @@ function money(v: number): string {
 }
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
-const tableHeadClass = "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const tableHeadClass =
+  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
-const primaryBtn = "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
-const outlineBtn = "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
-const inputClass = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+const primaryBtn =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+const outlineBtn =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
+const inputClass =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -40,21 +54,35 @@ function accountForLine(line: any, accounts: any[]) {
 function Modal({ open, title, children, onClose, wide = false }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-h-[90vh] ${wide ? "max-w-5xl" : "max-w-2xl"}`}>
+    <div
+      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-h-[90vh] ${wide ? "max-w-5xl" : "max-w-2xl"}`}
+      >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
           <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl leading-none">&times;</button>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-xl leading-none"
+          >
+            &times;
+          </button>
         </div>
-        <div className="p-5 overflow-y-auto">
-          {children}
-        </div>
+        <div className="p-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
 }
 
-function computeCCPL(vouchers: any[], accounts: any[], ccId: string, fromDate: string, toDate: string) {
+function computeCCPL(
+  vouchers: any[],
+  accounts: any[],
+  ccId: string,
+  fromDate: string,
+  toDate: string,
+) {
   const result: Record<string, any> = {};
 
   (vouchers || [])
@@ -93,7 +121,13 @@ function computeCCPL(vouchers: any[], accounts: any[], ccId: string, fromDate: s
   return { income, expenses, totalIncome, totalExpenses, net: totalIncome - totalExpenses };
 }
 
-function computeAccountCCMatrix(vouchers: any[], accounts: any[], costCenters: any[], fromDate: string, toDate: string) {
+function computeAccountCCMatrix(
+  vouchers: any[],
+  accounts: any[],
+  costCenters: any[],
+  fromDate: string,
+  toDate: string,
+) {
   const rowsMap: Record<string, any> = {};
 
   (accounts || [])
@@ -194,9 +228,18 @@ export default function CostCenterReport() {
 
   useEffect(() => {
     const db = getDB();
-    db.table("costAllocationRules").toArray().catch(() => []).then(setRules);
-    db.table("budgets").toArray().catch(() => []).then(setBudgets);
-    db.table("interDepartmentTransfers").toArray().catch(() => []).then(setTransferHistory);
+    db.table("costAllocationRules")
+      .toArray()
+      .catch(() => [])
+      .then(setRules);
+    db.table("budgets")
+      .toArray()
+      .catch(() => [])
+      .then(setBudgets);
+    db.table("interDepartmentTransfers")
+      .toArray()
+      .catch(() => [])
+      .then(setTransferHistory);
   }, []);
 
   const selectedPL = useMemo(() => {
@@ -275,7 +318,10 @@ export default function CostCenterReport() {
       createdAt: new Date().toISOString(),
     };
 
-    await getDB().table("costAllocationRules").put(row).catch(() => {});
+    await getDB()
+      .table("costAllocationRules")
+      .put(row)
+      .catch(() => {});
     setRules((r) => [...r, row]);
     setRuleModal(false);
     toast.success("Allocation rule saved");
@@ -283,7 +329,10 @@ export default function CostCenterReport() {
 
   async function deleteRule(id: string) {
     if (!confirm("Delete allocation rule?")) return;
-    await getDB().table("costAllocationRules").delete(id).catch(() => {});
+    await getDB()
+      .table("costAllocationRules")
+      .delete(id)
+      .catch(() => {});
     setRules((r) => r.filter((x) => x.id !== id));
     toast.success("Rule deleted");
   }
@@ -323,9 +372,16 @@ export default function CostCenterReport() {
     } else {
       const revenueByCC: any = {};
       visibleCostCenters.forEach((cc) => {
-        revenueByCC[cc.id] = computeCCPL(vouchers, accounts, cc.id, periodStart, periodEnd).totalIncome;
+        revenueByCC[cc.id] = computeCCPL(
+          vouchers,
+          accounts,
+          cc.id,
+          periodStart,
+          periodEnd,
+        ).totalIncome;
       });
-      const totalRev = Object.values(revenueByCC).reduce((s: number, v: any) => s + Number(v || 0), 0) || 1;
+      const totalRev =
+        Object.values(revenueByCC).reduce((s: number, v: any) => s + Number(v || 0), 0) || 1;
       allocations = visibleCostCenters.map((cc) => ({
         costCenterId: cc.id,
         amount: (amount * revenueByCC[cc.id]) / totalRev,
@@ -333,7 +389,14 @@ export default function CostCenterReport() {
       }));
     }
 
-    setAllocationPreview({ rule, account, totalAmount: amount, allocations, periodStart, periodEnd });
+    setAllocationPreview({
+      rule,
+      account,
+      totalAmount: amount,
+      allocations,
+      periodStart,
+      periodEnd,
+    });
   }
 
   async function postAllocationJournal() {
@@ -359,7 +422,11 @@ export default function CostCenterReport() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     toast.success("Allocation journal posted");
     setAllocationPreview(null);
@@ -393,7 +460,8 @@ export default function CostCenterReport() {
     const fromCC = costCenters.find((c) => c.id === transferForm.fromCostCenterId);
 
     const receivers = (transferForm.receivers || []).map((r) => {
-      const amount = r.amount !== "" ? Number(r.amount || 0) : (total * Number(r.percentage || 0)) / 100;
+      const amount =
+        r.amount !== "" ? Number(r.amount || 0) : (total * Number(r.percentage || 0)) / 100;
       return {
         ...r,
         amount,
@@ -444,7 +512,11 @@ export default function CostCenterReport() {
     };
 
     if (addVoucher) await addVoucher(voucher);
-    else await getDB().table("vouchers").put(voucher).catch(() => {});
+    else
+      await getDB()
+        .table("vouchers")
+        .put(voucher)
+        .catch(() => {});
 
     const historyRow = {
       id: generateId(),
@@ -457,10 +529,13 @@ export default function CostCenterReport() {
       narration: voucher.narration,
     };
 
-    await getDB().table("interDepartmentTransfers").put(historyRow).catch(() => {});
+    await getDB()
+      .table("interDepartmentTransfers")
+      .put(historyRow)
+      .catch(() => {});
     setTransferHistory((h) => [...h, historyRow]);
     toast.success("Inter-department transfer posted");
-    
+
     // Reset Form
     setTransferForm({
       fromCostCenterId: "",
@@ -469,7 +544,7 @@ export default function CostCenterReport() {
       totalAmount: "",
       narration: "",
       receivers: [],
-    })
+    });
   }
 
   const budgetRows = useMemo(() => {
@@ -480,9 +555,16 @@ export default function CostCenterReport() {
     const fyEnd = todayISO();
     const fyTotalDays = Math.max(
       1,
-      Math.floor((new Date(currentFiscalYear?.endDate || todayISO()).getTime() - new Date(fyStart).getTime()) / 86400000),
+      Math.floor(
+        (new Date(currentFiscalYear?.endDate || todayISO()).getTime() -
+          new Date(fyStart).getTime()) /
+          86400000,
+      ),
     );
-    const elapsedDays = Math.max(1, Math.floor((new Date(fyEnd).getTime() - new Date(fyStart).getTime()) / 86400000));
+    const elapsedDays = Math.max(
+      1,
+      Math.floor((new Date(fyEnd).getTime() - new Date(fyStart).getTime()) / 86400000),
+    );
     const prorate = elapsedDays / fyTotalDays;
 
     const ccBudget = budgets.filter(
@@ -510,7 +592,8 @@ export default function CostCenterReport() {
       const actualYTD = Number(actualMap[account.id] || actualMap[account.name] || 0);
       const variance = budgetYTD - actualYTD;
       const pctVariance = budgetYTD ? (variance / budgetYTD) * 100 : 0;
-      const status = Math.abs(pctVariance) <= 10 ? "On Track" : variance < 0 ? "Over Budget" : "Under Budget";
+      const status =
+        Math.abs(pctVariance) <= 10 ? "On Track" : variance < 0 ? "Over Budget" : "Under Budget";
       return { account, annualBudget, budgetYTD, actualYTD, variance, pctVariance, status };
     });
   }, [budgetCC, budgets, visibleCostCenters, currentFiscalYear, vouchers, accounts]);
@@ -524,9 +607,17 @@ export default function CostCenterReport() {
 
     if (selectedCC !== "all") {
       const data = [
-        ...selectedPL.income.map((r) => ({ Section: "Income", Account: r.accountName, Amount: r.amount })),
+        ...selectedPL.income.map((r) => ({
+          Section: "Income",
+          Account: r.accountName,
+          Amount: r.amount,
+        })),
         { Section: "Income Total", Account: "", Amount: selectedPL.totalIncome },
-        ...selectedPL.expenses.map((r) => ({ Section: "Expenses", Account: r.accountName, Amount: r.amount })),
+        ...selectedPL.expenses.map((r) => ({
+          Section: "Expenses",
+          Account: r.accountName,
+          Amount: r.amount,
+        })),
         { Section: "Expense Total", Account: "", Amount: selectedPL.totalExpenses },
         { Section: "Net", Account: "", Amount: selectedPL.net },
       ];
@@ -553,11 +644,14 @@ export default function CostCenterReport() {
       <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
         <div className={cardClass}>
           <h1 className="text-[15px] font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Building size={18} className="text-[#1557b0]"/> Cost Center Report
+            <Building size={18} className="text-[#1557b0]" /> Cost Center Report
           </h1>
           <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-md p-4 text-[12px]">
             <div className="font-semibold mb-1">No cost centers configured.</div>
-            <div>Create cost centers in Masters to use department-wise reports, allocations, and budgets.</div>
+            <div>
+              Create cost centers in Masters to use department-wise reports, allocations, and
+              budgets.
+            </div>
           </div>
         </div>
       </div>
@@ -567,10 +661,10 @@ export default function CostCenterReport() {
   const totalRulePct = ruleForm.allocations.reduce((s, a) => s + Number(a.percentage || 0), 0);
 
   const tabs = [
-    { id: "Cost Center P&L", label: "Cost Center P&L", icon: <FileText size={14}/> },
-    { id: "Allocation Setup", label: "Allocation Setup", icon: <PieChart size={14}/> },
-    { id: "Inter-Department Transfer", label: "Transfers", icon: <ArrowRightLeft size={14}/> },
-    { id: "Cost Center Budget", label: "Cost Center Budget", icon: <Building size={14}/> },
+    { id: "Cost Center P&L", label: "Cost Center P&L", icon: <FileText size={14} /> },
+    { id: "Allocation Setup", label: "Allocation Setup", icon: <PieChart size={14} /> },
+    { id: "Inter-Department Transfer", label: "Transfers", icon: <ArrowRightLeft size={14} /> },
+    { id: "Cost Center Budget", label: "Cost Center Budget", icon: <Building size={14} /> },
   ];
 
   return (
@@ -626,25 +720,45 @@ export default function CostCenterReport() {
           <div className={`${cardClass} no-print`}>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">Cost Center</label>
-                <select className={inputClass} value={selectedCC} onChange={(e) => setSelectedCC(e.target.value)}>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Cost Center
+                </label>
+                <select
+                  className={inputClass}
+                  value={selectedCC}
+                  onChange={(e) => setSelectedCC(e.target.value)}
+                >
                   {!currentUser?.costCenterId || currentUser.role === "admin" ? (
                     <option value="all">All Cost Centers (Matrix)</option>
                   ) : null}
                   {visibleCostCenters.map((cc) => (
-                    <option key={cc.id} value={cc.id}>{cc.name}</option>
+                    <option key={cc.id} value={cc.id}>
+                      {cc.name}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
-                 <input className={inputClass} type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  From Date
+                </label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
               </div>
-              
+
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
-                 <input className={inputClass} type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
+                <input
+                  className={inputClass}
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
               </div>
             </div>
           </div>
@@ -652,27 +766,47 @@ export default function CostCenterReport() {
           {selectedCC !== "all" && selectedPL && (
             <div className={cardClass}>
               <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
-                P&L for <span className="text-[#1557b0]">{costCenters.find((c) => c.id === selectedCC)?.name}</span>
+                P&L for{" "}
+                <span className="text-[#1557b0]">
+                  {costCenters.find((c) => c.id === selectedCC)?.name}
+                </span>
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h3 className="text-[12px] font-semibold bg-gray-50 border border-gray-200 px-3 py-2 rounded-t-md text-gray-700 uppercase tracking-wide">Income</h3>
+                  <h3 className="text-[12px] font-semibold bg-gray-50 border border-gray-200 px-3 py-2 rounded-t-md text-gray-700 uppercase tracking-wide">
+                    Income
+                  </h3>
                   <div className="border border-t-0 border-gray-200 rounded-b-md overflow-hidden">
                     <table className="w-full border-collapse">
                       <tbody className="divide-y divide-gray-100">
                         {selectedPL.income.map((r) => (
                           <tr key={r.accountId || r.accountName} className="hover:bg-gray-50">
                             <td className={tableCellClass}>{r.accountName}</td>
-                            <td className={`${tableCellClass} text-right font-medium`}>{money(r.amount)}</td>
+                            <td className={`${tableCellClass} text-right font-medium`}>
+                              {money(r.amount)}
+                            </td>
                           </tr>
                         ))}
                         {selectedPL.income.length === 0 && (
-                          <tr><td colSpan={2} className={`${tableCellClass} text-center text-gray-400 italic`}>No income data</td></tr>
+                          <tr>
+                            <td
+                              colSpan={2}
+                              className={`${tableCellClass} text-center text-gray-400 italic`}
+                            >
+                              No income data
+                            </td>
+                          </tr>
                         )}
                         <tr className="bg-gray-50/80">
-                          <td className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}>Total Income</td>
-                          <td className={`${tableCellClass} text-right font-bold text-gray-900`}>{money(selectedPL.totalIncome)}</td>
+                          <td
+                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                          >
+                            Total Income
+                          </td>
+                          <td className={`${tableCellClass} text-right font-bold text-gray-900`}>
+                            {money(selectedPL.totalIncome)}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -680,22 +814,39 @@ export default function CostCenterReport() {
                 </div>
 
                 <div>
-                  <h3 className="text-[12px] font-semibold bg-gray-50 border border-gray-200 px-3 py-2 rounded-t-md text-gray-700 uppercase tracking-wide">Expenses</h3>
+                  <h3 className="text-[12px] font-semibold bg-gray-50 border border-gray-200 px-3 py-2 rounded-t-md text-gray-700 uppercase tracking-wide">
+                    Expenses
+                  </h3>
                   <div className="border border-t-0 border-gray-200 rounded-b-md overflow-hidden">
                     <table className="w-full border-collapse">
                       <tbody className="divide-y divide-gray-100">
                         {selectedPL.expenses.map((r) => (
                           <tr key={r.accountId || r.accountName} className="hover:bg-gray-50">
                             <td className={tableCellClass}>{r.accountName}</td>
-                            <td className={`${tableCellClass} text-right font-medium`}>{money(r.amount)}</td>
+                            <td className={`${tableCellClass} text-right font-medium`}>
+                              {money(r.amount)}
+                            </td>
                           </tr>
                         ))}
                         {selectedPL.expenses.length === 0 && (
-                          <tr><td colSpan={2} className={`${tableCellClass} text-center text-gray-400 italic`}>No expense data</td></tr>
+                          <tr>
+                            <td
+                              colSpan={2}
+                              className={`${tableCellClass} text-center text-gray-400 italic`}
+                            >
+                              No expense data
+                            </td>
+                          </tr>
                         )}
                         <tr className="bg-gray-50/80">
-                          <td className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}>Total Expenses</td>
-                          <td className={`${tableCellClass} text-right font-bold text-gray-900`}>{money(selectedPL.totalExpenses)}</td>
+                          <td
+                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                          >
+                            Total Expenses
+                          </td>
+                          <td className={`${tableCellClass} text-right font-bold text-gray-900`}>
+                            {money(selectedPL.totalExpenses)}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -703,9 +854,17 @@ export default function CostCenterReport() {
                 </div>
               </div>
 
-              <div className={`p-4 rounded-md border flex items-center justify-between ${selectedPL.net >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
-                <div className={`text-[14px] font-bold uppercase tracking-wide ${selectedPL.net >= 0 ? "text-green-800" : "text-red-800"}`}>Net Profit / (Loss)</div>
-                <div className={`text-[20px] font-bold ${selectedPL.net >= 0 ? "text-green-700" : "text-red-700"}`}>
+              <div
+                className={`p-4 rounded-md border flex items-center justify-between ${selectedPL.net >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}
+              >
+                <div
+                  className={`text-[14px] font-bold uppercase tracking-wide ${selectedPL.net >= 0 ? "text-green-800" : "text-red-800"}`}
+                >
+                  Net Profit / (Loss)
+                </div>
+                <div
+                  className={`text-[20px] font-bold ${selectedPL.net >= 0 ? "text-green-700" : "text-red-700"}`}
+                >
                   NPR {money(selectedPL.net)}
                 </div>
               </div>
@@ -714,14 +873,18 @@ export default function CostCenterReport() {
 
           {selectedCC === "all" && (
             <div className={cardClass}>
-              <h2 className="text-[14px] font-semibold text-gray-800 mb-4">Cost Center Comparison Matrix</h2>
+              <h2 className="text-[14px] font-semibold text-gray-800 mb-4">
+                Cost Center Comparison Matrix
+              </h2>
               <div className="overflow-x-auto rounded-md border border-gray-200">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
                       <th className={tableHeadClass}>Account Name</th>
                       {visibleCostCenters.map((cc) => (
-                        <th key={cc.id} className={`${tableHeadClass} text-right`}>{cc.name}</th>
+                        <th key={cc.id} className={`${tableHeadClass} text-right`}>
+                          {cc.name}
+                        </th>
                       ))}
                       <th className={`${tableHeadClass} text-right bg-gray-100`}>Total</th>
                     </tr>
@@ -731,36 +894,67 @@ export default function CostCenterReport() {
                       <tr key={r.accountId || r.accountName} className="hover:bg-gray-50">
                         <td className={`${tableCellClass} font-medium`}>{r.accountName}</td>
                         {visibleCostCenters.map((cc) => (
-                          <td key={cc.id} className={`${tableCellClass} text-right`}>{money(r.values[cc.id] || 0)}</td>
+                          <td key={cc.id} className={`${tableCellClass} text-right`}>
+                            {money(r.values[cc.id] || 0)}
+                          </td>
                         ))}
-                        <td className={`${tableCellClass} text-right font-bold bg-gray-50/50`}>{money(r.total)}</td>
+                        <td className={`${tableCellClass} text-right font-bold bg-gray-50/50`}>
+                          {money(r.total)}
+                        </td>
                       </tr>
                     ))}
-                    
+
                     {matrix.length === 0 && (
-                       <tr><td colSpan={visibleCostCenters.length + 2} className="p-8 text-center text-gray-500 text-[12px]">No data found for selected period</td></tr>
+                      <tr>
+                        <td
+                          colSpan={visibleCostCenters.length + 2}
+                          className="p-8 text-center text-gray-500 text-[12px]"
+                        >
+                          No data found for selected period
+                        </td>
+                      </tr>
                     )}
 
                     {matrix.length > 0 && (
                       <>
                         <tr className="bg-gray-50/80 border-t-2 border-gray-200">
-                          <td className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}>Income Total</td>
+                          <td
+                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                          >
+                            Income Total
+                          </td>
                           {visibleCostCenters.map((cc) => (
-                            <td key={cc.id} className={`${tableCellClass} text-right font-bold`}>{money(matrixTotals[cc.id]?.income || 0)}</td>
+                            <td key={cc.id} className={`${tableCellClass} text-right font-bold`}>
+                              {money(matrixTotals[cc.id]?.income || 0)}
+                            </td>
                           ))}
-                          <td className={`${tableCellClass} text-right font-bold bg-gray-100`}>{money(matrixTotals.total?.income || 0)}</td>
+                          <td className={`${tableCellClass} text-right font-bold bg-gray-100`}>
+                            {money(matrixTotals.total?.income || 0)}
+                          </td>
                         </tr>
 
                         <tr className="bg-gray-50/80">
-                          <td className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}>Expense Total</td>
+                          <td
+                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                          >
+                            Expense Total
+                          </td>
                           {visibleCostCenters.map((cc) => (
-                            <td key={cc.id} className={`${tableCellClass} text-right font-bold`}>{money(matrixTotals[cc.id]?.expense || 0)}</td>
+                            <td key={cc.id} className={`${tableCellClass} text-right font-bold`}>
+                              {money(matrixTotals[cc.id]?.expense || 0)}
+                            </td>
                           ))}
-                          <td className={`${tableCellClass} text-right font-bold bg-gray-100`}>{money(matrixTotals.total?.expense || 0)}</td>
+                          <td className={`${tableCellClass} text-right font-bold bg-gray-100`}>
+                            {money(matrixTotals.total?.expense || 0)}
+                          </td>
                         </tr>
 
                         <tr className="bg-indigo-50/50 border-t-2 border-indigo-100">
-                          <td className={`${tableCellClass} font-bold text-indigo-900 uppercase tracking-wide`}>Net Profit</td>
+                          <td
+                            className={`${tableCellClass} font-bold text-indigo-900 uppercase tracking-wide`}
+                          >
+                            Net Profit
+                          </td>
                           {visibleCostCenters.map((cc) => (
                             <td
                               key={cc.id}
@@ -771,7 +965,9 @@ export default function CostCenterReport() {
                               {money(matrixTotals[cc.id]?.net || 0)}
                             </td>
                           ))}
-                          <td className={`${tableCellClass} text-right font-bold bg-indigo-100/50 ${matrixTotals.total?.net >= 0 ? "text-green-700" : "text-red-700"}`}>
+                          <td
+                            className={`${tableCellClass} text-right font-bold bg-indigo-100/50 ${matrixTotals.total?.net >= 0 ? "text-green-700" : "text-red-700"}`}
+                          >
                             {money(matrixTotals.total?.net || 0)}
                           </td>
                         </tr>
@@ -799,17 +995,30 @@ export default function CostCenterReport() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    {["Expense Account", "Method", "Cost Centers", "Ratios", "Period", "Actions"].map((h) => (
-                      <th key={h} className={tableHeadClass}>{h}</th>
+                    {[
+                      "Expense Account",
+                      "Method",
+                      "Cost Centers",
+                      "Ratios",
+                      "Period",
+                      "Actions",
+                    ].map((h) => (
+                      <th key={h} className={tableHeadClass}>
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {rules.map((r) => (
                     <tr key={r.id} className="bg-white hover:bg-gray-50">
-                      <td className={`${tableCellClass} font-medium`}>{accounts.find((a) => a.id === r.expenseAccountId)?.name}</td>
+                      <td className={`${tableCellClass} font-medium`}>
+                        {accounts.find((a) => a.id === r.expenseAccountId)?.name}
+                      </td>
                       <td className={tableCellClass}>
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-medium">{r.method}</span>
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-medium">
+                          {r.method}
+                        </span>
                       </td>
                       <td className={tableCellClass}>
                         <div className="max-w-[150px] truncate text-gray-600">
@@ -822,23 +1031,35 @@ export default function CostCenterReport() {
                       <td className={`${tableCellClass} text-gray-600 font-mono`}>
                         {(r.allocations || []).map((a) => `${a.percentage || 0}%`).join(", ")}
                       </td>
-                      <td className={`${tableCellClass} text-gray-600`}>{r.effectiveFrom} to {r.effectiveTo || "Open"}</td>
+                      <td className={`${tableCellClass} text-gray-600`}>
+                        {r.effectiveFrom} to {r.effectiveTo || "Open"}
+                      </td>
                       <td className={tableCellClass}>
                         <div className="flex items-center gap-2">
-                           <button className="text-[11px] font-medium text-[#1557b0] hover:underline" onClick={() => buildAllocationPreview(r)}>
-                             Apply
-                           </button>
-                           <button className="text-gray-400 hover:text-red-600 transition-colors" onClick={() => deleteRule(r.id)}>
-                             <Trash2 size={14} />
-                           </button>
+                          <button
+                            className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                            onClick={() => buildAllocationPreview(r)}
+                          >
+                            Apply
+                          </button>
+                          <button
+                            className="text-gray-400 hover:text-red-600 transition-colors"
+                            onClick={() => deleteRule(r.id)}
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </div>
                       </td>
                     </tr>
                   ))}
                   {!rules.length && (
                     <tr>
-                      <td colSpan={6} className="text-center text-[12px] p-8 text-gray-500 bg-gray-50/50">
-                        No allocation rules configured. Click "Create Rule" to start allocating expenses automatically.
+                      <td
+                        colSpan={6}
+                        className="text-center text-[12px] p-8 text-gray-500 bg-gray-50/50"
+                      >
+                        No allocation rules configured. Click "Create Rule" to start allocating
+                        expenses automatically.
                       </td>
                     </tr>
                   )}
@@ -848,9 +1069,13 @@ export default function CostCenterReport() {
           </div>
 
           <div className={`${cardClass} lg:col-span-1`}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Apply Allocations</h2>
-            
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Period (Month)</label>
+            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              Apply Allocations
+            </h2>
+
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              Select Period (Month)
+            </label>
             <input
               className={`${inputClass} w-full mb-4`}
               type="month"
@@ -864,36 +1089,53 @@ export default function CostCenterReport() {
                   {allocationPreview.account?.name}
                 </div>
                 <div className="text-[12px] text-indigo-700 mb-3 pb-3 border-b border-indigo-100">
-                  Total Amount: <span className="font-bold">NPR {money(allocationPreview.totalAmount)}</span>
+                  Total Amount:{" "}
+                  <span className="font-bold">NPR {money(allocationPreview.totalAmount)}</span>
                 </div>
 
                 <table className="w-full border-collapse mb-4">
                   <thead>
                     <tr>
-                      <th className="text-left text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">Cost Center</th>
-                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">%</th>
-                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">Allocated</th>
+                      <th className="text-left text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                        Cost Center
+                      </th>
+                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                        %
+                      </th>
+                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                        Allocated
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-indigo-100/50">
                     {allocationPreview.allocations.map((a) => (
                       <tr key={a.costCenterId}>
-                        <td className="py-1.5 text-[11px] text-indigo-900">{costCenters.find((c) => c.id === a.costCenterId)?.name}</td>
-                        <td className="py-1.5 text-[11px] text-indigo-800 text-right">{money(a.percentage)}%</td>
-                        <td className="py-1.5 text-[11px] text-indigo-900 font-medium text-right">NPR {money(a.amount)}</td>
+                        <td className="py-1.5 text-[11px] text-indigo-900">
+                          {costCenters.find((c) => c.id === a.costCenterId)?.name}
+                        </td>
+                        <td className="py-1.5 text-[11px] text-indigo-800 text-right">
+                          {money(a.percentage)}%
+                        </td>
+                        <td className="py-1.5 text-[11px] text-indigo-900 font-medium text-right">
+                          NPR {money(a.amount)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
 
-                <button className="w-full h-8 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors" onClick={postAllocationJournal}>
-                   Confirm & Post Journal
+                <button
+                  className="w-full h-8 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                  onClick={postAllocationJournal}
+                >
+                  Confirm & Post Journal
                 </button>
               </div>
             ) : (
-               <div className="border border-dashed border-gray-300 rounded-md p-6 text-center text-gray-500 text-[11px]">
-                  Select an allocation rule from the table and click "Apply" to generate a preview for the selected month.
-               </div>
+              <div className="border border-dashed border-gray-300 rounded-md p-6 text-center text-gray-500 text-[11px]">
+                Select an allocation rule from the table and click "Apply" to generate a preview for
+                the selected month.
+              </div>
             )}
           </div>
         </div>
@@ -902,115 +1144,238 @@ export default function CostCenterReport() {
       {activeTab === "Inter-Department Transfer" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">New Transfer</h2>
+            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              New Transfer
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">From Cost Center (Credit)</label>
-                 <select className={inputClass} value={transferForm.fromCostCenterId} onChange={(e) => setTransferForm({ ...transferForm, fromCostCenterId: e.target.value })}>
-                   <option value="">Select Origin...</option>
-                   {visibleCostCenters.map((cc) => <option key={cc.id} value={cc.id}>{cc.name}</option>)}
-                 </select>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  From Cost Center (Credit)
+                </label>
+                <select
+                  className={inputClass}
+                  value={transferForm.fromCostCenterId}
+                  onChange={(e) =>
+                    setTransferForm({ ...transferForm, fromCostCenterId: e.target.value })
+                  }
+                >
+                  <option value="">Select Origin...</option>
+                  {visibleCostCenters.map((cc) => (
+                    <option key={cc.id} value={cc.id}>
+                      {cc.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">Expense Account</label>
-                 <select className={inputClass} value={transferForm.expenseAccountId} onChange={(e) => setTransferForm({ ...transferForm, expenseAccountId: e.target.value })}>
-                   <option value="">Select Account...</option>
-                   {accounts.filter((a) => a.type === "expense").map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                 </select>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Expense Account
+                </label>
+                <select
+                  className={inputClass}
+                  value={transferForm.expenseAccountId}
+                  onChange={(e) =>
+                    setTransferForm({ ...transferForm, expenseAccountId: e.target.value })
+                  }
+                >
+                  <option value="">Select Account...</option>
+                  {accounts
+                    .filter((a) => a.type === "expense")
+                    .map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                </select>
               </div>
 
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">Period (Month)</label>
-                 <input className={inputClass} type="month" value={transferForm.period} onChange={(e) => setTransferForm({ ...transferForm, period: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Period (Month)
+                </label>
+                <input
+                  className={inputClass}
+                  type="month"
+                  value={transferForm.period}
+                  onChange={(e) => setTransferForm({ ...transferForm, period: e.target.value })}
+                />
               </div>
 
               <div>
-                 <label className="block text-[11px] font-medium text-gray-600 mb-1">Total Amount (NPR)</label>
-                 <input className={inputClass} type="number" placeholder="0.00" value={transferForm.totalAmount} onChange={(e) => setTransferForm({ ...transferForm, totalAmount: e.target.value })} />
+                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  Total Amount (NPR)
+                </label>
+                <input
+                  className={inputClass}
+                  type="number"
+                  placeholder="0.00"
+                  value={transferForm.totalAmount}
+                  onChange={(e) =>
+                    setTransferForm({ ...transferForm, totalAmount: e.target.value })
+                  }
+                />
               </div>
             </div>
 
             <div className="mb-4">
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
-              <textarea className={`${inputClass} h-auto py-2`} rows={2} placeholder="Reason for transfer..." value={transferForm.narration} onChange={(e) => setTransferForm({ ...transferForm, narration: e.target.value })} />
+              <textarea
+                className={`${inputClass} h-auto py-2`}
+                rows={2}
+                placeholder="Reason for transfer..."
+                value={transferForm.narration}
+                onChange={(e) => setTransferForm({ ...transferForm, narration: e.target.value })}
+              />
             </div>
 
             <div className="border border-gray-200 rounded-md p-3 bg-gray-50/50 mb-4">
-               <div className="flex justify-between items-center mb-3">
-                 <h3 className="text-[12px] font-semibold text-gray-700">Receiving Cost Centers (Debit)</h3>
-                 <button className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1" onClick={addReceiver}>
-                   <Plus size={12}/> Add Receiver
-                 </button>
-               </div>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-[12px] font-semibold text-gray-700">
+                  Receiving Cost Centers (Debit)
+                </h3>
+                <button
+                  className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                  onClick={addReceiver}
+                >
+                  <Plus size={12} /> Add Receiver
+                </button>
+              </div>
 
               {(transferForm.receivers || []).map((r, idx) => (
                 <div key={idx} className="flex gap-2 items-center mb-2">
-                  <select className={`${inputClass} flex-1`} value={r.costCenterId} onChange={(e) => updateReceiver(idx, { costCenterId: e.target.value })}>
+                  <select
+                    className={`${inputClass} flex-1`}
+                    value={r.costCenterId}
+                    onChange={(e) => updateReceiver(idx, { costCenterId: e.target.value })}
+                  >
                     <option value="">Cost Center...</option>
-                    {visibleCostCenters.map((cc) => <option key={cc.id} value={cc.id}>{cc.name}</option>)}
+                    {visibleCostCenters.map((cc) => (
+                      <option key={cc.id} value={cc.id}>
+                        {cc.name}
+                      </option>
+                    ))}
                   </select>
-                  <input className={`${inputClass} w-20`} type="number" placeholder="%" value={r.percentage} onChange={(e) => updateReceiver(idx, { percentage: Number(e.target.value), amount: "" })} />
-                  <input className={`${inputClass} w-28`} type="number" placeholder="Amt" value={r.amount} onChange={(e) => updateReceiver(idx, { amount: e.target.value })} />
-                  <button className="text-gray-400 hover:text-red-600 p-1" onClick={() => removeReceiver(idx)}><Trash2 size={14}/></button>
+                  <input
+                    className={`${inputClass} w-20`}
+                    type="number"
+                    placeholder="%"
+                    value={r.percentage}
+                    onChange={(e) =>
+                      updateReceiver(idx, { percentage: Number(e.target.value), amount: "" })
+                    }
+                  />
+                  <input
+                    className={`${inputClass} w-28`}
+                    type="number"
+                    placeholder="Amt"
+                    value={r.amount}
+                    onChange={(e) => updateReceiver(idx, { amount: e.target.value })}
+                  />
+                  <button
+                    className="text-gray-400 hover:text-red-600 p-1"
+                    onClick={() => removeReceiver(idx)}
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               ))}
-              
+
               {!transferForm.receivers?.length && (
-                 <div className="text-[11px] text-gray-500 italic text-center py-2">No receivers added. Click "Add Receiver" to allocate the amount.</div>
+                <div className="text-[11px] text-gray-500 italic text-center py-2">
+                  No receivers added. Click "Add Receiver" to allocate the amount.
+                </div>
               )}
             </div>
 
-            {(transferForm.receivers?.length > 0 && transferForm.fromCostCenterId && transferForm.expenseAccountId) && (
-              <div className="mt-4 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
-                <div className="font-semibold text-[13px] text-indigo-900 mb-2">Journal Preview</div>
-                <table className="w-full border-collapse mt-2 text-[11px]">
-                  <tbody className="divide-y divide-indigo-100/50">
-                    {transferPreview.receivers.map((r, idx) => (
-                      <tr key={idx}>
-                        <td className="py-1 text-indigo-900">Dr {r.costCenter?.name} ({transferPreview.account?.name})</td>
-                        <td className="py-1 text-right font-medium text-indigo-900">NPR {money(r.amount)}</td>
+            {transferForm.receivers?.length > 0 &&
+              transferForm.fromCostCenterId &&
+              transferForm.expenseAccountId && (
+                <div className="mt-4 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
+                  <div className="font-semibold text-[13px] text-indigo-900 mb-2">
+                    Journal Preview
+                  </div>
+                  <table className="w-full border-collapse mt-2 text-[11px]">
+                    <tbody className="divide-y divide-indigo-100/50">
+                      {transferPreview.receivers.map((r, idx) => (
+                        <tr key={idx}>
+                          <td className="py-1 text-indigo-900">
+                            Dr {r.costCenter?.name} ({transferPreview.account?.name})
+                          </td>
+                          <td className="py-1 text-right font-medium text-indigo-900">
+                            NPR {money(r.amount)}
+                          </td>
+                        </tr>
+                      ))}
+                      <tr className="bg-indigo-100/30">
+                        <td className="py-1 text-indigo-900">
+                          Cr {transferPreview.fromCC?.name} ({transferPreview.account?.name})
+                        </td>
+                        <td className="py-1 text-right font-bold text-indigo-900">
+                          NPR {money(transferPreview.receiverTotal)}
+                        </td>
                       </tr>
-                    ))}
-                    <tr className="bg-indigo-100/30">
-                      <td className="py-1 text-indigo-900">Cr {transferPreview.fromCC?.name} ({transferPreview.account?.name})</td>
-                      <td className="py-1 text-right font-bold text-indigo-900">NPR {money(transferPreview.receiverTotal)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <button className={`${primaryBtn} w-full mt-4`} onClick={postTransfer}>Post Transfer Journal</button>
-              </div>
-            )}
+                    </tbody>
+                  </table>
+                  <button className={`${primaryBtn} w-full mt-4`} onClick={postTransfer}>
+                    Post Transfer Journal
+                  </button>
+                </div>
+              )}
           </div>
 
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Recent Transfers</h2>
+            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              Recent Transfers
+            </h2>
             <div className="overflow-x-auto rounded-md border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    {["Date", "From", "To", "Amount"].map((h) => <th key={h} className={tableHeadClass}>{h}</th>)}
+                    {["Date", "From", "To", "Amount"].map((h) => (
+                      <th key={h} className={tableHeadClass}>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {transferHistory.slice().reverse().map((h) => (
-                    <tr key={h.id} className="bg-white hover:bg-gray-50">
-                      <td className={tableCellClass}>{h.date}</td>
-                      <td className={tableCellClass}>
-                         <div className="font-medium">{costCenters.find((c) => c.id === h.fromCostCenterId)?.name}</div>
-                         <div className="text-[10px] text-gray-500">{accounts.find((a) => a.id === h.expenseAccountId)?.name}</div>
-                      </td>
-                      <td className={tableCellClass}>
-                         <div className="text-[10px] max-w-[120px] truncate text-gray-600">
-                           {(h.toCostCenters || []).map((id) => costCenters.find((c) => c.id === id)?.name).join(", ")}
-                         </div>
-                      </td>
-                      <td className={`${tableCellClass} font-medium text-gray-900 text-right`}>{money(h.amount)}</td>
-                    </tr>
-                  ))}
+                  {transferHistory
+                    .slice()
+                    .reverse()
+                    .map((h) => (
+                      <tr key={h.id} className="bg-white hover:bg-gray-50">
+                        <td className={tableCellClass}>{h.date}</td>
+                        <td className={tableCellClass}>
+                          <div className="font-medium">
+                            {costCenters.find((c) => c.id === h.fromCostCenterId)?.name}
+                          </div>
+                          <div className="text-[10px] text-gray-500">
+                            {accounts.find((a) => a.id === h.expenseAccountId)?.name}
+                          </div>
+                        </td>
+                        <td className={tableCellClass}>
+                          <div className="text-[10px] max-w-[120px] truncate text-gray-600">
+                            {(h.toCostCenters || [])
+                              .map((id) => costCenters.find((c) => c.id === id)?.name)
+                              .join(", ")}
+                          </div>
+                        </td>
+                        <td className={`${tableCellClass} font-medium text-gray-900 text-right`}>
+                          {money(h.amount)}
+                        </td>
+                      </tr>
+                    ))}
                   {!transferHistory.length && (
-                    <tr><td colSpan={4} className="text-center text-[12px] text-gray-500 p-6 bg-gray-50/50">No transfer history.</td></tr>
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="text-center text-[12px] text-gray-500 p-6 bg-gray-50/50"
+                      >
+                        No transfer history.
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -1023,17 +1388,32 @@ export default function CostCenterReport() {
         <div className={cardClass}>
           <div className="flex gap-3 mb-6 no-print">
             <div className="w-64">
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Cost Center</label>
-               <select className={inputClass} value={budgetCC} onChange={(e) => setBudgetCC(e.target.value)}>
-                 <option value="">Select Cost Center...</option>
-                 {visibleCostCenters.map((cc) => (
-                   <option key={cc.id} value={cc.id}>{cc.name}</option>
-                 ))}
-               </select>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Cost Center
+              </label>
+              <select
+                className={inputClass}
+                value={budgetCC}
+                onChange={(e) => setBudgetCC(e.target.value)}
+              >
+                <option value="">Select Cost Center...</option>
+                {visibleCostCenters.map((cc) => (
+                  <option key={cc.id} value={cc.id}>
+                    {cc.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="w-48">
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Fiscal Year</label>
-               <input className={inputClass} value={selectedBudgetFY} onChange={(e) => setSelectedBudgetFY(e.target.value)} placeholder="e.g. 2080/81" />
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Fiscal Year
+              </label>
+              <input
+                className={inputClass}
+                value={selectedBudgetFY}
+                onChange={(e) => setSelectedBudgetFY(e.target.value)}
+                placeholder="e.g. 2080/81"
+              />
             </div>
           </div>
 
@@ -1041,53 +1421,87 @@ export default function CostCenterReport() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  {["Account", "Annual Budget", "Budget YTD", "Actual YTD", "Variance (NPR)", "% Variance", "Status"].map((h) => (
-                    <th key={h} className={h === 'Account' ? tableHeadClass : `${tableHeadClass} text-right`}>{h}</th>
+                  {[
+                    "Account",
+                    "Annual Budget",
+                    "Budget YTD",
+                    "Actual YTD",
+                    "Variance (NPR)",
+                    "% Variance",
+                    "Status",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className={h === "Account" ? tableHeadClass : `${tableHeadClass} text-right`}
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {budgetRows.map((r, idx) => (
                   <tr key={idx} className="bg-white hover:bg-gray-50">
-                    <td className={`${tableCellClass} font-medium`}>{r.account?.name || r.account?.accountName || "Account"}</td>
+                    <td className={`${tableCellClass} font-medium`}>
+                      {r.account?.name || r.account?.accountName || "Account"}
+                    </td>
                     <td className={`${tableCellClass} text-right`}>{money(r.annualBudget)}</td>
                     <td className={tableCellClass}>
                       <div className="text-right">{money(r.budgetYTD)}</div>
                       <div className="w-full bg-gray-100 rounded-full h-1 mt-1.5 overflow-hidden">
-                        <div style={{ width: Math.min(100, (r.budgetYTD / maxBudgetActual) * 100) + "%" }} className="h-full bg-blue-400 rounded-full" />
+                        <div
+                          style={{
+                            width: Math.min(100, (r.budgetYTD / maxBudgetActual) * 100) + "%",
+                          }}
+                          className="h-full bg-blue-400 rounded-full"
+                        />
                       </div>
                     </td>
                     <td className={tableCellClass}>
                       <div className="text-right font-medium">{money(r.actualYTD)}</div>
                       <div className="w-full bg-gray-100 rounded-full h-1 mt-1.5 overflow-hidden">
-                        <div style={{ width: Math.min(100, (r.actualYTD / maxBudgetActual) * 100) + "%" }} className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? 'bg-red-500' : 'bg-indigo-500'}`} />
+                        <div
+                          style={{
+                            width: Math.min(100, (r.actualYTD / maxBudgetActual) * 100) + "%",
+                          }}
+                          className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? "bg-red-500" : "bg-indigo-500"}`}
+                        />
                       </div>
                     </td>
-                    <td className={`${tableCellClass} text-right font-bold ${r.variance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    <td
+                      className={`${tableCellClass} text-right font-bold ${r.variance >= 0 ? "text-green-600" : "text-red-600"}`}
+                    >
                       {money(r.variance)}
                     </td>
                     <td className={`${tableCellClass} text-right`}>
-                       {r.variance >= 0 ? (
-                         <span className="text-green-600">{money(Math.abs(r.pctVariance))}%</span>
-                       ) : (
-                         <span className="text-red-600">({money(Math.abs(r.pctVariance))}%)</span>
-                       )}
+                      {r.variance >= 0 ? (
+                        <span className="text-green-600">{money(Math.abs(r.pctVariance))}%</span>
+                      ) : (
+                        <span className="text-red-600">({money(Math.abs(r.pctVariance))}%)</span>
+                      )}
                     </td>
                     <td className={`${tableCellClass} text-right`}>
-                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${
-                         r.status === 'On Track' ? 'bg-green-50 text-green-700 border-green-200' :
-                         r.status === 'Over Budget' ? 'bg-red-50 text-red-700 border-red-200' :
-                         'bg-blue-50 text-blue-700 border-blue-200'
-                       }`}>
-                         {r.status}
-                       </span>
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${
+                          r.status === "On Track"
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : r.status === "Over Budget"
+                              ? "bg-red-50 text-red-700 border-red-200"
+                              : "bg-blue-50 text-blue-700 border-blue-200"
+                        }`}
+                      >
+                        {r.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
 
                 {!budgetRows.length && (
                   <tr>
-                    <td colSpan={7} className="text-center p-10 text-gray-500 text-[12px] bg-gray-50/50">
+                    <td
+                      colSpan={7}
+                      className="text-center p-10 text-gray-500 text-[12px] bg-gray-50/50"
+                    >
                       <div className="font-medium text-gray-600 mb-1">No budget data available</div>
                       <div>Select a cost center with an active budget for this fiscal year.</div>
                     </td>
@@ -1099,79 +1513,143 @@ export default function CostCenterReport() {
         </div>
       )}
 
-      <Modal open={ruleModal} title="Create Cost Allocation Rule" onClose={() => setRuleModal(false)}>
+      <Modal
+        open={ruleModal}
+        title="Create Cost Allocation Rule"
+        onClose={() => setRuleModal(false)}
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Expense Account</label>
-               <select className={inputClass} value={ruleForm.expenseAccountId} onChange={(e) => setRuleForm({ ...ruleForm, expenseAccountId: e.target.value })}>
-                 <option value="">Select Account...</option>
-                 {accounts.filter((a) => a.type === "expense").map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-               </select>
-             </div>
-   
-             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Allocation Method</label>
-               <select className={inputClass} value={ruleForm.method} onChange={(e) => setRuleForm({ ...ruleForm, method: e.target.value })}>
-                 <option>Fixed %</option>
-                 <option>Headcount</option>
-                 <option>Revenue Share</option>
-               </select>
-             </div>
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Expense Account
+              </label>
+              <select
+                className={inputClass}
+                value={ruleForm.expenseAccountId}
+                onChange={(e) => setRuleForm({ ...ruleForm, expenseAccountId: e.target.value })}
+              >
+                <option value="">Select Account...</option>
+                {accounts
+                  .filter((a) => a.type === "expense")
+                  .map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Allocation Method
+              </label>
+              <select
+                className={inputClass}
+                value={ruleForm.method}
+                onChange={(e) => setRuleForm({ ...ruleForm, method: e.target.value })}
+              >
+                <option>Fixed %</option>
+                <option>Headcount</option>
+                <option>Revenue Share</option>
+              </select>
+            </div>
           </div>
 
           <div className="bg-amber-50/50 border border-amber-100 rounded p-2 text-[11px] text-amber-800">
-             {ruleForm.method === "Fixed %" && "Specify manual percentages for each receiving cost center."}
-             {ruleForm.method === "Headcount" && "Will allocate proportionally to employee count per cost center automatically."}
-             {ruleForm.method === "Revenue Share" && "Will allocate proportionally to each cost center's revenue in the period automatically."}
+            {ruleForm.method === "Fixed %" &&
+              "Specify manual percentages for each receiving cost center."}
+            {ruleForm.method === "Headcount" &&
+              "Will allocate proportionally to employee count per cost center automatically."}
+            {ruleForm.method === "Revenue Share" &&
+              "Will allocate proportionally to each cost center's revenue in the period automatically."}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Effective From</label>
-               <input className={inputClass} type="date" value={ruleForm.effectiveFrom} onChange={(e) => setRuleForm({ ...ruleForm, effectiveFrom: e.target.value })} />
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Effective From
+              </label>
+              <input
+                className={inputClass}
+                type="date"
+                value={ruleForm.effectiveFrom}
+                onChange={(e) => setRuleForm({ ...ruleForm, effectiveFrom: e.target.value })}
+              />
             </div>
             <div>
-               <label className="block text-[11px] font-medium text-gray-600 mb-1">Effective To (Optional)</label>
-               <input className={inputClass} type="date" value={ruleForm.effectiveTo} onChange={(e) => setRuleForm({ ...ruleForm, effectiveTo: e.target.value })} />
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Effective To (Optional)
+              </label>
+              <input
+                className={inputClass}
+                type="date"
+                value={ruleForm.effectiveTo}
+                onChange={(e) => setRuleForm({ ...ruleForm, effectiveTo: e.target.value })}
+              />
             </div>
           </div>
 
           {ruleForm.method === "Fixed %" && (
             <div className="mt-2 border-t border-gray-100 pt-4">
               <div className="flex justify-between items-center mb-3">
-                 <h3 className="text-[12px] font-semibold text-gray-800">Cost Center Targets</h3>
-                 <div className={`text-[12px] font-bold px-2 py-1 rounded border ${Math.abs(totalRulePct - 100) < 0.01 ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-                   Total Allocated: {money(totalRulePct)}%
-                 </div>
+                <h3 className="text-[12px] font-semibold text-gray-800">Cost Center Targets</h3>
+                <div
+                  className={`text-[12px] font-bold px-2 py-1 rounded border ${Math.abs(totalRulePct - 100) < 0.01 ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
+                >
+                  Total Allocated: {money(totalRulePct)}%
+                </div>
               </div>
 
               {(ruleForm.allocations || []).map((a, idx) => (
                 <div key={idx} className="flex gap-2 items-center mb-2">
-                  <select className={`${inputClass} flex-1`} value={a.costCenterId} onChange={(e) => updateRuleAllocation(idx, { costCenterId: e.target.value })}>
+                  <select
+                    className={`${inputClass} flex-1`}
+                    value={a.costCenterId}
+                    onChange={(e) => updateRuleAllocation(idx, { costCenterId: e.target.value })}
+                  >
                     <option value="">Cost Center...</option>
-                    {visibleCostCenters.map((cc) => <option key={cc.id} value={cc.id}>{cc.name}</option>)}
+                    {visibleCostCenters.map((cc) => (
+                      <option key={cc.id} value={cc.id}>
+                        {cc.name}
+                      </option>
+                    ))}
                   </select>
 
                   <div className="relative">
-                     <input className={`${inputClass} w-24 pr-6`} type="number" value={a.percentage} onChange={(e) => updateRuleAllocation(idx, { percentage: Number(e.target.value) })} />
-                     <span className="absolute right-2 top-2 text-[12px] text-gray-400">%</span>
+                    <input
+                      className={`${inputClass} w-24 pr-6`}
+                      type="number"
+                      value={a.percentage}
+                      onChange={(e) =>
+                        updateRuleAllocation(idx, { percentage: Number(e.target.value) })
+                      }
+                    />
+                    <span className="absolute right-2 top-2 text-[12px] text-gray-400">%</span>
                   </div>
 
-                  <button className="text-gray-400 hover:text-red-600 p-1 transition-colors" onClick={() => removeRuleAllocation(idx)}>
-                    <Trash2 size={14}/>
+                  <button
+                    className="text-gray-400 hover:text-red-600 p-1 transition-colors"
+                    onClick={() => removeRuleAllocation(idx)}
+                  >
+                    <Trash2 size={14} />
                   </button>
                 </div>
               ))}
 
-              <button className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1 mt-2" onClick={addRuleAllocation}>
-                 <Plus size={12}/> Add Cost Center
+              <button
+                className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1 mt-2"
+                onClick={addRuleAllocation}
+              >
+                <Plus size={12} /> Add Cost Center
               </button>
             </div>
           )}
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-6">
-            <button className={outlineBtn} onClick={() => setRuleModal(false)}>Cancel</button>
+            <button className={outlineBtn} onClick={() => setRuleModal(false)}>
+              Cancel
+            </button>
             <button className={primaryBtn} onClick={saveRule}>
               <Save size={14} /> Save Rule
             </button>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { BankAllocation, BankMode } from '@/lib/tallyVoucher';
-import { formatMoney, parseMoney } from '@/lib/tallyFormat';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { BankAllocation, BankMode } from "@/lib/tallyVoucher";
+import { formatMoney, parseMoney } from "@/lib/tallyFormat";
 
-const modes: BankMode[] = ['Cheque/DD', 'EFT', 'NEFT', 'RTGS', 'IMPS', 'UPI', 'Others'];
+const modes: BankMode[] = ["Cheque/DD", "EFT", "NEFT", "RTGS", "IMPS", "UPI", "Others"];
 
 interface Props {
   isOpen: boolean;
@@ -21,15 +21,15 @@ export const TallyBankAllocation: React.FC<Props> = ({
   onSave,
 }) => {
   const [form, setForm] = useState<BankAllocation>({
-    id: existing?.id || '',
-    transactionType: existing?.transactionType || 'Cheque/DD',
-    instrumentNumber: existing?.instrumentNumber || '',
-    instrumentDate: existing?.instrumentDate || '',
-    bankName: existing?.bankName || '',
-    branchName: existing?.branchName || '',
-    ifscCode: existing?.ifscCode || '',
+    id: existing?.id || "",
+    transactionType: existing?.transactionType || "Cheque/DD",
+    instrumentNumber: existing?.instrumentNumber || "",
+    instrumentDate: existing?.instrumentDate || "",
+    bankName: existing?.bankName || "",
+    branchName: existing?.branchName || "",
+    ifscCode: existing?.ifscCode || "",
     amount: existing?.amount || amount,
-    bankStatus: existing?.bankStatus || 'Not Reconciled',
+    bankStatus: existing?.bankStatus || "Not Reconciled",
   });
 
   useEffect(() => {
@@ -49,18 +49,26 @@ export const TallyBankAllocation: React.FC<Props> = ({
       <div className="tally-popup w-[480px] rounded-sm">
         <div className="tally-popup-title flex items-center justify-between">
           <span>Bank Allocation</span>
-          <button onClick={onClose}><X size={14} /></button>
+          <button onClick={onClose}>
+            <X size={14} />
+          </button>
         </div>
         <div className="p-3 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">Transaction Type</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                Transaction Type
+              </label>
               <select
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
                 value={form.transactionType}
                 onChange={(e) => setForm({ ...form, transactionType: e.target.value as BankMode })}
               >
-                {modes.map((m) => <option key={m} value={m}>{m}</option>)}
+                {modes.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
@@ -72,7 +80,9 @@ export const TallyBankAllocation: React.FC<Props> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">Instrument No</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                Instrument No
+              </label>
               <input
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
                 value={form.instrumentNumber}
@@ -80,7 +90,9 @@ export const TallyBankAllocation: React.FC<Props> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">Instrument Date</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                Instrument Date
+              </label>
               <input
                 type="date"
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
@@ -89,7 +101,9 @@ export const TallyBankAllocation: React.FC<Props> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">Bank Name</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                Bank Name
+              </label>
               <input
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
                 value={form.bankName}
@@ -97,7 +111,9 @@ export const TallyBankAllocation: React.FC<Props> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">Branch Name</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                Branch Name
+              </label>
               <input
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
                 value={form.branchName}
@@ -105,7 +121,9 @@ export const TallyBankAllocation: React.FC<Props> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] text-tally-700 font-semibold uppercase">IFSC Code</label>
+              <label className="text-[11px] text-tally-700 font-semibold uppercase">
+                IFSC Code
+              </label>
               <input
                 className="tally-input border border-tally-300 rounded-sm px-2 py-1 w-full"
                 value={form.ifscCode}
@@ -114,8 +132,12 @@ export const TallyBankAllocation: React.FC<Props> = ({
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button className="tally-btn" onClick={onClose}>Cancel</button>
-            <button className="tally-btn tally-btn-primary" onClick={handleSave}>Save</button>
+            <button className="tally-btn" onClick={onClose}>
+              Cancel
+            </button>
+            <button className="tally-btn tally-btn-primary" onClick={handleSave}>
+              Save
+            </button>
           </div>
         </div>
       </div>

@@ -81,47 +81,51 @@ export default function SignUpWizard() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (!validateStep(4)) {
       alert("Please complete all required fields");
       return;
     }
 
-    createCompanyAndAdmin({
-      company: {
-        name: formData.companyNameEn,
-        nameNepali: formData.companyNameNe,
-        panNumber: formData.panNumber,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
-        vatNumber: formData.vatNumber,
-        defaultCurrency: "NPR",
-        currencySymbol: "Rs.",
-        defaultDateFormat: formData.dateFormat as any,
-        fiscalYearStartMonth: 4,
-        stockValuationMethod: "weighted_average" as any,
-        enableCostCenter: formData.enableCostCenter,
-        enableMultiCurrency: false,
-        enableBillWiseTracking: formData.enableBillWise,
-        enableBatchTracking: false,
-        voucherSeries: {},
-        companyNameEn: formData.companyNameEn,
-        companyNameNe: formData.companyNameNe,
-        city: formData.city,
-        businessType: formData.businessType,
-        dateFormat: formData.dateFormat,
-        enableBillWise: formData.enableBillWise,
-      },
-      adminUser: {
-        name: formData.fullName,
-        username: formData.username,
-        password: formData.password,
-        role: "admin" as any,
-        isActive: true,
-      },
-    });
-    alert("Welcome to Sutra ERP! Your company is now set up.");
+    try {
+      await createCompanyAndAdmin({
+        company: {
+          name: formData.companyNameEn,
+          nameNepali: formData.companyNameNe,
+          panNumber: formData.panNumber,
+          address: formData.address,
+          phone: formData.phone,
+          email: formData.email,
+          vatNumber: formData.vatNumber,
+          defaultCurrency: "NPR",
+          currencySymbol: "Rs.",
+          defaultDateFormat: formData.dateFormat as any,
+          fiscalYearStartMonth: 4,
+          stockValuationMethod: "weighted_average" as any,
+          enableCostCenter: formData.enableCostCenter,
+          enableMultiCurrency: false,
+          enableBillWiseTracking: formData.enableBillWise,
+          enableBatchTracking: false,
+          voucherSeries: {},
+          companyNameEn: formData.companyNameEn,
+          companyNameNe: formData.companyNameNe,
+          city: formData.city,
+          businessType: formData.businessType,
+          dateFormat: formData.dateFormat,
+          enableBillWise: formData.enableBillWise,
+        },
+        adminUser: {
+          name: formData.fullName,
+          username: formData.username,
+          password: formData.password,
+          role: "admin" as any,
+          isActive: true,
+        },
+      });
+      alert("Welcome to Sutra ERP! Your company is now set up.");
+    } catch (error) {
+      alert("Failed to setup company. Please try again.");
+    }
   };
 
   const CurrentStepComponent = steps[currentStep - 1].component;

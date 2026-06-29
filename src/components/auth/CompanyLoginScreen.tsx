@@ -14,7 +14,7 @@ function formatLoginDate(isoString: string): string {
 }
 
 export default function CompanyLoginScreen() {
-  const { companySettings, lastLoginInfo, loginFailedAttempts, login, backToGateway } = useStore();
+  const { companySettings, lastLoginInfo, login, backToGateway } = useStore();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +23,10 @@ export default function CompanyLoginScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [lockoutCountdown, setLockoutCountdown] = useState(0);
+
+  const [localFailedAttempts, setLocalFailedAttempts] = useState(() => {
+    return parseInt(localStorage.getItem("loginAttempts") || "0", 10);
+  });
 
   const usernameRef = useRef<HTMLInputElement>(null);
 
@@ -40,13 +44,13 @@ export default function CompanyLoginScreen() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isSubmitting]);
 
-  // Watch store's loginFailedAttempts to trigger lockout
+  // Watch localFailedAttempts to trigger lockout
   useEffect(() => {
-    if (loginFailedAttempts >= 5 && !isLocked) {
+    if (localFailedAttempts >= 5 && !isLocked) {
       setIsLocked(true);
       setLockoutCountdown(30);
     }
-  }, [loginFailedAttempts]);
+  }, [localFailedAttempts]);
 
   // Lockout countdown
   useEffect(() => {
@@ -70,10 +74,18 @@ export default function CompanyLoginScreen() {
       const success = await login(username.trim(), password);
       if (!success) {
         setError("Invalid username or password");
+        const newCount = localFailedAttempts + 1;
+        setLocalFailedAttempts(newCount);
+        localStorage.setItem("loginAttempts", newCount.toString());
+      } else {
+        localStorage.setItem("loginAttempts", "0");
       }
       // On success: store sets authStage="authenticated" — nothing to do here
     } catch {
       setError("Sign in failed. Please try again.");
+      const newCount = localFailedAttempts + 1;
+      setLocalFailedAttempts(newCount);
+      localStorage.setItem("loginAttempts", newCount.toString());
     } finally {
       setIsSubmitting(false);
     }
@@ -168,10 +180,7 @@ export default function CompanyLoginScreen() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username */}
             <div>
-              <label
-                className="block text-sm font-medium mb-1"
-                style={{ color: "#1f2937" }}
-              >
+              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>
                 Username
               </label>
               <input
@@ -186,10 +195,7 @@ export default function CompanyLoginScreen() {
 
             {/* Password */}
             <div>
-              <label
-                className="block text-sm font-medium mb-1"
-                style={{ color: "#1f2937" }}
-              >
+              <label className="block text-sm font-medium mb-1" style={{ color: "#1f2937" }}>
                 Password
               </label>
               <div className="relative">
@@ -204,13 +210,14 @@ export default function CompanyLoginScreen() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2 top-1/2 -translate-y-1/2"
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "#1f2937" }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#1f2937",
+                  }}
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -225,7 +232,8 @@ export default function CompanyLoginScreen() {
             {/* Lockout Warning */}
             {isLocked && (
               <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-md text-[12px]">
-                Account locked due to multiple failed attempts. Please wait {lockoutCountdown} seconds.
+                Account locked due to multiple failed attempts. Please wait {lockoutCountdown}{" "}
+                seconds.
               </div>
             )}
 
@@ -240,7 +248,12 @@ export default function CompanyLoginScreen() {
                 <>
                   <span
                     className="border-2 border-t-transparent rounded-full animate-spin"
-                    style={{ width: 14, height: 14, borderColor: "#000000", borderTopColor: "transparent" }}
+                    style={{
+                      width: 14,
+                      height: 14,
+                      borderColor: "#000000",
+                      borderTopColor: "transparent",
+                    }}
                   />
                   Signing in…
                 </>
@@ -251,18 +264,12 @@ export default function CompanyLoginScreen() {
           </form>
 
           {/* Forgot Password Note */}
-          <p
-            className="text-center mt-4"
-            style={{ fontSize: "11px", color: "#666" }}
-          >
+          <p className="text-center mt-4" style={{ fontSize: "11px", color: "#666" }}>
             Forgot your password? Contact your system administrator.
           </p>
 
           {/* Last Login Security Indicator */}
-          <p
-            className="text-center mt-2"
-            style={{ fontSize: "11px", color: "#666" }}
-          >
+          <p className="text-center mt-2" style={{ fontSize: "11px", color: "#666" }}>
             {lastLoginInfo
               ? `Last login: ${formatLoginDate(lastLoginInfo.loginAt)} by ${lastLoginInfo.username}`
               : "No previous login recorded."}

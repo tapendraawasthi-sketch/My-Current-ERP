@@ -3,13 +3,7 @@
 import toast from "react-hot-toast";
 import { getDB, type DBInvoice } from "./db";
 
-export type CBMSInvoiceType =
-  | "tax-invoice"
-  | "simplified-invoice"
-  | "credit-note"
-  | "debit-note";
-
-
+export type CBMSInvoiceType = "tax-invoice" | "simplified-invoice" | "credit-note" | "debit-note";
 
 export interface CompanySettings {
   id?: string;
@@ -106,11 +100,7 @@ function normalizeAmount(value: unknown): number {
 }
 
 function getCompanyName(companySettings: CompanySettings): string {
-  return (
-    companySettings.companyNameEn ||
-    companySettings.name ||
-    "Company"
-  );
+  return companySettings.companyNameEn || companySettings.name || "Company";
 }
 
 function getSellerPan(companySettings: CompanySettings): string {
@@ -121,25 +111,16 @@ function getSellerVatNo(companySettings: CompanySettings): string {
   return companySettings.vatNumber || companySettings.panNumber || "";
 }
 
-function detectInvoiceType(
-  invoice: DBInvoice,
-  companySettings: CompanySettings,
-): CBMSInvoiceType {
+function detectInvoiceType(invoice: DBInvoice, companySettings: CompanySettings): CBMSInvoiceType {
   if (invoice.type === "sales-return") return "credit-note";
   if (invoice.type === "purchase-return") return "debit-note";
 
   const total = normalizeAmount(invoice.grandTotal);
-  const threshold =
-    companySettings.simplifiedInvoiceThreshold ?? DEFAULT_SIMPLIFIED_THRESHOLD;
+  const threshold = companySettings.simplifiedInvoiceThreshold ?? DEFAULT_SIMPLIFIED_THRESHOLD;
 
   const buyerIsUnregistered = !invoice.partyPan?.trim();
 
-  if (
-    invoice.type === "sales-invoice" &&
-    buyerIsUnregistered &&
-    total > 0 &&
-    total < threshold
-  ) {
+  if (invoice.type === "sales-invoice" && buyerIsUnregistered && total > 0 && total < threshold) {
     return "simplified-invoice";
   }
 
@@ -197,15 +178,11 @@ export function buildCbmsPayload(
       const exemptAmount = normalizeAmount(line.exemptAmount);
       const vatAmount = normalizeAmount(line.vatAmount);
       const totalAmount =
-        normalizeAmount(line.totalAmount) ||
-        taxableAmount + exemptAmount + vatAmount;
+        normalizeAmount(line.totalAmount) || taxableAmount + exemptAmount + vatAmount;
 
       return {
         sn: index + 1,
-        description:
-          line.itemName ||
-          line.description ||
-          `Item ${index + 1}`,
+        description: line.itemName || line.description || `Item ${index + 1}`,
         hsCode: line.hsCode || line.hsnCode || "",
         unit: line.unit || "PCS",
         quantity: qty,
@@ -313,17 +290,11 @@ class CBMSService {
 
       if (!response.ok) {
         throw new Error(
-          data?.message ||
-            data?.error ||
-            `CBMS submission failed with HTTP ${response.status}`,
+          data?.message || data?.error || `CBMS submission failed with HTTP ${response.status}`,
         );
       }
 
-      const irn =
-        data.irn ||
-        data.IRN ||
-        data.invoiceReferenceNumber ||
-        data.data?.irn;
+      const irn = data.irn || data.IRN || data.invoiceReferenceNumber || data.data?.irn;
 
       if (!irn) {
         throw new Error("CBMS response did not contain IRN.");
@@ -415,9 +386,7 @@ class CBMSService {
 
       if (!response.ok) {
         throw new Error(
-          data?.message ||
-            data?.error ||
-            `CBMS cancellation failed with HTTP ${response.status}`,
+          data?.message || data?.error || `CBMS cancellation failed with HTTP ${response.status}`,
         );
       }
 
@@ -508,12 +477,7 @@ class CBMSService {
     }
   }
 
-  async enqueueCancel(
-    invoiceId: string,
-    payload: any,
-    reason: string,
-    lastError?: string,
-  ) {
+  async enqueueCancel(invoiceId: string, payload: any, reason: string, lastError?: string) {
     const db = getDB();
 
     await db.cbmsQueue.add({
@@ -562,10 +526,7 @@ class CBMSService {
 
       if (!companySettings.cbmsEnabled) return;
 
-      const queueItems = await db.cbmsQueue
-        .where("status")
-        .equals("pending")
-        .sortBy("createdAt");
+      const queueItems = await db.cbmsQueue.where("status").equals("pending").sortBy("createdAt");
 
       for (const item of queueItems) {
         if (!item.id) continue;

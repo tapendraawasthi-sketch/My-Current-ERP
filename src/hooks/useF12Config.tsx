@@ -1,16 +1,16 @@
 // src/hooks/useF12Config.tsx
 // F12 Configuration System — React Context & Hook
 
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
-import { useStore } from '../store/useStore';
+import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import { useStore } from "../store/useStore";
 import {
   type F12ValueMap,
   type F12ScreenDef,
   type F12ScreenId,
   F12_SCREEN_REGISTRY,
   getDefaultValues,
-} from '../lib/f12Types';
-import { loadF12Values, saveF12Values, resetF12Values, getF12Value } from '../lib/f12Storage';
+} from "../lib/f12Types";
+import { loadF12Values, saveF12Values, resetF12Values, getF12Value } from "../lib/f12Storage";
 
 // ─── Context shape ───────────────────────────────────────────────────────────
 interface F12ContextValue {
@@ -39,7 +39,10 @@ interface F12ContextValue {
   /** Read a single config value for the active screen */
   getConfig: <T extends boolean | string | number>(key: string) => T | undefined;
   /** Read a single config value for any screen (for cross-screen access) */
-  getConfigFor: <T extends boolean | string | number>(screenId: F12ScreenId, key: string) => T | undefined;
+  getConfigFor: <T extends boolean | string | number>(
+    screenId: F12ScreenId,
+    key: string,
+  ) => T | undefined;
 }
 
 // ─── Context ─────────────────────────────────────────────────────────────────
@@ -48,13 +51,11 @@ const F12Context = createContext<F12ContextValue | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export const F12Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { companySettings } = useStore();
-  const companyId = companySettings?.id || 'default';
+  const companyId = companySettings?.id || "default";
 
-  const [activeScreenId, setActiveScreenIdState] = useState<F12ScreenId>('global');
+  const [activeScreenId, setActiveScreenIdState] = useState<F12ScreenId>("global");
   const [isOpen, setIsOpen] = useState(false);
-  const [values, setValuesState] = useState<F12ValueMap>(() =>
-    loadF12Values(companyId, 'global'),
-  );
+  const [values, setValuesState] = useState<F12ValueMap>(() => loadF12Values(companyId, "global"));
 
   // Keep a ref to companyId so callbacks always have the latest value
   const companyIdRef = useRef(companyId);
@@ -124,7 +125,7 @@ export const F12Provider: React.FC<{ children: React.ReactNode }> = ({ children 
 export function useF12Config(): F12ContextValue {
   const ctx = useContext(F12Context);
   if (!ctx) {
-    throw new Error('useF12Config must be used inside <F12Provider>');
+    throw new Error("useF12Config must be used inside <F12Provider>");
   }
   return ctx;
 }
@@ -135,7 +136,9 @@ export function useF12Config(): F12ContextValue {
  * @param screenId — must match a key in F12_SCREEN_REGISTRY (e.g. 'trial-balance', 'payment', 'ledger-master')
  * @returns getConfig — function to read a single F12 config value for this screen
  */
-export function useScreenF12(screenId: F12ScreenId): <T extends boolean | string | number>(key: string) => T | undefined {
+export function useScreenF12(
+  screenId: F12ScreenId,
+): <T extends boolean | string | number>(key: string) => T | undefined {
   const { setActiveScreenId, getConfig } = useF12Config();
 
   React.useEffect(() => {

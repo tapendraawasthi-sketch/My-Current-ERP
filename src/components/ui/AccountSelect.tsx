@@ -21,7 +21,7 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
   allowedTypes,
   allowedLevels,
   disabled = false,
-  className = ""
+  className = "",
 }) => {
   const { accounts } = useStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,17 +31,18 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Filter accounts based on allowedTypes and allowedLevels
-  const filteredAccounts = accounts.filter(acc => {
+  const filteredAccounts = accounts.filter((acc) => {
     const matchesType = !allowedTypes || allowedTypes.includes(acc.type);
     const matchesLevel = !allowedLevels || allowedLevels.includes(acc.level);
-    const matchesSearch = acc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         acc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (acc.alias && acc.alias.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch =
+      acc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      acc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (acc.alias && acc.alias.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesType && matchesLevel && matchesSearch;
   });
 
   // Find the currently selected account
-  const selectedAccount = accounts.find(acc => acc.id === value);
+  const selectedAccount = accounts.find((acc) => acc.id === value);
 
   // Handle outside clicks
   useEffect(() => {
@@ -62,10 +63,10 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setHighlightedIndex(prev => Math.min(prev + 1, filteredAccounts.length - 1));
+        setHighlightedIndex((prev) => Math.min(prev + 1, filteredAccounts.length - 1));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setHighlightedIndex(prev => Math.max(prev - 1, -1));
+        setHighlightedIndex((prev) => Math.max(prev - 1, -1));
       } else if (e.key === "Enter") {
         e.preventDefault();
         if (highlightedIndex >= 0) {
@@ -132,7 +133,9 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
                   }`}
                   onClick={() => handleOptionClick(account)}
                 >
-                  <div className="font-medium">{account.code} | {account.name}</div>
+                  <div className="font-medium">
+                    {account.code} | {account.name}
+                  </div>
                   {account.alias && (
                     <div className="text-[10px] text-gray-500 mt-0.5">Alias: {account.alias}</div>
                   )}
