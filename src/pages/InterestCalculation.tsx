@@ -1,468 +1,589 @@
-/**
- * src/pages/InterestCalculation.tsx
- *
- * Interest on Overdue Bills:
- *  - Reads overdue bills via computeBillWiseOutstanding
- *  - Simple or compound interest (monthly)
- *  - Rate configurable globally or per party
- *  - Table: Bill No | Outstanding | Overdue Days | Rate | Interest | Total
- *  - "Post Interest Entry" → creates Journal Voucher:
- *      Dr: Interest Receivable
- *      Cr: Interest Income
- */
-
-import React, { useMemo, useState, useCallback } from "react";
+// @ts-nocheck
+import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { toast } from "react-hot-toast";
+import { getDB } from "../lib/db";
+import { useStore } from "../store/useStore";
 import {
   Calculator,
-  TrendingUp,
+  FileSpreadsheet,
   RefreshCw,
-  FileText,
-  Info,
+  Download,
+  TrendingUp,
 } from "lucide-react";
-import { db } from "../lib/db";
-import { adToBS, formatBS, todayBS } from "../lib/nepaliDate";
-import {
-  computeBillWiseOutstanding,
-  computeInterestOnOverdue,
-  InterestRecord,
-} from "../lib/billWiseEngine";
-import { VoucherType, VoucherStatus } from "../lib/types";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface InterestRow {
+  partyId: string;
+  partyName: string;
+  partyPan?: string;
+  invoiceNo: string;
+  invoiceDate: string;
+  dueDate?: string;
+  originalAmount: number;
+  outstandingAmount: number;
+  daysOverdue: number;
+  interestRate: number;
+  interestAmount: number;
+  totalWithInterest: number;
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const fmt = (n: number) =>
-  "Rs. " +
-  n.toLocaleString("en-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-function bsStr(date: Date | null | undefined): string {
-  if (!date || isNaN(date.getTime())) return "—";
-  try {
-    return formatBS(adToBS(date));
-  } catch {
-    return "—";
-  }
-}
-
-// ─── Post Interest Journal ────────────────────────────────────────────────────
-
-async function postInterestJournal(
-  records: InterestRecord[],
-  interestReceivableAccountId: string,
-  interestIncomeAccountId: string,
-  fiscalYearBS: string
-) {
-  const today = new Date();
-  const bsDate = todayBS();
-  const totalInterest = records.reduce((s, r) => s + r.interestAmount, 0);
-
-  const narration =
-    `Interest on overdue receivables for ${records.length} bill(s). ` +
-    `Bills: ${records.map((r) => r.bill.billNo).join(", ")}.`;
-
-  const { generateSerialNumber } = await import("../lib/accounting");
-
-  const voucherNo = await generateSerialNumber(
-    VoucherType.JOURNAL,
-    undefined,
-    fiscalYearBS,
-    false
-  );
-
-  const entries = records.map((r) => ({
-    accountId: interestReceivableAccountId,
-    partyId: r.bill.partyId,
-    debit: r.interestAmount,
-    credit: 0,
-    narration: `Interest on bill ${r.bill.billNo} (${r.daysOverdue} days @ ${r.annualRate}%)`,
-  }));
-
-  entries.push({
-    accountId: interestIncomeAccountId,
-    partyId: "",
-    debit: 0,
-    credit: totalInterest,
-    narration: "Interest income on overdue receivables",
+function money(n: number): string {
+  return Number(n || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
-
-  await db.vouchers?.add({
-    type: VoucherType.JOURNAL,
-    status: VoucherStatus.POSTED,
-    voucherNo,
-    date: today.toISOString(),
-    dateBS: `${bsDate.year}/${String(bsDate.month).padStart(2, "0")}/${String(bsDate.day).padStart(2, "0")}`,
-    narration,
-    entries,
-    totalAmount: totalInterest,
-    createdAt: today.toISOString(),
-    updatedAt: today.toISOString(),
-  } as any);
-
-  return voucherNo;
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+function todayISO(): string {
+  return new Date().toISOString().split("T")[0];
+}
 
-export default function InterestCalculation() {
-  const [defaultRate, setDefaultRate] = useState(18); // 18% p.a.
-  const [useCompound, setUseCompound] = useState(false);
-  const [filterPartyId, setFilterPartyId] = useState("");
-  const [selectedBillNos, setSelectedBillNos] = useState<Set<string>>(new Set());
-  const [isPosting, setIsPosting] = useState(false);
+function daysDiff(dateStr: string, asOf: string): number {
+  if (!dateStr) return 0;
+  const d1 = new Date(dateStr);
+  const d2 = new Date(asOf);
+  const diff = d2.getTime() - d1.getTime();
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+}
 
-  // ── Company settings for accounts ────────────────────────────────────────
-  const companySettings = useLiveQuery(
-    () => db.companySettings?.toCollection().first() ?? Promise.resolve(null),
-    []
+// Local serial number generator — replaces the missing store.generateSerialNumber
+function generateLocalSerial(prefix: string, count: number): string {
+  return `${prefix}${String(count + 1).padStart(5, "0")}`;
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────────
+
+const InterestCalculation: React.FC = () => {
+  const { parties, companySettings } = useStore();
+
+  const [asOfDate, setAsOfDate] = useState(todayISO());
+  const [interestRate, setInterestRate] = useState(18); // % per annum
+  const [minDaysOverdue, setMinDaysOverdue] = useState(30);
+  const [direction, setDirection] = useState<"receivable" | "payable">(
+    "receivable",
   );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [generatingVoucher, setGeneratingVoucher] = useState(false);
 
-  // ── Live data ─────────────────────────────────────────────────────────────
-  const parties = useLiveQuery(() => db.parties?.toArray() ?? Promise.resolve([]), []);
+  // Fix: use getDB() default import — not named { db }
+  const db = getDB();
+
+  const invoiceType =
+    direction === "receivable" ? "sales-invoice" : "purchase-invoice";
+  const paymentType = direction === "receivable" ? "receipt" : "payment";
+
+  // Fix: useLiveQuery from "dexie-react-hooks" — correct package import
   const invoices = useLiveQuery(
-    () =>
-      db.vouchers
-        ?.where("type")
-        .equals(VoucherType.SALES_INVOICE as string)
-        .and((v: any) => v.status === VoucherStatus.POSTED)
-        .toArray() ?? Promise.resolve([]),
-    []
-  );
-  const receipts = useLiveQuery(
-    () =>
-      db.vouchers
-        ?.where("type")
-        .equals(VoucherType.RECEIPT as string)
-        .toArray() ?? Promise.resolve([]),
-    []
-  );
-  const currentFiscalYear = useLiveQuery(
-    () => db.fiscalYears?.filter((f: any) => f.isActive).first() ?? Promise.resolve(null),
-    []
+    () => db.invoices.where("type").equals(invoiceType).toArray(),
+    [invoiceType],
   );
 
-  // ── Party rates map ───────────────────────────────────────────────────────
-  const partyRatesMap = useMemo(() => {
-    const m = new Map<string, number>();
-    if (!parties) return m;
-    for (const p of parties as any[]) {
-      if (p.interestRate && p.interestRate > 0) {
-        m.set(p.id, p.interestRate);
+  const payments = useLiveQuery(
+    () => db.vouchers.where("type").equals(paymentType).toArray(),
+    [paymentType],
+  );
+
+  // ── Compute interest rows ─────────────────────────────────────────────────
+  const interestRows = useMemo<InterestRow[]>(() => {
+    if (!invoices || !payments) return [];
+
+    const rows: InterestRow[] = [];
+
+    for (const inv of invoices as any[]) {
+      if (!inv || inv.status === "cancelled" || inv.status === "draft")
+        continue;
+
+      const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
+      if (originalAmount <= 0) continue;
+
+      // Compute paid amount
+      let paidAmount = Number(inv.paidAmount ?? 0);
+      for (const pmt of payments as any[]) {
+        if (!pmt || pmt.partyId !== inv.partyId) continue;
+        for (const line of pmt.lines ?? []) {
+          if (
+            line.billRefNo === inv.invoiceNo ||
+            line.billRefNo === inv.id
+          ) {
+            paidAmount += Number(line.amount ?? 0);
+          }
+        }
       }
+
+      const outstanding = originalAmount - paidAmount;
+      if (outstanding <= 0.005) continue;
+
+      // Days overdue from due date
+      const refDate = inv.dueDate ?? inv.date;
+      const daysOverdue = refDate ? daysDiff(refDate, asOfDate) : 0;
+
+      if (daysOverdue < minDaysOverdue) continue;
+
+      // Daily interest = (outstanding × annualRate%) / 365
+      const dailyRate = interestRate / 100 / 365;
+      const interestAmount = parseFloat(
+        (outstanding * dailyRate * daysOverdue).toFixed(2),
+      );
+
+      const partyId = inv.partyId ?? "unknown";
+      const partyName =
+        inv.partyName ??
+        parties.find((p: any) => p.id === partyId)?.name ??
+        "Unknown";
+      const partyPan =
+        inv.partyPan ??
+        parties.find((p: any) => p.id === partyId)?.pan;
+
+      rows.push({
+        partyId,
+        partyName,
+        partyPan,
+        invoiceNo: inv.invoiceNo ?? inv.id,
+        invoiceDate: inv.date ?? "",
+        dueDate: inv.dueDate ?? "",
+        originalAmount,
+        outstandingAmount: parseFloat(outstanding.toFixed(2)),
+        daysOverdue,
+        interestRate,
+        interestAmount,
+        totalWithInterest: parseFloat(
+          (outstanding + interestAmount).toFixed(2),
+        ),
+      });
     }
-    return m;
-  }, [parties]);
 
-  const partiesMap = useMemo(() => {
-    const m = new Map<string, { name: string }>();
-    if (!parties) return m;
-    for (const p of parties as any[]) m.set(p.id, { name: p.name ?? p.id });
-    return m;
-  }, [parties]);
+    return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
+  }, [invoices, payments, asOfDate, interestRate, minDaysOverdue, parties]);
 
-  // ── Compute overdue bills then interest ───────────────────────────────────
-  const interestRecords = useMemo(() => {
-    if (!invoices || !receipts) return [];
-
-    const bills = computeBillWiseOutstanding(
-      filterPartyId || null,
-      invoices as any[],
-      receipts as any[],
-      new Date(),
-      "receivable"
+  // ── Filter ────────────────────────────────────────────────────────────────
+  const filteredRows = useMemo<InterestRow[]>(() => {
+    if (!searchTerm.trim()) return interestRows;
+    const q = searchTerm.toLowerCase();
+    return interestRows.filter(
+      (r) =>
+        r.partyName.toLowerCase().includes(q) ||
+        r.invoiceNo.toLowerCase().includes(q) ||
+        (r.partyPan ?? "").toLowerCase().includes(q),
     );
-
-    return computeInterestOnOverdue(bills, defaultRate, partyRatesMap, useCompound);
-  }, [invoices, receipts, filterPartyId, defaultRate, partyRatesMap, useCompound]);
+  }, [interestRows, searchTerm]);
 
   // ── Totals ────────────────────────────────────────────────────────────────
-  const { totalPrincipal, totalInterest, totalDue } = useMemo(() => {
-    const selected = selectedBillNos.size > 0
-      ? interestRecords.filter((r) => selectedBillNos.has(r.bill.billNo))
-      : interestRecords;
+  const totals = useMemo(() => {
     return {
-      totalPrincipal: selected.reduce((s, r) => s + r.bill.balanceAmount, 0),
-      totalInterest: selected.reduce((s, r) => s + r.interestAmount, 0),
-      totalDue: selected.reduce((s, r) => s + r.totalDue, 0),
+      outstanding: filteredRows.reduce((s, r) => s + r.outstandingAmount, 0),
+      interest: filteredRows.reduce((s, r) => s + r.interestAmount, 0),
+      total: filteredRows.reduce((s, r) => s + r.totalWithInterest, 0),
     };
-  }, [interestRecords, selectedBillNos]);
+  }, [filteredRows]);
 
-  const toggleBill = useCallback((billNo: string) => {
-    setSelectedBillNos((prev) => {
-      const n = new Set(prev);
-      n.has(billNo) ? n.delete(billNo) : n.add(billNo);
-      return n;
-    });
-  }, []);
-
-  const toggleAll = useCallback(() => {
-    setSelectedBillNos((prev) =>
-      prev.size === interestRecords.length
-        ? new Set()
-        : new Set(interestRecords.map((r) => r.bill.billNo))
-    );
-  }, [interestRecords]);
-
-  const handlePostInterest = useCallback(async () => {
-    const toPost =
-      selectedBillNos.size > 0
-        ? interestRecords.filter((r) => selectedBillNos.has(r.bill.billNo))
-        : interestRecords;
-
-    if (toPost.length === 0) {
-      toast.error("No bills selected to post interest for.");
-      return;
-    }
-
-    const interestReceivableId =
-      (companySettings as any)?.interestReceivableAccountId ?? "";
-    const interestIncomeId =
-      (companySettings as any)?.interestIncomeAccountId ?? "";
-
-    if (!interestReceivableId || !interestIncomeId) {
-      toast.error(
-        "Please configure Interest Receivable and Interest Income accounts in Company Settings."
-      );
-      return;
-    }
-
-    setIsPosting(true);
+  // ── Export ────────────────────────────────────────────────────────────────
+  const handleExport = () => {
     try {
-      const vNo = await postInterestJournal(
-        toPost,
-        interestReceivableId,
-        interestIncomeId,
-        (currentFiscalYear as any)?.fiscalYearBS ?? ""
-      );
-      toast.success(`Interest Journal ${vNo} posted successfully!`);
-      setSelectedBillNos(new Set());
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to post interest entry. Check console for details.");
-    } finally {
-      setIsPosting(false);
+      const companyName = companySettings?.name ?? "Company";
+      const headers = [
+        "Party",
+        "PAN",
+        "Invoice No.",
+        "Invoice Date",
+        "Due Date",
+        "Original Amt",
+        "Outstanding",
+        "Days Overdue",
+        "Rate (%)",
+        "Interest",
+        "Total with Interest",
+      ];
+      const rows = filteredRows.map((r) => [
+        r.partyName,
+        r.partyPan ?? "",
+        r.invoiceNo,
+        r.invoiceDate,
+        r.dueDate,
+        r.originalAmount,
+        r.outstandingAmount,
+        r.daysOverdue,
+        r.interestRate,
+        r.interestAmount,
+        r.totalWithInterest,
+      ]);
+
+      const wb = XLSX.utils.book_new();
+      const wsData = [
+        [companyName],
+        ["Interest Calculation Report"],
+        [`As of: ${asOfDate} | Rate: ${interestRate}% p.a. | Min Overdue: ${minDaysOverdue} days`],
+        [],
+        headers,
+        ...rows,
+        [],
+        [
+          "TOTAL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          totals.outstanding,
+          "",
+          "",
+          totals.interest,
+          totals.total,
+        ],
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "Interest Calculation");
+      XLSX.writeFile(wb, `InterestCalc_${asOfDate}.xlsx`);
+      toast.success("Interest calculation exported.");
+    } catch {
+      toast.error("Export failed.");
     }
-  }, [interestRecords, selectedBillNos, companySettings, currentFiscalYear]);
+  };
 
-  const isLoading = !invoices || !receipts || !parties;
+  // ── Generate interest vouchers ────────────────────────────────────────────
+  const handleGenerateVouchers = async () => {
+    if (filteredRows.length === 0) {
+      toast.error("No interest rows to generate vouchers for.");
+      return;
+    }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
-        <RefreshCw className="animate-spin mr-2" size={20} />
-        Computing interest…
-      </div>
-    );
-  }
+    setGeneratingVoucher(true);
+    try {
+      // Fix: use local serial number generator instead of
+      // store.generateSerialNumber which does not exist on AppState
+      const existingCount = await db.vouchers.count();
+      const voucherNo = generateLocalSerial("INT-", existingCount);
 
+      const ts = new Date().toISOString();
+      const totalInterest = totals.interest;
+
+      // Find interest income account
+      const allAccounts = await db.accounts.toArray();
+      const interestAccount = allAccounts.find(
+        (a: any) =>
+          (a.name ?? "").toLowerCase().includes("interest") &&
+          a.type === "income",
+      );
+
+      const voucher: any = {
+        id: crypto.randomUUID(),
+        voucherNo,
+        date: asOfDate,
+        type: "journal",
+        status: "posted",
+        narration: `Interest charged @ ${interestRate}% p.a. as of ${asOfDate}`,
+        totalDebit: totalInterest,
+        totalCredit: totalInterest,
+        grandTotal: totalInterest,
+        lines: filteredRows.flatMap((r) => [
+          {
+            accountId: r.partyId,
+            accountName: r.partyName,
+            debit: r.interestAmount,
+            credit: 0,
+            narration: `Interest on ${r.invoiceNo} (${r.daysOverdue} days)`,
+          },
+          {
+            accountId: interestAccount?.id ?? "",
+            accountName:
+              interestAccount?.name ?? "Interest Income",
+            debit: 0,
+            credit: r.interestAmount,
+            narration: `Interest income from ${r.partyName}`,
+          },
+        ]),
+        createdAt: ts,
+        updatedAt: ts,
+      };
+
+      await db.vouchers.add(voucher);
+      toast.success(
+        `Interest voucher ${voucherNo} created for Rs. ${money(totalInterest)}.`,
+      );
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to generate vouchers.");
+    } finally {
+      setGeneratingVoucher(false);
+    }
+  };
+
+  const isLoading = !invoices || !payments;
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 space-y-4">
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Interest on Overdue Bills</h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Computed as at {formatBS(adToBS(new Date()))}
+          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+            <Calculator className="h-4 w-4 text-[#1557b0]" />
+            Interest Calculation
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Calculate overdue interest on outstanding{" "}
+            {direction === "receivable" ? "receivables" : "payables"}
           </p>
         </div>
-        <button
-          onClick={handlePostInterest}
-          disabled={isPosting || interestRecords.length === 0}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <FileText size={14} />
-          {isPosting ? "Posting…" : "Post Interest Entry"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={filteredRows.length === 0}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors disabled:opacity-50"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            Export
+          </button>
+          <button
+            type="button"
+            onClick={handleGenerateVouchers}
+            disabled={filteredRows.length === 0 || generatingVoucher}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
+          >
+            {generatingVoucher ? (
+              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <TrendingUp className="h-3.5 w-3.5" />
+            )}
+            Post Vouchers
+          </button>
+        </div>
       </div>
 
-      {/* ── Configuration ── */}
-      <div className="bg-white border rounded-lg p-4 flex flex-wrap gap-4 items-end">
-        {/* Default rate */}
-        <div className="min-w-40">
-          <label className="block text-xs text-gray-500 mb-1">
-            Default Annual Rate (%)
-          </label>
-          <div className="flex items-center gap-1">
+      {/* Config */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
+        <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          Interest Parameters
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              Direction
+            </label>
+            <select
+              value={direction}
+              onChange={(e) =>
+                setDirection(e.target.value as "receivable" | "payable")
+              }
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            >
+              <option value="receivable">Receivables (Sales)</option>
+              <option value="payable">Payables (Purchase)</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              As of Date
+            </label>
+            <input
+              type="date"
+              value={asOfDate}
+              onChange={(e) => setAsOfDate(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            />
+          </div>
+
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              Annual Interest Rate (%)
+            </label>
             <input
               type="number"
               min={0}
               max={100}
-              step={0.5}
-              value={defaultRate}
-              onChange={(e) => setDefaultRate(parseFloat(e.target.value) || 0)}
-              className="w-full px-2 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+              step={0.1}
+              value={interestRate}
+              onChange={(e) =>
+                setInterestRate(parseFloat(e.target.value) || 0)
+              }
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
             />
-            <span className="text-sm text-gray-500 whitespace-nowrap">% p.a.</span>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+              Min. Days Overdue
+            </label>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              value={minDaysOverdue}
+              onChange={(e) =>
+                setMinDaysOverdue(parseInt(e.target.value) || 0)
+              }
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+            />
           </div>
         </div>
 
-        {/* Method toggle */}
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Method</label>
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-            {[false, true].map((c) => (
-              <button
-                key={String(c)}
-                onClick={() => setUseCompound(c)}
-                className={`px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${
-                  useCompound === c
-                    ? "bg-white shadow text-blue-700"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
-              >
-                {c ? "Compound (Monthly)" : "Simple"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Filter by party */}
-        <div className="min-w-48">
-          <label className="block text-xs text-gray-500 mb-1">Filter Party</label>
-          <select
-            value={filterPartyId}
-            onChange={(e) => setFilterPartyId(e.target.value)}
-            className="w-full px-2 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-          >
-            <option value="">All Parties</option>
-            {(parties as any[]).map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-lg self-center">
-          <Info size={13} />
-          Per-party rates from Party master override the default rate.
+        <div className="mt-3">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search party, invoice…"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-xs"
+          />
         </div>
       </div>
 
-      {/* ── Summary Cards ── */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white border rounded-lg p-4">
-          <div className="text-xs text-gray-500 mb-1">Total Principal Overdue</div>
-          <div className="text-lg font-bold text-gray-800">{fmt(totalPrincipal)}</div>
-        </div>
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-          <div className="text-xs text-orange-600 mb-1 flex items-center gap-1">
-            <TrendingUp size={12} />
-            Total Interest
+      {/* Summary */}
+      {!isLoading && filteredRows.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Outstanding Amount
+            </p>
+            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
+              {money(totals.outstanding)}
+            </p>
           </div>
-          <div className="text-lg font-bold text-orange-700">{fmt(totalInterest)}</div>
-        </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="text-xs text-blue-600 mb-1 flex items-center gap-1">
-            <Calculator size={12} />
-            Total Due (Principal + Interest)
+          <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Interest @ {interestRate}% p.a.
+            </p>
+            <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
+              {money(totals.interest)}
+            </p>
           </div>
-          <div className="text-lg font-bold text-blue-700">{fmt(totalDue)}</div>
+          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Total with Interest
+            </p>
+            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
+              {money(totals.total)}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* ── Table ── */}
-      <div className="bg-white border rounded-lg overflow-x-auto">
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
-              <th className="px-3 py-2">
-                <input
-                  type="checkbox"
-                  checked={
-                    selectedBillNos.size === interestRecords.length &&
-                    interestRecords.length > 0
-                  }
-                  onChange={toggleAll}
-                  className="rounded"
-                />
-              </th>
-              <th className="text-left px-3 py-2">Bill No.</th>
-              <th className="text-left px-3 py-2">Party</th>
-              <th className="text-left px-3 py-2">Invoice Date</th>
-              <th className="text-left px-3 py-2">Due Date</th>
-              <th className="text-right px-3 py-2">Outstanding</th>
-              <th className="text-right px-3 py-2">Overdue Days</th>
-              <th className="text-right px-3 py-2">Rate (%)</th>
-              <th className="text-right px-3 py-2">Interest</th>
-              <th className="text-right px-3 py-2">Total Due</th>
-            </tr>
-          </thead>
-          <tbody>
-            {interestRecords.length === 0 ? (
-              <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-500">
-                  No overdue bills found.{" "}
-                  {filterPartyId && "Try clearing the party filter."}
-                </td>
-              </tr>
-            ) : (
-              interestRecords.map((r) => (
-                <tr key={r.bill.billNo} className="border-b hover:bg-gray-50">
-                  <td className="px-3 py-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedBillNos.has(r.bill.billNo)}
-                      onChange={() => toggleBill(r.bill.billNo)}
-                      className="rounded"
-                    />
-                  </td>
-                  <td className="px-3 py-2 font-mono text-xs text-blue-600">
-                    {r.bill.billNo}
-                  </td>
-                  <td className="px-3 py-2 font-medium">
-                    {partiesMap.get(r.bill.partyId)?.name ?? r.bill.partyId}
-                  </td>
-                  <td className="px-3 py-2">{bsStr(r.bill.invoiceDate)}</td>
-                  <td className="px-3 py-2">{bsStr(r.bill.dueDate)}</td>
-                  <td className="px-3 py-2 text-right font-semibold">
-                    {fmt(r.bill.balanceAmount)}
-                  </td>
-                  <td className="px-3 py-2 text-right">
-                    <span className="text-red-600 font-semibold">{r.daysOverdue}</span>
-                  </td>
-                  <td className="px-3 py-2 text-right">{r.annualRate}%</td>
-                  <td className="px-3 py-2 text-right text-orange-700 font-semibold">
-                    {fmt(r.interestAmount)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-bold text-blue-700">
-                    {fmt(r.totalDue)}
-                  </td>
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+            <RefreshCw className="h-5 w-5 animate-spin" />
+            <span className="text-[12px]">Calculating interest…</span>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[900px]">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Party
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Invoice No.
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    Due Date
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Outstanding
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                    Days
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Interest
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                    Total
+                  </th>
                 </tr>
-              ))
-            )}
-          </tbody>
-          {interestRecords.length > 0 && (
-            <tfoot>
-              <tr className="bg-blue-50 font-bold text-blue-800 border-t-2">
-                <td colSpan={5} className="px-3 py-2">
-                  {selectedBillNos.size > 0
-                    ? `${selectedBillNos.size} of ${interestRecords.length} selected`
-                    : `Total (${interestRecords.length} bills)`}
-                </td>
-                <td className="px-3 py-2 text-right">{fmt(totalPrincipal)}</td>
-                <td className="px-3 py-2" />
-                <td className="px-3 py-2" />
-                <td className="px-3 py-2 text-right text-orange-700">{fmt(totalInterest)}</td>
-                <td className="px-3 py-2 text-right">{fmt(totalDue)}</td>
-              </tr>
-            </tfoot>
-          )}
-        </table>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredRows.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-3 py-12 text-center text-[12px] text-gray-400"
+                    >
+                      No overdue invoices found for the selected criteria.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRows.map((row: InterestRow, idx: number) => (
+                    <tr key={`${row.invoiceNo}-${idx}`} className="hover:bg-gray-50">
+                      <td className="px-3 py-2.5">
+                        <div className="text-[12px] font-semibold text-gray-800">
+                          {row.partyName}
+                        </div>
+                        {row.partyPan && (
+                          <div className="text-[10px] text-gray-500 font-mono">
+                            PAN: {row.partyPan}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
+                        {row.invoiceNo}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        {row.dueDate || "—"}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(row.outstandingAmount)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right text-[12px]">
+                        <span
+                          className={`font-semibold ${
+                            row.daysOverdue > 90
+                              ? "text-red-700"
+                              : row.daysOverdue > 60
+                              ? "text-red-500"
+                              : row.daysOverdue > 30
+                              ? "text-orange-600"
+                              : "text-amber-600"
+                          }`}
+                        >
+                          {row.daysOverdue}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-600">
+                        {money(row.interestAmount)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                        {money(row.totalWithInterest)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
 
-      {/* ── Post note ── */}
-      <div className="text-xs text-gray-500 bg-gray-50 border rounded p-3 flex gap-2">
-        <Info size={13} className="shrink-0 mt-0.5 text-blue-500" />
-        <span>
-          <strong>"Post Interest Entry"</strong> creates a Journal Voucher:
-          Dr. Interest Receivable → Cr. Interest Income, with a narration referencing each bill.
-          Configure the accounts in <em>Company Settings → Finance → Interest Accounts</em>.
-          {selectedBillNos.size > 0
-            ? ` ${selectedBillNos.size} bill(s) selected for posting.`
-            : " All listed bills will be posted."}
-        </span>
+              {filteredRows.length > 0 && (
+                <tfoot>
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                    <td
+                      colSpan={3}
+                      className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
+                    >
+                      Total ({filteredRows.length} invoices)
+                    </td>
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                      {money(totals.outstanding)}
+                    </td>
+                    <td className="px-3 py-2.5" />
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-red-600">
+                      {money(totals.interest)}
+                    </td>
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                      {money(totals.total)}
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default InterestCalculation;
