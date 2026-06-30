@@ -5,7 +5,13 @@ import { useStore } from "../store/useStore";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { computeItemStock } from "../lib/db";
+
+// Compute net stock for an item (optionally filtered by warehouse/material centre)
+function computeItemStock(movements: any[], itemId: string, warehouseId?: string): number {
+  return movements
+    .filter((m) => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId || m.materialCentreId === warehouseId))
+    .reduce((sum, m) => sum + (Number(m.qty) || 0), 0);
+}
 
 export default function StockSummaryReport() {
   const store = useStore();

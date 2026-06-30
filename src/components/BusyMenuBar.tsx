@@ -56,11 +56,14 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       {
         label: "Inventory",
         children: [
-          { label: "Stock Items", page: "item-master" },
-          { label: "Warehouses", page: "warehouses" },
+          { label: "Item Groups", page: "item-groups" },
+          { label: "Item Master", page: "item-master" },
           { label: "Units of Measure", page: "units" },
           { label: "Unit Conversions", page: "unit-conversion" },
           { label: "Price Lists", page: "price-lists" },
+          { label: "Bill of Material", page: "bill-of-material" },
+          { label: "Schemes / Offers", page: "schemes" },
+          { label: "Misc Masters", page: "misc-masters" },
         ],
       },
       // Operations group
@@ -104,8 +107,17 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
         label: "Inventory",
         children: [
           { label: "Stock Transfer", page: "stock-transfer" },
-          { label: "Stock Adjustment", page: "physical-stock" },
+          { label: "Stock Journal", page: "stock-journal" },
+          { label: "Production Voucher", page: "production" },
           { label: "Physical Stock", page: "physical-stock" },
+        ],
+      },
+      // Quotations
+      {
+        label: "Quotations",
+        children: [
+          { label: "Sales Quotation", page: "sales-quotation" },
+          { label: "Purchase Quotation", page: "purchase-quotation" },
         ],
       },
       // Finance / Accounts
@@ -154,10 +166,14 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
       {
         label: "Inventory",
         children: [
+          { label: "Stock Status", page: "stock-status" },
+          { label: "Stock Ledger", page: "stock-ledger" },
           { label: "Stock Summary", page: "stock-summary" },
-          { label: "Stock Movement", page: "stock-movement" },
-          { label: "Reorder Level Report", page: "reorder-report" },
-          { label: "Godown-wise Stock", page: "godown-stock" },
+          { label: "Sales Analysis", page: "sales-analysis" },
+          { label: "Purchase Analysis", page: "sales-analysis" },
+          { label: "Stock Aging", page: "stock-status" },
+          { label: "Critical Level", page: "stock-summary" },
+          { label: "Unmoved Items", page: "stock-summary" },
         ],
       },
       // GST Reports
@@ -179,6 +195,7 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
     items: [
       { label: "Data Import / Export", page: "data-import-export" },
       { label: "Users", page: "users" },
+      { label: "Inventory Configuration", page: "inventory-config" },
       { label: "Approval Workflow", page: "approval-workflow" },
       { separator: true, label: "" },
       { label: "About", page: "settings" },

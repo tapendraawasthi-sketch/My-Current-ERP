@@ -35,6 +35,7 @@ import { computeNextDueDate } from "../lib/recurringUtils";
 export const useStore = create<AppState>()((...a) => {
   const [set, get] = a;
   return {
+    ...createInventorySlice(set, get),
     isDbReady: false,
     isAuthenticated: false,
     authStage: "checking" as AuthStage,
@@ -377,6 +378,12 @@ export const useStore = create<AppState>()((...a) => {
         reportSchedules,
         priceFloorPolicies,
         chequeBounceLogs,
+        schemesArr,
+        bomsArr,
+        serialsArr,
+        stockTransfersArr,
+        quotationsArr,
+        inventoryConfigGlobal,
       ] = await Promise.all([
         db.accounts.toArray().catch(() => []),
         db.parties.toArray().catch(() => []),
@@ -463,6 +470,12 @@ export const useStore = create<AppState>()((...a) => {
         db.reportSchedules.toArray().catch(() => []),
         db.priceFloorPolicies.toArray().catch(() => []),
         db.chequeBounceLogs.toArray().catch(() => []),
+        Promise.resolve([]),            // schemes (not yet in DB schema)
+        Promise.resolve([]),            // billsOfMaterial (not yet in DB schema)
+        db.serialNumbers.toArray().catch(() => []),
+        db.stockTransfers.toArray().catch(() => []),
+        db.quotations.toArray().catch(() => []),
+        Promise.resolve(null),          // inventoryConfig (not yet in DB schema)
       ]);
 
       const currentFiscalYear = (fiscalYears.find((fy: any) => fy.isCurrent || fy.isDefault) ||
@@ -559,6 +572,12 @@ export const useStore = create<AppState>()((...a) => {
         priceFloorPolicies: priceFloorPolicies as any[],
         chequeBounceLogs: chequeBounceLogs as any[],
         journalEntries: vouchers,
+        schemes: schemesArr,
+        billsOfMaterial: bomsArr,
+        serialNumbers: serialsArr,
+        stockTransfers: stockTransfersArr,
+        quotationVouchers: quotationsArr,
+        inventoryConfig: inventoryConfigGlobal,
       });
 
       // Stock reorder notifications

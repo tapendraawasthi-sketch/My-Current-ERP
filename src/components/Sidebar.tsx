@@ -88,10 +88,14 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Chart of Accounts", page: "accounts", icon: BookOpen },
       { label: "Parties Directory", page: "parties", icon: Users },
-      { label: "Stock Items", page: "item-master", icon: Package },
+      { label: "Item Groups", page: "item-groups", icon: FolderOpen },
+      { label: "Item Master", page: "item-master", icon: Package },
       { label: "Unit Conversion", page: "unit-conversion", icon: Scale },
+      { label: "Bill of Material", page: "bill-of-material", icon: Factory },
+      { label: "Schemes", page: "schemes", icon: Tag },
       { label: "Bill Sundries", page: "bill-sundry", icon: Tags },
       { label: "Price List Master", page: "price-list-master", icon: Tags },
+      { label: "Misc Masters", page: "misc-masters", icon: Settings },
     ],
   },
   {
@@ -100,11 +104,16 @@ const menuGroups: MenuGroup[] = [
       { label: "Journal Entry", page: "journal", icon: FileText },
       { label: "Sales Invoice", page: "billing", icon: TrendingUp },
       { label: "Purchase Invoice", page: "purchase", icon: TrendingDown },
+      { label: "Stock Journal", page: "stock-journal", icon: ArrowLeftRight },
+      { label: "Stock Transfer", page: "stock-transfer", icon: Truck },
+      { label: "Production", page: "production", icon: Factory },
+      { label: "Physical Stock", page: "physical-stock", icon: Archive },
       { label: "Journal Register", page: "journal-register", icon: ScrollText },
       { label: "Day Book", page: "day-book", icon: BookMarked },
       { label: "Approval Workflow", page: "approval-workflow", icon: CheckCircle },
       { label: "Missing Vouchers", page: "missing-vouchers", icon: AlertTriangle },
-      { label: "Quotations", page: "quotations", icon: FileText },
+      { label: "Sales Quotation", page: "sales-quotation", icon: FileText },
+      { label: "Purchase Quotation", page: "purchase-quotation", icon: FileText },
       { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },
     ],
   },
@@ -134,6 +143,9 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Reports",
     items: [
+      { label: "Stock Status", page: "stock-status", icon: Package },
+      { label: "Stock Ledger", page: "stock-ledger", icon: BookOpen },
+      { label: "Sales Analysis", page: "sales-analysis", icon: TrendingUp },
       { label: "Sales Order Outstanding", page: "sales-order-outstanding", icon: ClipboardList },
       {
         label: "Purchase Order Outstanding",
@@ -179,6 +191,7 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Configuration",
     items: [
+      { label: "Inventory Config", page: "inventory-config", icon: Settings },
       { label: "Print Configuration", page: "print-configuration", icon: Printer },
       { label: "Accounts Configuration", page: "accounts-configuration", icon: Settings },
       { label: "F11 Features", page: "f11-features", icon: Settings },

@@ -69,11 +69,11 @@ import PartyStatement from "./pages/PartyStatement";
 // ── Inventory & New Masters (Parts 1-13) ───────────────────────────────────
 import InventoryConfiguration from "./pages/InventoryConfiguration";
 import ItemGroupMaster from "./pages/ItemGroupMaster";
-import ItemMaster from "./pages/ItemMaster";
-import BillOfMaterialMaster from "./pages/BillOfMaterialMaster";
+import ItemMaster from "./pages/StockBook"; // StockBook serves as Item Master
+import BillOfMaterialMaster from "./pages/BOMProduction"; // BOMProduction is the BOM page
 import StockJournalPage from "./pages/StockJournalPage";
-import ProductionVoucherPage from "./pages/ProductionVoucherPage";
-import StockStatusReport from "./pages/StockStatusReport";
+import ProductionVoucherPage from "./pages/ProductionPage"; // ProductionPage exists
+import StockStatusReport from "./pages/InventoryReport"; // InventoryReport as stock status
 import MiscMasters from "./pages/MiscMasters";
 import SchemeMaster from "./pages/SchemeMaster";
 import OrderVoucherPage from "./pages/OrderVoucherPage";

@@ -5,7 +5,12 @@ import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
 import { Save, RefreshCw } from "lucide-react";
 import type { DBItem, DBMaterialCentre } from "../lib/db";
-import { computeItemStock } from "../lib/db";
+
+function computeItemStock(movements: any[], itemId: string, warehouseId?: string): number {
+  return movements
+    .filter((m) => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId || m.materialCentreId === warehouseId))
+    .reduce((sum, m) => sum + (Number(m.qty) || 0), 0);
+}
 
 export default function PhysicalStockPage2() {
   const store = useStore();
