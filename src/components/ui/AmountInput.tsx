@@ -1,97 +1,66 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
+import { useStore } from "../../store/useStore";
 
-export interface AmountInputProps {
-  value: number | string;
-  onChange: (value: number) => void;
+interface AmountInputProps {
+  label?: string;
+  value: number;
+  onChange: (val: number) => void;
   placeholder?: string;
   disabled?: boolean;
-  className?: string;        // ← Fix BUG-021/022
-  inputClassName?: string;
-  label?: string;
-  min?: number;
-  max?: number;
-  decimalPlaces?: number;
-  prefix?: string;
-  suffix?: string;
-  autoFocus?: boolean;
-  tabIndex?: number;
-  onFocus?: () => void;
-  onBlur?: () => void;
+  required?: boolean;
+  error?: string;
+  id?: string;
+  className?: string;
 }
 
 const AmountInput: React.FC<AmountInputProps> = ({
+  label,
   value,
   onChange,
   placeholder = "0.00",
   disabled = false,
+  required = false,
+  error,
+  id,
   className = "",
-  inputClassName = "",
-  label,
-  min,
-  max,
-  decimalPlaces = 2,
-  prefix,
-  suffix,
-  autoFocus = false,
-  tabIndex,
-  onFocus,
-  onBlur,
 }) => {
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (autoFocus) ref.current?.focus();
-  }, [autoFocus]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/[^0-9.-]/g, "");
-    const num = parseFloat(raw);
-    onChange(isNaN(num) ? 0 : num);
-  };
-
-  const displayValue =
-    value === "" || value === undefined || value === null || value === 0
-      ? ""
-      : typeof value === "number"
-        ? value.toFixed(decimalPlaces)
-        : String(value);
+  const company = useStore((state) => state.companySettings);
+  const symbol = company ? company.currencySymbol : "Rs.";
 
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label className="block text-[11px] font-medium text-gray-600 mb-1">{label}</label>
+        <label
+          htmlFor={id}
+          className="text-[11px] font-medium text-[#000000] flex items-center gap-0.5"
+        >
+          {label}
+          {required && <span className="text-red-500 font-bold">*</span>}
+        </label>
       )}
-      <div className="relative flex items-center">
-        {prefix && (
-          <span className="absolute left-2 text-[12px] text-gray-500 select-none">{prefix}</span>
-        )}
+      <div className="relative flex items-center w-full rounded-md shadow-sm">
+        <span className="absolute left-2.5 text-[12px] text-[#000000] font-medium pointer-events-none">
+          {symbol}
+        </span>
         <input
-          ref={ref}
+          id={id}
           type="number"
-          value={displayValue}
-          onChange={handleChange}
+          value={value === 0 ? "" : value}
+          onChange={(e) => {
+            const parsed = parseFloat(e.target.value);
+            onChange(isNaN(parsed) ? 0 : parsed);
+          }}
           placeholder={placeholder}
           disabled={disabled}
-          min={min}
-          max={max}
-          step={Math.pow(10, -decimalPlaces)}
-          tabIndex={tabIndex}
-          onFocus={(e) => { e.target.select(); onFocus?.(); }}
-          onBlur={onBlur}
+          required={required}
           className={`
-            h-8 w-full px-2.5 text-[12px] text-right font-mono
-            border border-gray-300 rounded-md bg-white
-            focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]
-            disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
-            ${prefix ? "pl-7" : ""}
-            ${suffix ? "pr-7" : ""}
-            ${inputClassName}
+            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-[#000000] font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
+            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
           `}
         />
-        {suffix && (
-          <span className="absolute right-2 text-[12px] text-gray-500 select-none">{suffix}</span>
-        )}
       </div>
+      {error && <span className="text-xs text-red-650 font-medium">{error}</span>}
     </div>
   );
 };

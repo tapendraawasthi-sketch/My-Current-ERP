@@ -8,7 +8,7 @@ const S_DARK = { background: "#D4EABD", color: "#000000", border: "1px solid #00
 const S_TEXT = { color: "#000000" } as const;
 
 export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) => {
-  const { companySettings, currentFiscalYear, logout } = useStore();
+  const { companySettings, currentFiscalYear } = useStore();
   const company = companySettings?.companyNameEn || companySettings?.name || "Company";
   const fy = currentFiscalYear ? `F.Y. ${currentFiscalYear.name}` : "";
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -29,8 +29,13 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
 
   const handleClose = () => {
     if (window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.")) {
-      logout();
-      setTimeout(() => window.location.reload(), 100);
+      // Clear session and redirect to login
+      try {
+        sessionStorage.clear();
+        window.location.reload();
+      } catch {
+        window.location.href = "/";
+      }
     }
   };
 
@@ -116,12 +121,7 @@ export const StatusBar: React.FC = () => {
   const [bsDate, setBsDate] = useState("");
 
   useEffect(() => {
-    const update = () => {
-      try { setBsDate(getBSTodayLong()); } catch { /* ignore */ }
-    };
-    update();
-    const id = setInterval(update, 60_000);
-    return () => clearInterval(id);
+    setBsDate(getBSTodayLong());
   }, []);
 
   const today = new Date();

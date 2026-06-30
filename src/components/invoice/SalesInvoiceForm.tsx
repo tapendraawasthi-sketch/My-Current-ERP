@@ -234,7 +234,6 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedInvoice, setSavedInvoice] = useState<any>(null);
-  const [activeLineIdx, setActiveLineIdx] = useState<number>(-1);
 
   const [billSundries, setBillSundries] = useState<
     Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>
@@ -308,22 +307,20 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
   // ---- line helpers ----
   const recalculateLine = (line: InvoiceLineState): InvoiceLineState => {
-    const qty   = Number(line.qty   ?? 0);
-    const rate  = Number(line.rate  ?? 0);
-    const gross = Math.round(qty * rate * 100) / 100;
-    const discP = Number(line.discountPercent ?? 0);
-    const discA = Number(line.discountAmount  ?? 0);
-    const disc  = Math.round((gross * discP / 100 + discA) * 100) / 100;
-    const taxable = Math.max(0, Math.round((gross - disc) * 100) / 100);
-    // Fix BUG-055: round each line's VAT before summing
-    const vatRate = Number(line.vatRate ?? (line.isTaxable ? 13 : 0));
-    const vat   = Math.round(taxable * vatRate / 100 * 100) / 100;
+    const qty = Number(line.qty ?? 0);
+    const rate = Number(line.rate ?? 0);
+    const discPct = Number(line.discountPercent ?? 0);
+    const vatRate = Number(line.vatRate ?? 0);
+    const gross = round2(qty * rate);
+    const discAmt = round2((gross * discPct) / 100);
+    const taxable = round2(gross - discAmt);
+    const vatAmt = line.isTaxable ? round2((taxable * vatRate) / 100) : 0;
     return {
       ...line,
-      discountAmount: disc,
+      discountAmount: discAmt,
       taxableAmount: taxable,
-      vatAmount: vat,
-      totalAmount: taxable + vat,
+      vatAmount: vatAmt,
+      totalAmount: round2(taxable + vatAmt),
     };
   };
 
@@ -439,7 +436,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       lines: payloadLines,
       paymentMode: payMode,
       paymentStatus: ps,
-      paidAmount: payMode === PaymentMode.CREDIT ? paidAmount || 0 : grandTotal,
+      paidAmount: payMode === PaymentMode.CREDIT ? paidAmount || 0 : netPayable,
       bankAccountId: payMode === PaymentMode.BANK_TRANSFER ? bankAccountId : undefined,
       chequeNo: chequeNo || undefined,
       chequeDate: chequeNo ? chequeDate : undefined,
@@ -515,6 +512,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           { duration: 4000 },
         );
 
+        // Run CBMS async
         if (companySettings?.cbmsEnabled && result?.id) {
           submitToCBMS(result, companySettings).then(async (cbmsRes) => {
             if (cbmsRes.success && cbmsRes.irn) {
@@ -525,16 +523,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               });
               toast.success(`CBMS Synced: IRN ${cbmsRes.irn}`);
             } else {
-              await updateInvoice(result.id, { cbmsSubmitted: false, cbmsError: cbmsRes.error });
+              await updateInvoice(result.id, { cbmsSubmitted: false });
               toast.error(`CBMS Failed: ${cbmsRes.error}`);
             }
-          }).catch(async (err: unknown) => {
-            const msg = err instanceof Error ? err.message : "CBMS error";
-            toast.error(`CBMS submission failed: ${msg}`);
-            await updateInvoice(result.id, {
-              cbmsSubmitted: false,
-              cbmsError: msg,
-            }).catch(console.error);
           });
         }
       } else {
@@ -590,23 +581,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         handleBack();
       } else if (!readOnly && e.key === "F2") {
         e.preventDefault();
-        if (readOnly || existing?.status === VoucherStatus.POSTED) {
-          toast("This voucher is already posted.", { icon: "ℹ️" });
-          return;
-        }
         handleSaveRef.current(existing?.status || VoucherStatus.DRAFT);
       } else if (!readOnly && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
         handleSaveRef.current(existing?.status || VoucherStatus.DRAFT);
       } else if (!readOnly && e.key === "F9") {
         e.preventDefault();
-        setLines((p) => {
-          if (p.length <= 1) return [emptyLine()];
-          const idx = activeLineIdx >= 0 && activeLineIdx < p.length
-            ? activeLineIdx
-            : p.length - 1;
-          return p.filter((_, i) => i !== idx);
-        });
+        setLines((p) => (p.length > 1 ? p.slice(0, -1) : [emptyLine()]));
         markDirty();
       }
     };
@@ -838,7 +819,6 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                       showWarehouse={showWarehouse}
                       type={meta.isSales ? "sales" : "purchase"}
                       readOnly={readOnly}
-                      onFocus={() => setActiveLineIdx(idx)}
                     />
                   ))}
                   {lines.length === 0 && (

@@ -77,16 +77,32 @@ const Dashboard: React.FC = () => {
 
   // Cash & Bank balance
   const cashBankBalance = useMemo(() => {
-    // Fix BUG-050: use account group/type, not name string matching
-    const cash = (accounts ?? [])
-      .filter((a) => a.group === "Cash" || a.group === "Cash in Hand" || a.type === "cash" || a.nature === "cash")
-      .reduce((s, a) => s + Number(a.balance ?? 0), 0);
+    const cashAccounts = accounts.filter(
+      (acc) =>
+        !acc.isGroup &&
+        acc.isActive &&
+        (
+          acc.name.toLowerCase().includes("cash") ||
+          acc.group?.toLowerCase().includes("cash") ||
+          acc.groupName?.toLowerCase().includes("cash")
+        ),
+    );
+    const bankAccounts = accounts.filter(
+      (acc) =>
+        !acc.isGroup &&
+        acc.isActive &&
+        (
+          acc.name.toLowerCase().includes("bank") ||
+          acc.group?.toLowerCase().includes("bank") ||
+          acc.groupName?.toLowerCase().includes("bank") ||
+          (acc as any).bankDetails
+        ),
+    );
 
-    const bank = (accounts ?? [])
-      .filter((a) => a.group === "Bank Accounts" || a.type === "bank" || a.nature === "bank")
-      .reduce((s, a) => s + Number(a.balance ?? 0), 0);
+    const cashBalance = cashAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    const bankBalance = bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
-    return cash + bank;
+    return cashBalance + bankBalance;
   }, [accounts]);
 
   // Stock value
@@ -103,26 +119,22 @@ const Dashboard: React.FC = () => {
 
   // VAT liability (simplified)
   const vatLiability = useMemo(() => {
-    const fyStart = currentFiscalYear?.startDate ?? "";
-    const fyEnd   = currentFiscalYear?.endDate   ?? new Date().toISOString().split("T")[0];
+    const outputVat = invoices
+      .filter((inv) =>
+        (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
+        inv.status === "posted"
+      )
+      .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
 
-    // Fix BUG-049: filter by current fiscal year, not all time
-    const postedInvoices = (invoices ?? []).filter((inv) => {
-      if (inv.status !== "posted") return false;
-      const d = (inv.date ?? "").split("T")[0];
-      return (!fyStart || d >= fyStart) && d <= fyEnd;
-    });
-
-    const outputVat = postedInvoices
-      .filter((inv) => inv.type === "sales-invoice" || inv.type === "sales")
-      .reduce((s, inv) => s + Number(inv.vatAmount ?? 0), 0);
-
-    const inputVat = postedInvoices
-      .filter((inv) => inv.type === "purchase-invoice" || inv.type === "purchase")
-      .reduce((s, inv) => s + Number(inv.vatAmount ?? 0), 0);
+    const inputVat = invoices
+      .filter((inv) =>
+        (inv.type === VoucherType.PURCHASE_INVOICE || inv.type === "purchase-invoice") &&
+        inv.status === "posted"
+      )
+      .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
 
     return Math.max(0, outputVat - inputVat);
-  }, [invoices, currentFiscalYear]);
+  }, [invoices]);
 
   // Alerts computation
   const alerts = useMemo(() => {
@@ -224,16 +236,17 @@ const Dashboard: React.FC = () => {
     }
 
     // ALERT 5: Near-expiry batches (load from state if available)
+    const nearExpiryBatches = []; // Will be populated from DB if batches are loaded
+    // Check batches in useStore if batches array exists
+    // Check batch expiry from items in store
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     const thirtyDaysStr = thirtyDaysFromNow.toISOString().split("T")[0];
 
-    // Fix BUG-051: check stockMovements for batch expiry since we don't have a separate batches store slice
-    // Items with expiryDate set directly
-    const nearExpiryCount = (items ?? []).filter((item) => {
-      if (!item.expiryDate) return false;
-      return item.expiryDate <= thirtyDaysStr;
-    }).length;
+    // Note: batches are loaded by the BatchManagement page — check stockMovements for near-expiry
+    const nearExpiryCount = (items || []).filter((item: any) =>
+      item.expiryDate && item.expiryDate <= thirtyDaysStr && item.expiryDate >= today
+    ).length;
 
     if (nearExpiryCount > 0) {
       alertList.push({

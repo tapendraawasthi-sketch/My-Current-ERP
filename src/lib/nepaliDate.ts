@@ -1,345 +1,646 @@
-﻿// â”€â”€â”€ Nepali Calendar (Bikram Sambat) Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Fixes BUG-004, BUG-025-034: All date conversions centralised here.
-// Every report should use these helpers for BS date display.
+/**
+ * nepaliDate.ts  (src/lib/nepaliDate.ts)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Extended BS calendar utilities for Nepal ERP.
+ * Depends on: nepali-date-converter  (already in your stack)
+ *
+ * Complements src/utils/nepaliDate.ts — import the base helpers from there;
+ * import fiscal-year / formatting helpers from here.
+ */
 
-// BS month data: each row = [total days in each month for that BS year]
-// Starting from BS 2000 (AD 1943-44)
-export const BS_MONTH_DATA: number[][] = [
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2000
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2001
-  [31,31,32,32,31,30,30,29,30,29,30,30], // 2002
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2003
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2004
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2005
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2006
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2007
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2008
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2009
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2010
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2011
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2012
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2013
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2014
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2015
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2016
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2017
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2018
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2019
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2020
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2021
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2022
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2023
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2024
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2025
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2026
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2027
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2028
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2029
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2030
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2031
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2032
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2033
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2034
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2035
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2036
-  [31,31,31,32,31,31,30,29,30,29,30,30], // 2037
-  [31,31,32,31,31,31,29,30,30,29,29,31], // 2038
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2039
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2040
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2041
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2042
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2043
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2044
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2045
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2046
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2047
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2048
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2049
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2050
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2051
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2052
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2053
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2054
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2055
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2056
-  [31,31,32,31,31,30,30,29,30,29,30,30], // 2057
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2058
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2059
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2060
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2061
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2062
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2063
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2064
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2065
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2066
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2067
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2068
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2069
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2070
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2071
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2072
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2073
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2074
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2075
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2076
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2077
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2078
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2079
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2080
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2081
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2082
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2083
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2084
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2085
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2086
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2087
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2088
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2089
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2090
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2091
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2092
-  [31,31,32,31,31,31,30,29,30,29,30,30], // 2093
-  [31,32,31,32,31,30,30,29,30,29,30,30], // 2094
-  [31,32,31,32,31,30,30,30,29,29,30,31], // 2095
-  [30,32,31,32,31,30,30,30,29,30,29,31], // 2096
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2097
-  [31,31,32,31,31,30,30,30,29,30,29,31], // 2098
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2099
-  [31,32,31,32,31,30,30,30,29,30,29,31], // 2100
+import NepaliDate from "nepali-date-converter";
+const NEPALI_MONTHS = [
+  "Baisakh",
+  "Jestha",
+  "Ashadh",
+  "Shrawan",
+  "Bhadra",
+  "Ashwin",
+  "Kartik",
+  "Mangsir",
+  "Poush",
+  "Magh",
+  "Falgun",
+  "Chaitra",
 ];
 
-const BS_START_YEAR = 2000;
-// AD date corresponding to BS 2000 Baisakh 1 = April 13, 1943
-const AD_EPOCH = new Date(1943, 3, 14); // months are 0-indexed
-
-export const BS_MONTHS = [
-  "Baisakh", "Jestha", "Ashadh", "Shrawan",
-  "Bhadra", "Ashwin", "Kartik", "Mangsir",
-  "Poush", "Magh", "Falgun", "Chaitra",
+const NEPALI_DAYS = [
+  "Aaitabar",
+  "Sombar",
+  "Mangalbar",
+  "Budhabar",
+  "Bihibar",
+  "Sukrabar",
+  "Sanibar",
 ];
 
-export const BS_MONTHS_NP = [
-  "à¤¬à¥ˆà¤¶à¤¾à¤–", "à¤œà¥‡à¤ ", "à¤†à¤·à¤¾à¤¢", "à¤¶à¥à¤°à¤¾à¤µà¤£",
-  "à¤­à¤¾à¤¦à¥à¤°", "à¤†à¤¶à¥à¤µà¤¿à¤¨", "à¤•à¤¾à¤°à¥à¤¤à¤¿à¤•", "à¤®à¤‚à¤¸à¤¿à¤°",
-  "à¤ªà¥Œà¤·", "à¤®à¤¾à¤˜", "à¤«à¤¾à¤²à¥à¤—à¥à¤¨", "à¤šà¥ˆà¤¤à¥à¤°",
-];
+// Lookup table for days in each month for 2000-2090 BS (simplified)
+// Using standard library capabilities for exact days since nepali-date-converter handles leap years implicitly
+export function getDaysInBSMonth(year: number, month: number): number {
+  // Try to create a date for the last possible day (32)
+  for (let d = 32; d >= 29; d--) {
+    try {
+      new NepaliDate(year, month - 1, d);
+      return d;
+    } catch {
+      continue;
+    }
+  }
+  return 30; // fallback
+}
 
-export interface BSDate {
+export function isValidBSDate(year: number, month: number, day: number): boolean {
+  if (year < 2000 || year > 2099 || month < 1 || month > 12 || day < 1 || day > 32) return false;
+  try {
+    const nd = new NepaliDate(year, month - 1, day);
+    return nd.getYear() === year && nd.getMonth() === month - 1 && nd.getDate() === day;
+  } catch {
+    return false;
+  }
+}
+
+export function adToBS(date: Date): {
   year: number;
-  month: number; // 1-12
+  month: number;
   day: number;
+  monthName: string;
+} {
+  if (isNaN(date.getTime())) throw new Error("Invalid AD date");
+  const nd = new NepaliDate(date);
+  const year = nd.getYear();
+  const month = nd.getMonth() + 1;
+  const day = nd.getDate();
+  return {
+    year,
+    month,
+    day,
+    monthName: NEPALI_MONTHS[nd.getMonth()],
+  };
 }
 
-/**
- * Convert an AD Date object to BS date.
- * Fixes BUG-004, BUG-026: caller must wrap strings in new Date() before calling.
- */
-export function adToBS(adDate: Date): BSDate {
-  if (!(adDate instanceof Date) || isNaN(adDate.getTime())) {
-    return { year: 2081, month: 1, day: 1 }; // safe fallback
+export function bsToAD(year: number, month: number, day: number): Date {
+  if (!isValidBSDate(year, month, day)) {
+    throw new Error(`Invalid BS date: ${year}-${month}-${day}`);
+  }
+  const nd = new NepaliDate(year, month - 1, day);
+  return nd.toJsDate();
+}
+
+export function formatBS(bsDate: { year: number; month: number; day: number } | string): string {
+  if (typeof bsDate === "string") {
+    const parts = bsDate.replace(/-/g, "/").split("/");
+    if (parts.length === 3) {
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      return `${d} ${NEPALI_MONTHS[m - 1]} ${y}`;
+    }
+    return bsDate;
+  }
+  return `${bsDate.day} ${NEPALI_MONTHS[bsDate.month - 1]} ${bsDate.year}`;
+}
+
+export function todayBS(): {
+  year: number;
+  month: number;
+  day: number;
+  monthName: string;
+  dayName: string;
+} {
+  const nd = new NepaliDate();
+  return {
+    year: nd.getYear(),
+    month: nd.getMonth() + 1,
+    day: nd.getDate(),
+    monthName: NEPALI_MONTHS[nd.getMonth()],
+    dayName: NEPALI_DAYS[nd.getDay()],
+  };
+}
+
+export function getNepaliMonths(): string[] {
+  return [...NEPALI_MONTHS];
+}
+
+export function getFiscalYearFromBS(
+  bsDate: { year: number; month: number; day: number } | string,
+): { startYear: number; endYear: number; label: string } {
+  let y: number, m: number;
+  if (typeof bsDate === "string") {
+    const parts = bsDate.replace(/-/g, "/").split("/");
+    y = parseInt(parts[0], 10);
+    m = parseInt(parts[1], 10);
+  } else {
+    y = bsDate.year;
+    m = bsDate.month;
   }
 
-  // Total days from AD epoch
-  const epochMs = AD_EPOCH.getTime();
-  const inputMs = Date.UTC(adDate.getFullYear(), adDate.getMonth(), adDate.getDate());
-  const epochRef  = Date.UTC(AD_EPOCH.getFullYear(), AD_EPOCH.getMonth(), AD_EPOCH.getDate());
-  let totalDays = Math.floor((inputMs - epochRef) / 86400000);
+  if (m >= 4) {
+    // Shrawan or later
+    return {
+      startYear: y,
+      endYear: y + 1,
+      label: `${y}/${String(y + 1).slice(-2)}`,
+    };
+  } else {
+    return {
+      startYear: y - 1,
+      endYear: y,
+      label: `${y - 1}/${String(y).slice(-2)}`,
+    };
+  }
+}
 
-  let bsYear = BS_START_YEAR;
-  let bsMonth = 1;
-  let bsDay = 1;
+// ─────────────────────────────────────────────────────────────────────────────
+// Month metadata
+// ─────────────────────────────────────────────────────────────────────────────
 
-  // Walk through BS years
-  while (totalDays > 0) {
-    const yearIdx = bsYear - BS_START_YEAR;
-    if (yearIdx >= BS_MONTH_DATA.length) break;
-    const daysInYear = BS_MONTH_DATA[yearIdx].reduce((a, b) => a + b, 0);
-    if (totalDays >= daysInYear) {
-      totalDays -= daysInYear;
-      bsYear++;
-    } else {
-      // Walk through months
-      for (let m = 0; m < 12; m++) {
-        const daysInMonth = BS_MONTH_DATA[yearIdx][m];
-        if (totalDays >= daysInMonth) {
-          totalDays -= daysInMonth;
-          bsMonth = m + 2;
-          if (bsMonth > 12) { bsMonth = 1; bsYear++; }
-        } else {
-          bsMonth = m + 1;
-          bsDay = totalDays + 1;
-          totalDays = 0;
-          break;
-        }
-      }
+export interface BSMonthInfo {
+  number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+  english: string;
+  nepali: string;
+  /** Which fiscal quarter this month belongs to (FY starts Shrawan = month 4) */
+  fiscalQuarter: 1 | 2 | 3 | 4;
+}
+
+const BS_MONTHS: BSMonthInfo[] = [
+  { number: 1, english: "Baisakh", nepali: "बैशाख", fiscalQuarter: 4 },
+  { number: 2, english: "Jestha", nepali: "जेठ", fiscalQuarter: 4 },
+  { number: 3, english: "Ashad", nepali: "असार", fiscalQuarter: 4 },
+  { number: 4, english: "Shrawan", nepali: "श्रावण", fiscalQuarter: 1 },
+  { number: 5, english: "Bhadra", nepali: "भाद्र", fiscalQuarter: 1 },
+  { number: 6, english: "Ashwin", nepali: "आश्विन", fiscalQuarter: 1 },
+  { number: 7, english: "Kartik", nepali: "कार्तिक", fiscalQuarter: 2 },
+  { number: 8, english: "Mangsir", nepali: "मंसिर", fiscalQuarter: 2 },
+  { number: 9, english: "Poush", nepali: "पुष", fiscalQuarter: 2 },
+  { number: 10, english: "Magh", nepali: "माघ", fiscalQuarter: 3 },
+  { number: 11, english: "Falgun", nepali: "फाल्गुन", fiscalQuarter: 3 },
+  { number: 12, english: "Chaitra", nepali: "चैत्र", fiscalQuarter: 3 },
+];
+
+export function getBSMonthName(monthNo: number): BSMonthInfo {
+  if (monthNo < 1 || monthNo > 12) throw new Error(`Invalid month number: ${monthNo}`);
+  return BS_MONTHS[monthNo - 1];
+}
+
+export function getBSMonths(): BSMonthInfo[] {
+  return [...BS_MONTHS];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Nepali digit conversion
+// ─────────────────────────────────────────────────────────────────────────────
+
+const NEPALI_DIGITS = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
+
+export function toNepaliDigits(n: number | string): string {
+  return String(n)
+    .split("")
+    .map((ch) => (ch >= "0" && ch <= "9" ? NEPALI_DIGITS[parseInt(ch)] : ch))
+    .join("");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BS Calendar data  (days per month)  2070 – 2090 BS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BS_CALENDAR: Record<number, number[]> = {
+  2070: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2071: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2072: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30],
+  2073: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2074: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2075: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2076: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2077: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2078: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2079: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2080: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2081: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2082: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2083: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2084: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2085: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2086: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2087: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2088: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2089: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2090: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+};
+
+export function getDaysInBSMonthFull(year: number, month: number): number {
+  if (BS_CALENDAR[year]) return BS_CALENDAR[year][month - 1];
+  for (let d = 32; d >= 28; d--) {
+    try {
+      new NepaliDate(year, month - 1, d);
+      return d;
+    } catch {
+      continue;
     }
   }
-
-  return { year: bsYear, month: bsMonth, day: bsDay };
+  return 30;
 }
 
-/**
- * Convert a BS date to AD Date.
- */
-export function bsToAD(bsYear: number, bsMonth: number, bsDay: number): Date {
-  let totalDays = 0;
-  for (let y = BS_START_YEAR; y < bsYear; y++) {
-    const idx = y - BS_START_YEAR;
-    if (idx < BS_MONTH_DATA.length) {
-      totalDays += BS_MONTH_DATA[idx].reduce((a, b) => a + b, 0);
-    }
+// ─────────────────────────────────────────────────────────────────────────────
+// Fiscal year helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function getCurrentFiscalYearBS(): string {
+  const nd = new NepaliDate();
+  const year = nd.getYear();
+  const month = nd.getMonth() + 1; // 1-based
+
+  if (month >= 4) {
+    return `${year}/${String(year + 1).slice(-2)}`;
+  } else {
+    return `${year - 1}/${String(year).slice(-2)}`;
   }
-  const yearIdx = bsYear - BS_START_YEAR;
-  if (yearIdx < BS_MONTH_DATA.length) {
-    for (let m = 0; m < bsMonth - 1; m++) {
-      totalDays += BS_MONTH_DATA[yearIdx][m];
-    }
+}
+
+export function parseFYLabel(fyLabel: string): { startYear: number; endYear: number } {
+  const parts = fyLabel.split("/");
+  if (parts.length !== 2) throw new Error(`Invalid fiscal year label: "${fyLabel}"`);
+  const startYear = parseInt(parts[0], 10);
+  const shortEnd = parseInt(parts[1], 10);
+  const endYear = shortEnd > 100 ? shortEnd : Math.floor(startYear / 100) * 100 + shortEnd;
+  return { startYear, endYear };
+}
+
+export function getFiscalYearDateRange(fyLabel: string): {
+  startDate: string; // YYYY-MM-DD (AD)
+  endDate: string; // YYYY-MM-DD (AD)
+  startDateBS: string;
+  endDateBS: string;
+} {
+  const { startYear, endYear } = parseFYLabel(fyLabel);
+
+  const fyStartBS = { year: startYear, month: 4, day: 1 };
+  const lastDayAshad = getDaysInBSMonthFull(endYear, 3);
+  const fyEndBS = { year: endYear, month: 3, day: lastDayAshad };
+
+  const startAD = bsToAD(fyStartBS.year, fyStartBS.month, fyStartBS.day);
+  const endAD = bsToAD(fyEndBS.year, fyEndBS.month, fyEndBS.day);
+
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
+  return {
+    startDate: fmt(startAD),
+    endDate: fmt(endAD),
+    startDateBS: `${startYear}-04-01`,
+    endDateBS: `${endYear}-03-${String(lastDayAshad).padStart(2, "0")}`,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Fiscal quarter
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface FiscalQuarterInfo {
+  quarter: 1 | 2 | 3 | 4;
+  quarterLabel: string;
+  startDate: string;
+  endDate: string;
+  startDateBS: string;
+  endDateBS: string;
+}
+
+export function getNepaliFiscalQuarter(
+  bsDate: string | { year: number; month: number; day: number },
+): FiscalQuarterInfo {
+  let year: number, month: number;
+
+  if (typeof bsDate === "string") {
+    const parts = bsDate.split("-").map(Number);
+    year = parts[0];
+    month = parts[1];
+  } else {
+    year = bsDate.year;
+    month = bsDate.month;
   }
-  totalDays += bsDay - 1;
 
-  const result = new Date(AD_EPOCH);
-  result.setDate(result.getDate() + totalDays);
-  return result;
+  type Q = 1 | 2 | 3 | 4;
+  const quarterMap: Record<number, Q> = {
+    4: 1,
+    5: 1,
+    6: 1,
+    7: 2,
+    8: 2,
+    9: 2,
+    10: 3,
+    11: 3,
+    12: 3,
+    1: 4,
+    2: 4,
+    3: 4,
+  };
+
+  const quarter: Q = quarterMap[month];
+  const fyStartYear = month >= 4 ? year : year - 1;
+
+  const quarterBounds: Record<Q, { startMonth: number; endMonth: number; label: string }> = {
+    1: { startMonth: 4, endMonth: 6, label: "Q1 (Shrawan – Ashwin)" },
+    2: { startMonth: 7, endMonth: 9, label: "Q2 (Kartik – Poush)" },
+    3: { startMonth: 10, endMonth: 12, label: "Q3 (Magh – Chaitra)" },
+    4: { startMonth: 1, endMonth: 3, label: "Q4 (Baisakh – Ashad)" },
+  };
+
+  const bounds = quarterBounds[quarter];
+  const qStartYear = quarter === 4 ? fyStartYear + 1 : fyStartYear;
+  const qEndYear = qStartYear;
+
+  const startDayBS = 1;
+  const endDayBS = getDaysInBSMonthFull(qEndYear, bounds.endMonth);
+
+  const startAD = bsToAD(qStartYear, bounds.startMonth, 1);
+  const endAD = bsToAD(qEndYear, bounds.endMonth, endDayBS);
+
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return {
+    quarter,
+    quarterLabel: bounds.label,
+    startDate: fmt(startAD),
+    endDate: fmt(endAD),
+    startDateBS: `${qStartYear}-${pad(bounds.startMonth)}-${pad(startDayBS)}`,
+    endDateBS: `${qEndYear}-${pad(bounds.endMonth)}-${pad(endDayBS)}`,
+  };
 }
 
-/**
- * Format a BSDate to ISO-like string "YYYY-MM-DD" in BS.
- */
-export function formatBSDate(bs: BSDate): string {
-  return `${bs.year}-${String(bs.month).padStart(2, "0")}-${String(bs.day).padStart(2, "0")}`;
+export function getBSMonthDateRange(
+  fyLabel: string,
+  bsMonth: number,
+): { startDate: string; endDate: string; startDateBS: string; endDateBS: string } {
+  const { startYear, endYear } = parseFYLabel(fyLabel);
+  const bsYear = bsMonth >= 4 ? startYear : endYear;
+
+  const lastDay = getDaysInBSMonthFull(bsYear, bsMonth);
+  const startAD = bsToAD(bsYear, bsMonth, 1);
+  const endAD = bsToAD(bsYear, bsMonth, lastDay);
+
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return {
+    startDate: fmt(startAD),
+    endDate: fmt(endAD),
+    startDateBS: `${bsYear}-${pad(bsMonth)}-01`,
+    endDateBS: `${bsYear}-${pad(bsMonth)}-${pad(lastDay)}`,
+  };
 }
 
-/**
- * Format a BSDate to human-readable "DD MonthName YYYY B.S."
- */
-export function formatBSDateLong(bs: BSDate, nepali = false): string {
-  const months = nepali ? BS_MONTHS_NP : BS_MONTHS;
-  return `${bs.day} ${months[bs.month - 1]} ${bs.year} B.S.`;
+export function getFiscalYearMonths(
+  fyLabel: string,
+): Array<BSMonthInfo & { dateRange: ReturnType<typeof getBSMonthDateRange> }> {
+  const fyOrder = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
+  return fyOrder.map((m) => ({
+    ...getBSMonthName(m),
+    dateRange: getBSMonthDateRange(fyLabel, m),
+  }));
 }
 
-/**
- * Convert AD ISO string (YYYY-MM-DD) â†’ BS ISO string (YYYY-MM-DD).
- * Safe: returns "" on invalid input.
- * Fixes BUG-004, BUG-025, BUG-063, BUG-076.
- */
-export function ADToBSString(adIso: string | null | undefined): string {
-  if (!adIso) return "";
+// ─────────────────────────────────────────────────────────────────────────────
+// Date formatting
+// ─────────────────────────────────────────────────────────────────────────────
+
+type BSDateFormat =
+  | "YYYY-MM-DD"
+  | "YYYY/MM/DD"
+  | "DD MMMM YYYY"
+  | "DD/MM/YYYY"
+  | "NEPALI"
+  | "SHORT"
+  | "ISO";
+
+export function formatBSDate(
+  adDateParam: string | Date,
+  format: BSDateFormat = "YYYY/MM/DD",
+): string {
+  const adDate =
+    typeof adDateParam === "string"
+      ? new Date(adDateParam.includes("T") ? adDateParam : adDateParam + "T00:00:00")
+      : adDateParam;
+
+  if (isNaN(adDate.getTime())) return "";
+
+  const bs = adToBS(adDate);
+  const { year, month, day } = bs;
+  const monthInfo = getBSMonthName(month);
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  switch (format) {
+    case "YYYY-MM-DD":
+    case "ISO":
+      return `${year}-${pad(month)}-${pad(day)}`;
+
+    case "YYYY/MM/DD":
+      return `${year}/${pad(month)}/${pad(day)}`;
+
+    case "DD MMMM YYYY":
+      return `${day} ${monthInfo.english} ${year}`;
+
+    case "DD/MM/YYYY":
+      return `${pad(day)}/${pad(month)}/${year}`;
+
+    case "NEPALI":
+      return `${monthInfo.nepali} ${toNepaliDigits(day)}, ${toNepaliDigits(year)}`;
+
+    case "SHORT":
+      return `${pad(day)} ${monthInfo.english.slice(0, 3)} ${year}`;
+
+    default:
+      return `${year}/${pad(month)}/${pad(day)}`;
+  }
+}
+
+export function formatBSObject(
+  bs: { year: number; month: number; day: number },
+  format: BSDateFormat = "YYYY-MM-DD",
+): string {
+  const { year, month, day } = bs;
+  const monthInfo = getBSMonthName(month);
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  switch (format) {
+    case "YYYY-MM-DD":
+    case "ISO":
+      return `${year}-${pad(month)}-${pad(day)}`;
+    case "YYYY/MM/DD":
+      return `${year}/${pad(month)}/${pad(day)}`;
+    case "DD MMMM YYYY":
+      return `${day} ${monthInfo.english} ${year}`;
+    case "DD/MM/YYYY":
+      return `${pad(day)}/${pad(month)}/${year}`;
+    case "NEPALI":
+      return `${monthInfo.nepali} ${toNepaliDigits(day)}, ${toNepaliDigits(year)}`;
+    case "SHORT":
+      return `${pad(day)} ${monthInfo.english.slice(0, 3)} ${year}`;
+    default:
+      return `${year}-${pad(month)}-${pad(day)}`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Legacy backward compatibility helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function ADToBSString(adDateStr: string): string {
+  if (!adDateStr) return "";
+  return formatBSDate(adDateStr, "YYYY/MM/DD");
+}
+
+export function BSToADString(bsDateStr: string): string {
+  if (!bsDateStr) return "";
   try {
-    const parts = adIso.split("T")[0].split("-");
-    if (parts.length < 3) return "";
-    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-    if (isNaN(d.getTime())) return "";
-    const bs = adToBS(d);
-    return formatBSDate(bs);
+    const parts = bsDateStr.split(/[-/]/);
+    if (parts.length !== 3) return "";
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return "";
+    const ad = bsToAD(year, month, day);
+    return ad.toISOString().split("T")[0];
   } catch {
     return "";
   }
 }
 
-/**
- * Convert AD ISO string â†’ BS long string "DD Month YYYY B.S."
- */
-export function ADToBSLong(adIso: string | null | undefined, nepali = false): string {
-  if (!adIso) return "";
-  try {
-    const parts = adIso.split("T")[0].split("-");
-    if (parts.length < 3) return "";
-    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-    if (isNaN(d.getTime())) return "";
-    const bs = adToBS(d);
-    return formatBSDateLong(bs, nepali);
-  } catch {
-    return "";
-  }
-}
-
-/**
- * Get today's date as AD ISO string.
- */
-export function todayISO(): string {
-  return new Date().toISOString().split("T")[0];
-}
-
-/**
- * Get today's BS date as ISO string "YYYY-MM-DD" (BS).
- */
 export function getBSToday(): string {
-  return ADToBSString(todayISO());
+  return ADToBSString(new Date().toISOString().split("T")[0]);
 }
 
-/**
- * Get today's BS date as long human-readable string.
- */
 export function getBSTodayLong(): string {
-  return ADToBSLong(todayISO());
+  const bs = getBSToday();
+  if (!bs) return "";
+  const parts = bs.split("/");
+  if (parts.length !== 3) return bs;
+  const month = parseInt(parts[1], 10);
+  const mName = getBSMonthName(month).english;
+  return `${parseInt(parts[2], 10)} ${mName} ${parts[0]}`;
 }
 
-/**
- * Get today as full datetime ISO string.
- */
-export function nowISO(): string {
-  return new Date().toISOString();
+export function formatADToBS(adDateStr: string): string {
+  return ADToBSString(adDateStr);
 }
 
-/**
- * Get BS fiscal year start for a given BS year (Baisakh 1).
- */
-export function bsFiscalYearStart(bsYear: number): string {
-  const adStart = bsToAD(bsYear, 1, 1);
-  return adStart.toISOString().split("T")[0];
+export interface BSDay {
+  day: number;
+  month: number;
+  year: number;
+  adDateStr: string;
+  bsDateStr: string;
+  isCurrentMonth: boolean;
 }
 
-/**
- * Get BS fiscal year end for a given BS year (Chaitra last day).
- */
-export function bsFiscalYearEnd(bsYear: number): string {
-  const yearIdx = bsYear - BS_START_YEAR;
-  const lastDay = yearIdx >= 0 && yearIdx < BS_MONTH_DATA.length
-    ? BS_MONTH_DATA[yearIdx][11]
-    : 30;
-  const adEnd = bsToAD(bsYear, 12, lastDay);
-  return adEnd.toISOString().split("T")[0];
-}
+export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[] {
+  const calData = BS_CALENDAR[bsYear];
+  if (!calData) return [];
 
-/**
- * Parse BS ISO string "YYYY-MM-DD" and return BSDate.
- */
-export function parseBSIso(bsIso: string): BSDate | null {
-  const parts = bsIso.split("-");
-  if (parts.length < 3) return null;
-  const year = parseInt(parts[0]);
-  const month = parseInt(parts[1]);
-  const day = parseInt(parts[2]);
-  if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
-  return { year, month, day };
-}
+  const daysInMonth = calData[bsMonth - 1];
+  const firstDayAD = bsToAD(bsYear, bsMonth, 1);
+  const startDow = firstDayAD.getDay(); // 0=Sun
 
-/**
- * Format AD ISO for display: shows both BS and AD.
- * e.g. "15 Shrawan 2081 B.S. (2024-07-31)"
- */
-export function formatDualDate(adIso: string | null | undefined): string {
-  if (!adIso) return "-";
-  const bsLong = ADToBSLong(adIso);
-  return bsLong ? `${bsLong} (${adIso.split("T")[0]})` : adIso.split("T")[0];
-}
+  const days: BSDay[] = [];
 
-/**
- * Get current Nepali fiscal year label like "2080-81".
- */
-export function getCurrentFYLabel(): string {
-  const today = todayISO();
-  const bs = adToBS(new Date(today));
-  // Nepali FY: Baisakh to Chaitra
-  if (bs.month >= 1 && bs.month <= 12) {
-    const startYear = bs.year;
-    return `${startYear}-${String(startYear + 1).slice(2)}`;
+  let prevYear = bsYear;
+  let prevMonth = bsMonth - 1;
+  if (prevMonth === 0) {
+    prevMonth = 12;
+    prevYear--;
   }
-  return `${bs.year}-${String(bs.year + 1).slice(2)}`;
+  const prevCalData = BS_CALENDAR[prevYear];
+  const daysInPrevMonth = prevCalData ? prevCalData[prevMonth - 1] : 30;
+
+  for (let i = startDow - 1; i >= 0; i--) {
+    const d = daysInPrevMonth - i;
+    const adDate = bsToAD(prevYear, prevMonth, d);
+    days.push({
+      day: d,
+      month: prevMonth,
+      year: prevYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${prevYear}/${String(prevMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
+      isCurrentMonth: false,
+    });
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const adDate = bsToAD(bsYear, bsMonth, d);
+    days.push({
+      day: d,
+      month: bsMonth,
+      year: bsYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${bsYear}/${String(bsMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
+      isCurrentMonth: true,
+    });
+  }
+
+  const remaining = 42 - days.length;
+  let nextYear = bsYear;
+  let nextMonth = bsMonth + 1;
+  if (nextMonth > 12) {
+    nextMonth = 1;
+    nextYear++;
+  }
+
+  for (let d = 1; d <= remaining; d++) {
+    const adDate = bsToAD(nextYear, nextMonth, d);
+    days.push({
+      day: d,
+      month: nextMonth,
+      year: nextYear,
+      adDateStr: adDate.toISOString().split("T")[0],
+      bsDateStr: `${nextYear}/${String(nextMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
+      isCurrentMonth: false,
+    });
+  }
+
+  return days;
 }
-export const getNepaliMonths = () => ['Baisakh', 'Jestha', 'Ashadh', 'Shrawan', 'Bhadra', 'Ashwin', 'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'];
 
-export const formatADToBS = (ad: string) => { try { return ADToBSString(ad); } catch { return ''; } };
+export const getBSMonthRange = () => [];
+export const getQuarterRange = () => [];
+export const formatBSToAD = () => "";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Year-end closing helpers
+// ─────────────────────────────────────────────────────────────────────────────
 
+export interface YearEndClosingPreview {
+  fyLabel: string;
+  closingDateAD: string;
+  totalIncome: number;
+  totalExpense: number;
+  netProfitLoss: number;
+  isProfit: boolean;
+  journalEntriesCount: number;
+  description: string;
+}
 
+export function buildYearEndClosingPreview(params: {
+  fyLabel: string;
+  totalIncome: number;
+  totalExpense: number;
+  retainedEarningsAccount: string;
+  incomeSummaryAccount: string;
+  incomeAccountCount: number;
+  expenseAccountCount: number;
+}): YearEndClosingPreview {
+  const { endDate } = getFiscalYearDateRange(params.fyLabel);
+  const net = params.totalIncome - params.totalExpense;
+  const journalEntriesCount = params.incomeAccountCount + params.expenseAccountCount + 1;
+
+  return {
+    fyLabel: params.fyLabel,
+    closingDateAD: endDate,
+    totalIncome: params.totalIncome,
+    totalExpense: params.totalExpense,
+    netProfitLoss: Math.abs(net),
+    isProfit: net >= 0,
+    journalEntriesCount,
+    description:
+      `Closing FY ${params.fyLabel}: This will create ${journalEntriesCount} journal entries ` +
+      `transferring net ${net >= 0 ? "profit" : "loss"} of ` +
+      `Rs. ${Math.abs(net).toLocaleString("en-IN")} to ${params.retainedEarningsAccount}.`,
+  };
+}
