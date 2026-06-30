@@ -115,8 +115,8 @@ const PartiesDirectory: React.FC = React.memo(() => {
       toast.error("Invalid PAN format. Must be 9 digits.");
       return;
     }
-    if (phone && !/^(97|98)\d{8}$/.test(phone)) {
-      toast.error("Invalid mobile format. Must start with 97 or 98 and be 10 digits.");
+    if (phone && !/^[\d\-]{7,15}$/.test(phone)) {
+      toast.error("Invalid phone format. Must be 7-15 digits, can include dashes.");
       return;
     }
     try {

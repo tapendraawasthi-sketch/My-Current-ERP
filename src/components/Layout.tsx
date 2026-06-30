@@ -141,12 +141,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    if (loading) return; // prevent double-submission
     if (!username.trim() || !password.trim()) {
       toast.error("Credentials cannot be empty.");
       return;
     }
-
     setLoading(true);
 
     try {
@@ -290,7 +289,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     color: "#000000",
                   }}
                 >
-                  Nepal&apos;s Cloud Accounting
+                  {"Nepal's Cloud Accounting"}
                 </div>
               </div>
             </div>

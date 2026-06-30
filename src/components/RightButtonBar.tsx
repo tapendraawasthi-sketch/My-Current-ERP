@@ -45,10 +45,12 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isInputElement(document.activeElement)) return;
+      // Allow F-keys (F1–F12) even in inputs; block only alphanumeric shortcuts
+      const isFunctionKey = e.key.startsWith("F") && e.key.length <= 3;
+      if (isInputElement(document.activeElement) && !isFunctionKey && !e.ctrlKey) return;
 
       const combo = normalizeShortcut(
-        `${e.ctrlKey ? "Ctrl+" : ""}${e.altKey ? "Alt+" : ""}${e.shiftKey ? "Shift+" : ""}${e.key}`,
+        `${e.ctrlKey ? "Ctrl+" : ""}${e.altKey ? "Alt+" : ""}${e.shiftKey ? "Shift+" : ""}${e.key.toUpperCase()}`,
       );
 
       const button = visibleButtons.find(

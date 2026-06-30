@@ -114,80 +114,91 @@ body {
   background-color: #ebf5e2 !important;
 }
 
-/* Inputs, selects, textareas */
+/* Inputs, selects, textareas — theme defaults */
 input,
 select,
 textarea {
-  background-color: #ebf5e2 !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-  border-radius: 3px;
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
 }
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid #000000 !important;
-  outline-offset: 1px;
-  box-shadow: none !important;
+  outline: 2px solid rgba(21, 87, 176, 0.2);
+  border-color: #1557b0;
+  box-shadow: none;
 }
 input::placeholder,
-select::placeholder,
 textarea::placeholder {
-  color: rgba(0, 0, 0, 0.45) !important;
+  color: rgba(107, 114, 128, 0.8);
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
-/* Buttons — all same style */
+  /* Buttons — default theme styling only for unstyled buttons */
 button {
-  background-color: #d4eabd !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-  border-radius: 4px;
   cursor: pointer;
-}
-
-/* Preserve dark button styles inside dark-theme containers */
-.top-menu-bar button,
-.top-menu-dropdown button,
-.top-menu-item,
-.top-menu-btn,
-.right-button-bar button {
-  background-color: unset !important;
-  color: unset !important;
-  border: unset !important;
-  border-radius: unset;
-}
-button:hover {
-  background-color: #c9deb5 !important;
-}
-.top-menu-bar button:hover,
-.top-menu-dropdown button:hover,
-.right-button-bar button:hover {
-  background-color: unset !important;
 }
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 button:focus-visible {
-  outline: 2px solid #000000 !important;
+  outline: 2px solid #1557b0 !important;
   outline-offset: 2px;
 }
 
-/* Links */
+/* Dark-theme containers keep their own styles */
+.top-menu-bar button,
+.top-menu-dropdown button,
+.top-menu-item,
+.top-menu-btn {
+  background-color: transparent;
+  color: #cbd5e1;
+  border: none;
+}
+.top-menu-bar button:hover,
+.top-menu-dropdown button:hover {
+  background-color: #273148;
+  color: #ffffff;
+}
+.right-button-bar button {
+  background-color: #1e2433;
+  color: #cbd5e1;
+  border-bottom: 1px solid #2d3748;
+}
+.right-button-bar button:hover {
+  background-color: #273148;
+  color: #ffffff;
+}
+   /* Button hover handled by Tailwind classes per component */
+
+  /* Links */
 a {
-  color: #000000 !important;
-  text-decoration: underline;
-}
-.right-button-bar a,
-.top-menu-bar a,
-.top-menu-dropdown a {
-  color: unset !important;
-}
-.right-button-bar a:hover,
-.top-menu-dropdown a:hover {
-  color: unset !important;
+  color: #1557b0;
+  text-decoration: none;
 }
 a:hover {
+  color: #0f4a96;
+  text-decoration: underline;
+}
+.right-button-bar a {
+  color: #cbd5e1;
+  text-decoration: none;
+}
+.right-button-bar a:hover {
+  color: #ffffff;
+}
+.top-menu-bar a,
+.top-menu-dropdown a {
+  color: #cbd5e1;
   text-decoration: none;
 }
 
@@ -377,19 +388,14 @@ a:hover {
   color: #000000 !important;
   border: 1px solid #000000 !important;
 }
-/* Status badges that should retain green theme */
+/* Status badges — semantic colors preserved */
 .badge-posted,
 .badge-paid,
-.badge-active,
-.badge-success,
-.badge-default,
-.badge-secondary,
-.status-badge {
-  background: #d4eabd !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
+.badge-active {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #86efac !important;
 }
-/* Status badges that need DISTINCT colors — do NOT override */
 .badge-draft {
   background: #fef9c3 !important;
   color: #854d0e !important;
@@ -401,11 +407,7 @@ a:hover {
   color: #991b1b !important;
   border-color: #dc2626 !important;
 }
-.badge-warning {
-  background: #fef3c7 !important;
-  color: #92400e !important;
-  border-color: #d97706 !important;
-}
+.badge-warning,
 .badge-unpaid,
 .badge-partial {
   background: #fef3c7 !important;
@@ -742,119 +744,44 @@ aside {
   border-radius: 0 4px 4px 0;
 }
 
-/* ── MODALS / DIALOGS ── */
+   /* ── MODALS / DIALOGS ── */
 [role="dialog"],
 .modal,
 .dialog {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  color: #000000 !important;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #111827;
 }
 
 /* ── CARDS ── */
-.card,
-[class*="rounded"][class*="border"],
-.bg-white.rounded,
-.bg-white.rounded-lg,
-.bg-white.rounded-xl {
-  background: #ebf5e2 !important;
-  border-color: #000000 !important;
+.card {
+  background: #ebf5e2;
+  border-color: #000000;
 }
 
-/* ── OVERRIDE ALL TAILWIND COLOR CLASSES ── */
-/* Text colors */
-[class*="text-blue"],
-[class*="text-indigo"],
-[class*="text-violet"],
-[class*="text-purple"],
-[class*="text-sky"],
-[class*="text-cyan"],
-[class*="text-teal"],
-[class*="text-emerald"],
-[class*="text-green"],
-[class*="text-lime"],
-[class*="text-yellow"],
-[class*="text-amber"],
-[class*="text-orange"],
-[class*="text-red"],
-[class*="text-rose"],
-[class*="text-pink"],
-[class*="text-fuchsia"],
-[class*="text-slate"],
-[class*="text-gray"],
-[class*="text-zinc"],
-[class*="text-neutral"],
-[class*="text-stone"],
-[class*="text-white"] {
-  color: #000000 !important;
+   /* ── TEXT COLOR — only force black on body text, not semantic colors ── */
+/* Semantic colors (red/green/amber/blue) are intentionally preserved */
+.text-override-black {
+  color: #000000;
 }
 
-/* Background colors */
-[class*="bg-blue"],
-[class*="bg-indigo"],
-[class*="bg-violet"],
-[class*="bg-purple"],
-[class*="bg-sky"],
-[class*="bg-cyan"],
-[class*="bg-teal"],
-[class*="bg-emerald"],
-[class*="bg-green"],
-[class*="bg-lime"],
-[class*="bg-yellow"],
-[class*="bg-amber"],
-[class*="bg-orange"],
-[class*="bg-red"],
-[class*="bg-rose"],
-[class*="bg-pink"],
-[class*="bg-fuchsia"],
-[class*="bg-slate"],
-[class*="bg-gray"],
-[class*="bg-zinc"],
-[class*="bg-neutral"],
-[class*="bg-stone"],
-[class*="bg-black"] {
-  background-color: #d4eabd !important;
+   /* ── BACKGROUND — preserve semantic status colors ── */
+/* Only override the generic whites/grays to theme color */
+.bg-white,
+.bg-gray-50,
+.bg-gray-100 {
+  background-color: #ebf5e2 !important;
 }
 
-/* Border colors */
-[class*="border-blue"],
-[class*="border-indigo"],
-[class*="border-violet"],
-[class*="border-purple"],
-[class*="border-sky"],
-[class*="border-cyan"],
-[class*="border-teal"],
-[class*="border-emerald"],
-[class*="border-green"],
-[class*="border-lime"],
-[class*="border-yellow"],
-[class*="border-amber"],
-[class*="border-orange"],
-[class*="border-red"],
-[class*="border-rose"],
-[class*="border-pink"],
-[class*="border-fuchsia"],
-[class*="border-slate"],
-[class*="border-gray"],
-[class*="border-zinc"],
-[class*="border-neutral"],
-[class*="border-stone"],
-[class*="border-white"],
-[class*="border-black"] {
-  border-color: #000000 !important;
+  /* ── BORDERS — preserve semantic border colors for validation and status ── */
+.border-gray-200 {
+  border-color: #e5e7eb !important;
+}
+.border-gray-300 {
+  border-color: #d1d5db !important;
 }
 
-/* Ring colors */
-[class*="ring-blue"],
-[class*="ring-indigo"],
-[class*="ring-violet"],
-[class*="ring-green"],
-[class*="ring-red"],
-[class*="ring-gray"],
-[class*="ring-slate"],
-[class*="focus:ring"] {
-  --tw-ring-color: #000000 !important;
-}
+  /* Ring colors — let components define their own focus rings */
 
 /* Divide colors */
 [class*="divide-blue"],
@@ -905,23 +832,18 @@ aside {
 [data-state="checked"] {
   background: #c9deb5 !important;
 }
-[data-state="open"] {
-  background: #d4eabd !important;
-}
+/* data-state open — let components handle their own dropdown backgrounds */
 
-/* Dropdown menus */
+/* Dropdown menus — use white for readability */
 [role="menu"],
-[role="listbox"],
-[role="option"],
-[role="menuitem"],
-[role="combobox"] {
-  background: #ebf5e2 !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
+[role="listbox"] {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #111827;
 }
 [role="option"]:hover,
 [role="menuitem"]:hover {
-  background: #d4eabd !important;
+  background: #f3f4f6;
 }
 
 /* Popover */
@@ -938,17 +860,12 @@ select option {
 
 /* ── SPECIFIC COMPONENT OVERRIDES ── */
 
-/* Header */
+  /* Header — styled per component */
 header {
-  background: #d4eabd !important;
-  border-bottom: 1px solid #000000 !important;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-/* Sidebar */
-aside,
-nav {
-  background: #d4eabd !important;
-}
+/* Sidebar background set per component */
 
 /* Status bar, title bar, menu bar, hint bar */
 .busy-status-bar,
@@ -995,55 +912,32 @@ progress,
   color: #000000 !important;
 }
 
-/* Spinner / loader */
-.animate-spin {
-  color: #000000 !important;
-}
+/* Spinner color is set per-component via text-* class */
 
-/* SVG icons — green theme areas only */
+/* SVG icons — inherit color from parent context */
 main svg,
-main svg *,
-.page-content-area svg,
-.page-content-area svg * {
-  color: #000000 !important;
+.page-content-area svg {
   stroke: currentColor;
-}
-/* Lucide icons — green theme areas only */
-main .lucide,
-.page-content-area .lucide {
-  color: #000000 !important;
 }
 
 /* ── FOCUS RING GLOBAL ── */
 *:focus-visible {
-  outline: 2px solid #000000 !important;
+  outline: 2px solid #1557b0;
   outline-offset: 2px;
-  box-shadow: none !important;
 }
 
-/* ── SHADOW REMOVAL ── */
-[class*="shadow"] {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+/* Shadows — let Tailwind handle them per component */
+
+  /* Gradients not used per design system — no override needed */
+
+   /* Backdrop overlays */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
 }
 
-/* ── GRADIENT REMOVAL ── */
-[class*="gradient"],
-[class*="from-"],
-[class*="to-"],
-[class*="via-"] {
-  background-image: none !important;
-  background-color: #d4eabd !important;
-}
-
-/* ── BACKDROP ── */
-[class*="backdrop"] {
-  backdrop-filter: none !important;
-  background-color: rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Loading screen */
-.min-h-screen {
-  background-color: #e4f1d9 !important;
+/* Page background — applied only to the root layout */
+#root {
+  background-color: #e4f1d9;
 }
 
 /* ── TOAST NOTIFICATIONS ── */
@@ -1509,4 +1403,13 @@ input[type="number"]::-webkit-outer-spin-button {
     page-break-inside: avoid;
     page-break-after: auto;
   }
+}
+
+  /* ── HIDE SCROLLBAR ── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

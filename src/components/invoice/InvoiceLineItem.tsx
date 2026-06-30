@@ -75,13 +75,23 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           onUpdate({ itemId: "", itemName: "", itemCode: "", unit: "", hsnCode: "" });
           return;
         }
+        const itemRate = type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
+        if (itemRate === 0) {
+          // We still add the item but notify user
+          setTimeout(() => {
+            const event = new CustomEvent("sutra-warn", { 
+              detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.` 
+            });
+            window.dispatchEvent(event);
+          }, 0);
+        }
         onUpdate({
           itemId: it.id,
           itemName: it.name,
           itemCode: it.code,
           unit: it.unit || "",
           hsnCode: it.hsnCode || "",
-          rate: type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0),
+          rate: itemRate,
           isTaxable: !!it.isTaxable,
           vatRate: it.vatRate ?? (it.isTaxable ? 13 : 0),
         });
@@ -90,9 +100,12 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
     );
 
     const onKey = (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        onTabNext?.();
+      // Only trigger next-row on Tab, not Enter (Enter is for dropdown selection)
+      if (e.key === "Tab" && !e.shiftKey) {
+        const target = e.target as HTMLElement;
+        if (target.tagName === "INPUT") {
+          onTabNext?.();
+        }
       }
     };
 
@@ -210,7 +223,10 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
             type="checkbox"
             className="h-3.5 w-3.5 accent-indigo-600"
             checked={!!line.isTaxable}
-            onChange={(e) => onUpdate({ isTaxable: e.target.checked })}
+            onChange={(e) => onUpdate({ 
+              isTaxable: e.target.checked,
+              vatRate: e.target.checked ? (line.vatRate || 13) : 0
+            })}
             disabled={readOnly}
           />
         </td>

@@ -26,7 +26,7 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, resetDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting } from "../lib/db";
+import { getDB, resetDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus } from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -112,8 +112,7 @@ export const useStore = create<AppState>()((...a) => {
 
     branches: [],
     salespersons: [],
-    currencies: [] as DBCurrency[],
-    exchangeRates: [] as DBExchangeRate[],
+        exchangeRates: [] as DBExchangeRate[],
     fxGainLossEntries: [] as DBFXGainLossEntry[],
     costCentres: [] as DBCostCentre[],
     costCentreAllocations: [] as DBCostCentreAllocation[],
@@ -422,7 +421,7 @@ export const useStore = create<AppState>()((...a) => {
         db.discountStructures.toArray().catch(() => []),
         db.itemGroups.toArray().catch(() => []),
         db.holidays.toArray().catch(() => []),
-        db.employees.toArray().catch(() => []),
+        getDB().employees.toArray().catch(() => []),
         db.bankStatements.toArray().catch(() => []),
         db.tdsEntries.toArray().catch(() => []),
         db.tdsChallans.toArray().catch(() => []),
@@ -987,7 +986,7 @@ export const useStore = create<AppState>()((...a) => {
         const now = new Date().toISOString();
         const id = crypto.randomUUID();
         const row = { ...pdc, id, createdAt: now, updatedAt: now };
-        if (db.pdcRegister) await db.pdcRegister.put(row);
+        if (getDB().pdcRegister) await getDB().pdcRegister.put(row);
         set((s: any) => ({ pdcRegister: [...(s.pdcRegister || []), row] }));
         return row;
       } catch (err) { console.warn("addPDC failed", err); throw err; }
@@ -996,7 +995,7 @@ export const useStore = create<AppState>()((...a) => {
       try {
         const db = getDB();
         const now = new Date().toISOString();
-        if (db.pdcRegister) await db.pdcRegister.update(id, { ...updates, updatedAt: now });
+        if (getDB().pdcRegister) await getDB().pdcRegister.update(id, { ...updates, updatedAt: now });
         set((s: any) => ({
           pdcRegister: (s.pdcRegister || []).map((p: any) =>
             p.id === id ? { ...p, ...updates, updatedAt: now } : p
@@ -1007,15 +1006,15 @@ export const useStore = create<AppState>()((...a) => {
     deletePDC: async (id: string) => {
       try {
         const db = getDB();
-        if (db.pdcRegister) await db.pdcRegister.delete(id);
+        if (getDB().pdcRegister) await getDB().pdcRegister.delete(id);
         set((s: any) => ({ pdcRegister: (s.pdcRegister || []).filter((p: any) => p.id !== id) }));
       } catch (err) { console.warn("deletePDC failed", err); }
     },
     loadPDCRegister: async () => {
       try {
         const db = getDB();
-        if (!db.pdcRegister) return;
-        const records = await db.pdcRegister.toArray();
+        if (!getDB().pdcRegister) return;
+        const records = await getDB().pdcRegister.toArray();
         set({ pdcRegister: records || [] });
       } catch (err) { console.warn("loadPDCRegister failed", err); }
     },
@@ -1023,44 +1022,44 @@ export const useStore = create<AppState>()((...a) => {
     loadPayrollData: async () => {
       const [employees, salaryStructures, payrollRuns, payrollEntries] =
         await Promise.all([
-          db.employees.toArray(),
-          db.salaryStructures.toArray(),
-          db.payrollRuns.toArray(),
-          db.payrollEntries.toArray(),
+          getDB().employees.toArray(),
+          getDB().salaryStructures.toArray(),
+          getDB().payrollRuns.toArray(),
+          getDB().payrollEntries.toArray(),
         ]);
       set({ employees, salaryStructures, payrollRuns, payrollEntries });
     },
 
     addEmployee: async (emp: any) => {
       const id = emp.id || generateId();
-      await db.employees.put({ ...emp, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-      const employees = await db.employees.toArray();
+      await getDB().employees.put({ ...emp, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const employees = await getDB().employees.toArray();
       set({ employees });
       return id;
     },
 
     updateEmployee: async (id: number, changes: any) => {
-      await db.employees.update(id, { ...changes, updatedAt: new Date().toISOString() });
-      const employees = await db.employees.toArray();
+      await getDB().employees.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const employees = await getDB().employees.toArray();
       set({ employees });
     },
 
     deleteEmployee: async (id: number) => {
-      await db.employees.delete(id);
-      const employees = await db.employees.toArray();
+      await getDB().employees.delete(id);
+      const employees = await getDB().employees.toArray();
       set({ employees });
     },
 
     addPayrollRun: async (run: any) => {
       const id = run.id || generateId();
-      await db.payrollRuns.put({ ...run, id });
-      const payrollRuns = await db.payrollRuns.toArray();
+      await getDB().payrollRuns.put({ ...run, id });
+      const payrollRuns = await getDB().payrollRuns.toArray();
       set({ payrollRuns });
     },
 
     addSalaryStructure: async (s: any) => {
-      const id = await db.salaryStructures.add({ ...s, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-      const salaryStructures = await db.salaryStructures.toArray();
+      const id = await getDB().salaryStructures.add({ ...s, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const salaryStructures = await getDB().salaryStructures.toArray();
       set({ salaryStructures });
       return id;
     },
@@ -1143,7 +1142,7 @@ export const useStore = create<AppState>()((...a) => {
       const totalNetPay = entries.reduce((s: number, e: any) => s + e.netPay, 0);
       const totalEmployerContribution = entries.reduce((s: number, e: any) => s + e.epfEmployer + e.ssfEmployer, 0);
 
-      const runId = await db.payrollRuns.add({
+      const runId = await getDB().payrollRuns.add({
         month, year, fiscalYear,
         status: "processed",
         totalGross, totalDeductions, totalNetPay, totalEmployerContribution,
@@ -1153,11 +1152,11 @@ export const useStore = create<AppState>()((...a) => {
       });
 
       const finalEntries = entries.map((e: any) => ({ ...e, payrollRunId: runId as number }));
-      await db.payrollEntries.bulkAdd(finalEntries as any[]);
+      await getDB().payrollEntries.bulkAdd(finalEntries as any[]);
 
       const [payrollRuns, payrollEntries] = await Promise.all([
-        db.payrollRuns.toArray(),
-        db.payrollEntries.toArray(),
+        getDB().payrollRuns.toArray(),
+        getDB().payrollEntries.toArray(),
       ]);
       set({ payrollRuns, payrollEntries });
     },
@@ -1219,51 +1218,51 @@ export const useStore = create<AppState>()((...a) => {
     loadCostCentreData: async () => {
       const db = getDB();
       const [costCentres, costCentreAllocations] = await Promise.all([
-        db.costCentres.toArray(),
-        db.costCentreAllocations.toArray(),
+        getDB().costCentres.toArray(),
+        getDB().costCentreAllocations.toArray(),
       ]);
       set({ costCentres, costCentreAllocations });
     },
 
     addCostCentre: async (cc: Omit<DBCostCentre, "id">) => {
       const db = getDB();
-      await db.costCentres.add({ ...cc, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-      const costCentres = await db.costCentres.toArray();
+      await getDB().costCentres.add({ ...cc, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const costCentres = await getDB().costCentres.toArray();
       set({ costCentres });
     },
 
     updateCostCentre: async (id: number, changes: Partial<DBCostCentre>) => {
       const db = getDB();
-      await db.costCentres.update(id, { ...changes, updatedAt: new Date().toISOString() });
-      const costCentres = await db.costCentres.toArray();
+      await getDB().costCentres.update(id, { ...changes, updatedAt: new Date().toISOString() });
+      const costCentres = await getDB().costCentres.toArray();
       set({ costCentres });
     },
 
     deleteCostCentre: async (id: number) => {
       const db = getDB();
-      await db.costCentres.delete(id);
-      const costCentres = await db.costCentres.toArray();
+      await getDB().costCentres.delete(id);
+      const costCentres = await getDB().costCentres.toArray();
       set({ costCentres });
     },
 
     addPayrollEntry: async (entry: any) => {
       const id = entry.id || generateId();
-      await db.payrollEntries.put({ ...entry, id });
-      const payrollEntries = await db.payrollEntries.toArray();
+      await getDB().payrollEntries.put({ ...entry, id });
+      const payrollEntries = await getDB().payrollEntries.toArray();
       set({ payrollEntries });
     },
 
     addCostCentreAllocation: async (a: Omit<DBCostCentreAllocation, "id">) => {
       const db = getDB();
-      await db.costCentreAllocations.add({ ...a, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-      const costCentreAllocations = await db.costCentreAllocations.toArray();
+      await getDB().costCentreAllocations.add({ ...a, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const costCentreAllocations = await getDB().costCentreAllocations.toArray();
       set({ costCentreAllocations });
     },
 
     deleteCostCentreAllocation: async (id: number) => {
       const db = getDB();
-      await db.costCentreAllocations.delete(id);
-      const costCentreAllocations = await db.costCentreAllocations.toArray();
+      await getDB().costCentreAllocations.delete(id);
+      const costCentreAllocations = await getDB().costCentreAllocations.toArray();
       set({ costCentreAllocations });
     },
 
@@ -1271,8 +1270,8 @@ export const useStore = create<AppState>()((...a) => {
     loadApprovalData: async () => {
       const db = getDB();
       const [approvalPolicies, approvalRequests, approvalActions] = await Promise.all([
-        db.approvalPolicies.toArray(),
-        db.approvalRequests.toArray(),
+        getDB().approvalPolicies.toArray(),
+        getDB().approvalRequests.toArray(),
         db.approvalActions.toArray(),
       ]);
       // Parse JSON levels field
@@ -1285,9 +1284,9 @@ export const useStore = create<AppState>()((...a) => {
 
     addApprovalPolicy: async (policy: Omit<DBApprovalPolicy, "id">) => {
       const db = getDB();
-      const toStore = { ...policy, levels: JSON.stringify(policy.levels), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-      await db.approvalPolicies.add(toStore);
-      const raw = await db.approvalPolicies.toArray();
+      const toStore: any = { ...policy, levels: JSON.stringify(policy.levels), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      await getDB().approvalPolicies.add(toStore);
+      const raw = await getDB().approvalPolicies.toArray();
       const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
       set({ approvalPolicies });
     },
@@ -1296,24 +1295,24 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       const toStore: any = { ...changes, updatedAt: new Date().toISOString() };
       if (changes.levels) toStore.levels = JSON.stringify(changes.levels);
-      await db.approvalPolicies.update(id, toStore);
-      const raw = await db.approvalPolicies.toArray();
+      await getDB().approvalPolicies.update(id, toStore);
+      const raw = await getDB().approvalPolicies.toArray();
       const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
       set({ approvalPolicies });
     },
 
     deleteApprovalPolicy: async (id: number) => {
       const db = getDB();
-      await db.approvalPolicies.delete(id);
-      const raw = await db.approvalPolicies.toArray();
+      await getDB().approvalPolicies.delete(id);
+      const raw = await getDB().approvalPolicies.toArray();
       const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
       set({ approvalPolicies });
     },
 
     submitForApproval: async (request: Omit<DBApprovalRequest, "id">) => {
       const db = getDB();
-      const id = await db.approvalRequests.add({ ...request, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-      const approvalRequests = await db.approvalRequests.toArray();
+      const id = await getDB().approvalRequests.add({ ...request, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const approvalRequests = await getDB().approvalRequests.toArray();
       set({ approvalRequests });
       return id;
     },
@@ -1340,7 +1339,7 @@ export const useStore = create<AppState>()((...a) => {
       });
 
       // Update request status
-      const req = await db.approvalRequests.get(requestId);
+      const req = await getDB().approvalRequests.get(requestId);
       if (!req) return;
 
       let newStatus: ApprovalStatus = req.status;
@@ -1363,7 +1362,7 @@ export const useStore = create<AppState>()((...a) => {
       const lastAction = actions[actions.length - 1];
       if (lastAction?.id) await db.approvalActions.update(lastAction.id, { level: req.currentLevel });
 
-      await db.approvalRequests.update(requestId, {
+      await getDB().approvalRequests.update(requestId, {
         status: newStatus,
         currentLevel: newLevel,
         updatedAt: now,
@@ -1371,7 +1370,7 @@ export const useStore = create<AppState>()((...a) => {
       });
 
       const [approvalRequests, approvalActions] = await Promise.all([
-        db.approvalRequests.toArray(),
+        getDB().approvalRequests.toArray(),
         db.approvalActions.toArray(),
       ]);
       set({ approvalRequests, approvalActions });
@@ -1381,7 +1380,7 @@ export const useStore = create<AppState>()((...a) => {
     loadRecurringData: async () => {
       const db = getDB();
       const [recurringTemplates, recurringPostings] = await Promise.all([
-        db.recurringTemplates.toArray(),
+        getDB().recurringTemplates.toArray(),
         db.recurringPostings.toArray(),
       ]);
       const parsed = recurringTemplates.map(t => ({
@@ -1393,9 +1392,9 @@ export const useStore = create<AppState>()((...a) => {
 
     addRecurringTemplate: async (t: Omit<DBRecurringTemplate, "id">) => {
       const db = getDB();
-      const toStore = { ...t, lines: JSON.stringify(t.lines), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-      await db.recurringTemplates.add(toStore);
-      const raw = await db.recurringTemplates.toArray();
+      const toStore: any = { ...t, lines: JSON.stringify(t.lines), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      await getDB().recurringTemplates.add(toStore);
+      const raw = await getDB().recurringTemplates.toArray();
       const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
       set({ recurringTemplates });
     },
@@ -1404,23 +1403,23 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       const toStore: any = { ...changes, updatedAt: new Date().toISOString() };
       if (changes.lines) toStore.lines = JSON.stringify(changes.lines);
-      await db.recurringTemplates.update(id, toStore);
-      const raw = await db.recurringTemplates.toArray();
+      await getDB().recurringTemplates.update(id, toStore);
+      const raw = await getDB().recurringTemplates.toArray();
       const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
       set({ recurringTemplates });
     },
 
     deleteRecurringTemplate: async (id: number) => {
       const db = getDB();
-      await db.recurringTemplates.delete(id);
-      const raw = await db.recurringTemplates.toArray();
+      await getDB().recurringTemplates.delete(id);
+      const raw = await getDB().recurringTemplates.toArray();
       const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
       set({ recurringTemplates });
     },
 
     postRecurringTemplate: async (templateId: number, postDate: string, notes = "") => {
       const db = getDB();
-      const template = (await db.recurringTemplates.get(templateId)) as any;
+      const template = (await getDB().recurringTemplates.get(templateId)) as any;
       if (!template) return;
       const lines = typeof template.lines === "string" ? JSON.parse(template.lines) : (template.lines || []);
 
@@ -1438,7 +1437,7 @@ export const useStore = create<AppState>()((...a) => {
       });
 
       // Update template
-      await db.recurringTemplates.update(templateId, {
+      await getDB().recurringTemplates.update(templateId, {
         lastPostedDate: postDate,
         nextDueDate: nextDue,
         postingCount: (template.postingCount || 0) + 1,
@@ -1446,7 +1445,7 @@ export const useStore = create<AppState>()((...a) => {
       });
 
       const [raw, recurringPostings] = await Promise.all([
-        db.recurringTemplates.toArray(),
+        getDB().recurringTemplates.toArray(),
         db.recurringPostings.toArray(),
       ]);
       const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));

@@ -86,9 +86,9 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Masters",
     items: [
-      { label: "Chart of Accounts", page: "chart-of-accounts", icon: BookOpen },
-      { label: "Party Master", page: "party-master", icon: Users },
-      { label: "Item Master", page: "item-master", icon: Package },
+      { label: "Chart of Accounts", page: "accounts", icon: BookOpen },
+      { label: "Parties Directory", page: "parties", icon: Users },
+      { label: "Stock Items", page: "item-master", icon: Package },
       { label: "Unit Conversion", page: "unit-conversion", icon: Scale },
       { label: "Bill Sundries", page: "bill-sundry", icon: Tags },
       { label: "Price List Master", page: "price-list-master", icon: Tags },
@@ -97,12 +97,12 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Transactions",
     items: [
-      { label: "Voucher Entry", page: "voucher-entry", icon: FileText },
-      { label: "Sales Register", page: "sales-register", icon: TrendingUp },
-      { label: "Purchase Register", page: "purchase-register", icon: TrendingDown },
+      { label: "Journal Entry", page: "journal", icon: FileText },
+      { label: "Sales Invoice", page: "billing", icon: TrendingUp },
+      { label: "Purchase Invoice", page: "purchase", icon: TrendingDown },
       { label: "Journal Register", page: "journal-register", icon: ScrollText },
       { label: "Day Book", page: "day-book", icon: BookMarked },
-      { label: "Voucher Approval", page: "maker-checker", icon: CheckCircle },
+      { label: "Approval Workflow", page: "approval-workflow", icon: CheckCircle },
       { label: "Missing Vouchers", page: "missing-vouchers", icon: AlertTriangle },
       { label: "Quotations", page: "quotations", icon: FileText },
       { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },

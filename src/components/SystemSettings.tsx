@@ -19,7 +19,7 @@ const SystemSettings: React.FC = () => {
   const [email, setEmail] = useState(companySettings?.email || "finance@sutratextiles.com.np");
   const [fiscalYear, setFiscalYear] = useState("2083/2084");
   const [currency, setCurrency] = useState(companySettings?.currencySymbol || "Rs.");
-  const [salesPrefix, setSalesPrefix] = useState("SI-");
+  const [salesPrefix, setSalesPrefix] = useState(companySettings?.invoicePrefix || "SI-");
   const [vatRate, setVatRate] = useState(13);
 
   const [enableCostCenter, setEnableCostCenter] = useState(!!companySettings?.enableCostCenter);
@@ -35,6 +35,7 @@ const SystemSettings: React.FC = () => {
   );
 
   const [resetModal, setResetModal] = useState(false);
+  const [resetConfirmText, setResetConfirmText] = useState("");
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +59,7 @@ const SystemSettings: React.FC = () => {
         panNumber: pan.trim(),
         email: email.trim(),
         currencySymbol: currency,
+        invoicePrefix: salesPrefix,
         enableCostCenter,
         enableBillWiseTracking,
         enableBillWise: enableBillWiseTracking, // keep for compatibility
@@ -72,12 +74,14 @@ const SystemSettings: React.FC = () => {
   };
 
   const handleConfirmDBSandboxReset = async () => {
+    if (resetConfirmText !== "DELETE ALL DATA") return;
     toast.loading("Flushing schemas, erasing indexing blocks, re-seeding Nepal COAs...");
     try {
       await resetAllData();
       toast.dismiss();
       toast.success("IndexedDB reset. Workspace is refreshed.");
       setResetModal(false);
+      setResetConfirmText("");
       // Wait for a second and reload to let store load fresh seed
       setTimeout(() => {
         window.location.reload();
@@ -362,27 +366,40 @@ const SystemSettings: React.FC = () => {
         <Modal
           isOpen={resetModal}
           onClose={() => setResetModal(false)}
-          title="Confirm Sandbox Database Flush"
+          title="Confirm Database Reset"
           size="sm"
           footer={
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setResetModal(false)}>
+              <Button variant="outline" size="sm" onClick={() => {
+                setResetModal(false);
+                setResetConfirmText("");
+              }}>
                 Cancel
               </Button>
-              <Button variant="danger" size="sm" onClick={handleConfirmDBSandboxReset}>
+              <Button
+                variant="danger"
+                size="sm"
+                disabled={resetConfirmText !== "DELETE ALL DATA"}
+                onClick={handleConfirmDBSandboxReset}
+              >
                 Erase Everything
               </Button>
             </div>
           }
         >
-          <div className="text-xs font-semibold select-none text-[#1f2937] leading-relaxed">
-            Please type <span className="font-mono font-bold text-red-600">CONFIRM RESET</span> if
-            you understand this operation will erase all transaction invoices and vouchers ledger
-            books.
-            <div className="mt-4 bg-red-50/45 p-3 rounded-lg border border-red-200">
-              This sandbox uses Dexie.js local IndexedDB which resides client-side in your safe
-              browser container memory layers.
+          <div className="text-xs font-semibold select-none text-[#1f2937] leading-relaxed space-y-3">
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3">
+              ⚠️ This will permanently delete ALL business data including invoices, vouchers, accounts, 
+              parties, and stock records. This action CANNOT be undone.
             </div>
+            <p>Type <strong className="font-mono text-red-600">DELETE ALL DATA</strong> to confirm:</p>
+            <input
+              type="text"
+              value={resetConfirmText}
+              onChange={(e) => setResetConfirmText(e.target.value)}
+              placeholder="Type DELETE ALL DATA"
+              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            />
           </div>
         </Modal>
       )}

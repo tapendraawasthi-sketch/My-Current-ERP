@@ -6,9 +6,9 @@ import { useStore } from "@/store/useStore";
 function formatLoginDate(isoString: string): string {
   const d = new Date(isoString);
   return (
-    d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) +
+    d.toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }) +
     " at " +
-    d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
   );
 }
 
@@ -23,8 +23,9 @@ export default function CompanyLoginScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [lockoutCountdown, setLockoutCountdown] = useState(0);
+  const attemptKey = `loginAttempts_${companySettings?.id || "default"}`;
   const [failedAttempts, setFailedAttempts] = useState(() =>
-    parseInt(localStorage.getItem("loginAttempts") || "0", 10),
+    parseInt(localStorage.getItem(attemptKey) || "0", 10),
   );
 
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -82,14 +83,14 @@ export default function CompanyLoginScreen() {
       if (!success) {
         const newCount = failedAttempts + 1;
         setFailedAttempts(newCount);
-        localStorage.setItem("loginAttempts", String(newCount));
+        localStorage.setItem(attemptKey, String(newCount));
         if (newCount >= 5) {
           setError("Too many failed attempts. Account locked for 30 seconds.");
         } else {
           setError(`Invalid username or password. ${5 - newCount} attempt(s) remaining.`);
         }
       } else {
-        localStorage.setItem("loginAttempts", "0");
+        localStorage.setItem(attemptKey, "0");
       }
     } catch {
       setError("Sign in failed. Please try again.");

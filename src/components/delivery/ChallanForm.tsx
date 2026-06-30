@@ -453,11 +453,17 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
   };
 
   const handleCreateInvoice = () => {
-    toast.success(
-      type === "challan"
-        ? "Ready to create sales invoice from Challan."
-        : "Ready to create purchase invoice from GRN.",
-    );
+    if (!existing?.id) {
+      toast.error("Save the challan first before creating an invoice.");
+      return;
+    }
+    const targetPage = type === "challan" ? "billing" : "purchase";
+    toast.success(`Navigating to ${type === "challan" ? "Sales" : "Purchase"} Invoice...`);
+    // Navigate with reference pre-filled
+    const event = new CustomEvent("navigate", {
+      detail: targetPage,
+    });
+    window.dispatchEvent(event);
   };
 
   const gridClass = "grid gap-3 md:grid-cols-2";

@@ -229,7 +229,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
       if (sisterAccounts.length === 0) {
         setCode(String(base));
       } else {
-        const maxCode = Math.max(...sisterAccounts.map((a) => parseInt(a.code) || 0));
+        const maxCode = Math.max(0, ...sisterAccounts.map((a) => parseInt(a.code) || 0));
         setCode(String(maxCode + 100));
       }
       return;
@@ -238,7 +238,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     if (sisterAccounts.length === 0) {
       setCode(parentAcc.code + "1");
     } else {
-      const maxCode = Math.max(...sisterAccounts.map((a) => parseInt(a.code) || 0));
+      const maxCode = Math.max(0, ...sisterAccounts.map((a) => parseInt(a.code) || 0));
       if (!isNaN(maxCode) && maxCode > 0) {
         setCode(String(maxCode + 1));
       } else {
@@ -652,7 +652,7 @@ const ChartOfAccounts: React.FC = React.memo(() => {
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Chart of Accounts");
-    XLSX.writeFile(workbook, `Chart_of_Accounts_${new Date().toISOString().split("T")[0]}.xlsx`);
+    XLSX.writeFile(workbook, `Chart_of_Accounts_${new Date().toISOString().split("T")[0]}.csv`);
     toast.success("Chart of Accounts exported to Excel.");
   };
 

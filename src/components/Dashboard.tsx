@@ -78,10 +78,25 @@ const Dashboard: React.FC = () => {
   // Cash & Bank balance
   const cashBankBalance = useMemo(() => {
     const cashAccounts = accounts.filter(
-      (acc) => acc.type === "cash" || acc.name.toLowerCase().includes("cash"),
+      (acc) =>
+        !acc.isGroup &&
+        acc.isActive &&
+        (
+          acc.name.toLowerCase().includes("cash") ||
+          acc.group?.toLowerCase().includes("cash") ||
+          acc.groupName?.toLowerCase().includes("cash")
+        ),
     );
     const bankAccounts = accounts.filter(
-      (acc) => acc.type === "bank" || acc.name.toLowerCase().includes("bank"),
+      (acc) =>
+        !acc.isGroup &&
+        acc.isActive &&
+        (
+          acc.name.toLowerCase().includes("bank") ||
+          acc.group?.toLowerCase().includes("bank") ||
+          acc.groupName?.toLowerCase().includes("bank") ||
+          (acc as any).bankDetails
+        ),
     );
 
     const cashBalance = cashAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
@@ -104,11 +119,21 @@ const Dashboard: React.FC = () => {
 
   // VAT liability (simplified)
   const vatLiability = useMemo(() => {
-    // Simplified calculation - in reality this would be more complex
-    const salesInvoices = invoices.filter(
-      (inv) => inv.type === VoucherType.SALES_INVOICE && inv.status === "posted",
-    );
-    return salesInvoices.reduce((sum, inv) => sum + (inv.vatAmount || 0), 0);
+    const outputVat = invoices
+      .filter((inv) =>
+        (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
+        inv.status === "posted"
+      )
+      .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
+
+    const inputVat = invoices
+      .filter((inv) =>
+        (inv.type === VoucherType.PURCHASE_INVOICE || inv.type === "purchase-invoice") &&
+        inv.status === "posted"
+      )
+      .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
+
+    return Math.max(0, outputVat - inputVat);
   }, [invoices]);
 
   // Alerts computation
@@ -206,22 +231,29 @@ const Dashboard: React.FC = () => {
         title: `${pendingApproval.length} Vouchers Pending Approval (>24h)`,
         message: "Vouchers are waiting for approval for more than 24 hours",
         action: "APPROVE NOW",
-        actionPage: "maker-checker",
+        actionPage: "approval-workflow",
       });
     }
 
     // ALERT 5: Near-expiry batches (load from state if available)
     const nearExpiryBatches = []; // Will be populated from DB if batches are loaded
     // Check batches in useStore if batches array exists
-    if (
-      typeof (window as any).__erpBatchAlertCount === "number" &&
-      (window as any).__erpBatchAlertCount > 0
-    ) {
+    // Check batch expiry from items in store
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+    const thirtyDaysStr = thirtyDaysFromNow.toISOString().split("T")[0];
+
+    // Note: batches are loaded by the BatchManagement page — check stockMovements for near-expiry
+    const nearExpiryCount = (items || []).filter((item: any) =>
+      item.expiryDate && item.expiryDate <= thirtyDaysStr && item.expiryDate >= today
+    ).length;
+
+    if (nearExpiryCount > 0) {
       alertList.push({
         id: "batch-expiry",
         type: "danger",
         icon: "AlertTriangle",
-        title: `Batches Expiring Within 30 Days`,
+        title: `${nearExpiryCount} Items Expiring Within 30 Days`,
         message: "Review near-expiry stock before losses occur",
         action: "VIEW BATCHES",
         actionPage: "batch-management",

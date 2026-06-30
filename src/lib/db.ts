@@ -1731,4 +1731,3 @@ export interface DBApprovalPolicy {
   createdAt: string;
   updatedAt: string;
 }
-

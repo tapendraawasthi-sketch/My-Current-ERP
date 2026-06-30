@@ -127,7 +127,12 @@ const VouchersRegister: React.FC = () => {
       const blob = generateVoucherPDF(v, companySettings, accounts);
       const url = URL.createObjectURL(blob);
       const win = window.open(url);
-      if (win) win.focus();
+      if (win) {
+        win.focus();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } else {
+        URL.revokeObjectURL(url);
+      }
     } catch (e) {
       toast.error("Failed to compile PDF report.");
     }
@@ -174,7 +179,7 @@ const VouchersRegister: React.FC = () => {
     return {
       debit: round2(dr),
       credit: round2(cr),
-      balanced: Math.abs(round2(dr) - round2(cr)) === 0,
+      balanced: Math.abs(dr - cr) < 0.005,
     };
   }, [lines]);
 
@@ -224,6 +229,9 @@ const VouchersRegister: React.FC = () => {
         narration: vNarration.trim(),
         referenceNo: refNo.trim() || undefined,
         lines: cleanLines,
+        totalDebit: sums.debit,
+        totalCredit: sums.credit,
+        grandTotal: sums.debit,
         status: VoucherStatus.POSTED,
       });
 

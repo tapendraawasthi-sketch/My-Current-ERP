@@ -15,7 +15,7 @@ export function useF12Keyboard() {
       // Intercept F12 key
       if (e.key === "F12") {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         // Only open the panel if a screen has registered itself
         if (activeScreenId) {

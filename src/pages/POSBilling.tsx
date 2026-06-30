@@ -38,11 +38,13 @@ import {
   CreditCard as CardIcon,
 } from "lucide-react";
 
-const money = (v: any) =>
-  `Rs. ${Number(v || 0).toLocaleString("en-IN", {
+const money = (v: any) => {
+  const num = Number(v || 0);
+  return `Rs. ${num.toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
+};
 
 const btn =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
@@ -57,7 +59,21 @@ const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
-const todayISO = () => new Date().toISOString().slice(0, 10);
+const escapeHtml = (unsafe: string): string => {
+  return String(unsafe || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+const todayISO = () => {
+  const now = new Date();
+  // Use local date (Nepal is UTC+5:45)
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+};
 const nowISO = () => new Date().toISOString();
 
 const tableAll = (db: any, name: string) => {
@@ -118,10 +134,13 @@ const normalizePAN = (v: any) =>
 const stockForItem = (stockMovements: any[], itemId: string, warehouseId = "") => {
   return (stockMovements || [])
     .filter((m) => m.itemId === itemId && (!warehouseId || m.warehouseId === warehouseId))
-    .reduce(
-      (sum, m) => sum + Number(m.qtyIn || m.inQty || 0) - Number(m.qtyOut || m.outQty || 0),
-      0,
-    );
+    .reduce((sum, m) => {
+      // Use ONE consistent field — prefer signed qty, fall back to qtyIn - qtyOut
+      if (m.qty !== undefined && m.qty !== null) {
+        return sum + Number(m.qty || 0);
+      }
+      return sum + Number(m.qtyIn || m.inQty || 0) - Number(m.qtyOut || m.outQty || 0);
+    }, 0);
 };
 
 const lineNet = (l: any) => {
@@ -1047,15 +1066,15 @@ export default function POSBilling() {
         </head>
         <body>
           <div class="receipt">
-            <div class="center bold">${companyName}</div>
-            <div class="center">${companySettings?.address || ""}</div>
-            <div class="center">PAN: ${normalizePAN(companySettings?.pan || companySettings?.vatNo || "") || "-"}</div>
+            <div class="center bold">${escapeHtml(companyName)}</div>
+            <div class="center">${escapeHtml(companySettings?.address || "")}</div>
+            <div class="center">PAN: ${escapeHtml(normalizePAN(companySettings?.pan || companySettings?.vatNo || "") || "-")}</div>
             <div class="line"></div>
 
-            <div class="row"><span>Bill No:</span><span>${invoice.invoiceNo}</span></div>
-            <div class="row"><span>Date:</span><span>${invoice.date}</span></div>
-            <div class="row"><span>Cashier:</span><span>${invoice.createdByName || "-"}</span></div>
-            <div class="row"><span>Customer:</span><span>${invoice.partyName || "Walk-in Customer"}</span></div>
+            <div class="row"><span>Bill No:</span><span>${escapeHtml(invoice.invoiceNo)}</span></div>
+            <div class="row"><span>Date:</span><span>${escapeHtml(invoice.date)}</span></div>
+            <div class="row"><span>Cashier:</span><span>${escapeHtml(invoice.createdByName || "-")}</span></div>
+            <div class="row"><span>Customer:</span><span>${escapeHtml(invoice.partyName || "Walk-in Customer")}</span></div>
 
             <div class="line"></div>
 
@@ -1073,7 +1092,7 @@ export default function POSBilling() {
                   .map(
                     (l) => `
                       <tr>
-                        <td>${l.itemName || itemName(items, l.itemId)}</td>
+                        <td>${escapeHtml(l.itemName || itemName(items, l.itemId))}</td>
                         <td class="right">${Number(l.qty || 0).toFixed(2)}</td>
                         <td class="right">${Number(l.rate || 0).toFixed(2)}</td>
                         <td class="right">${Number(l.lineTotal || 0).toFixed(2)}</td>

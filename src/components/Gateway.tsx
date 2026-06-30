@@ -21,7 +21,13 @@ interface GatewayMenuItem {
 }
 
 const todayISO = () => new Date().toISOString().split("T")[0];
-const money = (value: number) => `रू ${formatNumber(Number(value) || 0)}`;
+const money = (value: number) => {
+  const num = Number(value) || 0;
+  return `रू ${num.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
 
 const MENU_SECTIONS: Record<string, GatewayMenuItem[]> = {
   MASTERS: [
@@ -275,6 +281,15 @@ const Gateway: React.FC = () => {
       )
       .reduce((sum: number, i: any) => sum + (i.grandTotal || 0), 0);
 
+    // VAT Liability
+    const outputVat = (invoices || [])
+      .filter((i: any) => (i.type === "sales-invoice" || i.type === "sales_invoice") && i.status === "posted")
+      .reduce((sum: number, i: any) => sum + (Number(i.vatAmount) || 0), 0);
+    const inputVat = (invoices || [])
+      .filter((i: any) => (i.type === "purchase-invoice" || i.type === "purchase_invoice") && i.status === "posted")
+      .reduce((sum: number, i: any) => sum + (Number(i.vatAmount) || 0), 0);
+    const vatPayable = Math.max(0, outputVat - inputVat);
+
     // Stock value
     const stockValue = stockPositions.reduce((sum: number, sp: any) => sum + (sp.value || 0), 0);
 
@@ -285,7 +300,7 @@ const Gateway: React.FC = () => {
       payables,
       todaysSales,
       todaysPurchases,
-      vatPayable: 0,
+      vatPayable,
       stockValue,
     };
   }, [vouchers, accounts, invoices, stockPositions]);

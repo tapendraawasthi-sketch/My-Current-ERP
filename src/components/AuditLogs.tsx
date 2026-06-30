@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Badge, Input, Pagination } from "./ui";
 import { ShieldCheck, Search } from "lucide-react";
@@ -32,60 +32,41 @@ const AuditLogs: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
-  const mockLogs = useMemo<AuditLog[]>(() => {
-    return [
-      {
-        id: "1",
-        timestamp: new Date().toISOString(),
-        user: currentUser?.name || "Administrator",
-        action: "LOGIN",
-        description: "Successful operator login, authenticated local session.",
-        status: "SUCCESS",
-      },
-      {
-        id: "2",
-        timestamp: new Date(Date.now() - 3200000).toISOString(),
-        user: currentUser?.name || "Administrator",
-        action: "UPDATE",
-        description: "System settings updated in local IndexedDB stores.",
-        status: "SUCCESS",
-      },
-      {
-        id: "3",
-        timestamp: new Date(Date.now() - 10000000).toISOString(),
-        user: "System daemon",
-        action: "CREATE",
-        description: "Standard Charter of Accounts structure seeded successfully.",
-        status: "SUCCESS",
-      },
-      {
-        id: "4",
-        timestamp: new Date(Date.now() - 250000000).toISOString(),
-        user: "Accountant",
-        action: "CREATE",
-        description: "VAT Tax-Invoice dispatched: Bill # SI-00104.",
-        status: "SUCCESS",
-      },
-      {
-        id: "5",
-        timestamp: new Date(Date.now() - 500000000).toISOString(),
-        user: "System daemon",
-        action: "DELETE",
-        description: "Obsolete cached index tables purged from local memory.",
-        status: "SUCCESS",
-      },
-    ];
-  }, [currentUser]);
+  const [realLogs, setRealLogs] = useState<AuditLog[]>([]);
+
+  useEffect(() => {
+    const loadLogs = async () => {
+      try {
+        const { getDB } = await import("../lib/db");
+        const db = getDB();
+        const logs = await db.table("auditLogs").orderBy("timestamp").reverse().limit(500).toArray();
+        setRealLogs(
+          logs.map((l: any) => ({
+            id: String(l.id || Math.random()),
+            timestamp: l.timestamp || l.createdAt || new Date().toISOString(),
+            user: l.userName || l.user || "System",
+            action: (l.action || "UPDATE").toUpperCase() as AuditLog["action"],
+            description: l.narration || l.description || l.action || "",
+            status: (l.status || "SUCCESS").toUpperCase() as AuditLog["status"],
+          }))
+        );
+      } catch (err) {
+        console.warn("Could not load audit logs from DB", err);
+        setRealLogs([]);
+      }
+    };
+    loadLogs();
+  }, []);
 
   const filteredLogs = useMemo(() => {
-    return mockLogs.filter((l) => {
+    return realLogs.filter((l) => {
       const matchesSearch =
         l.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
         l.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesAction = actionFilter === "" || l.action === actionFilter;
       return matchesSearch && matchesAction;
     });
-  }, [mockLogs, searchTerm, actionFilter]);
+  }, [realLogs, searchTerm, actionFilter]);
 
   const paginatedLogs = useMemo(() => {
     const startIndex = (page - 1) * pageSize;

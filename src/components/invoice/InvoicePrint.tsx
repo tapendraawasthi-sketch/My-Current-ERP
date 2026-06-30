@@ -40,6 +40,9 @@ interface CompanySettings {
   vatNumber?: string;
   logo?: string;
   printBankDetails?: boolean;
+  bankName?: string;
+  bankAccount?: string;
+  bankBranch?: string;
   termsConditions?: string;
   invoiceFooter?: string;
   signatoryName?: string;
@@ -196,7 +199,7 @@ export default function InvoicePrint({
             {/* TAX INVOICE Title Strip */}
             <div className="text-center bg-[#EBF5E2] border border-[#9DC07A] py-1.5 mb-5 rounded">
               <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-[#000000]">
-                TAX INVOICE
+                TAX INVOICE / कर बिजक
               </h2>
             </div>
 
@@ -342,20 +345,15 @@ export default function InvoicePrint({
                 </div>
 
                 {/* Bank Details */}
-                {company.printBankDetails && (
+                {company.printBankDetails && company.bankName && (
                   <div className="p-2.5 border border-[#9DC07A] rounded text-[11px] bg-white">
                     <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-1">
                       Bank Payment Details:
                     </p>
                     <div className="grid grid-cols-3 gap-1">
-                      <span className="text-[#000000]">Bank:</span>
-                      <span className="col-span-2 font-medium text-[#000000]">Nepal Bank Ltd.</span>
-                      <span className="text-[#000000]">Account:</span>
-                      <span className="col-span-2 font-mono font-bold text-[#000000]">
-                        00123456789
-                      </span>
-                      <span className="text-[#000000]">Branch:</span>
-                      <span className="col-span-2 font-medium text-[#000000]">Kathmandu</span>
+                      {company.bankName && <><span className="text-[#000000]">Bank:</span><span className="col-span-2 font-medium text-[#000000]">{company.bankName}</span></>}
+                      {company.bankAccount && <><span className="text-[#000000]">Account:</span><span className="col-span-2 font-mono font-bold text-[#000000]">{company.bankAccount}</span></>}
+                      {company.bankBranch && <><span className="text-[#000000]">Branch:</span><span className="col-span-2 font-medium text-[#000000]">{company.bankBranch}</span></>}
                     </div>
                   </div>
                 )}

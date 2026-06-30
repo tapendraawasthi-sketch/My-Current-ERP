@@ -93,7 +93,17 @@ const App: React.FC = () => {
         style={{ background: "#E4F1D9" }}
       >
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#1557b0] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              border: "4px solid #1557b0",
+              borderTopColor: "transparent",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+            className="mx-auto mb-4"
+          />
           <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>
             Loading Sutra ERP…
           </p>
@@ -287,6 +297,19 @@ const App: React.FC = () => {
         return <AuditLog />;
 
       // ── Dashboard / fallback ──────────────────────────────────────────────
+      case "chart-of-accounts":
+        return <ChartOfAccounts />;
+      case "party-master":
+        return <Parties />;
+      case "stock-book":
+        return <StockBook />;
+      case "pos-mode":
+        return <BillingInvoice />;
+      case "approval-workflow":
+        return <ApprovalWorkflow />;
+      case "maker-checker":
+        return <ApprovalWorkflow />;
+        
       default:
         return <Dashboard />;
     }

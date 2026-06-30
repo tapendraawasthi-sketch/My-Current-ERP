@@ -104,7 +104,7 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
         label: "Inventory",
         children: [
           { label: "Stock Transfer", page: "stock-transfer" },
-          { label: "Stock Adjustment", page: "stock-adjustment" },
+          { label: "Stock Adjustment", page: "physical-stock" },
           { label: "Physical Stock", page: "physical-stock" },
         ],
       },
@@ -177,12 +177,11 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   {
     title: "Utilities",
     items: [
-      { label: "Import / Export", page: "import-export" },
-      { label: "Data Cleanup", page: "data-cleanup" },
-      { label: "User Management", page: "user-management" },
-      { label: "Workflow Rules", page: "workflow" },
+      { label: "Data Import / Export", page: "data-import-export" },
+      { label: "Users", page: "users" },
+      { label: "Approval Workflow", page: "approval-workflow" },
       { separator: true, label: "" },
-      { label: "About / Licence", page: "about" },
+      { label: "About", page: "settings" },
     ],
   },
 ];

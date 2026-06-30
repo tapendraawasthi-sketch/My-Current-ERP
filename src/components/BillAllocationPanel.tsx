@@ -38,7 +38,7 @@ interface FifoResult {
 function fmt(n: number): string {
   return (
     "Rs. " +
-    Number(n || 0).toLocaleString("en-NP", {
+    Number(n || 0).toLocaleString("en-IN", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })
@@ -236,7 +236,7 @@ export function BillAllocationPanel({
 
     if (unallocated > 0.005) {
       billAllocs.push({
-        billRefNo: `ADV-${Date.now()}`,
+        billRefNo: `ADV-${partyId}-${new Date().toISOString().split("T")[0]}`,
         billRefType: "advance",
         amount: unallocated,
       });

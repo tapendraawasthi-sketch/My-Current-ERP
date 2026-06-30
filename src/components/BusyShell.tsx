@@ -29,10 +29,13 @@ export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) 
 
   const handleClose = () => {
     if (window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.")) {
+      // Clear session and redirect to login
       try {
-        window.close();
-        window.location.href = "about:blank";
-      } catch {}
+        sessionStorage.clear();
+        window.location.reload();
+      } catch {
+        window.location.href = "/";
+      }
     }
   };
 

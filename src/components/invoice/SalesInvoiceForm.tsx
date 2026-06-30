@@ -8,7 +8,7 @@
  * movements.
  */
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useStore } from "@/store/useStore";
 import {
   Card,
@@ -155,7 +155,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         (a) =>
           !a.isGroup &&
           a.isActive &&
-          (a.parentId === "grp-bank-accounts" || a.group === "Bank Accounts"),
+          (
+            a.group === "Bank Accounts" ||
+            a.groupName === "Bank Accounts" ||
+            a.name.toLowerCase().includes("bank") ||
+            (a as any).bankDetails && Object.keys((a as any).bankDetails).length > 0
+          ),
       ),
     [accounts],
   );
@@ -273,7 +278,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
   const words = useMemo(() => numberToWords(grandTotal, "Rupees"), [grandTotal]);
 
-  const [invoiceNoPreview, setInvoiceNoPreview] = useState(existing?.invoiceNo || "Loading...");
+  const [invoiceNoPreview, setInvoiceNoPreview] = useState(existing?.invoiceNo || "Auto-generated");
 
   useEffect(() => {
     if (existing?.invoiceNo) {
@@ -547,7 +552,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
       const blob = await generateInvoicePDF(target, companySettings, invoiceParty, items);
       const url = URL.createObjectURL(blob);
       const win = window.open(url);
-      if (win) win.focus();
+      if (win) {
+        win.focus();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } else {
+        URL.revokeObjectURL(url);
+        toast.error("Popup blocked. Please allow popups for PDF printing.");
+      }
     } catch {
       toast.error("Failed to generate PDF.");
     }
@@ -558,32 +569,31 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     else onCancel?.();
   };
 
+  const handleSaveRef = useRef(handleSave);
+  useEffect(() => {
+    handleSaveRef.current = handleSave;
+  });
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
         handleBack();
-      } else if (!readOnly && e.key === "F12") {
+      } else if (!readOnly && e.key === "F2") {
         e.preventDefault();
-        handleSave(VoucherStatus.POSTED);
-      } else if (!readOnly && e.key === "F9") {
-        e.preventDefault();
-        if (lines.length > 1) {
-          setLines((p) => p.slice(0, -1));
-          markDirty();
-        } else if (lines.length === 1) {
-          setLines([emptyLine()]);
-          markDirty();
-        }
+        handleSaveRef.current(existing?.status || VoucherStatus.DRAFT);
       } else if (!readOnly && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        handleSave(existing?.status || VoucherStatus.DRAFT);
+        handleSaveRef.current(existing?.status || VoucherStatus.DRAFT);
+      } else if (!readOnly && e.key === "F9") {
+        e.preventDefault();
+        setLines((p) => (p.length > 1 ? p.slice(0, -1) : [emptyLine()]));
+        markDirty();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines, dirty, readOnly, date, partyId, payMode, paidAmount, narration, tdsEnabled, tdsRate]);
+  }, [readOnly]);
 
   // ---- success screen ----
   if (savedInvoice) {
@@ -622,7 +632,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
   return (
     <div style={{ background: "#fffbe6", padding: 12 }}>
-      <PillTitle title="Add Sales Voucher" />
+      <PillTitle title={`${meta.label}`} />
       <FormPanel>
         <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
           {isCancelled && (

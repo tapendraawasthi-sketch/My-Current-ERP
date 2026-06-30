@@ -225,14 +225,6 @@ const Header: React.FC = () => {
           <HelpCircle style={{ width: 16, height: 16, color: "#000000" }} />
         </a>
 
-        {/* Dark mode toggle */}
-        <button onClick={toggleTheme} style={iconBtn} title="Toggle theme">
-          {theme === "dark" ? (
-            <Sun style={{ width: 16, height: 16, color: "#000000" }} />
-          ) : (
-            <Moon style={{ width: 16, height: 16, color: "#000000" }} />
-          )}
-        </button>
 
         {/* Notifications */}
         <div ref={alertsRef} style={{ position: "relative" }}>
