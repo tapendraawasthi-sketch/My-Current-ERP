@@ -1420,3 +1420,18 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Ensure all font-mono amount cells don't show raw dollar signs */
 td.amt::before { content: none; }
+
+/* ── P&L PRINT STYLES ── */
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  
+  body { background: white !important; color: black !important; font-size: 11px; }
+  
+  .bg-white, .bg-\[\#f5f6fa\] { background: white !important; }
+  
+  table { page-break-inside: auto; font-size: 10px; }
+  tr { page-break-inside: avoid; }
+  
+  @page { size: A3 landscape; margin: 10mm; }
+}
