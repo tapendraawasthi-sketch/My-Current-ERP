@@ -1,22 +1,21 @@
 services:
   - type: web
     name: sutra-erp
-    env: node
-    plan: free
+    env: static
     buildCommand: npm ci && npm run build
-    startCommand: node serve.mjs
-    healthCheckPath: /health
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: Cache-Control
+        value: no-cache
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
-      - key: DATABASE_URL
-        sync: false # Set this in Render dashboard → Environment → DATABASE_URL
-      - key: ALLOWED_ORIGINS
-        sync: false # Set to your Vercel URL if using separate frontend, e.g. https://my-erp.vercel.app
-databases:
-  - name: sutra-erp-db
-    plan: free
-    databaseName: sutra_erp
-    user: sutra_erp_user
