@@ -33,6 +33,8 @@ import StockSummary from "./pages/StockSummary";
 import BudgetMaster from "./pages/BudgetMaster";
 import FiscalYear from "./pages/FiscalYear";
 import AuditLog from "./pages/AuditLog";
+import IncomeExpenditureAccount from "./pages/IncomeExpenditureAccount";
+import AccountsConfiguration from "./pages/AccountsConfiguration";
 
 // ── Phase 4 new pages ─────────────────────────────────────────────────────────
 import SalesPersons from "./pages/SalesPersons";
@@ -230,6 +232,10 @@ const App: React.FC = () => {
         return <BalanceSheet />;
       case "profit-loss":
         return <ProfitLoss />;
+      case "income-expenditure":
+        return <IncomeExpenditureAccount />;
+      case "accounts-configuration":
+        return <AccountsConfiguration />;
       case "trial-balance":
         return <TrialBalance />;
       case "day-book":

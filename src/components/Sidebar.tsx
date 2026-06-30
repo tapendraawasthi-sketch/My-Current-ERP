@@ -114,6 +114,7 @@ const menuGroups: MenuGroup[] = [
       { label: "General Ledger", page: "ledger", icon: BookOpen },
       { label: "Trial Balance", page: "trial-balance", icon: FileBarChart },
       { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp },
+      { label: "Income & Expenditure A/c", page: "income-expenditure", icon: BookOpen },
       { label: "Balance Sheet", page: "balance-sheet", icon: PieChart },
       { label: "Cash Flow Statement", page: "cash-flow", icon: Activity },
       { label: "Funds Flow Statement", page: "funds-flow", icon: ArrowLeftRight },
@@ -179,6 +180,7 @@ const menuGroups: MenuGroup[] = [
     title: "Configuration",
     items: [
       { label: "Print Configuration", page: "print-configuration", icon: Printer },
+      { label: "Accounts Configuration", page: "accounts-configuration", icon: Settings },
       { label: "F11 Features", page: "f11-features", icon: Settings },
       { label: "Backup & Restore", page: "backup-restore", icon: Database },
       { label: "Users Management", page: "users", icon: Users },

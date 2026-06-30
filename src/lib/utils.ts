@@ -103,3 +103,18 @@ export function parseFlexibleDate(value: string | Date | undefined | null): Date
   const d = new Date(value);
   return isNaN(d.getTime()) ? new Date() : d;
 }
+
+/**
+ * Returns the number of decimal places to use for profit/balance sheet reports.
+ * Reads from localStorage key "cfg_decimal_places" with fallback of 2.
+ */
+export function getProfitDecimalPlaces(): number {
+  try {
+    const raw = localStorage.getItem("cfg_decimal_places");
+    if (raw !== null) {
+      const n = parseInt(raw, 10);
+      if (!isNaN(n) && n >= 0 && n <= 6) return n;
+    }
+  } catch {}
+  return 2;
+}
