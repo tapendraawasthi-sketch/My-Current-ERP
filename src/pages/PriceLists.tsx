@@ -495,7 +495,7 @@ export default function PriceLists() {
                     <option value="EUR">EUR — Euro</option>
                     <option value="GBP">GBP — British Pound</option>
                     <option value="AED">AED — UAE Dirham</option>
-                    <option value="NPR">NPR — Nepalese Rupee</option>
+                    <option value="NPR">Rs. — Nepalese Rupee</option>
                   </select>
                 </div>
 

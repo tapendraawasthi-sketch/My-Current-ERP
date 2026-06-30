@@ -227,24 +227,24 @@ export default function CommunicationHub() {
     const dueDate = selectedInvoice.dueDate || "";
 
     setEmailTo(party.email || "");
-    setEmailSubject(`Invoice ${invNo} from ${companySettings?.name || "Company"} — NPR ${amount}`);
+    setEmailSubject(`Invoice ${invNo} from ${companySettings?.name || "Company"} — Rs. ${amount}`);
     setEmailBody(
-      `Dear ${party.name || "Customer"},\n\nPlease find herewith Invoice No. ${invNo} dated ${selectedInvoice.date} for NPR ${amount}.\n\nPayment is due by ${dueDate}. For any queries, contact us at ${companySettings?.phone || ""}.\n\nThank you for your business.\n\nBest regards,\n${companySettings?.name || ""}\nPAN: ${companySettings?.panNumber || ""}`,
+      `Dear ${party.name || "Customer"},\n\nPlease find herewith Invoice No. ${invNo} dated ${selectedInvoice.date} for Rs. ${amount}.\n\nPayment is due by ${dueDate}. For any queries, contact us at ${companySettings?.phone || ""}.\n\nThank you for your business.\n\nBest regards,\n${companySettings?.name || ""}\nPAN: ${companySettings?.panNumber || ""}`,
     );
 
     setWaPhone(party.phone || "");
     setWaMessage(
-      `Dear ${party.name || "Customer"}, Invoice ${invNo} dated ${selectedInvoice.date} for NPR ${amount} is due on ${dueDate}. Please arrange payment. - ${companySettings?.name || ""}`,
+      `Dear ${party.name || "Customer"}, Invoice ${invNo} dated ${selectedInvoice.date} for Rs. ${amount} is due on ${dueDate}. Please arrange payment. - ${companySettings?.name || ""}`,
     );
   }, [selectedInvoice, selectedParty, companySettings]);
 
   useEffect(() => {
     const templates = {
       Polite:
-        "Dear {partyName}, this is a gentle reminder that invoices totaling NPR {amount} are overdue. Kindly arrange payment at your convenience.",
-      Firm: "Dear {partyName}, invoices totaling NPR {amount} are overdue by {days} days. Please arrange payment immediately.",
+        "Dear {partyName}, this is a gentle reminder that invoices totaling Rs. {amount} are overdue. Kindly arrange payment at your convenience.",
+      Firm: "Dear {partyName}, invoices totaling Rs. {amount} are overdue by {days} days. Please arrange payment immediately.",
       "Final Notice":
-        "Dear {partyName}, despite previous reminders, invoices totaling NPR {amount} remain overdue. Please clear payment immediately to avoid further action.",
+        "Dear {partyName}, despite previous reminders, invoices totaling Rs. {amount} remain overdue. Please clear payment immediately to avoid further action.",
     };
     setTemplateText(templates[templateType]);
   }, [templateType]);
@@ -373,7 +373,7 @@ export default function CommunicationHub() {
             <p>To,<br/><b>${row.party.name || ""}</b><br/>${row.party.address || ""}</p>
             <h3>Payment Reminder</h3>
             <p>${buildReminderMessage(row)}</p>
-            <p>Total Overdue: NPR ${money(row.total)}</p>
+            <p>Total Overdue: Rs. ${money(row.total)}</p>
             <p>Oldest Invoice Days: ${row.oldestDays}</p>
             <p>Regards,<br/>${companySettings?.name || ""}</p>
           </div>
@@ -741,7 +741,7 @@ export default function CommunicationHub() {
                 return (
                   <option key={inv.id} value={inv.id}>
                     {inv.invoiceNo || inv.voucherNo || inv.id} | {inv.date} | {p?.name || "Party"} |
-                    NPR {money(inv.grandTotal || 0)} |{" "}
+                    Rs. {money(inv.grandTotal || 0)} |{" "}
                     {String(inv.paymentStatus || "").toUpperCase()}
                   </option>
                 );
@@ -1042,7 +1042,7 @@ export default function CommunicationHub() {
                         </div>
                       </td>
                       <td className={`${tableCellClass} font-semibold text-red-600`}>
-                        NPR {money(row.total)}
+                        Rs. {money(row.total)}
                       </td>
                       <td className={tableCellClass}>{row.oldestDays} Days</td>
                       <td className={tableCellClass}>

@@ -865,7 +865,7 @@ export default function CostCenterReport() {
                 <div
                   className={`text-[20px] font-bold ${selectedPL.net >= 0 ? "text-green-700" : "text-red-700"}`}
                 >
-                  NPR {money(selectedPL.net)}
+                  Rs. {money(selectedPL.net)}
                 </div>
               </div>
             </div>
@@ -1090,7 +1090,7 @@ export default function CostCenterReport() {
                 </div>
                 <div className="text-[12px] text-indigo-700 mb-3 pb-3 border-b border-indigo-100">
                   Total Amount:{" "}
-                  <span className="font-bold">NPR {money(allocationPreview.totalAmount)}</span>
+                  <span className="font-bold">Rs. {money(allocationPreview.totalAmount)}</span>
                 </div>
 
                 <table className="w-full border-collapse mb-4">
@@ -1117,7 +1117,7 @@ export default function CostCenterReport() {
                           {money(a.percentage)}%
                         </td>
                         <td className="py-1.5 text-[11px] text-indigo-900 font-medium text-right">
-                          NPR {money(a.amount)}
+                          Rs. {money(a.amount)}
                         </td>
                       </tr>
                     ))}
@@ -1304,7 +1304,7 @@ export default function CostCenterReport() {
                             Dr {r.costCenter?.name} ({transferPreview.account?.name})
                           </td>
                           <td className="py-1 text-right font-medium text-indigo-900">
-                            NPR {money(r.amount)}
+                            Rs. {money(r.amount)}
                           </td>
                         </tr>
                       ))}
@@ -1313,7 +1313,7 @@ export default function CostCenterReport() {
                           Cr {transferPreview.fromCC?.name} ({transferPreview.account?.name})
                         </td>
                         <td className="py-1 text-right font-bold text-indigo-900">
-                          NPR {money(transferPreview.receiverTotal)}
+                          Rs. {money(transferPreview.receiverTotal)}
                         </td>
                       </tr>
                     </tbody>

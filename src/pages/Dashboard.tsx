@@ -360,7 +360,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="text-[24px] font-bold text-gray-900 mb-1">
-            NPR {money(dashData.todaySales)}
+            Rs. {money(dashData.todaySales)}
           </div>
           <div className="flex items-center gap-1.5">
             {dashData.salesTrend >= 0 ? (
@@ -386,7 +386,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="text-[24px] font-bold text-gray-900 mb-1">
-            NPR {money(dashData.totalReceivables)}
+            Rs. {money(dashData.totalReceivables)}
           </div>
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-gray-500">Total Customer Dues</span>
@@ -406,7 +406,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="text-[24px] font-bold text-gray-900 mb-1">
-            NPR {money(dashData.totalPayables)}
+            Rs. {money(dashData.totalPayables)}
           </div>
           <div className="text-[11px] text-gray-500">Vendor Dues Outstanding</div>
         </div>
@@ -425,7 +425,7 @@ export default function Dashboard() {
               dashData.cashBankBalance >= 0 ? "text-gray-900" : "text-red-600"
             }`}
           >
-            NPR {money(dashData.cashBankBalance)}
+            Rs. {money(dashData.cashBankBalance)}
           </div>
           <div className="text-[11px] text-gray-500">Total Cash & Bank Accounts</div>
         </div>
@@ -473,7 +473,7 @@ export default function Dashboard() {
                       minHeight: 2,
                     }}
                     className="w-[45%] max-w-[20px] bg-[#1557b0] rounded-t-sm cursor-pointer hover:opacity-80 transition-opacity shadow-sm"
-                    title={`Sales: NPR ${money(m.sales)}`}
+                    title={`Sales: Rs. ${money(m.sales)}`}
                   />
                   <div
                     style={{
@@ -481,7 +481,7 @@ export default function Dashboard() {
                       minHeight: 2,
                     }}
                     className="w-[45%] max-w-[20px] bg-red-400 rounded-t-sm opacity-90 cursor-pointer hover:opacity-75 transition-opacity shadow-sm"
-                    title={`Expenses: NPR ${money(m.expenses)}`}
+                    title={`Expenses: Rs. ${money(m.expenses)}`}
                   />
                 </div>
                 <div className="text-[10px] font-medium text-gray-500 group-hover:text-gray-900 transition-colors uppercase tracking-wider">
@@ -511,7 +511,7 @@ export default function Dashboard() {
               <span
                 className={`text-[15px] font-bold ${dashData.cashBankBalance >= 0 ? "text-green-600" : "text-red-600"}`}
               >
-                NPR {money(dashData.cashBankBalance)}
+                Rs. {money(dashData.cashBankBalance)}
               </span>
             </div>
           </div>
@@ -640,10 +640,10 @@ export default function Dashboard() {
                         {row.party?.name || "Unknown"}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-800 text-right font-semibold">
-                        NPR {money(row.amount)}
+                        Rs. {money(row.amount)}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-500 text-right">
-                        NPR {money(row.ytd)}
+                        Rs. {money(row.ytd)}
                       </td>
                     </tr>
                   ))}
@@ -759,7 +759,7 @@ export default function Dashboard() {
                     />
                   </div>
                   <span className="text-[11px] w-24 text-right font-semibold text-gray-800 whitespace-nowrap">
-                    NPR {money(acc.monthlyAmt)}
+                    Rs. {money(acc.monthlyAmt)}
                   </span>
                 </div>
               ))}

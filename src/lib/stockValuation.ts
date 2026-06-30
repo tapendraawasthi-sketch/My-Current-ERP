@@ -1,271 +1,358 @@
-// src/lib/stockValuation.ts
-// Pure stock valuation functions — FIFO, LIFO, Moving Weighted Average
-// No side-effects, no DB access, no store access.
-// Used by StockSummary page and future costing integrations.
+// FIFO, LIFO, Weighted Average stock valuation engine
 
-export type CostingMethod = "fifo" | "lifo" | "moving_avg" | "weighted_avg";
+export type ValuationMethod = "fifo" | "lifo" | "weighted_average";
 
-export interface StockLot {
-  date: string;       // ISO date of purchase/receipt
-  qty: number;        // quantity received in this lot
-  rate: number;       // cost per unit of this lot
-}
-
-export interface ValuationResult {
-  closingQty: number;
-  closingValue: number;
-  closingRate: number;   // average rate of closing stock
-  cogsSold: number;      // cost of goods sold (consumed)
-  cogsValue: number;     // total COGS value
-}
-
-export interface StockMovement {
-  date: string;
-  type: "in" | "out";
+export interface StockMovementRaw {
+  id: string;
+  date: string;           // "YYYY-MM-DD"
+  type: string;           // e.g. "purchase", "sales", "opening", "stock-transfer-in", etc.
+  itemId: string;
+  itemName: string;
+  warehouseId?: string;
+  warehouseName?: string;
   qty: number;
-  rate: number;  // purchase rate for "in", ignored for "out" in FIFO/LIFO
+  rate: number;
+  amount?: number;
 }
 
-// ─── MOVING WEIGHTED AVERAGE ──────────────────────────────────────────────────
-// Most common in Nepal for daily trading. Recalculates average cost on every
-// purchase. Sale uses the current running average rate.
-export function computeMovingWeightedAverage(
-  movements: StockMovement[]
+export interface ValuationLayer {
+  qty: number;
+  rate: number;
+}
+
+export interface StockLedgerEntry {
+  date: string;
+  particulars: string;
+  inQty: number;
+  inRate: number;
+  inAmount: number;
+  outQty: number;
+  outRate: number;
+  outAmount: number;
+  balanceQty: number;
+  balanceRate: number;
+  balanceAmount: number;
+}
+
+export interface StockItemSummary {
+  itemId: string;
+  itemName: string;
+  openingQty: number;
+  openingRate: number;
+  openingAmount: number;
+  purchaseQty: number;
+  purchaseRate: number; // weighted avg purchase rate during period
+  purchaseAmount: number;
+  salesQty: number;
+  salesRate: number;   // avg sales rate during period
+  salesAmount: number;
+  closingQty: number;
+  closingRate: number;
+  closingAmount: number;
+  ledger: StockLedgerEntry[];
+}
+
+function isInward(type: string): boolean {
+  const t = (type || "").toLowerCase();
+  return (
+    t.includes("purchase") ||
+    t.includes("opening") ||
+    t.includes("transfer-in") ||
+    t.includes("receipt") ||
+    t.includes("adjustment-in") ||
+    t === "in"
+  );
+}
+
+function isOutward(type: string): boolean {
+  const t = (type || "").toLowerCase();
+  return (
+    t.includes("sales") ||
+    t.includes("transfer-out") ||
+    t.includes("adjustment-out") ||
+    t === "out"
+  );
+}
+
+/**
+ * Compute per-item stock summary using chosen valuation method.
+ */
+export function computeStockSummary(
+  movements: StockMovementRaw[],
+  method: ValuationMethod,
+  fromDate?: string,
+  toDate?: string,
+): StockItemSummary[] {
+  // Group by itemId
+  const byItem = new Map<string, StockMovementRaw[]>();
+  for (const m of movements) {
+    const arr = byItem.get(m.itemId) ?? [];
+    arr.push(m);
+    byItem.set(m.itemId, arr);
+  }
+
+  const results: StockItemSummary[] = [];
+
+  for (const [itemId, rawMovs] of byItem) {
+    // Sort chronologically
+    const sorted = [...rawMovs].sort((a, b) => a.date.localeCompare(b.date));
+
+    // Split into pre-period (opening) and in-period
+    const preMovs = fromDate ? sorted.filter(m => m.date < fromDate) : [];
+    const inPeriod = fromDate && toDate
+      ? sorted.filter(m => m.date >= fromDate && m.date <= toDate)
+      : sorted;
+
+    // Compute opening stock using method
+    const { closingQty: openingQty, closingRate: openingRate, closingAmount: openingAmount } =
+      runValuation(preMovs, method);
+
+    // Run in-period
+    const {
+      closingQty,
+      closingRate,
+      closingAmount,
+      purchaseQty,
+      purchaseAmount,
+      salesQty,
+      salesAmount,
+      ledger,
+    } = runValuationDetailed(inPeriod, method, openingQty, openingRate, openingAmount);
+
+    results.push({
+      itemId,
+      itemName: rawMovs[0]?.itemName ?? itemId,
+      openingQty,
+      openingRate,
+      openingAmount,
+      purchaseQty,
+      purchaseRate: purchaseQty > 0 ? purchaseAmount / purchaseQty : 0,
+      purchaseAmount,
+      salesQty,
+      salesRate: salesQty > 0 ? salesAmount / salesQty : 0,
+      salesAmount,
+      closingQty,
+      closingRate,
+      closingAmount,
+      ledger,
+    });
+  }
+
+  return results.sort((a, b) => a.itemName.localeCompare(b.itemName));
+}
+
+interface ValuationResult {
+  closingQty: number;
+  closingRate: number;
+  closingAmount: number;
+}
+
+function runValuation(
+  movs: StockMovementRaw[],
+  method: ValuationMethod,
 ): ValuationResult {
-  let runningQty = 0;
-  let runningValue = 0;
-  let cogsValue = 0;
-  let cogsSold = 0;
+  const layers: ValuationLayer[] = [];
+  let waQty = 0;
+  let waAmount = 0;
 
-  const sorted = [...movements].sort((a, b) => a.date.localeCompare(b.date));
+  for (const m of movs) {
+    const qty = Math.abs(Number(m.qty) || 0);
+    const rate = Number(m.rate) || 0;
+    if (qty === 0) continue;
 
-  for (const mv of sorted) {
-    if (mv.type === "in") {
-      runningQty += mv.qty;
-      runningValue += mv.qty * mv.rate;
-    } else {
-      const avgRate = runningQty > 0 ? runningValue / runningQty : 0;
-      const consumed = Math.min(mv.qty, runningQty);
-      cogsValue += consumed * avgRate;
-      cogsSold += consumed;
-      runningQty -= consumed;
-      runningValue -= consumed * avgRate;
-      if (runningValue < 0) runningValue = 0;
+    if (isInward(m.type)) {
+      if (method === "weighted_average") {
+        waAmount += qty * rate;
+        waQty += qty;
+      } else {
+        layers.push({ qty, rate });
+      }
+    } else if (isOutward(m.type)) {
+      if (method === "weighted_average") {
+        waQty = Math.max(0, waQty - qty);
+        const avgRate = waQty > 0 ? waAmount / (waQty + qty) : rate;
+        waAmount = Math.max(0, waAmount - qty * avgRate);
+      } else {
+        consumeLayers(layers, qty, method);
+      }
     }
   }
 
-  const closingRate = runningQty > 0 ? runningValue / runningQty : 0;
+  if (method === "weighted_average") {
+    const avgRate = waQty > 0 ? waAmount / waQty : 0;
+    return { closingQty: waQty, closingRate: avgRate, closingAmount: waAmount };
+  }
 
+  const totalQty = layers.reduce((s, l) => s + l.qty, 0);
+  const totalAmt = layers.reduce((s, l) => s + l.qty * l.rate, 0);
   return {
-    closingQty: Math.max(0, runningQty),
-    closingValue: Math.max(0, runningValue),
-    closingRate,
-    cogsSold,
-    cogsValue,
+    closingQty: totalQty,
+    closingRate: totalQty > 0 ? totalAmt / totalQty : 0,
+    closingAmount: totalAmt,
   };
 }
 
-// ─── SIMPLE WEIGHTED AVERAGE ──────────────────────────────────────────────────
-// Calculates a single weighted average for the entire period.
-// Simpler than moving WA — uses total receipts to set one rate.
-export function computeWeightedAverage(
-  movements: StockMovement[],
-  openingQty = 0,
-  openingValue = 0
-): ValuationResult {
-  const totalInQty =
-    openingQty +
-    movements.filter((m) => m.type === "in").reduce((s, m) => s + m.qty, 0);
-  const totalInValue =
-    openingValue +
-    movements
-      .filter((m) => m.type === "in")
-      .reduce((s, m) => s + m.qty * m.rate, 0);
+interface DetailedResult extends ValuationResult {
+  purchaseQty: number;
+  purchaseAmount: number;
+  salesQty: number;
+  salesAmount: number;
+  ledger: StockLedgerEntry[];
+}
 
-  const avgRate = totalInQty > 0 ? totalInValue / totalInQty : 0;
+function runValuationDetailed(
+  movs: StockMovementRaw[],
+  method: ValuationMethod,
+  openingQty: number,
+  openingRate: number,
+  openingAmount: number,
+): DetailedResult {
+  const layers: ValuationLayer[] = [];
+  let waQty = openingQty;
+  let waAmount = openingAmount;
 
-  const totalOutQty = movements
-    .filter((m) => m.type === "out")
-    .reduce((s, m) => s + m.qty, 0);
+  if (method !== "weighted_average" && openingQty > 0) {
+    layers.push({ qty: openingQty, rate: openingRate });
+  }
 
-  const closingQty = Math.max(0, totalInQty - totalOutQty);
-  const cogsValue = totalOutQty * avgRate;
+  let purchaseQty = 0, purchaseAmount = 0;
+  let salesQty = 0, salesAmount = 0;
+  let balQty = openingQty;
+  let balAmount = openingAmount;
+
+  const ledger: StockLedgerEntry[] = [];
+
+  for (const m of movs) {
+    const qty = Math.abs(Number(m.qty) || 0);
+    const rate = Number(m.rate) || (qty > 0 ? m.amount! / qty : 0) || 0;
+    if (qty === 0) continue;
+
+    let entry: StockLedgerEntry;
+
+    if (isInward(m.type)) {
+      purchaseQty += qty;
+      purchaseAmount += qty * rate;
+      balQty += qty;
+
+      if (method === "weighted_average") {
+        waAmount += qty * rate;
+        waQty += qty;
+        balAmount = waAmount;
+        const avgRate = waQty > 0 ? waAmount / waQty : 0;
+        entry = {
+          date: m.date,
+          particulars: m.type.replace(/-/g, " "),
+          inQty: qty, inRate: rate, inAmount: qty * rate,
+          outQty: 0, outRate: 0, outAmount: 0,
+          balanceQty: waQty,
+          balanceRate: avgRate,
+          balanceAmount: waAmount,
+        };
+      } else {
+        layers.push({ qty, rate });
+        balAmount += qty * rate;
+        const bRate = balQty > 0 ? balAmount / balQty : 0;
+        entry = {
+          date: m.date,
+          particulars: m.type.replace(/-/g, " "),
+          inQty: qty, inRate: rate, inAmount: qty * rate,
+          outQty: 0, outRate: 0, outAmount: 0,
+          balanceQty: balQty,
+          balanceRate: bRate,
+          balanceAmount: balAmount,
+        };
+      }
+    } else if (isOutward(m.type)) {
+      salesQty += qty;
+
+      if (method === "weighted_average") {
+        const avgRate = waQty > 0 ? waAmount / waQty : rate;
+        const cost = qty * avgRate;
+        salesAmount += cost;
+        waQty = Math.max(0, waQty - qty);
+        waAmount = Math.max(0, waAmount - cost);
+        balQty -= qty;
+        balAmount = waAmount;
+        entry = {
+          date: m.date,
+          particulars: m.type.replace(/-/g, " "),
+          inQty: 0, inRate: 0, inAmount: 0,
+          outQty: qty, outRate: avgRate, outAmount: cost,
+          balanceQty: waQty,
+          balanceRate: waQty > 0 ? waAmount / waQty : 0,
+          balanceAmount: waAmount,
+        };
+      } else {
+        const { consumed, costOfGoods } = consumeLayers(layers, qty, method);
+        salesAmount += costOfGoods;
+        balQty -= qty;
+        balAmount -= costOfGoods;
+        if (balAmount < 0) balAmount = 0;
+        const bRate = balQty > 0 ? balAmount / balQty : 0;
+        entry = {
+          date: m.date,
+          particulars: m.type.replace(/-/g, " "),
+          inQty: 0, inRate: 0, inAmount: 0,
+          outQty: qty, outRate: qty > 0 ? costOfGoods / qty : 0, outAmount: costOfGoods,
+          balanceQty: balQty,
+          balanceRate: bRate,
+          balanceAmount: balAmount,
+        };
+      }
+    } else {
+      continue;
+    }
+
+    ledger.push(entry);
+  }
+
+  const closingQty = method === "weighted_average" ? waQty : layers.reduce((s, l) => s + l.qty, 0);
+  const closingAmount = method === "weighted_average"
+    ? waAmount
+    : layers.reduce((s, l) => s + l.qty * l.rate, 0);
+  const closingRate = closingQty > 0 ? closingAmount / closingQty : 0;
 
   return {
     closingQty,
-    closingValue: closingQty * avgRate,
-    closingRate: avgRate,
-    cogsSold: totalOutQty,
-    cogsValue,
+    closingRate,
+    closingAmount,
+    purchaseQty,
+    purchaseAmount,
+    salesQty,
+    salesAmount,
+    ledger,
   };
 }
 
-// ─── FIFO (First-In, First-Out) ───────────────────────────────────────────────
-// Oldest purchased lots are consumed first on each sale.
-// Required by IFRS. Shows higher profits when prices are rising.
-export function computeFIFO(
-  movements: StockMovement[],
-  openingLots: StockLot[] = []
-): ValuationResult {
-  // Build a queue of lots sorted by date (oldest first)
-  const lots: StockLot[] = [...openingLots];
-  let cogsValue = 0;
-  let cogsSold = 0;
+function consumeLayers(
+  layers: ValuationLayer[],
+  qty: number,
+  method: ValuationMethod,
+): { consumed: number; costOfGoods: number } {
+  let remaining = qty;
+  let costOfGoods = 0;
 
-  const sorted = [...movements].sort((a, b) => a.date.localeCompare(b.date));
-
-  for (const mv of sorted) {
-    if (mv.type === "in") {
-      lots.push({ date: mv.date, qty: mv.qty, rate: mv.rate });
-    } else {
-      let remaining = mv.qty;
-      cogsSold += mv.qty;
-
-      while (remaining > 0 && lots.length > 0) {
-        const lot = lots[0];
-        if (lot.qty <= remaining) {
-          // Consume entire lot
-          cogsValue += lot.qty * lot.rate;
-          remaining -= lot.qty;
-          lots.shift();
-        } else {
-          // Partially consume lot
-          cogsValue += remaining * lot.rate;
-          lot.qty -= remaining;
-          remaining = 0;
-        }
-      }
+  if (method === "lifo") {
+    // consume from end
+    while (remaining > 0 && layers.length > 0) {
+      const last = layers[layers.length - 1];
+      const take = Math.min(remaining, last.qty);
+      costOfGoods += take * last.rate;
+      last.qty -= take;
+      remaining -= take;
+      if (last.qty <= 0) layers.pop();
+    }
+  } else {
+    // fifo — consume from front
+    while (remaining > 0 && layers.length > 0) {
+      const first = layers[0];
+      const take = Math.min(remaining, first.qty);
+      costOfGoods += take * first.rate;
+      first.qty -= take;
+      remaining -= take;
+      if (first.qty <= 0) layers.shift();
     }
   }
 
-  const closingQty = lots.reduce((s, l) => s + l.qty, 0);
-  const closingValue = lots.reduce((s, l) => s + l.qty * l.rate, 0);
-  const closingRate = closingQty > 0 ? closingValue / closingQty : 0;
-
-  return {
-    closingQty: Math.max(0, closingQty),
-    closingValue: Math.max(0, closingValue),
-    closingRate,
-    cogsSold,
-    cogsValue,
-  };
-}
-
-// ─── LIFO (Last-In, First-Out) ────────────────────────────────────────────────
-// Newest purchased lots consumed first. Reduces taxable profit during inflation.
-// Banned under IFRS but included for completeness.
-export function computeLIFO(
-  movements: StockMovement[],
-  openingLots: StockLot[] = []
-): ValuationResult {
-  // Stack — newest first
-  const lots: StockLot[] = [...openingLots];
-  let cogsValue = 0;
-  let cogsSold = 0;
-
-  const sorted = [...movements].sort((a, b) => a.date.localeCompare(b.date));
-
-  for (const mv of sorted) {
-    if (mv.type === "in") {
-      lots.push({ date: mv.date, qty: mv.qty, rate: mv.rate });
-    } else {
-      let remaining = mv.qty;
-      cogsSold += mv.qty;
-
-      // Consume from the end (newest lots first)
-      while (remaining > 0 && lots.length > 0) {
-        const lot = lots[lots.length - 1];
-        if (lot.qty <= remaining) {
-          cogsValue += lot.qty * lot.rate;
-          remaining -= lot.qty;
-          lots.pop();
-        } else {
-          cogsValue += remaining * lot.rate;
-          lot.qty -= remaining;
-          remaining = 0;
-        }
-      }
-    }
-  }
-
-  const closingQty = lots.reduce((s, l) => s + l.qty, 0);
-  const closingValue = lots.reduce((s, l) => s + l.qty * l.rate, 0);
-  const closingRate = closingQty > 0 ? closingValue / closingQty : 0;
-
-  return {
-    closingQty: Math.max(0, closingQty),
-    closingValue: Math.max(0, closingValue),
-    closingRate,
-    cogsSold,
-    cogsValue,
-  };
-}
-
-// ─── DISPATCHER ───────────────────────────────────────────────────────────────
-// Single entry point — call with your chosen method.
-export function computeStockValuation(
-  method: CostingMethod,
-  movements: StockMovement[],
-  openingQty = 0,
-  openingValue = 0,
-  openingLots: StockLot[] = []
-): ValuationResult {
-  switch (method) {
-    case "fifo":
-      return computeFIFO(movements, openingLots);
-    case "lifo":
-      return computeLIFO(movements, openingLots);
-    case "weighted_avg":
-      return computeWeightedAverage(movements, openingQty, openingValue);
-    case "moving_avg":
-    default:
-      return computeMovingWeightedAverage(movements);
-  }
-}
-
-// ─── HELPER: Convert raw DB stock movements to StockMovement[] ─────────────
-// Works with whatever shape your stockMovements records have.
-export function normalizeDBMovements(rawMovements: any[]): StockMovement[] {
-  return rawMovements.map((m) => {
-    const type = normalizeMovementType(m.type || m.movementType || "");
-    const qty = Math.abs(
-      Number(m.qty ?? m.quantity ?? 0)
-    );
-    const rate = Number(m.rate ?? m.costRate ?? m.purchaseRate ?? 0);
-
-    return {
-      date: String(m.date || ""),
-      type,
-      qty,
-      rate,
-    };
-  });
-}
-
-function normalizeMovementType(raw: string): "in" | "out" {
-  const t = raw.toLowerCase();
-  if (
-    t.includes("purchase") ||
-    t.includes("in") ||
-    t.includes("receipt") ||
-    t.includes("grn") ||
-    t.includes("opening") ||
-    t.includes("transfer-in") ||
-    t.includes("adjustment-in") ||
-    t.includes("production")
-  ) {
-    return "in";
-  }
-  return "out";
-}
-
-// ─── LABEL HELPER ─────────────────────────────────────────────────────────────
-export function costingMethodLabel(method: CostingMethod): string {
-  switch (method) {
-    case "fifo":       return "FIFO (First-In, First-Out)";
-    case "lifo":       return "LIFO (Last-In, First-Out)";
-    case "weighted_avg": return "Weighted Average";
-    case "moving_avg": return "Moving Weighted Average";
-    default:           return "Moving Weighted Average";
-  }
+  return { consumed: qty - remaining, costOfGoods };
 }

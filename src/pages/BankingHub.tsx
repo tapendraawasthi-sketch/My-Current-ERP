@@ -899,7 +899,7 @@ const BankingHub: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Amount NPR <span className="text-red-500">*</span>
+                      Amount Rs. <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -1213,7 +1213,7 @@ const BankingHub: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Amount NPR <span className="text-red-500">*</span>
+                      Amount Rs. <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -1484,7 +1484,7 @@ const BankingHub: React.FC = () => {
                       Projected Inflow (30d)
                     </span>
                     <span className="text-xl font-bold text-green-700">
-                      NPR {money(cashFlowData.reduce((sum, d) => sum + d.inflow, 0))}
+                      Rs. {money(cashFlowData.reduce((sum, d) => sum + d.inflow, 0))}
                     </span>
                   </div>
                   <div className="bg-red-50/50 border border-red-100 rounded-md p-4 flex flex-col items-center justify-center">
@@ -1492,7 +1492,7 @@ const BankingHub: React.FC = () => {
                       Projected Outflow (30d)
                     </span>
                     <span className="text-xl font-bold text-red-700">
-                      NPR {money(cashFlowData.reduce((sum, d) => sum + d.outflow, 0))}
+                      Rs. {money(cashFlowData.reduce((sum, d) => sum + d.outflow, 0))}
                     </span>
                   </div>
                   <div className="bg-blue-50/50 border border-blue-100 rounded-md p-4 flex flex-col items-center justify-center">
@@ -1500,7 +1500,7 @@ const BankingHub: React.FC = () => {
                       Est. Closing Balance
                     </span>
                     <span className="text-xl font-bold text-[#1557b0]">
-                      NPR {money(cashFlowData[cashFlowData.length - 1]?.balance || 0)}
+                      Rs. {money(cashFlowData[cashFlowData.length - 1]?.balance || 0)}
                     </span>
                   </div>
                 </div>
@@ -1534,7 +1534,7 @@ const BankingHub: React.FC = () => {
                         tickFormatter={(val) => `₹${val / 1000}k`}
                       />
                       <Tooltip
-                        formatter={(value: number) => [`NPR ${money(value)}`, undefined]}
+                        formatter={(value: number) => [`Rs. ${money(value)}`, undefined]}
                         contentStyle={{
                           borderRadius: "6px",
                           border: "1px solid #E5E7EB",

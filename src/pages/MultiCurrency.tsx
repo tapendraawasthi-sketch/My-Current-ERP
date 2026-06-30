@@ -221,9 +221,9 @@ export default function MultiCurrency() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Active Currencies", value: foreignCurrencies.length, color: "blue", icon: Globe },
-          { label: "Realized FX", value: fmtFX(gainLossSummary.realized, "NPR "), color: gainLossSummary.realized >= 0 ? "green" : "red", icon: TrendingUp },
-          { label: "Unrealized FX", value: fmtFX(gainLossSummary.unrealized, "NPR "), color: gainLossSummary.unrealized >= 0 ? "green" : "red", icon: TrendingDown },
-          { label: "Net FX P&L", value: fmtFX(gainLossSummary.net, "NPR "), color: gainLossSummary.net >= 0 ? "green" : "red", icon: DollarSign },
+          { label: "Realized FX", value: fmtFX(gainLossSummary.realized, "Rs. "), color: gainLossSummary.realized >= 0 ? "green" : "red", icon: TrendingUp },
+          { label: "Unrealized FX", value: fmtFX(gainLossSummary.unrealized, "Rs. "), color: gainLossSummary.unrealized >= 0 ? "green" : "red", icon: TrendingDown },
+          { label: "Net FX P&L", value: fmtFX(gainLossSummary.net, "Rs. "), color: gainLossSummary.net >= 0 ? "green" : "red", icon: DollarSign },
         ].map(card => (
           <div key={card.label} className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-100`}>
             <div className="flex items-center justify-between mb-1">
@@ -253,10 +253,10 @@ export default function MultiCurrency() {
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <Globe className="w-5 h-5 text-amber-600"/>
-              <span className="font-semibold text-amber-800">NPR – Nepalese Rupee</span>
+              <span className="font-semibold text-amber-800">Rs. – Nepalese Rupee</span>
               <span className="ml-auto text-xs px-2 py-0.5 bg-amber-200 text-amber-800 rounded-full">Base</span>
             </div>
-            <div className="text-xs text-amber-700">Company's home currency. All reports are consolidated in NPR.</div>
+            <div className="text-xs text-amber-700">Company's home currency. All reports are consolidated in Rs.</div>
           </div>
 
           {/* Foreign currencies */}
@@ -388,7 +388,7 @@ export default function MultiCurrency() {
               <div key={item.label} className={`rounded-xl p-4 border ${item.value >= 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
                 <div className="text-xs text-gray-500 mb-1">{item.label}</div>
                 <div className={`text-xl font-bold ${item.value >= 0 ? "text-green-700" : "text-red-700"} font-mono`}>
-                  {fmtFX(item.value, "NPR ")}
+                  {fmtFX(item.value, "Rs. ")}
                 </div>
                 <div className="text-xs text-gray-400 mt-1">{item.entries} entries</div>
               </div>
@@ -449,7 +449,7 @@ export default function MultiCurrency() {
             </div>
             <div className="mt-5">
               <div className={`text-lg font-bold font-mono ${totalUnrealizedGL >= 0 ? "text-green-700" : "text-red-700"}`}>
-                Net Unrealized GL: {fmtFX(totalUnrealizedGL, "NPR ")}
+                Net Unrealized GL: {fmtFX(totalUnrealizedGL, "Rs. ")}
               </div>
             </div>
           </div>

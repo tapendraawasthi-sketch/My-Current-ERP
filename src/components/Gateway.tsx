@@ -23,7 +23,7 @@ interface GatewayMenuItem {
 const todayISO = () => new Date().toISOString().split("T")[0];
 const money = (value: number) => {
   const num = Number(value) || 0;
-  return `रू ${num.toLocaleString("en-IN", {
+  return `Rs. ${num.toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

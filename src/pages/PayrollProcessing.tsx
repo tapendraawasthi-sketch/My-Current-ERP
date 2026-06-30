@@ -403,7 +403,7 @@ export default function PayrollProcessing() {
             </div>
 
             <div class="net">
-              Net Salary: NPR ${money(slip.netSalary)}<br/>
+              Net Salary: Rs. ${money(slip.netSalary)}<br/>
               ${slip.netSalaryWords}
             </div>
 
@@ -962,10 +962,10 @@ export default function PayrollProcessing() {
 
           <div className="col-span-2 bg-white rounded-lg border border-gray-200 p-5">
             <div className="text-[13px] font-semibold text-[#1557b0]">
-              Total Net Salary Payable: NPR {money(payrollSummary.totalNetSalary)}
+              Total Net Salary Payable: Rs. {money(payrollSummary.totalNetSalary)}
             </div>
             <div className="text-[12px] text-gray-600 mt-1">
-              Total Employer Cost: NPR {money(payrollSummary.totalEmployerCost)}
+              Total Employer Cost: Rs. {money(payrollSummary.totalEmployerCost)}
             </div>
           </div>
         </div>

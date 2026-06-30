@@ -348,8 +348,8 @@ export default function Payroll() {
             </div>
             <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-700 space-y-1">
               <div className="font-semibold mb-2">Tax Parameters (IRD 2081/82)</div>
-              <div>• Personal Exemption (Single): NPR 4,00,000</div>
-              <div>• Personal Exemption (Married): NPR 5,00,000</div>
+              <div>• Personal Exemption (Single): Rs. 4,00,000</div>
+              <div>• Personal Exemption (Married): Rs. 5,00,000</div>
               <div>• EPF: 10% employee + 10% employer (of basic)</div>
               <div>• SSF: 1% employee + 3.33% employer (of gross)</div>
               <div>• CIT: 10% (optional, of basic, tax-deductible)</div>

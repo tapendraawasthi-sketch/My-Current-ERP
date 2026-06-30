@@ -1,272 +1,220 @@
-/**
- * Backend API endpoints referenced by Top Menu Bar:
- *
- * POST /api/companies
- * GET  /api/companies
- * PUT  /api/companies/:id
- * PUT  /api/companies/:id/features
- * POST /api/auth/switch-user
- * POST /api/data/backup
- * GET  /api/data/backup/status
- * POST /api/data/restore
- * POST /api/data/migrate
- * POST /api/data/split
- * POST /api/data/repair
- * POST /api/exchange/sync
- * POST /api/import/masters
- * POST /api/import/transactions
- * POST /api/import/bank-statement
- * POST /api/import/payroll
- * GET  /api/export/masters
- * GET  /api/export/transactions
- * GET  /api/reports/[report-name]/export
- * POST /api/share/email
- * POST /api/share/link
- * PUT  /api/settings/security
- * PUT  /api/settings/email
- * PUT  /api/settings/general
- * PUT  /api/settings/connectivity
- * POST /api/support/ticket
- * POST /api/admin/check-integrity
- * POST /api/admin/rebuild-indexes
- * POST /api/admin/clear-cache
- * GET  /api/admin/logs
- * POST /api/admin/diagnostics
- * POST /api/license/sync
- */
+import React, { useState, useRef, useEffect } from "react";
+import { useStore } from "../../store/useStore";
 
-import React, { useEffect, useMemo, useRef } from "react";
-import { useStore } from "@/store/useStore";
-import { TopbarMenuKey, useTopbarStore } from "@/store/topbarStore";
-import CompanyMenu from "./CompanyMenu";
-import DataMenu from "./DataMenu";
-import ExchangeMenu from "./ExchangeMenu";
-import ImportMenu from "./ImportMenu";
-import ExportMenu from "./ExportMenu";
-import ShareMenu from "./ShareMenu";
-import PrintMenu from "./PrintMenu";
-import HelpMenu from "./HelpMenu";
-import GoToPanel from "./GoToPanel";
-import SwitchToPanel from "./SwitchToPanel";
-
-interface MenuButtonDef {
-  key: TopbarMenuKey;
+interface TopMenuItem {
   label: string;
-  shortcut: string;
+  shortcut?: string;
+  page?: string;
+  action?: () => void;
+  separator?: boolean;
+  children?: TopMenuItem[];
 }
 
-const menuButtons: MenuButtonDef[] = [
-  { key: "company", label: "Company", shortcut: "Alt+K" },
-  { key: "data", label: "Data", shortcut: "Alt+Y" },
-  { key: "exchange", label: "Exchange", shortcut: "Alt+Z" },
-  { key: "import", label: "Import", shortcut: "Alt+O" },
-  { key: "export", label: "Export", shortcut: "Alt+E" },
-  { key: "share", label: "Share", shortcut: "Alt+M" },
-  { key: "print", label: "Print", shortcut: "Alt+P" },
-  { key: "help", label: "Help", shortcut: "F1" },
+const MENUS: { title: string; shortcut: string; items: TopMenuItem[] }[] = [
+  {
+    title: "Company", shortcut: "Alt+K",
+    items: [
+      { label: "Gateway / Home", page: "dashboard" },
+      { label: "Company Settings", page: "settings" },
+      { label: "Fiscal Year", page: "fiscal-year" },
+      { label: "", separator: true },
+      { label: "Backup / Restore", page: "backup" },
+      { label: "Audit Log", page: "audit-log" },
+    ],
+  },
+  {
+    title: "Data", shortcut: "Alt+Y",
+    items: [
+      { label: "Chart of Accounts", page: "accounts" },
+      { label: "Parties Directory", page: "parties" },
+      { label: "Stock Items", page: "item-master" },
+      { label: "Warehouses", page: "warehouses" },
+      { label: "Units of Measure", page: "units" },
+    ],
+  },
+  {
+    title: "Exchange", shortcut: "Alt+Z",
+    items: [
+      { label: "Sales Invoice", page: "billing" },
+      { label: "Purchase Invoice", page: "purchase" },
+      { label: "Journal Entry", page: "journal" },
+      { label: "Payment", page: "payment" },
+      { label: "Receipt", page: "receipt" },
+      { label: "Contra", page: "contra" },
+      { label: "", separator: true },
+      { label: "Stock Transfer", page: "stock-transfer" },
+    ],
+  },
+  {
+    title: "Import", shortcut: "Alt+O",
+    items: [
+      { label: "Data Import / Export", page: "data-import-export" },
+    ],
+  },
+  {
+    title: "Export", shortcut: "Alt+E",
+    items: [
+      { label: "Export to Excel", page: "data-import-export" },
+    ],
+  },
+  {
+    title: "Share", shortcut: "Alt+M",
+    items: [
+      { label: "Email Reports", page: "settings" },
+    ],
+  },
+  {
+    title: "Print", shortcut: "Alt+P",
+    items: [
+      { label: "Print Current View", action: () => window.print() },
+    ],
+  },
+  {
+    title: "Help", shortcut: "F1",
+    items: [
+      { label: "Documentation", action: () => window.open("https://docs.sutraerp.com","_blank") },
+      { label: "About Sutra ERP", page: "settings" },
+    ],
+  },
+  {
+    title: "Go To", shortcut: "Alt+G",
+    items: [
+      { label: "Dashboard", page: "dashboard" },
+      { label: "Balance Sheet", page: "balance-sheet" },
+      { label: "Profit & Loss", page: "profit-loss" },
+      { label: "Trial Balance", page: "trial-balance" },
+      { label: "VAT Reports", page: "vat-reports" },
+    ],
+  },
+  {
+    title: "Switch To", shortcut: "Ctrl+G",
+    items: [
+      { label: "POS Mode", page: "billing" },
+      { label: "Full Screen", action: () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+        else document.exitFullscreen().catch(()=>{});
+      }},
+    ],
+  },
 ];
 
-export default function TopMenuBar() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const currentUser = useStore((state) => state.currentUser);
-  const companySettings = useStore((state) => state.companySettings);
-  const currentFiscalYear = useStore((state) => state.currentFiscalYear);
-
-  const {
-    openMenu,
-    goToOpen,
-    switchToOpen,
-    activeCompany,
-    setOpenMenu,
-    setGoToOpen,
-    setSwitchToOpen,
-    setCurrentUser,
-  } = useTopbarStore();
+const TopMenuBar: React.FC = () => {
+  const { setCurrentPage } = useStore();
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!currentUser) {
-      setCurrentUser(null);
-      return;
-    }
-
-    setCurrentUser({
-      id: String(currentUser.id || ""),
-      username: String(currentUser.username || currentUser.name || "User"),
-      role: String(currentUser.role || "user"),
-      permissions: {},
-    });
-  }, [currentUser, setCurrentUser]);
-
-  useEffect(() => {
-    const onMouseDown = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setOpenMenu(null);
-      }
+    const handler = (e: MouseEvent) => {
+      if (barRef.current && !barRef.current.contains(e.target as Node)) setOpenIdx(null);
     };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-    window.addEventListener("mousedown", onMouseDown);
-    return () => window.removeEventListener("mousedown", onMouseDown);
-  }, [setOpenMenu]);
-
-  useEffect(() => {
-    const openCompanyAction = (detail: string) => {
-      window.dispatchEvent(new CustomEvent("topbar:company-action", { detail }));
-      setOpenMenu("company");
-    };
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-
-      if (event.key === "Escape") {
-        setOpenMenu(null);
-        setGoToOpen(false);
-        setSwitchToOpen(false);
-        return;
-      }
-
-      if (event.key === "F1") {
-        event.preventDefault();
-        setOpenMenu(openMenu === "help" ? null : "help");
-        return;
-      }
-
-      if (event.key === "F3" && !event.ctrlKey) {
-        event.preventDefault();
-        openCompanyAction("select");
-        return;
-      }
-
-      if (event.key === "F3" && event.ctrlKey) {
-        event.preventDefault();
-        openCompanyAction("shut");
-        return;
-      }
-
-      if (event.key === "F11") {
-        event.preventDefault();
-        openCompanyAction("features");
-        return;
-      }
-
-      if (event.altKey && key === "g") {
-        event.preventDefault();
-        setGoToOpen(true);
-        setOpenMenu(null);
-        return;
-      }
-
-      if (event.ctrlKey && key === "g") {
-        event.preventDefault();
-        setSwitchToOpen(true);
-        setOpenMenu(null);
-        return;
-      }
-
-      const altMap: Record<string, TopbarMenuKey> = {
-        k: "company",
-        y: "data",
-        z: "exchange",
-        o: "import",
-        e: "export",
-        m: "share",
-        p: "print",
-      };
-
-      if (event.altKey && altMap[key]) {
-        event.preventDefault();
-        setOpenMenu(openMenu === altMap[key] ? null : altMap[key]);
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [openMenu, setGoToOpen, setOpenMenu, setSwitchToOpen]);
-
-  const companyName = useMemo(() => {
-    const name =
-      activeCompany?.name || companySettings?.companyNameEn || companySettings?.name || "Sutra ERP";
-
-    return name.length > 20 ? `${name.slice(0, 20)}…` : name;
-  }, [activeCompany?.name, companySettings?.companyNameEn, companySettings?.name]);
-
-  const fiscalYearLabel =
-    activeCompany?.fiscalYear ||
-    currentFiscalYear?.name ||
-    currentFiscalYear?.fiscalYearBS ||
-    "FY —";
-
-  const username = currentUser?.username || currentUser?.name || "User";
-
-  const renderMenu = () => {
-    if (!openMenu) return null;
-
-    if (openMenu === "company") return <CompanyMenu />;
-    if (openMenu === "data") return <DataMenu />;
-    if (openMenu === "exchange") return <ExchangeMenu />;
-    if (openMenu === "import") return <ImportMenu />;
-    if (openMenu === "export") return <ExportMenu />;
-    if (openMenu === "share") return <ShareMenu />;
-    if (openMenu === "print") return <PrintMenu />;
-    if (openMenu === "help") return <HelpMenu />;
-
-    return null;
+  const handleItem = (item: TopMenuItem) => {
+    if (item.action) { item.action(); setOpenIdx(null); return; }
+    if (item.page) { setCurrentPage(item.page); setOpenIdx(null); }
   };
 
   return (
-    <>
-      <div ref={wrapperRef} className="top-menu-bar">
-        <div className="flex h-full items-center">
-          {menuButtons.map((item) => (
-            <div key={item.key} className="relative h-full">
-              <button
-                type="button"
-                className={`top-menu-btn ${openMenu === item.key ? "active" : ""}`}
-                onClick={() => setOpenMenu(openMenu === item.key ? null : item.key)}
-              >
-                <span>{item.label}</span>
-                <span className="top-menu-shortcut">{item.shortcut}</span>
-              </button>
+    <div
+      ref={barRef}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        height: 24,
+        background: "#C9DEB5",
+        borderBottom: "1px solid #000",
+        userSelect: "none",
+        flexShrink: 0,
+        position: "relative",
+        zIndex: 100,
+      }}
+    >
+      {MENUS.map((menu, idx) => (
+        <div key={menu.title} style={{ position: "relative" }}>
+          {/* Top-level button */}
+          <button
+            type="button"
+            onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+            style={{
+              height: 24,
+              padding: "0 8px",
+              fontSize: 11,
+              fontWeight: openIdx === idx ? 700 : 400,
+              background: openIdx === idx ? "#1557b0" : "transparent",
+              color: openIdx === idx ? "#ffffff" : "#000000",
+              border: "none",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {menu.title}
+            <span style={{ fontSize: 9, color: openIdx === idx ? "#cce" : "#444", marginLeft: 3 }}>
+              {menu.shortcut}
+            </span>
+          </button>
 
-              {openMenu === item.key && renderMenu()}
+          {/* Dropdown */}
+          {openIdx === idx && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                background: "#ffffff",
+                border: "1px solid #999",
+                boxShadow: "2px 4px 12px rgba(0,0,0,0.18)",
+                minWidth: 200,
+                zIndex: 9999,
+              }}
+            >
+              {menu.items.map((item, i) => {
+                if (item.separator) {
+                  return <div key={i} style={{ height: 1, background: "#ccc", margin: "2px 0" }} />;
+                }
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleItem(item)}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "5px 14px",
+                      fontSize: 12,
+                      color: "#111111",           // ← FIXED: always dark text
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      fontWeight: 400,
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "#1557b0";
+                      (e.currentTarget as HTMLButtonElement).style.color = "#ffffff";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                      (e.currentTarget as HTMLButtonElement).style.color = "#111111";
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
-          ))}
+          )}
         </div>
+      ))}
 
-        <div className="ml-auto flex h-full items-center gap-3 px-3 text-[11px] text-gray-300">
-          <button
-            type="button"
-            className={`top-menu-btn ${goToOpen ? "active" : ""}`}
-            onClick={() => {
-              setGoToOpen(true);
-              setOpenMenu(null);
-            }}
-          >
-            Go To <span className="top-menu-shortcut">Alt+G</span>
-          </button>
-
-          <button
-            type="button"
-            className={`top-menu-btn ${switchToOpen ? "active" : ""}`}
-            onClick={() => {
-              setSwitchToOpen(true);
-              setOpenMenu(null);
-            }}
-          >
-            Switch To <span className="top-menu-shortcut">Ctrl+G</span>
-          </button>
-
-          <div className="hidden items-center gap-2 border-l border-[#2d3748] pl-3 md:flex">
-            <span className="max-w-[160px] truncate font-medium text-white">{companyName}</span>
-            <span className="text-gray-500">|</span>
-            <span>{fiscalYearLabel}</span>
-            <span className="text-gray-500">|</span>
-            <span>{username}</span>
-          </div>
-        </div>
+      {/* Right side info */}
+      <div style={{ marginLeft: "auto", paddingRight: 10, fontSize: 10, color: "#333", display: "flex", gap: 10 }}>
+        <span>Connectivity Settings</span>
+        <span>Exchange Logs</span>
       </div>
-
-      {goToOpen && <GoToPanel onClose={() => setGoToOpen(false)} />}
-      {switchToOpen && <SwitchToPanel onClose={() => setSwitchToOpen(false)} />}
-    </>
+    </div>
   );
-}
+};
+
+export default TopMenuBar;

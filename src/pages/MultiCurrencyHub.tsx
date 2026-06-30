@@ -401,7 +401,7 @@ export default function MultiCurrencyHub() {
               <th style={{ border: BORDER, padding: "8px", textAlign: "left" }}>Currency</th>
               <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Foreign Amount</th>
               <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Exchange Rate</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>NPR Amount</th>
+              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Rs. Amount</th>
             </tr>
           </thead>
           <tbody>

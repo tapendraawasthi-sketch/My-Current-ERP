@@ -375,19 +375,19 @@ export default function AdvancedTaxCompliance() {
             }</p>
             <p><b>Employee:</b> ${emp.name || ""} | <b>PAN:</b> ${emp.panNumber || ""}</p>
             <table style="width:100%;border-collapse:collapse;margin-top:20px">
-              <tr><td style="border:1px solid #000;padding:6px">Total Earnings During Year</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+              <tr><td style="border:1px solid #000;padding:6px">Total Earnings During Year</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
                 worksheet.grossIncome,
               )}</td></tr>
-              <tr><td style="border:1px solid #000;padding:6px">PF Deduction</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+              <tr><td style="border:1px solid #000;padding:6px">PF Deduction</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
                 worksheet.pfDeduction,
               )}</td></tr>
-              <tr><td style="border:1px solid #000;padding:6px">SSA</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+              <tr><td style="border:1px solid #000;padding:6px">SSA</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
                 worksheet.ssaDeduction,
               )}</td></tr>
-              <tr><td style="border:1px solid #000;padding:6px">Taxable Income</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+              <tr><td style="border:1px solid #000;padding:6px">Taxable Income</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
                 worksheet.taxableIncome,
               )}</td></tr>
-              <tr><td style="border:1px solid #000;padding:6px">Income Tax Deducted</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+              <tr><td style="border:1px solid #000;padding:6px">Income Tax Deducted</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
                 worksheet.totalTax,
               )}</td></tr>
             </table>
@@ -480,7 +480,7 @@ export default function AdvancedTaxCompliance() {
     const rows = Object.entries(totals)
       .map(
         ([k, v]) =>
-          `<tr><td style="border:1px solid #000;padding:6px">${k}</td><td style="border:1px solid #000;padding:6px;text-align:right">NPR ${money(
+          `<tr><td style="border:1px solid #000;padding:6px">${k}</td><td style="border:1px solid #000;padding:6px;text-align:right">Rs. ${money(
             v as number,
           )}</td></tr>`,
       )
@@ -622,7 +622,7 @@ export default function AdvancedTaxCompliance() {
                   YTD Profit
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
-                  NPR {money(advanceTax.ytdProfit)}
+                  Rs. {money(advanceTax.ytdProfit)}
                 </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
@@ -638,7 +638,7 @@ export default function AdvancedTaxCompliance() {
                   Est. Annual Profit
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
-                  NPR {money(advanceTax.estimatedAnnualProfit)}
+                  Rs. {money(advanceTax.estimatedAnnualProfit)}
                 </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
@@ -652,7 +652,7 @@ export default function AdvancedTaxCompliance() {
                   Est. Annual Tax
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
-                  NPR {money(advanceTax.estimatedAnnualTax)}
+                  Rs. {money(advanceTax.estimatedAnnualTax)}
                 </div>
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-100">
@@ -660,7 +660,7 @@ export default function AdvancedTaxCompliance() {
                   TDS Deducted at Source
                 </div>
                 <div className="text-[14px] font-bold text-green-700">
-                  NPR {money(advanceTax.tdsPaid)}
+                  Rs. {money(advanceTax.tdsPaid)}
                 </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
@@ -668,7 +668,7 @@ export default function AdvancedTaxCompliance() {
                   Advance Tax Paid
                 </div>
                 <div className="text-[14px] font-bold text-[#1557b0]">
-                  NPR {money(advanceTax.advanceTaxPaid)}
+                  Rs. {money(advanceTax.advanceTaxPaid)}
                 </div>
               </div>
               <div className="bg-amber-50 p-3 rounded-md border border-amber-100">
@@ -676,7 +676,7 @@ export default function AdvancedTaxCompliance() {
                   Net Tax Payable
                 </div>
                 <div className="text-[15px] font-bold text-amber-700">
-                  NPR {money(advanceTax.netTaxPayable)}
+                  Rs. {money(advanceTax.netTaxPayable)}
                 </div>
               </div>
             </div>
@@ -805,13 +805,13 @@ export default function AdvancedTaxCompliance() {
                         {Math.round(i.pct * 100)}%
                       </td>
                       <td className="px-3 py-2.5 text-right text-gray-800">
-                        NPR {money(i.amountDue)}
+                        Rs. {money(i.amountDue)}
                       </td>
                       <td className="px-3 py-2.5 text-right text-green-600 font-medium">
-                        NPR {money(i.paid)}
+                        Rs. {money(i.paid)}
                       </td>
                       <td className="px-3 py-2.5 text-right font-medium text-amber-600">
-                        NPR {money(i.balance)}
+                        Rs. {money(i.balance)}
                       </td>
                       <td className="px-3 py-2.5 text-center">
                         <span
@@ -901,16 +901,16 @@ export default function AdvancedTaxCompliance() {
                             {emp.panNumber || ""}
                           </td>
                           <td className="px-2 py-2 text-right whitespace-nowrap text-gray-800">
-                            NPR {money(worksheet.grossIncome)}
+                            Rs. {money(worksheet.grossIncome)}
                           </td>
                           <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">
-                            NPR {money(worksheet.ssaDeduction)}
+                            Rs. {money(worksheet.ssaDeduction)}
                           </td>
                           <td className="px-2 py-2 text-right whitespace-nowrap text-gray-500">
-                            NPR {money(worksheet.pfDeduction)}
+                            Rs. {money(worksheet.pfDeduction)}
                           </td>
                           <td className="px-2 py-2 text-right whitespace-nowrap font-medium text-gray-800">
-                            NPR {money(worksheet.taxableIncome)}
+                            Rs. {money(worksheet.taxableIncome)}
                           </td>
                           <td className="px-2 py-2 text-right whitespace-nowrap text-gray-600">
                             {money(slabTax(1))}
@@ -961,25 +961,25 @@ export default function AdvancedTaxCompliance() {
                                     <div className="flex justify-between text-[12px]">
                                       <span className="text-gray-500">Annual Basic:</span>{" "}
                                       <span className="font-medium text-gray-800">
-                                        NPR {money(worksheet.annualBasic)}
+                                        Rs. {money(worksheet.annualBasic)}
                                       </span>
                                     </div>
                                     <div className="flex justify-between text-[12px]">
                                       <span className="text-gray-500">Allowances:</span>{" "}
                                       <span className="font-medium text-gray-800">
-                                        NPR {money(worksheet.annualAllowances)}
+                                        Rs. {money(worksheet.annualAllowances)}
                                       </span>
                                     </div>
                                     <div className="flex justify-between text-[12px]">
                                       <span className="text-gray-500">Provident Fund (PF):</span>{" "}
                                       <span className="font-medium text-gray-800">
-                                        NPR {money(worksheet.pfDeduction)}
+                                        Rs. {money(worksheet.pfDeduction)}
                                       </span>
                                     </div>
                                     <div className="flex justify-between text-[12px]">
                                       <span className="text-gray-500">Social Security (SSA):</span>{" "}
                                       <span className="font-medium text-gray-800">
-                                        NPR {money(worksheet.ssaDeduction)}
+                                        Rs. {money(worksheet.ssaDeduction)}
                                       </span>
                                     </div>
                                   </div>
@@ -1111,11 +1111,11 @@ export default function AdvancedTaxCompliance() {
                       <td className="px-3 py-2.5 text-gray-600">{r.partyName}</td>
                       <td className="px-3 py-2.5 text-gray-600">{r.partyPan}</td>
                       <td className="px-3 py-2.5 text-right text-gray-800">
-                        NPR {money(r.amountPaid)}
+                        Rs. {money(r.amountPaid)}
                       </td>
                       <td className="px-3 py-2.5 text-right text-gray-600">{r.tdsRate}%</td>
                       <td className="px-3 py-2.5 text-right font-medium text-[#1557b0]">
-                        NPR {money(r.tdsAmount)}
+                        Rs. {money(r.tdsAmount)}
                       </td>
                       <td className="px-3 py-2.5 text-gray-600">{r.quarter}</td>
                       <td className="px-3 py-2.5 text-gray-600">{r.paymentDate}</td>
@@ -1182,7 +1182,7 @@ export default function AdvancedTaxCompliance() {
                     <tr key={k} className="bg-white hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-800">{k}</td>
                       <td className="px-3 py-2.5 text-[12px] text-right font-bold text-[#1557b0]">
-                        NPR {money(v)}
+                        Rs. {money(v)}
                       </td>
                     </tr>
                   ))}
@@ -1256,14 +1256,14 @@ export default function AdvancedTaxCompliance() {
                         <td className="px-3 py-2.5 text-gray-600">{p.ownerName}</td>
                         <td className="px-3 py-2.5 text-gray-600">{p.ownerPan}</td>
                         <td className="px-3 py-2.5 text-right text-gray-800">
-                          NPR {money(p.monthlyRent)}
+                          Rs. {money(p.monthlyRent)}
                         </td>
                         <td className="px-3 py-2.5 text-right text-gray-600">{p.tdsRate}%</td>
                         <td className="px-3 py-2.5 text-right font-medium text-amber-600">
-                          NPR {money(monthlyTDS)}
+                          Rs. {money(monthlyTDS)}
                         </td>
                         <td className="px-3 py-2.5 text-right font-medium text-gray-800">
-                          NPR {money(monthlyTDS * 12)}
+                          Rs. {money(monthlyTDS * 12)}
                         </td>
                         <td className="px-3 py-2.5 text-gray-600">
                           {p.startDate} to {p.endDate || "Open"}
@@ -1351,13 +1351,13 @@ export default function AdvancedTaxCompliance() {
                         <tr key={idx} className="bg-white text-[12px]">
                           <td className="px-3 py-2">{j.property.propertyAddress}</td>
                           <td className="px-3 py-2 text-right text-gray-600">
-                            NPR {money(j.rent)}
+                            Rs. {money(j.rent)}
                           </td>
                           <td className="px-3 py-2 text-right text-amber-600 font-medium">
-                            NPR {money(j.tds)}
+                            Rs. {money(j.tds)}
                           </td>
                           <td className="px-3 py-2 text-right text-[#1557b0] font-medium">
-                            NPR {money(j.net)}
+                            Rs. {money(j.net)}
                           </td>
                         </tr>
                       ))}
@@ -1389,7 +1389,7 @@ export default function AdvancedTaxCompliance() {
                         <tr key={p.id} className="bg-white text-[12px]">
                           <td className="px-3 py-2">{p.propertyAddress}</td>
                           <td className="px-3 py-2 text-right font-medium text-gray-800">
-                            NPR {money(annual)}
+                            Rs. {money(annual)}
                           </td>
                         </tr>
                       );

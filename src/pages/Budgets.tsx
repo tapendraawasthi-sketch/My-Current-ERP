@@ -1192,11 +1192,11 @@ const Budgets: React.FC = () => {
                       Total Income
                     </div>
                     <div className="text-2xl font-bold text-gray-800 mb-2">
-                      NPR {money(summaryData.income.actual)}
+                      Rs. {money(summaryData.income.actual)}
                     </div>
                     <div className="flex items-center gap-2 text-[12px] bg-gray-50 p-2 rounded">
                       <span className="text-gray-500">
-                        Target: NPR {money(summaryData.income.budgeted)}
+                        Target: Rs. {money(summaryData.income.budgeted)}
                       </span>
                     </div>
                     <div
@@ -1207,7 +1207,7 @@ const Budgets: React.FC = () => {
                       ) : (
                         <TrendingDown size={14} />
                       )}
-                      Variance: NPR {money(Math.abs(summaryData.income.variance))}
+                      Variance: Rs. {money(Math.abs(summaryData.income.variance))}
                     </div>
                   </div>
 
@@ -1217,11 +1217,11 @@ const Budgets: React.FC = () => {
                       Total Expenses
                     </div>
                     <div className="text-2xl font-bold text-gray-800 mb-2">
-                      NPR {money(summaryData.expenses.actual)}
+                      Rs. {money(summaryData.expenses.actual)}
                     </div>
                     <div className="flex items-center gap-2 text-[12px] bg-gray-50 p-2 rounded">
                       <span className="text-gray-500">
-                        Target: NPR {money(summaryData.expenses.budgeted)}
+                        Target: Rs. {money(summaryData.expenses.budgeted)}
                       </span>
                     </div>
                     <div
@@ -1232,7 +1232,7 @@ const Budgets: React.FC = () => {
                       ) : (
                         <TrendingUp size={14} />
                       )}
-                      Variance: NPR {money(Math.abs(summaryData.expenses.variance))}
+                      Variance: Rs. {money(Math.abs(summaryData.expenses.variance))}
                     </div>
                   </div>
 
@@ -1242,11 +1242,11 @@ const Budgets: React.FC = () => {
                       Net Performance
                     </div>
                     <div className="text-2xl font-bold text-[#1557b0] mb-2">
-                      NPR {money(summaryData.net.actual)}
+                      Rs. {money(summaryData.net.actual)}
                     </div>
                     <div className="flex items-center gap-2 text-[12px] bg-gray-50 p-2 rounded">
                       <span className="text-gray-500">
-                        Target: NPR {money(summaryData.net.budgeted)}
+                        Target: Rs. {money(summaryData.net.budgeted)}
                       </span>
                     </div>
                     <div
@@ -1257,7 +1257,7 @@ const Budgets: React.FC = () => {
                       ) : (
                         <TrendingDown size={14} />
                       )}
-                      Variance: NPR {money(Math.abs(summaryData.net.variance))}
+                      Variance: Rs. {money(Math.abs(summaryData.net.variance))}
                     </div>
                   </div>
                 </div>
@@ -1494,7 +1494,7 @@ const Budgets: React.FC = () => {
                       Total Allocation
                     </div>
                     <div className="text-xl font-bold text-gray-800">
-                      NPR {money(departmentSummary.totalBudgeted)}
+                      Rs. {money(departmentSummary.totalBudgeted)}
                     </div>
                   </div>
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
@@ -1502,7 +1502,7 @@ const Budgets: React.FC = () => {
                       Actual Spent
                     </div>
                     <div className="text-xl font-bold text-gray-800">
-                      NPR {money(departmentSummary.totalActual)}
+                      Rs. {money(departmentSummary.totalActual)}
                     </div>
                   </div>
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
@@ -1556,10 +1556,10 @@ const Budgets: React.FC = () => {
                           </span>
                           <div className="text-right">
                             <span className="font-bold text-gray-800">
-                              NPR {money(item.actual)}
+                              Rs. {money(item.actual)}
                             </span>
                             <span className="text-gray-400 mx-1">/</span>
-                            <span className="text-gray-500">NPR {money(item.budgeted)}</span>
+                            <span className="text-gray-500">Rs. {money(item.budgeted)}</span>
                             <span className="ml-2 font-mono text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">
                               {pct.toFixed(0)}%
                             </span>

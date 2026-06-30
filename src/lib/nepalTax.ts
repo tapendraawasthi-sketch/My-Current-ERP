@@ -1,8 +1,8 @@
 // @ts-nocheck
 /**
  * Nepal IRD progressive income‑tax slabs (FY 2081/82 – 2082/83)
- * Single individual exemption: NPR 4,00,000
- * Married individual exemption: NPR 5,00,000
+ * Single individual exemption: Rs. 4,00,000
+ * Married individual exemption: Rs. 5,00,000
  * Slabs apply to income ABOVE the exemption threshold.
  */
 
@@ -57,5 +57,5 @@ export const EXEMPTION_MARRIED = 500000;
 
 /** Format Nepali rupees */
 export function fmtNPR(n: number): string {
-  return "NPR " + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return "Rs. " + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

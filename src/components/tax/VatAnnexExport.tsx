@@ -155,7 +155,7 @@ export default function VatAnnexExport() {
         list.push({
           type: "warning",
           invoiceNo: r["Invoice No"],
-          description: `VAT mismatch. Taxable × 13% = NPR ${money(taxable * 0.13)}, VAT shown NPR ${money(vat)}.`,
+          description: `VAT mismatch. Taxable × 13% = Rs. ${money(taxable * 0.13)}, VAT shown Rs. ${money(vat)}.`,
         });
       }
 

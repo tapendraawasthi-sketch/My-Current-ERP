@@ -914,7 +914,7 @@ export default function PriceListMaster() {
                           <td className={`${tableCellClass} font-medium`}>{r.level.name}</td>
                           <td className={`${tableCellClass} font-semibold text-gray-900`}>
                             {r.line?.rate ? (
-                              `NPR ${money(r.line.rate)}`
+                              `Rs. ${money(r.line.rate)}`
                             ) : (
                               <span className="text-gray-400 font-normal italic">Not Set</span>
                             )}
@@ -969,7 +969,7 @@ export default function PriceListMaster() {
                             </span>
                           </td>
                           <td className={`${tableCellClass} font-semibold text-gray-900`}>
-                            NPR {money(h.rate)}
+                            Rs. {money(h.rate)}
                           </td>
                           <td className={tableCellClass}>{h.listName}</td>
                           <td className={tableCellClass}>{h.changedBy}</td>
@@ -1202,7 +1202,7 @@ export default function PriceListMaster() {
                     <td className={`${tableCellClass} font-mono text-gray-500`}>{line.itemCode}</td>
                     <td className={`${tableCellClass} font-medium`}>{line.itemName}</td>
                     <td className={tableCellClass}>{line.unit}</td>
-                    <td className={tableCellClass}>NPR {money(line.purchaseRate)}</td>
+                    <td className={tableCellClass}>Rs. {money(line.purchaseRate)}</td>
                     <td className={tableCellClass}>
                       <input
                         className={`${inputClass} w-24 font-semibold`}

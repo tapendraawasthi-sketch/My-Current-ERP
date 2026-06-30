@@ -155,7 +155,7 @@ export default function Step2TaxRegistration({ data, onChange, errors = {} }: Pr
         className="px-3 py-2 rounded-md text-[11px]"
         style={{ background: "#fffbeb", border: "1px solid #fde68a", color: "#92400e" }}
       >
-        <strong>Nepal VAT Threshold:</strong> Annual turnover above NPR 50 lakh (NPR 5,000,000)
+        <strong>Nepal VAT Threshold:</strong> Annual turnover above Rs. 50 lakh (Rs. 5,000,000)
         requires mandatory VAT registration under Nepal Income Tax Act.
       </div>
     </div>

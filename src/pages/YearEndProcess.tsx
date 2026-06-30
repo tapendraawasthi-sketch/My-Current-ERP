@@ -191,7 +191,7 @@ export default function YearEndProcess() {
         id: "tb-balance",
         label: "Trial Balance is balanced (Total Dr = Total Cr)",
         pass: Math.abs(tb.dr - tb.cr) < 1,
-        note: `Dr NPR ${money(tb.dr)} | Cr NPR ${money(tb.cr)} | Diff NPR ${money(tb.diff)}`,
+        note: `Dr Rs. ${money(tb.dr)} | Cr Rs. ${money(tb.cr)} | Diff Rs. ${money(tb.diff)}`,
         automated: true,
       },
       {
@@ -818,7 +818,7 @@ export default function YearEndProcess() {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-[18px] font-bold text-indigo-900">
-                NPR {money(gratuityAmount)}
+                Rs. {money(gratuityAmount)}
               </div>
               <button
                 className="h-8 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap"
@@ -936,7 +936,7 @@ export default function YearEndProcess() {
                 Total Income
               </div>
               <div className="text-[18px] font-bold text-gray-900">
-                NPR {money(plSummary.totalIncome)}
+                Rs. {money(plSummary.totalIncome)}
               </div>
             </div>
             <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
@@ -944,7 +944,7 @@ export default function YearEndProcess() {
                 Total Expenses
               </div>
               <div className="text-[18px] font-bold text-gray-900">
-                NPR {money(plSummary.totalExpenses)}
+                Rs. {money(plSummary.totalExpenses)}
               </div>
             </div>
             <div
@@ -958,7 +958,7 @@ export default function YearEndProcess() {
               <div
                 className={`text-[20px] font-bold ${plSummary.netProfit >= 0 ? "text-green-700" : "text-red-700"}`}
               >
-                NPR {money(plSummary.netProfit)}
+                Rs. {money(plSummary.netProfit)}
               </div>
             </div>
           </div>
@@ -1092,7 +1092,7 @@ export default function YearEndProcess() {
               <div className="font-medium text-gray-900">{fyVoucherCount}</div>
 
               <div className="text-gray-500">Net Profit</div>
-              <div className="font-bold text-[#1557b0]">NPR {money(plSummary.netProfit)}</div>
+              <div className="font-bold text-[#1557b0]">Rs. {money(plSummary.netProfit)}</div>
             </div>
           </div>
 
@@ -1210,12 +1210,12 @@ export default function YearEndProcess() {
                   <tr key={a.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{a.name}</td>
                     <td className={`${tableCellClass} text-right text-gray-500`}>
-                      NPR {money(a.closingBalance)}
+                      Rs. {money(a.closingBalance)}
                     </td>
                     <td className={`${tableCellClass} text-right font-medium text-[#1557b0]`}>
                       {a.openingDr > 0
-                        ? `Dr NPR ${money(a.openingDr)}`
-                        : `Cr NPR ${money(a.openingCr)}`}
+                        ? `Dr Rs. ${money(a.openingDr)}`
+                        : `Cr Rs. ${money(a.openingCr)}`}
                     </td>
                   </tr>
                 ))}

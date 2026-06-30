@@ -152,17 +152,17 @@ const MultiModePayment: React.FC<MultiModePaymentProps> = ({ totalAmount, onChan
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-gray-800">
               <span className="text-gray-500">Total:</span>
-              <span>NPR {totalAmount.toFixed(2)}</span>
+              <span>Rs. {totalAmount.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-800">
               <span className="text-gray-500">Allocated:</span>
-              <span>NPR {allocatedAmount.toFixed(2)}</span>
+              <span>Rs. {allocatedAmount.toFixed(2)}</span>
             </div>
             <div
               className={`flex items-center gap-2 ${Math.abs(remainingAmount) > 0.01 ? "text-red-600" : "text-green-600"}`}
             >
               <span className="text-gray-500">Remaining:</span>
-              <span>NPR {remainingAmount.toFixed(2)}</span>
+              <span>Rs. {remainingAmount.toFixed(2)}</span>
             </div>
           </div>
           <div>

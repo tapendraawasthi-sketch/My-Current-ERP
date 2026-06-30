@@ -351,14 +351,14 @@ const PriceHistory: React.FC = () => {
                         >
                           <td className="px-4 py-2 text-[12px] text-gray-700">{item.itemName}</td>
                           <td className="px-4 py-2 text-right text-[12px] text-gray-700 font-mono">
-                            {item.lastSaleRate > 0 ? `NPR ${item.lastSaleRate.toFixed(2)}` : "-"}
+                            {item.lastSaleRate > 0 ? `Rs. ${item.lastSaleRate.toFixed(2)}` : "-"}
                           </td>
                           <td className="px-4 py-2 text-[12px] text-gray-700">
                             {item.lastSaleDate}
                           </td>
                           <td className="px-4 py-2 text-right text-[12px] text-gray-700 font-mono">
                             {item.lastPurchaseRate > 0
-                              ? `NPR ${item.lastPurchaseRate.toFixed(2)}`
+                              ? `Rs. ${item.lastPurchaseRate.toFixed(2)}`
                               : "-"}
                           </td>
                           <td className="px-4 py-2 text-[12px] text-gray-700">
@@ -398,12 +398,12 @@ const PriceHistory: React.FC = () => {
                     {rateRanges && (
                       <div className="mb-4 space-y-1">
                         <p className="text-sm font-medium">
-                          Sale Rate: Min NPR {rateRanges.sales.min.toFixed(2)} / Max NPR{" "}
+                          Sale Rate: Min Rs. {rateRanges.sales.min.toFixed(2)} / Max NPR{" "}
                           {rateRanges.sales.max.toFixed(2)} / Avg NPR{" "}
                           {rateRanges.sales.avg.toFixed(2)}
                         </p>
                         <p className="text-sm font-medium">
-                          Purchase Rate: Min NPR {rateRanges.purchases.min.toFixed(2)} / Max NPR{" "}
+                          Purchase Rate: Min Rs. {rateRanges.purchases.min.toFixed(2)} / Max NPR{" "}
                           {rateRanges.purchases.max.toFixed(2)} / Avg NPR{" "}
                           {rateRanges.purchases.avg.toFixed(2)}
                         </p>

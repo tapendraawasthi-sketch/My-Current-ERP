@@ -1413,3 +1413,10 @@ input[type="number"]::-webkit-outer-spin-button {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Currency symbol normalization ────────────────────────────────────────── */
+/* Prevent any accidental $ signs leaking into visible text via pseudo-elements */
+.currency-symbol::before { content: "Rs. "; }
+
+/* Ensure all font-mono amount cells don't show raw dollar signs */
+td.amt::before { content: none; }

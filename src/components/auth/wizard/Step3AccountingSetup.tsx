@@ -61,7 +61,7 @@ export default function Step3AccountingSetup({ data, onChange, errors = {} }: Pr
           <label className={labelClass}>Currency</label>
           <input
             type="text"
-            value="NPR - Nepali Rupee (Rs.)"
+            value="Rs. - Nepali Rupee (Rs.)"
             readOnly
             className={fieldClass}
             style={{

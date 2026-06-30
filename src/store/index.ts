@@ -1094,7 +1094,7 @@ export const useStore = create<AppState>()((...a) => {
         // Deductions allowed from taxable income
         const deductionsFromTax = (epfEmployee + citEmployee) * 12;
 
-        // Taxable income (married couples get NPR 500k exemption, single NPR 400k)
+        // Taxable income (married couples get Rs. 500k exemption, single Rs. 400k)
         const personalExemption = emp.maritalStatus === "married" ? 500000 : 400000;
         const taxableIncome = Math.max(0, annualisedGross - deductionsFromTax - personalExemption);
 

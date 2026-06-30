@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { formatNumber, dateToAD } from "../lib/utils";
+import { formatNumber, formatCurrency, dateToAD } from "../lib/utils";
 import { formatADToBS } from "../lib/nepaliDate";
 import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
 import {
@@ -317,14 +317,14 @@ const Dashboard: React.FC = () => {
           <span>💰</span>
           <span>
             Collection Today:{" "}
-            {formatNumber(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0))}
+            {formatCurrency(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0))}
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <span>🛒</span>
           <span>
             Purchases Today:{" "}
-            {formatNumber(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
+            {formatCurrency(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
           </span>
         </div>
       </div>
@@ -337,7 +337,7 @@ const Dashboard: React.FC = () => {
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Today's Sales</p>
               <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatNumber(todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
+                {formatCurrency(todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
               </p>
             </div>
             <div className="bg-green-100 p-2 rounded-md">
@@ -353,7 +353,7 @@ const Dashboard: React.FC = () => {
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Outstanding Receivables</p>
               <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatNumber(outstandingReceivables)}
+                {formatCurrency(outstandingReceivables)}
               </p>
             </div>
             <div className="bg-blue-100 p-2 rounded-md">
@@ -369,7 +369,7 @@ const Dashboard: React.FC = () => {
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Cash & Bank</p>
               <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatNumber(cashBankBalance)}
+                {formatCurrency(cashBankBalance)}
               </p>
             </div>
             <div className="bg-yellow-100 p-2 rounded-md">
@@ -385,7 +385,7 @@ const Dashboard: React.FC = () => {
             <div>
               <p className="text-[11px] text-gray-500 font-medium">VAT Liability</p>
               <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatNumber(vatLiability)}
+                {formatCurrency(vatLiability)}
               </p>
             </div>
             <div className="bg-red-100 p-2 rounded-md">
@@ -403,7 +403,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] text-gray-500 font-medium">Stock Position</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">{formatNumber(stockValue)}</p>
+              <p className="text-[18px] font-bold text-gray-800 mt-1">{formatCurrency(stockValue)}</p>
             </div>
             <div className="bg-purple-100 p-2 rounded-md">
               <Package className="h-5 w-5 text-purple-600" />

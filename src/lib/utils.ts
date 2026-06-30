@@ -6,97 +6,59 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatNumber(value: number | string | undefined | null, decimals = 2): string {
-  const num = Number(value ?? 0);
-  if (!Number.isFinite(num)) return "0.00";
-  return new Intl.NumberFormat("en-IN", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(num);
+export function formatCurrency(amount: number | string | undefined | null): string {
+  const num = Number(amount ?? 0);
+  if (isNaN(num)) return "Rs. 0.00";
+  const formatted = Math.abs(num).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return num < 0 ? `Rs. -${formatted}` : `Rs. ${formatted}`;
 }
 
-export function formatCurrency(
-  value: number | string | undefined | null,
-  symbol = "Rs.",
-  decimals = 2,
-): string {
-  return `${symbol} ${formatNumber(value, decimals)}`;
+export function formatNumber(num: number | string | undefined | null, decimals = 2): string {
+  const n = Number(num ?? 0);
+  if (isNaN(n)) return "0.00";
+  return n.toLocaleString("en-IN", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+export function money(amount: number | string | undefined | null): string {
+  return formatCurrency(amount);
 }
 
 export function round2(num: number | string | undefined | null): number {
   return Math.round((Number(num) || 0) * 100) / 100;
 }
 
-export function numberToWords(num: number, currency = "Rupees"): string {
-  if (!num || isNaN(num)) return `Zero ${currency} Only`;
-  const ones = [
-    "",
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
-  ];
-  const tens = [
-    "",
-    "",
-    "Twenty",
-    "Thirty",
-    "Forty",
-    "Fifty",
-    "Sixty",
-    "Seventy",
-    "Eighty",
-    "Ninety",
-  ];
+export function numberToWords(num: number, suffix = "Rupees Only"): string {
+  if (num === 0) return `Zero ${suffix}`;
+  const ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine",
+    "Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen",
+    "Seventeen","Eighteen","Nineteen"];
+  const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
 
-  function convertHundreds(n: number): string {
-    if (n === 0) return "";
+  function say(n: number): string {
     if (n < 20) return ones[n];
-    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
-    return (
-      ones[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertHundreds(n % 100) : "")
-    );
+    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
+    return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " " + say(n % 100) : "");
   }
 
-  const integer = Math.floor(Math.abs(num));
-  const decimal = Math.round((Math.abs(num) - integer) * 100);
+  let n = Math.floor(Math.abs(num));
+  const crore = Math.floor(n / 10000000); n %= 10000000;
+  const lakh  = Math.floor(n / 100000);   n %= 100000;
+  const thou  = Math.floor(n / 1000);     n %= 1000;
+  const rest  = n;
 
-  let words = "";
-  if (integer === 0) {
-    words = "Zero";
-  } else {
-    const crore = Math.floor(integer / 10000000);
-    const lakh = Math.floor((integer % 10000000) / 100000);
-    const thousand = Math.floor((integer % 100000) / 1000);
-    const remainder = integer % 1000;
+  const parts: string[] = [];
+  if (crore) parts.push(say(crore) + " Crore");
+  if (lakh)  parts.push(say(lakh)  + " Lakh");
+  if (thou)  parts.push(say(thou)  + " Thousand");
+  if (rest)  parts.push(say(rest));
 
-    if (crore > 0) words += convertHundreds(crore) + " Crore ";
-    if (lakh > 0) words += convertHundreds(lakh) + " Lakh ";
-    if (thousand > 0) words += convertHundreds(thousand) + " Thousand ";
-    if (remainder > 0) words += convertHundreds(remainder);
-    words = words.trim();
-  }
-
-  let result = `${words} ${currency}`;
-  if (decimal > 0) result += ` and ${convertHundreds(decimal)} Paisa`;
-  result += " Only";
-
-  return num < 0 ? `Negative ${result}` : result;
+  return parts.join(" ") + " " + suffix;
 }
 
 export function generateId(): string {

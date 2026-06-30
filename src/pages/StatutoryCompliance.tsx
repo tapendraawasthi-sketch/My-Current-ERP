@@ -20,7 +20,7 @@ const BS_MONTHS = ["Shrawan","Bhadra","Ashwin","Kartik","Mangsir","Poush",
 
 // ── VAT rate (Nepal standard) ─────────────────────────────────────────────
 const VAT_RATE = 0.13;   // 13%
-const TDS_RATE = 0.015;  // 1.5% on contracts above NPR 50,000
+const TDS_RATE = 0.015;  // 1.5% on contracts above Rs. 50,000
 
 // ── Keyword classifiers ───────────────────────────────────────────────────
 const PURCHASE_KEYWORDS = ["purchase","buy","supplier","vendor","raw material","stock in","goods received","input vat"];
@@ -277,9 +277,9 @@ export default function StatutoryCompliance() {
           { label: "Purchase Invoices (Annex A)", value: annexARows.length,     color: "blue"   },
           { label: "Sales Invoices (Annex B)",    value: annexBRows.length,     color: "green"  },
           { label: annexCData.isPayable ? "VAT Payable" : "VAT Refundable",
-                                                  value: `NPR ${fmt(Math.abs(annexCData.netVAT))}`,
+                                                  value: `Rs. ${fmt(Math.abs(annexCData.netVAT))}`,
                                                                                 color: annexCData.isPayable ? "orange" : "teal" },
-          { label: "TDS Deductible",              value: `NPR ${fmt(totalTDS)}`, color: "purple" },
+          { label: "TDS Deductible",              value: `Rs. ${fmt(totalTDS)}`, color: "purple" },
         ].map(card => (
           <div key={card.label} className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-100`}>
             <div className="text-xs text-gray-500 mb-1">{card.label}</div>
@@ -326,7 +326,7 @@ export default function StatutoryCompliance() {
               <div className="px-4 py-3 bg-blue-50 border-b border-blue-100 flex items-center justify-between">
                 <div>
                   <span className="font-semibold text-blue-800">Annex A – Purchase Register (VAT Input)</span>
-                  <span className="ml-3 text-xs text-blue-600">{annexARows.length} records · Total Input VAT: NPR {fmt(annexCData.totalInputVAT)}</span>
+                  <span className="ml-3 text-xs text-blue-600">{annexARows.length} records · Total Input VAT: Rs. {fmt(annexCData.totalInputVAT)}</span>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -380,7 +380,7 @@ export default function StatutoryCompliance() {
               <div className="px-4 py-3 bg-green-50 border-b border-green-100 flex items-center justify-between">
                 <div>
                   <span className="font-semibold text-green-800">Annex B – Sales Register (VAT Output)</span>
-                  <span className="ml-3 text-xs text-green-600">{annexBRows.length} records · Total Output VAT: NPR {fmt(annexCData.totalOutputVAT)}</span>
+                  <span className="ml-3 text-xs text-green-600">{annexBRows.length} records · Total Output VAT: Rs. {fmt(annexCData.totalOutputVAT)}</span>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -502,7 +502,7 @@ export default function StatutoryCompliance() {
               { label: "Total Bills",       value: cbmsStats.total,                color: "blue"   },
               { label: "CBMS Synced",       value: cbmsStats.synced,               color: "green"  },
               { label: "Pending Sync",      value: cbmsStats.unsynced,             color: "red"    },
-              { label: "Total Billing Amt", value: `NPR ${fmt(cbmsStats.totalBillAmt)}`, color: "purple" },
+              { label: "Total Billing Amt", value: `Rs. ${fmt(cbmsStats.totalBillAmt)}`, color: "purple" },
             ].map(card => (
               <div key={card.label} className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-100`}>
                 <div className="text-xs text-gray-500 mb-1">{card.label}</div>
@@ -570,7 +570,7 @@ export default function StatutoryCompliance() {
           <div className="flex items-center justify-between">
             <div className="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-sm text-purple-700">
               <span className="font-semibold">TDS under Income Tax Act 2058 – Section 88</span>
-              <span className="ml-2">Rate: 1.5% on contracts ≥ NPR 50,000</span>
+              <span className="ml-2">Rate: 1.5% on contracts ≥ Rs. 50,000</span>
             </div>
             <button onClick={exportTDS}
               className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">
@@ -582,8 +582,8 @@ export default function StatutoryCompliance() {
           <div className="grid grid-cols-3 gap-4">
             {[
               { label: "Deductees",          value: tdsRows.length              },
-              { label: "Gross Amount",       value: `NPR ${fmt(tdsRows.reduce((s,r)=>s+r.grossAmt,0))}` },
-              { label: "Total TDS (1.5%)",   value: `NPR ${fmt(totalTDS)}`       },
+              { label: "Gross Amount",       value: `Rs. ${fmt(tdsRows.reduce((s,r)=>s+r.grossAmt,0))}` },
+              { label: "Total TDS (1.5%)",   value: `Rs. ${fmt(totalTDS)}`       },
             ].map(card => (
               <div key={card.label} className="bg-purple-50 rounded-xl p-4 border border-purple-100">
                 <div className="text-xs text-gray-500 mb-1">{card.label}</div>
@@ -629,7 +629,7 @@ export default function StatutoryCompliance() {
                 )}
                 {tdsRows.length === 0 && (
                   <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400">
-                    No TDS-applicable transactions found (contracts ≥ NPR 50,000).
+                    No TDS-applicable transactions found (contracts ≥ Rs. 50,000).
                   </td></tr>
                 )}
               </tbody>

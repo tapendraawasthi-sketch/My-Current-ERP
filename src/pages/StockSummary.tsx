@@ -1,268 +1,119 @@
-// src/pages/StockSummary.tsx
-// @ts-nocheck
-// Enhanced Stock Summary with:
-// - FIFO / LIFO / Moving Weighted Average / Weighted Average toggle
-// - Fast / Slow / Non-Moving classification
-// - Reorder level alerts
-// - Stock Ageing buckets
-// - Warehouse-wise breakdown
-// - Export to Excel
-
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
+import { formatNumber } from "../lib/utils";
 import {
-  computeStockValuation,
-  normalizeDBMovements,
-  costingMethodLabel,
+  computeStockSummary,
+  type ValuationMethod,
+  type StockItemSummary,
 } from "../lib/stockValuation";
-import type { CostingMethod } from "../lib/stockValuation";
 import * as XLSX from "xlsx";
-import { Download, AlertTriangle, Package } from "lucide-react";
+import toast from "react-hot-toast";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const fmt = (n: number) =>
-  Number(n || 0).toLocaleString("en-NP", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+const th = "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-right";
+const thL = "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-left";
+const td = "px-2 py-2 text-[12px] text-gray-700 border border-gray-200 text-right font-mono";
+const tdL = "px-2 py-2 text-[12px] text-gray-700 border border-gray-200 text-left";
+const tdBold = "px-2 py-2 text-[12px] font-bold text-gray-800 border border-gray-200 text-right font-mono bg-[#f0f4ff]";
 
-const thCls =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
-const tdCls =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
-const amtCls = `${tdCls} font-mono text-right`;
-
-// Classify item movement speed
-type MovementClass = "fast" | "slow" | "non-moving";
-const classifyMovement = (
-  txnCount: number,
-  lastMovementDaysAgo: number
-): MovementClass => {
-  if (txnCount === 0 || lastMovementDaysAgo > 180) return "non-moving";
-  if (lastMovementDaysAgo > 60) return "slow";
-  return "fast";
-};
-
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function StockSummary() {
-  const {
-    items,
-    stockMovements,
-    warehouses,
-    companySettings,
-    currentFiscalYear,
-  } = useStore();
+  const { stockMovements, items, currentFiscalYear } = useStore();
 
-  const [costingMethod, setCostingMethod] = useState<CostingMethod>("moving_avg");
-  const [warehouseFilter, setWarehouseFilter] = useState("ALL");
-  const [movementFilter, setMovementFilter] = useState<"ALL" | MovementClass>("ALL");
-  const [showReorderOnly, setShowReorderOnly] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [method, setMethod] = useState<ValuationMethod>("weighted_average");
+  const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate ?? "");
+  const [toDate, setToDate] = useState(currentFiscalYear?.endDate ?? new Date().toISOString().split("T")[0]);
+  const [search, setSearch] = useState("");
+  const [showLedger, setShowLedger] = useState<string | null>(null);
 
-  const fyEnd =
-    currentFiscalYear?.endDate ||
-    new Date().toISOString().split("T")[0];
+  const summary = useMemo(() => {
+    const raw = (stockMovements || []).map((m: any) => ({
+      id: m.id,
+      date: m.date || "",
+      type: m.type || m.movementType || "purchase",
+      itemId: m.itemId || "",
+      itemName: m.itemName || items.find((i: any) => i.id === m.itemId)?.name || m.itemId,
+      warehouseId: m.warehouseId,
+      warehouseName: m.warehouseName,
+      qty: Number(m.qty || m.quantity || 0),
+      rate: Number(m.rate || m.costRate || 0),
+      amount: Number(m.amount || 0),
+    }));
 
-  // ── Compute stock for each item ───────────────────────────────────────────
-  const stockRows = useMemo(() => {
-    const today = new Date();
+    return computeStockSummary(raw, method, fromDate || undefined, toDate || undefined);
+  }, [stockMovements, items, method, fromDate, toDate]);
 
-    return items.map((item) => {
-      // Filter movements for this item
-      const itemMovements = stockMovements.filter(
-        (m) =>
-          m.itemId === item.id &&
-          (warehouseFilter === "ALL" || m.warehouseId === warehouseFilter) &&
-          (m.date || "") <= fyEnd
-      );
-
-      // Normalize to StockMovement[] format
-      const normalized = normalizeDBMovements(itemMovements);
-
-      // Compute valuation using chosen method
-      const valuation = computeStockValuation(
-        costingMethod,
-        normalized,
-        0,
-        0,
-        []
-      );
-
-      // Movement stats for fast/slow/non-moving classification
-      const outMovements = itemMovements.filter((m) => {
-        const t = (m.type || "").toLowerCase();
-        return t.includes("sales") || t.includes("out");
-      });
-
-      const txnCount = outMovements.length;
-      const lastMovDate = outMovements.length > 0
-        ? outMovements.sort((a, b) =>
-            (b.date || "").localeCompare(a.date || "")
-          )[0].date
-        : null;
-
-      const lastMovementDaysAgo = lastMovDate
-        ? Math.floor(
-            (today.getTime() - new Date(lastMovDate).getTime()) /
-              (1000 * 60 * 60 * 24)
-          )
-        : 9999;
-
-      const movementClass = classifyMovement(txnCount, lastMovementDaysAgo);
-
-      // Reorder level check
-      const reorderLevel = item.reorderLevel || item.minStockLevel || 0;
-      const isBelowReorder =
-        reorderLevel > 0 && valuation.closingQty <= reorderLevel;
-
-      // Warehouse-wise breakdown
-      const warehouseBreakdown = (warehouses || []).map((wh) => {
-        const whMovements = stockMovements.filter(
-          (m) =>
-            m.itemId === item.id &&
-            m.warehouseId === wh.id &&
-            (m.date || "") <= fyEnd
-        );
-        const whNorm = normalizeDBMovements(whMovements);
-        const whVal  = computeStockValuation(costingMethod, whNorm, 0, 0, []);
-        return {
-          warehouseId: wh.id,
-          warehouseName: wh.name,
-          qty: whVal.closingQty,
-          value: whVal.closingValue,
-        };
-      });
-
-      return {
-        id: item.id,
-        code: item.code || item.sku || "",
-        name: item.name || "",
-        unit: item.unit || "PCS",
-        category: item.category || item.group || "",
-        openingQty: 0, // simplified
-        inQty: normalized.filter((m) => m.type === "in").reduce((s, m) => s + m.qty, 0),
-        outQty: normalized.filter((m) => m.type === "out").reduce((s, m) => s + m.qty, 0),
-        closingQty: valuation.closingQty,
-        closingValue: valuation.closingValue,
-        closingRate: valuation.closingRate,
-        cogsSold: valuation.cogsValue,
-        reorderLevel,
-        isBelowReorder,
-        movementClass,
-        lastMovementDaysAgo,
-        txnCount,
-        lastMovDate,
-        warehouseBreakdown,
-      };
-    });
-  }, [items, stockMovements, warehouses, costingMethod, warehouseFilter, fyEnd]);
-
-  // ── Filter ────────────────────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    return stockRows.filter((r) => {
-      if (movementFilter !== "ALL" && r.movementClass !== movementFilter)
-        return false;
-      if (showReorderOnly && !r.isBelowReorder) return false;
-      if (
-        searchTerm &&
-        !r.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !r.code.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-        return false;
-      return true;
-    });
-  }, [stockRows, movementFilter, showReorderOnly, searchTerm]);
-
-  // ── Summary stats ─────────────────────────────────────────────────────────
-  const summary = useMemo(
-    () => ({
-      totalItems:   filtered.length,
-      totalValue:   filtered.reduce((s, r) => s + r.closingValue, 0),
-      fastMoving:   filtered.filter((r) => r.movementClass === "fast").length,
-      slowMoving:   filtered.filter((r) => r.movementClass === "slow").length,
-      nonMoving:    filtered.filter((r) => r.movementClass === "non-moving").length,
-      belowReorder: filtered.filter((r) => r.isBelowReorder).length,
-      zeroStock:    filtered.filter((r) => r.closingQty <= 0).length,
-    }),
-    [filtered]
+  const filtered = useMemo(() =>
+    summary.filter(s =>
+      !search || s.itemName.toLowerCase().includes(search.toLowerCase())
+    ),
+    [summary, search]
   );
 
-  // ── Export ────────────────────────────────────────────────────────────────
-  const exportToExcel = () => {
-    const data = filtered.map((r) => ({
-      Code:            r.code,
-      "Item Name":     r.name,
-      Unit:            r.unit,
-      Category:        r.category,
-      "In Qty":        r.inQty,
-      "Out Qty":       r.outQty,
-      "Closing Qty":   r.closingQty,
-      "Avg Rate":      r.closingRate,
-      "Closing Value": r.closingValue,
-      "COGS Value":    r.cogsSold,
-      "Reorder Level": r.reorderLevel,
-      "Below Reorder": r.isBelowReorder ? "YES" : "",
-      "Movement":      r.movementClass,
-      "Last Sale":     r.lastMovDate || "Never",
-    }));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(
-      wb,
-      XLSX.utils.json_to_sheet(data),
-      "Stock Summary"
-    );
-    XLSX.writeFile(
-      wb,
-      `StockSummary_${costingMethod}_${fyEnd}.xlsx`
-    );
-  };
+  const totals = useMemo(() => ({
+    openingAmount: filtered.reduce((s, r) => s + r.openingAmount, 0),
+    purchaseAmount: filtered.reduce((s, r) => s + r.purchaseAmount, 0),
+    salesAmount: filtered.reduce((s, r) => s + r.salesAmount, 0),
+    closingAmount: filtered.reduce((s, r) => s + r.closingAmount, 0),
+  }), [filtered]);
 
-  // ─── Render ───────────────────────────────────────────────────────────────
+  const exportExcel = useCallback(() => {
+    const headers = [
+      "Stock Item","Opening Qty","Opening Rate","Opening Amount",
+      "Purchase Qty","Purchase Rate","Purchase Amount",
+      "Sales Qty","Sales Rate","Sales Amount",
+      "Closing Qty","Closing Rate","Closing Amount",
+    ];
+    const rows = filtered.map(r => [
+      r.itemName,
+      r.openingQty, formatNumber(r.openingRate), formatNumber(r.openingAmount),
+      r.purchaseQty, formatNumber(r.purchaseRate), formatNumber(r.purchaseAmount),
+      r.salesQty, formatNumber(r.salesRate), formatNumber(r.salesAmount),
+      r.closingQty, formatNumber(r.closingRate), formatNumber(r.closingAmount),
+    ]);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Stock Summary");
+    XLSX.writeFile(wb, `StockSummary_${method}_${toDate}.xlsx`);
+    toast.success("Exported to Excel");
+  }, [filtered, method, toDate]);
+
+  const activeItem = showLedger ? filtered.find(f => f.itemId === showLedger) : null;
+
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      {/* Header */}
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      {/* Page Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            Stock Summary
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            {companySettings?.name || "Company"} —{" "}
-            {costingMethodLabel(costingMethod)} • As of {fyEnd}
+            Opening · During Year · Closing — with valuation method
           </p>
         </div>
-        <button
-          onClick={exportToExcel}
-          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-        >
-          <Download className="h-3.5 w-3.5" /> Export
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportExcel}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+          >
+            Export Excel
+          </button>
+        </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
-        {/* Costing method */}
-        <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-            Valuation Method
-          </label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
-            {(
-              [
-                ["moving_avg", "Moving WA"],
-                ["weighted_avg", "Weighted Avg"],
-                ["fifo", "FIFO"],
-                ["lifo", "LIFO"],
-              ] as [CostingMethod, string][]
-            ).map(([method, label]) => (
+      {/* Filters */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end">
+        {/* Valuation Method */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Valuation Method</label>
+          <div className="flex rounded-md border border-gray-300 overflow-hidden h-8">
+            {([
+              ["weighted_average","Weighted Avg"],
+              ["fifo","FIFO"],
+              ["lifo","LIFO"],
+            ] as [ValuationMethod, string][]).map(([v, label]) => (
               <button
-                key={method}
-                onClick={() => setCostingMethod(method)}
-                className={`h-8 px-3 text-[11px] font-medium transition-colors ${
-                  costingMethod === method
-                    ? "bg-[#1557b0] text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50"
-                }`}
+                key={v}
+                onClick={() => setMethod(v)}
+                className={`px-3 text-[11px] font-semibold transition-colors
+                  ${method === v ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
                 {label}
               </button>
@@ -270,257 +121,226 @@ export default function StockSummary() {
           </div>
         </div>
 
-        {/* Warehouse filter */}
-        {(warehouses || []).length > 0 && (
-          <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-              Warehouse
-            </label>
-            <select
-              value={warehouseFilter}
-              onChange={(e) => setWarehouseFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              <option value="ALL">All Warehouses</option>
-              {(warehouses || []).map((w: any) => (
-                <option key={w.id} value={w.id}>
-                  {w.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Movement filter */}
-        <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-            Movement
-          </label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
-            {(["ALL", "fast", "slow", "non-moving"] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setMovementFilter(f)}
-                className={`h-8 px-3 text-[11px] font-medium capitalize transition-colors ${
-                  movementFilter === f
-                    ? "bg-[#1557b0] text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                {f === "non-moving" ? "Non-Moving" : f === "ALL" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
-              </button>
-            ))}
-          </div>
+        {/* Date Range */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">From Date</label>
+          <input
+            type="date"
+            value={fromDate}
+            onChange={e => setFromDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">To Date</label>
+          <input
+            type="date"
+            value={toDate}
+            onChange={e => setToDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+          />
         </div>
 
         {/* Search */}
-        <div className="flex-1 min-w-[180px]">
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-            Search
-          </label>
+        <div className="flex flex-col gap-1 flex-1 min-w-[160px]">
+          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Search Item</label>
           <input
             type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Item name or code..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Item name..."
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
           />
         </div>
 
-        {/* Reorder toggle */}
-        <label className="flex items-center gap-1.5 h-8 text-[12px] text-gray-600 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={showReorderOnly}
-            onChange={(e) => setShowReorderOnly(e.target.checked)}
-            className="h-3.5 w-3.5 accent-[#1557b0]"
-          />
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
-          Below Reorder Only
-        </label>
-      </div>
-
-      {/* KPI Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-4">
-        {[
-          { label: "Total Items",    value: summary.totalItems,    isAmt: false, color: "text-gray-800" },
-          { label: "Stock Value",    value: summary.totalValue,    isAmt: true,  color: "text-[#1557b0]" },
-          { label: "Fast Moving",    value: summary.fastMoving,    isAmt: false, color: "text-green-700" },
-          { label: "Slow Moving",    value: summary.slowMoving,    isAmt: false, color: "text-amber-700" },
-          { label: "Non-Moving",     value: summary.nonMoving,     isAmt: false, color: "text-red-600" },
-          { label: "Below Reorder",  value: summary.belowReorder,  isAmt: false, color: "text-red-600" },
-          { label: "Zero Stock",     value: summary.zeroStock,     isAmt: false, color: "text-gray-400" },
-        ].map((kpi) => (
-          <div
-            key={kpi.label}
-            className="bg-white border border-gray-200 rounded-lg p-3"
-          >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
-              {kpi.label}
-            </p>
-            <p className={`font-bold font-mono mt-1 ${kpi.color} ${kpi.isAmt ? "text-[13px]" : "text-[18px]"}`}>
-              {kpi.isAmt
-                ? "Rs. " + fmt(kpi.value as number)
-                : kpi.value}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Reorder alert banner */}
-      {summary.belowReorder > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-center gap-2 text-[12px] text-amber-800">
-          <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
-          <strong>{summary.belowReorder} items</strong> are at or below
-          reorder level. Consider raising purchase orders.
+        <div className="text-[11px] text-gray-400 self-end pb-1">
+          Method: <strong className="text-gray-700">{method.replace("_"," ").toUpperCase()}</strong>
         </div>
-      )}
+      </div>
 
-      {/* Main table */}
+      {/* Main Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full" style={{ minWidth: 1000 }}>
+          <table className="w-full min-w-[900px] border-collapse">
             <thead>
+              {/* Group header */}
               <tr>
-                <th className={thCls} style={{ width: 80 }}>
-                  Code
+                <th className={thL} rowSpan={2} style={{verticalAlign:"middle"}}>Stock Item</th>
+                <th className={th} colSpan={3}
+                  style={{textAlign:"center",background:"#e8f0fe",color:"#1557b0"}}>
+                  Opening Stock
                 </th>
-                <th className={thCls}>Item Name</th>
-                <th className={thCls}>Category</th>
-                <th className={thCls} style={{ width: 60 }}>
-                  Unit
+                <th className={th} colSpan={3}
+                  style={{textAlign:"center",background:"#e6f4ea",color:"#059669"}}>
+                  During Year — Purchase
                 </th>
-                <th className={`${thCls} text-right`}>In Qty</th>
-                <th className={`${thCls} text-right`}>Out Qty</th>
-                <th className={`${thCls} text-right`}>Closing Qty</th>
-                <th className={`${thCls} text-right`}>Avg Rate</th>
-                <th className={`${thCls} text-right`}>Closing Value</th>
-                <th className={thCls} style={{ width: 80 }}>
-                  Reorder
+                <th className={th} colSpan={3}
+                  style={{textAlign:"center",background:"#fef3c7",color:"#d97706"}}>
+                  During Year — Sales
                 </th>
-                <th className={thCls}>Movement</th>
-                <th className={thCls}>Last Sale</th>
+                <th className={th} colSpan={3}
+                  style={{textAlign:"center",background:"#f3e8ff",color:"#7c3aed"}}>
+                  Closing Stock
+                </th>
+              </tr>
+              <tr>
+                {/* Opening */}
+                <th className={th}>Qty</th>
+                <th className={th}>Rate</th>
+                <th className={th}>Amount</th>
+                {/* Purchase */}
+                <th className={th} style={{background:"#e6f4ea"}}>Qty</th>
+                <th className={th} style={{background:"#e6f4ea"}}>Rate</th>
+                <th className={th} style={{background:"#e6f4ea"}}>Amount</th>
+                {/* Sales */}
+                <th className={th} style={{background:"#fef3c7"}}>Qty</th>
+                <th className={th} style={{background:"#fef3c7"}}>Rate</th>
+                <th className={th} style={{background:"#fef3c7"}}>Amount</th>
+                {/* Closing */}
+                <th className={th} style={{background:"#f3e8ff"}}>Qty</th>
+                <th className={th} style={{background:"#f3e8ff"}}>Rate</th>
+                <th className={th} style={{background:"#f3e8ff"}}>Amount</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={12}
-                    className="px-4 py-12 text-center text-[12px] text-gray-400"
-                  >
-                    <Package className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                    No stock items found for the selected filters.
+                  <td colSpan={13} className="text-center py-12 text-[12px] text-gray-500">
+                    No stock movements found for the selected period.
                   </td>
                 </tr>
               )}
-              {filtered.map((row) => {
-                const movColors = {
-                  fast:        "bg-green-100 text-green-700",
-                  slow:        "bg-amber-100 text-amber-700",
-                  "non-moving": "bg-red-100 text-red-700",
-                };
-                return (
-                  <tr
-                    key={row.id}
-                    className={`hover:bg-gray-50 ${row.closingQty <= 0 ? "opacity-60" : ""}`}
-                  >
-                    <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500 border-b border-gray-100">
-                      {row.code}
-                    </td>
-                    <td className={tdCls}>
-                      <span className="font-medium text-gray-800">
-                        {row.name}
-                      </span>
-                      {row.isBelowReorder && (
-                        <AlertTriangle className="inline h-3 w-3 text-amber-500 ml-1.5" />
-                      )}
-                    </td>
-                    <td className={tdCls}>{row.category || "—"}</td>
-                    <td className={tdCls}>{row.unit}</td>
-                    <td className={amtCls}>{fmt(row.inQty)}</td>
-                    <td className={amtCls}>{fmt(row.outQty)}</td>
-                    <td
-                      className={`${amtCls} font-semibold ${
-                        row.closingQty <= 0
-                          ? "text-red-500"
-                          : row.isBelowReorder
-                          ? "text-amber-700"
-                          : "text-gray-800"
-                      }`}
-                    >
-                      {fmt(row.closingQty)}
-                    </td>
-                    <td className={amtCls}>
-                      {row.closingRate > 0 ? fmt(row.closingRate) : "—"}
-                    </td>
-                    <td className={`${amtCls} font-semibold text-[#1557b0]`}>
-                      {row.closingValue > 0
-                        ? fmt(row.closingValue)
-                        : "—"}
-                    </td>
-                    <td className="px-3 py-2.5 text-[11px] border-b border-gray-100">
-                      {row.reorderLevel > 0 ? (
-                        <span
-                          className={`font-mono ${row.isBelowReorder ? "text-red-600 font-bold" : "text-gray-500"}`}
-                        >
-                          {row.reorderLevel}
-                          {row.isBelowReorder && " ⚠"}
-                        </span>
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-2.5 border-b border-gray-100">
-                      <span
-                        className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${movColors[row.movementClass]}`}
+              {filtered.map(row => (
+                <React.Fragment key={row.itemId}>
+                  <tr className="hover:bg-gray-50 border-b border-gray-100">
+                    <td className={tdL}>
+                      <button
+                        className="text-[#1557b0] hover:underline font-semibold text-[12px]"
+                        onClick={() => setShowLedger(showLedger === row.itemId ? null : row.itemId)}
                       >
-                        {row.movementClass}
-                      </span>
+                        {row.itemName}
+                      </button>
                     </td>
-                    <td className="px-3 py-2.5 text-[11px] text-gray-500 border-b border-gray-100">
-                      {row.lastMovDate
-                        ? row.lastMovDate + ` (${row.lastMovementDaysAgo}d ago)`
-                        : "Never"}
-                    </td>
+                    {/* Opening */}
+                    <td className={td}>{formatNumber(row.openingQty, 2)}</td>
+                    <td className={td}>Rs. {formatNumber(row.openingRate)}</td>
+                    <td className={td}>Rs. {formatNumber(row.openingAmount)}</td>
+                    {/* Purchase */}
+                    <td className={td} style={{background:"#f6fff8"}}>{formatNumber(row.purchaseQty, 2)}</td>
+                    <td className={td} style={{background:"#f6fff8"}}>Rs. {formatNumber(row.purchaseRate)}</td>
+                    <td className={td} style={{background:"#f6fff8"}}>Rs. {formatNumber(row.purchaseAmount)}</td>
+                    {/* Sales */}
+                    <td className={td} style={{background:"#fffef0"}}>{formatNumber(row.salesQty, 2)}</td>
+                    <td className={td} style={{background:"#fffef0"}}>Rs. {formatNumber(row.salesRate)}</td>
+                    <td className={td} style={{background:"#fffef0"}}>Rs. {formatNumber(row.salesAmount)}</td>
+                    {/* Closing */}
+                    <td className={tdBold} style={{background:"#f5f0ff"}}>{formatNumber(row.closingQty, 2)}</td>
+                    <td className={tdBold} style={{background:"#f5f0ff"}}>Rs. {formatNumber(row.closingRate)}</td>
+                    <td className={tdBold} style={{background:"#f5f0ff"}}>Rs. {formatNumber(row.closingAmount)}</td>
                   </tr>
-                );
-              })}
-            </tbody>
 
-            {/* Footer total */}
-            {filtered.length > 0 && (
-              <tfoot>
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                  <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                    TOTAL ({filtered.length} items)
+                  {/* Ledger Detail Expand */}
+                  {showLedger === row.itemId && activeItem && (
+                    <tr>
+                      <td colSpan={13} className="p-0 border-b border-gray-200">
+                        <div className="bg-blue-50 p-4">
+                          <div className="text-[11px] font-bold text-[#1557b0] mb-2 uppercase tracking-wide">
+                            Stock Ledger — {row.itemName} ({method.replace("_"," ").toUpperCase()})
+                          </div>
+                          <table className="w-full text-[11px] border-collapse">
+                            <thead>
+                              <tr className="bg-[#1557b0] text-white">
+                                <th className="px-2 py-1.5 text-left">Date</th>
+                                <th className="px-2 py-1.5 text-left">Particulars</th>
+                                <th className="px-2 py-1.5 text-right">In Qty</th>
+                                <th className="px-2 py-1.5 text-right">In Rate</th>
+                                <th className="px-2 py-1.5 text-right">In Amount</th>
+                                <th className="px-2 py-1.5 text-right">Out Qty</th>
+                                <th className="px-2 py-1.5 text-right">Out Rate</th>
+                                <th className="px-2 py-1.5 text-right">Out Amount</th>
+                                <th className="px-2 py-1.5 text-right">Bal Qty</th>
+                                <th className="px-2 py-1.5 text-right">Bal Rate</th>
+                                <th className="px-2 py-1.5 text-right">Bal Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* Opening row */}
+                              <tr className="bg-blue-100">
+                                <td className="px-2 py-1">—</td>
+                                <td className="px-2 py-1 font-semibold">Opening Balance</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right">—</td>
+                                <td className="px-2 py-1 text-right font-bold">{formatNumber(row.openingQty,2)}</td>
+                                <td className="px-2 py-1 text-right font-bold">Rs. {formatNumber(row.openingRate)}</td>
+                                <td className="px-2 py-1 text-right font-bold">Rs. {formatNumber(row.openingAmount)}</td>
+                              </tr>
+                              {activeItem.ledger.map((e, idx) => (
+                                <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-blue-50/40"}>
+                                  <td className="px-2 py-1 font-mono">{e.date}</td>
+                                  <td className="px-2 py-1 capitalize">{e.particulars}</td>
+                                  <td className="px-2 py-1 text-right">{e.inQty > 0 ? formatNumber(e.inQty,2) : "—"}</td>
+                                  <td className="px-2 py-1 text-right">{e.inQty > 0 ? `Rs. ${formatNumber(e.inRate)}` : "—"}</td>
+                                  <td className="px-2 py-1 text-right">{e.inQty > 0 ? `Rs. ${formatNumber(e.inAmount)}` : "—"}</td>
+                                  <td className="px-2 py-1 text-right">{e.outQty > 0 ? formatNumber(e.outQty,2) : "—"}</td>
+                                  <td className="px-2 py-1 text-right">{e.outQty > 0 ? `Rs. ${formatNumber(e.outRate)}` : "—"}</td>
+                                  <td className="px-2 py-1 text-right">{e.outQty > 0 ? `Rs. ${formatNumber(e.outAmount)}` : "—"}</td>
+                                  <td className="px-2 py-1 text-right font-semibold">{formatNumber(e.balanceQty,2)}</td>
+                                  <td className="px-2 py-1 text-right">Rs. {formatNumber(e.balanceRate)}</td>
+                                  <td className="px-2 py-1 text-right font-semibold">Rs. {formatNumber(e.balanceAmount)}</td>
+                                </tr>
+                              ))}
+                              {/* Closing row */}
+                              <tr className="bg-purple-100 font-bold">
+                                <td className="px-2 py-1.5">—</td>
+                                <td className="px-2 py-1.5">Closing Balance</td>
+                                <td colSpan={6} />
+                                <td className="px-2 py-1.5 text-right">{formatNumber(row.closingQty,2)}</td>
+                                <td className="px-2 py-1.5 text-right">Rs. {formatNumber(row.closingRate)}</td>
+                                <td className="px-2 py-1.5 text-right">Rs. {formatNumber(row.closingAmount)}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+
+              {/* Totals row */}
+              {filtered.length > 0 && (
+                <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
+                  <td className="px-2 py-2.5 text-[12px] font-bold text-gray-800">TOTAL</td>
+                  <td colSpan={2} className="border border-gray-200" />
+                  <td className="px-2 py-2.5 text-right font-mono text-[12px] border border-gray-200">
+                    Rs. {formatNumber(totals.openingAmount)}
                   </td>
-                  <td className={amtCls}>
-                    {fmt(filtered.reduce((s, r) => s + r.inQty, 0))}
+                  <td colSpan={2} className="border border-gray-200" />
+                  <td className="px-2 py-2.5 text-right font-mono text-[12px] border border-gray-200" style={{background:"#e6f4ea"}}>
+                    Rs. {formatNumber(totals.purchaseAmount)}
                   </td>
-                  <td className={amtCls}>
-                    {fmt(filtered.reduce((s, r) => s + r.outQty, 0))}
+                  <td colSpan={2} className="border border-gray-200" />
+                  <td className="px-2 py-2.5 text-right font-mono text-[12px] border border-gray-200" style={{background:"#fef3c7"}}>
+                    Rs. {formatNumber(totals.salesAmount)}
                   </td>
-                  <td className={amtCls}>
-                    {fmt(filtered.reduce((s, r) => s + r.closingQty, 0))}
+                  <td colSpan={2} className="border border-gray-200" />
+                  <td className="px-2 py-2.5 text-right font-mono text-[12px] font-bold border border-gray-200" style={{background:"#f3e8ff"}}>
+                    Rs. {formatNumber(totals.closingAmount)}
                   </td>
-                  <td className={amtCls}>—</td>
-                  <td className={`${amtCls} text-[#1557b0]`}>
-                    Rs. {fmt(summary.totalValue)}
-                  </td>
-                  <td colSpan={3} />
                 </tr>
-              </tfoot>
-            )}
+              )}
+            </tbody>
           </table>
         </div>
       </div>
 
-      <p className="text-[10px] text-gray-400 mt-3">
-        Valuation: {costingMethodLabel(costingMethod)} • As of {fyEnd} •
-        Fast Moving: sold within 60 days • Slow: 61-180 days •
-        Non-Moving: over 180 days or never sold
-      </p>
+      <div className="mt-2 text-[10px] text-gray-400 text-right">
+        Valuation: {method.replace("_"," ").toUpperCase()} · Period: {fromDate} to {toDate}
+      </div>
     </div>
   );
 }

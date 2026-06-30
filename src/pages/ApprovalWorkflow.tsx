@@ -532,7 +532,7 @@ export default function ApprovalWorkflow() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <input value={policyForm.description} onChange={e=>setPolicyForm({...policyForm,description:e.target.value})}
-                  placeholder="e.g. Payments above NPR 50,000 require manager approval"
+                  placeholder="e.g. Payments above Rs. 50,000 require manager approval"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"/>
               </div>
               <label className="flex items-center gap-2 text-sm cursor-pointer">

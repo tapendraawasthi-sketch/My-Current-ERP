@@ -443,7 +443,7 @@ const SmartBankReconciliation: React.FC = () => {
 
   // Format currency
   const formatCurrency = (amount: number): string => {
-    return `NPR ${Math.abs(amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `Rs. ${Math.abs(amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   // --- RENDER ---

@@ -292,7 +292,7 @@ export default function DebtorsAging() {
     if (!rows.length) return toast.error("No overdue interest found");
     if (
       !confirm(
-        `Will create ${rows.length} journal entries for NPR ${money(total)} total interest. Proceed?`,
+        `Will create ${rows.length} journal entries for Rs. ${money(total)} total interest. Proceed?`,
       )
     )
       return;
@@ -456,7 +456,7 @@ export default function DebtorsAging() {
             <FileText size={14} /> Total Outstanding
           </div>
           <div className="text-[20px] font-bold text-gray-800">
-            NPR {money(summary.totalOutstanding)}
+            Rs. {money(summary.totalOutstanding)}
           </div>
         </div>
 
@@ -464,14 +464,14 @@ export default function DebtorsAging() {
           <div className="text-[11px] font-medium text-green-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <CheckCircle size={14} /> Current (Not Due)
           </div>
-          <div className="text-[20px] font-bold text-green-800">NPR {money(summary.current)}</div>
+          <div className="text-[20px] font-bold text-green-800">Rs. {money(summary.current)}</div>
         </div>
 
         <div className="bg-red-50/50 border border-red-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
           <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <AlertTriangle size={14} /> Overdue Total
           </div>
-          <div className="text-[20px] font-bold text-red-800">NPR {money(summary.overdue)}</div>
+          <div className="text-[20px] font-bold text-red-800">Rs. {money(summary.overdue)}</div>
         </div>
 
         <div className="bg-amber-50/50 border border-amber-200 rounded-md p-4 shadow-sm flex flex-col justify-center">

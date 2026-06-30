@@ -453,11 +453,11 @@ const OutstandingManagement: React.FC = () => {
 
         let letter = "";
         if (tone === "gentle") {
-          letter = `Dear ${party.name},\n\nWe hope this letter finds you in good health. We wish to bring to your attention that invoice number ${inv.invoiceNo} dated ${inv.date} for NPR ${money(inv.balance)} is now ${inv.daysOverdue} days past its due date of ${inv.dueDate}.\n\nWe kindly request you to arrange payment at your earliest convenience. Please feel free to contact us if you have any queries.\n\nThank you for your continued business.\n\nWarm regards,\n${companySettings?.name || "Accounts Department"}`;
+          letter = `Dear ${party.name},\n\nWe hope this letter finds you in good health. We wish to bring to your attention that invoice number ${inv.invoiceNo} dated ${inv.date} for Rs. ${money(inv.balance)} is now ${inv.daysOverdue} days past its due date of ${inv.dueDate}.\n\nWe kindly request you to arrange payment at your earliest convenience. Please feel free to contact us if you have any queries.\n\nThank you for your continued business.\n\nWarm regards,\n${companySettings?.name || "Accounts Department"}`;
         } else if (tone === "firm") {
-          letter = `Dear ${party.name},\n\nThis is a formal reminder that invoice no. ${inv.invoiceNo} dated ${inv.date} for NPR ${money(inv.balance)} was due on ${inv.dueDate} and remains unpaid after ${inv.daysOverdue} days. We request immediate payment or contact within 7 days to avoid further action.\n\nSincerely,\n${companySettings?.name || "Accounts Department"}`;
+          letter = `Dear ${party.name},\n\nThis is a formal reminder that invoice no. ${inv.invoiceNo} dated ${inv.date} for Rs. ${money(inv.balance)} was due on ${inv.dueDate} and remains unpaid after ${inv.daysOverdue} days. We request immediate payment or contact within 7 days to avoid further action.\n\nSincerely,\n${companySettings?.name || "Accounts Department"}`;
         } else if (tone === "final") {
-          letter = `Dear ${party.name},\n\nDespite our previous reminders, invoice ${inv.invoiceNo} for NPR ${money(inv.balance)} remains unpaid since ${inv.daysOverdue} days beyond its due date. We are obliged to inform you that unless payment is received within 72 hours, we shall be constrained to initiate legal proceedings to recover the outstanding amount.\n\nFinal Notice,\n${companySettings?.name || "Accounts Department"}`;
+          letter = `Dear ${party.name},\n\nDespite our previous reminders, invoice ${inv.invoiceNo} for Rs. ${money(inv.balance)} remains unpaid since ${inv.daysOverdue} days beyond its due date. We are obliged to inform you that unless payment is received within 72 hours, we shall be constrained to initiate legal proceedings to recover the outstanding amount.\n\nFinal Notice,\n${companySettings?.name || "Accounts Department"}`;
         }
 
         return letter;
@@ -930,7 +930,7 @@ const OutstandingManagement: React.FC = () => {
                         .filter((inv) => inv.partyId === pdcForm.partyId)
                         .map((inv) => (
                           <option key={inv.id} value={inv.id}>
-                            {inv.invoiceNo} - NPR {money(inv.grandTotal)}
+                            {inv.invoiceNo} - Rs. {money(inv.grandTotal)}
                           </option>
                         ))}
                     </select>
@@ -1245,7 +1245,7 @@ const OutstandingManagement: React.FC = () => {
                 <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-200 text-right">
                   <span className="text-[12px] text-gray-600 mr-4">Closing Balance:</span>
                   <span className="text-[16px] font-bold text-[#1557b0]">
-                    NPR {money(Math.abs(statementData[statementData.length - 1]?.balance || 0))}{" "}
+                    Rs. {money(Math.abs(statementData[statementData.length - 1]?.balance || 0))}{" "}
                     {statementData[statementData.length - 1]?.balance >= 0 ? "Dr" : "Cr"}
                   </span>
                 </div>

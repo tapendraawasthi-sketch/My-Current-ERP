@@ -310,7 +310,7 @@ const F11CompanyFeatures = () => {
     <div>
       <FeatureRow
         label="Enable Value Added Tax (VAT)"
-        description="Nepal's primary business tax at 13%. Mandatory for annual turnover above NPR 50 lakh (NPR 5,000,000). Regulated by IRD (Inland Revenue Department)."
+        description="Nepal's primary business tax at 13%. Mandatory for annual turnover above Rs. 50 lakh (Rs. 5,000,000). Regulated by IRD (Inland Revenue Department)."
         isActive={features.enable_vat}
         onToggle={() => handleToggle("enable_vat")}
       >

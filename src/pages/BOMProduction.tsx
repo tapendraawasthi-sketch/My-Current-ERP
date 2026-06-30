@@ -290,7 +290,7 @@ export default function BOMProduction() {
     }, 0);
 
     setBomForm((f) => ({ ...f, components: rows }));
-    toast.success(`Cost roll-up complete. New standard cost: NPR ${money(newTotal)}`);
+    toast.success(`Cost roll-up complete. New standard cost: Rs. ${money(newTotal)}`);
   }
 
   async function saveBom() {
@@ -788,7 +788,7 @@ export default function BOMProduction() {
                       </span>
                     </td>
                     <td className={`${tableCellClass} font-semibold text-gray-900`}>
-                      NPR {money(b.totalStandardCost)}
+                      Rs. {money(b.totalStandardCost)}
                     </td>
                     <td className={tableCellClass}>v{b.version}</td>
                     <td className={tableCellClass}>{statusBadge(b.status)}</td>
@@ -1187,14 +1187,14 @@ export default function BOMProduction() {
                     <div className="flex flex-col">
                       <span className="text-gray-500 font-medium">Standard Cost</span>
                       <span className="text-gray-900 font-bold text-[14px]">
-                        NPR {money(completionPreview.standardCost)}
+                        Rs. {money(completionPreview.standardCost)}
                       </span>
                     </div>
                     <div className="w-px h-8 bg-gray-200"></div>
                     <div className="flex flex-col">
                       <span className="text-gray-500 font-medium">Actual Cost (Issued)</span>
                       <span className="text-gray-900 font-bold text-[14px]">
-                        NPR {money(completionPreview.issuedCost)}
+                        Rs. {money(completionPreview.issuedCost)}
                       </span>
                     </div>
                     <div className="w-px h-8 bg-gray-200"></div>
@@ -1203,7 +1203,7 @@ export default function BOMProduction() {
                       <span
                         className={`font-bold text-[14px] ${completionPreview.variance > 0 ? "text-red-600" : "text-green-600"}`}
                       >
-                        NPR {money(completionPreview.variance)}{" "}
+                        Rs. {money(completionPreview.variance)}{" "}
                         {completionPreview.variance > 0 ? "(Adverse)" : "(Favorable)"}
                       </span>
                     </div>
@@ -1640,7 +1640,7 @@ export default function BOMProduction() {
                       Total Standard Cost
                     </span>
                     <span className="text-[16px] font-bold text-gray-800">
-                      NPR {money(costSheet.standardCost)}
+                      Rs. {money(costSheet.standardCost)}
                     </span>
                   </div>
                   <div className="flex flex-col">
@@ -1648,7 +1648,7 @@ export default function BOMProduction() {
                       Total Actual Cost
                     </span>
                     <span className="text-[16px] font-bold text-gray-800">
-                      NPR {money(costSheet.actualCost)}
+                      Rs. {money(costSheet.actualCost)}
                     </span>
                   </div>
                 </div>
@@ -1659,7 +1659,7 @@ export default function BOMProduction() {
                   <span
                     className={`text-[18px] font-black ${costSheet.variance > 0 ? "text-red-600" : "text-green-600"}`}
                   >
-                    NPR {money(costSheet.variance)}
+                    Rs. {money(costSheet.variance)}
                     <span className="text-[12px] font-semibold ml-2 bg-white px-2 py-0.5 rounded border border-current">
                       {costSheet.variance > 0 ? "Adverse" : "Favorable"}
                     </span>
@@ -1898,7 +1898,7 @@ export default function BOMProduction() {
                   className={`${tableCellClass} font-bold text-[14px] text-[#1557b0]`}
                   colSpan={2}
                 >
-                  NPR {money(totalStandardCost)}
+                  Rs. {money(totalStandardCost)}
                 </td>
               </tr>
             </tbody>

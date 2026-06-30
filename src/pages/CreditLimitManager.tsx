@@ -120,7 +120,7 @@ export function checkCreditBlock(
   if (isOverLimit) {
     return {
       isBlocked: false,
-      reason: `Outstanding NPR ${currentOutstanding.toLocaleString("en-IN")} exceeds credit limit NPR ${creditLimit.toLocaleString("en-IN")}`,
+      reason: `Outstanding Rs. ${currentOutstanding.toLocaleString("en-IN")} exceeds credit limit Rs. ${creditLimit.toLocaleString("en-IN")}`,
       outstandingAmount: currentOutstanding,
       creditLimit,
     };
@@ -450,7 +450,7 @@ export default function CreditLimitManager() {
           <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
             Total Limit Extended
           </div>
-          <div className="text-[20px] font-bold text-gray-800">NPR {money(stats.totalLimit)}</div>
+          <div className="text-[20px] font-bold text-gray-800">Rs. {money(stats.totalLimit)}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
@@ -458,7 +458,7 @@ export default function CreditLimitManager() {
             Total Outstanding
           </div>
           <div className="text-[20px] font-bold text-gray-800">
-            NPR {money(stats.totalOutstanding)}
+            Rs. {money(stats.totalOutstanding)}
           </div>
         </div>
 
@@ -609,7 +609,7 @@ export default function CreditLimitManager() {
                     </td>
                     <td className={tableCellClass}>
                       {r.creditLimit > 0 ? (
-                        `NPR ${money(r.creditLimit)}`
+                        `Rs. ${money(r.creditLimit)}`
                       ) : (
                         <span className="text-gray-400 font-medium italic">Unlimited</span>
                       )}
@@ -617,7 +617,7 @@ export default function CreditLimitManager() {
                     <td
                       className={`${tableCellClass} font-semibold ${r.outstanding > 0 ? "text-gray-900" : "text-gray-500"}`}
                     >
-                      NPR {money(r.outstanding)}
+                      Rs. {money(r.outstanding)}
                     </td>
 
                     <td className={tableCellClass}>
