@@ -1,11 +1,12 @@
 // @ts-nocheck
 import Dexie, { Table } from "dexie";
+import type { CbmsStatus, VoucherStatus, VoucherType, AccountType, ItemType, UserRole } from "./types";
 
 export function generateId(): string {
   return crypto.randomUUID();
 }
 
-// ─── Account ──────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Account ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBAccount {
   id: string;
   code: string;
@@ -39,7 +40,7 @@ export interface DBAccount {
   updatedAt?: string;
 }
 
-// ─── Party ────────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Party ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBParty {
   id: string;
   code?: string;
@@ -71,7 +72,7 @@ export interface DBParty {
   updatedAt?: string;
 }
 
-// ─── Item ─────────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Item ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBItem {
   id: string;
   code?: string;
@@ -116,7 +117,7 @@ export interface DBItem {
   updatedAt?: string;
 }
 
-// ─── Voucher Line ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Voucher Line ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBVoucherLine {
   id?: string;
   accountId: string;
@@ -140,7 +141,7 @@ export interface DBVoucherLine {
   tdsAmount?: number;
 }
 
-// ─── Voucher ──────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Voucher ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBVoucher {
   id: string;
   voucherNo: string;
@@ -214,7 +215,7 @@ export interface WorkflowDocRef {
   workflowStatus?: WorkflowStatus;
 }
 
-// ─── Invoice Line ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Invoice Line ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBInvoiceLine {
   id?: string;
   itemId: string;
@@ -246,7 +247,7 @@ export interface DBInvoiceLine {
   hsCode?: string;
 }
 
-// ─── Invoice ──────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Invoice ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBInvoice {
   id: string;
   invoiceNo: string;
@@ -294,7 +295,7 @@ export interface DBInvoice {
   linkedDcId?: string;
   linkedDocuments?: WorkflowDocRef[];
   workflowStatus?: WorkflowStatus;
-  cbmsStatus?: "pending" | "failed" | "success" | "submitted" | "cancelled";
+  cbmsStatus?: CbmsStatus;
   cbmsIrn?: string;
   cbmsQrCode?: string;
   cbmsQrString?: string;
@@ -325,7 +326,7 @@ export interface DBInvoice {
   updatedAt?: string;
 }
 
-// ─── Stock Movement ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Stock Movement ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBStockMovement {
   id: string;
   date: string;
@@ -356,7 +357,7 @@ export interface DBStockMovement {
   updatedAt?: string;
 }
 
-// ─── Warehouse ────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Warehouse ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBWarehouse {
   id: string;
   code?: string;
@@ -384,7 +385,7 @@ export interface DBWarehouse {
   updatedAt?: string;
 }
 
-// ─── Stock Transfer ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Stock Transfer ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBStockTransferLine {
   id?: string;
   itemId: string;
@@ -422,7 +423,7 @@ export interface DBStockTransferVoucher {
   updatedAt?: string;
 }
 
-// ─── Unit ─────────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Unit ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBUnit {
   id: string;
   code: string;
@@ -434,7 +435,7 @@ export interface DBUnit {
   updatedAt?: string;
 }
 
-// ─── Unit Conversion ──────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Unit Conversion ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBUnitConversion {
   id: string;
   fromUnitId?: string;
@@ -451,7 +452,7 @@ export interface DBUnitConversion {
   updatedAt?: string;
 }
 
-// ─── Cost Center ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Cost Center ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBCostCenter {
   id: string;
   code?: string;
@@ -465,7 +466,7 @@ export interface DBCostCenter {
   updatedAt?: string;
 }
 
-// ─── Fiscal Year ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Fiscal Year ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBFiscalYear {
   id: string;
   name: string;
@@ -482,7 +483,7 @@ export interface DBFiscalYear {
   updatedAt?: string;
 }
 
-// ─── Company Settings ─────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Company Settings ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBCompanySettings {
   id: string;
   name?: string;
@@ -536,7 +537,7 @@ export interface DBCompanySettings {
   lastLoginIp?: string;
 }
 
-// ─── User ─────────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ User ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBUser {
   id: string;
   username: string;
@@ -554,7 +555,7 @@ export interface DBUser {
   updatedAt?: string;
 }
 
-// ─── Notification ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Notification ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBNotification {
   id: string;
   type: string;
@@ -568,7 +569,7 @@ export interface DBNotification {
   updatedAt?: string;
 }
 
-// ─── Shortcut ─────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Shortcut ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBShortcut {
   id?: number;
   key_combo: string;
@@ -582,7 +583,7 @@ export interface DBShortcut {
   updatedAt?: string;
 }
 
-// ─── POS Session ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ POS Session ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPosSession {
   id: string;
   date: string;
@@ -603,7 +604,7 @@ export interface DBPosSession {
   updatedAt?: string;
 }
 
-// ─── POS Hold ─────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ POS Hold ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPosHold {
   id: string;
   name: string;
@@ -618,7 +619,7 @@ export interface DBPosHold {
   updatedAt?: string;
 }
 
-// ─── Price List ───────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Price List ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPriceListLine {
   itemId: string;
   itemName?: string;
@@ -643,7 +644,7 @@ export interface DBPriceList {
   updatedAt?: string;
 }
 
-// ─── Bill Sundry ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Bill Sundry ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBBillSundry {
   id: string;
   code?: string;
@@ -666,7 +667,7 @@ export interface DBBillSundry {
   updatedAt?: string;
 }
 
-// ─── Standard Narration ───────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Standard Narration ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBStandardNarration {
   id: string;
   code?: string;
@@ -678,7 +679,7 @@ export interface DBStandardNarration {
   updatedAt?: string;
 }
 
-// ─── Sales Person ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Sales Person ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBSalesPerson {
   id: string;
   code?: string;
@@ -694,7 +695,7 @@ export interface DBSalesPerson {
   updatedAt?: string;
 }
 
-// ─── Purchase Order ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Purchase Order ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPurchaseOrderLine {
   itemId: string;
   itemName?: string;
@@ -729,7 +730,7 @@ export interface DBPurchaseOrder {
   updatedAt?: string;
 }
 
-// ─── Sales Order ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Sales Order ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBSalesOrderLine {
   itemId: string;
   itemName?: string;
@@ -765,7 +766,7 @@ export interface DBSalesOrder {
   updatedAt?: string;
 }
 
-// ─── Quotation ────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Quotation ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBQuotationLine {
   itemId: string;
   itemName?: string;
@@ -797,7 +798,7 @@ export interface DBQuotation {
   updatedAt?: string;
 }
 
-// ─── Delivery Challan ─────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Delivery Challan ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBDeliveryChallanLine {
   itemId: string;
   itemName?: string;
@@ -833,7 +834,7 @@ export interface DBDeliveryChallan {
   updatedAt?: string;
 }
 
-// ─── Goods Receipt Note ───────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Goods Receipt Note ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBGoodsReceiptNoteLine {
   itemId: string;
   itemName?: string;
@@ -871,7 +872,7 @@ export interface DBGoodsReceiptNote {
   updatedAt?: string;
 }
 
-// ─── Physical Stock ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Physical Stock ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPhysicalStockLine {
   itemId: string;
   itemName?: string;
@@ -899,7 +900,7 @@ export interface DBPhysicalStock {
   updatedAt?: string;
 }
 
-// ─── Budget ───────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Budget ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBBudgetLine {
   accountId: string;
   accountName?: string;
@@ -920,7 +921,7 @@ export interface DBBudget {
   updatedAt?: string;
 }
 
-// ─── Fixed Asset ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Fixed Asset ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBFixedAsset {
   id: string;
   name: string;
@@ -969,7 +970,7 @@ export interface DBDepreciationEntry {
   createdAt: string;
 }
 
-// ─── Bank Reconciliation ──────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Bank Reconciliation ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBBankReconciliation {
   id: string;
   bankAccountId: string;
@@ -988,7 +989,7 @@ export interface DBBankReconciliation {
   updatedAt?: string;
 }
 
-// ─── Employee ─────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Employee ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBEmployee {
   id: string;
   code?: string;
@@ -1014,7 +1015,7 @@ export interface DBEmployee {
   updatedAt?: string;
 }
 
-// ─── Payroll Entry ────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Payroll Entry ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPayrollEntry {
   id: string;
   month: string;
@@ -1037,7 +1038,7 @@ export interface DBPayrollEntry {
   updatedAt?: string;
 }
 
-// ─── Audit Log ────────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Audit Log ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBAuditLog {
   id?: string | number;
   timestamp: string;
@@ -1066,9 +1067,9 @@ export interface DBAuditLog {
   [key: string]: any;
 }
 
-// ─── Database Class ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Database Class ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
-// SCHEMA_VERSION retired — version blocks are now explicit in the constructor
+// SCHEMA_VERSION retired ΓÇö version blocks are now explicit in the constructor
 // const SCHEMA_VERSION = 18;
 
 export class SutraERPDatabase extends Dexie {
@@ -1108,7 +1109,7 @@ export class SutraERPDatabase extends Dexie {
   payrollEntries!: Table<DBPayrollEntry>;
   auditLogs!: Table<DBAuditLog>;
 
-  // ─── Extended / Feature Tables (declared as Table<any> for flexibility) ───
+  // ΓöÇΓöÇΓöÇ Extended / Feature Tables (declared as Table<any> for flexibility) ΓöÇΓöÇΓöÇ
   currencies!: Table<any>;
   recurringVouchers!: Table<any>;
   customFieldDefs!: Table<any>;
@@ -1163,12 +1164,10 @@ export class SutraERPDatabase extends Dexie {
   voucherAuditLogs!: Table<any>;
   salespersons!: Table<any>;
   loginHistory!: Table<any>;
-  employees!: Table<any>;
   salaryStructures!: Table<any>;
   payrollRuns!: Table<any>;
-  payrollEntries!: Table<any>;
   fxGainLossEntries!: Table<DBFXGainLossEntry>;
-  costCentres!: Table<DBCostCentre>;
+  costCentres!: Table<DBCostCenter>;
   costCentreAllocations!: Table<DBCostCentreAllocation>;
   approvalPolicies!: Table<DBApprovalPolicy>;
   approvalRequests!: Table<DBApprovalRequest>;
@@ -1176,10 +1175,10 @@ export class SutraERPDatabase extends Dexie {
   recurringTemplates!: Table<DBRecurringTemplate>;
   recurringPostings!: Table<DBRecurringPosting>;
 
-  constructor() {
-    super("SutraERPDatabase");
+  constructor(name: string = "SutraERPDatabase") {
+    super(name);
 
-    // Version 18 — original schema (must stay for Dexie migration chain)
+    // Version 18 ΓÇö original schema (must stay for Dexie migration chain)
     this.version(18).stores({
       accounts: "id, code, name, type, level, parentId, isGroup, isActive, createdAt",
       parties: "id, code, name, type, pan, isActive, createdAt",
@@ -1217,7 +1216,7 @@ export class SutraERPDatabase extends Dexie {
       auditLogs: "++id, timestamp, userId, action, entityType, entityId",
     });
 
-    // Version 19 — adds loginHistory audit table (no data migration needed)
+    // Version 19 ΓÇö adds loginHistory audit table (no data migration needed)
     this.version(19).stores({
       loginHistory: "++id, companyId, userId, loginAt, success",
     });
@@ -1276,8 +1275,8 @@ export class SutraERPDatabase extends Dexie {
       fxGainLossEntries: "++id, date, currencyCode, voucherId",
       costCentres: "++id, code, type, parentId, isActive",
       costCentreAllocations: "++id, voucherId, costCentreId, date",
-      approvalPolicies: "++id, voucherType, isActive",
-      approvalRequests: "++id, voucherId, voucherType, status, createdAt",
+      approvalPolicies: "++id, voucherType, minimumAmount, isActive",
+      approvalRequests: "++id, voucherId, voucherType, status, requestedBy, createdAt",
       approvalActions:  "++id, requestId, level, actionAt",
       recurringTemplates: "++id, name, frequency, isActive, nextDueDate",
       recurringPostings:  "++id, templateId, postedDate, voucherId",
@@ -1285,16 +1284,19 @@ export class SutraERPDatabase extends Dexie {
   }
 }
 
-// ─── Singleton Instance ───────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Singleton Instance ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ// Named export alias for backward compatibility
+export type SutraERP = SutraERPDatabase;
 
 let _db: SutraERPDatabase | null = null;
 
 export function getDB(): SutraERPDatabase {
   if (!_db) {
-    _db = new SutraERPDatabase();
+    _db = new SutraERPDatabase("SutraERP");
   }
   return _db;
 }
+
+export const db = getDB();
 
 export async function resetDB(): Promise<SutraERPDatabase> {
   if (_db) {
@@ -1306,11 +1308,11 @@ export async function resetDB(): Promise<SutraERPDatabase> {
 }
 
 // Named alias used by some pages
-export const db = getDB();
+// export const db = getDB();
 
 export default getDB;
 
-// ─── Seed Helpers ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Seed Helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export async function seedPredefinedVoucherTypes(): Promise<void> {
   const database = getDB();
@@ -1413,7 +1415,7 @@ export async function seedPredefinedVoucherTypes(): Promise<void> {
   await database.voucherTypeMasters.bulkPut(predefined as any[]);
 }
 
-// ─── Batch & Serial Tracking ──────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Batch & Serial Tracking ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBBatch {
   id: string;
   itemId: string;
@@ -1454,7 +1456,7 @@ export interface DBSerialNumber {
   updatedAt: string;
 }
 
-// ─── PDC (Post-Dated Cheques) ─────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ PDC (Post-Dated Cheques) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 export interface DBPDCEntry {
   id: string;
   type: "received" | "issued";          // received from customer / issued to supplier
@@ -1592,7 +1594,7 @@ export interface DBSalaryStructure {
 
 export interface DBPayrollRun {
   id?: number;
-  month: number;          // 1–12
+  month: number;          // 1ΓÇô12
   year: number;           // Gregorian or BS year
   fiscalYear: string;
   status: "draft" | "processed" | "approved" | "paid";
@@ -1656,9 +1658,9 @@ export interface DBCurrency {
 export interface DBExchangeRate {
   id?: number;
   currencyCode: string;   // foreign currency code
-  date: string;           // "YYYY-MM-DD" – rate effective from this date
-  buyRate: number;        // bank buy rate (foreign → base)
-  sellRate: number;       // bank sell rate (base → foreign)
+  date: string;           // "YYYY-MM-DD" ΓÇô rate effective from this date
+  buyRate: number;        // bank buy rate (foreign ΓåÆ base)
+  sellRate: number;       // bank sell rate (base ΓåÆ foreign)
   midRate: number;        // mid/official rate used for accounting
   source: string;         // "manual" | "NRB" | "IRD"
   createdAt: string;
@@ -1689,7 +1691,7 @@ export interface DBCostCentre {
   code: string;
   name: string;
   type: "cost" | "profit" | "investment";
-  parentId?: number;           // for hierarchy (department → sub-department)
+  parentId?: number;           // for hierarchy (department ΓåÆ sub-department)
   description: string;
   managerId?: string;
   budgetAmount: number;
@@ -1724,10 +1726,50 @@ export interface DBApprovalLevel {
 export interface DBApprovalPolicy {
   id?: number;
   voucherType: string;        // "payment", "receipt", "journal", "purchase", "sales", "*"
-  minimumAmount: number;      // apply only if voucher amount ≥ this
+  minimumAmount: number;      // apply only if voucher amount ΓëÑ this
   levels: DBApprovalLevel[];  // JSON-serialised array
   isActive: boolean;
   description: string;
   createdAt: string;
   updatedAt: string;
+}
+// ─── Utility: Safe table read ──────────────────────────────────────────────────
+// Silently returns [] on error so UI never crashes (fixes BUG-077 silent failure
+// is replaced with a toast-able error from the caller)
+export async function tableAll<T>(
+  dexie: any,
+  tableName: string,
+): Promise<T[]> {
+  try {
+    const table = dexie[tableName];
+    return await table.toArray();
+  } catch (err) {
+    console.error(`[DB] Failed to read table ${tableName}:`, err);
+    return [];
+  }
+}
+
+// ─── Default Shortcuts Seed ────────────────────────────────────────────────────
+// Fixes BUG-039: shortcuts table must be seeded on first run
+
+export const DEFAULT_SHORTCUTS = [
+  { id: "s-f2",  key_combo: "F2",      action: "save",         label: "Save",           description: "Save current form",              category: "general", is_active: true },
+  { id: "s-f4",  key_combo: "F4",      action: "narration",    label: "Narration",      description: "Focus narration field",          category: "general", is_active: true },
+  { id: "s-f5",  key_combo: "F5",      action: "refresh",      label: "Refresh",        description: "Refresh current list",           category: "general", is_active: true },
+  { id: "s-f6",  key_combo: "F6",      action: "type",         label: "Type/Mode",      description: "Change voucher type",            category: "general", is_active: true },
+  { id: "s-f9",  key_combo: "F9",      action: "delete-row",   label: "Delete Row",     description: "Delete selected line item row",  category: "general", is_active: true },
+  { id: "s-f12", key_combo: "F12",     action: "config",       label: "Config",         description: "Open screen configuration",      category: "general", is_active: true },
+  { id: "s-esc", key_combo: "Escape",  action: "cancel",       label: "Cancel",         description: "Cancel / Go back",               category: "general", is_active: true },
+];
+
+export async function seedShortcutsIfEmpty(): Promise<void> {
+  try {
+    const dexie = new SutraERPDatabase();
+    const count = await dexie.shortcuts.count();
+    if (count === 0) {
+      await dexie.shortcuts.bulkPut(DEFAULT_SHORTCUTS);
+    }
+  } catch (err) {
+    console.error("[DB] Failed to seed shortcuts:", err);
+  }
 }

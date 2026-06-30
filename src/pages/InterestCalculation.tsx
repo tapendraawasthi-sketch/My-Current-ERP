@@ -1,534 +1,184 @@
-// @ts-nocheck
-import React, { useState, useMemo } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
-import { getDB } from "../lib/db";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lucide-react";
-import * as XLSX from "xlsx";
+// Fix BUG-017: no dexie-react-hooks, no wrong db import, no missing generateSerialNumber
+import ReportShell from "../components/ui/ReportShell";
+import { ADToBSLong } from "../lib/nepaliDate";
+import { Download } from "lucide-react";
 import toast from "react-hot-toast";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface InterestRow {
-  partyId: string;
-  partyName: string;
-  partyPan?: string;
-  invoiceNo: string;
-  invoiceDate: string;
-  dueDate?: string;
-  originalAmount: number;
-  outstandingAmount: number;
-  daysOverdue: number;
-  interestRate: number;
-  interestAmount: number;
-  totalWithInterest: number;
+function fmtAmt(n: number | null | undefined): string {
+  return Number(n ?? 0).toLocaleString("en-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function money(n: number): string {
-  return Number(n || 0).toLocaleString("en-NP", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+function daysBetween(dateA: string, dateB: string): number {
+  const a = new Date(dateA);
+  const b = new Date(dateB);
+  if (isNaN(a.getTime()) || isNaN(b.getTime())) return 0;
+  return Math.max(0, Math.floor((b.getTime() - a.getTime()) / 86400000));
 }
-
-function todayISO(): string {
-  return new Date().toISOString().split("T")[0];
-}
-
-function daysDiff(dateStr: string, asOf: string): number {
-  if (!dateStr) return 0;
-  const d1 = new Date(dateStr);
-  const d2 = new Date(asOf);
-  const diff = d2.getTime() - d1.getTime();
-  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-}
-
-// Local serial number generator — replaces the missing store.generateSerialNumber
-function generateLocalSerial(prefix: string, count: number): string {
-  return `${prefix}${String(count + 1).padStart(5, "0")}`;
-}
-
-// ─── Main Component ────────────────────────────────────────────────────────────
 
 const InterestCalculation: React.FC = () => {
-  const { parties, companySettings } = useStore();
+  // Fix BUG-017: uses store hooks directly, not dexie-react-hooks
+  const { invoices, parties } = useStore();
 
-  const [asOfDate, setAsOfDate] = useState(todayISO());
-  const [interestRate, setInterestRate] = useState(18); // % per annum
-  const [minDaysOverdue, setMinDaysOverdue] = useState(30);
-  const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [generatingVoucher, setGeneratingVoucher] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
+  const [asAt,       setAsAt      ] = useState(today);
+  const [interestRate, setInterestRate] = useState<number>(18); // annual %
+  const [partyType,  setPartyType ] = useState<"customer" | "supplier" | "all">("customer");
+  const [minDays,    setMinDays   ] = useState<number>(30);
 
-  // Fix: use getDB() default import — not named { db }
-  const db = getDB();
+  const partyMap = useMemo(() => {
+    const m = new Map<string, string>();
+    (parties ?? []).forEach((p) => m.set(p.id, p.name));
+    return m;
+  }, [parties]);
 
-  const invoiceType = direction === "receivable" ? "sales-invoice" : "purchase-invoice";
-  const paymentType = direction === "receivable" ? "receipt" : "payment";
+  interface InterestRow {
+    partyId:    string;
+    partyName:  string;
+    invoiceNo:  string;
+    date:       string;
+    dueDate:    string;
+    outstanding: number;
+    daysOverdue: number;
+    interestAmt: number;
+  }
 
-  // Fix: useLiveQuery from "dexie-react-hooks" — correct package import
-  const invoices = useLiveQuery(
-    () => db.invoices.where("type").equals(invoiceType).toArray(),
-    [invoiceType],
-  );
+  const rows = useMemo<InterestRow[]>(() => {
+    const dailyRate = interestRate / 100 / 365;
 
-  const payments = useLiveQuery(
-    () => db.vouchers.where("type").equals(paymentType).toArray(),
-    [paymentType],
-  );
+    return (invoices ?? [])
+      .filter((inv) => {
+        if (inv.status !== "posted") return false;
+        const isCustomer = inv.type === "sales-invoice" || inv.type === "sales";
+        const isSupplier = inv.type === "purchase-invoice" || inv.type === "purchase";
+        if (partyType === "customer" && !isCustomer) return false;
+        if (partyType === "supplier" && !isSupplier) return false;
+        const d = (inv.date ?? "").split("T")[0];
+        if (d > asAt) return false;
+        const balance = Number(inv.balanceAmount ?? (Number(inv.grandTotal ?? 0) - Number(inv.paidAmount ?? 0)));
+        return balance > 0;
+      })
+      .map((inv) => {
+        const outstanding = Number(inv.grandTotal ?? 0) - Number(inv.paidAmount ?? 0);
+        const dueDate     = (inv.dueDate ?? inv.date ?? asAt).split("T")[0];
+        const daysOverdue = daysBetween(dueDate, asAt);
+        const interestAmt = daysOverdue >= minDays
+          ? outstanding * dailyRate * daysOverdue
+          : 0;
+        return {
+          partyId:    inv.partyId  ?? "",
+          partyName:  inv.partyName ?? partyMap.get(inv.partyId ?? "") ?? "Unknown",
+          invoiceNo:  inv.invoiceNo,
+          date:       (inv.date ?? "").split("T")[0],
+          dueDate,
+          outstanding,
+          daysOverdue,
+          interestAmt,
+        };
+      })
+      .filter((r) => r.daysOverdue >= minDays)
+      .sort((a, b) => b.interestAmt - a.interestAmt);
+  }, [invoices, asAt, interestRate, partyType, minDays, partyMap]);
 
-  // ── Compute interest rows ─────────────────────────────────────────────────
-  const interestRows = useMemo<InterestRow[]>(() => {
-    if (!invoices || !payments) return [];
+  const totalInterest    = useMemo(() => rows.reduce((s, r) => s + r.interestAmt, 0), [rows]);
+  const totalOutstanding = useMemo(() => rows.reduce((s, r) => s + r.outstanding, 0), [rows]);
 
-    const rows: InterestRow[] = [];
-
-    for (const inv of invoices as any[]) {
-      if (!inv || inv.status === "cancelled" || inv.status === "draft") continue;
-
-      const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
-      if (originalAmount <= 0) continue;
-
-      // Compute paid amount
-      let paidAmount = Number(inv.paidAmount ?? 0);
-      for (const pmt of payments as any[]) {
-        if (!pmt || pmt.partyId !== inv.partyId) continue;
-        for (const line of pmt.lines ?? []) {
-          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
-            paidAmount += Number(line.amount ?? 0);
-          }
-        }
-      }
-
-      const outstanding = originalAmount - paidAmount;
-      if (outstanding <= 0.005) continue;
-
-      // Days overdue from due date
-      const refDate = inv.dueDate ?? inv.date;
-      const daysOverdue = refDate ? daysDiff(refDate, asOfDate) : 0;
-
-      if (daysOverdue < minDaysOverdue) continue;
-
-      // Daily interest = (outstanding × annualRate%) / 365
-      const dailyRate = interestRate / 100 / 365;
-      const interestAmount = parseFloat((outstanding * dailyRate * daysOverdue).toFixed(2));
-
-      const partyId = inv.partyId ?? "unknown";
-      const partyName =
-        inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
-      const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
-
-      rows.push({
-        partyId,
-        partyName,
-        partyPan,
-        invoiceNo: inv.invoiceNo ?? inv.id,
-        invoiceDate: inv.date ?? "",
-        dueDate: inv.dueDate ?? "",
-        originalAmount,
-        outstandingAmount: parseFloat(outstanding.toFixed(2)),
-        daysOverdue,
-        interestRate,
-        interestAmount,
-        totalWithInterest: parseFloat((outstanding + interestAmount).toFixed(2)),
-      });
-    }
-
-    return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [invoices, payments, asOfDate, interestRate, minDaysOverdue, parties]);
-
-  // ── Filter ────────────────────────────────────────────────────────────────
-  const filteredRows = useMemo<InterestRow[]>(() => {
-    if (!searchTerm.trim()) return interestRows;
-    const q = searchTerm.toLowerCase();
-    return interestRows.filter(
-      (r) =>
-        r.partyName.toLowerCase().includes(q) ||
-        r.invoiceNo.toLowerCase().includes(q) ||
-        (r.partyPan ?? "").toLowerCase().includes(q),
-    );
-  }, [interestRows, searchTerm]);
-
-  // ── Totals ────────────────────────────────────────────────────────────────
-  const totals = useMemo(() => {
-    return {
-      outstanding: filteredRows.reduce((s, r) => s + r.outstandingAmount, 0),
-      interest: filteredRows.reduce((s, r) => s + r.interestAmount, 0),
-      total: filteredRows.reduce((s, r) => s + r.totalWithInterest, 0),
-    };
-  }, [filteredRows]);
-
-  // ── Export ────────────────────────────────────────────────────────────────
   const handleExport = () => {
-    try {
-      const companyName = companySettings?.name ?? "Company";
-      const headers = [
-        "Party",
-        "PAN",
-        "Invoice No.",
-        "Invoice Date",
-        "Due Date",
-        "Original Amt",
-        "Outstanding",
-        "Days Overdue",
-        "Rate (%)",
-        "Interest",
-        "Total with Interest",
-      ];
-      const rows = filteredRows.map((r) => [
-        r.partyName,
-        r.partyPan ?? "",
-        r.invoiceNo,
-        r.invoiceDate,
-        r.dueDate,
-        r.originalAmount,
-        r.outstandingAmount,
-        r.daysOverdue,
-        r.interestRate,
-        r.interestAmount,
-        r.totalWithInterest,
-      ]);
-
-      const wb = XLSX.utils.book_new();
-      const wsData = [
-        [companyName],
-        ["Interest Calculation Report"],
-        [`As of: ${asOfDate} | Rate: ${interestRate}% p.a. | Min Overdue: ${minDaysOverdue} days`],
-        [],
-        headers,
-        ...rows,
-        [],
-        ["TOTAL", "", "", "", "", "", totals.outstanding, "", "", totals.interest, totals.total],
-      ];
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, "Interest Calculation");
-      XLSX.writeFile(wb, `InterestCalc_${asOfDate}.xlsx`);
-      toast.success("Interest calculation exported.");
-    } catch {
-      toast.error("Export failed.");
-    }
+    const header = ["Party","Invoice No","Date","Due Date","Outstanding","Days Overdue","Interest"];
+    const data   = rows.map((r) => [r.partyName, r.invoiceNo, r.date, r.dueDate, r.outstanding, r.daysOverdue, r.interestAmt.toFixed(2)].map((c) => `"${c}"`).join(","));
+    const csv    = [header.join(","), ...data].join("\n");
+    const blob   = new Blob([csv], { type: "text/csv" });
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement("a");
+    a.href = url; a.download = `interest-calculation-${asAt}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Exported");
   };
 
-  // ── Generate interest vouchers ────────────────────────────────────────────
-  const handleGenerateVouchers = async () => {
-    if (filteredRows.length === 0) {
-      toast.error("No interest rows to generate vouchers for.");
-      return;
-    }
+  const inputCls = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  const td = "px-3 py-2.5 text-[12px] text-gray-700";
 
-    setGeneratingVoucher(true);
-    try {
-      // Fix: use local serial number generator instead of
-      // store.generateSerialNumber which does not exist on AppState
-      const existingCount = await db.vouchers.count();
-      const voucherNo = generateLocalSerial("INT-", existingCount);
-
-      const ts = new Date().toISOString();
-      const totalInterest = totals.interest;
-
-      // Find interest income account
-      const allAccounts = await db.accounts.toArray();
-      const interestAccount = allAccounts.find(
-        (a: any) => (a.name ?? "").toLowerCase().includes("interest") && a.type === "income",
-      );
-
-      const voucher: any = {
-        id: crypto.randomUUID(),
-        voucherNo,
-        date: asOfDate,
-        type: "journal",
-        status: "posted",
-        narration: `Interest charged @ ${interestRate}% p.a. as of ${asOfDate}`,
-        totalDebit: totalInterest,
-        totalCredit: totalInterest,
-        grandTotal: totalInterest,
-        lines: filteredRows.flatMap((r) => [
-          {
-            accountId: r.partyId,
-            accountName: r.partyName,
-            debit: r.interestAmount,
-            credit: 0,
-            narration: `Interest on ${r.invoiceNo} (${r.daysOverdue} days)`,
-          },
-          {
-            accountId: interestAccount?.id ?? "",
-            accountName: interestAccount?.name ?? "Interest Income",
-            debit: 0,
-            credit: r.interestAmount,
-            narration: `Interest income from ${r.partyName}`,
-          },
-        ]),
-        createdAt: ts,
-        updatedAt: ts,
-      };
-
-      await db.vouchers.add(voucher);
-      toast.success(`Interest voucher ${voucherNo} created for Rs. ${money(totalInterest)}.`);
-    } catch (err: any) {
-      toast.error(err?.message ?? "Failed to generate vouchers.");
-    } finally {
-      setGeneratingVoucher(false);
-    }
-  };
-
-  const isLoading = !invoices || !payments;
-
-  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Calculator className="h-4 w-4 text-[#1557b0]" />
-            Interest Calculation
-          </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Calculate overdue interest on outstanding{" "}
-            {direction === "receivable" ? "receivables" : "payables"}
-          </p>
+    <ReportShell
+      title="Interest Calculation"
+      subtitle={`Overdue interest as at ${ADToBSLong(asAt)}`}
+      actions={
+        <button onClick={handleExport} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+          <Download className="h-4 w-4" /> Export
+        </button>
+      }
+    >
+      <div className="no-print px-4 py-3 bg-white border-b border-gray-200 flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2">
+          <label className="text-[11px] font-medium text-gray-600">As at</label>
+          <input type="date" value={asAt} onChange={(e) => setAsAt(e.target.value)} className={inputCls} />
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={filteredRows.length === 0}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export
-          </button>
-          <button
-            type="button"
-            onClick={handleGenerateVouchers}
-            disabled={filteredRows.length === 0 || generatingVoucher}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            {generatingVoucher ? (
-              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+          <label className="text-[11px] font-medium text-gray-600">Interest Rate %/yr</label>
+          <input type="number" value={interestRate} min={0} max={100} step={0.5}
+            onChange={(e) => setInterestRate(Number(e.target.value))} className={`${inputCls} w-20`} />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-[11px] font-medium text-gray-600">Min Overdue Days</label>
+          <input type="number" value={minDays} min={0}
+            onChange={(e) => setMinDays(Number(e.target.value))} className={`${inputCls} w-20`} />
+        </div>
+        <select value={partyType} onChange={(e) => setPartyType(e.target.value as typeof partyType)} className={inputCls}>
+          <option value="customer">Customers</option>
+          <option value="supplier">Suppliers</option>
+          <option value="all">All</option>
+        </select>
+        <div className="ml-auto flex gap-4 text-[12px]">
+          <span className="text-gray-600">Outstanding: <strong>{fmtAmt(totalOutstanding)}</strong></span>
+          <span className="text-red-700 font-semibold">Interest Due: {fmtAmt(totalInterest)}</span>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[800px]">
+          <thead>
+            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <th className={th}>Party</th>
+              <th className={th}>Invoice No</th>
+              <th className={th}>Date</th>
+              <th className={th}>Due Date</th>
+              <th className={`${th} text-right`}>Outstanding</th>
+              <th className={`${th} text-right`}>Days Overdue</th>
+              <th className={`${th} text-right`}>Interest (@{interestRate}% p.a.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr><td colSpan={7} className="px-3 py-8 text-center text-[12px] text-gray-500">No overdue invoices found.</td></tr>
             ) : (
-              <TrendingUp className="h-3.5 w-3.5" />
-            )}
-            Post Vouchers
-          </button>
-        </div>
-      </div>
-
-      {/* Config */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
-        <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Interest Parameters
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">Direction</label>
-            <select
-              value={direction}
-              onChange={(e) => setDirection(e.target.value as "receivable" | "payable")}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-            >
-              <option value="receivable">Receivables (Sales)</option>
-              <option value="payable">Payables (Purchase)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">As of Date</label>
-            <input
-              type="date"
-              value={asOfDate}
-              onChange={(e) => setAsOfDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-            />
-          </div>
-
-          <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-              Annual Interest Rate (%)
-            </label>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.1}
-              value={interestRate}
-              onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
-            />
-          </div>
-
-          <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
-              Min. Days Overdue
-            </label>
-            <input
-              type="number"
-              min={0}
-              step={1}
-              value={minDaysOverdue}
-              onChange={(e) => setMinDaysOverdue(parseInt(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
-            />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search party, invoice…"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-xs"
-          />
-        </div>
-      </div>
-
-      {/* Summary */}
-      {!isLoading && filteredRows.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-              Outstanding Amount
-            </p>
-            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
-              {money(totals.outstanding)}
-            </p>
-          </div>
-          <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-              Interest @ {interestRate}% p.a.
-            </p>
-            <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
-              {money(totals.interest)}
-            </p>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-              Total with Interest
-            </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
-              {money(totals.total)}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
-            <RefreshCw className="h-5 w-5 animate-spin" />
-            <span className="text-[12px]">Calculating interest…</span>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px]">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Party
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Invoice No.
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                    Due Date
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Outstanding
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                    Days
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Interest
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
-                    Total
-                  </th>
+              rows.map((r, i) => (
+                <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className={`${td} font-medium`}>{r.partyName}</td>
+                  <td className={td}>{r.invoiceNo}</td>
+                  <td className={td}>{r.date}</td>
+                  <td className={td}>{r.dueDate}</td>
+                  <td className={`${td} text-right font-mono`}>{fmtAmt(r.outstanding)}</td>
+                  <td className={`${td} text-right font-mono text-amber-700`}>{r.daysOverdue}d</td>
+                  <td className={`${td} text-right font-mono text-red-700 font-bold`}>{fmtAmt(r.interestAmt)}</td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredRows.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-3 py-12 text-center text-[12px] text-gray-400">
-                      No overdue invoices found for the selected criteria.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredRows.map((row: InterestRow, idx: number) => (
-                    <tr key={`${row.invoiceNo}-${idx}`} className="hover:bg-gray-50">
-                      <td className="px-3 py-2.5">
-                        <div className="text-[12px] font-semibold text-gray-800">
-                          {row.partyName}
-                        </div>
-                        {row.partyPan && (
-                          <div className="text-[10px] text-gray-500 font-mono">
-                            PAN: {row.partyPan}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
-                        {row.invoiceNo}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {row.dueDate || "—"}
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                        {money(row.outstandingAmount)}
-                      </td>
-                      <td className="px-3 py-2.5 text-right text-[12px]">
-                        <span
-                          className={`font-semibold ${
-                            row.daysOverdue > 90
-                              ? "text-red-700"
-                              : row.daysOverdue > 60
-                                ? "text-red-500"
-                                : row.daysOverdue > 30
-                                  ? "text-orange-600"
-                                  : "text-amber-600"
-                          }`}
-                        >
-                          {row.daysOverdue}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-600">
-                        {money(row.interestAmount)}
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                        {money(row.totalWithInterest)}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-
-              {filteredRows.length > 0 && (
-                <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                      Total ({filteredRows.length} invoices)
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
-                      {money(totals.outstanding)}
-                    </td>
-                    <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-red-600">
-                      {money(totals.interest)}
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                      {money(totals.total)}
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
-            </table>
-          </div>
-        )}
+              ))
+            )}
+          </tbody>
+          {rows.length > 0 && (
+            <tfoot>
+              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+                <td colSpan={4} className="px-3 py-2.5 text-[12px] text-gray-700">Total</td>
+                <td className="px-3 py-2.5 text-right font-mono text-[12px]">{fmtAmt(totalOutstanding)}</td>
+                <td />
+                <td className="px-3 py-2.5 text-right font-mono text-[12px] text-red-700">{fmtAmt(totalInterest)}</td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
       </div>
-    </div>
+    </ReportShell>
   );
 };
 

@@ -1,353 +1,187 @@
-// src/hooks/useKeyboardShortcuts.ts
-/**
- * Global keyboard shortcuts (app-level navigation).
- *
- * IMPORTANT — Tally F-key alignment:
- *   F4  Contra  |  F5  Payment  |  F6  Receipt  |  F7  Journal
- *   F8  Sales   |  F9  Purchase
- *
- * The previous F5 = "List View" assignment conflicted with Tally's F5 = Payment.
- * List view is now accessible via Alt+L or the sidebar.
- */
-import { useEffect, useState, useCallback } from "react";
-import { useStore } from "../store/useStore";
+// ─── Global Keyboard Shortcut Manager ─────────────────────────────────────────
+// Fixes BUG-035, BUG-036, BUG-038, BUG-039, BUG-040, BUG-042, BUG-043
+
+import { useEffect, useCallback, useRef } from "react";
 import { getDB } from "../lib/db";
 
-export interface Shortcut {
-  id: number;
+export interface ShortcutBinding {
   key_combo: string;
+  action: string;
   label: string;
-  action_type: string;
-  action_value: string;
-  category: string;
-  is_active: boolean;
+  page?: string;
 }
 
-// ─── Default shortcuts ────────────────────────────────────────────────────────
-// NOTE: F4–F9 are intentionally absent here; they are handled inside
-//       useTallyKeyboard (voucher-entry screens) and TallyVoucherPage.
-//       Do NOT reassign F4–F9 in this list.
-const DEFAULT_SHORTCUTS: Shortcut[] = [
-  // General
-  {
-    id: 1,
-    key_combo: "Ctrl+N",
-    label: "New Journal Voucher",
-    action_type: "navigate",
-    action_value: "journal",
-    category: "Transactions",
-    is_active: true,
-  },
-  {
-    id: 2,
-    key_combo: "Ctrl+I",
-    label: "New Sales Invoice",
-    action_type: "navigate",
-    action_value: "billing",
-    category: "Transactions",
-    is_active: true,
-  },
-  {
-    id: 3,
-    key_combo: "F2",
-    label: "Save (voucher ctx)",
-    action_type: "save",
-    action_value: "save",
-    category: "General",
-    is_active: true,
-  },
-  {
-    id: 4,
-    key_combo: "Alt+L",
-    label: "Voucher Register",
-    action_type: "navigate",
-    action_value: "vouchers",
-    category: "General",
-    is_active: true,
-  },
-  {
-    id: 5,
-    key_combo: "?",
-    label: "Shortcuts Panel",
-    action_type: "help",
-    action_value: "shortcuts",
-    category: "General",
-    is_active: true,
-  },
-  // Reports
-  {
-    id: 6,
-    key_combo: "Ctrl+B",
-    label: "Balance Sheet",
-    action_type: "report",
-    action_value: "balance-sheet",
-    category: "Reports",
-    is_active: true,
-  },
-  {
-    id: 7,
-    key_combo: "Ctrl+G",
-    label: "Trial Balance",
-    action_type: "report",
-    action_value: "trial-balance",
-    category: "Reports",
-    is_active: true,
-  },
-  // Masters
-  {
-    id: 8,
-    key_combo: "Ctrl+P",
-    label: "Parties Directory",
-    action_type: "navigate",
-    action_value: "parties",
-    category: "Masters",
-    is_active: true,
-  },
-  {
-    id: 9,
-    key_combo: "Ctrl+A",
-    label: "Chart of Accounts",
-    action_type: "navigate",
-    action_value: "accounts",
-    category: "Masters",
-    is_active: true,
-  },
-  {
-    id: 10,
-    key_combo: "Ctrl+D",
-    label: "Dashboard",
-    action_type: "navigate",
-    action_value: "dashboard",
-    category: "General",
-    is_active: true,
-  },
-  // Tally voucher pages (F4-F9 handled in useTallyKeyboard, listed here for help panel display only)
-  {
-    id: 11,
-    key_combo: "F4",
-    label: "Contra Voucher",
-    action_type: "navigate",
-    action_value: "contra",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 12,
-    key_combo: "F5",
-    label: "Payment Voucher",
-    action_type: "navigate",
-    action_value: "payment",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 13,
-    key_combo: "F6",
-    label: "Receipt Voucher",
-    action_type: "navigate",
-    action_value: "receipt",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 14,
-    key_combo: "F7",
-    label: "Journal Voucher",
-    action_type: "navigate",
-    action_value: "journal",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 15,
-    key_combo: "F8",
-    label: "Sales Voucher",
-    action_type: "navigate",
-    action_value: "sales",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 16,
-    key_combo: "F9",
-    label: "Purchase Voucher",
-    action_type: "navigate",
-    action_value: "purchase",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 17,
-    key_combo: "Alt+V",
-    label: "Voucher Entry Hub",
-    action_type: "navigate",
-    action_value: "voucher-hub",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 18,
-    key_combo: "Alt+F8",
-    label: "Sales Voucher (Alt+F8)",
-    action_type: "navigate",
-    action_value: "sales-voucher",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 19,
-    key_combo: "Alt+F9",
-    label: "Purchase Voucher (Alt+F9)",
-    action_type: "navigate",
-    action_value: "purchase-voucher",
-    category: "Vouchers",
-    is_active: true,
-  },
-  {
-    id: 20,
-    key_combo: "Ctrl+F10",
-    label: "Memorandum Voucher",
-    action_type: "navigate",
-    action_value: "memorandum-voucher",
-    category: "Vouchers",
-    is_active: true,
-  },
-];
-
-let _shortcuts: Shortcut[] = DEFAULT_SHORTCUTS;
-let _listeners: Array<(s: Shortcut[]) => void> = [];
-
-function notifyListeners() {
-  _listeners.forEach((fn) => fn([..._shortcuts]));
+/**
+ * Normalize a keyboard combo to canonical form.
+ * Fixes BUG-038: normalization is consistent.
+ * e.g. "ctrl+b" → "Ctrl+B", "F2" → "F2", "escape" → "Escape"
+ */
+export function normalizeCombo(combo: string): string {
+  const parts = combo
+    .replace(/\s/g, "")
+    .split("+")
+    .map((p) => {
+      const l = p.toLowerCase();
+      if (l === "ctrl" || l === "control") return "Ctrl";
+      if (l === "alt")   return "Alt";
+      if (l === "shift") return "Shift";
+      if (l === "meta" || l === "cmd" || l === "win") return "Meta";
+      // Function keys
+      if (/^f\d{1,2}$/i.test(l)) return l.charAt(0).toUpperCase() + l.slice(1).toLowerCase().replace("f", "F").replace(l[0], l[0].toUpperCase());
+      if (l === "escape") return "Escape";
+      if (l === "enter")  return "Enter";
+      if (l === "tab")    return "Tab";
+      if (l === "delete" || l === "del") return "Delete";
+      if (l === "backspace") return "Backspace";
+      return p.toUpperCase();
+    });
+  return parts.join("+");
 }
 
-export function useKeyboardShortcuts() {
-  const { setCurrentPage } = useStore();
-  const [rawShortcuts, setRawShortcuts] = useState<Shortcut[]>(_shortcuts);
-  const [showHelp, setShowHelp] = useState(false);
+/**
+ * Build combo string from a KeyboardEvent.
+ */
+export function eventToCombo(e: KeyboardEvent): string {
+  const parts: string[] = [];
+  if (e.ctrlKey  || e.metaKey) parts.push("Ctrl");
+  if (e.altKey)   parts.push("Alt");
+  if (e.shiftKey) parts.push("Shift");
 
-  // Load persisted shortcuts from IndexedDB
+  const key = e.key;
+  // Don't add modifier keys themselves as the final key
+  if (!["Control", "Alt", "Shift", "Meta"].includes(key)) {
+    if (key === "Escape") parts.push("Escape");
+    else if (key === "Enter") parts.push("Enter");
+    else if (key === "Tab")   parts.push("Tab");
+    else if (key === "Delete") parts.push("Delete");
+    else if (key === "Backspace") parts.push("Backspace");
+    else if (/^F\d{1,2}$/.test(key)) parts.push(key); // F1-F12
+    else parts.push(key.toUpperCase());
+  }
+
+  return parts.join("+");
+}
+
+function isTypingElement(el: Element | null): boolean {
+  if (!el) return false;
+  const tag = el.tagName.toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return true;
+  if ((el as HTMLElement).isContentEditable) return true;
+  return false;
+}
+
+export interface UseKeyboardShortcutsOptions {
+  onAction: (action: string, combo: string) => void;
+  currentPage?: string;
+  disabled?: boolean;
+}
+
+/**
+ * Global keyboard shortcut hook.
+ * Loads shortcuts from IndexedDB (with fallback to defaults).
+ * Fixes BUG-035, BUG-036, BUG-039, BUG-040.
+ */
+export function useKeyboardShortcuts({
+  onAction,
+  currentPage = "*",
+  disabled = false,
+}: UseKeyboardShortcutsOptions): void {
+  const shortcutsRef = useRef<ShortcutBinding[]>([]);
+  const onActionRef  = useRef(onAction);
+  onActionRef.current = onAction;
+
+  // Load shortcuts from DB once
   useEffect(() => {
-    const db = getDB();
-    db.shortcuts
-      .toArray()
-      .then((dbShortcuts) => {
-        if (dbShortcuts.length > 0) {
-          _shortcuts = dbShortcuts as Shortcut[];
-          setRawShortcuts([..._shortcuts]);
-          notifyListeners();
+    let mounted = true;
+    const loadShortcuts = async () => {
+      try {
+        const db = getDB();
+        const dbShortcuts = await db.shortcuts.toArray();
+        if (mounted && dbShortcuts.length > 0) {
+          shortcutsRef.current = dbShortcuts.map((s) => ({
+            key_combo: normalizeCombo(s.key_combo),
+            action:    s.action,
+            label:     s.label,
+            page:      s.page,
+          }));
         }
-      })
-      .catch(() => {
-        /* ignore */
-      });
-  }, []);
-
-  useEffect(() => {
-    const listener = (s: Shortcut[]) => setRawShortcuts(s);
-    _listeners.push(listener);
-    return () => {
-      _listeners = _listeners.filter((l) => l !== listener);
+      } catch {
+        // Use defaults silently
+      }
     };
+    loadShortcuts();
+    return () => { mounted = false; };
   }, []);
-
-  const setShortcuts = useCallback((updater: ((prev: Shortcut[]) => Shortcut[]) | Shortcut[]) => {
-    _shortcuts = typeof updater === "function" ? updater(_shortcuts) : updater;
-    notifyListeners();
-  }, []);
-
-  // action_value → page route
-  const ACTION_VALUE_TO_PAGE: Record<string, string> = {
-    journal: "journal",
-    billing: "billing",
-    vouchers: "vouchers",
-    dashboard: "dashboard",
-    accounts: "accounts",
-    parties: "parties",
-    items: "items",
-    payment: "payment",
-    receipt: "receipt",
-    contra: "contra",
-    sales: "sales", // ← new
-    purchase: "purchase", // ← new
-    "balance-sheet": "balance-sheet",
-    "trial-balance": "trial-balance",
-    settings: "settings",
-    "day-book": "day-book",
-    "vat-reports": "vat-reports",
-    "stock-summary": "stock-summary",
-    ledger: "ledger",
-    "voucher-hub": "voucher-hub",
-    "sales-voucher": "sales-voucher",
-    "purchase-voucher": "purchase-voucher",
-    "memorandum-voucher": "memorandum-voucher",
-  };
 
   useEffect(() => {
+    if (disabled) return;
+
     const handler = (e: KeyboardEvent) => {
-      // Help panel toggle
-      if (e.key === "?" && !e.ctrlKey && !e.metaKey) {
-        const active = document.activeElement;
-        if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
-        e.preventDefault();
-        setShowHelp((h) => !h);
-        return;
+      const target = e.target as Element;
+      const combo  = eventToCombo(e);
+      const typing = isTypingElement(target);
+
+      // F-keys and Ctrl combos work even in inputs (except Ctrl+A, Ctrl+C etc.)
+      const isFKey    = /^F\d{1,2}$/.test(combo);
+      const isCtrl    = combo.startsWith("Ctrl+");
+      const isEscape  = combo === "Escape";
+
+      // In typing elements, only allow: F-keys, Escape, Ctrl combos
+      if (typing && !isFKey && !isCtrl && !isEscape) return;
+
+      // Find matching shortcut
+      const bindings = shortcutsRef.current;
+      let found = bindings.find((s) => {
+        const normalized = normalizeCombo(s.key_combo);
+        if (normalized !== combo) return false;
+        if (!s.page || s.page === "*") return true;
+        return s.page === currentPage;
+      });
+
+      // Fallback to hardcoded defaults if DB has no matching entry
+      if (!found) {
+        found = getDefaultShortcut(combo, currentPage);
       }
 
-      if (e.key === "F11" && !e.ctrlKey && !e.altKey && !e.shiftKey) {
-        e.preventDefault();
-        const target = e.target as HTMLElement;
-        const tag = target?.tagName?.toLowerCase();
-        if (tag !== "input" && tag !== "textarea" && tag !== "select") {
-          setCurrentPage("f11-company-features");
+      if (found) {
+        // Don't prevent default for typing shortcuts in inputs unless it's a form submit shortcut
+        if (!typing || isFKey || isCtrl) {
+          e.preventDefault();
         }
-        return;
-      }
-
-      // F4–F9: only fire when NOT inside a tally-shell (they handle themselves)
-      const inTallyShell = !!document.querySelector(".tally-shell");
-      const fKey = e.key.match(/^F([4-9])$/)?.[0];
-      if (fKey && inTallyShell) return; // let useTallyKeyboard handle it
-
-      const active = document.activeElement;
-      if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
-
-      for (const sc of _shortcuts) {
-        if (!sc.is_active) continue;
-
-        const combo = sc.key_combo.toLowerCase();
-        const pressed = [
-          e.ctrlKey ? "ctrl+" : "",
-          e.metaKey ? "meta+" : "",
-          e.altKey ? "alt+" : "",
-          e.shiftKey && combo.includes("shift+") ? "shift+" : "",
-          e.key.toLowerCase(),
-        ].join("");
-
-        if (pressed !== combo && e.key.toLowerCase() !== combo) continue;
-
-        e.preventDefault();
-
-        if (sc.action_type === "save" || sc.action_type === "search") break;
-        if (sc.action_type === "help") {
-          setShowHelp((h) => !h);
-        } else if (
-          sc.action_type === "navigate" ||
-          sc.action_type === "report" ||
-          sc.action_type === "modal"
-        ) {
-          const page =
-            ACTION_VALUE_TO_PAGE[sc.action_value] ||
-            ACTION_VALUE_TO_PAGE[sc.action_value.replace(/^\//, "")];
-          if (page) setCurrentPage(page);
-        }
-        break;
+        onActionRef.current(found.action, combo);
       }
     };
 
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [setCurrentPage]);
+    window.addEventListener("keydown", handler, { capture: true });
+    return () => window.removeEventListener("keydown", handler, { capture: true });
+  }, [disabled, currentPage]);
+}
 
-  return { rawShortcuts, setShortcuts, showHelp, setShowHelp };
+/**
+ * Hardcoded default shortcuts (fallback when DB is empty).
+ * Fixes BUG-039: ensures shortcuts work even before DB is seeded.
+ */
+function getDefaultShortcut(combo: string, page: string): ShortcutBinding | undefined {
+  const defaults: ShortcutBinding[] = [
+    { key_combo: "F2",      action: "save",          label: "Save",          page: "*"       },
+    { key_combo: "F4",      action: "narration",     label: "Narration",     page: "*"       },
+    { key_combo: "F5",      action: "refresh",       label: "Refresh",       page: "*"       },
+    { key_combo: "F6",      action: "type",          label: "Type/Mode",     page: "*"       },
+    { key_combo: "F9",      action: "delete-row",    label: "Delete Row",    page: "*"       },
+    { key_combo: "F12",     action: "config",        label: "Config",        page: "*"       },
+    { key_combo: "Escape",  action: "cancel",        label: "Cancel",        page: "*"       },
+    { key_combo: "Ctrl+B",  action: "balance-sheet", label: "Balance Sheet", page: "*"       },
+    { key_combo: "Ctrl+T",  action: "trial-balance", label: "Trial Balance", page: "*"       },
+    { key_combo: "Ctrl+L",  action: "ledger",        label: "Ledger",        page: "*"       },
+    { key_combo: "Ctrl+G",  action: "vat-reports",   label: "VAT Reports",   page: "*"       },
+    { key_combo: "Ctrl+P",  action: "print",         label: "Print",         page: "*"       },
+    { key_combo: "Ctrl+E",  action: "export",        label: "Export",        page: "*"       },
+    { key_combo: "Ctrl+N",  action: "new",           label: "New",           page: "*"       },
+  ];
+
+  return defaults.find((d) => {
+    if (d.key_combo !== combo) return false;
+    if (!d.page || d.page === "*") return true;
+    return d.page === page;
+  });
 }

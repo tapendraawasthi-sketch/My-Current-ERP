@@ -41,6 +41,7 @@ interface InvoiceLineItemProps {
   showWarehouse?: boolean;
   type: "sales" | "purchase";
   readOnly?: boolean;
+  onFocus?: () => void;
 }
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
@@ -49,9 +50,11 @@ const cellInput =
   "w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none";
 
 const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
-  ({ line, lineNo, onUpdate, onDelete, onTabNext, showWarehouse, type, readOnly }) => {
+  ({ line, lineNo, onUpdate, onDelete, onTabNext, showWarehouse, type, readOnly, onFocus }) => {
     const { items, warehouses } = useStore();
     const itemList = useMemo(() => items.filter((i) => i.isActive), [items]);
+    const mountedRef = React.useRef(true);
+    React.useEffect(() => () => { mountedRef.current = false; }, []);
 
     const taxable = useMemo(
       () =>
@@ -75,14 +78,20 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           onUpdate({ itemId: "", itemName: "", itemCode: "", unit: "", hsnCode: "" });
           return;
         }
-        const itemRate = type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
+        const isPurchase = type === "purchase";
+        const itemRate = isPurchase
+          ? Number(it.purchaseRate ?? (it as any).costRate ?? (it as any).rate ?? 0)
+          : Number(it.salesRate ?? (it as any).sellingPrice ?? (it as any).price ?? (it as any).rate ?? 0);
+
         if (itemRate === 0) {
           // We still add the item but notify user
           setTimeout(() => {
-            const event = new CustomEvent("sutra-warn", { 
-              detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.` 
-            });
-            window.dispatchEvent(event);
+            if (mountedRef.current) {
+              const event = new CustomEvent("sutra-warn", { 
+                detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.` 
+              });
+              window.dispatchEvent(event);
+            }
           }, 0);
         }
         onUpdate({
@@ -114,7 +123,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
     );
 
     return (
-      <tr className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50" onKeyDown={onKey}>
+      <tr className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50" onKeyDown={onKey} onFocusCapture={onFocus}>
         <td className="px-2 py-1 text-center text-[11px] font-bold text-[#000000] w-8">{lineNo}</td>
 
         {/* Item */}

@@ -1,56 +1,21 @@
-import { computeLedgerTotals } from "./reportingHierarchy";
+// ─── Nepal Financial Statements Engine ────────────────────────────────────────
+// Generates Balance Sheet, P&L, Income & Expenditure per Nepal accounting standards.
+// Fixes BUG-011: string was passed where object expected.
+// Fixes BUG-012: function called with wrong number of args.
 
-export type AccountType = "asset" | "liability" | "equity" | "income" | "expense";
-export type AccountLevel = "group" | "subgroup" | "ledger";
+import type { DBAccount, DBVoucher, DBInvoice, DBFiscalYear } from "./db";
+import { ADToBSLong } from "./nepaliDate";
 
-export interface DBAccount {
-  id: string;
-  code: string;
-  name: string;
-  nameNepali?: string;
-  type: AccountType;
-  level: AccountLevel;
-  parentId?: string;
-  isGroup: boolean;
-  isActive: boolean;
-  balance?: number;
-  openingBalance?: number;
-  openingBalanceDr?: number;
-  openingBalanceCr?: number;
-  isSystemAccount?: boolean;
-}
-
-export interface DBVoucherLine {
-  accountId: string;
-  debit: number;
-  credit: number;
-}
-
-export interface DBVoucher {
-  id: string;
-  voucherNo?: string;
-  date: string;
-  dateNepali?: string;
-  status?: string;
-  type?: string;
-  lines: DBVoucherLine[];
-}
-
-export type NepalReportSection =
-  | "equity"
-  | "non-current-liability"
-  | "current-liability"
-  | "fixed-asset"
-  | "non-current-asset"
-  | "current-asset"
-  | "revenue"
-  | "cogs"
-  | "indirect-expense"
-  | "other-income";
-
-export interface NepalGroupMapping {
-  section: NepalReportSection;
-  sortOrder: number;
+export interface StatementOptions {
+  startDate?: string;       // AD ISO string — Fix BUG-011: was incorrectly receiving bare string
+  endDate?: string;         // AD ISO string
+  includeOpening?: boolean;
+  includeZeroBalance?: boolean;
+  comparativePeriod?: boolean;
+  prevStartDate?: string;
+  prevEndDate?: string;
+  format?: "standard" | "schedule-vi" | "ifrs" | "non-corporate";
+  roundToThousands?: boolean;
 }
 
 export interface NepalStatementLine {
@@ -59,642 +24,408 @@ export interface NepalStatementLine {
   labelNepali?: string;
   currentYear: number;
   previousYear: number;
+  indent: number;
   isTotal?: boolean;
   isGrandTotal?: boolean;
   isDeduction?: boolean;
-  indent?: number;
+  isSeparator?: boolean;
   children?: NepalStatementLine[];
+  accountIds?: string[];
+  note?: number;
 }
 
-export interface BalanceSheetData {
-  equity: NepalStatementLine[];
-  nonCurrentLiabilities: NepalStatementLine[];
-  currentLiabilities: NepalStatementLine[];
-  nonCurrentAssets: NepalStatementLine[];
-  fixedAssets: NepalStatementLine[];
-  currentAssets: NepalStatementLine[];
+// ─── Account Group Mapping ─────────────────────────────────────────────────────
 
-  totalEquity: number;
-  totalNonCurrentLiabilities: number;
-  totalCurrentLiabilities: number;
-  totalEquityAndLiabilities: number;
+const GROUP_PATTERNS = {
+  // Assets
+  fixedAssets:        /fixed.?asset|property|plant|equipment|furniture|vehicle|land|building|machinery/i,
+  capitalWIP:         /capital.?wip|work.?in.?progress|cwip/i,
+  investments:        /investment|mutual.?fund|shares?|securities?/i,
+  longTermLoans:      /long.?term.?loan|term.?loan.?given/i,
+  currentAssets:      /current.?asset|trade.?receivable|debtor|sundry.?debtor/i,
+  cashAndBank:        /cash|bank(?!.?loan)|petty.?cash/i,
+  inventories:        /stock|inventor|raw.?material|finished.?good|wip/i,
+  shortTermLoans:     /short.?term.?loan|loan.?given/i,
+  otherCurrentAssets: /advance|prepaid|other.?current/i,
+  // Liabilities
+  shareCapital:       /share.?capital|equity.?share|preference.?share|paid.?up.?capital/i,
+  reserves:           /reserve|surplus|retained|general.?reserve|profit.?reserve/i,
+  longTermBorrowings: /long.?term.?borrow|term.?loan.?taken|debenture/i,
+  shortTermBorrowings:/short.?term.?borrow|overdraft|cash.?credit|working.?capital.?loan/i,
+  tradePayables:      /creditor|sundry.?creditor|trade.?payable|accounts.?payable/i,
+  otherCurrentLiab:   /other.?current.?liab|advance.?received|short.?term.?provision/i,
+  provisions:         /provision|taxation|audit.?fee|gratuity.?provision/i,
+  // P&L
+  revenue:            /sales|revenue|income|turnover/i,
+  otherIncome:        /other.?income|interest.?income|dividend|rent.?income/i,
+  cogs:               /purchase|cost.?of.?good|cogs|direct.?cost/i,
+  directExpenses:     /direct.?expense|wage|labour|freight.?inward/i,
+  adminExpenses:      /admin|office|salary|electricity|rent.?expense|telephone|stationery/i,
+  financialCosts:     /interest.?expense|bank.?charge|finance.?cost/i,
+  depreciation:       /depreciation|amortization/i,
+  otherExpenses:      /other.?expense|miscellaneous/i,
+};
 
-  totalNonCurrentAssets: number;
-  totalFixedAssets: number;
-  totalCurrentAssets: number;
-  totalAssets: number;
-
-  difference: number;
+function matchGroup(account: DBAccount, patterns: RegExp[]): boolean {
+  const text = `${account.name} ${account.group || ""} ${account.subGroup || ""} ${account.type || ""}`;
+  return patterns.some((p) => p.test(text));
 }
 
-export interface ProfitLossData {
-  revenue: NepalStatementLine[];
-  otherIncome: NepalStatementLine[];
-  cogs: NepalStatementLine[];
-  indirectExpenses: NepalStatementLine[];
-  taxExpenses: NepalStatementLine[];
+// ─── Balance Computation ───────────────────────────────────────────────────────
 
-  netSales: number;
-  totalOtherIncome: number;
-  totalIncome: number;
-  costOfGoodsSold: number;
-  totalIndirectExpenses: number;
-  totalExpenses: number;
-  profitBeforeTax: number;
-  incomeTaxProvision: number;
-  netProfitAfterTax: number;
+function computeAccountBalances(
+  accounts: DBAccount[],
+  vouchers: DBVoucher[],
+  options: StatementOptions,   // Fix BUG-011: was receiving bare string
+): Map<string, { current: number; previous: number }> {
+  const { startDate, endDate, prevStartDate, prevEndDate } = options;
+
+  const balanceMap = new Map<string, { current: number; previous: number }>();
+
+  for (const acc of accounts) {
+    balanceMap.set(acc.id, { current: 0, previous: 0 });
+  }
+
+  // Opening balances
+  if (options.includeOpening) {
+    for (const acc of accounts) {
+      const entry = balanceMap.get(acc.id)!;
+      entry.current += Number(acc.openingBalance ?? 0);
+      entry.previous += Number(acc.openingBalance ?? 0);
+    }
+  }
+
+  // Apply voucher lines
+  for (const v of vouchers) {
+    if (v.status !== "posted") continue;
+    const vDate = v.date?.split("T")[0] ?? "";
+
+    // Current period
+    const inCurrent =
+      (!startDate || vDate >= startDate) && (!endDate || vDate <= endDate);
+    // Previous period
+    const inPrevious =
+      prevStartDate && prevEndDate
+        ? vDate >= prevStartDate && vDate <= prevEndDate
+        : false;
+
+    for (const line of v.lines ?? []) {
+      if (!line.accountId) continue;
+      if (!balanceMap.has(line.accountId)) {
+        balanceMap.set(line.accountId, { current: 0, previous: 0 });
+      }
+      const entry = balanceMap.get(line.accountId)!;
+      const net = Number(line.debit ?? 0) - Number(line.credit ?? 0);
+
+      if (inCurrent) entry.current += net;
+      if (inPrevious) entry.previous += net;
+    }
+  }
+
+  return balanceMap;
 }
 
-function normalize(text: string): string {
-  return (text || "")
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/[-_/]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+// ─── Sum by group pattern ──────────────────────────────────────────────────────
+
+function sumGroup(
+  accounts: DBAccount[],
+  balanceMap: Map<string, { current: number; previous: number }>,
+  patterns: RegExp[],
+  excludePatterns: RegExp[] = [],
+): { current: number; previous: number; accountIds: string[] } {
+  let current = 0;
+  let previous = 0;
+  const accountIds: string[] = [];
+
+  for (const acc of accounts) {
+    if (!matchGroup(acc, patterns)) continue;
+    if (excludePatterns.length && matchGroup(acc, excludePatterns)) continue;
+    const bal = balanceMap.get(acc.id);
+    if (!bal) continue;
+    current += bal.current;
+    previous += bal.previous;
+    accountIds.push(acc.id);
+  }
+
+  return { current, previous, accountIds };
 }
+
+// ─── Balance Sheet Generator ───────────────────────────────────────────────────
 
 /**
- * Maps your NAS-standard account group names to Nepal Companies Act / NAS vertical report sections.
+ * Generate Nepal-format Balance Sheet.
+ * Fixes BUG-011: now receives StatementOptions object (not bare string).
+ * Fixes BUG-012: takes exactly 3 parameters.
  */
-export function mapGroupToNepalFormat(groupName: string): NepalGroupMapping {
-  const g = normalize(groupName);
-
-  // =========================
-  // EQUITY
-  // =========================
-  if (
-    g.includes("equity") ||
-    g.includes("capital account") ||
-    g.includes("owner capital") ||
-    g.includes("partner capital") ||
-    g.includes("proprietor") ||
-    g.includes("share capital")
-  ) {
-    return { section: "equity", sortOrder: 10 };
-  }
-
-  if (
-    g.includes("reserves") ||
-    g.includes("surplus") ||
-    g.includes("retained earnings") ||
-    g.includes("accumulated profit")
-  ) {
-    return { section: "equity", sortOrder: 20 };
-  }
-
-  // =========================
-  // NON-CURRENT LIABILITIES
-  // =========================
-  if (
-    g.includes("secured loans") ||
-    g.includes("term loans") ||
-    g.includes("long term loan") ||
-    g.includes("long-term loan") ||
-    g.includes("bank overdraft")
-  ) {
-    return { section: "non-current-liability", sortOrder: 110 };
-  }
-
-  if (g.includes("debenture") || g.includes("bond")) {
-    return { section: "non-current-liability", sortOrder: 120 };
-  }
-
-  if (g.includes("deferred tax liability")) {
-    return { section: "non-current-liability", sortOrder: 130 };
-  }
-
-  if (g.includes("unsecured loans") || g.includes("unsecured loan")) {
-    return { section: "non-current-liability", sortOrder: 140 };
-  }
-
-  // =========================
-  // CURRENT LIABILITIES
-  // =========================
-  if (
-    g.includes("current liabilities") ||
-    g.includes("sundry creditors") ||
-    g.includes("creditors") ||
-    g.includes("bills payable") ||
-    g.includes("advance from customers")
-  ) {
-    return { section: "current-liability", sortOrder: 210 };
-  }
-
-  if (
-    g.includes("duties") ||
-    g.includes("taxes") ||
-    g.includes("vat payable") ||
-    g.includes("tds payable") ||
-    g.includes("income tax payable") ||
-    g.includes("ssf payable") ||
-    g.includes("pf payable") ||
-    g.includes("custom duty")
-  ) {
-    return { section: "current-liability", sortOrder: 220 };
-  }
-
-  if (
-    g.includes("provision") ||
-    g.includes("gratuity") ||
-    g.includes("leave") ||
-    g.includes("tax provision")
-  ) {
-    return { section: "current-liability", sortOrder: 230 };
-  }
-
-  // =========================
-  // FIXED ASSETS
-  // =========================
-  if (
-    g.includes("fixed assets") ||
-    g.includes("land") ||
-    g.includes("building") ||
-    g.includes("plant") ||
-    g.includes("machinery") ||
-    g.includes("furniture") ||
-    g.includes("fixtures") ||
-    g.includes("vehicles") ||
-    g.includes("computer equipment") ||
-    g.includes("office equipment") ||
-    g.includes("intangible") ||
-    g.includes("goodwill") ||
-    g.includes("software") ||
-    g.includes("accumulated depreciation") ||
-    g.includes("accumulated amortization")
-  ) {
-    return { section: "fixed-asset", sortOrder: 310 };
-  }
-
-  // =========================
-  // NON-CURRENT ASSETS
-  // =========================
-  if (g.includes("capital work in progress") || g.includes("capital wip")) {
-    return { section: "non-current-asset", sortOrder: 320 };
-  }
-
-  if (g.includes("long term investment") || g.includes("long-term investment")) {
-    return { section: "non-current-asset", sortOrder: 330 };
-  }
-
-  // =========================
-  // CURRENT ASSETS
-  // =========================
-  if (
-    g.includes("current assets") ||
-    g.includes("inventories") ||
-    g.includes("inventory") ||
-    g.includes("closing stock") ||
-    g.includes("sundry debtors") ||
-    g.includes("debtors") ||
-    g.includes("bills receivable") ||
-    g.includes("advance to suppliers") ||
-    g.includes("advance to employees") ||
-    g.includes("prepaid") ||
-    g.includes("tds receivable") ||
-    g.includes("vat receivable") ||
-    g.includes("input vat") ||
-    g.includes("cash") ||
-    g.includes("bank accounts") ||
-    g.includes("bank balances") ||
-    g.includes("short term investment") ||
-    g.includes("short-term investment") ||
-    g.includes("loans and advances")
-  ) {
-    return { section: "current-asset", sortOrder: 410 };
-  }
-
-  // =========================
-  // REVENUE
-  // =========================
-  if (
-    g.includes("sales accounts") ||
-    g.includes("local taxable sales") ||
-    g.includes("local exempt sales") ||
-    g.includes("export sales") ||
-    g.includes("sales")
-  ) {
-    return { section: "revenue", sortOrder: 510 };
-  }
-
-  // =========================
-  // OTHER INCOME
-  // =========================
-  if (
-    g.includes("other income") ||
-    g.includes("interest income") ||
-    g.includes("discount received") ||
-    g.includes("commission received") ||
-    g.includes("miscellaneous income")
-  ) {
-    return { section: "other-income", sortOrder: 520 };
-  }
-
-  // =========================
-  // COGS / DIRECT EXPENSES
-  // =========================
-  if (
-    g.includes("purchase accounts") ||
-    g.includes("local taxable purchase") ||
-    g.includes("local exempt purchase") ||
-    g.includes("import purchase") ||
-    g.includes("direct expenses") ||
-    g.includes("freight inward") ||
-    g.includes("cartage") ||
-    g.includes("labour") ||
-    g.includes("wages") ||
-    g.includes("manufacturing")
-  ) {
-    return { section: "cogs", sortOrder: 610 };
-  }
-
-  // =========================
-  // INDIRECT EXPENSES
-  // =========================
-  if (
-    g.includes("indirect expenses") ||
-    g.includes("admin") ||
-    g.includes("administrative") ||
-    g.includes("rent") ||
-    g.includes("electricity") ||
-    g.includes("telephone") ||
-    g.includes("office supplies") ||
-    g.includes("printing") ||
-    g.includes("stationery") ||
-    g.includes("postage") ||
-    g.includes("salary") ||
-    g.includes("staff") ||
-    g.includes("allowance") ||
-    g.includes("ssf employer") ||
-    g.includes("pf employer") ||
-    g.includes("staff welfare") ||
-    g.includes("dashain bonus") ||
-    g.includes("gratuity expense") ||
-    g.includes("leave encashment") ||
-    g.includes("financial expenses") ||
-    g.includes("bank charges") ||
-    g.includes("interest expense") ||
-    g.includes("loan processing") ||
-    g.includes("depreciation")
-  ) {
-    return { section: "indirect-expense", sortOrder: 620 };
-  }
-
-  if (
-    g.includes("tax expenses") ||
-    g.includes("income tax expense") ||
-    g.includes("deferred tax")
-  ) {
-    return { section: "indirect-expense", sortOrder: 630 };
-  }
-
-  // Safe fallback
-  return { section: "current-asset", sortOrder: 999 };
-}
-
-/**
- * Adapter for unknown computeLedgerTotals() output shapes.
- * Supports:
- * - Record<accountId, number>
- * - Array<{ accountId, closingBalance | balance | amount }>
- */
-export function normalizeLedgerTotals(raw: any): Record<string, number> {
-  if (!raw) return {};
-
-  if (Array.isArray(raw)) {
-    return raw.reduce<Record<string, number>>((acc, row) => {
-      const id = row.accountId || row.id;
-      acc[id] = Number(row.closingBalance ?? row.balance ?? row.amount ?? 0);
-      return acc;
-    }, {});
-  }
-
-  return Object.fromEntries(
-    Object.entries(raw).map(([key, value]: [string, any]) => [
-      key,
-      Number(value?.closingBalance ?? value?.balance ?? value ?? 0),
-    ]),
-  );
-}
-
-function getChildren(accounts: DBAccount[], parentId?: string): DBAccount[] {
-  return accounts
-    .filter((a) => a.parentId === parentId)
-    .sort((a, b) => a.code.localeCompare(b.code));
-}
-
-function getDescendants(accounts: DBAccount[], parentId: string): DBAccount[] {
-  const children = getChildren(accounts, parentId);
-  return children.flatMap((child) => [child, ...getDescendants(accounts, child.id)]);
-}
-
-function getAccountBalance(
-  account: DBAccount,
+export function generateNepalBalanceSheet(
   accounts: DBAccount[],
-  totals: Record<string, number>,
-): number {
-  if (!account.isGroup) {
-    return Number(totals[account.id] || 0);
-  }
-
-  const descendants = getDescendants(accounts, account.id).filter((a) => !a.isGroup);
-  return descendants.reduce((sum, ledger) => sum + Number(totals[ledger.id] || 0), 0);
-}
-
-function buildSectionLines(
-  accounts: DBAccount[],
-  currentTotals: Record<string, number>,
-  previousTotals: Record<string, number>,
-  section: NepalReportSection,
-  options?: {
-    accountType?: AccountType[];
-    invertSign?: boolean;
-    deductionKeywords?: string[];
-  },
+  vouchers: DBVoucher[],
+  options: StatementOptions,           // Fix BUG-011: object not string
 ): NepalStatementLine[] {
-  const accountTypes = options?.accountType || [];
-  const deductionKeywords = options?.deductionKeywords || [];
+  const balanceMap = computeAccountBalances(accounts, vouchers, options);
 
-  const roots = accounts
-    .filter((a) => {
-      if (!a.isGroup) return false;
-      if (a.parentId) return false;
-      if (accountTypes.length && !accountTypes.includes(a.type)) return false;
-      return true;
-    })
-    .flatMap((root) => [root, ...getDescendants(accounts, root.id)])
-    .filter((a) => a.isGroup)
-    .filter((a) => mapGroupToNepalFormat(a.name).section === section)
-    .sort((a, b) => {
-      const ma = mapGroupToNepalFormat(a.name);
-      const mb = mapGroupToNepalFormat(b.name);
-      if (ma.sortOrder !== mb.sortOrder) return ma.sortOrder - mb.sortOrder;
-      return a.code.localeCompare(b.code);
-    });
+  const g = (patterns: RegExp[], excludes: RegExp[] = []) =>
+    sumGroup(accounts, balanceMap, patterns, excludes);
 
-  const unique = Array.from(new Map(roots.map((a) => [a.id, a])).values());
+  // ── Assets ─────────────────────────────────────────────────────────────────
+  const fixedAssets    = g([GROUP_PATTERNS.fixedAssets]);
+  const capitalWIP     = g([GROUP_PATTERNS.capitalWIP]);
+  const investments    = g([GROUP_PATTERNS.investments]);
+  const ltLoans        = g([GROUP_PATTERNS.longTermLoans]);
+  const inventories    = g([GROUP_PATTERNS.inventories]);
+  const tradeRec       = g([GROUP_PATTERNS.currentAssets], [GROUP_PATTERNS.cashAndBank]);
+  const cashBank       = g([GROUP_PATTERNS.cashAndBank]);
+  const stLoans        = g([GROUP_PATTERNS.shortTermLoans]);
+  const otherCA        = g([GROUP_PATTERNS.otherCurrentAssets]);
 
-  return unique
-    .map<NepalStatementLine>((account) => {
-      const rawCurrent = getAccountBalance(account, accounts, currentTotals);
-      const rawPrevious = getAccountBalance(account, accounts, previousTotals);
+  const totalNCA: NepalStatementLine = {
+    id: "nca-total", label: "Total Non-Current Assets", labelNepali: "कुल गैर-चालु सम्पत्ति",
+    currentYear: fixedAssets.current + capitalWIP.current + investments.current + ltLoans.current,
+    previousYear: fixedAssets.previous + capitalWIP.previous + investments.previous + ltLoans.previous,
+    indent: 1, isTotal: true,
+  };
 
-      const isDeduction = deductionKeywords.some((k) =>
-        normalize(account.name).includes(normalize(k)),
-      );
+  const totalCA: NepalStatementLine = {
+    id: "ca-total", label: "Total Current Assets", labelNepali: "कुल चालु सम्पत्ति",
+    currentYear: inventories.current + tradeRec.current + cashBank.current + stLoans.current + otherCA.current,
+    previousYear: inventories.previous + tradeRec.previous + cashBank.previous + stLoans.previous + otherCA.previous,
+    indent: 1, isTotal: true,
+  };
 
-      const sign = options?.invertSign ? -1 : 1;
-      const deductionSign = isDeduction ? -1 : 1;
+  const totalAssets: NepalStatementLine = {
+    id: "total-assets", label: "TOTAL ASSETS", labelNepali: "कुल सम्पत्ति",
+    currentYear: totalNCA.currentYear + totalCA.currentYear,
+    previousYear: totalNCA.previousYear + totalCA.previousYear,
+    indent: 0, isGrandTotal: true,
+  };
 
-      const children = getDescendants(accounts, account.id)
-        .filter((a) => !a.isGroup)
-        .map<NepalStatementLine>((ledger) => ({
-          id: ledger.id,
-          label: ledger.name,
-          labelNepali: ledger.nameNepali,
-          currentYear: Number(totalsRound((currentTotals[ledger.id] || 0) * sign * deductionSign)),
-          previousYear: Number(
-            totalsRound((previousTotals[ledger.id] || 0) * sign * deductionSign),
-          ),
-          indent: 1,
-        }))
-        .filter((x) => x.currentYear !== 0 || x.previousYear !== 0);
+  // ── Equity & Liabilities ────────────────────────────────────────────────────
+  const shareCapital   = g([GROUP_PATTERNS.shareCapital]);
+  const reserves       = g([GROUP_PATTERNS.reserves]);
+  const ltBorrowings   = g([GROUP_PATTERNS.longTermBorrowings]);
+  const stBorrowings   = g([GROUP_PATTERNS.shortTermBorrowings]);
+  const tradePayables  = g([GROUP_PATTERNS.tradePayables]);
+  const otherCL        = g([GROUP_PATTERNS.otherCurrentLiab]);
+  const provisions     = g([GROUP_PATTERNS.provisions]);
 
-      return {
-        id: account.id,
-        label: account.name,
-        labelNepali: account.nameNepali,
-        currentYear: totalsRound(rawCurrent * sign * deductionSign),
-        previousYear: totalsRound(rawPrevious * sign * deductionSign),
-        isDeduction,
-        children,
-      };
-    })
-    .filter((x) => x.currentYear !== 0 || x.previousYear !== 0 || (x.children?.length || 0) > 0);
-}
+  const totalEquity: NepalStatementLine = {
+    id: "equity-total", label: "Total Equity", labelNepali: "कुल इक्विटी",
+    currentYear: shareCapital.current + reserves.current,
+    previousYear: shareCapital.previous + reserves.previous,
+    indent: 1, isTotal: true,
+  };
 
-function totalsRound(value: number): number {
-  return Math.round(value * 100) / 100;
-}
+  const totalNCL: NepalStatementLine = {
+    id: "ncl-total", label: "Total Non-Current Liabilities", labelNepali: "कुल गैर-चालु दायित्व",
+    currentYear: ltBorrowings.current,
+    previousYear: ltBorrowings.previous,
+    indent: 1, isTotal: true,
+  };
 
-function total(lines: NepalStatementLine[]): number {
-  return totalsRound(lines.reduce((sum, line) => sum + line.currentYear, 0));
-}
+  const totalCL: NepalStatementLine = {
+    id: "cl-total", label: "Total Current Liabilities", labelNepali: "कुल चालु दायित्व",
+    currentYear: stBorrowings.current + tradePayables.current + otherCL.current + provisions.current,
+    previousYear: stBorrowings.previous + tradePayables.previous + otherCL.previous + provisions.previous,
+    indent: 1, isTotal: true,
+  };
 
-function totalPrevious(lines: NepalStatementLine[]): number {
-  return totalsRound(lines.reduce((sum, line) => sum + line.previousYear, 0));
-}
+  const totalEquityLiab: NepalStatementLine = {
+    id: "total-equity-liab", label: "TOTAL EQUITY AND LIABILITIES", labelNepali: "कुल इक्विटी र दायित्व",
+    currentYear: totalEquity.currentYear + totalNCL.currentYear + totalCL.currentYear,
+    previousYear: totalEquity.previousYear + totalNCL.previousYear + totalCL.previousYear,
+    indent: 0, isGrandTotal: true,
+  };
 
-export function buildBalanceSheetData(args: {
-  accounts: DBAccount[];
-  currentVouchers: DBVoucher[];
-  previousVouchers: DBVoucher[];
-  asAtDate?: string;
-  previousAsAtDate?: string;
-}): BalanceSheetData {
-  const currentTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.currentVouchers, { endDate: args.asAtDate }),
-  );
-
-  const previousTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.previousVouchers, { endDate: args.previousAsAtDate }),
-  );
-
-  const equity = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "equity",
-    { accountType: ["equity"], invertSign: true }, // Adjusted per hint in point 6 if engine uses negative for Cr
-  );
-
-  const nonCurrentLiabilities = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "non-current-liability",
-    { accountType: ["liability"], invertSign: true },
-  );
-
-  const currentLiabilities = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "current-liability",
-    { accountType: ["liability"], invertSign: true },
-  );
-
-  const fixedAssets = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "fixed-asset",
-    {
-      accountType: ["asset"],
-      invertSign: false,
-      deductionKeywords: ["accumulated depreciation", "accumulated amortization"],
-    },
-  );
-
-  const nonCurrentAssets = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "non-current-asset",
-    { accountType: ["asset"], invertSign: false },
-  );
-
-  const currentAssets = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "current-asset",
-    { accountType: ["asset"], invertSign: false },
-  );
-
-  const totalEquity = total(equity);
-  const totalNonCurrentLiabilities = total(nonCurrentLiabilities);
-  const totalCurrentLiabilities = total(currentLiabilities);
-  const totalEquityAndLiabilities = totalsRound(
-    totalEquity + totalNonCurrentLiabilities + totalCurrentLiabilities,
-  );
-
-  const totalFixedAssets = total(fixedAssets);
-  const totalNonCurrentAssets = total(nonCurrentAssets);
-  const totalCurrentAssets = total(currentAssets);
-  const totalAssets = totalsRound(totalFixedAssets + totalNonCurrentAssets + totalCurrentAssets);
-
-  return {
-    equity,
-    nonCurrentLiabilities,
-    currentLiabilities,
-    nonCurrentAssets,
-    fixedAssets,
-    currentAssets,
-
-    totalEquity,
-    totalNonCurrentLiabilities,
-    totalCurrentLiabilities,
-    totalEquityAndLiabilities,
-
-    totalNonCurrentAssets,
-    totalFixedAssets,
-    totalCurrentAssets,
+  return [
+    // Assets section
+    { id: "assets-hdr",  label: "ASSETS",               labelNepali: "सम्पत्ति",          currentYear: 0, previousYear: 0, indent: 0, isSeparator: true },
+    { id: "nca-hdr",     label: "Non-Current Assets",   labelNepali: "गैर-चालु सम्पत्ति", currentYear: 0, previousYear: 0, indent: 0 },
+    { id: "fixed-asset", label: "Property, Plant & Equipment", labelNepali: "स्थायी सम्पत्ति", ...fixedAssets, indent: 1 },
+    { id: "cwip",        label: "Capital Work-in-Progress",    labelNepali: "पूँजीगत कार्य",   ...capitalWIP, indent: 1 },
+    { id: "investments", label: "Investments",                 labelNepali: "लगानी",           ...investments, indent: 1 },
+    { id: "lt-loans",    label: "Long-term Loans",            labelNepali: "दीर्घकालीन ऋण",   ...ltLoans, indent: 1 },
+    totalNCA,
+    { id: "ca-hdr",      label: "Current Assets",        labelNepali: "चालु सम्पत्ति",     currentYear: 0, previousYear: 0, indent: 0 },
+    { id: "inventories", label: "Inventories",                labelNepali: "माल सूची",        ...inventories, indent: 1 },
+    { id: "trade-rec",   label: "Trade Receivables",          labelNepali: "व्यापार प्राप्य", ...tradeRec, indent: 1 },
+    { id: "cash-bank",   label: "Cash & Cash Equivalents",    labelNepali: "नगद र बैंक",     ...cashBank, indent: 1 },
+    { id: "st-loans",    label: "Short-term Loans",           labelNepali: "अल्पकालीन ऋण",   ...stLoans, indent: 1 },
+    { id: "other-ca",    label: "Other Current Assets",       labelNepali: "अन्य चालु सम्पत्ति", ...otherCA, indent: 1 },
+    totalCA,
     totalAssets,
-
-    difference: totalsRound(totalAssets - totalEquityAndLiabilities),
-  };
+    // Equity & Liabilities
+    { id: "el-hdr",       label: "EQUITY AND LIABILITIES",    labelNepali: "इक्विटी र दायित्व",  currentYear: 0, previousYear: 0, indent: 0, isSeparator: true },
+    { id: "eq-hdr",       label: "Equity",                    labelNepali: "इक्विटी",            currentYear: 0, previousYear: 0, indent: 0 },
+    { id: "share-cap",    label: "Share Capital",             labelNepali: "शेयर पुँजी",         ...shareCapital, indent: 1 },
+    { id: "reserves",     label: "Reserves & Surplus",        labelNepali: "जगेडा र बचत",        ...reserves, indent: 1 },
+    totalEquity,
+    { id: "ncl-hdr",      label: "Non-Current Liabilities",   labelNepali: "गैर-चालु दायित्व",  currentYear: 0, previousYear: 0, indent: 0 },
+    { id: "lt-borrow",    label: "Long-term Borrowings",      labelNepali: "दीर्घकालीन ऋण",     ...ltBorrowings, indent: 1 },
+    totalNCL,
+    { id: "cl-hdr",       label: "Current Liabilities",       labelNepali: "चालु दायित्व",      currentYear: 0, previousYear: 0, indent: 0 },
+    { id: "st-borrow",    label: "Short-term Borrowings",     labelNepali: "अल्पकालीन ऋण",     ...stBorrowings, indent: 1 },
+    { id: "trade-pay",    label: "Trade Payables",            labelNepali: "व्यापार देय",       ...tradePayables, indent: 1 },
+    { id: "other-cl",     label: "Other Current Liabilities", labelNepali: "अन्य चालु दायित्व", ...otherCL, indent: 1 },
+    { id: "provisions",   label: "Provisions",                labelNepali: "प्रावधान",          ...provisions, indent: 1 },
+    totalCL,
+    totalEquityLiab,
+  ];
 }
 
-export function buildProfitLossData(args: {
-  accounts: DBAccount[];
-  currentVouchers: DBVoucher[];
-  previousVouchers: DBVoucher[];
-  fromDate?: string;
-  toDate?: string;
-  previousFromDate?: string;
-  previousToDate?: string;
-  openingStockCurrent?: number;
-  openingStockPrevious?: number;
-  closingStockCurrent?: number;
-  closingStockPrevious?: number;
-}): ProfitLossData {
-  const currentTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.currentVouchers, {
-      endDate: args.toDate,
-      startDate: args.fromDate,
-    }),
-  );
+// ─── Profit & Loss Generator ───────────────────────────────────────────────────
 
-  const previousTotals = normalizeLedgerTotals(
-    computeLedgerTotals(args.accounts, args.previousVouchers, {
-      endDate: args.previousToDate,
-      startDate: args.previousFromDate,
-    }),
-  );
+/**
+ * Generate Nepal-format Profit & Loss statement.
+ * Fixes BUG-012: takes exactly 3 parameters (was being called with 4).
+ */
+export function generateNepalProfitLoss(
+  accounts: DBAccount[],
+  vouchers: DBVoucher[],
+  options: StatementOptions,  // Fix BUG-012: 3rd param is options object, not a 4th separate param
+): NepalStatementLine[] {
+  const balanceMap = computeAccountBalances(accounts, vouchers, options);
 
-  const revenue = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "revenue",
-    { accountType: ["income"], invertSign: true }, // Based on point 6
-  );
+  const g = (patterns: RegExp[], excludes: RegExp[] = []) =>
+    sumGroup(accounts, balanceMap, patterns, excludes);
 
-  const otherIncome = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "other-income",
-    { accountType: ["income"], invertSign: true },
-  );
+  const revenue        = g([GROUP_PATTERNS.revenue]);
+  const otherIncome    = g([GROUP_PATTERNS.otherIncome]);
+  const cogs           = g([GROUP_PATTERNS.cogs]);
+  const directExp      = g([GROUP_PATTERNS.directExpenses]);
+  const adminExp       = g([GROUP_PATTERNS.adminExpenses]);
+  const financeCosts   = g([GROUP_PATTERNS.financialCosts]);
+  const depreciation   = g([GROUP_PATTERNS.depreciation]);
+  const otherExp       = g([GROUP_PATTERNS.otherExpenses]);
 
-  const cogs = buildSectionLines(args.accounts, currentTotals, previousTotals, "cogs", {
-    accountType: ["expense"],
-    invertSign: false,
-  });
-
-  const indirectExpenses = buildSectionLines(
-    args.accounts,
-    currentTotals,
-    previousTotals,
-    "indirect-expense",
-    { accountType: ["expense"], invertSign: false },
-  );
-
-  const taxExpenses = indirectExpenses.filter((x) => normalize(x.label).includes("tax"));
-
-  const revenueTotal = total(revenue);
-  const otherIncomeTotal = total(otherIncome);
-
-  const openingStock = totalsRound(args.openingStockCurrent || 0);
-  const closingStock = totalsRound(args.closingStockCurrent || 0);
-
-  const cogsBeforeStock = total(cogs);
-  const costOfGoodsSold = totalsRound(openingStock + cogsBeforeStock - closingStock);
-
-  const indirectExpenseTotal = total(indirectExpenses);
-  const totalExpenses = totalsRound(costOfGoodsSold + indirectExpenseTotal);
-
-  const totalIncome = totalsRound(revenueTotal + otherIncomeTotal);
-  const profitBeforeTax = totalsRound(totalIncome - totalExpenses);
-
-  const incomeTaxProvision = taxExpenses.reduce((sum, row) => sum + row.currentYear, 0);
-
-  const netProfitAfterTax = totalsRound(profitBeforeTax - incomeTaxProvision);
-
-  return {
-    revenue,
-    otherIncome,
-    cogs: [
-      {
-        id: "opening-stock",
-        label: "Opening Stock",
-        labelNepali: "सुरु मौज्दात",
-        currentYear: openingStock,
-        previousYear: args.openingStockPrevious || 0,
-      },
-      ...cogs,
-      {
-        id: "closing-stock",
-        label: "Less: Closing Stock",
-        labelNepali: "घटाउनुहोस्: अन्तिम मौज्दात",
-        currentYear: -closingStock,
-        previousYear: -(args.closingStockPrevious || 0),
-        isDeduction: true,
-      },
-    ],
-    indirectExpenses,
-    taxExpenses,
-
-    netSales: revenueTotal,
-    totalOtherIncome: otherIncomeTotal,
-    totalIncome,
-    costOfGoodsSold,
-    totalIndirectExpenses: indirectExpenseTotal,
-    totalExpenses,
-    profitBeforeTax,
-    incomeTaxProvision,
-    netProfitAfterTax,
+  const grossProfit = {
+    current: revenue.current + otherIncome.current - cogs.current - directExp.current,
+    previous: revenue.previous + otherIncome.previous - cogs.previous - directExp.previous,
   };
+
+  const totalRevenue = {
+    current: revenue.current + otherIncome.current,
+    previous: revenue.previous + otherIncome.previous,
+  };
+
+  const totalExpenses = {
+    current: cogs.current + directExp.current + adminExp.current + financeCosts.current + depreciation.current + otherExp.current,
+    previous: cogs.previous + directExp.previous + adminExp.previous + financeCosts.previous + depreciation.previous + otherExp.previous,
+  };
+
+  const netProfit = {
+    current: totalRevenue.current - totalExpenses.current,
+    previous: totalRevenue.previous - totalExpenses.previous,
+  };
+
+  return [
+    // Revenue
+    { id: "rev-hdr",      label: "REVENUE",                   labelNepali: "राजस्व",          currentYear: 0, previousYear: 0, indent: 0, isSeparator: true },
+    { id: "sales",        label: "Revenue from Operations",   labelNepali: "व्यापार राजस्व",  ...revenue,     indent: 1 },
+    { id: "other-income", label: "Other Income",              labelNepali: "अन्य आम्दानी",    ...otherIncome, indent: 1 },
+    { id: "total-rev",    label: "Total Revenue",             labelNepali: "कुल राजस्व",      currentYear: totalRevenue.current, previousYear: totalRevenue.previous, indent: 0, isTotal: true },
+    // Expenses
+    { id: "exp-hdr",      label: "EXPENSES",                  labelNepali: "खर्च",            currentYear: 0, previousYear: 0, indent: 0, isSeparator: true },
+    { id: "cogs",         label: "Cost of Materials / Purchases", labelNepali: "माल खर्च",   ...cogs,         indent: 1 },
+    { id: "direct-exp",   label: "Direct Expenses",           labelNepali: "प्रत्यक्ष खर्च",  ...directExp,   indent: 1 },
+    { id: "admin-exp",    label: "Employee Benefits / Admin",  labelNepali: "प्रशासनिक खर्च", ...adminExp,    indent: 1 },
+    { id: "depreciation", label: "Depreciation & Amortization", labelNepali: "ह्रास",         ...depreciation, indent: 1 },
+    { id: "finance-cost", label: "Finance Costs",             labelNepali: "वित्त लागत",      ...financeCosts, indent: 1 },
+    { id: "other-exp",    label: "Other Expenses",            labelNepali: "अन्य खर्च",       ...otherExp,    indent: 1 },
+    { id: "total-exp",    label: "Total Expenses",            labelNepali: "कुल खर्च",        currentYear: totalExpenses.current, previousYear: totalExpenses.previous, indent: 0, isTotal: true },
+    // Net Profit
+    { id: "gross-profit", label: "Gross Profit",              labelNepali: "कुल मुनाफा",      currentYear: grossProfit.current, previousYear: grossProfit.previous, indent: 0, isTotal: true },
+    { id: "net-profit",   label: "NET PROFIT / (LOSS)",       labelNepali: "खुद मुनाफा / (नोक्सान)", currentYear: netProfit.current, previousYear: netProfit.previous, indent: 0, isGrandTotal: true },
+  ];
+}
+
+// ─── Trial Balance Generator ───────────────────────────────────────────────────
+
+export interface TrialBalanceLine {
+  accountId: string;
+  accountCode?: string;
+  accountName: string;
+  group: string;
+  openingDebit: number;
+  openingCredit: number;
+  periodDebit: number;
+  periodCredit: number;
+  closingDebit: number;
+  closingCredit: number;
+  balance: number;
+  hasChildren?: boolean;
+}
+
+/**
+ * Generate Trial Balance data.
+ * Fixes BUG-069: properly filters by date to show balances at specific date.
+ */
+export function generateTrialBalance(
+  accounts: DBAccount[],
+  vouchers: DBVoucher[],
+  options: StatementOptions,
+): TrialBalanceLine[] {
+  const { startDate, endDate, includeZeroBalance = false } = options;
+
+  const lines: TrialBalanceLine[] = [];
+
+  for (const acc of accounts) {
+    // Opening balance (before startDate)
+    let openingDebit = 0;
+    let openingCredit = 0;
+    const openingBal = Number(acc.openingBalance ?? 0);
+    if (openingBal >= 0) openingDebit = openingBal;
+    else openingCredit = Math.abs(openingBal);
+
+    // Period movements
+    let periodDebit = 0;
+    let periodCredit = 0;
+
+    for (const v of vouchers) {
+      if (v.status !== "posted") continue;
+      const vDate = v.date?.split("T")[0] ?? "";
+
+      // Opening: all vouchers before startDate (Fix BUG-069)
+      if (startDate && vDate < startDate) {
+        for (const line of v.lines ?? []) {
+          if (line.accountId !== acc.id) continue;
+          openingDebit  += Number(line.debit  ?? 0);
+          openingCredit += Number(line.credit ?? 0);
+        }
+      }
+
+      // Period: vouchers within date range
+      const inPeriod = (!startDate || vDate >= startDate) && (!endDate || vDate <= endDate);
+      if (inPeriod) {
+        for (const line of v.lines ?? []) {
+          if (line.accountId !== acc.id) continue;
+          periodDebit  += Number(line.debit  ?? 0);
+          periodCredit += Number(line.credit ?? 0);
+        }
+      }
+    }
+
+    const closingDebit  = openingDebit  + periodDebit;
+    const closingCredit = openingCredit + periodCredit;
+    const balance       = closingDebit  - closingCredit;
+
+    if (!includeZeroBalance && balance === 0 && openingDebit === 0 && periodDebit === 0) {
+      continue;
+    }
+
+    lines.push({
+      accountId:    acc.id,
+      accountCode:  acc.code,
+      accountName:  acc.name,
+      group:        acc.group,
+      openingDebit,
+      openingCredit,
+      periodDebit,
+      periodCredit,
+      closingDebit,
+      closingCredit,
+      balance,
+    });
+  }
+
+  return lines.sort((a, b) => a.accountName.localeCompare(b.accountName));
 }
