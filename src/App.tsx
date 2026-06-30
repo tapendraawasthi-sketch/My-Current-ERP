@@ -66,6 +66,22 @@ import VatReports from "./pages/VatReports";
 import BillingInvoice from "./pages/BillingInvoice";
 import PartyStatement from "./pages/PartyStatement";
 
+// ── Inventory & New Masters (Parts 1-13) ───────────────────────────────────
+import InventoryConfiguration from "./pages/InventoryConfiguration";
+import ItemGroupMaster from "./pages/ItemGroupMaster";
+import ItemMaster from "./pages/ItemMaster";
+import BillOfMaterialMaster from "./pages/BillOfMaterialMaster";
+import StockJournalPage from "./pages/StockJournalPage";
+import ProductionVoucherPage from "./pages/ProductionVoucherPage";
+import StockStatusReport from "./pages/StockStatusReport";
+import MiscMasters from "./pages/MiscMasters";
+import SchemeMaster from "./pages/SchemeMaster";
+import OrderVoucherPage from "./pages/OrderVoucherPage";
+import QuotationPage from "./pages/QuotationPage";
+import PhysicalStockPage2 from "./pages/PhysicalStockPage2";
+import StockLedgerReport from "./pages/StockLedgerReport";
+import SalesAnalysisReport from "./pages/SalesAnalysisReport";
+import StockSummaryReport from "./pages/StockSummaryReport";
 // ─── Auth screens (Tally-style stage machine) ─────────────────────────────────
 import SignUpWizard from "./components/auth/SignUpWizard";
 import GatewayScreen from "./components/auth/GatewayScreen";
@@ -315,6 +331,68 @@ const App: React.FC = () => {
         return <ApprovalWorkflow />;
       case "maker-checker":
         return <ApprovalWorkflow />;
+
+      // ── Inventory Configuration ───────────────────────────────────────────
+      case "inventory-config":
+        return <InventoryConfiguration />;
+      case "inventory-configuration":
+        return <InventoryConfiguration />;
+
+      // ── Inventory Masters ─────────────────────────────────────────────────
+      case "item-groups":
+        return <ItemGroupMaster />;
+      case "item-group-master":
+        return <ItemGroupMaster />;
+      case "item-master":
+        return <ItemMaster />;
+      case "items":
+        return <ItemMaster />;
+      case "stock-book":
+        return <ItemMaster />;
+      case "bom":
+        return <BillOfMaterialMaster />;
+      case "bill-of-material":
+        return <BillOfMaterialMaster />;
+      case "schemes":
+        return <SchemeMaster />;
+      case "misc-masters":
+        return <MiscMasters />;
+      case "bill-sundry":
+        return <MiscMasters />;
+      case "warehouses":
+        return <MiscMasters />;
+      case "material-centres":
+        return <MiscMasters />;
+
+      // ── Inventory Vouchers ────────────────────────────────────────────────
+      case "stock-journal":
+        return <StockJournalPage />;
+      case "production":
+        return <ProductionVoucherPage />;
+      case "production-voucher":
+        return <ProductionVoucherPage />;
+      case "sales-order":
+        return <OrderVoucherPage type="sales_order" />;
+      case "purchase-order":
+        return <OrderVoucherPage type="purchase_order" />;
+      case "sales-quotation":
+        return <QuotationPage type="sales_quotation" />;
+      case "purchase-quotation":
+        return <QuotationPage type="purchase_quotation" />;
+      case "physical-stock":
+        return <PhysicalStockPage2 />;
+
+      // ── Inventory Reports ─────────────────────────────────────────────────
+      case "stock-status":
+        return <StockStatusReport />;
+      case "closing-stock":
+        return <StockStatusReport />;
+      case "stock-ledger":
+        return <StockLedgerReport />;
+      case "sales-analysis":
+        return <SalesAnalysisReport />;
+      case "stock-summary":
+        return <StockSummaryReport />;
         
       default:
         return <Dashboard />;
