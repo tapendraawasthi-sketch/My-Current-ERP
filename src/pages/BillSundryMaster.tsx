@@ -1,511 +1,274 @@
-import React, { useState, useMemo } from "react";
-import { useStore } from "../store";
+// src/pages/BillSundryMaster.tsx
+import React, { useState, useMemo, useEffect } from "react";
+import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
-import { DBBillSundry as DBBillSundryMaster } from "../lib/db";
-import { Plus, Pencil, Trash2, X, Save, Search, Receipt } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, Tag } from "lucide-react";
+import { BillSundryType, BillSundryNature } from "../lib/busyTypes";
+import { getDB } from "../lib/db";
 
-// ─── Empty form template ──────────────────────────────────────────────────────
+interface BillSundry {
+  id: string;
+  name: string;
+  type: BillSundryType;
+  nature: BillSundryNature;
+  affectCostInSale: boolean;
+  affectCostInPurchase: boolean;
+  accountingInSale?: string;
+  accountingInPurchase?: string;
+  affectAccountingInStockTransfer: boolean;
+  gstApplicable: boolean;
+  taxCategoryId?: string;
+  isActive: boolean;
+}
 
-const emptyForm = (): Omit<DBBillSundryMaster, "id"> => ({
-  name: "",
-  alias: "",
-  type: "additive",
-  nature: "percentage",
-  accountHeadId: "",
-  defaultValue: 0,
-  affectsCostInSale: false,
-  affectsCostInPurchase: false,
-  isActive: true,
-});
-
-// ─── Component ────────────────────────────────────────────────────────────────
+const DEFAULT_BILL_SUNDRIES: Omit<BillSundry, "id">[] = [
+  { name: "Freight & Forwarding", type: BillSundryType.ADDITIVE, nature: BillSundryNature.FREIGHT, affectCostInSale: true, affectCostInPurchase: true, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Packing Charges", type: BillSundryType.ADDITIVE, nature: BillSundryNature.PACKING, affectCostInSale: true, affectCostInPurchase: true, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Trade Discount", type: BillSundryType.DEDUCTIVE, nature: BillSundryNature.DISCOUNT, affectCostInSale: false, affectCostInPurchase: false, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Round Off +", type: BillSundryType.ADDITIVE, nature: BillSundryNature.ROUND_OFF, affectCostInSale: false, affectCostInPurchase: false, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Round Off -", type: BillSundryType.DEDUCTIVE, nature: BillSundryNature.ROUND_OFF, affectCostInSale: false, affectCostInPurchase: false, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Loading Charges", type: BillSundryType.ADDITIVE, nature: BillSundryNature.OTHER, affectCostInSale: true, affectCostInPurchase: true, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+  { name: "Insurance", type: BillSundryType.ADDITIVE, nature: BillSundryNature.OTHER, affectCostInSale: true, affectCostInPurchase: true, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true },
+];
 
 export default function BillSundryMaster() {
-  const {
-    billSundryMasters,
-    accounts,
-    addBillSundryMaster,
-    updateBillSundryMaster,
-    deleteBillSundryMaster,
-  } = useStore();
+  const { accounts } = useStore();
+  const [billSundries, setBillSundries] = useState<BillSundry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState<BillSundry | null>(null);
+  const [form, setForm] = useState<Omit<BillSundry, "id">>({
+    name: "",
+    type: BillSundryType.ADDITIVE,
+    nature: BillSundryNature.OTHER,
+    affectCostInSale: false,
+    affectCostInPurchase: false,
+    affectAccountingInStockTransfer: false,
+    gstApplicable: false,
+    isActive: true,
+  });
 
-  // ── UI state ────────────────────────────────────────────────────────────────
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [form, setForm] = useState(emptyForm());
-  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    loadBillSundries();
+  }, []);
 
-  // ── Derived data ────────────────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    if (!q) return billSundryMasters;
-    return billSundryMasters.filter(
-      (bs) => bs.name.toLowerCase().includes(q) || (bs.alias ?? "").toLowerCase().includes(q),
-    );
-  }, [billSundryMasters, search]);
-
-  const deleteTarget = useMemo(
-    () => billSundryMasters.find((bs) => bs.id === deleteTargetId) ?? null,
-    [billSundryMasters, deleteTargetId],
-  );
-
-  const activeAccounts = useMemo(
-    () => (accounts ?? []).filter((a: any) => a.isActive !== false),
-    [accounts],
-  );
-
-  // ── Handlers ────────────────────────────────────────────────────────────────
-
-  const handleOpenCreate = () => {
-    setEditingId(null);
-    setForm(emptyForm());
-    setShowForm(true);
-  };
-
-  const handleOpenEdit = (bs: DBBillSundryMaster) => {
-    setEditingId(bs.id);
-    setForm({
-      name: bs.name,
-      alias: bs.alias ?? "",
-      type: bs.type,
-      nature: bs.nature,
-      accountHeadId: bs.accountHeadId ?? "",
-      defaultValue: bs.defaultValue ?? 0,
-      affectsCostInSale: bs.affectsCostInSale ?? false,
-      affectsCostInPurchase: bs.affectsCostInPurchase ?? false,
-      isActive: bs.isActive ?? true,
-    });
-    setShowForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setShowForm(false);
-    setEditingId(null);
-    setForm(emptyForm());
-  };
-
-  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
-
-  const validate = (): string | null => {
-    if (!form.name.trim()) return "Bill Sundry name is required.";
-
-    const dup = billSundryMasters.find(
-      (bs) => bs.name.toLowerCase() === form.name.trim().toLowerCase() && bs.id !== editingId,
-    );
-    if (dup) return `Bill Sundry "${form.name.trim()}" already exists.`;
-
-    if (form.defaultValue < 0) return "Default value cannot be negative.";
-
-    return null;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const err = validate();
-    if (err) {
-      toast.error(err);
-      return;
-    }
-
-    setSaving(true);
+  const loadBillSundries = async () => {
     try {
-      const payload: Omit<DBBillSundryMaster, "id"> = {
-        name: form.name.trim(),
-        alias: form.alias?.trim() || undefined,
-        type: form.type,
-        nature: form.nature,
-        accountHeadId: form.accountHeadId || undefined,
-        defaultValue: Number(form.defaultValue),
-        affectsCostInSale: form.affectsCostInSale,
-        affectsCostInPurchase: form.affectsCostInPurchase,
-        isActive: form.isActive,
-      };
-
-      if (editingId) {
-        await updateBillSundryMaster(editingId, payload);
-        toast.success("Bill Sundry updated successfully.");
-      } else {
-        await addBillSundryMaster(payload);
-        toast.success("Bill Sundry created successfully.");
+      const db = getDB();
+      let items: BillSundry[] = [];
+      if (db.billSundries) {
+        items = await db.billSundries.toArray();
       }
-      handleCloseForm();
+      if (items.length === 0) {
+        // Seed defaults
+        const defaults = DEFAULT_BILL_SUNDRIES.map((d, i) => ({
+          ...d,
+          id: `bs-default-${i + 1}`,
+        }));
+        if (db.billSundries) {
+          await db.billSundries.bulkPut(defaults);
+          items = defaults;
+        } else {
+          items = defaults;
+        }
+      }
+      setBillSundries(items);
     } catch {
-      toast.error("Failed to save. Please try again.");
+      setBillSundries(DEFAULT_BILL_SUNDRIES.map((d, i) => ({ ...d, id: `bs-${i}` })));
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
-  const handleDeleteRequest = (id: string) => setDeleteTargetId(id);
+  const filtered = useMemo(() =>
+    billSundries.filter(b =>
+      b.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [billSundries, searchTerm]);
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
+  const openAdd = () => {
+    setEditItem(null);
+    setForm({ name: "", type: BillSundryType.ADDITIVE, nature: BillSundryNature.OTHER, affectCostInSale: false, affectCostInPurchase: false, affectAccountingInStockTransfer: false, gstApplicable: false, isActive: true });
+    setShowModal(true);
+  };
+
+  const openEdit = (item: BillSundry) => {
+    setEditItem(item);
+    const { id, ...rest } = item;
+    setForm(rest);
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.name.trim()) { toast.error("Name is required"); return; }
     try {
-      await deleteBillSundryMaster(deleteTargetId);
-      toast.success("Bill Sundry deleted.");
-    } catch {
-      toast.error("Failed to delete bill sundry.");
-    } finally {
-      setDeleteTargetId(null);
+      const db = getDB();
+      if (editItem) {
+        const updated = { ...editItem, ...form };
+        if (db.billSundries) await db.billSundries.put(updated);
+        setBillSundries(prev => prev.map(b => b.id === editItem.id ? updated : b));
+        toast.success("Bill Sundry updated");
+      } else {
+        const newItem: BillSundry = { ...form, id: `bs-${Date.now()}` };
+        if (db.billSundries) await db.billSundries.put(newItem);
+        setBillSundries(prev => [...prev, newItem]);
+        toast.success("Bill Sundry added");
+      }
+      setShowModal(false);
+    } catch (e) {
+      toast.error("Failed to save");
     }
   };
 
-  const getAccountName = (id?: string) => {
-    if (!id) return "—";
-    const acc = activeAccounts.find((a: any) => a.id === id);
-    return acc ? acc.name : "Unknown Account";
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this bill sundry?")) return;
+    try {
+      const db = getDB();
+      if (db.billSundries) await db.billSundries.delete(id);
+      setBillSundries(prev => prev.filter(b => b.id !== id));
+      toast.success("Deleted");
+    } catch { toast.error("Failed to delete"); }
   };
 
-  // ── Render ───────────────────────────────────────────────────────────────────
+  const F = form;
+  const setF = (k: keyof typeof form, v: any) => setForm(prev => ({ ...prev, [k]: v }));
+
+  const inputCls = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
-      {/* Page header */}
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Bill Sundries</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Manage additional charges, discounts, and taxes for billing
-          </p>
+          <h1 className="text-[15px] font-semibold text-gray-800">Bill Sundry Master</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Freight, Discount, Round Off, Packing and other charges</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleOpenCreate}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New Bill Sundry
-          </button>
-        </div>
+        <button onClick={openAdd} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5">
+          <Plus className="h-3.5 w-3.5" /> Add Bill Sundry
+        </button>
       </div>
 
-      {/* Search bar */}
-      <div className="flex items-center gap-3">
-        <div className="relative">
-          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or alias..."
-            className="w-64 h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-          />
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="p-3 border-b border-gray-200 flex items-center gap-3">
+          <div className="relative">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-2.5 text-gray-400" />
+            <input
+              value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Search bill sundries..."
+              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 w-56"
+            />
+          </div>
+          <span className="text-[11px] text-gray-500">{filtered.length} records</span>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Name
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Type
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Nature
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Account Head
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Default Value
-              </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Status
-              </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Actions
-              </th>
+              {["Name", "Type", "Nature", "Affect Cost (Sale)", "Affect Cost (Purchase)", "GST", "Status", "Actions"].map(h => (
+                <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
-                  <Receipt className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search
-                    ? "No results found."
-                    : "No bill sundries yet. Create your first bill sundry."}
+          <tbody className="divide-y divide-gray-100">
+            {filtered.map(item => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{item.name}</td>
+                <td className="px-3 py-2.5 text-[12px]">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${item.type === BillSundryType.ADDITIVE ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                    {item.type === BillSundryType.ADDITIVE ? "Additive (+)" : "Deductive (-)"}
+                  </span>
+                </td>
+                <td className="px-3 py-2.5 text-[12px] text-gray-600 capitalize">{item.nature.replace(/_/g, " ")}</td>
+                <td className="px-3 py-2.5 text-[12px] text-center">{item.affectCostInSale ? "✓" : "—"}</td>
+                <td className="px-3 py-2.5 text-[12px] text-center">{item.affectCostInPurchase ? "✓" : "—"}</td>
+                <td className="px-3 py-2.5 text-[12px] text-center">{item.gstApplicable ? "✓" : "—"}</td>
+                <td className="px-3 py-2.5">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${item.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                    {item.isActive ? "Active" : "Inactive"}
+                  </span>
+                </td>
+                <td className="px-3 py-2.5">
+                  <div className="flex gap-1">
+                    <button onClick={() => openEdit(item)} className="p-1.5 hover:bg-gray-100 rounded text-gray-500"><Edit2 className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 hover:bg-red-50 rounded text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                  </div>
                 </td>
               </tr>
-            ) : (
-              filtered.map((bs) => (
-                <tr key={bs.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700">
-                    <div>{bs.name}</div>
-                    {bs.alias && (
-                      <div className="text-[10px] text-gray-400 font-normal">Alias: {bs.alias}</div>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
-                    {bs.type === "additive" ? (
-                      <span className="text-blue-600 font-medium">Add (+)</span>
-                    ) : (
-                      <span className="text-red-600 font-medium">Sub (-)</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
-                    {bs.nature.replace("_", " ")}
-                  </td>
-                  <td
-                    className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[200px] truncate"
-                    title={getAccountName(bs.accountHeadId)}
-                  >
-                    {getAccountName(bs.accountHeadId)}
-                  </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                    {bs.defaultValue > 0 ? (
-                      <span>
-                        {bs.defaultValue}
-                        {bs.nature === "percentage" ? "%" : ""}
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        bs.isActive
-                          ? "bg-green-100 text-green-700 border border-green-200"
-                          : "bg-red-100 text-red-700 border border-red-200"
-                      }`}
-                    >
-                      {bs.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleOpenEdit(bs)}
-                        title="Edit"
-                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteRequest(bs.id)}
-                        title="Delete"
-                        className="text-gray-400 hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+            ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={8} className="py-12 text-center text-[12px] text-gray-500">No bill sundries found</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* ── Add / Edit Modal ─────────────────────────────────────────────────── */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-2xl shadow-xl flex flex-col max-h-[90vh]">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg flex-shrink-0">
-              <h2 className="text-[14px] font-semibold text-gray-800">
-                {editingId ? "Edit Bill Sundry" : "New Bill Sundry"}
-              </h2>
-              <button
-                type="button"
-                onClick={handleCloseForm}
-                className="text-gray-400 hover:text-gray-700 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-[15px] font-semibold text-gray-800">{editItem ? "Modify Bill Sundry" : "Add Bill Sundry"}</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
-
-            <form
-              onSubmit={handleSubmit}
-              className="flex-1 overflow-y-auto p-4 flex flex-col gap-4"
-            >
-              <div className="grid grid-cols-2 gap-3 border-b border-gray-100 pb-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">Name *</label>
-                  <input
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => setField("name", e.target.value)}
-                    placeholder="e.g. VAT, Freight Charges"
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">Alias</label>
-                  <input
-                    type="text"
-                    value={form.alias}
-                    onChange={(e) => setField("alias", e.target.value)}
-                    placeholder="Short name or code"
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Bill Sundry Type *
-                  </label>
-                  <select
-                    value={form.type}
-                    onChange={(e) => setField("type", e.target.value as any)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  >
-                    <option value="additive">Additive (+)</option>
-                    <option value="subtractive">Subtractive (-)</option>
+            <div className="p-4 space-y-3">
+              <div>
+                <label className={labelCls}>Name *</label>
+                <input value={F.name} onChange={e => setF("name", e.target.value)} className={`${inputCls} w-full`} placeholder="e.g. Freight, Discount, Round Off+" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Bill Sundry Type</label>
+                  <select value={F.type} onChange={e => setF("type", e.target.value)} className={`${inputCls} w-full`}>
+                    <option value={BillSundryType.ADDITIVE}>Additive (+) — Increases bill</option>
+                    <option value={BillSundryType.DEDUCTIVE}>Deductive (-) — Decreases bill</option>
                   </select>
                 </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Bill Sundry Nature *
-                  </label>
-                  <select
-                    value={form.nature}
-                    onChange={(e) => setField("nature", e.target.value as any)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  >
-                    <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Absolute Amount</option>
-                    <option value="per_unit">Per Unit Rate</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">Default Value</label>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    value={form.defaultValue}
-                    onChange={(e) => setField("defaultValue", Number(e.target.value))}
-                    className="h-8 px-2.5 font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-medium text-gray-600">
-                    Account Head to Post (Optional)
-                  </label>
-                  <select
-                    value={form.accountHeadId}
-                    onChange={(e) => setField("accountHeadId", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  >
-                    <option value="">— Do not post to account —</option>
-                    {activeAccounts.map((a: any) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name}
-                      </option>
+                <div>
+                  <label className={labelCls}>Nature</label>
+                  <select value={F.nature} onChange={e => setF("nature", e.target.value)} className={`${inputCls} w-full`}>
+                    {Object.values(BillSundryNature).map(n => (
+                      <option key={n} value={n}>{n.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</option>
                     ))}
                   </select>
                 </div>
               </div>
-
-              {/* Behavior Settings */}
-              <div className="flex flex-col gap-2 pt-2">
-                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Behavior & Costing
-                </span>
-
-                <div className="flex flex-col gap-2 mt-1">
-                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={form.affectsCostInSale}
-                      onChange={(e) => setField("affectsCostInSale", e.target.checked)}
-                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                    />
-                    <span className="text-[12px] font-medium text-gray-700">
-                      Affects Cost of Goods Sold (COGS)
-                    </span>
-                  </label>
-
-                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={form.affectsCostInPurchase}
-                      onChange={(e) => setField("affectsCostInPurchase", e.target.checked)}
-                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                    />
-                    <span className="text-[12px] font-medium text-gray-700">
-                      Affects Cost of Goods Purchased (Landed Cost)
-                    </span>
-                  </label>
-
-                  <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={form.isActive}
-                      onChange={(e) => setField("isActive", e.target.checked)}
-                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                    />
-                    <span className="text-[12px] font-medium text-gray-700">Active Status</span>
-                  </label>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Accounting in Sale</label>
+                  <select value={F.accountingInSale || ""} onChange={e => setF("accountingInSale", e.target.value)} className={`${inputCls} w-full`}>
+                    <option value="">— Select Account —</option>
+                    {accounts.filter(a => !a.isGroup && a.isActive).map(a => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Accounting in Purchase</label>
+                  <select value={F.accountingInPurchase || ""} onChange={e => setF("accountingInPurchase", e.target.value)} className={`${inputCls} w-full`}>
+                    <option value="">— Select Account —</option>
+                    {accounts.filter(a => !a.isGroup && a.isActive).map(a => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
-
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-2 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={handleCloseForm}
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
-                >
-                  <Save className="h-3.5 w-3.5" />
-                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Bill Sundry"}
-                </button>
+              <div className="grid grid-cols-2 gap-4 pt-1">
+                {[
+                  { key: "affectCostInSale", label: "Affect Cost in Sale" },
+                  { key: "affectCostInPurchase", label: "Affect Cost in Purchase" },
+                  { key: "affectAccountingInStockTransfer", label: "Affect in Stock Transfer" },
+                  { key: "gstApplicable", label: "GST Applicable" },
+                  { key: "isActive", label: "Active" },
+                ].map(({ key, label }) => (
+                  <label key={key} className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!(F as any)[key]} onChange={e => setF(key as any, e.target.checked)} className="rounded" />
+                    <span className="text-[12px] text-gray-700">{label}</span>
+                  </label>
+                ))}
               </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ── Delete Confirmation Modal ─────────────────────────────────────────── */}
-      {deleteTargetId && deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800">Delete Bill Sundry</h2>
             </div>
-            <div className="p-4">
-              <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete{" "}
-                <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? This
-                action cannot be undone.
-              </p>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setDeleteTargetId(null)}
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDeleteConfirm}
-                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
+              <button onClick={() => setShowModal(false)} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50">Cancel</button>
+              <button onClick={handleSave} className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md hover:bg-[#0f4a96]">Save (F2)</button>
             </div>
           </div>
         </div>

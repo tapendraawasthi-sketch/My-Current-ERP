@@ -1,151 +1,188 @@
 // src/pages/StockLedgerReport.tsx
-// @ts-nocheck
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { Download } from "lucide-react";
-import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
-import type { DBItem, DBStockMovement, DBMaterialCentre } from "../lib/db";
-
-const TYPE_LABELS: Record<string, string> = {
-  purchase: "Purchase", sales: "Sales", sales_return: "Sales Return", purchase_return: "Purchase Return",
-  stock_journal_in: "SJ-In", stock_journal_out: "SJ-Out",
-  stock_transfer_in: "Transfer In", stock_transfer_out: "Transfer Out",
-  production_in: "Production In", production_out: "Production Out",
-  physical_stock_adjustment: "Physical Adj", opening: "Opening",
-};
+import { Download, RefreshCw } from "lucide-react";
+import { formatNumber } from "../lib/utils";
 
 export default function StockLedgerReport() {
-  const store = useStore();
-  const items: DBItem[] = store.items || [];
-  const movements: DBStockMovement[] = store.stockMovements || [];
-  const mcs: DBMaterialCentre[] = store.materialCentres || [];
-
-  const [itemId, setItemId] = useState("");
-  const [mcId, setMcId] = useState("");
-  const [fromDate, setFromDate] = useState(() => { const d = new Date(); d.setMonth(d.getMonth() - 1); return d.toISOString().split("T")[0]; });
+  const { items, stockMovements } = useStore();
+  const [selectedItem, setSelectedItem] = useState("");
+  const [fromDate, setFromDate] = useState(() => {
+    const d = new Date();
+    d.setDate(1);
+    return d.toISOString().split("T")[0];
+  });
   const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const [showZeroStock, setShowZeroStock] = useState(true);
 
-  useEffect(() => { store.loadItems?.(); store.loadAllInventoryVouchers?.(); store.loadMaterialCentres?.(); }, []);
+  const ledgerData = useMemo(() => {
+    if (!selectedItem) return null;
+    const item = (items || []).find((i: any) => i.id === selectedItem);
+    if (!item) return null;
 
-  const selectedItem = items.find((i) => i.id === itemId);
+    const allMovements = (stockMovements || []).filter((m: any) => m.itemId === selectedItem);
 
-  const ledger = useMemo(() => {
-    if (!itemId) return [];
-    const filtered = movements
-      .filter((m) => m.itemId === itemId && (!mcId || m.mcId === mcId) && m.date >= fromDate && m.date <= toDate)
-      .sort((a, b) => a.date.localeCompare(b.date));
-    let runningQty = 0;
-    const beforePeriod = movements.filter((m) => m.itemId === itemId && (!mcId || m.mcId === mcId) && m.date < fromDate);
-    runningQty = beforePeriod.reduce((s, m) => s + m.qtyIn - m.qtyOut, 0);
-    const rows = [];
-    if (runningQty !== 0 || true) rows.push({ isOpening: true, date: fromDate, narration: "Opening Balance", qtyIn: 0, qtyOut: 0, balance: runningQty, type: "opening" });
-    for (const m of filtered) {
-      runningQty += m.qtyIn - m.qtyOut;
-      rows.push({ ...m, balance: runningQty, isOpening: false });
-    }
-    return rows;
-  }, [itemId, mcId, fromDate, toDate, movements]);
+    // Opening balance — movements BEFORE fromDate
+    const openingMovements = allMovements.filter((m: any) => m.date < fromDate);
+    const openingQty = openingMovements.reduce((s: number, m: any) => {
+      const qty = Number(m.quantity || m.qty || 0);
+      const t = String(m.type || m.movementType || "").toLowerCase();
+      return (t.includes("in") || t.includes("purchase") || t.includes("opening") || t.includes("received")) ? s + qty : s - qty;
+    }, 0);
+    const openingValue = openingMovements.reduce((s: number, m: any) => {
+      const qty = Number(m.quantity || m.qty || 0);
+      const rate = Number(m.rate || m.costRate || 0);
+      const t = String(m.type || m.movementType || "").toLowerCase();
+      return (t.includes("in") || t.includes("purchase") || t.includes("opening") || t.includes("received")) ? s + qty * rate : s - qty * rate;
+    }, 0);
 
-  const totals = useMemo(() => ({
-    qtyIn: ledger.filter((r: any) => !r.isOpening).reduce((s: number, r: any) => s + (r.qtyIn || 0), 0),
-    qtyOut: ledger.filter((r: any) => !r.isOpening).reduce((s: number, r: any) => s + (r.qtyOut || 0), 0),
-    closing: ledger.length > 0 ? ledger[ledger.length - 1].balance : 0,
-  }), [ledger]);
+    // Movements within date range
+    const movements = allMovements
+      .filter((m: any) => m.date >= fromDate && m.date <= toDate)
+      .sort((a: any, b: any) => a.date.localeCompare(b.date));
 
-  const handleExport = () => {
-    if (!ledger.length) return;
-    const rows = ledger.map((r: any) => ({
-      Date: r.date,
-      Type: TYPE_LABELS[r.type] || r.type,
-      "Reference No": r.referenceNo || "",
-      Party: r.partyName || "",
-      Narration: r.narration || "",
-      "Qty In": r.qtyIn || "",
-      "Qty Out": r.qtyOut || "",
-      Balance: r.balance,
-      Rate: r.rate || "",
-      Value: r.value || "",
-    }));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Stock Ledger");
-    XLSX.writeFile(wb, `StockLedger_${selectedItem?.name}_${fromDate}.xlsx`);
-    toast.success("Exported");
-  };
+    let runningQty = openingQty;
+    let runningValue = openingValue;
 
-  const inp = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:border-[#1557b0]";
+    const rows = movements.map((m: any) => {
+      const qty = Number(m.quantity || m.qty || 0);
+      const rate = Number(m.rate || m.costRate || 0);
+      const t = String(m.type || m.movementType || "").toLowerCase();
+      const isIn = t.includes("in") || t.includes("purchase") || t.includes("opening") || t.includes("received");
+      const inQty = isIn ? qty : 0;
+      const outQty = isIn ? 0 : qty;
+      runningQty += isIn ? qty : -qty;
+      runningValue += isIn ? qty * rate : -(qty * rate);
+
+      return {
+        date: m.date,
+        particular: m.type || m.referenceType || "Movement",
+        referenceNo: m.referenceNo || m.voucherNo || "—",
+        inQty,
+        outQty,
+        rate,
+        inValue: inQty * rate,
+        outValue: outQty * rate,
+        balance: Math.max(0, runningQty),
+        balanceValue: Math.max(0, runningValue),
+      };
+    });
+
+    return { openingQty, openingValue, rows, item };
+  }, [selectedItem, items, stockMovements, fromDate, toDate]);
+
+  const inputCls = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
   return (
     <div className="p-4 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
-        <div><h1 className="text-[15px] font-semibold text-gray-800">Stock Ledger</h1><p className="text-[11px] text-gray-500 mt-0.5">Item-wise transaction ledger with running balance</p></div>
-        <button onClick={handleExport} disabled={!ledger.length} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md flex items-center gap-1.5 hover:bg-gray-50 disabled:opacity-40"><Download className="h-3.5 w-3.5" /> Export</button>
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock Ledger Report</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Item-wise detailed movement history with running balance (IN/OUT transactions)</p>
+        </div>
+        <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+          <Download className="h-3.5 w-3.5" /> Export
+        </button>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex items-center gap-3 flex-wrap shadow-sm">
-        <div><label className="text-[10px] font-medium text-gray-500 block mb-0.5">Item *</label>
-          <select value={itemId} onChange={(e) => setItemId(e.target.value)} className={`${inp} w-56`}>
-            <option value="">— Select Item —</option>
-            {items.filter((i) => i.isActive && i.maintainStock !== false).map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
-          </select>
-        </div>
-        {store.inventoryConfig?.enableMultiGodown && (
-          <div><label className="text-[10px] font-medium text-gray-500 block mb-0.5">Godown</label>
-            <select value={mcId} onChange={(e) => setMcId(e.target.value)} className={`${inp} w-40`}>
-              <option value="">All</option>
-              {mcs.filter((m) => m.isActive).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+      {/* Filters */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="md:col-span-2">
+            <label className={labelCls}>Select Item (F4)</label>
+            <select value={selectedItem} onChange={e => setSelectedItem(e.target.value)} className={`${inputCls} w-full`}>
+              <option value="">— Select Item to view ledger —</option>
+              {(items || []).filter((i: any) => i.isActive !== false).map((i: any) => (
+                <option key={i.id} value={i.id}>{i.name}</option>
+              ))}
             </select>
           </div>
-        )}
-        <div><label className="text-[10px] font-medium text-gray-500 block mb-0.5">From</label><input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className={inp} /></div>
-        <div><label className="text-[10px] font-medium text-gray-500 block mb-0.5">To</label><input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className={inp} /></div>
+          <div>
+            <label className={labelCls}>From Date</label>
+            <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className={`${inputCls} w-full`} />
+          </div>
+          <div>
+            <label className={labelCls}>To Date</label>
+            <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className={`${inputCls} w-full`} />
+          </div>
+          <div className="flex items-end pb-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={showZeroStock} onChange={e => setShowZeroStock(e.target.checked)} className="rounded" />
+              <span className="text-[12px] text-gray-700">Show Zero Stock</span>
+            </label>
+          </div>
+        </div>
       </div>
 
-      {!itemId && <div className="bg-white border border-gray-200 rounded-lg p-12 text-center text-[13px] text-gray-400 shadow-sm">Select an item to view its stock ledger</div>}
+      {selectedItem && ledgerData ? (
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          {/* Item Info Bar */}
+          <div className="px-4 py-2.5 border-b border-gray-200 bg-[#1557b0] text-white flex justify-between items-center">
+            <span className="text-[13px] font-semibold">{(ledgerData.item as any)?.name} — Stock Ledger</span>
+            <span className="text-[12px]">{fromDate} to {toDate}</span>
+          </div>
 
-      {itemId && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-          {selectedItem && (
-            <div className="px-4 py-3 bg-[#eef2ff] border-b border-[#c7d2fe] flex items-center justify-between">
-              <div>
-                <span className="text-[13px] font-bold text-[#1557b0]">{selectedItem.name}</span>
-                {selectedItem.alias && <span className="ml-2 text-[11px] text-gray-500">{selectedItem.alias}</span>}
-                <span className="ml-3 text-[11px] text-gray-600">Unit: {selectedItem.mainUnit}</span>
-              </div>
-              <div className="flex gap-4 text-[12px]">
-                <span>Total In: <strong className="text-green-600">{totals.qtyIn.toFixed(2)}</strong></span>
-                <span>Total Out: <strong className="text-red-600">{totals.qtyOut.toFixed(2)}</strong></span>
-                <span>Closing: <strong className="text-[#1557b0]">{totals.closing.toFixed(2)}</strong></span>
+          {/* Opening Balance */}
+          <div className="px-4 py-2.5 border-b border-gray-200 bg-amber-50 flex justify-between text-[12px]">
+            <span className="font-semibold text-amber-700">Opening Balance</span>
+            <div className="flex gap-6">
+              <span className="text-amber-700">Qty: <strong className="font-mono">{formatNumber(ledgerData.openingQty)}</strong></span>
+              <span className="text-amber-700">Value: <strong className="font-mono">Rs. {formatNumber(ledgerData.openingValue)}</strong></span>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[900px]">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  {["Date", "Particular", "Reference No.", "IN Qty", "OUT Qty", "Rate", "IN Value", "OUT Value", "Balance Qty", "Balance Value"].map(h => (
+                    <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {ledgerData.rows.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 text-[12px] text-gray-600">{row.date}</td>
+                    <td className="px-3 py-2 text-[12px] text-gray-700 capitalize">{row.particular.replace(/-/g, " ")}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-[#1557b0]">{row.referenceNo}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right text-green-700">{row.inQty > 0 ? formatNumber(row.inQty) : "—"}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right text-red-600">{row.outQty > 0 ? formatNumber(row.outQty) : "—"}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right">{row.rate > 0 ? formatNumber(row.rate) : "—"}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right text-green-700">{row.inValue > 0 ? `Rs. ${formatNumber(row.inValue)}` : "—"}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right text-red-600">{row.outValue > 0 ? `Rs. ${formatNumber(row.outValue)}` : "—"}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right font-bold">{formatNumber(row.balance)}</td>
+                    <td className="px-3 py-2 text-[12px] font-mono text-right font-bold">Rs. {formatNumber(row.balanceValue)}</td>
+                  </tr>
+                ))}
+                {ledgerData.rows.length === 0 && (
+                  <tr>
+                    <td colSpan={10} className="py-8 text-center text-[12px] text-gray-500">
+                      No movements found for selected period
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Closing Balance Footer */}
+          {ledgerData.rows.length > 0 && (
+            <div className="px-4 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-bold text-gray-800">
+              <span>Closing Balance</span>
+              <div className="flex gap-8">
+                <span className="font-mono">{formatNumber(ledgerData.rows[ledgerData.rows.length - 1].balance)} {(ledgerData.item as any)?.unit || "Pcs"}</span>
+                <span className="font-mono">Rs. {formatNumber(ledgerData.rows[ledgerData.rows.length - 1].balanceValue)}</span>
               </div>
             </div>
           )}
-          <table className="w-full min-w-[800px]">
-            <thead><tr className="bg-[#f5f6fa] border-b border-gray-200">
-              {["Date", "Type", "Ref No", "Party", "Qty In", "Qty Out", "Balance", "Rate", "Godown"].map((h) => (
-                <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
-              ))}
-            </tr></thead>
-            <tbody>
-              {ledger.map((r: any, idx: number) => (
-                <tr key={idx} className={`border-b border-gray-100 ${r.isOpening ? "bg-blue-50/40 font-semibold" : "hover:bg-gray-50"}`}>
-                  <td className="px-3 py-2 text-[12px] text-gray-700">{r.date}</td>
-                  <td className="px-3 py-2 text-[11px]">
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${r.type === "purchase" || r.type === "stock_journal_in" || r.type === "production_in" || r.type === "stock_transfer_in" ? "bg-green-50 text-green-700 border border-green-200" : r.isOpening ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
-                      {TYPE_LABELS[r.type] || r.type}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 font-mono text-[11px] text-gray-500">{r.referenceNo || "—"}</td>
-                  <td className="px-3 py-2 text-[12px] text-gray-700">{r.partyName || "—"}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[12px] text-green-600 font-semibold">{r.qtyIn > 0 ? r.qtyIn.toFixed(2) : "—"}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[12px] text-red-500 font-semibold">{r.qtyOut > 0 ? r.qtyOut.toFixed(2) : "—"}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-gray-800">{r.balance.toFixed(2)}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-500">{r.rate ? r.rate.toFixed(2) : "—"}</td>
-                  <td className="px-3 py-2 text-[12px] text-gray-500">{r.mcName || "—"}</td>
-                </tr>
-              ))}
-              {ledger.length === 0 && <tr><td colSpan={9} className="p-8 text-center text-[12px] text-gray-400">No transactions found for selected filters.</td></tr>}
-            </tbody>
-          </table>
+        </div>
+      ) : (
+        <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+          <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+          <p className="text-[13px] font-medium text-gray-500">Select an item to view its stock ledger</p>
+          <p className="text-[11px] text-gray-400 mt-1">Shows all IN/OUT transactions with running balance — drill-down to voucher level</p>
         </div>
       )}
     </div>

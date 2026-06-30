@@ -1,818 +1,366 @@
-// @ts-nocheck
-import React, { useState, useMemo, useEffect } from "react";
-import { useStore } from "../store/useStore";
-import { Card, Badge, Button, Input, Select, ActionToolbar } from "../components/ui";
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  X,
-  Save,
-  Settings,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+// src/pages/VoucherTypeMaster.tsx
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { VOUCHER_TYPE_LABELS, getVoucherGroupForType } from "../lib/voucherUtils";
+import { Plus, Edit2, Settings, ChevronRight } from "lucide-react";
+import { NumberingType, RenumberingFrequency, RoundOffMode } from "../lib/busyTypes";
+import { getDB } from "../lib/db";
 
-const VoucherTypeMaster: React.FC = () => {
-  const {
-    voucherTypeMasters,
-    addVoucherTypeMaster,
-    updateVoucherTypeMaster,
-    deleteVoucherTypeMaster,
-    loadVoucherTypeMasters,
-  } = useStore();
+interface VoucherSeriesItem {
+  id: string;
+  voucherType: string;
+  seriesName: string;
+  description: string;
+  numberingType: NumberingType;
+  renumberingFrequency: RenumberingFrequency;
+  embedYearInVchNo: "no" | "prefix" | "suffix";
+  prefix: string;
+  suffix: string;
+  startingNumber: number;
+  currentNumber: number;
+  // Features
+  enableSettlement: boolean;
+  autoRoundOff: boolean;
+  roundOffMode: RoundOffMode;
+  itemwiseDescription: boolean;
+  itemwiseDescriptionLines: number;
+  itemwiseDiscount: boolean;
+  separateBillingShipping: boolean;
+  billSundryNarration: boolean;
+  enableAdvancedPOS: boolean;
+  pickItemFromBarcode: boolean;
+  consolidateItemsOnSave: boolean;
+  sendSMSEmail: boolean;
+  sendBNSNotification: boolean;
+  generateEInvoice: boolean;
+  showStockDuringEntry: boolean;
+  allowPurchaseReturnInPurchase: boolean;
+  isActive: boolean;
+}
 
-  const [showForm, setShowForm] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeGroupFilter, setActiveGroupFilter] = useState("all");
-  const [showAdvanced, setShowAdvanced] = useState(false);
+const VOUCHER_TYPES = [
+  "Sales", "Purchase", "Sales Return (Cr. Note)", "Purchase Return (Dr. Note)",
+  "Payment", "Receipt", "Journal", "Contra",
+  "Debit Note w/o Items", "Credit Note w/o Items",
+  "Stock Journal", "Physical Stock", "Stock Transfer",
+  "Material Issue to Party", "Material Receive from Party",
+  "Production", "Unassemble",
+];
 
-  const [form, setForm] = useState({
-    name: "",
-    alias: "",
-    abbreviation: "",
-    parentVoucherType: "",
-    voucherGroup: "",
-    isPredefined: false,
-    isActive: true,
-    numberingMethod: "automatic",
-    prefix: "",
-    suffix: "",
-    startingNumber: 1,
-    restartPeriod: "never",
-    preventDuplicateNumber: false,
-    allowManualOverride: false,
-    warnOnDuplicate: true,
-    useEffectiveDate: false,
-    allowZeroValue: false,
-    optionalByDefault: false,
-    allowCommonNarration: true,
-    allowLedgerNarration: false,
-    printAfterSaving: false,
-    useForPOS: false,
-    defaultPrintTitle: "",
-    defaultBankLedgerId: "",
-    defaultJurisdiction: "",
-    declarationText: "",
-    enableDefaultAllocations: false,
-    whatsAppAfterSaving: false,
+const DEFAULT_SERIES: Omit<VoucherSeriesItem, "id">[] = [
+  { voucherType: "Sales", seriesName: "Tax Invoice", description: "Standard tax invoice for sales", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "SI-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: true, autoRoundOff: true, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: true, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: true, allowPurchaseReturnInPurchase: false, isActive: true },
+  { voucherType: "Purchase", seriesName: "Purchase Invoice", description: "Standard purchase voucher", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "PUR-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: false, autoRoundOff: true, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: true, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: true, allowPurchaseReturnInPurchase: true, isActive: true },
+  { voucherType: "Payment", seriesName: "Payment", description: "Payment voucher", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "PAY-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: false, autoRoundOff: false, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: false, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: false, allowPurchaseReturnInPurchase: false, isActive: true },
+  { voucherType: "Receipt", seriesName: "Receipt", description: "Receipt voucher", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "REC-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: false, autoRoundOff: false, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: false, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: false, allowPurchaseReturnInPurchase: false, isActive: true },
+  { voucherType: "Journal", seriesName: "Journal", description: "Journal voucher", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "JV-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: false, autoRoundOff: false, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: false, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: false, allowPurchaseReturnInPurchase: false, isActive: true },
+  { voucherType: "Contra", seriesName: "Contra", description: "Cash/Bank transfers", numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY, embedYearInVchNo: "prefix", prefix: "CON-", suffix: "", startingNumber: 1, currentNumber: 1, enableSettlement: false, autoRoundOff: false, roundOffMode: RoundOffMode.AUTOMATIC, itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: false, separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false, pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false, sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: false, allowPurchaseReturnInPurchase: false, isActive: true },
+];
+
+export default function VoucherTypeMaster() {
+  const [series, setSeries] = useState<VoucherSeriesItem[]>([]);
+  const [selectedType, setSelectedType] = useState<string>("Sales");
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState<VoucherSeriesItem | null>(null);
+  const [activeTab, setActiveTab] = useState<"numbering" | "features">("numbering");
+  const [form, setForm] = useState<Omit<VoucherSeriesItem, "id">>({
+    voucherType: "Sales", seriesName: "", description: "",
+    numberingType: NumberingType.AUTOMATIC, renumberingFrequency: RenumberingFrequency.YEARLY,
+    embedYearInVchNo: "prefix", prefix: "", suffix: "", startingNumber: 1, currentNumber: 1,
+    enableSettlement: false, autoRoundOff: false, roundOffMode: RoundOffMode.AUTOMATIC,
+    itemwiseDescription: false, itemwiseDescriptionLines: 1, itemwiseDiscount: false,
+    separateBillingShipping: false, billSundryNarration: false, enableAdvancedPOS: false,
+    pickItemFromBarcode: false, consolidateItemsOnSave: false, sendSMSEmail: false,
+    sendBNSNotification: false, generateEInvoice: false, showStockDuringEntry: true,
+    allowPurchaseReturnInPurchase: false, isActive: true,
   });
 
-  useEffect(() => {
-    loadVoucherTypeMasters();
-  }, []);
+  useEffect(() => { loadSeries(); }, []);
 
-  const filteredVoucherTypes = useMemo(() => {
-    return voucherTypeMasters
-      .filter((vtm) => {
-        const matchesSearch =
-          vtm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          vtm.abbreviation?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          vtm.parentVoucherType.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const matchesGroup = activeGroupFilter === "all" || vtm.voucherGroup === activeGroupFilter;
-
-        return matchesSearch && matchesGroup;
-      })
-      .sort((a, b) => {
-        if (a.isPredefined && !b.isPredefined) return -1;
-        if (!a.isPredefined && b.isPredefined) return 1;
-        return a.name.localeCompare(b.name);
-      });
-  }, [voucherTypeMasters, searchTerm, activeGroupFilter]);
-
-  const activeCount = useMemo(() => {
-    return filteredVoucherTypes.filter((vtm) => vtm.isActive).length;
-  }, [filteredVoucherTypes]);
-
-  const handleFormChange = (field: string, value: any) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-
-    // Auto-update voucherGroup when parentVoucherType changes
-    if (field === "parentVoucherType") {
-      const group = getVoucherGroupForType(value);
-      setForm((prev) => ({ ...prev, voucherGroup: group }));
-    }
-  };
-
-  const resetForm = () => {
-    setForm({
-      name: "",
-      alias: "",
-      abbreviation: "",
-      parentVoucherType: "",
-      voucherGroup: "",
-      isPredefined: false,
-      isActive: true,
-      numberingMethod: "automatic",
-      prefix: "",
-      suffix: "",
-      startingNumber: 1,
-      restartPeriod: "never",
-      preventDuplicateNumber: false,
-      allowManualOverride: false,
-      warnOnDuplicate: true,
-      useEffectiveDate: false,
-      allowZeroValue: false,
-      optionalByDefault: false,
-      allowCommonNarration: true,
-      allowLedgerNarration: false,
-      printAfterSaving: false,
-      useForPOS: false,
-      defaultPrintTitle: "",
-      defaultBankLedgerId: "",
-      defaultJurisdiction: "",
-      declarationText: "",
-      enableDefaultAllocations: false,
-      whatsAppAfterSaving: false,
-    });
-    setSelected(null);
-    setShowForm(false);
-  };
-
-  const handleSubmit = async () => {
-    if (!form.name.trim()) {
-      toast.error("Voucher type name is required");
-      return;
-    }
-
-    if (!form.parentVoucherType) {
-      toast.error("Parent voucher type is required");
-      return;
-    }
-
+  const loadSeries = async () => {
     try {
-      // Auto-set voucher group based on parent type
-      const voucherGroup = getVoucherGroupForType(form.parentVoucherType);
-      const formData = { ...form, voucherGroup };
-
-      if (selected && selected.isPredefined) {
-        // For predefined types, only allow specific fields to be updated
-        const allowedFields = [
-          "isActive",
-          "printAfterSaving",
-          "useForPOS",
-          "defaultPrintTitle",
-          "defaultBankLedgerId",
-          "defaultJurisdiction",
-          "declarationText",
-          "allowCommonNarration",
-          "allowLedgerNarration",
-          "whatsAppAfterSaving",
-        ];
-
-        const filteredData: any = {};
-        allowedFields.forEach((field) => {
-          filteredData[field] = formData[field];
-        });
-
-        await updateVoucherTypeMaster(selected.id, filteredData);
-      } else if (selected) {
-        await updateVoucherTypeMaster(selected.id, formData);
+      const db = getDB();
+      if (db.voucherSeriesConfig) {
+        const data = await db.voucherSeriesConfig.toArray();
+        if (data.length === 0) {
+          const seeded = DEFAULT_SERIES.map((d, i) => ({ ...d, id: `vs-${i}` }));
+          await db.voucherSeriesConfig.bulkPut(seeded);
+          setSeries(seeded);
+        } else setSeries(data);
       } else {
-        await addVoucherTypeMaster(formData);
+        setSeries(DEFAULT_SERIES.map((d, i) => ({ ...d, id: `vs-${i}` })));
       }
-
-      toast.success("Voucher type saved successfully");
-      resetForm();
-    } catch (error) {
-      toast.error(error.message || "Failed to save voucher type");
+    } catch {
+      setSeries(DEFAULT_SERIES.map((d, i) => ({ ...d, id: `vs-${i}` })));
     }
   };
 
-  const loadFormForEdit = (record: any) => {
-    setForm({
-      ...record,
-      parentVoucherType: record.parentVoucherType,
-      voucherGroup: record.voucherGroup,
-      isPredefined: record.isPredefined,
-      numberingMethod: record.numberingMethod || "automatic",
-      startingNumber: record.startingNumber || 1,
-      restartPeriod: record.restartPeriod || "never",
-    });
-    setSelected(record);
-    setShowForm(true);
-    // Scroll to form
-    setTimeout(() => {
-      const formElement = document.getElementById("voucher-type-form");
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: "smooth" });
+  const filteredSeries = series.filter(s => s.voucherType === selectedType);
+
+  const openAdd = () => {
+    setEditItem(null);
+    setForm({ ...form, voucherType: selectedType, seriesName: `${selectedType} ${filteredSeries.length + 1}`, prefix: selectedType.substring(0, 3).toUpperCase() + "-" });
+    setActiveTab("numbering");
+    setShowModal(true);
+  };
+
+  const openEdit = (item: VoucherSeriesItem) => {
+    setEditItem(item);
+    const { id, ...rest } = item;
+    setForm(rest);
+    setActiveTab("numbering");
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.seriesName.trim()) { toast.error("Series name is required"); return; }
+    const totalLen = form.prefix.length + form.suffix.length + String(form.startingNumber).length;
+    if (totalLen > 16) { toast.error("Total voucher number length cannot exceed 16 characters"); return; }
+    try {
+      const db = getDB();
+      if (editItem) {
+        const updated = { ...editItem, ...form };
+        if (db.voucherSeriesConfig) await db.voucherSeriesConfig.put(updated);
+        setSeries(prev => prev.map(s => s.id === editItem.id ? updated : s));
+        toast.success("Voucher Series updated");
+      } else {
+        const newItem: VoucherSeriesItem = { ...form, id: `vs-${Date.now()}` };
+        if (db.voucherSeriesConfig) await db.voucherSeriesConfig.put(newItem);
+        setSeries(prev => [...prev, newItem]);
+        toast.success("Voucher Series added");
       }
-    }, 100);
+      setShowModal(false);
+    } catch { toast.error("Failed to save"); }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete voucher type "${name}"?`)) {
-      return;
-    }
+  const setF = (k: keyof typeof form, v: any) => setForm(prev => ({ ...prev, [k]: v }));
+  const inputCls = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
-    try {
-      await deleteVoucherTypeMaster(id);
-      toast.success("Voucher type deleted successfully");
-    } catch (error) {
-      toast.error(error.message || "Failed to delete voucher type");
-    }
+  const previewVchNo = () => {
+    const yr = new Date().getFullYear().toString().slice(-2);
+    const num = String(form.startingNumber).padStart(4, "0");
+    if (form.embedYearInVchNo === "prefix") return `${form.prefix}${yr}-${num}${form.suffix}`;
+    if (form.embedYearInVchNo === "suffix") return `${form.prefix}${num}-${yr}${form.suffix}`;
+    return `${form.prefix}${num}${form.suffix}`;
   };
 
-  const toggleActive = async (record: any) => {
-    try {
-      const updatedRecord = { ...record, isActive: !record.isActive };
-      await updateVoucherTypeMaster(record.id, { isActive: !record.isActive });
-      toast.success(
-        `Voucher type ${updatedRecord.isActive ? "activated" : "deactivated"} successfully`,
-      );
-    } catch (error) {
-      toast.error(error.message || "Failed to update voucher type status");
-    }
-  };
-
-  const voucherTypeOptions = Object.entries(VOUCHER_TYPE_LABELS).map(([value, label]) => ({
-    value,
-    label,
-  }));
-
-  const groupColors: Record<string, string> = {
-    accounting: "bg-blue-100 text-blue-700",
-    inventory: "bg-green-100 text-green-700",
-    order: "bg-orange-100 text-orange-700",
-    payroll: "bg-purple-100 text-purple-700",
-    other: "bg-gray-100 text-gray-700",
-  };
+  const featureToggles = [
+    { key: "enableSettlement", label: "Enable Settlement Details", desc: "Settlement window at save (cash/cheque/card at billing time)" },
+    { key: "autoRoundOff", label: "Auto Round Off Final Amount", desc: "Automatically round invoice total" },
+    { key: "itemwiseDescription", label: "Item-wise Description", desc: "Multiple description lines per item" },
+    { key: "itemwiseDiscount", label: "Item-wise Discount", desc: "Discount % and amount columns in item grid" },
+    { key: "separateBillingShipping", label: "Separate Billing/Shipping Details", desc: "Billing To and Shipping To addresses for GST Place of Supply" },
+    { key: "billSundryNarration", label: "Bill Sundry-wise Narration", desc: "Narration per bill sundry line" },
+    { key: "enableAdvancedPOS", label: "Enable Advanced POS Data Entry", desc: "Barcode-based fast billing" },
+    { key: "pickItemFromBarcode", label: "Pick Item Names from Barcode", desc: "Scan barcode to auto-pick item" },
+    { key: "consolidateItemsOnSave", label: "Consolidate Items While Saving", desc: "Merge duplicate items" },
+    { key: "sendSMSEmail", label: "Send SMS/Email After Saving", desc: "Auto communication to party" },
+    { key: "sendBNSNotification", label: "Send Notification to BNS App", desc: "Push notification to owner's mobile" },
+    { key: "generateEInvoice", label: "Generate E-Invoice After Saving", desc: "Auto-push to GST portal" },
+    { key: "showStockDuringEntry", label: "Show Stock During Entry", desc: "Stock balance visible in item dropdown" },
+    { key: "allowPurchaseReturnInPurchase", label: "Allow Purchase Return in Purchase", desc: "Enter negative quantity for returns" },
+  ];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-green-700 flex items-center gap-2">
-            <Settings className="w-6 h-6" />
-            Voucher Type Master
-          </h1>
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Voucher Series Configuration</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Configure voucher numbering, features, settlement, round-off for each voucher type and series</p>
         </div>
+      </div>
 
-        <ActionToolbar className="mb-4">
-          <Button
-            variant="primary"
-            onClick={() => {
-              resetForm();
-              setShowForm(true);
-            }}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            New Voucher Type
-          </Button>
-
-          <Input
-            placeholder="Search voucher types..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-xs"
-          />
-        </ActionToolbar>
-
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            className={`px-3 py-1 rounded-full text-sm ${
-              activeGroupFilter === "all"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-            onClick={() => setActiveGroupFilter("all")}
-          >
-            All
-          </button>
-          {["accounting", "inventory", "order", "payroll", "other"].map((group) => (
+      <div className="flex gap-4">
+        {/* Left: Voucher Types */}
+        <div className="w-56 bg-white border border-gray-200 rounded-lg overflow-hidden shrink-0">
+          <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Voucher Types</div>
+          {VOUCHER_TYPES.map(vt => (
             <button
-              key={group}
-              className={`px-3 py-1 rounded-full text-sm capitalize ${
-                activeGroupFilter === group
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-              onClick={() => setActiveGroupFilter(group)}
+              key={vt}
+              onClick={() => setSelectedType(vt)}
+              className={`w-full text-left px-3 py-2 text-[12px] flex items-center justify-between border-b border-gray-100 last:border-0 transition-colors ${selectedType === vt ? "bg-[#1557b0] text-white" : "text-gray-700 hover:bg-gray-50"}`}
             >
-              {group}
+              <span>{vt}</span>
+              <div className="flex items-center gap-1">
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${selectedType === vt ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"}`}>
+                  {series.filter(s => s.voucherType === vt).length}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+              </div>
             </button>
           ))}
         </div>
 
-        <p className="text-sm text-gray-600">
-          {filteredVoucherTypes.length} Voucher Types ({activeCount} active)
-        </p>
+        {/* Right: Series List */}
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[13px] font-semibold text-gray-800">{selectedType} — Series Configuration</h2>
+            <button onClick={openAdd} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5">
+              <Plus className="h-3.5 w-3.5" /> Add Series
+            </button>
+          </div>
+
+          {filteredSeries.length === 0 ? (
+            <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+              <Settings className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+              <p className="text-[13px] font-medium text-gray-500">No series configured for {selectedType}</p>
+              <p className="text-[11px] text-gray-400 mt-1">Click "Add Series" to create a new voucher series</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredSeries.map(item => (
+                <div key={item.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-[13px] font-semibold text-gray-800">{item.seriesName}</h3>
+                      <p className="text-[11px] text-gray-500 mt-0.5">{item.description}</p>
+                      <div className="flex items-center gap-3 mt-2 text-[11px] text-gray-600">
+                        <span>Prefix: <strong className="font-mono">{item.prefix || "—"}</strong></span>
+                        <span>Current: <strong className="font-mono">#{item.currentNumber}</strong></span>
+                        <span>Numbering: <strong>{item.numberingType}</strong></span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {item.enableSettlement && <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold border border-blue-100">Settlement</span>}
+                        {item.autoRoundOff && <span className="px-2 py-0.5 bg-green-50 text-green-700 rounded text-[10px] font-semibold border border-green-100">Auto Round-off</span>}
+                        {item.itemwiseDiscount && <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded text-[10px] font-semibold border border-amber-100">Item Discount</span>}
+                        {item.generateEInvoice && <span className="px-2 py-0.5 bg-purple-50 text-purple-700 rounded text-[10px] font-semibold border border-purple-100">E-Invoice</span>}
+                        {item.enableAdvancedPOS && <span className="px-2 py-0.5 bg-orange-50 text-orange-700 rounded text-[10px] font-semibold border border-orange-100">POS</span>}
+                      </div>
+                    </div>
+                    <button onClick={() => openEdit(item)} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+                      <Edit2 className="h-3.5 w-3.5" /> Configure
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Form Panel */}
-      {showForm && (
-        <Card className="mb-6" id="voucher-type-form">
-          <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4">
-              {selected ? "Edit Voucher Type" : "New Voucher Type"}
-            </h2>
-
-            {selected?.isPredefined && (
-              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md mb-4 text-sm text-yellow-700">
-                (Predefined type — some fields restricted)
-              </div>
-            )}
-
-            {/* Basic Details Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between shrink-0">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Voucher Type Name*
-                </label>
-                <Input
-                  value={form.name}
-                  onChange={(e) => handleFormChange("name", e.target.value)}
-                  disabled={selected?.isPredefined}
-                  placeholder="Enter voucher type name"
-                />
+                <h2 className="text-[15px] font-semibold text-gray-800">{editItem ? "Modify" : "Add"} Voucher Series — {form.voucherType}</h2>
+                <p className="text-[11px] text-gray-500 mt-0.5">Preview: <span className="font-mono font-semibold text-[#1557b0]">{previewVchNo()}</span></p>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alias</label>
-                <Input
-                  value={form.alias}
-                  onChange={(e) => handleFormChange("alias", e.target.value)}
-                  disabled={selected?.isPredefined}
-                  placeholder="Enter alias"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
-                <Input
-                  value={form.abbreviation}
-                  onChange={(e) => handleFormChange("abbreviation", e.target.value.slice(0, 5))}
-                  disabled={selected?.isPredefined}
-                  placeholder="Max 5 chars"
-                  maxLength={5}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Type of Voucher / Parent*
-                </label>
-                <Select
-                  value={form.parentVoucherType}
-                  onChange={(value) => handleFormChange("parentVoucherType", value)}
-                  disabled={selected?.isPredefined}
-                  options={voucherTypeOptions}
-                  placeholder="Select parent type"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Voucher Group
-                </label>
-                <Input
-                  value={form.voucherGroup}
-                  readOnly
-                  placeholder="Auto-filled from parent"
-                  className="bg-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Active</label>
-                <Select
-                  value={form.isActive ? "true" : "false"}
-                  onChange={(value) => handleFormChange("isActive", value === "true")}
-                  options={[
-                    { value: "true", label: "Yes" },
-                    { value: "false", label: "No" },
-                  ]}
-                />
-              </div>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
 
-            {/* Numbering Section */}
-            <div className="border-t pt-4 mb-4">
-              <div
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setShowAdvanced(!showAdvanced)}
-              >
-                <h3 className="font-medium text-gray-900">Numbering</h3>
-                {showAdvanced ? <ChevronUp /> : <ChevronDown />}
-              </div>
+            <div className="flex border-b border-gray-200 shrink-0">
+              {(["numbering", "features"] as const).map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2.5 text-[12px] font-medium capitalize border-b-2 transition-colors ${activeTab === tab ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+                  {tab === "numbering" ? "Numbering & Basic" : "Features & Options"}
+                </button>
+              ))}
+            </div>
 
-              {showAdvanced && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Method of Numbering
-                    </label>
-                    <Select
-                      value={form.numberingMethod}
-                      onChange={(value) => handleFormChange("numberingMethod", value)}
-                      options={[
-                        { value: "automatic", label: "Automatic" },
-                        { value: "manual", label: "Manual" },
-                        { value: "multi-user-automatic", label: "Multi-User Automatic" },
-                        { value: "none", label: "None" },
-                      ]}
-                    />
+            <div className="flex-1 overflow-y-auto p-4">
+              {activeTab === "numbering" && (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={labelCls}>Series Name *</label>
+                      <input value={form.seriesName} onChange={e => setF("seriesName", e.target.value)} className={`${inputCls} w-full`} placeholder="e.g. Tax Invoice, Retail Sale" />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Description</label>
+                      <input value={form.description} onChange={e => setF("description", e.target.value)} className={`${inputCls} w-full`} placeholder="Optional description" />
+                    </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={labelCls}>Numbering Type</label>
+                      <select value={form.numberingType} onChange={e => setF("numberingType", e.target.value)} className={`${inputCls} w-full`}>
+                        <option value={NumberingType.AUTOMATIC}>Automatic</option>
+                        <option value={NumberingType.MANUAL}>Manual</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Renumbering Frequency</label>
+                      <select value={form.renumberingFrequency} onChange={e => setF("renumberingFrequency", e.target.value)} className={`${inputCls} w-full`}>
+                        <option value={RenumberingFrequency.NEVER}>Never</option>
+                        <option value={RenumberingFrequency.DAILY}>Daily</option>
+                        <option value={RenumberingFrequency.MONTHLY}>Monthly</option>
+                        <option value={RenumberingFrequency.YEARLY}>Yearly</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className={labelCls}>Prefix</label>
+                      <input value={form.prefix} onChange={e => setF("prefix", e.target.value)} className={`${inputCls} w-full`} placeholder="e.g. SI-, TAX/" maxLength={8} />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Suffix</label>
+                      <input value={form.suffix} onChange={e => setF("suffix", e.target.value)} className={`${inputCls} w-full`} placeholder="Optional suffix" maxLength={4} />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Starting Number</label>
+                      <input type="number" value={form.startingNumber} onChange={e => setF("startingNumber", +e.target.value)} className={`${inputCls} w-full`} min={1} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Embed Year in Voucher Number</label>
+                    <select value={form.embedYearInVchNo} onChange={e => setF("embedYearInVchNo", e.target.value)} className={`${inputCls} w-full`}>
+                      <option value="no">No</option>
+                      <option value="prefix">As Prefix (year before number)</option>
+                      <option value="suffix">As Suffix (year after number)</option>
+                    </select>
+                  </div>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-[12px] text-blue-700">
+                    <strong>Preview:</strong> <span className="font-mono font-bold">{previewVchNo()}</span>
+                    <span className="text-[10px] ml-2 text-blue-500">(Total: {previewVchNo().length} chars, max 16)</span>
+                    {previewVchNo().length > 16 && <span className="text-red-600 ml-2">⚠ Exceeds 16 character limit!</span>}
+                  </div>
+                </div>
+              )}
 
-                  {(form.numberingMethod === "automatic" ||
-                    form.numberingMethod === "multi-user-automatic") && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Starting Number
-                        </label>
-                        <Input
-                          type="number"
-                          value={form.startingNumber}
-                          onChange={(e) =>
-                            handleFormChange("startingNumber", parseInt(e.target.value) || 1)
-                          }
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Prefix
-                        </label>
-                        <Input
-                          value={form.prefix}
-                          onChange={(e) => handleFormChange("prefix", e.target.value)}
-                          placeholder="e.g., SI-"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Suffix
-                        </label>
-                        <Input
-                          value={form.suffix}
-                          onChange={(e) => handleFormChange("suffix", e.target.value)}
-                          placeholder="e.g., -INV"
-                        />
-                      </div>
-                    </>
+              {activeTab === "features" && (
+                <div className="space-y-2">
+                  {featureToggles.map(({ key, label, desc }) => (
+                    <div key={key} className="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                      <input
+                        type="checkbox"
+                        id={key}
+                        checked={!!(form as any)[key]}
+                        onChange={e => setF(key as any, e.target.checked)}
+                        className="mt-0.5 rounded"
+                      />
+                      <label htmlFor={key} className="cursor-pointer flex-1">
+                        <div className="text-[12px] font-medium text-gray-800">{label}</div>
+                        <div className="text-[11px] text-gray-500 mt-0.5">{desc}</div>
+                      </label>
+                    </div>
+                  ))}
+                  {form.autoRoundOff && (
+                    <div className="p-3 border border-green-200 bg-green-50 rounded-lg">
+                      <label className={labelCls}>Round Off Mode</label>
+                      <select value={form.roundOffMode} onChange={e => setF("roundOffMode", e.target.value)} className={`${inputCls} w-full`}>
+                        <option value={RoundOffMode.AUTOMATIC}>Automatic (nearest)</option>
+                        <option value={RoundOffMode.ALWAYS_UPPER}>Always Upper (ceiling)</option>
+                        <option value={RoundOffMode.ALWAYS_LOWER}>Always Lower (floor)</option>
+                      </select>
+                    </div>
                   )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Restart Numbering
-                    </label>
-                    <Select
-                      value={form.restartPeriod}
-                      onChange={(value) => handleFormChange("restartPeriod", value)}
-                      options={[
-                        { value: "never", label: "Never" },
-                        { value: "daily", label: "Daily" },
-                        { value: "monthly", label: "Monthly" },
-                        { value: "yearly", label: "Financial Year" },
-                        { value: "financial-year", label: "Financial Year" },
-                      ]}
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={form.preventDuplicateNumber}
-                      onChange={(e) => handleFormChange("preventDuplicateNumber", e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <label className="text-sm font-medium text-gray-700">
-                      Prevent Duplicate Numbers
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={form.allowManualOverride}
-                      onChange={(e) => handleFormChange("allowManualOverride", e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <label className="text-sm font-medium text-gray-700">
-                      Allow Manual Override
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={form.warnOnDuplicate}
-                      onChange={(e) => handleFormChange("warnOnDuplicate", e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <label className="text-sm font-medium text-gray-700">Warn on Duplicate</label>
-                  </div>
+                  {form.itemwiseDescription && (
+                    <div className="p-3 border border-blue-200 bg-blue-50 rounded-lg">
+                      <label className={labelCls}>Description Lines per Item</label>
+                      <input type="number" value={form.itemwiseDescriptionLines} onChange={e => setF("itemwiseDescriptionLines", +e.target.value)} className={`${inputCls} w-32`} min={1} max={5} />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Behavior Section */}
-            <div className="border-t pt-4 mb-4">
-              <div className="flex items-center justify-between cursor-pointer">
-                <h3 className="font-medium text-gray-900">Behavior</h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.useEffectiveDate}
-                    onChange={(e) => handleFormChange("useEffectiveDate", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">Use Effective Dates</label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.allowZeroValue}
-                    onChange={(e) => handleFormChange("allowZeroValue", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Allow Zero Value Transactions
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.optionalByDefault}
-                    onChange={(e) => handleFormChange("optionalByDefault", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Make Optional by Default
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.allowCommonNarration}
-                    onChange={(e) => handleFormChange("allowCommonNarration", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Allow Common Narration
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.allowLedgerNarration}
-                    onChange={(e) => handleFormChange("allowLedgerNarration", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Allow Ledger Narration
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Printing Section */}
-            <div className="border-t pt-4 mb-4">
-              <h3 className="font-medium text-gray-900 mb-2">Printing</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.printAfterSaving}
-                    onChange={(e) => handleFormChange("printAfterSaving", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">Print After Saving</label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.useForPOS}
-                    onChange={(e) => handleFormChange("useForPOS", e.target.checked)}
-                    disabled={form.parentVoucherType !== "sales-invoice"}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">Use for POS Invoicing</label>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Default Print Title
-                  </label>
-                  <Input
-                    value={form.defaultPrintTitle}
-                    onChange={(e) => handleFormChange("defaultPrintTitle", e.target.value)}
-                    placeholder="e.g., Sales Invoice"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Default Jurisdiction
-                  </label>
-                  <Input
-                    value={form.defaultJurisdiction}
-                    onChange={(e) => handleFormChange("defaultJurisdiction", e.target.value)}
-                    placeholder="e.g., Nepal"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Declaration Text
-                  </label>
-                  <textarea
-                    value={form.declarationText}
-                    onChange={(e) => handleFormChange("declarationText", e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    placeholder="Enter declaration text..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Sharing Section */}
-            <div className="border-t pt-4 mb-4">
-              <h3 className="font-medium text-gray-900 mb-2">Sharing</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.whatsAppAfterSaving}
-                    onChange={(e) => handleFormChange("whatsAppAfterSaving", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Send via WhatsApp After Saving
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={form.enableDefaultAllocations}
-                    onChange={(e) => handleFormChange("enableDefaultAllocations", e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Enable Default Allocations
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Form Buttons */}
-            <div className="flex space-x-2 pt-4 border-t">
-              <Button variant="primary" onClick={handleSubmit} className="flex items-center gap-2">
-                <Save className="w-4 h-4" />
-                Save
-              </Button>
-              <Button variant="secondary" onClick={resetForm} className="flex items-center gap-2">
-                <X className="w-4 h-4" />
-                Cancel
-              </Button>
+            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 shrink-0">
+              <button onClick={() => setShowModal(false)} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50">Cancel (Esc)</button>
+              <button onClick={handleSave} className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md hover:bg-[#0f4a96]">Save (F2)</button>
             </div>
           </div>
-        </Card>
-      )}
-
-      {/* List Section */}
-      <Card>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  #
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Parent Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Group
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Abbr
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Method
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Active
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredVoucherTypes.map((vtm, index) => (
-                <tr key={vtm.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{vtm.name}</div>
-                    {vtm.alias && <div className="text-sm text-gray-500">{vtm.alias}</div>}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {VOUCHER_TYPE_LABELS[vtm.parentVoucherType] || vtm.parentVoucherType}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant="outline" className={groupColors[vtm.voucherGroup]}>
-                      {vtm.voucherGroup}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {vtm.abbreviation}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {vtm.numberingMethod
-                      .replace(/-/g, " ")
-                      .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={vtm.isActive ? "success" : "destructive"}>
-                      {vtm.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => loadFormForEdit(vtm)}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={() => toggleActive(vtm)}
-                        className={
-                          vtm.isActive
-                            ? "text-red-600 hover:text-red-900"
-                            : "text-green-600 hover:text-green-900"
-                        }
-                        title={vtm.isActive ? "Deactivate" : "Activate"}
-                      >
-                        {vtm.isActive ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </button>
-
-                      {vtm.isPredefined ? (
-                        <button
-                          disabled
-                          className="text-gray-400 cursor-not-allowed"
-                          title="Predefined types cannot be deleted"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleDelete(vtm.id, vtm.name)}
-                          className="text-red-600 hover:text-red-900"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-
-        {filteredVoucherTypes.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No voucher types found. Create your first voucher type using the "New Voucher Type"
-            button.
-          </div>
-        )}
-      </Card>
+      )}
     </div>
   );
-};
-
-export default VoucherTypeMaster;
+}

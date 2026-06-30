@@ -1,353 +1,227 @@
-import React, { useState, useMemo } from "react";
-import { useStore } from "../store";
+// src/pages/StandardNarrationMaster.tsx
+import React, { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
-import { DBStandardNarration } from "../lib/db";
-import { Plus, Pencil, Trash2, X, Save, Search, MessageSquare } from "lucide-react";
+import { Plus, Edit2, Trash2, Search } from "lucide-react";
+import { getDB } from "../lib/db";
 
-// ─── Empty form template ──────────────────────────────────────────────────────
+interface StandardNarration {
+  id: string;
+  text: string;
+  category: string;
+  voucherTypes: string[];
+  isActive: boolean;
+}
 
-const emptyForm = (): Omit<DBStandardNarration, "id"> => ({
-  voucherType: "all",
-  narration: "",
-  isActive: true,
-});
+const CATEGORIES = ["General", "Sales", "Purchase", "Payment", "Receipt", "Journal", "Contra", "Stock"];
+const VOUCHER_TYPES = ["All", "Sales", "Purchase", "Payment", "Receipt", "Journal", "Contra", "Stock Journal"];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const DEFAULTS: Omit<StandardNarration, "id">[] = [
+  { text: "Being goods sold as per tax invoice", category: "Sales", voucherTypes: ["Sales"], isActive: true },
+  { text: "Being goods purchased as per invoice", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
+  { text: "Being payment made against invoice", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being receipt received against invoice", category: "Receipt", voucherTypes: ["Receipt"], isActive: true },
+  { text: "Being cash deposited into bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
+  { text: "Being cash withdrawn from bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
+  { text: "Being salary paid for the month", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being rent paid for premises", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being goods returned by customer", category: "Sales", voucherTypes: ["Sales"], isActive: true },
+  { text: "Being goods returned to supplier", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
+  { text: "Being stock adjusted per physical count", category: "Stock", voucherTypes: ["Stock Journal"], isActive: true },
+  { text: "Being depreciation charged on fixed assets", category: "Journal", voucherTypes: ["Journal"], isActive: true },
+];
 
 export default function StandardNarrationMaster() {
-  const {
-    standardNarrations,
-    addStandardNarration,
-    updateStandardNarration,
-    deleteStandardNarration,
-  } = useStore();
+  const [narrations, setNarrations] = useState<StandardNarration[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState<StandardNarration | null>(null);
+  const [form, setForm] = useState<Omit<StandardNarration, "id">>({
+    text: "", category: "General", voucherTypes: ["All"], isActive: true
+  });
 
-  // ── UI state ────────────────────────────────────────────────────────────────
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [form, setForm] = useState(emptyForm());
-  const [saving, setSaving] = useState(false);
+  useEffect(() => { loadNarrations(); }, []);
 
-  // ── Derived data ────────────────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    if (!q) return standardNarrations;
-    return standardNarrations.filter(
-      (sn) => sn.narration.toLowerCase().includes(q) || sn.voucherType.toLowerCase().includes(q),
-    );
-  }, [standardNarrations, search]);
-
-  const deleteTarget = useMemo(
-    () => standardNarrations.find((sn) => sn.id === deleteTargetId) ?? null,
-    [standardNarrations, deleteTargetId],
-  );
-
-  // ── Handlers ────────────────────────────────────────────────────────────────
-
-  const handleOpenCreate = () => {
-    setEditingId(null);
-    setForm(emptyForm());
-    setShowForm(true);
-  };
-
-  const handleOpenEdit = (sn: DBStandardNarration) => {
-    setEditingId(sn.id);
-    setForm({
-      voucherType: sn.voucherType || "all",
-      narration: sn.narration,
-      isActive: sn.isActive,
-    });
-    setShowForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setShowForm(false);
-    setEditingId(null);
-    setForm(emptyForm());
-  };
-
-  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
-
-  const validate = (): string | null => {
-    if (!form.narration.trim()) return "Narration text is required.";
-    return null;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const err = validate();
-    if (err) {
-      toast.error(err);
-      return;
-    }
-
-    setSaving(true);
+  const loadNarrations = async () => {
     try {
-      const payload = {
-        voucherType: form.voucherType,
-        narration: form.narration.trim(),
-        isActive: form.isActive,
-      };
-
-      if (editingId) {
-        await updateStandardNarration(editingId, payload);
-        toast.success("Standard narration updated successfully.");
+      const db = getDB();
+      if (db.standardNarrations) {
+        const data = await db.standardNarrations.toArray();
+        if (data.length === 0) {
+          const seeded = DEFAULTS.map((d, i) => ({ ...d, id: `sn-${i}` }));
+          await db.standardNarrations.bulkPut(seeded);
+          setNarrations(seeded);
+        } else setNarrations(data);
       } else {
-        await addStandardNarration(payload);
-        toast.success("Standard narration added successfully.");
+        setNarrations(DEFAULTS.map((d, i) => ({ ...d, id: `sn-${i}` })));
       }
-      handleCloseForm();
     } catch {
-      toast.error("Failed to save. Please try again.");
-    } finally {
-      setSaving(false);
+      setNarrations(DEFAULTS.map((d, i) => ({ ...d, id: `sn-${i}` })));
     }
   };
 
-  const handleDeleteRequest = (id: string) => setDeleteTargetId(id);
+  const filtered = useMemo(() =>
+    narrations.filter(n => {
+      const matchSearch = n.text.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchCat = categoryFilter === "All" || n.category === categoryFilter;
+      return matchSearch && matchCat;
+    }), [narrations, searchTerm, categoryFilter]);
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
+  const openAdd = () => {
+    setEditItem(null);
+    setForm({ text: "", category: "General", voucherTypes: ["All"], isActive: true });
+    setShowModal(true);
+  };
+
+  const openEdit = (item: StandardNarration) => {
+    setEditItem(item);
+    const { id, ...rest } = item;
+    setForm(rest);
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.text.trim()) { toast.error("Narration text is required"); return; }
     try {
-      await deleteStandardNarration(deleteTargetId);
-      toast.success("Standard narration deleted.");
-    } catch {
-      toast.error("Failed to delete standard narration.");
-    } finally {
-      setDeleteTargetId(null);
-    }
+      const db = getDB();
+      if (editItem) {
+        const updated = { ...editItem, ...form };
+        if (db.standardNarrations) await db.standardNarrations.put(updated);
+        setNarrations(prev => prev.map(n => n.id === editItem.id ? updated : n));
+        toast.success("Narration updated");
+      } else {
+        const newItem: StandardNarration = { ...form, id: `sn-${Date.now()}` };
+        if (db.standardNarrations) await db.standardNarrations.put(newItem);
+        setNarrations(prev => [...prev, newItem]);
+        toast.success("Narration added");
+      }
+      setShowModal(false);
+    } catch { toast.error("Failed to save"); }
   };
 
-  // ── Render ───────────────────────────────────────────────────────────────────
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this narration?")) return;
+    try {
+      const db = getDB();
+      if (db.standardNarrations) await db.standardNarrations.delete(id);
+      setNarrations(prev => prev.filter(n => n.id !== id));
+      toast.success("Deleted");
+    } catch { toast.error("Failed to delete"); }
+  };
+
+  const inputCls = "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
-      {/* Page header */}
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Standard Narrations</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Pre-defined reusable remarks for voucher entries
-          </p>
+          <h1 className="text-[15px] font-semibold text-gray-800">Standard Narration Master</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Pre-defined narrations — press F4 in vouchers to pick from list</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleOpenCreate}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New Narration
-          </button>
-        </div>
+        <button onClick={openAdd} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5">
+          <Plus className="h-3.5 w-3.5" /> Add Narration
+        </button>
       </div>
 
-      {/* Search bar */}
-      <div className="flex items-center gap-3">
-        <div className="relative">
-          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search narrations..."
-            className="w-64 h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-          />
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="p-3 border-b border-gray-200 flex items-center gap-3 flex-wrap">
+          <div className="relative">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-2.5 text-gray-400" />
+            <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search narrations..." className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md w-56 focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20" />
+          </div>
+          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className={inputCls}>
+            <option value="All">All Categories</option>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <span className="text-[11px] text-gray-500">{filtered.length} narrations</span>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">
-                Voucher Type
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Narration Text
-              </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                Status
-              </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                Actions
-              </th>
+              {["Narration Text", "Category", "Voucher Types", "Status", "Actions"].map(h => (
+                <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-3 py-10 text-center text-gray-500 text-[12px]">
-                  <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {search
-                    ? "No results found."
-                    : "No standard narrations yet. Create your first template."}
+          <tbody className="divide-y divide-gray-100">
+            {filtered.map(item => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.text}</td>
+                <td className="px-3 py-2.5 text-[12px]">
+                  <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">{item.category}</span>
+                </td>
+                <td className="px-3 py-2.5 text-[11px] text-gray-500">{item.voucherTypes.join(", ")}</td>
+                <td className="px-3 py-2.5">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${item.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                    {item.isActive ? "Active" : "Inactive"}
+                  </span>
+                </td>
+                <td className="px-3 py-2.5">
+                  <div className="flex gap-1">
+                    <button onClick={() => openEdit(item)} className="p-1.5 hover:bg-gray-100 rounded text-gray-500"><Edit2 className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 hover:bg-red-50 rounded text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                  </div>
                 </td>
               </tr>
-            ) : (
-              filtered.map((sn) => (
-                <tr key={sn.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2.5 font-medium text-[12px] text-gray-700 capitalize">
-                    {sn.voucherType === "all" ? "All Vouchers" : sn.voucherType}
-                  </td>
-                  <td
-                    className="px-3 py-2.5 text-[12px] text-gray-700 max-w-xl truncate"
-                    title={sn.narration}
-                  >
-                    {sn.narration}
-                  </td>
-                  <td className="px-3 py-2.5 text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        sn.isActive
-                          ? "bg-green-100 text-green-700 border border-green-200"
-                          : "bg-red-100 text-red-700 border border-red-200"
-                      }`}
-                    >
-                      {sn.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleOpenEdit(sn)}
-                        title="Edit"
-                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteRequest(sn.id)}
-                        title="Delete"
-                        className="text-gray-400 hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
+            ))}
+            {filtered.length === 0 && <tr><td colSpan={5} className="py-12 text-center text-[12px] text-gray-500">No narrations found</td></tr>}
           </tbody>
         </table>
       </div>
 
-      {/* ── Add / Edit Modal ─────────────────────────────────────────────────── */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800">
-                {editingId ? "Edit Standard Narration" : "New Standard Narration"}
-              </h2>
-              <button
-                type="button"
-                onClick={handleCloseForm}
-                className="text-gray-400 hover:text-gray-700 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-[15px] font-semibold text-gray-800">{editItem ? "Modify Narration" : "Add Narration"}</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
-
-            <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-600">Voucher Type</label>
-                <select
-                  value={form.voucherType}
-                  onChange={(e) => setField("voucherType", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                >
-                  <option value="all">All Vouchers</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Purchase">Purchase</option>
-                  <option value="Sales Return">Sales Return</option>
-                  <option value="Purchase Return">Purchase Return</option>
-                  <option value="Payment">Payment</option>
-                  <option value="Receipt">Receipt</option>
-                  <option value="Journal">Journal</option>
-                  <option value="Contra">Contra</option>
-                  <option value="Stock Transfer">Stock Transfer</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1 mt-1">
-                <label className="text-[11px] font-medium text-gray-600">Narration Text *</label>
+            <div className="p-4 space-y-3">
+              <div>
+                <label className={labelCls}>Narration Text *</label>
                 <textarea
-                  value={form.narration}
-                  onChange={(e) => setField("narration", e.target.value)}
-                  placeholder="Enter standard remark/narration here..."
-                  className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-h-[100px] resize-y"
-                  required
+                  value={form.text}
+                  onChange={e => setForm(p => ({ ...p, text: e.target.value }))}
+                  className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 resize-none"
+                  rows={3}
+                  placeholder="e.g. Being goods sold as per tax invoice"
                 />
               </div>
-
-              <div className="pt-1 mt-1">
-                <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={form.isActive}
-                    onChange={(e) => setField("isActive", e.target.checked)}
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-                  />
-                  <span className="text-[12px] font-medium text-gray-700">Active</span>
-                </label>
+              <div>
+                <label className={labelCls}>Category</label>
+                <select value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))} className={`${inputCls} w-full`}>
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
               </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200 mt-2">
-                <button
-                  type="button"
-                  onClick={handleCloseForm}
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-60"
-                >
-                  <Save className="h-3.5 w-3.5" />
-                  {saving ? "Saving..." : editingId ? "Save Changes" : "Add Narration"}
-                </button>
+              <div>
+                <label className={labelCls}>Applicable Voucher Types</label>
+                <div className="grid grid-cols-2 gap-1 mt-1">
+                  {VOUCHER_TYPES.map(vt => (
+                    <label key={vt} className="flex items-center gap-2 cursor-pointer p-1">
+                      <input
+                        type="checkbox"
+                        checked={form.voucherTypes.includes(vt)}
+                        onChange={e => {
+                          if (e.target.checked) setForm(p => ({ ...p, voucherTypes: [...p.voucherTypes, vt] }));
+                          else setForm(p => ({ ...p, voucherTypes: p.voucherTypes.filter(v => v !== vt) }));
+                        }}
+                        className="rounded"
+                      />
+                      <span className="text-[12px] text-gray-700">{vt}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ── Delete Confirmation Modal ─────────────────────────────────────────── */}
-      {deleteTargetId && deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-              <h2 className="text-[14px] font-semibold text-gray-800">Delete Standard Narration</h2>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.isActive} onChange={e => setForm(p => ({ ...p, isActive: e.target.checked }))} className="rounded" />
+                <span className="text-[12px] text-gray-700">Active</span>
+              </label>
             </div>
-            <div className="p-4">
-              <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete this narration template? This action cannot be
-                undone.
-              </p>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setDeleteTargetId(null)}
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDeleteConfirm}
-                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
+              <button onClick={() => setShowModal(false)} className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50">Cancel</button>
+              <button onClick={handleSave} className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md hover:bg-[#0f4a96]">Save</button>
             </div>
           </div>
         </div>

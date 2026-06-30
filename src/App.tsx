@@ -1,8 +1,8 @@
+// src/App.tsx
 import React, { useEffect } from "react";
 import { useStore } from "./store";
 import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
-import BusyMenuBar from "./components/BusyMenuBar";
 import Dashboard from "./pages/Dashboard";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import Warehouses from "./pages/Warehouses";
@@ -35,45 +35,44 @@ import FiscalYear from "./pages/FiscalYear";
 import AuditLog from "./pages/AuditLog";
 import IncomeExpenditureAccount from "./pages/IncomeExpenditureAccount";
 import AccountsConfiguration from "./pages/AccountsConfiguration";
-
-// ── Phase 4 new pages ─────────────────────────────────────────────────────────
 import SalesPersons from "./pages/SalesPersons";
 import PriceLists from "./pages/PriceLists";
 import UnitConversionMaster from "./pages/UnitConversionMaster";
-import StandardNarrationMaster from "./pages/StandardNarrationMaster";
-import BillSundryMaster from "./pages/BillSundryMaster";
 import JournalEntries from "./pages/JournalEntries";
 import DebitNoteVoucher from "./pages/DebitNoteVoucher";
 import CreditNoteVoucher from "./pages/CreditNoteVoucher";
 import PhysicalStockPage from "./pages/PhysicalStockPage";
 import CashFlowStatement from "./pages/CashFlowStatement";
-import FundsFlow from "./pages/FundsFlow";
-import EquityStatement from "./pages/EquityStatement";
 import RatioAnalysis from "./pages/RatioAnalysis";
 import FixedAssets from "./pages/FixedAssets";
 import BatchManagement from "./pages/BatchManagement";
 import PDCManagement from "./pages/PDCManagement";
 import Payroll from "./pages/Payroll";
 import BudgetVsActual from "./pages/BudgetVsActual";
-import MultiCurrency from "./pages/MultiCurrency";
-import CostCentre from "./pages/CostCentre";
-import ApprovalWorkflow from "./pages/ApprovalWorkflow";
-import StatutoryCompliance from "./pages/StatutoryCompliance";
 import RecurringVouchers from "./pages/RecurringVouchers";
 import FinancialDashboard from "./pages/FinancialDashboard";
 import GeneralLedger from "./pages/GeneralLedger";
 import VatReports from "./pages/VatReports";
 import BillingInvoice from "./pages/BillingInvoice";
 import PartyStatement from "./pages/PartyStatement";
-
-// ── Inventory & New Masters (Parts 1-13) ───────────────────────────────────
 import InventoryConfiguration from "./pages/InventoryConfiguration";
 import ItemGroupMaster from "./pages/ItemGroupMaster";
-import ItemMaster from "./pages/StockBook"; // StockBook serves as Item Master
-import BillOfMaterialMaster from "./pages/BOMProduction"; // BOMProduction is the BOM page
 import StockJournalPage from "./pages/StockJournalPage";
-import ProductionVoucherPage from "./pages/ProductionPage"; // ProductionPage exists
-import StockStatusReport from "./pages/InventoryReport"; // InventoryReport as stock status
+import ProductionPage from "./pages/ProductionPage";
+import InventoryReport from "./pages/InventoryReport";
+import SignUpWizard from "./components/auth/SignUpWizard";
+import GatewayScreen from "./components/auth/GatewayScreen";
+import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
+import BusyMenuBar from "./components/BusyMenuBar";
+// import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./components/BusyShell";
+
+// NEW BUSY FEATURE PAGES
+import BillSundryMaster from "./pages/BillSundryMaster";
+import SaleTypeMaster from "./pages/SaleTypeMaster";
+import PurchaseTypeMaster from "./pages/PurchaseTypeMaster";
+import TaxCategoryMaster from "./pages/TaxCategoryMaster";
+import VoucherTypeMaster from "./pages/VoucherTypeMaster";
+import StandardNarrationMaster from "./pages/StandardNarrationMaster";
 import MiscMasters from "./pages/MiscMasters";
 import SchemeMaster from "./pages/SchemeMaster";
 import OrderVoucherPage from "./pages/OrderVoucherPage";
@@ -82,13 +81,9 @@ import PhysicalStockPage2 from "./pages/PhysicalStockPage2";
 import StockLedgerReport from "./pages/StockLedgerReport";
 import SalesAnalysisReport from "./pages/SalesAnalysisReport";
 import StockSummaryReport from "./pages/StockSummaryReport";
-// ─── Auth screens (Tally-style stage machine) ─────────────────────────────────
-import SignUpWizard from "./components/auth/SignUpWizard";
-import GatewayScreen from "./components/auth/GatewayScreen";
-import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
 
 const App: React.FC = () => {
-  const { currentPage, authStage, initializeApp } = useStore();
+  const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
 
   useEffect(() => {
     initializeApp();
@@ -102,310 +97,173 @@ const App: React.FC = () => {
     return () => window.removeEventListener("navigate", handleNav as EventListener);
   }, []);
 
-  // ── Auth Stage Machine — single source of truth for what renders ──────────
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (document.activeElement as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      if (e.ctrlKey && e.key === "b") { e.preventDefault(); setCurrentPage("balance-sheet"); }
+      else if (e.ctrlKey && e.key === "t") { e.preventDefault(); setCurrentPage("trial-balance"); }
+      else if (e.ctrlKey && e.key === "l") { e.preventDefault(); setCurrentPage("ledger"); }
+      else if (e.ctrlKey && e.key === "g") { e.preventDefault(); setCurrentPage("vat-reports"); }
+      else if (e.ctrlKey && e.key === "u") { e.preventDefault(); setCurrentPage("users"); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [setCurrentPage]);
 
   if (authStage === "checking") {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: "#E4F1D9" }}
-      >
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
         <div className="text-center">
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              border: "4px solid #1557b0",
-              borderTopColor: "transparent",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-            }}
-            className="mx-auto mb-4"
-          />
-          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>
-            Loading Sutra ERP…
-          </p>
+          <div style={{ width: 40, height: 40, border: "4px solid #1557b0", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} className="mx-auto mb-4" />
+          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>Loading Sutra ERP</p>
         </div>
       </div>
     );
   }
 
-  if (authStage === "no-company") {
-    return (
-      <>
-        <Toaster position="top-right" />
-        <SignUpWizard />
-      </>
-    );
-  }
+  if (authStage === "no-company") return (<><Toaster position="top-right" /><SignUpWizard /></>);
+  if (authStage === "gateway") return (<><Toaster position="top-right" /><GatewayScreen /></>);
+  if (authStage === "company-login") return (<><Toaster position="top-right" /><CompanyLoginScreen /></>);
 
-  if (authStage === "gateway") {
-    return (
-      <>
-        <Toaster position="top-right" />
-        <GatewayScreen />
-      </>
-    );
-  }
-
-  if (authStage === "company-login") {
-    return (
-      <>
-        <Toaster position="top-right" />
-        <CompanyLoginScreen />
-      </>
-    );
-  }
-
-  // authStage === "authenticated" — render the full app shell
-
-  // ── Page resolver ─────────────────────────────────────────────────────────
   const renderPage = () => {
     switch (currentPage) {
-      // ── Masters ──────────────────────────────────────────────────────────
+      // Dashboard
       case "financial-dashboard":
-      case "dashboard":
-        return <FinancialDashboard />;
+      case "dashboard": return <FinancialDashboard />;
+
+      // Masters
       case "accounts":
-        return <ChartOfAccounts />;
-      case "cost-centers":
-        return <CostCenters />;
-      case "budget":
-        return <BudgetMaster />;
+      case "chart-of-accounts": return <ChartOfAccounts />;
       case "parties":
-        return <Parties />;
+      case "party-master": return <Parties />;
       case "item-master":
-        return <StockBook />;
-      case "batch-management":
-        return <BatchManagement />;
-      case "pdc-summary":
-        return <PDCManagement />;
-      case "pdc-management":
-        return <PDCManagement />;
-      case "warehouses":
-        return <Warehouses />;
-      case "units":
-        return <Units />;
+      case "items":
+      case "stock-book": return <StockBook />;
+      case "item-groups":
+      case "item-group-master": return <ItemGroupMaster />;
+      case "warehouses": return <Warehouses />;
+      case "units": return <Units />;
       case "unit-conversion":
-        return <UnitConversionMaster />;
-
-      // ── Phase 4 masters ───────────────────────────────────────────────────
-      case "sales-persons":
-        return <SalesPersons />;
-      case "price-lists":
-        return <PriceLists />;
+      case "unit-conversions": return <UnitConversionMaster />;
+      case "cost-centers":
+      case "cost-centre": return <CostCenters />;
+      case "sales-persons": return <SalesPersons />;
+      case "price-lists": return <PriceLists />;
       case "standard-narration":
-        return <StandardNarrationMaster />;
+      case "standard-narrations": return <StandardNarrationMaster />;
+      case "budget": return <BudgetMaster />;
+      case "batch-management":
+      case "batches": return <BatchManagement />;
+      case "pdc-summary":
+      case "pdc-management": return <PDCManagement />;
+
+      // NEW BUSY MASTERS
       case "bill-sundry":
-        return <BillSundryMaster />;
+      case "bill-sundries": return <BillSundryMaster />;
+      case "sale-type":
+      case "sale-types": return <SaleTypeMaster />;
+      case "purchase-type":
+      case "purchase-types": return <PurchaseTypeMaster />;
+      case "tax-category":
+      case "tax-categories": return <TaxCategoryMaster />;
+      case "voucher-types":
+      case "voucher-series-config": return <VoucherTypeMaster />;
+      case "schemes": return <SchemeMaster />;
+      case "misc-masters":
+      case "material-centres":
+      case "bill-of-material":
+      case "bom": return <MiscMasters />;
 
-      // ── Sales transactions ────────────────────────────────────────────────
+      // Sales Transactions
       case "billing":
-        return <BillingInvoice />;
-      case "sales":
-        return <SalesVoucher />;
-      case "sales-return":
-        return <BillingInvoice />;
-      case "delivery-challan":
-        return <DeliveryChallan />;
+      case "sales-return": return <BillingInvoice />;
+      case "sales": return <SalesVoucher />;
+      case "delivery-challan": return <DeliveryChallan />;
       case "quotation":
-        return <Quotation />;
-      case "sales-order":
-        return <SalesOrder />;
+      case "sales-quotation": return <QuotationPage type="sales_quotation" />;
+      case "sales-order": return <OrderVoucherPage type="sales_order" />;
 
-      // ── Purchase transactions ─────────────────────────────────────────────
+      // Purchase Transactions
       case "purchase":
-        return <PurchaseVoucher />;
-      case "purchase-return":
-        return <BillingInvoice />;
+      case "purchase-return": return <PurchaseVoucher />;
       case "goods-receipt":
-        return <GoodsReceiptNote />;
-      case "purchase-order":
-        return <PurchaseOrder />;
+      case "grn": return <GoodsReceiptNote />;
+      case "purchase-order": return <OrderVoucherPage type="purchase_order" />;
+      case "purchase-quotation": return <QuotationPage type="purchase_quotation" />;
 
-      // ── Inventory transactions ────────────────────────────────────────────
-      case "stock-transfer":
-        return <StockTransfer />;
-      case "physical-stock":
-        return <PhysicalStockPage />;
+      // Finance Vouchers
+      case "journal": return <JournalEntries />;
+      case "payment": return <PaymentVoucher />;
+      case "receipt": return <ReceiptVoucher />;
+      case "contra": return <ContraVoucher />;
+      case "debit-note": return <DebitNoteVoucher />;
+      case "credit-note": return <CreditNoteVoucher />;
+      case "recurring-vouchers": return <RecurringVouchers />;
 
-      // ── Finance / Accounts ────────────────────────────────────────────────
-      case "journal":
-        return <JournalEntries />;
-      case "payment":
-        return <PaymentVoucher />;
-      case "receipt":
-        return <ReceiptVoucher />;
-      case "contra":
-        return <ContraVoucher />;
-      case "debit-note":
-        return <DebitNoteVoucher />;
-      case "credit-note":
-        return <CreditNoteVoucher />;
+      // Inventory Vouchers
+      case "stock-transfer": return <StockTransfer />;
+      case "physical-stock": return <PhysicalStockPage2 />;
+      case "stock-journal": return <StockJournalPage />;
+      case "production": return <ProductionPage />;
 
-      // ── Financial reports ─────────────────────────────────────────────────
-      case "balance-sheet":
-        return <BalanceSheet />;
-      case "profit-loss":
-        return <ProfitLoss />;
-      case "income-expenditure":
-        return <IncomeExpenditureAccount />;
-      case "accounts-configuration":
-        return <AccountsConfiguration />;
-      case "trial-balance":
-        return <TrialBalance />;
-      case "day-book":
-        return <DayBook />;
-      case "payroll":
-        return <Payroll />;
-      case "salary-process":
-        return <Payroll />;
-      case "budget-vs-actual":
-        return <BudgetVsActual />;
-      case "multi-currency":
-        return <MultiCurrency />;
-      case "cost-centre":
-        return <CostCentre />;
-      case "approval-workflow":
-        return <ApprovalWorkflow />;
-      case "statutory-compliance":
-        return <StatutoryCompliance />;
-      case "recurring-vouchers":
-        return <RecurringVouchers />;
-      case "cash-flow":
-        return <CashFlowStatement />;
-      case "funds-flow":
-        return <FundsFlow />;
-      case "equity-statement":
-        return <EquityStatement />;
-      case "ratio-analysis":
-        return <RatioAnalysis />;
-      case "fixed-assets":
-        return <FixedAssets />;
+      // Financial Reports
+      case "balance-sheet": return <BalanceSheet />;
+      case "profit-loss": return <ProfitLoss />;
+      case "trial-balance": return <TrialBalance />;
+      case "day-book": return <DayBook />;
+      case "outstanding-receivables": return <OutstandingReceivables />;
+      case "outstanding-payables": return <OutstandingPayables />;
+      case "aging-report": return <AgingReport />;
+      case "interest-calculation": return <InterestCalculation />;
+      case "income-expenditure": return <IncomeExpenditureAccount />;
+      case "cash-flow": return <CashFlowStatement />;
+      case "ratio-analysis": return <RatioAnalysis />;
+      case "fixed-assets": return <FixedAssets />;
+      case "budget-vs-actual": return <BudgetVsActual />;
       case "ledger-report":
-        return <GeneralLedger />;
-      case "ledger":
-        return <GeneralLedger />;
+      case "ledger": return <GeneralLedger />;
+      case "party-statement": return <PartyStatement />;
+      
+      // Inventory Reports
+      case "stock-summary": return <StockSummaryReport />;
+      case "stock-status":
+      case "closing-stock":
+      case "inventory-report": return <InventoryReport />;
+      case "stock-ledger": return <StockLedgerReport />;
+      case "sales-analysis": return <SalesAnalysisReport />;
 
-      // ── GST / VAT reports ─────────────────────────────────────────────────
+      // GST / VAT Reports
       case "vat-reports":
-        return <VatReports />;
       case "gstr1":
       case "gstr2":
       case "gstr3b":
-      case "gst-summary":
-        return <VatReports />;
+      case "gst-summary": return <VatReports />;
 
-      // ── Party reports ─────────────────────────────────────────────────────
-      case "outstanding-receivables":
-        return <OutstandingReceivables />;
-      case "outstanding-payables":
-        return <OutstandingPayables />;
-      case "aging-report":
-        return <AgingReport />;
-      case "party-statement":
-        return <PartyStatement />;
-      case "interest-calculation":
-        return <InterestCalculation />;
-
-      // ── Inventory reports ─────────────────────────────────────────────────
-      case "stock-summary":
-        return <StockSummary />;
-
-      // ── Company / utilities ───────────────────────────────────────────────
-      case "fiscal-year":
-        return <FiscalYear />;
-      case "audit-log":
-        return <AuditLog />;
-
-      // ── Dashboard / fallback ──────────────────────────────────────────────
-      case "chart-of-accounts":
-        return <ChartOfAccounts />;
-      case "party-master":
-        return <Parties />;
-      case "stock-book":
-        return <StockBook />;
-      case "pos-mode":
-        return <BillingInvoice />;
-      case "approval-workflow":
-        return <ApprovalWorkflow />;
-      case "maker-checker":
-        return <ApprovalWorkflow />;
-
-      // ── Inventory Configuration ───────────────────────────────────────────
+      // Company / Utilities
+      case "fiscal-year": return <FiscalYear />;
+      case "audit-log": return <AuditLog />;
+      case "accounts-configuration": return <AccountsConfiguration />;
       case "inventory-config":
-        return <InventoryConfiguration />;
-      case "inventory-configuration":
-        return <InventoryConfiguration />;
+      case "inventory-configuration": return <InventoryConfiguration />;
+      case "payroll":
+      case "salary-process": return <Payroll />;
 
-      // ── Inventory Masters ─────────────────────────────────────────────────
-      case "item-groups":
-        return <ItemGroupMaster />;
-      case "item-group-master":
-        return <ItemGroupMaster />;
-      case "item-master":
-        return <ItemMaster />;
-      case "items":
-        return <ItemMaster />;
-      case "stock-book":
-        return <ItemMaster />;
-      case "bom":
-        return <BillOfMaterialMaster />;
-      case "bill-of-material":
-        return <BillOfMaterialMaster />;
-      case "schemes":
-        return <SchemeMaster />;
-      case "misc-masters":
-        return <MiscMasters />;
-      case "bill-sundry":
-        return <MiscMasters />;
-      case "warehouses":
-        return <MiscMasters />;
-      case "material-centres":
-        return <MiscMasters />;
-
-      // ── Inventory Vouchers ────────────────────────────────────────────────
-      case "stock-journal":
-        return <StockJournalPage />;
-      case "production":
-        return <ProductionVoucherPage />;
-      case "production-voucher":
-        return <ProductionVoucherPage />;
-      case "sales-order":
-        return <OrderVoucherPage type="sales_order" />;
-      case "purchase-order":
-        return <OrderVoucherPage type="purchase_order" />;
-      case "sales-quotation":
-        return <QuotationPage type="sales_quotation" />;
-      case "purchase-quotation":
-        return <QuotationPage type="purchase_quotation" />;
-      case "physical-stock":
-        return <PhysicalStockPage2 />;
-
-      // ── Inventory Reports ─────────────────────────────────────────────────
-      case "stock-status":
-        return <StockStatusReport />;
-      case "closing-stock":
-        return <StockStatusReport />;
-      case "stock-ledger":
-        return <StockLedgerReport />;
-      case "sales-analysis":
-        return <SalesAnalysisReport />;
-      case "stock-summary":
-        return <StockSummaryReport />;
-        
       default:
         return <Dashboard />;
     }
   };
 
-  // ── Shell ─────────────────────────────────────────────────────────────────
   return (
     <>
       <Toaster position="top-right" />
       <Layout>
         <div className="flex flex-col h-full">
-          <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">{renderPage()}</main>
+          <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">
+            {renderPage()}
+          </main>
         </div>
       </Layout>
     </>
