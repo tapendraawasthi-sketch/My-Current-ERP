@@ -1,1950 +1,682 @@
-// @ts-nocheck
-import React, { useState } from "react";
-import { useStore } from "../store/useStore";
-import { getDB, generateId } from "../lib/db";
-import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
-import { FolderOpen, Package, Briefcase, Building, Users, Heart, X } from "lucide-react";
+// src/pages/AccountGroupMaster.tsx
+// BUSY-style Account Group Master — Add / Modify / Delete / List with full hierarchy
 
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { useStore } from "../store/useStore";
+import toast from "react-hot-toast";
+import {
+  Plus, Edit2, Trash2, Search, ChevronRight, ChevronDown,
+  FolderOpen, Folder, Copy, Save, X, AlertTriangle, Info
+} from "lucide-react";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface AccountGroup {
+  id: string;
+  name: string;
+  alias?: string;
+  isPrimary: boolean;
+  parentGroupId?: string;
+  narration?: string;
+  isSystem: boolean;
+  nature: "debit" | "credit";
+  sortOrder?: number;
+  children?: AccountGroup[];
+  depth?: number;
+}
+
+// ── Predefined Primary Groups (BUSY-style) ────────────────────────────────────
+const PREDEFINED_GROUPS: Omit<AccountGroup, "children" | "depth">[] = [
+  { id: "pg-capital", name: "Capital Account", alias: "Capital", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-reserves", name: "Reserves & Surplus", alias: "Reserves", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-loans-liability", name: "Loans (Liability)", alias: "Loans-L", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-current-liability", name: "Current Liabilities", alias: "Curr-L", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-provisions", name: "Provisions", alias: "Prov", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-fixed-assets", name: "Fixed Assets", alias: "FA", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-current-assets", name: "Current Assets", alias: "Curr-A", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-investments", name: "Investments", alias: "Invest", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-loans-asset", name: "Loans & Advances (Asset)", alias: "Loans-A", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-direct-income", name: "Direct Income", alias: "Dir-Inc", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-indirect-income", name: "Indirect Income", alias: "Indir-Inc", isPrimary: true, isSystem: true, nature: "credit" },
+  { id: "pg-direct-expense", name: "Direct Expenses (Mfg.)", alias: "Dir-Exp", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-indirect-expense", name: "Indirect Expenses (Admn.)", alias: "Indir-Exp", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-purchase", name: "Purchase Accounts", alias: "Purchase", isPrimary: true, isSystem: true, nature: "debit" },
+  { id: "pg-suspense", name: "Suspense Account", alias: "Suspense", isPrimary: true, isSystem: true, nature: "debit" },
+];
+
+// ── Mode type ─────────────────────────────────────────────────────────────────
+type Mode = "list" | "add" | "modify";
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const NATURE_LABEL: Record<string, string> = {
+  debit: "Debit (Asset/Expense)",
+  credit: "Credit (Liability/Income)",
+};
+
+const inputCls = "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+
+// ── Main Component ────────────────────────────────────────────────────────────
 const AccountGroupMaster: React.FC = () => {
-  const { accounts, addAccount, updateAccount, deleteAccount } = useStore();
-  const [showTemplateSelector, setShowTemplateSelector] = useState(accounts.length === 0);
-  const [showForm, setShowForm] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState(null);
+  const { accounts, addAccount, updateAccount } = useStore() as any;
+  
+  // Local group state (loaded from store + predefined)
+  const [groups, setGroups] = useState<AccountGroup[]>([]);
+  const [mode, setMode] = useState<Mode>("list");
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("");
-  const [filterLevel, setFilterLevel] = useState("");
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["root"]));
+  const [clipboardGroup, setClipboardGroup] = useState<AccountGroup | null>(null);
 
   // Form state
   const [form, setForm] = useState({
-    code: "",
     name: "",
-    nameNepali: "",
-    type: "asset",
-    level: "group",
-    parentId: "",
-    openingBalanceDr: 0,
-    openingBalanceCr: 0,
     alias: "",
-    isGroup: false,
-    isActive: true,
-    creditLimit: 0,
-    interestRate: 0,
-    narrationTemplate: "",
-    tags: "",
+    isPrimary: false,
+    parentGroupId: "",
+    narration: "",
+    nature: "debit" as "debit" | "credit",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const nameRef = useRef<HTMLInputElement>(null);
 
-  const templates = [
-    {
-      id: "simple-trade",
-      name: "Simple Trade",
-      description:
-        "Basic shop setup with essential accounts for retail businesses. Includes Cash, Bank, Debtors, Creditors, Sales, Purchases, and common expenses.",
-      icon: <Package className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Cash",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Bank",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1200",
-          name: "Sundry Debtors",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Sundry Creditors",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Sales",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Purchases",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Operating Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1010",
-          name: "Petty Cash",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1000",
-        },
-        {
-          id: generateId(),
-          code: "1110",
-          name: "HBL Current Account",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "3010",
-          name: "Retail Sales",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "3000",
-        },
-        {
-          id: generateId(),
-          code: "4010",
-          name: "Purchases",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Rent Expense",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Utilities",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5030",
-          name: "Salaries",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-      ],
-    },
-    {
-      id: "manufacturing",
-      name: "Manufacturing",
-      description:
-        "Complete manufacturing setup with raw materials, work-in-progress, finished goods, factory overhead, and production cost tracking.",
-      icon: <Briefcase className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Investments",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1200",
-          name: "Current Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Current Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2100",
-          name: "Long-term Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Capital Account",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Cost of Sales",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6000",
-          name: "Operating Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1210",
-          name: "Raw Materials",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1220",
-          name: "Work in Process",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1230",
-          name: "Finished Goods",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1240",
-          name: "Sundry Debtors",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1250",
-          name: "Cash",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1260",
-          name: "Bank",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Direct Labour",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Factory Overhead",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "6010",
-          name: "Administrative Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6020",
-          name: "Selling Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-      ],
-    },
-    {
-      id: "nas-compliant",
-      name: "NAS Compliant",
-      description:
-        "Full Nepal Accounting Standards compliant chart of accounts with all required groups and ledgers for compliance reporting.",
-      icon: <Building className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Investments",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1200",
-          name: "Current Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1300",
-          name: "Loans and Advances",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Current Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2100",
-          name: "Long-term Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Capital Account",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3100",
-          name: "Reserves and Surplus",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Cost of Sales",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6000",
-          name: "Administrative Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6100",
-          name: "Selling Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6200",
-          name: "Finance Costs",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1010",
-          name: "Tangible Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1000",
-        },
-        {
-          id: generateId(),
-          code: "1020",
-          name: "Intangible Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1000",
-        },
-        {
-          id: generateId(),
-          code: "1210",
-          name: "Cash and Bank",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1220",
-          name: "Sundry Debtors",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1230",
-          name: "Inventory",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "1240",
-          name: "Advances",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: "1200",
-        },
-        {
-          id: generateId(),
-          code: "2010",
-          name: "Sundry Creditors",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: "2000",
-        },
-        {
-          id: generateId(),
-          code: "2020",
-          name: "Expenses Payable",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: "2000",
-        },
-        {
-          id: generateId(),
-          code: "2030",
-          name: "Taxes Payable",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: "2000",
-        },
-        {
-          id: generateId(),
-          code: "2110",
-          name: "Long-term Loans",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: "2100",
-        },
-        {
-          id: generateId(),
-          code: "4010",
-          name: "Sales Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "4020",
-          name: "Service Income",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Purchases",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Direct Labour",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "6010",
-          name: "Salaries and Wages",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6020",
-          name: "Rent",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6030",
-          name: "Utilities",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6040",
-          name: "Depreciation",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6110",
-          name: "Marketing Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6100",
-        },
-        {
-          id: generateId(),
-          code: "6210",
-          name: "Bank Interest",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: "6200",
-        },
-        {
-          id: generateId(),
-          code: "1011",
-          name: "Land",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1010",
-        },
-        {
-          id: generateId(),
-          code: "1012",
-          name: "Building",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1010",
-        },
-        {
-          id: generateId(),
-          code: "1013",
-          name: "Plant and Machinery",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1010",
-        },
-        {
-          id: generateId(),
-          code: "1014",
-          name: "Furniture and Fixtures",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1010",
-        },
-        {
-          id: generateId(),
-          code: "1021",
-          name: "Software",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1020",
-        },
-        {
-          id: generateId(),
-          code: "1211",
-          name: "Cash",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1210",
-        },
-        {
-          id: generateId(),
-          code: "1212",
-          name: "Bank",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1210",
-        },
-        {
-          id: generateId(),
-          code: "1221",
-          name: "Trade Debtors",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1220",
-        },
-        {
-          id: generateId(),
-          code: "1231",
-          name: "Raw Materials",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1230",
-        },
-        {
-          id: generateId(),
-          code: "1232",
-          name: "Work in Progress",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1230",
-        },
-        {
-          id: generateId(),
-          code: "1233",
-          name: "Finished Goods",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1230",
-        },
-        {
-          id: generateId(),
-          code: "2011",
-          name: "Trade Creditors",
-          type: "liability",
-          level: "ledger",
-          isGroup: false,
-          parentId: "2010",
-        },
-        {
-          id: generateId(),
-          code: "2031",
-          name: "VAT Payable",
-          type: "liability",
-          level: "ledger",
-          isGroup: false,
-          parentId: "2030",
-        },
-        {
-          id: generateId(),
-          code: "2032",
-          name: "TDS Payable",
-          type: "liability",
-          level: "ledger",
-          isGroup: false,
-          parentId: "2030",
-        },
-        {
-          id: generateId(),
-          code: "4011",
-          name: "Domestic Sales",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4010",
-        },
-        {
-          id: generateId(),
-          code: "4012",
-          name: "Export Sales",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4010",
-        },
-        {
-          id: generateId(),
-          code: "5011",
-          name: "Raw Material Purchases",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5010",
-        },
-        {
-          id: generateId(),
-          code: "6011",
-          name: "Manager Salary",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6010",
-        },
-        {
-          id: generateId(),
-          code: "6012",
-          name: "Staff Salaries",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6010",
-        },
-        {
-          id: generateId(),
-          code: "6021",
-          name: "Office Rent",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6020",
-        },
-        {
-          id: generateId(),
-          code: "6031",
-          name: "Electricity",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6030",
-        },
-        {
-          id: generateId(),
-          code: "6032",
-          name: "Water",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6030",
-        },
-        {
-          id: generateId(),
-          code: "6041",
-          name: "Building Depreciation",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6040",
-        },
-        {
-          id: generateId(),
-          code: "6042",
-          name: "Machine Depreciation",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6040",
-        },
-        {
-          id: generateId(),
-          code: "6111",
-          name: "Advertisement",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6110",
-        },
-        {
-          id: generateId(),
-          code: "6211",
-          name: "Bank Interest Expense",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6210",
-        },
-      ],
-    },
-    {
-      id: "service-business",
-      name: "Service Business",
-      description:
-        "Designed for service-based companies with revenue streams, project costs, professional expenses, and client management accounts.",
-      icon: <Users className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Current Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Current Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Capital Account",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Operating Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1110",
-          name: "Cash",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "1120",
-          name: "Bank",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "1130",
-          name: "Sundry Debtors",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "2010",
-          name: "Sundry Creditors",
-          type: "liability",
-          level: "ledger",
-          isGroup: false,
-          parentId: "2000",
-        },
-        {
-          id: generateId(),
-          code: "4010",
-          name: "Service Revenue",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "4020",
-          name: "Consultancy Fees",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Professional Fees",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Travel Expenses",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5030",
-          name: "Communication",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5040",
-          name: "Office Supplies",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-      ],
-    },
-    {
-      id: "hotel-hospitality",
-      name: "Hotel/Hospitality",
-      description:
-        "Complete hotel management with room revenue, food & beverage, laundry services, and departmental cost tracking.",
-      icon: <Building className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Current Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Current Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Capital Account",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Cost of Sales",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6000",
-          name: "Operating Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1110",
-          name: "Cash",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "1120",
-          name: "Bank",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "1130",
-          name: "Sundry Debtors",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "4010",
-          name: "Room Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "4020",
-          name: "Food and Beverage Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "4030",
-          name: "Laundry Revenue",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Food Cost",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Beverage Cost",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "6010",
-          name: "Staff Salaries",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6020",
-          name: "Maintenance",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6000",
-        },
-      ],
-    },
-    {
-      id: "ngo-non-profit",
-      name: "NGO/Non-Profit",
-      description:
-        "Fund accounting structure for NGOs with programme funds, administrative funds, donor funds, and grant tracking.",
-      icon: <Heart className="w-5 h-5 text-[#1557b0]" />,
-      accounts: [
-        {
-          id: generateId(),
-          code: "1000",
-          name: "Fixed Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1100",
-          name: "Current Assets",
-          type: "asset",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "2000",
-          name: "Current Liabilities",
-          type: "liability",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "3000",
-          name: "Funds",
-          type: "equity",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "4000",
-          name: "Grants and Contributions",
-          type: "income",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "5000",
-          name: "Programme Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "6000",
-          name: "Administrative Expenses",
-          type: "expense",
-          level: "group",
-          isGroup: true,
-          parentId: null,
-        },
-        {
-          id: generateId(),
-          code: "1110",
-          name: "Cash",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "1120",
-          name: "Bank",
-          type: "asset",
-          level: "ledger",
-          isGroup: false,
-          parentId: "1100",
-        },
-        {
-          id: generateId(),
-          code: "3010",
-          name: "Programme Fund",
-          type: "equity",
-          level: "ledger",
-          isGroup: false,
-          parentId: "3000",
-        },
-        {
-          id: generateId(),
-          code: "3020",
-          name: "Administrative Fund",
-          type: "equity",
-          level: "ledger",
-          isGroup: false,
-          parentId: "3000",
-        },
-        {
-          id: generateId(),
-          code: "3030",
-          name: "Donor Restricted Fund",
-          type: "equity",
-          level: "ledger",
-          isGroup: false,
-          parentId: "3000",
-        },
-        {
-          id: generateId(),
-          code: "4010",
-          name: "Government Grants",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "4020",
-          name: "Private Donations",
-          type: "income",
-          level: "ledger",
-          isGroup: false,
-          parentId: "4000",
-        },
-        {
-          id: generateId(),
-          code: "5010",
-          name: "Community Outreach",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "5020",
-          name: "Training Programmes",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "5000",
-        },
-        {
-          id: generateId(),
-          code: "6010",
-          name: "Office Rent",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6000",
-        },
-        {
-          id: generateId(),
-          code: "6020",
-          name: "Staff Salaries",
-          type: "expense",
-          level: "ledger",
-          isGroup: false,
-          parentId: "6000",
-        },
-      ],
-    },
-  ];
+  // Initialize with predefined groups + any stored groups
+  useEffect(() => {
+    const stored = loadGroupsFromStorage();
+    const all = mergePredefinedWithStored(PREDEFINED_GROUPS, stored);
+    setGroups(all);
+    // Expand all primary groups by default
+    const ids = new Set<string>(PREDEFINED_GROUPS.map(g => g.id));
+    setExpandedIds(ids);
+  }, []);
 
-  const loadCOATemplate = async (templateName: string) => {
-    const template = templates.find((t) => t.name === templateName);
-    if (!template) return;
-
+  function loadGroupsFromStorage(): AccountGroup[] {
     try {
-      const db = getDB();
-      await db.accounts.bulkAdd(template.accounts as any[]);
-      toast.success(
-        `Template "${templateName}" loaded! ${template.accounts.length} accounts created.`,
-      );
-      setShowTemplateSelector(false);
-    } catch (error) {
-      console.error("Error loading template:", error);
-      toast.error("Failed to load template. Please try again.");
+      const raw = localStorage.getItem("sutra_account_groups");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  function saveGroupsToStorage(grps: AccountGroup[]) {
+    const userGroups = grps.filter(g => !g.isSystem);
+    localStorage.setItem("sutra_account_groups", JSON.stringify(userGroups));
+  }
+
+  function mergePredefinedWithStored(predefined: typeof PREDEFINED_GROUPS, stored: AccountGroup[]): AccountGroup[] {
+    const all: AccountGroup[] = [...predefined as AccountGroup[]];
+    for (const g of stored) {
+      if (!all.find(a => a.id === g.id)) all.push(g);
     }
-  };
+    return all;
+  }
 
-  const filteredAccounts = accounts.filter((acc) => {
-    const matchesSearch =
-      acc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      acc.code.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = !filterType || acc.type === filterType;
-    const matchesLevel = !filterLevel || acc.level === filterLevel;
-    return matchesSearch && matchesType && matchesLevel;
-  });
+  // Build tree structure
+  const tree = useMemo(() => {
+    const map = new Map<string, AccountGroup>();
+    groups.forEach(g => map.set(g.id, { ...g, children: [] }));
+    const roots: AccountGroup[] = [];
+    map.forEach(g => {
+      if (!g.parentGroupId || !map.has(g.parentGroupId)) {
+        g.depth = 0;
+        roots.push(g);
+      } else {
+        const parent = map.get(g.parentGroupId)!;
+        if (!parent.children) parent.children = [];
+        g.depth = (parent.depth ?? 0) + 1;
+        parent.children.push(g);
+      }
+    });
+    return roots.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }, [groups]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (selectedAccount) {
-      await updateAccount(selectedAccount.id, form);
-      toast.success("Account updated successfully");
-    } else {
-      await addAccount(form);
-      toast.success("Account created successfully");
+  // Flatten for display
+  function flattenTree(nodes: AccountGroup[], result: AccountGroup[] = []): AccountGroup[] {
+    for (const n of nodes) {
+      result.push(n);
+      if (expandedIds.has(n.id) && n.children?.length) {
+        flattenTree(n.children, result);
+      }
     }
+    return result;
+  }
 
-    setShowForm(false);
+  const flatList = useMemo(() => {
+    const raw = flattenTree(tree);
+    if (!searchTerm.trim()) return raw;
+    const q = searchTerm.toLowerCase();
+    return groups.filter(g =>
+      g.name.toLowerCase().includes(q) ||
+      (g.alias || "").toLowerCase().includes(q)
+    ).map(g => ({ ...g, depth: 0 }));
+  }, [tree, expandedIds, searchTerm, groups]);
+
+  // Form reset
+  function resetForm() {
+    setForm({ name: "", alias: "", isPrimary: false, parentGroupId: "", narration: "", nature: "debit" });
+    setErrors({});
+  }
+
+  // Open Add
+  function openAdd() {
     resetForm();
-  };
+    setEditingId(null);
+    setMode("add");
+    setTimeout(() => nameRef.current?.focus(), 100);
+  }
 
-  const resetForm = () => {
+  // Open Modify
+  function openModify(g: AccountGroup) {
     setForm({
-      code: "",
-      name: "",
-      nameNepali: "",
-      type: "asset",
-      level: "group",
-      parentId: "",
-      openingBalanceDr: 0,
-      openingBalanceCr: 0,
-      alias: "",
-      isGroup: false,
-      isActive: true,
-      creditLimit: 0,
-      interestRate: 0,
-      narrationTemplate: "",
-      tags: "",
+      name: g.name,
+      alias: g.alias || "",
+      isPrimary: g.isPrimary,
+      parentGroupId: g.parentGroupId || "",
+      narration: g.narration || "",
+      nature: g.nature,
     });
-    setSelectedAccount(null);
-  };
+    setEditingId(g.id);
+    setErrors({});
+    setMode("modify");
+    setTimeout(() => nameRef.current?.focus(), 100);
+  }
 
-  const handleEdit = (account: any) => {
-    setSelectedAccount(account);
-    setForm({
-      code: account.code,
-      name: account.name,
-      nameNepali: account.nameNepali || "",
-      type: account.type,
-      level: account.level,
-      parentId: account.parentId || "",
-      openingBalanceDr: account.openingBalanceDr || 0,
-      openingBalanceCr: account.openingBalanceCr || 0,
-      alias: account.alias || "",
-      isGroup: account.isGroup,
-      isActive: account.isActive,
-      creditLimit: account.creditLimit || 0,
-      interestRate: account.interestRate || 0,
-      narrationTemplate: account.narrationTemplate || "",
-      tags: account.tags || "",
-    });
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this account?")) {
-      await deleteAccount(id);
-      toast.success("Account deleted successfully");
+  // Validate
+  function validate(): boolean {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = "Group Name is required";
+    if (!form.isPrimary && !form.parentGroupId) e.parentGroupId = "Select parent group (Under Group)";
+    if (groups.find(g => g.name.toLowerCase() === form.name.trim().toLowerCase() && g.id !== editingId)) {
+      e.name = "A group with this name already exists";
     }
-  };
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
 
-  const exportToExcel = () => {
-    const headers = [
-      "Code",
-      "Name",
-      "Nepali Name",
-      "Type",
-      "Level",
-      "Parent",
-      "Is Group",
-      "Is Active",
-    ];
-    const rows = filteredAccounts.map((acc) => [
-      acc.code,
-      acc.name,
-      acc.nameNepali || "",
-      acc.type,
-      acc.level,
-      acc.parentId || "",
-      acc.isGroup ? "Yes" : "No",
-      acc.isActive ? "Yes" : "No",
-    ]);
+  // Save group
+  function handleSave(andNew = false) {
+    if (!validate()) return;
+    const newGroup: AccountGroup = {
+      id: editingId || `grp-${Date.now()}`,
+      name: form.name.trim(),
+      alias: form.alias.trim() || undefined,
+      isPrimary: form.isPrimary,
+      parentGroupId: form.isPrimary ? undefined : form.parentGroupId || undefined,
+      narration: form.narration.trim() || undefined,
+      isSystem: false,
+      nature: form.nature,
+      sortOrder: groups.length,
+    };
 
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Chart of Accounts");
-    XLSX.writeFile(wb, "Chart_of_Accounts.xlsx");
-    toast.success("Accounts exported to Excel");
-  };
+    let updated: AccountGroup[];
+    if (editingId && mode === "modify") {
+      updated = groups.map(g => g.id === editingId ? { ...g, ...newGroup } : g);
+      toast.success(`Group "${newGroup.name}" updated.`);
+    } else {
+      updated = [...groups, newGroup];
+      toast.success(`Group "${newGroup.name}" created.`);
+    }
+    setGroups(updated);
+    saveGroupsToStorage(updated);
+    
+    if (andNew) {
+      resetForm();
+      setEditingId(null);
+      setMode("add");
+      setTimeout(() => nameRef.current?.focus(), 50);
+    } else {
+      setMode("list");
+    }
+  }
 
-  if (showTemplateSelector) {
-    return (
-      <div className="min-h-screen bg-[#f5f6fa] p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">
-                Select Chart of Accounts Template
-              </h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Choose a starting template or build from scratch
-              </p>
-            </div>
-            {accounts.length > 0 && (
-              <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-                onClick={() => setShowTemplateSelector(false)}
-              >
-                Cancel
-              </button>
-            )}
+  // Delete group
+  function handleDelete(g: AccountGroup) {
+    if (g.isSystem) {
+      toast.error("Predefined system groups cannot be deleted.");
+      return;
+    }
+    const hasChildren = groups.some(x => x.parentGroupId === g.id);
+    if (hasChildren) {
+      toast.error("Cannot delete: This group has sub-groups under it. Delete sub-groups first.");
+      return;
+    }
+    // Check if accounts use this group
+    const hasAccounts = accounts?.some?.((a: any) => a.groupId === g.id || a.group === g.name);
+    if (hasAccounts) {
+      toast.error("Cannot delete: Accounts are using this group. Re-assign or delete accounts first.");
+      return;
+    }
+    if (!confirm(`Delete group "${g.name}"? This cannot be undone.`)) return;
+    const updated = groups.filter(x => x.id !== g.id);
+    setGroups(updated);
+    saveGroupsToStorage(updated);
+    toast.success(`Group "${g.name}" deleted.`);
+  }
+
+  // Copy group
+  function handleCopy(g: AccountGroup) {
+    setClipboardGroup(g);
+    toast.success(`"${g.name}" copied to clipboard. Use Paste to create duplicate.`);
+  }
+
+  function handlePaste() {
+    if (!clipboardGroup) return;
+    setForm({
+      name: `${clipboardGroup.name} (Copy)`,
+      alias: clipboardGroup.alias || "",
+      isPrimary: clipboardGroup.isPrimary,
+      parentGroupId: clipboardGroup.parentGroupId || "",
+      narration: clipboardGroup.narration || "",
+      nature: clipboardGroup.nature,
+    });
+    setEditingId(null);
+    setMode("add");
+  }
+
+  // Toggle expand
+  function toggleExpand(id: string) {
+    setExpandedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  // Get all groups for parent dropdown (excluding self and children when editing)
+  const parentOptions = useMemo(() => {
+    if (!editingId) return groups;
+    // Exclude self and all descendants
+    const descendants = new Set<string>();
+    function collectDesc(id: string) {
+      descendants.add(id);
+      groups.filter(g => g.parentGroupId === id).forEach(c => collectDesc(c.id));
+    }
+    if (editingId) collectDesc(editingId);
+    return groups.filter(g => !descendants.has(g.id));
+  }, [groups, editingId]);
+
+  // ── RENDER: List Mode ─────────────────────────────────────────────────────
+  const renderList = () => (
+    <div className="flex flex-col h-full">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between px-4 py-2 bg-[#f5f6fa] border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <button onClick={openAdd}
+            className="h-7 px-3 bg-[#1557b0] text-white text-[11px] font-medium rounded flex items-center gap-1.5 hover:bg-[#0f4a96]">
+            <Plus className="h-3.5 w-3.5" /> Add (F3)
+          </button>
+          <button onClick={() => { if (expandedIds.size) setExpandedIds(new Set()); else setExpandedIds(new Set(groups.map(g=>g.id))); }}
+            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50">
+            {expandedIds.size ? "Collapse All" : "Expand All"}
+          </button>
+          {clipboardGroup && (
+            <button onClick={handlePaste}
+              className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50">
+              Paste Copy
+            </button>
+          )}
+        </div>
+        <div className="relative">
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search groups..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="h-7 pl-8 pr-3 text-[11px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] w-48"
+          />
+        </div>
+      </div>
+
+      {/* Column headers */}
+      <div className="grid grid-cols-[1fr_120px_100px_80px_80px] gap-0 px-4 py-1.5 bg-[#c9deb5] border-b border-gray-200 text-[10px] font-bold text-gray-700 uppercase tracking-wide">
+        <span>Group Name</span>
+        <span>Under Group</span>
+        <span>Primary</span>
+        <span>Nature</span>
+        <span>Actions</span>
+      </div>
+
+      {/* Tree rows */}
+      <div className="flex-1 overflow-y-auto">
+        {flatList.length === 0 && (
+          <div className="text-center py-12 text-[12px] text-gray-500">
+            No account groups found.
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {templates.map((template) => (
-              <div
-                key={template.id}
-                className="bg-white border border-gray-200 rounded-lg p-5 hover:border-[#1557b0] hover:shadow-sm cursor-pointer flex flex-col transition-all group"
-                onClick={() => loadCOATemplate(template.name)}
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-blue-50 rounded-md">{template.icon}</div>
-                  <h3 className="text-[14px] font-semibold text-gray-800">{template.name}</h3>
-                </div>
-                <p className="text-[11px] text-gray-500 mb-4 flex-grow leading-relaxed">
-                  {template.description}
-                </p>
-                <button className="h-8 w-full bg-[#f5f6fa] text-[#1557b0] text-[12px] font-medium rounded-md group-hover:bg-[#1557b0] group-hover:text-white transition-colors border border-gray-200 group-hover:border-[#1557b0]">
-                  Load Template
+        )}
+        {flatList.map(g => {
+          const hasChildren = groups.some(x => x.parentGroupId === g.id);
+          const isExpanded = expandedIds.has(g.id);
+          const depth = g.depth ?? 0;
+          const parentGroup = groups.find(x => x.id === g.parentGroupId);
+
+          return (
+            <div
+              key={g.id}
+              className="grid grid-cols-[1fr_120px_100px_80px_80px] items-center px-4 py-1.5 border-b border-gray-100 hover:bg-[#f0f5ff] group cursor-pointer text-[12px]"
+              style={{ paddingLeft: `${16 + depth * 20}px` }}
+              onClick={() => openModify(g)}
+            >
+              {/* Name */}
+              <div className="flex items-center gap-1.5">
+                {hasChildren ? (
+                  <button
+                    onClick={e => { e.stopPropagation(); toggleExpand(g.id); }}
+                    className="p-0.5 text-gray-500 hover:text-gray-800"
+                  >
+                    {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                  </button>
+                ) : <span className="w-5" />}
+                {hasChildren
+                  ? <FolderOpen className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                  : <Folder className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                }
+                <span className={`font-medium ${g.isPrimary ? "text-[#1557b0] font-semibold" : "text-gray-800"}`}>
+                  {g.name}
+                </span>
+                {g.alias && <span className="text-[10px] text-gray-400">({g.alias})</span>}
+                {g.isSystem && (
+                  <span className="ml-1 px-1 py-0 bg-amber-50 border border-amber-200 text-amber-700 text-[9px] font-bold rounded uppercase">System</span>
+                )}
+              </div>
+
+              {/* Under Group */}
+              <span className="text-gray-500 text-[11px]">{parentGroup?.name || "—"}</span>
+
+              {/* Primary */}
+              <span className={`text-[11px] font-semibold ${g.isPrimary ? "text-[#1557b0]" : "text-gray-500"}`}>
+                {g.isPrimary ? "Yes" : "No"}
+              </span>
+
+              {/* Nature */}
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${g.nature === "credit" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"}`}>
+                {g.nature === "credit" ? "Cr" : "Dr"}
+              </span>
+
+              {/* Actions */}
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={e => { e.stopPropagation(); openModify(g); }}
+                  className="p-1 rounded text-gray-500 hover:text-[#1557b0] hover:bg-blue-50"
+                  title="Modify (Enter)"
+                >
+                  <Edit2 className="h-3 w-3" />
+                </button>
+                <button
+                  onClick={e => { e.stopPropagation(); handleCopy(g); }}
+                  className="p-1 rounded text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  title="Copy (F12)"
+                >
+                  <Copy className="h-3 w-3" />
+                </button>
+                {!g.isSystem && (
+                  <button
+                    onClick={e => { e.stopPropagation(); handleDelete(g); }}
+                    className="p-1 rounded text-gray-500 hover:text-red-600 hover:bg-red-50"
+                    title="Delete (F8)"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Status bar */}
+      <div className="px-4 py-1 bg-[#d4eabd] border-t border-gray-200 text-[10px] text-gray-600 flex items-center gap-4">
+        <span>Total Groups: <strong>{groups.length}</strong></span>
+        <span>Primary: <strong>{groups.filter(g => g.isPrimary).length}</strong></span>
+        <span>Sub-Groups: <strong>{groups.filter(g => !g.isPrimary).length}</strong></span>
+        <span className="ml-auto">F3=Add · Enter=Modify · F8=Delete · F12=Copy</span>
+      </div>
+    </div>
+  );
+
+  // ── RENDER: Add / Modify Mode ─────────────────────────────────────────────
+  const renderForm = () => {
+    const isModify = mode === "modify";
+    const editingGroup = isModify ? groups.find(g => g.id === editingId) : null;
+    const isSystemGroup = editingGroup?.isSystem ?? false;
+
+    return (
+      <div className="p-4 max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+          <h2 className="text-[14px] font-bold text-gray-800">
+            {isModify ? `Modify Account Group — ${editingGroup?.name}` : "Add Account Group"}
+          </h2>
+          <div className="flex items-center gap-2 text-[10px] text-gray-500">
+            {isModify && isSystemGroup && (
+              <span className="flex items-center gap-1 text-amber-600">
+                <AlertTriangle className="h-3 w-3" /> System group — limited editing
+              </span>
+            )}
+            <span>F2=Save · Esc=Cancel</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {/* Name */}
+          <div>
+            <label className={labelCls}>Group Name <span className="text-red-500">*</span></label>
+            <input
+              ref={nameRef}
+              type="text"
+              value={form.name}
+              onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+              disabled={isSystemGroup}
+              className={`${inputCls} ${errors.name ? "border-red-400" : ""} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
+              placeholder="e.g. Office Equipment, Secured Loans"
+              onKeyDown={e => { if (e.key === "F2") { e.preventDefault(); handleSave(); } }}
+            />
+            {errors.name && <p className="text-[11px] text-red-600 mt-0.5">{errors.name}</p>}
+          </div>
+
+          {/* Alias */}
+          <div>
+            <label className={labelCls}>Alias / Short Name (optional)</label>
+            <input
+              type="text"
+              value={form.alias}
+              onChange={e => setForm(p => ({ ...p, alias: e.target.value }))}
+              disabled={isSystemGroup}
+              className={`${inputCls} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
+              placeholder="e.g. Off-Equip, Bank-OD"
+            />
+          </div>
+
+          {/* Primary Group toggle */}
+          <div className="p-3 bg-gray-50 rounded border border-gray-200">
+            <div className="flex items-center gap-3">
+              <label className="text-[12px] font-medium text-gray-700">Is Primary Group?</label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => !isSystemGroup && setForm(p => ({ ...p, isPrimary: true, parentGroupId: "" }))}
+                  disabled={isSystemGroup}
+                  className={`px-3 py-1 text-[11px] font-semibold rounded border transition-colors ${form.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"} ${isSystemGroup ? "cursor-not-allowed opacity-60" : ""}`}
+                >
+                  Y (Top-level)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => !isSystemGroup && setForm(p => ({ ...p, isPrimary: false }))}
+                  disabled={isSystemGroup}
+                  className={`px-3 py-1 text-[11px] font-semibold rounded border transition-colors ${!form.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"} ${isSystemGroup ? "cursor-not-allowed opacity-60" : ""}`}
+                >
+                  N (Sub-group)
                 </button>
               </div>
-            ))}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-1">
+              Primary = Top-most level group. Non-primary = Sub-group under an existing group.
+            </p>
+          </div>
+
+          {/* Under Group (only for sub-groups) */}
+          {!form.isPrimary && (
+            <div>
+              <label className={labelCls}>Under Group <span className="text-red-500">*</span></label>
+              <select
+                value={form.parentGroupId}
+                onChange={e => setForm(p => ({ ...p, parentGroupId: e.target.value }))}
+                disabled={isSystemGroup}
+                className={`${inputCls} ${errors.parentGroupId ? "border-red-400" : ""} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
+              >
+                <option value="">— Select Parent Group —</option>
+                {parentOptions.map(g => (
+                  <option key={g.id} value={g.id} style={{ paddingLeft: `${(g.depth ?? 0) * 16}px` }}>
+                    {"\u00A0".repeat((g.depth ?? 0) * 2)}{g.name}
+                    {g.isPrimary ? " (Primary)" : ""}
+                  </option>
+                ))}
+              </select>
+              {errors.parentGroupId && <p className="text-[11px] text-red-600 mt-0.5">{errors.parentGroupId}</p>}
+            </div>
+          )}
+
+          {/* Nature */}
+          <div>
+            <label className={labelCls}>Nature of Group</label>
+            <div className="flex gap-3">
+              {(["debit", "credit"] as const).map(n => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => !isSystemGroup && setForm(p => ({ ...p, nature: n }))}
+                  disabled={isSystemGroup}
+                  className={`px-4 py-1.5 text-[11px] font-semibold rounded border transition-colors ${form.nature === n ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"} ${isSystemGroup ? "cursor-not-allowed opacity-60" : ""}`}
+                >
+                  {n === "debit" ? "Debit (Assets/Expenses)" : "Credit (Liabilities/Income)"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Narration */}
+          <div>
+            <label className={labelCls}>Narration / Description (optional)</label>
+            <textarea
+              value={form.narration}
+              onChange={e => setForm(p => ({ ...p, narration: e.target.value }))}
+              rows={2}
+              className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] resize-none"
+              placeholder="Internal description of this group..."
+            />
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+            <div className="flex gap-2">
+              {isModify && !isSystemGroup && (
+                <button
+                  onClick={() => editingGroup && handleDelete(editingGroup)}
+                  className="h-8 px-3 bg-red-600 text-white text-[12px] font-medium rounded hover:bg-red-700 flex items-center gap-1.5"
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> Delete (F8)
+                </button>
+              )}
+              {editingGroup && (
+                <button
+                  onClick={() => handleCopy(editingGroup)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50 flex items-center gap-1.5"
+                >
+                  <Copy className="h-3.5 w-3.5" /> Copy (F12)
+                </button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setMode("list")}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50 flex items-center gap-1.5"
+              >
+                <X className="h-3.5 w-3.5" /> Cancel (Esc)
+              </button>
+              {!isSystemGroup && (
+                <>
+                  <button
+                    onClick={() => handleSave(true)}
+                    className="h-8 px-3 bg-gray-200 border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-300 flex items-center gap-1.5"
+                  >
+                    Save & New
+                  </button>
+                  <button
+                    onClick={() => handleSave(false)}
+                    className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded hover:bg-[#0f4a96] flex items-center gap-1.5"
+                  >
+                    <Save className="h-3.5 w-3.5" /> Save (F2)
+                  </button>
+                </>
+              )}
+              {isSystemGroup && (
+                <button onClick={() => setMode("list")} className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded">
+                  Close
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
     );
-  }
+  };
+
+  // ── Keyboard handling ────────────────────────────────────────────────────
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (mode === "list") {
+        if (e.key === "F3") { e.preventDefault(); openAdd(); }
+      }
+      if (mode === "add" || mode === "modify") {
+        if (e.key === "Escape") setMode("list");
+        if (e.key === "F2") { e.preventDefault(); handleSave(); }
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [mode, form]);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
-      <div className="w-full">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">Manage groups and ledgers</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-              onClick={() => setShowTemplateSelector(true)}
-            >
-              Load Template
-            </button>
-            <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-              onClick={exportToExcel}
-            >
-              Export
-            </button>
-            <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-              onClick={() => {
-                resetForm();
-                setShowForm(true);
-              }}
-            >
-              Add Account
-            </button>
-          </div>
+    <div className="flex flex-col h-full bg-[#f5f6fa]">
+      {/* Page header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Account Group Master</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Manage the hierarchy of account groups (Administration → Masters → Account Group)
+          </p>
         </div>
-
-        <div className="bg-white border border-gray-200 rounded-md p-3 mb-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Search</label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                placeholder="Search accounts..."
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Type</label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              >
-                <option value="">All Types</option>
-                <option value="asset">Asset</option>
-                <option value="liability">Liability</option>
-                <option value="equity">Equity</option>
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Level</label>
-              <select
-                value={filterLevel}
-                onChange={(e) => setFilterLevel(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              >
-                <option value="">All Levels</option>
-                <option value="group">Group</option>
-                <option value="subgroup">Subgroup</option>
-                <option value="ledger">Ledger</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-full">
-          <table className="w-full min-w-max border-collapse">
-            <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Code
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Name
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Nepali Name
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Type
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Level
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Parent
-                </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAccounts.map((acc) => {
-                const parentAcc = accounts.find((a) => a.id === acc.parentId);
-                return (
-                  <tr key={acc.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono">{acc.code}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
-                      {acc.name}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                      {acc.nameNepali || "—"}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">{acc.type}</td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
-                      <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                          acc.level === "group"
-                            ? "bg-blue-50 text-blue-700"
-                            : acc.level === "subgroup"
-                              ? "bg-indigo-50 text-indigo-700"
-                              : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {acc.level}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-gray-500">
-                      {parentAcc ? parentAcc.name : "—"}
-                    </td>
-                    <td className="px-3 py-2.5 text-[12px] text-right text-gray-700">
-                      <button
-                        className="text-[#1557b0] hover:text-[#0f4a96] mr-3 font-medium"
-                        onClick={() => handleEdit(acc)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-600 hover:text-red-800 font-medium"
-                        onClick={() => handleDelete(acc.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-              {filteredAccounts.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                    No accounts found matching your filters.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {mode !== "list" && (
+          <button onClick={() => setMode("list")} className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 flex items-center gap-1.5">
+            ← Back to List
+          </button>
+        )}
       </div>
 
-      {/* Add/Edit Account Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
-            <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[15px] font-semibold text-gray-800">
-                {selectedAccount ? "Edit Account" : "Add New Account"}
-              </h2>
-              <button
-                onClick={() => setShowForm(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="p-4 overflow-y-auto">
-              <form id="accountForm" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Account Code *
-                    </label>
-                    <input
-                      type="text"
-                      value={form.code}
-                      onChange={(e) => setForm({ ...form, code: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Account Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Account Name (Nepali)
-                    </label>
-                    <input
-                      type="text"
-                      value={form.nameNepali}
-                      onChange={(e) => setForm({ ...form, nameNepali: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Account Type *
-                    </label>
-                    <select
-                      value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                      required
-                    >
-                      <option value="asset">Asset</option>
-                      <option value="liability">Liability</option>
-                      <option value="equity">Equity</option>
-                      <option value="income">Income</option>
-                      <option value="expense">Expense</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Account Level *
-                    </label>
-                    <select
-                      value={form.level}
-                      onChange={(e) => setForm({ ...form, level: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                      required
-                    >
-                      <option value="group">Group</option>
-                      <option value="subgroup">Subgroup</option>
-                      <option value="ledger">Ledger</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Parent Account
-                    </label>
-                    <select
-                      value={form.parentId}
-                      onChange={(e) => setForm({ ...form, parentId: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    >
-                      <option value="">None</option>
-                      {accounts
-                        .filter((a) => a.isGroup)
-                        .map((acc) => (
-                          <option key={acc.id} value={acc.id}>
-                            {acc.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Opening Dr Balance
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={form.openingBalanceDr}
-                      onChange={(e) =>
-                        setForm({ ...form, openingBalanceDr: parseFloat(e.target.value) || 0 })
-                      }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Opening Cr Balance
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={form.openingBalanceCr}
-                      onChange={(e) =>
-                        setForm({ ...form, openingBalanceCr: parseFloat(e.target.value) || 0 })
-                      }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Alias / Short Name
-                    </label>
-                    <input
-                      type="text"
-                      value={form.alias}
-                      onChange={(e) => setForm({ ...form, alias: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Credit Limit (NPR)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={form.creditLimit}
-                      onChange={(e) =>
-                        setForm({ ...form, creditLimit: parseFloat(e.target.value) || 0 })
-                      }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Interest Rate (%)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={form.interestRate}
-                      onChange={(e) =>
-                        setForm({ ...form, interestRate: parseFloat(e.target.value) || 0 })
-                      }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Narration Template
-                    </label>
-                    <input
-                      type="text"
-                      value={form.narrationTemplate}
-                      onChange={(e) => setForm({ ...form, narrationTemplate: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-[11px] font-medium text-gray-600 mb-1">
-                      Tags (comma-separated)
-                    </label>
-                    <input
-                      type="text"
-                      value={form.tags}
-                      onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-6 mt-5 pt-4 border-t border-gray-100">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.isGroup}
-                      onChange={(e) => setForm({ ...form, isGroup: e.target.checked })}
-                      className="form-checkbox h-4 w-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
-                    />
-                    <span className="text-[12px] text-gray-700 font-medium">Is Group Account</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.isActive}
-                      onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                      className="form-checkbox h-4 w-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
-                    />
-                    <span className="text-[12px] text-gray-700 font-medium">Account is Active</span>
-                  </label>
-                </div>
-              </form>
-            </div>
-
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50 rounded-b-lg">
-              <button
-                type="button"
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                form="accountForm"
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-              >
-                {selectedAccount ? "Update Account" : "Save Account"}
-              </button>
-            </div>
-          </div>
+      {/* Mode sub-tabs */}
+      {mode === "list" && (
+        <div className="flex items-center gap-0 px-4 pt-2 bg-white border-b border-gray-200">
+          {["Add", "List"].map(m => (
+            <button
+              key={m}
+              onClick={() => m === "Add" ? openAdd() : setMode("list")}
+              className={`px-4 py-1.5 text-[11px] font-medium border-b-2 -mb-px transition-colors ${
+                (m === "List" && mode === "list") ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
         </div>
       )}
+
+      <div className="flex-1 overflow-hidden bg-white">
+        {mode === "list" && renderList()}
+        {(mode === "add" || mode === "modify") && (
+          <div className="h-full overflow-y-auto">
+            {renderForm()}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

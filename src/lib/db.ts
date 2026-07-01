@@ -456,10 +456,12 @@ export interface DBCostCenter {
   id: string;
   code?: string;
   name: string;
+  alias?: string;
   nameNepali?: string;
-  type?: string;
+  type?: string | "cost" | "profit" | "both";
   parentId?: string;
   isActive: boolean;
+  narration?: string;
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -1729,5 +1731,150 @@ export interface DBApprovalPolicy {
   isActive: boolean;
   description: string;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBAccountGroup {
+  id: string;
+  name: string;
+  alias?: string;
+  isPrimary: boolean;           // Primary group = true
+  parentGroupId?: string;       // Under Group
+  narration?: string;
+  isSystem: boolean;            // Predefined groups cannot be deleted
+  nature: "debit" | "credit";  // Debit-nature or Credit-nature
+  sortOrder?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBSubLedger {
+  id: string;
+  name: string;
+  alias?: string;
+  parentAccountId: string;      // Parent General Ledger
+  accountGroupId: string;       // Same as parent's group
+  openingBalance: number;
+  openingBalanceDr: number;
+  openingBalanceCr: number;
+  isActive: boolean;
+  narration?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBBillReference {
+  id: string;
+  accountId: string;            // Party account
+  voucherId: string;            // Source voucher (invoice)
+  voucherNo: string;
+  voucherDate: string;
+  billRefNo: string;            // Bill reference number
+  originalAmount: number;
+  allocatedAmount: number;
+  pendingAmount: number;
+  dueDate?: string;
+  isClosed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBBillAllocation {
+  id: string;
+  paymentVoucherId: string;     // Receipt/Payment voucher
+  billReferenceId: string;      // Which bill being settled
+  amount: number;
+  allocationType: "full" | "partial" | "advance";
+  createdAt: string;
+}
+
+export interface DBMasterConfig {
+  id: string;
+  masterType: string;           // "account", "item", "party", etc.
+  dropdownElements: string;     // "name" | "name_alias" | "name_alias_group"
+  additionalDropdownFields: Array<{
+    fieldName: string;
+    width: number;
+  }>;
+  showAdditionalInfoInBottom: boolean;
+  bottomPanelFields: string[];
+  optionalFields: Array<{
+    id: string;
+    fieldName: string;
+    dataType: "text" | "numeric" | "date" | "list" | "yesno";
+    listValues?: string;
+    isMandatory: boolean;
+    maintainDatabase: boolean;
+    defaultValue?: string;
+    decimalPlaces?: number;
+  }>;
+  hiddenFields: string[];
+  mandatoryFields: string[];
+  defaultValues: Record<string, any>;
+  updatedAt: string;
+}
+
+export interface DBFeatureConfig {
+  id: string;
+  feature: string;              // "multiCurrency" | "subLedgers" | "billByBill" | etc.
+  isEnabled: boolean;
+  config?: Record<string, any>; // Feature-specific config
+  updatedAt: string;
+}
+
+export interface DBSalesman {
+  id: string;
+  name: string;
+  alias?: string;
+  phone?: string;
+  email?: string;
+  commissionType: "percentage" | "fixed";
+  commissionRate: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBBudget {
+  id: string;
+  name: string;
+  fiscalYearId: string;
+  accountId?: string;
+  groupId?: string;
+  period: "monthly" | "quarterly" | "yearly";
+  amounts: Record<string, number>; // period key -> amount
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DBInterestConfig {
+  id: string;
+  accountId: string;
+  interestRate: number;
+  compoundingPeriod: "monthly" | "quarterly" | "yearly";
+  gracePeriodDays: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface DBTdsConfig {
+  id: string;
+  sectionCode: string;         // "194C", "194J", etc.
+  sectionName: string;
+  rate: number;
+  surchargeRate: number;
+  cessRate: number;
+  thresholdAmount: number;
+  isActive: boolean;
+}
+
+export interface DBCurrency {
+  id: string;
+  code: string;                // "USD", "EUR", "GBP"
+  name: string;
+  symbol: string;
+  exchangeRate: number;        // Against base currency
+  isActive: boolean;
   updatedAt: string;
 }
