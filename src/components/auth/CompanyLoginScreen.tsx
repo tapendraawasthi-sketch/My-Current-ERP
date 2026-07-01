@@ -212,22 +212,10 @@ export default function CompanyLoginScreen() {
             </div>
           )}
 
-          {/* Lockout */}
-          {isLocked && (
-            <div
-              className="mb-4 px-3 py-2.5 rounded-md"
-              style={{ background: "#fffbeb", border: "1px solid #fde68a", color: "#92400e" }}
-            >
-              <p className="text-[12px] font-medium">
-                Account locked. Try again in <strong>{lockoutCountdown}s</strong>.
-              </p>
-            </div>
-          )}
-
           {/* Submit */}
           <button
             type="submit"
-            disabled={isLocked || isSubmitting}
+            disabled={isSubmitting}
             className="w-full flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               height: "40px",
@@ -235,10 +223,10 @@ export default function CompanyLoginScreen() {
               background: "#1557b0",
               color: "#ffffff",
               border: "none",
-              cursor: isLocked || isSubmitting ? "not-allowed" : "pointer",
+              cursor: isSubmitting ? "not-allowed" : "pointer",
             }}
             onMouseEnter={(e) => {
-              if (!isLocked && !isSubmitting)
+              if (!isSubmitting)
                 (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96";
             }}
             onMouseLeave={(e) => {
