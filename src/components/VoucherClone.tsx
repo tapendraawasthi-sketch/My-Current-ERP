@@ -15,25 +15,18 @@ const VoucherClone: React.FC<VoucherCloneProps> = ({ voucher, onClone }) => {
       toast.error("Cannot clone an unsaved voucher");
       return;
     }
-    const {
-      cbmsSubmitted, cbmsIrn, cbmsSubmittedAt, cbmsStatus, cbmsError, // strip these
-      paidAmount, paymentStatus,                                     // strip these too
-      ...rest
-    } = voucher;
 
     const cloned = {
-      ...rest,
+      ...voucher,
       id: generateId(),
       date: new Date().toISOString().split("T")[0],
       status: "draft",
       voucherNo: "",
-      paidAmount: 0,
-      paymentStatus: "unpaid",
-      lines: (voucher.lines || []).map((l: any) => ({ ...l, id: generateId() })),
+      lines: (voucher.lines || []).map((l) => ({ ...l, id: generateId() })),
     };
 
     onClone(cloned);
-    toast.success("Voucher cloned as a fresh draft.");
+    toast.success("Voucher cloned. Editing a new draft copy.");
   };
 
   if (!voucher?.id) {

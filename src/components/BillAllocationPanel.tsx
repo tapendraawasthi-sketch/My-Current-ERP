@@ -35,10 +35,14 @@ interface FifoResult {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-import { formatMoney } from "@/lib/currency";
-
 function fmt(n: number): string {
-  return formatMoney(n);
+  return (
+    "Rs. " +
+    Number(n || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  );
 }
 
 function computeOutstanding(

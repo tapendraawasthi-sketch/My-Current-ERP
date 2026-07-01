@@ -653,13 +653,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }}
     >
       <TopMenuBar />
+
       <TitleBar onMinimize={() => setIsMinimized((prev) => !prev)} />
+
       {!isMinimized && (
         <>
           <BusyMenuBar />
           <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-            <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
             <main style={{ flex: 1, overflowY: "auto", padding: 12, background: TWO_COLOR.bg }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "#000000",
+                  textAlign: "center",
+                  marginBottom: 6,
+                  fontWeight: 600,
+                }}
+              >
+                {currentPage.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+              </div>
               {children}
             </main>
             <ShortcutSidebar onShortcut={handleSidebarShortcut} />
@@ -668,9 +680,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <StatusBar />
         </>
       )}
+
       {isMinimized && (
-        <div onClick={() => setIsMinimized(false)} style={{ flex: 1, background: TWO_COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-          Click here to restore Sutra ERP
+        <div
+          onClick={() => setIsMinimized(false)}
+          style={{
+            flex: 1,
+            background: TWO_COLOR.bg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#000000",
+            fontSize: 13,
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          Click here or press — again to restore Sutra ERP
         </div>
       )}
     </div>

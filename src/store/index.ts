@@ -35,7 +35,7 @@ import { computeNextDueDate } from "../lib/recurringUtils";
 export const useStore = create<AppState>()((...a) => {
   const [set, get] = a;
   return {
-    ...createInventorySlice(...a),
+    ...createInventorySlice(set, get),
     isDbReady: false,
     isAuthenticated: false,
     authStage: "checking" as AuthStage,
@@ -572,7 +572,7 @@ export const useStore = create<AppState>()((...a) => {
         priceFloorPolicies: priceFloorPolicies as any[],
         chequeBounceLogs: chequeBounceLogs as any[],
         journalEntries: vouchers,
-        // @ts-ignore
+        schemes: schemesArr,
         billsOfMaterial: bomsArr,
         serialNumbers: serialsArr,
         stockTransfers: stockTransfersArr,

@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Eye, EyeOff, Building2, ArrowLeft, AlertCircle } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { getDB } from "@/lib/db";
 
 function formatLoginDate(isoString: string): string {
   const d = new Date(isoString);
@@ -22,6 +21,12 @@ export default function CompanyLoginScreen() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [lockoutCountdown, setLockoutCountdown] = useState(0);
+  const attemptKey = `loginAttempts_${companySettings?.id || "default"}`;
+  const [failedAttempts, setFailedAttempts] = useState(() =>
+    parseInt(localStorage.getItem(attemptKey) || "0", 10),
+  );
 
   const usernameRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +42,22 @@ export default function CompanyLoginScreen() {
     return () => document.removeEventListener("keydown", handler);
   }, [isSubmitting]);
 
+  useEffect(() => {
+    if (failedAttempts >= 5 && !isLocked) {
+      setIsLocked(true);
+      setLockoutCountdown(30);
+    }
+  }, [failedAttempts]);
+
+  useEffect(() => {
+    if (lockoutCountdown > 0) {
+      const t = setTimeout(() => setLockoutCountdown((c) => c - 1), 1000);
+      return () => clearTimeout(t);
+    } else if (lockoutCountdown === 0 && isLocked) {
+      setIsLocked(false);
+    }
+  }, [lockoutCountdown, isLocked]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -51,12 +72,8 @@ export default function CompanyLoginScreen() {
       return;
     }
 
-    const db = getDB();
-    const user = await db.users.where("username").equals(username.trim()).first();
-    
-    if (user?.lockedUntil && Date.now() < new Date(user.lockedUntil).getTime()) {
-      const remaining = Math.ceil((new Date(user.lockedUntil).getTime() - Date.now()) / 1000);
-      setError(`Account locked. Try again in ${remaining}s.`);
+    if (isLocked) {
+      setError(`Account locked. Please wait ${lockoutCountdown} seconds before trying again.`);
       return;
     }
 
@@ -64,16 +81,16 @@ export default function CompanyLoginScreen() {
     try {
       const success = await login(username.trim(), password);
       if (!success) {
-        const attempts = (user?.failedAttempts || 0) + 1;
-        const patch: any = { failedAttempts: attempts };
-        if (attempts >= 5) {
-          patch.lockedUntil = new Date(Date.now() + 30000).toISOString();
-          patch.failedAttempts = 0;
+        const newCount = failedAttempts + 1;
+        setFailedAttempts(newCount);
+        localStorage.setItem(attemptKey, String(newCount));
+        if (newCount >= 5) {
+          setError("Too many failed attempts. Account locked for 30 seconds.");
+        } else {
+          setError(`Invalid username or password. ${5 - newCount} attempt(s) remaining.`);
         }
-        if (user) await db.users.update(user.id, patch);
-        setError(attempts >= 5 ? "Account locked for 30 seconds." : `Invalid credentials. ${5 - attempts} attempt(s) left.`);
-      } else if (user) {
-        await db.users.update(user.id, { failedAttempts: 0, lockedUntil: null });
+      } else {
+        localStorage.setItem(attemptKey, "0");
       }
     } catch {
       setError("Sign in failed. Please try again.");
@@ -212,10 +229,22 @@ export default function CompanyLoginScreen() {
             </div>
           )}
 
+          {/* Lockout */}
+          {isLocked && (
+            <div
+              className="mb-4 px-3 py-2.5 rounded-md"
+              style={{ background: "#fffbeb", border: "1px solid #fde68a", color: "#92400e" }}
+            >
+              <p className="text-[12px] font-medium">
+                Account locked. Try again in <strong>{lockoutCountdown}s</strong>.
+              </p>
+            </div>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isLocked || isSubmitting}
             className="w-full flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               height: "40px",
@@ -223,10 +252,10 @@ export default function CompanyLoginScreen() {
               background: "#1557b0",
               color: "#ffffff",
               border: "none",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
+              cursor: isLocked || isSubmitting ? "not-allowed" : "pointer",
             }}
             onMouseEnter={(e) => {
-              if (!isSubmitting)
+              if (!isLocked && !isSubmitting)
                 (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96";
             }}
             onMouseLeave={(e) => {

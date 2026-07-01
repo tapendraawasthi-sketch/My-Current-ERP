@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { getDB } from "@/lib/db";
-import { verifyPassword } from "@/lib/auth";
-import toast from "react-hot-toast";
 
 interface Props {
   userId: string;
@@ -51,39 +48,27 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
     e.preventDefault();
 
     if (formData.newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      alert("Password must be at least 6 characters");
       return;
     }
 
     if (!/\d/.test(formData.newPassword)) {
-      toast.error("Password must contain at least 1 number");
+      alert("Password must contain at least 1 number");
       return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
+      alert("Passwords do not match");
       return;
-    }
-
-    if (isOwnPassword) {
-      const db = getDB();
-      const user = await db.users.get(userId);
-      const valid = user?.passwordHash
-        ? await verifyPassword(formData.currentPassword, user.passwordHash)
-        : false;
-      if (!valid) {
-        toast.error("Current password is incorrect");
-        return;
-      }
     }
 
     try {
       await updateUser(userId, { password: formData.newPassword });
-      toast.success("Password changed successfully");
+      alert("Password changed successfully");
       setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       onClose();
     } catch (err) {
-      toast.error("Failed to change password");
+      alert("Failed to change password");
     }
   };
 

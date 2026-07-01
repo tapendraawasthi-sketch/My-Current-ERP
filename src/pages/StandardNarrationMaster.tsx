@@ -1,4 +1,3 @@
-// @ts-nocheck
 // src/pages/StandardNarrationMaster.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";

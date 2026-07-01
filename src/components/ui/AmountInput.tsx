@@ -1,40 +1,66 @@
 import React from "react";
+import { useStore } from "../../store/useStore";
 
 interface AmountInputProps {
   label?: string;
-  value: number | string;
-  onChange: (value: number) => void;
-  className?: string;
-  disabled?: boolean;
+  value: number;
+  onChange: (val: number) => void;
   placeholder?: string;
-  hint?: string;
+  disabled?: boolean;
+  required?: boolean;
   error?: string;
+  id?: string;
+  className?: string;
 }
 
-export const AmountInput: React.FC<AmountInputProps> = ({
+const AmountInput: React.FC<AmountInputProps> = ({
   label,
   value,
   onChange,
-  className = "",
-  disabled,
   placeholder = "0.00",
-  hint,
+  disabled = false,
+  required = false,
   error,
+  id,
+  className = "",
 }) => {
+  const company = useStore((state) => state.companySettings);
+  const symbol = company ? company.currencySymbol : "Rs.";
+
   return (
-    <div className="flex flex-col gap-1">
-      {label && <label className="text-[11px] font-medium text-gray-600">{label}</label>}
-      <input
-        type="number"
-        step="0.01"
-        value={value === 0 ? "" : value}
-        disabled={disabled}
-        placeholder={placeholder}
-        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        className={`h-8 px-2.5 text-[12px] text-right border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${error ? "border-red-400" : "border-gray-300"} ${className}`}
-      />
-      {hint && !error && <span className="text-[10px] text-gray-400">{hint}</span>}
-      {error && <span className="text-[11px] text-red-600">{error}</span>}
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && (
+        <label
+          htmlFor={id}
+          className="text-[11px] font-medium text-[#000000] flex items-center gap-0.5"
+        >
+          {label}
+          {required && <span className="text-red-500 font-bold">*</span>}
+        </label>
+      )}
+      <div className="relative flex items-center w-full rounded-md shadow-sm">
+        <span className="absolute left-2.5 text-[12px] text-[#000000] font-medium pointer-events-none">
+          {symbol}
+        </span>
+        <input
+          id={id}
+          type="number"
+          value={value === 0 ? "" : value}
+          onChange={(e) => {
+            const parsed = parseFloat(e.target.value);
+            onChange(isNaN(parsed) ? 0 : parsed);
+          }}
+          placeholder={placeholder}
+          disabled={disabled}
+          required={required}
+          className={`
+            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-[#000000] font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
+            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
+            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
+          `}
+        />
+      </div>
+      {error && <span className="text-xs text-red-650 font-medium">{error}</span>}
     </div>
   );
 };

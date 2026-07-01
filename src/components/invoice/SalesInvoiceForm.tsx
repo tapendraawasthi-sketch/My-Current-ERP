@@ -365,7 +365,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     }
     if (grandTotal <= 0) return "Grand total must be greater than zero.";
     if (payMode === PaymentMode.BANK_TRANSFER && !bankAccountId) return "Select a bank account.";
-    if (Number(paidAmount) > netPayable) return "Paid amount cannot exceed net payable amount.";
+    if (Number(paidAmount) > grandTotal) return "Paid amount cannot exceed grand total.";
     if (forPost) {
       const inactive = valid.find((l) => {
         const acc = accounts.find((a) => a.id === party?.accountId);

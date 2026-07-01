@@ -84,9 +84,8 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
       const typing = isInputElement(document.activeElement);
       const combo = getComboString(e);
 
-      // F-keys always work unless typing
+      // F-keys always work
       if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
-        if (typing) return; // FIX: previously F-keys fired even while typing in a form field
         const btn = visibleButtons.find((b) => b.shortcut === e.key && b.enabled);
         if (btn) {
           e.preventDefault();

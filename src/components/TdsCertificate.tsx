@@ -35,10 +35,11 @@ interface TdsCertificateProps {
   certificateDateBS: string;
 }
 
-import { formatMoney } from "@/lib/currency";
-
 function money(value: number): string {
-  return formatMoney(value);
+  return Number(value || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 const TdsCertificate: React.FC<TdsCertificateProps> = ({

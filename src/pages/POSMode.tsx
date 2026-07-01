@@ -32,7 +32,6 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import { generateId } from "../lib/db";
-import { formatMoney } from "@/lib/currency";
 
 interface CartItem {
   item: Item;
@@ -174,7 +173,7 @@ export default function POSMode() {
     }
 
     if (selectedPayment === "cash" && cashTendered < grandTotal) {
-      toast.error(`Cash received is short by ${formatMoney(grandTotal - cashTendered)}`);
+      toast.error(`Cash received is short by Rs. ${formatNumber(grandTotal - cashTendered)}`);
       return;
     }
 
@@ -336,7 +335,7 @@ export default function POSMode() {
 
                     <div className="mt-auto flex items-end justify-between">
                       <div className="text-[16px] font-bold text-[#1557b0]">
-                        {formatMoney(item.salesRate)}
+                        Rs. {formatNumber(item.salesRate)}
                       </div>
                       <div
                         className={`text-[11px] font-semibold ${outOfStock ? "text-red-500" : "text-green-600"}`}
@@ -461,26 +460,26 @@ export default function POSMode() {
             <div className="p-3 bg-[#EBF5E2] border-b border-[#9DC07A] grid grid-cols-2 gap-x-6 gap-y-1">
               <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Subtotal</span>
-                <span className="font-mono">{formatMoney(subTotal)}</span>
+                <span className="font-mono">Rs. {formatNumber(subTotal)}</span>
               </div>
               <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Taxable Amount</span>
-                <span className="font-mono">{formatMoney(taxableAmount)}</span>
+                <span className="font-mono">Rs. {formatNumber(taxableAmount)}</span>
               </div>
               <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>Discount</span>
-                <span className="font-mono">{formatMoney(discountTotal)}</span>
+                <span className="font-mono">Rs. {formatNumber(discountTotal)}</span>
               </div>
               <div className="flex justify-between text-[12px] text-[#000000]">
                 <span>VAT (13%)</span>
-                <span className="font-mono">{formatMoney(vatAmount)}</span>
+                <span className="font-mono">Rs. {formatNumber(vatAmount)}</span>
               </div>
               <div className="col-span-2 mt-2 pt-2 border-t border-[#9DC07A] flex justify-between items-end">
                 <span className="text-[14px] font-bold text-[#000000] uppercase tracking-wide">
                   Grand Total
                 </span>
                 <span className="text-[28px] font-bold text-[#1557b0] font-mono leading-none">
-                  {formatMoney(grandTotal)}
+                  Rs. {formatNumber(grandTotal)}
                 </span>
               </div>
             </div>
@@ -537,7 +536,7 @@ export default function POSMode() {
                       <div
                         className={`text-[20px] font-mono font-bold ${cashTendered - grandTotal >= 0 ? "text-green-600" : "text-red-500"}`}
                       >
-                        {formatMoney(Math.max(0, cashTendered - grandTotal))}
+                        Rs. {formatNumber(Math.max(0, cashTendered - grandTotal))}
                       </div>
                     </div>
                   </div>
@@ -552,7 +551,7 @@ export default function POSMode() {
                     <div className="text-[11px] text-[#000000] font-medium">
                       Scan to pay
                       <br />
-                      <b className="text-[14px] text-[#000000]">{formatMoney(grandTotal)}</b>
+                      <b className="text-[14px] text-[#000000]">Rs. {formatNumber(grandTotal)}</b>
                     </div>
                   </div>
                 )}

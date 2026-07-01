@@ -7,13 +7,10 @@ import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Button, Input, Select, Modal, ActionToolbar } from "./ui";
 import { Sliders, HelpCircle, Save, Database, AlertTriangle, ShieldCheck } from "lucide-react";
-import { verifyPassword } from "../lib/auth";
-import { getDB } from "../lib/db";
 import toast from "react-hot-toast";
 
 const SystemSettings: React.FC = () => {
-  const { companySettings, updateCompanySettings, resetAllData, currentUser } = useStore();
-  const isAdmin = currentUser?.role === "admin";
+  const { companySettings, updateCompanySettings, resetAllData } = useStore();
 
   const [name, setName] = useState(companySettings?.name || "Sutra Textiles Pvt. Ltd.");
   const [address, setAddress] = useState(companySettings?.address || "Tripureshwor-11, Kathmandu");
@@ -39,7 +36,6 @@ const SystemSettings: React.FC = () => {
 
   const [resetModal, setResetModal] = useState(false);
   const [resetConfirmText, setResetConfirmText] = useState("");
-  const [resetPassword, setResetPassword] = useState("");
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,22 +74,7 @@ const SystemSettings: React.FC = () => {
   };
 
   const handleConfirmDBSandboxReset = async () => {
-    if (!isAdmin) {
-      toast.error("Only an Admin can reset the database.");
-      return;
-    }
     if (resetConfirmText !== "DELETE ALL DATA") return;
-
-    const db = getDB();
-    const user = await db.users.get(currentUser!.id);
-    const valid = user?.passwordHash
-      ? await verifyPassword(resetPassword, user.passwordHash)
-      : false;
-    if (!valid) {
-      toast.error("Incorrect password. Reset aborted.");
-      return;
-    }
-
     toast.loading("Flushing schemas, erasing indexing blocks, re-seeding Nepal COAs...");
     try {
       await resetAllData();
@@ -101,7 +82,6 @@ const SystemSettings: React.FC = () => {
       toast.success("IndexedDB reset. Workspace is refreshed.");
       setResetModal(false);
       setResetConfirmText("");
-      setResetPassword("");
       // Wait for a second and reload to let store load fresh seed
       setTimeout(() => {
         window.location.reload();
@@ -334,12 +314,11 @@ const SystemSettings: React.FC = () => {
 
         {/* Developer sandbox reset diagnostics tool (Col span 1) */}
         <div className="flex flex-col gap-6">
-          {isAdmin && (
-            <Card
-              title="Administrative Sandbox Controls"
-              subtitle="Diagnostics and system database flush engines"
-            >
-              <div className="flex flex-col gap-4 text-xs select-none">
+          <Card
+            title="Administrative Sandbox Controls"
+            subtitle="Diagnostics and system database flush engines"
+          >
+            <div className="flex flex-col gap-4 text-xs select-none">
               <div className="bg-amber-50/50 border border-amber-250 text-amber-900 rounded-xl p-3.5 flex gap-2">
                 <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                 <div className="flex flex-col font-semibold">
@@ -364,9 +343,8 @@ const SystemSettings: React.FC = () => {
                   Factory Reset Database
                 </Button>
               </div>
-              </div>
-            </Card>
-          )}
+            </div>
+          </Card>
 
           <Card title="Workspace Security Compliance">
             <div className="flex items-start gap-2.5 text-xs select-none">
@@ -401,7 +379,7 @@ const SystemSettings: React.FC = () => {
               <Button
                 variant="danger"
                 size="sm"
-                disabled={resetConfirmText !== "DELETE ALL DATA" || !resetPassword}
+                disabled={resetConfirmText !== "DELETE ALL DATA"}
                 onClick={handleConfirmDBSandboxReset}
               >
                 Erase Everything
@@ -414,22 +392,12 @@ const SystemSettings: React.FC = () => {
               ⚠️ This will permanently delete ALL business data including invoices, vouchers, accounts, 
               parties, and stock records. This action CANNOT be undone.
             </div>
-            <p>
-              Type <strong className="font-mono text-red-600">DELETE ALL DATA</strong> and re-enter your
-              password to confirm:
-            </p>
+            <p>Type <strong className="font-mono text-red-600">DELETE ALL DATA</strong> to confirm:</p>
             <input
               type="text"
               value={resetConfirmText}
               onChange={(e) => setResetConfirmText(e.target.value)}
               placeholder="Type DELETE ALL DATA"
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] mb-2"
-            />
-            <input
-              type="password"
-              value={resetPassword}
-              onChange={(e) => setResetPassword(e.target.value)}
-              placeholder="Your account password"
               className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             />
           </div>

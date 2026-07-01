@@ -1,46 +1,79 @@
+// src/components/ui/Badge.tsx
 import React from "react";
 
-export type BadgeVariant =
+type BadgeVariant =
+  | "default"
   | "success"
+  | "warning"
+  | "danger"
+  | "info"
   | "primary"
   | "secondary"
   | "outline"
-  | "ghost"
-  | "danger"
-  | "warning"
-  | "info"
-  | "default";
+  | "destructive";
 
 interface BadgeProps {
+  children: React.ReactNode;
   variant?: BadgeVariant;
   size?: "sm" | "md";
-  children: React.ReactNode;
+  dot?: boolean;
   className?: string;
 }
 
-const VARIANT_CLASSES: Record<BadgeVariant, string> = {
-  success: "bg-green-100 text-green-700 border border-green-200",
-  warning: "bg-amber-100 text-amber-700 border border-amber-200",
-  danger: "bg-red-100 text-red-700 border border-red-200",
-  info: "bg-blue-100 text-blue-700 border border-blue-200",
-  primary: "bg-[#1557b0] text-white border border-[#1557b0]",
-  secondary: "bg-gray-100 text-gray-700 border border-gray-200",
-  outline: "bg-white text-gray-700 border border-gray-300",
-  ghost: "bg-transparent text-gray-600 border border-transparent",
-  default: "bg-gray-100 text-gray-600 border border-gray-200",
+const VARIANT_STYLES: Record<BadgeVariant, React.CSSProperties> = {
+  default: { background: "#D4EABD", color: "#000000", borderColor: "#9DC07A" },
+  success: { background: "#dcfce7", color: "#166534", borderColor: "#16a34a" },
+  warning: { background: "#fef9c3", color: "#854d0e", borderColor: "#ca8a04" },
+  danger: { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
+  info: { background: "#dbeafe", color: "#1e3a8a", borderColor: "#3b82f6" },
+  primary: { background: "#D4EABD", color: "#000000", borderColor: "#000000" },
+  secondary: { background: "#f1f5f9", color: "#475569", borderColor: "#cbd5e1" },
+  outline: { background: "transparent", color: "#475569", borderColor: "#cbd5e1" },
+  destructive: { background: "#fee2e2", color: "#991b1b", borderColor: "#dc2626" },
 };
 
-export const Badge: React.FC<BadgeProps> = ({
-  variant = "default",
-  size = "sm",
+const Badge: React.FC<BadgeProps> = ({
   children,
+  variant = "default",
+  size = "md",
+  dot,
   className = "",
 }) => {
-  const sizeCls = size === "md" ? "px-2.5 py-1 text-[11px]" : "px-2 py-0.5 text-[10px]";
+  const style = VARIANT_STYLES[variant] || VARIANT_STYLES.default;
+  const padding = size === "sm" ? "1px 6px" : "2px 8px";
+  const fontSize = size === "sm" ? 9 : 10;
+
   return (
     <span
-      className={`inline-flex items-center rounded font-semibold uppercase ${sizeCls} ${VARIANT_CLASSES[variant] || VARIANT_CLASSES.default} ${className}`}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+        padding,
+        fontSize,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.04em",
+        borderRadius: 3,
+        border: `1px solid ${style.borderColor}`,
+        background: style.background,
+        color: style.color,
+        whiteSpace: "nowrap",
+      }}
+      className={className}
     >
+      {dot && (
+        <span
+          style={{
+            display: "inline-block",
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: style.color,
+            flexShrink: 0,
+          }}
+        />
+      )}
       {children}
     </span>
   );
