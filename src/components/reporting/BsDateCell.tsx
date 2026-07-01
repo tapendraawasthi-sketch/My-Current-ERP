@@ -11,13 +11,7 @@ function safeFormatBS(adDate: string, fallback?: string): string {
   if (fallback) return fallback;
 
   try {
-    const converted = adToBS(new Date(adDate)) as unknown;
-
-    if (typeof converted === "string") {
-      return converted;
-    }
-
-    return formatBSDate(converted as any);
+    return formatBSDate(adDate, "DD MMMM YYYY");
   } catch {
     return adDate || "—";
   }

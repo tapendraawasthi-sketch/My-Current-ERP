@@ -9,6 +9,18 @@
  */
 
 import NepaliDate from "nepali-date-converter";
+
+function toLocalADString(d: Date): string {
+  if (isNaN(d.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function parseLocalADString(s: string): Date {
+  const [y, m, d] = s.split(/[-/]/).map(Number);
+  return new Date(y, m - 1, d);
+}
+
 const NEPALI_MONTHS = [
   "Baisakh",
   "Jestha",
@@ -280,7 +292,7 @@ export function getFiscalYearDateRange(fyLabel: string): {
   const startAD = bsToAD(fyStartBS.year, fyStartBS.month, fyStartBS.day);
   const endAD = bsToAD(fyEndBS.year, fyEndBS.month, fyEndBS.day);
 
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  const fmt = (d: Date) => toLocalADString(d);
 
   return {
     startDate: fmt(startAD),
@@ -353,7 +365,7 @@ export function getNepaliFiscalQuarter(
   const startAD = bsToAD(qStartYear, bounds.startMonth, 1);
   const endAD = bsToAD(qEndYear, bounds.endMonth, endDayBS);
 
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  const fmt = (d: Date) => toLocalADString(d);
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return {
@@ -377,7 +389,7 @@ export function getBSMonthDateRange(
   const startAD = bsToAD(bsYear, bsMonth, 1);
   const endAD = bsToAD(bsYear, bsMonth, lastDay);
 
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  const fmt = (d: Date) => toLocalADString(d);
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return {
@@ -417,7 +429,7 @@ export function formatBSDate(
 ): string {
   const adDate =
     typeof adDateParam === "string"
-      ? new Date(adDateParam.includes("T") ? adDateParam : adDateParam + "T00:00:00")
+      ? (adDateParam.includes("T") ? new Date(adDateParam) : parseLocalADString(adDateParam))
       : adDateParam;
 
   if (isNaN(adDate.getTime())) return "";
@@ -498,14 +510,14 @@ export function BSToADString(bsDateStr: string): string {
     const day = parseInt(parts[2], 10);
     if (isNaN(year) || isNaN(month) || isNaN(day)) return "";
     const ad = bsToAD(year, month, day);
-    return ad.toISOString().split("T")[0];
+    return toLocalADString(ad);
   } catch {
     return "";
   }
 }
 
 export function getBSToday(): string {
-  return ADToBSString(new Date().toISOString().split("T")[0]);
+  return ADToBSString(toLocalADString(new Date()));
 }
 
 export function getBSTodayLong(): string {
@@ -557,7 +569,7 @@ export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[]
       day: d,
       month: prevMonth,
       year: prevYear,
-      adDateStr: adDate.toISOString().split("T")[0],
+      adDateStr: toLocalADString(adDate),
       bsDateStr: `${prevYear}/${String(prevMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
       isCurrentMonth: false,
     });
@@ -569,7 +581,7 @@ export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[]
       day: d,
       month: bsMonth,
       year: bsYear,
-      adDateStr: adDate.toISOString().split("T")[0],
+      adDateStr: toLocalADString(adDate),
       bsDateStr: `${bsYear}/${String(bsMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
       isCurrentMonth: true,
     });
@@ -589,7 +601,7 @@ export function getBSMonthCalendarGrid(bsYear: number, bsMonth: number): BSDay[]
       day: d,
       month: nextMonth,
       year: nextYear,
-      adDateStr: adDate.toISOString().split("T")[0],
+      adDateStr: toLocalADString(adDate),
       bsDateStr: `${nextYear}/${String(nextMonth).padStart(2, "0")}/${String(d).padStart(2, "0")}`,
       isCurrentMonth: false,
     });
