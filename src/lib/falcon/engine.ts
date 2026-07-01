@@ -1,198 +1,127 @@
-// src/lib/falcon/engine.ts
-// Falcon's local matching engine. No external API calls — pure client-side
-// keyword scoring against the knowledge base, boosted by current page context.
+import { KNOWLEDGE_BASE } from "./kb";
+import { tokenize, expandTokens, normalize } from "./textUtils";
+import type { FalconAnswer, KBEntry } from "./types";
 
-import { FALCON_KB, type FalconKBEntry } from "./knowledgeBase";
+const GREETINGS = new Set(["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]);
+const THANKS = new Set(["thanks", "thank you", "appreciate it", "great", "ok", "okay"]);
 
-export interface FalconContext {
-  route?: string;
-  module?: string;
-  pageTitle?: string;
+function isGreetingOrThanks(text: string): string | null {
+  const norm = normalize(text);
+  if (GREETINGS.has(norm)) {
+    return "Hello! How can I help you with Sutra ERP today?";
+  }
+  if (THANKS.has(norm)) {
+    return "You're welcome! Let me know if you need anything else.";
+  }
+  return null;
 }
 
-export interface FalconAnswer {
-  text: string;
-  matchedEntry: FalconKBEntry | null;
-  confidence: number;
-  suggestions: string[];
-  fallback: boolean;
-}
-
-// Route → module mapping so Falcon can boost relevant answers based on
-// whichever screen the user is currently on. Extend this map any time you
-// add a new page to App.tsx.
-const ROUTE_MODULE_MAP: Record<string, string> = {
-  dashboard: "reports",
-  accounts: "accounts",
-  "chart-of-accounts": "accounts",
-  parties: "parties",
-  "item-master": "inventory",
-  items: "inventory",
-  "stock-book": "inventory",
-  warehouses: "inventory",
-  units: "inventory",
-  "stock-transfer": "inventory",
-  "physical-stock": "inventory",
-  billing: "sales",
-  sales: "sales",
-  "sales-return": "sales",
-  "sales-order": "sales",
-  quotation: "sales",
-  purchase: "purchase",
-  "purchase-return": "purchase",
-  "purchase-order": "purchase",
-  "goods-receipt": "inventory",
-  "delivery-challan": "inventory",
-  payment: "payment",
-  receipt: "receipt",
-  journal: "journal",
-  contra: "contra",
-  "debit-note": "purchase",
-  "credit-note": "sales",
-  "balance-sheet": "reports",
-  "profit-loss": "reports",
-  "trial-balance": "reports",
-  "day-book": "reports",
-  ledger: "reports",
-  "cash-flow": "reports",
-  "aging-report": "reports",
-  "outstanding-receivables": "reports",
-  "outstanding-payables": "reports",
-  "stock-summary": "inventory",
-  "vat-reports": "vat",
-  gstr1: "vat",
-  payroll: "payroll",
-  "fiscal-year": "admin",
-  "audit-log": "admin",
-  backup: "admin",
-  users: "admin",
-  settings: "admin",
-  "pos-mode": "pos",
-  "approval-workflow": "journal",
-  "recurring-vouchers": "journal",
-  budget: "accounts",
-  "cost-centers": "accounts",
-};
-
-function normalize(s: string): string {
-  return s.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
-}
-
-function tokenize(s: string): string[] {
-  return normalize(s).split(" ").filter((t) => t.length > 1);
-}
-
-// Simple stemmer-lite: strips common suffixes so "vouchers" matches "voucher"
-function stem(token: string): string {
-  return token.replace(/(ing|es|s)$/i, "");
-}
-
-function scoreEntry(entry: FalconKBEntry, queryTokens: string[], currentModule?: string): number {
+function calculateScore(entry: KBEntry, expandedTokens: Set<string>, currentPath?: string): number {
   let score = 0;
-  const queryStems = queryTokens.map(stem);
+  let matches = 0;
 
+  // Score against question tokens
+  const qTokens = tokenize(entry.q);
+  for (const t of qTokens) {
+    if (expandedTokens.has(t)) {
+      score += 1.5;
+      matches++;
+    }
+  }
+
+  // Score against explicit keywords
   for (const kw of entry.keywords) {
     const kwTokens = tokenize(kw);
-    const kwStems = kwTokens.map(stem);
-
-    // Exact phrase match is the strongest signal
-    const normalizedQuery = " " + queryTokens.join(" ") + " ";
-    if (normalizedQuery.includes(" " + normalize(kw) + " ")) {
-      score += 12;
-      continue;
+    // If a multi-word keyword is fully matched
+    if (kwTokens.length > 0 && kwTokens.every(t => expandedTokens.has(t))) {
+      score += 3;
+      matches++;
+    } else {
+      // Partial match on keywords
+      for (const t of kwTokens) {
+        if (expandedTokens.has(t)) {
+          score += 1.0;
+          matches++;
+        }
+      }
     }
+  }
 
-    // Token/stem overlap
-    for (const kws of kwStems) {
-      if (queryStems.includes(kws)) score += 3;
+  // Category boosting
+  if (currentPath && matches > 0) {
+    if (
+      (currentPath.includes("billing") || currentPath.includes("invoice") || currentPath.includes("voucher") || currentPath.includes("pos")) &&
+      entry.category === "transactions"
+    ) {
+      score *= 1.2;
+    } else if (
+      (currentPath.includes("master") || currentPath.includes("party") || currentPath.includes("item") || currentPath.includes("account")) &&
+      entry.category === "masters"
+    ) {
+      score *= 1.2;
+    } else if (currentPath.includes("report") && entry.category === "reports") {
+      score *= 1.2;
+    } else if (currentPath.includes("settings") && entry.category === "general") {
+      score *= 1.2;
     }
   }
 
-  // Boost if title words appear in the query
-  const titleStems = tokenize(entry.title).map(stem);
-  for (const ts of titleStems) {
-    if (queryStems.includes(ts)) score += 2;
-  }
-
-  // Boost matching current page/module context
-  if (currentModule && entry.module === currentModule) {
-    score += 4;
-  }
-
-  return score;
+  return matches > 0 ? score : 0;
 }
 
-const MIN_CONFIDENT_SCORE = 5;
-
-export function askFalcon(question: string, context?: FalconContext): FalconAnswer {
-  const trimmed = question.trim();
-  if (!trimmed) {
+export function askFalcon(question: string, currentPath?: string): FalconAnswer {
+  const conversational = isGreetingOrThanks(question);
+  if (conversational) {
     return {
-      text: "Ask me anything about Sutra ERP — vouchers, ledgers, inventory, VAT, reports, payroll or settings.",
-      matchedEntry: null,
+      answer: conversational,
+      suggestions: ["How do I create a sales invoice?", "What are the keyboard shortcuts?"],
+      confidence: 100,
+    };
+  }
+
+  const tokens = tokenize(question);
+  if (tokens.length === 0) {
+    return {
+      answer: "I didn't quite catch that. Could you provide a bit more detail?",
+      suggestions: ["How do I create a sales invoice?", "What are the keyboard shortcuts?"],
       confidence: 0,
-      suggestions: defaultSuggestions(context),
-      fallback: true,
     };
   }
 
-  const queryTokens = tokenize(trimmed);
-  const currentModule = context?.module || (context?.route ? ROUTE_MODULE_MAP[context.route] : undefined);
+  const expandedTokens = expandTokens(tokens);
 
-  let best: FalconKBEntry | null = null;
-  let bestScore = 0;
+  let bestEntry: KBEntry | null = null;
+  let highestScore = 0;
 
-  for (const entry of FALCON_KB) {
-    const s = scoreEntry(entry, queryTokens, currentModule);
-    if (s > bestScore) {
-      bestScore = s;
-      best = entry;
+  // Simple scoring model
+  for (const entry of KNOWLEDGE_BASE) {
+    const score = calculateScore(entry, expandedTokens, currentPath);
+    if (score > highestScore) {
+      highestScore = score;
+      bestEntry = entry;
     }
   }
 
-  if (best && bestScore >= MIN_CONFIDENT_SCORE) {
+  if (bestEntry && highestScore > 1.0) {
+    // Collect related questions for suggestions (same category, excluding the answer itself)
+    const related = KNOWLEDGE_BASE.filter(
+      (e) => e.category === bestEntry!.category && e.id !== bestEntry!.id
+    )
+      .sort(() => 0.5 - Math.random()) // Shuffle
+      .slice(0, 3)
+      .map((e) => e.q);
+
     return {
-      text: best.answer,
-      matchedEntry: best,
-      confidence: Math.min(1, bestScore / 20),
-      suggestions: best.followups?.length ? best.followups : contextualSuggestions(currentModule),
-      fallback: false,
+      answer: bestEntry.a,
+      matchedId: bestEntry.id,
+      suggestions: related,
+      confidence: highestScore,
     };
   }
 
-  // Low-confidence fallback — never invent an answer.
   return {
-    text:
-      "I can help with Sutra ERP workflows, but I don't have a confident answer for that exact wording yet. Try rephrasing with the voucher type, screen name, or report you're asking about (e.g. 'how do I record a payment against a supplier bill'), or pick one of the suggestions below.",
-    matchedEntry: null,
+    answer: "I couldn't find a direct answer for that in my knowledge base. Try checking the documentation or rephrasing your question.",
+    suggestions: ["How do I create a sales invoice?", "What are the keyboard shortcuts?"],
     confidence: 0,
-    suggestions: contextualSuggestions(currentModule),
-    fallback: true,
   };
-}
-
-function contextualSuggestions(module?: string): string[] {
-  const byModule: Record<string, string[]> = {
-    sales: ["How do I create a sales invoice?", "How do I apply a sales return?", "Why is VAT not calculating?"],
-    purchase: ["How do I record a purchase invoice?", "How do I create a purchase return?", "What is a GRN?"],
-    accounts: ["How do I add a new ledger?", "What is bill-by-bill tracking?", "How do I set an opening balance?"],
-    inventory: ["How do I transfer stock between warehouses?", "Why is stock quantity insufficient?", "How do I add a new item?"],
-    journal: ["How do I pass a journal entry?", "Why is my voucher not balancing?", "What is the approval workflow?"],
-    payment: ["How do I record a supplier payment?", "How do I allocate a payment to a bill?"],
-    receipt: ["How do I record a customer receipt?", "How do I use FIFO auto-allocation?"],
-    vat: ["How do I generate VAT reports?", "Why is VAT not calculating on a line?", "What is CBMS submission?"],
-    reports: ["How do I read the Trial Balance?", "What does the Aging Report show?", "How do I view the General Ledger?"],
-    payroll: ["How do I run payroll?", "How do I set up pay heads?"],
-    admin: ["How do I back up my data?", "How do I add a new user?", "How do I close the fiscal year?"],
-    pos: ["How do I open a POS session?", "How do I hold a bill in POS?"],
-  };
-  return byModule[module || ""] || defaultSuggestions();
-}
-
-function defaultSuggestions(context?: FalconContext): string[] {
-  return [
-    "How do I create a sales invoice?",
-    "How do I pass a journal entry?",
-    "What reports are available?",
-  ];
 }

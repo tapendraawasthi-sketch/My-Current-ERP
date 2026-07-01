@@ -1,0 +1,244 @@
+import type { KBEntry } from "../types";
+
+export const KB_GENERAL: KBEntry[] = [
+  {
+    id: "gen-001", category: "general",
+    q: "What is Sutra ERP?",
+    keywords: ["sutra erp", "what is this system", "about sutra"],
+    a: "Sutra ERP is a web-based accounting and inventory system for Nepali businesses with double-entry accounting, 13% VAT compliance, Bikram Sambat calendar support, multi-warehouse inventory, POS billing, and IRD-compliant tax reporting. It uses React/TypeScript on the frontend with Dexie.js (IndexedDB) for offline-capable local storage, and Zustand for state management."
+  },
+  {
+    id: "gen-002", category: "general",
+    q: "What are the main modules of Sutra ERP?",
+    keywords: ["modules", "main sections", "features list"],
+    a: "The main modules are: Gateway/Company (settings, fiscal year, backup, audit log), Masters (Chart of Accounts, Parties, Items, Warehouses, Cost Centers, Price Lists), Transactions (Sales/Purchase Invoices, Returns, Delivery Challan, GRN, Stock Transfer), Finance Vouchers (Journal, Payment, Receipt, Contra, Debit/Credit Note), Reports (financial, inventory, tax), POS Mode, and Utilities (Users, Audit Log, Backup, Import/Export)."
+  },
+  {
+    id: "gen-003", category: "general",
+    q: "What technology does Sutra ERP use?",
+    keywords: ["tech stack", "built with", "technology"],
+    a: "Frontend: React 19, TypeScript, Vite, Tailwind CSS, Zustand (state), Dexie.js (IndexedDB). PDF/Excel: jsPDF and SheetJS (xlsx). Nepali calendar: nepali-date-converter. Optional backend: Express.js + PostgreSQL + Redis, deployable on Render, with the frontend on Vercel."
+  },
+  {
+    id: "gen-004", category: "general",
+    q: "Where is my data stored?",
+    keywords: ["data storage", "indexeddb", "database location", "is my data safe"],
+    a: "Data is stored locally in your browser using IndexedDB (via Dexie.js), which persists across restarts. For multi-device or multi-user production use, deploy the optional backend with PostgreSQL. Regardless of mode, always take regular backups (Utilities → Backup & Restore) since browser storage can be cleared."
+  },
+  {
+    id: "gen-005", category: "general",
+    q: "What are the authentication stages?",
+    keywords: ["auth stages", "login flow", "signup wizard", "gateway screen"],
+    a: "There are four stages: 'checking' (app is initializing), 'no-company' (shows the Sign Up Wizard to create a company + admin), 'gateway' (select the company to open), and 'company-login' (enter username/password). After login you land on the full ERP interface."
+  },
+  {
+    id: "gen-006", category: "general",
+    q: "What are the keyboard shortcuts in Sutra ERP?",
+    keywords: ["keyboard shortcuts", "hotkeys", "f-keys", "shortcut list"],
+    a: "F1=Help, F2=Save, F3=Items/Add Ledger, F4=Accounts, F5=Journal, F6=Payment, F7=Receipt, F8=Contra/Delete, F9=Sales/Delete Row, F10=Purchase, F11=Balance Sheet, F12=Screen Configuration, Esc=Cancel/Back. Single letters (when not typing): B=Balance Sheet, T=Trial Balance, S=Stock Status, L=Ledger, V=VAT Report, D=Day Book, G=GST Summary. Ctrl+B/T/L/G/U/S/K also work. Press ? to open the full shortcut editor."
+  },
+  {
+    id: "gen-007", category: "general",
+    q: "How does the right sidebar shortcut bar work?",
+    keywords: ["right sidebar", "shortcut bar", "quick actions panel"],
+    a: "The right sidebar gives one-click access to F1–F11 screens plus single-letter report shortcuts (B, T, S, L, V, D, G) and an F12 button for screen configuration. It sits on the right edge with a dark theme and works alongside the keyboard shortcuts."
+  },
+  {
+    id: "gen-008", category: "general",
+    q: "How do I open Falcon AI and what can I ask it?",
+    keywords: ["open falcon", "falcon ai", "chat assistant", "ask falcon"],
+    a: "Click the blue chat bubble in the bottom-right corner. You can ask about creating invoices/vouchers, adding masters, generating reports, VAT/TDS, POS Mode, settings, printing, keyboard shortcuts, or troubleshooting. Falcon is read-only guidance — it never creates, edits, or deletes your data."
+  },
+  {
+    id: "gen-009", category: "general",
+    q: "What are Falcon's limitations?",
+    keywords: ["falcon limitations", "what falcon cannot do"],
+    a: "Falcon is strictly read-only: it cannot create, edit, delete, navigate pages, post transactions, or change settings for you. It only provides step-by-step guidance which you then perform yourself."
+  },
+  {
+    id: "gen-010", category: "general",
+    q: "How do I create a new company?",
+    keywords: ["create company", "sign up wizard", "new company setup"],
+    a: "On first launch the Sign Up Wizard appears with 4 steps: 1) Company Profile (name, business type, address, phone, email) 2) Tax Registration (PAN 9-digit, VAT toggle, IRD province, fiscal year) 3) Accounting Setup (BS/AD format, Stock/Cost Center/Bill-wise toggles) 4) Admin Account (username min 4 chars, password min 6 chars with letters+numbers). After finishing, sign in with the admin account."
+  },
+  {
+    id: "gen-011", category: "general",
+    q: "How do I configure company settings?",
+    keywords: ["company settings", "configure company", "company info"],
+    a: "Go to Company → Company Settings. Update legal identity (name, PAN, email, phone, fiscal year, address), invoice settings (prefix, currency symbol, VAT rate), and feature toggles (Cost Center, Bill-wise Tracking, Batch Tracking, TDS, Multi-Currency). Click Save Settings."
+  },
+  {
+    id: "gen-012", category: "general",
+    q: "How do I set up a fiscal year?",
+    keywords: ["fiscal year", "financial year setup", "open close fy"],
+    a: "Go to Company → Fiscal Year. Create a fiscal year with BS start/end dates, mark it 'Open' to make it active, and close the previous year once done. All new vouchers/invoices default to the active fiscal year and dates must fall within its range."
+  },
+  {
+    id: "gen-013", category: "general",
+    q: "What is the F12 Configuration panel?",
+    keywords: ["f12 panel", "screen configuration", "f12 settings"],
+    a: "F12 opens screen-specific settings (booleans, dropdowns, text, integers) registered by the current page. Click Save to apply or 'Reset to Defaults' to revert. If a screen has no config registered, it shows 'No F12 configuration available.' Press F12 or Esc to close."
+  },
+  {
+    id: "gen-014", category: "general",
+    q: "How do I backup and restore data?",
+    keywords: ["backup", "restore", "export database", "download backup"],
+    a: "Go to Utilities → Backup & Restore. 'Create Backup' exports all IndexedDB tables to a JSON file — download and store it off-device (cloud/USB/email). 'Restore Backup' lets you upload that JSON file to replace current data; confirm the warning since this overwrites everything. Backup daily."
+  },
+  {
+    id: "gen-015", category: "general",
+    q: "How do I view audit logs?",
+    keywords: ["audit log", "activity log", "who changed what"],
+    a: "Go to Utilities → Audit Log. It shows Timestamp, User, Action (CREATE/UPDATE/DELETE/LOGIN/LOGOUT), Description and Status, filterable by action type and searchable. Logs are append-only and immutable for compliance."
+  },
+  {
+    id: "gen-016", category: "general",
+    q: "How do I factory reset the database?",
+    keywords: ["factory reset", "delete all data", "clear database"],
+    a: "Go to Company Settings → Administrative Controls → 'Factory Reset Database'. You must type DELETE ALL DATA exactly to confirm. This permanently erases everything and reloads with fresh seed data — take a backup first, this cannot be undone."
+  },
+  {
+    id: "gen-017", category: "general",
+    q: "How does the BS/AD date format work?",
+    keywords: ["nepali date", "bikram sambat", "bs ad date format"],
+    a: "Sutra supports both Bikram Sambat (BS) and Anno Domini (AD) dates using the nepali-date-converter library. Choose BS or AD as the default format during company setup or in settings. Every voucher/invoice stores both representations, and the NepaliDatePicker component lets you pick BS dates directly."
+  },
+  {
+    id: "gen-018", category: "general",
+    q: "How do I set the invoice number prefix?",
+    keywords: ["invoice prefix", "voucher numbering", "serial number format"],
+    a: "Set the 'Trading Prefix Code' in Company Settings (e.g. SI- for Sales, PI- for Purchase) or configure per-type numbering series in Masters → Voucher Type Master. Invoice numbers are then auto-generated as [Prefix][Serial Number]."
+  },
+  {
+    id: "gen-019", category: "general",
+    q: "What feature toggles are available in company settings?",
+    keywords: ["feature toggles", "enable cost center", "enable tds"],
+    a: "Cost Center Module (track expenses by department/project), Bill-wise Outstanding Tracking (enables AR/AP aging), Batch & Expiry Tracking, TDS Withholding, and Multi-Currency Support. Enable them in Company Settings and they will appear across relevant forms."
+  },
+  {
+    id: "gen-020", category: "general",
+    q: "How do I add a new user and what roles exist?",
+    keywords: ["add user", "user roles", "manage users", "permissions"],
+    a: "Go to Utilities → Users Management → Add User. Enter name, username (min 4 alphanumeric chars), password (min 6 chars, letters+numbers), and role. Roles: Admin/Owner (full access), Accountant (masters, transactions, reports), Manager (approvals, reports), Operator (basic entry only)."
+  },
+  {
+    id: "gen-021", category: "general",
+    q: "How do I change my password?",
+    keywords: ["change password", "reset password", "update credentials"],
+    a: "Click your profile icon in the header → Settings/Change Password. Enter current password, then a new password (min 6 characters with letters and numbers), confirm it, and save."
+  },
+  {
+    id: "gen-022", category: "general",
+    q: "What happens after too many failed login attempts?",
+    keywords: ["login lockout", "account locked", "too many attempts"],
+    a: "After 5 consecutive failed logins, the account locks for 30 seconds with a visible countdown. The login button is disabled until the countdown expires. A successful login resets the failure counter."
+  },
+  {
+    id: "gen-023", category: "general",
+    q: "How does the Gateway/company selection screen work?",
+    keywords: ["gateway screen", "select company", "open company"],
+    a: "The Gateway screen appears when a company exists but you are not logged in. It shows the company name, PAN, and last login info with an 'Open' button leading to the login screen, plus a 'Create New Company' option at the bottom."
+  },
+  {
+    id: "gen-024", category: "general",
+    q: "How does the global search work?",
+    keywords: ["global search", "search everything", "ctrl+k", "find anything"],
+    a: "Press / or Ctrl+K to open Global Search. It searches Accounts, Parties, Vouchers, Invoices, Items, and Pages simultaneously. Use Arrow keys to navigate results, Enter to open, Esc to close."
+  },
+  {
+    id: "gen-025", category: "general",
+    q: "How do I customize keyboard shortcuts?",
+    keywords: ["customize shortcuts", "shortcut panel", "edit shortcut keys"],
+    a: "Press ? to open the Shortcut Panel. Browse shortcuts by category, toggle any on/off, or click the pencil icon to type a new key combination (e.g. Ctrl+Shift+N) and save with the checkmark. Changes persist across sessions."
+  },
+  {
+    id: "gen-026", category: "general",
+    q: "How does the sidebar and top menu navigation work?",
+    keywords: ["sidebar navigation", "top menu bar", "busy menu bar"],
+    a: "The left Sidebar has collapsible sections (Masters, Transactions, Books, Reports, Configuration, etc.) — click a group header to expand/collapse, and the collapse toggle shrinks it to icon-only mode. The BusyMenuBar below the title bar provides dropdown menus (Company, Masters, Transactions, Reports, Utilities) for quick navigation."
+  },
+  {
+    id: "gen-027", category: "general",
+    q: "What does the Dashboard show?",
+    keywords: ["dashboard overview", "home page", "dashboard widgets"],
+    a: "The Dashboard shows a Quick Stats strip (vouchers/invoices/collection/purchases today), KPI cards (Today's Sales, Outstanding Receivables, Cash & Bank, VAT Liability, Stock Position, Active Parties), and an Alerts section (overdue receivables, low stock, PDC due, pending approvals, near-expiry batches) each with a direct action button."
+  },
+  {
+    id: "gen-028", category: "general",
+    q: "How do I import or export data in bulk?",
+    keywords: ["data import export", "bulk import", "excel import"],
+    a: "Go to Utilities → Data Import/Export. Download the Excel template for Parties, Items, or Chart of Accounts, fill it in, and upload it — the system validates each row and creates records, reporting any errors. Export buttons on most list pages let you download filtered data as Excel."
+  },
+  {
+    id: "gen-029", category: "general",
+    q: "The Trial Balance is not balancing, what should I check?",
+    keywords: ["trial balance not balancing", "unbalanced books", "debit credit mismatch"],
+    a: "Check the Day Book for unbalanced journal vouchers, verify opening balances, look for cancelled vouchers that may lack reversal entries, and confirm all invoices are posted (not draft). The balance indicator on each journal voucher shows red when unbalanced — fix that voucher first."
+  },
+  {
+    id: "gen-030", category: "general",
+    q: "My invoice will not save, why?",
+    keywords: ["invoice not saving", "cannot post invoice", "save error"],
+    a: "Check that: a party is selected, at least one line has quantity > 0 and rate ≥ 0, the date falls within the active fiscal year, the grand total is greater than zero, a bank account is chosen if paying by bank transfer, and the party's ledger is marked Active."
+  },
+  {
+    id: "gen-031", category: "general",
+    q: "My stock quantities look wrong, how do I fix it?",
+    keywords: ["stock quantity wrong", "inventory mismatch", "wrong stock"],
+    a: "Verify all purchase invoices/GRNs are posted (increases stock), all sales invoices/challans are posted (decreases stock), stock transfers are correctly recorded, and check the Stock Ledger report for the specific item to trace every movement. Use Physical Stock counting to reconcile and post adjustments."
+  },
+  {
+    id: "gen-032", category: "general",
+    q: "Printing does not work / popup blocked",
+    keywords: ["popup blocked", "print not working", "pdf will not open"],
+    a: "Allow popups for the Sutra ERP site in your browser (click the blocked-popup icon in the address bar → Always allow), then click Print again. If PDF still fails, check the browser console for errors — very large invoices can occasionally hit jsPDF memory limits."
+  },
+  {
+    id: "gen-033", category: "general",
+    q: "How do I deploy Sutra ERP to Vercel or Render?",
+    keywords: ["deploy vercel", "deploy render", "hosting", "production deployment"],
+    a: "Frontend: push to GitHub, import into Vercel — it auto-detects Vite (build command `npm run build`, output `dist`), and vercel.json handles SPA routing. Backend (optional): deploy to Render with `npm ci` build and `npm start`, plus a managed PostgreSQL and Redis instance, wiring env vars like DATABASE_URL, REDIS_URL, JWT_SECRET."
+  },
+  {
+    id: "gen-034", category: "general",
+    q: "How can I improve performance with large datasets?",
+    keywords: ["performance slow", "large data optimization", "speed up app"],
+    a: "Use filters before browsing large lists, rely on pagination, close old fiscal years to shrink active data, export and archive old transactions, and for very large datasets consider the backend (PostgreSQL) deployment instead of pure browser IndexedDB."
+  },
+  {
+    id: "gen-035", category: "general",
+    q: "What are security best practices for Sutra ERP?",
+    keywords: ["security best practices", "protect data", "access control tips"],
+    a: "Use strong unique passwords (min 6 chars, letters+numbers), grant users the minimum role they need, review Audit Logs regularly, take encrypted off-device backups, log out when leaving the device unattended, and deactivate (rather than delete) users who leave the company."
+  },
+  {
+    id: "gen-036", category: "general",
+    q: "What is Period Lock?",
+    keywords: ["period lock", "lock closed period", "prevent editing old data"],
+    a: "Period Lock prevents modification of vouchers before a configured lock date, typically set right after an audit is completed. It protects filed tax periods from accidental edits."
+  },
+  {
+    id: "gen-037", category: "general",
+    q: "How does the approval workflow role permission work?",
+    keywords: ["approval roles", "who can approve vouchers", "workflow permissions"],
+    a: "Accountants can submit Drafts for approval. Managers can move Submitted → Under Review → Approved, and can reject back to Draft. Admins can perform any transition including the final Approved → Posted step. Operators cannot submit or approve."
+  },
+  {
+    id: "gen-038", category: "general",
+    q: "What does the green theme / design system look like?",
+    keywords: ["theme colors", "design system", "ui style"],
+    a: "Sutra uses a BUSY/Tally-inspired green theme: page background #E4F1D9, card background #EBF5E2, black borders, and black text for a sharp accounting-software look. The dark sidebar and top menu bar (#1e2433) are intentionally exempt from this theme."
+  },
+  {
+    id: "gen-039", category: "general",
+    q: "How does the mobile layout differ from desktop?",
+    keywords: ["mobile layout", "responsive design", "phone view"],
+    a: "On mobile, the top bar shows the page title with a hamburger menu that opens a slide-in drawer containing the sidebar, and a bottom navigation bar offers Home, Invoices, Vouchers, Reports, and More. The dark title bar, status bar, and right shortcut sidebar are hidden."
+  },
+  {
+    id: "gen-040", category: "general",
+    q: "How do I clear Falcon's chat history?",
+    keywords: ["clear falcon chat", "reset falcon", "delete chat history"],
+    a: "Open the Falcon panel and click the trash icon in the header. All messages are cleared and the welcome message reappears. History is stored in your browser's localStorage, so clearing site data also clears it."
+  },
+];

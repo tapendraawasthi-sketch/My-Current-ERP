@@ -1,0 +1,706 @@
+import type { KBEntry } from "../types";
+
+export const KB_EXTENDED4: KBEntry[] = [
+  {
+    id: "ext-538", category: "general",
+    q: "How does code splitting work in Sutra ERP?",
+    keywords: ["code splitting vite", "chunk sizes"],
+    a: "Vite chunks: react (React+ReactDOM), ui (Lucide+Recharts), db (Dexie), pdf (jsPDF), xlsx (SheetJS), tanstack. Loads on demand, reduces initial load."
+  },
+  {
+    id: "ext-539", category: "general",
+    q: "How can I improve large list performance?",
+    keywords: ["large list performance", "pagination optimize"],
+    a: "Pagination (default 50), filter before paginating, limit loaded data, useMemo, close old FYs, archive old transactions."
+  },
+  {
+    id: "ext-540", category: "general",
+    q: "How does the app handle memory for long sessions?",
+    keywords: ["memory management", "long session performance"],
+    a: "Zustand holds active data. Heavy data entry may increase memory. Browser handles cleanup. Periodic refresh releases memory. POS designed for day-long use."
+  },
+  {
+    id: "ext-541", category: "general",
+    q: "How does lazy loading work for pages?",
+    keywords: ["lazy loading pages", "page render"],
+    a: "Components imported upfront (no dynamic imports). App.tsx renders current page via switch/case. Only active page renders, others unmounted."
+  },
+  {
+    id: "ext-542", category: "general",
+    q: "How does the green theme CSS work?",
+    keywords: ["green theme css", "custom properties colors"],
+    a: "CSS variables in :root (--bg, --bg-card, --bg-muted). Global overrides in .green-theme class. Preserves semantic colors (red/green)."
+  },
+  {
+    id: "ext-543", category: "general",
+    q: "How do the dark theme exemptions work?",
+    keywords: ["dark theme exemption", "topbar sidebar colors"],
+    a: "!important overrides reset theme for .top-menu-bar, .right-button-bar, Sidebar so they keep their own dark styles (#1e2433)."
+  },
+  {
+    id: "ext-544", category: "general",
+    q: "How are semantic status colors preserved?",
+    keywords: ["status colors badge", "semantic css"],
+    a: "Badges explicitly defined (green for posted, yellow for draft, red for cancelled). Not overridden by the green theme."
+  },
+  {
+    id: "ext-545", category: "general",
+    q: "How does the font system cascade?",
+    keywords: ["font hierarchy css", "typography details"],
+    a: "Base: Inter (body). Monospace: Courier New (amounts/codes). Strict size hierarchy (10px to 18px). No font-black or text-xl on data."
+  },
+  {
+    id: "ext-546", category: "general",
+    q: "What are all the single-letter shortcuts?",
+    keywords: ["single letter shortcuts", "keyboard hotkeys"],
+    a: "B (Balance Sheet), T (Trial Balance), S (Stock Status), L (Ledger), V (VAT Report), D (Day Book), G (GST Summary), U (Users), F (Config), K (Lock)."
+  },
+  {
+    id: "ext-547", category: "general",
+    q: "What are all the Ctrl shortcuts?",
+    keywords: ["ctrl shortcuts", "control keys"],
+    a: "Ctrl+B (Balance Sheet), Ctrl+T (Trial Balance), Ctrl+L (Ledger), Ctrl+G (VAT), Ctrl+U (Users), Ctrl+K or / (Global Search), Ctrl+S (Save)."
+  },
+  {
+    id: "ext-548", category: "general",
+    q: "What are all the F-key shortcuts?",
+    keywords: ["f key shortcuts", "function keys"],
+    a: "F1 (Help), F2 (Save), F3 (Items/Ledger), F4 (Accounts), F5 (Journal), F6 (Payment), F7 (Receipt), F8 (Contra), F9 (Sales/Delete Row), F10 (Purchase), F11 (Features), F12 (Config), Esc (Cancel)."
+  },
+  {
+    id: "ext-549", category: "general",
+    q: "How do I customize keyboard shortcuts?",
+    keywords: ["customize shortcuts", "change hotkeys"],
+    a: "Press ? to open ShortcutPanel. Edit key combos, toggle active state. Saved in IndexedDB shortcuts table. Persists across sessions."
+  },
+  {
+    id: "ext-550", category: "general",
+    q: "What modifier combinations are supported for custom shortcuts?",
+    keywords: ["shortcut modifiers", "custom combo"],
+    a: "Ctrl, Alt, Shift + individual keys (A-Z, 0-9, F1-F12). Example: Ctrl+Shift+N. Single letters work only when not typing."
+  },
+  {
+    id: "ext-551", category: "general",
+    q: "How does the F12 configuration system work technically?",
+    keywords: ["f12 configuration architecture", "usescreenf12 hook"],
+    a: "useF12Config hook manages state. useScreenF12(screenId) registers config. F12Panel renders modal overlay. Values stored in Zustand store."
+  },
+  {
+    id: "ext-552", category: "general",
+    q: "What field types can F12 configurations have?",
+    keywords: ["f12 field types", "config inputs"],
+    a: "boolean (Yes/No), dropdown (select), integer (number min/max), text (free text), char (single char). Rendered by FieldRow component."
+  },
+  {
+    id: "ext-553", category: "general",
+    q: "How are F12 values saved and persisted?",
+    keywords: ["save f12 settings", "persist config"],
+    a: "User clicks 'Save' in F12 panel. saveValues() writes to store (memory only currently). Reset to defaults available. Changes apply on save."
+  },
+  {
+    id: "ext-554", category: "general",
+    q: "What F12 configurations are available for specific screens?",
+    keywords: ["available f12 screens", "page specific settings"],
+    a: "Global screen registered in Gateway. Other screens can register via useScreenF12('screen-id'). Default is empty. Extensible per page."
+  },
+  {
+    id: "ext-555", category: "general",
+    q: "How does the Modal component work?",
+    keywords: ["modal component ui", "overlay dialog"],
+    a: "Fixed overlay with backdrop blur. Centered panel, title bar with close button, scrollable body, optional footer. Configurable max-width, z-index 50."
+  },
+  {
+    id: "ext-556", category: "general",
+    q: "How does ConfirmDialog work?",
+    keywords: ["confirmdialog code", "confirmation modal"],
+    a: "Simplified modal for confirmations (delete/cancel). Standard pattern: title + message + confirm (red for destructive) / cancel buttons."
+  },
+  {
+    id: "ext-557", category: "general",
+    q: "What modal patterns exist for data entry?",
+    keywords: ["data entry modals", "form in dialog"],
+    a: "Add/Edit Party (full form), Add/Edit Ledger (multi-tab in content), Invoice/Voucher Detail (read-only), CBMS Status, Cancel/Void, Bill Hold."
+  },
+  {
+    id: "ext-558", category: "general",
+    q: "How are modals closed?",
+    keywords: ["close modal", "dismiss dialog"],
+    a: "Click X button, click overlay/backdrop, press Escape, click Cancel/Close button, click Confirm/Save, or programmatically via onClose()."
+  },
+  {
+    id: "ext-559", category: "general",
+    q: "What badge variants are available?",
+    keywords: ["badge variants", "status styling"],
+    a: "success (green), warning (amber), danger (red), info (blue), default/secondary (gray), outline (transparent/gray border)."
+  },
+  {
+    id: "ext-560", category: "general",
+    q: "How are party type badges styled?",
+    keywords: ["party type badges", "customer supplier color"],
+    a: "Customer (blue), Supplier (amber), Both (green). Size 'sm', uppercase 10px font. Used in listings and selectors."
+  },
+  {
+    id: "ext-561", category: "general",
+    q: "How are invoice/voucher status badges displayed?",
+    keywords: ["invoice status badge", "posted draft color"],
+    a: "Posted: Green check. Draft: Yellow/amber. Cancelled/Voided: Red. Size 'sm', uppercase, shown in list tables and detail headers."
+  },
+  {
+    id: "ext-562", category: "general",
+    q: "What are the BUSY-style pill components?",
+    keywords: ["pilltitle component", "busy style header"],
+    a: "PillTitle component ('SALES INVOICE'). variant='tally': green background, black border. Used in form headers for BUSY software look."
+  },
+  {
+    id: "ext-563", category: "general",
+    q: "What is the FormPanel component?",
+    keywords: ["formpanel wrapper", "form container style"],
+    a: "Wrapper with border/padding. variant='tally' (green bg, black border), variant='standard' (white bg, gray border). Consistent styling."
+  },
+  {
+    id: "ext-564", category: "general",
+    q: "What is the GroupBox component?",
+    keywords: ["groupbox component", "field grouping ui"],
+    a: "Bordered container with label at top (absolutely positioned overlapping border). Used for grouping related fields in BUSY-style."
+  },
+  {
+    id: "ext-565", category: "general",
+    q: "What is the FieldRow component?",
+    keywords: ["fieldrow layout", "form input wrapper"],
+    a: "Horizontal layout: label (right-aligned, 130px) + content (flex-1). BUSY-style form field layout with colored border."
+  },
+  {
+    id: "ext-566", category: "general",
+    q: "How does the form footer work?",
+    keywords: ["form footer layout", "save cancel buttons"],
+    a: "Sticky at bottom. Action buttons: Cancel, Save & New, Save. Shows keyboard hints (F2, Esc). Separator border from content."
+  },
+  {
+    id: "ext-567", category: "general",
+    q: "How does the data-table class work?",
+    keywords: ["data table css", "table styling structure"],
+    a: "thead sticky/green, tbody alternating/hover, tfoot green/bold. Amount cells use .amt-dr (blue), .amt-cr (red) and monospace font."
+  },
+  {
+    id: "ext-568", category: "general",
+    q: "How does the line-table work?",
+    keywords: ["line table css", "invoice entry grid"],
+    a: "Tighter spacing than data-table. Inline inputs (qty, rate), dropdowns, delete button per row, add line button, auto-recalculates totals."
+  },
+  {
+    id: "ext-569", category: "general",
+    q: "How does the T-format report table work?",
+    keywords: ["t format table", "balance sheet layout"],
+    a: ".tformat-wrapper, .tformat-table. Two columns (Left/Right). Group headers bold, ledgers, total rows highlighted, drill-down buttons."
+  },
+  {
+    id: "ext-570", category: "general",
+    q: "How do sticky table headers work?",
+    keywords: ["sticky headers table", "scroll table head"],
+    a: "CSS: position: sticky; top: 0; z-index: 5; background: #c9deb5. Stays visible while scrolling body rows."
+  },
+  {
+    id: "ext-571", category: "general",
+    q: "How does the app show loading states?",
+    keywords: ["loading states", "spinners UI"],
+    a: "Initial load/Auth: Spinner with text. Save/Post: Button spinner. Data: Spinner icon. Falcon: 'Falcon is thinking...'."
+  },
+  {
+    id: "ext-572", category: "general",
+    q: "How are empty states displayed?",
+    keywords: ["empty states ui", "no results shown"],
+    a: "Tables: Centered cell message. Reports: ReportEmptyState component. Cart/Search: Dashed borders with text. Dashboard alerts: 'All clear' green message."
+  },
+  {
+    id: "ext-573", category: "general",
+    q: "How does the 'no company' state work?",
+    keywords: ["no company state", "signup wizard trigger"],
+    a: "authStage === 'no-company' triggers SignUpWizard (4 steps). After completion, calls createCompanyAndAdmin() and transitions to gateway."
+  },
+  {
+    id: "ext-574", category: "general",
+    q: "How does the gateway (company selection) work?",
+    keywords: ["gateway screen setup", "company selection ui"],
+    a: "authStage === 'gateway'. Shows Company card (name/PAN). 'Open' button proceeds to login. 'Create New Company' option available."
+  },
+  {
+    id: "ext-575", category: "general",
+    q: "How are toast notifications used?",
+    keywords: ["toast notifications UI", "react hot toast"],
+    a: "react-hot-toast. Success (green check), Error (red X), Loading (spinner). Custom invoice toast (with buttons). Top-right, 3-4s duration."
+  },
+  {
+    id: "ext-576", category: "general",
+    q: "What is the invoice posting toast?",
+    keywords: ["invoice posted toast", "custom success notification"],
+    a: "Custom toast showing invoice number, 'Print' button, and 'Dismiss' button. 4000ms duration, custom styled."
+  },
+  {
+    id: "ext-577", category: "general",
+    q: "How are error toasts triggered?",
+    keywords: ["error toast trigger", "validation fail UI"],
+    a: "toast.error('Message'). Used for validation errors, save failures, API errors, CBMS failures. Red styling."
+  },
+  {
+    id: "ext-578", category: "general",
+    q: "How does CBMS invoice submission work?",
+    keywords: ["cbms submission flow", "ird api call"],
+    a: "Invoice posted → submitToCBMS(async). Updates invoice with cbmsIrn/cbmsSubmitted on success, false on failure. Shows toast. Generates QR."
+  },
+  {
+    id: "ext-579", category: "general",
+    q: "How do I view CBMS status for an invoice?",
+    keywords: ["cbms status modal", "check cbms sync"],
+    a: "Click CBMS badge on invoice. Modal shows IRN, status, timestamp, error, QR code, and 'Resubmit' button."
+  },
+  {
+    id: "ext-580", category: "general",
+    q: "How does CBMS QR code generation work?",
+    keywords: ["cbms qr code generation", "qrcode library"],
+    a: "Uses qrcode npm package. QRCode.toDataURL(qrString). Medium error correction, 180px width, minimal margin."
+  },
+  {
+    id: "ext-581", category: "general",
+    q: "What CBMS configuration is needed?",
+    keywords: ["cbms configuration setup", "enable cbms"],
+    a: "Company Settings → enable cbmsEnabled, configure credentials/API keys. System auto-submits posted sales invoices."
+  },
+  {
+    id: "ext-582", category: "general",
+    q: "How does Falcon maintain context?",
+    keywords: ["falcon context aware", "falcon screen route"],
+    a: "Updates via useEffect on page change: setContext({route: currentPage, screenTitle}). Uses context to provide screen-specific answers."
+  },
+  {
+    id: "ext-583", category: "general",
+    q: "How does Falcon message history work?",
+    keywords: ["falcon message history", "falcon store state"],
+    a: "Stored in useFalconStore messages array (id, role, content, timestamp, feedback). Persists in Zustand memory. Can be cleared."
+  },
+  {
+    id: "ext-584", category: "general",
+    q: "What are Falcon's limitations?",
+    keywords: ["falcon limitations", "read only chatbot"],
+    a: "Strictly read-only. Cannot create/edit data, navigate, or access real-time values. Guidance based on general ERP knowledge."
+  },
+  {
+    id: "ext-585", category: "general",
+    q: "How does Falcon's UI work?",
+    keywords: ["falcon ui structure", "assistant panel"],
+    a: "Launcher button (bottom-right). Panel (420x620) with header, quick prompts, message list (user right/assistant left), feedback buttons, composer."
+  },
+  {
+    id: "ext-586", category: "general",
+    q: "How does the RightButtonBar render buttons?",
+    keywords: ["rightbuttonbar structure", "shortcut sidebar styling"],
+    a: "Fixed 148px width, dark background (#1e2433). 26px height buttons, border separators. Shortcut key colored orange."
+  },
+  {
+    id: "ext-587", category: "general",
+    q: "What are all the default RightButtonBar buttons?",
+    keywords: ["right button bar buttons", "default shortcuts sidebar"],
+    a: "F1-F12 standard actions (Help, Sales, Items, Accounts, Vouchers, Config). Quick reports (B, T, S, L, V, D, G)."
+  },
+  {
+    id: "ext-588", category: "general",
+    q: "How does the keyboard event listener work for the RightButtonBar?",
+    keywords: ["rightbuttonbar keyboard listener", "shortcut event capture"],
+    a: "Capture phase document.addEventListener. Checks focus (ignores if in input). Prevents default, fires onShortcut callback."
+  },
+  {
+    id: "ext-589", category: "general",
+    q: "What menus does the TopMenuBar have?",
+    keywords: ["topmenubar items", "dropdown menus top"],
+    a: "Company, Data management, Exchange/sync, Reports, Settings, Support, Admin, License. Dark themed (#1e2433)."
+  },
+  {
+    id: "ext-590", category: "general",
+    q: "How does the TopMenuBar interact with the ERP?",
+    keywords: ["topmenubar interaction", "top navigation logic"],
+    a: "Sits above Title Bar. Independent of sidebar navigation. Uses setCurrentPage() for navigation or backend /api/ endpoints."
+  },
+  {
+    id: "ext-591", category: "general",
+    q: "How does sidebar collapsing work?",
+    keywords: ["sidebar collapse state", "shrink sidebar"],
+    a: "Toggle in header. Persisted in localStorage. Collapsed width 60px (icons), Expanded 240px. 300ms animation."
+  },
+  {
+    id: "ext-592", category: "general",
+    q: "How does sidebar group expansion work?",
+    keywords: ["sidebar group expansion", "accordion menu sidebar"],
+    a: "expandedGroups state. Chevron icons toggle. Items render only when expanded. Smooth animation on toggle."
+  },
+  {
+    id: "ext-593", category: "general",
+    q: "How does sidebar active item highlighting work?",
+    keywords: ["sidebar active item css", "menu highlight"],
+    a: "Blue background (#1557b0), white text, left 3px accent bar via .sidebar-active-item::before. Smooth transition."
+  },
+  {
+    id: "ext-594", category: "general",
+    q: "What are all the sidebar sections?",
+    keywords: ["sidebar sections list", "menu categories"],
+    a: "Gateway, Masters, Transactions, Books, Inventory, Reports, Payroll, Security, Configuration, Tools, Company, Assets, POS."
+  },
+  {
+    id: "ext-595", category: "general",
+    q: "How does data flow from IndexedDB to UI?",
+    keywords: ["data flow pipeline", "indexeddb zustand ui"],
+    a: "Dexie manages IndexedDB. initializeApp loads to Zustand store. Components useStore hooks (reactive). Write: Store Action → DB → Store Update → UI."
+  },
+  {
+    id: "ext-596", category: "general",
+    q: "What happens during app initialization?",
+    keywords: ["initializeapp logic", "startup sequence"],
+    a: "Loads settings, user, FYs, masters, transactions, shortcuts to store. Sets isDbReady=true, routes to correct auth stage."
+  },
+  {
+    id: "ext-597", category: "general",
+    q: "How does the page routing system work?",
+    keywords: ["custom routing system", "spa page switch"],
+    a: "Zustand currentPage state. App.tsx switch/case renders component. setCurrentPage() triggers navigation. Dispatches custom 'navigate' event. No URL changes."
+  },
+  {
+    id: "ext-598", category: "general",
+    q: "How does the auth stage flow work?",
+    keywords: ["auth stage progression", "login sequence"],
+    a: "checking → no-company (wizard) → gateway (select) → company-login → authenticated (full UI)."
+  },
+  {
+    id: "ext-599", category: "general",
+    q: "How do components communicate with each other?",
+    keywords: ["component communication", "react state sharing"],
+    a: "Zustand store (primary), Custom events, Props drilling, Context API (Theme/F12), Callback props, refs."
+  },
+  {
+    id: "ext-600", category: "general",
+    q: "How does the store handle optimistic updates?",
+    keywords: ["optimistic updates store", "db write confirmation"],
+    a: "No optimistic updates. Store validates, writes to DB async, updates Zustand state on success (UI re-renders). Failures show error toast."
+  },
+  {
+    id: "ext-601", category: "general",
+    q: "How does the invoice form handle party change?",
+    keywords: ["invoice party change logic", "auto fill customer"],
+    a: "Updates partyId, auto-fills billTo address, enables TDS fields (if config), updates item rates (if price list). PAN updates."
+  },
+  {
+    id: "ext-602", category: "general",
+    q: "How does the invoice form handle payment mode change?",
+    keywords: ["invoice payment mode switch", "cash bank credit input"],
+    a: "Cash: simple. Bank: shows dropdown/cheque inputs. Credit: shows paid amount/balance. Preserves data when switching back."
+  },
+  {
+    id: "ext-603", category: "general",
+    q: "How does the journal voucher form validate balance?",
+    keywords: ["journal balance validation code", "dr cr math check"],
+    a: "useMemo calculates dr/cr sum. Balanced if difference < 0.005. Visual indicator (Green/Red). Post blocked if unbalanced."
+  },
+  {
+    id: "ext-604", category: "general",
+    q: "How does the bill allocation auto-fill work?",
+    keywords: ["fifo bill allocation algorithm", "suggest allocation logic"],
+    a: "Sorts by due date (oldest first). Allocates payment sequentially until exhausted. Unallocated remainder becomes advance."
+  },
+  {
+    id: "ext-605", category: "general",
+    q: "How does challan/GRN stock posting work?",
+    keywords: ["challan stock posting code", "grn db transaction"],
+    a: "Creates stock movements. Wraps in Dexie transaction: bulkAdd movements, update challan.inventoryPosted=true. Atomicity guaranteed."
+  },
+  {
+    id: "ext-606", category: "general",
+    q: "What happens if I delete a party with transactions?",
+    keywords: ["delete party impact", "orphan records"],
+    a: "Orphans transaction records. Recommended to deactivate (isActive: false) instead. Transactions remain in reports."
+  },
+  {
+    id: "ext-607", category: "general",
+    q: "What happens if I delete an account with transactions?",
+    keywords: ["delete ledger impact", "account zero balance check"],
+    a: "Validation blocks deletion if balance !== 0. If deleted, referencing vouchers orphan. Recommended to deactivate instead."
+  },
+  {
+    id: "ext-608", category: "general",
+    q: "What happens if fiscal year changes mid-transaction?",
+    keywords: ["fiscal year change impact", "transaction dates fy"],
+    a: "New transactions use new active FY. Date validation checks against FY. Year-end processing required for proper closing."
+  },
+  {
+    id: "ext-609", category: "general",
+    q: "What happens when stock goes negative?",
+    keywords: ["negative stock behavior", "allow negative stock config"],
+    a: "Default: Blocked. If enabled in settings: Allowed, dashboard may show negatives, physical reconciliation needed."
+  },
+  {
+    id: "ext-610", category: "general",
+    q: "What happens with very large invoice amounts?",
+    keywords: ["large amounts handling", "js number max limit"],
+    a: "JS Number handles up to ~9 quadrillion (safe for NPR). Formats with Indian numbering. Rounds to 2 decimals, Grand Total rounded to integer."
+  },
+  {
+    id: "ext-611", category: "general",
+    q: "What happens with zero-quantity items?",
+    keywords: ["zero quantity item logic", "empty lines invoice"],
+    a: "Validation rejects (Qty must be > 0). Zero rate allowed (free items). Must remove zero-qty lines to post."
+  },
+  {
+    id: "ext-612", category: "general",
+    q: "What happens on browser back button?",
+    keywords: ["browser back button spa", "routing navigation history"],
+    a: "May navigate away from app entirely (no URL routing). Unsaved form data lost. Use in-app Esc/Cancel buttons instead."
+  },
+  {
+    id: "ext-613", category: "general",
+    q: "What happens during a power outage?",
+    keywords: ["power outage handling", "data loss indexdb"],
+    a: "IndexedDB persists saved data. Unsaved forms lost. POS session remains open. Save frequently."
+  },
+  {
+    id: "ext-614", category: "general",
+    q: "How do I print a TDS certificate?",
+    keywords: ["print tds certificate", "generate tds format"],
+    a: "From reports → 'Generate TDS Certificate'. Shows bilingual header, deductor/deductee details, transaction table, signature section."
+  },
+  {
+    id: "ext-615", category: "general",
+    q: "How do I print multiple invoices at once?",
+    keywords: ["bulk print invoices", "batch printing"],
+    a: "No built-in bulk print. Export to Excel and use external tools, or use party statement print for monthly statements."
+  },
+  {
+    id: "ext-616", category: "general",
+    q: "How does the A4 invoice print layout work?",
+    keywords: ["a4 invoice print layout", "standard print format"],
+    a: "A4 size, 1.5cm margins. Header, PAN strip, Buyer details, Items table, Amount words, Bank details, Totals summary, Signature/Footer."
+  },
+  {
+    id: "ext-617", category: "general",
+    q: "How does thermal receipt layout differ from A4?",
+    keywords: ["thermal receipt layout", "pos print format"],
+    a: "310px width. Compact single-column, monospace font, centered, dashed separators, no signature section. Auto-triggers print."
+  },
+  {
+    id: "ext-618", category: "general",
+    q: "What is the COA export format?",
+    keywords: ["coa export format", "ledger excel columns"],
+    a: "Group/Ledger, Type, Parent, Nature, Account Type, GSTIN, Balance."
+  },
+  {
+    id: "ext-619", category: "general",
+    q: "What is the Day Book export format?",
+    keywords: ["day book export columns", "daily transactions excel"],
+    a: "Date (BS/AD), Voucher No, Type, Party, Narration, Dr/Cr, Status."
+  },
+  {
+    id: "ext-620", category: "general",
+    q: "What is the POS day report export format?",
+    keywords: ["pos day report export", "cashier excel summary"],
+    a: "2 Sheets. POS Sales: sale details. Summary: Bills, Sales, Cash/Card/Bank totals, Expected Cash."
+  },
+  {
+    id: "ext-621", category: "general",
+    q: "What is the invoice register export format?",
+    keywords: ["invoice register export format", "billing excel columns"],
+    a: "Invoice No, Date, Customer/PAN, Type, Gross, Discount, Taxable, VAT, Grand Total, Mode, Status."
+  },
+  {
+    id: "ext-622", category: "general",
+    q: "What are export file naming conventions?",
+    keywords: ["export file naming conventions"],
+    a: "COA_YYYY-MM-DD.xlsx, Invoices_..., Vouchers_..., backup_YYYY-MM-DD.json. Date is always AD date of export."
+  },
+  {
+    id: "ext-623", category: "general",
+    q: "What is the project directory structure?",
+    keywords: ["project directory structure", "folder tree"],
+    a: "public/, src/ (components, pages, store, hooks, lib, context, styles), scripts/, .github/, configs (vite, tsconfig, package)."
+  },
+  {
+    id: "ext-624", category: "general",
+    q: "What external libraries does Sutra ERP depend on?",
+    keywords: ["external libraries list", "npm dependencies"],
+    a: "React, Zustand, Dexie, Lucide, Recharts, jsPDF, xlsx, react-hot-toast, nepali-date-converter, qrcode, react-hook-form, radix-ui, tailwind."
+  },
+  {
+    id: "ext-625", category: "general",
+    q: "What TypeScript configuration is used?",
+    keywords: ["typescript config tsconfig", "compiler options"],
+    a: "ES2021 target, ESNext modules, strict disabled (gradual typing), path aliases (@/ -> src/), skipLibCheck true."
+  },
+  {
+    id: "ext-626", category: "general",
+    q: "What Vite configuration is used?",
+    keywords: ["vite config details", "build rollup"],
+    a: "React/Tailwind/Paths plugins. Excludes backend packages from browser bundle. ManualChunks for splitting. OutDir: dist."
+  },
+  {
+    id: "ext-627", category: "general",
+    q: "How do I deploy the frontend to Vercel?",
+    keywords: ["vercel deployment", "frontend hosting"],
+    a: "GitHub integration, auto-detects Vite. Build cmd: npm run build, OutDir: dist. vercel.json handles SPA rewrite to /index.html."
+  },
+  {
+    id: "ext-628", category: "general",
+    q: "How do I deploy the backend to Render?",
+    keywords: ["render deployment backend", "api hosting postgres redis"],
+    a: "GitHub integration. Web Service → Start: npm start/node serve.mjs. Configure env vars (DATABASE_URL). Links to Render Postgres/Redis."
+  },
+  {
+    id: "ext-629", category: "general",
+    q: "How does the GitHub Actions CI/CD work?",
+    keywords: ["github actions cicd", "workflows test deploy"],
+    a: "test.yml (lint, tsc on push/PR). frontend-deploy.yml (Vercel). backend-deploy.yml (triggers Render deploy hook)."
+  },
+  {
+    id: "ext-630", category: "general",
+    q: "How does the static serve (serve.mjs) work?",
+    keywords: ["serve mjs script", "static node server"],
+    a: "Creates HTTP server, serves dist/ files, MIME mapping. SPA fallback routes to index.html. /health check endpoint."
+  },
+  {
+    id: "ext-631", category: "general",
+    q: "How does the docker-compose setup work?",
+    keywords: ["docker compose setup", "local dev containers"],
+    a: "Postgres 15, Redis 7, Backend (Node). Health checks enabled, volume mounts for hot reload on port 3000."
+  },
+  {
+    id: "ext-632", category: "general",
+    q: "How does the global search rank results?",
+    keywords: ["global search ranking algorithm", "relevance exact match"],
+    a: "Exact match > StartsWith > Contains. Grouped by category. Flat list keyboard navigation (Arrow keys). Selected index highlighted."
+  },
+  {
+    id: "ext-633", category: "general",
+    q: "What search fields are checked for each entity?",
+    keywords: ["search field mapping", "entity search criteria"],
+    a: "Accounts (name, code), Parties (name, code, pan, type), Vouchers (no, type, narr), Invoices (no, party, date), Items (name, code, barcode), Pages (name, path)."
+  },
+  {
+    id: "ext-634", category: "general",
+    q: "How does the search modal render results?",
+    keywords: ["search modal ui", "global search display"],
+    a: "Header (input), States (Searching, No Results). Sections by category. Rows show icon, primary/secondary text. 500px max height scroll."
+  },
+  {
+    id: "ext-635", category: "general",
+    q: "How does the overdue receivables alert work?",
+    keywords: ["overdue alert logic", "receivable tracking dashboard"],
+    a: "Filters posted sales invoices, unpaid/partial, dueDate < today. Shows count/amount. Links to outstanding-receivables."
+  },
+  {
+    id: "ext-636", category: "general",
+    q: "How does the reorder alert work?",
+    keywords: ["reorder alert code", "min stock dashboard"],
+    a: "Calculates current stock, compares to reorderLevel. Skips items without level. Shows up to 3 names. Links to stock-summary."
+  },
+  {
+    id: "ext-637", category: "general",
+    q: "How does the PDC due alert work?",
+    keywords: ["pdc due alert", "cheque dashboard warning"],
+    a: "Checks receipt vouchers with PDC date within next 3 days. Must be posted. Links to pdc-summary."
+  },
+  {
+    id: "ext-638", category: "general",
+    q: "How does the pending approval alert work?",
+    keywords: ["pending approval alert", "voucher > 24h"],
+    a: "Vouchers with status 'pending_approval' created more than 24 hours ago. Links to approval-workflow."
+  },
+  {
+    id: "ext-639", category: "general",
+    q: "How does the near-expiry alert work?",
+    keywords: ["near expiry alert", "batch dashboard red"],
+    a: "Checks items with expiryDate within 30 days from today. Danger (red) alert. Links to batch-management."
+  },
+  {
+    id: "ext-640", category: "masters",
+    q: "How do I create a batch?",
+    keywords: ["create batch", "lot number mfg exp"],
+    a: "Inventory → Batch Management → Add Batch. Enter Number, Item, MFG, EXP, Qty, Warehouse."
+  },
+  {
+    id: "ext-641", category: "transactions",
+    q: "How does batch selection work during sales?",
+    keywords: ["batch selection sales", "fifo batch invoice"],
+    a: "Add item, shows available batches. Default FIFO (oldest expiry). Manual selection available. Multiple batches can be used per item."
+  },
+  {
+    id: "ext-642", category: "transactions",
+    q: "How are batch expiry dates monitored?",
+    keywords: ["batch expiry monitoring", "fefo sales"],
+    a: "Dashboard alert (30 days). Batch Management sorting. FEFO for sales. Expired batches flagged in reports."
+  },
+  {
+    id: "ext-643", category: "masters",
+    q: "How do I set up an employee for payroll?",
+    keywords: ["setup employee payroll", "add staff details"],
+    a: "Masters → Employees. Add code, name, contact, joining date, dept, designation, PAN, bank details. Assign salary structure."
+  },
+  {
+    id: "ext-644", category: "masters",
+    q: "How do I configure salary structures?",
+    keywords: ["salary structures", "pay heads config"],
+    a: "Masters → Salary Structures. Create earnings (Basic, HRA) and deductions (PF, TDS). Set calc method (Fixed, % Basic). Assign to employees."
+  },
+  {
+    id: "ext-645", category: "transactions",
+    q: "How do I process monthly payroll?",
+    keywords: ["process monthly payroll", "run salary generation"],
+    a: "Payroll → Salary Process. Select month/employees. Enter attendance. Auto-calculates gross/net. 'Process Payroll' creates vouchers."
+  },
+  {
+    id: "ext-646", category: "reports",
+    q: "What reports are available for payroll?",
+    keywords: ["payroll reports", "salary slip register"],
+    a: "Salary Register, Pay Slip, PF/ESI Reports, TDS on Salary, Salary Summary, Bank Transfer Letter."
+  },
+  {
+    id: "ext-647", category: "transactions",
+    q: "How do I record a fixed asset purchase?",
+    keywords: ["record fixed asset purchase", "buy asset entry"],
+    a: "Purchase Invoice for asset ledger OR Payment Voucher. Record details in Fixed Assets page (cost, depreciation method, life)."
+  },
+  {
+    id: "ext-648", category: "transactions",
+    q: "How is monthly depreciation calculated?",
+    keywords: ["monthly depreciation calculation", "straight line math"],
+    a: "Straight Line: (Cost - Salvage) / Life / 12. WDV: Book Value x Rate. Posted via journal: Dr Dep Exp, Cr Accum Dep."
+  },
+  {
+    id: "ext-649", category: "transactions",
+    q: "How do I handle asset sale/disposal?",
+    keywords: ["asset sale disposal", "sell fixed asset logic"],
+    a: "Record sale via Receipt. Calc profit/loss (Sale - Book Value). Clear asset from register. Journal: Dr Bank/Accum Dep, Cr Asset/Profit."
+  },
+  {
+    id: "ext-650", category: "masters",
+    q: "What is the Fixed Assets register?",
+    keywords: ["fixed assets register page"],
+    a: "Shows Asset ID, Name, Category, Purchase Date/Cost, Dep Method/Rate, Accum Dep, Net Book Value, Status, Dep schedule."
+  },
+  {
+    id: "ext-651", category: "transactions",
+    q: "How do I create a recurring journal entry?",
+    keywords: ["create recurring journal", "automate template"],
+    a: "Transactions → Recurring Vouchers → Add. Add lines, set schedule (Daily/Monthly), start/end dates. Save template."
+  },
+  {
+    id: "ext-652", category: "transactions",
+    q: "How do I process recurring vouchers?",
+    keywords: ["process recurring vouchers", "generate due voucher"],
+    a: "Open Recurring Vouchers. Select due templates, click 'Generate'. Creates actual vouchers with new dates/numbers, posts to ledgers."
+  },
+  {
+    id: "ext-653", category: "transactions",
+    q: "What frequency options exist for recurring vouchers?",
+    keywords: ["recurring voucher frequency", "schedule options"],
+    a: "Daily, Weekly (same day), Monthly (same date), Quarterly, Yearly. Start date determines first occurrence."
+  },
+  {
+    id: "ext-654", category: "masters",
+    q: "How do I create a cost center?",
+    keywords: ["create cost center", "add department project"],
+    a: "Masters → Cost Centers → Add. Enter Code, Name, Category (Dept/Project), Parent, Active status. Appears in voucher dropdowns."
+  }
+];

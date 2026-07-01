@@ -1163,10 +1163,8 @@ export class SutraERPDatabase extends Dexie {
   voucherAuditLogs!: Table<any>;
   salespersons!: Table<any>;
   loginHistory!: Table<any>;
-  employees!: Table<any>;
   salaryStructures!: Table<any>;
   payrollRuns!: Table<any>;
-  payrollEntries!: Table<any>;
   fxGainLossEntries!: Table<DBFXGainLossEntry>;
   costCentres!: Table<DBCostCentre>;
   costCentreAllocations!: Table<DBCostCentreAllocation>;

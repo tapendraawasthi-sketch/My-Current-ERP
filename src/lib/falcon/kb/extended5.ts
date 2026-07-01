@@ -1,0 +1,640 @@
+import type { KBEntry } from "../types";
+
+export const KB_EXTENDED5: KBEntry[] = [
+  {
+    id: "ext-655", category: "reports",
+    q: "How do cost centers affect reports?",
+    keywords: ["cost center reporting", "department profitability"],
+    a: "Voucher lines tagged with cost center. Cost Center Report groups transactions. P&L filterable by cost center. Budget vs Actual compares per cost center."
+  },
+  {
+    id: "ext-656", category: "transactions",
+    q: "How do I allocate shared expenses to cost centers?",
+    keywords: ["allocate shared expenses", "cost center journal"],
+    a: "Create journal: Debit each cost center's expense account (tagged), Credit shared expense account. Basis: headcount, area, revenue share."
+  },
+  {
+    id: "ext-657", category: "transactions",
+    q: "What is the complete approval flow?",
+    keywords: ["approval workflow stages", "voucher status cycle"],
+    a: "Draft → Submitted (locked) → Under Review → Approved → Posted (final). Rejection returns to Draft with reason."
+  },
+  {
+    id: "ext-658", category: "general",
+    q: "Who can perform each approval action?",
+    keywords: ["approval permissions role", "manager accountant admin"],
+    a: "Operator: None. Accountant: Submit. Manager: Review, Approve, Reject. Admin: All actions."
+  },
+  {
+    id: "ext-659", category: "transactions",
+    q: "What happens when a voucher is rejected?",
+    keywords: ["voucher rejected flow", "resubmit rejected"],
+    a: "Rejector provides reason. Status becomes 'draft' (editable). Submitter reviews, corrects, and re-submits. Logged in audit trail."
+  },
+  {
+    id: "ext-660", category: "transactions",
+    q: "Can I approve multiple vouchers at once?",
+    keywords: ["bulk approve vouchers", "multiple approvals"],
+    a: "No bulk approve currently. Must select and process one at a time in Approval Workflow page."
+  },
+  {
+    id: "ext-661", category: "general",
+    q: "How do I migrate from another accounting system?",
+    keywords: ["migrate accounting system", "data migration strategy"],
+    a: "Export old system to Excel. Map to Sutra format. Import: 1. Groups 2. Ledgers 3. Parties 4. Items (with stock) 5. Opening Balances (Journal). Verify TB."
+  },
+  {
+    id: "ext-662", category: "general",
+    q: "How do I migrate opening balances?",
+    keywords: ["migrate opening balances", "setup initial balance"],
+    a: "Set FY start date. Enter balances in Ledger/Party masters. Enter opening stock qty/rate for items. Create opening balance journal to verify Dr=Cr."
+  },
+  {
+    id: "ext-663", category: "general",
+    q: "Can I import historical transactions?",
+    keywords: ["import historical transactions", "past data import"],
+    a: "Use Data Import for vouchers/invoices. Needs unique IDs. Verify balances after each batch. Recommended to only import TB and current year."
+  },
+  {
+    id: "ext-664", category: "general",
+    q: "How do I close a fiscal year?",
+    keywords: ["close fiscal year", "year end process"],
+    a: "Complete transactions, verify TB. Generate final P&L. Journal to close P&L to Retained Earnings. Set FY status 'Closed'. Create new FY."
+  },
+  {
+    id: "ext-665", category: "general",
+    q: "How do I archive old data?",
+    keywords: ["archive old data", "data retention"],
+    a: "Export all data. Close FY. Optionally factory reset and restore only current year, or keep all data and use FY filters."
+  },
+  {
+    id: "ext-666", category: "general",
+    q: "How do I verify data integrity?",
+    keywords: ["verify data integrity", "audit checks"],
+    a: "TB: Dr=Cr. BS: Assets=Liabilities. Stock: Movements=Closing. Party: Sum matches ledger. Day Book: All vouchers present."
+  },
+  {
+    id: "ext-667", category: "general",
+    q: "How do I set up a foreign currency?",
+    keywords: ["setup foreign currency", "multi currency config"],
+    a: "Enable Multi-Currency in Settings. Masters → Currency Master. Add Code, Name, Symbol, Exchange Rate vs NPR, Decimals."
+  },
+  {
+    id: "ext-668", category: "transactions",
+    q: "How do I record a USD transaction?",
+    keywords: ["usd transaction", "foreign currency invoice"],
+    a: "Enable multi-currency for party. Create invoice in FC. System calculates NPR equivalent. Both saved, exchange rate recorded."
+  },
+  {
+    id: "ext-669", category: "transactions",
+    q: "How is exchange gain/loss calculated?",
+    keywords: ["exchange gain loss", "forex difference"],
+    a: "Difference between booked rate and payment rate. Payment journal: Dr Supplier (booked), Dr Exchange Loss, Cr Bank (payment)."
+  },
+  {
+    id: "ext-670", category: "transactions",
+    q: "How do I revalue foreign currency balances?",
+    keywords: ["revalue forex balance", "period end revaluation"],
+    a: "Determine outstanding FC balance. Get current rate. Calculate difference from booked rate. Create revaluation journal for unrealized gain/loss."
+  },
+  {
+    id: "ext-671", category: "general",
+    q: "Why did my CBMS submission fail?",
+    keywords: ["cbms submission failure", "ird error troubleshoot"],
+    a: "Network error, invalid credentials, missing required fields (PAN), duplicate IRN, or server downtime. Check error in CBMS modal, click Resubmit."
+  },
+  {
+    id: "ext-672", category: "general",
+    q: "How do I check CBMS configuration?",
+    keywords: ["check cbms config", "verify ird setup"],
+    a: "Verify cbmsEnabled in Settings, check API credentials. Verify invoices have valid PAN, complete items, correct tax calc. Check network."
+  },
+  {
+    id: "ext-673", category: "general",
+    q: "Can I manually trigger CBMS submission?",
+    keywords: ["manual cbms submit", "retry ird sync"],
+    a: "Yes. Click CBMS badge on posted invoice. In modal, click 'Resubmit'. System re-attempts. Generates IRN/QR on success."
+  },
+  {
+    id: "ext-674", category: "masters",
+    q: "How do I create a 'Buy X Get Y Free' scheme?",
+    keywords: ["bogo scheme", "buy x get y free"],
+    a: "Masters → Schemes. Type: Buy X Get Y Free. Select Buy Item/Qty and Free Item/Qty. Set validity dates. Save and activate."
+  },
+  {
+    id: "ext-675", category: "masters",
+    q: "How do I create a quantity-based discount scheme?",
+    keywords: ["quantity discount scheme", "volume discount tier"],
+    a: "Type: Quantity Discount. Select Item/Group. Define Slabs (e.g., Qty >= 10 -> 5%). Discount auto-applies during sales."
+  },
+  {
+    id: "ext-676", category: "transactions",
+    q: "How do schemes affect invoice calculation?",
+    keywords: ["scheme invoice impact", "discount application logic"],
+    a: "Free items added with zero price. Discounts applied as line discount. VAT calculated on discounted amounts. Best discount wins on conflict."
+  },
+  {
+    id: "ext-677", category: "masters",
+    q: "How do I create a Bill Sundry?",
+    keywords: ["create bill sundry", "freight packing charge"],
+    a: "Masters → Bill Sundries. Add Name, Code, Type (Additive/Subtractive), Calc Method (%/Fixed), Default Rate, Ledger Account, Applicability, VAT flag."
+  },
+  {
+    id: "ext-678", category: "transactions",
+    q: "How do bill sundries affect invoice totals?",
+    keywords: ["bill sundry calculation", "invoice total math"],
+    a: "Applied after line totals and bill discount. Additive increases total, Subtractive decreases. Used for exact grand total calculation (before RoundOff)."
+  },
+  {
+    id: "ext-679", category: "transactions",
+    q: "How are bill sundries posted to accounting?",
+    keywords: ["bill sundry accounting", "sundry ledger entry"],
+    a: "Additive on sales credits Sundry Income ledger. Subtractive reduces sales income. Each sundry posts to its assigned ledger for tracking."
+  },
+  {
+    id: "ext-680", category: "transactions",
+    q: "Can I add multiple bill sundries to one invoice?",
+    keywords: ["multiple bill sundries", "many extra charges"],
+    a: "Yes. Click 'Add Sundry' in invoice footer. Each has independent name/type/amount. Net effect = Sum of additives - Sum of subtractives."
+  },
+  {
+    id: "ext-681", category: "masters",
+    q: "How do I create a price list?",
+    keywords: ["create price list", "wholesale retail price"],
+    a: "Masters → Price Lists. Add Name, Currency, Items with prices. Assign price list to parties in Party Master."
+  },
+  {
+    id: "ext-682", category: "masters",
+    q: "How are price lists assigned to parties?",
+    keywords: ["assign price list party", "customer pricing"],
+    a: "Edit party, select Price List. Invoices for this party will auto-load rates from the price list (can be overridden)."
+  },
+  {
+    id: "ext-683", category: "transactions",
+    q: "What happens when an item has multiple price lists?",
+    keywords: ["price list priority", "which price applies"],
+    a: "Priority: Customer-specific > Customer group > Default/Standard > Item default selling price. Highest priority matching price auto-selected."
+  },
+  {
+    id: "ext-684", category: "masters",
+    q: "How do I update prices in bulk?",
+    keywords: ["bulk price update", "change all prices"],
+    a: "Price List Master → select list → bulk update options (increase/decrease %, round to nearest X) or import from Excel."
+  },
+  {
+    id: "ext-685", category: "transactions",
+    q: "How do price lists interact with schemes?",
+    keywords: ["price list and scheme", "discount on wholesale"],
+    a: "Price list sets base price. Scheme applies on top. Order: Base Price → Price List → Scheme → Line Discount → VAT."
+  },
+  {
+    id: "ext-686", category: "masters",
+    q: "How do I create a sales person?",
+    keywords: ["create sales person", "add commission agent"],
+    a: "Masters → Sales Persons. Add Name, Code, Contact, Commission type (% or Fixed per unit), Commission rate."
+  },
+  {
+    id: "ext-687", category: "transactions",
+    q: "How do I assign a sales person to an invoice?",
+    keywords: ["assign sales person invoice", "track agent sale"],
+    a: "During invoice creation, select Sales Person from dropdown. Commission auto-calculated and tracked for reporting."
+  },
+  {
+    id: "ext-688", category: "reports",
+    q: "How is sales person commission calculated?",
+    keywords: ["calculate commission", "sales agent payout"],
+    a: "% = Taxable Amount × Rate%. Fixed = Qty Sold × Fixed Rate. For reporting only; actual payment recorded via payment voucher."
+  },
+  {
+    id: "ext-689", category: "reports",
+    q: "What sales person reports are available?",
+    keywords: ["sales person reports", "commission report"],
+    a: "Sales by Sales Person, Sales Person-wise Collection, Performance trends, Commission Payable Report."
+  },
+  {
+    id: "ext-690", category: "masters",
+    q: "How do I create a standard narration?",
+    keywords: ["create standard narration", "reusable voucher description"],
+    a: "Masters → Standard Narrations. Add Code and full Narration Text (e.g., 'Being rent paid for...'). Available in voucher dropdowns."
+  },
+  {
+    id: "ext-691", category: "transactions",
+    q: "How do I use a standard narration in a voucher?",
+    keywords: ["use standard narration", "autofill description"],
+    a: "In Narration field, click dropdown, select standard narration. Text auto-fills and can be edited before saving."
+  },
+  {
+    id: "ext-692", category: "masters",
+    q: "What are common standard narration examples?",
+    keywords: ["common standard narrations", "narration templates"],
+    a: "'Being rent paid for [Month]', 'Being salary paid', 'Being cash sales for the day', 'Being depreciation charged'."
+  },
+  {
+    id: "ext-693", category: "masters",
+    q: "What are tax categories?",
+    keywords: ["tax categories definition", "vat composition sez"],
+    a: "Regular (13%), Composition (lower, no input credit), Unregistered (reverse charge), Consumer, SEZ (0%), Deemed Export. Configured in Tax Category Master."
+  },
+  {
+    id: "ext-694", category: "masters",
+    q: "How do sale types affect reporting?",
+    keywords: ["sale types reporting", "local interstate export"],
+    a: "Local Sale (same state), Interstate, Export (0%). Affects GST/VAT reports (B2B/B2C categorization, tax rate breakup)."
+  },
+  {
+    id: "ext-695", category: "masters",
+    q: "How do purchase types work?",
+    keywords: ["purchase type categories", "local import interstate"],
+    a: "Local, Interstate, Import. Affects input tax credit eligibility, reverse charge, and customs duty tracking."
+  },
+  {
+    id: "ext-696", category: "masters",
+    q: "How do I create a new voucher type?",
+    keywords: ["create voucher type", "custom voucher series"],
+    a: "Masters → Voucher Types. Select Parent Type (Payment/Receipt/etc), set Prefix (e.g., 'CPV-'), Starting No, padding digits."
+  },
+  {
+    id: "ext-697", category: "general",
+    q: "How does voucher numbering work?",
+    keywords: ["voucher numbering system", "auto serial logic"],
+    a: "Format: [Prefix][Zero-Padded Serial]. Auto-increments. generateSerialNumber() handles it. Separate series per voucher type."
+  },
+  {
+    id: "ext-698", category: "masters",
+    q: "Can I have multiple numbering series for the same type?",
+    keywords: ["multiple numbering series", "branch voucher prefixes"],
+    a: "Yes. Create multiple types under same parent (e.g., 'Cash Payment' & 'Bank Payment' both under Payment). Both appear in register."
+  },
+  {
+    id: "ext-699", category: "masters",
+    q: "What is a Material Centre?",
+    keywords: ["material centre", "production location"],
+    a: "Production location/work center for manufacturing. Tracks labor/machine/overhead. Managed in Misc Masters."
+  },
+  {
+    id: "ext-700", category: "masters",
+    q: "How do I create a Bill of Material (BOM)?",
+    keywords: ["create bom", "bill of material setup"],
+    a: "Misc Masters → BOM. Select Finished Product/Output Qty. Add Raw Materials/Qty needed. Add wastage % if any."
+  },
+  {
+    id: "ext-701", category: "transactions",
+    q: "How does BOM wastage/scrap work?",
+    keywords: ["bom wastage scrap", "manufacturing waste calculation"],
+    a: "Total consumption = Required Qty x (1 + Wastage%). Cost absorbed into production cost. By-products offset cost. Can adjust actuals."
+  },
+  {
+    id: "ext-702", category: "transactions",
+    q: "How do I conduct a physical stock count?",
+    keywords: ["physical stock count", "stock taking process"],
+    a: "Inventory → Physical Stock. Select Warehouse/Date. Enter physically counted qty. System calculates variance (Surplus/Shortage). Posts adjustments."
+  },
+  {
+    id: "ext-703", category: "transactions",
+    q: "How are stock variances handled?",
+    keywords: ["stock variance handling", "surplus shortage adjustment"],
+    a: "Surplus increases stock, Shortage decreases. Posts stock movements. May require journal for financial value adjustment. Preserved for audit."
+  },
+  {
+    id: "ext-704", category: "transactions",
+    q: "Can I do partial physical stock counts?",
+    keywords: ["partial stock count", "cycle counting"],
+    a: "Yes. Select subset of items. Leave others at book qty. Each count creates a separate entry. Spreads counting over days."
+  },
+  {
+    id: "ext-705", category: "reports",
+    q: "How do I trace stock movement history for an item?",
+    keywords: ["stock ledger trace", "item movement history"],
+    a: "Reports → Stock Ledger. Select item/date. Shows every movement (In/Out qty, rate, value, running balance) with links to source documents."
+  },
+  {
+    id: "ext-706", category: "reports",
+    q: "How is closing stock valued?",
+    keywords: ["closing stock valuation", "weighted average fifo value"],
+    a: "Weighted Avg (default): Avg Rate = Total Val / Total Qty. FIFO: Oldest sold first. Shown in Stock Summary, Balance Sheet."
+  },
+  {
+    id: "ext-707", category: "reports",
+    q: "How do I identify slow-moving items?",
+    keywords: ["slow moving items", "dead stock analysis"],
+    a: "Sales Analysis (sort by qty ascending). Unmoved Items report (no movement). Stock Aging report (how long held)."
+  },
+  {
+    id: "ext-708", category: "reports",
+    q: "How does interest calculation work for overdue bills?",
+    keywords: ["interest calculation logic", "overdue invoice penalty"],
+    a: "Reports → Interest Calc. Identifies overdue invoices. Interest = Outstanding x Rate% x (Days/365). Can generate notes to post."
+  },
+  {
+    id: "ext-709", category: "transactions",
+    q: "How do I post calculated interest?",
+    keywords: ["post calculated interest", "charge interest customer"],
+    a: "Review calculation → 'Post Interest'. Creates Debit Note/Journal (Dr Customer, Cr Interest Income). Creates new receivable."
+  },
+  {
+    id: "ext-710", category: "reports",
+    q: "What interest rates should I use?",
+    keywords: ["interest rate guidance", "penalty percentage"],
+    a: "Contract rate, commercial rate (12-18%), or policy default. Mention in terms. Check local legal compliance."
+  },
+  {
+    id: "ext-711", category: "reports",
+    q: "How do I perform bank reconciliation?",
+    keywords: ["bank reconciliation steps", "match bank statement"],
+    a: "Reports → Bank Rec. Enter statement date/balance. Mark book items as 'Cleared'. Reconciled balance should match bank statement."
+  },
+  {
+    id: "ext-712", category: "reports",
+    q: "How are uncleared items handled?",
+    keywords: ["uncleared bank items", "pending cheques deposits"],
+    a: "Uncleared Deposits (not credited) & Uncleared Payments (cheques not presented). Appear until cleared in future. Stale cheques need reversal."
+  },
+  {
+    id: "ext-713", category: "reports",
+    q: "What is the reconciliation formula?",
+    keywords: ["reconciliation formula", "bank balance math"],
+    a: "Book Balance + Uncleared Deposits - Uncleared Payments = Reconciled Balance (should equal Bank Statement Closing Balance)."
+  },
+  {
+    id: "ext-714", category: "reports",
+    q: "How do I create a budget?",
+    keywords: ["create budget", "set financial targets"],
+    a: "Masters → Budget Master. Select FY/Level (Group or Ledger). Enter monthly amounts or annual total (auto-distributed). Save version."
+  },
+  {
+    id: "ext-715", category: "reports",
+    q: "How does Budget vs Actual work?",
+    keywords: ["budget vs actual report", "variance analysis"],
+    a: "Reports → Budget vs Actual. Shows Budget, Actual, Variance amount/%. Green=Favorable, Red=Unfavorable. Drill-down available."
+  },
+  {
+    id: "ext-716", category: "reports",
+    q: "Can I set budgets at group level?",
+    keywords: ["group level budget", "department budget"],
+    a: "Yes. Select account group (e.g., Indirect Expenses). All ledgers in group share budget. Useful for department flexibility."
+  },
+  {
+    id: "ext-717", category: "reports",
+    q: "What does the Party Statement show?",
+    keywords: ["party statement contents", "customer ledger print"],
+    a: "Opening Balance, Transaction List (Date, Ref, Dr, Cr, Running Balance), Closing Balance, Summary totals."
+  },
+  {
+    id: "ext-718", category: "reports",
+    q: "How do I send a statement to a party?",
+    keywords: ["send party statement", "export statement customer"],
+    a: "Generate Party Statement, select date range. Print directly, export to PDF for email, or export to Excel."
+  },
+  {
+    id: "ext-719", category: "reports",
+    q: "How do debits and credits appear on customer vs supplier statements?",
+    keywords: ["customer supplier statement dr cr", "statement orientation"],
+    a: "Customer: Dr = Sales (owes), Cr = Receipts (paid). Supplier: Cr = Purchases (we owe), Dr = Payments (we paid)."
+  },
+  {
+    id: "ext-720", category: "reports",
+    q: "What transactions appear in Day Book?",
+    keywords: ["day book transactions", "daily entry list"],
+    a: "All POSTED vouchers and invoices. Chronological order. Excludes drafts/cancelled. Filterable by date/type."
+  },
+  {
+    id: "ext-721", category: "reports",
+    q: "How do I use Day Book for daily audit?",
+    keywords: ["daily audit day book", "review daily entries"],
+    a: "End of day: Open Day Book. Review chronologically. Verify narrations, amounts, accounts, Dr=Cr, serial continuity."
+  },
+  {
+    id: "ext-722", category: "reports",
+    q: "What is the difference between Day Book and Vouchers Register?",
+    keywords: ["day book vs vouchers register", "transaction reports diff"],
+    a: "Day Book: All transactions (vouchers+invoices), chronological audit tool. Vouchers Register: Vouchers only, filterable management tool."
+  },
+  {
+    id: "ext-723", category: "transactions",
+    q: "How do I handle goods returned by customer after invoicing?",
+    keywords: ["post invoice sales return", "customer refund process"],
+    a: "Create Sales Return. Reference original invoice (auto-fills). Adjust qty. Stock increases, customer balance decreases, Output VAT reduced."
+  },
+  {
+    id: "ext-724", category: "transactions",
+    q: "How do I handle goods returned to supplier after purchase?",
+    keywords: ["purchase return", "supplier refund process"],
+    a: "Create Purchase Return. Reference original invoice. Adjust qty. Stock decreases, supplier balance decreases, Input VAT reversed."
+  },
+  {
+    id: "ext-725", category: "transactions",
+    q: "How do I handle stock transfer between branches with different valuations?",
+    keywords: ["inter branch transfer valuation", "branch accounting"],
+    a: "Transfer at cost or transfer price. Journal: Dr Branch Transfer Receivable (Receiving), Cr Branch Transfer Payable (Sending)."
+  },
+  {
+    id: "ext-726", category: "transactions",
+    q: "How do I handle stock damage/write-off?",
+    keywords: ["stock damage write off", "inventory loss accounting"],
+    a: "Stock Journal with negative qty. Journal Voucher for financial impact: Dr Stock Write-off Expense, Cr Stock Asset."
+  },
+  {
+    id: "ext-727", category: "transactions",
+    q: "How do I record a loan from bank?",
+    keywords: ["record bank loan", "loan accounting entry"],
+    a: "Receipt: Dr Bank, Cr Bank Loan (Liability). EMI: Payment: Dr Bank Loan (Principal), Dr Interest Expense, Cr Bank."
+  },
+  {
+    id: "ext-728", category: "transactions",
+    q: "How do I record owner's capital introduction?",
+    keywords: ["capital introduction", "owner investment entry"],
+    a: "Receipt: Dr Cash/Bank, Cr Capital Account. Or for non-cash: Dr Fixed Asset, Cr Capital Account."
+  },
+  {
+    id: "ext-729", category: "transactions",
+    q: "How do I record drawings by owner?",
+    keywords: ["owner drawings", "personal withdrawal entry"],
+    a: "Payment: Dr Capital/Drawings Account, Cr Cash/Bank. Year-end: Dr Capital, Cr Drawings."
+  },
+  {
+    id: "ext-730", category: "transactions",
+    q: "How do I handle prepaid expenses?",
+    keywords: ["prepaid expense accounting", "insurance prepay entry"],
+    a: "Payment: Dr Prepaid Expense (Asset), Cr Bank. Monthly Journal: Dr Expense, Cr Prepaid Expense."
+  },
+  {
+    id: "ext-731", category: "transactions",
+    q: "How do I handle accrued expenses?",
+    keywords: ["accrued expense accounting", "unpaid bill entry"],
+    a: "Journal: Dr Expense, Cr Accrued Expenses (Liability). When paid: Payment: Dr Accrued Expenses, Cr Bank."
+  },
+  {
+    id: "ext-732", category: "transactions",
+    q: "How do I handle unearned revenue?",
+    keywords: ["unearned revenue advance", "customer deposit entry"],
+    a: "Receipt: Dr Bank, Cr Unearned Revenue (Liability). When delivered: Journal: Dr Unearned Revenue, Cr Sales."
+  },
+  {
+    id: "ext-733", category: "transactions",
+    q: "How do I handle partially exempt VAT supplies?",
+    keywords: ["mixed supplies vat", "partially exempt tax"],
+    a: "Use VAT checkbox per line. Taxable lines get 13% VAT, exempt get 0. Invoice shows taxable and exempt portions separately."
+  },
+  {
+    id: "ext-734", category: "transactions",
+    q: "How do I handle zero-rated supplies (exports)?",
+    keywords: ["zero rated supplies export", "vat 0 percent"],
+    a: "Set item VAT rate to 0%. Invoice shows VAT = 0. Input VAT still claimable. Export documentation required."
+  },
+  {
+    id: "ext-735", category: "transactions",
+    q: "How do I record reverse charge VAT?",
+    keywords: ["reverse charge vat", "unregistered supplier tax"],
+    a: "Enable RC on purchase invoice. Creates dual entries offsetting VAT Payable and VAT Input. Both reported in VAT returns."
+  },
+  {
+    id: "ext-736", category: "transactions",
+    q: "How do I file Nepal VAT returns from Sutra?",
+    keywords: ["file nepal vat return", "ird tax export"],
+    a: "VAT Reports → Generate Annex A, B, C. Review Output/Input VAT and Net Payable. Export for IRD filing."
+  },
+  {
+    id: "ext-737", category: "transactions",
+    q: "How do I deduct TDS on contractor payments?",
+    keywords: ["contractor tds deduction", "section 88 tax"],
+    a: "Payment Voucher → Enable TDS (1.5%). Dr Expense (Gross), Cr Bank (Net), Cr TDS Payable."
+  },
+  {
+    id: "ext-738", category: "transactions",
+    q: "How do I generate TDS return (e-TDS)?",
+    keywords: ["generate tds return etds", "tax report filing"],
+    a: "Reports → TDS Reports. Select quarter/FY. Shows party-wise/section-wise breakup. Export for IRD e-TDS portal."
+  },
+  {
+    id: "ext-739", category: "transactions",
+    q: "How do I record TDS deposit to IRD?",
+    keywords: ["record tds deposit", "pay ird tax"],
+    a: "Payment Voucher: Dr TDS Payable, Cr Bank. Narration: 'TDS deposited'. Challan no in reference."
+  },
+  {
+    id: "ext-740", category: "transactions",
+    q: "How do I handle TDS on rent payments?",
+    keywords: ["rent tds deduction", "house rent tax"],
+    a: "Section 88 'House Rent' (10%). Threshold > 30k. Dr Rent Exp (Gross), Cr Bank (Net), Cr TDS Payable. Issue certificate."
+  },
+  {
+    id: "ext-741", category: "transactions",
+    q: "How do I handle POS with multiple cash drawers?",
+    keywords: ["multi drawer pos", "multiple terminals pos"],
+    a: "Each terminal uses separate browser/client. Opens own session with separate opening/closing cash. Day close per terminal."
+  },
+  {
+    id: "ext-742", category: "transactions",
+    q: "How does POS handle exchange/refund of goods?",
+    keywords: ["pos exchange refund", "retail return process"],
+    a: "Use Sales Return referencing original invoice. For exchange: Return old + Sale new. Pay difference. Stock adjusts."
+  },
+  {
+    id: "ext-743", category: "transactions",
+    q: "How do I configure POS for restaurant use?",
+    keywords: ["restaurant pos config", "table billing"],
+    a: "Use 'Hold Bill' with table names ('Table 1'). Add items. Recall bill to add more or process payment."
+  },
+  {
+    id: "ext-744", category: "transactions",
+    q: "How does POS handle combo/deal pricing?",
+    keywords: ["combo pricing pos", "meal deal pos"],
+    a: "Create Scheme or use Composite Item (BOM) for combo. POS auto-applies discount or uses combo price."
+  },
+  {
+    id: "ext-745", category: "transactions",
+    q: "How do I handle partial delivery against sales order?",
+    keywords: ["partial delivery sales order", "challan partial"],
+    a: "Create Challan referencing Order. Enter dispatched qty. Order status becomes 'Partial'. Multiple challans can fulfill one order."
+  },
+  {
+    id: "ext-746", category: "transactions",
+    q: "How do I handle goods rejected on delivery?",
+    keywords: ["delivery rejection", "challan return"],
+    a: "Create Sales Return for rejected items, or note on challan. Net stock effect = only accepted qty dispatched."
+  },
+  {
+    id: "ext-747", category: "transactions",
+    q: "How do I handle quality inspection on GRN?",
+    keywords: ["grn quality inspection", "accepted rejected goods"],
+    a: "Enter Received Qty. Inspector determines Accepted Qty. Rejected = Received - Accepted. Only Accepted enters stock."
+  },
+  {
+    id: "ext-748", category: "transactions",
+    q: "Can I create GRN from purchase order?",
+    keywords: ["grn from purchase order", "po receipt"],
+    a: "Yes. GRN referencing PO auto-fills items/qty. Enter received qty. PO status updates. Multiple GRNs possible per PO."
+  },
+  {
+    id: "ext-749", category: "reports",
+    q: "How do I customize report columns?",
+    keywords: ["customize report columns", "filter export fields"],
+    a: "Use built-in column selection, date/party filters, F12 configs. Export to Excel for deep customization/pivot tables."
+  },
+  {
+    id: "ext-750", category: "reports",
+    q: "How do I create custom report layouts?",
+    keywords: ["custom report layouts", "excel template formatting"],
+    a: "Export to Excel, create custom template (logo, headers, charts). Save template, import future exports into it."
+  },
+  {
+    id: "ext-751", category: "reports",
+    q: "Can I schedule automatic report generation?",
+    keywords: ["schedule automatic report", "cron job reporting"],
+    a: "Not in frontend. Backend can use node-cron to email reports. Frontend requires manual generation."
+  },
+  {
+    id: "ext-752", category: "general",
+    q: "What is the disaster recovery plan for Sutra ERP?",
+    keywords: ["disaster recovery plan", "dr strategy"],
+    a: "Daily JSON backups, off-site storage, periodic restore tests, export key reports, document settings."
+  },
+  {
+    id: "ext-753", category: "general",
+    q: "How do I recover from complete data loss?",
+    keywords: ["recover complete data loss", "restore system crash"],
+    a: "Fresh install → Backup & Restore → Restore latest JSON. Verify TB/Stock. Re-enter any missed transactions."
+  },
+  {
+    id: "ext-754", category: "general",
+    q: "What should I backup besides the JSON file?",
+    keywords: ["additional backup items", "manual records save"],
+    a: "Company settings screenshots (PAN/VAT), FY dates, user credentials, custom templates, key report exports (COA, TB)."
+  },
+  {
+    id: "ext-755", category: "general",
+    q: "Can multiple users work simultaneously?",
+    keywords: ["simultaneous users concurrent", "multi user support"],
+    a: "Frontend (IndexedDB): Single user per browser. Backend (Postgres): Multi-user supported, DB handles concurrency."
+  },
+  {
+    id: "ext-756", category: "general",
+    q: "How do I set up users for different roles?",
+    keywords: ["setup user roles", "admin accountant manager"],
+    a: "Utilities → Users Management. Create Admin, Accountant, Manager, Operator. Assign permissions. Review periodically."
+  },
+  {
+    id: "ext-757", category: "general",
+    q: "How do I track who made which entry?",
+    keywords: ["track user entry", "audit log creator"],
+    a: "Transactions record createdBy, createdByName, createdAt. Audit log records all actions. POS tracks cashier."
+  },
+  {
+    id: "ext-758", category: "general",
+    q: "Why is the app running slow?",
+    keywords: ["app running slow", "performance fix"],
+    a: "Too much data, large lists, memory full. Fix: close old FYs, archive data, use pagination, clear cache, refresh browser."
+  },
+  {
+    id: "ext-759", category: "general",
+    q: "How do I optimize IndexedDB performance?",
+    keywords: ["optimize indexeddb", "database tuning dexie"],
+    a: "Add indexes, use limit(), pagination, batch writes (bulkPut), clear old data, close old FYs."
+  },
+  {
+    id: "ext-760", category: "general",
+    q: "What browser settings affect performance?",
+    keywords: ["browser settings performance", "hardware acceleration cache"],
+    a: "Hardware acceleration (enable), Cache size, Extensions (disable heavy ones). Private browsing may limit IndexedDB."
+  }
+];

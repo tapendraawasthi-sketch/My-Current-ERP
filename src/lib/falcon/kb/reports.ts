@@ -1,0 +1,142 @@
+import type { KBEntry } from "../types";
+
+export const KB_REPORTS: KBEntry[] = [
+  {
+    id: "rep-001", category: "reports",
+    q: "How do I view Trial Balance?",
+    keywords: ["trial balance", "tb", "financial report"],
+    a: "Go to Reports → Financial → Trial Balance (or press Ctrl+T). Select date range. It shows all ledger accounts with debit/credit balances grouped by categories. Total debit must equal total credit."
+  },
+  {
+    id: "rep-002", category: "reports",
+    q: "How do I view Profit & Loss Statement?",
+    keywords: ["profit and loss", "p&l", "income statement"],
+    a: "Go to Reports → Financial → Profit & Loss. Select date range. Shows Income (Direct/Indirect) and Expenses (Direct/Indirect/Purchases), Gross Profit, and Net Profit. Supports T-format and vertical format."
+  },
+  {
+    id: "rep-003", category: "reports",
+    q: "How do I view Balance Sheet?",
+    keywords: ["balance sheet", "assets liabilities"],
+    a: "Go to Reports → Financial → Balance Sheet (or press F11). Select as-on date. Shows Liabilities (Capital, Loans, Current) and Assets (Fixed, Current, Investments). Total Assets must equal Total Liabilities."
+  },
+  {
+    id: "rep-004", category: "reports",
+    q: "How do I view Day Book?",
+    keywords: ["day book", "daily transactions"],
+    a: "Go to Reports → Financial → Day Book. Select date range. Shows all vouchers and invoices in chronological order with narration and debit/credit amounts. Useful for daily audit."
+  },
+  {
+    id: "rep-005", category: "reports",
+    q: "How do I view General Ledger?",
+    keywords: ["general ledger", "account statement"],
+    a: "Go to Reports → Financial → General Ledger (or press Ctrl+L). Select specific ledger account and date range. Shows opening balance, all entries, running balance, and closing balance."
+  },
+  {
+    id: "rep-006", category: "reports",
+    q: "How do I view Party Statement?",
+    keywords: ["party statement", "customer ledger", "supplier statement"],
+    a: "Go to Reports → Party → Party Statement. Select customer/supplier and date range. Shows all invoices and payments for the selected party with running balance."
+  },
+  {
+    id: "rep-007", category: "reports",
+    q: "How do I view Outstanding Receivables/Payables?",
+    keywords: ["outstanding", "receivables", "payables", "due"],
+    a: "Go to Reports → Party → Outstanding Receivables (or Payables). Shows all unpaid invoices with original amounts, outstanding balances, and days overdue."
+  },
+  {
+    id: "rep-008", category: "reports",
+    q: "How do I view Aging Report?",
+    keywords: ["aging report", "debtor aging"],
+    a: "Go to Reports → Party → Aging Report. Shows outstanding amounts grouped by age buckets: 0-30 days, 31-60 days, 61-90 days, 91-180 days, Over 180 days."
+  },
+  {
+    id: "rep-009", category: "reports",
+    q: "How do I view Cash Flow Statement?",
+    keywords: ["cash flow", "cash movement"],
+    a: "Go to Reports → Financial → Cash Flow. Shows cash from Operating, Investing, and Financing activities, plus net cash flow and opening/closing cash balance."
+  },
+  {
+    id: "rep-010", category: "reports",
+    q: "How do I view Budget vs Actual report?",
+    keywords: ["budget vs actual", "variance"],
+    a: "Set up budgets in Budget Master. Go to Reports → Budget vs Actual. Select budget and date range. Compares budgeted amounts against actual transactions, showing variance."
+  },
+  {
+    id: "rep-011", category: "reports",
+    q: "How do I view Ratio Analysis?",
+    keywords: ["ratio analysis", "financial ratios"],
+    a: "Go to Reports → Financial → Ratio Analysis. Calculates Current Ratio, Quick Ratio, Debt-Equity, Gross/Net Profit Margin, Return on Assets/Equity, Inventory/Debtor Turnover."
+  },
+  {
+    id: "rep-012", category: "reports",
+    q: "How does Interest Calculation work?",
+    keywords: ["interest calculation", "overdue interest"],
+    a: "Go to Reports → Party → Interest Calculation. Select party, enter interest rate and date range. Calculates interest on overdue party balances."
+  },
+  {
+    id: "rep-013", category: "reports",
+    q: "How do I view Stock Summary?",
+    keywords: ["stock summary", "inventory balance"],
+    a: "Go to Reports → Inventory → Stock Summary. Shows per item: Opening stock, Inward, Outward, and Closing stock (quantity and value)."
+  },
+  {
+    id: "rep-014", category: "reports",
+    q: "How do I view Stock Ledger?",
+    keywords: ["stock ledger", "item movement"],
+    a: "Go to Reports → Inventory → Stock Ledger. Select item and date range. Shows all stock movements for an item with quantities, rates, and running balance."
+  },
+  {
+    id: "rep-015", category: "reports",
+    q: "What is the Inventory Report?",
+    keywords: ["inventory report", "stock position"],
+    a: "Shows comprehensive stock status: item-wise position across warehouses, current quantity/rate/value, reorder levels, and closing stock valuation."
+  },
+  {
+    id: "rep-016", category: "reports",
+    q: "How does Sales Analysis report work?",
+    keywords: ["sales analysis", "sales trends"],
+    a: "Go to Reports → Inventory → Sales Analysis. Select filters. Shows sales by item/customer/month, quantity/revenue trends, and profit margins."
+  },
+  {
+    id: "rep-017", category: "reports",
+    q: "How do I view VAT Reports?",
+    keywords: ["vat reports", "vat register", "tax report"],
+    a: "Go to Reports → GST/VAT → VAT Reports. Select date range. Provides Sales Register, Purchase Register, VAT Summary, and Annex reports for IRD filing."
+  },
+  {
+    id: "rep-018", category: "reports",
+    q: "How do I view TDS reports?",
+    keywords: ["tds reports", "withholding tax"],
+    a: "Go to Reports → TDS Reports. Select date range/section. Shows TDS deducted by section, party-wise summary, and supports generating TDS certificates."
+  },
+  {
+    id: "rep-019", category: "reports",
+    q: "How do TDS certificates work?",
+    keywords: ["tds certificate", "print tds"],
+    a: "Generated per party showing deductor/deductee details, list of payments with TDS sections/rates/amounts. Print-ready A4 format with Nepali headings."
+  },
+  {
+    id: "rep-020", category: "reports",
+    q: "What is the Income & Expenditure Account?",
+    keywords: ["income and expenditure", "ngo report"],
+    a: "Used by non-profit organizations instead of P&L. Shows income and expenditure for the period, with surplus/deficit instead of profit/loss."
+  },
+  {
+    id: "rep-021", category: "reports",
+    q: "What is Fixed Assets management?",
+    keywords: ["fixed assets", "depreciation"],
+    a: "Tracks asset purchase date/cost, depreciation method/rate, accumulated depreciation, and net book value. Supports addition, disposal, and depreciation calculation."
+  },
+  {
+    id: "rep-022", category: "reports",
+    q: "What are PDC (Post-Dated Cheque) management features?",
+    keywords: ["pdc", "post dated cheque"],
+    a: "Tracks cheques received/issued with future dates. Status: pending/deposited/cleared/bounced. Dashboard alert for cheques due in next 3 days."
+  },
+  {
+    id: "rep-023", category: "reports",
+    q: "How does payroll work?",
+    keywords: ["payroll", "salary"],
+    a: "Handles salary processing with employee master data, salary structures/pay heads, attendance tracking, monthly processing, and payroll reports."
+  }
+];
