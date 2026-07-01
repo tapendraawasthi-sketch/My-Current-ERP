@@ -137,28 +137,38 @@ const Header: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: 28,
+            height: 30,
             padding: "0 10px",
             fontSize: 12,
             background: "#ffffff",
             border: "1px solid #d1d5db",
-            borderRadius: 3,
+            borderRadius: 4,
             cursor: "pointer",
             color: "#374151",
+            transition: "border-color 150ms ease, box-shadow 150ms ease",
+          }}
+          onFocus={e => {
+            e.currentTarget.style.borderColor = "#2e7d32";
+            e.currentTarget.style.boxShadow = "0 0 0 2px rgba(46,125,50,0.15)";
+          }}
+          onBlur={e => {
+            e.currentTarget.style.borderColor = "#d1d5db";
+            e.currentTarget.style.boxShadow = "none";
           }}
         >
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <Search style={{ width: 13, height: 13, color: "#374151" }} />
-            <span>Search anything...</span>
+            <span style={{ color: "rgba(107,114,128,0.8)" }}>Search accounts, vouchers, parties…</span>
           </span>
           <kbd
             style={{
               fontSize: 9,
-              background: "#f3f4f6",
-              border: "1px solid #d1d5db",
+              background: "#C9DEB5",
+              border: "1px solid #000",
               borderRadius: 2,
-              padding: "1px 4px",
-              color: "#374151",
+              padding: "1px 5px",
+              color: "#000000",
+              fontFamily: "monospace",
             }}
           >
             /
@@ -238,19 +248,19 @@ const Header: React.FC = () => {
               <span
                 style={{
                   position: "absolute",
-                  top: 3,
-                  right: 3,
-                  width: 14,
+                  top: 2,
+                  right: 2,
+                  minWidth: 14,
                   height: 14,
-                  background: "#C9DEB5",
-                  border: "1px solid #000000",
+                  background: "#dc2626",
                   borderRadius: "50%",
                   fontSize: 8,
                   fontWeight: 700,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#000000",
+                  color: "#ffffff",
+                  padding: "0 2px",
                 }}
               >
                 {unreadAlerts}
@@ -295,15 +305,16 @@ const Header: React.FC = () => {
               style={{
                 width: 30,
                 height: 30,
-                background: "#C9DEB5",
-                border: "1px solid #000000",
+                background: "#2e7d32",
+                border: "1px solid #1b5e20",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 700,
                 fontSize: 12,
-                color: "#000000",
+                color: "#ffffff",
+                flexShrink: 0,
               }}
             >
               {currentUser?.name?.charAt(0).toUpperCase() || "U"}
@@ -332,14 +343,14 @@ const Header: React.FC = () => {
               <div
                 style={{
                   padding: "8px 14px",
-                  background: "#C9DEB5",
-                  borderBottom: "1px solid #000000",
+                  background: "#2e7d32",
+                  borderBottom: "1px solid #1b5e20",
                 }}
               >
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#000000" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>
                   {currentUser?.name}
                 </div>
-                <div style={{ fontSize: 10, color: "#000000", marginTop: 2 }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                   {currentUser?.email || "No email"}
                 </div>
               </div>

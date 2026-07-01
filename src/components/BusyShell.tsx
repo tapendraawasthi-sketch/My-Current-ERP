@@ -339,7 +339,7 @@ export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = 
         background: "#EBF5E2",
         padding: "0 4px",
         color: "#000000",
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: "bold",
       }}
     >
@@ -377,11 +377,14 @@ export const BusyInput: React.FC<
     {...props}
     style={{
       border: "1px solid #000000",
-      background: "#EBF5E2",
+      background: props.readOnly ? "#EBF5E2" : "#ffffff",
       color: "#000000",
-      height: 20,
-      padding: "0 3px",
+      height: 26,
+      padding: "0 6px",
       width: props.width || "100%",
+      borderRadius: 3,
+      fontSize: 12,
+      transition: "border-color 150ms ease, box-shadow 150ms ease",
       ...props.style,
     }}
   />

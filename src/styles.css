@@ -126,8 +126,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid rgba(21, 87, 176, 0.2);
-  border-color: #1557b0;
+  outline: 2px solid rgba(46, 125, 50, 0.2);
+  border-color: #2e7d32;
   box-shadow: none;
 }
 input::placeholder,
@@ -151,7 +151,7 @@ button:disabled {
   cursor: not-allowed;
 }
 button:focus-visible {
-  outline: 2px solid #1557b0 !important;
+  outline: 2px solid #2e7d32 !important;
   outline-offset: 2px;
 }
 
@@ -657,9 +657,67 @@ main::-webkit-scrollbar-thumb {
     transform: translateY(0);
   }
 }
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 .animate-fadeIn,
 .page-content {
   animation: fadeIn 0.15s ease-out;
+}
+.animate-dropIn {
+  animation: dropIn 0.15s ease-out;
+}
+
+/* ── GLOBAL TRANSITIONS ── */
+a,
+button,
+select {
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, color 150ms ease;
+}
+
+/* ── TABULAR NUMS ── */
+.font-tabular,
+.amt,
+.amount-cell,
+.kpi-value,
+td.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── DR/CR GLOBAL COLORING ── */
+.dr-amount {
+  color: #1b5e20 !important;
+  font-weight: 600;
+}
+.cr-amount {
+  color: #8b1e1e !important;
+  font-weight: 600;
+}
+
+/* ── SKELETON LOADER ── */
+.skeleton {
+  background: linear-gradient(90deg, #EBF5E2 25%, #D4EABD 50%, #EBF5E2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* ── IMPROVED DISABLED STATE ── */
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ── BUSY SHELL COMPONENTS ── */
@@ -806,11 +864,26 @@ aside {
 .table-row-hover:hover {
   background-color: #d4eabd !important;
   cursor: pointer;
+  transition: background-color 100ms ease;
+}
+.data-table tbody tr {
+  transition: background-color 100ms ease;
 }
 
 /* ── PRINT ── */
 @media print {
-  .no-print {
+  .no-print,
+  aside,
+  header,
+  .busy-title-bar,
+  .busy-menu-bar,
+  .busy-hint-bar,
+  .busy-status-bar,
+  .busy-shortcut-sidebar,
+  .top-menu-bar,
+  .right-button-bar,
+  .page-toolbar,
+  nav {
     display: none !important;
   }
   .print-only {
@@ -818,8 +891,24 @@ aside {
   }
   body {
     font-size: 11px;
-    background: white;
-    color: black;
+    background: white !important;
+    color: black !important;
+  }
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+  table {
+    page-break-inside: auto;
+    font-size: 10px;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
   }
 }
 
@@ -922,7 +1011,7 @@ main svg,
 
 /* ── FOCUS RING GLOBAL ── */
 *:focus-visible {
-  outline: 2px solid #1557b0;
+  outline: 2px solid #2e7d32;
   outline-offset: 2px;
 }
 
@@ -1090,8 +1179,8 @@ input[type="number"]::-webkit-outer-spin-button {
   background: transparent;
 }
 .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 2px;
+  background: #9dc07a;
+  border-radius: 4px;
 }
 
 /* New utility classes for transactions */
@@ -1137,12 +1226,12 @@ input[type="number"]::-webkit-outer-spin-button {
 .section-title {
   font-size: 11px;
   font-weight: 700;
-  color: #1557b0;
+  color: #000000;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   margin-bottom: 0.75rem;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 4px;
 }
 
 .form-grid {
@@ -1435,3 +1524,98 @@ td.amt::before { content: none; }
   
   @page { size: A3 landscape; margin: 10mm; }
 }
+
+/* ── STATUS PILL BADGES ── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.status-pill-posted  { background: #dcfce7; color: #166534; }
+.status-pill-paid    { background: #dcfce7; color: #166534; }
+.status-pill-active  { background: #dcfce7; color: #166534; }
+.status-pill-draft   { background: #fef9c3; color: #713f12; }
+.status-pill-pending { background: #fef3c7; color: #92400e; }
+.status-pill-cancelled { background: #fee2e2; color: #991b1b; }
+.status-pill-partial   { background: #fef3c7; color: #92400e; }
+.status-pill-inactive  { background: #f1f5f9; color: #64748b; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  gap: 12px;
+  color: #9dc07a;
+  text-align: center;
+}
+.empty-state-icon {
+  opacity: 0.6;
+}
+.empty-state-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+}
+.empty-state-sub {
+  font-size: 11px;
+  color: rgba(0,0,0,0.45);
+}
+
+/* ── BUTTON TIERS ── */
+.btn-primary-dark {
+  height: 30px;
+  padding: 0 16px;
+  background: #2e7d32;
+  color: #ffffff;
+  border: 1px solid #1b5e20;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 150ms ease;
+}
+.btn-primary-dark:hover { background: #1b5e20; }
+.btn-secondary {
+  height: 30px;
+  padding: 0 16px;
+  background: #D4EABD;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 150ms ease;
+}
+.btn-secondary:hover { background: #C9DEB5; }
+.btn-destructive {
+  height: 30px;
+  padding: 0 16px;
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 150ms ease, color 150ms ease;
+}
+.btn-destructive:hover { background: #fee2e2; }

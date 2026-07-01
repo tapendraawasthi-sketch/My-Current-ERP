@@ -124,9 +124,9 @@ const App: React.FC = () => {
     );
   }
 
-  if (authStage === "no-company") return (<><Toaster position="top-right" /><SignUpWizard /></>);
-  if (authStage === "gateway") return (<><Toaster position="top-right" /><GatewayScreen /></>);
-  if (authStage === "company-login") return (<><Toaster position="top-right" /><CompanyLoginScreen /></>);
+  if (authStage === "no-company") return (<><Toaster position="bottom-right" /><SignUpWizard /></>);
+  if (authStage === "gateway") return (<><Toaster position="bottom-right" /><GatewayScreen /></>);
+  if (authStage === "company-login") return (<><Toaster position="bottom-right" /><CompanyLoginScreen /></>);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -258,10 +258,27 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: "#D4EABD",
+            color: "#000000",
+            border: "1px solid #000000",
+            fontSize: "12px",
+            borderRadius: "4px",
+          },
+          success: {
+            iconTheme: { primary: "#2e7d32", secondary: "#ffffff" },
+          },
+          error: {
+            iconTheme: { primary: "#dc2626", secondary: "#ffffff" },
+          },
+        }}
+      />
       <Layout>
         <div className="flex flex-col h-full">
-          <main className="flex-1 overflow-y-auto bg-[#f5f6fa]">
+          <main className="flex-1 overflow-y-auto" style={{ background: "#E4F1D9" }}>
             {renderPage()}
           </main>
         </div>

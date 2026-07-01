@@ -13,6 +13,11 @@ import {
   XCircle,
   Package,
   RefreshCw,
+  ScrollText,
+  FileText,
+  Receipt,
+  Banknote,
+  ShoppingBag,
 } from "lucide-react";
 import { getDB } from "../lib/db";
 
@@ -272,14 +277,30 @@ const Dashboard: React.FC = () => {
   const todayBS = formatADToBS(today);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen p-4" style={{ background: "#E4F1D9", color: "#000000" }}>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Dashboard</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Business overview for {todayBS}</p>
+          <h1 style={{ fontSize: 15, fontWeight: 700, color: "#000000" }}>Dashboard</h1>
+          <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", marginTop: 2 }}>Business overview for {todayBS}</p>
         </div>
         <button
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          style={{
+            height: 30,
+            padding: "0 14px",
+            background: "#2e7d32",
+            color: "#ffffff",
+            border: "1px solid #1b5e20",
+            borderRadius: 4,
+            fontSize: 12,
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            cursor: "pointer",
+            transition: "background 150ms ease",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "#1b5e20")}
+          onMouseLeave={e => (e.currentTarget.style.background = "#2e7d32")}
           onClick={() => window.location.reload()}
         >
           <RefreshCw size={14} />
@@ -292,160 +313,219 @@ const Dashboard: React.FC = () => {
         style={{
           backgroundColor: "#D4EABD",
           border: "1px solid #000",
-          borderTop: "1px solid #000",
-          borderBottom: "1px solid #000",
-          padding: "8px 12px",
+          padding: "6px 12px",
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "10px",
+          gap: "8px",
           marginBottom: "20px",
-          fontSize: "12px",
-          fontFamily: "monospace",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span>📋</span>
-          <span>Vouchers Today: {todaysVouchers.length}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span>🧾</span>
-          <span>Invoices Today: {todaysInvoices.length}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span>💰</span>
-          <span>
-            Collection Today:{" "}
-            {formatCurrency(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0))}
-          </span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span>🛒</span>
-          <span>
-            Purchases Today:{" "}
-            {formatCurrency(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
-          </span>
-        </div>
+        {[
+          {
+            icon: <ScrollText size={12} />,
+            label: "VOUCHERS TODAY",
+            value: String(todaysVouchers.length),
+          },
+          {
+            icon: <FileText size={12} />,
+            label: "INVOICES TODAY",
+            value: String(todaysInvoices.length),
+          },
+          {
+            icon: <CheckCircle size={12} />,
+            label: "COLLECTION TODAY",
+            value: formatCurrency(todaysReceipts.reduce((sum, v) => sum + (v.grandTotal || 0), 0)),
+          },
+          {
+            icon: <Package size={12} />,
+            label: "PURCHASES TODAY",
+            value: formatCurrency(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0)),
+          },
+        ].map((stat, i, arr) => (
+          <div
+            key={stat.label}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              paddingRight: i < arr.length - 1 ? 16 : 0,
+              borderRight: i < arr.length - 1 ? "1px solid rgba(0,0,0,0.2)" : "none",
+            }}
+          >
+            <div
+              style={{
+                width: 22,
+                height: 22,
+                background: "#C9DEB5",
+                border: "1px solid #000",
+                borderRadius: 3,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              {stat.icon}
+            </div>
+            <div>
+              <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.5)" }}>
+                {stat.label}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
+                {stat.value}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Existing Dashboard Widgets */}
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {/* Today's Sales */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">Today's Sales</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatCurrency(todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0))}
-              </p>
+        {[
+          {
+            label: "Today's Sales",
+            value: formatCurrency(todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0)),
+            meta: `${todaysInvoices.length} invoices`,
+            icon: <TrendingDown size={16} />,
+          },
+          {
+            label: "Outstanding Receivables",
+            value: formatCurrency(outstandingReceivables),
+            meta: "Pending collection",
+            icon: <TrendingDown size={16} />,
+          },
+          {
+            label: "Cash & Bank",
+            value: formatCurrency(cashBankBalance),
+            meta: "Liquid assets",
+            icon: <TrendingDown size={16} />,
+          },
+          {
+            label: "VAT Liability",
+            value: formatCurrency(vatLiability),
+            meta: "Due to IRD",
+            icon: <TrendingDown size={16} />,
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            style={{
+              background: "#EBF5E2",
+              border: "1px solid #9dc07a",
+              borderRadius: 6,
+              padding: "14px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.55)" }}>
+                  {card.label}
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontVariantNumeric: "tabular-nums", fontFamily: "'Courier New', monospace" }}>
+                  {card.value}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  background: "#C9DEB5",
+                  border: "1px solid #000",
+                  borderRadius: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                {card.icon}
+              </div>
             </div>
-            <div className="bg-green-100 p-2 rounded-md">
-              <TrendingDown className="h-5 w-5 text-green-600" />
-            </div>
+            <div style={{ fontSize: 10, color: "rgba(0,0,0,0.5)" }}>{card.meta}</div>
           </div>
-          <p className="text-[10px] text-gray-400 mt-2">{todaysInvoices.length} invoices</p>
-        </div>
-
-        {/* Outstanding Receivables */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">Outstanding Receivables</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatCurrency(outstandingReceivables)}
-              </p>
-            </div>
-            <div className="bg-blue-100 p-2 rounded-md">
-              <TrendingDown className="h-5 w-5 text-blue-600" />
-            </div>
-          </div>
-          <p className="text-[10px] text-gray-400 mt-2">Pending collection</p>
-        </div>
-
-        {/* Cash & Bank Balance */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">Cash & Bank</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatCurrency(cashBankBalance)}
-              </p>
-            </div>
-            <div className="bg-yellow-100 p-2 rounded-md">
-              <TrendingDown className="h-5 w-5 text-yellow-600" />
-            </div>
-          </div>
-          <p className="text-[10px] text-gray-400 mt-2">Liquid assets</p>
-        </div>
-
-        {/* VAT Liability */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">VAT Liability</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {formatCurrency(vatLiability)}
-              </p>
-            </div>
-            <div className="bg-red-100 p-2 rounded-md">
-              <TrendingDown className="h-5 w-5 text-red-600" />
-            </div>
-          </div>
-          <p className="text-[10px] text-gray-400 mt-2">Due to IRD</p>
-        </div>
+        ))}
       </div>
 
       {/* Additional Widgets */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {/* Stock Position */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">Stock Position</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">{formatCurrency(stockValue)}</p>
+        {[
+          {
+            label: "Stock Position",
+            value: formatCurrency(stockValue),
+            meta: "Current inventory value",
+            icon: <Package size={16} />,
+          },
+          {
+            label: "Active Parties",
+            value: String(parties.filter((p) => p.isActive).length),
+            meta: "Customers & suppliers",
+            icon: <TrendingDown size={16} />,
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            style={{
+              background: "#EBF5E2",
+              border: "1px solid #9dc07a",
+              borderRadius: 6,
+              padding: "14px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.55)" }}>
+                  {card.label}
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontVariantNumeric: "tabular-nums", fontFamily: "'Courier New', monospace" }}>
+                  {card.value}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  background: "#C9DEB5",
+                  border: "1px solid #000",
+                  borderRadius: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                {card.icon}
+              </div>
             </div>
-            <div className="bg-purple-100 p-2 rounded-md">
-              <Package className="h-5 w-5 text-purple-600" />
-            </div>
+            <div style={{ fontSize: 10, color: "rgba(0,0,0,0.5)" }}>{card.meta}</div>
           </div>
-          <p className="text-[10px] text-gray-400 mt-2">Current inventory value</p>
-        </div>
-
-        {/* Active Parties */}
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-gray-500 font-medium">Active Parties</p>
-              <p className="text-[18px] font-bold text-gray-800 mt-1">
-                {parties.filter((p) => p.isActive).length}
-              </p>
-            </div>
-            <div className="bg-indigo-100 p-2 rounded-md">
-              <TrendingDown className="h-5 w-5 text-indigo-600" />
-            </div>
-          </div>
-          <p className="text-[10px] text-gray-400 mt-2">Customers & suppliers</p>
-        </div>
+        ))}
       </div>
 
       {/* Alerts & Notifications Section */}
       <div style={{ marginTop: "30px" }}>
         <div
           style={{
-            backgroundColor: "#D4EABD",
-            border: "1px solid #000",
-            padding: "10px 15px",
-            borderRadius: "4px",
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-            marginBottom: "15px",
+            gap: 8,
+            paddingBottom: 6,
+            borderBottom: "1px solid #000000",
+            marginBottom: 15,
           }}
         >
-          <Bell size={16} style={{ color: "#000000" }} />
-          <span style={{ fontSize: "13px", fontWeight: "bold", color: "#000000" }}>
-            ⚡ ALERTS & ACTION REQUIRED
+          <Bell size={13} />
+          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            Alerts &amp; Action Required
           </span>
         </div>
 
@@ -475,27 +555,23 @@ const Dashboard: React.FC = () => {
             }}
           >
             {alerts.map((alert) => {
-              let bgColor, borderColor, iconColor;
+              let borderColor, iconColor;
               switch (alert.type) {
                 case "danger":
-                  bgColor = "#fee2e2";
                   borderColor = "#dc2626";
                   iconColor = "#dc2626";
                   break;
                 case "warning":
-                  bgColor = "#fef9c3";
                   borderColor = "#d97706";
                   iconColor = "#d97706";
                   break;
                 case "info":
-                  bgColor = "#dbeafe";
                   borderColor = "#1557b0";
                   iconColor = "#1557b0";
                   break;
                 default:
-                  bgColor = "#f0f0f0";
-                  borderColor = "#666";
-                  iconColor = "#666";
+                  borderColor = "#6b7280";
+                  iconColor = "#6b7280";
               }
 
               let IconComponent;
@@ -523,15 +599,14 @@ const Dashboard: React.FC = () => {
                 <div
                   key={alert.id}
                   style={{
-                    backgroundColor: bgColor,
-                    border: `1px solid ${borderColor}`,
+                    backgroundColor: "#EBF5E2",
+                    border: "1px solid #9dc07a",
+                    borderLeft: `4px solid ${borderColor}`,
                     borderRadius: "6px",
                     padding: "12px",
                     display: "flex",
                     alignItems: "flex-start",
                     gap: "10px",
-                    borderLeft: "4px solid",
-                    borderLeftColor: borderColor,
                   }}
                 >
                   <div style={{ color: iconColor }}>
@@ -543,12 +618,13 @@ const Dashboard: React.FC = () => {
                     <button
                       onClick={() => handleAlertAction(alert)}
                       style={{
-                        backgroundColor: borderColor,
-                        color: "white",
-                        border: "none",
-                        padding: "4px 10px",
+                        backgroundColor: "transparent",
+                        color: borderColor,
+                        border: `1px solid ${borderColor}`,
+                        padding: "3px 10px",
                         borderRadius: "4px",
                         fontSize: "11px",
+                        fontWeight: 700,
                         cursor: "pointer",
                       }}
                     >
