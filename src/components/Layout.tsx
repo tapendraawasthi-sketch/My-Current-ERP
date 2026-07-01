@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { useGlobalKeyboardShortcuts } from "../hooks/useGlobalKeyboardShortcuts";
 import { useF12Keyboard } from "../hooks/useF12Keyboard";
 import Sidebar from "./Sidebar";
 import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
@@ -29,6 +30,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Attach global F12 keyboard handler
   useF12Keyboard();
+
+  useGlobalKeyboardShortcuts((page: string) => {
+    if (isAuthenticated && isDbReady) {
+      setCurrentPage(page);
+    }
+  });
 
   const isMobile = useIsMobile();
 

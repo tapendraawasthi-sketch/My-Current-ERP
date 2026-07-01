@@ -1,9 +1,19 @@
+// src/components/RightButtonBar.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useRightBarButtons, type RightBarButton } from "../hooks/useRightBarButtons";
 import { useF12Config } from "../hooks/useF12Config";
+import { useStore } from "../store/useStore";
 
-const normalizeShortcut = (shortcut: string) =>
-  shortcut.replace(/\s+/g, "").replace("Control+", "Ctrl+").replace("Escape", "Esc");
+interface RightBarButton {
+  id: string;
+  label: string;
+  shortcut: string;
+  action: () => void;
+  enabled: boolean;
+  visible: boolean;
+  active?: boolean;
+  confirmMessage?: string;
+  disabledReason?: string;
+}
 
 const formatShortcutLabel = (shortcut: string): string => {
   return shortcut
@@ -25,56 +35,84 @@ const isInputElement = (el: Element | null): boolean => {
   );
 };
 
-const executeButton = (button: RightBarButton) => {
-  if (!button.enabled) return;
-  if (button.confirmMessage && !window.confirm(button.confirmMessage)) return;
-  button.action();
-};
+function getComboString(e: KeyboardEvent): string {
+  const parts: string[] = [];
+  if (e.ctrlKey || e.metaKey) parts.push("Ctrl");
+  if (e.altKey) parts.push("Alt");
+  if (e.shiftKey) parts.push("Shift");
+  const key = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+  parts.push(key);
+  return parts.join("+");
+}
 
 export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = ({
   onShortcut,
 }) => {
-  const buttons = useRightBarButtons();
+  const { setCurrentPage } = useStore();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   const { toggleF12, isOpen: f12IsOpen } = useF12Config();
 
-  const visibleButtons = useMemo(() => {
-    return buttons.filter((b) => b.visible);
-  }, [buttons]);
+  const buttons: RightBarButton[] = useMemo(() => [
+    { id: "f1", label: "Help", shortcut: "F1", action: () => setCurrentPage("dashboard"), enabled: true, visible: true },
+    { id: "f2", label: "New Sales", shortcut: "F2", action: () => setCurrentPage("billing"), enabled: true, visible: true },
+    { id: "f3", label: "Items", shortcut: "F3", action: () => setCurrentPage("item-master"), enabled: true, visible: true },
+    { id: "f4", label: "Accounts", shortcut: "F4", action: () => setCurrentPage("accounts"), enabled: true, visible: true },
+    { id: "f5", label: "Journal", shortcut: "F5", action: () => setCurrentPage("journal"), enabled: true, visible: true },
+    { id: "f6", label: "Payment", shortcut: "F6", action: () => setCurrentPage("payment"), enabled: true, visible: true },
+    { id: "f7", label: "Receipt", shortcut: "F7", action: () => setCurrentPage("receipt"), enabled: true, visible: true },
+    { id: "f8", label: "Contra", shortcut: "F8", action: () => setCurrentPage("contra"), enabled: true, visible: true },
+    { id: "f9", label: "Sales Invoice", shortcut: "F9", action: () => setCurrentPage("billing"), enabled: true, visible: true },
+    { id: "f10", label: "Purchase", shortcut: "F10", action: () => setCurrentPage("purchase"), enabled: true, visible: true },
+    { id: "f11", label: "Balance Sheet", shortcut: "F11", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
+    { id: "divider1", label: "─── Quick Reports ───", shortcut: "", action: () => {}, enabled: false, visible: true },
+    { id: "b", label: "Balance Sheet", shortcut: "B", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
+    { id: "t", label: "Trial Balance", shortcut: "T", action: () => setCurrentPage("trial-balance"), enabled: true, visible: true },
+    { id: "s", label: "Stock Status", shortcut: "S", action: () => setCurrentPage("stock-summary"), enabled: true, visible: true },
+    { id: "l", label: "Ledger", shortcut: "L", action: () => setCurrentPage("ledger"), enabled: true, visible: true },
+    { id: "v", label: "VAT Report", shortcut: "V", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
+    { id: "d", label: "Day Book", shortcut: "D", action: () => setCurrentPage("day-book"), enabled: true, visible: true },
+    { id: "g", label: "GST Summary", shortcut: "G", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
+  ], [setCurrentPage]);
+
+  const visibleButtons = useMemo(() => buttons.filter((b) => b.visible), [buttons]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Allow F-keys (F1–F12) even in inputs; block only alphanumeric shortcuts
-      const isFunctionKey = e.key.startsWith("F") && e.key.length <= 3;
-      if (isInputElement(document.activeElement) && !isFunctionKey && !e.ctrlKey) return;
+    const handler = (e: KeyboardEvent) => {
+      // Skip if F12
+      if (e.key === "F12") return;
 
-      const combo = normalizeShortcut(
-        `${e.ctrlKey ? "Ctrl+" : ""}${e.altKey ? "Alt+" : ""}${e.shiftKey ? "Shift+" : ""}${e.key.toUpperCase()}`,
-      );
+      const typing = isInputElement(document.activeElement);
+      const combo = getComboString(e);
 
-      const button = visibleButtons.find(
-        (b) => b.shortcut && normalizeShortcut(b.shortcut) === combo,
-      );
-
-      if (button) {
-        if (!button.enabled) {
-          if (button.disabledReason) {
-            alert(`Cannot perform action: ${button.disabledReason}`);
-          }
+      // F-keys always work
+      if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
+        const btn = visibleButtons.find((b) => b.shortcut === e.key && b.enabled);
+        if (btn) {
+          e.preventDefault();
+          btn.action();
           return;
         }
-        e.preventDefault();
-        executeButton(button);
-        return;
       }
 
-      onShortcut?.(combo);
+      // Single letter shortcuts - only when not typing
+      if (!typing && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.length === 1) {
+        const key = e.key.toUpperCase();
+        const btn = visibleButtons.find((b) => b.shortcut === key && b.enabled);
+        if (btn) {
+          e.preventDefault();
+          btn.action();
+          return;
+        }
+      }
+
+      // Pass to parent handler
+      if (onShortcut) onShortcut(combo);
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [visibleButtons, onShortcut, toggleF12]);
+    // Use capture to intercept before other handlers
+    document.addEventListener("keydown", handler, { capture: true });
+    return () => document.removeEventListener("keydown", handler, { capture: true });
+  }, [visibleButtons, onShortcut]);
 
   return (
     <div className="right-button-bar w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto">
@@ -83,12 +121,18 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
       </div>
 
       {visibleButtons.map((button) => {
-        const isHovered = hoveredId === button.id;
-        const isActive = button.active;
+        if (!button.shortcut) {
+          return (
+            <div key={button.id} className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-400 tracking-widest mt-1">
+              {button.label}
+            </div>
+          );
+        }
 
-        let bgClass = "bg-[#1e2433]";
-        if (isActive) bgClass = "bg-[#1557b0]";
-        else if (isHovered && button.enabled) bgClass = "bg-[#273148]";
+        const isHovered = hoveredId === button.id;
+        const bgClass = isHovered && button.enabled
+          ? "bg-[#273148]"
+          : "bg-[#1e2433]";
 
         return (
           <button
@@ -99,16 +143,12 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
             }`}
             onMouseEnter={() => setHoveredId(button.id)}
             onMouseLeave={() => setHoveredId(null)}
-            onBlur={() => setHoveredId(null)}
-            onClick={() => executeButton(button)}
-            title={button.enabled ? button.shortcut : button.disabledReason}
+            onClick={() => button.enabled && button.action()}
+            title={button.shortcut}
             aria-label={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ""}`}
           >
-            <span
-              className={`w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden ${isActive ? "text-blue-200" : "text-[#d97706]"}`}
-              title={button.shortcut}
-            >
-              {button.shortcut ? formatShortcutLabel(button.shortcut) : ""}
+            <span className="w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden text-[#d97706]">
+              {formatShortcutLabel(button.shortcut)}
             </span>
             <span className="flex-1 text-[11px] truncate pr-1">{button.label}</span>
           </button>
@@ -125,11 +165,8 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
           f12IsOpen ? "bg-[#1557b0] text-white" : "bg-[#1e2433] hover:bg-[#273148] text-white"
         }`}
         title="F12: Open screen configuration settings"
-        aria-label="Open screen configuration settings"
       >
-        <span
-          className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}
-        >
+        <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}>
           F12
         </span>
         <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
@@ -143,20 +180,12 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
           Nepal Links
         </div>
         <div className="py-1">
-          <a
-            href="https://ird.gov.np"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
-          >
+          <a href="https://ird.gov.np" target="_blank" rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
             IRD Portal
           </a>
-          <a
-            href="https://etds.ird.gov.np"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
-          >
+          <a href="https://etds.ird.gov.np" target="_blank" rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
             e-TDS Portal
           </a>
         </div>
