@@ -6,14 +6,9 @@ export type AuthStage =
   | "company-login" // User picked a company, not yet logged in — show CompanyLoginScreen
   | "authenticated"; // Valid credentials entered — show full app shell
 
-import { migrateWorkflowFields } from "../lib/workflowMigration";
-import { createWorkflowActions } from "./workflowActions";
-
-// src/store/index.ts
-
-import { getDB, DBSalesPerson, DBPriceList } from "../lib/db";
-import { generateNextNumber } from "../lib/accounting";
-import { startCbmsQueueWorker } from "../lib/cbmsService";
+// Types-only file — no runtime imports here.
+// (DBSalesPerson, DBPriceList are imported below from db via the AppState interface.)
+import type { DBSalesPerson, DBPriceList } from "../lib/db";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type UserRole = "admin" | "manager" | "accountant" | "viewer";
@@ -22,20 +17,22 @@ export type UserRole = "admin" | "manager" | "accountant" | "viewer";
 const round2 = (value: number | string | null | undefined) =>
   Math.round((Number(value) || 0) * 100) / 100;
 
-export const validateVoucherBalance = (lines: any[]) => {
+export const validateVoucherBalance = (lines: any[], isDraft = false) => {
   const totalDebit = round2((lines ?? []).reduce((sum, line) => sum + Number(line.debit || 0), 0));
   const totalCredit = round2(
     (lines ?? []).reduce((sum, line) => sum + Number(line.credit || 0), 0),
   );
 
-  if (Math.abs(totalDebit - totalCredit) >= 0.01) {
-    throw new Error(
-      `Unbalanced voucher: Debit ${totalDebit} does not equal Credit ${totalCredit}.`,
-    );
-  }
-
-  if (totalDebit <= 0) {
-    throw new Error("Voucher amount must be greater than zero.");
+  // Draft vouchers skip amount/balance checks — they are works-in-progress.
+  if (!isDraft) {
+    if (Math.abs(totalDebit - totalCredit) >= 0.01) {
+      throw new Error(
+        `Unbalanced voucher: Debit ${totalDebit} does not equal Credit ${totalCredit}.`,
+      );
+    }
+    if (totalDebit <= 0) {
+      throw new Error("Voucher amount must be greater than zero.");
+    }
   }
 
   return { totalDebit, totalCredit };
@@ -45,7 +42,14 @@ export const assertDateInFiscalYear = (date: string, fiscalYear: FiscalYear | nu
   if (!fiscalYear) {
     throw new Error("No active fiscal year selected.");
   }
-  if (date < fiscalYear.startDate || date > fiscalYear.endDate) {
+  // Parse to Date objects to ensure reliable comparison regardless of format.
+  const d = new Date(date);
+  const start = new Date(fiscalYear.startDate);
+  const end = new Date(fiscalYear.endDate);
+  if (isNaN(d.getTime())) {
+    throw new Error(`Invalid date: ${date}`);
+  }
+  if (d < start || d > end) {
     throw new Error(`Date ${date} is outside the current fiscal year (${fiscalYear.name}).`);
   }
 };
@@ -239,7 +243,7 @@ export const DEFAULT_ACCOUNTS = [
   },
   {
     id: "grp-bank-accounts",
-    code: "1101",
+    code: "1100",
     name: "Bank Accounts",
     type: "asset",
     level: "subgroup",
@@ -327,7 +331,7 @@ export const DEFAULT_ACCOUNTS = [
   },
   {
     id: "grp-sundry-creditors",
-    code: "2101",
+    code: "2100",
     name: "Sundry Creditors",
     type: "liability",
     level: "subgroup",
@@ -361,6 +365,21 @@ export const DEFAULT_ACCOUNTS = [
     type: "liability",
     level: "ledger",
     parentId: "grp-current-liabilities",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
+  {
+    id: "acc-vat-receivable",
+    code: "1301",
+    name: "VAT Receivable (Input Tax)",
+    type: "asset",
+    level: "ledger",
+    parentId: "grp-current-assets",
     isGroup: false,
     isActive: true,
     balance: 0,
@@ -1205,12 +1224,10 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     }
   }
 
-  // ── Plain-text legacy (very old dev seeds) ────────────────────────────────
-  if (hash === password) return true;
-
   // ── Last resort: hash the password and compare ────────────────────────────
-  const computed = await hashPassword(password);
-  return computed === hash;
+  // NOTE: Plain-text comparison removed — it was a security bypass.
+  // If none of the known hash formats matched, deny access.
+  return false;
 }
 
 // Nepal TDS rates per Income Tax Act 2058

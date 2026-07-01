@@ -58,13 +58,32 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
 
   deleteAccount: async (id) => {
     const db = getDB();
-    // Check no voucher lines use this account
-    const voucherCount = await db.vouchers
-      .filter((v) => v.lines?.some((l: any) => l.accountId === id))
+
+    // Bug #28 fix: only block deletion if account has POSTED (not draft/cancelled) vouchers.
+    const postedVoucherCount = await db.vouchers
+      .filter((v) => v.status === "posted" && v.lines?.some((l: any) => l.accountId === id))
       .count();
-    if (voucherCount > 0) {
-      throw new Error("Cannot delete: account has posted transactions.");
+    if (postedVoucherCount > 0) {
+      throw new Error(
+        "Cannot delete: account has posted voucher transactions. Cancel or reverse them first.",
+      );
     }
+
+    // Bug #25 fix: also check invoices (partyAccountId and line accounts).
+    const invoiceCount = await (db as any).invoices
+      .filter(
+        (inv: any) =>
+          inv.status === "posted" &&
+          (inv.partyAccountId === id ||
+            (inv.lines || []).some((l: any) => l.accountId === id)),
+      )
+      .count();
+    if (invoiceCount > 0) {
+      throw new Error(
+        "Cannot delete: account is referenced by posted invoices. Cancel those invoices first.",
+      );
+    }
+
     await db.accounts.delete(id);
     set((s) => ({ accounts: s.accounts.filter((a) => a.id !== id) }));
     return true;

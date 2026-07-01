@@ -115,28 +115,40 @@ export default function TrialBalance() {
     const fromD = new Date(options.fromDate);
     const toD = new Date(options.toDate);
 
+    // Determine if the selected fromDate is the very start of the fiscal year.
+    // If so, account-level opening balances are the only source (no pre-period vouchers
+    // within the same FY to accumulate). If fromDate is mid-period we derive opening
+    // entirely from pre-period vouchers and do NOT add account OB to avoid double-count.
+    const fyStart = currentFiscalYear?.startDate || "";
+    const fromIsAtFYStart = !fyStart || options.fromDate <= fyStart;
+
     for (const acc of accounts) {
       balances[acc.id] = { dr: 0, cr: 0 };
       txn[acc.id] = { dr: 0, cr: 0 };
       opening[acc.id] = { dr: 0, cr: 0 };
 
-      const ob = Number(acc.openingBalance || 0);
-      const obDr = Number(acc.openingBalanceDr || 0);
-      const obCr = Number(acc.openingBalanceCr || 0);
-      
-      if (obDr > 0) {
-        opening[acc.id].dr += obDr;
-        balances[acc.id].dr += obDr;
-      } else if (obCr > 0) {
-        opening[acc.id].cr += obCr;
-        balances[acc.id].cr += obCr;
-      } else if (ob > 0 && isDebitNature(acc.type)) {
-        opening[acc.id].dr += ob;
-        balances[acc.id].dr += ob;
-      } else if (ob > 0) {
-        opening[acc.id].cr += ob;
-        balances[acc.id].cr += ob;
+      if (fromIsAtFYStart) {
+        // Only seed from account field when the report starts at fiscal year beginning.
+        const ob = Number(acc.openingBalance || 0);
+        const obDr = Number(acc.openingBalanceDr || 0);
+        const obCr = Number(acc.openingBalanceCr || 0);
+
+        if (obDr > 0) {
+          opening[acc.id].dr += obDr;
+          balances[acc.id].dr += obDr;
+        } else if (obCr > 0) {
+          opening[acc.id].cr += obCr;
+          balances[acc.id].cr += obCr;
+        } else if (ob > 0 && isDebitNature(acc.type)) {
+          opening[acc.id].dr += ob;
+          balances[acc.id].dr += ob;
+        } else if (ob > 0) {
+          opening[acc.id].cr += ob;
+          balances[acc.id].cr += ob;
+        }
       }
+      // For mid-period fromDates the opening balance accumulates from pre-period
+      // vouchers in the loop below — no account-field seeding needed.
     }
 
     const postedVouchers = vouchers.filter((v) => v.status === "posted");
@@ -178,8 +190,11 @@ export default function TrialBalance() {
       const isBeforeFrom = iDate < fromD;
       const isInRange = iDate >= fromD && iDate <= toD;
 
+      // Auto-journals created by postInvoiceJournal use the ID pattern "jnl-{invoiceId}".
+      // Skip any invoice whose journal already appears in the vouchers loop above.
+      const autoJournalId = `jnl-${inv.id}`;
       const hasLinkedVoucher = postedVouchers.some(
-        (v) => v.sourceId === inv.id || v.invoiceId === inv.id,
+        (v) => v.id === autoJournalId || v.sourceId === inv.id || v.invoiceId === inv.id,
       );
       if (hasLinkedVoucher) continue;
 
@@ -206,7 +221,7 @@ export default function TrialBalance() {
     }
 
     return { accountBalances: balances, accountTxn: txn, accountOpening: opening };
-  }, [accounts, vouchers, invoices, options.fromDate, options.toDate]);
+  }, [accounts, vouchers, invoices, options.fromDate, options.toDate, currentFiscalYear]);
 
   // ─── Build the TB tree ─────────────────────────────────────────────────────
   const buildTree = useCallback((): TBRow[] => {

@@ -25,6 +25,21 @@ import toast from "react-hot-toast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
 
+/** Checks IndexedDB periodLocks table and throws if the given date is locked. */
+async function enforceperiodLock(date: string, db: ReturnType<typeof getDB>): Promise<void> {
+  try {
+    const d = new Date(date);
+    const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    const locks: any[] = await (db as any).table("periodLocks").toArray();
+    if (locks.some((l: any) => l.periodKey === key)) {
+      throw new Error(`Period is locked for date ${date}. Unlock the period before posting.`);
+    }
+  } catch (e: any) {
+    // If periodLocks table doesn't exist yet (first run), ignore silently.
+    if (e.message?.includes("Period is locked")) throw e;
+  }
+}
+
 export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Vouchers ─────────────────────────────────────────────────────────────
   addVoucher: async (voucher) => {
@@ -32,12 +47,18 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const { currentFiscalYear } = get();
     assertDateInFiscalYear(voucher.date, currentFiscalYear);
 
-    const { totalDebit, totalCredit } = validateVoucherBalance(voucher.lines);
+    // Enforce period lock for posted vouchers.
+    if ((voucher.status || "draft") === "posted") {
+      await enforceperiodLock(voucher.date, db);
+    }
+
+    const isDraft = (voucher.status || "draft") === "draft";
+    const { totalDebit, totalCredit } = validateVoucherBalance(voucher.lines, isDraft);
 
     const id = generateId();
     const type = voucher.type || "journal";
 
-    return db.transaction("rw", [db.vouchers, db.accounts], async () => {
+    return db.transaction("rw", [db.vouchers, db.accounts, db.auditLogs], async () => {
       const voucherNo = await generateNextVoucherNo(type, db);
 
       const newVoucher = {
@@ -58,15 +79,34 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           if (line.accountId) {
             const acc = await db.accounts.get(line.accountId);
             if (acc) {
-              await db.accounts.update(line.accountId, {
-                balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
-              });
+              const newBal = Math.round(
+                ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
+              ) / 100;
+              await db.accounts.update(line.accountId, { balance: newBal });
             }
           }
         }
       }
 
       await reloadAccounts(db, set);
+
+      // Audit log for every posted voucher.
+      if ((newVoucher as any).status === "posted") {
+        try {
+          const user = get().currentUser;
+          await db.auditLogs.add({
+            id: generateId(),
+            timestamp: new Date().toISOString(),
+            userId: user?.id || "system",
+            userName: user?.name || "system",
+            action: "VOUCHER_POSTED",
+            module: "vouchers",
+            recordId: id,
+            recordType: (newVoucher as any).type || "journal",
+            after: { voucherNo: (newVoucher as any).voucherNo, totalDebit, totalCredit },
+          });
+        } catch { /* audit failure must never block a voucher post */ }
+      }
 
       set((s) => ({ vouchers: [newVoucher, ...s.vouchers] }));
       return newVoucher;
@@ -75,10 +115,49 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
   updateVoucher: async (id, updates) => {
     const db = getDB();
-    await db.vouchers.update(id, updates);
-    set((s) => ({
-      vouchers: s.vouchers.map((v) => (v.id === id ? { ...v, ...updates } : v)),
-    }));
+    return db.transaction("rw", [db.vouchers, db.accounts, db.auditLogs], async () => {
+      const original = await db.vouchers.get(id);
+
+      // 1. Reverse impact of the original posted voucher on account balances.
+      if (original && original.status === "posted") {
+        for (const line of original.lines || []) {
+          if (line.accountId) {
+            const acc = await db.accounts.get(line.accountId);
+            if (acc) {
+              const reversed = Math.round(
+                ((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100,
+              ) / 100;
+              await db.accounts.update(line.accountId, { balance: reversed });
+            }
+          }
+        }
+      }
+
+      // 2. Persist the updates.
+      await db.vouchers.update(id, updates);
+
+      // 3. Apply new balance impact if the resulting voucher is posted.
+      const newLines: any[] = updates.lines ?? original?.lines ?? [];
+      const newStatus: string = updates.status ?? original?.status ?? "draft";
+      if (newStatus === "posted") {
+        for (const line of newLines) {
+          if (line.accountId) {
+            const acc = await db.accounts.get(line.accountId);
+            if (acc) {
+              const newBal = Math.round(
+                ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
+              ) / 100;
+              await db.accounts.update(line.accountId, { balance: newBal });
+            }
+          }
+        }
+      }
+
+      await reloadAccounts(db, set);
+      set((s) => ({
+        vouchers: s.vouchers.map((v) => (v.id === id ? { ...v, ...updates } : v)),
+      }));
+    });
   },
 
   cancelVoucher: async (id, reason) => {
@@ -100,10 +179,14 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           credit: Number(line.debit || 0),
         }));
 
+        const reversalDate = new Date().toISOString().split("T")[0];
+        const { currentFiscalYear } = get();
+        assertDateInFiscalYear(reversalDate, currentFiscalYear);
+
         const reversalVoucher = {
           id: reversalVoucherId,
           voucherNo: await generateNextVoucherNo("reversal", db),
-          date: new Date().toISOString().split("T")[0],
+          date: reversalDate,
           type: "reversal",
           status: "posted",
           narration: `Reversal of ${original.voucherNo}: ${reason}`,
@@ -135,6 +218,23 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
       await reloadAccounts(db, set);
 
+      // Audit log for cancellation.
+      try {
+        const user = get().currentUser;
+        await db.auditLogs.add({
+          id: generateId(),
+          timestamp: new Date().toISOString(),
+          userId: user?.id || "system",
+          userName: user?.name || "system",
+          action: "VOUCHER_CANCELLED",
+          module: "vouchers",
+          recordId: id,
+          recordType: "journal",
+          before: { voucherNo: original.voucherNo, status: original.status },
+          after: { status: "cancelled", reason },
+        });
+      } catch { /* non-critical */ }
+
       const allVouchers = await db.vouchers.toArray();
       set({
         vouchers: allVouchers.sort(
@@ -149,6 +249,11 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const db = getDB();
     const { currentFiscalYear } = get();
     assertDateInFiscalYear(invoice.date, currentFiscalYear);
+
+    // Enforce period lock for posted invoices.
+    if ((invoice.status || "draft") === "posted") {
+      await enforceperiodLock(invoice.date, db);
+    }
 
     const id = generateId();
     const type = invoice.type || "sales-invoice";
@@ -204,14 +309,19 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         if (!invoice) throw new Error("Invoice not found");
         if (invoice.status === "cancelled") throw new Error("Invoice is already cancelled");
 
+        // Store original status BEFORE updating so the "posted" check below uses the real value.
+        const wasPosted = invoice.status === "posted";
+
         await db.invoices.update(id, {
           status: "cancelled",
           cancellationReason: reason,
           paymentStatus: "cancelled",
         });
 
-        // Reverse stock movements
-        const movements = await db.stockMovements.where("referenceId").equals(id).toArray();
+        // Reverse stock movements only if invoice was actually posted.
+        const movements = wasPosted
+          ? await db.stockMovements.where("referenceId").equals(id).toArray()
+          : [];
         for (const mov of movements) {
           const reversalMovement = {
             ...mov,
@@ -224,8 +334,8 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           await db.stockMovements.add(reversalMovement as any);
         }
 
-        // Reverse journal entry if posted
-        if (invoice.status === "posted") {
+        // Reverse journal entry if invoice was posted at time of cancellation.
+        if (wasPosted) {
           const jnlId = `jnl-${invoice.id}`;
           const originalVoucher = await db.vouchers.get(jnlId);
           if (originalVoucher && originalVoucher.status === "posted") {
@@ -334,6 +444,8 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     }
 
     const today = new Date().toISOString().split("T")[0];
+    const { currentFiscalYear } = get();
+    assertDateInFiscalYear(today, currentFiscalYear);
     const newVoucher = await addVoucher({
       ...template,
       id: undefined,
@@ -512,7 +624,24 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const db = getDB();
     const now = new Date().toISOString();
     const vId = generateId();
-    await db.vouchers.add({ ...journalData, id: vId, createdAt: now } as any);
+    const voucherToAdd = { ...journalData, id: vId, createdAt: now };
+    await db.vouchers.add(voucherToAdd as any);
+
+    // Update account balances for the conversion journal — mirrors addVoucher logic.
+    if ((voucherToAdd as any).status === "posted") {
+      for (const line of (voucherToAdd as any).lines || []) {
+        if (line.accountId) {
+          const acc = await db.accounts.get(line.accountId);
+          if (acc) {
+            const newBal = Math.round(
+              ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
+            ) / 100;
+            await db.accounts.update(line.accountId, { balance: newBal });
+          }
+        }
+      }
+    }
+
     await db.pdCheques.update(pdcId, {
       status: "presented",
       convertedAt: now,
@@ -536,7 +665,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
   addAuditLog: async ({ action, resourceType, resourceId, before, after }) => {
     const user = get().currentUser;
-    const db = await getDB();
+    const db = getDB(); // getDB() is synchronous — no await needed.
     await db.auditLogs.add({
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),

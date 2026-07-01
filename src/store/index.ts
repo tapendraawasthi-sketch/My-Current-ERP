@@ -623,8 +623,16 @@ export const useStore = create<AppState>()((...a) => {
 
     login: async (username: string, password: string): Promise<boolean> => {
       const db = getDB();
-      const { selectedCompanyId } = get();
+      const { selectedCompanyId, loginFailedAttempts } = get();
       const companyId = selectedCompanyId || "main";
+
+      // Brute-force lockout: block after 5 consecutive failures.
+      const MAX_ATTEMPTS = 5;
+      if (loginFailedAttempts >= MAX_ATTEMPTS) {
+        throw new Error(
+          `Account locked after ${MAX_ATTEMPTS} failed attempts. Please restart the application or contact your administrator.`,
+        );
+      }
 
       const user = (await db.users.where("username").equals(username.trim()).first()) as any;
       if (!user || !user.isActive) {
@@ -1574,8 +1582,8 @@ export async function postInvoiceJournal(
       });
     if (vat > 0)
       lines.push({
-        accountId: "acc-vat-payable",
-        accountName: "VAT Receivable",
+        accountId: "acc-vat-receivable",
+        accountName: "VAT Receivable (Input Tax)",
         debit: vat,
         credit: 0,
       });
@@ -1587,7 +1595,11 @@ export async function postInvoiceJournal(
     });
   }
 
-  if (lines.length === 0) return;
+  if (lines.length === 0) {
+    throw new Error(
+      `Invoice ${invoice.invoiceNo} has no accountable amounts (taxable/exempt/total are all zero). Cannot post.`,
+    );
+  }
 
   validateVoucherBalance(lines);
 
@@ -1610,14 +1622,13 @@ export async function postInvoiceJournal(
     grandTotal: totalDebit,
   } as any);
 
-  // Update account balances
+  // Update account balances — round to 2 decimal places to prevent float drift.
   for (const line of lines) {
     if (line.accountId) {
       const acc = await db.accounts.get(line.accountId);
       if (acc) {
-        await db.accounts.update(line.accountId, {
-          balance: (acc.balance || 0) + (line.debit || 0) - (line.credit || 0),
-        });
+        const newBal = Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) / 100;
+        await db.accounts.update(line.accountId, { balance: newBal });
       }
     }
   }
@@ -1643,7 +1654,10 @@ export async function postInvoiceStock(
         ? -(line.qty || 0)
         : line.qty || 0;
 
-    const movId = `mov-${invoice.id}-${line.itemId}`;
+    // Use line.id (or a fallback index) in the movement ID so two lines
+    // for the same item do NOT share an ID and overwrite each other.
+    const lineUniqueKey = line.id || line.itemId + "-" + Math.random().toString(36).slice(2, 8);
+    const movId = `mov-${invoice.id}-${lineUniqueKey}`;
     const movement = {
       id: movId,
       date: invoice.date,
@@ -1655,13 +1669,18 @@ export async function postInvoiceStock(
       warehouseName,
       qty,
       rate: line.rate || 0,
-      amount: (line.qty || 0) * (line.rate || 0),
+      // Store cost price (item.costPrice) not the selling rate for accurate COGS.
+      amount: (line.qty || 0) * (item.costPrice || line.rate || 0),
       referenceId: invoice.id,
       referenceNo: invoice.invoiceNo,
       referenceType: invoice.type,
       narration: `Stock movement for ${invoice.invoiceNo}`,
     };
-    await db.stockMovements.put(movement as any);
+    // Use add() not put() so each line creates a separate record.
+    await db.stockMovements.add(movement as any).catch(async () => {
+      // On rare ID collision retry with fully unique ID.
+      await db.stockMovements.add({ ...movement, id: `mov-${invoice.id}-${generateId()}` } as any);
+    });
   }
   const updatedMovements = await db.stockMovements.toArray();
   set({ stockMovements: updatedMovements });

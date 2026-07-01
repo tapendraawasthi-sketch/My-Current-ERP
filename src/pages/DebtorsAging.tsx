@@ -139,8 +139,13 @@ export default function DebtorsAging() {
         const total = bills.reduce((s, b) => s + Number(b.balance || 0), 0);
         const interest = bills.reduce((s, b) => s + Number(b.interest || 0), 0);
 
+        // "Current" = not yet overdue (daysOverdue === 0); "0-30" = 1 to 30 days past due.
+        const current = bills
+          .filter((b) => b.daysOverdue === 0)
+          .reduce((s, b) => s + b.balance, 0);
+
         const d30 = bills
-          .filter((b) => b.daysOverdue >= 0 && b.daysOverdue <= 30)
+          .filter((b) => b.daysOverdue > 0 && b.daysOverdue <= 30)
           .reduce((s, b) => s + b.balance, 0);
 
         const d60 = bills
@@ -167,6 +172,7 @@ export default function DebtorsAging() {
           bills,
           total,
           interest,
+          current,
           d30,
           d60,
           d90,
@@ -311,7 +317,8 @@ export default function DebtorsAging() {
       PAN: r.party.panNumber || "",
       "Credit Limit": Number(r.party.creditLimit || 0),
       Outstanding: r.total,
-      "0-30 Days": r.d30,
+      Current: r.current,
+      "1-30 Days": r.d30,
       "31-60 Days": r.d60,
       "61-90 Days": r.d90,
       "91-180 Days": r.d180,
@@ -526,6 +533,7 @@ export default function DebtorsAging() {
                   "PAN",
                   "Credit Limit",
                   "Outstanding",
+                  "Current",
                   "1-30 Days",
                   "31-60 Days",
                   "61-90 Days",
@@ -583,6 +591,7 @@ export default function DebtorsAging() {
                       <td className={`${tableCellClass} font-semibold text-gray-900`}>
                         {money(r.total)}
                       </td>
+                      <td className={tableCellClass}>{money(r.current)}</td>
                       <td className={tableCellClass}>{money(r.d30)}</td>
                       <td className={tableCellClass}>{money(r.d60)}</td>
                       <td className={tableCellClass}>{money(r.d90)}</td>

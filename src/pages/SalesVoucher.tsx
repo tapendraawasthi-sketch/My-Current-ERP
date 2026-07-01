@@ -165,19 +165,31 @@ const SalesVoucher: React.FC = () => {
     const taxable = lines.filter((l) => l.isTaxable).reduce((s, l) => s + l.netAmount, 0);
     const exempt = lines.filter((l) => !l.isTaxable).reduce((s, l) => s + l.netAmount, 0);
     const vat = lines.reduce((s, l) => s + l.vatAmount, 0);
+    // Bill discount must reduce the taxable base BEFORE VAT is computed.
+    // First, split the bill discount proportionally between taxable and exempt portions.
+    const preBillDiscTotal = taxable + exempt;
     const billDisc =
       billDiscountAmount > 0
         ? billDiscountAmount
-        : (taxable + exempt) * (billDiscountPercent / 100);
-    const grandRaw = taxable + exempt + vat - billDisc;
+        : preBillDiscTotal * (billDiscountPercent / 100);
+
+    // Subtract bill discount from the taxable portion only (exempt already has no VAT).
+    const taxableAfterDisc = Math.max(0, taxable - billDisc);
+
+    // Recompute VAT on the discounted taxable base (line-level VAT rates vary,
+    // so we scale VAT proportionally to how much the taxable base was reduced).
+    const vatScale = taxable > 0 ? taxableAfterDisc / taxable : 1;
+    const vatAfterDisc = vat * vatScale;
+
+    const grandRaw = taxableAfterDisc + exempt + vatAfterDisc;
     const grandTotal = Math.round(grandRaw);
     const autoRoundOff = parseFloat((grandTotal - grandRaw).toFixed(2));
     return {
       subTotal,
       lineDiscount,
-      taxable,
+      taxable: taxableAfterDisc,
       exempt,
-      vat,
+      vat: vatAfterDisc,
       billDisc,
       grandTotal,
       roundOff: autoRoundOff,

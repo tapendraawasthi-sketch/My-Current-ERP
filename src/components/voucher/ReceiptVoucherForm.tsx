@@ -486,6 +486,30 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         toast.success(status === VoucherStatus.POSTED ? "Receipt voucher posted." : "Draft saved.");
       }
       if (status === VoucherStatus.POSTED) {
+        // Bug #27 fix: on edit, reverse the previous settlement before applying new one.
+        if (isEdit && existing?.settledInvoiceIds?.length) {
+          for (const prevInvId of existing.settledInvoiceIds) {
+            const prevInv = invoices.find((i: any) => i.id === prevInvId);
+            if (!prevInv) continue;
+            // We don't have per-invoice allocation stored on the old voucher,
+            // so reset paidAmount by re-deriving from remaining allocations
+            // (excluding the voucher being edited).
+            const otherAllocations = (getBillAllocationsForInvoice(prevInvId) || []).filter(
+              (a: any) => a.voucherId !== voucherId,
+            );
+            const newPaid = round2(
+              otherAllocations.reduce((s: number, a: any) => s + (a.allocatedAmount || 0), 0),
+            );
+            const balance = round2((prevInv.grandTotal || 0) - newPaid);
+            const newStatus =
+              Math.abs(balance) < 0.01
+                ? PaymentStatus.PAID
+                : newPaid > 0
+                ? PaymentStatus.PARTIAL
+                : PaymentStatus.UNPAID;
+            await updateInvoice(prevInvId, { paidAmount: newPaid, paymentStatus: newStatus });
+          }
+        }
         await settleInvoices(result.id);
       }
       setDirty(false);

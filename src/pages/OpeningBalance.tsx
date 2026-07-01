@@ -709,6 +709,30 @@ export default function OpeningBalance() {
     try {
       const db = getDB();
 
+      // Guard: prevent double-posting. Check if an opening voucher already exists
+      // for this fiscal year and delete it before re-posting.
+      const fyId = storeFiscalYear?.id || "";
+      const existingOBVouchers = await (db as any).vouchers
+        .filter((v: any) => v.type === "opening" && v.fiscalYearId === fyId)
+        .toArray();
+      if (existingOBVouchers.length > 0) {
+        // Reverse balance impacts of the old opening voucher before replacing it.
+        for (const oldV of existingOBVouchers) {
+          for (const line of oldV.lines || []) {
+            if (line.accountId) {
+              const acc = await db.accounts.get(line.accountId);
+              if (acc) {
+                const reversed =
+                  Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) / 100;
+                await db.accounts.update(line.accountId, { balance: reversed });
+              }
+            }
+          }
+          await (db as any).vouchers.delete(oldV.id);
+        }
+        toast("Existing opening balance replaced.", { icon: "ℹ️" });
+      }
+
       const lines = ledgerRows.map((r) => ({
         id: generateId(),
         accountId: r.accountId,

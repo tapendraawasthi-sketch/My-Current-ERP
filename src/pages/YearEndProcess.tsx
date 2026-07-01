@@ -312,52 +312,104 @@ export default function YearEndProcess() {
   }, [employees]);
 
   const plSummary = useMemo(() => {
+    // Compute from posted vouchers within the fiscal year — do NOT rely on cached balance field.
+    const fyStart = currentFiscalYear?.startDate;
+    const fyEnd = currentFiscalYear?.endDate;
+
+    const balances: Record<string, number> = {};
+    for (const v of (vouchers || [])) {
+      if (v.status !== "posted") continue;
+      if (fyStart && v.date < fyStart) continue;
+      if (fyEnd && v.date > fyEnd) continue;
+      for (const line of v.lines || []) {
+        balances[line.accountId] =
+          (balances[line.accountId] || 0) + (line.credit || 0) - (line.debit || 0);
+      }
+    }
+
     const totalIncome = (accounts || [])
-      .filter((a) => a.type === "income")
-      .reduce((s, a) => s + Number(a.balance || 0), 0);
+      .filter((a) => !a.isGroup && (a.type === "income" || a.type === "revenue"))
+      .reduce((s, a) => s + Math.max(0, balances[a.id] || 0), 0);
 
     const totalExpenses = (accounts || [])
-      .filter((a) => a.type === "expense")
-      .reduce((s, a) => s + Number(a.balance || 0), 0);
+      .filter((a) => !a.isGroup && a.type === "expense")
+      .reduce((s, a) => s + Math.max(0, -(balances[a.id] || 0)), 0);
 
     return {
       totalIncome,
       totalExpenses,
       netProfit: totalIncome - totalExpenses,
     };
-  }, [accounts]);
+  }, [accounts, vouchers, currentFiscalYear]);
 
   const closingPreview = useMemo(() => {
+    const fyStart = currentFiscalYear?.startDate;
+    const fyEnd = currentFiscalYear?.endDate;
+    const creditBals: Record<string, number> = {};
+    for (const v of (vouchers || [])) {
+      if (v.status !== "posted") continue;
+      if (fyStart && v.date < fyStart) continue;
+      if (fyEnd && v.date > fyEnd) continue;
+      for (const line of v.lines || []) {
+        creditBals[line.accountId] =
+          (creditBals[line.accountId] || 0) + (line.credit || 0) - (line.debit || 0);
+      }
+    }
+
     const incomeLines = (accounts || [])
-      .filter((a) => a.type === "income" && Number(a.balance || 0) !== 0)
-      .map((a) => ({
-        account: a,
-        debit: Math.max(0, Number(a.balance || 0)),
-        credit: Math.max(0, -Number(a.balance || 0)),
+      .filter((a) => !a.isGroup && (a.type === "income" || a.type === "revenue"))
+      .map((a) => ({ account: a, bal: creditBals[a.id] || 0 }))
+      .filter((r) => r.bal !== 0)
+      .map((r) => ({
+        account: r.account,
+        debit: Math.max(0, r.bal),
+        credit: Math.max(0, -r.bal),
       }));
 
     const expenseLines = (accounts || [])
-      .filter((a) => a.type === "expense" && Number(a.balance || 0) !== 0)
-      .map((a) => ({
-        account: a,
-        debit: Math.max(0, -Number(a.balance || 0)),
-        credit: Math.max(0, Number(a.balance || 0)),
+      .filter((a) => !a.isGroup && a.type === "expense")
+      .map((a) => ({ account: a, bal: creditBals[a.id] || 0 }))
+      .filter((r) => r.bal !== 0)
+      .map((r) => ({
+        account: r.account,
+        debit: Math.max(0, -r.bal),
+        credit: Math.max(0, r.bal),
       }));
 
     return { incomeLines, expenseLines };
-  }, [accounts]);
+  }, [accounts, vouchers, currentFiscalYear]);
 
   const balanceSheetRollover = useMemo(() => {
+    // Derive closing balance from posted vouchers up to fiscal year end.
+    // Do NOT trust account.balance which can be stale.
+    const fyEnd = currentFiscalYear?.endDate;
+
+    const balances: Record<string, number> = {};
+    for (const v of (vouchers || [])) {
+      if (v.status !== "posted") continue;
+      if (fyEnd && v.date > fyEnd) continue;
+      for (const line of v.lines || []) {
+        balances[line.accountId] =
+          (balances[line.accountId] || 0) + (line.debit || 0) - (line.credit || 0);
+      }
+    }
+
     return (accounts || [])
-      .filter((a) => ["asset", "liability", "equity"].includes(a.type))
-      .map((a) => ({
-        ...a,
-        closingBalance: Number(a.balance || 0),
-        openingDr: Number(a.balance || 0) > 0 ? Number(a.balance || 0) : 0,
-        openingCr: Number(a.balance || 0) < 0 ? Math.abs(Number(a.balance || 0)) : 0,
-      }))
+      .filter((a) => ["asset", "liability", "equity"].includes(a.type) && !a.isGroup)
+      .map((a) => {
+        const obDr = Number(a.openingBalanceDr || 0);
+        const obCr = Number(a.openingBalanceCr || 0);
+        const voucherNet = balances[a.id] || 0;
+        const closingBalance = obDr - obCr + voucherNet;
+        return {
+          ...a,
+          closingBalance,
+          openingDr: closingBalance > 0 ? closingBalance : 0,
+          openingCr: closingBalance < 0 ? Math.abs(closingBalance) : 0,
+        };
+      })
       .filter((a) => Math.abs(a.closingBalance) > 0.01);
-  }, [accounts]);
+  }, [accounts, vouchers, currentFiscalYear]);
 
   if (!isAllowed) {
     return (

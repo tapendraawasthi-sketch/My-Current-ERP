@@ -88,6 +88,7 @@ const PayrollRun: React.FC = () => {
     otherDeduct,
     arrears,
     bonus,
+    selectedMonth = 4,
   ) {
     const basic = Number(emp.salaryDetails?.basicSalary || emp.basicSalary || 0);
 
@@ -106,8 +107,14 @@ const PayrollRun: React.FC = () => {
     const grossEarnings = earnTotal + arrears + bonus;
     const proratedGross = workingDays > 0 ? (grossEarnings / workingDays) * presentDays : 0;
 
-    // OT pay (1.5x rate)
-    const dailyRate = basic / workingDays;
+    // OT pay (1.5x hourly rate).
+    // When employee is prorated (presentDays < workingDays), derive the daily rate
+    // from the effective prorated basic so OT is consistent with their actual pay basis.
+    const effectiveDailyBasic = workingDays > 0
+      ? (basic / workingDays) * (presentDays > 0 ? Math.min(presentDays, workingDays) / workingDays * workingDays : workingDays) / (presentDays > 0 ? presentDays : workingDays) * workingDays
+      : basic;
+    // Simplified: standard daily rate is basic / workingDays regardless of attendance.
+    const dailyRate = workingDays > 0 ? basic / workingDays : 0;
     const hourlyRate = dailyRate / 8;
     const otPay = otHrs * hourlyRate * 1.5;
     const totalGross = proratedGross + otPay;
@@ -125,9 +132,11 @@ const PayrollRun: React.FC = () => {
 
     // Income Tax — Nepal slab (FY 2081-82 rates)
     const annualGross = totalGross * 12;
-    const ssaDeduction = 450000; // Social Security Allowance
+    const ssaDeduction = 450000; // Social Security Allowance (Section 63)
     const pfDeductionAnnual = empPF * 12;
-    const taxableIncome = Math.max(0, annualGross - ssaDeduction - pfDeductionAnnual);
+    // Section 63(B): Employee SSF contribution is also deductible from taxable income.
+    const empSSFAnnual = empSSF * 12;
+    const taxableIncome = Math.max(0, annualGross - ssaDeduction - pfDeductionAnnual - empSSFAnnual);
 
     function computeAnnualTax(income, isWoman) {
       let tax = 0;
@@ -141,7 +150,12 @@ const PayrollRun: React.FC = () => {
     }
 
     const annualTax = computeAnnualTax(taxableIncome, emp.gender === "female");
-    const monthlyTax = Math.round(annualTax / 12);
+    // Divide by remaining months in the fiscal year so the full annual liability
+    // is collected by year-end. Nepal FY runs Shrawan(4)→Ashad(3).
+    // remainingMonths formula: months from selectedMonth to end of FY.
+    const monthInFY = selectedMonth >= 4 ? selectedMonth - 3 : selectedMonth + 9;
+    const remainingMonths = Math.max(1, 13 - monthInFY);
+    const monthlyTax = Math.round(annualTax / remainingMonths);
 
     const totalDeductions = empSSF + empPF + monthlyTax + cit + advDeduct + otherDeduct;
     const netSalary = totalGross - totalDeductions;
@@ -181,6 +195,7 @@ const PayrollRun: React.FC = () => {
           record.otherDeduct,
           record.arrears,
           record.bonus,
+          selectedMonth,
         );
 
         return {
@@ -230,65 +245,111 @@ const PayrollRun: React.FC = () => {
         return;
       }
 
-      // Create journal voucher
+      // Aggregate all deduction totals for balanced journal.
+      const totalCIT = payrollResults.reduce((sum, r) => sum + (r.cit || 0), 0);
+      const totalAdvDeduct = payrollResults.reduce((sum, r) => sum + (r.advDeduct || 0), 0);
+      const totalOtherDeduct = payrollResults.reduce((sum, r) => sum + (r.otherDeduct || 0), 0);
+
+      // Balanced payroll journal:
+      // Debit  = Gross Salary Expense + Employer SSF Expense + Employer PF Expense
+      // Credit = Net Salary Payable + Emp SSF Payable + Emp PF Payable +
+      //          Employer SSF Payable + Employer PF Payable + Tax Payable +
+      //          CIT Payable + Advance Recovered + Other Deduction Payable
       const journalVoucher = {
         id: generateId(),
         type: "journal",
         date: payrollDate,
-        dateNepali: "", // Will be calculated later
+        dateNepali: "",
         narration: `Salary for ${nepaliMonths[selectedMonth - 1]} ${selectedYear}`,
         status: "posted",
         lines: [
+          // ── Debit lines ──────────────────────────────────────────────────
           {
             accountId: salaryExpenseAccount.id,
             accountName: salaryExpenseAccount.name,
             debit: totalGross,
             credit: 0,
-            narration: "Salary & Wages Expense",
+            narration: "Gross Salary & Wages Expense",
           },
-          {
+          totalEmployerSSF > 0 && {
             accountId: employerSSFAccount?.id || salaryExpenseAccount.id,
-            accountName: employerSSFAccount?.name || salaryExpenseAccount.name,
+            accountName: employerSSFAccount?.name || "Employer SSF Expense",
             debit: totalEmployerSSF,
             credit: 0,
-            narration: "Employer SSF Contribution",
+            narration: "Employer SSF Contribution (Expense)",
           },
-          {
+          totalEmployerPF > 0 && {
             accountId: employerPFAccount?.id || salaryExpenseAccount.id,
-            accountName: employerPFAccount?.name || salaryExpenseAccount.name,
+            accountName: employerPFAccount?.name || "Employer PF Expense",
             debit: totalEmployerPF,
             credit: 0,
-            narration: "Employer PF Contribution",
+            narration: "Employer PF Contribution (Expense)",
           },
+          // ── Credit lines ─────────────────────────────────────────────────
           {
             accountId: netSalaryPayableAccount.id,
             accountName: netSalaryPayableAccount.name,
             debit: 0,
             credit: totalNet,
-            narration: "Net Salary Payable",
+            narration: "Net Salary Payable to Employees",
           },
-          {
+          totalEmpSSF > 0 && {
             accountId: ssfPayableAccount?.id || netSalaryPayableAccount.id,
-            accountName: ssfPayableAccount?.name || netSalaryPayableAccount.name,
+            accountName: ssfPayableAccount?.name || "SSF Payable",
             debit: 0,
-            credit: totalEmpSSF + totalEmployerSSF,
-            narration: "SSF Payable",
+            credit: totalEmpSSF,
+            narration: "Employee SSF Payable",
           },
-          {
+          totalEmployerSSF > 0 && {
+            accountId: ssfPayableAccount?.id || netSalaryPayableAccount.id,
+            accountName: ssfPayableAccount?.name || "SSF Payable",
+            debit: 0,
+            credit: totalEmployerSSF,
+            narration: "Employer SSF Payable",
+          },
+          totalEmpPF > 0 && {
             accountId: pfPayableAccount?.id || netSalaryPayableAccount.id,
-            accountName: pfPayableAccount?.name || netSalaryPayableAccount.name,
+            accountName: pfPayableAccount?.name || "PF Payable",
             debit: 0,
-            credit: totalEmpPF + totalEmployerPF,
-            narration: "PF Payable",
+            credit: totalEmpPF,
+            narration: "Employee PF Payable",
           },
-          {
+          totalEmployerPF > 0 && {
+            accountId: pfPayableAccount?.id || netSalaryPayableAccount.id,
+            accountName: pfPayableAccount?.name || "PF Payable",
+            debit: 0,
+            credit: totalEmployerPF,
+            narration: "Employer PF Payable",
+          },
+          totalTax > 0 && {
             accountId: incomeTaxPayableAccount?.id || netSalaryPayableAccount.id,
-            accountName: incomeTaxPayableAccount?.name || netSalaryPayableAccount.name,
+            accountName: incomeTaxPayableAccount?.name || "Income Tax Payable",
             debit: 0,
             credit: totalTax,
-            narration: "Income Tax Payable",
+            narration: "Employee TDS Payable",
           },
-        ].filter((line) => line.debit > 0 || line.credit > 0),
+          totalCIT > 0 && {
+            accountId: netSalaryPayableAccount.id,
+            accountName: "CIT Payable",
+            debit: 0,
+            credit: totalCIT,
+            narration: "CIT Deduction Payable",
+          },
+          totalAdvDeduct > 0 && {
+            accountId: netSalaryPayableAccount.id,
+            accountName: "Advance Salary Recovered",
+            debit: 0,
+            credit: totalAdvDeduct,
+            narration: "Advance Recovery",
+          },
+          totalOtherDeduct > 0 && {
+            accountId: netSalaryPayableAccount.id,
+            accountName: "Other Deductions Payable",
+            debit: 0,
+            credit: totalOtherDeduct,
+            narration: "Other Deductions",
+          },
+        ].filter(Boolean).filter((line: any) => line.debit > 0 || line.credit > 0),
       };
 
       await addVoucher(journalVoucher);

@@ -57,7 +57,8 @@ export async function generateSerialNumber(
   }
 }
 
-// Synchronous version for contexts that can't await
+// Synchronous fallback — uses timestamp + random suffix to minimise collision risk.
+// Callers that can await should use generateSerialNumber() instead for guaranteed sequence.
 export function generateSerialNumberSync(voucherType: string): string {
   const prefixes: Record<string, string> = {
     journal: "JV",
@@ -70,7 +71,9 @@ export function generateSerialNumberSync(voucherType: string): string {
     "purchase-return": "PR",
   };
   const prefix = prefixes[voucherType] || "VCH";
-  return `${prefix}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+  const ts = Date.now().toString(36).toUpperCase().slice(-6);
+  const rand = Math.floor(Math.random() * 1000).toString().padStart(3, "0");
+  return `${prefix}-${ts}${rand}`;
 }
 
 // Used by store
@@ -262,7 +265,24 @@ export function computeProfitLoss(
       (!startDate || v.date >= startDate) &&
       (!endDate || v.date <= endDate),
   );
+
+  // Seed balances with each account's opening balance so migrations / partial
+  // year-starts that carry an opening position are included in the P&L.
   const balances: Record<string, number> = {};
+  for (const acc of accounts) {
+    if (!acc.isGroup && (acc.type === "income" || acc.type === "revenue" || acc.type === "expense")) {
+      const obDr = Number(acc.openingBalanceDr || 0);
+      const obCr = Number(acc.openingBalanceCr || 0);
+      const ob = Number(acc.openingBalance || 0);
+      // Income accounts are credit-nature; expenses are debit-nature.
+      if (obDr || obCr) {
+        balances[acc.id] = obCr - obDr;
+      } else if (ob) {
+        balances[acc.id] = (acc.type === "expense") ? -ob : ob;
+      }
+    }
+  }
+
   for (const v of filtered) {
     for (const line of v.lines || []) {
       balances[line.accountId] =
