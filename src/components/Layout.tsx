@@ -10,6 +10,7 @@ import TopMenuBar from "./topbar/TopMenuBar";
 import { useIsMobile } from "../hooks/use-mobile";
 import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
+import FalconProvider from "./falcon/FalconProvider";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -637,6 +638,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
         )}
+        <FalconProvider />
       </div>
     );
   }
@@ -699,6 +701,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           Click here or press — again to restore Sutra ERP
         </div>
       )}
+      <FalconProvider />
     </div>
   );
 };
