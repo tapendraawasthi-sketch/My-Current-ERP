@@ -35,7 +35,7 @@ import FiscalYear from "./pages/FiscalYear";
 import AuditLog from "./pages/AuditLog";
 import IncomeExpenditureAccount from "./pages/IncomeExpenditureAccount";
 import AccountsConfiguration from "./pages/AccountsConfiguration";
-// import SalesPersons from "./pages/SalesPersons"; // Replaced by SalesmanMaster
+import SalesPersons from "./pages/SalesPersons";
 import PriceLists from "./pages/PriceLists";
 import UnitConversionMaster from "./pages/UnitConversionMaster";
 import JournalEntries from "./pages/JournalEntries";
@@ -81,12 +81,6 @@ import PhysicalStockPage2 from "./pages/PhysicalStockPage2";
 import StockLedgerReport from "./pages/StockLedgerReport";
 import SalesAnalysisReport from "./pages/SalesAnalysisReport";
 import StockSummaryReport from "./pages/StockSummaryReport";
-import AccountGroupMaster from "./pages/AccountGroupMaster";
-import FeaturesOptions from "./pages/FeaturesOptions";
-import MasterConfigurationPage from "./pages/MasterConfiguration";
-import SubLedgerMaster from "./pages/SubLedgerMaster";
-import BudgetMasterAdvanced from "./pages/BudgetMasterAdvanced";
-import SalesmanMaster from "./pages/SalesmanMaster";
 
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
@@ -141,23 +135,6 @@ const App: React.FC = () => {
       case "dashboard": return <FinancialDashboard />;
 
       // Masters
-      case "account-group-master":
-      case "account-groups-admin":
-        return <AccountGroupMaster />;
-      case "features-options":
-      case "f11-features":
-      case "f11-company-features":
-        return <FeaturesOptions />;
-      case "master-configuration":
-        return <MasterConfigurationPage />;
-      case "sub-ledger-master":
-        return <SubLedgerMaster />;
-      case "budget-master-adv":
-        return <BudgetMasterAdvanced />;
-      case "sales-persons":
-      case "salesman":
-        return <SalesmanMaster />;
-
       case "accounts":
       case "chart-of-accounts": return <ChartOfAccounts />;
       case "parties":
@@ -173,7 +150,7 @@ const App: React.FC = () => {
       case "unit-conversions": return <UnitConversionMaster />;
       case "cost-centers":
       case "cost-centre": return <CostCenters />;
-      // case "sales-persons": return <SalesPersons />; // Replaced
+      case "sales-persons": return <SalesPersons />;
       case "price-lists": return <PriceLists />;
       case "standard-narration":
       case "standard-narrations": return <StandardNarrationMaster />;
