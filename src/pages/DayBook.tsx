@@ -14,7 +14,10 @@ import {
   TrendingDown,
   BookOpen,
   Filter,
+  Edit2,
+  Trash2,
 } from "lucide-react";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -111,7 +114,10 @@ function getTypeColor(type: string): { bg: string; text: string; border: string 
 const DayBook: React.FC = () => {
   const { vouchers, invoices, accounts, companySettings, currentFiscalYear } = useStore();
 
-  const [selectedDate, setSelectedDate] = useState(todayISO());
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: todayISO(),
+    toDate: todayISO(),
+  });
   const [typeFilter, setTypeFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<DayBookEntry | null>(null);
@@ -123,7 +129,7 @@ const DayBook: React.FC = () => {
 
     // From vouchers
     const dayVouchers = vouchers.filter(
-      (v: any) => v.date === selectedDate && v.status === "posted",
+      (v: any) => v.date >= dateRange.fromDate && v.date <= dateRange.toDate && v.status === "posted",
     );
 
     for (const v of dayVouchers) {
@@ -160,7 +166,7 @@ const DayBook: React.FC = () => {
 
     // From invoices
     const dayInvoices = invoices.filter(
-      (inv: any) => inv.date === selectedDate && inv.status === "posted",
+      (inv: any) => inv.date >= dateRange.fromDate && inv.date <= dateRange.toDate && inv.status === "posted",
     );
 
     for (const inv of dayInvoices) {
@@ -190,7 +196,7 @@ const DayBook: React.FC = () => {
     entries.sort((a, b) => a.voucherNo.localeCompare(b.voucherNo));
 
     return entries;
-  }, [vouchers, invoices, selectedDate]);
+  }, [vouchers, invoices, dateRange.fromDate, dateRange.toDate]);
 
   // ── Filter ───────────────────────────────────────────────────────────────
   const filteredEntries = useMemo<DayBookEntry[]>(() => {
@@ -228,14 +234,6 @@ const DayBook: React.FC = () => {
   }, [dayBookEntries]);
 
   // ── Navigate date ────────────────────────────────────────────────────────
-  const navigateDate = useCallback(
-    (direction: -1 | 1) => {
-      const d = new Date(selectedDate);
-      d.setDate(d.getDate() + direction);
-      setSelectedDate(d.toISOString().split("T")[0]);
-    },
-    [selectedDate],
-  );
 
   // ── Export Excel ─────────────────────────────────────────────────────────
   const handleExportExcel = useCallback(() => {
@@ -254,25 +252,24 @@ const DayBook: React.FC = () => {
       ]);
 
       const wb = XLSX.utils.book_new();
-      const wsData = [
+      const ws = XLSX.utils.aoa_to_sheet([
         [companyName],
         ["Day Book"],
-        [`Date: ${selectedDate}`],
+        [`Date Range: ${dateRange.fromDate} to ${dateRange.toDate}`],
         [],
         headers,
         ...rows,
         [],
         ["TOTAL", "", "", "", summary.totalDebit, summary.totalCredit],
-      ];
+      ]);
 
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, "Day Book");
-      XLSX.writeFile(wb, `DayBook_${selectedDate}.xlsx`);
+      XLSX.utils.book_append_sheet(wb, ws, "DayBook");
+      XLSX.writeFile(wb, `DayBook_${dateRange.fromDate}_${dateRange.toDate}.xlsx`);
       toast.success("Day Book exported to Excel.");
     } catch {
       toast.error("Export failed.");
     }
-  }, [filteredEntries, companySettings, selectedDate, summary]);
+  }, [filteredEntries, companySettings, dateRange, summary]);
 
   const handlePrint = () => window.print();
 
@@ -311,38 +308,15 @@ const DayBook: React.FC = () => {
       </div>
 
       {/* Date Navigation + Filters */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-3">
-        {/* Date navigator */}
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => navigateDate(-1)}
-            className="h-8 w-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-          />
-          <button
-            type="button"
-            onClick={() => navigateDate(1)}
-            className="h-8 w-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedDate(todayISO())}
-            className="h-8 px-3 text-[11px] font-medium border border-gray-300 rounded-md bg-white text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            Today
-          </button>
-        </div>
+      <div className="mb-4">
+        <ReportDateRangePicker
+          value={dateRange}
+          onChange={setDateRange}
+          label="Day Book Period"
+        />
+      </div>
 
+      <div className="flex flex-wrap gap-2 mb-4">
         {/* Search */}
         <div className="flex-1 min-w-[160px]">
           <input
@@ -433,7 +407,7 @@ const DayBook: React.FC = () => {
       {/* Main Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <h3 className="text-[12px] font-semibold text-gray-700">Day Book — {selectedDate}</h3>
+          <h3 className="text-[12px] font-semibold text-gray-700">Day Book ({dateRange.fromDate} to {dateRange.toDate})</h3>
           <p className="text-[11px] text-gray-500">
             {filteredEntries.length} entr
             {filteredEntries.length === 1 ? "y" : "ies"}
@@ -473,7 +447,7 @@ const DayBook: React.FC = () => {
                 <tr>
                   <td colSpan={7} className="px-3 py-16 text-center text-[12px] text-gray-400">
                     <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                    No vouchers recorded on {selectedDate}.
+                    No vouchers recorded in this period.
                   </td>
                 </tr>
               ) : (

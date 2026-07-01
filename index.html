@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sutra ERP</title>
+    <script>
+      // Suppress Alt key browser menu-bar focus so Alt+K etc. work in our app
+      // This runs before React loads so it captures everything
+      document.addEventListener('keydown', function(e) {
+        if (e.altKey && !e.ctrlKey && !e.metaKey) {
+          // Alt alone or Alt+key: prevent browser from hijacking focus to native menu
+          e.preventDefault();
+        }
+      }, { capture: true, passive: false });
+    </script>
   </head>
   <body class="green-theme">
     <div id="root"></div>

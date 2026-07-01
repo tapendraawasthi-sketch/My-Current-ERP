@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { PLReportOptions, PLReportVariant } from "../../lib/plTypes";
 import { BarChart2, TrendingUp, Calendar, Table } from "lucide-react";
+import ReportDateRangePicker from "../ui/ReportDateRangePicker";
 
 interface Props {
   defaultOptions: PLReportOptions;
@@ -93,27 +94,15 @@ export default function PLOptionsDialog({ defaultOptions, onConfirm, onCancel, c
           </div>
 
           {/* Date Range */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelCls}>From Date</label>
-              <input
-                type="date"
-                className={inputCls}
-                value={opts.fromDate}
-                onChange={(e) => set("fromDate", e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className={labelCls}>To Date</label>
-              <input
-                type="date"
-                className={inputCls}
-                value={opts.toDate}
-                onChange={(e) => set("toDate", e.target.value)}
-                required
-              />
-            </div>
+          <div className="mb-4">
+            <ReportDateRangePicker
+              value={{ fromDate: opts.fromDate, toDate: opts.toDate }}
+              onChange={(r) => {
+                set("fromDate", r.fromDate);
+                set("toDate", r.toDate);
+              }}
+              label="Report Period"
+            />
           </div>
 
           {/* Fiscal year quick presets */}

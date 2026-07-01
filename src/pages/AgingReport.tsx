@@ -4,6 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
 import { Download, FileSpreadsheet, RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -73,7 +74,11 @@ function addBuckets(a: AgingBucket, b: Partial<AgingBucket>): AgingBucket {
 const AgingReport: React.FC = () => {
   const { parties, companySettings } = useStore();
 
-  const [asOfDate, setAsOfDate] = useState(todayISO());
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: todayISO(),
+    toDate: todayISO(),
+  });
+  const asOfDate = dateRange.toDate;
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -284,15 +289,12 @@ const AgingReport: React.FC = () => {
           </button>
         </div>
 
-        <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
-            As of Date
-          </label>
-          <input
-            type="date"
-            value={asOfDate}
-            onChange={(e) => setAsOfDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+        <div className="mb-2">
+          <ReportDateRangePicker
+            value={dateRange}
+            onChange={setDateRange}
+            label="As Of Date (Uses To Date)"
+            compact
           />
         </div>
 

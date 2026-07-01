@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReportDateRangePicker from "../ui/ReportDateRangePicker";
 
 export interface ReportOptions {
   layout: "horizontal" | "vertical";
@@ -110,25 +111,15 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
           </div>
 
           {/* Date range */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">From Date</label>
-              <input
-                type="date"
-                className={inputCls}
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-medium text-gray-600 block mb-1">To Date</label>
-              <input
-                type="date"
-                className={inputCls}
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
-            </div>
+          <div className="mb-4">
+            <ReportDateRangePicker
+              value={{ fromDate, toDate }}
+              onChange={(r) => {
+                setFromDate(r.fromDate);
+                setToDate(r.toDate);
+              }}
+              label="Report Period"
+            />
           </div>
 
           {/* Fiscal Year */}

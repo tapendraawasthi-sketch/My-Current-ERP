@@ -10,6 +10,7 @@ import {
   FileText, ChevronDown as DropIcon, BarChart2, Scale,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 
 // ─── Default Options ──────────────────────────────────────────────────────────
 
@@ -87,15 +88,14 @@ function OptionsDialog({
           </div>
 
           {/* Date Range */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={lbl}>Starting Date</label>
-              <input type="date" className={inp} value={opts.fromDate} onChange={(e) => set("fromDate", e.target.value)} />
-            </div>
-            <div>
-              <label className={lbl}>Ending Date (As At)</label>
-              <input type="date" className={inp} value={opts.toDate} onChange={(e) => set("toDate", e.target.value)} />
-            </div>
+          <div className="mb-4">
+            <ReportDateRangePicker
+              value={{ fromDate: opts.fromDate, toDate: opts.toDate }}
+              onChange={(r) => {
+                setOpts((p) => ({ ...p, fromDate: r.fromDate, toDate: r.toDate }));
+              }}
+              label="Report Period"
+            />
           </div>
 
           {/* FY presets */}

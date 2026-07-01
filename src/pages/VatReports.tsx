@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -198,8 +199,10 @@ const VatReports: React.FC = () => {
   const { invoices, parties, companySettings, currentFiscalYear } = useStore();
 
   const [activeTab, setActiveTab] = useState<ActiveTab>("summary");
-  const [fromDate, setFromDate] = useState(firstDayOfMonth());
-  const [toDate, setToDate] = useState(todayISO());
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: firstDayOfMonth(),
+    toDate: todayISO(),
+  });
   const [loading, setLoading] = useState(false);
 
   // ── Filter invoices by date range ─────────────────────────────────────────
@@ -207,9 +210,9 @@ const VatReports: React.FC = () => {
     return invoices.filter((inv) => {
       if (!inv.date) return false;
       // Fix: use toDate() helper to convert string dates to Date objects properly
-      return isDateInRange(inv.date, fromDate, toDate);
+      return isDateInRange(inv.date, dateRange.fromDate, dateRange.toDate);
     });
-  }, [invoices, fromDate, toDate]);
+  }, [invoices, dateRange.fromDate, dateRange.toDate]);
 
   // ── Annex A: Sales to VAT registered parties ──────────────────────────────
   const annexAData = useMemo<AnnexEntry[]>(() => {
@@ -503,28 +506,12 @@ const VatReports: React.FC = () => {
       {/* Toolbar — rendered as children, NOT as "actions" prop */}
       <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
-          <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
-              From Date
-            </label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
-              To Date
-            </label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            />
-          </div>
+          <ReportDateRangePicker
+            value={dateRange}
+            onChange={setDateRange}
+            label=""
+            compact
+          />
         </div>
 
         <div className="flex items-center gap-2">

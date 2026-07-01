@@ -3,7 +3,9 @@ import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import { Download, FileSpreadsheet, RefreshCw, TrendingUp, Eye, X } from "lucide-react";
+import { Download, FileSpreadsheet, RefreshCw, TrendingUp,  Printer,
+} from "lucide-react";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -72,7 +74,11 @@ function getStatusBadge(status: string): string {
 const OutstandingReceivables: React.FC = () => {
   const { parties, companySettings } = useStore();
 
-  const [asOfDate, setAsOfDate] = useState(todayISO());
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: todayISO(),
+    toDate: todayISO(),
+  });
+  const asOfDate = dateRange.toDate;
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState<ReceivableRow | null>(null);
@@ -321,15 +327,12 @@ const OutstandingReceivables: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-2">
-        <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-0.5">
-            As of
-          </label>
-          <input
-            type="date"
-            value={asOfDate}
-            onChange={(e) => setAsOfDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+        <div className="mb-2">
+          <ReportDateRangePicker
+            value={dateRange}
+            onChange={setDateRange}
+            label="As Of Date (Uses To Date)"
+            compact
           />
         </div>
 

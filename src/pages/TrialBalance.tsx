@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   Settings,
 } from "lucide-react";
+import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 
 type TBVariant =
   | "closing-alphabetical"
@@ -585,23 +586,15 @@ export default function TrialBalance() {
           </select>
         </div>
 
-        <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">From Date</label>
-          <input
-            type="date"
-            value={options.fromDate}
-            onChange={(e) => setOpt("fromDate", e.target.value)}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">To Date</label>
-          <input
-            type="date"
-            value={options.toDate}
-            onChange={(e) => setOpt("toDate", e.target.value)}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+        <div className="md:col-span-2">
+          <ReportDateRangePicker
+            value={{ fromDate: options.fromDate, toDate: options.toDate }}
+            onChange={(r) => {
+              setOpt("fromDate", r.fromDate);
+              setOpt("toDate", r.toDate);
+            }}
+            label=""
+            compact
           />
         </div>
 
