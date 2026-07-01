@@ -9,10 +9,13 @@ const FalconLauncher: React.FC = () => {
   return (
     <button
       type="button"
-      onClick={togglePanel}
+      onClick={(e) => {
+        e.stopPropagation();
+        togglePanel();
+      }}
       className="fixed bottom-5 right-5 z-[9998] h-12 w-12 rounded-full bg-[#1557b0] hover:bg-[#0f4a96] text-white shadow-lg flex items-center justify-center transition-transform hover:scale-105"
-      title="Falcon — Sutra ERP Assistant"
-      aria-label="Open Falcon assistant"
+      title="Falcon AI — Sutra ERP Assistant"
+      aria-label="Open Falcon AI assistant"
     >
       {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
     </button>

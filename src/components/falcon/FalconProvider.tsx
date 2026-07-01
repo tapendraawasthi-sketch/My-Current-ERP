@@ -5,16 +5,16 @@ import { useFalconStore } from "../../store/falconStore";
 import FalconLauncher from "./FalconLauncher";
 import FalconPanel from "./FalconPanel";
 
-// Mount <FalconProvider /> once, near the root of your authenticated app
-// shell (e.g. inside Layout.tsx, alongside <Toaster />). It automatically
-// tracks the current ERP page so Falcon's answers are page-aware, and it
-// hides itself on the login/signup screens.
 const FalconProvider: React.FC = () => {
   const { currentPage, isAuthenticated, isDbReady } = useStore();
-  const setContext = useFalconStore((s) => s.setContext);
+
+  const setContext = useFalconStore((state) => state.setContext);
 
   useEffect(() => {
-    setContext({ route: currentPage });
+    setContext({
+      route: currentPage,
+      screenTitle: currentPage?.replace(/-/g, " "),
+    });
   }, [currentPage, setContext]);
 
   if (!isAuthenticated || !isDbReady) return null;
