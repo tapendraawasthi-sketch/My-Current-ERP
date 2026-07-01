@@ -1,2051 +1,1657 @@
+// src/components/ChartOfAccounts.tsx
 // @ts-nocheck
 /**
- * @license
- * SPDX-License-Identifier: Apache-2.0
+ * BUSY-style Chart of Accounts — Complete Implementation
+ * Phases 1-13: All 15 predefined groups, Account Group Master,
+ * Account Master (all sections), Features/Options, Master Configuration,
+ * Sub-Ledgers, Bill-by-Bill, all modes (Add/Modify/Delete/List/View)
  */
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useStore } from "../store";
-import { Card, Badge, Button, Input, Select, Modal, ConfirmDialog } from "./ui";
-import Pagination from "./ui/Pagination";
-import {
-  Plus,
-  Search,
-  Edit2,
-  Lock,
-  ChevronDown,
-  ChevronRight,
-  Download,
-  Upload,
-  Trash2,
-  ArrowRight,
-  CheckSquare,
-  Square,
-  FolderOpen,
-  BookOpen,
-  RefreshCw,
-  FileSpreadsheet,
-} from "lucide-react";
-import { formatNumber } from "../lib/utils";
-import { AccountType, AccountLevel, Account } from "../lib/types";
-import { isDebitNature } from "../lib/accounting";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
-import { PillTitle, FormPanel } from "../components/BusyShell";
+import {
+  Plus, Search, Edit2, Trash2, ChevronDown, ChevronRight,
+  FolderOpen, Folder, BookOpen, Download, Upload, Copy,
+  Settings, Save, X, AlertTriangle, Info, RefreshCw,
+  FileSpreadsheet, Eye, Lock, CheckSquare, Square,
+  ArrowRight, Filter, Printer, Building, CreditCard,
+  Users, ShoppingCart, Package, TrendingUp, TrendingDown,
+  BarChart2, PieChart, Wallet, Landmark, Briefcase
+} from "lucide-react";
 
-interface BankDetails {
-  bankName?: string;
-  branch?: string;
-  accountNo?: string;
-  ifscSwift?: string;
-  accountType?: "Current" | "Savings" | "Overdraft" | "CashCredit";
-}
-
-interface TreeNode {
-  id: string;
-  name: string;
-  nameNepali?: string;
-  alias?: string;
-  code: string;
-  type: AccountType;
-  level: "root" | AccountLevel;
-  depth: number;
-  isActive: boolean;
-  isGroup: boolean;
-  isSystemAccount?: boolean;
-  parentId?: string;
-  balance: number;
-  billByBill?: boolean;
-  bankDetails?: BankDetails;
-  creditLimit?: number;
-  creditPeriod?: number;
-  rowObject?: Account;
-  children: TreeNode[];
-}
-
-// ─── TYPE COLOR CONFIG ─────────────────────────────────────────────────────────
-const TYPE_CONFIG: Record<
-  AccountType,
-  { bg: string; text: string; border: string; badge: string; dot: string; label: string }
-> = {
-  [AccountType.ASSET]: {
-    bg: "bg-gray-200",
-    text: "text-gray-800",
-    border: "border-l-blue-600",
-    badge: "bg-gray-200 text-gray-800 border-gray-300",
-    dot: "bg-gray-200",
-    label: "Assets",
-  },
-  [AccountType.LIABILITY]: {
-    bg: "bg-red-50",
-    text: "text-red-800",
-    border: "border-l-red-600",
-    badge: "bg-red-100 text-red-700 border-red-200",
-    dot: "bg-red-500",
-    label: "Liabilities",
-  },
-  [AccountType.EQUITY]: {
-    bg: "bg-purple-50",
-    text: "text-purple-800",
-    border: "border-l-purple-600",
-    badge: "bg-purple-100 text-purple-700 border-purple-200",
-    dot: "bg-purple-500",
-    label: "Equity",
-  },
-  [AccountType.INCOME]: {
-    bg: "bg-emerald-50",
-    text: "text-emerald-800",
-    border: "border-l-emerald-600",
-    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    dot: "bg-emerald-500",
-    label: "Income",
-  },
-  [AccountType.EXPENSE]: {
-    bg: "bg-amber-50",
-    text: "text-amber-800",
-    border: "border-l-amber-600",
-    badge: "bg-amber-100 text-amber-700 border-amber-200",
-    dot: "bg-amber-500",
-    label: "Expenses",
-  },
-};
-
-const LEVEL_LABELS: Record<string, string> = {
-  root: "Primary",
-  group: "Group",
-  subgroup: "Sub-Group",
-  ledger: "Ledger",
-  subledger: "Sub-Ledger",
-};
-
-const BANK_ACCOUNT_TYPES = [
-  { value: "Current", label: "Current Account" },
-  { value: "Savings", label: "Savings Account" },
-  { value: "Overdraft", label: "Overdraft (OD)" },
-  { value: "CashCredit", label: "Cash Credit (CC)" },
+// ─── 15 PREDEFINED PRIMARY GROUPS (BUSY-style) ───────────────────────────────
+const PREDEFINED_GROUPS = [
+  // Capital / Equity
+  { id: "pg-capital", name: "Capital Account", nature: "credit", category: "Capital/Equity", sortOrder: 1, icon: "Wallet", color: "#7c3aed", subGroups: [{ id: "sg-partners-capital", name: "Partners Capital Account", parentId: "pg-capital" }, { id: "sg-share-capital", name: "Share Capital", parentId: "pg-capital" }] },
+  { id: "pg-reserves", name: "Reserves & Surplus", nature: "credit", category: "Capital/Equity", sortOrder: 2, icon: "Wallet", color: "#7c3aed", subGroups: [{ id: "sg-general-reserve", name: "General Reserve", parentId: "pg-reserves" }, { id: "sg-retained-earnings", name: "Retained Earnings", parentId: "pg-reserves" }] },
+  // Liabilities
+  { id: "pg-loans-liability", name: "Loans (Liability)", nature: "credit", category: "Liabilities", sortOrder: 3, icon: "Landmark", color: "#dc2626", subGroups: [{ id: "sg-secured-loans", name: "Secured Loans", parentId: "pg-loans-liability" }, { id: "sg-unsecured-loans", name: "Unsecured Loans", parentId: "pg-loans-liability" }] },
+  { id: "pg-current-liability", name: "Current Liabilities", nature: "credit", category: "Liabilities", sortOrder: 4, icon: "Briefcase", color: "#dc2626", subGroups: [{ id: "sg-sundry-creditors", name: "Sundry Creditors", parentId: "pg-current-liability" }, { id: "sg-duties-taxes", name: "Duties & Taxes", parentId: "pg-current-liability" }, { id: "sg-advances-customers", name: "Advances from Customers", parentId: "pg-current-liability" }, { id: "sg-outstanding-expenses", name: "Outstanding Expenses", parentId: "pg-current-liability" }] },
+  { id: "pg-provisions", name: "Provisions", nature: "credit", category: "Liabilities", sortOrder: 5, icon: "Briefcase", color: "#dc2626", subGroups: [{ id: "sg-provision-tax", name: "Provision for Tax", parentId: "pg-provisions" }, { id: "sg-provision-doubtful", name: "Provision for Doubtful Debts", parentId: "pg-provisions" }] },
+  // Assets
+  { id: "pg-fixed-assets", name: "Fixed Assets", nature: "debit", category: "Assets", sortOrder: 6, icon: "Building", color: "#0284c7", subGroups: [] },
+  { id: "pg-current-assets", name: "Current Assets", nature: "debit", category: "Assets", sortOrder: 7, icon: "Package", color: "#0284c7", subGroups: [{ id: "sg-cash-in-hand", name: "Cash-in-Hand", parentId: "pg-current-assets" }, { id: "sg-bank-accounts", name: "Bank Accounts", parentId: "pg-current-assets" }, { id: "sg-sundry-debtors", name: "Sundry Debtors", parentId: "pg-current-assets" }, { id: "sg-deposits-asset", name: "Deposits (Asset)", parentId: "pg-current-assets" }, { id: "sg-stock-in-hand", name: "Stock-in-Hand", parentId: "pg-current-assets" }] },
+  { id: "pg-investments", name: "Investments", nature: "debit", category: "Assets", sortOrder: 8, icon: "TrendingUp", color: "#0284c7", subGroups: [{ id: "sg-fixed-deposits", name: "Fixed Deposits", parentId: "pg-investments" }, { id: "sg-shares-bonds", name: "Shares & Bonds", parentId: "pg-investments" }] },
+  { id: "pg-loans-asset", name: "Loans & Advances (Asset)", nature: "debit", category: "Assets", sortOrder: 9, icon: "Users", color: "#0284c7", subGroups: [{ id: "sg-employee-advances", name: "Employee Advances", parentId: "pg-loans-asset" }, { id: "sg-advances-suppliers", name: "Advances to Suppliers", parentId: "pg-loans-asset" }] },
+  // Income
+  { id: "pg-direct-income", name: "Direct Income", nature: "credit", category: "Income/Revenue", sortOrder: 10, icon: "TrendingUp", color: "#059669", subGroups: [{ id: "sg-sales-accounts", name: "Sales Accounts", parentId: "pg-direct-income" }, { id: "sg-service-income", name: "Service Income", parentId: "pg-direct-income" }] },
+  { id: "pg-indirect-income", name: "Indirect Income", nature: "credit", category: "Income/Revenue", sortOrder: 11, icon: "TrendingUp", color: "#059669", subGroups: [{ id: "sg-interest-received", name: "Interest Received", parentId: "pg-indirect-income" }, { id: "sg-commission-received", name: "Commission Received", parentId: "pg-indirect-income" }, { id: "sg-rent-received", name: "Rent Received", parentId: "pg-indirect-income" }] },
+  // Expenses
+  { id: "pg-direct-expense", name: "Direct Expenses (Mfg.)", nature: "debit", category: "Expenses", sortOrder: 12, icon: "TrendingDown", color: "#d97706", subGroups: [{ id: "sg-raw-material", name: "Raw Material Purchase", parentId: "pg-direct-expense" }, { id: "sg-freight-inward", name: "Freight Inward", parentId: "pg-direct-expense" }, { id: "sg-factory-wages", name: "Factory Wages", parentId: "pg-direct-expense" }] },
+  { id: "pg-indirect-expense", name: "Indirect Expenses (Admn.)", nature: "debit", category: "Expenses", sortOrder: 13, icon: "TrendingDown", color: "#d97706", subGroups: [{ id: "sg-admin-expenses", name: "Administrative Expenses", parentId: "pg-indirect-expense" }, { id: "sg-selling-expenses", name: "Selling Expenses", parentId: "pg-indirect-expense" }, { id: "sg-financial-charges", name: "Financial Charges", parentId: "pg-indirect-expense" }] },
+  { id: "pg-purchase", name: "Purchase Accounts", nature: "debit", category: "Expenses", sortOrder: 14, icon: "ShoppingCart", color: "#d97706", subGroups: [{ id: "sg-purchase-local", name: "Purchase (Local)", parentId: "pg-purchase" }, { id: "sg-purchase-interstate", name: "Purchase (Interstate)", parentId: "pg-purchase" }, { id: "sg-purchase-import", name: "Purchase (Import)", parentId: "pg-purchase" }] },
+  // Miscellaneous
+  { id: "pg-suspense", name: "Suspense Account", nature: "debit", category: "Miscellaneous", sortOrder: 15, icon: "BarChart2", color: "#6b7280", subGroups: [] },
 ];
 
-const ChartOfAccounts: React.FC = React.memo(() => {
-  const {
-    accounts,
-    vouchers,
-    addAccount,
-    updateAccount,
-    deleteAccount,
-    companySettings,
-    costCenters,
-    setCurrentPage,
-    setReportFilters,
-    isDbReady,
-    currentFiscalYear,
-  } = useStore();
+const CATEGORY_ORDER = ["Capital/Equity", "Liabilities", "Assets", "Income/Revenue", "Expenses", "Miscellaneous"];
+const CATEGORY_COLORS: Record<string, string> = {
+  "Capital/Equity": "#7c3aed",
+  "Liabilities": "#dc2626",
+  "Assets": "#0284c7",
+  "Income/Revenue": "#059669",
+  "Expenses": "#d97706",
+  "Miscellaneous": "#6b7280",
+};
+
+// ─── Account Type Options ─────────────────────────────────────────────────────
+const ACCOUNT_TYPES = ["General Ledger", "Party", "Bank", "Cash"];
+const PARTY_REG_TYPES = ["Regular", "Composition", "Unregistered", "Consumer", "SEZ", "Deemed Export"];
+const BANK_ACCOUNT_TYPES = ["Savings", "Current", "Overdraft", "Cash Credit", "Fixed Deposit"];
+const INDIA_STATES = ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Jammu & Kashmir","Ladakh","Chandigarh","Dadra & Nagar Haveli","Daman & Diu","Lakshadweep","Puducherry","Andaman & Nicobar Islands"];
+
+// ─── localStorage helpers ─────────────────────────────────────────────────────
+const LS_KEYS = {
+  GROUPS: "busy_account_groups",
+  LEDGERS: "busy_ledgers",
+  FEATURES: "busy_features",
+  MASTER_CONFIG: "busy_master_config",
+};
+
+function loadFromLS<T>(key: string, fallback: T): T {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+}
+function saveToLS(key: string, data: any) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface AccountGroup {
+  id: string;
+  name: string;
+  alias?: string;
+  isPrimary: boolean;
+  parentId?: string;
+  narration?: string;
+  isSystem: boolean;
+  nature: "debit" | "credit";
+  category: string;
+  sortOrder?: number;
+}
+
+interface Ledger {
+  id: string;
+  name: string;
+  alias?: string;
+  printName?: string;
+  groupId: string;
+  accountType: string;
+  // Address
+  address?: string;
+  state?: string;
+  pinCode?: string;
+  country?: string;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  website?: string;
+  // GST
+  gstin?: string;
+  pan?: string;
+  registrationType?: string;
+  taxCategory?: string;
+  // Bank details
+  bankName?: string;
+  bankBranch?: string;
+  bankAccountNo?: string;
+  ifscCode?: string;
+  bankAccountType?: string;
+  odCcLimit?: number;
+  // Opening balance
+  openingBalance?: number;
+  openingBalanceType?: "Dr" | "Cr";
+  // Configuration
+  billByBill?: boolean;
+  maintainCostCenter?: boolean;
+  maintainBranch?: boolean;
+  multiCurrency?: boolean;
+  tdsApplicable?: boolean;
+  tcsApplicable?: boolean;
+  gstApplicable?: boolean;
+  reverseCharge?: boolean;
+  creditLimit?: number;
+  creditPeriod?: number;
+  // Sub-ledger
+  ledgerType?: "General Ledger" | "Sub Ledger";
+  parentLedgerId?: string;
+  // Optional fields
+  optionalFields?: Record<string, any>;
+  isActive?: boolean;
+  balance?: number;
+  createdAt?: string;
+}
+
+interface FeatureConfig {
+  multiCurrency: boolean;
+  subLedgers: boolean;
+  billByBill: boolean;
+  autoRefSales: boolean;
+  autoRefPurchase: boolean;
+  bankInstruments: boolean;
+  ledgerReconciliation: boolean;
+  salesman: boolean;
+  costCenter: boolean;
+  budgeting: boolean;
+  interestCalculation: boolean;
+  tds: boolean;
+  tcs: boolean;
+  branchDivision: boolean;
+  multiGodown: boolean;
+}
+
+interface MasterConfig {
+  dropdownDisplay: "name" | "name_alias" | "name_alias_group" | "name_code";
+  additionalDropdownFields: Array<{ field: string; width: number }>;
+  showBottomPanel: boolean;
+  bottomPanelFields: string[];
+  optionalFields: Array<{
+    id: string;
+    name: string;
+    dataType: "text" | "numeric" | "date" | "list" | "yesno";
+    listValues?: string;
+    mandatory: boolean;
+    maintainDB: boolean;
+    defaultValue?: string;
+    decimalPlaces?: number;
+  }>;
+  hiddenFields: string[];
+  mandatoryFields: string[];
+}
+
+// ─── Initial data ─────────────────────────────────────────────────────────────
+function buildInitialGroups(): AccountGroup[] {
+  const groups: AccountGroup[] = [];
+  PREDEFINED_GROUPS.forEach(pg => {
+    groups.push({
+      id: pg.id, name: pg.name, isPrimary: true, isSystem: true,
+      nature: pg.nature as any, category: pg.category, sortOrder: pg.sortOrder,
+    });
+    pg.subGroups.forEach(sg => {
+      groups.push({
+        id: sg.id, name: sg.name, isPrimary: false, parentId: pg.id,
+        isSystem: true, nature: pg.nature as any, category: pg.category,
+      });
+    });
+  });
+  return groups;
+}
+
+const DEFAULT_FEATURES: FeatureConfig = {
+  multiCurrency: false, subLedgers: false, billByBill: true,
+  autoRefSales: true, autoRefPurchase: true, bankInstruments: true,
+  ledgerReconciliation: false, salesman: false, costCenter: false,
+  budgeting: false, interestCalculation: false, tds: false, tcs: false,
+  branchDivision: false, multiGodown: true,
+};
+
+const DEFAULT_MASTER_CONFIG: MasterConfig = {
+  dropdownDisplay: "name_alias",
+  additionalDropdownFields: [{ field: "group", width: 20 }, { field: "gstin", width: 16 }],
+  showBottomPanel: true,
+  bottomPanelFields: ["Name", "Group", "City", "GSTIN", "Phone", "Opening Balance"],
+  optionalFields: [],
+  hiddenFields: [],
+  mandatoryFields: [],
+};
+
+// ─── Utility ──────────────────────────────────────────────────────────────────
+const inputCls = "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-0.5 block";
+const sectionHdr = "text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 px-3 py-1.5 border-y border-gray-200 -mx-4 mb-3 mt-3";
+
+function fmt(n: number): string {
+  return "Rs. " + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+const ChartOfAccounts: React.FC = () => {
+  const { accounts, addAccount, updateAccount, deleteAccount } = useStore() as any;
+
+  // ── State: Groups & Ledgers ──────────────────────────────────────────────
+  const [groups, setGroups] = useState<AccountGroup[]>(() => {
+    const stored = loadFromLS<AccountGroup[]>(LS_KEYS.GROUPS, []);
+    const initial = buildInitialGroups();
+    // Merge: keep predefined, add user groups
+    const userGroups = stored.filter(g => !g.isSystem);
+    return [...initial, ...userGroups];
+  });
+
+  const [ledgers, setLedgers] = useState<Ledger[]>(() =>
+    loadFromLS<Ledger[]>(LS_KEYS.LEDGERS, [])
+  );
+
+  const [features, setFeatures] = useState<FeatureConfig>(() =>
+    loadFromLS<FeatureConfig>(LS_KEYS.FEATURES, DEFAULT_FEATURES)
+  );
+
+  const [masterConfig, setMasterConfig] = useState<MasterConfig>(() =>
+    loadFromLS<MasterConfig>(LS_KEYS.MASTER_CONFIG, DEFAULT_MASTER_CONFIG)
+  );
+
+  // ── Persist ──────────────────────────────────────────────────────────────
+  useEffect(() => { saveToLS(LS_KEYS.GROUPS, groups.filter(g => !g.isSystem)); }, [groups]);
+  useEffect(() => { saveToLS(LS_KEYS.LEDGERS, ledgers); }, [ledgers]);
+  useEffect(() => { saveToLS(LS_KEYS.FEATURES, features); }, [features]);
+  useEffect(() => { saveToLS(LS_KEYS.MASTER_CONFIG, masterConfig); }, [masterConfig]);
+
+  // ── UI State ─────────────────────────────────────────────────────────────
+  const [activePanel, useState_activePanel] = useState<
+    "list" | "addGroup" | "editGroup" | "addLedger" | "editLedger" |
+    "features" | "masterConfig" | "deleteConfirm"
+  >("list");
+  
+  // NOTE: the code user gave used `const [activePanel, setActivePanel] = useState<...>("list");`
+  const setActivePanel = useState_activePanel;
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<"ALL" | AccountType>("ALL");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
-  const [viewMode, setViewMode] = useState<"tree" | "groups">("tree");
-
-  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
-    "root-asset": true,
-    "root-liability": true,
-    "root-equity": true,
-    "root-income": true,
-    "root-expense": true,
-  });
-
-  const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({});
-  const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState<Account | null>(null);
-  const [importModalOpen, setImportModalOpen] = useState(false);
-
-  // Form states
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [nameNepali, setNameNepali] = useState("");
-  const [alias, setAlias] = useState("");
-  const [type, setType] = useState<AccountType>(AccountType.ASSET);
-  const [level, setLevel] = useState<AccountLevel>(AccountLevel.LEDGER);
-  const [parentId, setParentId] = useState("");
-  const [costCenterId, setCostCenterId] = useState("");
-  const [isActive, setIsActive] = useState(true);
-  const [isGroup, setIsGroup] = useState(false);
-  const [openingBalance, setOpeningBalance] = useState<number>(0);
-  const [openingType, setOpeningType] = useState<"Dr" | "Cr">("Dr");
-  const [openingBalanceDate, setOpeningBalanceDate] = useState<string>(
-    () => currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
+  const [filterGroup, setFilterGroup] = useState("ALL");
+  const [filterType, setFilterType] = useState("ALL");
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+    new Set(PREDEFINED_GROUPS.map(g => g.id))
   );
-  const [billByBill, setBillByBill] = useState<boolean>(false);
-  const [bankDetails, setBankDetails] = useState<BankDetails>({});
-  const [creditLimit, setCreditLimit] = useState<number>(0);
-  const [creditPeriod, setCreditPeriod] = useState<number>(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: "group" | "ledger"; id: string; name: string } | null>(null);
+  const [clipboardItem, setClipboardItem] = useState<any>(null);
 
-  useEffect(() => {
-    if (currentFiscalYear?.startDate) setOpeningBalanceDate(currentFiscalYear.startDate);
-  }, [currentFiscalYear?.startDate]);
+  // ── Group Form State ──────────────────────────────────────────────────────
+  const [gForm, setGForm] = useState<Partial<AccountGroup>>({});
+  const [gErrors, setGErrors] = useState<Record<string, string>>({});
+  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // ── Ledger Form State ─────────────────────────────────────────────────────
+  const initLedger = (): Partial<Ledger> => ({
+    accountType: "General Ledger", openingBalanceType: "Dr",
+    gstApplicable: true, isActive: true, ledgerType: "General Ledger",
+    country: "India",
+  });
+  const [lForm, setLForm] = useState<Partial<Ledger>>(initLedger());
+  const [lErrors, setLErrors] = useState<Record<string, string>>({});
+  const [editingLedgerId, setEditingLedgerId] = useState<string | null>(null);
+  const [ledgerTab, setLedgerTab] = useState<"general" | "address" | "gst" | "bank" | "config" | "optional">("general");
 
-  // ─── PARENT CHANGE HANDLER ────────────────────────────────────────────────────
-  const handleParentIdChange = (parentAcctId: string) => {
-    setParentId(parentAcctId);
-    if (!parentAcctId) {
-      setLevel(AccountLevel.GROUP);
-      setIsGroup(true);
-      suggestNextCode(undefined);
-      return;
+  // ── Build tree ────────────────────────────────────────────────────────────
+  const allGroups = useMemo(() => groups, [groups]);
+  const allLedgers = useMemo(() => ledgers, [ledgers]);
+
+  // Hierarchy: category → primary group → sub-groups → ledgers
+  const tree = useMemo(() => {
+    const groupMap = new Map<string, AccountGroup>();
+    allGroups.forEach(g => groupMap.set(g.id, g));
+
+    function buildNode(g: AccountGroup, depth: number): any {
+      const children = allGroups
+        .filter(child => !child.isPrimary && child.parentId === g.id)
+        .sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99));
+      const ledgerItems = allLedgers
+        .filter(l => l.groupId === g.id)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      return { ...g, depth, children: children.map(c => buildNode(c, depth + 1)), ledgers: ledgerItems };
     }
-    const parentAcc = accounts.find((a) => a.id === parentAcctId);
-    if (parentAcc) {
-      setType(parentAcc.type);
-      if (parentAcc.level === AccountLevel.GROUP) {
-        setLevel(AccountLevel.SUBGROUP);
-        setIsGroup(true);
-      } else if (parentAcc.level === AccountLevel.SUBGROUP) {
-        setLevel(AccountLevel.LEDGER);
-        setIsGroup(false);
-      } else if (parentAcc.level === AccountLevel.LEDGER) {
-        setLevel(AccountLevel.SUBLEDGER);
-        setIsGroup(false);
-      }
-      suggestNextCode(parentAcc);
-    }
-  };
 
-  // ─── AUTO CODE SUGGESTION ─────────────────────────────────────────────────────
-  const suggestNextCode = (parentAcc?: Account) => {
-    if (!parentAcc) {
-      const typeBases: Record<AccountType, number> = {
-        [AccountType.ASSET]: 1000,
-        [AccountType.LIABILITY]: 3000,
-        [AccountType.EQUITY]: 2000,
-        [AccountType.INCOME]: 4000,
-        [AccountType.EXPENSE]: 5000,
-      };
-      const base = typeBases[type] || 1000;
-      const sisterAccounts = accounts.filter((a) => !a.parentId && a.type === type);
-      if (sisterAccounts.length === 0) {
-        setCode(String(base));
-      } else {
-        const maxCode = Math.max(0, ...sisterAccounts.map((a) => parseInt(a.code) || 0));
-        setCode(String(maxCode + 100));
-      }
-      return;
+    const primaryGroups = allGroups
+      .filter(g => g.isPrimary)
+      .sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99));
+
+    const byCategory: Record<string, any[]> = {};
+    primaryGroups.forEach(pg => {
+      const cat = pg.category || "Miscellaneous";
+      if (!byCategory[cat]) byCategory[cat] = [];
+      byCategory[cat].push(buildNode(pg, 0));
+    });
+    return byCategory;
+  }, [allGroups, allLedgers]);
+
+  // ── Flattened for search ──────────────────────────────────────────────────
+  function flattenNode(node: any, result: any[] = []): any[] {
+    result.push({ ...node, kind: "group" });
+    node.ledgers.forEach((l: any) => result.push({ ...l, kind: "ledger", depth: node.depth + 1 }));
+    node.children.forEach((c: any) => flattenNode(c, result));
+    return result;
+  }
+
+  const flatList = useMemo(() => {
+    const all: any[] = [];
+    CATEGORY_ORDER.forEach(cat => { (tree[cat] || []).forEach((n: any) => flattenNode(n, all)); });
+    if (!searchTerm && filterGroup === "ALL" && filterType === "ALL") return all;
+    const q = searchTerm.toLowerCase();
+    return all.filter(item => {
+      const matchSearch = !q || item.name.toLowerCase().includes(q) || (item.alias || "").toLowerCase().includes(q) || (item.gstin || "").toLowerCase().includes(q);
+      const matchGroup = filterGroup === "ALL" || item.groupId === filterGroup || item.id === filterGroup;
+      const matchType = filterType === "ALL" || (item.kind === "group" && filterType === "group") || (item.kind === "ledger" && (filterType === "ALL" || item.accountType === filterType));
+      return matchSearch && matchGroup && matchType;
+    });
+  }, [tree, searchTerm, filterGroup, filterType]);
+
+  // ── Balance calculations ──────────────────────────────────────────────────
+  function getGroupBalance(groupId: string): number {
+    const directLedgers = allLedgers.filter(l => l.groupId === groupId);
+    const directBalance = directLedgers.reduce((s, l) => s + (l.balance || 0), 0);
+    const childGroups = allGroups.filter(g => g.parentId === groupId);
+    const childBalance = childGroups.reduce((s, g) => s + getGroupBalance(g.id), 0);
+    return directBalance + childBalance;
+  }
+
+  // ── Toggle expand ─────────────────────────────────────────────────────────
+  const toggleExpand = useCallback((id: string) => {
+    setExpandedIds(prev => {
+      const n = new Set(prev);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+  }, []);
+
+  // ─── GROUP MASTER ─────────────────────────────────────────────────────────
+  function openAddGroup(parentId?: string) {
+    const parentGroup = parentId ? allGroups.find(g => g.id === parentId) : null;
+    setGForm({
+      isPrimary: !parentId,
+      parentId: parentId,
+      nature: parentGroup?.nature || "debit",
+      category: parentGroup?.category || "Assets",
+    });
+    setGErrors({});
+    setEditingGroupId(null);
+    setActivePanel("addGroup");
+  }
+
+  function openEditGroup(g: AccountGroup) {
+    setGForm({ ...g });
+    setGErrors({});
+    setEditingGroupId(g.id);
+    setActivePanel("editGroup");
+  }
+
+  function validateGroupForm(): boolean {
+    const e: Record<string, string> = {};
+    if (!gForm.name?.trim()) e.name = "Group Name is required";
+    if (!gForm.isPrimary && !gForm.parentId) e.parentId = "Under Group is required";
+    if (allGroups.find(g => g.name.toLowerCase() === gForm.name?.trim().toLowerCase() && g.id !== editingGroupId)) {
+      e.name = `Group "${gForm.name}" already exists`;
     }
-    const sisterAccounts = accounts.filter((a) => a.parentId === parentAcc.id);
-    if (sisterAccounts.length === 0) {
-      setCode(parentAcc.code + "1");
+    setGErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
+  function saveGroup(andNew = false) {
+    if (!validateGroupForm()) return;
+    const parentGroup = gForm.parentId ? allGroups.find(g => g.id === gForm.parentId) : null;
+    const newGroup: AccountGroup = {
+      id: editingGroupId || `ug-${Date.now()}`,
+      name: gForm.name!.trim(),
+      alias: gForm.alias?.trim(),
+      isPrimary: gForm.isPrimary ?? false,
+      parentId: gForm.isPrimary ? undefined : gForm.parentId,
+      narration: gForm.narration?.trim(),
+      isSystem: false,
+      nature: gForm.nature || parentGroup?.nature || "debit",
+      category: gForm.category || parentGroup?.category || "Assets",
+      sortOrder: gForm.sortOrder,
+    };
+    if (editingGroupId) {
+      setGroups(prev => prev.map(g => g.id === editingGroupId ? newGroup : g));
+      toast.success(`Group "${newGroup.name}" updated.`);
     } else {
-      const maxCode = Math.max(0, ...sisterAccounts.map((a) => parseInt(a.code) || 0));
-      if (!isNaN(maxCode) && maxCode > 0) {
-        setCode(String(maxCode + 1));
-      } else {
-        setCode(parentAcc.code + "1");
-      }
+      setGroups(prev => [...prev, newGroup]);
+      toast.success(`Group "${newGroup.name}" created.`);
     }
-  };
+    if (andNew) {
+      setGForm({ isPrimary: false, parentId: gForm.parentId, nature: gForm.nature, category: gForm.category });
+      setEditingGroupId(null);
+    } else {
+      setActivePanel("list");
+    }
+  }
 
-  const groupsOnlyList = useMemo(() => {
-    return accounts.filter((a) => a.isGroup).sort((a, b) => a.name.localeCompare(b.name));
-  }, [accounts]);
+  function confirmDeleteGroup(g: AccountGroup) {
+    if (g.isSystem) { toast.error("System groups cannot be deleted."); return; }
+    const hasChildren = allGroups.some(x => x.parentId === g.id);
+    if (hasChildren) { toast.error("Cannot delete: Group has sub-groups."); return; }
+    const hasLedgers = allLedgers.some(l => l.groupId === g.id);
+    if (hasLedgers) { toast.error("Cannot delete: Group has ledger accounts."); return; }
+    setDeleteTarget({ type: "group", id: g.id, name: g.name });
+    setActivePanel("deleteConfirm");
+  }
 
-  const parentAccount = useMemo(
-    () => (parentId ? accounts.find((a) => a.id === parentId) : null),
-    [accounts, parentId],
-  );
-  const isBankAccount = useMemo(() => {
-    if (!parentAccount) return false;
-    const pName = (parentAccount.name || "").toLowerCase();
-    const pGroup = (parentAccount.group || "").toLowerCase();
-    return pName.includes("bank") || pGroup.includes("bank");
-  }, [parentAccount]);
-  const isDebtorCreditor = useMemo(() => {
-    if (!parentAccount) return false;
-    const pName = (parentAccount.name || "").toLowerCase();
-    const pGroup = (parentAccount.group || "").toLowerCase();
-    return (
-      pName.includes("debtor") ||
-      pName.includes("creditor") ||
-      pName.includes("receivable") ||
-      pName.includes("payable") ||
-      pGroup.includes("debtor") ||
-      pGroup.includes("creditor") ||
-      pGroup.includes("receivable") ||
-      pGroup.includes("payable")
-    );
-  }, [parentAccount]);
+  function executeDelete() {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "group") {
+      setGroups(prev => prev.filter(g => g.id !== deleteTarget.id));
+      toast.success(`Group "${deleteTarget.name}" deleted.`);
+    } else {
+      setLedgers(prev => prev.filter(l => l.id !== deleteTarget.id));
+      toast.success(`Ledger "${deleteTarget.name}" deleted.`);
+    }
+    setDeleteTarget(null);
+    setActivePanel("list");
+  }
 
-  // ─── TREE DATA ────────────────────────────────────────────────────────────────
-  const treeData = useMemo(() => {
-    const rootTypes = [
-      { type: AccountType.ASSET, name: "Assets" },
-      { type: AccountType.LIABILITY, name: "Liabilities" },
-      { type: AccountType.EQUITY, name: "Equity" },
-      { type: AccountType.INCOME, name: "Income" },
-      { type: AccountType.EXPENSE, name: "Expenses" },
-    ];
+  function copyGroup(g: AccountGroup) {
+    setClipboardItem({ type: "group", data: g });
+    toast.success(`"${g.name}" copied. Press "Paste" to create duplicate.`);
+  }
 
-    const accountMap = new Map<string, Account>();
-    accounts.forEach((a) => accountMap.set(a.id, a));
+  // ─── LEDGER MASTER ────────────────────────────────────────────────────────
+  function openAddLedger(groupId?: string) {
+    const grp = groupId ? allGroups.find(g => g.id === groupId) : null;
+    const defaultType = (() => {
+      if (!grp) return "General Ledger";
+      const name = grp.name.toLowerCase();
+      if (name.includes("bank")) return "Bank";
+      if (name.includes("cash")) return "Cash";
+      if (name.includes("debtor") || name.includes("creditor") || name.includes("sundry")) return "Party";
+      return "General Ledger";
+    })();
+    setLForm({ ...initLedger(), groupId: groupId, accountType: defaultType });
+    setLErrors({});
+    setLedgerTab("general");
+    setEditingLedgerId(null);
+    setActivePanel("addLedger");
+  }
 
-    const getSubNodes = (
-      pId: string | undefined,
-      currentType: AccountType,
-      currentDepth: number,
-    ): TreeNode[] => {
-      return accounts
-        .filter(
-          (a) =>
-            a.type === currentType &&
-            (pId === undefined ? !a.parentId || !accountMap.has(a.parentId) : a.parentId === pId),
-        )
-        .map((a) => {
-          const children = getSubNodes(a.id, currentType, currentDepth + 1);
-          return {
-            id: a.id,
-            name: a.name,
-            nameNepali: a.nameNepali,
-            alias: (a as any).alias,
-            code: a.code,
-            type: a.type,
-            level: a.level,
-            depth: currentDepth,
-            isActive: a.isActive,
-            isGroup: a.isGroup,
-            isSystemAccount: !!a.isSystemAccount,
-            parentId: a.parentId,
-            balance: a.balance || 0,
-            billByBill: !!(a as any).billByBill,
-            bankDetails: (a as any).bankDetails,
-            creditLimit: (a as any).creditLimit,
-            creditPeriod: (a as any).creditPeriod,
-            rowObject: a,
-            children,
-          };
-        })
-        .sort((a, b) => a.code.localeCompare(b.code));
+  function openEditLedger(l: Ledger) {
+    setLForm({ ...l });
+    setLErrors({});
+    setLedgerTab("general");
+    setEditingLedgerId(l.id);
+    setActivePanel("editLedger");
+  }
+
+  function validateLedgerForm(): boolean {
+    const e: Record<string, string> = {};
+    if (!lForm.name?.trim()) e.name = "Account Name is required";
+    if (!lForm.groupId) e.groupId = "Account Group is required";
+    if (allLedgers.find(l => l.name.toLowerCase() === lForm.name?.trim().toLowerCase() && l.id !== editingLedgerId)) {
+      e.name = `Ledger "${lForm.name}" already exists`;
+    }
+    if (features.subLedgers && lForm.ledgerType === "Sub Ledger" && !lForm.parentLedgerId) {
+      e.parentLedgerId = "Parent Account is required for Sub Ledger";
+    }
+    setLErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
+  function saveLedger(andNew = false) {
+    if (!validateLedgerForm()) { setLedgerTab("general"); return; }
+    const newLedger: Ledger = {
+      ...lForm as Ledger,
+      id: editingLedgerId || `led-${Date.now()}`,
+      name: lForm.name!.trim(),
+      createdAt: editingLedgerId ? (allLedgers.find(l => l.id === editingLedgerId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+      balance: lForm.balance || 0,
     };
-
-    return rootTypes.map((rt) => {
-      const children = getSubNodes(undefined, rt.type, 1);
-      const rootBalance = children.reduce((sum, child) => sum + child.balance, 0);
-      return {
-        id: `root-${rt.type}`,
-        name: rt.name,
-        code: "",
-        type: rt.type,
-        level: "root" as any,
-        depth: 0,
-        isActive: true,
-        isGroup: true,
-        balance: rootBalance,
-        billByBill: false,
-        children,
-      };
-    });
-  }, [accounts]);
-
-  // ─── EXPAND / COLLAPSE ────────────────────────────────────────────────────────
-  const toggleExpand = (id: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setExpandedNodes((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const expandAll = () => {
-    const nextStates: Record<string, boolean> = {
-      "root-asset": true,
-      "root-liability": true,
-      "root-equity": true,
-      "root-income": true,
-      "root-expense": true,
-    };
-    accounts.forEach((acc) => {
-      if (acc.isGroup) nextStates[acc.id] = true;
-    });
-    setExpandedNodes(nextStates);
-    toast.success("All groups expanded.");
-  };
-
-  const collapseAll = () => {
-    setExpandedNodes({
-      "root-asset": false,
-      "root-liability": false,
-      "root-equity": false,
-      "root-income": false,
-      "root-expense": false,
-    });
-    toast.success("All groups collapsed.");
-  };
-
-  // ─── FLATTENED ROWS ───────────────────────────────────────────────────────────
-  const flattenedRows = useMemo(() => {
-    const list: TreeNode[] = [];
-    const visit = (node: TreeNode) => {
-      if (activeTab !== "ALL" && node.depth === 0 && node.type !== activeTab) return;
-      if (node.depth > 0) {
-        list.push(node);
-      } else if (activeTab === "ALL" || node.type === activeTab) {
-        list.push(node);
-      }
-      if (expandedNodes[node.id] && node.children.length > 0) {
-        node.children.forEach(visit);
-      }
-    };
-    treeData.forEach(visit);
-    return list;
-  }, [treeData, expandedNodes, activeTab]);
-
-  // ─── SEARCH ───────────────────────────────────────────────────────────────────
-  const searchResults = useMemo(() => {
-    if (!searchTerm.trim()) return [];
-    const q = searchTerm.toLowerCase().trim();
-    return accounts.filter((acc) => {
-      const matchText =
-        acc.name.toLowerCase().includes(q) ||
-        acc.code.includes(q) ||
-        (acc.nameNepali && acc.nameNepali.includes(q)) ||
-        ((acc as any).alias && (acc as any).alias.toLowerCase().includes(q));
-      const matchTab = activeTab === "ALL" || acc.type === activeTab;
-      return matchText && matchTab;
-    });
-  }, [accounts, searchTerm, activeTab]);
-
-  // ─── BALANCE DISPLAY ──────────────────────────────────────────────────────────
-  const formatDrCrBalance = (balance: number, type: AccountType) => {
-    const absVal = Math.abs(balance);
-    if (absVal === 0) return "—";
-    const isDr = balance >= 0 ? isDebitNature(type) : !isDebitNature(type);
-    const suffix = isDr ? " Dr" : " Cr";
-    return `Rs. ${formatNumber(absVal)}${suffix}`;
-  };
-
-  // ─── DETAIL PANEL DATA ────────────────────────────────────────────────────────
-  const detailPanelData = useMemo(() => {
-    if (!selectedNode || selectedNode.level === "root") return null;
-    const acctId = selectedNode.id;
-    const ledgerLines = vouchers
-      .filter((v) => v.status === "posted")
-      .flatMap((v) => v.lines.map((line) => ({ ...line, date: v.date, voucherNo: v.voucherNo })))
-      .filter((line) => line.accountId === acctId);
-    const transactionsCount = ledgerLines.length;
-    const lastTxDate =
-      ledgerLines.length > 0
-        ? ledgerLines.reduce((max, line) => (line.date > max ? line.date : max), "")
-        : null;
-    return { transactionsCount, lastTxDate };
-  }, [selectedNode, vouchers]);
-
-  // ─── KEYBOARD SHORTCUTS ───────────────────────────────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const activeEl = document.activeElement;
-      const isTyping =
-        activeEl &&
-        (activeEl.tagName === "INPUT" ||
-          activeEl.tagName === "TEXTAREA" ||
-          activeEl.getAttribute("contenteditable") === "true");
-      if (isTyping) return;
-
-      if (e.ctrlKey && e.key.toLowerCase() === "n") {
-        e.preventDefault();
-        handleOpenCreateModal();
-      } else if (e.ctrlKey && e.key.toLowerCase() === "e") {
-        if (selectedNode && selectedNode.level !== "root") {
-          e.preventDefault();
-          handleOpenEditModal(selectedNode.rowObject);
-        }
-      } else if (e.key === "Delete") {
-        if (selectedNode && selectedNode.level !== "root" && !selectedNode.isSystemAccount) {
-          e.preventDefault();
-          setConfirmDeleteAccount(selectedNode.rowObject || null);
-        }
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedNode, accounts]);
-
-  // ─── CRUD HANDLERS ────────────────────────────────────────────────────────────
-  const resetForm = () => {
-    setCode("");
-    setName("");
-    setNameNepali("");
-    setAlias("");
-    setType(AccountType.ASSET);
-    setLevel(AccountLevel.LEDGER);
-    setParentId("");
-    setCostCenterId("");
-    setIsActive(true);
-    setIsGroup(false);
-    setOpeningBalance(0);
-    setOpeningType("Dr");
-    setOpeningBalanceDate(currentFiscalYear?.startDate || new Date().toISOString().split("T")[0]);
-    setBillByBill(false);
-    setBankDetails({});
-    setCreditLimit(0);
-    setCreditPeriod(0);
-  };
-
-  const handleOpenCreateModal = () => {
-    resetForm();
-    setAddModalOpen(true);
-  };
-
-  const handleOpenEditModal = (acc: any) => {
-    if (!acc) return;
-    setCode(acc.code);
-    setName(acc.name);
-    setNameNepali(acc.nameNepali || "");
-    setAlias((acc as any).alias || "");
-    setType(acc.type);
-    setLevel(acc.level);
-    setParentId(acc.parentId || "");
-    setCostCenterId(acc.costCenterId || "");
-    setIsActive(acc.isActive);
-    setIsGroup(!!acc.isGroup);
-    setOpeningBalance(acc.openingBalance || 0);
-    setOpeningType(acc.openingBalanceDr && acc.openingBalanceDr > 0 ? "Dr" : "Cr");
-    setOpeningBalanceDate(
-      acc.openingBalanceDate ||
-        currentFiscalYear?.startDate ||
-        new Date().toISOString().split("T")[0],
-    );
-    setBillByBill(!!(acc as any).billByBill);
-    setBankDetails((acc as any).bankDetails || {});
-    setCreditLimit((acc as any).creditLimit || 0);
-    setCreditPeriod((acc as any).creditPeriod || 0);
-    setEditModalOpen(true);
-  };
-
-  const buildPayload = () => ({
-    code: code.trim(),
-    name: name.trim(),
-    nameNepali: nameNepali.trim() || undefined,
-    alias: alias.trim() || undefined,
-    type,
-    level,
-    parentId: parentId || undefined,
-    costCenterId: costCenterId || undefined,
-    isGroup: ["group", "subgroup"].includes(level),
-    isActive,
-    openingBalance,
-    openingBalanceDr: openingType === "Dr" ? openingBalance : 0,
-    openingBalanceCr: openingType === "Cr" ? openingBalance : 0,
-    openingBalanceDate: openingBalanceDate || new Date().toISOString().split("T")[0],
-    billByBill:
-      !["group", "subgroup"].includes(level) &&
-      (type === AccountType.ASSET || type === AccountType.LIABILITY)
-        ? billByBill
-        : false,
-    bankDetails: isBankAccount && !["group", "subgroup"].includes(level) ? bankDetails : undefined,
-    creditLimit:
-      isDebtorCreditor && !["group", "subgroup"].includes(level) ? creditLimit || 0 : undefined,
-    creditPeriod:
-      isDebtorCreditor && !["group", "subgroup"].includes(level) ? creditPeriod || 0 : undefined,
-  });
-
-  const handleAddSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) {
-      toast.error("Account name is required.");
-      return;
+    if (editingLedgerId) {
+      setLedgers(prev => prev.map(l => l.id === editingLedgerId ? newLedger : l));
+      toast.success(`Ledger "${newLedger.name}" updated.`);
+    } else {
+      setLedgers(prev => [...prev, newLedger]);
+      toast.success(`Ledger "${newLedger.name}" created.`);
     }
-    if (!code.trim()) {
-      toast.error("Account code is required.");
-      return;
+    if (andNew) {
+      setLForm({ ...initLedger(), groupId: lForm.groupId, accountType: lForm.accountType });
+      setEditingLedgerId(null);
+      setLedgerTab("general");
+    } else {
+      setActivePanel("list");
     }
-    const codeMatch = accounts.find((a) => a.code === code.trim());
-    if (codeMatch) {
-      toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`);
-      return;
-    }
-    if (level !== AccountLevel.GROUP && !parentId) {
-      toast.error("A parent group is required for this account level.");
-      return;
-    }
-    try {
-      await addAccount(buildPayload());
-      toast.success(`'${name}' created successfully.`);
-      setAddModalOpen(false);
-      setSelectedNode(null);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create account.");
-    }
-  };
+  }
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedNode || !selectedNode.rowObject) return;
-    const accId = selectedNode.rowObject.id;
-    if (!name.trim()) {
-      toast.error("Account name is required.");
-      return;
-    }
-    const codeMatch = accounts.find((a) => a.code === code.trim() && a.id !== accId);
-    if (codeMatch) {
-      toast.error(`Code '${code}' is already used by '${codeMatch.name}'.`);
-      return;
-    }
-    if (level !== AccountLevel.GROUP && !parentId) {
-      toast.error("A parent group is required for this account level.");
-      return;
-    }
-    try {
-      await updateAccount(accId, buildPayload());
-      toast.success(`'${name}' updated successfully.`);
-      setEditModalOpen(false);
-      setSelectedNode(null);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update account.");
-    }
-  };
+  function confirmDeleteLedger(l: Ledger) {
+    if ((l.balance || 0) !== 0) { toast.error("Cannot delete: Ledger has non-zero balance."); return; }
+    setDeleteTarget({ type: "ledger", id: l.id, name: l.name });
+    setActivePanel("deleteConfirm");
+  }
 
-  const handleConfirmDelete = async () => {
-    if (!confirmDeleteAccount) return;
-    try {
-      const res = await deleteAccount(confirmDeleteAccount.id);
-      if (res) {
-        toast.success(`'${confirmDeleteAccount.name}' deleted.`);
-        setConfirmDeleteAccount(null);
-        setSelectedNode(null);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Cannot delete. Check for linked transactions.");
-    }
-  };
+  function copyLedger(l: Ledger) {
+    setClipboardItem({ type: "ledger", data: l });
+    toast.success(`"${l.name}" copied.`);
+  }
 
-  // ─── EXPORT / IMPORT ──────────────────────────────────────────────────────────
-  const handleExportToExcel = () => {
-    const headers = [
-      "Code",
-      "Account Name",
-      "Alias",
-      "Nepali Name",
-      "Type",
-      "Level",
-      "Balance",
-      "Status",
-      "System Account",
-      "Bill By Bill",
-    ];
-    const rows: any[] = [];
-    const visit = (node: TreeNode, indent = "") => {
+  function pasteCopied() {
+    if (!clipboardItem) return;
+    if (clipboardItem.type === "group") {
+      setGForm({ ...clipboardItem.data, name: `${clipboardItem.data.name} (Copy)`, id: undefined });
+      setEditingGroupId(null);
+      setGErrors({});
+      setActivePanel("addGroup");
+    } else {
+      setLForm({ ...clipboardItem.data, name: `${clipboardItem.data.name} (Copy)`, id: undefined });
+      setEditingLedgerId(null);
+      setLErrors({});
+      setLedgerTab("general");
+      setActivePanel("addLedger");
+    }
+  }
+
+  // ─── EXPORT ───────────────────────────────────────────────────────────────
+  function exportToExcel() {
+    const rows: any[] = [["Group/Ledger", "Type", "Parent", "Nature", "Account Type", "GSTIN", "Balance"]];
+    flatList.forEach(item => {
+      const grp = item.kind === "ledger" ? allGroups.find(g => g.id === item.groupId) : allGroups.find(g => g.id === item.parentId);
       rows.push([
-        node.code || "-",
-        indent + node.name,
-        node.alias || "",
-        node.nameNepali || "",
-        node.type.toUpperCase(),
-        LEVEL_LABELS[node.level] || node.level,
-        node.balance,
-        node.isActive ? "Active" : "Inactive",
-        node.isSystemAccount ? "Yes" : "No",
-        node.billByBill ? "Yes" : "No",
+        ("  ".repeat(item.depth || 0)) + item.name,
+        item.kind === "group" ? "Group" : "Ledger",
+        grp?.name || "",
+        item.nature || "",
+        item.accountType || "",
+        item.gstin || "",
+        item.balance || 0,
       ]);
-      node.children.forEach((c) => visit(c, indent + "  "));
-    };
-    treeData.forEach((node) => {
-      if (activeTab === "ALL" || node.type === activeTab) visit(node);
     });
-    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Chart of Accounts");
-    XLSX.writeFile(workbook, `Chart_of_Accounts_${new Date().toISOString().split("T")[0]}.csv`);
-    toast.success("Chart of Accounts exported to Excel.");
-  };
-
-  const handleDownloadTemplate = () => {
-    const headers = [
-      "Account_Code",
-      "Account_Name",
-      "Nepali_Name",
-      "Alias",
-      "Type",
-      "Level",
-      "Parent_Code",
-      "Opening_Balance",
-      "Dr_Cr",
-    ];
-    const example1 = [
-      "1111",
-      "Everest Bank Account",
-      "एभरेष्ट बैंक खाता",
-      "EBL",
-      "asset",
-      "ledger",
-      "1100",
-      "75000",
-      "Dr",
-    ];
-    const example2 = [
-      "5208",
-      "Stationery Expenses",
-      "स्टेशनरी खर्च",
-      "",
-      "expense",
-      "ledger",
-      "5200",
-      "0",
-      "Dr",
-    ];
-    const ws = XLSX.utils.aoa_to_sheet([headers, example1, example2]);
+    const ws = XLSX.utils.aoa_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "COA Import Template");
-    XLSX.writeFile(wb, "COA_Import_Template.csv");
-    toast.success("Import template downloaded.");
-  };
+    XLSX.utils.book_append_sheet(wb, ws, "Chart of Accounts");
+    XLSX.writeFile(wb, `COA_${new Date().toISOString().split("T")[0]}.xlsx`);
+    toast.success("Exported to Excel.");
+  }
 
-  const handleImportCSVData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const text = event.target?.result as string;
-        if (!text) return;
-        const lines = text
-          .split("\n")
-          .map((l) => l.trim())
-          .filter(Boolean);
-        if (lines.length <= 1) {
-          toast.error("No data rows found in file.");
-          return;
+  // ─── Keyboard shortcuts ───────────────────────────────────────────────────
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (activePanel === "list") {
+        if (e.key === "F3") { e.preventDefault(); openAddLedger(); }
+      }
+      if (activePanel !== "list") {
+        if (e.key === "Escape") { e.preventDefault(); setActivePanel("list"); }
+        if (e.key === "F2") {
+          e.preventDefault();
+          if (activePanel === "addGroup" || activePanel === "editGroup") saveGroup();
+          if (activePanel === "addLedger" || activePanel === "editLedger") saveLedger();
         }
-        let successCount = 0;
-        let failCount = 0;
-        const tempAccounts: any[] = [...accounts];
-        for (let i = 1; i < lines.length; i++) {
-          const row = lines[i]
-            .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-            .map((cell) => cell.replace(/^"|"$/g, "").trim());
-          if (row.length === 0 || !row[0]) continue;
-          const accCode = row[0];
-          const accName = row[1];
-          const accNepali = row[2] || undefined;
-          const accAlias = row[3] || undefined;
-          const rawType = (row[4] || "asset").toLowerCase() as AccountType;
-          const rawLevel = (row[5] || "ledger").toLowerCase() as AccountLevel;
-          const pCodeOrId = row[6] || undefined;
-          const oBalance = parseFloat(row[7]) || 0;
-          const balDrCr = (row[8] || "Dr").trim();
-          if (!accCode || !accName) {
-            failCount++;
-            continue;
-          }
-          let resolvedParentId: string | undefined;
-          if (pCodeOrId) {
-            const parentDef = tempAccounts.find((a) => a.id === pCodeOrId || a.code === pCodeOrId);
-            if (parentDef) resolvedParentId = parentDef.id;
-          }
-          const newAcc = await addAccount({
-            code: accCode,
-            name: accName,
-            nameNepali: accNepali,
-            alias: accAlias,
-            type: rawType,
-            level: rawLevel,
-            parentId: resolvedParentId,
-            isActive: true,
-            isGroup: ["group", "subgroup"].includes(rawLevel),
-            openingBalance: oBalance,
-            openingBalanceDr: balDrCr.toLowerCase() === "dr" ? oBalance : 0,
-            openingBalanceCr: balDrCr.toLowerCase() === "cr" ? oBalance : 0,
-            openingBalanceDate:
-              currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
-            billByBill: false,
-          });
-          tempAccounts.push(newAcc);
-          successCount++;
-        }
-        toast.success(`Import complete: ${successCount} accounts added, ${failCount} skipped.`);
-        setImportModalOpen(false);
-      } catch (err: any) {
-        toast.error(`Import failed: ${err.message || "File parse error."}`);
       }
     };
-    reader.readAsText(file);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+    window.addEventListener("keydown", handler, { capture: true });
+    return () => window.removeEventListener("keydown", handler, { capture: true });
+  }, [activePanel, gForm, lForm]);
 
-  // ─── BULK SELECT ──────────────────────────────────────────────────────────────
-  const handleToggleSelectRow = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  // ─── GROUP FORM ───────────────────────────────────────────────────────────
+  const renderGroupForm = () => {
+    const isEdit = activePanel === "editGroup";
+    const editGroup = isEdit && editingGroupId ? allGroups.find(g => g.id === editingGroupId) : null;
+    const isSystemGroup = editGroup?.isSystem;
+    const parentOptions = allGroups.filter(g => !g.isPrimary || true).filter(g => g.id !== editingGroupId);
 
-  const getActiveSelectedList = () => Object.keys(selectedIds).filter((id) => selectedIds[id]);
+    return (
+      <div className="p-4 max-w-xl mx-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[14px] font-bold text-gray-800">
+            {isEdit ? `Modify Group — ${editGroup?.name}` : "Add Account Group"}
+          </h2>
+          <div className="text-[10px] text-gray-500">F2=Save · Esc=Cancel</div>
+        </div>
 
-  const selectAllFlattened = () => {
-    const list = getActiveSelectedList();
-    if (list.length === flattenedRows.filter((r) => !r.id.startsWith("root-")).length) {
-      setSelectedIds({});
-    } else {
-      const dict: Record<string, boolean> = {};
-      flattenedRows.forEach((row) => {
-        if (!row.id.startsWith("root-")) dict[row.id] = true;
-      });
-      setSelectedIds(dict);
-    }
-  };
-
-  const handleBulkDeactivate = async () => {
-    const list = getActiveSelectedList();
-    if (list.length === 0) return;
-    try {
-      const load = toast.loading(`Deactivating ${list.length} accounts...`);
-      for (const id of list) {
-        const acc = accounts.find((a) => a.id === id);
-        if (acc && !acc.isSystemAccount) await updateAccount(id, { isActive: false });
-      }
-      toast.dismiss(load);
-      toast.success(`${list.length} accounts deactivated.`);
-      setSelectedIds({});
-    } catch {
-      toast.error("Bulk deactivation failed.");
-    }
-  };
-
-  const handleBulkActivate = async () => {
-    const list = getActiveSelectedList();
-    if (list.length === 0) return;
-    try {
-      const load = toast.loading(`Activating ${list.length} accounts...`);
-      for (const id of list) {
-        const acc = accounts.find((a) => a.id === id);
-        if (acc) await updateAccount(id, { isActive: true });
-      }
-      toast.dismiss(load);
-      toast.success(`${list.length} accounts activated.`);
-      setSelectedIds({});
-    } catch {
-      toast.error("Bulk activation failed.");
-    }
-  };
-
-  // ─── COMPUTED ─────────────────────────────────────────────────────────────────
-  const isSearchActive = useMemo(() => searchTerm.trim().length > 0, [searchTerm]);
-  const filteredAccounts = useMemo(
-    () => (isSearchActive ? searchResults : flattenedRows),
-    [isSearchActive, searchResults, flattenedRows],
-  );
-  const paginatedData = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredAccounts.slice(start, start + pageSize);
-  }, [filteredAccounts, page, pageSize]);
-  const totalPages = Math.max(1, Math.ceil(filteredAccounts.length / pageSize));
-
-  useEffect(() => {
-    setPage(1);
-  }, [searchTerm, activeTab]);
-
-  // ─── SHARED LEDGER FORM JSX ───────────────────────────────────────────────────
-  const renderLedgerForm = (onSubmit: (e: React.FormEvent) => void, formId: string) => (
-    <form id={formId} onSubmit={onSubmit} className="flex flex-col gap-4">
-      {/* Type + Level row */}
-      <div className="grid grid-cols-2 gap-3">
-        <Select
-          label="Account Type"
-          options={[
-            { value: AccountType.ASSET, label: "Asset" },
-            { value: AccountType.LIABILITY, label: "Liability" },
-            { value: AccountType.EQUITY, label: "Equity" },
-            { value: AccountType.INCOME, label: "Income" },
-            { value: AccountType.EXPENSE, label: "Expense" },
-          ]}
-          value={type}
-          onChange={(val) => setType(val as AccountType)}
-          required
-          disabled={!!parentId}
-        />
-        <Select
-          label="Account Level"
-          options={Object.values(AccountLevel).map((v) => ({
-            value: v,
-            label: LEVEL_LABELS[v] || v,
-          }))}
-          value={level}
-          onChange={(val) => {
-            const nextLevel = val as AccountLevel;
-            setLevel(nextLevel);
-            setIsGroup(["group", "subgroup"].includes(nextLevel));
-          }}
-          required
-        />
-      </div>
-
-      {/* Under (Parent) */}
-      <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 flex flex-col gap-2">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
-          Under (Parent Group)
-        </span>
-        <Select
-          label=""
-          options={accounts
-            .filter((a) => {
-              if (!a.isGroup) return false;
-              if (editModalOpen && selectedNode && a.id === selectedNode.id) return false;
-              return true;
-            })
-            .map((a) => ({
-              value: a.id,
-              label: `${a.code ? a.code + " · " : ""}${a.name}  [${LEVEL_LABELS[a.level] || a.level}]`,
-            }))}
-          value={parentId}
-          onChange={handleParentIdChange}
-          placeholder="— Primary (No parent) —"
-          searchable={true}
-        />
-        {parentId && (
-          <p className="text-[10px] text-gray-800 font-medium">
-            Account type and level are auto-set based on the selected parent group.
-          </p>
+        {isSystemGroup && (
+          <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-800 flex items-center gap-1.5">
+            <Lock className="h-3.5 w-3.5 shrink-0" />
+            System group — limited editing allowed
+          </div>
         )}
-      </div>
 
-      {/* Code + Status */}
-      <div className="grid grid-cols-2 gap-3">
-        <Input
-          label="Account Code"
-          placeholder="e.g. 1151"
-          value={code}
-          onChange={setCode}
-          required
-        />
-        <div className="flex flex-col gap-1 justify-end pb-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800 mb-1">
-            Status
-          </span>
-          <label className="inline-flex items-center gap-2 cursor-pointer border border-gray-300 bg-white rounded-md px-3 py-2">
-            <input
-              type="checkbox"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-              className="rounded text-gray-800 focus:ring-[#1557b0]"
-            />
-            <span className="text-xs font-medium text-gray-800">Active</span>
-          </label>
+        <div className="flex flex-col gap-3">
+          {/* Name */}
+          <div>
+            <label className={labelCls}>Group Name <span className="text-red-500">*</span></label>
+            <input value={gForm.name || ""} onChange={e => setGForm(p => ({ ...p, name: e.target.value }))}
+              disabled={isSystemGroup} className={`${inputCls} ${gErrors.name ? "border-red-400" : ""} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
+              placeholder="e.g. Office Equipment" />
+            {gErrors.name && <p className="text-[11px] text-red-600 mt-0.5">{gErrors.name}</p>}
+          </div>
+
+          {/* Alias */}
+          <div>
+            <label className={labelCls}>Alias / Short Name (optional)</label>
+            <input value={gForm.alias || ""} onChange={e => setGForm(p => ({ ...p, alias: e.target.value }))}
+              disabled={isSystemGroup} className={`${inputCls} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
+              placeholder="e.g. OffEq" />
+          </div>
+
+          {/* Primary Group toggle */}
+          {!isSystemGroup && (
+            <div className="p-3 bg-gray-50 rounded border border-gray-200">
+              <label className="text-[12px] font-medium text-gray-700 mb-2 block">Is Primary Group?</label>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setGForm(p => ({ ...p, isPrimary: true, parentId: undefined }))}
+                  className={`flex-1 h-8 text-[11px] font-semibold rounded border transition-colors ${gForm.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
+                  Y (Top Level)
+                </button>
+                <button type="button" onClick={() => setGForm(p => ({ ...p, isPrimary: false }))}
+                  className={`flex-1 h-8 text-[11px] font-semibold rounded border transition-colors ${!gForm.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
+                  N (Sub-Group)
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-500 mt-1">Primary = Top-level. Non-primary = Sub-group under an existing group.</p>
+            </div>
+          )}
+
+          {/* Under Group */}
+          {!gForm.isPrimary && !isSystemGroup && (
+            <div>
+              <label className={labelCls}>Under Group <span className="text-red-500">*</span></label>
+              <select value={gForm.parentId || ""} onChange={e => {
+                const pg = allGroups.find(g => g.id === e.target.value);
+                setGForm(p => ({ ...p, parentId: e.target.value, nature: pg?.nature || p.nature, category: pg?.category || p.category }));
+              }} className={`${inputCls} ${gErrors.parentId ? "border-red-400" : ""}`}>
+                <option value="">— Select Parent Group —</option>
+                {allGroups.filter(g => g.id !== editingGroupId).map(g => (
+                  <option key={g.id} value={g.id}>{g.isPrimary ? g.name : `  ${g.name}`} {g.isSystem ? "(System)" : ""}</option>
+                ))}
+              </select>
+              {gErrors.parentId && <p className="text-[11px] text-red-600 mt-0.5">{gErrors.parentId}</p>}
+            </div>
+          )}
+
+          {/* Nature */}
+          {!isSystemGroup && (
+            <div>
+              <label className={labelCls}>Nature</label>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setGForm(p => ({ ...p, nature: "debit" }))}
+                  className={`flex-1 h-8 text-[11px] font-semibold rounded border ${gForm.nature === "debit" ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}>
+                  Debit (Assets/Expenses)
+                </button>
+                <button type="button" onClick={() => setGForm(p => ({ ...p, nature: "credit" }))}
+                  className={`flex-1 h-8 text-[11px] font-semibold rounded border ${gForm.nature === "credit" ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}>
+                  Credit (Liabilities/Income)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Narration */}
+          <div>
+            <label className={labelCls}>Narration / Description (optional)</label>
+            <textarea value={gForm.narration || ""} onChange={e => setGForm(p => ({ ...p, narration: e.target.value }))} rows={2}
+              className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] resize-none"
+              placeholder="Internal description..." />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+            <div className="flex gap-2">
+              {isEdit && !isSystemGroup && (
+                <button onClick={() => editGroup && confirmDeleteGroup(editGroup)}
+                  className="h-8 px-3 bg-red-600 text-white text-[12px] font-medium rounded hover:bg-red-700 flex items-center gap-1.5">
+                  <Trash2 className="h-3.5 w-3.5" /> Delete (F8)
+                </button>
+              )}
+              {editGroup && (
+                <button onClick={() => copyGroup(editGroup)}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50 flex items-center gap-1.5">
+                  <Copy className="h-3.5 w-3.5" /> Copy (F12)
+                </button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setActivePanel("list")}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50">
+                Cancel (Esc)
+              </button>
+              {!isSystemGroup && (
+                <>
+                  <button onClick={() => saveGroup(true)}
+                    className="h-8 px-3 bg-gray-100 border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-200">
+                    Save & New
+                  </button>
+                  <button onClick={() => saveGroup(false)}
+                    className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded hover:bg-[#0f4a96] flex items-center gap-1.5">
+                    <Save className="h-3.5 w-3.5" /> Save (F2)
+                  </button>
+                </>
+              )}
+              {isSystemGroup && (
+                <button onClick={() => setActivePanel("list")} className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded">Close</button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+    );
+  };
 
-      {/* Account Name */}
-      <Input
-        label="Account Name (English)"
-        placeholder="e.g. Nepal Investment Bank Ltd."
-        value={name}
-        onChange={setName}
-        required
-      />
-      <Input
-        label="Account Name (Nepali) — Optional"
-        placeholder="जस्तै: नेपाल इन्भेष्टमेन्ट बैंक लि."
-        value={nameNepali}
-        onChange={setNameNepali}
-      />
+  // ─── LEDGER FORM ──────────────────────────────────────────────────────────
+  const LEDGER_TABS = [
+    { id: "general", label: "General" },
+    { id: "address", label: "Address" },
+    { id: "gst", label: "GST & Tax" },
+    ...(lForm.accountType === "Bank" ? [{ id: "bank", label: "Bank" }] : []),
+    { id: "config", label: "Configuration" },
+    ...(masterConfig.optionalFields.length > 0 ? [{ id: "optional", label: "Optional Fields" }] : []),
+  ];
 
-      {/* Task 2.1: Alias field */}
-      <Input
-        label="Alias / Short Name — Optional"
-        placeholder="e.g. NBL, EBL (max 30 chars)"
-        value={alias}
-        onChange={setAlias}
-      />
+  const renderLedgerForm = () => {
+    const isEdit = activePanel === "editLedger";
+    const editLedger = isEdit && editingLedgerId ? allLedgers.find(l => l.id === editingLedgerId) : null;
+    const selectedGroup = lForm.groupId ? allGroups.find(g => g.id === lForm.groupId) : null;
+    const isBankGroup = selectedGroup?.name.toLowerCase().includes("bank");
+    const isDebtorCreditor = selectedGroup?.id === "sg-sundry-debtors" || selectedGroup?.id === "sg-sundry-creditors" || selectedGroup?.name.toLowerCase().includes("debtor") || selectedGroup?.name.toLowerCase().includes("creditor");
 
-      {/* Opening Balance — ledger/subledger only */}
-      {!["group", "subgroup"].includes(level) && (
-        <div className="rounded-lg border border-gray-300 bg-gray-200/40 p-3 flex flex-col gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
-            Opening Balance
-          </span>
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Amount"
-              type="number"
-              placeholder="0.00"
-              value={openingBalance === 0 ? "" : openingBalance}
-              onChange={(v) => {
-                const val = parseFloat(v);
-                setOpeningBalance(isNaN(val) ? 0 : val);
-              }}
-              prefix="Rs."
-              align="right"
-            />
-            <Select
-              label="Dr / Cr"
-              options={[
-                { value: "Dr", label: "Debit (Dr)" },
-                { value: "Cr", label: "Credit (Cr)" },
-              ]}
-              value={openingType}
-              onChange={(v) => setOpeningType(v as "Dr" | "Cr")}
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="As on Date"
-              type="date"
-              value={openingBalanceDate}
-              onChange={setOpeningBalanceDate}
-            />
-            {companySettings?.enableCostCenter && (
-              <Select
-                label="Cost Centre"
-                options={costCenters.map((cc) => ({ value: cc.id, label: cc.name }))}
-                value={costCenterId}
-                onChange={setCostCenterId}
-                placeholder="Not Applicable"
-              />
+    return (
+      <div className="p-4 max-w-3xl mx-auto">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[14px] font-bold text-gray-800">
+            {isEdit ? `Modify Ledger — ${editLedger?.name}` : "Add Ledger Account"}
+          </h2>
+          <div className="text-[10px] text-gray-500">F2=Save · Esc=Cancel</div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200 mb-4 gap-0">
+          {LEDGER_TABS.map(tab => (
+            <button key={tab.id} onClick={() => setLedgerTab(tab.id as any)}
+              className={`px-3 py-1.5 text-[11px] font-medium border-b-2 transition-colors -mb-px ${ledgerTab === tab.id ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-600 hover:text-gray-800"}`}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── GENERAL TAB ── */}
+        {ledgerTab === "general" && (
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <label className={labelCls}>Account Name <span className="text-red-500">*</span></label>
+                <input value={lForm.name || ""} onChange={e => setLForm(p => ({ ...p, name: e.target.value }))}
+                  className={`${inputCls} ${lErrors.name ? "border-red-400" : ""}`}
+                  placeholder="e.g. HDFC Bank Current A/c 0234" autoFocus />
+                {lErrors.name && <p className="text-[11px] text-red-600 mt-0.5">{lErrors.name}</p>}
+              </div>
+              <div>
+                <label className={labelCls}>Alias (optional)</label>
+                <input value={lForm.alias || ""} onChange={e => setLForm(p => ({ ...p, alias: e.target.value }))}
+                  className={inputCls} placeholder="Short name for quick search" />
+              </div>
+              <div>
+                <label className={labelCls}>Print Name (optional)</label>
+                <input value={lForm.printName || ""} onChange={e => setLForm(p => ({ ...p, printName: e.target.value }))}
+                  className={inputCls} placeholder="Name on invoices/statements" />
+              </div>
+            </div>
+
+            <div>
+              <label className={labelCls}>Account Group <span className="text-red-500">*</span></label>
+              <select value={lForm.groupId || ""} onChange={e => setLForm(p => ({ ...p, groupId: e.target.value }))}
+                className={`${inputCls} ${lErrors.groupId ? "border-red-400" : ""}`}>
+                <option value="">— Select Account Group —</option>
+                {CATEGORY_ORDER.map(cat => (
+                  <optgroup key={cat} label={cat}>
+                    {allGroups.filter(g => g.category === cat).map(g => (
+                      <option key={g.id} value={g.id}>{g.isPrimary ? g.name : `  ${g.name}`}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              {lErrors.groupId && <p className="text-[11px] text-red-600 mt-0.5">{lErrors.groupId}</p>}
+            </div>
+
+            <div>
+              <label className={labelCls}>Account Type</label>
+              <div className="flex gap-1.5 flex-wrap">
+                {ACCOUNT_TYPES.map(t => (
+                  <button key={t} type="button" onClick={() => setLForm(p => ({ ...p, accountType: t }))}
+                    className={`h-7 px-3 text-[11px] font-semibold rounded border transition-colors ${lForm.accountType === t ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Party = Customers/Suppliers · Bank = Bank Accounts · Cash = Cash Accounts · General Ledger = Others
+              </p>
+            </div>
+
+            {/* Sub Ledger */}
+            {features.subLedgers && (
+              <div className="p-3 bg-gray-50 rounded border border-gray-200">
+                <label className={labelCls}>Ledger Type</label>
+                <div className="flex gap-2 mb-2">
+                  {["General Ledger", "Sub Ledger"].map(t => (
+                    <button key={t} type="button" onClick={() => setLForm(p => ({ ...p, ledgerType: t as any }))}
+                      className={`flex-1 h-7 text-[11px] font-semibold rounded border ${lForm.ledgerType === t ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+                {lForm.ledgerType === "Sub Ledger" && (
+                  <div>
+                    <label className={labelCls}>Parent Account <span className="text-red-500">*</span></label>
+                    <select value={lForm.parentLedgerId || ""} onChange={e => setLForm(p => ({ ...p, parentLedgerId: e.target.value }))}
+                      className={`${inputCls} ${lErrors.parentLedgerId ? "border-red-400" : ""}`}>
+                      <option value="">— Select Parent Ledger —</option>
+                      {allLedgers.filter(l => l.ledgerType !== "Sub Ledger" && l.id !== editingLedgerId).map(l => (
+                        <option key={l.id} value={l.id}>{l.name}</option>
+                      ))}
+                    </select>
+                    {lErrors.parentLedgerId && <p className="text-[11px] text-red-600 mt-0.5">{lErrors.parentLedgerId}</p>}
+                    <p className="text-[10px] text-gray-500 mt-1">Sub-ledger balance rolls up to the parent in all reports.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Opening Balance */}
+            <div className="p-3 bg-gray-50 rounded border border-gray-200">
+              <div className={sectionHdr + " -mx-3 mb-2"}>Opening Balance</div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-2">
+                  <label className={labelCls}>Amount</label>
+                  <input type="number" value={lForm.openingBalance || ""} onChange={e => setLForm(p => ({ ...p, openingBalance: Number(e.target.value) || 0 }))}
+                    className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                </div>
+                <div>
+                  <label className={labelCls}>Dr / Cr</label>
+                  <div className="flex h-8 border border-gray-300 rounded overflow-hidden">
+                    <button type="button" onClick={() => setLForm(p => ({ ...p, openingBalanceType: "Dr" }))}
+                      className={`flex-1 text-[11px] font-bold transition-colors ${lForm.openingBalanceType === "Dr" ? "bg-[#1557b0] text-white" : "bg-white text-gray-700"}`}>Dr</button>
+                    <button type="button" onClick={() => setLForm(p => ({ ...p, openingBalanceType: "Cr" }))}
+                      className={`flex-1 text-[11px] font-bold transition-colors ${lForm.openingBalanceType === "Cr" ? "bg-[#1557b0] text-white" : "bg-white text-gray-700"}`}>Cr</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Credit terms for debtors/creditors */}
+            {(isDebtorCreditor || lForm.accountType === "Party") && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Credit Limit (Rs.)</label>
+                  <input type="number" value={lForm.creditLimit || ""} onChange={e => setLForm(p => ({ ...p, creditLimit: Number(e.target.value) || 0 }))}
+                    className={inputCls} placeholder="0 = unlimited" />
+                </div>
+                <div>
+                  <label className={labelCls}>Credit Period (Days)</label>
+                  <input type="number" value={lForm.creditPeriod || ""} onChange={e => setLForm(p => ({ ...p, creditPeriod: Number(e.target.value) || 0 }))}
+                    className={inputCls} placeholder="e.g. 30" />
+                </div>
+              </div>
             )}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ── TASK 1.6: Bill-by-Bill toggle for ASSET / LIABILITY ledgers ── */}
-      {!["group", "subgroup"].includes(level) &&
-        (type === AccountType.ASSET || type === AccountType.LIABILITY) && (
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                id="billByBill"
-                checked={billByBill}
-                onChange={(e) => setBillByBill(e.target.checked)}
-                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
-              />
+        {/* ── ADDRESS TAB ── */}
+        {ledgerTab === "address" && (
+          <div className="flex flex-col gap-3">
+            <div>
+              <label className={labelCls}>Address</label>
+              <textarea value={lForm.address || ""} onChange={e => setLForm(p => ({ ...p, address: e.target.value }))}
+                rows={2} className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] resize-none"
+                placeholder="Street address, Area" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <span className="text-[12px] font-semibold text-gray-800">
-                  Maintain Bill-by-Bill Details
-                </span>
-                <p className="text-[10px] text-gray-800 mt-0.5">
-                  Track individual invoice references for this ledger (recommended for Sundry
-                  Debtors and Sundry Creditors accounts)
-                </p>
+                <label className={labelCls}>State</label>
+                <select value={lForm.state || ""} onChange={e => setLForm(p => ({ ...p, state: e.target.value }))} className={inputCls}>
+                  <option value="">— Select State —</option>
+                  {INDIA_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>PIN Code</label>
+                <input value={lForm.pinCode || ""} onChange={e => setLForm(p => ({ ...p, pinCode: e.target.value }))}
+                  className={inputCls} placeholder="6-digit PIN" maxLength={6} />
+              </div>
+              <div>
+                <label className={labelCls}>Country</label>
+                <input value={lForm.country || "India"} onChange={e => setLForm(p => ({ ...p, country: e.target.value }))} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Phone</label>
+                <input value={lForm.phone || ""} onChange={e => setLForm(p => ({ ...p, phone: e.target.value }))} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Mobile</label>
+                <input value={lForm.mobile || ""} onChange={e => setLForm(p => ({ ...p, mobile: e.target.value }))} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Email</label>
+                <input type="email" value={lForm.email || ""} onChange={e => setLForm(p => ({ ...p, email: e.target.value }))} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Website</label>
+                <input value={lForm.website || ""} onChange={e => setLForm(p => ({ ...p, website: e.target.value }))} className={inputCls} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── GST TAB ── */}
+        {ledgerTab === "gst" && (
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className={labelCls}>GSTIN / UIN (15 chars)</label>
+                <div className="flex gap-1">
+                  <input value={lForm.gstin || ""} onChange={e => setLForm(p => ({ ...p, gstin: e.target.value.toUpperCase().slice(0, 15) }))}
+                    className={`${inputCls} flex-1`} placeholder="27AABCT1234Q1Z5" maxLength={15} />
+                  <button type="button" className="h-8 px-2 bg-[#1557b0] text-white text-[10px] rounded hover:bg-[#0f4a96]"
+                    onClick={() => toast.success("GSTIN validation requires GST portal integration.")}>
+                    Validate
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className={labelCls}>PAN (10 chars)</label>
+                <input value={lForm.pan || ""} onChange={e => setLForm(p => ({ ...p, pan: e.target.value.toUpperCase().slice(0, 10) }))}
+                  className={inputCls} placeholder="AABCT1234Q" maxLength={10} />
+              </div>
+              <div>
+                <label className={labelCls}>Registration Type</label>
+                <select value={lForm.registrationType || ""} onChange={e => setLForm(p => ({ ...p, registrationType: e.target.value }))} className={inputCls}>
+                  <option value="">— Select —</option>
+                  {PARTY_REG_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Tax Category</label>
+                <input value={lForm.taxCategory || ""} onChange={e => setLForm(p => ({ ...p, taxCategory: e.target.value }))}
+                  className={inputCls} placeholder="Default tax category" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-200">
+              {[
+                { key: "gstApplicable", label: "GST Applicable" },
+                { key: "reverseCharge", label: "Reverse Charge Applicable" },
+                { key: "tdsApplicable", label: "TDS Applicable" },
+                { key: "tcsApplicable", label: "TCS Applicable" },
+              ].map(({ key, label }) => (
+                <label key={key} className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={(lForm as any)[key] || false}
+                    onChange={e => setLForm(p => ({ ...p, [key]: e.target.checked }))}
+                    className="h-4 w-4 rounded accent-[#1557b0]" />
+                  <span className="text-[12px] text-gray-700">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── BANK TAB ── */}
+        {ledgerTab === "bank" && lForm.accountType === "Bank" && (
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className={labelCls}>Bank Name</label>
+                <input value={lForm.bankName || ""} onChange={e => setLForm(p => ({ ...p, bankName: e.target.value }))}
+                  className={inputCls} placeholder="e.g. HDFC Bank" />
+              </div>
+              <div>
+                <label className={labelCls}>Branch</label>
+                <input value={lForm.bankBranch || ""} onChange={e => setLForm(p => ({ ...p, bankBranch: e.target.value }))}
+                  className={inputCls} placeholder="e.g. Andheri West" />
+              </div>
+              <div>
+                <label className={labelCls}>Account Number</label>
+                <input value={lForm.bankAccountNo || ""} onChange={e => setLForm(p => ({ ...p, bankAccountNo: e.target.value }))}
+                  className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>IFSC Code</label>
+                <input value={lForm.ifscCode || ""} onChange={e => setLForm(p => ({ ...p, ifscCode: e.target.value.toUpperCase() }))}
+                  className={inputCls} maxLength={11} placeholder="HDFC0001234" />
+              </div>
+              <div>
+                <label className={labelCls}>Account Type</label>
+                <select value={lForm.bankAccountType || ""} onChange={e => setLForm(p => ({ ...p, bankAccountType: e.target.value }))} className={inputCls}>
+                  <option value="">— Select —</option>
+                  {BANK_ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>OD/CC Limit (Rs.)</label>
+                <input type="number" value={lForm.odCcLimit || ""} onChange={e => setLForm(p => ({ ...p, odCcLimit: Number(e.target.value) || 0 }))}
+                  className={inputCls} placeholder="0" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── CONFIGURATION TAB ── */}
+        {ledgerTab === "config" && (
+          <div className="flex flex-col gap-2">
+            {[
+              { key: "billByBill", label: "Maintain Bill-by-Bill Balancing", desc: "Track outstanding invoices individually. Enables AR/AP aging reports.", show: features.billByBill },
+              { key: "maintainCostCenter", label: "Maintain Cost Center", desc: "Require cost center allocation for transactions in this account.", show: features.costCenter },
+              { key: "maintainBranch", label: "Maintain Branch-wise Details", desc: "Track transactions by branch/division.", show: features.branchDivision },
+              { key: "multiCurrency", label: "Multi-Currency", desc: "Enable foreign currency transactions for this party.", show: features.multiCurrency },
+              { key: "isActive", label: "Active", desc: "Inactive ledgers are hidden from voucher entry dropdowns.", show: true },
+            ].filter(f => f.show).map(({ key, label, desc }) => (
+              <div key={key} className={`p-3 rounded border ${(lForm as any)[key] ? "bg-blue-50 border-blue-200" : "bg-gray-50 border-gray-200"}`}>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" checked={(lForm as any)[key] || false}
+                    onChange={e => setLForm(p => ({ ...p, [key]: e.target.checked }))}
+                    className="h-4 w-4 mt-0.5 rounded accent-[#1557b0] shrink-0" />
+                  <div>
+                    <span className="text-[12px] font-semibold text-gray-800 block">{label}</span>
+                    <span className="text-[11px] text-gray-500">{desc}</span>
+                  </div>
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── OPTIONAL FIELDS TAB ── */}
+        {ledgerTab === "optional" && masterConfig.optionalFields.length > 0 && (
+          <div className="flex flex-col gap-3">
+            {masterConfig.optionalFields.map(field => (
+              <div key={field.id}>
+                <label className={labelCls}>{field.name}{field.mandatory && <span className="text-red-500 ml-1">*</span>}</label>
+                {field.dataType === "text" && (
+                  <input value={(lForm.optionalFields || {})[field.id] || field.defaultValue || ""}
+                    onChange={e => setLForm(p => ({ ...p, optionalFields: { ...(p.optionalFields || {}), [field.id]: e.target.value } }))}
+                    className={inputCls} />
+                )}
+                {field.dataType === "numeric" && (
+                  <input type="number" step={field.decimalPlaces ? `0.${"0".repeat(field.decimalPlaces - 1)}1` : "1"}
+                    value={(lForm.optionalFields || {})[field.id] || field.defaultValue || ""}
+                    onChange={e => setLForm(p => ({ ...p, optionalFields: { ...(p.optionalFields || {}), [field.id]: e.target.value } }))}
+                    className={inputCls} />
+                )}
+                {field.dataType === "date" && (
+                  <input type="date" value={(lForm.optionalFields || {})[field.id] || ""}
+                    onChange={e => setLForm(p => ({ ...p, optionalFields: { ...(p.optionalFields || {}), [field.id]: e.target.value } }))}
+                    className={inputCls} />
+                )}
+                {field.dataType === "list" && (
+                  <select value={(lForm.optionalFields || {})[field.id] || ""}
+                    onChange={e => setLForm(p => ({ ...p, optionalFields: { ...(p.optionalFields || {}), [field.id]: e.target.value } }))}
+                    className={inputCls}>
+                    <option value="">— Select —</option>
+                    {(field.listValues || "").split(",").map(v => v.trim()).filter(Boolean).map(v => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                )}
+                {field.dataType === "yesno" && (
+                  <div className="flex gap-2">
+                    {["Yes", "No"].map(v => (
+                      <button key={v} type="button" onClick={() => setLForm(p => ({ ...p, optionalFields: { ...(p.optionalFields || {}), [field.id]: v } }))}
+                        className={`flex-1 h-8 text-[11px] font-semibold rounded border ${(lForm.optionalFields || {})[field.id] === v ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}>
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200 mt-4">
+          <div className="flex gap-2">
+            {isEdit && (
+              <button onClick={() => editLedger && confirmDeleteLedger(editLedger)}
+                className="h-8 px-3 bg-red-600 text-white text-[12px] font-medium rounded hover:bg-red-700 flex items-center gap-1.5">
+                <Trash2 className="h-3.5 w-3.5" /> Delete (F8)
+              </button>
+            )}
+            {editLedger && (
+              <button onClick={() => copyLedger(editLedger)}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50 flex items-center gap-1.5">
+                <Copy className="h-3.5 w-3.5" /> Copy (F12)
+              </button>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => setActivePanel("list")}
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50">Cancel (Esc)</button>
+            <button onClick={() => saveLedger(true)}
+              className="h-8 px-3 bg-gray-100 border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-200">Save & New</button>
+            <button onClick={() => saveLedger(false)}
+              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded hover:bg-[#0f4a96] flex items-center gap-1.5">
+              <Save className="h-3.5 w-3.5" /> Save (F2)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── FEATURES PANEL ───────────────────────────────────────────────────────
+  const renderFeatures = () => (
+    <div className="p-4 max-w-2xl mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[14px] font-bold text-gray-800">Features / Options — Accounts Tab</h2>
+        <button onClick={() => setActivePanel("list")} className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50">← Back</button>
+      </div>
+      <div className="flex flex-col gap-2">
+        {[
+          { key: "multiCurrency", label: "Multi Currency", desc: "Enable foreign currency transactions, exchange rates." },
+          { key: "subLedgers", label: "Maintain Sub Ledgers", desc: "Create child accounts under a parent General Ledger." },
+          { key: "billByBill", label: "Bill-by-Bill Details", desc: "Track outstanding invoices individually. Enables AR/AP aging." },
+          { key: "autoRefSales", label: "↳ Auto Create References in Sales", desc: "Auto-create bill reference on saving sales voucher.", indent: true },
+          { key: "autoRefPurchase", label: "↳ Auto Create References in Purchase", desc: "Auto-create bill reference on saving purchase voucher.", indent: true },
+          { key: "bankInstruments", label: "Maintain Bank Instrument Details", desc: "Track cheque/DD/NEFT/UPI details in vouchers." },
+          { key: "ledgerReconciliation", label: "Ledger Reconciliation", desc: "Enable bank statement reconciliation." },
+          { key: "salesman", label: "Salesman / Broker Wise Reporting", desc: "Track sales by salesman. Enables commission calculation." },
+          { key: "costCenter", label: "Cost Center", desc: "Enable cost/profit center tracking in vouchers." },
+          { key: "budgeting", label: "Budgeting", desc: "Set budgets per account/group. Budget vs Actual reports." },
+          { key: "interestCalculation", label: "Interest Calculation", desc: "Auto-calculate interest on overdue party balances." },
+          { key: "tds", label: "TDS (Tax Deducted at Source)", desc: "TDS sections, rates, thresholds. Auto-deduct TDS in payments." },
+          { key: "tcs", label: "TCS (Tax Collected at Source)", desc: "Tax collection at source on sales." },
+          { key: "branchDivision", label: "Maintain Branch / Division", desc: "Multi-branch accounting. Branch-wise P&L and Balance Sheet." },
+          { key: "multiGodown", label: "Maintain Multiple Godowns", desc: "Multi-location inventory tracking." },
+        ].map(({ key, label, desc, indent }) => (
+          <div key={key} className={`p-3 rounded border transition-colors ${features[key as keyof FeatureConfig] ? "bg-blue-50 border-blue-200" : "bg-white border-gray-200"} ${indent ? "ml-6" : ""}`}>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked={features[key as keyof FeatureConfig] || false}
+                onChange={e => { const updated = { ...features, [key]: e.target.checked }; setFeatures(updated); saveToLS(LS_KEYS.FEATURES, updated); toast.success(`${label} ${e.target.checked ? "enabled" : "disabled"}.`); }}
+                className="h-4 w-4 mt-0.5 rounded accent-[#1557b0] shrink-0" />
+              <div>
+                <span className="text-[12px] font-semibold text-gray-800 block">{label}</span>
+                <span className="text-[11px] text-gray-500">{desc}</span>
               </div>
             </label>
           </div>
-        )}
-
-      {/* Task 2.2: Bank Details — only for bank-type ledgers */}
-      {isBankAccount && !["group", "subgroup"].includes(level) && (
-        <div className="border border-gray-300 rounded-lg p-4 space-y-3 bg-gray-50">
-          <h4 className="text-[11px] font-bold text-gray-800 uppercase tracking-wide">
-            Bank Details
-          </h4>
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Bank Name"
-              placeholder="e.g. Nepal Investment Bank"
-              value={bankDetails.bankName || ""}
-              onChange={(v) => setBankDetails((prev) => ({ ...prev, bankName: v }))}
-            />
-            <Input
-              label="Branch"
-              placeholder="e.g. New Road, Kathmandu"
-              value={bankDetails.branch || ""}
-              onChange={(v) => setBankDetails((prev) => ({ ...prev, branch: v }))}
-            />
-            <Input
-              label="Account Number"
-              placeholder="Bank account number"
-              value={bankDetails.accountNo || ""}
-              onChange={(v) => setBankDetails((prev) => ({ ...prev, accountNo: v }))}
-            />
-            <Input
-              label="IFSC / SWIFT Code"
-              placeholder="e.g. NIBL0001"
-              value={bankDetails.ifscSwift || ""}
-              onChange={(v) => setBankDetails((prev) => ({ ...prev, ifscSwift: v }))}
-            />
-          </div>
-          <Select
-            label="Account Type"
-            options={BANK_ACCOUNT_TYPES}
-            value={bankDetails.accountType || ""}
-            onChange={(v) =>
-              setBankDetails((prev) => ({ ...prev, accountType: v as BankDetails["accountType"] }))
-            }
-            placeholder="— Select account type —"
-          />
-        </div>
-      )}
-
-      {/* Task 2.3: Credit Limit & Period — only for debtor/creditor ledgers */}
-      {isDebtorCreditor && !["group", "subgroup"].includes(level) && (
-        <div className="border border-gray-300 rounded-lg p-4 space-y-3 bg-gray-50">
-          <h4 className="text-[11px] font-bold text-gray-800 uppercase tracking-wide">
-            Credit Terms
-          </h4>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
-                Credit Limit (NPR)
-              </span>
-              <input
-                type="number"
-                min={0}
-                value={creditLimit || ""}
-                onChange={(e) => setCreditLimit(Number(e.target.value) || 0)}
-                placeholder="0 = unlimited"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-800">
-                Credit Period (Days)
-              </span>
-              <input
-                type="number"
-                min={0}
-                max={365}
-                value={creditPeriod || ""}
-                onChange={(e) => setCreditPeriod(Number(e.target.value) || 0)}
-                placeholder="e.g. 30"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
-              />
-            </div>
-          </div>
-          <p className="text-[10px] text-gray-800">
-            Credit limit of 0 means unlimited credit. Period defines the due date for bill-by-bill
-            tracking.
-          </p>
-        </div>
-      )}
-    </form>
+        ))}
+      </div>
+    </div>
   );
 
-  // ─── RENDER ───────────────────────────────────────────────────────────────────
-  return (
-    <div style={{ background: "#f5f6fa", padding: 12 }}>
-      <PillTitle title="Chart of Accounts" />
-      <FormPanel>
-        <div className="flex flex-col gap-4 animate-fadeIn select-none pb-12">
-          {/* ── TOP TOOLBAR ─────────────────────────────────────────────────────── */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
-              <p className="text-[11px] text-gray-800 mt-0.5">
-                {viewMode === "groups"
-                  ? `${groupsOnlyList.length} account groups · ${groupsOnlyList.filter((a) => !a.parentId).length} primary`
-                  : `${accounts.length} accounts · ${accounts.filter((a) => a.isGroup).length} groups · ${accounts.filter((a) => !a.isGroup).length} ledgers`}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center rounded-md border border-gray-300 bg-white overflow-hidden mr-2">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("tree")}
-                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "tree" ? "bg-[#1557b0] text-white" : "text-gray-800 hover:bg-gray-50"}`}
-                >
-                  Tree
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("groups")}
-                  className={`h-8 px-3 text-[11px] font-medium transition-colors ${viewMode === "groups" ? "bg-[#1557b0] text-white" : "text-gray-800 hover:bg-gray-50"}`}
-                >
-                  List of Groups
-                </button>
-              </div>
-              <button
-                type="button"
-                onClick={collapseAll}
-                title="Collapse All"
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="h-3.5 w-3.5" /> Collapse
-              </button>
-              <button
-                type="button"
-                onClick={expandAll}
-                title="Expand All"
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronDown className="h-3.5 w-3.5" /> Expand
-              </button>
-              <button
-                type="button"
-                onClick={() => setImportModalOpen(true)}
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-              >
-                <Upload className="h-3.5 w-3.5" /> Import
-              </button>
-              <button
-                type="button"
-                onClick={handleExportToExcel}
-                className="h-8 px-3 text-[11px] font-medium rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-              >
-                <Download className="h-3.5 w-3.5" /> Export
-              </button>
-              <button
-                type="button"
-                onClick={handleOpenCreateModal}
-                className="h-8 px-3 text-[11px] font-semibold rounded-md bg-[#1557b0] hover:bg-[#0f4a96] text-white flex items-center gap-1.5 transition-colors"
-              >
-                <Plus className="h-3.5 w-3.5" /> New Account
-              </button>
-            </div>
+  // ─── MASTER CONFIG PANEL ──────────────────────────────────────────────────
+  const renderMasterConfig = () => (
+    <div className="p-4 max-w-2xl mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[14px] font-bold text-gray-800">Master Configuration — Account</h2>
+        <div className="flex gap-2">
+          <button onClick={() => { saveToLS(LS_KEYS.MASTER_CONFIG, masterConfig); toast.success("Master Configuration saved. Dropdowns updated."); setActivePanel("list"); }}
+            className="h-7 px-3 bg-[#1557b0] text-white text-[11px] font-medium rounded hover:bg-[#0f4a96]">Save & Apply</button>
+          <button onClick={() => setActivePanel("list")} className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50">← Back</button>
+        </div>
+      </div>
+
+      {/* Dropdown Display */}
+      <div className="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
+        <div className={sectionHdr + " -mx-3 mb-3"}>Master Dropdown List Configuration</div>
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className={labelCls}>Elements to be shown in Dropdown</label>
+            <select value={masterConfig.dropdownDisplay} onChange={e => setMasterConfig(p => ({ ...p, dropdownDisplay: e.target.value as any }))} className={inputCls}>
+              <option value="name">Name Only</option>
+              <option value="name_alias">Name and Alias</option>
+              <option value="name_alias_group">Name, Alias and Group</option>
+              <option value="name_code">Name and Code</option>
+            </select>
           </div>
-
-          {/* ── SEARCH + TABS ────────────────────────────────────────────────────── */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="relative flex-shrink-0">
-              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-800 pointer-events-none" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by name, code, or alias…"
-                className="h-8 pl-8 pr-3 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-gray-300 w-56 transition"
-              />
-            </div>
-            <div className="flex items-center gap-1 border border-gray-300 rounded-md bg-white p-0.5">
-              {(["ALL", "asset", "liability", "equity", "income", "expense"] as const).map(
-                (tab) => {
-                  const cfg = tab !== "ALL" ? TYPE_CONFIG[tab as AccountType] : null;
-                  const isActive2 = activeTab === tab;
-                  return (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => setActiveTab(tab)}
-                      className={`h-7 px-3 text-[11px] font-semibold rounded transition-colors flex items-center gap-1.5 ${
-                        isActive2
-                          ? "bg-[#1557b0] text-white shadow-sm"
-                          : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
-                      }`}
-                    >
-                      {cfg && isActive2 && (
-                        <span
-                          className={`inline-block h-1.5 w-1.5 rounded-full bg-white opacity-80`}
-                        />
-                      )}
-                      {cfg && !isActive2 && (
-                        <span className={`inline-block h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                      )}
-                      {tab === "ALL" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                  );
-                },
-              )}
-            </div>
-            <div className="ml-auto flex items-center gap-1 text-[10.5px] text-gray-800 font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
-                Ctrl+N
-              </kbd>{" "}
-              New &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
-                Ctrl+E
-              </kbd>{" "}
-              Edit &nbsp;&nbsp;
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-[10px] shadow-sm font-mono mr-0.5">
-                Del
-              </kbd>{" "}
-              Delete
-            </div>
-          </div>
-
-          {/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */}
-          <div className="flex flex-col lg:flex-row gap-4 items-start">
-            {/* ── ACCOUNTS TABLE ────────────────────────────────────────────────── */}
-            <div className="flex-1 w-full flex flex-col gap-3">
-              <div className="rounded-xl border border-gray-300 bg-white overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                  {viewMode === "groups" ? (
-                    <>
-                      <table className="w-full text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-gray-50 border-b border-gray-300">
-                            <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px]">
-                              Name
-                            </th>
-                            <th className="px-3 py-2.5 text-center font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
-                              Primary
-                            </th>
-                            <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px]">
-                              Under Group
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {groupsOnlyList.map((account) => {
-                            const parent = account.parentId
-                              ? accounts.find((a) => a.id === account.parentId)
-                              : null;
-                            const isPrimary = !account.parentId;
-                            return (
-                              <tr
-                                key={account.id}
-                                onClick={() => handleOpenEditModal(account)}
-                                className="cursor-pointer hover:bg-gray-200/30 transition-colors"
-                              >
-                                <td className="px-3 py-2 text-[12px] font-medium text-[#1557b0] hover:underline">
-                                  {account.name}
-                                  {account.nameNepali && (
-                                    <span className="ml-1.5 text-[10px] text-gray-800">
-                                      · {account.nameNepali}
-                                    </span>
-                                  )}
-                                </td>
-                                <td className="px-3 py-2 text-center text-[12px] font-bold text-gray-800">
-                                  {isPrimary ? "Y" : "N"}
-                                </td>
-                                <td className="px-3 py-2 text-[12px] text-[#1557b0] hover:underline">
-                                  {parent ? parent.name : "—"}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                          {groupsOnlyList.length === 0 && (
-                            <tr>
-                              <td
-                                colSpan={3}
-                                className="text-center py-10 text-[11px] text-gray-800"
-                              >
-                                No account groups found.
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                      <div className="px-3 py-1.5 border-t border-gray-300 bg-gray-50 flex items-center gap-4 text-[10px] text-gray-800">
-                        <span>Entry No : 1 / {groupsOnlyList.length}</span>
-                        <span>|</span>
-                        <span>Total Groups : {groupsOnlyList.length}</span>
-                        <span>|</span>
-                        <span>Primary : {groupsOnlyList.filter((a) => !a.parentId).length}</span>
-                        <span>|</span>
-                        <span>
-                          Sub-Groups : {groupsOnlyList.filter((a) => !!a.parentId).length}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <table className="w-full text-xs border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 border-b border-gray-300">
-                          <th className="w-10 px-3 py-2.5 text-center">
-                            <button
-                              type="button"
-                              onClick={selectAllFlattened}
-                              className="text-gray-800 hover:text-gray-800"
-                              title="Select all"
-                            >
-                              {getActiveSelectedList().length > 0 &&
-                              getActiveSelectedList().length ===
-                                flattenedRows.filter((r) => !r.id.startsWith("root-")).length ? (
-                                <CheckSquare className="h-4 w-4 text-gray-800" />
-                              ) : (
-                                <Square className="h-4 w-4" />
-                              )}
-                            </button>
-                          </th>
-                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
-                            Code
-                          </th>
-                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px]">
-                            Account Name
-                          </th>
-                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-28">
-                            Type
-                          </th>
-                          <th className="px-3 py-2.5 text-left font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-24">
-                            Level
-                          </th>
-                          <th className="px-3 py-2.5 text-right font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-40">
-                            Closing Balance
-                          </th>
-                          <th className="px-3 py-2.5 text-center font-semibold text-gray-800 uppercase tracking-wider text-[10px] w-20">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {/* ── SEARCH MODE ── */}
-                        {isSearchActive ? (
-                          paginatedData.length === 0 ? (
-                            <tr>
-                              <td
-                                colSpan={7}
-                                className="text-center py-14 text-gray-800 text-xs font-medium"
-                              >
-                                <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                                No accounts match your search.
-                              </td>
-                            </tr>
-                          ) : (
-                            (paginatedData as Account[]).map((row) => {
-                              const cfg = TYPE_CONFIG[row.type];
-                              const isSelected = !!selectedIds[row.id];
-                              return (
-                                <tr
-                                  key={row.id}
-                                  onClick={() =>
-                                    setSelectedNode({
-                                      id: row.id,
-                                      name: row.name,
-                                      nameNepali: row.nameNepali,
-                                      code: row.code,
-                                      type: row.type,
-                                      level: row.level,
-                                      depth: 1,
-                                      isActive: row.isActive,
-                                      isGroup: row.isGroup,
-                                      isSystemAccount: !!row.isSystemAccount,
-                                      balance: row.balance || 0,
-                                      rowObject: row,
-                                      children: [],
-                                    })
-                                  }
-                                  className={`cursor-pointer transition-colors hover:bg-gray-200/30 ${selectedNode?.id === row.id ? "bg-gray-200/50" : ""}`}
-                                >
-                                  <td
-                                    className="px-3 py-2.5 text-center"
-                                    onClick={(e) => handleToggleSelectRow(row.id, e)}
-                                  >
-                                    {isSelected ? (
-                                      <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
-                                    ) : (
-                                      <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />
-                                    )}
-                                  </td>
-                                  <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-semibold">
-                                    {row.code}
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <div className="flex items-center gap-1.5">
-                                      {!row.isActive && (
-                                        <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-500 border border-red-100">
-                                          Inactive
-                                        </span>
-                                      )}
-                                      {row.isSystemAccount && (
-                                        <Lock className="h-3 w-3 text-amber-400 shrink-0" />
-                                      )}
-                                      {row.billByBill && (
-                                        <span
-                                          className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-[#1557b0] border border-blue-100"
-                                          title="Bill-by-Bill Tracking Enabled"
-                                        >
-                                          B/B
-                                        </span>
-                                      )}
-                                      <span
-                                        className={`font-semibold text-gray-800 ${!row.isActive ? "opacity-50" : ""}`}
-                                      >
-                                        {row.name}
-                                      </span>
-                                      {row.nameNepali && (
-                                        <span className="text-[10px] text-gray-800 ml-1">
-                                          · {row.nameNepali}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <span
-                                      className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
-                                    >
-                                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                                      {cfg.label}
-                                    </span>
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <span className="text-[10px] font-medium text-gray-800 bg-gray-50 border border-gray-300 rounded px-2 py-0.5">
-                                      {LEVEL_LABELS[row.level] || row.level}
-                                    </span>
-                                  </td>
-                                  <td
-                                    className={`px-3 py-2.5 text-right font-mono text-[11px] font-bold ${row.balance < 0 ? "text-red-600" : "text-gray-800"}`}
-                                  >
-                                    {formatDrCrBalance(row.balance || 0, row.type)}
-                                  </td>
-                                  <td
-                                    className="px-3 py-2.5 text-center"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <div className="flex items-center justify-center gap-0.5">
-                                      <button
-                                        onClick={() => handleOpenEditModal(row)}
-                                        className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition"
-                                        title="Edit"
-                                      >
-                                        <Edit2 className="h-3.5 w-3.5" />
-                                      </button>
-                                      {!row.isSystemAccount && (
-                                        <button
-                                          onClick={() => setConfirmDeleteAccount(row)}
-                                          className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition"
-                                          title="Delete"
-                                        >
-                                          <Trash2 className="h-3.5 w-3.5" />
-                                        </button>
-                                      )}
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          )
-                        ) : (
-                          /* ── TREE MODE ── */
-                          (paginatedData as TreeNode[]).map((row) => {
-                            const isVirtualRoot = row.level === "root";
-                            const cfg = TYPE_CONFIG[row.type];
-                            const isSelected = !!selectedIds[row.id];
-
-                            // ── ROOT ROW ──
-                            if (isVirtualRoot) {
-                              return (
-                                <tr
-                                  key={row.id}
-                                  onClick={() => setSelectedNode(row)}
-                                  className={`cursor-pointer border-l-4 ${cfg.border} ${cfg.bg} hover:brightness-95 transition-all`}
-                                >
-                                  <td className="px-3 py-3 text-center w-10" />
-                                  <td className="px-3 py-3 font-mono text-[11px] text-gray-800 font-medium">
-                                    —
-                                  </td>
-                                  <td className="px-3 py-3" colSpan={1}>
-                                    <div className="flex items-center gap-2">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => toggleExpand(row.id, e)}
-                                        className="p-0.5 rounded hover:bg-black/5 transition"
-                                      >
-                                        {expandedNodes[row.id] ? (
-                                          <ChevronDown className={`h-4 w-4 ${cfg.text}`} />
-                                        ) : (
-                                          <ChevronRight className={`h-4 w-4 ${cfg.text}`} />
-                                        )}
-                                      </button>
-                                      <span
-                                        className={`text-[12px] font-bold uppercase tracking-wide ${cfg.text}`}
-                                      >
-                                        {row.name}
-                                      </span>
-                                      <span
-                                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
-                                      >
-                                        {row.children.length} groups
-                                      </span>
-                                    </div>
-                                  </td>
-                                  <td className="px-3 py-3">
-                                    <span
-                                      className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
-                                    >
-                                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                                      {cfg.label}
-                                    </span>
-                                  </td>
-                                  <td className="px-3 py-3">
-                                    <span className="text-[10px] font-medium text-gray-800 bg-white/60 border border-gray-300 rounded px-2 py-0.5">
-                                      Primary
-                                    </span>
-                                  </td>
-                                  <td
-                                    className={`px-3 py-3 text-right font-mono text-[11px] font-bold ${cfg.text}`}
-                                  >
-                                    {formatDrCrBalance(row.balance, row.type)}
-                                  </td>
-                                  <td className="px-3 py-3 text-center w-20" />
-                                </tr>
-                              );
-                            }
-
-                            // ── GROUP / LEDGER ROW ──
-                            const depthPad = (row.depth - 1) * 20 + 8;
-                            const isGroupRow = row.isGroup;
-                            return (
-                              <tr
-                                key={row.id}
-                                onClick={() => setSelectedNode(row)}
-                                className={`cursor-pointer transition-colors
-                                ${selectedNode?.id === row.id ? "bg-gray-200/60 ring-1 ring-inset ring-blue-200" : ""}
-                                ${isGroupRow ? "bg-gray-50/70 hover:bg-gray-50/60" : "bg-white hover:bg-gray-50/50"}
-                                ${!row.isActive ? "opacity-60" : ""}
-                              `}
-                              >
-                                {/* Checkbox */}
-                                <td
-                                  className="px-3 py-2.5 text-center w-10"
-                                  onClick={(e) => handleToggleSelectRow(row.id, e)}
-                                >
-                                  {isSelected ? (
-                                    <CheckSquare className="h-4 w-4 text-gray-800 mx-auto" />
-                                  ) : (
-                                    <Square className="h-4 w-4 text-gray-800 hover:text-gray-800 mx-auto" />
-                                  )}
-                                </td>
-
-                                {/* Code */}
-                                <td className="px-3 py-2.5 font-mono text-[11px] text-gray-800 font-medium">
-                                  {row.code || "—"}
-                                </td>
-
-                                {/* Name with indent */}
-                                <td className="px-3 py-2.5">
-                                  <div
-                                    className="flex items-center gap-1.5"
-                                    style={{ paddingLeft: `${depthPad}px` }}
-                                  >
-                                    {/* Expand/collapse or leaf spacer */}
-                                    {isGroupRow ? (
-                                      <button
-                                        type="button"
-                                        onClick={(e) => toggleExpand(row.id, e)}
-                                        className="p-0.5 rounded hover:bg-gray-50/70 text-gray-800 hover:text-gray-800 transition shrink-0"
-                                        title={expandedNodes[row.id] ? "Collapse" : "Expand"}
-                                      >
-                                        {expandedNodes[row.id] ? (
-                                          <ChevronDown className="h-3.5 w-3.5" />
-                                        ) : (
-                                          <ChevronRight className="h-3.5 w-3.5" />
-                                        )}
-                                      </button>
-                                    ) : (
-                                      <span className="w-5 shrink-0" />
-                                    )}
-
-                                    {/* Icon */}
-                                    {isGroupRow ? (
-                                      <FolderOpen className="h-3.5 w-3.5 text-gray-800 shrink-0" />
-                                    ) : (
-                                      <BookOpen className="h-3 w-3 text-gray-800 shrink-0" />
-                                    )}
-
-                                    {/* Name */}
-                                    <div className="flex flex-col leading-tight min-w-0">
-                                      <div className="flex items-center gap-1.5 flex-wrap">
-                                        <span
-                                          className={`leading-tight ${isGroupRow ? "font-semibold text-gray-800" : "font-medium text-gray-800"} text-[12px]`}
-                                        >
-                                          {row.name}
-                                        </span>
-                                        {row.isSystemAccount && (
-                                          <Lock
-                                            className="h-2.5 w-2.5 text-amber-400 shrink-0"
-                                            title="System account — protected"
-                                          />
-                                        )}
-                                        {!row.isActive && (
-                                          <span className="text-[9px] font-bold px-1 py-0 rounded bg-red-50 text-red-400 border border-red-100">
-                                            INACTIVE
-                                          </span>
-                                        )}
-                                        {row.billByBill && (
-                                          <span
-                                            className="text-[9px] font-bold uppercase px-1 py-0 rounded bg-blue-50 text-[#1557b0] border border-blue-100"
-                                            title="Bill-by-Bill Tracking Enabled"
-                                          >
-                                            B/B
-                                          </span>
-                                        )}
-                                      </div>
-                                      {row.nameNepali && (
-                                        <span className="text-[10px] text-gray-800 mt-0.5">
-                                          {row.nameNepali}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </td>
-
-                                {/* Type badge */}
-                                <td className="px-3 py-2.5">
-                                  <span
-                                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.badge}`}
-                                  >
-                                    <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
-                                    {cfg.label}
-                                  </span>
-                                </td>
-
-                                {/* Level */}
-                                <td className="px-3 py-2.5">
-                                  <span
-                                    className={`text-[10px] font-medium px-2 py-0.5 rounded border ${isGroupRow ? "bg-gray-50 text-gray-800 border-gray-300" : "bg-white text-gray-800 border-gray-300"}`}
-                                  >
-                                    {LEVEL_LABELS[row.level] || row.level}
-                                  </span>
-                                </td>
-
-                                {/* Balance */}
-                                <td
-                                  className={`px-3 py-2.5 text-right font-mono text-[11px] font-semibold ${row.balance < 0 ? "text-red-600" : isGroupRow ? "text-gray-800" : "text-gray-800"}`}
-                                >
-                                  {formatDrCrBalance(row.balance, row.type)}
-                                </td>
-
-                                {/* Actions */}
-                                <td
-                                  className="px-3 py-2.5 text-center w-20"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <div className="flex items-center justify-center gap-0.5">
-                                    <button
-                                      onClick={() => handleOpenEditModal(row.rowObject)}
-                                      className="p-1.5 rounded text-gray-800 hover:bg-gray-200 hover:text-gray-800 transition"
-                                      title="Edit account (Ctrl+E)"
-                                    >
-                                      <Edit2 className="h-3.5 w-3.5" />
-                                    </button>
-                                    {!row.isSystemAccount && (
-                                      <button
-                                        onClick={() =>
-                                          setConfirmDeleteAccount(row.rowObject || null)
-                                        }
-                                        className="p-1.5 rounded text-gray-800 hover:bg-red-50 hover:text-red-500 transition"
-                                        title="Delete account"
-                                      >
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                      </button>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-                {viewMode === "tree" && (
-                  <Pagination
-                    page={page}
-                    totalPages={totalPages}
-                    totalRecords={filteredAccounts.length}
-                    pageSize={pageSize}
-                    onPageChange={setPage}
-                    onPageSizeChange={(s) => {
-                      setPageSize(s);
-                      setPage(1);
-                    }}
-                  />
-                )}
+          <div>
+            <label className={labelCls}>Additional Dropdown Fields (max 3)</label>
+            {masterConfig.additionalDropdownFields.map((f, i) => (
+              <div key={i} className="flex gap-2 mb-1.5">
+                <select value={f.field} onChange={e => {
+                  const upd = [...masterConfig.additionalDropdownFields]; upd[i] = { ...upd[i], field: e.target.value };
+                  setMasterConfig(p => ({ ...p, additionalDropdownFields: upd }));
+                }} className={`${inputCls} flex-1`}>
+                  <option value="">— Select Field —</option>
+                  {["group", "city", "state", "gstin", "pan", "phone", "opening_balance", "credit_limit", "account_type"].map(v => (
+                    <option key={v} value={v}>{v.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</option>
+                  ))}
+                </select>
+                <input type="number" value={f.width} onChange={e => {
+                  const upd = [...masterConfig.additionalDropdownFields]; upd[i] = { ...upd[i], width: Number(e.target.value) };
+                  setMasterConfig(p => ({ ...p, additionalDropdownFields: upd }));
+                }} className="w-16 h-8 px-2 text-[11px] border border-gray-300 rounded" placeholder="Width" />
+                <button onClick={() => setMasterConfig(p => ({ ...p, additionalDropdownFields: p.additionalDropdownFields.filter((_, j) => j !== i) }))}
+                  className="h-8 w-8 flex items-center justify-center text-red-500 hover:bg-red-50 rounded">
+                  <X className="h-3.5 w-3.5" />
+                </button>
               </div>
-
-              {/* ── BULK ACTION BAR ───────────────────────────────────────────── */}
-              {getActiveSelectedList().length > 0 && (
-                <div className="sticky bottom-4 bg-gray-50 text-gray-800 rounded-xl shadow-xl border border-gray-300 px-4 py-3 flex items-center justify-between gap-3 animate-fadeIn">
-                  <div className="flex items-center gap-2 text-xs">
-                    <CheckSquare className="h-4 w-4 text-gray-800" />
-                    <span className="font-semibold">
-                      {getActiveSelectedList().length} account
-                      {getActiveSelectedList().length > 1 ? "s" : ""} selected
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => setSelectedIds({})}
-                      className="bg-transparent text-gray-800 border-gray-300 hover:bg-gray-50 text-xs"
-                    >
-                      Clear
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={handleBulkDeactivate}
-                      className="bg-transparent text-red-400 border-red-800/60 hover:bg-red-900/20 text-xs"
-                    >
-                      Deactivate
-                    </Button>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={handleBulkActivate}
-                      className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-xs"
-                    >
-                      Activate
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* ── RIGHT DETAIL PANEL ─────────────────────────────────────────────── */}
-            {selectedNode && selectedNode.level !== "root" && (
-              <div className="w-full lg:w-72 shrink-0 sticky top-6">
-                <div className="rounded-xl border border-gray-300 bg-white shadow-sm overflow-hidden">
-                  {/* Panel header */}
-                  <div
-                    className={`px-4 py-3 border-b border-gray-300 flex items-center justify-between ${TYPE_CONFIG[selectedNode.type].bg}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {selectedNode.isGroup ? (
-                        <FolderOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
-                      ) : (
-                        <BookOpen className={`h-4 w-4 ${TYPE_CONFIG[selectedNode.type].text}`} />
-                      )}
-                      <span
-                        className={`text-[11px] font-bold uppercase tracking-wide ${TYPE_CONFIG[selectedNode.type].text}`}
-                      >
-                        Account Details
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => setSelectedNode(null)}
-                      className="text-gray-800 hover:text-gray-800 text-[10px] font-bold border border-gray-300 bg-white rounded px-2 py-0.5 leading-none hover:bg-gray-50 transition"
-                    >
-                      ✕ Close
-                    </button>
-                  </div>
-
-                  <div className="p-4 flex flex-col gap-4">
-                    {/* Account title block */}
-                    <div>
-                      <p className="text-[13px] font-bold text-gray-800 leading-snug">
-                        {selectedNode.name}
-                      </p>
-                      {selectedNode.nameNepali && (
-                        <p className="text-[11px] text-gray-800 mt-0.5">
-                          {selectedNode.nameNepali}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        <span className="font-mono text-[10px] bg-gray-50 text-gray-800 px-2 py-0.5 rounded border border-gray-300 font-semibold">
-                          {selectedNode.code || "—"}
-                        </span>
-                        <span
-                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${TYPE_CONFIG[selectedNode.type].badge}`}
-                        >
-                          {TYPE_CONFIG[selectedNode.type].label}
-                        </span>
-                        <span className="text-[10px] font-medium text-gray-800 bg-gray-50 border border-gray-300 rounded px-2 py-0.5">
-                          {LEVEL_LABELS[selectedNode.level] || selectedNode.level}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Status */}
-                    <div className="flex items-center justify-between text-xs border border-gray-300 rounded-lg px-3 py-2 bg-gray-50">
-                      <span className="text-gray-800 font-medium">Status</span>
-                      <span
-                        className={`flex items-center gap-1.5 font-semibold text-[11px] ${selectedNode.isActive ? "text-emerald-600" : "text-red-500"}`}
-                      >
-                        <span
-                          className={`h-2 w-2 rounded-full ${selectedNode.isActive ? "bg-emerald-400" : "bg-red-400"}`}
-                        />
-                        {selectedNode.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-
-                    {/* Balance */}
-                    <div
-                      className={`rounded-lg border p-3 ${TYPE_CONFIG[selectedNode.type].bg} border-opacity-40`}
-                    >
-                      <p className="text-[10px] font-semibold text-gray-800 uppercase tracking-wider mb-1">
-                        Closing Balance
-                      </p>
-                      <p
-                        className={`text-[15px] font-bold font-mono leading-tight ${TYPE_CONFIG[selectedNode.type].text}`}
-                      >
-                        {formatDrCrBalance(selectedNode.balance, selectedNode.type)}
-                      </p>
-                      <p className="text-[10px] text-gray-800 mt-1 font-medium">
-                        As per posted vouchers
-                      </p>
-                    </div>
-
-                    {/* Voucher stats */}
-                    {detailPanelData && (
-                      <div className="flex flex-col gap-1.5 text-[11px]">
-                        <div className="flex items-center justify-between py-1.5 border-b border-gray-300">
-                          <span className="text-gray-800 font-medium">Voucher entries</span>
-                          <span className="font-mono font-semibold text-gray-800">
-                            {detailPanelData.transactionsCount}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between py-1.5 border-b border-gray-300">
-                          <span className="text-gray-800 font-medium">Last transaction</span>
-                          <span className="font-semibold text-gray-800">
-                            {detailPanelData.lastTxDate || "—"}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Quick actions */}
-                    <div className="flex flex-col gap-2 pt-1">
-                      <p className="text-[10px] font-bold text-gray-800 uppercase tracking-wider">
-                        Quick Actions
-                      </p>
-                      <button
-                        onClick={() => handleOpenEditModal(selectedNode.rowObject)}
-                        className="w-full px-3 py-2 bg-[#1557b0] hover:bg-[#0f4a96] text-white rounded-lg font-semibold text-[11px] text-left flex items-center justify-between transition"
-                      >
-                        <span>Edit This Account</span>
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCurrentPage("reports");
-                          setReportFilters({ selectedReport: "trial-balance" });
-                        }}
-                        className="w-full px-3 py-2 bg-gray-50 border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
-                      >
-                        <span>View Trial Balance</span>
-                        <ArrowRight className="h-3.5 w-3.5 text-gray-800" />
-                      </button>
-                      <button
-                        onClick={() => setCurrentPage("vouchers")}
-                        className="w-full px-3 py-2 bg-gray-50 border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-lg font-medium text-[11px] text-left flex items-center justify-between transition"
-                      >
-                        <span>View Vouchers</span>
-                        <ArrowRight className="h-3.5 w-3.5 text-gray-800" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            ))}
+            {masterConfig.additionalDropdownFields.length < 3 && (
+              <button onClick={() => setMasterConfig(p => ({ ...p, additionalDropdownFields: [...p.additionalDropdownFields, { field: "", width: 15 }] }))}
+                className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50 flex items-center gap-1.5 mt-1">
+                <Plus className="h-3 w-3" /> Add Field
+              </button>
             )}
           </div>
         </div>
+      </div>
 
-        {/* ── CREATE LEDGER MODAL ────────────────────────────────────────────────── */}
-        <Modal
-          isOpen={addModalOpen}
-          onClose={() => setAddModalOpen(false)}
-          title="Create Ledger / Group"
-          size="md"
-          footer={
-            <div className="flex justify-end gap-2">
-              <Button variant="default" size="sm" onClick={() => setAddModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="primary" size="sm" type="submit" form="add-ledger-form">
-                Create Account
-              </Button>
-            </div>
-          }
-        >
-          {renderLedgerForm(handleAddSubmit, "add-ledger-form")}
-        </Modal>
-
-        {/* ── ALTER LEDGER MODAL ─────────────────────────────────────────────────── */}
-        <Modal
-          isOpen={editModalOpen}
-          onClose={() => setEditModalOpen(false)}
-          title="Alter Ledger / Group"
-          size="md"
-          footer={
-            <div className="flex justify-between items-center w-full">
-              {selectedNode?.rowObject && !selectedNode.rowObject.isSystemAccount ? (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => {
-                    setConfirmDeleteAccount(selectedNode.rowObject || null);
-                    setEditModalOpen(false);
-                  }}
-                  className="text-red-600 hover:bg-red-50 border-red-200"
-                  icon={<Trash2 className="h-3.5 w-3.5" />}
-                >
-                  Delete
-                </Button>
-              ) : (
-                <span />
-              )}
-              <div className="flex gap-2">
-                <Button variant="default" size="sm" onClick={() => setEditModalOpen(false)}>
-                  Cancel
-                </Button>
-                <Button variant="primary" size="sm" type="submit" form="edit-ledger-form">
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          }
-        >
-          {renderLedgerForm(handleEditSubmit, "edit-ledger-form")}
-        </Modal>
-
-        {/* ── IMPORT MODAL ───────────────────────────────────────────────────────── */}
-        <Modal
-          isOpen={importModalOpen}
-          onClose={() => setImportModalOpen(false)}
-          title="Import Chart of Accounts"
-          size="md"
-          footer={
-            <div className="flex justify-end gap-2">
-              <Button variant="default" size="sm" onClick={() => setImportModalOpen(false)}>
-                Close
-              </Button>
-            </div>
-          }
-        >
-          <div className="flex flex-col gap-4 text-xs">
-            <p className="text-gray-800 leading-relaxed">
-              Import accounts from a CSV file. Download the template first to ensure correct column
-              mapping.
-            </p>
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 flex items-center justify-between gap-3">
-              <div>
-                <p className="font-semibold text-gray-800 text-[11px]">Import Template (CSV)</p>
-                <p className="text-[10px] text-gray-800 mt-0.5">
-                  Pre-formatted columns for correct import
-                </p>
-              </div>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleDownloadTemplate}
-                icon={<Download className="h-3.5 w-3.5" />}
-              >
-                Download
-              </Button>
-            </div>
-            <div
-              className="border-2 border-dashed border-gray-300 rounded-xl text-center flex flex-col items-center justify-center gap-3 py-8 bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <div className="p-2.5 bg-gray-200 rounded-full">
-                <FileSpreadsheet className="h-5 w-5 text-gray-800" />
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800">Click to upload CSV file</p>
-                <p className="text-[10px] text-gray-800 mt-0.5">Accepts .csv format only</p>
-              </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  fileInputRef.current?.click();
-                }}
-                className="px-4 py-1.5 bg-gray-200 hover:bg-gray-200 text-gray-800 rounded-lg font-semibold text-[11px] transition"
-              >
-                Select File
-              </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImportCSVData}
-                accept=".csv"
-                className="hidden"
-              />
+      {/* Bottom Panel */}
+      <div className="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
+        <div className={sectionHdr + " -mx-3 mb-3"}>Bottom Panel Configuration</div>
+        <label className="flex items-center gap-2 mb-3 cursor-pointer">
+          <input type="checkbox" checked={masterConfig.showBottomPanel} onChange={e => setMasterConfig(p => ({ ...p, showBottomPanel: e.target.checked }))} className="h-4 w-4 rounded accent-[#1557b0]" />
+          <span className="text-[12px] font-medium text-gray-700">Show Additional Information in Bottom of List</span>
+        </label>
+        {masterConfig.showBottomPanel && (
+          <div>
+            <label className={labelCls}>Fields to show in bottom panel</label>
+            <div className="grid grid-cols-3 gap-1.5">
+              {["Name", "Alias", "Group", "Address", "City", "State", "PIN Code", "Phone", "Mobile", "Email", "GSTIN", "PAN", "Registration Type", "Opening Balance", "Account Type", "Credit Limit", "TDS Applicable"].map(f => (
+                <label key={f} className="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked={masterConfig.bottomPanelFields.includes(f)}
+                    onChange={e => setMasterConfig(p => ({
+                      ...p,
+                      bottomPanelFields: e.target.checked ? [...p.bottomPanelFields, f] : p.bottomPanelFields.filter(x => x !== f)
+                    }))} className="h-3.5 w-3.5 rounded accent-[#1557b0]" />
+                  <span className="text-[11px] text-gray-700">{f}</span>
+                </label>
+              ))}
             </div>
           </div>
-        </Modal>
+        )}
+      </div>
 
-        {/* ── DELETE CONFIRM ─────────────────────────────────────────────────────── */}
-        <ConfirmDialog
-          isOpen={confirmDeleteAccount !== null}
-          onClose={() => setConfirmDeleteAccount(null)}
-          onConfirm={handleConfirmDelete}
-          title="Delete Account"
-          message={`Are you sure you want to permanently delete '${confirmDeleteAccount?.name}' (${confirmDeleteAccount?.code})? This cannot be undone.`}
-          confirmText="Yes, Delete"
-          cancelText="Cancel"
-          danger={true}
-        />
-      </FormPanel>
+      {/* Optional Fields */}
+      <div className="p-3 bg-gray-50 rounded border border-gray-200">
+        <div className={sectionHdr + " -mx-3 mb-3"}>Optional / Additional Fields (up to 10)</div>
+        {masterConfig.optionalFields.map((f, i) => (
+          <div key={f.id} className="border border-gray-200 rounded p-3 mb-2 bg-white">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className={labelCls}>Field Name</label>
+                <input value={f.name} onChange={e => { const upd = [...masterConfig.optionalFields]; upd[i] = { ...upd[i], name: e.target.value }; setMasterConfig(p => ({ ...p, optionalFields: upd })); }}
+                  className={inputCls} placeholder="e.g. Contact Person" />
+              </div>
+              <div>
+                <label className={labelCls}>Data Type</label>
+                <select value={f.dataType} onChange={e => { const upd = [...masterConfig.optionalFields]; upd[i] = { ...upd[i], dataType: e.target.value as any }; setMasterConfig(p => ({ ...p, optionalFields: upd })); }} className={inputCls}>
+                  <option value="text">Text</option>
+                  <option value="numeric">Numeric</option>
+                  <option value="date">Date</option>
+                  <option value="list">List (Dropdown)</option>
+                  <option value="yesno">Yes/No</option>
+                </select>
+              </div>
+              {f.dataType === "list" && (
+                <div className="col-span-2">
+                  <label className={labelCls}>List Values (comma separated)</label>
+                  <input value={f.listValues || ""} onChange={e => { const upd = [...masterConfig.optionalFields]; upd[i] = { ...upd[i], listValues: e.target.value }; setMasterConfig(p => ({ ...p, optionalFields: upd })); }}
+                    className={inputCls} placeholder="A,B,C or North,South,East" />
+                </div>
+              )}
+              <div className="flex items-center gap-3">
+                <label className="flex items-center gap-1.5 cursor-pointer text-[11px]">
+                  <input type="checkbox" checked={f.mandatory} onChange={e => { const upd = [...masterConfig.optionalFields]; upd[i] = { ...upd[i], mandatory: e.target.checked }; setMasterConfig(p => ({ ...p, optionalFields: upd })); }} className="h-3.5 w-3.5 rounded accent-[#1557b0]" /> Mandatory
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer text-[11px]">
+                  <input type="checkbox" checked={f.maintainDB} onChange={e => { const upd = [...masterConfig.optionalFields]; upd[i] = { ...upd[i], maintainDB: e.target.checked }; setMasterConfig(p => ({ ...p, optionalFields: upd })); }} className="h-3.5 w-3.5 rounded accent-[#1557b0]" /> Maintain Database
+                </label>
+              </div>
+              <div className="flex justify-end">
+                <button onClick={() => setMasterConfig(p => ({ ...p, optionalFields: p.optionalFields.filter((_, j) => j !== i) }))}
+                  className="h-7 px-2 bg-red-50 text-red-600 text-[11px] rounded border border-red-200 hover:bg-red-100">Remove</button>
+              </div>
+            </div>
+          </div>
+        ))}
+        {masterConfig.optionalFields.length < 10 && (
+          <button onClick={() => setMasterConfig(p => ({ ...p, optionalFields: [...p.optionalFields, { id: `opt-${Date.now()}`, name: "", dataType: "text", mandatory: false, maintainDB: true }] }))}
+            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50 flex items-center gap-1.5">
+            <Plus className="h-3 w-3" /> Add Optional Field
+          </button>
+        )}
+      </div>
     </div>
   );
-});
+
+  // ─── LIST VIEW ────────────────────────────────────────────────────────────
+  function renderTreeRow(item: any) {
+    const isGroup = item.kind === "group";
+    const isExpanded = expandedIds.has(item.id);
+    const hasChildren = isGroup && (item.children?.length > 0 || item.ledgers?.length > 0);
+    const color = CATEGORY_COLORS[item.category] || "#6b7280";
+    const group = !isGroup ? allGroups.find(g => g.id === item.groupId) : null;
+    const nature = item.nature || group?.nature || "debit";
+    const balance = isGroup ? getGroupBalance(item.id) : (item.balance || 0);
+    const isSelected = selectedId === item.id;
+    const isSystem = item.isSystem;
+
+    return (
+      <React.Fragment key={item.id}>
+        <tr
+          onClick={() => { setSelectedId(item.id); if (isGroup && hasChildren) toggleExpand(item.id); }}
+          onDoubleClick={() => isGroup ? openEditGroup(item) : openEditLedger(item)}
+          className={`cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors ${isSelected ? "bg-blue-50" : ""}`}
+        >
+          {/* Expand + Name */}
+          <td className="px-2 py-1.5" style={{ paddingLeft: `${8 + (item.depth || 0) * 18}px` }}>
+            <div className="flex items-center gap-1.5">
+              {isGroup && hasChildren ? (
+                <button onClick={e => { e.stopPropagation(); toggleExpand(item.id); }}
+                  className="p-0.5 rounded text-gray-400 hover:text-gray-600">
+                  {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                </button>
+              ) : <span className="w-4 shrink-0" />}
+
+              {isGroup
+                ? <FolderOpen className="h-3.5 w-3.5 shrink-0" style={{ color }} />
+                : <BookOpen className="h-3 w-3 shrink-0 text-gray-400" />
+              }
+
+              <span className={`text-[12px] ${isGroup ? "font-semibold" : "font-medium"} text-gray-800 truncate max-w-[260px]`}>
+                {item.name}
+              </span>
+              {item.alias && <span className="text-[10px] text-gray-400 ml-1">({item.alias})</span>}
+              {isSystem && <span className="ml-1 px-1 bg-amber-50 border border-amber-200 text-amber-700 text-[9px] font-bold rounded">SYS</span>}
+              {isGroup && item.isPrimary && <span className="ml-1 px-1 bg-gray-100 border border-gray-300 text-gray-600 text-[9px] font-bold rounded">PRIMARY</span>}
+            </div>
+          </td>
+
+          {/* Group / Parent */}
+          <td className="px-3 py-1.5 text-[11px] text-gray-500 max-w-[160px] truncate">
+            {isGroup
+              ? (item.isPrimary ? item.category : allGroups.find(g => g.id === item.parentId)?.name || "—")
+              : (group?.name || "—")}
+          </td>
+
+          {/* Account Type */}
+          <td className="px-3 py-1.5">
+            {!isGroup && (
+              <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${
+                item.accountType === "Bank" ? "bg-blue-100 text-blue-700" :
+                item.accountType === "Cash" ? "bg-green-100 text-green-700" :
+                item.accountType === "Party" ? "bg-purple-100 text-purple-700" :
+                "bg-gray-100 text-gray-600"
+              }`}>{item.accountType}</span>
+            )}
+          </td>
+
+          {/* Nature */}
+          <td className="px-3 py-1.5">
+            <span className={`text-[10px] font-bold ${nature === "credit" ? "text-green-600" : "text-blue-600"}`}>
+              {nature === "credit" ? "Cr" : "Dr"}
+            </span>
+          </td>
+
+          {/* Balance */}
+          <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-700">
+            {balance !== 0 ? fmt(balance) : "—"}
+          </td>
+
+          {/* GSTIN */}
+          <td className="px-3 py-1.5 text-[11px] text-gray-500 font-mono">
+            {!isGroup && item.gstin ? item.gstin.slice(0, 15) : ""}
+          </td>
+
+          {/* Actions */}
+          <td className="px-2 py-1.5 text-right">
+            <div className="flex items-center gap-0.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={e => { e.stopPropagation(); isGroup ? openEditGroup(item) : openEditLedger(item); }}
+                className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-blue-50">
+                <Edit2 className="h-3 w-3" />
+              </button>
+              <button onClick={e => { e.stopPropagation(); isGroup ? copyGroup(item) : copyLedger(item); }}
+                className="p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                <Copy className="h-3 w-3" />
+              </button>
+              {!isSystem && (
+                <button onClick={e => { e.stopPropagation(); isGroup ? confirmDeleteGroup(item) : confirmDeleteLedger(item); }}
+                  className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50">
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          </td>
+        </tr>
+      </React.Fragment>
+    );
+  }
+
+  function renderCategorySection(cat: string, nodes: any[]) {
+    const catColor = CATEGORY_COLORS[cat] || "#6b7280";
+    const catBalance = nodes.reduce((s, n) => s + getGroupBalance(n.id), 0);
+    return (
+      <React.Fragment key={cat}>
+        <tr className="border-b-2" style={{ borderColor: catColor + "40" }}>
+          <td colSpan={7} className="px-3 py-1.5" style={{ backgroundColor: catColor + "12" }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: catColor }}>{cat}</span>
+              <span className="text-[11px] font-mono font-semibold" style={{ color: catColor }}>
+                {catBalance !== 0 ? fmt(catBalance) : ""}
+              </span>
+            </div>
+          </td>
+        </tr>
+        {nodes.map(n => renderGroupNode(n))}
+      </React.Fragment>
+    );
+  }
+
+  function renderGroupNode(node: any): React.ReactNode {
+    const isExpanded = expandedIds.has(node.id);
+    const rows: React.ReactNode[] = [renderTreeRow(node)];
+    if (isExpanded) {
+      node.ledgers?.forEach((l: any) => { rows.push(renderTreeRow({ ...l, kind: "ledger", depth: (node.depth || 0) + 1 })); });
+      node.children?.forEach((child: any) => { rows.push(...(renderGroupNode(child) as any)); });
+    }
+    return rows;
+  }
+
+  // ─── SELECTED ITEM BOTTOM PANEL ───────────────────────────────────────────
+  const selectedItem = selectedId
+    ? (allLedgers.find(l => l.id === selectedId) || allGroups.find(g => g.id === selectedId))
+    : null;
+  const selectedIsLedger = selectedId ? !!allLedgers.find(l => l.id === selectedId) : false;
+
+  // ─── RENDER ───────────────────────────────────────────────────────────────
+  if (activePanel === "addGroup" || activePanel === "editGroup") {
+    return <div className="h-full overflow-y-auto bg-white">{renderGroupForm()}</div>;
+  }
+  if (activePanel === "addLedger" || activePanel === "editLedger") {
+    return <div className="h-full overflow-y-auto bg-white">{renderLedgerForm()}</div>;
+  }
+  if (activePanel === "features") {
+    return <div className="h-full overflow-y-auto bg-white">{renderFeatures()}</div>;
+  }
+  if (activePanel === "masterConfig") {
+    return <div className="h-full overflow-y-auto bg-white">{renderMasterConfig()}</div>;
+  }
+  if (activePanel === "deleteConfirm") {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="bg-white border border-gray-200 rounded-xl p-6 max-w-sm w-full shadow-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+            </div>
+            <div>
+              <h3 className="text-[14px] font-bold text-gray-800">Confirm Delete</h3>
+              <p className="text-[12px] text-gray-500">This action cannot be undone.</p>
+            </div>
+          </div>
+          <p className="text-[12px] text-gray-700 mb-4">
+            Are you sure you want to delete <strong>"{deleteTarget?.name}"</strong>?
+          </p>
+          <div className="flex gap-2 justify-end">
+            <button onClick={() => { setDeleteTarget(null); setActivePanel("list"); }}
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50">
+              Cancel (No)
+            </button>
+            <button onClick={executeDelete}
+              className="h-8 px-3 bg-red-600 text-white text-[12px] font-medium rounded hover:bg-red-700">
+              Yes, Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Main List View ────────────────────────────────────────────────────────
+  const isSearchActive = searchTerm.trim().length > 0 || filterGroup !== "ALL" || filterType !== "ALL";
+  const displayRows = isSearchActive ? flatList : null;
+
+  return (
+    <div className="flex flex-col h-full bg-[#f5f6fa]">
+      {/* ── Top Header ── */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {allGroups.length} groups · {allLedgers.length} ledgers
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {clipboardItem && (
+            <button onClick={pasteCopied}
+              className="h-7 px-2 bg-amber-50 border border-amber-300 text-amber-700 text-[11px] rounded flex items-center gap-1 hover:bg-amber-100">
+              <Copy className="h-3 w-3" /> Paste ({clipboardItem.data.name.slice(0, 15)})
+            </button>
+          )}
+          <button onClick={() => setActivePanel("features")}
+            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50">
+            <Settings className="h-3.5 w-3.5" /> Features
+          </button>
+          <button onClick={() => setActivePanel("masterConfig")}
+            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50">
+            <Settings className="h-3.5 w-3.5" /> Master Config
+          </button>
+          <button onClick={exportToExcel}
+            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50">
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
+          <button onClick={() => openAddGroup()}
+            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50">
+            <Plus className="h-3.5 w-3.5" /> Add Group (F3)
+          </button>
+          <button onClick={() => openAddLedger()}
+            className="h-7 px-2 bg-[#1557b0] text-white text-[11px] font-medium rounded flex items-center gap-1 hover:bg-[#0f4a96]">
+            <Plus className="h-3.5 w-3.5" /> Add Ledger
+          </button>
+        </div>
+      </div>
+
+      {/* ── Search & Filter bar ── */}
+      <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-200">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search by name, alias, GSTIN..."
+            className="h-7 pl-8 pr-3 text-[11px] border border-gray-300 rounded w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]" />
+        </div>
+        <select value={filterGroup} onChange={e => setFilterGroup(e.target.value)}
+          className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none">
+          <option value="ALL">All Groups</option>
+          {allGroups.map(g => <option key={g.id} value={g.id}>{g.isPrimary ? g.name : `  ${g.name}`}</option>)}
+        </select>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)}
+          className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none">
+          <option value="ALL">All Types</option>
+          <option value="group">Groups Only</option>
+          {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        {isSearchActive && (
+          <button onClick={() => { setSearchTerm(""); setFilterGroup("ALL"); setFilterType("ALL"); }}
+            className="h-7 px-2 text-[11px] text-red-600 border border-red-200 rounded hover:bg-red-50">
+            Clear Filters
+          </button>
+        )}
+        <div className="ml-auto flex items-center gap-2 text-[10px] text-gray-400">
+          <span>F3=Add Ledger · DblClick=Edit · F8=Delete</span>
+        </div>
+      </div>
+
+      {/* ── Table ── */}
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-auto">
+          <table className="w-full text-[12px] border-collapse">
+            <thead className="sticky top-0 bg-gray-50 z-10">
+              <tr className="border-b-2 border-gray-200">
+                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Name / Group</th>
+                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Under / Category</th>
+                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
+                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nature</th>
+                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Balance</th>
+                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">GSTIN</th>
+                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isSearchActive ? (
+                displayRows!.map(item => renderTreeRow(item))
+              ) : (
+                CATEGORY_ORDER.map(cat => {
+                  const nodes = tree[cat];
+                  if (!nodes?.length) return null;
+                  return renderCategorySection(cat, nodes);
+                })
+              )}
+              {isSearchActive && displayRows!.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-[12px] text-gray-500">
+                    <Search className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                    No accounts match your search.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── Bottom Panel (Selected Item Details) ── */}
+        {masterConfig.showBottomPanel && selectedItem && selectedIsLedger && (
+          <div className="border-t-2 border-gray-200 bg-white px-4 py-2 min-h-[80px]">
+            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5">Account Details</div>
+            <div className="grid grid-cols-4 gap-x-6 gap-y-1">
+              {masterConfig.bottomPanelFields.map(f => {
+                const l = selectedItem as Ledger;
+                const val = (() => {
+                  switch (f) {
+                    case "Name": return l.name;
+                    case "Alias": return l.alias;
+                    case "Group": return allGroups.find(g => g.id === l.groupId)?.name;
+                    case "Address": return l.address;
+                    case "City": return l.state;
+                    case "State": return l.state;
+                    case "PIN Code": return l.pinCode;
+                    case "Phone": return l.phone;
+                    case "Mobile": return l.mobile;
+                    case "Email": return l.email;
+                    case "GSTIN": return l.gstin;
+                    case "PAN": return l.pan;
+                    case "Registration Type": return l.registrationType;
+                    case "Opening Balance": return l.openingBalance ? `${fmt(l.openingBalance)} ${l.openingBalanceType}` : "—";
+                    case "Account Type": return l.accountType;
+                    case "Credit Limit": return l.creditLimit ? `Rs. ${l.creditLimit.toLocaleString()}` : "No limit";
+                    case "TDS Applicable": return l.tdsApplicable ? "Yes" : "No";
+                    default: return "";
+                  }
+                })();
+                if (!val) return null;
+                return (
+                  <div key={f}>
+                    <span className="text-[10px] text-gray-400">{f}: </span>
+                    <span className="text-[11px] text-gray-700 font-medium">{val}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Status bar ── */}
+        <div className="px-4 py-1 bg-[#f5f6fa] border-t border-gray-200 text-[10px] text-gray-500 flex items-center gap-4">
+          <span>Total Groups: <strong>{allGroups.length}</strong></span>
+          <span>Primary: <strong>{allGroups.filter(g => g.isPrimary).length}</strong></span>
+          <span>Sub-Groups: <strong>{allGroups.filter(g => !g.isPrimary).length}</strong></span>
+          <span>Ledgers: <strong>{allLedgers.length}</strong></span>
+          {features.subLedgers && <span>Sub-Ledgers: <strong>{allLedgers.filter(l => l.ledgerType === "Sub Ledger").length}</strong></span>}
+          <span className="ml-auto">F3=Add Ledger · Double-click=Edit · Esc=Cancel</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default ChartOfAccounts;
