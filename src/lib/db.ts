@@ -294,7 +294,8 @@ export interface DBInvoice {
   linkedDcId?: string;
   linkedDocuments?: WorkflowDocRef[];
   workflowStatus?: WorkflowStatus;
-  cbmsStatus?: "pending" | "failed" | "success" | "submitted" | "cancelled";
+  cbmsEnabled?: boolean;
+  cbmsStatus?: "pending" | "failed" | "cancelled" | "submitted";
   cbmsIrn?: string;
   cbmsQrCode?: string;
   cbmsQrString?: string;
@@ -1129,6 +1130,7 @@ export class SutraERPDatabase extends Dexie {
   materialReceived!: Table<any>;
   stockCategories!: Table<any>;
   voucherTypeMasters!: Table<any>;
+  voucherSeriesConfig!: Table<any>;
   scenarios!: Table<any>;
   costCategories!: Table<any>;
   costCentreClasses!: Table<any>;
@@ -1246,6 +1248,7 @@ export class SutraERPDatabase extends Dexie {
       materialReceived: "id, receiveNo, date, status, createdAt",
       stockCategories: "id, name, parentId, isActive, createdAt",
       voucherTypeMasters: "id, name, type, isActive, createdAt",
+      voucherSeriesConfig: "++id, seriesName, voucherType, format",
       scenarios: "id, name, isActive, createdAt",
       costCategories: "id, name, isActive, createdAt",
       costCentreClasses: "id, name, isActive, createdAt",
@@ -1305,8 +1308,13 @@ export async function resetDB(): Promise<SutraERPDatabase> {
   return _db;
 }
 
-// Named alias used by some pages
-export const db = getDB();
+// db alias removed to enforce getDB() factory
+
+export const generateSerialNumber = async (prefix: string, table: keyof SutraERPDatabase) => {
+  const db = getDB();
+  const count = await (db[table] as any).count();
+  return `${prefix}${String(count + 1).padStart(5, '0')}`;
+};
 
 export default getDB;
 

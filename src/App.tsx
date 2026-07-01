@@ -32,7 +32,7 @@ import InterestCalculation from "./pages/InterestCalculation";
 import StockSummary from "./pages/StockSummary";
 import BudgetMaster from "./pages/BudgetMaster";
 import FiscalYear from "./pages/FiscalYear";
-import AuditLog from "./pages/AuditLog";
+import AuditLogs from "./components/AuditLogs";
 import IncomeExpenditureAccount from "./pages/IncomeExpenditureAccount";
 import AccountsConfiguration from "./pages/AccountsConfiguration";
 import SalesPersons from "./pages/SalesPersons";
@@ -60,6 +60,13 @@ import ItemGroupMaster from "./pages/ItemGroupMaster";
 import StockJournalPage from "./pages/StockJournalPage";
 import ProductionPage from "./pages/ProductionPage";
 import InventoryReport from "./pages/InventoryReport";
+import ComingSoonPage from "./pages/ComingSoonPage";
+import POSMode from "./pages/POSMode";
+import SystemSettings from "./components/SystemSettings";
+import Gateway from "./components/Gateway";
+import ReportHub from "./components/ReportHub";
+import Backup from "./pages/Backup";
+import Users from "./pages/UsersManagement";
 import SignUpWizard from "./components/auth/SignUpWizard";
 import GatewayScreen from "./components/auth/GatewayScreen";
 import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
@@ -244,12 +251,70 @@ const App: React.FC = () => {
 
       // Company / Utilities
       case "fiscal-year": return <FiscalYear />;
-      case "audit-log": return <AuditLog />;
+      case "audit-log": 
+      case "audit-logs": return <AuditLogs />;
       case "accounts-configuration": return <AccountsConfiguration />;
       case "inventory-config":
       case "inventory-configuration": return <InventoryConfiguration />;
       case "payroll":
       case "salary-process": return <Payroll />;
+
+      case "settings":
+      case "company-settings": return <SystemSettings />;
+      case "backup":
+      case "backup-restore": return <Backup />;
+      case "users": return <Users />;
+      case "pos":
+      case "pos-mode": return <POSMode />;
+      case "gateway": return <Gateway />;
+      case "reports-hub": return <ReportHub />;
+
+      case "configuration-hub":
+      case "data-import-export":
+      case "price-list-master":
+      case "journal-register":
+      case "approval-workflow":
+      case "missing-vouchers":
+      case "funds-flow":
+      case "stock-categories":
+      case "serial-tracking":
+      case "bom-production":
+      case "sales-order-outstanding":
+      case "purchase-order-outstanding":
+      case "debtors-aging":
+      case "creditors-aging":
+      case "bank-reconciliation":
+      case "gst-reports":
+      case "tds-reports":
+      case "tds-report":
+      case "cbms-dashboard":
+      case "sales-purchase-analysis":
+      case "price-history":
+      case "payroll-reports":
+      case "budgets":
+      case "statistics-report":
+      case "exception-reports":
+      case "party-reconciliation":
+      case "credit-limit-manager":
+      case "advanced-tax-compliance":
+      case "cost-center-report":
+      case "bank-statement-import":
+      case "tally-vault":
+      case "security-control":
+      case "roles-management":
+      case "control-centre":
+      case "audit-trail":
+      case "period-lock":
+      case "print-configuration":
+      case "f11-features":
+      case "f11-company-features":
+      case "bulk-updations":
+      case "troubleshooting":
+      case "communication-hub":
+      case "year-end-process":
+      case "company-info":
+      case "opening-balance":
+        return <ComingSoonPage pageKey={currentPage} />;
 
       default:
         return <Dashboard />;

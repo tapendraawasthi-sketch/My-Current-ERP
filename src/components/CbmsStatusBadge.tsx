@@ -18,8 +18,9 @@ const CbmsStatusBadge: React.FC<CbmsStatusBadgeProps> = ({ invoice, onUpdated })
   const [submitting, setSubmitting] = useState(false);
 
   const status = useMemo(() => {
-    if (invoice.cbmsSubmitted && invoice.cbmsIrn) return "submitted";
+    if (invoice.cbmsStatus === "submitted" || (invoice.cbmsSubmitted && invoice.cbmsIrn)) return "submitted";
     if (invoice.cbmsStatus === "failed" || invoice.cbmsError) return "failed";
+    if (invoice.cbmsStatus === "cancelled") return "cancelled";
     return "pending";
   }, [invoice]);
 

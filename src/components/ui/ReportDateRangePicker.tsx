@@ -109,16 +109,12 @@ const ReportDateRangePicker: React.FC<Props> = ({
           label="From Date"
           value={value.fromDate}
           onChange={date => { setActivePreset(null); onChange({ ...value, fromDate: date }); }}
-          maxDate={value.toDate || undefined}
-          placeholder="Select start date (BS)"
           required
         />
         <NepaliDatePicker
           label="To Date"
           value={value.toDate}
           onChange={date => { setActivePreset(null); onChange({ ...value, toDate: date }); }}
-          minDate={value.fromDate || undefined}
-          placeholder="Select end date (BS)"
           required
         />
       </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Eye, EyeOff, Building2, ArrowLeft, AlertCircle } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { getDB } from "@/lib/db";
 
 function formatLoginDate(isoString: string): string {
   const d = new Date(isoString);
@@ -21,12 +22,6 @@ export default function CompanyLoginScreen() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
-  const [lockoutCountdown, setLockoutCountdown] = useState(0);
-  const attemptKey = `loginAttempts_${companySettings?.id || "default"}`;
-  const [failedAttempts, setFailedAttempts] = useState(() =>
-    parseInt(localStorage.getItem(attemptKey) || "0", 10),
-  );
 
   const usernameRef = useRef<HTMLInputElement>(null);
 
@@ -42,22 +37,6 @@ export default function CompanyLoginScreen() {
     return () => document.removeEventListener("keydown", handler);
   }, [isSubmitting]);
 
-  useEffect(() => {
-    if (failedAttempts >= 5 && !isLocked) {
-      setIsLocked(true);
-      setLockoutCountdown(30);
-    }
-  }, [failedAttempts]);
-
-  useEffect(() => {
-    if (lockoutCountdown > 0) {
-      const t = setTimeout(() => setLockoutCountdown((c) => c - 1), 1000);
-      return () => clearTimeout(t);
-    } else if (lockoutCountdown === 0 && isLocked) {
-      setIsLocked(false);
-    }
-  }, [lockoutCountdown, isLocked]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -72,8 +51,12 @@ export default function CompanyLoginScreen() {
       return;
     }
 
-    if (isLocked) {
-      setError(`Account locked. Please wait ${lockoutCountdown} seconds before trying again.`);
+    const db = getDB();
+    const user = await db.users.where("username").equals(username.trim()).first();
+    
+    if (user?.lockedUntil && Date.now() < new Date(user.lockedUntil).getTime()) {
+      const remaining = Math.ceil((new Date(user.lockedUntil).getTime() - Date.now()) / 1000);
+      setError(`Account locked. Try again in ${remaining}s.`);
       return;
     }
 
@@ -81,16 +64,16 @@ export default function CompanyLoginScreen() {
     try {
       const success = await login(username.trim(), password);
       if (!success) {
-        const newCount = failedAttempts + 1;
-        setFailedAttempts(newCount);
-        localStorage.setItem(attemptKey, String(newCount));
-        if (newCount >= 5) {
-          setError("Too many failed attempts. Account locked for 30 seconds.");
-        } else {
-          setError(`Invalid username or password. ${5 - newCount} attempt(s) remaining.`);
+        const attempts = (user?.failedAttempts || 0) + 1;
+        const patch: any = { failedAttempts: attempts };
+        if (attempts >= 5) {
+          patch.lockedUntil = new Date(Date.now() + 30000).toISOString();
+          patch.failedAttempts = 0;
         }
-      } else {
-        localStorage.setItem(attemptKey, "0");
+        if (user) await db.users.update(user.id, patch);
+        setError(attempts >= 5 ? "Account locked for 30 seconds." : `Invalid credentials. ${5 - attempts} attempt(s) left.`);
+      } else if (user) {
+        await db.users.update(user.id, { failedAttempts: 0, lockedUntil: null });
       }
     } catch {
       setError("Sign in failed. Please try again.");

@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Printer, Download } from "lucide-react";
+import { formatMoney } from "@/lib/currency";
 
 interface Invoice {
   id: string;
@@ -376,24 +377,24 @@ export default function InvoicePrint({
                     <div className="flex justify-between">
                       <span className="text-[#000000]">Subtotal:</span>
                       <span className="font-mono font-semibold">
-                        Rs. {invoice.subtotal.toFixed(2)}
+                        {formatMoney(invoice.subtotal)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#000000]">Discount:</span>
                       <span className="font-mono text-[#000000]">
-                        (-) Rs. {invoice.discount.toFixed(2)}
+                        (-) {formatMoney(invoice.discount)}
                       </span>
                     </div>
                     <div className="flex justify-between pt-1 border-t border-[#9DC07A]">
                       <span className="text-[#000000]">Taxable Value:</span>
                       <span className="font-mono font-bold text-[#000000]">
-                        Rs. {invoice.taxable.toFixed(2)}
+                        {formatMoney(invoice.taxable)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#000000]">VAT (13%):</span>
-                      <span className="font-mono">Rs. {invoice.vat.toFixed(2)}</span>
+                      <span className="font-mono">{formatMoney(invoice.vat)}</span>
                     </div>
                   </div>
                   <div className="bg-[#3D6B25] text-white px-3 py-2 flex justify-between items-center">
@@ -401,7 +402,7 @@ export default function InvoicePrint({
                       Grand Total:
                     </span>
                     <span className="font-mono text-[14px] font-bold">
-                      Rs. {invoice.total.toFixed(2)}
+                      {formatMoney(invoice.total)}
                     </span>
                   </div>
                 </div>
