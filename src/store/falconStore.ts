@@ -102,11 +102,18 @@ export const useFalconStore = create<FalconState>()(
         // Small delay so the chat feels natural
         await new Promise((resolve) => setTimeout(resolve, 250));
 
-        const result = askFalcon(clean, get().context.route);
+        // Build conversation history from current messages (last 6, excluding welcome)
+        const recentMessages = get()
+          .messages.filter((m) => m.id !== "welcome")
+          .slice(-6)
+          .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
+        const result = askFalcon(clean, get().context.route, recentMessages);
 
         let content = result.answer;
-        if (result.confidence > 0 && result.confidence < 2.0 && get().context.route) {
-            content += getPageHint(get().context.route);
+        // Only append the page hint for very low-confidence answers (not for reasoning results)
+        if (result.confidence > 0 && result.confidence < 10 && get().context.route) {
+          content += getPageHint(get().context.route);
         }
 
         const assistantMessage: FalconMessage = {

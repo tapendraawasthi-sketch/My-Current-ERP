@@ -23,6 +23,31 @@ export function tokenize(text: string): string[] {
     .filter((t) => t.length > 1 && !STOPWORDS.has(t));
 }
 
+/**
+ * Jaccard similarity between two text strings.
+ *
+ * Converts both strings to token sets (after normalisation and stop-word
+ * removal) then returns |intersection| / |union|.  Returns 0 when both sets
+ * are empty after filtering (prevents a nonsensical 1.0 result for blank
+ * strings) and 1 when both produce the exact same token set.
+ *
+ * Range: [0, 1].
+ */
+export function sentenceSimilarity(a: string, b: string): number {
+  const setA = new Set(tokenize(a));
+  const setB = new Set(tokenize(b));
+  if (setA.size === 0 && setB.size === 0) return 0;
+  if (setA.size === 0 || setB.size === 0) return 0;
+
+  let intersectionCount = 0;
+  for (const token of setA) {
+    if (setB.has(token)) intersectionCount++;
+  }
+
+  const unionCount = setA.size + setB.size - intersectionCount;
+  return intersectionCount / unionCount;
+}
+
 // Equivalence groups widen recall WITHOUT discarding the original word.
 export const SYNONYM_GROUPS: string[][] = [
   ["invoice", "bill", "billing", "bills", "invoices"],
