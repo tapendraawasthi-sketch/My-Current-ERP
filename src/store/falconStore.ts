@@ -102,7 +102,7 @@ function buildFallbackResponse(text: string, category: QuestionCategory, route: 
     if (module) {
       return `Here is some information about the **${safeRoute}** module:\n\n` +
              `${module.description}\n\n**How to use:**\n- ` + module.howToUse.join('\n- ') +
-             `\n\n*(Note: Set your Together AI API key in settings for full conversational capability)*`;
+             `\n\n*(Note: Set your Groq API key in settings for full conversational capability)*`;
     }
     return `I am currently in fallback mode (API key not set). Please provide an API key in the settings to get detailed ERP assistance.`;
   }
@@ -132,7 +132,7 @@ function buildFallbackResponse(text: string, category: QuestionCategory, route: 
     return "I couldn't calculate that in fallback mode.";
   }
   
-  return `Please set your Together AI API key in settings to unlock my full reasoning and search capabilities!`;
+  return `Please set your Groq API key in settings to unlock my full reasoning and search capabilities!`;
 }
 
 export const useFalconStore = create<FalconState>()(
@@ -253,7 +253,7 @@ export const useFalconStore = create<FalconState>()(
 
             if (!response.ok) {
               if (response.status === 401) {
-                assistantMsg.content = "Please set your Together AI API key in settings (or check if it is correct).";
+                assistantMsg.content = "Please set your Groq API key in settings (or check if it is correct).";
               } else if (response.status === 429) {
                 assistantMsg.content = "I've reached my request limit. Please try again in a moment.";
               } else {
@@ -290,4 +290,5 @@ export const useFalconStore = create<FalconState>()(
     }
   )
 );
+
 
