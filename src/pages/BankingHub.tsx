@@ -1480,7 +1480,7 @@ const BankingHub: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="bg-green-50/50 border border-green-100 rounded-md p-4 flex flex-col items-center justify-center">
-                    <span className="text-[11px] font-semibold text-green-700 tracking-wide mb-1">
+                    <span className="text-[11px] font-semibold text-green-700 uppercase tracking-wide mb-1">
                       Projected Inflow (30d)
                     </span>
                     <span className="text-xl font-bold text-green-700">
@@ -1488,7 +1488,7 @@ const BankingHub: React.FC = () => {
                     </span>
                   </div>
                   <div className="bg-red-50/50 border border-red-100 rounded-md p-4 flex flex-col items-center justify-center">
-                    <span className="text-[11px] font-semibold text-red-700 tracking-wide mb-1">
+                    <span className="text-[11px] font-semibold text-red-700 uppercase tracking-wide mb-1">
                       Projected Outflow (30d)
                     </span>
                     <span className="text-xl font-bold text-red-700">
@@ -1496,7 +1496,7 @@ const BankingHub: React.FC = () => {
                     </span>
                   </div>
                   <div className="bg-blue-50/50 border border-blue-100 rounded-md p-4 flex flex-col items-center justify-center">
-                    <span className="text-[11px] font-semibold text-[#1557b0] tracking-wide mb-1">
+                    <span className="text-[11px] font-semibold text-[#1557b0] uppercase tracking-wide mb-1">
                       Est. Closing Balance
                     </span>
                     <span className="text-xl font-bold text-[#1557b0]">

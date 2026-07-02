@@ -449,7 +449,7 @@ const ExceptionReports: React.FC = () => {
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Issues
           </span>
           <span
@@ -459,7 +459,7 @@ const ExceptionReports: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Negative Stock
           </span>
           <span
@@ -469,7 +469,7 @@ const ExceptionReports: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Overdue &gt; 60 days
           </span>
           <span
@@ -479,7 +479,7 @@ const ExceptionReports: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Post-Dated
           </span>
           <span className="text-2xl font-bold mt-1 text-[#1557b0]">{summaryCounts.postDated}</span>

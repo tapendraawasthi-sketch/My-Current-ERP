@@ -193,7 +193,7 @@ export default function CostCenters() {
                     <div className="text-[12px] font-medium text-[#000000] flex items-center gap-2">
                       {node.name}
                       {!node.isActive && (
-                        <span className="px-1.5 py-0.5 text-[9px] bg-red-100 text-red-600 rounded font-bold">
+                        <span className="px-1.5 py-0.5 text-[9px] bg-red-100 text-red-600 rounded uppercase font-bold">
                           Inactive
                         </span>
                       )}
@@ -405,7 +405,7 @@ export default function CostCenters() {
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                  <div className="text-[10px] font-bold text-[#000000] mb-1">Status</div>
+                  <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">Status</div>
                   <div
                     className={`text-[12px] font-medium ${selectedCenter.isActive ? "text-green-600" : "text-red-600"}`}
                   >
@@ -413,7 +413,7 @@ export default function CostCenters() {
                   </div>
                 </div>
                 <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                  <div className="text-[10px] font-bold text-[#000000] mb-1">
+                  <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">
                     Responsible Person
                   </div>
                   <div className="text-[12px] font-medium text-[#000000]">
@@ -422,7 +422,7 @@ export default function CostCenters() {
                 </div>
                 <div className="bg-[#D4EABD] p-3 rounded border border-[#9DC07A] col-span-2 flex items-center justify-between">
                   <div>
-                    <div className="text-[10px] font-bold text-[#000000] mb-1">
+                    <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">
                       Current Net Balance
                     </div>
                     <div className="text-[16px] font-mono font-bold text-[#000000]">

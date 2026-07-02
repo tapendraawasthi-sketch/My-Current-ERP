@@ -211,7 +211,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
             >
               {log.severity}
             </span>
-            <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-gray-100 text-gray-700">
+            <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
               {log.entityType}
             </span>
           </div>
@@ -219,13 +219,13 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
           {/* Metadata grid */}
           <div className="grid grid-cols-2 gap-3 text-[12px]">
             <div className="col-span-2">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Timestamp
               </p>
               <p className="text-gray-800 font-mono">{formatTimestamp(log.timestamp)}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 User
               </p>
               <div className="flex items-center gap-2">
@@ -236,26 +236,26 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Role
               </p>
               <p className="text-gray-700">{log.userRole || "—"}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Entity ID
               </p>
               <p className="text-gray-700 font-mono text-[11px] break-all">{log.entityId || "—"}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Entity Name
               </p>
               <p className="text-gray-700">{log.entityName || "—"}</p>
             </div>
             {log.sessionId && (
               <div className="col-span-2">
-                <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                   Session ID
                 </p>
                 <p className="text-gray-600 font-mono text-[11px] break-all">{log.sessionId}</p>
@@ -265,7 +265,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
 
           {/* Change Description */}
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Change Description
             </p>
             <div className="bg-[#f5f6fa] border border-gray-200 rounded-md px-3 py-2.5 text-[12px] text-gray-700 whitespace-pre-wrap break-words">
@@ -318,7 +318,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
           {/* Checksum */}
           {log.checksum && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Integrity Checksum
               </p>
               <p className="font-mono text-[11px] text-gray-500 break-all bg-[#f5f6fa] border border-gray-200 rounded px-2 py-1">
@@ -667,7 +667,7 @@ const AuditLogs: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-3 py-2.5">
-                        <span className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded bg-gray-100 text-gray-700">
+                        <span className="inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
                           {log.entityType}
                         </span>
                       </td>

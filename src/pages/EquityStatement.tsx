@@ -359,7 +359,7 @@ export default function EquityStatement() {
             key={kpi.label}
             className="bg-white border border-gray-200 rounded-lg p-3"
           >
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
             <p

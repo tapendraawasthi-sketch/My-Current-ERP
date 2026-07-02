@@ -581,11 +581,11 @@ export default function PeriodLockPage() {
                       <td className={tableCellClass}>{p.endDate}</td>
                       <td className={tableCellClass}>
                         {isLocked ? (
-                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide flex items-center gap-1 w-max">
+                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 w-max">
                             <Lock size={12} /> Locked
                           </span>
                         ) : (
-                          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide flex items-center gap-1 w-max">
+                          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 w-max">
                             <Unlock size={12} /> Open
                           </span>
                         )}
@@ -755,7 +755,7 @@ export default function PeriodLockPage() {
 
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-[10px] font-bold tracking-wide text-gray-500 mb-0.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500 mb-0.5">
                     Health Score
                   </div>
                   <div

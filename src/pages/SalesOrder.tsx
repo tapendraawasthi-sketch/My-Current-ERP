@@ -19,37 +19,37 @@ const getStatusBadge = (status: string) => {
   switch (val) {
     case "draft":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-[#EBF5E2] text-[#000000]">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#EBF5E2] text-[#000000]">
           Draft
         </span>
       );
     case "approved":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-[#D4EABD] text-[#000000]">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#D4EABD] text-[#000000]">
           Approved
         </span>
       );
     case "fulfilled":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-green-100 text-green-700">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-green-100 text-green-700">
           Fulfilled
         </span>
       );
     case "partial":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-amber-100 text-amber-700">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-amber-100 text-amber-700">
           Partial
         </span>
       );
     case "cancelled":
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-700">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-red-100 text-red-700">
           Cancelled
         </span>
       );
     default:
       return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded bg-[#EBF5E2] text-[#000000]">
+        <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-[#EBF5E2] text-[#000000]">
           {status}
         </span>
       );

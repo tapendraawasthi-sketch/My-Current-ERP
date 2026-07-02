@@ -143,7 +143,7 @@ const JournalEntries: React.FC = () => {
             <BookOpen className="h-5 w-5 text-[#000000]" />
             <span>JOURNAL VOUCHERS</span>
           </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold tracking-wider">
+          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
             Double-entry journal voucher register
           </p>
         </div>

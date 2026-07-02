@@ -9,8 +9,8 @@ import { getDB } from "../lib/db";
 interface BillSundry {
   id: string;
   name: string;
-  type: BillSundryType | string;
-  nature?: BillSundryNature | string;
+  type: BillSundryType;
+  nature: BillSundryNature;
   affectCostInSale: boolean;
   affectCostInPurchase: boolean;
   accountingInSale?: string;
@@ -58,15 +58,22 @@ export default function BillSundryMaster() {
       const db = getDB();
       let items: BillSundry[] = [];
       if (db.billSundries) {
-        const data = await db.billSundries.toArray();
-        if (data.length === 0) {
-          const seeded = DEFAULT_BILL_SUNDRIES.map((d, i) => ({ ...d, id: `bs-${i}` }));
-          await db.billSundries.bulkPut(seeded as any);
-          setBillSundries(seeded as BillSundry[]);
+        items = await db.billSundries.toArray();
+      }
+      if (items.length === 0) {
+        // Seed defaults
+        const defaults = DEFAULT_BILL_SUNDRIES.map((d, i) => ({
+          ...d,
+          id: `bs-default-${i + 1}`,
+        }));
+        if (db.billSundries) {
+          await db.billSundries.bulkPut(defaults);
+          items = defaults;
         } else {
-          setBillSundries(data as unknown as BillSundry[]);
+          items = defaults;
         }
       }
+      setBillSundries(items);
     } catch {
       setBillSundries(DEFAULT_BILL_SUNDRIES.map((d, i) => ({ ...d, id: `bs-${i}` })));
     } finally {

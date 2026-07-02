@@ -371,7 +371,7 @@ export default function BudgetMaster() {
                       })}
                     </div>
                     <div className="mt-4 pt-3 border-t border-[#9DC07A] flex justify-between items-center">
-                      <span className="text-[11px] font-bold text-[#000000] tracking-wide">
+                      <span className="text-[11px] font-bold text-[#000000] uppercase tracking-wide">
                         Total Calculated Annual:
                       </span>
                       <span className="text-[14px] font-mono font-bold text-[#1557b0]">

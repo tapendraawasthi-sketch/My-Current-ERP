@@ -190,7 +190,7 @@ const DebitCreditNote: React.FC = () => {
                 <FileText className="h-5 w-5 text-[#1557b0]" />
                 NEW {kind === "debit" ? "DEBIT" : "CREDIT"} NOTE
               </h2>
-              <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
+              <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
                 {kind === "debit" ? "Reduce supplier payable" : "Reduce customer receivable"}
               </p>
             </div>
@@ -247,7 +247,7 @@ const DebitCreditNote: React.FC = () => {
           {/* Journal preview */}
           {amount > 0 && partyAccountId && adjAccountId && (
             <div className="mt-4 rounded-md border border-[#9DC07A] bg-[#EBF5E2] p-3">
-              <p className="text-[10px] font-bold tracking-wider text-[#000000] mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#000000] mb-2">
                 Journal preview
               </p>
               <div className="grid grid-cols-3 gap-2 text-[11px]">
@@ -356,7 +356,7 @@ const DebitCreditNote: React.FC = () => {
           <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
             <Receipt className="h-5 w-5 text-[#1557b0]" /> Debit / Credit Notes
           </h2>
-          <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
+          <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
             Non-inventory price adjustments
           </p>
         </div>

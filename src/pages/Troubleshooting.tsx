@@ -79,7 +79,7 @@ export default function Troubleshooting() {
                   key={table}
                   className="bg-gray-50 p-3 rounded border border-gray-100 flex flex-col"
                 >
-                  <span className="text-[10px] font-semibold text-gray-500 tracking-wide truncate">
+                  <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide truncate">
                     {table}
                   </span>
                   <span className="text-[15px] font-semibold text-gray-800 mt-1">{count}</span>

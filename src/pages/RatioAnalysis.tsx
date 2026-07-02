@@ -164,7 +164,14 @@ const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = (
           {ratio.benchmark.unit}
         </span>
       </div>
-      <div className="ratio-benchmark">
+      <div style={{
+        fontSize: 10,
+        color: "#6b7280",
+        padding: "3px 8px",
+        background: "rgba(0,0,0,0.04)",
+        borderRadius: 3,
+        borderLeft: `2px solid ${color}`,
+      }}>
         {ratio.benchmark.label}
       </div>
     </div>

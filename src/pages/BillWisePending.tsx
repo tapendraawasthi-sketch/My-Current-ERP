@@ -270,7 +270,7 @@ const BillWisePending: React.FC = () => {
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Receivable
           </span>
           <span className="text-2xl font-bold mt-1 text-[#059669] font-mono">
@@ -278,7 +278,7 @@ const BillWisePending: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Payable
           </span>
           <span className="text-2xl font-bold mt-1 text-[#1557b0] font-mono">
@@ -286,7 +286,7 @@ const BillWisePending: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Net Position
           </span>
           <span
@@ -366,7 +366,7 @@ const BillWisePending: React.FC = () => {
                   <tr key={row.id} className="bg-gray-50 font-semibold text-gray-700">
                     <td
                       colSpan={5}
-                      className="px-3 py-2.5 pl-9 text-gray-500 text-[11px] tracking-wide"
+                      className="px-3 py-2.5 pl-9 text-gray-500 text-[11px] uppercase tracking-wide"
                     >
                       {row.partyOrInvoice}
                     </td>
@@ -413,11 +413,11 @@ const BillWisePending: React.FC = () => {
                     </td>
                     <td className="px-3 py-2.5 text-center">
                       {row.type.includes("sales") ? (
-                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-green-100 text-green-700">
+                        <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-green-100 text-green-700">
                           Sales
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-blue-100 text-blue-700">
+                        <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-blue-100 text-blue-700">
                           Purchase
                         </span>
                       )}

@@ -451,19 +451,19 @@ const AuditLog = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium">Total Entries</div>
+          <div className="text-gray-500 text-[10px] font-medium uppercase">Total Entries</div>
           <div className="text-[24px] font-bold text-gray-800">{stats.total}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium">Today</div>
+          <div className="text-gray-500 text-[10px] font-medium uppercase">Today</div>
           <div className="text-[24px] font-bold text-gray-800">{stats.today}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium">High Risk</div>
+          <div className="text-gray-500 text-[10px] font-medium uppercase">High Risk</div>
           <div className="text-[24px] font-bold text-red-600">{stats.highRisk}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium">Failed</div>
+          <div className="text-gray-500 text-[10px] font-medium uppercase">Failed</div>
           <div className="text-[24px] font-bold text-orange-600">{stats.failed}</div>
         </div>
       </div>
@@ -984,7 +984,7 @@ const AuditLog = () => {
         )}
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-600 mb-2 tracking-wide">
+          <p className="text-[11px] font-semibold text-gray-600 mb-2 uppercase tracking-wide">
             Nepal Fiscal Year BS Months
           </p>
           <div className="grid grid-cols-4 md:grid-cols-6 xl:grid-cols-12 gap-2">
@@ -1501,7 +1501,7 @@ const AuditLog = () => {
                     const diffs = computeDiff(selectedLog.before, selectedLog.after);
                     return (
                       <div className="space-y-2">
-                        <p className="text-[10px] font-semibold text-gray-500">
+                        <p className="text-[10px] font-semibold text-gray-500 uppercase">
                           Data Changes
                         </p>
                         {diffs.length > 0 ? (
@@ -1553,7 +1553,7 @@ const AuditLog = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {selectedLog.before && (
                               <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                                <p className="text-[10px] font-semibold text-gray-500 mb-1">
+                                <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">
                                   Before (raw)
                                 </p>
                                 <pre className="text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">
@@ -1563,7 +1563,7 @@ const AuditLog = () => {
                             )}
                             {selectedLog.after && (
                               <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                                <p className="text-[10px] font-semibold text-gray-500 mb-1">
+                                <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">
                                   After (raw)
                                 </p>
                                 <pre className="text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">

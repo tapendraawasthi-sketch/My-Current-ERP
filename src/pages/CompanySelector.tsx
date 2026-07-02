@@ -27,7 +27,7 @@ function CompanySelector() {
           <h2 className="text-xl font-bold text-[#000000] tracking-tight">
             SUTRA <span className="text-[#1557b0]">ERP</span>
           </h2>
-          <p className="text-[10px] text-[#000000] font-semibold tracking-wider">
+          <p className="text-[10px] text-[#000000] font-semibold uppercase tracking-wider">
             Select Workspace
           </p>
         </div>

@@ -618,7 +618,7 @@ export default function AdvancedTaxCompliance() {
             <h2 className="text-[14px] font-bold text-gray-800 mb-4">Advance Tax Computation</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
                   YTD Profit
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
@@ -626,7 +626,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
                   Months Elapsed
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
@@ -634,7 +634,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
                   Est. Annual Profit
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
@@ -642,13 +642,13 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
                   Tax Rate
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">25% (Corporate)</div>
               </div>
               <div className="bg-gray-50 p-3 rounded-md border border-gray-100">
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-1">
                   Est. Annual Tax
                 </div>
                 <div className="text-[14px] font-bold text-gray-800">
@@ -656,7 +656,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-100">
-                <div className="text-[11px] text-green-700 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-green-700 uppercase tracking-wide font-semibold mb-1">
                   TDS Deducted at Source
                 </div>
                 <div className="text-[14px] font-bold text-green-700">
@@ -664,7 +664,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-                <div className="text-[11px] text-[#1557b0] tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-[#1557b0] uppercase tracking-wide font-semibold mb-1">
                   Advance Tax Paid
                 </div>
                 <div className="text-[14px] font-bold text-[#1557b0]">
@@ -672,7 +672,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div className="bg-amber-50 p-3 rounded-md border border-amber-100">
-                <div className="text-[11px] text-amber-700 tracking-wide font-semibold mb-1">
+                <div className="text-[11px] text-amber-700 uppercase tracking-wide font-semibold mb-1">
                   Net Tax Payable
                 </div>
                 <div className="text-[15px] font-bold text-amber-700">
@@ -1139,13 +1139,13 @@ export default function AdvancedTaxCompliance() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
                   Company
                 </div>
                 <div className="text-[13px] text-gray-800">{companySettings?.name || "N/A"}</div>
               </div>
               <div>
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
                   PAN
                 </div>
                 <div className="text-[13px] text-gray-800">
@@ -1153,7 +1153,7 @@ export default function AdvancedTaxCompliance() {
                 </div>
               </div>
               <div>
-                <div className="text-[11px] text-gray-500 tracking-wide font-semibold">
+                <div className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold">
                   Fiscal Year
                 </div>
                 <div className="text-[13px] text-gray-800">{currentFiscalYear?.name || "N/A"}</div>

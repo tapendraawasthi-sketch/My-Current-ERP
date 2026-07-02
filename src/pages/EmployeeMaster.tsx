@@ -186,7 +186,7 @@ export default function EmployeeMaster() {
                     </td>
                     <td className="px-3 py-2.5">
                       {emp.ssf ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#D4EABD] text-[#000000]">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-[#D4EABD] text-[#000000]">
                           SSF ENROLLED
                         </span>
                       ) : (

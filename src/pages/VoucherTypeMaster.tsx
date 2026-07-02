@@ -172,7 +172,7 @@ export default function VoucherTypeMaster() {
       <div className="flex gap-4">
         {/* Left: Voucher Types */}
         <div className="w-56 bg-white border border-gray-200 rounded-lg overflow-hidden shrink-0">
-          <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 text-[10px] font-semibold text-gray-500 tracking-wide">Voucher Types</div>
+          <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Voucher Types</div>
           {VOUCHER_TYPES.map(vt => (
             <button
               key={vt}

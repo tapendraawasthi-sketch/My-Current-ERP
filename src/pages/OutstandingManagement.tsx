@@ -655,7 +655,7 @@ const OutstandingManagement: React.FC = () => {
                   {receivables.length > 0 && (
                     <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
                       <td
-                        className="px-3 py-2.5 text-[11px] font-bold text-gray-700"
+                        className="px-3 py-2.5 text-[11px] font-bold text-gray-700 uppercase"
                         colSpan={4}
                       >
                         Totals
@@ -792,7 +792,7 @@ const OutstandingManagement: React.FC = () => {
                   {payables.length > 0 && (
                     <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
                       <td
-                        className="px-3 py-2.5 text-[11px] font-bold text-gray-700"
+                        className="px-3 py-2.5 text-[11px] font-bold text-gray-700 uppercase"
                         colSpan={4}
                       >
                         Totals
@@ -1175,7 +1175,7 @@ const OutstandingManagement: React.FC = () => {
                   <h2 className="text-[18px] font-bold text-gray-800">
                     {companySettings?.name || "Company Name"}
                   </h2>
-                  <div className="text-[14px] font-semibold text-gray-600 mt-1 tracking-widest">
+                  <div className="text-[14px] font-semibold text-gray-600 mt-1 uppercase tracking-widest">
                     Statement of Account
                   </div>
                   <div className="text-[12px] text-gray-500 mt-2">

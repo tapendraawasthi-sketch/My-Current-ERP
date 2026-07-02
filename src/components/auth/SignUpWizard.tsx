@@ -158,13 +158,13 @@ export default function SignUpWizard() {
         {/* Progress bar */}
         <div
           className="relative h-1.5 rounded-full overflow-hidden mb-6"
-          style={{ background: "var(--border-default)" }}
+          style={{ background: "#e5e7eb" }}
         >
           <div
             className="absolute top-0 left-0 h-full rounded-full transition-all duration-300"
             style={{
               width: `${(currentStep / steps.length) * 100}%`,
-              background: "var(--color-primary)",
+              background: "#1557b0",
             }}
           />
         </div>
@@ -188,12 +188,14 @@ export default function SignUpWizard() {
                       style={{
                         background:
                           hasErrors
-                            ? "var(--color-danger)"
-                            : currentStep >= step.id
-                            ? "var(--color-primary)"
-                            : "var(--border-default)",
+                            ? "#dc2626"
+                            : currentStep > step.id
+                            ? "#059669"
+                            : currentStep === step.id
+                            ? "#1557b0"
+                            : "#e5e7eb",
                         color:
-                          currentStep >= step.id || hasErrors ? "#ffffff" : "var(--text-secondary)",
+                          currentStep >= step.id || hasErrors ? "#ffffff" : "#6b7280",
                       }}
                     >
                       {hasErrors ? (
@@ -207,7 +209,7 @@ export default function SignUpWizard() {
                     <span
                       className="text-[11px] mt-2 font-medium"
                       style={{
-                        color: currentStep === step.id ? "var(--color-primary)" : "var(--text-secondary)",
+                        color: currentStep === step.id ? "#1557b0" : "#6b7280",
                       }}
                     >
                       {step.name}
@@ -217,7 +219,7 @@ export default function SignUpWizard() {
                     <div
                       className="flex-1 h-0.5 mx-2"
                       style={{
-                        background: currentStep > step.id ? "var(--color-primary)" : "var(--border-default)",
+                        background: currentStep > step.id ? "#059669" : "#e5e7eb",
                         marginTop: "-18px",
                       }}
                     />
@@ -282,7 +284,7 @@ export default function SignUpWizard() {
                 onClick={handleNext}
                 className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors"
                 style={{
-                  background: "var(--color-primary)",
+                  background: "#1557b0",
                   color: "#ffffff",
                   border: "none",
                 }}
@@ -295,7 +297,7 @@ export default function SignUpWizard() {
                 disabled={submitLoading}
                 className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                 style={{
-                  background: "var(--color-primary)",
+                  background: "#1557b0",
                   color: "#ffffff",
                   border: "none",
                 }}

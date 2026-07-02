@@ -578,7 +578,7 @@ const AdvancedReportHub: React.FC = () => {
                     className="bg-white border border-gray-200 rounded-md p-4 cursor-pointer hover:border-[#1557b0] hover:shadow-md transition-all group"
                     onClick={() => handleTypeSelect(type)}
                   >
-                    <div className="text-[11px] text-gray-500 tracking-wide font-medium mb-2 group-hover:text-[#1557b0] transition-colors">
+                    <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-2 group-hover:text-[#1557b0] transition-colors">
                       {type}
                     </div>
                     <div className="text-xl font-bold text-gray-800">
@@ -799,7 +799,7 @@ const AdvancedReportHub: React.FC = () => {
                       <tr className="bg-gray-50 border-t-2 border-gray-200 font-bold text-[12px] text-gray-800">
                         <td
                           colSpan={2}
-                          className="px-4 py-3 text-right text-[10px] text-gray-500 tracking-wide"
+                          className="px-4 py-3 text-right uppercase text-[10px] text-gray-500 tracking-wide"
                         >
                           Total
                         </td>
@@ -840,7 +840,7 @@ const AdvancedReportHub: React.FC = () => {
                   {financialHealthScore}
                   <span className="text-xl text-gray-400">/100</span>
                 </div>
-                <div className="text-[10px] font-semibold text-gray-500 tracking-wide mt-1">
+                <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mt-1">
                   Financial Health Score
                 </div>
               </div>
@@ -848,7 +848,7 @@ const AdvancedReportHub: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Current Ratio
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>
@@ -863,7 +863,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
 
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Quick Ratio
                   <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>
@@ -878,7 +878,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
 
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Cash Ratio
                   <TrendingDown size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>
@@ -889,7 +889,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
 
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   GP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>
@@ -904,7 +904,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
 
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   NP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>
@@ -919,7 +919,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
 
               <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
-                <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   ROA
                   <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
                 </div>

@@ -122,8 +122,29 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
   const SectionDivider = ({ label }: { label: string }) => (
     <tr>
       <td colSpan={totalColSpan} style={{ padding: "0", lineHeight: 0 }}>
-        <div className="report-section-heading">
+        <div style={{
+          position: "relative",
+          height: 28,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "8px 0",
+        }}>
+          <div style={{ position: "absolute", left: 0, right: 0, top: "50%", borderTop: "2px solid #d1d5db" }} />
+          <div style={{
+            position: "relative",
+            background: "#ffffff",
+            padding: "2px 16px",
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "#6b7280",
+            border: "1px solid #d1d5db",
+            borderRadius: 3,
+          }}>
             {label}
+          </div>
         </div>
       </td>
     </tr>
@@ -140,8 +161,8 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
   );
 
   const GrandTotal = ({ amount, side }: { amount: number; side: string }) => (
-    <tr className="fin-row-total">
-      <td>Total ({side})</td>
+    <tr className="bg-[#1557b0] text-white">
+      <td className="px-3 py-2 text-[12px] font-bold">Total ({side})</td>
       <td className="text-right font-mono text-[13px] font-bold px-3 py-2">{fmt(amount)}</td>
       {options.showPercentage && <td />}
     </tr>
@@ -154,12 +175,17 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
     const lossText = isIE ? "Excess of Expenditure over Income" : "Gross Loss";
     
     return (
-      <tr className="fin-row-total">
-        <td>
+      <tr style={{
+        background: isGrossProfit ? "#f0fdf4" : "#fef2f2",
+        borderTop: "1px solid #d1d5db",
+        boxShadow: `inset 0 -4px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}, inset 0 -7px 0 0 ${isGrossProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}`,
+        paddingBottom: 8,
+      }}>
+        <td style={{ padding: "10px 16px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
           {isGrossProfit ? profitText : lossText} {isCD ? "c/d" : "b/d"}
         </td>
-        <td className="text-right font-mono">
-          {isGrossProfit ? fmt(absGrossProfit) : `(${fmt(absGrossProfit)})`}
+        <td className="num-cell-bold" style={{ color: isGrossProfit ? "#059669" : "#dc2626", padding: "10px 16px" }}>
+          {absGrossProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
         </td>
         {options.showPercentage && <td />}
       </tr>
@@ -171,8 +197,12 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
     const absNetProfit = Math.abs(netProfit);
     
     return (
-      <tr className="fin-row-total">
-        <td>
+      <tr style={{
+        background: isNetProfit ? "#f0fdf4" : "#fef2f2",
+        borderTop: "2px solid #d1d5db",
+        boxShadow: `inset 0 -4px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${isNetProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}`,
+      }}>
+        <td style={{ padding: "12px 16px" }}>
           <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
             {isIE 
               ? (isNetProfit ? "Surplus for the Period" : "Deficit for the Period")
@@ -184,8 +214,8 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
               : "Transferred to Balance Sheet"}
           </div>
         </td>
-        <td className="text-right font-mono" style={{ fontSize: 14 }}>
-          {isNetProfit ? fmt(absNetProfit) : `(${fmt(absNetProfit)})`}
+        <td className="num-cell-bold" style={{ color: isNetProfit ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px" }}>
+          {absNetProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
         </td>
         {options.showPercentage && <td />}
       </tr>

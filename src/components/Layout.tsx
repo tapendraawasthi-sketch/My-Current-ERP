@@ -321,10 +321,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   padding: "10px 12px",
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" style={{ marginTop: 1, flexShrink: 0 }}>
-                  <circle cx="8" cy="8" r="7" stroke="rgba(255,255,255,0.35)" strokeWidth="1" fill="none" />
-                  <path d="M5 8l2 2 4-4" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                </svg>
+                <span
+                  style={{
+                    width: 18,
+                    height: 18,
+                    background: "rgba(255,255,255,0.2)",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    flexShrink: 0,
+                  }}
+                >
+                  ✓
+                </span>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>{feature.title}</div>
                   <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)" }}>{feature.desc}</div>

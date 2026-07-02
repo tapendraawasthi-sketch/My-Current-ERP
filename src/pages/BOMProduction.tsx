@@ -54,48 +54,48 @@ function statusBadge(status: string) {
   const s = String(status || "").toLowerCase();
   if (s === "completed")
     return (
-      <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         Completed
       </span>
     );
   if (s === "cancelled")
     return (
-      <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         Cancelled
       </span>
     );
   if (s === "in-process")
     return (
-      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         In-Process
       </span>
     );
   if (s === "released")
     return (
-      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         Released
       </span>
     );
   if (s === "draft")
     return (
-      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         Draft
       </span>
     );
   if (s === "active")
     return (
-      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold uppercase tracking-wide">
         Active
       </span>
     );
   if (s === "obsolete")
     return (
-      <span className="px-2 py-0.5 bg-gray-200 text-gray-600 border border-gray-300 rounded text-[10px] font-semibold tracking-wide">
+      <span className="px-2 py-0.5 bg-gray-200 text-gray-600 border border-gray-300 rounded text-[10px] font-semibold uppercase tracking-wide">
         Obsolete
       </span>
     );
   return (
-    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold tracking-wide">
+    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
       {status || "Unknown"}
     </span>
   );
@@ -973,11 +973,11 @@ export default function BOMProduction() {
                           <td className={tableCellClass}>{money(m.available)}</td>
                           <td className={tableCellClass}>
                             {m.sufficient ? (
-                              <span className="flex items-center gap-1 text-green-600 font-semibold text-[11px]">
+                              <span className="flex items-center gap-1 text-green-600 font-semibold text-[11px] uppercase">
                                 <CheckCircle size={12} /> Yes
                               </span>
                             ) : (
-                              <span className="flex items-center gap-1 text-red-600 font-semibold text-[11px]">
+                              <span className="flex items-center gap-1 text-red-600 font-semibold text-[11px] uppercase">
                                 <AlertTriangle size={12} /> No
                               </span>
                             )}
@@ -1132,11 +1132,11 @@ export default function BOMProduction() {
                         <td className={tableCellClass}>{money(m.available)}</td>
                         <td className={tableCellClass}>
                           {m.sufficient ? (
-                            <span className="text-green-600 font-semibold text-[11px] flex items-center gap-1">
+                            <span className="text-green-600 font-semibold text-[11px] uppercase flex items-center gap-1">
                               <CheckCircle size={12} /> Yes
                             </span>
                           ) : (
-                            <span className="text-red-600 font-semibold text-[11px] flex items-center gap-1">
+                            <span className="text-red-600 font-semibold text-[11px] uppercase flex items-center gap-1">
                               <AlertTriangle size={12} /> No
                             </span>
                           )}
@@ -1636,7 +1636,7 @@ export default function BOMProduction() {
               <div className="bg-gray-50 border border-gray-200 rounded-md p-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex gap-8">
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-medium text-gray-500 tracking-wide">
+                    <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
                       Total Standard Cost
                     </span>
                     <span className="text-[16px] font-bold text-gray-800">
@@ -1644,7 +1644,7 @@ export default function BOMProduction() {
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-medium text-gray-500 tracking-wide">
+                    <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
                       Total Actual Cost
                     </span>
                     <span className="text-[16px] font-bold text-gray-800">
@@ -1653,7 +1653,7 @@ export default function BOMProduction() {
                   </div>
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="text-[11px] font-medium text-gray-500 tracking-wide">
+                  <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
                     Net Variance
                   </span>
                   <span

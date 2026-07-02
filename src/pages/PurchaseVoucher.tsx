@@ -1050,7 +1050,7 @@ const PurchaseVoucher: React.FC = () => {
                         </td>
                         <td className="px-3 py-2.5 text-center">
                           {inv.tdsAmount && inv.tdsAmount > 0 ? (
-                            <span className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded bg-amber-100 text-amber-700">
+                            <span className="inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-amber-100 text-amber-700">
                               {money(inv.tdsAmount)}
                             </span>
                           ) : (
@@ -1114,7 +1114,7 @@ const PurchaseVoucher: React.FC = () => {
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
               <div className="grid grid-cols-2 gap-3 text-[12px]">
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Date
                   </p>
                   <p className="text-gray-800">
@@ -1122,19 +1122,19 @@ const PurchaseVoucher: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Supplier
                   </p>
                   <p className="text-gray-800">{selectedInvoice.partyName || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Payment Mode
                   </p>
                   <p className="text-gray-800 capitalize">{selectedInvoice.paymentMode || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Grand Total
                   </p>
                   <p className="text-gray-800 font-mono font-semibold">
@@ -1146,7 +1146,7 @@ const PurchaseVoucher: React.FC = () => {
               {/* Lines */}
               {selectedInvoice.lines && selectedInvoice.lines.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-2">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Line Items
                   </p>
                   <div className="border border-gray-200 rounded-md overflow-hidden">
@@ -1190,7 +1190,7 @@ const PurchaseVoucher: React.FC = () => {
 
               {selectedInvoice.narration && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Narration
                   </p>
                   <p className="text-[12px] text-gray-700 bg-[#f5f6fa] rounded px-3 py-2 border border-gray-200">

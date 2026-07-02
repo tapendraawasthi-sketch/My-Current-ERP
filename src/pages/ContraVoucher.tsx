@@ -350,7 +350,7 @@ const ContraVoucher: React.FC = () => {
               <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
               NEW CONTRA VOUCHER
             </h2>
-            <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
+            <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
               Transfer between cash &amp; bank accounts only
             </p>
           </div>

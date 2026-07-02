@@ -333,7 +333,7 @@ export default function CashFlowStatement() {
         <tr key={idx}>
           <td
             colSpan={2}
-            className="px-4 py-2 text-[10px] font-semibold text-gray-500 tracking-wide bg-[#f5f6fa] border-b border-gray-200"
+            className="px-4 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200"
           >
             {line.label}
             {line.note && (
@@ -533,7 +533,7 @@ export default function CashFlowStatement() {
           { label: "Closing Cash & Bank", value: closingCash, color: closingCash >= 0 ? "text-[#1557b0]" : "text-red-600" },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
             <p className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}>

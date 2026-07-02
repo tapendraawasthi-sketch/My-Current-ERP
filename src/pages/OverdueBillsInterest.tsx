@@ -139,7 +139,7 @@ const OverdueBillsInterest: React.FC = () => {
           <h2 className="text-lg font-bold text-[#000000] tracking-tight">
             Overdue Bills Interest Calculator
           </h2>
-          <p className="text-[11px] text-[#000000] font-extrabold tracking-wider mt-0.5">
+          <p className="text-[11px] text-[#000000] font-extrabold uppercase tracking-wider mt-0.5">
             Audit interest accumulated on outstanding customer ledger balances
           </p>
         </div>
@@ -148,7 +148,7 @@ const OverdueBillsInterest: React.FC = () => {
       {/* Control panel filters */}
       <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-bold text-[#000000] flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <Calendar className="h-3 w-3" /> As Of Date
           </span>
           <input
@@ -160,7 +160,7 @@ const OverdueBillsInterest: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-bold text-[#000000] flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <Percent className="h-3 w-3" /> Interest Rate (% p.a.)
           </span>
           <input
@@ -174,7 +174,7 @@ const OverdueBillsInterest: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-bold text-[#000000] flex items-center gap-1">
+          <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <ShieldAlert className="h-3 w-3" /> Min Days Overdue
           </span>
           <input
@@ -190,13 +190,13 @@ const OverdueBillsInterest: React.FC = () => {
       {/* Summary KPI stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
-          <span className="text-[10px] font-bold text-[#000000]">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Overdue Invoices
           </span>
           <span className="text-base font-bold text-[#000000]">{grandTotals.count} Bills</span>
         </div>
         <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
-          <span className="text-[10px] font-bold text-[#000000]">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Overdue Outstanding
           </span>
           <span className="text-base font-bold text-red-600 font-mono">
@@ -204,7 +204,7 @@ const OverdueBillsInterest: React.FC = () => {
           </span>
         </div>
         <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1 text-right">
-          <span className="text-[10px] font-bold text-[#000000]">
+          <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Accumulated Interest
           </span>
           <span className="text-base font-bold text-[#000000] font-mono">

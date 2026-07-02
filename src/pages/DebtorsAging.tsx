@@ -459,7 +459,7 @@ export default function DebtorsAging() {
 
       <div className="no-print grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-gray-500 tracking-wide flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <FileText size={14} /> Total Outstanding
           </div>
           <div className="text-[20px] font-bold text-gray-800">
@@ -468,21 +468,21 @@ export default function DebtorsAging() {
         </div>
 
         <div className="bg-green-50/50 border border-green-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-green-700 tracking-wide flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-medium text-green-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <CheckCircle size={14} /> Current (Not Due)
           </div>
           <div className="text-[20px] font-bold text-green-800">Rs. {money(summary.current)}</div>
         </div>
 
         <div className="bg-red-50/50 border border-red-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-red-700 tracking-wide flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <AlertTriangle size={14} /> Overdue Total
           </div>
           <div className="text-[20px] font-bold text-red-800">Rs. {money(summary.overdue)}</div>
         </div>
 
         <div className="bg-amber-50/50 border border-amber-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-amber-700 tracking-wide flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-medium text-amber-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <Clock size={14} /> Average Collection
           </div>
           <div className="text-[20px] font-bold text-amber-800">{money(summary.avgDays)} Days</div>
@@ -606,7 +606,7 @@ export default function DebtorsAging() {
                       )}
                       <td className={tableCellClass}>
                         {r.overLimit ? (
-                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
+                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
                             Yes
                           </span>
                         ) : (
@@ -696,7 +696,7 @@ export default function DebtorsAging() {
                                 ))}
                                 <tr className="bg-indigo-50/30">
                                   <td
-                                    className="px-3 py-2 text-[11px] font-bold text-gray-700 tracking-wide"
+                                    className="px-3 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide"
                                     colSpan={5}
                                   >
                                     Subtotal Balance

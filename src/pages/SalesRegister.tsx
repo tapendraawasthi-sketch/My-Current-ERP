@@ -383,7 +383,7 @@ const SalesRegister: React.FC = () => {
             className="bg-white border rounded-lg p-3"
             style={{ borderColor: "var(--border)" }}
           >
-            <div className="text-[10px] font-bold tracking-wide text-[#000000]">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-[#000000]">
               {label}
             </div>
             <div className="text-[16px] font-bold text-[#000000] mt-0.5">{value}</div>

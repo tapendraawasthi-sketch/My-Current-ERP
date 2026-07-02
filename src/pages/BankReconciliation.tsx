@@ -776,7 +776,7 @@ export default function BankReconciliation() {
                       {/* Book side */}
                       <div className="pb-1.5 border-b border-dashed border-gray-200 mb-1.5">
                         <div className="flex justify-between items-center">
-                          <span className="text-[9px] font-bold text-gray-400">Book</span>
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">Book</span>
                           <AmountChip amount={pair.bookEntry.amount} type={pair.bookEntry.type} />
                         </div>
                         <div className="text-[10px] font-semibold text-gray-700 truncate">
@@ -789,7 +789,7 @@ export default function BankReconciliation() {
                       {/* Statement side */}
                       <div>
                         <div className="flex justify-between items-center">
-                          <span className="text-[9px] font-bold text-gray-400">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">
                             Statement
                           </span>
                           <AmountChip
@@ -905,7 +905,7 @@ export default function BankReconciliation() {
             <div
               className={`rounded-lg border p-2.5 ${summary.isReconciled ? "bg-green-50 border-green-300" : "bg-red-50 border-red-300"}`}
             >
-              <div className="text-[9px] font-bold text-gray-500 mb-0.5">Difference</div>
+              <div className="text-[9px] uppercase font-bold text-gray-500 mb-0.5">Difference</div>
               <div
                 className={`text-[14px] font-bold font-mono ${summary.isReconciled ? "text-green-700" : "text-red-600"}`}
               >
@@ -1047,7 +1047,7 @@ const COLOR_MAP: Record<string, string> = {
 function SummaryTile({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className={`rounded-lg border p-2.5 ${COLOR_MAP[color] || COLOR_MAP.gray}`}>
-      <div className="text-[9px] font-bold opacity-60 mb-0.5">{label}</div>
+      <div className="text-[9px] uppercase font-bold opacity-60 mb-0.5">{label}</div>
       <div className="text-[13px] font-bold font-mono">Rs. {formatNumber(value)}</div>
     </div>
   );

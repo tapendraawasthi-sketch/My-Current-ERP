@@ -313,7 +313,7 @@ const GodownSummary: React.FC = () => {
               } else if (row.isSubtotal) {
                 return (
                   <tr key={row.id} className="bg-gray-50 font-semibold text-gray-700">
-                    <td className="px-3 py-2.5 pl-9 text-gray-500 text-[11px] tracking-wide">
+                    <td className="px-3 py-2.5 pl-9 text-gray-500 text-[11px] uppercase tracking-wide">
                       {row.itemName}
                     </td>
                     <td className="px-3 py-2.5"></td>

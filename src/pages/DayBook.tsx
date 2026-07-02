@@ -428,7 +428,7 @@ const DayBook: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Vouchers
             </p>
             <p className="text-[18px] font-bold text-gray-800 mt-0.5">{summary.totalVouchers}</p>
@@ -438,7 +438,7 @@ const DayBook: React.FC = () => {
 
         <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Total Debit
             </p>
             <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
@@ -450,7 +450,7 @@ const DayBook: React.FC = () => {
 
         <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Total Credit
             </p>
             <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
@@ -716,7 +716,7 @@ const DayBook: React.FC = () => {
               {/* Meta */}
               <div className="grid grid-cols-2 gap-3 text-[12px]">
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Date
                   </p>
                   <p className="text-gray-800">
@@ -724,7 +724,7 @@ const DayBook: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Party
                   </p>
                   <p className="text-gray-800">
@@ -732,7 +732,7 @@ const DayBook: React.FC = () => {
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Narration
                   </p>
                   <p className="text-gray-800">{String(selectedEntry.narration || "—")}</p>
@@ -742,7 +742,7 @@ const DayBook: React.FC = () => {
               {/* Ledger lines */}
               {(selectedEntry.lines ?? []).length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-2">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Ledger Entries
                   </p>
                   <div className="border border-gray-200 rounded-md overflow-hidden">
@@ -804,7 +804,7 @@ const DayBook: React.FC = () => {
               {(selectedEntry.lines ?? []).length === 0 && (
                 <div className="grid grid-cols-2 gap-3 text-[12px]">
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                       Debit
                     </p>
                     <p className="text-[#1557b0] font-mono font-bold">
@@ -812,7 +812,7 @@ const DayBook: React.FC = () => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                       Credit
                     </p>
                     <p className="text-gray-800 font-mono font-bold">
@@ -824,7 +824,7 @@ const DayBook: React.FC = () => {
 
               {selectedEntry.createdByName && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Created By
                   </p>
                   <p className="text-[12px] text-gray-700">{String(selectedEntry.createdByName)}</p>

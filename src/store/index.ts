@@ -35,6 +35,7 @@ import { computeNextDueDate } from "../lib/recurringUtils";
 export const useStore = create<AppState>()((...a) => {
   const [set, get] = a;
   return {
+    ...createInventorySlice(set, get),
     isDbReady: false,
     isAuthenticated: false,
     authStage: "checking" as AuthStage,

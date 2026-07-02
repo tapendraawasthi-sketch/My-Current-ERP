@@ -342,7 +342,7 @@ export default function BudgetVsActual() {
                   </td>
                   <td className="px-4 py-3 text-right font-medium">{fmt(r.budget)}</td>
                   <td className="px-4 py-3 text-right">{fmt(r.actual)}</td>
-                  <td className={`td-right ${r.isFavourable?"variance-positive":"variance-negative"}`}>
+                  <td className={`px-4 py-3 text-right font-medium ${r.isFavourable?"text-green-600":"text-red-600"}`}>
                     {r.variance > 0 ? "+" : ""}{fmt(r.variance)}
                   </td>
                   <td className="px-4 py-3">

@@ -275,7 +275,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
                               : "default"
                         }
                       >
-                        {party.type.charAt(0).toUpperCase() + party.type.slice(1)}
+                        {party.type}
                       </Badge>
                     </td>
                     <td className="font-mono">{party.pan || "-"}</td>

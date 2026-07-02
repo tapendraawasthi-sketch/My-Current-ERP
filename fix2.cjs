@@ -1,0 +1,1 @@
+const fs = require('fs'); let content = fs.readFileSync('src/store/store.types.ts', 'utf-8'); content = content.replace(/approvalRequests: any\[\];/g, 'approvalRequests: any[];\n  approvalActions: any[];\n  recurringPostings: any[];'); fs.writeFileSync('src/store/store.types.ts', content);

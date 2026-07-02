@@ -6,10 +6,10 @@ import { getDB } from "../lib/db";
 
 interface MaterialCentre {
   id: string;
-  code?: string;
+  code: string;
   name: string;
   address?: string;
-  isDefault?: boolean;
+  isDefault: boolean;
   isActive: boolean;
 }
 

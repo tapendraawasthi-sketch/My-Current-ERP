@@ -148,11 +148,11 @@ const Header: React.FC = () => {
             transition: "border-color 150ms ease, box-shadow 150ms ease",
           }}
           onFocus={e => {
-            e.currentTarget.style.borderColor = "var(--color-primary)";
-            e.currentTarget.style.boxShadow = "0 0 0 2px var(--color-primary-border)";
+            e.currentTarget.style.borderColor = "#2e7d32";
+            e.currentTarget.style.boxShadow = "0 0 0 2px rgba(46,125,50,0.15)";
           }}
           onBlur={e => {
-            e.currentTarget.style.borderColor = "var(--border-default)";
+            e.currentTarget.style.borderColor = "#d1d5db";
             e.currentTarget.style.boxShadow = "none";
           }}
         >
@@ -163,11 +163,11 @@ const Header: React.FC = () => {
           <kbd
             style={{
               fontSize: 9,
-              background: "var(--surface-elevated)",
-              border: "1px solid var(--border-emphasis)",
+              background: "#C9DEB5",
+              border: "1px solid #000",
               borderRadius: 2,
               padding: "1px 5px",
-              color: "var(--text-primary)",
+              color: "#000000",
               fontFamily: "monospace",
             }}
           >
@@ -211,7 +211,7 @@ const Header: React.FC = () => {
           style={{
             textAlign: "right",
             paddingRight: 12,
-            borderRight: "1px solid var(--border-default)",
+            borderRight: "1px solid #000000",
             flexDirection: "column",
           }}
           className="hidden md:flex"
@@ -272,7 +272,7 @@ const Header: React.FC = () => {
               <div
                 style={{
                   padding: "8px 14px",
-                  borderBottom: "1px solid var(--border-default)",
+                  borderBottom: "1px solid #000000",
                   fontSize: 12,
                   fontWeight: 700,
                   color: "#000000",
@@ -305,8 +305,8 @@ const Header: React.FC = () => {
               style={{
                 width: 30,
                 height: 30,
-                background: "var(--color-primary)",
-                border: "1px solid var(--color-primary-hover)",
+                background: "#2e7d32",
+                border: "1px solid #1b5e20",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
@@ -343,8 +343,8 @@ const Header: React.FC = () => {
               <div
                 style={{
                   padding: "8px 14px",
-                  background: "var(--color-primary)",
-                  borderBottom: "1px solid var(--color-primary-hover)",
+                  background: "#2e7d32",
+                  borderBottom: "1px solid #1b5e20",
                 }}
               >
                 <div style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>
@@ -364,7 +364,7 @@ const Header: React.FC = () => {
                 <Settings style={{ width: 14, height: 14, color: "#000000" }} />
                 <span>Settings</span>
               </button>
-              <div style={{ height: 1, background: "var(--border-default)", margin: "2px 0" }} />
+              <div style={{ height: 1, background: "#000000", margin: "2px 0" }} />
               <button
                 style={{ ...dropdownItem }}
                 onClick={() => {

@@ -203,7 +203,7 @@ export default function OrderVoucherPage({ type }: Props) {
         {/* Item grid */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4">
           <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-gray-600 tracking-wide">Item Details</span>
+            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">Item Details</span>
             <button onClick={addLine} className="h-7 px-2 text-[11px] bg-[#1557b0] text-white rounded flex items-center gap-1">
               <Plus className="h-3 w-3" /> Add Row (F5)
             </button>
@@ -251,7 +251,7 @@ export default function OrderVoucherPage({ type }: Props) {
           {/* Total bar */}
           <div className="px-4 py-3 border-t border-gray-200 bg-[#eef2ff] flex justify-end">
             <div className="text-right">
-              <div className="text-[11px] text-gray-500 tracking-wide">Order Total</div>
+              <div className="text-[11px] text-gray-500 uppercase tracking-wide">Order Total</div>
               <div className="text-[16px] font-bold text-gray-800 font-mono">Rs. {formatNumber(totalAmount)}</div>
             </div>
           </div>

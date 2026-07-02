@@ -1766,22 +1766,22 @@ export default function POSBilling() {
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 tracking-wide">Bills</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Bills</p>
           <p className="text-xl font-bold text-gray-800 mt-1">{dayStats.bills}</p>
         </div>
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 tracking-wide">Sales</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Sales</p>
           <p className="text-xl font-bold text-[#1557b0] mt-1">{money(dayStats.totalSales)}</p>
         </div>
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 tracking-wide">Cash</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Cash</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
         </div>
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 tracking-wide">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
             Card/Wallet/Bank
           </p>
           <p className="text-xl font-bold text-gray-800 mt-1">
@@ -1790,7 +1790,7 @@ export default function POSBilling() {
         </div>
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-500 tracking-wide">Credit</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Credit</p>
           <p className="text-xl font-bold text-amber-600 mt-1">{money(dayStats.credit)}</p>
         </div>
       </div>
@@ -1824,7 +1824,7 @@ export default function POSBilling() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Opening Cash
             </p>
             <p className="text-lg font-bold text-gray-800 mt-1">
@@ -1833,21 +1833,21 @@ export default function POSBilling() {
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Cash Sales
             </p>
             <p className="text-lg font-bold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Expected Cash
             </p>
             <p className="text-lg font-bold text-gray-800 mt-1">{money(dayStats.expectedCash)}</p>
           </div>
 
           <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Open Session
             </p>
             <p className="text-lg font-bold text-gray-800 mt-1">{currentSession ? "Yes" : "No"}</p>
@@ -2222,7 +2222,7 @@ export default function POSBilling() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Opening Cash
               </p>
               <p className="text-[14px] font-bold text-gray-800 mt-0.5">
@@ -2231,7 +2231,7 @@ export default function POSBilling() {
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Cash Sales
               </p>
               <p className="text-[14px] font-bold text-emerald-600 mt-0.5">
@@ -2240,7 +2240,7 @@ export default function POSBilling() {
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Expected Cash
               </p>
               <p className="text-[14px] font-bold text-gray-800 mt-0.5">
@@ -2249,7 +2249,7 @@ export default function POSBilling() {
             </div>
 
             <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Variance
               </p>
               <p

@@ -124,31 +124,31 @@ function statusBadge(status: string) {
   switch (status) {
     case "Active":
       return (
-        <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold tracking-wide">
+        <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase tracking-wide">
           Active
         </span>
       );
     case "Inactive":
       return (
-        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold tracking-wide">
+        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
           Inactive
         </span>
       );
     case "Upcoming":
       return (
-        <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold tracking-wide">
+        <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-semibold uppercase tracking-wide">
           Upcoming
         </span>
       );
     case "Expired":
       return (
-        <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold tracking-wide">
+        <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold uppercase tracking-wide">
           Expired
         </span>
       );
     default:
       return (
-        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold tracking-wide">
+        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
           {status}
         </span>
       );
@@ -578,7 +578,7 @@ export default function PriceListMaster() {
                     <td className={tableCellClass}>{l.description}</td>
                     <td className={tableCellClass}>
                       {l.isDefault ? (
-                        <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold">
+                        <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase">
                           Yes
                         </span>
                       ) : (
@@ -643,7 +643,7 @@ export default function PriceListMaster() {
                   <tr key={pl.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{pl.name}</td>
                     <td className={tableCellClass}>
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 rounded text-[10px] font-semibold">
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 rounded text-[10px] font-semibold uppercase">
                         {priceLevels.find((l) => l.id === pl.priceLevelId)?.name || pl.priceLevelId}
                       </span>
                     </td>
@@ -822,12 +822,12 @@ export default function PriceListMaster() {
                           {p.panNumber || p.vatNumber || <span className="text-gray-400">-</span>}
                         </td>
                         <td className={tableCellClass}>
-                          <span className="text-[10px] tracking-wide bg-gray-100 px-2 py-0.5 rounded text-gray-600">
+                          <span className="text-[10px] uppercase tracking-wide bg-gray-100 px-2 py-0.5 rounded text-gray-600">
                             {p.type || "Other"}
                           </span>
                         </td>
                         <td className={tableCellClass}>
-                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold">
+                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase">
                             {priceLevels.find((l) => l.id === row?.priceLevelId)?.name ||
                               "Retail / MRP"}
                           </span>
@@ -964,7 +964,7 @@ export default function PriceListMaster() {
                         <tr key={idx} className="bg-white hover:bg-gray-50">
                           <td className={tableCellClass}>{h.effectiveDate}</td>
                           <td className={tableCellClass}>
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 rounded text-[10px] font-semibold">
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 rounded text-[10px] font-semibold uppercase">
                               {h.priceLevel}
                             </span>
                           </td>
@@ -1250,7 +1250,7 @@ export default function PriceListMaster() {
                     (line.slabs || []).map((s, si) => (
                       <tr key={si} className="bg-blue-50/40 border-l-2 border-l-[#1557b0]">
                         <td className={tableCellClass} colSpan={2}>
-                          <div className="flex justify-end pr-2 text-[10px] font-semibold text-gray-500 tracking-wider">
+                          <div className="flex justify-end pr-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
                             Slab {si + 1}
                           </div>
                         </td>

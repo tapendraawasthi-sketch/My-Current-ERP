@@ -1,441 +1,200 @@
 // src/components/RightButtonBar.tsx
-import React, { useEffect, useMemo, useState, createContext, useContext, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useF12Config } from "../hooks/useF12Config";
 import { useStore } from "../store/useStore";
 
-// ─── Shortcut Context ─────────────────────────────────────────────────────────
-// Pages push their relevant shortcuts here. The RightButtonBar reads from it.
-
-export interface PageShortcut {
+interface RightBarButton {
   id: string;
   label: string;
   shortcut: string;
   action: () => void;
-  enabled?: boolean;
+  enabled: boolean;
+  visible: boolean;
+  active?: boolean;
+  confirmMessage?: string;
+  disabledReason?: string;
 }
 
-interface ShortcutContextType {
-  shortcuts: PageShortcut[];
-  registerShortcuts: (shortcuts: PageShortcut[]) => void;
-  clearShortcuts: () => void;
-}
+const formatShortcutLabel = (shortcut: string): string => {
+  return shortcut
+    .replace("Control+", "C+")
+    .replace("Ctrl+", "C+")
+    .replace("Alt+", "A+")
+    .replace("Shift+", "S+")
+    .replace("Escape", "Esc");
+};
 
-const ShortcutContext = createContext<ShortcutContextType>({
-  shortcuts: [],
-  registerShortcuts: () => {},
-  clearShortcuts: () => {},
-});
-
-export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [shortcuts, setShortcuts] = useState<PageShortcut[]>([]);
-
-  const registerShortcuts = useCallback((newShortcuts: PageShortcut[]) => {
-    setShortcuts(newShortcuts);
-  }, []);
-
-  const clearShortcuts = useCallback(() => {
-    setShortcuts([]);
-  }, []);
-
+const isInputElement = (el: Element | null): boolean => {
+  if (!el) return false;
+  const tag = el.tagName?.toLowerCase();
   return (
-    <ShortcutContext.Provider value={{ shortcuts, registerShortcuts, clearShortcuts }}>
-      {children}
-    </ShortcutContext.Provider>
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select" ||
+    el.getAttribute("contenteditable") === "true"
   );
 };
 
-export const usePageShortcuts = () => useContext(ShortcutContext);
-
-// ─── Default shortcuts per page ───────────────────────────────────────────────
-// Pages that do NOT register their own shortcuts fall back to these.
-
-const DEFAULT_SHORTCUTS: Record<string, Array<{ label: string; shortcut: string; page?: string }>> = {
-  "balance-sheet": [
-    { label: "Options",    shortcut: "F11" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Drill Down", shortcut: "Enter" },
-    { label: "Back",       shortcut: "Esc" },
-  ],
-  "profit-loss": [
-    { label: "Options",    shortcut: "F11" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Export",     shortcut: "Ctrl+E" },
-  ],
-  "trial-balance": [
-    { label: "Options",    shortcut: "F11" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Balance",    shortcut: "Ctrl+B" },
-  ],
-  "day-book": [
-    { label: "Prev Day",   shortcut: "←" },
-    { label: "Next Day",   shortcut: "→" },
-    { label: "Today",      shortcut: "T" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Export",     shortcut: "Ctrl+E" },
-  ],
-  "ledger": [
-    { label: "Select Acc", shortcut: "F3" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Drill Down", shortcut: "Enter" },
-  ],
-  "vat-reports": [
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Options",    shortcut: "F11" },
-  ],
-  "billing": [
-    { label: "Save",       shortcut: "F2" },
-    { label: "New",        shortcut: "Ctrl+N" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Add Line",   shortcut: "Tab" },
-    { label: "Del Line",   shortcut: "F9" },
-  ],
-  "purchase": [
-    { label: "Save",       shortcut: "F2" },
-    { label: "New",        shortcut: "Ctrl+N" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Add Line",   shortcut: "Tab" },
-    { label: "Del Line",   shortcut: "F9" },
-  ],
-  "journal": [
-    { label: "Save",       shortcut: "F2" },
-    { label: "New",        shortcut: "Ctrl+N" },
-    { label: "Add Line",   shortcut: "Tab" },
-    { label: "Narration",  shortcut: "F4" },
-  ],
-  "payment": [
-    { label: "Save",       shortcut: "F2" },
-    { label: "New",        shortcut: "Ctrl+N" },
-    { label: "Narration",  shortcut: "F4" },
-  ],
-  "receipt": [
-    { label: "Save",       shortcut: "F2" },
-    { label: "New",        shortcut: "Ctrl+N" },
-    { label: "Narration",  shortcut: "F4" },
-  ],
-  "outstanding-receivables": [
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Party Stmt", shortcut: "Enter" },
-  ],
-  "outstanding-payables": [
-    { label: "Export",     shortcut: "Ctrl+E" },
-    { label: "Print",      shortcut: "F12" },
-    { label: "Party Stmt", shortcut: "Enter" },
-  ],
-};
-
-// Universal shortcuts always shown at the bottom
-const UNIVERSAL_SHORTCUTS = [
-  { label: "Help",       shortcut: "F1" },
-  { label: "Configure",  shortcut: "F12" },
-];
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const formatShortcut = (s: string): string =>
-  s.replace("Control+", "C+")
-   .replace("Ctrl+", "C+")
-   .replace("Alt+", "A+")
-   .replace("Shift+", "S+")
-   .replace("Escape", "Esc");
-
-const isInputFocused = (): boolean => {
-  const tag = (document.activeElement as HTMLElement)?.tagName?.toLowerCase();
-  return tag === "input" || tag === "textarea" || tag === "select" ||
-    document.activeElement?.getAttribute("contenteditable") === "true";
-};
-
-// ─── Main Component ───────────────────────────────────────────────────────────
+function getComboString(e: KeyboardEvent): string {
+  const parts: string[] = [];
+  if (e.ctrlKey || e.metaKey) parts.push("Ctrl");
+  if (e.altKey) parts.push("Alt");
+  if (e.shiftKey) parts.push("Shift");
+  const key = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+  parts.push(key);
+  return parts.join("+");
+}
 
 export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = ({
   onShortcut,
 }) => {
-  const { setCurrentPage, currentPage } = useStore();
-  const { shortcuts: contextShortcuts } = usePageShortcuts();
+  const { setCurrentPage } = useStore();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const { toggleF12, isOpen: f12IsOpen } = useF12Config();
 
-  // Determine which shortcuts to show:
-  // 1. If the current page has registered contextual shortcuts, use those
-  // 2. Otherwise fall back to DEFAULT_SHORTCUTS[currentPage]
-  // 3. Always append UNIVERSAL_SHORTCUTS at the bottom
-  const displayShortcuts = useMemo(() => {
-    const pageDefaults = DEFAULT_SHORTCUTS[currentPage] || [];
-    const primary = contextShortcuts.length > 0
-      ? contextShortcuts.map((cs) => ({
-          label: cs.label,
-          shortcut: cs.shortcut,
-          action: cs.action,
-          enabled: cs.enabled !== false,
-        }))
-      : pageDefaults.map((s) => ({
-          label: s.label,
-          shortcut: s.shortcut,
-          action: undefined as (() => void) | undefined,
-          enabled: true,
-        }));
+  const buttons: RightBarButton[] = useMemo(() => [
+    { id: "f1", label: "Help", shortcut: "F1", action: () => setCurrentPage("dashboard"), enabled: true, visible: true },
+    { id: "f2", label: "New Sales", shortcut: "F2", action: () => setCurrentPage("billing"), enabled: true, visible: true },
+    { id: "f3", label: "Items", shortcut: "F3", action: () => setCurrentPage("item-master"), enabled: true, visible: true },
+    { id: "f4", label: "Accounts", shortcut: "F4", action: () => setCurrentPage("accounts"), enabled: true, visible: true },
+    { id: "f5", label: "Journal", shortcut: "F5", action: () => setCurrentPage("journal"), enabled: true, visible: true },
+    { id: "f6", label: "Payment", shortcut: "F6", action: () => setCurrentPage("payment"), enabled: true, visible: true },
+    { id: "f7", label: "Receipt", shortcut: "F7", action: () => setCurrentPage("receipt"), enabled: true, visible: true },
+    { id: "f8", label: "Contra", shortcut: "F8", action: () => setCurrentPage("contra"), enabled: true, visible: true },
+    { id: "f9", label: "Sales Invoice", shortcut: "F9", action: () => setCurrentPage("billing"), enabled: true, visible: true },
+    { id: "f10", label: "Purchase", shortcut: "F10", action: () => setCurrentPage("purchase"), enabled: true, visible: true },
+    { id: "f11", label: "Balance Sheet", shortcut: "F11", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
+    { id: "divider1", label: "Quick Reports", shortcut: "", action: () => {}, enabled: false, visible: true },
+    { id: "b", label: "Balance Sheet", shortcut: "B", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
+    { id: "t", label: "Trial Balance", shortcut: "T", action: () => setCurrentPage("trial-balance"), enabled: true, visible: true },
+    { id: "s", label: "Stock Status", shortcut: "S", action: () => setCurrentPage("stock-summary"), enabled: true, visible: true },
+    { id: "l", label: "Ledger", shortcut: "L", action: () => setCurrentPage("ledger"), enabled: true, visible: true },
+    { id: "v", label: "VAT Report", shortcut: "V", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
+    { id: "d", label: "Day Book", shortcut: "D", action: () => setCurrentPage("day-book"), enabled: true, visible: true },
+    { id: "g", label: "GST Summary", shortcut: "G", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
+  ], [setCurrentPage]);
 
-    return primary;
-  }, [currentPage, contextShortcuts]);
+  const visibleButtons = useMemo(() => buttons.filter((b) => b.visible), [buttons]);
 
-  // Global keyboard handler
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "F12") return; // handled by F12Panel separately
+      // Skip if F12
+      if (e.key === "F12") return;
 
-      const typing = isInputFocused();
+      const typing = isInputElement(document.activeElement);
+      const combo = getComboString(e);
 
-      // F-keys work regardless of focus
+      // F-keys always work
       if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
-        // Let context shortcuts handle their own F-keys
-        return;
+        const btn = visibleButtons.find((b) => b.shortcut === e.key && b.enabled);
+        if (btn) {
+          e.preventDefault();
+          btn.action();
+          return;
+        }
       }
 
-      // Single letters only when not typing
+      // Single letter shortcuts - only when not typing
       if (!typing && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.length === 1) {
-        onShortcut?.(e.key.toUpperCase());
+        const key = e.key.toUpperCase();
+        const btn = visibleButtons.find((b) => b.shortcut === key && b.enabled);
+        if (btn) {
+          e.preventDefault();
+          btn.action();
+          return;
+        }
       }
+
+      // Pass to parent handler
+      if (onShortcut) onShortcut(combo);
     };
 
+    // Use capture to intercept before other handlers
     document.addEventListener("keydown", handler, { capture: true });
     return () => document.removeEventListener("keydown", handler, { capture: true });
-  }, [onShortcut]);
+  }, [visibleButtons, onShortcut]);
 
   return (
     <div
-      className="right-button-bar"
-      style={{
-        width: 148,
-        background: "#1e2433",
-        borderLeft: "1px solid #2d3748",
-        color: "#ffffff",
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-        overflowY: "auto",
-        boxShadow: "-2px 0 4px rgba(0,0,0,0.15)",
-      }}
+      className="right-button-bar w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto"
+      style={{ boxShadow: "-2px 0 4px rgba(0,0,0,0.15)" }}
     >
-      {/* Header */}
-      <div style={{
-        background: "#273148",
-        textAlign: "center",
-        padding: "5px 0",
-        fontWeight: 700,
-        borderBottom: "1px solid #2d3748",
-        fontSize: 10,
-        color: "#9ca3af",
-        textTransform: "uppercase" as const,
-        letterSpacing: "0.06em",
-        flexShrink: 0,
-      }}>
-        Quick Keys
+      <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest shadow-sm">
+        Quick Actions
       </div>
 
-      {/* Page-specific section label */}
-      {displayShortcuts.length > 0 && (
-        <div style={{
-          padding: "4px 10px 2px",
-          fontSize: 9,
-          fontWeight: 700,
-          color: "#475c8a",
-          textTransform: "uppercase" as const,
-          letterSpacing: "0.05em",
-        }}>
-          {(currentPage || "general")
-            .split("-")
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(" ")}
-        </div>
-      )}
-
-      {/* Page-specific shortcuts */}
-      <div style={{ flex: 1 }}>
-        {displayShortcuts.map((btn, idx) => {
-          const id = `${btn.shortcut}-${idx}`;
-          const isHov = hoveredId === id;
-          const enabled = btn.enabled !== false;
-
+      {visibleButtons.map((button) => {
+        if (!button.shortcut) {
           return (
-            <button
-              key={id}
-              type="button"
-              className="w-full"
-              onMouseEnter={() => setHoveredId(id)}
-              onMouseLeave={() => setHoveredId(null)}
-              onClick={() => {
-                if (!enabled) return;
-                if (btn.action) btn.action();
-                else onShortcut?.(btn.shortcut);
-              }}
-              style={{
-                width: "100%",
-                height: 26,
-                borderBottom: "1px solid #2d3748",
-                display: "flex",
-                alignItems: "center",
-                background: isHov && enabled ? "#273148" : "#1e2433",
-                border: "none",
-                borderBottom: "1px solid #2d3748",
-                cursor: enabled ? "pointer" : "default",
-                opacity: enabled ? 1 : 0.4,
-                textAlign: "left" as const,
-                padding: 0,
-                userSelect: "none" as const,
-                transition: "background 80ms ease",
-              }}
-              title={btn.label}
-              aria-label={`${btn.label} (${btn.shortcut})`}
-            >
-              {/* Shortcut key — amber for distinction on dark bg */}
-              <span style={{
-                width: 36,
-                textAlign: "center" as const,
-                flexShrink: 0,
-                fontSize: 10,
-                fontWeight: 700,
-                color: "#d97706",
-                fontFamily: "monospace",
-                overflow: "hidden",
-              }}>
-                {formatShortcut(btn.shortcut)}
+            <div key={button.id} className="px-3 py-1.5 mt-1">
+              <hr className="border-t border-[#2d3748] mb-1.5" />
+              <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                {button.label}
               </span>
-
-              {/* Label */}
-              <span style={{
-                flex: 1,
-                fontSize: 11,
-                color: "#cbd5e1",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                paddingRight: 4,
-              }}>
-                {btn.label}
-              </span>
-            </button>
+            </div>
           );
-        })}
+        }
 
-        {/* Fallback when no page shortcuts are defined */}
-        {displayShortcuts.length === 0 && (
-          <div style={{
-            padding: "12px 10px",
-            fontSize: 10,
-            color: "#475c8a",
-            textAlign: "center",
-          }}>
-            No shortcuts for
-            <br />this screen
-          </div>
-        )}
-      </div>
+        const isHovered = hoveredId === button.id;
+        const bgClass = isHovered && button.enabled
+          ? "bg-[#273148]"
+          : "bg-[#1e2433]";
 
-      {/* Universal shortcuts — always shown */}
-      <div style={{
-        borderTop: "1px solid #2d3748",
-        background: "#1a1f2c",
-        flexShrink: 0,
-      }}>
-        <div style={{
-          padding: "4px 10px 2px",
-          fontSize: 9,
-          fontWeight: 700,
-          color: "#475c8a",
-          textTransform: "uppercase" as const,
-          letterSpacing: "0.05em",
-        }}>
-          Universal
-        </div>
-        {UNIVERSAL_SHORTCUTS.map((btn, idx) => (
+        return (
           <button
-            key={idx}
             type="button"
-            style={{
-              width: "100%",
-              height: 26,
-              display: "flex",
-              alignItems: "center",
-              background: "transparent",
-              border: "none",
-              borderBottom: "1px solid #2d3748",
-              cursor: "pointer",
-              userSelect: "none" as const,
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#273148";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-            }}
+            key={button.id}
+            className={`w-full h-[26px] border-b border-[#2d3748] flex items-center select-none text-left ${bgClass} ${
+              button.enabled ? "cursor-pointer" : "cursor-not-allowed opacity-40"
+            }`}
+            onMouseEnter={() => setHoveredId(button.id)}
+            onMouseLeave={() => setHoveredId(null)}
+            onClick={() => button.enabled && button.action()}
+            title={button.shortcut}
+            aria-label={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ""}`}
           >
-            <span style={{
-              width: 36,
-              textAlign: "center" as const,
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#d97706",
-              fontFamily: "monospace",
-            }}>
-              {formatShortcut(btn.shortcut)}
+            <span className="w-8 text-center shrink-0 text-[10px] font-bold overflow-hidden text-[#d97706]">
+              {formatShortcutLabel(button.shortcut)}
             </span>
-            <span style={{ flex: 1, fontSize: 11, color: "#94a3b8" }}>
-              {btn.label}
-            </span>
+            <span className="flex-1 text-[11px] truncate pr-1">{button.label}</span>
           </button>
-        ))}
-      </div>
+        );
+      })}
 
-      {/* IRD Links */}
-      <div style={{
-        borderTop: "1px solid #2d3748",
-        background: "#1e2433",
-        padding: "6px 0",
-        flexShrink: 0,
-      }}>
-        <div style={{
-          padding: "2px 10px",
-          fontSize: 9,
-          fontWeight: 700,
-          color: "#475c8a",
-          textTransform: "uppercase" as const,
-          letterSpacing: "0.05em",
-          marginBottom: 2,
-        }}>
+      <div className="bg-[#273148] text-center py-1 font-bold border-y border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest mt-1">
+        Configuration
+      </div>
+      <button
+        type="button"
+        onClick={toggleF12}
+        className={`h-[26px] border-b border-[#2d3748] flex items-center select-none w-full text-left transition-colors ${
+          f12IsOpen ? "bg-[#1557b0] text-white" : "bg-[#1e2433] hover:bg-[#273148] text-white"
+        }`}
+        title="F12: Open screen configuration settings"
+      >
+        <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}>
+          F12
+        </span>
+        <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
+          {f12IsOpen && <span className="text-blue-200 text-[9px]">✓</span>}
+          Configure
+        </span>
+      </button>
+
+      <div className="mt-auto border-t border-[#2d3748] bg-[#1e2433] pt-1">
+        <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest">
           Nepal Links
         </div>
-        {[
-          { label: "IRD Portal",   href: "https://ird.gov.np" },
-          { label: "e-TDS Portal", href: "https://etds.ird.gov.np" },
-        ].map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "block",
-              textAlign: "center",
-              padding: "3px 0",
-              fontSize: 11,
-              color: "#0284c7",
-              textDecoration: "none",
-              transition: "color 100ms ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#38bdf8";
-              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "underline";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#0284c7";
-              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "none";
-            }}
-          >
-            {link.label}
+        <div className="py-1">
+          <a href="https://ird.gov.np" target="_blank" rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
+            IRD Portal
           </a>
-        ))}
+          <a href="https://etds.ird.gov.np" target="_blank" rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
+            e-TDS Portal
+          </a>
+        </div>
       </div>
     </div>
   );

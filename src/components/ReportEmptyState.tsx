@@ -1,44 +1,59 @@
 // src/components/ReportEmptyState.tsx
 import React from "react";
+import { FileText } from "lucide-react";
 
 interface ReportEmptyStateProps {
   message?: string;
   hint?: string;
+  icon?: React.ReactNode;
 }
 
-/**
- * ReportEmptyState — professional, text-only empty state.
- *
- * Rules applied:
- * - No cartoon images or emoji
- * - No coloured icons (icon is neutral #d1d5db)
- * - Title in #374151, hint in #9ca3af
- * - No green from old palette
- */
 export const ReportEmptyState: React.FC<ReportEmptyStateProps> = ({
   message = "No transactions found for the selected period.",
   hint = "Adjust the date range or check your filter settings.",
+  icon,
 }) => {
   return (
-    <div className="empty-state">
-      {/* Minimal geometric icon — no cartoon, no colour */}
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        className="empty-state-icon"
-        aria-hidden="true"
-      >
-        <rect x="4" y="6" width="24" height="20" rx="2"
-          stroke="#d1d5db" strokeWidth="1.5" fill="none" />
-        <line x1="9"  y1="12" x2="23" y2="12" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="9"  y1="16" x2="23" y2="16" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="9"  y1="20" x2="17" y2="20" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "48px 24px",
+        gap: 8,
+        textAlign: "center",
+      }}
+    >
+      {/* Icon — small, neutral gray, never colored or cartoon */}
+      <div style={{ color: "#d1d5db", marginBottom: 4 }}>
+        {icon || <FileText size={28} strokeWidth={1.5} />}
+      </div>
 
-      <p className="empty-state-title">{message}</p>
-      <p className="empty-state-sub">{hint}</p>
+      {/* Primary message — professional, direct */}
+      <p
+        style={{
+          fontSize: 13,
+          fontWeight: 600,
+          color: "#374151",
+          margin: 0,
+          maxWidth: 400,
+        }}
+      >
+        {message}
+      </p>
+
+      {/* Hint — smaller, muted */}
+      <p
+        style={{
+          fontSize: 11,
+          color: "#9ca3af",
+          margin: 0,
+          maxWidth: 360,
+        }}
+      >
+        {hint}
+      </p>
     </div>
   );
 };

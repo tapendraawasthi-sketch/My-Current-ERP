@@ -83,7 +83,7 @@ const DeliveryChallan: React.FC = () => {
           <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
             <Truck className="h-5 w-5 text-[#1557b0]" /> Delivery Challans
           </h2>
-          <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
+          <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
             Outgoing goods before invoicing
           </p>
         </div>

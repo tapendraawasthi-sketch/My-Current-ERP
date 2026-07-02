@@ -295,7 +295,7 @@ const StockItemReport: React.FC = () => {
       {/* Summary section */}
       <div className="grid grid-cols-4 gap-4 text-[12px] mb-4">
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Inward Qty
           </div>
           <div className="text-[16px] font-mono font-bold text-[#1557b0]">
@@ -303,7 +303,7 @@ const StockItemReport: React.FC = () => {
           </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Outward Qty
           </div>
           <div className="text-[16px] font-mono font-bold text-[#d97706]">
@@ -311,7 +311,7 @@ const StockItemReport: React.FC = () => {
           </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Qty
           </div>
           <div
@@ -321,7 +321,7 @@ const StockItemReport: React.FC = () => {
           </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Value
           </div>
           <div className="text-[16px] font-mono font-bold text-gray-800">

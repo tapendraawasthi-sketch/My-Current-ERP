@@ -892,7 +892,7 @@ export default function UsersManagement() {
                       <tr>
                         <td
                           colSpan={roles.length + 1}
-                          className="bg-gray-50 border-y border-gray-200 px-4 py-2 text-[11px] font-bold text-gray-700 tracking-wide"
+                          className="bg-gray-50 border-y border-gray-200 px-4 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide"
                         >
                           {group}
                         </td>
@@ -1159,7 +1159,7 @@ export default function UsersManagement() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-center">
-              <div className="text-[11px] text-gray-500 font-semibold tracking-wide mb-1">
+              <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wide mb-1">
                 Total Logins Today
               </div>
               <div className="text-[28px] font-bold text-gray-800">
@@ -1182,7 +1182,7 @@ export default function UsersManagement() {
               </div>
             </div>
             <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-center">
-              <div className="text-[11px] text-gray-500 font-semibold tracking-wide mb-1">
+              <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wide mb-1">
                 Active Sessions
               </div>
               <div className="text-[28px] font-bold text-[#1557b0]">
@@ -1541,7 +1541,7 @@ export default function UsersManagement() {
                   {Object.entries(MODULE_ACCESS_GROUPS).map(([group, perms]) => (
                     <div key={group} className="border border-gray-200 rounded-md bg-gray-50/50">
                       <div className="flex items-center justify-between p-2.5 border-b border-gray-200 bg-gray-50 rounded-t-md">
-                        <div className="text-[11px] font-bold text-gray-700 tracking-wide">
+                        <div className="text-[11px] font-bold text-gray-700 uppercase tracking-wide">
                           {group}
                         </div>
                         <div className="flex gap-2">

@@ -50,7 +50,7 @@ function getStatusBadge(status: string) {
 
   if (s === "pending") {
     return (
-      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700">
+      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-amber-100 text-amber-700">
         Pending
       </span>
     );
@@ -58,7 +58,7 @@ function getStatusBadge(status: string) {
 
   if (s === "approved") {
     return (
-      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-green-100 text-green-700">
+      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-100 text-green-700">
         Approved
       </span>
     );
@@ -66,14 +66,14 @@ function getStatusBadge(status: string) {
 
   if (s === "rejected") {
     return (
-      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700">
+      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-red-100 text-red-700">
         Rejected
       </span>
     );
   }
 
   return (
-    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-700">
+    <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
       Draft
     </span>
   );

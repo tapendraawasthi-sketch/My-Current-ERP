@@ -6,9 +6,9 @@ import { getDB } from "../lib/db";
 
 interface StandardNarration {
   id: string;
-  narration: string;
-  category?: string;
-  voucherTypes?: string[];
+  text: string;
+  category: string;
+  voucherTypes: string[];
   isActive: boolean;
 }
 
@@ -16,18 +16,18 @@ const CATEGORIES = ["General", "Sales", "Purchase", "Payment", "Receipt", "Journ
 const VOUCHER_TYPES = ["All", "Sales", "Purchase", "Payment", "Receipt", "Journal", "Contra", "Stock Journal"];
 
 const DEFAULTS: Omit<StandardNarration, "id">[] = [
-  { narration: "Being goods sold as per tax invoice", category: "Sales", voucherTypes: ["Sales"], isActive: true },
-  { narration: "Being goods purchased as per invoice", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
-  { narration: "Being payment made against invoice", category: "Payment", voucherTypes: ["Payment"], isActive: true },
-  { narration: "Being receipt received against invoice", category: "Receipt", voucherTypes: ["Receipt"], isActive: true },
-  { narration: "Being cash deposited into bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
-  { narration: "Being cash withdrawn from bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
-  { narration: "Being salary paid for the month", category: "Payment", voucherTypes: ["Payment"], isActive: true },
-  { narration: "Being rent paid for premises", category: "Payment", voucherTypes: ["Payment"], isActive: true },
-  { narration: "Being goods returned by customer", category: "Sales", voucherTypes: ["Sales"], isActive: true },
-  { narration: "Being goods returned to supplier", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
-  { narration: "Being stock adjusted per physical count", category: "Stock", voucherTypes: ["Stock Journal"], isActive: true },
-  { narration: "Being depreciation charged on fixed assets", category: "Journal", voucherTypes: ["Journal"], isActive: true },
+  { text: "Being goods sold as per tax invoice", category: "Sales", voucherTypes: ["Sales"], isActive: true },
+  { text: "Being goods purchased as per invoice", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
+  { text: "Being payment made against invoice", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being receipt received against invoice", category: "Receipt", voucherTypes: ["Receipt"], isActive: true },
+  { text: "Being cash deposited into bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
+  { text: "Being cash withdrawn from bank account", category: "Contra", voucherTypes: ["Contra"], isActive: true },
+  { text: "Being salary paid for the month", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being rent paid for premises", category: "Payment", voucherTypes: ["Payment"], isActive: true },
+  { text: "Being goods returned by customer", category: "Sales", voucherTypes: ["Sales"], isActive: true },
+  { text: "Being goods returned to supplier", category: "Purchase", voucherTypes: ["Purchase"], isActive: true },
+  { text: "Being stock adjusted per physical count", category: "Stock", voucherTypes: ["Stock Journal"], isActive: true },
+  { text: "Being depreciation charged on fixed assets", category: "Journal", voucherTypes: ["Journal"], isActive: true },
 ];
 
 export default function StandardNarrationMaster() {
@@ -37,7 +37,7 @@ export default function StandardNarrationMaster() {
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState<StandardNarration | null>(null);
   const [form, setForm] = useState<Omit<StandardNarration, "id">>({
-    narration: "", category: "General", voucherTypes: ["All"], isActive: true
+    text: "", category: "General", voucherTypes: ["All"], isActive: true
   });
 
   useEffect(() => { loadNarrations(); }, []);
@@ -60,18 +60,16 @@ export default function StandardNarrationMaster() {
     }
   };
 
-  const filtered = useMemo(() => {
-    const q = searchTerm.toLowerCase();
-    return narrations.filter(n => {
-      const matchSearch = n.narration.toLowerCase().includes(q);
+  const filtered = useMemo(() =>
+    narrations.filter(n => {
+      const matchSearch = n.text.toLowerCase().includes(searchTerm.toLowerCase());
       const matchCat = categoryFilter === "All" || n.category === categoryFilter;
       return matchSearch && matchCat;
-    });
-  }, [narrations, searchTerm, categoryFilter]);
+    }), [narrations, searchTerm, categoryFilter]);
 
   const openAdd = () => {
     setEditItem(null);
-    setForm({ narration: "", category: "General", voucherTypes: ["All"], isActive: true });
+    setForm({ text: "", category: "General", voucherTypes: ["All"], isActive: true });
     setShowModal(true);
   };
 
@@ -83,7 +81,7 @@ export default function StandardNarrationMaster() {
   };
 
   const handleSave = async () => {
-    if (!form.narration.trim()) { toast.error("Narration text is required"); return; }
+    if (!form.text.trim()) { toast.error("Narration text is required"); return; }
     try {
       const db = getDB();
       if (editItem) {
@@ -150,7 +148,7 @@ export default function StandardNarrationMaster() {
           <tbody className="divide-y divide-gray-100">
             {filtered.map(item => (
               <tr key={item.id} className="hover:bg-gray-50">
-                <td className="px-3 py-2 text-[12px] text-gray-700 font-medium">{item.narration}</td>
+                <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.text}</td>
                 <td className="px-3 py-2.5 text-[12px]">
                   <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">{item.category}</span>
                 </td>
@@ -184,8 +182,8 @@ export default function StandardNarrationMaster() {
               <div>
                 <label className={labelCls}>Narration Text *</label>
                 <textarea
-                  value={form.narration}
-                  onChange={e => setForm(p => ({ ...p, narration: e.target.value }))}
+                  value={form.text}
+                  onChange={e => setForm(p => ({ ...p, text: e.target.value }))}
                   className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 resize-none"
                   rows={3}
                   placeholder="e.g. Being goods sold as per tax invoice"

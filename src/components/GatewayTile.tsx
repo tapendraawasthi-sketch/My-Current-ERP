@@ -1,94 +1,62 @@
-// src/components/GatewayTile.tsx
-import React, { useState } from "react";
+import React from "react";
 
 interface GatewayTileProps {
   label: string;
   value: string;
   subtitle?: string;
   onClick: () => void;
-  /** Optional: override the left accent stripe colour. Defaults to #1557b0. */
-  accentColour?: string;
 }
 
-const GatewayTile: React.FC<GatewayTileProps> = ({
-  label,
-  value,
-  subtitle,
-  onClick,
-  accentColour = "#1557b0",
-}) => {
-  const [hov, setHov] = useState(false);
-
+const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, subtitle, onClick }) => {
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      className="hover:bg-gray-50 transition-colors bg-white border border-gray-200 text-gray-800 rounded shadow-sm"
       style={{
-        /* Layout */
-        minWidth: 140,
-        flex: "1 1 140px",
-        padding: "10px 12px 10px 14px",
-        textAlign: "left",
+        minWidth: 145,
+        flex: "1 1 145px",
+        padding: "10px 12px",
         cursor: "pointer",
-
-        /* Colour system */
-        background: "#ffffff",
-        border: `1px solid ${hov ? "#1557b0" : "#e5e7eb"}`,
-        borderLeft: `3px solid ${accentColour}`,
-        borderRadius: 6,
-
-        /* Typography */
+        textAlign: "left",
         fontFamily:
-          "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, " +
-          "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-
-        /* Transitions */
-        transition: "border-color 100ms ease",
-
-        /* Remove default button styles */
-        boxShadow: "none",
-        outline: "none",
+          "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       }}
     >
-      {/* Label */}
-      <div style={{
-        fontSize: 9,
-        fontWeight: 700,
-        textTransform: "uppercase",
-        letterSpacing: "0.07em",
-        color: "#6b7280",
-        lineHeight: 1.2,
-        marginBottom: 4,
-      }}>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          lineHeight: 1.2,
+        }}
+      >
         {label}
       </div>
 
-      {/* Value */}
-      <div style={{
-        fontFamily: "'Courier New', Courier, monospace",
-        fontSize: 15,
-        fontWeight: 700,
-        color: "#1557b0",
-        lineHeight: 1.2,
-        whiteSpace: "nowrap",
-        fontVariantNumeric: "tabular-nums",
-      }}>
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          marginTop: 3,
+          lineHeight: 1.2,
+          whiteSpace: "nowrap",
+        }}
+      >
         {value}
       </div>
 
-      {/* Subtitle */}
-      {subtitle && (
-        <div style={{
-          fontSize: 10,
-          color: "#9ca3af",
-          lineHeight: 1.3,
-          marginTop: 3,
-        }}>
+      {subtitle ? (
+        <div
+          style={{
+            fontSize: 10,
+            marginTop: 2,
+            lineHeight: 1.2,
+          }}
+        >
           {subtitle}
         </div>
-      )}
+      ) : null}
     </button>
   );
 };

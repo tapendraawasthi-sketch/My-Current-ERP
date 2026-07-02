@@ -1,291 +1,404 @@
 // src/pages/FinancialDashboard.tsx
 // @ts-nocheck
-import React, { useMemo, useEffect, useState } from "react";
+/**
+ * SUTRA ERP — Financial Dashboard (Single Authoritative Version)
+ * Replaces both src/components/Dashboard.tsx (now dead) and the old FinancialDashboard.
+ *
+ * Layout hierarchy (top → bottom):
+ *   Row 1  — Enterprise Header Bar  (company, date BS+AD, FY, user, Books status)
+ *   Row 2  — Profit Pulse Strip     (Today / MTD / YTD Gross Margin)
+ *   Row 3  — Four Primary KPI Cards (Cash+Bank, AR, AP, VAT Payable)
+ *   Row 4  — Balance Sheet Mini-Snapshot (T-format)
+ *   Row 5  — Six-month Sales vs Expenses bar chart
+ *   Row 6  — Aging Receivables + Top-5 Customers side-by-side
+ *   Row 7  — Alerts & Action Required
+ */
+
+import React, { useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  AlertTriangle,
+  Clock,
+  Package,
+  BookOpen,
+  BookX,
+  ArrowRight,
+  Banknote,
+  FileText,
+  Receipt,
+} from "lucide-react";
 import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Formatting helpers ────────────────────────────────────────────────────────
 
-function fmtMoney(n: number): string {
-  const abs = Math.abs(Number(n) || 0);
-  return (
-    "Rs. " +
-    abs.toLocaleString("en-IN", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
-  );
-}
-
-function fmtShort(n: number): string {
-  const abs = Math.abs(Number(n) || 0);
-  if (abs >= 10_000_000) return `Rs. ${(abs / 10_000_000).toFixed(2)} Cr`;
-  if (abs >= 100_000)    return `Rs. ${(abs / 100_000).toFixed(2)} L`;
-  if (abs >= 1_000)      return `Rs. ${(abs / 1_000).toFixed(1)} K`;
-  return `Rs. ${abs.toFixed(2)}`;
-}
-
-function fmtCount(n: number): string {
-  return String(n || 0);
-}
-
-// Derive today's AD date parts for display
-function getADDateString(): string {
-  const d = new Date();
-  return d.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+const fmt = (n: number) =>
+  "Rs. " +
+  Math.abs(Number(n) || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
+
+const fmtShort = (n: number) => {
+  const abs = Math.abs(Number(n) || 0);
+  if (abs >= 10_000_000) return `Rs. ${(abs / 10_000_000).toFixed(2)}Cr`;
+  if (abs >= 100_000) return `Rs. ${(abs / 100_000).toFixed(2)}L`;
+  if (abs >= 1_000) return `Rs. ${(abs / 1_000).toFixed(1)}K`;
+  return `Rs. ${abs.toFixed(2)}`;
+};
+
+// ─── Weekday lookup (English) ──────────────────────────────────────────────────
+
+const WEEKDAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// ─── Custom Bar chart tooltip ──────────────────────────────────────────────────
+
+const ChartTooltip: React.FC<any> = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div
+      style={{
+        background: "#1e2433",
+        border: "1px solid #2d3748",
+        borderRadius: 6,
+        padding: "8px 12px",
+        fontSize: 11,
+        color: "#e2e8f0",
+        minWidth: 140,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: 4, color: "#ffffff" }}>{label}</div>
+      {payload.map((entry: any) => (
+        <div key={entry.name} style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 2 }}>
+          <span style={{ color: entry.color }}>{entry.name}</span>
+          <span style={{ fontFamily: "monospace", fontWeight: 600 }}>
+            {fmtShort(entry.value)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ─── Trend indicator ───────────────────────────────────────────────────────────
+
+const TrendIcon: React.FC<{ value: number; size?: number }> = ({ value, size = 14 }) => {
+  if (value > 0) return <TrendingUp size={size} style={{ color: "#059669" }} />;
+  if (value < 0) return <TrendingDown size={size} style={{ color: "#dc2626" }} />;
+  return <Minus size={size} style={{ color: "#6b7280" }} />;
+};
+
+// ─── KPI Card ──────────────────────────────────────────────────────────────────
+
+interface KpiCardProps {
+  label: string;
+  value: string;
+  sub?: string;
+  trend?: number;
+  accentColor?: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
 }
 
-function getWeekday(): string {
-  return new Date().toLocaleDateString("en-US", { weekday: "long" });
-}
-
-function getADShort(): string {
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2, "0")}-${String(d.getMonth() + 1).padStart(2, "0")}-${d.getFullYear()} (A.D.)`;
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-/** Books status pill */
-const BooksPill: React.FC<{ isOpen: boolean; fyName: string }> = ({ isOpen, fyName }) => (
+const KpiCard: React.FC<KpiCardProps> = ({
+  label,
+  value,
+  sub,
+  trend,
+  accentColor = "#1557b0",
+  icon,
+  onClick,
+}) => (
   <div
+    onClick={onClick}
     style={{
-      display: "inline-flex",
-      alignItems: "center",
+      background: "#ffffff",
+      border: "1px solid #e5e7eb",
+      borderRadius: 6,
+      padding: "14px 16px",
+      display: "flex",
+      flexDirection: "column",
       gap: 6,
-      padding: "4px 10px",
-      borderRadius: 20,
-      fontSize: 11,
-      fontWeight: 600,
-      background: isOpen ? "var(--color-success-light)" : "var(--color-danger-light)",
-      color: isOpen ? "var(--color-success)" : "var(--color-danger)",
-      border: `1px solid ${isOpen ? "var(--color-success-border)" : "var(--color-danger-border)"}`,
+      position: "relative",
+      overflow: "hidden",
+      cursor: onClick ? "pointer" : "default",
+      transition: "box-shadow 150ms ease, border-color 150ms ease",
+    }}
+    onMouseEnter={(e) => {
+      if (onClick) {
+        (e.currentTarget as HTMLDivElement).style.borderColor = accentColor;
+        (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 0 2px ${accentColor}22`;
+      }
+    }}
+    onMouseLeave={(e) => {
+      (e.currentTarget as HTMLDivElement).style.borderColor = "#e5e7eb";
+      (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
     }}
   >
-    <span
+    {/* Left accent stripe */}
+    <div
       style={{
-        width: 6,
-        height: 6,
-        borderRadius: "50%",
-        background: isOpen ? "var(--color-success)" : "var(--color-danger)",
-        flexShrink: 0,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: 3,
+        height: "100%",
+        background: accentColor,
+        borderRadius: "6px 0 0 6px",
       }}
     />
-    {isOpen ? `Books Open — FY ${fyName}` : `FY ${fyName} Closed`}
+    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", paddingLeft: 4 }}>
+      <div>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280" }}>
+          {label}
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontFamily: "'Courier New', monospace", color: "#111827", lineHeight: 1.2 }}>
+          {value}
+        </div>
+        {sub && (
+          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>{sub}</div>
+        )}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            background: `${accentColor}15`,
+            borderRadius: 6,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: accentColor,
+          }}
+        >
+          {icon}
+        </div>
+        {trend !== undefined && (
+          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <TrendIcon value={trend} size={12} />
+            <span style={{ fontSize: 10, color: trend >= 0 ? "#059669" : "#dc2626", fontWeight: 600 }}>
+              vs yesterday
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+    {onClick && (
+      <div style={{ display: "flex", alignItems: "center", gap: 3, paddingLeft: 4, color: accentColor, fontSize: 10, fontWeight: 600 }}>
+        View Report <ArrowRight size={10} />
+      </div>
+    )}
   </div>
 );
 
-/** Profit Pulse cell */
-const PulseCell: React.FC<{
+// ─── Profit Pulse Cell ─────────────────────────────────────────────────────────
+
+interface PulseCellProps {
   label: string;
   value: number;
-  note: string;
-  isLast?: boolean;
-}> = ({ label, value, note, isLast }) => {
-  const isPos  = value > 0;
-  const isNeg  = value < 0;
-  const trend  = isPos ? "+ " : isNeg ? "− " : "";
-  const trendClass = isPos
-    ? "profit-pulse-positive"
-    : isNeg
-    ? "profit-pulse-negative"
-    : "profit-pulse-neutral";
+  period: string;
+}
 
+const PulseCell: React.FC<PulseCellProps> = ({ label, value, period }) => {
+  const isPositive = value >= 0;
   return (
     <div
-      className="profit-pulse-cell"
-      style={{ borderRight: isLast ? "none" : "1px solid var(--border-default)" }}
+      style={{
+        flex: 1,
+        padding: "10px 16px",
+        borderRight: "1px solid #e5e7eb",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
     >
-      <div className="profit-pulse-label">{label}</div>
-      <div
-        className="profit-pulse-value"
-        style={{ color: isPos ? "var(--color-success)" : isNeg ? "var(--color-danger)" : "var(--text-primary)" }}
-      >
-        {fmtMoney(value)}
+      <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+        {label}
       </div>
-      <div className={`profit-pulse-trend ${trendClass}`}>
-        {trend}{note}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+        <span
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+            fontFamily: "'Courier New', monospace",
+            color: isPositive ? "#059669" : "#dc2626",
+          }}
+        >
+          {fmt(value)}
+        </span>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "1px 6px",
+            borderRadius: 3,
+            background: isPositive ? "#dcfce7" : "#fee2e2",
+            color: isPositive ? "#166534" : "#991b1b",
+          }}
+        >
+          {isPositive ? "PROFIT" : "LOSS"}
+        </span>
+      </div>
+      <div style={{ fontSize: 10, color: "#9ca3af" }}>
+        Gross Margin (Sales − Purchases) · {period}
       </div>
     </div>
   );
 };
 
-/** KPI card — no icons, left accent stripe only */
-const KpiCard: React.FC<{
-  label: string;
-  amount: number;
-  sub: string;
-  onClick?: () => void;
-  accentColour?: string;
-}> = ({ label, amount, sub, onClick, accentColour = "var(--color-primary)" }) => (
-  <div
-    className="kpi-card"
-    style={{ borderLeftColor: accentColour }}
-    onClick={onClick}
-    role={onClick ? "button" : undefined}
-    tabIndex={onClick ? 0 : undefined}
-    onKeyDown={onClick ? (e) => e.key === "Enter" && onClick() : undefined}
-  >
-    <div className="kpi-card-label">{label}</div>
-    <div className="kpi-card-amount">{fmtShort(amount)}</div>
-    <div className="kpi-card-sub">{sub}</div>
-    <div
-      style={{
-        fontSize: 10,
-        color: "var(--text-placeholder)",
-        marginTop: 6,
-        fontFamily: "monospace",
-      }}
-    >
-      {fmtMoney(amount)}
-    </div>
-  </div>
-);
+// ─── Alert row ─────────────────────────────────────────────────────────────────
 
-/** Activity cell in the today strip */
-const ActivityCell: React.FC<{
-  label: string;
-  count: number;
-  amount?: number;
-  onClick?: () => void;
-  isLast?: boolean;
-}> = ({ label, count, amount, onClick, isLast }) => (
-  <div
-    className="activity-cell"
-    style={{ borderRight: isLast ? "none" : undefined }}
-    onClick={onClick}
-  >
-    <div className="activity-label">{label}</div>
-    <div className="activity-count">{fmtCount(count)}</div>
-    {amount !== undefined && (
-      <div className="activity-amount">{fmtShort(amount)}</div>
-    )}
-  </div>
-);
-
-/** Balance Sheet row */
-const BSLine: React.FC<{ name: string; amount: number; indent?: boolean }> = ({
-  name,
-  amount,
-  indent = false,
-}) => (
-  <div className="bs-line" style={{ paddingLeft: indent ? 12 : 0 }}>
-    <span className="bs-line-name" style={{ color: indent ? "var(--text-muted)" : "var(--text-secondary)" }}>
-      {name}
-    </span>
-    <span className="bs-line-amount">{fmtMoney(amount)}</span>
-  </div>
-);
-
-/** Balance Sheet subtotal row */
-const BSSubtotal: React.FC<{ name: string; amount: number }> = ({ name, amount }) => (
-  <div className="bs-subtotal">
-    <span className="bs-subtotal-name">{name}</span>
-    <span className="bs-subtotal-amount">{fmtMoney(amount)}</span>
-  </div>
-);
-
-/** Alert card — stripe-only severity indicator, text-link action */
-const AlertCard: React.FC<{
+interface AlertRowProps {
   type: "danger" | "warning" | "info";
+  icon: React.ReactNode;
   title: string;
   message: string;
-  action: string;
-  onAction: () => void;
-}> = ({ type, title, message, action, onAction }) => (
-  <div className="alert-card">
-    <div className={`alert-stripe alert-stripe-${type}`} />
-    <div style={{ flex: 1 }}>
-      <div className="alert-title">{title}</div>
-      <div className="alert-message">{message}</div>
-      <button className="alert-action" onClick={onAction}>
-        {action} →
-      </button>
-    </div>
-  </div>
-);
+  action?: string;
+  onAction?: () => void;
+}
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+const AlertRow: React.FC<AlertRowProps> = ({ type, icon, title, message, action, onAction }) => {
+  const colors = {
+    danger: { border: "#dc2626", bg: "#fff5f5", label: "#991b1b" },
+    warning: { border: "#d97706", bg: "#fffbeb", label: "#92400e" },
+    info: { border: "#1557b0", bg: "#eff6ff", label: "#1e40af" },
+  }[type];
+
+  return (
+    <div
+      style={{
+        background: colors.bg,
+        border: `1px solid ${colors.border}`,
+        borderLeft: `4px solid ${colors.border}`,
+        borderRadius: 6,
+        padding: "10px 14px",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 10,
+      }}
+    >
+      <div style={{ color: colors.border, flexShrink: 0, marginTop: 1 }}>{icon}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>{title}</div>
+        <div style={{ fontSize: 11, color: "#374151", marginTop: 2 }}>{message}</div>
+      </div>
+      {action && (
+        <button
+          onClick={onAction}
+          style={{
+            flexShrink: 0,
+            height: 28,
+            padding: "0 10px",
+            background: "transparent",
+            border: `1px solid ${colors.border}`,
+            borderRadius: 4,
+            fontSize: 10,
+            fontWeight: 700,
+            color: colors.label,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {action}
+        </button>
+      )}
+    </div>
+  );
+};
+
+// ─── Main Component ────────────────────────────────────────────────────────────
 
 const FinancialDashboard: React.FC = () => {
   const {
-    accounts,
-    vouchers,
-    invoices,
-    items,
-    parties,
-    stockMovements,
-    fiscalYears,
     companySettings,
+    currentUser,
+    currentFiscalYear,
+    invoices,
+    vouchers,
+    accounts,
+    items,
+    stockMovements,
+    initializeApp,
     setCurrentPage,
   } = useStore();
 
-  // ── Date state ───────────────────────────────────────────────
-  const [bsDate, setBsDate] = useState("");
-  const [bsDateLong, setBsDateLong] = useState("");
+  // ── Date strings ────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    try {
-      setBsDate(getBSToday());
-      setBsDateLong(getBSTodayLong());
-    } catch {
-      setBsDate("");
-      setBsDateLong("");
-    }
-  }, []);
-
-  const weekday   = getWeekday();
-  const adShort   = getADShort();
-  const todayISO  = new Date().toISOString().split("T")[0];
-
-  // ── Fiscal year state ─────────────────────────────────────────
-  const currentFY = useMemo(
-    () => fiscalYears.find((fy) => fy.status === "open"),
-    [fiscalYears],
-  );
-  const fyName    = currentFY?.name || "—";
-  const fyOpen    = !!currentFY;
-  const fyStart   = currentFY?.startDate || todayISO.substring(0, 4) + "-01-01";
-
-  // ── Company ───────────────────────────────────────────────────
-  const companyName =
-    companySettings?.companyNameEn ||
-    companySettings?.name ||
-    "Company";
-
-  // ── Profit Pulse calculations ─────────────────────────────────
-  const mtdStart = todayISO.substring(0, 7) + "-01";
-
-  function grossMargin(from: string, to: string): number {
-    let sales = 0;
-    let cost  = 0;
-    for (const inv of invoices) {
-      if (!inv.date || inv.status !== "posted") continue;
-      if (inv.date < from || inv.date > to) continue;
-      const t = String(inv.type || "").toLowerCase();
-      if (t.includes("sales-invoice") || t === "sales_invoice")    sales += Number(inv.grandTotal || 0);
-      if (t.includes("purchase-invoice") || t === "purchase_invoice") cost  += Number(inv.grandTotal || 0);
-    }
-    return sales - cost;
+  const today = new Date();
+  const todayISO = today.toISOString().split("T")[0];
+  const weekdayEn = WEEKDAYS_EN[today.getDay()];
+  const adDateStr = today.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  let bsDateStr = "";
+  try {
+    bsDateStr = getBSTodayLong();
+  } catch {
+    bsDateStr = getBSToday();
   }
 
-  const todayMargin = useMemo(() => grossMargin(todayISO, todayISO),   [invoices, todayISO]);
-  const mtdMargin   = useMemo(() => grossMargin(mtdStart, todayISO),   [invoices, mtdStart, todayISO]);
-  const ytdMargin   = useMemo(() => grossMargin(fyStart,  todayISO),   [invoices, fyStart,  todayISO]);
+  const fyLabel = currentFiscalYear?.name || currentFiscalYear?.fiscalYearBS || "—";
 
-  // ── KPI cards ─────────────────────────────────────────────────
+  // ── Books open/closed (wired to actual fiscal year status) ──────────────────
+
+  const booksOpen = useMemo(() => {
+    if (!currentFiscalYear) return false;
+    const status = (currentFiscalYear.status || "").toLowerCase();
+    return status === "open" || status === "active" || status === "";
+  }, [currentFiscalYear]);
+
+  // ── Helpers: compute sales + purchase totals for a date range ───────────────
+
+  const computeRange = useCallback(
+    (fromDate: string, toDate: string) => {
+      let sales = 0;
+      let purchases = 0;
+      for (const inv of invoices) {
+        if (!inv.date || inv.status !== "posted") continue;
+        if (inv.date < fromDate || inv.date > toDate) continue;
+        const t = String(inv.type || "").toLowerCase();
+        if (t.includes("sales-invoice") || t === "sales_invoice") sales += Number(inv.grandTotal || 0);
+        if (t.includes("purchase-invoice") || t === "purchase_invoice") purchases += Number(inv.grandTotal || 0);
+      }
+      return { sales, purchases, grossMargin: sales - purchases };
+    },
+    [invoices],
+  );
+
+  // ── Row 2: Profit Pulse ─────────────────────────────────────────────────────
+
+  const todayPulse = useMemo(() => computeRange(todayISO, todayISO), [computeRange, todayISO]);
+
+  const mtdPulse = useMemo(() => {
+    const start = todayISO.substring(0, 7) + "-01";
+    return computeRange(start, todayISO);
+  }, [computeRange, todayISO]);
+
+  const ytdPulse = useMemo(() => {
+    const fyStart = currentFiscalYear?.startDate || todayISO.substring(0, 4) + "-01-01";
+    return computeRange(fyStart, todayISO);
+  }, [computeRange, currentFiscalYear, todayISO]);
+
+  // ── Row 3: Primary KPI Cards ────────────────────────────────────────────────
+
   const cashBankBalance = useMemo(() => {
     let total = 0;
     for (const acc of accounts) {
       if (acc.isGroup || acc.isActive === false) continue;
-      const n = (acc.name || "").toLowerCase();
-      const g = (acc.group || acc.groupName || "").toLowerCase();
-      if (n.includes("cash") || n.includes("bank") || g.includes("cash") || g.includes("bank")) {
+      const name = (acc.name || "").toLowerCase();
+      const group = (acc.group || acc.groupName || "").toLowerCase();
+      if (name.includes("cash") || name.includes("bank") || group.includes("cash") || group.includes("bank")) {
         total += Number(acc.balance || 0);
       }
     }
@@ -300,7 +413,7 @@ const FinancialDashboard: React.FC = () => {
       if (inv.status !== "posted") continue;
       const ps = (inv.paymentStatus || "").toLowerCase();
       if (ps === "unpaid" || ps === "partial") {
-        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
+        total += (Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0));
       }
     }
     return total;
@@ -314,626 +427,812 @@ const FinancialDashboard: React.FC = () => {
       if (inv.status !== "posted") continue;
       const ps = (inv.paymentStatus || "").toLowerCase();
       if (ps === "unpaid" || ps === "partial") {
-        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
+        total += (Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0));
       }
     }
     return total;
   }, [invoices]);
 
   const vatPayable = useMemo(() => {
-    let out = 0;
-    let inp = 0;
+    let output = 0;
+    let input = 0;
     for (const inv of invoices) {
       if (inv.status !== "posted") continue;
       const t = String(inv.type || "").toLowerCase();
-      const v = Number(inv.vatAmount || inv.taxAmount || 0);
-      if (t.includes("sales-invoice") || t === "sales_invoice")    out += v;
-      if (t.includes("purchase-invoice") || t === "purchase_invoice") inp += v;
+      const vat = Number(inv.vatAmount || inv.taxAmount || 0);
+      if (t.includes("sales-invoice") || t === "sales_invoice") output += vat;
+      if (t.includes("purchase-invoice") || t === "purchase_invoice") input += vat;
     }
-    return Math.max(0, out - inp);
+    return Math.max(0, output - input);
   }, [invoices]);
 
-  // ── Balance Sheet snapshot ────────────────────────────────────
-  //
-  // Group accounts by their standard accounting group names.
-  // We look at acc.group or acc.groupName to classify.
+  // ── Row 4: Balance Sheet Mini-Snapshot ─────────────────────────────────────
 
   const bsSnapshot = useMemo(() => {
-    const sums: Record<string, number> = {
-      fixedAssets:        0,
-      currentAssets:      0,
-      cashBank:           0,
-      receivables:        0,
-      totalAssets:        0,
-      equity:             0,
-      loans:              0,
-      currentLiabilities: 0,
-      payables:           0,
-      totalLiabilities:   0,
-    };
+    let currentAssets = 0;
+    let fixedAssets = 0;
+    let currentLiabilities = 0;
+    let longTermLiabilities = 0;
+    let equity = 0;
 
     for (const acc of accounts) {
       if (acc.isGroup || acc.isActive === false) continue;
+      const group = (acc.group || acc.groupName || acc.parentGroup || "").toLowerCase();
       const bal = Number(acc.balance || 0);
-      const g   = (acc.group || acc.groupName || acc.parentGroup || "").toLowerCase();
-      const n   = (acc.name || "").toLowerCase();
 
-      // Assets
-      if (g.includes("fixed") || g.includes("plant") || g.includes("property")) {
-        sums.fixedAssets += bal;
-      } else if (n.includes("cash") || g.includes("cash-in-hand") || g.includes("cash in hand")) {
-        sums.cashBank += bal;
-      } else if (n.includes("bank") || g.includes("bank account")) {
-        sums.cashBank += bal;
-      } else if (g.includes("sundry debtor") || g.includes("receivable")) {
-        sums.receivables += bal;
-      } else if (
-        g.includes("current asset") ||
-        g.includes("stock") ||
-        g.includes("inventory") ||
-        g.includes("advance") ||
-        g.includes("deposit")
-      ) {
-        sums.currentAssets += bal;
-      }
-
-      // Liabilities
-      else if (
-        g.includes("capital") ||
-        g.includes("equity") ||
-        g.includes("reserve") ||
-        g.includes("partner")
-      ) {
-        sums.equity += bal;
-      } else if (g.includes("loan") || g.includes("secured") || g.includes("unsecured")) {
-        sums.loans += bal;
-      } else if (g.includes("sundry creditor") || g.includes("payable")) {
-        sums.payables += bal;
-      } else if (g.includes("current liabilit") || g.includes("duties") || g.includes("tax")) {
-        sums.currentLiabilities += bal;
+      if (group.includes("cash") || group.includes("bank") || group.includes("sundry debtor") || group.includes("stock") || group.includes("current asset") || group.includes("receivable")) {
+        currentAssets += bal;
+      } else if (group.includes("fixed") || group.includes("plant") || group.includes("equipment") || group.includes("building")) {
+        fixedAssets += bal;
+      } else if (group.includes("sundry creditor") || group.includes("current liab") || group.includes("payable") || group.includes("duties") || group.includes("outstanding")) {
+        currentLiabilities += Math.abs(bal);
+      } else if (group.includes("loan") || group.includes("long-term") || group.includes("debenture") || group.includes("long term")) {
+        longTermLiabilities += Math.abs(bal);
+      } else if (group.includes("capital") || group.includes("reserve") || group.includes("equity") || group.includes("retained") || group.includes("surplus")) {
+        equity += Math.abs(bal);
       }
     }
 
-    sums.totalAssets =
-      sums.fixedAssets +
-      sums.cashBank +
-      sums.receivables +
-      sums.currentAssets;
-
-    sums.totalLiabilities =
-      sums.equity +
-      sums.loans +
-      sums.payables +
-      sums.currentLiabilities;
-
-    const diff    = Math.abs(sums.totalAssets - sums.totalLiabilities);
-    const tallied = diff < 1;
-
-    return { ...sums, tallied, diff };
+    return { currentAssets, fixedAssets, currentLiabilities, longTermLiabilities, equity };
   }, [accounts]);
 
-  // ── Today's activity ──────────────────────────────────────────
-  const todayActivity = useMemo(() => {
-    const result = {
-      salesCount:    0, salesAmount:    0,
-      purchaseCount: 0, purchaseAmount: 0,
-      receiptCount:  0, receiptAmount:  0,
-      paymentCount:  0, paymentAmount:  0,
-      journalCount:  0,
-    };
+  // ── Row 5: 6-month Sales vs Expenses chart ──────────────────────────────────
 
-    for (const inv of invoices) {
-      if (inv.date !== todayISO || inv.status !== "posted") continue;
-      const t = String(inv.type || "").toLowerCase();
-      const a = Number(inv.grandTotal || 0);
-      if (t.includes("sales-invoice") || t === "sales_invoice") {
-        result.salesCount++;
-        result.salesAmount += a;
-      } else if (t.includes("purchase-invoice") || t === "purchase_invoice") {
-        result.purchaseCount++;
-        result.purchaseAmount += a;
-      }
+  const chartData = useMemo(() => {
+    const result: Array<{ month: string; sales: number; purchases: number }> = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      const fromDate = `${ym}-01`;
+      const toDate = `${ym}-${String(lastDay).padStart(2, "0")}`;
+      const { sales, purchases } = computeRange(fromDate, toDate);
+      result.push({
+        month: d.toLocaleString("en-US", { month: "short" }) + " " + String(d.getFullYear()).slice(2),
+        sales,
+        purchases,
+      });
     }
-
-    for (const v of vouchers) {
-      if (v.date !== todayISO || v.status !== "posted") continue;
-      const t = String(v.type || "").toLowerCase();
-      const a = Number(v.grandTotal || v.totalDebit || 0);
-      if (t === "receipt") {
-        result.receiptCount++;
-        result.receiptAmount += a;
-      } else if (t === "payment") {
-        result.paymentCount++;
-        result.paymentAmount += a;
-      } else if (t === "journal") {
-        result.journalCount++;
-      }
-    }
-
     return result;
-  }, [invoices, vouchers, todayISO]);
+  }, [computeRange, today]);
 
-  // ── Alerts ────────────────────────────────────────────────────
+  // ── Row 6: Aging Receivables ────────────────────────────────────────────────
+
+  const agingBuckets = useMemo(() => {
+    const buckets = { current: 0, d1_30: 0, d31_60: 0, d61_90: 0, d90plus: 0 };
+    for (const inv of invoices) {
+      const t = String(inv.type || "").toLowerCase();
+      if (!(t.includes("sales-invoice") || t === "sales_invoice")) continue;
+      if (inv.status !== "posted") continue;
+      const ps = (inv.paymentStatus || "").toLowerCase();
+      if (ps !== "unpaid" && ps !== "partial") continue;
+      const outstanding = Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
+      if (outstanding <= 0) continue;
+      const due = inv.dueDate || inv.date;
+      const days = Math.floor((today.getTime() - new Date(due).getTime()) / 86400000);
+      if (days <= 0) buckets.current += outstanding;
+      else if (days <= 30) buckets.d1_30 += outstanding;
+      else if (days <= 60) buckets.d31_60 += outstanding;
+      else if (days <= 90) buckets.d61_90 += outstanding;
+      else buckets.d90plus += outstanding;
+    }
+    return buckets;
+  }, [invoices, today]);
+
+  // ── Row 6: Top-5 Customers ──────────────────────────────────────────────────
+
+  const topCustomers = useMemo(() => {
+    const fyStart = currentFiscalYear?.startDate || todayISO.substring(0, 4) + "-01-01";
+    const map = new Map<string, { name: string; total: number }>();
+    for (const inv of invoices) {
+      const t = String(inv.type || "").toLowerCase();
+      if (!(t.includes("sales-invoice") || t === "sales_invoice")) continue;
+      if (inv.status !== "posted") continue;
+      if ((inv.date || "") < fyStart) continue;
+      const id = inv.partyId || inv.partyName || "—";
+      const name = inv.partyName || "—";
+      const prev = map.get(id) || { name, total: 0 };
+      prev.total += Number(inv.grandTotal || 0);
+      map.set(id, prev);
+    }
+    return Array.from(map.values())
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+  }, [invoices, currentFiscalYear, todayISO]);
+
+  // ── Row 7: Alerts ───────────────────────────────────────────────────────────
+
   const alerts = useMemo(() => {
-    const list: Array<{
-      id: string;
-      type: "danger" | "warning" | "info";
-      title: string;
-      message: string;
-      action: string;
-      page: string;
-    }> = [];
+    const list: AlertRowProps[] = [];
 
     // Overdue receivables
-    const overdueInvs = invoices.filter(
-      (inv) =>
-        String(inv.type || "").toLowerCase().includes("sales-invoice") &&
-        inv.status === "posted" &&
-        (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial") &&
-        inv.dueDate &&
-        inv.dueDate < todayISO,
-    );
-    if (overdueInvs.length > 0) {
-      const overdueAmt = overdueInvs.reduce((s, i) => s + Number(i.grandTotal || 0), 0);
+    const overdue = invoices.filter((inv) => {
+      const t = String(inv.type || "").toLowerCase();
+      if (!(t.includes("sales-invoice") || t === "sales_invoice")) return false;
+      if (inv.status !== "posted") return false;
+      const ps = (inv.paymentStatus || "").toLowerCase();
+      if (ps !== "unpaid" && ps !== "partial") return false;
+      return inv.dueDate && inv.dueDate < todayISO;
+    });
+    if (overdue.length > 0) {
+      const amt = overdue.reduce((s, i) => s + (Number(i.grandTotal || 0) - Number(i.paidAmount || 0)), 0);
       list.push({
-        id: "overdue",
         type: "danger",
-        title: `${overdueInvs.length} Overdue Invoice${overdueInvs.length > 1 ? "s" : ""}`,
-        message: `${fmtShort(overdueAmt)} outstanding beyond due date`,
-        action: "View Outstanding Receivables",
-        page: "outstanding-receivables",
+        icon: <AlertTriangle size={16} />,
+        title: `${overdue.length} Overdue Invoice${overdue.length > 1 ? "s" : ""}`,
+        message: `${fmt(amt)} outstanding beyond due date — requires immediate follow-up`,
+        action: "VIEW AR",
+        onAction: () => setCurrentPage("outstanding-receivables"),
       });
     }
 
-    // Items below reorder level
-    const reorderItems = items.filter((item) => {
-      const reorder = item.reorderLevel || item.minStockLevel || 0;
-      if (reorder <= 0) return false;
+    // Stock below reorder level
+    const reorder = items.filter((item) => {
+      const minQty = item.reorderLevel || item.minimumStock || item.minStockLevel || 0;
+      if (minQty <= 0) return false;
       const stock = stockMovements
         .filter((m) => m.itemId === item.id)
         .reduce((s, m) => {
-          const q = Number(m.quantity || m.qty || 0);
-          const t = String(m.type || m.movementType || "").toLowerCase();
-          return t === "in" || t === "purchase" ? s + q : s - q;
+          const qty = Number(m.qty || m.quantity || 0);
+          const mtype = String(m.type || m.movementType || "").toLowerCase();
+          return mtype === "in" || mtype === "purchase" || mtype === "opening" ? s + qty : s - qty;
         }, 0);
-      return stock <= reorder;
+      return stock <= minQty;
     });
-    if (reorderItems.length > 0) {
+    if (reorder.length > 0) {
       list.push({
-        id: "reorder",
         type: "warning",
-        title: `${reorderItems.length} Item${reorderItems.length > 1 ? "s" : ""} Below Reorder Level`,
-        message: reorderItems
-          .slice(0, 3)
-          .map((i) => i.name)
-          .join(", ") + (reorderItems.length > 3 ? ` and ${reorderItems.length - 3} more` : ""),
-        action: "View Stock Summary",
-        page: "stock-summary",
+        icon: <Package size={16} />,
+        title: `${reorder.length} Item${reorder.length > 1 ? "s" : ""} Below Reorder Level`,
+        message: reorder.slice(0, 3).map((i) => i.name).join(", ") + (reorder.length > 3 ? ` + ${reorder.length - 3} more` : ""),
+        action: "VIEW STOCK",
+        onAction: () => setCurrentPage("stock-summary"),
       });
     }
 
-    // PDC cheques due in 3 days
-    const threeDays = new Date();
-    threeDays.setDate(threeDays.getDate() + 3);
-    const threeDaysStr = threeDays.toISOString().split("T")[0];
-    const duePDC = vouchers.filter(
-      (v) =>
-        v.type === "receipt" &&
-        v.pdc &&
-        v.pdcDate &&
-        v.pdcDate <= threeDaysStr &&
-        v.pdcDate >= todayISO &&
-        v.status === "posted",
+    // PDC cheques due within 3 days
+    const in3days = new Date(today);
+    in3days.setDate(in3days.getDate() + 3);
+    const in3daysISO = in3days.toISOString().split("T")[0];
+    const pdcDue = vouchers.filter(
+      (v) => v.type === "receipt" && v.pdc && v.pdcDate && v.pdcDate <= in3daysISO && v.pdcDate >= todayISO && v.status === "posted",
     );
-    if (duePDC.length > 0) {
+    if (pdcDue.length > 0) {
       list.push({
-        id: "pdc",
         type: "info",
-        title: `${duePDC.length} PDC Cheque${duePDC.length > 1 ? "s" : ""} Due for Deposit`,
-        message: `Due by ${threeDaysStr}`,
-        action: "View PDC Summary",
-        page: "pdc-management",
-      });
-    }
-
-    // Unreconciled vouchers pending approval > 24h
-    const pendingApproval = vouchers.filter((v) => {
-      if (v.status !== "pending_approval") return false;
-      const created = new Date(v.createdAt || v.date);
-      return (Date.now() - created.getTime()) / 3_600_000 > 24;
-    });
-    if (pendingApproval.length > 0) {
-      list.push({
-        id: "approval",
-        type: "warning",
-        title: `${pendingApproval.length} Voucher${pendingApproval.length > 1 ? "s" : ""} Pending Approval`,
-        message: "Awaiting approval for more than 24 hours",
-        action: "Review Pending Vouchers",
-        page: "approval-workflow",
+        icon: <Clock size={16} />,
+        title: `${pdcDue.length} PDC Cheque${pdcDue.length > 1 ? "s" : ""} Due for Deposit`,
+        message: `Due by ${in3daysISO} — total Rs. ${pdcDue.reduce((s, v) => s + (Number(v.amount || 0)), 0).toLocaleString("en-IN")}`,
+        action: "VIEW PDC",
+        onAction: () => setCurrentPage("pdc-management"),
       });
     }
 
     return list;
-  }, [invoices, items, stockMovements, vouchers, todayISO]);
+  }, [invoices, items, stockMovements, vouchers, todayISO, today, setCurrentPage]);
 
-  // ─────────────────────────────────────────────────────────────
+  // ── Refresh (calls initializeApp, NOT page reload) ──────────────────────────
+
+  const handleRefresh = useCallback(() => {
+    initializeApp();
+  }, [initializeApp]);
+
+  // ── Aging bar widths ────────────────────────────────────────────────────────
+
+  const agingTotal = Object.values(agingBuckets).reduce((s, v) => s + v, 0) || 1;
+
+  // ── BSSnapshot totals ───────────────────────────────────────────────────────
+
+  const totalAssets = bsSnapshot.currentAssets + bsSnapshot.fixedAssets;
+  const totalLiabEquity = bsSnapshot.currentLiabilities + bsSnapshot.longTermLiabilities + bsSnapshot.equity;
+
+  // ─────────────────────────────────────────────────────────────────────────────
   // RENDER
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
 
   return (
     <div
       style={{
-        padding: "var(--page-padding)",
-        background: "var(--surface-page)",
         minHeight: "100%",
+        background: "#f5f6fa",
         display: "flex",
         flexDirection: "column",
-        gap: 16,
+        gap: 0,
       }}
     >
-      {/* ── ROW 1: Date & Context Header ────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════════════
+          ROW 1 — Enterprise Header Bar (sticky)
+      ══════════════════════════════════════════════════════════════════════ */}
       <div
         style={{
-          background: "var(--surface-card)",
-          border: "1px solid var(--border-default)",
-          borderRadius: "var(--radius-lg)",
-          padding: "12px 20px",
+          background: "#1e2433",
+          borderBottom: "1px solid #2d3748",
+          padding: "10px 20px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: 12,
-          boxShadow: "var(--shadow-card)",
+          gap: 8,
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
         }}
+        className="no-print"
       >
-        {/* Left: BS Date */}
-        <div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-            <span className="date-bs">{bsDateLong || bsDate || "—"}</span>
-            <span className="date-bs-day">{weekday}</span>
+        {/* Left: Company + FY */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff", lineHeight: 1.2 }}>
+              {companySettings?.companyNameEn || companySettings?.name || "Sutra ERP"}
+            </div>
+            <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
+              FY {fyLabel} &nbsp;|&nbsp; PAN: {companySettings?.panNumber || "—"}
+            </div>
           </div>
-          <div className="date-ad">{adShort}</div>
+
+          {/* Books Open/Closed badge — wired to actual fiscal year status */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              padding: "3px 10px",
+              borderRadius: 4,
+              background: booksOpen ? "#14532d22" : "#7f1d1d22",
+              border: `1px solid ${booksOpen ? "#16a34a" : "#dc2626"}`,
+            }}
+          >
+            {booksOpen ? (
+              <BookOpen size={12} style={{ color: "#22c55e" }} />
+            ) : (
+              <BookX size={12} style={{ color: "#dc2626" }} />
+            )}
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: booksOpen ? "#22c55e" : "#dc2626",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
+              Books {booksOpen ? "Open" : "Closed"}
+            </span>
+          </div>
         </div>
 
-        {/* Centre: Company & FY */}
+        {/* Center: Date */}
         <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "var(--text-primary)",
-              lineHeight: 1.2,
-            }}
-          >
-            {companyName}
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#ffffff" }}>
+            {weekdayEn}, {bsDateStr}
           </div>
-          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
-            Fiscal Year {fyName}
+          <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
+            {adDateStr} (AD)
           </div>
         </div>
 
-        {/* Right: Books status */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <BooksPill isOpen={fyOpen} fyName={fyName} />
-          {/* Minimal refresh — icon-only, unobtrusive */}
+        {/* Right: User + Refresh */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#e2e8f0" }}>
+              {currentUser?.name || currentUser?.username || "User"}
+            </div>
+            <div style={{ fontSize: 10, color: "#94a3b8", textTransform: "capitalize" }}>
+              {currentUser?.role || "user"}
+            </div>
+          </div>
           <button
-            type="button"
-            onClick={() => window.location.reload()}
-            title="Refresh data"
+            onClick={handleRefresh}
             style={{
-              background: "transparent",
-              border: "1px solid var(--border-default)",
-              borderRadius: "var(--radius-md)",
-              padding: "5px 6px",
-              cursor: "pointer",
-              color: "var(--text-muted)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "background 120ms ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "var(--surface-elevated)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-            }}
-          >
-            {/* Minimal SVG refresh — avoids Lucide icon import just for this */}
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M13 7A6 6 0 1 1 7 1a6 6 0 0 1 4.95 2.63"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M10 1l2 3-3 1"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* ── ROW 2: Profit Pulse Strip ────────────────────────── */}
-      <div className="profit-pulse-strip">
-        <PulseCell
-          label="Today's Gross Margin"
-          value={todayMargin}
-          note="Revenue minus Cost of Goods · Today"
-        />
-        <PulseCell
-          label="Month-to-Date Margin"
-          value={mtdMargin}
-          note={`Since ${mtdStart}`}
-        />
-        <PulseCell
-          label="Year-to-Date Margin"
-          value={ytdMargin}
-          note={`Since ${fyStart}`}
-          isLast
-        />
-      </div>
-
-      {/* ── ROW 3: Four KPI Cards ─────────────────────────────── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          gap: 12,
-        }}
-      >
-        <KpiCard
-          label="Cash & Bank"
-          amount={cashBankBalance}
-          sub="Liquid assets across all accounts"
-          onClick={() => setCurrentPage("ledger")}
-          accentColour="var(--color-primary)"
-        />
-        <KpiCard
-          label="Outstanding Receivables"
-          amount={arOutstanding}
-          sub="Unpaid sales invoices"
-          onClick={() => setCurrentPage("outstanding-receivables")}
-          accentColour="var(--color-warning)"
-        />
-        <KpiCard
-          label="Outstanding Payables"
-          amount={apOutstanding}
-          sub="Unpaid purchase invoices"
-          onClick={() => setCurrentPage("outstanding-payables")}
-          accentColour="var(--color-danger)"
-        />
-        <KpiCard
-          label="VAT Payable"
-          amount={vatPayable}
-          sub="Output VAT minus Input VAT"
-          onClick={() => setCurrentPage("vat-reports")}
-          accentColour="var(--color-info)"
-        />
-      </div>
-
-      {/* ── ROW 4: Balance Sheet Mini-Snapshot ───────────────── */}
-      <div className="bs-snapshot">
-        <div className="bs-snapshot-header">
-          <span className="bs-snapshot-title">
-            Balance Sheet — As at {bsDateLong || bsDate || todayISO}
-          </span>
-          <button
-            type="button"
-            onClick={() => setCurrentPage("balance-sheet")}
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "var(--color-primary)",
-              background: "none",
+              height: 30,
+              padding: "0 12px",
+              background: "#1557b0",
               border: "none",
-              cursor: "pointer",
-              textDecoration: "underline",
-              textUnderlineOffset: 2,
-              padding: 0,
-            }}
-          >
-            Full Report →
-          </button>
-        </div>
-
-        <div className="bs-snapshot-body">
-          {/* Assets column */}
-          <div className="bs-col">
-            <div className="bs-col-header">Assets</div>
-            <BSLine
-              name="Fixed Assets"
-              amount={bsSnapshot.fixedAssets}
-              indent
-            />
-            <BSLine
-              name="Cash & Bank"
-              amount={bsSnapshot.cashBank}
-              indent
-            />
-            <BSLine
-              name="Receivables"
-              amount={bsSnapshot.receivables}
-              indent
-            />
-            <BSLine
-              name="Other Current Assets"
-              amount={bsSnapshot.currentAssets}
-              indent
-            />
-            <BSSubtotal name="Total Assets" amount={bsSnapshot.totalAssets} />
-          </div>
-
-          {/* Capital & Liabilities column */}
-          <div className="bs-col bs-col-right">
-            <div className="bs-col-header">Capital &amp; Liabilities</div>
-            <BSLine
-              name="Equity / Capital"
-              amount={bsSnapshot.equity}
-              indent
-            />
-            <BSLine
-              name="Loans &amp; Borrowings"
-              amount={bsSnapshot.loans}
-              indent
-            />
-            <BSLine
-              name="Payables"
-              amount={bsSnapshot.payables}
-              indent
-            />
-            <BSLine
-              name="Other Current Liabilities"
-              amount={bsSnapshot.currentLiabilities}
-              indent
-            />
-            <BSSubtotal
-              name="Total Liabilities"
-              amount={bsSnapshot.totalLiabilities}
-            />
-          </div>
-        </div>
-
-        {/* Tally row */}
-        <div
-          className={`bs-tally-row ${bsSnapshot.tallied ? "bs-tally-balanced" : "bs-tally-unbalanced"}`}
-        >
-          <span
-            style={{
+              borderRadius: 5,
               fontSize: 11,
               fontWeight: 600,
-              color: bsSnapshot.tallied
-                ? "var(--color-success)"
-                : "var(--color-danger)",
-            }}
-          >
-            {bsSnapshot.tallied
-              ? `✓ Assets = Liabilities (${fmtMoney(bsSnapshot.totalAssets)})`
-              : `⚠ Difference: ${fmtMoney(bsSnapshot.diff)} — Check your chart of accounts`}
-          </span>
-          <span
-            style={{
-              fontSize: 10,
-              color: "var(--text-muted)",
-              fontFamily: "monospace",
-            }}
-          >
-            {bsSnapshot.tallied ? "Balanced" : "Unbalanced"}
-          </span>
-        </div>
-      </div>
-
-      {/* ── ROW 5: Today's Activity Summary ─────────────────── */}
-      <div>
-        {/* Strip label */}
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.07em",
-            color: "var(--text-muted)",
-            marginBottom: 6,
-          }}
-        >
-          Today's Activity
-        </div>
-        <div className="activity-strip">
-          <ActivityCell
-            label="Sales Invoices"
-            count={todayActivity.salesCount}
-            amount={todayActivity.salesAmount}
-            onClick={() => setCurrentPage("billing")}
-          />
-          <ActivityCell
-            label="Purchase Invoices"
-            count={todayActivity.purchaseCount}
-            amount={todayActivity.purchaseAmount}
-            onClick={() => setCurrentPage("purchase")}
-          />
-          <ActivityCell
-            label="Receipts"
-            count={todayActivity.receiptCount}
-            amount={todayActivity.receiptAmount}
-            onClick={() => setCurrentPage("receipt")}
-          />
-          <ActivityCell
-            label="Payments"
-            count={todayActivity.paymentCount}
-            amount={todayActivity.paymentAmount}
-            onClick={() => setCurrentPage("payment")}
-          />
-          <ActivityCell
-            label="Journal Entries"
-            count={todayActivity.journalCount}
-            onClick={() => setCurrentPage("journal")}
-            isLast
-          />
-        </div>
-      </div>
-
-      {/* ── ROW 6: Alerts ────────────────────────────────────── */}
-      <div>
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.07em",
-            color: "var(--text-muted)",
-            marginBottom: 8,
-          }}
-        >
-          Alerts &amp; Required Actions
-        </div>
-
-        {alerts.length === 0 ? (
-          <div
-            style={{
-              background: "var(--color-success-light)",
-              border: "1px solid var(--color-success-border)",
-              borderRadius: "var(--radius-md)",
-              padding: "10px 14px",
-              fontSize: 12,
-              fontWeight: 600,
-              color: "var(--color-success)",
+              color: "#ffffff",
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              gap: 5,
+              transition: "background 150ms ease",
             }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#1557b0"; }}
+            title="Refresh data (does not reload the page)"
           >
-            <span>✓</span>
-            <span>All clear — no pending alerts for today.</span>
+            <RefreshCw size={13} />
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Main scrollable content */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 2 — Profit Pulse Strip
+        ════════════════════════════════════════════════════════════════════ */}
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: 6,
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          <PulseCell label="Today's Gross Margin" value={todayPulse.grossMargin} period="Today" />
+          <PulseCell label="Month-to-Date Gross Margin" value={mtdPulse.grossMargin} period="MTD" />
+          <div style={{ flex: 1, padding: "10px 16px", display: "flex", flexDirection: "column", gap: 2 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+              Year-to-Date Gross Margin
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  fontFamily: "'Courier New', monospace",
+                  color: ytdPulse.grossMargin >= 0 ? "#059669" : "#dc2626",
+                }}
+              >
+                {fmt(ytdPulse.grossMargin)}
+              </span>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: "1px 6px",
+                  borderRadius: 3,
+                  background: ytdPulse.grossMargin >= 0 ? "#dcfce7" : "#fee2e2",
+                  color: ytdPulse.grossMargin >= 0 ? "#166534" : "#991b1b",
+                }}
+              >
+                {ytdPulse.grossMargin >= 0 ? "PROFIT" : "LOSS"}
+              </span>
+            </div>
+            <div style={{ fontSize: 10, color: "#9ca3af" }}>
+              Gross Margin (Sales − Purchases) · YTD
+            </div>
           </div>
-        ) : (
+        </div>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 3 — Four Primary KPI Cards
+        ════════════════════════════════════════════════════════════════════ */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+          <KpiCard
+            label="Cash & Bank Position"
+            value={fmtShort(cashBankBalance)}
+            sub={fmt(cashBankBalance)}
+            accentColor="#059669"
+            icon={<Banknote size={16} />}
+            onClick={() => setCurrentPage("ledger")}
+          />
+          <KpiCard
+            label="Accounts Receivable"
+            value={fmtShort(arOutstanding)}
+            sub={fmt(arOutstanding) + " outstanding"}
+            accentColor="#1557b0"
+            icon={<Receipt size={16} />}
+            onClick={() => setCurrentPage("outstanding-receivables")}
+          />
+          <KpiCard
+            label="Accounts Payable"
+            value={fmtShort(apOutstanding)}
+            sub={fmt(apOutstanding) + " outstanding"}
+            accentColor="#d97706"
+            icon={<FileText size={16} />}
+            onClick={() => setCurrentPage("outstanding-payables")}
+          />
+          <KpiCard
+            label="VAT Payable to IRD"
+            value={fmtShort(vatPayable)}
+            sub={fmt(vatPayable)}
+            accentColor="#7c3aed"
+            icon={<TrendingUp size={16} />}
+            onClick={() => setCurrentPage("vat-reports")}
+          />
+        </div>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 4 — Balance Sheet Mini-Snapshot (T-format)
+        ════════════════════════════════════════════════════════════════════ */}
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: 6,
+            overflow: "hidden",
+          }}
+        >
+          {/* Section title */}
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: 8,
+              padding: "8px 16px",
+              background: "#f5f6fa",
+              borderBottom: "1px solid #e5e7eb",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {alerts.map((alert) => (
-              <AlertCard
-                key={alert.id}
-                type={alert.type}
-                title={alert.title}
-                message={alert.message}
-                action={alert.action}
-                onAction={() => setCurrentPage(alert.page)}
-              />
-            ))}
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              Balance Sheet Snapshot
+            </span>
+            <button
+              onClick={() => setCurrentPage("balance-sheet")}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: 10,
+                fontWeight: 600,
+                color: "#1557b0",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              Full Report <ArrowRight size={10} />
+            </button>
+          </div>
+
+          {/* T-format two-column table */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "none" }}>
+            {/* Assets (Left) */}
+            <div style={{ borderRight: "1px solid #e5e7eb" }}>
+              <div
+                style={{
+                  padding: "6px 16px",
+                  background: "#eff6ff",
+                  borderBottom: "1px solid #e5e7eb",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  color: "#1557b0",
+                }}
+              >
+                Assets
+              </div>
+              {[
+                { label: "Current Assets", value: bsSnapshot.currentAssets, sub: "Cash, Bank, Debtors, Stock" },
+                { label: "Fixed Assets", value: bsSnapshot.fixedAssets, sub: "Plant, Equipment, Building" },
+              ].map(({ label, value, sub }) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: "10px 16px",
+                    borderBottom: "1px solid #f3f4f6",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>{label}</div>
+                    <div style={{ fontSize: 10, color: "#9ca3af" }}>{sub}</div>
+                  </div>
+                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: 13, fontWeight: 700, color: "#059669" }}>
+                    {fmtShort(value)}
+                  </div>
+                </div>
+              ))}
+              <div
+                style={{
+                  padding: "10px 16px",
+                  background: "#f0fdf4",
+                  borderTop: "2px solid #bbf7d0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>Total Assets</span>
+                <span style={{ fontFamily: "'Courier New', monospace", fontSize: 14, fontWeight: 700, color: "#059669" }}>
+                  {fmtShort(totalAssets)}
+                </span>
+              </div>
+            </div>
+
+            {/* Liabilities + Equity (Right) */}
+            <div>
+              <div
+                style={{
+                  padding: "6px 16px",
+                  background: "#fff7ed",
+                  borderBottom: "1px solid #e5e7eb",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  color: "#d97706",
+                }}
+              >
+                Liabilities & Equity
+              </div>
+              {[
+                { label: "Current Liabilities", value: bsSnapshot.currentLiabilities, sub: "Creditors, Outstanding Expenses" },
+                { label: "Long-Term Liabilities", value: bsSnapshot.longTermLiabilities, sub: "Loans, Debentures" },
+                { label: "Equity / Capital", value: bsSnapshot.equity, sub: "Capital, Reserves & Surplus" },
+              ].map(({ label, value, sub }) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: "10px 16px",
+                    borderBottom: "1px solid #f3f4f6",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>{label}</div>
+                    <div style={{ fontSize: 10, color: "#9ca3af" }}>{sub}</div>
+                  </div>
+                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: 13, fontWeight: 700, color: "#d97706" }}>
+                    {fmtShort(value)}
+                  </div>
+                </div>
+              ))}
+              <div
+                style={{
+                  padding: "10px 16px",
+                  background: "#fffbeb",
+                  borderTop: "2px solid #fde68a",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>Total Liab. + Equity</span>
+                <span style={{ fontFamily: "'Courier New', monospace", fontSize: 14, fontWeight: 700, color: "#d97706" }}>
+                  {fmtShort(totalLiabEquity)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 5 — Six-month Sales vs Expenses Bar Chart
+        ════════════════════════════════════════════════════════════════════ */}
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: 6,
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "10px 16px",
+              background: "#f5f6fa",
+              borderBottom: "1px solid #e5e7eb",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              6-Month Sales vs Purchases
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#374151" }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: "#1557b0" }} />
+                Sales
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#374151" }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: "#dc2626" }} />
+                Purchases
+              </div>
+            </div>
+          </div>
+          <div style={{ padding: "16px", height: 220 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} barGap={4} barCategoryGap="30%">
+                {/* CartesianGrid intentionally omitted per spec — no grid noise */}
+                <XAxis
+                  dataKey="month"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: "#6b7280" }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: "#6b7280" }}
+                  tickFormatter={(v) => {
+                    if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + "M";
+                    if (v >= 1_000) return (v / 1_000).toFixed(0) + "K";
+                    return String(v);
+                  }}
+                />
+                <Tooltip content={<ChartTooltip />} cursor={{ fill: "#f5f6fa" }} />
+                <Bar dataKey="sales" name="Sales" fill="#1557b0" radius={[4, 4, 0, 0]} maxBarSize={32} />
+                <Bar dataKey="purchases" name="Purchases" fill="#dc2626" radius={[4, 4, 0, 0]} maxBarSize={32} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 6 — Aging Receivables + Top-5 Customers (side by side)
+        ════════════════════════════════════════════════════════════════════ */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {/* Aging Receivables */}
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: 6,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "8px 16px",
+                background: "#f5f6fa",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                AR Aging
+              </span>
+              <button
+                onClick={() => setCurrentPage("aging-report")}
+                style={{ background: "none", border: "none", fontSize: 10, fontWeight: 600, color: "#1557b0", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
+              >
+                Full Report <ArrowRight size={10} />
+              </button>
+            </div>
+            <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                { label: "Current (Not yet due)", value: agingBuckets.current, color: "#059669" },
+                { label: "1 – 30 Days", value: agingBuckets.d1_30, color: "#d97706" },
+                { label: "31 – 60 Days", value: agingBuckets.d31_60, color: "#f59e0b" },
+                { label: "61 – 90 Days", value: agingBuckets.d61_90, color: "#ef4444" },
+                { label: "90+ Days", value: agingBuckets.d90plus, color: "#991b1b" },
+              ].map(({ label, value, color }) => (
+                <div key={label}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                    <span style={{ fontSize: 11, color: "#374151" }}>{label}</span>
+                    <span style={{ fontSize: 11, fontFamily: "'Courier New', monospace", fontWeight: 700, color }}>
+                      {fmt(value)}
+                    </span>
+                  </div>
+                  <div style={{ height: 4, background: "#f3f4f6", borderRadius: 2, overflow: "hidden" }}>
+                    <div
+                      style={{
+                        height: "100%",
+                        width: `${Math.min(100, (value / agingTotal) * 100)}%`,
+                        background: color,
+                        borderRadius: 2,
+                        transition: "width 600ms ease",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top 5 Customers */}
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: 6,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "8px 16px",
+                background: "#f5f6fa",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                Top 5 Customers (YTD)
+              </span>
+              <button
+                onClick={() => setCurrentPage("party-statement")}
+                style={{ background: "none", border: "none", fontSize: 10, fontWeight: 600, color: "#1557b0", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
+              >
+                View All <ArrowRight size={10} />
+              </button>
+            </div>
+            <div>
+              {topCustomers.length === 0 ? (
+                <div style={{ padding: "24px 16px", textAlign: "center", fontSize: 11, color: "#9ca3af" }}>
+                  No sales data available for this fiscal year.
+                </div>
+              ) : (
+                topCustomers.map((c, idx) => {
+                  return (
+                    <div
+                      key={c.name + idx}
+                      style={{
+                        padding: "10px 16px",
+                        borderBottom: idx < topCustomers.length - 1 ? "1px solid #f3f4f6" : "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 22,
+                          height: 22,
+                          borderRadius: "50%",
+                          background: ["#1557b0", "#059669", "#d97706", "#7c3aed", "#0284c7"][idx % 5] + "20",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: ["#1557b0", "#059669", "#d97706", "#7c3aed", "#0284c7"][idx % 5],
+                          fontSize: 10,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {c.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {c.name}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#111827" }}>
+                        {fmt(c.total)}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            ROW 7 — Alerts & Action Required
+        ════════════════════════════════════════════════════════════════════ */}
+        {alerts.length > 0 && (
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: 6,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "10px 16px",
+                background: "#fef2f2",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                Action Required
+              </span>
+            </div>
+            <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+              {alerts.map((alert, idx) => (
+                <AlertRow key={idx} {...alert} />
+              ))}
+            </div>
           </div>
         )}
       </div>
-
-      {/* ── Bottom padding for status bar ───────────────────── */}
-      <div style={{ height: 8 }} />
     </div>
   );
 };

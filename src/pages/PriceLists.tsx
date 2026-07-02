@@ -526,7 +526,7 @@ export default function PriceLists() {
               {/* Line Items */}
               <div className="border border-gray-200 rounded-md overflow-hidden">
                 <div className="bg-[#f5f6fa] border-b border-gray-200 px-3 py-2 flex items-center justify-between">
-                  <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+                  <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Line Items
                   </span>
                   <button

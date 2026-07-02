@@ -291,7 +291,7 @@ function computeOutstanding(accounts: any[], vouchers: any[], invoices: any[]): 
 function statusBadge(party: PartyOutstanding) {
   if (party.overdueAmount > 0) {
     return (
-      <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-semibold">
+      <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-semibold uppercase">
         Overdue
       </span>
     );
@@ -299,14 +299,14 @@ function statusBadge(party: PartyOutstanding) {
 
   if (party.netBalance > 0) {
     return (
-      <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-[10px] font-semibold">
+      <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-[10px] font-semibold uppercase">
         Outstanding
       </span>
     );
   }
 
   return (
-    <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold">
+    <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold uppercase">
       Clear
     </span>
   );
@@ -315,7 +315,7 @@ function statusBadge(party: PartyOutstanding) {
 function reconciliationStatusBadge(status: ReconciliationEntry["status"]) {
   if (status === "matched") {
     return (
-      <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold">
+      <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold uppercase">
         Matched
       </span>
     );
@@ -323,14 +323,14 @@ function reconciliationStatusBadge(status: ReconciliationEntry["status"]) {
 
   if (status === "disputed") {
     return (
-      <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-semibold">
+      <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-semibold uppercase">
         Disputed
       </span>
     );
   }
 
   return (
-    <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-[10px] font-semibold">
+    <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-[10px] font-semibold uppercase">
       Unmatched
     </span>
   );

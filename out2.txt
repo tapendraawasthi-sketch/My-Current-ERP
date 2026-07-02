@@ -1,0 +1,133 @@
+src/components/BillAllocationPanel.tsx(22,30): error TS2307: Cannot find module 'dexie-react-hooks' or its corresponding type declarations.
+src/components/BillAllocationPanel.tsx(24,10): error TS2614: Module '"../lib/db"' has no exported member 'db'. Did you mean to use 'import db from "../lib/db"' instead?
+src/components/Breadcrumb.tsx(78,3): error TS1117: An object literal cannot have multiple properties with the same name.
+src/components/Breadcrumb.tsx(79,3): error TS1117: An object literal cannot have multiple properties with the same name.
+src/components/Breadcrumb.tsx(80,3): error TS1117: An object literal cannot have multiple properties with the same name.
+src/components/reporting/BsDateCell.tsx(14,30): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Date'.
+src/components/topbar/ExportMenu.tsx(556,6): error TS2550: Property 'replaceAll' does not exist on type 'string'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2021' or later.
+src/components/topbar/HelpMenu.tsx(625,30): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/components/voucher/VoucherHeader.tsx(64,20): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/components/voucher/VoucherHeader.tsx(71,22): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/components/voucher/VoucherHeader.tsx(77,22): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/components/voucher/VoucherHeader.tsx(83,22): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/components/voucher/VoucherHeader.tsx(89,22): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/components/voucher/VoucherHeader.tsx(110,15): error TS2322: Type '{ value: string; onChange: (date: string) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & NepaliDatePickerProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NepaliDatePickerProps'.
+src/components/voucher/VoucherHeader.tsx(120,17): error TS2322: Type '{ value: string; onChange: (date: string) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & NepaliDatePickerProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NepaliDatePickerProps'.
+src/components/voucher/VoucherHeader.tsx(130,60): error TS2339: Property 'target' does not exist on type 'string'.
+src/lib/cbmsService.ts(621,53): error TS2345: Argument of type 'import("D:/50/My-Current-ERP/src/lib/db").DBInvoice' is not assignable to parameter of type 'import("D:/50/My-Current-ERP/src/lib/cbmsService").DBInvoice'.
+  Types of property 'cbmsStatus' are incompatible.
+    Type '"pending" | "failed" | "success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
+      Type '"success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
+src/lib/cbmsService.ts(632,15): error TS2345: Argument of type 'import("D:/50/My-Current-ERP/src/lib/db").DBInvoice' is not assignable to parameter of type 'import("D:/50/My-Current-ERP/src/lib/cbmsService").DBInvoice'.
+  Types of property 'cbmsStatus' are incompatible.
+    Type '"pending" | "failed" | "success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
+      Type '"success"' is not assignable to type '"pending" | "failed" | "cancelled" | "submitted"'.
+src/lib/db.ts(159,3): error TS2300: Duplicate identifier 'tdsAmount'.
+src/lib/db.ts(160,3): error TS2300: Duplicate identifier 'tdsRate'.
+src/lib/db.ts(171,3): error TS2300: Duplicate identifier 'tdsRate'.
+src/lib/db.ts(172,3): error TS2300: Duplicate identifier 'tdsAmount'.
+src/lib/nepalFinancialStatements.ts(511,62): error TS2559: Type 'string' has no properties in common with type '{ startDate?: string; endDate?: string; includeOpening?: boolean; }'.
+src/lib/nepalFinancialStatements.ts(515,63): error TS2559: Type 'string' has no properties in common with type '{ startDate?: string; endDate?: string; includeOpening?: boolean; }'.
+src/lib/nepalFinancialStatements.ts(620,75): error TS2554: Expected 2-3 arguments, but got 4.
+src/lib/nepalFinancialStatements.ts(624,84): error TS2554: Expected 2-3 arguments, but got 4.
+src/lib/workflowMigration.ts(24,29): error TS2345: Argument of type '{ linkedPoIds: string[]; linkedGrnIds: string[]; linkedSoIds: string[]; linkedDcIds: string[]; linkedDocuments: WorkflowDocRef[]; workflowStatus: WorkflowStatus; ... 15 more ...; narration?: string; }[]' is not assignable to parameter of type 'readonly DBVoucher[]'.
+  Type '{ linkedPoIds: string[]; linkedGrnIds: string[]; linkedSoIds: string[]; linkedDcIds: string[]; linkedDocuments: WorkflowDocRef[]; workflowStatus: WorkflowStatus; ... 15 more ...; narration?: string; }' is missing the following properties from type 'DBVoucher': totalDebit, totalCredit
+src/pages/AgingReport.tsx(11,30): error TS2307: Cannot find module 'dexie-react-hooks' or its corresponding type declarations.
+src/pages/AgingReport.tsx(25,10): error TS2614: Module '"../lib/db"' has no exported member 'db'. Did you mean to use 'import db from "../lib/db"' instead?
+src/pages/BalanceSheet.tsx(207,7): error TS2322: Type '{ children: Element[]; title: string; subtitle: string; actions: Element; }' is not assignable to type 'IntrinsicAttributes & ReportShellProps'.
+  Property 'actions' does not exist on type 'IntrinsicAttributes & ReportShellProps'.
+src/pages/DayBook.tsx(215,23): error TS2322: Type 'unknown' is not assignable to type 'Key'.
+src/pages/DayBook.tsx(215,34): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[]'.
+src/pages/DayBook.tsx(216,17): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/pages/DayBook.tsx(287,27): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/pages/InterestCalculation.tsx(15,30): error TS2307: Cannot find module 'dexie-react-hooks' or its corresponding type declarations.
+src/pages/InterestCalculation.tsx(24,10): error TS2614: Module '"../lib/db"' has no exported member 'db'. Did you mean to use 'import db from "../lib/db"' instead?
+src/pages/InterestCalculation.tsx(64,11): error TS2339: Property 'generateSerialNumber' does not exist on type 'typeof import("D:/50/My-Current-ERP/src/lib/db")'.
+src/pages/OutstandingReceivables.tsx(11,30): error TS2307: Cannot find module 'dexie-react-hooks' or its corresponding type declarations.
+src/pages/OutstandingReceivables.tsx(24,10): error TS2614: Module '"../lib/db"' has no exported member 'db'. Did you mean to use 'import db from "../lib/db"' instead?
+src/pages/PriceListMaster.tsx(340,53): error TS2322: Type 'string | number' is not assignable to type 'string'.
+  Type 'number' is not assignable to type 'string'.
+src/pages/ProfitLoss.tsx(199,7): error TS2322: Type '{ children: Element[]; title: string; subtitle: string; actions: Element; }' is not assignable to type 'IntrinsicAttributes & ReportShellProps'.
+  Property 'actions' does not exist on type 'IntrinsicAttributes & ReportShellProps'.
+src/pages/PurchaseVoucher.tsx(289,60): error TS2339: Property 'sectionId' does not exist on type 'NepalTdsCalculationResult | { applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+  Property 'sectionId' does not exist on type '{ applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+src/pages/PurchaseVoucher.tsx(349,8): error TS2322: Type '{ children: Element[]; className: string; }' is not assignable to type 'IntrinsicAttributes & ActionToolbarProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ActionToolbarProps'.
+src/pages/PurchaseVoucher.tsx(372,13): error TS2322: Type '{ value: string; onChange: Dispatch<SetStateAction<string>>; className: string; }' is not assignable to type 'IntrinsicAttributes & NepaliDatePickerProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NepaliDatePickerProps'.
+src/pages/PurchaseVoucher.tsx(377,47): error TS2339: Property 'target' does not exist on type 'string'.
+src/pages/PurchaseVoucher.tsx(432,55): error TS2339: Property 'target' does not exist on type 'string'.
+src/pages/PurchaseVoucher.tsx(442,15): error TS2322: Type '{ value: string; onChange: Dispatch<SetStateAction<string>>; className: string; }' is not assignable to type 'IntrinsicAttributes & NepaliDatePickerProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NepaliDatePickerProps'.
+src/pages/PurchaseVoucher.tsx(450,15): error TS2322: Type 'Dispatch<SetStateAction<"cash" | "credit" | "bank">>' is not assignable to type '(val: string) => void'.
+  Types of parameters 'value' and 'val' are incompatible.
+    Type 'string' is not assignable to type 'SetStateAction<"cash" | "credit" | "bank">'.
+src/pages/PurchaseVoucher.tsx(510,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/PurchaseVoucher.tsx(518,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/PurchaseVoucher.tsx(525,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/PurchaseVoucher.tsx(535,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/PurchaseVoucher.tsx(605,15): error TS2322: Type '{ value: number; onChange: Dispatch<SetStateAction<number>>; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/PurchaseVoucher.tsx(642,29): error TS2339: Property 'reason' does not exist on type 'NepalTdsCalculationResult | { applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+  Property 'reason' does not exist on type '{ applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+src/pages/PurchaseVoucher.tsx(643,78): error TS2339: Property 'reason' does not exist on type 'NepalTdsCalculationResult | { applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+  Property 'reason' does not exist on type '{ applicable: boolean; grossAmount: any; tdsAmount: number; netPayable: any; rate: number; sectionCode: string; description: string; }'.
+src/pages/PurchaseVoucher.tsx(730,17): error TS2322: Type '"destructive"' is not assignable to type '"success" | "primary" | "secondary" | "outline" | "ghost" | "danger"'.
+src/pages/SalesVoucher.tsx(258,8): error TS2322: Type '{ children: Element[]; className: string; }' is not assignable to type 'IntrinsicAttributes & ActionToolbarProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ActionToolbarProps'.
+src/pages/SalesVoucher.tsx(261,18): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/pages/SalesVoucher.tsx(265,20): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/pages/SalesVoucher.tsx(270,20): error TS2322: Type '"outline"' is not assignable to type 'BadgeVariant'.
+src/pages/SalesVoucher.tsx(281,13): error TS2322: Type '{ value: string; onChange: Dispatch<SetStateAction<string>>; className: string; }' is not assignable to type 'IntrinsicAttributes & NepaliDatePickerProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NepaliDatePickerProps'.
+src/pages/SalesVoucher.tsx(286,47): error TS2339: Property 'target' does not exist on type 'string'.
+src/pages/SalesVoucher.tsx(375,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/SalesVoucher.tsx(383,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/SalesVoucher.tsx(390,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/SalesVoucher.tsx(400,23): error TS2322: Type '{ value: any; onChange: (value: number) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/SalesVoucher.tsx(462,15): error TS2322: Type '{ value: number; onChange: Dispatch<SetStateAction<number>>; className: string; }' is not assignable to type 'IntrinsicAttributes & AmountInputProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AmountInputProps'.
+src/pages/SalesVoucher.tsx(552,17): error TS2322: Type '"destructive"' is not assignable to type '"success" | "primary" | "secondary" | "outline" | "ghost" | "danger"'.
+src/pages/VatReports.tsx(201,30): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Date'.
+src/pages/VatReports.tsx(593,32): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Date'.
+src/pages/VatReports.tsx(771,7): error TS2322: Type '{ children: Element[]; title: string; subtitle: string; actions: Element; }' is not assignable to type 'IntrinsicAttributes & ReportShellProps'.
+  Property 'actions' does not exist on type 'IntrinsicAttributes & ReportShellProps'.
+src/pages/VatReports.tsx(914,13): error TS2322: Type '({ key: string; header: string; width: string; align?: undefined; render?: undefined; } | { key: string; header: string; width?: undefined; align?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; })[]' is not assignable to type 'Column[]'.
+  Type '{ key: string; header: string; width: string; align?: undefined; render?: undefined; } | { key: string; header: string; width?: undefined; align?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; }' is not assignable to type 'Column'.
+    Property 'label' is missing in type '{ key: string; header: string; width: string; align?: undefined; render?: undefined; }' but required in type 'Column'.
+src/pages/VatReports.tsx(956,25): error TS2322: Type '({ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; })[]' is not assignable to type 'Column[]'.
+  Type '{ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; }' is not assignable to type 'Column'.
+    Property 'label' is missing in type '{ key: string; header: string; align: "center"; width: string; render?: undefined; }' but required in type 'Column'.
+src/pages/VatReports.tsx(981,27): error TS2322: Type '({ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; })[]' is not assignable to type 'Column[]'.
+  Type '{ key: string; header: string; align: "center"; width: string; render?: undefined; } | { key: string; header: string; align?: undefined; width?: undefined; render?: undefined; } | { key: string; header: string; align: "right"; render: (value: number) => string; width?: undefined; }' is not assignable to type 'Column'.
+    Property 'label' is missing in type '{ key: string; header: string; align: "center"; width: string; render?: undefined; }' but required in type 'Column'.
+src/store/index.ts(11,13): error TS2300: Duplicate identifier 'UserRole'.
+src/store/index.ts(51,13): error TS2300: Duplicate identifier 'UserRole'.
+src/store/index.ts(96,3): error TS2300: Duplicate identifier 'cbmsEnabled'.
+src/store/index.ts(103,3): error TS2300: Duplicate identifier 'cbmsEnabled'.
+src/store/index.ts(572,56): error TS2739: Type '{ isDbReady: false; isAuthenticated: false; currentUser: any; accounts: any[]; parties: any[]; items: any[]; vouchers: any[]; invoices: any[]; stockMovements: any[]; warehouses: any[]; stockTransfers: any[]; units: any[]; ... 215 more ...; getBaseCurrency: () => any; }' is missing the following properties from type 'AppState': loadWarehouses, addWarehouse, updateWarehouse, getNextTransferNo, saveStockTransfer
+src/store/index.ts(655,13): error TS2339: Property 'isInitializing' does not exist on type 'AppState'.
+src/store/index.ts(657,11): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
+src/store/index.ts(970,13): error TS2353: Object literal may only specify known properties, and 'isInitializing' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.
+src/store/index.ts(997,47): error TS2339: Property 'password' does not exist on type 'Partial<StoreUser>'.
+src/store/index.ts(1108,18): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1116,27): error TS2339: Property 'name' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1119,22): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1120,23): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1121,26): error TS2339: Property 'openingStock' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1121,56): error TS2339: Property 'openingStockRate' does not exist on type '{ id: any; isActive: boolean; }'.
+src/store/index.ts(1883,22): error TS2339: Property 'status' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1883,56): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1884,39): error TS2339: Property 'lines' does not exist on type '{ id: string; voucherNo: string; totalDebit: number; totalCredit: number; grandTotal: number; }'.
+src/store/index.ts(1988,24): error TS2339: Property 'status' does not exist on type '{ id: string; invoiceNo: string; }'.
+src/store/index.ts(2470,11): error TS2353: Object literal may only specify known properties, and 'auditLogs' does not exist in type 'AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>)'.

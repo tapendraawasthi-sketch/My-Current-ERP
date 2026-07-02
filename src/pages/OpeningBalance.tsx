@@ -1108,7 +1108,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
               Ledger Debit
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerDr)}</p>
@@ -1120,7 +1120,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
               Ledger Credit
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerCr)}</p>
@@ -1132,7 +1132,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
               Difference
             </p>
             <p
@@ -1152,7 +1152,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
               Stock Value
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.stockValue)}</p>
@@ -1556,10 +1556,10 @@ export default function OpeningBalance() {
                 }`}
               >
                 <div className="flex justify-between gap-2">
-                  <span className="font-semibold text-[11px] tracking-wide">
+                  <span className="font-semibold text-[11px] uppercase tracking-wide">
                     {i.area}
                   </span>
-                  <span className="font-semibold text-[11px] tracking-wide">
+                  <span className="font-semibold text-[11px] uppercase tracking-wide">
                     {i.severity}
                   </span>
                 </div>
@@ -1916,7 +1916,7 @@ export default function OpeningBalance() {
                         className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50"
                       >
                         <td className={td}>
-                          <span className="inline-flex px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-[10px] font-medium text-gray-600">
+                          <span className="inline-flex px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-[10px] font-medium uppercase text-gray-600">
                             {r.type}
                           </span>
                         </td>

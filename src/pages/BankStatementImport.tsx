@@ -875,22 +875,22 @@ export default function BankStatementImport() {
   const renderSummary = () => (
     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-3">
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Rows</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rows</p>
         <p className="text-[15px] font-bold text-gray-800">{stats.count}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Receipts</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Receipts</p>
         <p className="text-[15px] font-bold text-emerald-600">{money(stats.receipts)}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Payments</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Payments</p>
         <p className="text-[15px] font-bold text-red-600">{money(stats.payments)}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Net</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Net</p>
         <p
           className={`text-[15px] font-bold ${stats.net >= 0 ? "text-emerald-600" : "text-red-600"}`}
         >
@@ -899,17 +899,17 @@ export default function BankStatementImport() {
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Matched</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Matched</p>
         <p className="text-[15px] font-bold text-[#1557b0]">{stats.matched}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Probable</p>
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Probable</p>
         <p className="text-[15px] font-bold text-amber-600">{stats.probable}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
           Reconciled
         </p>
         <p className="text-[15px] font-bold text-emerald-600">{stats.reconciled}</p>
@@ -1353,25 +1353,25 @@ export default function BankStatementImport() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Date
               </p>
               <p className="font-semibold text-gray-800">{selectedRow.date}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Debit
               </p>
               <p className="font-semibold text-red-600">{money(selectedRow.debit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Credit
               </p>
               <p className="font-semibold text-emerald-600">{money(selectedRow.credit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Status
               </p>
               <span
@@ -1385,14 +1385,14 @@ export default function BankStatementImport() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Narration
             </p>
             <p className="font-medium text-[12px] text-gray-800">{selectedRow.narration || "-"}</p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">Match</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Match</p>
             <p className="font-semibold text-gray-800">
               {selectedRow.matchedVoucherNo || selectedRow.matchedVoucherId || "No match"}
             </p>
@@ -1402,7 +1402,7 @@ export default function BankStatementImport() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Raw Imported Data
             </p>
             <pre className="text-[10px] bg-white border border-gray-200 p-3 rounded-lg overflow-auto max-h-64">

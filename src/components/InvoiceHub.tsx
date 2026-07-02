@@ -705,7 +705,7 @@ const InvoiceHub: React.FC = () => {
               header: "Bill Module",
               width: "12%",
               render: (val) => (
-                <span className="badge badge-default">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#000000] leading-none">
                   {String(val).replace("-", " ")}
                 </span>
               ),

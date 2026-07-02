@@ -370,7 +370,7 @@ export default function BatchManagement() {
               { label: "Total Value",    value: batchStats.totalValue,  color: "text-[#1557b0]",  isAmt: true  },
             ].map((k) => (
               <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-                <p className="text-[10px] font-semibold text-gray-500 tracking-wide">{k.label}</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
                 <p className={`font-bold font-mono mt-1 ${k.color} ${k.isAmt ? "text-[13px]" : "text-[20px]"}`}>
                   {k.isAmt ? "Rs. " + fmt(k.value as number) : k.value}
                 </p>
@@ -511,7 +511,7 @@ export default function BatchManagement() {
               { label: "Damaged",      value: snStats.damaged,    color: "text-red-600"   },
             ].map((k) => (
               <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-                <p className="text-[10px] font-semibold text-gray-500 tracking-wide">{k.label}</p>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
                 <p className={`text-[20px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
               </div>
             ))}

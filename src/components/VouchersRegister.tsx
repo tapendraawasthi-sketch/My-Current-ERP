@@ -558,7 +558,7 @@ const VouchersRegister: React.FC = () => {
                           {sums.balanced ? "BALANCED" : "UNBALANCED"}
                         </Badge>
                     </td>
-                    </tr>
+                  </HoverActionRow>
                   </tfoot>
                 </table>
               </div>
@@ -765,7 +765,7 @@ const VouchersRegister: React.FC = () => {
                     </td>
                     <td>
                       <span className={`badge badge-${v.type?.replace(/-/g, "")}`}>
-                        {v.type?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                        {v.type?.replace(/-/g, " ").toUpperCase()}
                       </span>
                     </td>
                     <td>
