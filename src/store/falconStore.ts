@@ -1,159 +1,292 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { askFalcon } from "../lib/falcon/engine";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { 
+  classifyQuestion, 
+  buildReasoningChain, 
+  shouldSearchWeb, 
+  extractSearchQuery, 
+  generateFollowUps, 
+  analyzeERPContext,
+  type QuestionCategory, 
+  type ReasoningStep, 
+  type ReasoningResult 
+} from '../lib/falconReasoning';
+import { searchWeb, formatSearchResults } from '../lib/falconWebSearch';
+import { 
+  buildSystemPrompt, 
+  buildUserMessage, 
+  buildConversationHistory,
+  getDefaultLLMConfig, 
+  getERPSpecificConfig,
+  type FalconMessage 
+} from '../lib/falconPromptBuilder';
+import { ERP_MODULE_KNOWLEDGE, ACCOUNTING_CONCEPTS } from '../lib/falconKnowledge';
 
-export type FalconRole = "user" | "assistant";
-
-export interface FalconMessage {
+export interface FalconChatMessage {
   id: string;
-  role: FalconRole;
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  createdAt: string;
-  suggestions?: string[];
+  timestamp: Date;
+  category?: QuestionCategory;
+  reasoningSteps?: ReasoningStep[];
+  webSearchUsed?: boolean;
+  searchQuery?: string;
   feedback?: 1 | -1;
+  suggestions?: string[];
+  isThinking?: boolean;
 }
 
-interface FalconContext {
+export interface FalconContext {
   route?: string;
   screenTitle?: string;
+  companyName?: string;
+  userName?: string;
 }
 
-interface FalconState {
+export interface FalconState {
   isOpen: boolean;
   isTyping: boolean;
-  messages: FalconMessage[];
+  showThinking: boolean;
+  messages: FalconChatMessage[];
+  currentThinkingSteps: ReasoningStep[];
   context: FalconContext;
-
+  apiKey: string;
+  apiEndpoint: string;
+  
   openPanel: () => void;
   closePanel: () => void;
   togglePanel: () => void;
-  setContext: (context: Partial<FalconContext>) => void;
-
+  setContext: (ctx: Partial<FalconContext>) => void;
+  setApiKey: (key: string) => void;
   sendMessage: (text: string) => Promise<void>;
-  rateMessage: (id: string, feedback: 1 | -1) => void;
+  rateMessage: (id: string, rating: 1 | -1) => void;
   clearHistory: () => void;
+  toggleShowThinking: () => void;
 }
 
-const now = () => new Date().toISOString();
+const generateId = () => Math.random().toString(36).substring(2, 9);
 
-const makeId = () => {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  return `falcon-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-};
+const INITIAL_WELCOME: FalconChatMessage = {
+  id: 'welcome',
+  role: 'assistant',
+  content: `👋 Hello! I'm **Falcon AI**, your intelligent assistant for Sutra ERP.
 
-const WELCOME_MESSAGE: FalconMessage = {
-  id: "welcome",
-  role: "assistant",
-  createdAt: now(),
-  content:
-    "Namaste! I’m Falcon, your Sutra ERP assistant. Ask me how to create vouchers, invoices, masters, reports, VAT reports, stock entries, company settings, users, audit logs, print/export, or shortcuts. I only guide you — I will not change your data.",
+I can help you with:
+• 📊 **ERP Tasks** — invoices, vouchers, reports, inventory, VAT
+• 📚 **Accounting** — concepts, calculations, best practices  
+• 🌐 **General Questions** — science, math, history, daily life
+• 🔍 **Web Search** — I can search the web for current information
+
+What would you like to know?`,
+  timestamp: new Date(),
   suggestions: [
-    "How do I create a sales invoice?",
-    "How do I see Profit & Loss?",
-    "How do I add a new party?",
-    "How do I configure company settings?",
-  ],
+    'How do I create a sales invoice?',
+    'What is double-entry bookkeeping?',
+    'Search for Nepal tax updates 2024'
+  ]
 };
 
-const getPageHint = (route?: string) => {
-  if (!route) return "";
-  const pretty = route.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  return `\n\nCurrent screen context: You appear to be on **${pretty}**. If your question is about this screen, tell me exactly what you want to do here and I’ll guide step-by-step.`;
-};
+function getInitialApiKey() {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const saved = localStorage.getItem('falcon_api_key');
+    if (saved) return saved;
+  }
+  // @ts-ignore
+  return typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_TOGETHER_API_KEY || '' : '';
+}
+
+function buildFallbackResponse(text: string, category: QuestionCategory, route: string = ''): string {
+  if (category === 'erp-how-to' || category === 'erp-explain') {
+    const safeRoute = route || 'dashboard';
+    const module = ERP_MODULE_KNOWLEDGE[safeRoute];
+    if (module) {
+      return `Here is some information about the **${safeRoute}** module:\n\n` +
+             `${module.description}\n\n**How to use:**\n- ` + module.howToUse.join('\n- ') +
+             `\n\n*(Note: Set your Together AI API key in settings for full conversational capability)*`;
+    }
+    return `I am currently in fallback mode (API key not set). Please provide an API key in the settings to get detailed ERP assistance.`;
+  }
+  if (category === 'accounting-concept') {
+    // try to find a matching concept
+    const found = Object.entries(ACCOUNTING_CONCEPTS).find(([k]) => text.toLowerCase().includes(k.toLowerCase()));
+    if (found) {
+      return `**${found[0]}**: ${found[1]}\n\n*(Note: Set API key for deeper explanations)*`;
+    }
+    return `I am in fallback mode. I know about terms like debit, credit, VAT, etc. Set your API key for full capabilities.`;
+  }
+  if (category === 'greeting') {
+    return `Hello! I am Falcon AI. Please set your API key in the settings to enable my full intelligence!`;
+  }
+  if (category === 'math-calculation') {
+    try {
+      // Basic math extraction and eval
+      const expression = text.replace(/[^0-9\+\-\*\/\(\)\.]/g, '');
+      if (expression) {
+        // eslint-disable-next-line no-eval
+        const result = eval(expression);
+        return `The result is **${result}**.\n\n*(Calculated via fallback logic)*`;
+      }
+    } catch {
+      // ignore
+    }
+    return "I couldn't calculate that in fallback mode.";
+  }
+  
+  return `Please set your Together AI API key in settings to unlock my full reasoning and search capabilities!`;
+}
 
 export const useFalconStore = create<FalconState>()(
   persist(
     (set, get) => ({
       isOpen: false,
       isTyping: false,
-      messages: [WELCOME_MESSAGE],
+      showThinking: false,
+      messages: [INITIAL_WELCOME],
+      currentThinkingSteps: [],
       context: {},
+      apiKey: getInitialApiKey(),
+      apiEndpoint: 'https://api.together.xyz/v1/chat/completions',
 
       openPanel: () => set({ isOpen: true }),
       closePanel: () => set({ isOpen: false }),
-      togglePanel: () => set((state) => ({ isOpen: !state.isOpen })),
-
-      setContext: (context) =>
-        set((state) => ({
-          context: {
-            ...state.context,
-            ...context,
-          },
-        })),
-
-      sendMessage: async (text: string) => {
-        const clean = text.trim();
-        if (!clean) return;
-
-        const userMessage: FalconMessage = {
-          id: makeId(),
-          role: "user",
-          content: clean,
-          createdAt: now(),
-        };
-
-        set((state) => ({
-          messages: [...state.messages, userMessage],
-          isTyping: true,
-        }));
-
-        // Small delay so the chat feels natural
-        await new Promise((resolve) => setTimeout(resolve, 250));
-
-        // Build conversation history from current messages (last 6, excluding welcome)
-        const recentMessages = get()
-          .messages.filter((m) => m.id !== "welcome")
-          .slice(-6)
-          .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
-
-        const result = askFalcon(clean, get().context.route, recentMessages);
-
-        let content = result.answer;
-        // Only append the page hint for very low-confidence answers (not for reasoning results)
-        if (result.confidence > 0 && result.confidence < 10 && get().context.route) {
-          content += getPageHint(get().context.route);
+      togglePanel: () => set(state => ({ isOpen: !state.isOpen })),
+      
+      setContext: (ctx) => set(state => ({ context: { ...state.context, ...ctx } })),
+      
+      setApiKey: (key) => {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('falcon_api_key', key);
         }
-
-        const assistantMessage: FalconMessage = {
-          id: makeId(),
-          role: "assistant",
-          content,
-          suggestions: result.suggestions,
-          createdAt: now(),
-        };
-
-        set((state) => ({
-          messages: [...state.messages, assistantMessage],
-          isTyping: false,
-        }));
+        set({ apiKey: key });
       },
 
-      rateMessage: (id, feedback) =>
-        set((state) => ({
-          messages: state.messages.map((message) =>
-            message.id === id ? { ...message, feedback } : message,
-          ),
-        })),
+      toggleShowThinking: () => set(state => ({ showThinking: !state.showThinking })),
 
-      clearHistory: () =>
-        set({
-          messages: [
-            {
-              ...WELCOME_MESSAGE,
-              createdAt: now(),
-            },
-          ],
-          isTyping: false,
-        }),
+      rateMessage: (id, rating) => set(state => ({
+        messages: state.messages.map(m => m.id === id ? { ...m, feedback: rating } : m)
+      })),
+
+      clearHistory: () => set({ messages: [{ ...INITIAL_WELCOME, timestamp: new Date() }] }),
+
+      sendMessage: async (text: string) => {
+        const cleanText = text.trim();
+        if (!cleanText) return;
+
+        const userMsg: FalconChatMessage = {
+          id: generateId(),
+          role: 'user',
+          content: cleanText,
+          timestamp: new Date()
+        };
+
+        set(state => ({
+          messages: [...state.messages, userMsg],
+          isTyping: true,
+          currentThinkingSteps: []
+        }));
+
+        const state = get();
+        const route = state.context.route || '';
+        
+        let assistantMsg: FalconChatMessage = {
+          id: generateId(),
+          role: 'assistant',
+          content: '',
+          timestamp: new Date()
+        };
+
+        try {
+          // Reason & Plan
+          const category = classifyQuestion(cleanText, route);
+          assistantMsg.category = category;
+          
+          const steps = buildReasoningChain(cleanText, category, route);
+          set({ currentThinkingSteps: steps });
+          assistantMsg.reasoningSteps = steps;
+
+          // Web Search if needed
+          let webSearchResults = '';
+          if (shouldSearchWeb(cleanText, category)) {
+            assistantMsg.webSearchUsed = true;
+            const sq = extractSearchQuery(cleanText, category);
+            assistantMsg.searchQuery = sq;
+            const searchRes = await searchWeb(sq);
+            webSearchResults = formatSearchResults(searchRes);
+          }
+
+          // Generate response
+          if (!state.apiKey) {
+            assistantMsg.content = buildFallbackResponse(cleanText, category, route);
+          } else {
+            const systemPrompt = buildSystemPrompt({
+              currentRoute: route,
+              category,
+              webSearchResults,
+              companyName: state.context.companyName
+            });
+
+            const config = category.startsWith('erp') ? getERPSpecificConfig() : getDefaultLLMConfig();
+            
+            // Build history
+            const coreMessages = state.messages.map(m => ({ role: m.role as string, content: m.content }));
+            const userPrompt = buildUserMessage(cleanText, steps, { currentRoute: route });
+            
+            const reqMessages = [
+              { role: 'system', content: systemPrompt },
+              ...buildConversationHistory(coreMessages, 8),
+              { role: 'user', content: userPrompt }
+            ];
+
+            const response = await fetch(state.apiEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.apiKey}`
+              },
+              body: JSON.stringify({
+                model: config.model,
+                messages: reqMessages,
+                max_tokens: config.maxTokens,
+                temperature: config.temperature
+              })
+            });
+
+            if (!response.ok) {
+              if (response.status === 401) {
+                assistantMsg.content = "Please set your Together AI API key in settings (or check if it is correct).";
+              } else if (response.status === 429) {
+                assistantMsg.content = "I've reached my request limit. Please try again in a moment.";
+              } else {
+                assistantMsg.content = `API error: ${response.statusText}`;
+              }
+            } else {
+              const data = await response.json();
+              assistantMsg.content = data.choices?.[0]?.message?.content || "No response generated.";
+            }
+          }
+
+          // Followups
+          assistantMsg.suggestions = generateFollowUps(cleanText, category, route);
+
+        } catch (error: any) {
+          console.error("Falcon sendMessage error:", error);
+          assistantMsg.content = "I'm having trouble connecting or processing your request. Please check your internet or try again.";
+        } finally {
+          set(state => ({
+            messages: [...state.messages, assistantMsg],
+            isTyping: false,
+            currentThinkingSteps: []
+          }));
+        }
+      }
     }),
     {
-      name: "sutra-falcon-chat-v2",
+      name: 'falcon-store-persist',
       partialize: (state) => ({
-        messages: state.messages.slice(-60),
         context: state.context,
+        apiKey: state.apiKey
       }),
-    },
-  ),
+      storage: createJSONStorage(() => sessionStorage)
+    }
+  )
 );

@@ -558,7 +558,7 @@ const VouchersRegister: React.FC = () => {
                           {sums.balanced ? "BALANCED" : "UNBALANCED"}
                         </Badge>
                     </td>
-                  </HoverActionRow>
+                  </tr>
                   </tfoot>
                 </table>
               </div>
