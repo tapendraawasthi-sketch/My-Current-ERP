@@ -1,39 +1,88 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { 
-  classifyQuestion, 
-  buildReasoningChain, 
-  shouldSearchWeb, 
-  extractSearchQuery, 
-  generateFollowUps, 
-  analyzeERPContext,
-  type QuestionCategory, 
-  type ReasoningStep, 
-  type ReasoningResult 
-} from '../lib/falconReasoning';
-import { searchWeb, formatSearchResults } from '../lib/falconWebSearch';
-import { 
-  buildSystemPrompt, 
-  buildUserMessage, 
-  buildConversationHistory,
-  getDefaultLLMConfig, 
-  getERPSpecificConfig,
-  type FalconMessage 
-} from '../lib/falconPromptBuilder';
-import { ERP_MODULE_KNOWLEDGE, ACCOUNTING_CONCEPTS } from '../lib/falconKnowledge';
+// src/store/falconStore.ts
+// Falcon AI — Zustand Store with Streaming, Chain-of-Thought, and Web Search
+// Replaces the original falconStore.ts entirely.
+
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import {
+  classifyQuestion,
+  buildReasoningPlan,
+  generateFollowUpSuggestions,
+  buildEnhancedUserMessage,
+} from "../lib/falcon/chainOfThought";
+import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/chainOfThought";
+import { buildMasterSystemPrompt } from "../lib/falcon/masterSystemPrompt";
+import { getModuleContext } from "../lib/falcon/erpCodeKnowledge";
+import { searchWeb, formatSearchResultsForLLM } from "../lib/falcon/searchService";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const GROQ_MODELS = [
+  { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B (Best)", recommended: true },
+  { id: "llama-3.1-8b-instant", name: "Llama 3.1 8B (Fast)" },
+  { id: "mixtral-8x7b-32768", name: "Mixtral 8x7B (Balanced)" },
+  { id: "gemma2-9b-it", name: "Gemma 2 9B (Efficient)" },
+] as const;
+
+const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+
+const WELCOME_MESSAGE = `🦅 Hello! I'm **Falcon AI**, your intelligent reasoning assistant for Sutra ERP.
+
+✅ **ERP Expert** — Step-by-step guidance for any module
+✅ **Accounting Teacher** — Concepts, formulas, Nepal tax rules
+✅ **Web Search** — Live internet data when you need it
+✅ **General Knowledge** — Science, math, history, daily life
+✅ **Streaming Responses** — Real-time answers as I think
+
+Powered by **Llama 3.3 70B** via Groq. Set your API key in ⚙️ Settings.
+
+What would you like to know?`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODULE-LEVEL AbortController (avoids Zustand serialization issues)
+// ─────────────────────────────────────────────────────────────────────────────
+
+let _activeController: AbortController | null = null;
+
+function createController(): AbortController {
+  _activeController?.abort();
+  _activeController = new AbortController();
+  return _activeController;
+}
+
+function abortActive() {
+  _activeController?.abort();
+  _activeController = null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ID GENERATOR
+// ─────────────────────────────────────────────────────────────────────────────
+
+function genId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INTERFACES
+// ─────────────────────────────────────────────────────────────────────────────
 
 export interface FalconChatMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
-  category?: QuestionCategory;
-  reasoningSteps?: ReasoningStep[];
+  domain?: QuestionDomain;
+  intent?: QuestionIntent;
+  reasoningSteps?: ThoughtStep[];
   webSearchUsed?: boolean;
   searchQuery?: string;
   feedback?: 1 | -1;
   suggestions?: string[];
-  isThinking?: boolean;
+  isStreaming?: boolean;
+  streamBuffer?: string;
 }
 
 export interface FalconContext {
@@ -44,251 +93,432 @@ export interface FalconContext {
 }
 
 export interface FalconState {
+  // ── UI State ────────────────────────────────────────────────────────────
   isOpen: boolean;
   isTyping: boolean;
+  isStreaming: boolean;
   showThinking: boolean;
+
+  // ── Conversation ────────────────────────────────────────────────────────
   messages: FalconChatMessage[];
-  currentThinkingSteps: ReasoningStep[];
+  currentThinkingSteps: ThoughtStep[];
+  streamingContent: string;
+
+  // ── Config ──────────────────────────────────────────────────────────────
   context: FalconContext;
   apiKey: string;
   apiEndpoint: string;
-  
+  model: string;
+
+  // ── Actions ──────────────────────────────────────────────────────────────
   openPanel: () => void;
   closePanel: () => void;
   togglePanel: () => void;
   setContext: (ctx: Partial<FalconContext>) => void;
   setApiKey: (key: string) => void;
+  setModel: (model: string) => void;
   sendMessage: (text: string) => Promise<void>;
   rateMessage: (id: string, rating: 1 | -1) => void;
   clearHistory: () => void;
   toggleShowThinking: () => void;
+  cancelStream: () => void;
 }
 
-const generateId = () => Math.random().toString(36).substring(2, 9);
+// ─────────────────────────────────────────────────────────────────────────────
+// FALLBACK RESPONSE (no API key)
+// ─────────────────────────────────────────────────────────────────────────────
 
-const INITIAL_WELCOME: FalconChatMessage = {
-  id: 'welcome',
-  role: 'assistant',
-  content: `👋 Hello! I'm **Falcon AI**, your intelligent assistant for Sutra ERP.
+function buildFallbackResponse(
+  query: string,
+  domain: QuestionDomain,
+  route?: string,
+): string {
+  const routeCtx = route ? ` You appear to be on the **${route}** page.` : "";
 
-I can help you with:
-• 📊 **ERP Tasks** — invoices, vouchers, reports, inventory, VAT
-• 📚 **Accounting** — concepts, calculations, best practices  
-• 🌐 **General Questions** — science, math, history, daily life
-• 🔍 **Web Search** — I can search the web for current information
-
-What would you like to know?`,
-  timestamp: new Date(),
-  suggestions: [
-    'How do I create a sales invoice?',
-    'What is double-entry bookkeeping?',
-    'Search for Nepal tax updates 2024'
-  ]
-};
-
-function getInitialApiKey() {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const saved = localStorage.getItem('falcon_api_key');
-    if (saved) return saved;
+  if (domain === "greeting") {
+    return WELCOME_MESSAGE;
   }
-  // @ts-ignore
-  return typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GROQ_API_KEY || '' : '';
+
+  if (domain === "erp") {
+    const moduleCtx = route ? getModuleContext(route) : "";
+    return (
+      `I'd love to give you a detailed answer about **${query}**, but I need a Groq API key to power my full reasoning.nn` +
+      `${moduleCtx ? `Here is what I know about the current page:nn${moduleCtx}nn` : ""}` +
+      `🔑 **To enable Falcon AI:**n` +
+      `1. Visit [console.groq.com](https://console.groq.com) (free)n` +
+      `2. Create a free account and generate an API keyn` +
+      `3. Open Falcon settings (⚙️ icon) and paste your keynn` +
+      `Once configured, I can give you step-by-step ERP guidance, accounting help, web search, and much more!`
+    );
+  }
+
+  return (
+    `I need a Groq API key to answer **"${query}"** fully.${routeCtx}nn` +
+    `Get your free key at [console.groq.com](https://console.groq.com), then add it in Falcon settings (⚙️).`
+  );
 }
 
-function buildFallbackResponse(text: string, category: QuestionCategory, route: string = ''): string {
-  if (category === 'erp-how-to' || category === 'erp-explain') {
-    const safeRoute = route || 'dashboard';
-    const module = ERP_MODULE_KNOWLEDGE[safeRoute];
-    if (module) {
-      return `Here is some information about the **${safeRoute}** module:\n\n` +
-             `${module.description}\n\n**How to use:**\n- ` + module.howToUse.join('\n- ') +
-             `\n\n*(Note: Set your Groq API key in settings for full conversational capability)*`;
-    }
-    return `I am currently in fallback mode (API key not set). Please provide an API key in the settings to get detailed ERP assistance.`;
-  }
-  if (category === 'accounting-concept') {
-    // try to find a matching concept
-    const found = Object.entries(ACCOUNTING_CONCEPTS).find(([k]) => text.toLowerCase().includes(k.toLowerCase()));
-    if (found) {
-      return `**${found[0]}**: ${found[1]}\n\n*(Note: Set API key for deeper explanations)*`;
-    }
-    return `I am in fallback mode. I know about terms like debit, credit, VAT, etc. Set your API key for full capabilities.`;
-  }
-  if (category === 'greeting') {
-    return `Hello! I am Falcon AI. Please set your API key in the settings to enable my full intelligence!`;
-  }
-  if (category === 'math-calculation') {
-    try {
-      // Basic math extraction and eval
-      const expression = text.replace(/[^0-9\+\-\*\/\(\)\.]/g, '');
-      if (expression) {
-        // eslint-disable-next-line no-eval
-        const result = eval(expression);
-        return `The result is **${result}**.\n\n*(Calculated via fallback logic)*`;
-      }
-    } catch {
-      // ignore
-    }
-    return "I couldn't calculate that in fallback mode.";
-  }
-  
-  return `Please set your Groq API key in settings to unlock my full reasoning and search capabilities!`;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// ZUSTAND STORE
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const useFalconStore = create<FalconState>()(
   persist(
     (set, get) => ({
+      // ── Initial State ────────────────────────────────────────────────────
       isOpen: false,
       isTyping: false,
-      showThinking: false,
-      messages: [INITIAL_WELCOME],
+      isStreaming: false,
+      showThinking: true,
+      messages: [
+        {
+          id: "welcome",
+          role: "assistant",
+          content: WELCOME_MESSAGE,
+          timestamp: new Date(),
+        },
+      ],
       currentThinkingSteps: [],
+      streamingContent: "",
       context: {},
-      apiKey: getInitialApiKey(),
-      apiEndpoint: 'https://api.groq.com/openai/v1/chat/completions',
+      apiKey: "",
+      apiEndpoint: GROQ_ENDPOINT,
+      model: "llama-3.3-70b-versatile",
 
+      // ── Simple Actions ───────────────────────────────────────────────────
       openPanel: () => set({ isOpen: true }),
       closePanel: () => set({ isOpen: false }),
-      togglePanel: () => set(state => ({ isOpen: !state.isOpen })),
-      
-      setContext: (ctx) => set(state => ({ context: { ...state.context, ...ctx } })),
-      
-      setApiKey: (key) => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('falcon_api_key', key);
-        }
-        set({ apiKey: key });
+      togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
+      setContext: (ctx) => set((s) => ({ context: { ...s.context, ...ctx } })),
+      setApiKey: (key) => set({ apiKey: key.trim() }),
+      setModel: (model) => set({ model }),
+      toggleShowThinking: () => set((s) => ({ showThinking: !s.showThinking })),
+      rateMessage: (id, rating) =>
+        set((s) => ({
+          messages: s.messages.map((m) =>
+            m.id === id ? { ...m, feedback: rating } : m,
+          ),
+        })),
+      clearHistory: () =>
+        set({
+          messages: [
+            {
+              id: "welcome",
+              role: "assistant",
+              content: WELCOME_MESSAGE,
+              timestamp: new Date(),
+            },
+          ],
+          currentThinkingSteps: [],
+          streamingContent: "",
+          isTyping: false,
+          isStreaming: false,
+        }),
+      cancelStream: () => {
+        abortActive();
+        set({ isTyping: false, isStreaming: false, currentThinkingSteps: [], streamingContent: "" });
       },
 
-      toggleShowThinking: () => set(state => ({ showThinking: !state.showThinking })),
-
-      rateMessage: (id, rating) => set(state => ({
-        messages: state.messages.map(m => m.id === id ? { ...m, feedback: rating } : m)
-      })),
-
-      clearHistory: () => set({ messages: [{ ...INITIAL_WELCOME, timestamp: new Date() }] }),
-
+      // ── sendMessage — The Core Action ─────────────────────────────────────
       sendMessage: async (text: string) => {
+        const state = get();
         const cleanText = text.trim();
-        if (!cleanText) return;
+        if (!cleanText || state.isTyping) return;
 
+        // ── STEP 1: Add user message ────────────────────────────────────────
         const userMsg: FalconChatMessage = {
-          id: generateId(),
-          role: 'user',
+          id: genId(),
+          role: "user",
           content: cleanText,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
-
-        set(state => ({
-          messages: [...state.messages, userMsg],
+        set((s) => ({
+          messages: [...s.messages, userMsg],
           isTyping: true,
-          currentThinkingSteps: []
+          isStreaming: false,
+          currentThinkingSteps: [],
+          streamingContent: "",
         }));
 
-        const state = get();
-        const route = state.context.route || '';
-        
-        let assistantMsg: FalconChatMessage = {
-          id: generateId(),
-          role: 'assistant',
-          content: '',
-          timestamp: new Date()
+        // ── STEP 2: Chain-of-thought classification ─────────────────────────
+        const classification = classifyQuestion(cleanText, state.context.route);
+        const plan = buildReasoningPlan(
+          cleanText,
+          classification.domain,
+          classification.intent,
+          state.context.route,
+        );
+
+        // Show thinking steps immediately
+        set({ currentThinkingSteps: plan.steps });
+
+        // Artificial delay so user can see thinking steps animate
+        await new Promise((r) => setTimeout(r, 500));
+
+        // ── STEP 3: Web search (conditional) ────────────────────────────────
+        let webSearchResults: string | undefined;
+        let webSearchUsed = false;
+        let usedSearchQuery: string | undefined;
+
+        if (plan.shouldSearchWeb && plan.searchQuery) {
+          // Update last thinking step visually
+          set((s) => {
+            const steps = [...s.currentThinkingSteps];
+            if (steps.length > 0) {
+              steps[steps.length - 1] = {
+                ...steps[steps.length - 1],
+                title: "🌐 Searching the web…",
+              };
+            }
+            return { currentThinkingSteps: steps };
+          });
+
+          try {
+            const searchResponse = await searchWeb(plan.searchQuery, {
+              maxResults: 4,
+              timeoutMs: 6000,
+            });
+            webSearchResults = formatSearchResultsForLLM(searchResponse);
+            webSearchUsed = searchResponse.results.length > 0;
+            usedSearchQuery = plan.searchQuery;
+          } catch {
+            // Non-fatal — proceed without web results
+          }
+        }
+
+        // ── STEP 4 & 6: Build system prompt and enhanced user message ────────
+        const systemPrompt = buildMasterSystemPrompt({
+          currentRoute: state.context.route,
+          questionCategory: classification.domain,
+          webSearchResults: webSearchResults,
+          companyName: state.context.companyName,
+          userName: state.context.userName,
+          conversationTurnCount: Math.floor(
+            state.messages.filter((m) => m.role === "user").length,
+          ),
+          hasApiKey: !!state.apiKey,
+        });
+
+        const enhancedUserMessage = buildEnhancedUserMessage(cleanText, plan, {
+          route: state.context.route,
+          webResults: webSearchResults,
+        });
+
+        // ── STEP 5: Build conversation history (last 10 messages) ────────────
+        const conversationHistory = state.messages
+          .filter((m) => m.role !== "system" && m.id !== "welcome")
+          .slice(-10)
+          .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
+        // ── STEP 7: API Call (with streaming or fallback) ────────────────────
+        if (!state.apiKey) {
+          // ── No API key: use fallback response ─────────────────────────────
+          const fallback = buildFallbackResponse(
+            cleanText,
+            classification.domain,
+            state.context.route,
+          );
+          const fallbackMsg: FalconChatMessage = {
+            id: genId(),
+            role: "assistant",
+            content: fallback,
+            timestamp: new Date(),
+            domain: classification.domain,
+            intent: classification.intent,
+            reasoningSteps: plan.steps,
+            suggestions: generateFollowUpSuggestions(
+              cleanText,
+              classification.domain,
+              state.context.route,
+            ),
+          };
+          set((s) => ({
+            messages: [...s.messages, fallbackMsg],
+            isTyping: false,
+            isStreaming: false,
+            currentThinkingSteps: [],
+          }));
+          return;
+        }
+
+        // ── Streaming API call ────────────────────────────────────────────────
+        const abortController = createController();
+        const assistantId = genId();
+
+        // Add placeholder streaming message immediately
+        const placeholderMsg: FalconChatMessage = {
+          id: assistantId,
+          role: "assistant",
+          content: "",
+          timestamp: new Date(),
+          isStreaming: true,
+          domain: classification.domain,
+          intent: classification.intent,
+          webSearchUsed,
+          searchQuery: usedSearchQuery,
         };
+        set((s) => ({
+          messages: [...s.messages, placeholderMsg],
+          isStreaming: true,
+        }));
 
         try {
-          // Reason & Plan
-          const category = classifyQuestion(cleanText, route);
-          assistantMsg.category = category;
-          
-          const steps = buildReasoningChain(cleanText, category, route);
-          set({ currentThinkingSteps: steps });
-          assistantMsg.reasoningSteps = steps;
+          const response = await fetch(state.apiEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${state.apiKey}`,
+            },
+            body: JSON.stringify({
+              model: state.model || "llama-3.3-70b-versatile",
+              messages: [
+                { role: "system", content: systemPrompt },
+                ...conversationHistory,
+                { role: "user", content: enhancedUserMessage },
+              ],
+              max_tokens: 1500,
+              temperature: classification.domain === "erp" ? 0.3 : 0.7,
+              stream: true,
+            }),
+            signal: abortController.signal,
+          });
 
-          // Web Search if needed
-          let webSearchResults = '';
-          if (shouldSearchWeb(cleanText, category)) {
-            assistantMsg.webSearchUsed = true;
-            const sq = extractSearchQuery(cleanText, category);
-            assistantMsg.searchQuery = sq;
-            const searchRes = await searchWeb(sq);
-            webSearchResults = formatSearchResults(searchRes);
+          // ── Handle non-200 responses ───────────────────────────────────────
+          if (!response.ok) {
+            let errorMsg: string;
+            if (response.status === 401) {
+              errorMsg =
+                "❌ **Invalid API key.** Please check your Groq API key in settings. Get a free key at [console.groq.com](https://console.groq.com).";
+            } else if (response.status === 429) {
+              errorMsg =
+                "⏳ **Rate limit reached.** You've hit Groq's rate limit. Please wait a moment and try again.";
+            } else if (response.status === 400) {
+              errorMsg =
+                "⚠️ **Request error.** The model may not support the current request. Try switching to a different model in settings.";
+            } else {
+              errorMsg = `❌ **API Error ${response.status}.** Please try again or check your settings.`;
+            }
+            set((s) => ({
+              messages: s.messages.map((m) =>
+                m.id === assistantId
+                  ? { ...m, content: errorMsg, isStreaming: false }
+                  : m,
+              ),
+              isTyping: false,
+              isStreaming: false,
+              currentThinkingSteps: [],
+            }));
+            return;
           }
 
-          // Generate response
-          if (!state.apiKey) {
-            assistantMsg.content = buildFallbackResponse(cleanText, category, route);
-          } else {
-            const systemPrompt = buildSystemPrompt({
-              currentRoute: route,
-              category,
-              webSearchResults,
-              companyName: state.context.companyName
-            });
+          if (!response.body) {
+            throw new Error("Response body is null — streaming not supported");
+          }
 
-            const config = category.startsWith('erp') ? getERPSpecificConfig() : getDefaultLLMConfig();
-            
-            // Build history
-            const coreMessages = state.messages.map(m => ({ role: m.role as string, content: m.content }));
-            const userPrompt = buildUserMessage(cleanText, steps, { currentRoute: route });
-            
-            const reqMessages = [
-              { role: 'system', content: systemPrompt },
-              ...buildConversationHistory(coreMessages, 8),
-              { role: 'user', content: userPrompt }
-            ];
+          // ── SSE Stream Parsing ─────────────────────────────────────────────
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let fullContent = "";
 
-            const response = await fetch(state.apiEndpoint, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${state.apiKey}`
-              },
-              body: JSON.stringify({
-                model: config.model,
-                messages: reqMessages,
-                max_tokens: config.maxTokens,
-                temperature: config.temperature
-              })
-            });
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-            if (!response.ok) {
-              if (response.status === 401) {
-                assistantMsg.content = "Please set your Groq API key in settings (or check if it is correct).";
-              } else if (response.status === 429) {
-                assistantMsg.content = "I've reached my request limit. Please try again in a moment.";
-              } else {
-                assistantMsg.content = `API error: ${response.statusText}`;
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("n").filter((l) => l.startsWith("data: "));
+
+            for (const line of lines) {
+              const data = line.replace(/^data:s*/, "").trim();
+              if (data === "[DONE]") break;
+              if (!data) continue;
+
+              try {
+                const parsed = JSON.parse(data);
+                const delta: string = parsed?.choices?.[0]?.delta?.content || "";
+                if (delta) {
+                  fullContent += delta;
+                  // Real-time update of the streaming message
+                  set((s) => ({
+                    messages: s.messages.map((m) =>
+                      m.id === assistantId
+                        ? { ...m, content: fullContent }
+                        : m,
+                    ),
+                    streamingContent: fullContent,
+                  }));
+                }
+              } catch {
+                // Malformed SSE chunk — skip silently
+                continue;
               }
-            } else {
-              const data = await response.json();
-              assistantMsg.content = data.choices?.[0]?.message?.content || "No response generated.";
             }
           }
 
-          // Followups
-          assistantMsg.suggestions = generateFollowUps(cleanText, category, route);
+          // ── Finalize the streamed message ──────────────────────────────────
+          const followUps = generateFollowUpSuggestions(
+            cleanText,
+            classification.domain,
+            state.context.route,
+          );
 
-        } catch (error: any) {
-          console.error("Falcon sendMessage error:", error);
-          assistantMsg.content = "I'm having trouble connecting or processing your request. Please check your internet or try again.";
-        } finally {
-          set(state => ({
-            messages: [...state.messages, assistantMsg],
+          set((s) => ({
+            messages: s.messages.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    content: fullContent || "_(No response received — please try again)_",
+                    isStreaming: false,
+                    reasoningSteps: plan.steps,
+                    suggestions: followUps,
+                  }
+                : m,
+            ),
             isTyping: false,
-            currentThinkingSteps: []
+            isStreaming: false,
+            currentThinkingSteps: [],
+            streamingContent: "",
+          }));
+        } catch (err: any) {
+          const isAbort = err?.name === "AbortError";
+          const errorContent = isAbort
+            ? "_(Response cancelled by user)_"
+            : err?.message?.includes("Failed to fetch")
+            ? "❌ **Network error.** Please check your internet connection and try again."
+            : `❌ **Error:** ${err?.message || "An unexpected error occurred."}`;
+
+          set((s) => ({
+            messages: s.messages.map((m) =>
+              m.id === assistantId
+                ? { ...m, content: errorContent, isStreaming: false }
+                : m,
+            ),
+            isTyping: false,
+            isStreaming: false,
+            currentThinkingSteps: [],
+            streamingContent: "",
           }));
         }
-      }
+      },
     }),
+
+    // ── Persistence config ─────────────────────────────────────────────────
     {
-      name: 'falcon-store-persist',
+      name: "falcon-store",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        apiKey: state.apiKey,
         context: state.context,
-        apiKey: state.apiKey
+        model: state.model,
+        showThinking: state.showThinking,
+        // Persist last 50 messages
+        messages: state.messages.slice(-50),
       }),
-      storage: createJSONStorage(() => sessionStorage)
-    }
-  )
+    },
+  ),
 );
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Named re-export for backward compatibility
+// ─────────────────────────────────────────────────────────────────────────────
 
+export default useFalconStore;

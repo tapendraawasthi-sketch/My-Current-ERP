@@ -1,359 +1,602 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { 
-  Send, ThumbsUp, ThumbsDown, Trash2, X, Bot, Sparkles, Loader2, 
-  Brain, Globe, Check, Settings, Key, Search, Copy
-} from 'lucide-react';
-import { useFalconStore } from '../../store/falconStore';
-import { FalconThinkingPanel } from './FalconThinkingPanel';
-// If react-hot-toast is used in the project. Assuming standard fallback otherwise.
-// import toast from 'react-hot-toast';
+// src/components/falcon/FalconPanel.tsx
+// Falcon AI — Main Chat Panel UI
+// Replaces existing FalconPanel.tsx with streaming, markdown, and enhanced UX.
 
-const QUICK_PROMPTS = {
-  ERP: ["Create sales invoice", "Record payment", "View VAT report", "Add new party", "Check outstanding", "Day book today"],
-  Finance: ["Explain double-entry", "What is VAT?", "Trial balance vs P&L", "How is depreciation calculated?"],
-  General: ["Current Nepal VAT rate", "Search news", "Calculate compound interest", "Explain inflation"]
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+} from "react";
+import {
+  Send,
+  ThumbsUp,
+  ThumbsDown,
+  Trash2,
+  X,
+  Bot,
+  Sparkles,
+  Loader2,
+  Brain,
+  Globe,
+  Check,
+  Settings,
+  Key,
+  Search,
+  Copy,
+  Square,
+  ChevronDown,
+} from "lucide-react";
+import { MarkdownRenderer } from "../../lib/falcon/markdownRenderer";
+import { useFalconStore, GROQ_MODELS } from "../../store/falconStore";
+import { FalconThinkingPanel } from "./FalconThinkingPanel";
+import type { FalconChatMessage } from "../../store/falconStore";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUICK PROMPTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const QUICK_PROMPTS: Record<string, string[]> = {
+  ERP: [
+    "Create sales invoice",
+    "Record receipt",
+    "View VAT report",
+    "Add new party",
+    "Check outstanding",
+    "Day book today",
+    "Print invoice",
+    "Stock summary",
+  ],
+  Finance: [
+    "Explain double-entry",
+    "VAT calculation formula",
+    "Trial balance vs P&L",
+    "How is depreciation calculated?",
+    "What is TDS?",
+    "Debit vs Credit",
+  ],
+  General: [
+    "Search latest news",
+    "Calculate compound interest",
+    "Explain inflation simply",
+    "What is machine learning?",
+    "Healthy breakfast ideas",
+    "How does GPS work?",
+  ],
 };
 
-type PromptTab = 'ERP' | 'Finance' | 'General';
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Format a Date as "10:32 AM" */
+function formatTime(ts: Date | string): string {
+  try {
+    const d = ts instanceof Date ? ts : new Date(ts);
+    return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+}
+
+/** Domain badge config */
+function getDomainBadge(domain?: string): { label: string; cls: string } | null {
+  if (!domain) return null;
+  const map: Record<string, { label: string; cls: string }> = {
+    erp:        { label: "🏢 ERP Expert Mode",    cls: "bg-blue-50 text-blue-700 border-blue-200" },
+    accounting: { label: "📊 Finance Mode",        cls: "bg-green-50 text-green-700 border-green-200" },
+    "web-search":{ label: "🌐 Web Search Mode",   cls: "bg-orange-50 text-orange-700 border-orange-200" },
+    math:       { label: "🧮 Calculator Mode",     cls: "bg-teal-50 text-teal-700 border-teal-200" },
+    code:       { label: "💻 Code Mode",           cls: "bg-violet-50 text-violet-700 border-violet-200" },
+    greeting:   { label: "👋 Conversation",        cls: "bg-gray-50 text-gray-600 border-gray-200" },
+    general:    { label: "💡 General Knowledge",   cls: "bg-purple-50 text-purple-700 border-purple-200" },
+  };
+  return map[domain] ?? { label: "💡 General Knowledge", cls: "bg-purple-50 text-purple-700 border-purple-200" };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MESSAGE BUBBLE
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MessageBubble = memo(
+  ({
+    msg,
+    onRate,
+  }: {
+    msg: FalconChatMessage;
+    onRate: (id: string, v: 1 | -1) => void;
+  }) => {
+    const [copied, setCopied] = useState(false);
+    const isUser = msg.role === "user";
+    const isStreaming = !!msg.isStreaming;
+    const domainBadge = getDomainBadge(msg.domain);
+
+    const handleCopy = useCallback(() => {
+      navigator.clipboard.writeText(msg.content).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1800);
+      });
+    }, [msg.content]);
+
+    return (
+      <div
+        className={`group flex flex-col gap-1 ${isUser ? "items-end" : "items-start"} animate-fadeIn`}
+      >
+        {/* Bubble */}
+        <div
+          className={[
+            "relative max-w-[92%] rounded-xl px-3 py-2 text-[12px] shadow-sm transition-all",
+            isUser
+              ? "bg-[#1557b0] text-white rounded-tr-sm"
+              : [
+                  "bg-white text-gray-800 rounded-tl-sm border",
+                  isStreaming
+                    ? "border-blue-300 shadow-blue-100"
+                    : "border-gray-200",
+                ].join(" "),
+          ].join(" ")}
+        >
+          {isUser ? (
+            <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+          ) : (
+            <>
+              <MarkdownRenderer
+                content={msg.content}
+                compact
+                animate={isStreaming}
+              />
+              {/* Blinking cursor while streaming */}
+              {isStreaming && (
+                <span className="inline-block w-[7px] h-[13px] bg-blue-500 ml-0.5 animate-pulse rounded-sm align-text-bottom" />
+              )}
+            </>
+          )}
+
+          {/* Copy button — appears on hover for assistant */}
+          {!isUser && !isStreaming && msg.content && (
+            <button
+              onClick={handleCopy}
+              title="Copy response"
+              className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            >
+              {copied ? (
+                <Check className="h-3 w-3 text-green-500" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* Timestamp */}
+        {msg.timestamp && (
+          <span className="text-[10px] text-gray-400 px-1">
+            {formatTime(msg.timestamp)}
+          </span>
+        )}
+
+        {/* Badges — web search + domain */}
+        {!isUser && !isStreaming && (
+          <div className="flex flex-wrap gap-1 px-1">
+            {msg.webSearchUsed && msg.searchQuery && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-orange-50 text-orange-700 border border-orange-200">
+                <Search className="h-2.5 w-2.5" />
+                Searched: {msg.searchQuery.slice(0, 40)}{msg.searchQuery.length > 40 ? "…" : ""}
+              </span>
+            )}
+            {domainBadge && (
+              <span
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${domainBadge.cls}`}
+              >
+                {domainBadge.label}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Thinking panel */}
+        {!isUser && !isStreaming && msg.reasoningSteps && msg.reasoningSteps.length > 0 && (
+          <div className="w-full max-w-[92%]">
+            <FalconThinkingPanel
+              steps={msg.reasoningSteps}
+              domain={msg.domain}
+              isLive={false}
+              defaultExpanded={false}
+            />
+          </div>
+        )}
+
+        {/* Follow-up suggestions */}
+        {!isUser && !isStreaming && msg.suggestions && msg.suggestions.length > 0 && (
+          <div className="flex flex-wrap gap-1 px-1 max-w-[92%]">
+            {msg.suggestions.slice(0, 3).map((s, i) => (
+              <button
+                key={i}
+                className="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-2 py-0.5 hover:bg-blue-100 transition-colors"
+                onClick={() => {
+                  // Suggestions are handled by parent via a custom event
+                  window.dispatchEvent(new CustomEvent("falcon-suggestion", { detail: s }));
+                }}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Feedback buttons */}
+        {!isUser && !isStreaming && msg.id !== "welcome" && (
+          <div className="flex items-center gap-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() => onRate(msg.id, 1)}
+              className={`p-1 rounded hover:bg-gray-100 transition-colors ${msg.feedback === 1 ? "text-green-500" : "text-gray-400"}`}
+              title="Helpful"
+            >
+              <ThumbsUp className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => onRate(msg.id, -1)}
+              className={`p-1 rounded hover:bg-gray-100 transition-colors ${msg.feedback === -1 ? "text-red-500" : "text-gray-400"}`}
+              title="Not helpful"
+            >
+              <ThumbsDown className="h-3 w-3" />
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  },
+);
+MessageBubble.displayName = "MessageBubble";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETTINGS PANEL
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
+  const { apiKey, setApiKey, model, setModel } = useFalconStore();
+  const [draft, setDraft] = useState(apiKey);
+  const [show, setShow] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setApiKey(draft);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="border-t border-gray-200 bg-gray-50 px-3 py-3 space-y-3 text-[12px]">
+      {/* API Key row */}
+      <div>
+        <label className="flex items-center gap-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
+          <Key className="h-3 w-3" /> Groq API Key
+        </label>
+        <div className="flex gap-1">
+          <div className="relative flex-1">
+            <input
+              type={show ? "text" : "password"}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="gsk_…"
+              className="w-full h-7 px-2 pr-8 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:border-[#1557b0]"
+            />
+            <button
+              onClick={() => setShow((p) => !p)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-[10px]"
+            >
+              {show ? "Hide" : "Show"}
+            </button>
+          </div>
+          <button
+            onClick={handleSave}
+            className="h-7 px-2.5 bg-[#1557b0] text-white text-[11px] rounded-md hover:bg-[#0f4a96] flex items-center gap-1"
+          >
+            {saved ? <Check className="h-3 w-3" /> : "Save"}
+          </button>
+        </div>
+        <p className="mt-0.5 text-[10px] text-gray-400">
+          Free key at{" "}
+          <a
+            href="https://console.groq.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            console.groq.com
+          </a>
+        </p>
+      </div>
+
+      {/* Model selector */}
+      <div>
+        <label className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
+          AI Model
+        </label>
+        <select
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          className="w-full h-7 px-2 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:border-[#1557b0]"
+        >
+          {GROQ_MODELS.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.name}
+            </option>
+          ))}
+        </select>
+        <p className="mt-0.5 text-[10px] text-gray-400">
+          Llama 3.3 70B recommended for best reasoning
+        </p>
+      </div>
+
+      <button
+        onClick={onClose}
+        className="text-[11px] text-gray-500 hover:text-gray-700 underline"
+      >
+        Close settings
+      </button>
+    </div>
+  );
+});
+SettingsPanel.displayName = "SettingsPanel";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN PANEL
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const FalconPanel: React.FC = () => {
-  const { 
-    isOpen, isTyping, messages, context, currentThinkingSteps, 
-    apiKey, setApiKey, sendMessage, rateMessage, clearHistory, closePanel 
-  } = useFalconStore();
-  
-  const [input, setInput] = useState('');
+  const store = useFalconStore();
+  const {
+    isOpen,
+    closePanel,
+    messages,
+    isTyping,
+    isStreaming,
+    currentThinkingSteps,
+    context,
+    sendMessage,
+    rateMessage,
+    clearHistory,
+    cancelStream,
+  } = store;
+
+  const [input, setInput] = useState("");
+  const [promptTab, setPromptTab] = useState<"ERP" | "Finance" | "General">("ERP");
   const [showSettings, setShowSettings] = useState(false);
-  const [keyInput, setKeyInput] = useState(apiKey);
-  const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<PromptTab>('ERP');
-  const [panelHeight, setPanelHeight] = useState(620);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showQuick, setShowQuick] = useState(false);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-scroll
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, isTyping, currentThinkingSteps]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping, isStreaming]);
 
-  // Focus input on open
+  // Listen for suggestion clicks from MessageBubble
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
+    const handler = (e: Event) => {
+      const suggestion = (e as CustomEvent).detail as string;
+      if (suggestion) {
+        setInput(suggestion);
+        textareaRef.current?.focus();
+      }
+    };
+    window.addEventListener("falcon-suggestion", handler);
+    return () => window.removeEventListener("falcon-suggestion", handler);
+  }, []);
+
+  // Focus textarea on open
+  useEffect(() => {
+    if (isOpen) setTimeout(() => textareaRef.current?.focus(), 100);
   }, [isOpen]);
 
-  // Global Keyboard Shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'Escape') {
-        closePanel();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+  // ── Send ──────────────────────────────────────────────────────────────────
+  const handleSend = useCallback(async () => {
+    const text = input.trim();
+    if (!text || isTyping || isStreaming) return;
+    setInput("");
+    await sendMessage(text);
+  }, [input, isTyping, isStreaming, sendMessage]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        inputRef.current?.focus();
+        handleSend();
       }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, closePanel]);
-
-  const handleSend = () => {
-    if (!input.trim() || isTyping) return;
-    sendMessage(input);
-    setInput('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Stop propagation so ERP shortcuts don't fire when typing
-    e.stopPropagation();
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const handleSaveKey = () => {
-    setApiKey(keyInput);
-    setTimeout(() => setShowSettings(false), 1000);
-  };
-
-  const copyToClipboard = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy', err);
-    }
-  };
-
-  const startResize = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    const startY = e.clientY;
-    const startHeight = panelHeight;
-
-    const doDrag = (dragEvent: MouseEvent) => {
-      const diff = startY - dragEvent.clientY;
-      const newHeight = Math.max(400, Math.min(window.innerHeight * 0.85, startHeight + diff));
-      setPanelHeight(newHeight);
-    };
-
-    const stopDrag = () => {
-      window.removeEventListener('mousemove', doDrag);
-      window.removeEventListener('mouseup', stopDrag);
-    };
-
-    window.addEventListener('mousemove', doDrag);
-    window.addEventListener('mouseup', stopDrag);
-  }, [panelHeight]);
+    },
+    [handleSend],
+  );
 
   if (!isOpen) return null;
 
+  const canSend = input.trim().length > 0 && !isTyping && !isStreaming;
+
   return (
-    <div 
-      ref={panelRef}
-      className="fixed bottom-4 right-4 w-[420px] bg-white rounded-xl shadow-2xl flex flex-col border border-gray-200 z-[9998] overflow-hidden"
-      style={{ height: `${panelHeight}px` }}
+    <div
+      className="fixed bottom-4 right-4 z-[9999] w-[420px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+      style={{ maxHeight: "min(82vh, 700px)", minHeight: 420 }}
     >
-      {/* Resize Handle (Top Left) */}
-      <div 
-        className="absolute top-0 left-0 w-4 h-4 cursor-nwse-resize z-50 flex items-center justify-center"
-        onMouseDown={startResize}
-      >
-        <div className="w-2 h-2 border-t-2 border-l-2 border-gray-400 opacity-50 rounded-tl" />
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-[#1557b0] text-white flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <Bot className="h-4 w-4 flex-shrink-0" />
+          <span className="font-bold text-[13px] tracking-tight">FALCON AI</span>
+          {isStreaming && (
+            <span className="text-[10px] text-blue-200 animate-pulse ml-1">● streaming</span>
+          )}
+          {isTyping && !isStreaming && (
+            <span className="text-[10px] text-blue-200 animate-pulse ml-1">● thinking</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => { setShowSettings((p) => !p); setShowQuick(false); }}
+            title="Settings"
+            className="p-1 rounded hover:bg-white/20 transition-colors"
+          >
+            <Settings className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => { if (window.confirm("Clear all messages?")) clearHistory(); }}
+            title="Clear history"
+            className="p-1 rounded hover:bg-white/20 transition-colors"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={closePanel}
+            title="Close"
+            className="p-1 rounded hover:bg-white/20 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Header */}
-      <div className="bg-[#1557b0] text-white px-4 py-3 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="bg-white/20 p-1.5 rounded-md">
-            <Sparkles size={16} />
-          </div>
-          <div>
-            <h3 className="font-semibold text-[14px]">Falcon AI</h3>
-            <p className="text-[10px] text-blue-200">Sutra ERP Intelligent Assistant</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowSettings(!showSettings)} className="p-1 hover:bg-white/20 rounded-md transition-colors" title="Settings">
-            <Settings size={16} />
-          </button>
-          <button onClick={clearHistory} className="p-1 hover:bg-white/20 rounded-md transition-colors" title="Clear Chat">
-            <Trash2 size={16} />
-          </button>
-          <button onClick={closePanel} className="p-1 hover:bg-white/20 rounded-md transition-colors" title="Close (Esc)">
-            <X size={16} />
-          </button>
-        </div>
-      </div>
+      {/* ── Settings Panel ──────────────────────────────────────────────────── */}
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
 
-      {/* Settings Panel */}
-      {showSettings && (
-        <div className="bg-blue-50 border-b border-blue-100 p-3 shrink-0 animate-in slide-in-from-top-2">
-          <label className="block text-[11px] font-medium text-blue-900 mb-1">Groq API Key</label>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <input 
-                type={showPassword ? "text" : "password"} 
-                value={keyInput}
-                onChange={e => setKeyInput(e.target.value)}
-                className="w-full text-[12px] h-8 pl-8 pr-8 rounded-md border border-blue-200 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
-                placeholder="sk-..."
-              />
-              <Key size={12} className="absolute left-2.5 top-2.5 text-blue-400" />
-            </div>
-            <button onClick={handleSaveKey} className="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 rounded-md font-medium transition-colors">
-              Save Key
-            </button>
-          </div>
-          <div className="flex justify-between items-center mt-2">
-            <a href="https://console.groq.com" target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1">
-              <Globe size={10} /> Get free key at groq.com
-            </a>
-            {apiKey === keyInput && apiKey.length > 10 && (
-              <span className="text-[10px] text-green-600 flex items-center gap-1"><Check size={10}/> Configured</span>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Context Banner */}
-      {context.route && context.route !== 'dashboard' && (
-        <div className="bg-gray-50 border-b border-gray-100 px-3 py-1.5 flex items-center justify-between shrink-0">
-          <span className="text-[10px] text-gray-500 flex items-center gap-1.5">
-            <Search size={10} /> Page context: <strong className="text-gray-700">{context.route.replace(/-/g, ' ')}</strong>
+      {/* ── Context Banner ──────────────────────────────────────────────────── */}
+      {context.route && (
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 border-b border-blue-100 text-[11px] text-blue-700 flex-shrink-0">
+          <Sparkles className="h-3 w-3" />
+          <span>
+            Context: <strong>{context.screenTitle || context.route}</strong>
           </span>
         </div>
       )}
 
-      {/* Chat Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#f5f6fa]">
+      {/* ── Messages Area ────────────────────────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 min-h-0">
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            {msg.role === 'assistant' && (
-              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-1">
-                <Bot size={14} className="text-blue-600" />
-              </div>
-            )}
-            
-            <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div 
-                className={`relative group p-2.5 rounded-lg text-[12px] shadow-sm whitespace-pre-wrap
-                  ${msg.role === 'user' 
-                    ? 'bg-[#1557b0] text-white rounded-tr-none' 
-                    : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
-                  }`}
-              >
-                {/* Copy Button */}
-                {msg.role === 'assistant' && (
-                  <button 
-                    onClick={() => copyToClipboard(msg.content, msg.id)}
-                    className="absolute top-1 right-1 p-1 rounded-md bg-white/80 opacity-0 group-hover:opacity-100 hover:bg-gray-100 transition-opacity"
-                    title="Copy response"
-                  >
-                    {copiedId === msg.id ? <Check size={12} className="text-green-600"/> : <Copy size={12} className="text-gray-400"/>}
-                  </button>
-                )}
-
-                {msg.content}
-              </div>
-
-              {/* Badges and Actions for Assistant Messages */}
-              {msg.role === 'assistant' && (
-                <div className="mt-1 flex flex-col w-full gap-1">
-                  {msg.webSearchUsed && (
-                    <span className="inline-flex items-center gap-1 text-[9px] font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-100 self-start">
-                      <Globe size={10} /> Searched web
-                    </span>
-                  )}
-
-                  {msg.reasoningSteps && msg.reasoningSteps.length > 0 && (
-                    <FalconThinkingPanel 
-                      steps={msg.reasoningSteps} 
-                      category={msg.category} 
-                      defaultExpanded={false}
-                    />
-                  )}
-
-                  {/* Feedback */}
-                  {msg.id !== 'welcome' && (
-                    <div className="flex gap-1.5 mt-1">
-                      <button onClick={() => rateMessage(msg.id, 1)} className={`p-1 rounded ${msg.feedback === 1 ? 'text-green-600 bg-green-50' : 'text-gray-400 hover:text-green-600 hover:bg-gray-100'}`}>
-                        <ThumbsUp size={12} />
-                      </button>
-                      <button onClick={() => rateMessage(msg.id, -1)} className={`p-1 rounded ${msg.feedback === -1 ? 'text-red-600 bg-red-50' : 'text-gray-400 hover:text-red-600 hover:bg-gray-100'}`}>
-                        <ThumbsDown size={12} />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Suggestions */}
-                  {msg.suggestions && msg.suggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {msg.suggestions.map((suggestion, i) => (
-                        <button
-                          key={i}
-                          onClick={() => { setInput(suggestion); setTimeout(handleSend, 0); }}
-                          className="text-[10px] bg-white border border-blue-200 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-50 transition-colors"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+          <MessageBubble key={msg.id} msg={msg} onRate={rateMessage} />
         ))}
 
-        {/* Live Typing / Thinking Indicator */}
-        {isTyping && (
-          <div className="flex gap-2.5">
-            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-              <Loader2 size={14} className="text-blue-600 animate-spin" />
+        {/* Live thinking panel (while typing but NOT yet streaming) */}
+        {isTyping && !isStreaming && currentThinkingSteps.length > 0 && (
+          <div className="flex flex-col items-start animate-fadeIn">
+            <FalconThinkingPanel
+              steps={currentThinkingSteps}
+              domain={undefined}
+              isLive
+              defaultExpanded
+            />
+          </div>
+        )}
+
+        {/* Streaming indicator (once content starts flowing) */}
+        {isStreaming && (
+          <p className="text-[10px] text-blue-400 animate-pulse px-1">
+            Streaming response…
+          </p>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* ── Quick Prompts Toggle ────────────────────────────────────────────── */}
+      <div className="border-t border-gray-100 flex-shrink-0">
+        <button
+          onClick={() => setShowQuick((p) => !p)}
+          className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] text-gray-500 hover:bg-gray-50 transition-colors"
+        >
+          <span className="flex items-center gap-1">
+            <Brain className="h-3 w-3" />
+            Quick prompts
+          </span>
+          <ChevronDown
+            className={`h-3 w-3 transition-transform ${showQuick ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {showQuick && (
+          <div className="px-3 pb-2 space-y-1.5">
+            {/* Tab bar */}
+            <div className="flex gap-1">
+              {(["ERP", "Finance", "General"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setPromptTab(tab)}
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors ${
+                    promptTab === tab
+                      ? "bg-[#1557b0] text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
-            <div className="flex flex-col max-w-[85%]">
-              <div className="bg-white border border-gray-100 text-gray-500 text-[11px] p-2.5 rounded-lg rounded-tl-none shadow-sm flex items-center gap-2">
-                <span className="flex gap-1">
-                  <span className="animate-bounce">.</span><span className="animate-bounce" style={{animationDelay:'150ms'}}>.</span><span className="animate-bounce" style={{animationDelay:'300ms'}}>.</span>
-                </span>
-                {currentThinkingSteps.length > 0 
-                  ? <span>{currentThinkingSteps[currentThinkingSteps.length - 1].title}...</span>
-                  : <span>Falcon is thinking...</span>
-                }
-              </div>
-              {currentThinkingSteps.length > 0 && (
-                <FalconThinkingPanel 
-                  steps={currentThinkingSteps} 
-                  isLive={true} 
-                  defaultExpanded={true} 
-                />
-              )}
+            {/* Prompt chips */}
+            <div className="flex flex-wrap gap-1">
+              {QUICK_PROMPTS[promptTab].map((p) => (
+                <button
+                  key={p}
+                  onClick={() => {
+                    setInput(p);
+                    setShowQuick(false);
+                    textareaRef.current?.focus();
+                  }}
+                  className="px-2 py-0.5 text-[10px] bg-white border border-gray-200 rounded-full text-gray-700 hover:border-[#1557b0] hover:text-[#1557b0] transition-colors"
+                >
+                  {p}
+                </button>
+              ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* Quick Prompts */}
-      <div className="bg-white border-t border-gray-100 p-2 shrink-0">
-        <div className="flex gap-1 mb-2 px-1">
-          {(['ERP', 'Finance', 'General'] as PromptTab[]).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`text-[10px] px-2 py-0.5 rounded-full font-medium transition-colors ${activeTab === tab ? 'bg-gray-800 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-        <div className="flex overflow-x-auto gap-2 pb-1 px-1 scrollbar-hide">
-          {QUICK_PROMPTS[activeTab].map((prompt, i) => (
-            <button
-              key={i}
-              onClick={() => { setInput(prompt); }}
-              className="text-[10px] whitespace-nowrap bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-md hover:bg-gray-100 hover:border-gray-300 transition-all shrink-0"
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Composer */}
-      <div className="p-3 bg-white border-t border-gray-200 shrink-0">
-        <div className="relative flex items-end gap-2 bg-gray-50 border border-gray-300 rounded-lg p-1.5 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all">
+      {/* ── Composer ─────────────────────────────────────────────────────────── */}
+      <div className="border-t border-gray-200 px-3 pt-2 pb-2 flex-shrink-0">
+        <div className="flex gap-2 items-end">
           <textarea
-            ref={inputRef}
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask Falcon anything... (Ctrl+K)"
-            className="flex-1 max-h-32 min-h-[36px] bg-transparent resize-none outline-none text-[12px] p-2 placeholder-gray-400"
-            rows={input.split('\n').length > 1 ? Math.min(input.split('\n').length, 4) : 1}
+            placeholder="Ask Falcon anything…"
+            rows={2}
+            disabled={isStreaming}
+            className="flex-1 resize-none rounded-lg border border-gray-300 px-2.5 py-1.5 text-[12px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]/20 disabled:bg-gray-50 disabled:cursor-not-allowed leading-relaxed"
+            style={{ minHeight: 52, maxHeight: 120 }}
           />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping}
-            className={`p-2 mb-0.5 rounded-md flex shrink-0 items-center justify-center transition-colors
-              ${input.trim() && !isTyping ? 'bg-[#1557b0] text-white hover:bg-[#0f4a96]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
-          >
-            <Send size={14} className={isTyping ? 'animate-pulse' : ''} />
-          </button>
+
+          {/* Send / Stop button */}
+          {isStreaming ? (
+            <button
+              onClick={cancelStream}
+              title="Stop generation"
+              className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex-shrink-0"
+            >
+              <Square className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <button
+              onClick={handleSend}
+              disabled={!canSend}
+              title="Send message (Enter)"
+              className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#1557b0] text-white hover:bg-[#0f4a96] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            >
+              {isTyping ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Send className="h-3.5 w-3.5" />
+              )}
+            </button>
+          )}
         </div>
-        <div className="text-center mt-2">
-          <span className="text-[9px] text-gray-400 font-medium">FALCON AI CAN MAKE MISTAKES. VERIFY IMPORTANT INFO.</span>
-        </div>
+
+        {/* Hint bar */}
+        <p className="mt-1 text-[10px] text-gray-400 leading-tight">
+          Falcon AI can make mistakes · Ctrl+/ to toggle · Enter to send · Shift+Enter for new line
+        </p>
       </div>
     </div>
   );
 };
 
+export default FalconPanel;
