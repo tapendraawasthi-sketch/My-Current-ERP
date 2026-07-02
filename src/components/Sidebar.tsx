@@ -1,63 +1,42 @@
 // @ts-nocheck
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import {
   LayoutDashboard,
-  FolderOpen,
   Users,
   Package,
   Tags,
   BookOpen,
   Wallet,
-  Download,
   ArrowLeftRight,
   ScrollText,
   FileText,
   CreditCard,
-  ShoppingCart,
   ClipboardList,
   Truck,
   Archive,
   RefreshCw,
-  Store,
   Scale,
   TrendingUp,
   TrendingDown,
   BarChart2,
   Activity,
-  FileBarChart,
   BookMarked,
   Calendar,
   Banknote,
-  Landmark,
   Layers,
   PieChart,
   Map,
   Settings,
-  Shield,
-  Database,
-  FileClock,
   ChevronDown,
   ChevronRight,
   LogOut,
-  Sliders,
   ChevronLeft,
-  Lock,
-  Monitor,
-  Printer,
-  Building,
-  CheckCircle,
-  AlertTriangle,
-  Tag,
   Building2,
-  History,
   ShieldCheck,
-  Factory,
-  MessageSquare,
-  CalendarCheck,
   Repeat,
   Receipt,
-  Clock,
+  Calculator,
 } from "lucide-react";
 
 interface NavItem {
@@ -74,163 +53,137 @@ interface MenuGroup {
 
 const menuGroups: MenuGroup[] = [
   {
-    title: "Gateway",
+    title: "Home",
     items: [
-      { label: "Dashboard", page: "dashboard", icon: LayoutDashboard },
-      { label: "Reports Hub", page: "reports-hub", icon: BarChart2 },
-      { label: "Configuration Hub", page: "configuration-hub", icon: Sliders },
-      { label: "Data Import/Export", page: "data-import-export", icon: Download },
-    ],
-  },
-
-  {
-    title: "Masters",
-    items: [
-      { label: "Chart of Accounts", page: "accounts", icon: BookOpen },
-      { label: "Parties Directory", page: "parties", icon: Users },
-      { label: "Item Groups", page: "item-groups", icon: FolderOpen },
-      { label: "Item Master", page: "item-master", icon: Package },
-      { label: "Unit Conversion", page: "unit-conversion", icon: Scale },
-      { label: "Bill of Material", page: "bill-of-material", icon: Factory },
-      { label: "Schemes", page: "schemes", icon: Tag },
-      { label: "Bill Sundries", page: "bill-sundry", icon: Tags },
-      { label: "Price List Master", page: "price-list-master", icon: Tags },
-      { label: "Misc Masters", page: "misc-masters", icon: Settings },
+      { label: "Dashboard",        page: "dashboard",           icon: LayoutDashboard },
+      { label: "Financial Dashboard", page: "financial-dashboard", icon: BarChart2 },
     ],
   },
   {
     title: "Transactions",
     items: [
-      { label: "Journal Entry", page: "journal", icon: FileText },
-      { label: "Sales Invoice", page: "billing", icon: TrendingUp },
-      { label: "Purchase Invoice", page: "purchase", icon: TrendingDown },
-      { label: "Stock Journal", page: "stock-journal", icon: ArrowLeftRight },
-      { label: "Stock Transfer", page: "stock-transfer", icon: Truck },
-      { label: "Production", page: "production", icon: Factory },
-      { label: "Physical Stock", page: "physical-stock", icon: Archive },
-      { label: "Journal Register", page: "journal-register", icon: ScrollText },
-      { label: "Day Book", page: "day-book", icon: BookMarked },
-      { label: "Approval Workflow", page: "approval-workflow", icon: CheckCircle },
-      { label: "Missing Vouchers", page: "missing-vouchers", icon: AlertTriangle },
-      { label: "Sales Quotation", page: "sales-quotation", icon: FileText },
-      { label: "Purchase Quotation", page: "purchase-quotation", icon: FileText },
-      { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },
+      { label: "Sales Invoice",     page: "billing",             icon: TrendingUp },
+      { label: "Purchase Invoice",  page: "purchase",            icon: TrendingDown },
+      { label: "Sales Return",      page: "sales-return",        icon: RefreshCw },
+      { label: "Purchase Return",   page: "purchase-return",     icon: RefreshCw },
+      { label: "Receipt",           page: "receipt",             icon: Receipt },
+      { label: "Payment",           page: "payment",             icon: Banknote },
+      { label: "Journal",           page: "journal",             icon: FileText },
+      { label: "Contra",            page: "contra",              icon: ArrowLeftRight },
+      { label: "Debit Note",        page: "debit-note",          icon: FileText },
+      { label: "Credit Note",       page: "credit-note",         icon: FileText },
+      { label: "Delivery Challan",  page: "delivery-challan",    icon: Truck },
+      { label: "Goods Receipt Note",page: "goods-receipt",       icon: Archive },
+      { label: "Sales Order",       page: "sales-order",         icon: ClipboardList },
+      { label: "Purchase Order",    page: "purchase-order",      icon: ClipboardList },
     ],
   },
   {
-    title: "Books",
+    title: "Books & Reports",
     items: [
-      { label: "General Ledger", page: "ledger", icon: BookOpen },
-      { label: "Trial Balance", page: "trial-balance", icon: FileBarChart },
-      { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp },
-      { label: "Income & Expenditure A/c", page: "income-expenditure", icon: BookOpen },
-      { label: "Balance Sheet", page: "balance-sheet", icon: PieChart },
-      { label: "Cash Flow Statement", page: "cash-flow", icon: Activity },
-      { label: "Funds Flow Statement", page: "funds-flow", icon: ArrowLeftRight },
+      { label: "Day Book",                  page: "day-book",                  icon: BookMarked },
+      { label: "General Ledger",            page: "ledger",                    icon: BookOpen },
+      { label: "Trial Balance",             page: "trial-balance",             icon: Scale },
+      { label: "Profit & Loss",             page: "profit-loss",               icon: TrendingUp },
+      { label: "Balance Sheet",             page: "balance-sheet",             icon: PieChart },
+      { label: "Cash Flow",                 page: "cash-flow",                 icon: Activity },
+      { label: "Party Statement",           page: "party-statement",           icon: Users },
+      { label: "Outstanding Receivables",   page: "outstanding-receivables",   icon: TrendingUp },
+      { label: "Outstanding Payables",      page: "outstanding-payables",      icon: TrendingDown },
+      { label: "Aging Report",              page: "aging-report",              icon: Calendar },
+      { label: "VAT Reports",               page: "vat-reports",               icon: FileText },
+      { label: "Ratio Analysis",            page: "ratio-analysis",            icon: PieChart },
+      { label: "Budget vs Actual",          page: "budget-vs-actual",          icon: BarChart2 },
+      { label: "Income & Expenditure",      page: "income-expenditure",        icon: BookOpen },
+      { label: "Interest Calculation",      page: "interest-calculation",      icon: Calculator },
     ],
   },
   {
     title: "Inventory",
     items: [
-      { label: "Stock Book", page: "stock-book", icon: Archive },
-      { label: "Stock Summary", page: "stock-summary", icon: Package },
-      { label: "Stock Categories", page: "stock-categories", icon: FolderOpen },
-      { label: "Batch Management", page: "batch-management", icon: Package },
-      { label: "Serial Tracking", page: "serial-tracking", icon: Tag },
-      { label: "BOM & Production", page: "bom-production", icon: Factory },
+      { label: "Item Master",      page: "item-master",      icon: Package },
+      { label: "Item Groups",      page: "item-groups",      icon: Layers },
+      { label: "Stock Summary",    page: "stock-summary",    icon: Package },
+      { label: "Stock Ledger",     page: "stock-ledger",     icon: BookOpen },
+      { label: "Stock Transfer",   page: "stock-transfer",   icon: ArrowLeftRight },
+      { label: "Stock Journal",    page: "stock-journal",    icon: FileText },
+      { label: "Physical Stock",   page: "physical-stock",   icon: Archive },
+      { label: "Batch Management", page: "batch-management", icon: Layers },
+      { label: "Warehouses",       page: "warehouses",       icon: Building2 },
     ],
   },
   {
-    title: "Reports",
+    title: "Masters",
     items: [
-      { label: "Stock Status", page: "stock-status", icon: Package },
-      { label: "Stock Ledger", page: "stock-ledger", icon: BookOpen },
-      { label: "Sales Analysis", page: "sales-analysis", icon: TrendingUp },
-      { label: "Sales Order Outstanding", page: "sales-order-outstanding", icon: ClipboardList },
-      {
-        label: "Purchase Order Outstanding",
-        page: "purchase-order-outstanding",
-        icon: ClipboardList,
-      },
-      { label: "Debtors Aging", page: "debtors-aging", icon: Calendar },
-      { label: "Creditors Aging", page: "creditors-aging", icon: Calendar },
-      { label: "Bank Reconciliation", page: "bank-reconciliation", icon: Banknote },
-      { label: "GST Reports", page: "gst-reports", icon: FileText },
-      { label: "TDS Reports", page: "tds-reports", icon: FileText },
-      { label: "VAT Reports", page: "vat-reports", icon: FileText },
-      { label: "CBMS Dashboard", page: "cbms-dashboard", icon: FileText },
-      { label: "Sales & Purchase Analysis", page: "sales-purchase-analysis", icon: BarChart2 },
-      { label: "Price History & Rates", page: "price-history", icon: History },
-      { label: "Payroll Reports", page: "payroll-reports", icon: FileText },
-      { label: "Budget Reports", page: "budgets", icon: Banknote },
-      { label: "Ratio Analysis", page: "ratio-analysis", icon: PieChart },
-      { label: "Statistics Report", page: "statistics-report", icon: BarChart2 },
-      { label: "Exception Reports", page: "exception-reports", icon: FileBarChart },
-      { label: "Party Reconciliation", page: "party-reconciliation", icon: Users },
-      { label: "Credit Limit Manager", page: "credit-limit-manager", icon: CreditCard },
-      { label: "Advanced Tax Compliance", page: "advanced-tax-compliance", icon: ShieldCheck },
-      { label: "Cost Center Report", page: "cost-center-report", icon: FileText },
-      { label: "Bank Statement Import", page: "bank-statement-import", icon: Banknote },
+      { label: "Chart of Accounts", page: "accounts",           icon: BookOpen },
+      { label: "Parties",           page: "parties",            icon: Users },
+      { label: "Units",             page: "units",              icon: Calculator },
+      { label: "Price Lists",       page: "price-lists",        icon: Tags },
+      { label: "Cost Centers",      page: "cost-centers",       icon: Map },
+      { label: "Narrations",        page: "standard-narration", icon: ScrollText },
+      { label: "Bill Sundries",     page: "bill-sundry",        icon: Tags },
+      { label: "Fiscal Year",       page: "fiscal-year",        icon: Calendar },
+      { label: "Budget Master",     page: "budget",             icon: Wallet },
+      { label: "Fixed Assets",      page: "fixed-assets",       icon: Building2 },
+      { label: "Payroll",           page: "payroll",            icon: Wallet },
+      { label: "PDC Management",    page: "pdc-management",     icon: CreditCard },
     ],
   },
   {
-    title: "Payroll",
-    items: [{ label: "Payroll", page: "payroll", icon: Wallet }],
-  },
-  {
-    title: "Security",
+    title: "Administration",
     items: [
-      { label: "TallyVault / Encryption", page: "tally-vault", icon: Lock },
-      { label: "Security Control", page: "security-control", icon: Shield },
-      { label: "Roles Management", page: "roles-management", icon: Users },
-      { label: "Control Centre", page: "control-centre", icon: Monitor },
-      { label: "Audit Trail", page: "audit-trail", icon: Shield },
-      { label: "Period Lock", page: "period-lock", icon: Lock },
-    ],
-  },
-  {
-    title: "Configuration",
-    items: [
-      { label: "Inventory Config", page: "inventory-config", icon: Settings },
-      { label: "Print Configuration", page: "print-configuration", icon: Printer },
-      { label: "Accounts Configuration", page: "accounts-configuration", icon: Settings },
-      { label: "F11 Features", page: "f11-features", icon: Settings },
-      { label: "Backup & Restore", page: "backup-restore", icon: Database },
-      { label: "Users Management", page: "users", icon: Users },
-      { label: "Audit Logs", page: "audit-logs", icon: FileClock },
-      { label: "Audit Log (System)", page: "audit-log", icon: FileClock },
-    ],
-  },
-  {
-    title: "Tools",
-    items: [
-      { label: "Bulk Updations", page: "bulk-updations", icon: RefreshCw },
-      { label: "Troubleshooting", page: "troubleshooting", icon: Settings },
-      { label: "Communication Hub", page: "communication-hub", icon: MessageSquare },
-      { label: "Year End Process", page: "year-end-process", icon: CalendarCheck },
-    ],
-  },
-  {
-    title: "Company",
-    items: [
-      { label: "Company Information", page: "company-info", icon: Building },
-      { label: "Fiscal Year", page: "fiscal-year", icon: Calendar },
-      { label: "Company Settings", page: "company-settings", icon: Settings },
-      { label: "Opening Balance", page: "opening-balance", icon: BookOpen },
-    ],
-  },
-  {
-    title: "Assets",
-    items: [{ label: "Fixed Assets", page: "fixed-assets", icon: Building2 }],
-  },
-  {
-    title: "POS",
-    items: [
-      { label: "POS Billing", page: "pos", icon: ShoppingCart },
-      { label: "POS Mode", page: "pos-mode", icon: Receipt },
+      { label: "Audit Log",              page: "audit-log",              icon: ShieldCheck },
+      { label: "Users",                  page: "users",                  icon: Users },
+      { label: "Accounts Config",        page: "accounts-configuration", icon: Settings },
+      { label: "Inventory Config",       page: "inventory-config",       icon: Settings },
+      { label: "Recurring Vouchers",     page: "recurring-vouchers",     icon: Repeat },
     ],
   },
 ];
+
+const SidebarTooltip: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => {
+  const [show, setShow] = useState(false);
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      {children}
+      {show && (
+        <div style={{
+          position: "absolute",
+          left: "calc(100% + 8px)",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "#1e2433",
+          color: "#ffffff",
+          fontSize: 11,
+          fontWeight: 600,
+          padding: "4px 10px",
+          borderRadius: 4,
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          zIndex: 100,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        }}>
+          {label}
+          <div style={{
+            position: "absolute",
+            left: -4,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 0,
+            height: 0,
+            borderTop: "4px solid transparent",
+            borderBottom: "4px solid transparent",
+            borderRight: "4px solid #1e2433",
+          }} />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void }> = ({
   collapsed,
@@ -242,31 +195,28 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
     currentUser,
     logout,
     currentFiscalYear,
-    companySettings,
     users,
     items,
     stockMovements,
   } = useStore();
 
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    Gateway: true,
-    Overview: true,
-    Masters: false,
-    Transactions: true,
-    Payroll: false,
-    Inventory: false,
-    Books: false,
-    Reports: false,
-    Admin: false,
-    "Inventory Masters": false,
-    "Accounting Masters": false,
-    "Statutory Masters (Nepal)": false,
-    "Payroll Masters": false,
-    Security: true,
-    Configuration: false,
-    Tools: false,
-    Company: false,
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    menuGroups.forEach((group) => {
+      const hasActive = group.items.some((item) => item.page === currentPage);
+      initial[group.title] = hasActive || group.title === "Home" || group.title === "Transactions";
+    });
+    return initial;
   });
+
+  useEffect(() => {
+    menuGroups.forEach((group) => {
+      const hasActive = group.items.some((item) => item.page === currentPage);
+      if (hasActive) {
+        setExpandedGroups((prev) => ({ ...prev, [group.title]: true }));
+      }
+    });
+  }, [currentPage]);
 
   const toggleGroup = (groupName: string) => {
     setExpandedGroups((prev) => ({
@@ -282,12 +232,11 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
       itemsWithCounts[group.title] = group.items.map((item) => {
         let count: number | undefined;
 
-        // Logic for counts
         if (item.page === "users") {
           count = users?.length || 0;
-        } else if (item.page === "items") {
+        } else if (item.page === "items" || item.page === "item-master") {
           count = items?.length || 0;
-        } else if (item.page === "stock-movements") {
+        } else if (item.page === "stock-summary") {
           count = stockMovements?.length || 0;
         }
 
@@ -300,11 +249,32 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
 
   const isActive = (page: string) => currentPage === page;
 
+  const getItemStyle = (page: string): React.CSSProperties => {
+    const isAct = isActive(page);
+    return {
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      padding: collapsed ? "8px" : "7px 12px",
+      justifyContent: collapsed ? "center" : "flex-start",
+      background: isAct ? "#1557b010" : "transparent",
+      border: "none",
+      borderLeft: isAct ? "3px solid #1557b0" : "3px solid transparent",
+      borderRadius: "0 4px 4px 0",
+      color: isAct ? "#1557b0" : "#cbd5e1",
+      fontSize: 12,
+      fontWeight: isAct ? 700 : 400,
+      cursor: "pointer",
+      transition: "all 150ms ease",
+      paddingLeft: collapsed ? undefined : isAct ? 9 : 12,
+    };
+  };
+
   return (
     <div
       className={`bg-[#1e2433] text-white transition-all duration-300 ${collapsed ? "w-[60px]" : "w-[240px]"} flex flex-col border-r border-[#2d3748] h-full`}
     >
-      {/* Sidebar Header & Collapse Toggle */}
       <div className="p-3 border-b border-[#2d3748] flex justify-end">
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -314,22 +284,22 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
         </button>
       </div>
 
-      {/* Navigation Groups */}
       <nav className="flex-1 overflow-y-auto py-3 custom-scrollbar">
         {menuGroups.map((group) => {
           const isExpanded = expandedGroups[group.title];
-          const items = groupedNavItems[group.title] || [];
+          const groupItems = groupedNavItems[group.title] || [];
 
-          if (items.length === 0) return null;
+          if (groupItems.length === 0) return null;
 
           return (
             <div key={group.title} className="mb-1.5">
               <button
-                onClick={() => toggleGroup(group.title)}
+                onClick={() => !collapsed && toggleGroup(group.title)}
                 className={`w-full flex items-center justify-between px-3 py-1.5 transition-colors ${
                   collapsed ? "justify-center" : ""
                 } hover:bg-[#273148] group`}
                 title={collapsed ? group.title : undefined}
+                style={{ cursor: collapsed ? "default" : "pointer" }}
               >
                 {!collapsed && (
                   <>
@@ -344,45 +314,53 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                   </>
                 )}
                 {collapsed && (
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-[#475c8a] uppercase tracking-wider">
                     {group.title.substring(0, 3)}
                   </span>
                 )}
               </button>
 
-              {isExpanded && !collapsed && (
-                <div className="mt-0.5 mb-1 px-2 space-y-0.5">
-                  {items.map(({ item, count }, index) => {
+              {(isExpanded || collapsed) && (
+                <div className="mt-0.5 mb-1 px-1 space-y-0.5">
+                  {groupItems.map(({ item, count }, index) => {
                     const active = isActive(item.page);
-                    return (
+                    
+                    const btn = (
                       <button
                         key={index}
                         onClick={() => setCurrentPage(item.page)}
-                        className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-[12px] rounded-md transition-colors group ${
-                          active
-                            ? "bg-[#1557b0] text-white"
-                            : "text-[#cbd5e1] hover:bg-[#273148] hover:text-white"
-                        }`}
+                        style={getItemStyle(item.page)}
+                        className="group hover:bg-[#273148]"
                       >
-                        <div className="flex items-center gap-2">
-                          <item.icon
-                            size={14}
-                            className={
-                              active ? "text-white" : "text-[#cbd5e1] group-hover:text-white"
-                            }
-                          />
-                          <span>{item.label}</span>
-                        </div>
-                        {count !== undefined && count > 0 && (
-                          <span
-                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${
-                              active ? "bg-white/20 text-white" : "bg-[#2d3748] text-gray-300"
-                            }`}
-                          >
-                            {count}
-                          </span>
+                        <item.icon
+                          size={collapsed ? 16 : 14}
+                          style={{ color: active ? "#1557b0" : "#94a3b8", flexShrink: 0 }}
+                        />
+                        {!collapsed && (
+                          <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "space-between" }}>
+                            <span>{item.label}</span>
+                            {count !== undefined && count > 0 && (
+                              <span
+                                className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${
+                                  active ? "bg-white/20 text-[#1557b0]" : "bg-[#2d3748] text-gray-300"
+                                }`}
+                              >
+                                {count}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </button>
+                    );
+
+                    return collapsed ? (
+                      <SidebarTooltip key={index} label={item.label}>
+                        {btn}
+                      </SidebarTooltip>
+                    ) : (
+                      <React.Fragment key={index}>
+                        {btn}
+                      </React.Fragment>
                     );
                   })}
                 </div>
@@ -392,7 +370,6 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
         })}
       </nav>
 
-      {/* Footer Profile & Logout */}
       <div className="p-3 border-t border-[#2d3748] bg-[#1a1f2c]">
         <button
           onClick={logout}

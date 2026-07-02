@@ -1,545 +1,711 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import { VoucherStatus, PaymentStatus, VoucherType } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
-import ReportGrid from "../components/reporting/ReportGrid";
-import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
-import { useScreenF12 } from "../hooks/useF12Config";
+import { Download, FileSpreadsheet, RefreshCw, TrendingUp,  Printer,
+} from "lucide-react";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
+import * as XLSX from "xlsx";
+import toast from "react-hot-toast";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface PayableRow {
+  partyId: string;
+  partyName: string;
+  partyPan?: string;
+  invoiceNo: string;
+  invoiceDate: string;
+  dateNepali?: string;
+  dueDate?: string;
+  originalAmount: number;
+  paidAmount: number;
+  outstandingAmount: number;
+  daysOverdue: number;
+  paymentStatus: string;
+  invoiceId: string;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function money(n: number): string {
+  return Number(n || 0).toLocaleString("en-NP", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function todayISO(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
+function daysDiff(dateStr: string, asOf: string): number {
+  if (!dateStr) return 0;
+  const d1 = new Date(dateStr);
+  const d2 = new Date(asOf);
+  const diff = d2.getTime() - d1.getTime();
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+}
+
+function getOverdueClass(days: number): string {
+  if (days === 0) return "text-green-600";
+  if (days <= 30) return "text-amber-600";
+  if (days <= 60) return "text-orange-600";
+  if (days <= 90) return "text-red-500";
+  return "text-red-700 font-bold";
+}
+
+function getStatusBadge(status: string): string {
+  switch (status) {
+    case "paid":
+      return "bg-green-100 text-green-700";
+    case "partial":
+      return "bg-amber-100 text-amber-700";
+    case "unpaid":
+      return "bg-red-100 text-red-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────────
 
 const OutstandingPayables: React.FC = () => {
-  // Register this screen with F12 system
-  const getConfig = useScreenF12("outstanding-payables");
+  const { parties, companySettings } = useStore();
 
-  const { invoices, parties, companySettings } = useStore();
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [view, setView] = useState<"payables" | "ageing">("payables");
-  const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
-  const [selectedPartyId, setSelectedPartyId] = useState("");
-  const [ageFrom, setAgeFrom] = useState<"dueDate" | "invoiceDate">("dueDate"); // Due Date vs Invoice Date toggle
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: todayISO(),
+    toDate: todayISO(),
+  });
+  const asOfDate = dateRange.toDate;
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRow, setSelectedRow] = useState<PayableRow | null>(null);
+  const [partyFilter, setPartyFilter] = useState("");
+  const [showOverdueOnly, setShowOverdueOnly] = useState(false);
+  const [expandedParties, setExpandedParties] = useState<Set<string>>(new Set());
 
-  // Pending states for options modal
-  const [pendingAsOnDate, setPendingAsOnDate] = useState(asOnDate);
-  const [pendingSelectedPartyId, setPendingSelectedPartyId] = useState(selectedPartyId);
-  const [pendingAgeFrom, setPendingAgeFrom] = useState(ageFrom);
-
-  const applyOptions = () => {
-    setAsOnDate(pendingAsOnDate);
-    setSelectedPartyId(pendingSelectedPartyId);
-    setAgeFrom(pendingAgeFrom);
-    setOptionsOpen(false);
+  const toggleParty = (partyId: string) => {
+    setExpandedParties((prev) => {
+      const next = new Set(prev);
+      next.has(partyId) ? next.delete(partyId) : next.add(partyId);
+      return next;
+    });
   };
 
-  // Helper function to calculate days between dates
-  const daysBetween = (dateString1: string, dateString2: string): number => {
-    const date1 = new Date(dateString1);
-    const date2 = new Date(dateString2);
-    const timeDiff = date2.getTime() - date1.getTime();
-    return Math.floor(timeDiff / (1000 * 3600 * 24));
+  const getAgingStyle = (daysOverdue: number) => {
+    if (daysOverdue <= 0)  return { background: "transparent", color: "#374151", borderLeft: "3px solid transparent" };
+    if (daysOverdue <= 30) return { background: "#fffbeb",    color: "#92400e",  borderLeft: "3px solid #f59e0b" };
+    if (daysOverdue <= 60) return { background: "#fff7ed",    color: "#9a3412",  borderLeft: "3px solid #f97316" };
+    if (daysOverdue <= 90) return { background: "#fef2f2",    color: "#991b1b",  borderLeft: "3px solid #ef4444" };
+    return                        { background: "#fef2f2",    color: "#7f1d1d",  borderLeft: "3px solid #991b1b" };
   };
 
-  // Get unique parties with outstanding payables
-  const outstandingParties = useMemo(() => {
-    const uniquePartyIds = new Set();
-    (invoices || []).forEach((inv) => {
-      if (
-        inv.type === "purchase-invoice" &&
-        inv.status === "posted" &&
-        inv.paymentStatus !== "paid" &&
-        inv.partyId
-      ) {
-        uniquePartyIds.add(inv.partyId);
-      }
-    });
+  // Fix: use getDB() — default import, NOT named { db }
+  const db = getDB();
 
-    return Array.from(uniquePartyIds).map((id) => {
-      const party = parties.find((p) => p.id === id);
-      return { id, name: party?.name || "Unknown" };
-    });
-  }, [invoices, parties]);
+  // Fix: useLiveQuery from "dexie-react-hooks" — correct package
+  const invoices = useLiveQuery(
+    () =>
+      db.invoices
+        .where("type")
+        .equals("purchase-invoice")
+        .and((inv: any) => inv.status === "posted")
+        .toArray(),
+    [],
+  );
 
-  // Compute payables data
-  const payablesData = useMemo(() => {
-    if (!invoices) return [];
+  const receipts = useLiveQuery(
+    () =>
+      db.vouchers
+        .where("type")
+        .equals("payment")
+        .and((v: any) => v.status === "posted")
+        .toArray(),
+    [],
+  );
 
-    let filteredInvoices = invoices.filter(
-      (inv) =>
-        inv.type === "purchase-invoice" &&
-        inv.status === "posted" &&
-        inv.paymentStatus !== "paid" &&
-        new Date(inv.date) <= new Date(asOnDate),
-    );
+  // ── Compute receivable rows ───────────────────────────────────────────────
+  const payableRows = useMemo<PayableRow[]>(() => {
+    if (!invoices || !receipts) return [];
 
-    if (selectedPartyId) {
-      filteredInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
-    }
+    const rows: PayableRow[] = [];
 
-    // Sort by party then by date
-    filteredInvoices.sort((a, b) => {
-      if (a.partyName !== b.partyName) {
-        return (a.partyName || "").localeCompare(b.partyName || "");
-      }
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
+    for (const inv of invoices as any[]) {
+      if (!inv) continue;
 
-    const result = [];
-    let currentParty = null;
-    let partyTotalPending = 0;
+      const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
+      if (originalAmount <= 0) continue;
 
-    filteredInvoices.forEach((inv) => {
-      // Skip if party doesn't match filter
-      if (selectedPartyId && inv.partyId !== selectedPartyId) return;
-
-      const paidAmount = inv.paidAmount || 0;
-      const pending = (inv.grandTotal || 0) - paidAmount;
-
-      // Calculate overdue days
-      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
-      const overdueDays = Math.max(0, daysBetween(comparisonDate, asOnDate));
-
-      // Calculate priority
-      let priority = "";
-      if (overdueDays > 90) {
-        priority = "URGENT";
-      } else if (overdueDays > 30) {
-        priority = "HIGH";
-      } else if (overdueDays > 0) {
-        priority = "MEDIUM";
-      }
-
-      // Add subtotal row when party changes
-      if (currentParty !== inv.partyName && currentParty !== null) {
-        result.push({
-          id: `subtotal-${currentParty}`,
-          supplier: `Subtotal for ${currentParty}`,
-          invoiceNo: "",
-          date: "",
-          dueDate: "",
-          amount: "",
-          paidAmount: "",
-          pending: partyTotalPending,
-          overdueDays: "",
-          priority: "",
-          isSubtotal: true,
-        });
-        partyTotalPending = 0;
-      }
-
-      currentParty = inv.partyName;
-
-      result.push({
-        id: inv.id,
-        supplier: inv.partyName || "Unknown",
-        invoiceNo: inv.invoiceNo || inv.voucherNo || "—",
-        date: inv.date,
-        dueDate: inv.dueDate || "—",
-        amount: inv.grandTotal || 0,
-        paidAmount,
-        pending,
-        overdueDays,
-        priority,
-      });
-
-      partyTotalPending += pending;
-    });
-
-    // Add final subtotal
-    if (currentParty !== null) {
-      result.push({
-        id: `subtotal-${currentParty}`,
-        supplier: `Subtotal for ${currentParty}`,
-        invoiceNo: "",
-        date: "",
-        dueDate: "",
-        amount: "",
-        paidAmount: "",
-        pending: partyTotalPending,
-        overdueDays: "",
-        priority: "",
-        isSubtotal: true,
-      });
-    }
-
-    return result;
-  }, [invoices, asOnDate, selectedPartyId, ageFrom]);
-
-  // Compute ageing data
-  const ageingData = useMemo(() => {
-    if (!invoices) return [];
-
-    let filteredInvoices = invoices.filter(
-      (inv) =>
-        inv.type === "purchase-invoice" &&
-        inv.status === "posted" &&
-        inv.paymentStatus !== "paid" &&
-        new Date(inv.date) <= new Date(asOnDate),
-    );
-
-    if (selectedPartyId) {
-      filteredInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
-    }
-
-    // Group by party
-    const partyMap: Record<string, any> = {};
-    filteredInvoices.forEach((inv) => {
-      const partyId = inv.partyId;
-      if (!partyMap[partyId]) {
-        const party = parties.find((p) => p.id === partyId);
-        partyMap[partyId] = {
-          partyId,
-          supplier: party?.name || "Unknown",
-          total: 0,
-          current: 0,
-          b1to30: 0,
-          b31to60: 0,
-          b61to90: 0,
-          b90plus: 0,
-        };
-      }
-
-      const paidAmount = inv.paidAmount || 0;
-      const pending = (inv.grandTotal || 0) - paidAmount;
-      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
-      const days = daysBetween(comparisonDate, asOnDate);
-
-      partyMap[partyId].total += pending;
-
-      if (days < 0) {
-        // Not due yet
-        partyMap[partyId].current += pending;
-      } else if (days <= 30) {
-        partyMap[partyId].b1to30 += pending;
-      } else if (days <= 60) {
-        partyMap[partyId].b31to60 += pending;
-      } else if (days <= 90) {
-        partyMap[partyId].b61to90 += pending;
-      } else {
-        partyMap[partyId].b90plus += pending;
-      }
-    });
-
-    const result = Object.values(partyMap);
-
-    if (result.length > 0) {
-      // Add grand total row
-      const grandTotal = {
-        id: "grand-total",
-        supplier: "GRAND TOTAL",
-        total: result.reduce((sum, party) => sum + party.total, 0),
-        current: result.reduce((sum, party) => sum + party.current, 0),
-        b1to30: result.reduce((sum, party) => sum + party.b1to30, 0),
-        b31to60: result.reduce((sum, party) => sum + party.b31to60, 0),
-        b61to90: result.reduce((sum, party) => sum + party.b61to90, 0),
-        b90plus: result.reduce((sum, party) => sum + party.b90plus, 0),
-        isTotal: true,
-      };
-      return [...result, grandTotal];
-    }
-
-    return result;
-  }, [invoices, asOnDate, selectedPartyId, ageFrom, parties]);
-
-  // Compute summary stats
-  const summaryStats = useMemo(() => {
-    const filteredInvoices = (invoices || []).filter(
-      (inv) =>
-        inv.type === "purchase-invoice" &&
-        inv.status === "posted" &&
-        inv.paymentStatus !== "paid" &&
-        new Date(inv.date) <= new Date(asOnDate),
-    );
-
-    let relevantInvoices = filteredInvoices;
-    if (selectedPartyId) {
-      relevantInvoices = filteredInvoices.filter((inv) => inv.partyId === selectedPartyId);
-    }
-
-    let totalOutstanding = 0;
-    let overdueAmount = 0;
-    let dueThisWeek = 0;
-
-    const today = new Date(asOnDate);
-    const weekFromNow = new Date(today);
-    weekFromNow.setDate(today.getDate() + 7);
-
-    relevantInvoices.forEach((inv) => {
-      const paidAmount = inv.paidAmount || 0;
-      const pending = (inv.grandTotal || 0) - paidAmount;
-      totalOutstanding += pending;
-
-      // Calculate overdue days
-      const comparisonDate = ageFrom === "dueDate" ? inv.dueDate || inv.date : inv.date;
-      const overdueDays = Math.max(0, daysBetween(comparisonDate, asOnDate));
-
-      if (overdueDays > 0) {
-        overdueAmount += pending;
-      }
-
-      // Check if due within 7 days
-      if (inv.dueDate) {
-        const daysUntilDue = daysBetween(asOnDate, inv.dueDate);
-        if (daysUntilDue >= 0 && daysUntilDue <= 7) {
-          dueThisWeek += pending;
+      // Compute receipts allocated to this invoice
+      let allocatedAmount = Number(inv.paidAmount ?? 0);
+      for (const rct of receipts as any[]) {
+        if (!rct || rct.partyId !== inv.partyId) continue;
+        for (const line of rct.lines ?? []) {
+          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
+            allocatedAmount += Number(line.amount ?? 0);
+          }
         }
       }
+
+      const outstanding = parseFloat((originalAmount - allocatedAmount).toFixed(2));
+
+      // Skip fully paid
+      if (outstanding <= 0.005) continue;
+
+      // Days overdue from due date
+      const refDate = inv.dueDate ?? inv.date;
+      const daysOverdue = refDate ? daysDiff(refDate, asOfDate) : 0;
+
+      const partyId = inv.partyId ?? "unknown";
+      const partyName =
+        inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
+      const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
+
+      const paymentStatus =
+        allocatedAmount <= 0 ? "unpaid" : allocatedAmount < originalAmount ? "partial" : "paid";
+
+      rows.push({
+        partyId,
+        partyName,
+        partyPan,
+        invoiceNo: inv.invoiceNo ?? inv.id,
+        invoiceDate: inv.date ?? "",
+        dateNepali: inv.dateNepali,
+        dueDate: inv.dueDate,
+        originalAmount,
+        paidAmount: parseFloat(allocatedAmount.toFixed(2)),
+        outstandingAmount: outstanding,
+        daysOverdue,
+        paymentStatus,
+        invoiceId: inv.id,
+      });
+    }
+
+    // Sort by days overdue descending
+    return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
+  }, [invoices, receipts, asOfDate, parties]);
+
+  // ── Unique parties for filter ─────────────────────────────────────────────
+  const uniqueParties = useMemo(() => {
+    const seen = new Set<string>();
+    return payableRows
+      .filter((r) => {
+        if (seen.has(r.partyId)) return false;
+        seen.add(r.partyId);
+        return true;
+      })
+      .map((r) => ({ id: r.partyId, name: r.partyName }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [payableRows]);
+
+  // ── Filter ────────────────────────────────────────────────────────────────
+  const filteredRows = useMemo<PayableRow[]>(() => {
+    return payableRows.filter((r) => {
+      const matchStatus = statusFilter === "all" || r.paymentStatus === statusFilter;
+      const matchParty = partyFilter === "" || r.partyId === partyFilter;
+      const matchSearch =
+        searchTerm === "" ||
+        r.partyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.invoiceNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.partyPan ?? "").includes(searchTerm);
+      const matchOverdue = showOverdueOnly ? r.daysOverdue > 0 : true;
+      return matchStatus && matchParty && matchSearch && matchOverdue;
     });
+  }, [payableRows, statusFilter, partyFilter, searchTerm, showOverdueOnly]);
 
-    return { totalOutstanding, overdueAmount, dueThisWeek };
-  }, [invoices, asOnDate, selectedPartyId, ageFrom]);
+  // ── Totals ────────────────────────────────────────────────────────────────
+  
+  const groupedByParty = useMemo(() => {
+    const map = new Map<string, {
+      partyName: string;
+      partyId: string;
+      invoices: PayableRow[];
+      total: number;
+      avgDaysOverdue: number;
+    }>();
 
-  // Render cell with appropriate formatting
-  const renderPayablesCell = (columnKey: string, value: any, row: any) => {
-    if (row.isSubtotal) {
-      if (columnKey === "supplier") {
-        return <span className="font-semibold text-gray-800">{value}</span>;
+    for (const inv of filteredRows) {
+      const key = inv.partyId || inv.partyName || "unknown";
+      const outstanding = inv.outstandingAmount;
+      if (outstanding <= 0) continue;
+
+      const days = inv.daysOverdue;
+
+      if (!map.has(key)) {
+        map.set(key, { partyName: inv.partyName || "—", partyId: inv.partyId || "", invoices: [], total: 0, avgDaysOverdue: 0 });
       }
-      if (columnKey === "pending") {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
-      }
-      return "";
+      const group = map.get(key)!;
+      group.invoices.push(inv);
+      group.total += outstanding;
+      group.avgDaysOverdue = (group.avgDaysOverdue * (group.invoices.length - 1) + days) / group.invoices.length;
     }
 
-    if (columnKey === "amount" || columnKey === "paidAmount" || columnKey === "pending") {
-      return <span className="font-mono">{formatNumber(value)}</span>;
-    }
+    return Array.from(map.values()).sort((a, b) => b.total - a.total);
+  }, [filteredRows]);
+  
+  const totals = useMemo(
+    () => ({
+      original: filteredRows.reduce((s, r) => s + r.originalAmount, 0),
+      paid: filteredRows.reduce((s, r) => s + r.paidAmount, 0),
+      outstanding: filteredRows.reduce((s, r) => s + r.outstandingAmount, 0),
+      overdue: filteredRows
+        .filter((r) => r.daysOverdue > 0)
+        .reduce((s, r) => s + r.outstandingAmount, 0),
+    }),
+    [filteredRows],
+  );
 
-    if (columnKey === "overdueDays") {
-      if (value === 0 || value === "" || value === undefined) {
-        return <span className="text-gray-400">—</span>;
-      } else if (value <= 30) {
-        return <span className="text-amber-600 font-medium">{value}</span>;
-      } else if (value <= 60) {
-        return <span className="text-red-600 font-semibold">{value}</span>;
-      } else {
-        return (
-          <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[10px] font-bold">
-            {value}
-          </span>
-        );
-      }
-    }
+  // ── Export ────────────────────────────────────────────────────────────────
+  const handleExport = () => {
+    try {
+      const companyName = companySettings?.name ?? "Company";
+      const headers = [
+        "Party",
+        "PAN",
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Original Amt",
+        "Paid Amt",
+        "Outstanding",
+        "Days Overdue",
+        "Status",
+      ];
+      const rows = filteredRows.map((r) => [
+        r.partyName,
+        r.partyPan ?? "",
+        r.invoiceNo,
+        r.invoiceDate,
+        r.dueDate ?? "",
+        r.originalAmount,
+        r.paidAmount,
+        r.outstandingAmount,
+        r.daysOverdue,
+        r.paymentStatus,
+      ]);
 
-    if (columnKey === "priority") {
-      if (value === "URGENT") {
-        return (
-          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#dc2626] text-[#dc2626] bg-white">
-            URGENT
-          </span>
-        );
-      } else if (value === "HIGH") {
-        return (
-          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#d97706] text-[#d97706] bg-white">
-            HIGH
-          </span>
-        );
-      } else if (value === "MEDIUM") {
-        return (
-          <span className="px-2 py-0.5 text-[9px] font-bold border rounded-sm border-[#1557b0] text-[#1557b0] bg-white">
-            MEDIUM
-          </span>
-        );
-      }
-      return value;
+      const wb = XLSX.utils.book_new();
+      const wsData = [
+        [companyName],
+        ["Outstanding Payables Report"],
+        [`As of: ${asOfDate}`],
+        [],
+        headers,
+        ...rows,
+        [],
+        ["TOTAL", "", "", "", "", totals.original, totals.paid, totals.outstanding, "", ""],
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "Outstanding Payables");
+      XLSX.writeFile(wb, `OutstandingPayables_${asOfDate}.xlsx`);
+      toast.success("Outstanding payables exported.");
+    } catch {
+      toast.error("Export failed.");
     }
-
-    return value;
   };
 
-  const renderAgeingCell = (columnKey: string, value: any, row: any) => {
-    if (row.isTotal) {
-      if (columnKey === "supplier") {
-        return <span className="font-bold text-gray-800">{value}</span>;
-      }
-      if (["total", "current", "b1to30", "b31to60", "b61to90", "b90plus"].includes(columnKey)) {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
-      }
-      return "";
-    }
+  const isLoading = !invoices || !receipts;
 
-    if (columnKey === "b90plus" && value > 0) {
-      return <span className="font-mono text-red-600 font-medium">{formatNumber(value)}</span>;
-    }
-
-    if (["total", "current", "b1to30", "b31to60", "b61to90", "b90plus"].includes(columnKey)) {
-      return <span className="font-mono">{value > 0 ? formatNumber(value) : "—"}</span>;
-    }
-
-    return value;
-  };
-
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <ReportShell
-      title="Outstanding Payables — Sundry Creditors"
-      subtitle="Amounts owed to suppliers"
-      companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`As on ${asOnDate}`}
-      onPrint={() => window.print()}
-      onOptions={() => {
-        setPendingAsOnDate(asOnDate);
-        setPendingSelectedPartyId(selectedPartyId);
-        setPendingAgeFrom(ageFrom);
-        setOptionsOpen(true);
-      }}
-      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
-      toolbarLeft={
-        <>
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            As On:
-            <input
-              type="date"
-              value={asOnDate}
-              onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            />
-          </label>
-
-          <select
-            value={selectedPartyId}
-            onChange={(e) => setSelectedPartyId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[200px]"
+    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-[#1557b0]" />
+            Outstanding Payables
+          </h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Unpaid and partially paid sales invoices
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={filteredRows.length === 0}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <option value="">All Suppliers</option>
-            {outstandingParties.map((party) => (
-              <option key={party.id} value={party.id}>
-                {party.name}
-              </option>
-            ))}
-          </select>
-        </>
-      }
-    >
-      {/* View toggle buttons */}
-      <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-md w-fit">
-        <button
-          className={`px-4 py-1.5 text-[12px] font-medium rounded-md transition-colors ${view === "payables" ? "bg-white text-[#1557b0] shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
-          onClick={() => setView("payables")}
-        >
-          Detailed Payables
-        </button>
-        <button
-          className={`px-4 py-1.5 text-[12px] font-medium rounded-md transition-colors ${view === "ageing" ? "bg-white text-[#1557b0] shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
-          onClick={() => setView("ageing")}
-        >
-          Ageing Analysis
-        </button>
-      </div>
-
-      {/* Summary stats */}
-      <div className="grid grid-cols-3 gap-4 mb-4 text-[12px]">
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
-            Total Outstanding
-          </div>
-          <div className="text-[14px] font-mono font-bold text-gray-800">
-            Rs. {formatNumber(summaryStats.totalOutstanding)}
-          </div>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
-            Overdue Amount
-          </div>
-          <div className="text-[14px] font-mono font-bold text-red-600">
-            Rs. {formatNumber(summaryStats.overdueAmount)}
-          </div>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
-            Due for Payment This Week
-          </div>
-          <div className="text-[14px] font-mono font-bold text-amber-600">
-            Rs. {formatNumber(summaryStats.dueThisWeek)}
-          </div>
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            Export
+          </button>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
-        {view === "payables" ? (
-          <ReportGrid
-            columns={[
-              { key: "supplier", label: "Supplier" },
-              { key: "invoiceNo", label: "Bill No" },
-              { key: "date", label: "Bill Date" },
-              { key: "dueDate", label: "Due Date" },
-              { key: "amount", label: "Bill Amount", align: "right" },
-              { key: "paidAmount", label: "Paid", align: "right" },
-              { key: "pending", label: "Pending", align: "right" },
-              { key: "priority", label: "Priority" },
-              { key: "overdueDays", label: "Overdue Days", align: "right" },
-            ]}
-            data={payablesData}
-            getRowClassName={(row) =>
-              row.isSubtotal ? "bg-[#f8fafc] border-y border-gray-200" : ""
-            }
-            renderCell={renderPayablesCell}
+      {/* Summary KPIs */}
+      {!isLoading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Total Invoiced
+            </p>
+            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
+              {money(totals.original)}
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Received
+            </p>
+            <p className="text-[18px] font-bold text-green-600 mt-0.5 font-mono">
+              {money(totals.paid)}
+            </p>
+          </div>
+          <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Outstanding
+            </p>
+            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
+              {money(totals.outstanding)}
+            </p>
+          </div>
+          <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Overdue
+            </p>
+            <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
+              {money(totals.overdue)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-2">
+
+        <button
+          type="button"
+          onClick={() => setShowOverdueOnly((v) => !v)}
+          style={{
+            height: 30,
+            padding: "0 12px",
+            fontSize: 11,
+            fontWeight: 700,
+            background: showOverdueOnly ? "#fee2e2" : "#ffffff",
+            border: `1px solid ${showOverdueOnly ? "#fca5a5" : "#d1d5db"}`,
+            borderRadius: 4,
+            color: showOverdueOnly ? "#dc2626" : "#374151",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+            transition: "all 150ms ease",
+          }}
+        >
+          {showOverdueOnly ? "⚠ Overdue Only" : "All Invoices"}
+          {showOverdueOnly && (
+            <span style={{ background: "#dc2626", color: "#ffffff", borderRadius: 9999, padding: "0 5px", fontSize: 9 }}>
+              {groupedByParty.reduce((s, g) => s + g.invoices.filter(inv => inv.daysOverdue > 0).length, 0)}
+            </span>
+          )}
+        </button>
+  
+        <div className="mb-2">
+          <ReportDateRangePicker
+            value={dateRange}
+            onChange={setDateRange}
+            label="As Of Date (Uses To Date)"
+            compact
           />
+        </div>
+
+        <div className="flex items-center gap-1 border border-gray-300 rounded-md overflow-hidden">
+          {["all", "unpaid", "partial"].map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setStatusFilter(s)}
+              className={`h-8 px-3 text-[11px] font-medium transition-colors capitalize ${
+                statusFilter === s
+                  ? "bg-[#1557b0] text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <select
+          value={partyFilter}
+          onChange={(e) => setPartyFilter(e.target.value)}
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+        >
+          <option value="">All Parties</option>
+          {uniqueParties.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+
+        <div className="flex-1 min-w-[180px]">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search party, invoice, PAN…"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+            <RefreshCw className="h-5 w-5 animate-spin" />
+            <span className="text-[12px]">Loading payables…</span>
+          </div>
         ) : (
-          <ReportGrid
-            columns={[
-              { key: "supplier", label: "Supplier" },
-              { key: "total", label: "Total Outstanding", align: "right" },
-              { key: "current", label: "Not Due", align: "right" },
-              { key: "b1to30", label: "1-30 Days", align: "right" },
-              { key: "b31to60", label: "31-60 Days", align: "right" },
-              { key: "b61to90", label: "61-90 Days", align: "right" },
-              { key: "b90plus", label: ">90 Days", align: "right" },
-            ]}
-            data={ageingData}
-            getRowClassName={(row) =>
-              row.isTotal ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""
-            }
-            renderCell={renderAgeingCell}
-          />
+          <div className="overflow-x-auto">
+            <table className="report-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+              <colgroup>
+                <col style={{ width: "5%" }} />   {/* expand */}
+                <col style={{ width: "30%" }} />  {/* name */}
+                <col style={{ width: "12%" }} />  {/* invoice no */}
+                <col style={{ width: "10%" }} />  {/* date */}
+                <col style={{ width: "10%" }} />  {/* due date */}
+                <col style={{ width: "10%" }} />  {/* days overdue */}
+                <col style={{ width: "13%" }} />  {/* outstanding */}
+                <col style={{ width: "10%" }} />  {/* action */}
+              </colgroup>
+              <thead>
+                <tr style={{ background: "#f5f6fa", borderBottom: "2px solid #e5e7eb" }}>
+                  <th style={{ width: 36 }} />
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party / Invoice</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Inv. No.</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Due Date</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days Overdue</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Outstanding</th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {groupedByParty.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-3 py-12 text-center text-[12px] text-gray-400">
+                      No outstanding payables found.
+                    </td>
+                  </tr>
+                ) : (
+                  groupedByParty.map((group) => {
+                    const isExpanded = expandedParties.has(group.partyId || group.partyName);
+                    const groupKey = group.partyId || group.partyName;
+                    const avgStyle = getAgingStyle(Math.round(group.avgDaysOverdue));
+
+                    return (
+                      <React.Fragment key={groupKey}>
+                        {/* Party group header row */}
+                        <tr
+                          style={{
+                            background: "#f9fafb",
+                            cursor: "pointer",
+                            borderBottom: "1px solid #e5e7eb",
+                            borderLeft: avgStyle.borderLeft,
+                          }}
+                          onClick={() => toggleParty(groupKey)}
+                        >
+                          <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                            <span style={{ fontSize: 11, color: "#6b7280", transform: isExpanded ? "rotate(90deg)" : "none", display: "inline-block", transition: "transform 150ms ease" }}>
+                              ▶
+                            </span>
+                          </td>
+                          <td style={{ padding: "8px 10px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
+                            {group.partyName}
+                            <span style={{ fontSize: 10, color: "#9ca3af", fontWeight: 400, marginLeft: 6 }}>
+                              {group.invoices.length} bill{group.invoices.length > 1 ? "s" : ""}
+                            </span>
+                          </td>
+                          <td colSpan={3} style={{ padding: "8px 10px", fontSize: 10, color: "#9ca3af" }}>
+                            Avg overdue: {Math.round(group.avgDaysOverdue)} days
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono font-bold" style={{ color: avgStyle.color }}>
+                            Rs. {group.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td colSpan={2} />
+                        </tr>
+
+                        {/* Nested invoice rows — shown when expanded */}
+                        {isExpanded && group.invoices.map((inv) => {
+                          const outstanding = inv.outstandingAmount;
+                          const daysOverdue = inv.daysOverdue;
+                          const rowStyle = getAgingStyle(daysOverdue);
+
+                          return (
+                            <tr key={inv.invoiceId} style={{ background: rowStyle.background, borderBottom: "1px solid #f3f4f6", borderLeft: rowStyle.borderLeft }}>
+                              <td />
+                              <td style={{ padding: "7px 10px 7px 24px", fontSize: 11, color: "#374151" }}>
+                                {inv.invoiceNo || inv.invoiceId?.slice(0, 8)}
+                              </td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, fontFamily: "monospace", color: "#374151" }}>
+                                {inv.invoiceNo}
+                              </td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, color: "#6b7280" }}>{inv.dateNepali || inv.invoiceDate}</td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, color: daysOverdue > 0 ? "#dc2626" : "#6b7280" }}>
+                                {inv.dueDate || "—"}
+                              </td>
+                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}>
+                                {daysOverdue > 0 ? (
+                                  <span style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    background: "#fee2e2",
+                                    color: "#991b1b",
+                                    borderRadius: 9999,
+                                    padding: "1px 8px",
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                  }}>
+                                    {daysOverdue}d
+                                  </span>
+                                ) : (
+                                  <span style={{ color: "#059669", fontSize: 10, fontWeight: 600 }}>Not due</span>
+                                )}
+                              </td>
+                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ fontWeight: 600, color: rowStyle.color }}>
+                                {outstanding.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                              </td>
+                              <td style={{ padding: "7px 10px", textAlign: "center" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedRow(inv)}
+                                  style={{ height: 22, padding: "0 8px", fontSize: 10, fontWeight: 600, background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 3, color: "#1e40af", cursor: "pointer" }}
+                                >
+                                  View
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })
+                )}
+              </tbody>
+              {filteredRows.length > 0 && (
+                <tfoot>
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                      Total ({filteredRows.length} invoices)
+                    </td>
+                    <td colSpan={4} />
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                      {money(totals.outstanding)}
+                    </td>
+                    <td />
+                  </tr>
+                </tfoot>
+              )}
+            </table>
+          </div>
         )}
       </div>
 
-      <ReportOptionsModal
-        open={optionsOpen}
-        title="Outstanding Payables Options"
-        onClose={() => setOptionsOpen(false)}
-        onApply={applyOptions}
-      >
-        <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            As On Date
-            <input
-              type="date"
-              value={pendingAsOnDate}
-              onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            />
-          </label>
+      {/* Detail Modal */}
+      {selectedRow && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedRow(null);
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[#f5f6fa]">
+              <span className="text-[13px] font-semibold text-gray-800">
+                Invoice: {selectedRow.invoiceNo}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedRow(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Supplier Filter
-            <select
-              value={pendingSelectedPartyId}
-              onChange={(e) => setPendingSelectedPartyId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              <option value="">All Suppliers</option>
-              {outstandingParties.map((party) => (
-                <option key={party.id} value={party.id}>
-                  {party.name}
-                </option>
-              ))}
-            </select>
-          </label>
+            <div className="px-5 py-4 space-y-3 text-[12px]">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Party
+                  </p>
+                  <p className="text-gray-800 font-semibold">{selectedRow.partyName}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    PAN
+                  </p>
+                  <p className="text-gray-700 font-mono">{selectedRow.partyPan ?? "—"}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Invoice Date
+                  </p>
+                  <p className="text-gray-700">
+                    {selectedRow.dateNepali || selectedRow.invoiceDate}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Due Date
+                  </p>
+                  <p className="text-gray-700">{selectedRow.dueDate || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Original Amount
+                  </p>
+                  <p className="text-gray-800 font-mono font-semibold">
+                    {money(selectedRow.originalAmount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Amount Received
+                  </p>
+                  <p className="text-green-600 font-mono font-semibold">
+                    {money(selectedRow.paidAmount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Outstanding
+                  </p>
+                  <p className="text-[#1557b0] font-mono font-bold text-[14px]">
+                    {money(selectedRow.outstandingAmount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    Days Overdue
+                  </p>
+                  <p className={`font-semibold ${getOverdueClass(selectedRow.daysOverdue)}`}>
+                    {selectedRow.daysOverdue > 0
+                      ? `${selectedRow.daysOverdue} days`
+                      : "Not overdue"}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            Calculate Ageing From
-            <select
-              value={pendingAgeFrom}
-              onChange={(e) => setPendingAgeFrom(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              <option value="dueDate">Due Date</option>
-              <option value="invoiceDate">Invoice Date</option>
-            </select>
-          </label>
+            <div className="px-5 py-3 border-t border-gray-200 bg-[#f5f6fa] flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedRow(null)}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
-      </ReportOptionsModal>
-    </ReportShell>
+      )}
+    </div>
   );
 };
 

@@ -20,6 +20,8 @@ interface Props {
   drillState: PLDrillState;
   companyName: string;
   plData: PLComputation | null;
+  closingStock?: number;
+  onClosingStockChange?: (val: number) => void;
 }
 
 const VARIANT_LABELS = {
@@ -32,7 +34,7 @@ const VARIANT_LABELS = {
 export default function PLToolbar({
   options, onOpenOptions, onRefresh, onExportExcel,
   onExportCSV, onExportPDF, loading, hasDrill, onBack, drillState,
-  companyName, plData,
+  companyName, plData, closingStock, onClosingStockChange,
 }: Props) {
   const [exportOpen, setExportOpen] = useState(false);
 
@@ -97,6 +99,36 @@ export default function PLToolbar({
           }`}>
             {plData.netProfitLabel}: Rs.{" "}
             {Math.abs(plData.netProfit).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+          </div>
+        )}
+
+        {onClosingStockChange && (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 8px", borderLeft: "1px solid #e5e7eb" }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "#374151", whiteSpace: "nowrap" }}>
+              Closing Stock:
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                type="number"
+                value={closingStock ?? ""}
+                onChange={(e) => onClosingStockChange(Number(e.target.value) || 0)}
+                placeholder="0.00"
+                style={{
+                  width: 120,
+                  height: 28,
+                  padding: "0 24px 0 8px",
+                  fontSize: 12,
+                  fontFamily: "'Courier New', monospace",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 4,
+                  textAlign: "right",
+                  background: "#fff9f0",
+                  borderColor: closingStock !== undefined && closingStock > 0 ? "#d97706" : "#d1d5db",
+                  outline: "none",
+                }}
+              />
+              <span style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", fontSize: 10, color: "#9ca3af", pointerEvents: "none" }}>✎</span>
+            </div>
           </div>
         )}
 

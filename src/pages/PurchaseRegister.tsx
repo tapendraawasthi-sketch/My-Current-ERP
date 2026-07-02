@@ -15,6 +15,30 @@ import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useStore } from "../store/useStore";
 import Pagination from "../components/ui/Pagination";
 
+
+interface ColumnDef {
+  key: string;
+  label: string;
+  defaultVisible: boolean;
+  width: string;
+}
+
+const ALL_COLUMNS: ColumnDef[] = [
+  { key: "invoiceNo",  label: "Invoice No",  defaultVisible: true,  width: "10%" },
+  { key: "date",       label: "Date",        defaultVisible: true,  width: "9%"  },
+  { key: "party",      label: "Party",       defaultVisible: true,  width: "22%" },
+  { key: "pan",        label: "PAN",         defaultVisible: false, width: "8%"  },
+  { key: "subTotal",   label: "Sub Total",   defaultVisible: true,  width: "10%" },
+  { key: "discount",   label: "Discount",    defaultVisible: true,  width: "9%" },
+  { key: "taxable",    label: "Taxable",     defaultVisible: true,  width: "10%" },
+  { key: "exempt",     label: "Exempt",      defaultVisible: true,  width: "10%" },
+  { key: "vat",        label: "VAT 13%",     defaultVisible: true,  width: "10%" },
+  { key: "grandTotal", label: "Grand Total", defaultVisible: true,  width: "11%" },
+  { key: "tds",        label: "TDS",         defaultVisible: false, width: "8%"  },
+  { key: "netAmount",  label: "Net Amount",  defaultVisible: true,  width: "11%" },
+  { key: "status",     label: "Status",      defaultVisible: true,  width: "8%"  },
+];
+
 const PurchaseRegister: React.FC = () => {
   const { invoices } = useStore();
   const purchaseInvoices = useMemo(() => {
@@ -23,6 +47,27 @@ const PurchaseRegister: React.FC = () => {
         inv.type === VoucherType.PURCHASE_INVOICE || inv.type === VoucherType.PURCHASE_RETURN,
     );
   }, [invoices]);
+
+  
+  const STORAGE_KEY = "sutra_purchase_register_cols";
+  const [visibleCols, setVisibleCols] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) return new Set(JSON.parse(stored));
+    } catch {}
+    return new Set(ALL_COLUMNS.filter((c) => c.defaultVisible).map((c) => c.key));
+  });
+
+  const toggleCol = (key: string) => {
+    setVisibleCols((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next)));
+      return next;
+    });
+  };
+
+  const [showColPicker, setShowColPicker] = useState(false);
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -242,6 +287,64 @@ const PurchaseRegister: React.FC = () => {
           <p className="text-[11px] text-[#000000] mt-0.5">All purchase invoices and returns</p>
         </div>
         <div className="flex items-center gap-2">
+
+          <div style={{ position: "relative" }}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowColPicker((v) => !v)}
+              style={{
+                background: showColPicker ? "#eff6ff" : "#ffffff",
+              }}
+            >
+              ⊞ Columns
+            </Button>
+            {showColPicker && (
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                right: 0,
+                background: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 6,
+                boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                zIndex: 50,
+                minWidth: 200,
+                padding: 8,
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280", padding: "2px 6px 6px" }}>
+                  Show / Hide Columns
+                </div>
+                {ALL_COLUMNS.map((col) => (
+                  <label
+                    key={col.key}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "5px 6px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                      fontSize: 12,
+                      color: "#374151",
+                      userSelect: "none",
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLLabelElement).style.background = "#f5f6fa"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLLabelElement).style.background = "transparent"; }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={visibleCols.has(col.key)}
+                      onChange={() => toggleCol(col.key)}
+                      style={{ accentColor: "#1557b0", width: 14, height: 14 }}
+                    />
+                    {col.label}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
           <Button
             size="sm"
             variant="outline"
@@ -333,142 +436,91 @@ const PurchaseRegister: React.FC = () => {
         </div>
       </Card>
 
+      
       {/* Table */}
-      <div
-        className="bg-white border rounded-lg overflow-hidden animate-fadeIn"
-        style={{ borderColor: "var(--border)" }}
-      >
-        <table className="data-table">
-          <thead>
+      <div style={{
+        flex: 1,
+        overflowY: "auto",
+        maxHeight: "calc(100vh - 200px)",
+        position: "relative",
+      }} className="bg-white border rounded-lg overflow-hidden animate-fadeIn" style={{ borderColor: "var(--border)" }}>
+        <table className="data-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+          <colgroup>
+            {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((c) => (
+              <col key={c.key} style={{ width: c.width }} />
+            ))}
+          </colgroup>
+          <thead style={{ position: "sticky", top: 0, zIndex: 5 }}>
             <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
-                Invoice No
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
-                Date
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
-                Supplier
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left">
-                Supplier PAN
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Sub Total
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Discount
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Taxable
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Exempt
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                VAT
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Grand Total
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                TDS
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right">
-                Net Amount
-              </th>
-              <th className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-center">
-                Status
-              </th>
+              {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => (
+                <th key={col.key} className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]" style={{ textAlign: ["subTotal", "discount", "taxable", "exempt", "vat", "grandTotal", "tds", "netAmount"].includes(col.key) ? "right" : "left" }}>
+                  {col.label}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {paginatedInvoices.length === 0 ? (
               <tr>
-                <td colSpan={13} className="text-center py-8 text-[#000000]">
-                  No purchase invoices found
+                <td colSpan={ALL_COLUMNS.filter(c => visibleCols.has(c.key)).length} className="text-center py-8 text-[#000000]">
+                  No invoices found
                 </td>
               </tr>
             ) : (
               paginatedInvoices.map((invoice) => (
                 <tr key={invoice.id} className="hover:bg-[#e8eeff]">
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">
-                    {invoice.invoiceNo}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000]">
-                    {new Date(invoice.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000]">{invoice.partyName}</td>
-                  <td className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">
-                    {invoice.partyPan || "-"}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
-                    Rs. {formatNumber(invoice.subTotal)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
-                    Rs. {formatNumber(invoice.discountAmount || 0)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
-                    Rs. {formatNumber(invoice.taxableAmount)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
-                    Rs. {formatNumber(invoice.exemptAmount || 0)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-cr">
-                    Rs. {formatNumber(invoice.vatAmount)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">
-                    Rs. {formatNumber(invoice.grandTotal)}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-right font-mono amt">
-                    Rs. {formatNumber(invoice.tdsAmount || 0)}
-                  </td>
-                  <td
-                    className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold"
-                    style={{ color: "var(--primary)" }}
-                  >
-                    Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}
-                  </td>
-                  <td className="px-3 py-[7px] text-[12px] text-center">
-                    {getPaymentStatusBadge(invoice.paymentStatus)}
-                  </td>
+                  {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => {
+                    switch (col.key) {
+                      case "invoiceNo": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{invoice.invoiceNo}</td>;
+                      case "date": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">{new Date(invoice.date).toLocaleDateString()}</td>;
+                      case "party": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">{invoice.partyName}</td>;
+                      case "pan": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">{invoice.partyPan || "-"}</td>;
+                      case "subTotal": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.subTotal)}</td>;
+                      case "discount": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.discountAmount || 0)}</td>;
+                      case "taxable": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.taxableAmount)}</td>;
+                      case "exempt": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.exemptAmount || 0)}</td>;
+                      case "vat": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr">Rs. {formatNumber(invoice.vatAmount)}</td>;
+                      case "grandTotal": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">Rs. {formatNumber(invoice.grandTotal)}</td>;
+                      case "tds": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.tdsAmount || 0)}</td>;
+                      case "netAmount": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold" style={{ color: "var(--primary)" }}>Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}</td>;
+                      case "status": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-center">{getPaymentStatusBadge(invoice.paymentStatus)}</td>;
+                      default: return <td key={col.key} />;
+                    }
+                  })}
                 </tr>
               ))
             )}
           </tbody>
-          <tfoot className="bg-[#eef1f8] border-t-2 border-[#c5cad8] font-bold">
-            <tr>
-              <td colSpan={4} className="px-3 py-2 text-[12px] text-[#000000]">
-                Total
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
-                Rs. {formatNumber(totals.subTotal)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
-                Rs. {formatNumber(totals.discount)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
-                Rs. {formatNumber(totals.taxable)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
-                Rs. {formatNumber(totals.exempt)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt amt-cr">
-                Rs. {formatNumber(totals.vat)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt font-bold">
-                Rs. {formatNumber(totals.grandTotal)}
-              </td>
-              <td className="px-3 py-2 text-[12px] text-right font-mono amt">
-                Rs. {formatNumber(totals.tds)}
-              </td>
-              <td
-                className="px-3 py-2 text-[12px] text-right font-mono amt font-bold"
-                style={{ color: "var(--primary)" }}
-              >
-                Rs. {formatNumber(totals.netAmount)}
-              </td>
-              <td />
+          <tfoot style={{ position: "sticky", bottom: 0, zIndex: 5, boxShadow: "0 -2px 8px rgba(0,0,0,0.08)" }}>
+            <tr style={{ background: "#1e2433", color: "#ffffff" }}>
+              {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col, idx) => {
+                if (idx === 0) {
+                  const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(c => c.key === "subTotal");
+                  if (span > 0) {
+                    return (
+                      <td key="grand-total-label" colSpan={span} style={{ padding: "10px 12px", fontSize: 12, fontWeight: 700, color: "#ffffff" }}>
+                        Grand Total ({filteredInvoices.length} records)
+                      </td>
+                    );
+                  }
+                }
+                
+                const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(c => c.key === "subTotal");
+                if (idx > 0 && idx < span) return null;
+
+                switch (col.key) {
+                  case "subTotal": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.subTotal)}</td>;
+                  case "discount": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.discount)}</td>;
+                  case "taxable": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#86efac", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.taxable)}</td>;
+                  case "exempt": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.exempt)}</td>;
+                  case "vat": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#93c5fd", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.vat)}</td>;
+                  case "grandTotal": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#fde68a", fontFamily: "'Courier New', monospace", fontSize: 13, textAlign: "right" }}>Rs. {formatNumber(totals.grandTotal)}</td>;
+                  case "tds": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.tds)}</td>;
+                  case "netAmount": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#fde68a", fontFamily: "'Courier New', monospace", fontSize: 13, textAlign: "right" }}>Rs. {formatNumber(totals.netAmount)}</td>;
+                  case "status": return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
+                  default: return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
+                }
+              })}
             </tr>
           </tfoot>
         </table>

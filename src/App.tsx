@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useStore } from "./store";
 import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import Warehouses from "./pages/Warehouses";
 import Units from "./pages/Units";
@@ -115,10 +114,10 @@ const App: React.FC = () => {
 
   if (authStage === "checking") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#E4F1D9" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>
         <div className="text-center">
           <div style={{ width: 40, height: 40, border: "4px solid #1557b0", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} className="mx-auto mb-4" />
-          <p className="text-[12px] mt-1" style={{ color: "#1f2937" }}>Loading Sutra ERP</p>
+          <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>Loading Sutra ERP…</p>
         </div>
       </div>
     );
@@ -252,7 +251,7 @@ const App: React.FC = () => {
       case "salary-process": return <Payroll />;
 
       default:
-        return <Dashboard />;
+        return <FinancialDashboard />;
     }
   };
 
@@ -279,7 +278,7 @@ const App: React.FC = () => {
       />
       <Layout>
         <div className="flex flex-col h-full">
-          <main className="flex-1 overflow-y-auto" style={{ background: "#E4F1D9" }}>
+          <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
             {renderPage()}
           </main>
         </div>

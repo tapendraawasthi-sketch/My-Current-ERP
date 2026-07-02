@@ -3,10 +3,10 @@
 
 :root {
   /* Layout backgrounds */
-  --bg: #e4f1d9; /* page background */
-  --bg-card: #ebf5e2; /* card/form background */
-  --bg-muted: #d4eabd; /* muted/hover background */
-  --bg-hover: #c9deb5; /* hover/active background */
+  --bg: #f5f6fa; /* page background */
+  --bg-card: #ffffff; /* card/form background */
+  --bg-muted: #f5f6fa; /* muted/hover background */
+  --bg-hover: #eef2ff; /* hover/active background */
 
   /* Borders — use black for the Tally-style sharp grid look */
   --border: #000000;
@@ -51,7 +51,7 @@ body {
   font-size: 13px;
   line-height: 1.5;
   color: #000000;
-  background-color: #e4f1d9;
+  background-color: #f5f6fa;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -241,7 +241,7 @@ a:hover {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  background: #e4f1d9 !important;
+  background: #f5f6fa !important;
 }
 
 .page-title {
@@ -371,6 +371,21 @@ a:hover {
   text-align: right;
   font-size: 13px;
   color: #000000 !important;
+}
+.num-cell {
+  font-family: 'Courier New', Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.num-cell-bold {
+  font-family: 'Courier New', Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 /* ── BADGES ── */
@@ -639,7 +654,7 @@ main::-webkit-scrollbar {
   width: 5px;
 }
 main::-webkit-scrollbar-track {
-  background: #e4f1d9;
+  background: #f5f6fa;
 }
 main::-webkit-scrollbar-thumb {
   background: #000000;
@@ -1026,7 +1041,7 @@ main svg,
 
 /* Page background — applied only to the root layout */
 #root {
-  background-color: #e4f1d9;
+  background-color: #f5f6fa;
 }
 
 /* ── TOAST NOTIFICATIONS ── */
@@ -1619,3 +1634,202 @@ td.amt::before { content: none; }
   transition: background 150ms ease, color 150ms ease;
 }
 .btn-destructive:hover { background: #fee2e2; }
+
+/* src/styles.css — Universal report table header styling */
+.report-table thead th,
+.data-table thead th {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #6b7280 !important;
+  white-space: nowrap;
+  user-select: none;
+}
+.report-table thead,
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f5f6fa;
+}
+.report-table thead th,
+.data-table thead th {
+  background: #f5f6fa;
+  box-shadow: 0 1px 0 #e5e7eb;
+}
+
+/* Primary utility for all monetary amount cells */
+.number-cell {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-size: 12px;
+  padding-right: 12px;
+}
+.number-cell-bold {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-size: 12px;
+  font-weight: 700 !important;
+  padding-right: 12px;
+}
+.number-cell-dr {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: right !important;
+  font-size: 12px;
+  color: #1557b0 !important;
+  font-weight: 600;
+}
+.number-cell-cr {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: right !important;
+  font-size: 12px;
+  color: #059669 !important;
+  font-weight: 600;
+}
+.number-cell-neg {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: right !important;
+  font-size: 12px;
+  color: #dc2626 !important;
+}
+
+/* src/styles.css — Report section headings */
+.report-section-heading {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 8px 12px !important;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  color: #374151 !important;
+  /* Left accent stripe in the section color */
+  border-left: 3px solid #1557b0 !important;
+}
+/* Variants by section type */
+.report-section-heading-assets  { border-left-color: #1557b0 !important; }
+.report-section-heading-liab    { border-left-color: #d97706 !important; }
+.report-section-heading-income  { border-left-color: #059669 !important; }
+.report-section-heading-expense { border-left-color: #dc2626 !important; }
+.report-section-heading-capital { border-left-color: #7c3aed !important; }
+
+.report-period-label {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 3px;
+  display: block;
+  font-weight: 400;
+  font-style: italic;
+}
+
+@media print {
+  /* Hide all chrome elements */
+  aside,
+  .top-menu-bar,
+  .busy-menu-bar,
+  .right-button-bar,
+  .sidebar-scroll,
+  header,
+  nav,
+  .no-print,
+  .page-toolbar,
+  .report-toolbar,
+  [role="toolbar"],
+  .modal,
+  [data-dialog],
+  .toaster,
+  button:not(.print-include) {
+    display: none !important;
+  }
+  main,
+  .flex-1,
+  #root {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body,
+  #root,
+  main {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+  table {
+    page-break-inside: auto;
+    border-collapse: collapse;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tfoot {
+    display: table-footer-group;
+  }
+  .number-cell,
+  .number-cell-bold {
+    font-size: 10pt;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm;
+  }
+  @page :first {
+    margin-top: 8mm;
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-enter {
+  animation: pageEnter 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes dropdownEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.data-table tbody tr:nth-child(even),
+.report-table tbody tr:nth-child(even) {
+  background-color: #fafafa !important;
+}
+.data-table tbody tr:nth-child(odd),
+.report-table tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
+}
+
+.report-table tbody tr:hover,
+.data-table tbody tr:hover {
+  background-color: #fafeff !important;
+  border-left: 2px solid #1557b0;
+}

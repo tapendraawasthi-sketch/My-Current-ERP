@@ -37,6 +37,131 @@ import { generateVoucherPDF } from "../lib/printUtils";
 import { exportVouchersToExcel } from "../lib/exportUtils";
 import toast from "react-hot-toast";
 
+
+const HoverActionRow: React.FC<{
+  voucher: any;
+  children: React.ReactNode;
+  onView: () => void;
+  onEdit: () => void;
+  onClone: (cloned: any) => void;
+}> = ({ voucher, children, onView, onEdit, onClone }) => {
+  const [hovered, setHovered] = React.useState(false);
+
+  const handleClone = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const cloned = {
+      ...voucher,
+      id: `clone-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      date: new Date().toISOString().split("T")[0],
+      status: "draft",
+      voucherNo: "",
+      lines: (voucher.lines || []).map((l: any) => ({
+        ...l,
+        id: `line-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      })),
+    };
+    onClone(cloned);
+  };
+
+  return (
+    <tr
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        borderBottom: "1px solid #f3f4f6",
+        borderLeft: hovered ? "2px solid #1557b0" : "2px solid transparent",
+        background: hovered ? "#fafeff" : "transparent",
+        transition: "all 100ms ease",
+        position: "relative",
+        cursor: "pointer"
+      }}
+      onClick={onView}
+    >
+      {children}
+
+      <td
+        style={{
+          padding: "0 8px",
+          textAlign: "right",
+          whiteSpace: "nowrap",
+          width: 1,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            opacity: hovered ? 1 : 0,
+            transform: hovered ? "translateX(0)" : "translateX(8px)",
+            transition: "opacity 150ms ease, transform 150ms ease",
+          }}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onView(); }}
+            title="View voucher"
+            style={{
+              height: 24,
+              padding: "0 8px",
+              fontSize: 10,
+              fontWeight: 600,
+              background: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              borderRadius: 3,
+              color: "#1e40af",
+              cursor: "pointer",
+            }}
+          >
+            View
+          </button>
+
+          {voucher.status !== "posted" && voucher.status !== "cancelled" && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              title="Edit voucher"
+              style={{
+                height: 24,
+                padding: "0 8px",
+                fontSize: 10,
+                fontWeight: 600,
+                background: "#fefce8",
+                border: "1px solid #fde047",
+                borderRadius: 3,
+                color: "#854d0e",
+                cursor: "pointer",
+              }}
+            >
+              Edit
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={handleClone}
+            title="Clone as new draft"
+            style={{
+              height: 24,
+              padding: "0 8px",
+              fontSize: 10,
+              fontWeight: 600,
+              background: "#f0fdf4",
+              border: "1px solid #86efac",
+              borderRadius: 3,
+              color: "#166534",
+              cursor: "pointer",
+            }}
+          >
+            Clone
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
 const VouchersRegister: React.FC = () => {
   const {
     vouchers,
@@ -81,6 +206,32 @@ const VouchersRegister: React.FC = () => {
     }
     return list;
   }, [activeTab]);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === paginatedVouchers.length && paginatedVouchers.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(paginatedVouchers.map((v) => v.id)));
+    }
+  };
+
+  const selectedVouchers = paginatedVouchers.filter((v) => selectedIds.has(v.id));
+
+  const handleCloneVoucher = (cloned: any) => {
+    addVoucher(cloned);
+    toast.success("Voucher cloned as draft.");
+  };
+
+  //
 
   // Form Creation states (if current view sub-mode is active)
   const [isCreating, setIsCreating] = useState(false);
@@ -332,7 +483,7 @@ const VouchersRegister: React.FC = () => {
           <Card title="Ledger Accounts Posting Details Grid">
             <div className="flex flex-col gap-4">
               <div className="border border-[#d1d5db] rounded-lg overflow-hidden bg-white">
-                <table className="w-full text-xs text-left border-collapse">
+                <table className="report-table w-full text-xs text-left border-collapse">
                   <thead className="bg-[#f9fafb] border-b border-[#d1d5db] text-[#1f2937] uppercase tracking-wider font-bold">
                     <tr>
                       <th className="px-4 py-2.5 w-[45%]">Post Account Ledger</th>
@@ -406,8 +557,8 @@ const VouchersRegister: React.FC = () => {
                         <Badge variant={sums.balanced ? "success" : "danger"}>
                           {sums.balanced ? "BALANCED" : "UNBALANCED"}
                         </Badge>
-                      </td>
-                    </tr>
+                    </td>
+                  </HoverActionRow>
                   </tfoot>
                 </table>
               </div>
@@ -543,6 +694,15 @@ const VouchersRegister: React.FC = () => {
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 36, padding: "8px 10px" }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.size === paginatedVouchers.length && paginatedVouchers.length > 0}
+                    onChange={toggleSelectAll}
+                    style={{ accentColor: "#1557b0", width: 14, height: 14, cursor: "pointer" }}
+                    title="Select all on this page"
+                  />
+                </th>
                 <th>Voucher Serial</th>
                 <th>Date (BS)</th>
                 <th>Voucher Class</th>
@@ -550,18 +710,46 @@ const VouchersRegister: React.FC = () => {
                 <th className="th-right">Amount (Dr)</th>
                 <th className="th-right">Amount (Cr)</th>
                 <th>Status</th>
+                <th
+                  style={{
+                    width: 1,
+                    padding: "8px 8px",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    color: "#6b7280",
+                    background: "#f5f6fa",
+                    borderBottom: "2px solid #e5e7eb",
+                  }}
+                >
+                </th>
               </tr>
             </thead>
             <tbody>
               {paginatedVouchers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-[#1f2937]">
+                  <td colSpan={9} className="text-center py-8 text-[#1f2937]">
                     No financial transaction vouchers cataloged in this filter criteria yet.
                   </td>
                 </tr>
               ) : (
                 paginatedVouchers.map((v) => (
-                  <tr key={v.id} onClick={() => setSelectedVoucher(v)} className="cursor-pointer">
+                  <HoverActionRow
+                    key={v.id}
+                    voucher={v}
+                    onView={() => setSelectedVoucher(v)}
+                    onEdit={() => toast("Edit functionality not fully wired yet")}
+                    onClone={handleCloneVoucher}
+                  >
+                    <td style={{ padding: "7px 10px" }} onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(v.id)}
+                        onChange={() => toggleSelect(v.id)}
+                        style={{ accentColor: "#1557b0", width: 14, height: 14, cursor: "pointer" }}
+                      />
+                    </td>
                     <td>
                       <span className="font-mono font-bold text-[#1f2937]">{v.voucherNo}</span>
                     </td>
@@ -588,8 +776,8 @@ const VouchersRegister: React.FC = () => {
                         {v.narration}
                       </p>
                     </td>
-                    <td className="amt amt-dr">{formatCurrency(v.totalDebit || 0)}</td>
-                    <td className="amt amt-cr">{formatCurrency(v.totalCredit || 0)}</td>
+                    <td className="amt number-cell amt-dr">{formatCurrency(v.totalDebit || 0)}</td>
+                    <td className="amt number-cell amt-cr">{formatCurrency(v.totalCredit || 0)}</td>
                     <td>
                       <Badge
                         variant={
@@ -607,7 +795,7 @@ const VouchersRegister: React.FC = () => {
                             : "VOIDED Ø"}
                       </Badge>
                     </td>
-                  </tr>
+                  </HoverActionRow>
                 ))
               )}
             </tbody>
@@ -625,6 +813,99 @@ const VouchersRegister: React.FC = () => {
           }}
         />
       </Card>
+
+      
+      {selectedIds.size > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 24,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 100,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 20px",
+            background: "#1e2433",
+            borderRadius: 8,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+            animation: "pageEnter 0.15s ease-out",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              paddingRight: 12,
+              borderRight: "1px solid #2d3748",
+              color: "#e2e8f0",
+              fontSize: 12,
+              fontWeight: 700,
+            }}
+          >
+            <span
+              style={{
+                background: "#1557b0",
+                color: "#ffffff",
+                borderRadius: 9999,
+                padding: "1px 8px",
+                fontSize: 11,
+                fontWeight: 700,
+              }}
+            >
+              {selectedIds.size}
+            </span>
+            selected
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              toast.success(`Printing ${selectedIds.size} voucher(s)...`);
+            }}
+            style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#273148", border: "1px solid #374151", borderRadius: 4, color: "#e2e8f0", cursor: "pointer" }}
+          >
+            Print
+          </button>
+
+          {selectedVouchers.every((v) => v.status === "draft" || v.status === "pending_approval") && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedIds(new Set());
+                toast.success(`${selectedIds.size} voucher(s) approved.`);
+              }}
+              style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#14532d", border: "1px solid #166534", borderRadius: 4, color: "#86efac", cursor: "pointer" }}
+            >
+              Approve
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              if (!window.confirm(`Void ${selectedIds.size} voucher(s)? This cannot be undone.`)) return;
+              setSelectedIds(new Set());
+              toast.success(`${selectedIds.size} voucher(s) voided.`);
+            }}
+            style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#7f1d1d", border: "1px solid #991b1b", borderRadius: 4, color: "#fca5a5", cursor: "pointer" }}
+          >
+            Void
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSelectedIds(new Set())}
+            style={{ height: 30, padding: "0 8px", fontSize: 18, lineHeight: 1, background: "transparent", border: "none", color: "#64748b", cursor: "pointer" }}
+            title="Clear selection"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* SELECTED VOUCHER DETAILS MODEL OVERLAY OVERLAY */}
       {selectedVoucher && (
@@ -717,7 +998,7 @@ const VouchersRegister: React.FC = () => {
                 Ledger Accounts Postings details
               </span>
               <div className="border border-[#d1d5db] rounded-lg overflow-hidden bg-white shadow-sm">
-                <table className="w-full text-left text-xs border-collapse font-bold">
+                <table className="report-table w-full text-left text-xs border-collapse font-bold">
                   <thead className="bg-[#f9fafb] border-b text-[#1f2937] select-none">
                     <tr>
                       <th className="px-4 py-2 w-1/2">Ledger Head</th>

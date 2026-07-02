@@ -1,33 +1,55 @@
+// src/components/reporting/BsDateCell.tsx
 import React from "react";
-import { adToBS, formatBSDate } from "../../lib/nepaliDate";
+import { formatADToBS } from "../../lib/nepaliDate"; // or whatever the correct import path is
 
 interface BsDateCellProps {
-  adDate: string;
-  bsDate?: string;
-  className?: string;
+  date: string; // AD date in YYYY-MM-DD format
+  dateNepali?: string; // BS date string already computed, optional
+  compact?: boolean; // if true, show single line
 }
 
-function safeFormatBS(adDate: string, fallback?: string): string {
-  if (fallback) return fallback;
+const BsDateCell: React.FC<BsDateCellProps> = ({ date, dateNepali, compact }) => {
+  const bsDate = dateNepali || (() => {
+    try { return formatADToBS(date); } catch { return date; }
+  })();
 
-  try {
-    return formatBSDate(adDate, "DD MMMM YYYY");
-  } catch {
-    return adDate || "—";
+  // Parse AD date for the secondary display
+  const adDisplay = (() => {
+    if (!date || date === "—") return "";
+    try {
+      const d = new Date(date);
+      return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    } catch { return date; }
+  })();
+
+  if (compact) {
+    return (
+      <span style={{ fontSize: 12, fontFamily: "inherit" }}>{bsDate}</span>
+    );
   }
-}
-
-/**
- * Tally-style dual date cell.
- * BS date is primary; AD date is secondary.
- */
-const BsDateCell: React.FC<BsDateCellProps> = ({ adDate, bsDate, className }) => {
-  const displayBS = safeFormatBS(adDate, bsDate);
 
   return (
-    <div className={className}>
-      <div className="text-[12px] font-semibold text-gray-800 leading-tight">{displayBS}</div>
-      <div className="text-[10px] text-gray-500 leading-tight mt-0.5">{adDate}</div>
+    <div style={{ minWidth: 90, lineHeight: 1.3 }}>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#111827",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {bsDate}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "#9ca3af",
+          whiteSpace: "nowrap",
+          marginTop: 1,
+        }}
+      >
+        {adDisplay}
+      </div>
     </div>
   );
 };

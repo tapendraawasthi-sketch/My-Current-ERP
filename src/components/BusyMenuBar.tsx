@@ -9,13 +9,23 @@ interface MenuItem {
   separator?: boolean;
 }
 
-// ─── Menu Tree ────────────────────────────────────────────────────────────────
-// Restructured per Phase 3.4:
-//   • "Masters" split into Accounts, Inventory, and Operations sub-groups
-//   • "Transactions" split into Sales, Purchase, Inventory, and Finance
-//   • "Reports" organised into Financial, Inventory, and Party sub-groups
-//   • "Utilities" consolidated at the end
-// ─────────────────────────────────────────────────────────────────────────────
+const PAGE_SHORTCUTS: Record<string, string> = {
+  "balance-sheet":         "Ctrl+B",
+  "trial-balance":         "Ctrl+T",
+  "ledger":                "Ctrl+L",
+  "vat-reports":           "Ctrl+G",
+  "users":                 "Ctrl+U",
+  "billing":               "F9",
+  "purchase":              "F10",
+  "journal":               "F5",
+  "payment":               "F6",
+  "receipt":               "F7",
+  "contra":                "F8",
+  "day-book":              "D",
+  "accounts":              "F4",
+  "items":                 "F3",
+  "profit-loss":           "Ctrl+P",
+};
 
 const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   // ── Company ────────────────────────────────────────────────────────────────
@@ -203,15 +213,16 @@ const MENU_TREE: { title: string; items: MenuItem[] }[] = [
   },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 const BusyMenuBar: React.FC = () => {
   const { setCurrentPage } = useStore();
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  
+  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollBottom, setScrollBottom] = useState(999);
+  const dropdownScrollRef = useRef<HTMLDivElement>(null);
 
-  // Close menus when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (barRef.current && !barRef.current.contains(e.target as Node)) {
@@ -222,6 +233,14 @@ const BusyMenuBar: React.FC = () => {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  useEffect(() => {
+    if (openMenu !== null && dropdownScrollRef.current) {
+      const el = dropdownScrollRef.current;
+      setScrollTop(el.scrollTop);
+      setScrollBottom(el.scrollHeight - el.scrollTop - el.clientHeight);
+    }
+  }, [openMenu, openSub]);
 
   const navigate = (page: string) => {
     setCurrentPage(page);
@@ -245,7 +264,6 @@ const BusyMenuBar: React.FC = () => {
     setOpenSub((prev) => (prev === label ? null : label));
   };
 
-  // Recursive item renderer
   const renderItems = (items: MenuItem[], depth = 0) =>
     items.map((item, i) => {
       if (item.separator) {
@@ -294,12 +312,53 @@ const BusyMenuBar: React.FC = () => {
         <button
           key={item.label}
           onClick={() => item.page && navigate(item.page)}
-          className={`w-full text-left px-4 py-2 text-[12px] text-gray-700
-            hover:bg-[#1557b0]/10 hover:text-[#1557b0] transition-colors
-            ${depth > 0 ? "pl-8" : ""}
-          `}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "7px 16px",
+            fontSize: 12,
+            color: "#374151",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            textAlign: "left",
+            transition: "background 100ms ease",
+            paddingLeft: depth > 0 ? 32 : 16,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff";
+            (e.currentTarget as HTMLButtonElement).style.color = "#1557b0";
+            (e.currentTarget as HTMLButtonElement).style.borderLeft = "3px solid #1557b0";
+            // paddingLeft needs adjustment because of borderLeft addition?
+            // standard approach is box-sizing: border-box, but we can set border-left: 3px solid transparent below
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+            (e.currentTarget as HTMLButtonElement).style.color = "#374151";
+            (e.currentTarget as HTMLButtonElement).style.borderLeft = "3px solid transparent";
+          }}
         >
-          {item.label}
+          <span>{item.label}</span>
+
+          {item.page && PAGE_SHORTCUTS[item.page] && (
+            <span style={{
+              fontSize: 9,
+              fontWeight: 700,
+              color: "#9ca3af",
+              background: "#f3f4f6",
+              border: "1px solid #e5e7eb",
+              borderRadius: 3,
+              padding: "1px 5px",
+              fontFamily: "monospace",
+              flexShrink: 0,
+              marginLeft: 8,
+              whiteSpace: "nowrap",
+            }}>
+              {PAGE_SHORTCUTS[item.page]}
+            </span>
+          )}
         </button>
       );
     });
@@ -307,30 +366,80 @@ const BusyMenuBar: React.FC = () => {
   return (
     <div
       ref={barRef}
-      className="flex items-center bg-white border-b border-gray-200 shadow-sm select-none"
+      className="bg-white border-b border-gray-200 shadow-sm select-none h-10"
+      style={{ display: "flex", alignItems: "stretch" }}
     >
       {MENU_TREE.map((section, idx) => {
         const isOpen = openMenu === idx;
         return (
-          <div key={section.title} className="relative">
-            {/* Top-level menu button */}
+          <div key={section.title} className="relative h-full flex flex-col justify-center">
             <button
               onClick={() => toggleMenu(idx)}
-              className={`px-4 py-2.5 text-[12px] font-medium transition-colors
-                ${
-                  isOpen
-                    ? "bg-[#1557b0] text-white"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-800"
-                }
-              `}
+              style={{
+                padding: "0 16px",
+                height: "100%",
+                fontSize: 12,
+                fontWeight: isOpen ? 700 : 500,
+                background: isOpen ? "#f0f6ff" : "transparent",
+                border: "none",
+                borderBottom: isOpen ? "2px solid #1557b0" : "2px solid transparent",
+                color: isOpen ? "#1557b0" : "#374151",
+                cursor: "pointer",
+                transition: "all 150ms ease",
+                whiteSpace: "nowrap",
+              }}
             >
               {section.title}
             </button>
 
-            {/* Dropdown panel */}
             {isOpen && (
-              <div className="absolute left-0 top-full mt-0 w-56 bg-white border border-gray-200 rounded-b-lg shadow-lg z-50 py-1 max-h-[80vh] overflow-y-auto">
-                {renderItems(section.items)}
+              <div style={{ position: "absolute", left: 0, top: "100%", width: 224, zIndex: 50, marginTop: 0 }}>
+                <div style={{ position: "relative" }}>
+                  <div
+                    className="overflow-y-auto"
+                    style={{
+                      maxHeight: "80vh",
+                      background: "#ffffff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "0 0 6px 6px",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                    }}
+                    onScroll={(e) => {
+                      const el = e.currentTarget;
+                      setScrollTop(el.scrollTop);
+                      setScrollBottom(el.scrollHeight - el.scrollTop - el.clientHeight);
+                    }}
+                    ref={dropdownScrollRef}
+                  >
+                    {scrollTop > 4 && (
+                      <div style={{
+                        position: "sticky",
+                        top: 0,
+                        height: 20,
+                        background: "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
+                        zIndex: 2,
+                        pointerEvents: "none",
+                        marginBottom: -20,
+                      }} />
+                    )}
+
+                    <div style={{ padding: "4px 0" }}>
+                      {renderItems(section.items)}
+                    </div>
+
+                    {scrollBottom > 4 && (
+                      <div style={{
+                        position: "sticky",
+                        bottom: 0,
+                        height: 20,
+                        background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
+                        zIndex: 2,
+                        pointerEvents: "none",
+                        marginTop: -20,
+                      }} />
+                    )}
+                  </div>
+                </div>
               </div>
             )}
           </div>

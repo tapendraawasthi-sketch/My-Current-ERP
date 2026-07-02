@@ -19,6 +19,7 @@ interface StockRow {
   minStock: number;
   maxStock: number;
   isBelowReorder: boolean;
+  isNearReorder: boolean;
   isBelowMin: boolean;
   isAboveMax: boolean;
 }
@@ -57,6 +58,8 @@ export default function StockSummaryReport() {
         const reorderLevel = Number(item.reorderLevel || item.minStockLevel || 0);
         const minStock = Number(item.minStock || 0);
         const maxStock = Number(item.maxStock || 0);
+        const isAtReorder = (reorderLevel > 0 || minStock > 0) && qty <= Math.max(reorderLevel, minStock);
+        const isNearReorder = !isAtReorder && reorderLevel > 0 && qty <= reorderLevel * 1.2;
         return {
           id: item.id,
           name: item.name,
@@ -69,7 +72,8 @@ export default function StockSummaryReport() {
           reorderLevel,
           minStock,
           maxStock,
-          isBelowReorder: reorderLevel > 0 && qty <= reorderLevel,
+          isBelowReorder: isAtReorder,
+          isNearReorder,
           isBelowMin: minStock > 0 && qty < minStock,
           isAboveMax: maxStock > 0 && qty > maxStock,
         };
@@ -198,43 +202,73 @@ export default function StockSummaryReport() {
 
 function StockTable({ items }: { items: StockRow[] }) {
   return (
-    <table className="w-full">
+    <table className="report-table w-full" style={{ borderCollapse: "collapse", tableLayout: "fixed" }}>
+      <colgroup>
+        <col style={{ width: "10%" }} /> {/* Code */}
+        <col style={{ width: "25%" }} /> {/* Name */}
+        <col style={{ width: "15%" }} /> {/* Group */}
+        <col style={{ width: "8%" }} />  {/* Unit */}
+        <col style={{ width: "10%" }} /> {/* Qty */}
+        <col style={{ width: "10%" }} /> {/* Avg Rate */}
+        <col style={{ width: "12%" }} /> {/* Value */}
+        <col style={{ width: "10%" }} /> {/* Status */}
+      </colgroup>
       <thead>
         <tr className="bg-[#f5f6fa] border-b border-gray-200">
-          {["Code", "Item Name", "Group", "Unit", "Closing Qty", "Avg Rate", "Closing Value", "Status"].map(h => (
-            <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+          {["Code", "Item Name", "Group", "Unit", "Closing Qty", "Avg Rate", "Stock Value", "Status"].map(h => (
+            <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide" style={{ textAlign: h.includes("Qty") || h.includes("Rate") || h.includes("Value") ? "right" : "left" }}>{h}</th>
           ))}
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-100">
-        {items.map(item => (
-          <tr key={item.id} className={`hover:bg-gray-50 ${item.isBelowMin ? "bg-red-50/40" : item.isBelowReorder ? "bg-amber-50/40" : ""}`}>
-            <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500">{item.code || "—"}</td>
-            <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{item.name}</td>
-            <td className="px-3 py-2.5 text-[11px] text-gray-500">{item.group}</td>
-            <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.unit}</td>
-            <td className={`px-3 py-2.5 text-[12px] font-mono text-right font-bold ${item.qty === 0 ? "text-gray-400" : "text-gray-800"}`}>
-              {formatNumber(item.qty)}
-            </td>
-            <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
-              {item.avgRate > 0 ? formatNumber(item.avgRate) : "—"}
-            </td>
-            <td className="px-3 py-2.5 text-[12px] font-mono text-right font-bold text-gray-800">
-              Rs. {formatNumber(item.value)}
-            </td>
-            <td className="px-3 py-2.5">
-              {item.isBelowMin ? (
-                <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold"><AlertTriangle className="h-3 w-3" /> Below Min</span>
-              ) : item.isBelowReorder ? (
-                <span className="flex items-center gap-1 text-[10px] text-amber-600 font-semibold"><AlertTriangle className="h-3 w-3" /> Reorder</span>
-              ) : item.isAboveMax ? (
-                <span className="text-[10px] text-blue-600 font-semibold">Above Max</span>
-              ) : (
-                <span className="text-[10px] text-green-600 font-semibold">Normal</span>
-              )}
-            </td>
-          </tr>
-        ))}
+        {items.map(item => {
+          const isAtReorder = item.isBelowReorder;
+          const isNearReorder = item.isNearReorder;
+          
+          return (
+            <tr key={item.id} style={{
+              borderBottom: "1px solid #f3f4f6",
+              borderLeft: isAtReorder ? "3px solid #dc2626" : isNearReorder ? "3px solid #d97706" : "3px solid transparent",
+              background: isAtReorder ? "#fef2f2" : "transparent",
+            }} className="hover:bg-gray-50">
+              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500">{item.code || "—"}</td>
+              <td style={{ padding: "7px 10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  {isAtReorder && (
+                    <span title="Stock at or below reorder level — replenishment required" style={{ fontSize: 12, flexShrink: 0 }}>⚠</span>
+                  )}
+                  <span style={{ fontSize: 12, fontWeight: isAtReorder ? 700 : 400, color: isAtReorder ? "#991b1b" : "#111827" }}>
+                    {item.name}
+                  </span>
+                </div>
+              </td>
+              <td className="px-3 py-2.5 text-[11px] text-gray-500">{item.group}</td>
+              <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.unit}</td>
+              <td className={`px-3 py-2.5 text-[12px] font-mono text-right font-bold ${item.qty === 0 ? "text-gray-400" : "text-gray-800"}`}>
+                {formatNumber(item.qty)}
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
+                {item.avgRate > 0 ? formatNumber(item.avgRate) : "—"}
+              </td>
+              <td className="px-3 py-2.5 text-[12px] font-mono text-right font-bold" style={{ color: "#059669" }}>
+                Rs. {formatNumber(item.value)}
+              </td>
+              <td className="px-3 py-2.5">
+                {item.isBelowMin ? (
+                  <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold"><AlertTriangle className="h-3 w-3" /> Below Min</span>
+                ) : item.isBelowReorder ? (
+                  <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold"><AlertTriangle className="h-3 w-3" /> Reorder</span>
+                ) : item.isNearReorder ? (
+                  <span className="flex items-center gap-1 text-[10px] text-amber-600 font-semibold"><AlertTriangle className="h-3 w-3" /> Near Reorder</span>
+                ) : item.isAboveMax ? (
+                  <span className="text-[10px] text-blue-600 font-semibold">Above Max</span>
+                ) : (
+                  <span className="text-[10px] text-green-600 font-semibold">Normal</span>
+                )}
+              </td>
+            </tr>
+          );
+        })}
         {items.length === 0 && (
           <tr>
             <td colSpan={8} className="py-8 text-center text-[12px] text-gray-500">No items to display</td>

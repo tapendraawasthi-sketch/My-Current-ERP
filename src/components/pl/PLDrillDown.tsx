@@ -5,6 +5,7 @@ import type { PLComputation, PLReportOptions, PLDrillState, AccountLedgerData } 
 import { getAccountLedger } from "../../lib/profitLossEngine";
 import { getDB } from "../../lib/db";
 import { RefreshCw, ArrowLeft } from "lucide-react";
+import { useStore } from "../../store/useStore";
 
 const fmt = (n: number) =>
   Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -136,6 +137,7 @@ function AccountLedgerView({
 }) {
   const [ledger, setLedger] = useState<AccountLedgerData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setCurrentPage } = useStore();
 
   useEffect(() => {
     if (!drillState.selectedAccountId) return;
@@ -237,7 +239,50 @@ function AccountLedgerView({
                     {entry.voucherType}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-[11px] font-mono text-[#1557b0]">{entry.voucherNo}</td>
+                <td style={{ padding: "6px 10px" }}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (entry.voucherId) {
+                        sessionStorage.setItem("sutra:open-voucher-id", entry.voucherId);
+                        sessionStorage.setItem("sutra:open-voucher-type", entry.voucherType || "journal");
+                      }
+                      const pageMap: Record<string, string> = {
+                        receipt: "receipt",
+                        payment: "payment",
+                        journal: "journal",
+                        contra: "contra",
+                        "sales-invoice": "billing",
+                        "purchase-invoice": "purchase",
+                        "debit-note": "debit-note",
+                        "credit-note": "credit-note",
+                      };
+                      const targetPage = pageMap[entry.voucherType?.toLowerCase() || ""] || "journal";
+                      setCurrentPage(targetPage);
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#1557b0",
+                      fontSize: 12,
+                      fontFamily: "'Courier New', monospace",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: "2px 4px",
+                      borderRadius: 3,
+                      textDecoration: "underline",
+                      textUnderlineOffset: 2,
+                      textDecorationStyle: "dotted",
+                      transition: "background 120ms ease",
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+                    title={`Open ${entry.voucherType} voucher`}
+                  >
+                    {entry.voucherNo}
+                  </button>
+                </td>
                 <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-700">
                   {entry.debit > 0 ? fmt(entry.debit) : ""}
                 </td>

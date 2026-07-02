@@ -24,12 +24,29 @@ const DEFAULT_OPTIONS: PLReportOptions = {
   variant: "horizontal",
 };
 
+const PL_STORAGE_KEY = "sutra_pl_options";
+
+const loadPLOptions = (): PLReportOptions | null => {
+  try {
+    const raw = localStorage.getItem(PL_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+};
+
+const savePLOptions = (opts: PLReportOptions) => {
+  try {
+    localStorage.setItem(PL_STORAGE_KEY, JSON.stringify({ ...opts, _savedAt: new Date().toISOString() }));
+  } catch {}
+};
+
 export default function ProfitLoss() {
   const { companySettings, currentFiscalYear } = useStore();
 
   // ── State ─────────────────────────────────────────────────────────────────
-  const [showOptionsDialog, setShowOptionsDialog] = useState(true);
+  const storedPLOpts = loadPLOptions();
+  const [showOptionsDialog, setShowOptionsDialog] = useState(!storedPLOpts);
   const [options, setOptions] = useState<PLReportOptions>(() => {
+    if (storedPLOpts) return storedPLOpts;
     const opts = { ...DEFAULT_OPTIONS };
     if (currentFiscalYear?.startDate) opts.fromDate = currentFiscalYear.startDate;
     if (currentFiscalYear?.endDate) opts.toDate = currentFiscalYear.endDate;
@@ -73,10 +90,17 @@ export default function ProfitLoss() {
 
   const handleOptionsConfirm = useCallback((newOptions: PLReportOptions) => {
     setOptions(newOptions);
+    savePLOptions(newOptions);
     setShowOptionsDialog(false);
     setDrillState({ level: 0 });
     runCompute(newOptions, closingStockOverride);
   }, [runCompute, closingStockOverride]);
+
+  useEffect(() => {
+    if (storedPLOpts) {
+      runCompute(storedPLOpts);
+    }
+  }, []);
 
   const handleRefresh = useCallback(() => {
     if (plData) runCompute(options, closingStockOverride);
@@ -174,6 +198,8 @@ export default function ProfitLoss() {
         drillState={drillState}
         companyName={companyName}
         plData={plData}
+        closingStock={closingStockOverride ?? plData?.closingStock}
+        onClosingStockChange={handleClosingStockUpdate}
       />
 
       {/* Loading state */}

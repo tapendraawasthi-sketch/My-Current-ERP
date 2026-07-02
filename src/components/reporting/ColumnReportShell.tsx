@@ -9,6 +9,13 @@ export interface ColumnVisibilityItem {
 interface ColumnReportShellProps {
   title: string;
   subtitle?: string;
+  reportMeta?: {
+    accountName?: string;
+    accountCode?: string;
+    period?: string;
+    companyName?: string;
+    pan?: string;
+  };
 
   fromBS: string;
   toBS: string;
@@ -60,6 +67,7 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
   onPrint,
   onExport,
   onRefresh,
+  reportMeta,
   children,
 }) => {
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
@@ -275,7 +283,20 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
       </div>
 
       {/* Report body */}
-      <div className={`flex-1 overflow-auto column-report-body ${rowHeightClass}`}>{children}</div>
+      <div className={`flex-1 overflow-auto column-report-body ${rowHeightClass}`}>
+        {reportMeta && (
+          <div className="print-only hidden" style={{ marginBottom: 12, borderBottom: "2px solid #111827", paddingBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, textAlign: "center" }}>{reportMeta.companyName}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, textAlign: "center", marginTop: 2 }}>General Ledger</div>
+            <div style={{ fontSize: 11, textAlign: "center", color: "#6b7280", marginTop: 2 }}>
+              Account: {reportMeta.accountName} ({reportMeta.accountCode})
+            </div>
+            <div style={{ fontSize: 11, textAlign: "center", color: "#6b7280" }}>Period: {reportMeta.period}</div>
+            <div style={{ fontSize: 10, textAlign: "center", color: "#9ca3af", marginTop: 2 }}>PAN: {reportMeta.pan}</div>
+          </div>
+        )}
+        {children}
+      </div>
     </div>
   );
 };

@@ -1,37 +1,154 @@
+// src/components/reports/ReportHeader.tsx
 import React from "react";
 
-interface CompanySettings {
-  name: string;
-  nameNepali?: string;
+interface ReportHeaderProps {
+  companyName: string;
+  companyNameNepali?: string;
   address?: string;
+  pan?: string;
   phone?: string;
   email?: string;
-  pan?: string;
+  reportTitle: string;
+  reportSubtitle?: string;
+  period?: string;              // "For the period 2081 Shrawan 1 to 2081 Ashadh 32"
+  asAt?: string;                // "As at 2081 Ashadh 32 (July 16, 2025)" — for point-in-time reports
+  // Screen vs print behavior
+  screenMode?: "always" | "print-only"; // default: "print-only"
+  companyLogo?: string;         // base64 or URL
 }
 
-interface ReportHeaderProps {
-  title: string;
-  subtitle?: string;
-  period?: string;
-  company: CompanySettings;
-}
+const ReportHeader: React.FC<ReportHeaderProps> = ({
+  companyName,
+  companyNameNepali,
+  address,
+  pan,
+  phone,
+  email,
+  reportTitle,
+  reportSubtitle,
+  period,
+  asAt,
+  screenMode = "print-only",
+  companyLogo,
+}) => {
+  const isAlwaysVisible = screenMode === "always";
 
-export const ReportHeader: React.FC<ReportHeaderProps> = ({ title, period, company }) => {
   return (
-    <div className="text-center mb-4 pb-3 border-b-2 border-[#9DC07A] print-only hidden">
-      {/* Centered Company Name */}
-      <h1 className="text-[15px] font-bold text-[#000000]">{company.name}</h1>
+    <div
+      className={isAlwaysVisible ? "" : "print-only hidden"}
+      style={{
+        textAlign: "center",
+        paddingBottom: 14,
+        marginBottom: 16,
+        borderBottom: "2px solid #111827",
+      }}
+    >
+      {/* Company logo (if provided) */}
+      {companyLogo && (
+        <div style={{ marginBottom: 8 }}>
+          <img
+            src={companyLogo}
+            alt="Company Logo"
+            style={{ maxHeight: 60, maxWidth: 180, objectFit: "contain" }}
+          />
+        </div>
+      )}
 
-      {/* Address / PAN */}
-      <p className="text-[11px] text-[#000000] mt-0.5">
-        {[company.address, company.pan ? `PAN: ${company.pan}` : ""].filter(Boolean).join(" | ")}
-      </p>
+      {/* Company name — primary */}
+      <div
+        style={{
+          fontSize: 18,
+          fontWeight: 700,
+          color: "#111827",
+          letterSpacing: "-0.01em",
+          lineHeight: 1.2,
+        }}
+      >
+        {companyName}
+      </div>
 
-      {/* Report Title */}
-      <h2 className="text-[13px] font-bold text-[#1557b0] uppercase mt-2">{title}</h2>
+      {/* Nepali name if different */}
+      {companyNameNepali && companyNameNepali !== companyName && (
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#374151", marginTop: 2 }}>
+          {companyNameNepali}
+        </div>
+      )}
 
-      {/* Period Line */}
-      {period && <p className="text-[11px] text-[#000000] mt-0.5">Period: {period}</p>}
+      {/* Address */}
+      {address && (
+        <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
+          {address}
+        </div>
+      )}
+
+      {/* Contact line: PAN | Phone | Email */}
+      <div
+        style={{
+          fontSize: 10,
+          color: "#6b7280",
+          marginTop: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        {pan && (
+          <span>
+            <strong style={{ color: "#374151" }}>PAN/VAT:</strong> {pan}
+          </span>
+        )}
+        {phone && (
+          <span>
+            <strong style={{ color: "#374151" }}>Tel:</strong> {phone}
+          </span>
+        )}
+        {email && (
+          <span>
+            <strong style={{ color: "#374151" }}>Email:</strong> {email}
+          </span>
+        )}
+      </div>
+
+      {/* Divider */}
+      <div style={{ margin: "10px auto", borderTop: "1px solid #d1d5db", maxWidth: "80%" }} />
+
+      {/* Report title */}
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          color: "#111827",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+        }}
+      >
+        {reportTitle}
+      </div>
+
+      {/* Subtitle (e.g., "Schedule III Format") */}
+      {reportSubtitle && (
+        <div style={{ fontSize: 11, color: "#374151", marginTop: 2 }}>
+          {reportSubtitle}
+        </div>
+      )}
+
+      {/* Period or As-At — mandatory, never omit */}
+      {(period || asAt) && (
+        <div
+          style={{
+            fontSize: 11,
+            color: "#6b7280",
+            marginTop: 4,
+            fontStyle: "italic",
+          }}
+        >
+          {period || asAt}
+        </div>
+      )}
     </div>
   );
 };
+
+export default ReportHeader;

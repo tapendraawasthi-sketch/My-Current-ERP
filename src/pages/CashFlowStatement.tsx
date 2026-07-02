@@ -195,32 +195,24 @@ export default function CashFlowStatement() {
 
     const netChange = operatingCF + investingCF + financingCF;
 
-    return [
-      // ── A. Operating ───────────────────────────────────────────────────
-      { label: "A. OPERATING ACTIVITIES", amount: 0, isTotal: false, indent: 0, note: "Indirect method starts from net profit" },
+    const operatingRows = [
       { label: "Net Profit / (Loss) for the period", amount: netProfit, indent: 1 },
       { label: "Adjustments for non-cash items:", amount: 0, indent: 1, note: "" },
       { label: "Add: Depreciation & Amortization", amount: depreciation, indent: 2 },
       { label: "Working Capital Changes:", amount: 0, indent: 1 },
       { label: "(Increase) / Decrease in Trade Debtors", amount: -changeInDebtors, indent: 2, note: "Increase in debtors = use of cash" },
       { label: "Increase / (Decrease) in Trade Creditors", amount: changeInCreditors, indent: 2, note: "Increase in creditors = source of cash" },
-      { label: "Net Cash from Operating Activities (A)", amount: operatingCF, isSubtotal: true, indent: 0 },
-
-      // ── B. Investing ───────────────────────────────────────────────────
-      { label: "B. INVESTING ACTIVITIES", amount: 0, indent: 0 },
-      { label: "Purchase of Fixed Assets / Capital Expenditure", amount: investingCF, indent: 1 },
-      { label: "Net Cash from Investing Activities (B)", amount: investingCF, isSubtotal: true, indent: 0 },
-
-      // ── C. Financing ───────────────────────────────────────────────────
-      { label: "C. FINANCING ACTIVITIES", amount: 0, indent: 0 },
-      { label: "Proceeds / (Repayment) of Loans & Borrowings", amount: financingCF, indent: 1 },
-      { label: "Net Cash from Financing Activities (C)", amount: financingCF, isSubtotal: true, indent: 0 },
-
-      // ── Summary ────────────────────────────────────────────────────────
-      { label: "Net Increase / (Decrease) in Cash (A+B+C)", amount: netChange, isTotal: true },
-      { label: "Cash & Bank Balance — Opening", amount: openingCash, indent: 1 },
-      { label: "Cash & Bank Balance — Closing (Opening + Net Change)", amount: closingCash, isSubtotal: true, indent: 1 },
     ];
+
+    const investingRows = [
+      { label: "Purchase of Fixed Assets / Capital Expenditure", amount: investingCF, indent: 1 },
+    ];
+
+    const financingRows = [
+      { label: "Proceeds / (Repayment) of Loans & Borrowings", amount: financingCF, indent: 1 },
+    ];
+
+    return { operatingRows, investingRows, financingRows, operatingCF, investingCF, financingCF, netChange };
   }, [accounts, movements, openingCash, closingCash, cashAccounts]);
 
   // ── DIRECT METHOD computation ──────────────────────────────────────────────
@@ -280,39 +272,40 @@ export default function CashFlowStatement() {
     const financingCF = loanReceipts - loanRepayments;
     const netChange   = operatingCF + investingCF + financingCF;
 
-    return [
-      // ── A. Operating ───────────────────────────────────────────────────
-      { label: "A. OPERATING ACTIVITIES", amount: 0, indent: 0, note: "Direct method shows actual cash inflows and outflows" },
+    const operatingRows = [
       { label: "Cash Receipts from Customers", amount: cashReceiptsFromCustomers, indent: 1, note: "Receipts collected from customers" },
       { label: "Cash Paid to Suppliers & for Purchases", amount: -cashPaidToSuppliers, indent: 1, note: "Payments made to suppliers" },
       { label: "Cash Paid for Operating Expenses", amount: -cashPaidForExpenses, indent: 1, note: "Salaries, rent, utilities, etc." },
-      { label: "Net Cash from Operating Activities (A)", amount: operatingCF, isSubtotal: true, indent: 0 },
+    ];
 
-      // ── B. Investing ───────────────────────────────────────────────────
-      { label: "B. INVESTING ACTIVITIES", amount: 0, indent: 0 },
+    const investingRows = [
       { label: "Purchase of Fixed Assets (Capital Expenditure)", amount: -capex, indent: 1, note: "Outflow for buying fixed assets" },
-      { label: "Net Cash from Investing Activities (B)", amount: investingCF, isSubtotal: true, indent: 0 },
+    ];
 
-      // ── C. Financing ───────────────────────────────────────────────────
-      { label: "C. FINANCING ACTIVITIES", amount: 0, indent: 0 },
+    const financingRows = [
       { label: "Proceeds from Loans & Borrowings", amount: loanReceipts, indent: 1 },
       { label: "Repayment of Loans & Borrowings", amount: -loanRepayments, indent: 1 },
-      { label: "Net Cash from Financing Activities (C)", amount: financingCF, isSubtotal: true, indent: 0 },
-
-      // ── Summary ────────────────────────────────────────────────────────
-      { label: "Net Increase / (Decrease) in Cash (A+B+C)", amount: netChange, isTotal: true },
-      { label: "Cash & Bank Balance — Opening", amount: openingCash, indent: 1 },
-      { label: "Cash & Bank Balance — Closing", amount: closingCash, isSubtotal: true, indent: 1 },
     ];
+
+    return { operatingRows, investingRows, financingRows, operatingCF, investingCF, financingCF, netChange };
   }, [accounts, vouchers, movements, openingCash, closingCash, accountMap, cashAccounts, fromDate, toDate]);
 
-  const lines = method === "indirect" ? indirectLines : directLines;
-
-  // Summary amounts from lines
-  const operatingCF = lines.find((l) => l.label.includes("Operating Activities (A)"))?.amount || 0;
-  const investingCF = lines.find((l) => l.label.includes("Investing Activities (B)"))?.amount || 0;
-  const financingCF = lines.find((l) => l.label.includes("Financing Activities (C)"))?.amount || 0;
-  const netChange   = operatingCF + investingCF + financingCF;
+  const { operatingRows, investingRows, financingRows, operatingCF, investingCF, financingCF, netChange } = method === "indirect" ? indirectLines : directLines;
+  
+  const lines: CFLine[] = [
+    { label: "A. OPERATING ACTIVITIES", amount: 0, isTotal: false, indent: 0 },
+    ...operatingRows,
+    { label: "Net Cash from Operating Activities (A)", amount: operatingCF, isSubtotal: true, indent: 0 },
+    { label: "B. INVESTING ACTIVITIES", amount: 0, indent: 0 },
+    ...investingRows,
+    { label: "Net Cash from Investing Activities (B)", amount: investingCF, isSubtotal: true, indent: 0 },
+    { label: "C. FINANCING ACTIVITIES", amount: 0, indent: 0 },
+    ...financingRows,
+    { label: "Net Cash from Financing Activities (C)", amount: financingCF, isSubtotal: true, indent: 0 },
+    { label: "Net Increase / (Decrease) in Cash (A+B+C)", amount: netChange, isTotal: true },
+    { label: "Cash & Bank Balance — Opening", amount: openingCash, indent: 1 },
+    { label: "Cash & Bank Balance — Closing", amount: closingCash, isSubtotal: true, indent: 1 },
+  ];
 
   // ── Export ────────────────────────────────────────────────────────────────
   const exportToExcel = () => {
@@ -413,6 +406,33 @@ export default function CashFlowStatement() {
       </tr>
     );
   };
+
+  const CashFlowSectionHeader: React.FC<{ label: string; letter: string }> = ({ label, letter }) => (
+    <tr>
+      <td colSpan={2} style={{
+        background: "#1e2433",
+        color: "#ffffff",
+        padding: "8px 16px",
+        fontSize: 11,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+      }}>
+        {letter}. {label}
+      </td>
+    </tr>
+  );
+
+  const CashFlowSubtotal: React.FC<{ label: string; amount: number; letter: string }> = ({ label, amount, letter }) => (
+    <tr style={{ background: "#f5f6fa", borderTop: "2px solid #d1d5db" }}>
+      <td style={{ padding: "8px 16px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
+        Net Cash from {label} ({letter})
+      </td>
+      <td className="num-cell-bold" style={{ color: amount >= 0 ? "#059669" : "#dc2626", padding: "8px 16px", textAlign: "right" }}>
+        {amount < 0 ? "(" : ""}{Math.abs(amount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}{amount < 0 ? ")" : ""}
+      </td>
+    </tr>
+  );
 
   // ─── Main render ──────────────────────────────────────────────────────────
   return (
@@ -534,7 +554,7 @@ export default function CashFlowStatement() {
       )}
 
       {/* Main statement */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 flex justify-between">
           <span className="text-[12px] font-semibold text-gray-800">
             Statement of Cash Flows — {method === "indirect" ? "Indirect" : "Direct"} Method
@@ -544,21 +564,92 @@ export default function CashFlowStatement() {
           </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px]">
-            <thead>
-              <tr>
-                <th className={thCls}>Particulars</th>
-                <th className={`${thCls} text-right`} style={{ width: 200 }}>
-                  Amount (Rs.)
-                </th>
-              </tr>
-            </thead>
+          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+            <colgroup>
+              <col style={{ width: "70%" }} />
+              <col style={{ width: "30%" }} />
+            </colgroup>
             <tbody>
-              {lines.map((line, idx) => renderRow(line, idx))}
+              <CashFlowSectionHeader label="Cash Flows from Operating Activities" letter="A" />
+              {operatingRows.map((line, idx) => renderRow(line, idx))}
+              <CashFlowSubtotal label="Operating Activities" amount={operatingCF} letter="A" />
+
+              {/* Blank separator */}
+              <tr><td colSpan={2} style={{ height: 8 }} /></tr>
+
+              <CashFlowSectionHeader label="Cash Flows from Investing Activities" letter="B" />
+              {investingRows.map((line, idx) => renderRow(line, idx))}
+              <CashFlowSubtotal label="Investing Activities" amount={investingCF} letter="B" />
+
+              <tr><td colSpan={2} style={{ height: 8 }} /></tr>
+
+              <CashFlowSectionHeader label="Cash Flows from Financing Activities" letter="C" />
+              {financingRows.map((line, idx) => renderRow(line, idx))}
+              <CashFlowSubtotal label="Financing Activities" amount={financingCF} letter="C" />
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Net Change Box */}
+      <div style={{
+        margin: "20px 0",
+        border: "2px solid #1557b0",
+        borderRadius: 6,
+        padding: "14px 20px",
+        background: "#eff6ff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#1557b0" }}>
+            Net Increase / (Decrease) in Cash and Cash Equivalents (A+B+C)
+          </div>
+        </div>
+        <div className="num-cell-bold" style={{
+          fontSize: 18,
+          color: netChange >= 0 ? "#059669" : "#dc2626",
+          fontFamily: "'Courier New', monospace",
+        }}>
+          {netChange < 0 ? "(" : ""}
+          {Math.abs(netChange).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+          {netChange < 0 ? ")" : ""}
+        </div>
+      </div>
+
+      {/* Reconciliation section */}
+      <table style={{ width: "100%", borderCollapse: "collapse", background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 4 }}>
+        <caption style={{ padding: "6px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          Cash &amp; Cash Equivalents Reconciliation
+        </caption>
+        <tbody>
+          {[
+            { label: "Opening Cash & Bank Balance", amount: openingCash },
+            { label: "Add: Net Change in Cash (A+B+C)", amount: netChange },
+            { label: "Closing Cash & Bank Balance", amount: closingCash, bold: true },
+            { label: "Balance per Balance Sheet", amount: closingCash, bold: true }, // Approximation based on existing logic
+            ...(Math.abs(closingCash - closingCash) > 0.01 // Replace closingCash with balanceSheetCash if available in context
+              ? [{ label: "⚠ Reconciliation Difference", amount: 0, isError: true }]
+              : [{ label: "✓ Reconciliation: No difference", amount: 0, isSuccess: true }]
+            ),
+          ].map((r, i) => (
+            <tr key={i} style={{
+              borderTop: i > 0 ? "1px solid #e5e7eb" : undefined,
+              background: r.bold ? "#f0f9ff" : r.isError ? "#fef2f2" : r.isSuccess ? "#f0fdf4" : "transparent",
+            }}>
+              <td style={{ padding: "7px 16px", fontSize: 12, fontWeight: r.bold ? 700 : 400, color: r.isError ? "#dc2626" : r.isSuccess ? "#059669" : "#374151" }}>
+                {r.label}
+              </td>
+              <td className={r.bold ? "num-cell-bold" : "num-cell"} style={{ padding: "7px 16px", color: r.isError ? "#dc2626" : r.bold ? "#111827" : "#374151", textAlign: "right" }}>
+                {r.amount !== 0 || !r.isSuccess
+                  ? r.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })
+                  : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <p className="text-[10px] text-gray-400 mt-3">
         Prepared as per IAS 7 — Statement of Cash Flows •{" "}

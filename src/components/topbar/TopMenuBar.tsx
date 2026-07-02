@@ -348,8 +348,8 @@ const TopMenuBar: React.FC = () => {
               {/* Dropdown */}
               {isOpen && (
                 <div
-                  className="absolute top-full left-0 mt-0 bg-[#1e2433] border border-[#2d3748]
-                    rounded-b-lg shadow-2xl z-[10000] py-1 min-w-[220px] max-h-[70vh] overflow-y-auto"
+                  className="absolute top-full left-0 mt-0 bg-[#1e2433] border border-[#2d3748] rounded-b-lg shadow-2xl z-[10000] py-1 min-w-[220px] max-h-[70vh] overflow-y-auto"
+                  style={{ animation: "dropdownEnter 120ms cubic-bezier(0.4, 0, 0.2, 1) both" }}
                 >
                   {menu.entries.map((entry, i) => {
                     if (entry.separator) {

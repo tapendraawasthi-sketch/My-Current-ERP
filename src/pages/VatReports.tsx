@@ -135,7 +135,7 @@ const DataTable: React.FC<DataTableProps> = ({
   footerRow,
 }) => (
   <div className="overflow-x-auto">
-    <table className="w-full min-w-max">
+    <table className="report-table w-full min-w-max">
       <thead>
         <tr className="bg-[#f5f6fa] border-b border-gray-200">
           {columns.map((col) => (
@@ -193,12 +193,11 @@ const DataTable: React.FC<DataTableProps> = ({
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-type ActiveTab = "summary" | "annexA" | "annexB" | "annexC" | "annexD";
 
 const VatReports: React.FC = () => {
   const { invoices, parties, companySettings, currentFiscalYear } = useStore();
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>("summary");
+  const [activeAnnex, setActiveAnnex] = useState<"A" | "B" | "C" | "D" | "summary">("summary");
   const [dateRange, setDateRange] = useState<DateRange>({
     fromDate: firstDayOfMonth(),
     toDate: todayISO(),
@@ -307,37 +306,34 @@ const VatReports: React.FC = () => {
   }, [filteredInvoices]);
 
   // ── VAT Summary ───────────────────────────────────────────────────────────
-  const vatSummary = useMemo<VatSummary>(() => {
-    const salesInvoices = filteredInvoices.filter(
-      (inv) =>
-        (inv.type === "sales-invoice" || inv.type === "sales_invoice") && inv.status === "posted",
-    );
-    const purchaseInvoices = filteredInvoices.filter(
-      (inv) =>
-        (inv.type === "purchase-invoice" || inv.type === "purchase_invoice") &&
-        inv.status === "posted",
-    );
+  const vatSummary = useMemo(() => {
+    let outputVat = 0, inputVat = 0, outputTaxable = 0, inputTaxable = 0;
+    let outputCount = 0, inputCount = 0;
 
-    const totalSalesVat = salesInvoices.reduce((s, inv) => s + (inv.vatAmount ?? 0), 0);
-    const totalPurchaseVat = purchaseInvoices.reduce((s, inv) => s + (inv.vatAmount ?? 0), 0);
-    const totalSalesTaxable = salesInvoices.reduce((s, inv) => s + (inv.taxableAmount ?? 0), 0);
-    const totalPurchaseTaxable = purchaseInvoices.reduce(
-      (s, inv) => s + (inv.taxableAmount ?? 0),
-      0,
-    );
+    for (const inv of filteredInvoices) {
+      if (inv.status !== "posted") continue;
+      const t = String(inv.type || "").toLowerCase();
+      const vat = Number(inv.vatAmount || inv.taxAmount || 0);
+      const taxable = Number(inv.taxableAmount || 0);
 
-    return {
-      totalSalesVat,
-      totalPurchaseVat,
-      totalSalesTaxable,
-      totalPurchaseTaxable,
-      vatPayable: totalSalesVat - totalPurchaseVat,
-      annexACount: annexAData.length,
-      annexBCount: annexBData.length,
-      annexCCount: annexCData.length,
-      annexDCount: annexDData.length,
-    } as any;
-  }, [filteredInvoices, annexAData, annexBData, annexCData, annexDData]);
+      if (t.includes("sales-invoice") || t === "sales_invoice") {
+        outputVat += vat;
+        outputTaxable += taxable;
+        outputCount++;
+      }
+      if (t.includes("purchase-invoice") || t === "purchase_invoice") {
+        inputVat += vat;
+        inputTaxable += taxable;
+        inputCount++;
+      }
+    }
+
+    const netVat = outputVat - inputVat;
+    return { outputVat, inputVat, netVat, outputTaxable, inputTaxable, outputCount, inputCount };
+  }, [filteredInvoices]);
+
+  const fmtVat = (n: number) =>
+    "Rs. " + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   // ── Column definitions — using "label" not "header" ────────────────────────
 
@@ -527,20 +523,20 @@ const VatReports: React.FC = () => {
             type="button"
             onClick={() => {
               const data =
-                activeTab === "annexA"
+                activeAnnex === "A"
                   ? annexAData
-                  : activeTab === "annexB"
+                  : activeAnnex === "B"
                     ? annexBData
-                    : activeTab === "annexC"
+                    : activeAnnex === "C"
                       ? annexCData
                       : annexDData;
               const cols =
-                activeTab === "annexA"
+                activeAnnex === "A"
                   ? annexAColumns
-                  : activeTab === "annexB"
+                  : activeAnnex === "B"
                     ? annexBColumns
                     : annexCColumns;
-              handleExportExcel(activeTab.toUpperCase(), data, cols);
+              handleExportExcel("Annex_" + activeAnnex, data, cols);
             }}
             className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
           >
@@ -550,104 +546,128 @@ const VatReports: React.FC = () => {
         </div>
       </div>
 
+            {/* KPI cells */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        borderBottom: "2px solid #e5e7eb",
+        background: "#ffffff",
+        marginBottom: 16
+      }}>
+        {/* Output VAT */}
+        <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+            Output VAT (Sales)
+          </div>
+          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#1557b0", marginTop: 4, lineHeight: 1.2 }}>
+            {fmtVat(vatSummary.outputVat)}
+          </div>
+          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
+            Taxable: {fmtVat(vatSummary.outputTaxable)} · {vatSummary.outputCount} invoices
+          </div>
+        </div>
+
+        {/* Input VAT */}
+        <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+            Input VAT (Purchases)
+          </div>
+          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#059669", marginTop: 4, lineHeight: 1.2 }}>
+            {fmtVat(vatSummary.inputVat)}
+          </div>
+          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
+            Taxable: {fmtVat(vatSummary.inputTaxable)} · {vatSummary.inputCount} bills
+          </div>
+        </div>
+
+        {/* Net VAT Payable */}
+        <div style={{
+          padding: "14px 20px",
+          background: vatSummary.netVat >= 0 ? "#fef9f0" : "#f0fdf4",
+        }}>
+          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+            {vatSummary.netVat >= 0 ? "Net VAT Payable to IRD" : "Net VAT Refundable"}
+          </div>
+          <div style={{
+            fontSize: 20,
+            fontWeight: 700,
+            fontFamily: "'Courier New', monospace",
+            color: vatSummary.netVat >= 0 ? "#dc2626" : "#059669",
+            marginTop: 4,
+            lineHeight: 1.2,
+          }}>
+            {fmtVat(Math.abs(vatSummary.netVat))}
+          </div>
+          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
+            Output − Input = {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 border-b border-gray-200">
-        {(
-          [
-            { id: "summary", label: "VAT Summary" },
-            { id: "annexA", label: "Annex A (Sales — VAT Reg.)" },
-            { id: "annexB", label: "Annex B (Sales — Retail)" },
-            { id: "annexC", label: "Annex C (Purchases)" },
-            { id: "annexD", label: "Annex D (Imports)" },
-          ] as { id: ActiveTab; label: string }[]
-        ).map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            className={`h-8 px-3 text-[12px] font-medium rounded-t-md transition-colors border-b-2 -mb-px ${
-              activeTab === tab.id
-                ? "border-[#1557b0] text-[#1557b0] bg-white"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div style={{
+        display: "flex",
+        borderBottom: "2px solid #e5e7eb",
+        background: "#ffffff",
+        overflowX: "auto",
+        marginBottom: 16
+      }}>
+        {[
+          { key: "summary" as const, label: "Summary",    sub: "VAT Computation",   total: vatSummary.netVat,     color: "#7c3aed" },
+          { key: "A" as const,       label: "Annex A",    sub: "Sales Register",    total: vatSummary.outputVat,  color: "#1557b0" },
+          { key: "B" as const,       label: "Annex B",    sub: "Retail Sales",      total: 0,                     color: "#059669" },
+          { key: "C" as const,       label: "Annex C",    sub: "Purchases",         total: vatSummary.inputVat,   color: "#d97706" },
+          { key: "D" as const,       label: "Annex D",    sub: "Import Purchases",  total: 0,                     color: "#4f46e5" },
+        ].map((tab) => {
+          const isActive = activeAnnex === tab.key;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveAnnex(tab.key)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 2,
+                padding: "10px 20px",
+                background: "transparent",
+                border: "none",
+                borderBottom: isActive ? `2px solid ${tab.color}` : "2px solid transparent",
+                marginBottom: -2,
+                cursor: "pointer",
+                transition: "border-color 150ms ease",
+                whiteSpace: "nowrap",
+                minWidth: 140,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: isActive ? tab.color : "#374151" }}>
+                  {tab.label}
+                </span>
+                {tab.total !== 0 && (
+                  <span style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    background: isActive ? `${tab.color}18` : "#f3f4f6",
+                    color: isActive ? tab.color : "#9ca3af",
+                    border: `1px solid ${isActive ? tab.color + "40" : "#e5e7eb"}`,
+                    borderRadius: 10,
+                    padding: "0 6px",
+                  }}>
+                    {Math.abs(tab.total).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+                  </span>
+                )}
+              </div>
+              <span style={{ fontSize: 10, color: "#9ca3af" }}>{tab.sub}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* ── Summary Tab ──────────────────────────────────────────────────────── */}
-      {activeTab === "summary" && (
+      {activeAnnex === "summary" && (
         <div className="space-y-4">
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Output VAT (Sales)
-              </p>
-              <p className="text-[20px] font-bold text-[#1557b0] mt-1 font-mono">
-                {money(vatSummary.totalSalesVat)}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-1">
-                Taxable: {money(vatSummary.totalSalesTaxable)}
-              </p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Input VAT (Purchases)
-              </p>
-              <p className="text-[20px] font-bold text-amber-600 mt-1 font-mono">
-                {money(vatSummary.totalPurchaseVat)}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-1">
-                Taxable: {money(vatSummary.totalPurchaseTaxable)}
-              </p>
-            </div>
-
-            <div
-              className={`bg-white border rounded-lg p-4 shadow-sm ${
-                vatSummary.vatPayable >= 0 ? "border-red-200" : "border-green-200"
-              }`}
-            >
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                VAT Payable / (Refund)
-              </p>
-              <p
-                className={`text-[20px] font-bold mt-1 font-mono ${
-                  vatSummary.vatPayable >= 0 ? "text-red-600" : "text-green-600"
-                }`}
-              >
-                {vatSummary.vatPayable >= 0 ? "" : "("}
-                {money(Math.abs(vatSummary.vatPayable))}
-                {vatSummary.vatPayable < 0 ? ")" : ""}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-1">
-                {vatSummary.vatPayable >= 0 ? "Payable to IRD" : "Refundable from IRD"}
-              </p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Invoice Counts
-              </p>
-              <div className="mt-2 space-y-1 text-[11px]">
-                <div className="flex justify-between text-gray-600">
-                  <span>Annex A</span>
-                  <span className="font-semibold">{annexAData.length}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Annex B</span>
-                  <span className="font-semibold">{annexBData.length}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Annex C</span>
-                  <span className="font-semibold">{annexCData.length}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* VAT Return Summary Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
             <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
@@ -660,7 +680,7 @@ const VatReports: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="report-table w-full">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
                     <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -711,10 +731,10 @@ const VatReports: React.FC = () => {
                       Total Output VAT
                     </td>
                     <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
-                      {money(vatSummary.totalSalesTaxable)}
+                      {money(vatSummary.outputTaxable)}
                     </td>
                     <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
-                      {money(vatSummary.totalSalesVat)}
+                      {money(vatSummary.outputVat)}
                     </td>
                   </tr>
 
@@ -743,37 +763,37 @@ const VatReports: React.FC = () => {
                       Total Input VAT
                     </td>
                     <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
-                      {money(vatSummary.totalPurchaseTaxable)}
+                      {money(vatSummary.inputTaxable)}
                     </td>
                     <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
-                      {money(vatSummary.totalPurchaseVat)}
+                      {money(vatSummary.inputVat)}
                     </td>
                   </tr>
 
                   {/* Net VAT payable */}
                   <tr
                     className={`border-t-2 ${
-                      vatSummary.vatPayable >= 0
+                      vatSummary.netVat >= 0
                         ? "bg-red-50 border-red-200"
                         : "bg-green-50 border-green-200"
                     }`}
                   >
                     <td
                       className={`px-4 py-3 text-[13px] font-bold ${
-                        vatSummary.vatPayable >= 0 ? "text-red-800" : "text-green-800"
+                        vatSummary.netVat >= 0 ? "text-red-800" : "text-green-800"
                       }`}
                     >
-                      Net VAT {vatSummary.vatPayable >= 0 ? "Payable" : "Refundable"}
+                      Net VAT {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
                     </td>
                     <td className="px-4 py-3" />
                     <td
                       className={`px-4 py-3 text-right font-mono text-[13px] font-bold ${
-                        vatSummary.vatPayable >= 0 ? "text-red-800" : "text-green-800"
+                        vatSummary.netVat >= 0 ? "text-red-800" : "text-green-800"
                       }`}
                     >
-                      {vatSummary.vatPayable >= 0 ? "" : "("}
-                      {money(Math.abs(vatSummary.vatPayable))}
-                      {vatSummary.vatPayable < 0 ? ")" : ""}
+                      {vatSummary.netVat >= 0 ? "" : "("}
+                      {money(Math.abs(vatSummary.netVat))}
+                      {vatSummary.netVat < 0 ? ")" : ""}
                     </td>
                   </tr>
                 </tbody>
@@ -783,8 +803,8 @@ const VatReports: React.FC = () => {
         </div>
       )}
 
-      {/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
-      {activeTab === "annexA" && (
+{/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
+      {activeAnnex === "A" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -836,7 +856,7 @@ const VatReports: React.FC = () => {
       )}
 
       {/* ── Annex B Tab ───────────────────────────────────────────────────────── */}
-      {activeTab === "annexB" && (
+      {activeAnnex === "B" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -888,7 +908,7 @@ const VatReports: React.FC = () => {
       )}
 
       {/* ── Annex C Tab ───────────────────────────────────────────────────────── */}
-      {activeTab === "annexC" && (
+      {activeAnnex === "C" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -937,7 +957,7 @@ const VatReports: React.FC = () => {
       )}
 
       {/* ── Annex D Tab ───────────────────────────────────────────────────────── */}
-      {activeTab === "annexD" && (
+      {activeAnnex === "D" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>

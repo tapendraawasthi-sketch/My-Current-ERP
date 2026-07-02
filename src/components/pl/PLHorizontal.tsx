@@ -14,6 +14,7 @@ const thCls = "px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-gray
 const tdCls = "px-3 py-1.5 text-[12px]";
 
 interface Props {
+  mode?: "pl" | "ie"; // "ie" = Income & Expenditure mode
   pl: PLComputation;
   options: PLReportOptions;
   onDrillDown: (state: PLDrillState) => void;
@@ -110,20 +111,41 @@ function AccountLines({
   );
 }
 
-export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockUpdate }: Props) {
+export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, onClosingStockUpdate }: Props) {
   const [editingClosingStock, setEditingClosingStock] = useState(false);
   const [closingStockInput, setClosingStockInput] = useState(pl.closingStock);
 
+  const isIE = mode === "ie";
   const colCount = options.showPercentage ? 3 : 2;
   const totalColSpan = colCount;
 
   const SectionDivider = ({ label }: { label: string }) => (
     <tr>
-      <td
-        colSpan={totalColSpan}
-        className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#1557b0] bg-blue-50 border-y border-blue-100"
-      >
-        {label}
+      <td colSpan={totalColSpan} style={{ padding: "0", lineHeight: 0 }}>
+        <div style={{
+          position: "relative",
+          height: 28,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "8px 0",
+        }}>
+          <div style={{ position: "absolute", left: 0, right: 0, top: "50%", borderTop: "2px solid #d1d5db" }} />
+          <div style={{
+            position: "relative",
+            background: "#ffffff",
+            padding: "2px 16px",
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "#6b7280",
+            border: "1px solid #d1d5db",
+            borderRadius: 3,
+          }}>
+            {label}
+          </div>
+        </div>
       </td>
     </tr>
   );
@@ -146,12 +168,75 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
     </tr>
   );
 
+  const renderGrossProfitRow = (grossProfit: number, isCD: boolean) => {
+    const isGrossProfit = grossProfit >= 0;
+    const absGrossProfit = Math.abs(grossProfit);
+    const profitText = isIE ? "Excess of Income over Expenditure" : "Gross Profit";
+    const lossText = isIE ? "Excess of Expenditure over Income" : "Gross Loss";
+    
+    return (
+      <tr style={{
+        background: isGrossProfit ? "#f0fdf4" : "#fef2f2",
+        borderTop: "1px solid #d1d5db",
+        boxShadow: `inset 0 -4px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}, inset 0 -7px 0 0 ${isGrossProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}`,
+        paddingBottom: 8,
+      }}>
+        <td style={{ padding: "10px 16px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
+          {isGrossProfit ? profitText : lossText} {isCD ? "c/d" : "b/d"}
+        </td>
+        <td className="num-cell-bold" style={{ color: isGrossProfit ? "#059669" : "#dc2626", padding: "10px 16px" }}>
+          {absGrossProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+        </td>
+        {options.showPercentage && <td />}
+      </tr>
+    );
+  };
+
+  const renderNetProfitRow = (netProfit: number) => {
+    const isNetProfit = netProfit >= 0;
+    const absNetProfit = Math.abs(netProfit);
+    
+    return (
+      <tr style={{
+        background: isNetProfit ? "#f0fdf4" : "#fef2f2",
+        borderTop: "2px solid #d1d5db",
+        boxShadow: `inset 0 -4px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${isNetProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}`,
+      }}>
+        <td style={{ padding: "12px 16px" }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
+            {isIE 
+              ? (isNetProfit ? "Surplus for the Period" : "Deficit for the Period")
+              : `Net ${isNetProfit ? "Profit" : "(Loss)"}`}
+          </div>
+          <div style={{ fontSize: 10, color: "#9ca3af", fontStyle: "italic", marginTop: 2 }}>
+            {isIE
+              ? (isNetProfit ? "Transferred to Corpus / General Fund" : "Charged to Corpus / General Fund")
+              : "Transferred to Balance Sheet"}
+          </div>
+        </td>
+        <td className="num-cell-bold" style={{ color: isNetProfit ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px" }}>
+          {absNetProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+        </td>
+        {options.showPercentage && <td />}
+      </tr>
+    );
+  };
+
+  const reportTitle = isIE ? "Income & Expenditure Account" : "Trading and Profit & Loss Account";
+  const netResultLabel = isIE 
+    ? (pl.netProfit >= 0 ? "Surplus" : "Deficit")
+    : pl.netProfitLabel;
+  const leftHeader = isIE ? "EXPENDITURE" : "DEBIT / EXPENDITURE";
+  const rightHeader = isIE ? "INCOME" : "CREDIT / INCOME";
+  const sec1Label = isIE ? "Operating Account" : "Trading Account";
+  const sec2Label = isIE ? "Income & Expenditure Account" : "Profit & Loss Account";
+
   return (
     <div className="space-y-4">
       {/* Report Header */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between">
         <div>
-          <h2 className="text-[15px] font-bold text-gray-800">Trading and Profit & Loss Account</h2>
+          <h2 className="text-[15px] font-bold text-gray-800">{reportTitle}</h2>
           <p className="text-[11px] text-gray-500 mt-0.5">
             For the period: <strong>{pl.fromDate}</strong> to <strong>{pl.toDate}</strong>
             {options.showSecondLevel && " · Detailed View"}
@@ -162,7 +247,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
             ? "bg-green-50 text-green-700 border-green-200"
             : "bg-red-50 text-red-700 border-red-200"
         }`}>
-          {pl.netProfitLabel}: Rs. {fmt(Math.abs(pl.netProfit))}
+          {netResultLabel}: Rs. {fmt(Math.abs(pl.netProfit))}
         </div>
       </div>
 
@@ -173,7 +258,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className={`${thCls} text-left`}>DEBIT / EXPENDITURE</th>
+                <th className={`${thCls} text-left`}>{leftHeader}</th>
                 <th className={`${thCls} text-right`}>Amount (Rs.)</th>
                 {options.showPercentage && <th className={`${thCls} text-right`}>%</th>}
               </tr>
@@ -181,7 +266,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
             <tbody className="divide-y divide-gray-100">
 
               {/* === TRADING ACCOUNT — DEBIT === */}
-              <SectionDivider label="Trading Account" />
+              <SectionDivider label={sec1Label} />
 
               {/* Opening Stock */}
               <tr className="hover:bg-[#f5f8ff] cursor-pointer" onClick={() => onDrillDown({ level: 1, selectedGroupId: "opening-stock", selectedGroupLabel: "Opening Stock" })}>
@@ -225,27 +310,15 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
               )}
 
               {/* Gross Loss if applicable */}
-              {pl.grossProfit < 0 && (
-                <tr className="bg-red-50">
-                  <td className={`${tdCls} text-red-700 font-bold`}>Gross Loss c/d</td>
-                  <td className="text-right font-mono text-[12px] font-bold text-red-700 px-3">{fmt(Math.abs(pl.grossProfit))}</td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
+              {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, true)}
 
-              <SubtotalRow label="Total (Trading)" amount={pl.tradingDebitTotal} />
+              <SubtotalRow label={`Total (${sec1Label.split(" ")[0]})`} amount={pl.tradingDebitTotal} />
 
               {/* === P&L ACCOUNT — DEBIT === */}
-              <SectionDivider label="Profit & Loss Account" />
+              <SectionDivider label={sec2Label} />
 
               {/* Gross Loss b/d */}
-              {pl.grossProfit < 0 && (
-                <tr>
-                  <td className={`${tdCls} text-red-600 font-semibold`}>Gross Loss b/d</td>
-                  <td className="text-right font-mono text-[12px] font-semibold text-red-600 px-3">{fmt(Math.abs(pl.grossProfit))}</td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
+              {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, false)}
 
               {/* Indirect Expenses */}
               {options.showSecondLevel ? (
@@ -265,9 +338,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
               )}
 
               {/* Net Profit */}
-              {pl.netProfit >= 0 && (
-                <SubtotalRow label={`${pl.netProfitLabel} (transferred to Balance Sheet)`} amount={pl.netProfit} highlight />
-              )}
+              {pl.netProfit >= 0 && renderNetProfitRow(pl.netProfit)}
 
               <GrandTotal amount={pl.grandDebitTotal} side="Dr" />
             </tbody>
@@ -279,7 +350,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className={`${thCls} text-left`}>CREDIT / INCOME</th>
+                <th className={`${thCls} text-left`}>{rightHeader}</th>
                 <th className={`${thCls} text-right`}>Amount (Rs.)</th>
                 {options.showPercentage && <th className={`${thCls} text-right`}>%</th>}
               </tr>
@@ -287,7 +358,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
             <tbody className="divide-y divide-gray-100">
 
               {/* === TRADING ACCOUNT — CREDIT === */}
-              <SectionDivider label="Trading Account" />
+              <SectionDivider label={sec1Label} />
 
               {/* Sales */}
               {options.showSecondLevel ? (
@@ -342,28 +413,16 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
                 {options.showPercentage && <td />}
               </tr>
 
-              {/* Gross Loss c/d if applicable */}
-              {pl.grossProfit >= 0 && (
-                <tr className="bg-green-50">
-                  <td className={`${tdCls} text-green-700 font-bold`}>Gross Profit c/d</td>
-                  <td className="text-right font-mono text-[12px] font-bold text-green-700 px-3">{fmt(pl.grossProfit)}</td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
+              {/* Gross Profit c/d if applicable */}
+              {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, true)}
 
-              <SubtotalRow label="Total (Trading)" amount={pl.tradingCreditTotal} />
+              <SubtotalRow label={`Total (${sec1Label.split(" ")[0]})`} amount={pl.tradingCreditTotal} />
 
               {/* === P&L ACCOUNT — CREDIT === */}
-              <SectionDivider label="Profit & Loss Account" />
+              <SectionDivider label={sec2Label} />
 
               {/* Gross Profit b/d */}
-              {pl.grossProfit >= 0 && (
-                <tr>
-                  <td className={`${tdCls} text-green-700 font-semibold`}>Gross Profit b/d</td>
-                  <td className="text-right font-mono text-[12px] font-semibold text-green-700 px-3">{fmt(pl.grossProfit)}</td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
+              {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, false)}
 
               {/* Indirect Income */}
               {options.showSecondLevel ? (
@@ -383,9 +442,7 @@ export default function PLHorizontal({ pl, options, onDrillDown, onClosingStockU
               )}
 
               {/* Net Loss */}
-              {pl.netProfit < 0 && (
-                <SubtotalRow label={`${pl.netProfitLabel} (transferred to Balance Sheet)`} amount={Math.abs(pl.netProfit)} highlight />
-              )}
+              {pl.netProfit < 0 && renderNetProfitRow(pl.netProfit)}
 
               <GrandTotal amount={pl.grandCreditTotal} side="Cr" />
             </tbody>

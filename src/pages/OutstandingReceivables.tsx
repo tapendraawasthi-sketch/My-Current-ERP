@@ -83,6 +83,24 @@ const OutstandingReceivables: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState<ReceivableRow | null>(null);
   const [partyFilter, setPartyFilter] = useState("");
+  const [showOverdueOnly, setShowOverdueOnly] = useState(false);
+  const [expandedParties, setExpandedParties] = useState<Set<string>>(new Set());
+
+  const toggleParty = (partyId: string) => {
+    setExpandedParties((prev) => {
+      const next = new Set(prev);
+      next.has(partyId) ? next.delete(partyId) : next.add(partyId);
+      return next;
+    });
+  };
+
+  const getAgingStyle = (daysOverdue: number) => {
+    if (daysOverdue <= 0)  return { background: "transparent", color: "#374151", borderLeft: "3px solid transparent" };
+    if (daysOverdue <= 30) return { background: "#fffbeb",    color: "#92400e",  borderLeft: "3px solid #f59e0b" };
+    if (daysOverdue <= 60) return { background: "#fff7ed",    color: "#9a3412",  borderLeft: "3px solid #f97316" };
+    if (daysOverdue <= 90) return { background: "#fef2f2",    color: "#991b1b",  borderLeft: "3px solid #ef4444" };
+    return                        { background: "#fef2f2",    color: "#7f1d1d",  borderLeft: "3px solid #991b1b" };
+  };
 
   // Fix: use getDB() — default import, NOT named { db }
   const db = getDB();
@@ -192,11 +210,41 @@ const OutstandingReceivables: React.FC = () => {
         r.partyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         r.invoiceNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (r.partyPan ?? "").includes(searchTerm);
-      return matchStatus && matchParty && matchSearch;
+      const matchOverdue = showOverdueOnly ? r.daysOverdue > 0 : true;
+      return matchStatus && matchParty && matchSearch && matchOverdue;
     });
-  }, [receivableRows, statusFilter, partyFilter, searchTerm]);
+  }, [receivableRows, statusFilter, partyFilter, searchTerm, showOverdueOnly]);
 
   // ── Totals ────────────────────────────────────────────────────────────────
+  
+  const groupedByParty = useMemo(() => {
+    const map = new Map<string, {
+      partyName: string;
+      partyId: string;
+      invoices: ReceivableRow[];
+      total: number;
+      avgDaysOverdue: number;
+    }>();
+
+    for (const inv of filteredRows) {
+      const key = inv.partyId || inv.partyName || "unknown";
+      const outstanding = inv.outstandingAmount;
+      if (outstanding <= 0) continue;
+
+      const days = inv.daysOverdue;
+
+      if (!map.has(key)) {
+        map.set(key, { partyName: inv.partyName || "—", partyId: inv.partyId || "", invoices: [], total: 0, avgDaysOverdue: 0 });
+      }
+      const group = map.get(key)!;
+      group.invoices.push(inv);
+      group.total += outstanding;
+      group.avgDaysOverdue = (group.avgDaysOverdue * (group.invoices.length - 1) + days) / group.invoices.length;
+    }
+
+    return Array.from(map.values()).sort((a, b) => b.total - a.total);
+  }, [filteredRows]);
+  
   const totals = useMemo(
     () => ({
       original: filteredRows.reduce((s, r) => s + r.originalAmount, 0),
@@ -327,6 +375,34 @@ const OutstandingReceivables: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-2">
+
+        <button
+          type="button"
+          onClick={() => setShowOverdueOnly((v) => !v)}
+          style={{
+            height: 30,
+            padding: "0 12px",
+            fontSize: 11,
+            fontWeight: 700,
+            background: showOverdueOnly ? "#fee2e2" : "#ffffff",
+            border: `1px solid ${showOverdueOnly ? "#fca5a5" : "#d1d5db"}`,
+            borderRadius: 4,
+            color: showOverdueOnly ? "#dc2626" : "#374151",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+            transition: "all 150ms ease",
+          }}
+        >
+          {showOverdueOnly ? "⚠ Overdue Only" : "All Invoices"}
+          {showOverdueOnly && (
+            <span style={{ background: "#dc2626", color: "#ffffff", borderRadius: 9999, padding: "0 5px", fontSize: 9 }}>
+              {groupedByParty.reduce((s, g) => s + g.invoices.filter(inv => inv.daysOverdue > 0).length, 0)}
+            </span>
+          )}
+        </button>
+  
         <div className="mb-2">
           <ReportDateRangePicker
             value={dateRange}
@@ -386,130 +462,142 @@ const OutstandingReceivables: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[850px]">
+            <table className="report-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+              <colgroup>
+                <col style={{ width: "5%" }} />   {/* expand */}
+                <col style={{ width: "30%" }} />  {/* name */}
+                <col style={{ width: "12%" }} />  {/* invoice no */}
+                <col style={{ width: "10%" }} />  {/* date */}
+                <col style={{ width: "10%" }} />  {/* due date */}
+                <col style={{ width: "10%" }} />  {/* days overdue */}
+                <col style={{ width: "13%" }} />  {/* outstanding */}
+                <col style={{ width: "10%" }} />  {/* action */}
+              </colgroup>
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Party
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Invoice No.
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                    Date
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                    Due Date
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Original
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Received
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Outstanding
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                    Days
-                  </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                    Status
-                  </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-14">
-                    View
-                  </th>
+                <tr style={{ background: "#f5f6fa", borderBottom: "2px solid #e5e7eb" }}>
+                  <th style={{ width: 36 }} />
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party / Invoice</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Inv. No.</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Due Date</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days Overdue</th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Outstanding</th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredRows.length === 0 ? (
+                {groupedByParty.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="px-3 py-12 text-center text-[12px] text-gray-400">
-                      No outstanding receivables found for the selected criteria.
+                    <td colSpan={8} className="px-3 py-12 text-center text-[12px] text-gray-400">
+                      No outstanding receivables found.
                     </td>
                   </tr>
                 ) : (
-                  filteredRows.map((row: ReceivableRow) => (
-                    <tr
-                      key={`${row.invoiceId}`}
-                      className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => setSelectedRow(row)}
-                    >
-                      <td className="px-3 py-2.5">
-                        <div className="text-[12px] font-semibold text-gray-800">
-                          {row.partyName}
-                        </div>
-                        {row.partyPan && (
-                          <div className="text-[10px] text-gray-500 font-mono">{row.partyPan}</div>
-                        )}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
-                        {row.invoiceNo}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {row.dateNepali || row.invoiceDate}
-                      </td>
-                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        {row.dueDate || "—"}
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                        {money(row.originalAmount)}
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-green-600">
-                        {row.paidAmount > 0 ? money(row.paidAmount) : "—"}
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-[#1557b0]">
-                        {money(row.outstandingAmount)}
-                      </td>
-                      <td className="px-3 py-2.5 text-right text-[12px]">
-                        <span className={getOverdueClass(row.daysOverdue)}>
-                          {row.daysOverdue > 0 ? row.daysOverdue : "—"}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span
-                          className={`inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded ${getStatusBadge(
-                            row.paymentStatus,
-                          )}`}
+                  groupedByParty.map((group) => {
+                    const isExpanded = expandedParties.has(group.partyId || group.partyName);
+                    const groupKey = group.partyId || group.partyName;
+                    const avgStyle = getAgingStyle(Math.round(group.avgDaysOverdue));
+
+                    return (
+                      <React.Fragment key={groupKey}>
+                        {/* Party group header row */}
+                        <tr
+                          style={{
+                            background: "#f9fafb",
+                            cursor: "pointer",
+                            borderBottom: "1px solid #e5e7eb",
+                            borderLeft: avgStyle.borderLeft,
+                          }}
+                          onClick={() => toggleParty(groupKey)}
                         >
-                          {row.paymentStatus}
-                        </span>
-                      </td>
-                      <td
-                        className="px-3 py-2.5 text-center"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedRow(row);
-                        }}
-                      >
-                        <button
-                          type="button"
-                          className="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-[#1557b0] hover:bg-[#1557b0]/10 rounded transition-colors mx-auto"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                          <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                            <span style={{ fontSize: 11, color: "#6b7280", transform: isExpanded ? "rotate(90deg)" : "none", display: "inline-block", transition: "transform 150ms ease" }}>
+                              ▶
+                            </span>
+                          </td>
+                          <td style={{ padding: "8px 10px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
+                            {group.partyName}
+                            <span style={{ fontSize: 10, color: "#9ca3af", fontWeight: 400, marginLeft: 6 }}>
+                              {group.invoices.length} bill{group.invoices.length > 1 ? "s" : ""}
+                            </span>
+                          </td>
+                          <td colSpan={3} style={{ padding: "8px 10px", fontSize: 10, color: "#9ca3af" }}>
+                            Avg overdue: {Math.round(group.avgDaysOverdue)} days
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono font-bold" style={{ color: avgStyle.color }}>
+                            Rs. {group.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td colSpan={2} />
+                        </tr>
+
+                        {/* Nested invoice rows — shown when expanded */}
+                        {isExpanded && group.invoices.map((inv) => {
+                          const outstanding = inv.outstandingAmount;
+                          const daysOverdue = inv.daysOverdue;
+                          const rowStyle = getAgingStyle(daysOverdue);
+
+                          return (
+                            <tr key={inv.invoiceId} style={{ background: rowStyle.background, borderBottom: "1px solid #f3f4f6", borderLeft: rowStyle.borderLeft }}>
+                              <td />
+                              <td style={{ padding: "7px 10px 7px 24px", fontSize: 11, color: "#374151" }}>
+                                {inv.invoiceNo || inv.invoiceId?.slice(0, 8)}
+                              </td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, fontFamily: "monospace", color: "#374151" }}>
+                                {inv.invoiceNo}
+                              </td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, color: "#6b7280" }}>{inv.dateNepali || inv.invoiceDate}</td>
+                              <td style={{ padding: "7px 10px", fontSize: 11, color: daysOverdue > 0 ? "#dc2626" : "#6b7280" }}>
+                                {inv.dueDate || "—"}
+                              </td>
+                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}>
+                                {daysOverdue > 0 ? (
+                                  <span style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    background: "#fee2e2",
+                                    color: "#991b1b",
+                                    borderRadius: 9999,
+                                    padding: "1px 8px",
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                  }}>
+                                    {daysOverdue}d
+                                  </span>
+                                ) : (
+                                  <span style={{ color: "#059669", fontSize: 10, fontWeight: 600 }}>Not due</span>
+                                )}
+                              </td>
+                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ fontWeight: 600, color: rowStyle.color }}>
+                                {outstanding.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                              </td>
+                              <td style={{ padding: "7px 10px", textAlign: "center" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedRow(inv)}
+                                  style={{ height: 22, padding: "0 8px", fontSize: 10, fontWeight: 600, background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 3, color: "#1e40af", cursor: "pointer" }}
+                                >
+                                  View
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })
                 )}
               </tbody>
-
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Total ({filteredRows.length} invoices)
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                      {money(totals.original)}
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-green-600">
-                      {money(totals.paid)}
-                    </td>
+                    <td colSpan={4} />
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
                       {money(totals.outstanding)}
                     </td>
-                    <td colSpan={3} />
+                    <td />
                   </tr>
                 </tfoot>
               )}

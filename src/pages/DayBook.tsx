@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useStore } from "../store/useStore";
 import {
   Download,
@@ -122,6 +122,34 @@ const DayBook: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<DayBookEntry | null>(null);
   const [viewMode, setViewMode] = useState<"condensed" | "detailed">("condensed");
+
+  const [jumpQuery, setJumpQuery] = useState("");
+  const jumpInputRef = useRef<HTMLInputElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const handleJump = (e: React.KeyboardEvent<HTMLInputElement> | { key: string }) => {
+    if (e.key !== "Enter") return;
+    const query = jumpQuery.trim().toLowerCase();
+    if (!query) return;
+
+    const rows = tableRef.current?.querySelectorAll("[data-voucher-no]") || [];
+    let found: Element | null = null;
+    rows.forEach((row) => {
+      if ((row.getAttribute("data-voucher-no") || "").toLowerCase().includes(query)) {
+        found = row;
+      }
+    });
+
+    if (found) {
+      (found as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+      (found as HTMLElement).style.background = "#fef3c7";
+      (found as HTMLElement).style.transition = "background 1.5s ease";
+      setTimeout(() => {
+        if (found) (found as HTMLElement).style.background = "";
+      }, 1500);
+      setJumpQuery("");
+    }
+  };
 
   // ── Build day book entries from vouchers ────────────────────────────────
   const dayBookEntries = useMemo<DayBookEntry[]>(() => {
@@ -365,6 +393,35 @@ const DayBook: React.FC = () => {
             Detailed
           </button>
         </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+          <input
+            ref={jumpInputRef}
+            type="text"
+            value={jumpQuery}
+            onChange={(e) => setJumpQuery(e.target.value)}
+            onKeyDown={handleJump}
+            placeholder="Jump to voucher #"
+            style={{
+              width: 160,
+              height: 30,
+              padding: "0 10px",
+              fontSize: 12,
+              border: "1px solid #d1d5db",
+              borderRadius: 4,
+              background: "#ffffff",
+              outline: "none",
+            }}
+            onFocus={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0"; }}
+            onBlur={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#d1d5db"; }}
+          />
+          <button
+            onClick={() => handleJump({ key: "Enter" } as any)}
+            style={{ height: 30, padding: "0 10px", background: "#f5f6fa", border: "1px solid #d1d5db", borderRadius: 4, fontSize: 11, cursor: "pointer" }}
+          >
+            Find
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -414,8 +471,8 @@ const DayBook: React.FC = () => {
           </p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[700px]">
+        <div className="overflow-x-auto" ref={tableRef}>
+          <table className="report-table w-full min-w-[700px]">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
@@ -459,6 +516,7 @@ const DayBook: React.FC = () => {
                     return (
                       <React.Fragment key={entry.id as string}>
                         <tr
+                          data-voucher-no={String(entry.voucherNo) || ""}
                           className="hover:bg-gray-50 cursor-pointer"
                           onClick={() => setSelectedEntry(entry)}
                         >
@@ -688,7 +746,7 @@ const DayBook: React.FC = () => {
                     Ledger Entries
                   </p>
                   <div className="border border-gray-200 rounded-md overflow-hidden">
-                    <table className="w-full text-[11px]">
+                    <table className="report-table w-full text-[11px]">
                       <thead>
                         <tr className="bg-[#f5f6fa] border-b border-gray-200">
                           <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">

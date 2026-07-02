@@ -518,9 +518,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
         </header>
 
-        <main style={{ flex: 1, overflowY: "auto", padding: 16, paddingBottom: 72, background: THEME.bg }}
-          className="transition-opacity duration-150">
-          {children}
+        <main style={{ flex: 1, overflowY: "auto", padding: 16, paddingBottom: 72, background: "#f5f6fa" }}>
+          <div key={currentPage} className="page-enter" style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+            {children}
+          </div>
         </main>
 
         <nav
@@ -607,11 +608,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <TopMenuBar />
       <BusyMenuBar />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <main
-          className="transition-opacity duration-150"
-          style={{ flex: 1, overflowY: "auto", padding: 20, background: THEME.bg }}
-        >
-          {children}
+        <main style={{ flex: 1, overflowY: "auto", padding: 20, background: "#f5f6fa" }}>
+          <div key={currentPage} className="page-enter" style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+            {children}
+          </div>
         </main>
         <ShortcutSidebar onShortcut={handleSidebarShortcut} />
       </div>

@@ -23,6 +23,7 @@ interface AgingRow {
   partyId: string;
   partyName: string;
   partyPan?: string;
+  partyPhone?: string;
   buckets: AgingBucket;
 }
 
@@ -71,6 +72,75 @@ function addBuckets(a: AgingBucket, b: Partial<AgingBucket>): AgingBucket {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
+
+const AgingBar: React.FC<{ totals: AgingBucket, direction: "receivable" | "payable" }> = ({ totals, direction }) => {
+  const segments = [
+    { label: "Current",   value: totals.current, color: "#059669", pct: (totals.current / totals.total) * 100 },
+    { label: "1-30 days", value: totals.days1to30,   color: "#d97706", pct: (totals.days1to30   / totals.total) * 100 },
+    { label: "31-60 days",value: totals.days31to60,  color: "#f59e0b", pct: (totals.days31to60  / totals.total) * 100 },
+    { label: "61-90 days",value: totals.days61to90,  color: "#ef4444", pct: (totals.days61to90  / totals.total) * 100 },
+    { label: "90+ days",  value: totals.over90, color: "#991b1b", pct: (totals.over90 / totals.total) * 100 },
+  ];
+
+  const fmt = (n: number) =>
+    "Rs. " + (n || 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+  return (
+    <div style={{
+      background: "#ffffff",
+      border: "1px solid #e5e7eb",
+      borderRadius: 6,
+      padding: "14px 16px",
+      marginBottom: 12,
+    }}>
+      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280", marginBottom: 10 }}>
+        {direction === "receivable" ? "Receivables" : "Payables"} Aging Overview — Total: {fmt(totals.total)}
+      </div>
+
+      {/* Stacked bar */}
+      <div style={{
+        display: "flex",
+        height: 12,
+        borderRadius: 6,
+        overflow: "hidden",
+        background: "#f3f4f6",
+        marginBottom: 10,
+      }}>
+        {segments.map((seg) =>
+          seg.pct > 0 ? (
+            <div
+              key={seg.label}
+              title={`${seg.label}: ${fmt(seg.value)} (${seg.pct.toFixed(1)}%)`}
+              style={{
+                width: `${seg.pct}%`,
+                background: seg.color,
+                transition: "width 600ms ease",
+                minWidth: seg.pct > 0 ? 2 : 0,
+              }}
+            />
+          ) : null
+        )}
+      </div>
+
+      {/* Legend row */}
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+        {segments.map((seg) => (
+          <div key={seg.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: seg.color, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: "#374151" }}>{seg.label}</span>
+            <span style={{ fontSize: 10, fontFamily: "'Courier New', monospace", fontWeight: 700, color: seg.color }}>
+              {fmt(seg.value)}
+            </span>
+            <span style={{ fontSize: 9, color: "#9ca3af" }}>
+              ({(seg.pct || 0).toFixed(0)}%)
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const AgingReport: React.FC = () => {
   const { parties, companySettings } = useStore();
 
@@ -81,6 +151,7 @@ const AgingReport: React.FC = () => {
   const asOfDate = dateRange.toDate;
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
+  const [reminderParty, setReminderParty] = useState<{ name: string; phone?: string; outstanding: number; days: number } | null>(null);
 
   // Fix: use getDB() — default import, not named { db }
   const db = getDB();
@@ -134,11 +205,13 @@ const AgingReport: React.FC = () => {
       const partyName =
         inv.partyName ?? parties.find((p: any) => p.id === partyId)?.name ?? "Unknown";
       const partyPan = inv.partyPan ?? parties.find((p: any) => p.id === partyId)?.pan;
+      const party = parties.find((p: any) => p.id === partyId);
+      const partyPhone = party?.phone || party?.mobile;
 
       const existing = partyMap.get(partyId) ?? {
         partyId,
         partyName,
-        partyPan,
+        partyPan, partyPhone,
         buckets: emptyBucket(),
       };
 
@@ -260,6 +333,9 @@ const AgingReport: React.FC = () => {
         </div>
       </div>
 
+      {/* Visual Stacked Bar */}
+      {filteredRows.length > 0 && <AgingBar totals={grandTotal} direction={direction} />}
+
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-3">
         <div className="flex items-center rounded-md border border-gray-300 overflow-hidden">
@@ -318,7 +394,7 @@ const AgingReport: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px]">
+            <table className="report-table w-full min-w-[900px]">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -344,6 +420,12 @@ const AgingReport: React.FC = () => {
                   </th>
                   <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                     Total
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Contact
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                    Action
                   </th>
                 </tr>
               </thead>
@@ -382,6 +464,40 @@ const AgingReport: React.FC = () => {
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
                         {money(row.buckets.total)}
                       </td>
+                      <td style={{ padding: "7px 10px", fontSize: 11, color: "#374151" }}>
+                        {row.partyPhone ? (
+                          <a href={`tel:${row.partyPhone}`} style={{ color: "#1557b0", textDecoration: "none", fontFamily: "monospace" }}>
+                            {row.partyPhone}
+                          </a>
+                        ) : (
+                          <span style={{ color: "#d1d5db" }}>—</span>
+                        )}
+                      </td>
+                      <td style={{ padding: "7px 10px", textAlign: "center" }}>
+                        <button
+                          type="button"
+                          onClick={() => setReminderParty({
+                            name: row.partyName || "Party",
+                            phone: row.partyPhone,
+                            outstanding: row.buckets.total,
+                            days: row.buckets.over90 > 0 ? 90 : row.buckets.days61to90 > 0 ? 60 : row.buckets.days31to60 > 0 ? 30 : 0,
+                          })}
+                          style={{
+                            height: 24,
+                            padding: "0 8px",
+                            fontSize: 10,
+                            fontWeight: 600,
+                            background: "#fef3c7",
+                            border: "1px solid #d97706",
+                            borderRadius: 4,
+                            color: "#92400e",
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Remind
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -411,6 +527,7 @@ const AgingReport: React.FC = () => {
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
                       {money(grandTotal.total)}
                     </td>
+                    <td colSpan={2} />
                   </tr>
                 </tfoot>
               )}

@@ -7,6 +7,7 @@ import LedgerDrillPanel from "../components/reports/LedgerDrillPanel";
 import RebuildBalancesAction from "../components/reports/RebuildBalancesAction";
 import { getDB } from "../lib/db";
 import { getProfitDecimalPlaces } from "../lib/utils";
+import { formatADToBS } from "../lib/nepaliDate";
 
 function buildPLTree(
   accounts: any[],
@@ -184,8 +185,8 @@ const IncomeExpenditureAccount: React.FC = () => {
       />
 
       <ReportShell
-        title="Income & Expenditure Account"
-        subtitle="Indirect Income and Administrative Expenses"
+        title="Income &amp; Expenditure Account"
+        subtitle="For non-profit / trust entities — Nepal Accounting Standards"
         onPrint={() => window.print()}
         onExport={handleExport}
         extraActions={extraActions}
@@ -201,6 +202,31 @@ const IncomeExpenditureAccount: React.FC = () => {
 
           return (
             <div className="space-y-4">
+              <div style={{
+                textAlign: "center",
+                padding: "16px 0 12px",
+                borderBottom: "1px solid #e5e7eb",
+                marginBottom: 16,
+              }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#111827" }}>
+                  {useStore.getState().companySettings?.companyNameEn || useStore.getState().companySettings?.name || "Company Name"}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginTop: 3 }}>
+                  Income &amp; Expenditure Account
+                </div>
+                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
+                  For the period from {formatADToBS(reportOptions.fromDate)} to {formatADToBS(reportOptions.toDate)}
+                </div>
+                <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>
+                  ({reportOptions.fromDate} to {reportOptions.toDate})
+                </div>
+                {useStore.getState().companySettings?.panNumber && (
+                  <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>
+                    PAN: {useStore.getState().companySettings?.panNumber}
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Income */}
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -244,20 +270,29 @@ const IncomeExpenditureAccount: React.FC = () => {
               </div>
 
               {/* Surplus / Deficit */}
-              <div
-                className={`rounded-lg border p-4 ${
-                  surplus >= 0
-                    ? "bg-green-50 border-green-200 text-green-700"
-                    : "bg-red-50 border-red-200 text-red-700"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[13px]">
-                    {surplus >= 0 ? "Surplus" : "Deficit"}
-                  </span>
-                  <span className="font-mono font-bold text-[15px]">{fmtAmt(surplus)}</span>
-                </div>
-              </div>
+              <table className="w-full">
+                <tbody>
+                  <tr style={{
+                    background: surplus >= 0 ? "#f0fdf4" : "#fef2f2",
+                    borderTop: "2px solid #d1d5db",
+                    boxShadow: `inset 0 -4px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${surplus >= 0 ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}`,
+                  }}>
+                    <td style={{ padding: "12px 16px" }}>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
+                        {surplus >= 0 ? "Surplus for the Period" : "Deficit for the Period"}
+                      </div>
+                      <div style={{ fontSize: 10, color: "#9ca3af", fontStyle: "italic", marginTop: 2 }}>
+                        {surplus >= 0
+                          ? "Transferred to Corpus / General Fund"
+                          : "Charged to Corpus / General Fund"}
+                      </div>
+                    </td>
+                    <td className="num-cell-bold" style={{ color: surplus >= 0 ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px", textAlign: "right" }}>
+                      {Math.abs(surplus).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
               {drillPanel.open && (
                 <LedgerDrillPanel

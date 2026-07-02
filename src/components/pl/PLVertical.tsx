@@ -9,6 +9,7 @@ interface Props {
   pl: PLComputation;
   options: PLReportOptions;
   onDrillDown: (state: PLDrillState) => void;
+  mode?: "pl" | "ie";
 }
 
 function VRow({
@@ -110,17 +111,21 @@ function AccountGroup({
   );
 }
 
-export default function PLVertical({ pl, options, onDrillDown }: Props) {
+export default function PLVertical({ pl, options, onDrillDown, mode = "pl" }: Props) {
   const colCount = options.showPercentage ? 3 : 2;
 
   const totalRevenue = pl.sales.total + pl.directIncome.total;
   const cogs = pl.openingStock + pl.purchases.total + pl.directExpenses.total - pl.closingStock;
 
+  const title = mode === "ie" ? "Income & Expenditure Account (Vertical)" : "Vertical Profit & Loss (Waterfall)";
+  const grossLabel = mode === "ie" ? "Excess of Income over Expenditure (Gross)" : pl.grossProfitLabel;
+  const netLabel = mode === "ie" ? (pl.netProfit >= 0 ? "Surplus for the Period" : "Deficit for the Period") : pl.netProfitLabel;
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm max-w-4xl mx-auto">
       <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-semibold text-gray-800">Vertical Profit & Loss (Waterfall)</h3>
+          <h3 className="text-[14px] font-semibold text-gray-800">{title}</h3>
           <p className="text-[11px] text-gray-500 mt-0.5">
             For the period: {pl.fromDate} to {pl.toDate}
           </p>
@@ -172,7 +177,7 @@ export default function PLVertical({ pl, options, onDrillDown }: Props) {
           <VRow label="Total Cost of Goods Sold" amount={cogs} bold indent={1} sign={-1} />
 
           {/* Gross Profit */}
-          <VRow label={pl.grossProfitLabel} amount={pl.grossProfit} bold highlight isTotal pct={options.showPercentage ? (Math.abs(pl.grossProfit) / pl.revenueBase) * 100 : undefined} />
+          <VRow label={grossLabel} amount={pl.grossProfit} bold highlight isTotal pct={options.showPercentage ? (Math.abs(pl.grossProfit) / pl.revenueBase) * 100 : undefined} />
 
           {/* Indirect items */}
           <VRow label="Add: Indirect Income" amount={pl.indirectIncome.total} indent={1} clickable onClick={() => onDrillDown({ level: 1, selectedGroupId: "indirect-income", selectedGroupLabel: "Indirect Income" })} pct={options.showPercentage ? (pl.indirectIncome.total / pl.revenueBase) * 100 : undefined} />
@@ -182,7 +187,7 @@ export default function PLVertical({ pl, options, onDrillDown }: Props) {
           <AccountGroup lines={pl.indirectExpenses.lines} options={options} onDrillDown={onDrillDown} sign={-1} groupId="indirect-expenses" groupLabel="Indirect Expenses" />
 
           {/* Net Profit */}
-          <VRow label={pl.netProfitLabel} amount={pl.netProfit} bold highlight isTotal pct={options.showPercentage ? (Math.abs(pl.netProfit) / pl.revenueBase) * 100 : undefined} />
+          <VRow label={netLabel} amount={pl.netProfit} bold highlight isTotal pct={options.showPercentage ? (Math.abs(pl.netProfit) / pl.revenueBase) * 100 : undefined} />
         </tbody>
       </table>
     </div>

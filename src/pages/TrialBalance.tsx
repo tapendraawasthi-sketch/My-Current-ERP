@@ -573,35 +573,48 @@ export default function TrialBalance() {
   };
 
   // ─── Views ─────────────────────────────────────────────────────────────────
-  const OptionsPanel = () => (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm no-print">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[14px] font-bold text-gray-800">Trial Balance Options</h3>
-        {generated && (
+  const Drawer = () => (
+    <>
+      {showOptions && (
+        <div
+          onClick={() => setShowOptions(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.15)",
+            zIndex: 40,
+          }}
+        />
+      )}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          height: "100vh",
+          width: 340,
+          background: "#ffffff",
+          borderLeft: "1px solid #e5e7eb",
+          boxShadow: "-4px 0 24px rgba(0,0,0,0.08)",
+          zIndex: 50,
+          transform: showOptions ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 220ms cubic-bezier(0.4, 0, 0.2, 1)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ padding: "14px 16px", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#f5f6fa" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>Report Options</span>
           <button
             onClick={() => setShowOptions(false)}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: 18, lineHeight: 1 }}
           >
-            Hide Options
+            ×
           </button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Report Type</label>
-          <select
-            value={options.variant}
-            onChange={(e) => setOpt("variant", e.target.value)}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-          >
-            <option value="closing-alphabetical">Closing Trial — Alphabetical</option>
-            <option value="closing-groupwise">Closing Trial — Group Wise</option>
-            <option value="opening">Opening Trial Balance</option>
-          </select>
         </div>
 
-        <div className="md:col-span-2">
+        <div style={{ flex: 1, overflowY: "auto", padding: 16 }} className="flex flex-col gap-4">
           <ReportDateRangePicker
             value={{ fromDate: options.fromDate, toDate: options.toDate }}
             onChange={(r) => {
@@ -611,117 +624,91 @@ export default function TrialBalance() {
             label=""
             compact
           />
-        </div>
 
-        <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Display Mode</label>
-          <div className="flex gap-4 h-8 items-center">
-            <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
-              <input
-                type="radio"
-                name="displayMode"
-                value="balance-only"
-                checked={options.displayMode === "balance-only"}
-                onChange={() => setOpt("displayMode", "balance-only")}
-                className="accent-[#1557b0]"
-              />
-              Balance Only
-            </label>
-            <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
-              <input
-                type="radio"
-                name="displayMode"
-                value="detailed"
-                checked={options.displayMode === "detailed"}
-                onChange={() => setOpt("displayMode", "detailed")}
-                className="accent-[#1557b0]"
-              />
-              Detailed
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-[11px] font-medium text-gray-600 mb-1">Group Filter</label>
-          <div className="flex gap-4 h-8 items-center">
-            <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
-              <input
-                type="radio"
-                name="groupFilter"
-                value="all"
-                checked={options.groupFilter === "all"}
-                onChange={() => setOpt("groupFilter", "all")}
-                className="accent-[#1557b0]"
-              />
-              All
-            </label>
-            <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
-              <input
-                type="radio"
-                name="groupFilter"
-                value="specific"
-                checked={options.groupFilter === "specific"}
-                onChange={() => setOpt("groupFilter", "specific")}
-                className="accent-[#1557b0]"
-              />
-              Specific
-            </label>
-          </div>
-        </div>
-
-        {options.groupFilter === "specific" && (
           <div>
-            <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Group</label>
-            <select
-              value={options.selectedGroupId}
-              onChange={(e) => setOpt("selectedGroupId", e.target.value)}
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            >
-              <option value="">— All Groups —</option>
-              {accounts
-                .filter((a) => a.isGroup)
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-2 pt-1 md:col-span-2">
-          <label className="block text-[11px] font-medium text-gray-600 mb-0.5">Additional Options</label>
-          <div className="flex flex-wrap gap-4">
-            {[
-              { key: "showZeroBalance", label: "Show Zero Balance" },
-              { key: "showPercentage", label: "Show %" },
-              { key: "showPrevYear", label: "Prev Year" },
-              { key: "roundOff", label: "Round Off" },
-            ].map(({ key, label }) => (
-              <label key={key} className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">Group Filter</label>
+            <div className="flex gap-4 h-8 items-center">
+              <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
                 <input
-                  type="checkbox"
-                  checked={options[key as keyof TBOptions] as boolean}
-                  onChange={(e) => setOpt(key as keyof TBOptions, e.target.checked)}
+                  type="radio"
+                  name="groupFilter"
+                  value="all"
+                  checked={options.groupFilter === "all"}
+                  onChange={() => setOpt("groupFilter", "all")}
                   className="accent-[#1557b0]"
                 />
-                {label}
+                All
               </label>
-            ))}
+              <label className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
+                <input
+                  type="radio"
+                  name="groupFilter"
+                  value="specific"
+                  checked={options.groupFilter === "specific"}
+                  onChange={() => setOpt("groupFilter", "specific")}
+                  className="accent-[#1557b0]"
+                />
+                Specific
+              </label>
+            </div>
+          </div>
+
+          {options.groupFilter === "specific" && (
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Group</label>
+              <select
+                value={options.selectedGroupId}
+                onChange={(e) => setOpt("selectedGroupId", e.target.value)}
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              >
+                <option value="">— All Groups —</option>
+                {accounts
+                  .filter((a) => a.isGroup)
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2 pt-1">
+            <label className="block text-[11px] font-medium text-gray-600 mb-0.5">Additional Options</label>
+            <div className="flex flex-col gap-2">
+              {[
+                { key: "showZeroBalance", label: "Show Zero Balance" },
+                { key: "showPercentage", label: "Show %" },
+                { key: "showPrevYear", label: "Prev Year" },
+                { key: "roundOff", label: "Round Off" },
+              ].map(({ key, label }) => (
+                <label key={key} className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={options[key as keyof TBOptions] as boolean}
+                    onChange={(e) => setOpt(key as keyof TBOptions, e.target.checked)}
+                    className="accent-[#1557b0]"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex justify-end mt-4 pt-4 border-t border-gray-200">
-        <button
-          onClick={handleGenerate}
-          className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
-        >
-          Generate Report
-        </button>
+        <div style={{ padding: "12px 16px", borderTop: "1px solid #e5e7eb", display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          <button onClick={() => setShowOptions(false)}
+            style={{ height: 32, padding: "0 14px", background: "#ffffff", border: "1px solid #d1d5db", borderRadius: 5, fontSize: 12, cursor: "pointer" }}>
+            Cancel
+          </button>
+          <button onClick={handleGenerate}
+            style={{ height: 32, padding: "0 14px", background: "#1557b0", color: "#ffffff", border: "none", borderRadius: 5, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+            Generate Report
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 
   const renderRow = (row: TBRow & { indent: number }, idx: number) => {
@@ -762,30 +749,30 @@ export default function TrialBalance() {
 
         {options.displayMode === "detailed" ? (
           <>
-            <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700">{row.openingDebit > 0 ? money(row.openingDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700">{row.openingCredit > 0 ? money(row.openingCredit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700">{row.txnDebit > 0 ? money(row.txnDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700">{row.txnCredit > 0 ? money(row.txnCredit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.openingDebit > 0 ? money(row.openingDebit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.openingCredit > 0 ? money(row.openingCredit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.txnDebit > 0 ? money(row.txnDebit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.txnCredit > 0 ? money(row.txnCredit, options.roundOff) : "—"}</td>
           </>
         ) : null}
 
-        <td className={`px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
+        <td className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
           {row.debit > 0 ? money(row.debit, options.roundOff) : "—"}
         </td>
-        <td className={`px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
+        <td className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
           {row.credit > 0 ? money(row.credit, options.roundOff) : "—"}
         </td>
 
         {options.showPercentage && (
-          <td className="px-3 py-2.5 text-right border-r border-gray-200 text-[11px] font-mono text-gray-600">
+          <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-600">
             {totalPct > 0 ? `${totalPct.toFixed(1)}%` : "—"}
           </td>
         )}
 
         {options.showPrevYear && (
           <>
-            <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-[12px] text-gray-500">{row.prevYearDebit > 0 ? money(row.prevYearDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 text-right border-gray-200 font-mono text-[12px] text-gray-500">{row.prevYearCredit > 0 ? money(row.prevYearCredit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-500">{row.prevYearDebit > 0 ? money(row.prevYearDebit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-gray-200 num-cell text-gray-500">{row.prevYearCredit > 0 ? money(row.prevYearCredit, options.roundOff) : "—"}</td>
           </>
         )}
       </tr>
@@ -822,7 +809,7 @@ export default function TrialBalance() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-[12px] border-collapse">
+          <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Date</th>
@@ -905,7 +892,7 @@ export default function TrialBalance() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[12px] border-collapse">
+          <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account</th>
@@ -938,6 +925,17 @@ export default function TrialBalance() {
       </div>
     );
   };
+
+  const totalClosingDebit = useMemo(
+    () => flatRows.reduce((s, r) => s + (r.debit || 0), 0),
+    [flatRows]
+  );
+  const totalClosingCredit = useMemo(
+    () => flatRows.reduce((s, r) => s + (r.credit || 0), 0),
+    [flatRows]
+  );
+  const balanceDifference = Math.abs(totalClosingDebit - totalClosingCredit);
+  const isBalanced = balanceDifference < 0.005;
 
   return (
     <div className="p-4 min-h-[calc(100vh-3rem)] bg-[#f5f6fa]">
@@ -978,50 +976,180 @@ export default function TrialBalance() {
         </div>
       </div>
 
-      {showOptions && currentDrill.type === "tb" && <OptionsPanel />}
+      <Drawer />
 
       {currentDrill.type === "tb" && generated && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" ref={printRef}>
+          <div style={{
+            display: "flex",
+            gap: 0,
+            borderBottom: "2px solid #e5e7eb",
+            background: "#ffffff",
+            padding: "0 16px",
+            marginBottom: 0,
+          }} className="no-print">
+            {[
+              { key: "closing-alphabetical", label: "Alphabetical" },
+              { key: "closing-groupwise", label: "Group-wise" },
+              { key: "opening", label: "Opening" },
+              { key: "detailed", label: "Detailed" },
+            ].map((v) => {
+              const activeKey = options.displayMode === "detailed" ? "detailed" : options.variant;
+              return (
+                <button
+                  key={v.key}
+                  type="button"
+                  onClick={() => {
+                    if (v.key === "detailed") {
+                      setOpt("variant", "closing-groupwise");
+                      setOpt("displayMode", "detailed");
+                    } else {
+                      setOpt("variant", v.key as any);
+                      setOpt("displayMode", "balance-only");
+                    }
+                  }}
+                  style={{
+                    height: 36,
+                    padding: "0 16px",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: activeKey === v.key ? "2px solid #1557b0" : "2px solid transparent",
+                    color: activeKey === v.key ? "#1557b0" : "#6b7280",
+                    fontSize: 12,
+                    fontWeight: activeKey === v.key ? 700 : 400,
+                    cursor: "pointer",
+                    marginBottom: -2,
+                    transition: "all 150ms ease",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {v.label}
+                </button>
+              );
+            })}
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, paddingBottom: 4 }}>
+              <button
+                onClick={() => setShowOptions(true)}
+                style={{ height: 28, padding: "0 10px", background: "#f5f6fa", border: "1px solid #e5e7eb", borderRadius: 4, fontSize: 11, fontWeight: 600, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+              >
+                ⚙ Options
+              </button>
+            </div>
+          </div>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" rowSpan={options.displayMode === "detailed" ? 2 : 1}>
-                    Account Name
-                  </th>
-                  {options.displayMode === "detailed" ? (
-                    <>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Opening Balance</th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Transactions</th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Closing Balance</th>
-                    </>
-                  ) : (
-                    <>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Debit (Dr)</th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Credit (Cr)</th>
-                    </>
-                  )}
-                  {options.showPercentage && (
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-20" rowSpan={options.displayMode === "detailed" ? 2 : 1}>%</th>
-                  )}
-                  {options.showPrevYear && (
-                    <>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32" rowSpan={options.displayMode === "detailed" ? 2 : 1}>Prev Yr Dr</th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32" rowSpan={options.displayMode === "detailed" ? 2 : 1}>Prev Yr Cr</th>
-                    </>
-                  )}
-                </tr>
-                {options.displayMode === "detailed" && (
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                    <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
-                  </tr>
+            <table className="report-table w-full border-collapse" style={{ tableLayout: "fixed", width: "100%" }}>
+              <colgroup>
+                {options.displayMode === "detailed" ? (
+                  <>
+                    <col style={{ width: "34%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "11%" }} />
+                  </>
+                ) : (
+                  <>
+                    <col style={{ width: "60%" }} />
+                    <col style={{ width: "20%" }} />
+                    <col style={{ width: "20%" }} />
+                  </>
                 )}
-              </thead>
+              </colgroup>
+              {options.showPrevYear ? (
+                <thead>
+                  <tr>
+                    <th colSpan={1} style={{ background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }} />
+                    <th
+                      colSpan={2}
+                      style={{
+                        background: "#6b7280",
+                        color: "#ffffff",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textAlign: "center",
+                        padding: "6px 8px",
+                        borderRight: "2px solid #ffffff",
+                      }}
+                    >
+                      Previous Year
+                    </th>
+                    <th
+                      colSpan={options.displayMode === "detailed" ? 6 : 2}
+                      style={{
+                        background: "#1557b0",
+                        color: "#ffffff",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textAlign: "center",
+                        padding: "6px 8px",
+                      }}
+                    >
+                      Current Year
+                    </th>
+                    {options.showPercentage && (
+                      <th style={{ background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }} />
+                    )}
+                  </tr>
+                  <tr>
+                    <th style={{ background: "#f5f6fa", color: "#374151", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "left", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap", borderRight: "1px solid #e5e7eb" }}>Account Name</th>
+                    <th style={{ background: "#64748b", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Prev Dr</th>
+                    <th style={{ background: "#64748b", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap", borderRight: "1px solid #e5e7eb" }}>Prev Cr</th>
+                    {options.displayMode === "detailed" ? (
+                      <>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Op Dr</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Op Cr</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Txn Dr</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Txn Cr</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Cl Dr</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Cl Cr</th>
+                      </>
+                    ) : (
+                      <>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Debit (Dr)</th>
+                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Credit (Cr)</th>
+                      </>
+                    )}
+                    {options.showPercentage && (
+                      <th style={{ background: "#f5f6fa", color: "#374151", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>%</th>
+                    )}
+                  </tr>
+                </thead>
+              ) : (
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" rowSpan={options.displayMode === "detailed" ? 2 : 1}>
+                      Account Name
+                    </th>
+                    {options.displayMode === "detailed" ? (
+                      <>
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Opening Balance</th>
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Transactions</th>
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Closing Balance</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Debit (Dr)</th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Credit (Cr)</th>
+                      </>
+                    )}
+                    {options.showPercentage && (
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-20" rowSpan={options.displayMode === "detailed" ? 2 : 1}>%</th>
+                    )}
+                  </tr>
+                  {options.displayMode === "detailed" && (
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
+                    </tr>
+                  )}
+                </thead>
+              )}
               <tbody>
                 {flatRows.length === 0 ? (
                   <tr>
@@ -1039,19 +1167,29 @@ export default function TrialBalance() {
                     <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">GRAND TOTAL</td>
                     {options.displayMode === "detailed" ? (
                       <>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-800 border-r border-gray-200" colSpan={4}></td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-[#1557b0] border-r border-gray-200">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-[#1557b0] border-r border-gray-200">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200" colSpan={4}></td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
                       </>
                     ) : (
                       <>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-[#1557b0] border-r border-gray-200">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-[#1557b0] border-r border-gray-200">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
                       </>
                     )}
                     {options.showPercentage && <td className="px-3 py-2.5 border-r border-gray-200"></td>}
-                    {options.showPrevYear && <td className="px-3 py-2.5" colSpan={2}></td>}
                   </tr>
+                  {!isBalanced && (
+                    <tr>
+                      <td colSpan={options.displayMode === "detailed" ? 5 : 1} className="num-cell-bold" style={{ color: "#dc2626", textAlign: "left", padding: "8px 10px", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
+                        Difference (should be zero)
+                      </td>
+                      <td colSpan={2} className="num-cell-bold" style={{ color: "#dc2626", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
+                        {balanceDifference.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </td>
+                      {options.showPercentage && <td style={{ background: "#fef2f2", borderTop: "2px solid #fca5a5" }}></td>}
+                    </tr>
+                  )}
                 </tfoot>
               )}
             </table>

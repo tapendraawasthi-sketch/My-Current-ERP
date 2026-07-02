@@ -133,7 +133,7 @@ export default function StockLedgerReport() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px]">
+            <table className="report-table w-full min-w-[900px]">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   {["Date", "Particular", "Reference No.", "IN Qty", "OUT Qty", "Rate", "IN Value", "OUT Value", "Balance Qty", "Balance Value"].map(h => (

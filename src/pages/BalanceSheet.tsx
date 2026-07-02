@@ -458,7 +458,7 @@ function GroupSummaryView({
           <p className="mt-1 text-[10px] text-gray-400">Groups with zero balance are still shown as per settings.</p>
         </div>
       ) : (
-        <table className="w-full">
+        <table className="report-table w-full">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
               <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account</th>
@@ -555,7 +555,7 @@ function AccountLedgerView({
           </p>
         </div>
       </div>
-      <table className="w-full">
+      <table className="report-table w-full">
         <thead>
           <tr className="bg-[#f5f6fa] border-b border-gray-200">
             <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-24">Date</th>
@@ -656,7 +656,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
             {voucher.narration}
           </div>
         )}
-        <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+        <table className="report-table w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead>
             <tr className="bg-[#f5f6fa]">
               <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Account</th>

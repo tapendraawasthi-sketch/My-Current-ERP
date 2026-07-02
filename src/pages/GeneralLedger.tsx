@@ -35,6 +35,43 @@ interface Voucher {
   lines: VoucherLine[];
 }
 
+
+const fuzzyScore = (query: string, target: string): number => {
+  const q = query.toLowerCase().trim();
+  const t = (target || "").toLowerCase();
+  if (!q) return 1;
+  if (t === q) return 100;                                   // exact match
+  if (t.startsWith(q)) return 90;                           // prefix match
+  if (t.includes(" " + q)) return 80;                       // word-start match
+  if (t.includes(q)) return 60;                             // substring match
+
+  // Character sequence match (fuzzy):
+  let score = 0;
+  let qi = 0;
+  for (let ti = 0; ti < t.length && qi < q.length; ti++) {
+    if (t[ti] === q[qi]) {
+      score += qi === 0 ? 10 : 5; // first char match worth more
+      qi++;
+    }
+  }
+  return qi === q.length ? score : 0; // return 0 if not all chars matched
+};
+
+const HighlightMatch: React.FC<{ text: string; query: string }> = ({ text, query }) => {
+  if (!query.trim()) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark style={{ background: "#fef3c7", color: "#111827", borderRadius: 2, padding: "0 1px" }}>
+        {text.slice(idx, idx + query.length)}
+      </mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+};
+
 function money(value: number): string {
   return Number(value || 0).toLocaleString("en-NP", {
     minimumFractionDigits: 2,
@@ -110,10 +147,21 @@ const GeneralLedger: React.FC = () => {
     [accountList, accountId],
   );
 
-  const filteredAccountList = useMemo(() => {
-    const q = searchAccount.toLowerCase();
+    const filteredAccountList = useMemo(() => {
+    if (!searchAccount.trim()) return accountList.filter((a) => !a.isGroup).slice(0, 100);
     return accountList
-      .filter((a) => !q || a.name.toLowerCase().includes(q) || a.code.includes(q))
+      .filter((a) => !a.isGroup)
+      .map((a) => ({
+        account: a,
+        score: Math.max(
+          fuzzyScore(searchAccount, a.name || ""),
+          fuzzyScore(searchAccount, a.code || ""),
+          fuzzyScore(searchAccount, a.group || ""),
+        ),
+      }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((x) => x.account)
       .slice(0, 100);
   }, [accountList, searchAccount]);
 
@@ -263,25 +311,66 @@ const GeneralLedger: React.FC = () => {
       onRefresh={initializeApp}
     >
       <div className="no-print bg-white border-b border-gray-200 px-4 py-2 flex gap-3 items-center">
-        <input
-          value={searchAccount}
-          onChange={(e) => setSearchAccount(e.target.value)}
-          placeholder="Search account..."
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-64"
-        />
-
-        <select
-          value={accountId}
-          onChange={(e) => setAccountId(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white min-w-[360px]"
-        >
-          <option value="">Select Account</option>
-          {filteredAccountList.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.code} - {a.name}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative", width: 400 }}>
+          <input
+            value={searchAccount}
+            onChange={(e) => {
+              setSearchAccount(e.target.value);
+              // also clear selection if typed
+              if (account && e.target.value && account.name !== e.target.value) {
+                setAccountId("");
+              }
+            }}
+            onFocus={() => {
+              if (account && searchAccount === account.name) {
+                setSearchAccount("");
+              }
+            }}
+            placeholder="Search and select account..."
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          />
+          {searchAccount && !accountId && (
+            <div style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0 0 6px 6px",
+              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              maxHeight: 300,
+              overflowY: "auto",
+              zIndex: 50,
+            }}>
+              {filteredAccountList.map((a) => (
+                <div
+                  key={a.id}
+                  onClick={() => {
+                    setAccountId(a.id);
+                    setSearchAccount(a.name);
+                  }}
+                  style={{ padding: "6px 12px", cursor: "pointer", fontSize: 12, borderBottom: "1px solid #f3f4f6" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <div style={{ fontWeight: 600, color: "#111827" }}>
+                    <HighlightMatch text={a.name} query={searchAccount} />
+                  </div>
+                  <div style={{ fontSize: 10, color: "#6b7280" }}>
+                    <HighlightMatch text={a.code} query={searchAccount} />
+                    {a.group && <span> • <HighlightMatch text={a.group} query={searchAccount} /></span>}
+                  </div>
+                </div>
+              ))}
+              {filteredAccountList.length === 0 && (
+                <div style={{ padding: "12px", fontSize: 12, color: "#6b7280", textAlign: "center" }}>
+                  No accounts found.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {account && (
@@ -303,7 +392,7 @@ const GeneralLedger: React.FC = () => {
         </div>
       )}
 
-      <table className="w-full border-collapse">
+      <table className="report-table w-full border-collapse">
         <thead className="sticky top-[36px] z-10 bg-[#f5f6fa] border-b border-gray-200">
           <tr>
             {show("date") && <Th>Date</Th>}
