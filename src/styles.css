@@ -1,1803 +1,2190 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+/* ============================================================
+   SUTRA ERP — DESIGN SYSTEM v2.0
+   Single source of truth for all design tokens.
+   Do NOT add hardcoded hex values anywhere in component files.
+   Use these CSS variables exclusively.
+   ============================================================ */
+
 @import "tailwindcss";
 
+/* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-  /* Layout backgrounds */
-  --bg: #f5f6fa; /* page background */
-  --bg-card: #ffffff; /* card/form background */
-  --bg-muted: #f5f6fa; /* muted/hover background */
-  --bg-hover: #eef2ff; /* hover/active background */
+  /* Primary Brand */
+  --color-primary:        #1557b0;
+  --color-primary-hover:  #0f4a96;
+  --color-primary-light:  #eef2ff;
+  --color-primary-border: #c7d2fe;
 
-  /* Borders — use black for the Tally-style sharp grid look */
-  --border: #000000;
-  --border-soft: #9dc07a; /* secondary/soft borders */
+  /* Semantic States */
+  --color-success:        #059669;
+  --color-success-light:  #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-warning:        #d97706;
+  --color-warning-light:  #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-danger:         #dc2626;
+  --color-danger-light:   #fef2f2;
+  --color-danger-border:  #fca5a5;
+  --color-info:           #0284c7;
+  --color-info-light:     #f0f9ff;
+  --color-info-border:    #bae6fd;
+
+  /* Surface Hierarchy */
+  --surface-page:         #f5f6fa;  /* page background — keep as-is */
+  --surface-card:         #ffffff;  /* card / panel */
+  --surface-elevated:     #f9fafb;  /* toolbar, section headers */
+  --surface-sunken:       #f4f5f7;  /* table header row */
+  --surface-row-alt:      #fafbfc;  /* alternate table row */
+  --surface-row-hover:    #eef2ff;  /* table row hover */
+
+  /* Border System */
+  --border-default:       #e5e7eb;
+  --border-emphasis:      #d1d5db;
+  --border-focus:         #1557b0;
+  --border-danger:        #dc2626;
+  --border-warning:       #d97706;
 
   /* Text */
-  --text: #000000;
-  --text-muted: #000000;
-  --accent: #000000;
+  --text-primary:         #111827;
+  --text-secondary:       #374151;
+  --text-muted:           #6b7280;
+  --text-placeholder:     #9ca3af;
+  --text-inverse:         #ffffff;
+  --text-link:            #1557b0;
+  --text-danger:          #dc2626;
+  --text-success:         #059669;
+  --text-warning:         #d97706;
 
-  /* Semantic colors (used by badges, indicators, charts) */
-  --color-positive: #059669; /* success green */
-  --color-negative: #dc2626; /* danger red */
-  --color-accent: #1557b0; /* primary blue */
-  --color-warning: #d97706; /* warning amber */
+  /* Sidebar (dark — intentional, keep as-is) */
+  --sidebar-bg:           #1e2433;
+  --sidebar-hover:        #273148;
+  --sidebar-border:       #2d3748;
+  --sidebar-active:       rgba(21, 87, 176, 0.15);
+  --sidebar-text:         #cbd5e1;
+  --sidebar-text-muted:   #64748b;
 
-  /* Surfaces */
-  --color-surface-raised: #d4eabd;
+  /* Typography Scale */
+  --text-page-title:      15px;
+  --text-page-subtitle:   11px;
+  --text-section-header:  10px;
+  --text-form-label:      11px;
+  --text-body:            12px;
+  --text-mono:            12px;
+  --text-badge:           10px;
 
-  /* Typography */
-  --font-mono: "Courier New", Courier, monospace;
+  /* Spacing */
+  --page-padding:         20px;
+  --card-padding:         16px;
+  --section-gap:          16px;
+
+  /* Radius */
+  --radius-sm:            4px;
+  --radius-md:            6px;
+  --radius-lg:            8px;
+
+  /* Shadow */
+  --shadow-card:          0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-dropdown:      0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-modal:         0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* Component Heights */
+  --h-input:    32px;
+  --h-btn-xs:   24px;
+  --h-btn-sm:   28px;
+  --h-btn-md:   32px;
+  --h-btn-lg:   36px;
+
+  /* Table */
+  --table-cell-px:  12px;
+  --table-cell-py:  8px;
 }
 
-*,
-*::before,
-*::after {
+/* ============================================================
+   SECTION 2: TYPOGRAPHY SYSTEM
+   ============================================================ */
+
+/* ── KPI / Amount Display Classes ────────────────────────────── */
+
+/* The canonical class for all large monetary values on the dashboard.
+   Previously dashboard cards used inline style fontSize: 20 with
+   Courier New scattered across multiple components. This class is
+   the single source of truth. */
+.kpi-value {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Smaller KPI for secondary / sub-metrics */
+.kpi-value-sm {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Inline amount — for table cells, form summaries, and sidebars */
+.amount {
+  font-family: "Courier New", Courier, monospace;
+  font-size: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.amount-lg {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Semantic amount colouring */
+.amount-positive { color: var(--color-success); }
+.amount-negative { color: var(--color-danger); }
+.amount-neutral  { color: var(--text-primary); }
+.amount-muted    { color: var(--text-muted); }
+
+/* ── Section Headers ─────────────────────────────────────────── */
+
+/* CRITICAL FIX: Multiple files set section header colour to
+   #000000 !important. Replace with the charcoal token instead.
+   Reserve pure black only for monetary totals. */
+.section-label {
+  font-size: var(--text-section-header);
+  font-weight: 600;           /* Was 700 — reduced for non-critical headers */
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #374151;             /* --text-secondary, NOT #000000 */
+}
+
+/* For critical totals / grand total rows — bold + slightly darker */
+.total-label {
+  font-size: var(--text-body);
+  font-weight: 700;
+  color: var(--text-primary); /* #111827 — reserved for totals */
+}
+
+/* ── Data Cell Typography Rules ──────────────────────────────── */
+
+/* RULE: Never uppercase ledger names, party names, or amounts.
+   Uppercase is only permitted on section headers and badge text.
+   Apply this class to data table cells to explicitly prevent
+   any inherited text-transform from parent containers. */
+.data-cell {
+  text-transform: none !important;
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+}
+
+.data-cell-bold {
+  text-transform: none !important;
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Status / type cells in tables — these ARE permitted to be uppercase */
+.status-cell {
+  text-transform: uppercase;
+  font-size: var(--text-badge);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ── Page Title Typography ────────────────────────────────────── */
+.page-title {
+  font-size: var(--text-page-title);  /* 15px */
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.page-subtitle {
+  font-size: var(--text-page-subtitle); /* 11px */
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ── Tabular Numeric Figures ─────────────────────────────────── */
+/* Apply to any container that displays financial figures to prevent
+   number-width jitter as values update */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Date Display ────────────────────────────────────────────── */
+.date-bs {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.date-bs-day {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.date-ad {
+  font-size: var(--text-page-subtitle);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── Profit Pulse Strip ──────────────────────────────────────── */
+.profit-pulse-strip {
+  display: flex;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.profit-pulse-cell {
+  flex: 1;
+  padding: 12px 16px;
+  border-right: 1px solid var(--border-default);
+}
+.profit-pulse-cell:last-child {
+  border-right: none;
+}
+.profit-pulse-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.profit-pulse-value {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.profit-pulse-trend {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.profit-pulse-positive { color: var(--color-success); }
+.profit-pulse-negative { color: var(--color-danger); }
+.profit-pulse-neutral  { color: var(--text-muted); }
+
+/* ── Today Activity Strip ────────────────────────────────────── */
+.activity-strip {
+  display: flex;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.activity-cell {
+  flex: 1;
+  padding: 10px 14px;
+  border-right: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+.activity-cell:last-child {
+  border-right: none;
+}
+.activity-cell:hover {
+  background: var(--surface-row-hover);
+}
+.activity-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+.activity-count {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.activity-amount {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Balance Sheet Mini Snapshot ─────────────────────────────── */
+.bs-snapshot {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.bs-snapshot-header {
+  padding: 10px 14px;
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bs-snapshot-title {
+  font-size: var(--text-section-header);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.bs-snapshot-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.bs-col {
+  padding: 12px 14px;
+}
+.bs-col-right {
+  border-left: 1px solid var(--border-default);
+}
+.bs-col-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-default);
+}
+.bs-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+}
+.bs-line-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.bs-line-amount {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.bs-subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0 3px;
+  border-top: 1px solid var(--border-default);
+  margin-top: 4px;
+}
+.bs-subtotal-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.bs-subtotal-amount {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.bs-tally-row {
+  padding: 8px 14px;
+  border-top: 2px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-elevated);
+}
+.bs-tally-balanced {
+  background: var(--color-success-light);
+  border-top-color: var(--color-success-border);
+}
+.bs-tally-unbalanced {
+  background: var(--color-danger-light);
+  border-top-color: var(--color-danger-border);
+}
+
+/* ── Alert Cards ─────────────────────────────────────────────── */
+.alert-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow: hidden;
+}
+.alert-stripe {
+  width: 4px;
+  align-self: stretch;
+  flex-shrink: 0;
+  border-radius: 0;
+  margin-right: 12px;
+}
+.alert-stripe-danger  { background: var(--color-danger); }
+.alert-stripe-warning { background: var(--color-warning); }
+.alert-stripe-info    { background: var(--color-primary); }
+.alert-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.alert-message {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.alert-action {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  margin-top: 4px;
+  display: inline-block;
+}
+.alert-action:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ── KPI Card with Left Accent Stripe ────────────────────────── */
+.kpi-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+  box-shadow: var(--shadow-card);
+}
+.kpi-card:hover {
+  border-color: var(--color-primary);
+  border-left-color: var(--color-primary);
+}
+.kpi-card-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.kpi-card-amount {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-card-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Base Reset ─────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
 }
-html,
-body,
-#root {
-  height: 100%;
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  background: var(--surface-page);
   line-height: 1.5;
-  color: #000000;
-  background-color: #f5f6fa;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── GLOBAL COLOR RESET — EVERYTHING IS BLACK TEXT ON #E4F1D9 ── */
-.green-theme {
-  --theme-text: #000000;
-  --theme-border: #000000;
-  color: var(--theme-text);
-  /* Use currentColor for borders where not explicitly overridden, which inherits properly */
-}
+/* ── CRITICAL FIX: Remove the green global overrides ────────────
+   The following overrides were causing every Radix UI popup,
+   every modal, every dropdown to inherit the green palette.
+   They are removed entirely.
+   ────────────────────────────────────────────────────────────── */
+/* DELETED:
+   .bg-white, .bg-gray-50, .bg-blue-50, .bg-green-50, .bg-purple-50 → #ebf5e2
+   These are gone. White is white. */
 
-/* ── DARK THEME EXEMPTIONS — Right sidebar + Top menu bar ── */
-/* These components intentionally use dark backgrounds (#1e2433).
-   The global color reset above must NOT apply inside them. */
-
-.top-menu-bar,
-.top-menu-bar *,
-.top-menu-bar button,
-.top-menu-bar a,
-.top-menu-dropdown,
-.top-menu-dropdown *,
-.top-menu-dropdown button,
-[data-topbar-dark],
-[data-topbar-dark] * {
-  color: unset !important;
-  border-color: unset !important;
-}
-
-/* Right sidebar (RightButtonBar / ShortcutSidebar) */
-.right-button-bar,
-.right-button-bar *,
-.right-button-bar button,
-.right-button-bar a {
-  color: unset !important;
-  border-color: unset !important;
-  background-color: unset !important;
-}
-
-/* Background overrides — only two backgrounds allowed */
-.bg-white,
-.bg-gray-50,
-.bg-gray-100,
-.bg-gray-200,
-.bg-slate-50,
-.bg-slate-100,
-.bg-blue-50,
-.bg-blue-100,
-.bg-green-50,
-.bg-green-100,
-.bg-red-50,
-.bg-red-100,
-.bg-amber-50,
-.bg-amber-100,
-.bg-yellow-50,
-.bg-yellow-100,
-.bg-emerald-50,
-.bg-purple-50,
-.bg-indigo-50 {
-  background-color: #ebf5e2 !important;
-}
-
-/* Inputs, selects, textareas — theme defaults */
-input,
-select,
-textarea {
-  background-color: #ffffff;
-  color: #111827;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-}
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid rgba(46, 125, 50, 0.2);
-  border-color: #2e7d32;
-  box-shadow: none;
-}
-input::placeholder,
-textarea::placeholder {
-  color: rgba(107, 114, 128, 0.8);
-}
-input:disabled,
-select:disabled,
-textarea:disabled {
-  background-color: #f9fafb;
-  color: #9ca3af;
-  cursor: not-allowed;
-}
-
-  /* Buttons — default theme styling only for unstyled buttons */
-button {
-  cursor: pointer;
-}
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-button:focus-visible {
-  outline: 2px solid #2e7d32 !important;
-  outline-offset: 2px;
-}
-
-/* Dark-theme containers keep their own styles */
-.top-menu-bar button,
-.top-menu-dropdown button,
-.top-menu-item,
-.top-menu-btn {
-  background-color: transparent;
-  color: #cbd5e1;
-  border: none;
-}
-.top-menu-bar button:hover,
-.top-menu-dropdown button:hover {
-  background-color: #273148;
-  color: #ffffff;
-}
-.right-button-bar button {
-  background-color: #1e2433;
-  color: #cbd5e1;
-  border-bottom: 1px solid #2d3748;
-}
-.right-button-bar button:hover {
-  background-color: #273148;
-  color: #ffffff;
-}
-   /* Button hover handled by Tailwind classes per component */
-
-  /* Links */
-a {
-  color: #1557b0;
-  text-decoration: none;
-}
-a:hover {
-  color: #0f4a96;
-  text-decoration: underline;
-}
-.right-button-bar a {
-  color: #cbd5e1;
-  text-decoration: none;
-}
-.right-button-bar a:hover {
-  color: #ffffff;
-}
-.top-menu-bar a,
-.top-menu-dropdown a {
-  color: #cbd5e1;
-  text-decoration: none;
-}
-
-/* ── PAGE LAYOUT ── */
-.page-wrapper {
+/* ── Layout Primitives ─────────────────────────────────────── */
+.app-layout-with-topbar {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
+/* ── Page Scaffold ──────────────────────────────────────────── */
+.page-root {
+  padding: var(--page-padding);
+  background: var(--surface-page);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* Standard page header — use for every list/report page */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.page-header h1 {
+  font-size: var(--text-page-title);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.page-header p {
+  font-size: var(--text-page-subtitle);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────── */
 .page-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 8px;
-  padding: 8px 16px;
-  background: #d4eabd !important;
-  border-bottom: 1px solid #000000 !important;
-  min-height: 44px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  padding: 8px 0;
+  margin-bottom: 8px;
 }
 .page-toolbar-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 .page-toolbar-right {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.page-content-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  background: #f5f6fa !important;
+/* ── Cards ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-card);
 }
 
-.page-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #000000 !important;
-}
-.page-subtitle {
-  font-size: 12px;
-  color: #000000 !important;
-  margin-top: 1px;
-}
-
-.section-header {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #000000 !important;
-  padding: 8px 0 4px;
-  border-bottom: 1px solid #000000 !important;
-  margin-bottom: 12px;
-}
-
-/* ── TABLES ── */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.data-table thead tr {
-  background: #c9deb5 !important;
-  border-bottom: 2px solid #000000 !important;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-.data-table thead th {
-  padding: 8px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #000000 !important;
-  text-align: left;
-  white-space: nowrap;
-  border-right: 1px solid #000000 !important;
-  user-select: none;
-  background: #c9deb5 !important;
-}
-.data-table thead th:last-child {
-  border-right: none !important;
-}
-.data-table thead th.th-right {
-  text-align: right;
-}
-.data-table thead th.th-center {
-  text-align: center;
-}
-
-.data-table tbody tr {
-  border-bottom: 1px solid #000000 !important;
-}
-.data-table tbody tr:nth-child(even) {
-  background: #ebf5e2 !important;
-}
-.data-table tbody tr:hover {
-  background: #d4eabd !important;
-  cursor: pointer;
-}
-
-.data-table tbody td {
-  padding: 7px 10px;
-  color: #000000 !important;
-  vertical-align: middle;
-  border-right: 1px solid #000000 !important;
-  background: transparent;
-}
-.data-table tbody td:last-child {
-  border-right: none !important;
-}
-.data-table .amt-dr {
-  color: #1557b0 !important;
-} /* Debit — blue */
-.data-table .amt-cr {
-  color: #dc2626 !important;
-} /* Credit — red */
-
-.data-table tfoot tr {
-  background: #d4eabd !important;
-  border-top: 2px solid #000000 !important;
-  font-weight: 700;
-}
-.data-table tfoot td {
-  padding: 8px 10px;
-  font-size: 12px;
-  color: #000000 !important;
-  border-right: 1px solid #000000 !important;
-  background: #d4eabd !important;
-}
-.data-table tfoot td:last-child {
-  border-right: none !important;
-}
-
-/* ── AMOUNTS ── */
-.amt {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: right;
-  white-space: nowrap;
-  color: #000000 !important;
-}
-.amt-dr {
-  color: #000000 !important;
-}
-.amt-cr {
-  color: #000000 !important;
-}
-.amt-neutral {
-  color: #000000 !important;
-}
-.amount-cell {
-  font-family: "Courier New", Courier, monospace;
-  font-weight: 600;
-  text-align: right;
-  font-size: 13px;
-  color: #000000 !important;
-}
-.num-cell {
-  font-family: 'Courier New', Courier, monospace;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  white-space: nowrap;
-  font-size: 12px;
-}
-.num-cell-bold {
-  font-family: 'Courier New', Courier, monospace;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* ── BADGES ── */
-.badge {
+/* ── Buttons ─────────────────────────────────────────────────
+   Four variants: primary, outline, ghost, danger
+   Three sizes: sm (h-7), md (h-8 = default), lg (h-9)
+   ────────────────────────────────────────────────────────────── */
+.btn {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: 1.4;
-  background: #d4eabd !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-}
-/* Status badges — semantic colors preserved */
-.badge-posted,
-.badge-paid,
-.badge-active {
-  background: #dcfce7 !important;
-  color: #166534 !important;
-  border: 1px solid #86efac !important;
-}
-.badge-draft {
-  background: #fef9c3 !important;
-  color: #854d0e !important;
-  border-color: #ca8a04 !important;
-}
-.badge-cancelled,
-.badge-danger {
-  background: #fee2e2 !important;
-  color: #991b1b !important;
-  border-color: #dc2626 !important;
-}
-.badge-warning,
-.badge-unpaid,
-.badge-partial {
-  background: #fef3c7 !important;
-  color: #92400e !important;
-  border-color: #d97706 !important;
-}
-.badge-info {
-  background: #dbeafe !important;
-  color: #1e3a8a !important;
-  border-color: #3b82f6 !important;
-}
-.badge-inactive {
-  background: #f1f5f9 !important;
-  color: #64748b !important;
-  border-color: #94a3b8 !important;
-}
-
-/* ── FORMS ── */
-.form-wrapper,
-.form-card {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.form-header {
-  padding: 12px 16px;
-  background: #d4eabd !important;
-  border-bottom: 1px solid #000000 !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.form-section {
-  padding: 16px;
-  border-bottom: 1px solid #000000 !important;
-}
-.form-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: #000000 !important;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #000000 !important;
-}
-.form-footer {
-  padding: 10px 16px;
-  background: #d4eabd !important;
-  border-top: 2px solid #000000 !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-}
-.form-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-.form-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.form-grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-@media (max-width: 768px) {
-  .form-grid-2,
-  .form-grid-3,
-  .form-grid-4 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ── LINE TABLES ── */
-.line-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-.line-table th {
-  background: #c9deb5 !important;
-  padding: 7px 8px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-  text-align: left;
-  white-space: nowrap;
-}
-.line-table td {
-  border: 1px solid #000000 !important;
-  padding: 4px 6px;
-  vertical-align: middle;
-  background: #ebf5e2 !important;
-  color: #000000 !important;
-}
-.line-table tr:nth-child(even) td {
-  background: #d4eabd !important;
-}
-.line-table input,
-.line-table select {
-  width: 100%;
-  height: 28px;
-  padding: 0 6px;
-  font-size: 12px;
-  border: 1px solid #000000 !important;
-  background: #ebf5e2 !important;
-  color: #000000 !important;
-  border-radius: 3px;
-  outline: none;
-}
-
-/* ── TOTALS PANEL ── */
-.totals-panel {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  overflow: hidden;
-  min-width: 280px;
-}
-.totals-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 14px;
-  border-bottom: 1px solid #000000 !important;
-  font-size: 12px;
-  color: #000000 !important;
-  background: transparent;
-}
-.totals-row:last-child {
-  border-bottom: none !important;
-}
-.totals-row.total-final {
-  background: #c9deb5 !important;
-  padding: 10px 14px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #000000 !important;
-  border-top: 2px solid #000000 !important;
-}
-
-/* ── KPI CARDS ── */
-.kpi-card {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 6px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 4px;
-}
-.kpi-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: #000000 !important;
-}
-.kpi-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #000000 !important;
-}
-.kpi-value {
-  font-family: "Courier New", monospace;
-  font-size: 24px;
-  font-weight: 700;
-  color: #000000 !important;
-  line-height: 1.1;
-}
-.kpi-meta {
-  font-size: 12px;
-  color: #000000 !important;
-}
-
-/* ── TOOLBAR / REPORT ── */
-.report-toolbar,
-.toolbar-strip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  border-radius: 4px;
-}
-.search-input {
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid #000000 !important;
-  background: #ebf5e2 !important;
-  font-size: 12px;
-  color: #000000 !important;
+  font-size: var(--text-body);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  white-space: nowrap;
+  text-decoration: none;
   outline: none;
-  min-width: 200px;
-  border-radius: 4px;
+  padding: 0 12px;
+  height: var(--h-btn-md);
 }
-
-/* ── SCROLLBARS ── */
-.sidebar-scroll::-webkit-scrollbar {
-  width: 3px;
-}
-.sidebar-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #000000;
-  border-radius: 10px;
-}
-main::-webkit-scrollbar {
-  width: 5px;
-}
-main::-webkit-scrollbar-track {
-  background: #f5f6fa;
-}
-main::-webkit-scrollbar-thumb {
-  background: #000000;
-  border-radius: 10px;
-}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes dropIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.animate-fadeIn,
-.page-content {
-  animation: fadeIn 0.15s ease-out;
-}
-.animate-dropIn {
-  animation: dropIn 0.15s ease-out;
-}
-
-/* ── GLOBAL TRANSITIONS ── */
-a,
-button,
-select {
-  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, color 150ms ease;
-}
-
-/* ── TABULAR NUMS ── */
-.font-tabular,
-.amt,
-.amount-cell,
-.kpi-value,
-td.num {
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── DR/CR GLOBAL COLORING ── */
-.dr-amount {
-  color: #1b5e20 !important;
-  font-weight: 600;
-}
-.cr-amount {
-  color: #8b1e1e !important;
-  font-weight: 600;
-}
-
-/* ── SKELETON LOADER ── */
-.skeleton {
-  background: linear-gradient(90deg, #EBF5E2 25%, #D4EABD 50%, #EBF5E2 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
-}
-
-/* ── IMPROVED DISABLED STATE ── */
-button:disabled {
-  opacity: 0.45;
+.btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
+.btn-xs { height: var(--h-btn-xs); font-size: 11px; padding: 0 8px; gap: 4px; }
+.btn-sm { height: var(--h-btn-sm); font-size: 11px; padding: 0 10px; }
+.btn-lg { height: var(--h-btn-lg); font-size: 13px; padding: 0 16px; }
 
-/* ── BUSY SHELL COMPONENTS ── */
-.busy-pill {
-  display: inline-block;
-  background: #c9deb5 !important;
-  color: #000000 !important;
-  font-weight: bold;
-  font-size: 13px;
-  padding: 3px 18px;
-  text-align: center;
-  border-radius: 4px;
-  border: 1px solid #000000 !important;
+/* Primary */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--text-inverse);
+  border-color: var(--color-primary);
 }
-.busy-groupbox {
-  border: 1px solid #000000 !important;
-  padding: 12px 10px 8px;
-  position: relative;
-  margin-top: 10px;
-  border-radius: 4px;
-  background: #ebf5e2 !important;
-}
-.busy-groupbox-label {
-  position: absolute;
-  top: -8px;
-  left: 8px;
-  background: #ebf5e2 !important;
-  padding: 0 4px;
-  color: #000000 !important;
-  font-size: 11px;
-  font-weight: bold;
-}
-.busy-field-row {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 3px;
-}
-.busy-field-label {
-  color: #000000 !important;
-  min-width: 130px;
-  text-align: right;
-  padding-right: 8px;
-  padding-top: 2px;
-  flex-shrink: 0;
-}
-.busy-field-value {
-  flex: 1;
-  color: #000000 !important;
-}
-.busy-grid-row-selected {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-}
-.busy-orange-modal-header {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-  font-weight: bold;
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid #000000 !important;
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
-/* ── SIDEBAR ── */
-aside {
-  background: #d4eabd !important;
-  border-right: 1px solid #000000 !important;
+/* Outline */
+.btn-outline {
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  border-color: var(--border-emphasis);
 }
-.sidebar-active-item {
-  position: relative;
-  background-color: #c9deb5 !important;
-  color: #000000 !important;
-}
-.sidebar-active-item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3px;
-  height: 100%;
-  background-color: #000000 !important;
-  border-radius: 0 4px 4px 0;
+.btn-outline:hover:not(:disabled) {
+  background: var(--surface-elevated);
 }
 
-   /* ── MODALS / DIALOGS ── */
-[role="dialog"],
-.modal,
-.dialog {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  color: #111827;
+/* Ghost */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
 }
 
-/* ── CARDS ── */
-.card {
-  background: #ebf5e2;
-  border-color: #000000;
+/* Danger */
+.btn-danger {
+  background: var(--color-danger);
+  color: var(--text-inverse);
+  border-color: var(--color-danger);
+}
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
 }
 
-   /* ── TEXT COLOR — only force black on body text, not semantic colors ── */
-/* Semantic colors (red/green/amber/blue) are intentionally preserved */
-.text-override-black {
-  color: #000000;
+/* ── Form Controls ──────────────────────────────────────────── */
+.input,
+.select-input {
+  height: var(--h-input);
+  padding: 0 10px;
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-md);
+  width: 100%;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  line-height: 1;
+}
+.input:focus,
+.select-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(21, 87, 176, 0.12);
+}
+.input:read-only,
+.input:disabled,
+.select-input:disabled {
+  background: var(--surface-elevated);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.input::placeholder {
+  color: var(--text-placeholder);
 }
 
-   /* ── BACKGROUND — preserve semantic status colors ── */
-/* Only override the generic whites/grays to theme color */
-.bg-white,
-.bg-gray-50,
-.bg-gray-100 {
-  background-color: #ebf5e2 !important;
-}
-
-  /* ── BORDERS — preserve semantic border colors for validation and status ── */
-.border-gray-200 {
-  border-color: #e5e7eb !important;
-}
-.border-gray-300 {
-  border-color: #d1d5db !important;
-}
-
-  /* Ring colors — let components define their own focus rings */
-
-/* Divide colors */
-[class*="divide-blue"],
-[class*="divide-gray"],
-[class*="divide-slate"] {
-  border-color: #000000 !important;
-}
-
-/* ── TOTAL ROW / CLOSING ROWS ── */
-.total-row {
-  background: #d4eabd !important;
-  font-weight: 700;
+/* Search input */
+.search-input {
+  height: 30px;
+  padding: 0 8px 0 32px;
   font-size: 12px;
-  border-top: 2px solid #000000 !important;
-  color: #000000 !important;
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 120ms ease;
+  min-width: 200px;
+}
+.search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(21, 87, 176, 0.1);
 }
 
-/* ── MISC ── */
-.num {
-  font-variant-numeric: tabular-nums;
+/* Form label */
+.form-label {
+  display: block;
+  font-size: var(--text-form-label);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
 }
-.table-row-hover:hover {
-  background-color: #d4eabd !important;
-  cursor: pointer;
-  transition: background-color 100ms ease;
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body);
 }
+
+/* CRITICAL FIX: Remove #c9deb5 and #000000 from table headers */
+.data-table thead tr {
+  background: var(--surface-sunken);
+  border-bottom: 2px solid var(--border-default);
+}
+
+.data-table thead th {
+  padding: var(--table-cell-py) var(--table-cell-px);
+  text-align: left;
+  font-size: var(--text-section-header);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+
+  /* DELETED: background: #c9deb5; border: 1px solid #000000; */
+}
+
+.data-table thead th.th-right,
+.data-table thead th[data-align="right"] {
+  text-align: right;
+}
+.data-table thead th.th-center,
+.data-table thead th[data-align="center"] {
+  text-align: center;
+}
+
 .data-table tbody tr {
-  transition: background-color 100ms ease;
+  border-bottom: 1px solid var(--border-default);
+  transition: background 80ms ease;
+}
+.data-table tbody tr:nth-child(even) {
+  background: var(--surface-row-alt);
+}
+.data-table tbody tr:hover {
+  background: var(--surface-row-hover);
 }
 
-/* ── PRINT ── */
-@media print {
-  .no-print,
-  aside,
-  header,
-  .busy-title-bar,
-  .busy-menu-bar,
-  .busy-hint-bar,
-  .busy-status-bar,
-  .busy-shortcut-sidebar,
-  .top-menu-bar,
-  .right-button-bar,
-  .page-toolbar,
-  nav {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-  body {
-    font-size: 11px;
-    background: white !important;
-    color: black !important;
-  }
-  main {
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-  @page {
-    size: A4 portrait;
-    margin: 15mm;
-  }
-  table {
-    page-break-inside: auto;
-    font-size: 10px;
-  }
-  tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
+.data-table td {
+  padding: var(--table-cell-py) var(--table-cell-px);
+  color: var(--text-secondary);
+  font-size: var(--text-body);
+  vertical-align: middle;
+}
+.data-table td.td-right,
+.data-table td[data-align="right"] {
+  text-align: right;
+}
+.data-table td.td-mono {
+  font-family: "Courier New", Courier, monospace;
 }
 
-/* ── RADIX UI / SHADCN COMPONENT OVERRIDES ── */
-[data-radix-popper-content-wrapper] {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
-  color: #000000 !important;
-}
-[data-state="checked"] {
-  background: #c9deb5 !important;
-}
-/* data-state open — let components handle their own dropdown backgrounds */
-
-/* Dropdown menus — use white for readability */
-[role="menu"],
-[role="listbox"] {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  color: #111827;
-}
-[role="option"]:hover,
-[role="menuitem"]:hover {
-  background: #f3f4f6;
+/* Total / closing row */
+.data-table tfoot tr,
+.data-table tr.row-total {
+  background: #eef2ff;
+  font-weight: 700;
+  font-size: var(--text-body);
+  border-top: 2px solid var(--color-primary-border);
 }
 
-/* Popover */
-[data-radix-popover-content] {
-  background: #ebf5e2 !important;
-  border: 1px solid #000000 !important;
+/* Amount cells — always mono, right-aligned */
+.data-table .amt,
+.data-table .number-cell {
+  font-family: "Courier New", Courier, monospace;
+  text-align: right;
+  white-space: nowrap;
 }
+.data-table .amt-dr { color: var(--text-primary); }
+.data-table .amt-cr { color: var(--color-success); }
+.data-table .amt-neg { color: var(--color-danger); }
 
-/* Select dropdown */
-select option {
-  background: #ebf5e2 !important;
-  color: #000000 !important;
-}
-
-/* ── SPECIFIC COMPONENT OVERRIDES ── */
-
-  /* Header — styled per component */
-header {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Sidebar background set per component */
-
-/* Status bar, title bar, menu bar, hint bar */
-.busy-status-bar,
-.busy-title-bar,
-.busy-menu-bar,
-.busy-hint-bar,
-.busy-shortcut-sidebar {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
-}
-
-/* Active/selected states */
-.active,
-[aria-selected="true"],
-[aria-current="page"] {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-}
-
-/* Tabs */
-[role="tab"] {
-  background: #ebf5e2 !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
-}
-[role="tab"][aria-selected="true"],
-[role="tab"][data-state="active"] {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-  border-bottom: 2px solid #000000 !important;
-}
-
-/* Checkbox, Radio */
-input[type="checkbox"],
-input[type="radio"] {
-  accent-color: #000000 !important;
-}
-
-/* Progress bar */
-progress,
-[role="progressbar"] {
-  background: #c9deb5 !important;
-  color: #000000 !important;
-}
-
-/* Spinner color is set per-component via text-* class */
-
-/* SVG icons — inherit color from parent context */
-main svg,
-.page-content-area svg {
-  stroke: currentColor;
-}
-
-/* ── FOCUS RING GLOBAL ── */
-*:focus-visible {
-  outline: 2px solid #2e7d32;
-  outline-offset: 2px;
-}
-
-/* Shadows — let Tailwind handle them per component */
-
-  /* Gradients not used per design system — no override needed */
-
-   /* Backdrop overlays */
-.backdrop-blur-sm {
-  backdrop-filter: blur(4px);
-}
-
-/* Page background — applied only to the root layout */
-#root {
-  background-color: #f5f6fa;
-}
-
-/* ── TOAST NOTIFICATIONS ── */
-/* Styling is handled entirely via toastOptions in src/App.tsx.
-   Do NOT add CSS rules here targeting react-hot-toast elements —
-   the library uses goober CSS-in-JS with auto-generated class names
-   so attribute selectors like [class*="toast"] match wrapper divs
-   but not the toast message itself, causing split background/text conflicts. */
-
-/* ===== SUTRA ERP GLOBAL UTILITY CLASSES ===== */
-
-/* Animations */
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Badges */
+/* ── Badges ──────────────────────────────────────────────────── */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   padding: 2px 8px;
-  font-size: 10px;
-  font-weight: 700;
+  border-radius: 4px;
+  font-size: var(--text-badge);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-radius: 3px;
-  border: 1px solid #000000;
-  background: #d4eabd;
-  color: #000000;
-}
-.badge-customer {
-  background: #d4eabd;
-  color: #000000;
-  border-color: #000000;
-}
-.badge-supplier {
-  background: #ebf5e2;
-  color: #000000;
-  border-color: #000000;
-}
-.badge-both {
-  background: #c9deb5;
-  color: #000000;
-  border-color: #000000;
-}
-.badge-posted {
-  background: #d4eabd;
-  color: #000000;
-  border-color: #000000;
-}
-.badge-draft {
-  background: #fef9c3;
-  color: #854d0e;
-  border-color: #ca8a04;
-}
-.badge-cancelled {
-  background: #fee2e2;
-  color: #991b1b;
-  border-color: #dc2626;
-}
-.badge-partial {
-  background: #fef3c7;
-  color: #92400e;
-  border-color: #d97706;
-}
-.badge-info {
-  background: #dbeafe;
-  color: #1e3a8a;
-  border-color: #3b82f6;
+  white-space: nowrap;
+  border: 1px solid transparent;
 }
 
-/* Section headers */
-.section-header {
+.badge-success  { background: var(--color-success-light); color: var(--color-success);  border-color: var(--color-success-border); }
+.badge-warning  { background: var(--color-warning-light); color: var(--color-warning);  border-color: var(--color-warning-border); }
+.badge-danger   { background: var(--color-danger-light);  color: var(--color-danger);   border-color: var(--color-danger-border); }
+.badge-info     { background: var(--color-info-light);    color: var(--color-info);     border-color: var(--color-info-border); }
+.badge-primary  { background: var(--color-primary-light); color: var(--color-primary);  border-color: var(--color-primary-border); }
+.badge-default  { background: var(--surface-elevated);    color: var(--text-muted);     border-color: var(--border-default); }
+
+/* Status badges — mapped from Sutra status strings */
+.badge-posted   { background: var(--color-success-light); color: var(--color-success); border-color: var(--color-success-border); }
+.badge-draft    { background: var(--color-warning-light); color: var(--color-warning); border-color: var(--color-warning-border); }
+.badge-cancelled { background: var(--color-danger-light); color: var(--color-danger);  border-color: var(--color-danger-border); }
+.badge-journal  { background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary-border); }
+.badge-payment  { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.badge-receipt  { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.badge-contra   { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+
+/* ── Balance / Validation Indicators ────────────────────────── */
+.balance-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+.balance-indicator.balanced {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+.balance-indicator.unbalanced {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+/* ── KPI / Stat Cards ────────────────────────────────────────── */
+.stat-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-card);
+}
+.stat-card-label {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #000000;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #000000;
-  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
 }
-
-/* Buttons */
-.btn-primary {
-  height: 32px;
-  padding: 0 16px;
-  background: #d4eabd;
-  color: #000000;
-  border: 1px solid #000000;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-primary:hover {
-  background: #c9deb5;
-}
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Input reset */
-input,
-select,
-textarea {
-  color: #000000;
-}
-input:disabled,
-select:disabled,
-textarea:disabled {
-  background: #ebf5e2;
-  color: #000000;
-  cursor: not-allowed;
-}
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  opacity: 0.5;
-}
-
-/* Sidebar scroll */
-.sidebar-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #000000 transparent;
-}
-.sidebar-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-.sidebar-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #9dc07a;
-  border-radius: 4px;
-}
-
-/* New utility classes for transactions */
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  font-size: 0.75rem;
-  user-select: none;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.page-header {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.75rem;
-  border-bottom: 1px solid #9dc07a;
-  padding-bottom: 1rem;
-}
-@media (min-width: 640px) {
-  .page-header {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.card {
-  background: #ebf5e2;
-  border: 1px solid #9dc07a;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.table-card {
-  background: #ebf5e2;
-  border: 1px solid #9dc07a;
-  border-radius: 0.375rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-  font-size: 11px;
+.stat-card-value {
+  font-size: 20px;
   font-weight: 700;
-  color: #000000;
+  font-family: "Courier New", Courier, monospace;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.stat-card-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ── Section Headers (inside cards) ─────────────────────────── */
+.section-header {
+  font-size: var(--text-section-header);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid #000000;
-  padding-bottom: 4px;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  margin: 12px -16px;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem;
-}
-@media (min-width: 768px) {
-  .form-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.form-row {
-  display: grid;
-  gap: 0.75rem;
-  align-items: flex-end;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 0.75rem;
-}
-.form-row:last-child {
-  border-bottom-width: 0;
-  padding-bottom: 0;
-}
-@media (min-width: 768px) {
-  .form-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.actions {
+/* ── Modal / Overlay ─────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9000;
 }
-
-/* === T-FORMAT REPORTS === */
-.tformat-wrapper {
+.modal-container {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-modal);
   width: 100%;
-  border: 1px solid #000;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
   overflow: hidden;
-  background: #ebf5e2;
+}
+.modal-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.modal-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+  background: var(--surface-elevated);
 }
 
+/* ── Dropdown / Select Menus ─────────────────────────────────── */
+/* These were getting the #ebf5e2 override. Removed. */
+[data-radix-popper-content-wrapper],
+[data-radix-select-viewport],
+.radix-dropdown,
+.cmdk-list {
+  background: var(--surface-card) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-dropdown) !important;
+}
+
+/* ── Right Button Bar ────────────────────────────────────────── */
+.right-button-bar {
+  background: var(--sidebar-bg);
+  border-left: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Print Utilities ─────────────────────────────────────────── */
+@media print {
+  .no-print     { display: none !important; }
+  .print-only   { display: block !important; }
+  body          { background: white !important; font-size: 11px; }
+  .data-table   { font-size: 10px; }
+}
+.print-only { display: none; }
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-spin     { animation: spin 0.8s linear infinite; }
+.animate-fadeIn   { animation: fadeIn 150ms ease-out; }
+.page-enter       { animation: pageEnter 200ms ease-out; }
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-emphasis); border-radius: 2px; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { scrollbar-width: none; }
+
+/* ── Focus-visible ring (keyboard a11y) ──────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+  
+/* ============================================================
+   SECTION 5 & 6: REPORT PAGES + SIDEBAR
+   All report layout tokens, financial statement row classes,
+   and sidebar refinements.
+   ============================================================ */
+
+/* ── Report Shell Layout ─────────────────────────────────────── */
+
+.report-root {
+  padding: var(--page-padding);
+  background: var(--surface-page);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* The toolbar strip above every report */
+.report-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 8px 14px;
+}
+.report-toolbar-left  { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.report-toolbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* Toolbar button — text-only with subtle outline */
+.report-btn {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 100ms ease, color 100ms ease;
+  white-space: nowrap;
+}
+.report-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+/* Primary report toolbar button — Options, Export */
+.report-btn-primary {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 100ms ease;
+  white-space: nowrap;
+}
+.report-btn-primary:hover { background: var(--color-primary-hover); }
+
+/* Export button — specially prominent per Section 5.10 */
+.report-btn-export {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 100ms ease;
+  white-space: nowrap;
+}
+.report-btn-export:hover { background: var(--color-primary-hover); }
+
+/* Tab bar — used in VAT reports, Sales Analysis */
+.report-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border-default);
+  gap: 0;
+  margin-bottom: 0;
+}
+.report-tab {
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color 100ms ease, border-color 100ms ease, font-weight 100ms ease;
+  white-space: nowrap;
+}
+.report-tab:hover { color: var(--text-secondary); }
+.report-tab.active {
+  color: var(--color-primary);
+  font-weight: 700;
+  border-bottom-color: var(--color-primary);
+}
+
+/* ── Financial Statement Table ───────────────────────────────── */
+
+/* Shared table for Balance Sheet, P&L, Trial Balance, Ledger */
+.fin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body);
+}
+
+/* Column header row — neutral, professional */
+.fin-table thead tr {
+  background: #f4f5f7;                      /* --surface-sunken equivalent */
+  border-bottom: 2px solid var(--border-default);
+}
+.fin-table thead th {
+  padding: 9px 12px;
+  font-size: var(--text-section-header);
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  /* REMOVED: background: #c9deb5; border: 1px solid #000000 */
+}
+.fin-table thead th.th-r { text-align: right; }
+.fin-table thead th.th-c { text-align: center; }
+
+/* Primary Group row — weight 700, no background colour */
+.fin-row-group {
+  background: #f4f5f7;
+  border-top: 1px solid var(--border-emphasis);
+  border-bottom: 1px solid var(--border-default);
+}
+.fin-row-group td {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Sub-group row — weight 600, transparent background, indent */
+.fin-row-subgroup td {
+  padding: 5px 12px 5px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  background: transparent;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Ledger row — weight 400, deeper indent */
+.fin-row-ledger td {
+  padding: 4px 12px 4px 44px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border-bottom: 1px dotted #f3f4f6;
+}
+.fin-row-ledger:hover td { background: var(--surface-row-hover); cursor: pointer; }
+
+/* Group total row — muted gray */
+.fin-row-subtotal td {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+  background: #f0f0f0;
+  border-top: 2px solid #d1d5db;
+}
+
+/* Grand total / closing row — dark navy, professional closing line */
+.fin-row-total td {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #1e2433;
+  font-family: "Courier New", Courier, monospace;
+  border-top: 2px solid #374151;
+}
+
+/* Opening / Closing balance rows in Ledger and Party Statement */
+.fin-row-opening td,
+.fin-row-closing td {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  background: #f4f5f7;
+  border-bottom: 1px solid var(--border-default);
+  cursor: default;
+}
+
+/* ── Drill-through links ──────────────────────────────────────── */
+.drill-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+.drill-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* Back navigation — plain text link, no button styling */
+.report-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.report-back-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── T-Format Balance Sheet ──────────────────────────────────── */
 .tformat-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
-}
-.tformat-table td.tformat-cell:last-child {
-  border-right: none;
-}
-.tformat-table th:last-child {
-  border-right: none;
+  table-layout: fixed;
 }
 
+/* CRITICAL FIX: Remove #c9deb5 from tformat headers */
 .tformat-table thead th {
-  background: #c9deb5;
-  border-bottom: 2px solid #000;
-  text-align: center;
-  padding: 8px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.tformat-cell {
-  padding: 6px 10px;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  background: #ebf5e2;
+  padding: 9px 12px;
   font-size: 12px;
-}
-
-.tformat-cell:last-child {
-  border-right: none;
-}
-
-.tformat-amount {
-  text-align: right;
-  font-family: "Courier New", monospace;
-  font-weight: 600;
-}
-
-.tformat-group {
   font-weight: 700;
-  background: #d4eabd;
-}
-
-.tformat-subgroup {
-  font-weight: 600;
-}
-
-.tformat-ledger {
-  font-weight: 500;
-}
-
-.tformat-total {
-  font-weight: 700;
-  background: #c9deb5;
-}
-
-.tformat-link {
+  color: #374151;
+  background: #f4f5f7;                   /* was #c9deb5 — now neutral gray */
+  border-bottom: 2px solid var(--border-default);
   text-align: left;
-  width: 100%;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+}
+.tformat-table thead th:last-child { text-align: right; }
+
+/* Group row — was #d4eabd, now neutral */
+.tformat-group {
+  background: #f4f5f7;                   /* was #d4eabd — removed green */
+}
+.tformat-group td {
+  padding: 6px 12px;
   font-size: 12px;
-}
-
-/* === REPORT TOOLBAR TOGGLE BUTTONS === */
-.report-toggle {
-  display: flex;
-  gap: 4px;
-}
-
-.report-toggle button {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 11px;
-  font-weight: 600;
-  border: 1px solid #000;
-  background: #ebf5e2;
-  cursor: pointer;
-}
-
-.report-toggle button.active {
-  background: #c9deb5;
-}
-.report-action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #d4eabd;
-  border-bottom: 1px solid #000;
-  padding: 4px 8px;
-  gap: 10px;
-}
-
-.report-action-left {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.report-action-btn {
-  padding: 2px 8px;
-  border: 1px solid #000;
-  background: #ebf5e2;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.report-title-pill {
-  padding: 2px 10px;
-  border: 1px solid #000;
-  background: #d4eabd;
-  font-size: 11px;
   font-weight: 700;
+  color: #1f2937;                        /* was black — now charcoal */
+  border-top: 1px solid var(--border-emphasis);
 }
 
-.report-toolbar-btn {
-  padding: 3px 8px;
-  border: 1px solid #000;
-  background: #ebf5e2;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.report-option-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.report-option-row input,
-.report-option-row select {
-  height: 26px;
-  min-width: 120px;
-}
-
-/* Top Menu Bar */
-.top-menu-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  z-index: 50;
-  background: #1e2433 !important;
-  border-bottom: 1px solid #2d3748 !important;
-  display: flex;
-  align-items: center;
-}
-
-.top-menu-bar,
-.top-menu-bar * {
-  color: #cbd5e1 !important;
-  border-color: #2d3748 !important;
-}
-
-.top-menu-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 10px;
-  height: 100%;
+/* Sub-group row */
+.tformat-subgroup td {
+  padding: 5px 12px 5px 24px;
   font-size: 12px;
-  color: #cbd5e1 !important;
-  cursor: pointer;
-  border: none !important;
-  background: transparent !important;
-  white-space: nowrap;
-  transition: background 0.1s;
+  font-weight: 600;
+  color: #374151;
+  background: transparent;
 }
 
-.top-menu-btn:hover,
-.top-menu-btn.active {
+/* Individual ledger row */
+.tformat-ledger td {
+  padding: 4px 12px 4px 36px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border-bottom: 1px dotted #f3f4f6;
+}
+.tformat-ledger:hover td { background: var(--surface-row-hover); cursor: pointer; }
+
+/* Total row — was #c9deb5, now neutral gray */
+.tformat-total td {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+  background: #f0f0f0;                   /* was #c9deb5 — removed green */
+  border-top: 2px solid #d1d5db;
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* Grand total row — dark navy closing line */
+.tformat-grand-total td {
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #1e2433;
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* Vertical (Schedule III) section heading */
+.report-section-heading {
+  padding: 8px 12px 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+  background: #f4f5f7;
+  border-left: 3px solid var(--color-primary); /* SINGLE colour — was multi-colour */
+  border-bottom: 1px solid var(--border-default);
   margin: 4px 0;
 }
 
-/* Adjust app layout to account for fixed top bar */
-.app-layout-with-topbar {
-  padding-top: 40px;
+/* ── Running Balance Column ──────────────────────────────────── */
+/* Used in General Ledger, Party Statement, Stock Ledger */
+.running-bal-cell {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: right;
+  white-space: nowrap;
+}
+.running-bal-dr {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-primary);           /* Dr indicator in blue */
+  margin-left: 3px;
+  vertical-align: super;
+}
+.running-bal-cr {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-danger);            /* Cr indicator in red */
+  margin-left: 3px;
+  vertical-align: super;
 }
 
-@media print {
-  .no-print {
-    display: none !important;
-  }
-
-  .print-only {
-    display: block !important;
-  }
-
-  body {
-    background: white !important;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 12mm;
-  }
-
-  table {
-    page-break-inside: auto;
-  }
-
-  tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
+/* ── Summary Metric Strips ───────────────────────────────────── */
+/* Used in Outstanding Receivables/Payables, Cash Flow footer */
+.summary-strip {
+  display: flex;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
 }
-
-  /* ── HIDE SCROLLBAR ── */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.summary-cell {
+  flex: 1;
+  padding: 10px 14px;
+  border-right: 1px solid var(--border-default);
 }
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* ── Currency symbol normalization ────────────────────────────────────────── */
-/* Prevent any accidental $ signs leaking into visible text via pseudo-elements */
-.currency-symbol::before { content: "Rs. "; }
-
-/* Ensure all font-mono amount cells don't show raw dollar signs */
-td.amt::before { content: none; }
-
-/* ── P&L PRINT STYLES ── */
-@media print {
-  .no-print { display: none !important; }
-  .print-only { display: block !important; }
-  
-  body { background: white !important; color: black !important; font-size: 11px; }
-  
-  .bg-white, .bg-\[\#f5f6fa\] { background: white !important; }
-  
-  table { page-break-inside: auto; font-size: 10px; }
-  tr { page-break-inside: avoid; }
-  
-  @page { size: A3 landscape; margin: 10mm; }
-}
-
-/* ── STATUS PILL BADGES ── */
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 10px;
+.summary-cell:last-child { border-right: none; }
+.summary-cell-label {
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+.summary-cell-value {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1557b0;
+  font-variant-numeric: tabular-nums;
+}
+.summary-cell-sub {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* Aging column text colours — text colour only, no row backgrounds */
+.age-current { color: #374151; }
+.age-30      { color: #374151; }
+.age-60      { color: #d97706; font-weight: 600; }
+.age-90      { color: #dc2626; font-weight: 600; }
+.age-over90  { color: #991b1b; font-weight: 700; }
+
+/* ── Day Book ────────────────────────────────────────────────── */
+.daybook-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.daybook-nav-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-card);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: border-color 100ms ease, color 100ms ease;
+  user-select: none;
+}
+.daybook-nav-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.daybook-date-display { text-align: center; }
+.daybook-date-bs {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.daybook-date-ad {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* Day Book group header row */
+.daybook-group-header td {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  background: #f4f5f7;
+  border-top: 2px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* ── Trial Balance ───────────────────────────────────────────── */
+.tb-balanced-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4ade80;                        /* light green on dark bg */
+}
+.tb-unbalanced-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f87171;                        /* light red on dark bg */
+}
+
+/* ── Cash Flow Statement ─────────────────────────────────────── */
+.cashflow-reconciliation {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  margin-top: 8px;
+}
+.cashflow-recon-cell {
+  text-align: center;
+}
+.cashflow-recon-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+.cashflow-recon-value {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.cashflow-recon-sep {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+/* ── Budget vs Actual ─────────────────────────────────────────── */
+.variance-positive { color: var(--color-success); font-weight: 600; }
+.variance-negative { color: var(--color-danger);  font-weight: 600; }
+
+/* Budget progress bar — single colour */
+.budget-bar-track {
+  height: 6px;
+  background: var(--border-default);
+  border-radius: 3px;
+  overflow: hidden;
+  width: 80px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.budget-bar-fill {
+  height: 100%;
+  background: var(--color-primary);     /* single colour — no amber/red */
+  border-radius: 3px;
+  transition: width 300ms ease;
+}
+
+/* ── Stock Summary ────────────────────────────────────────────── */
+/* Low stock indicators — background colour is justified here
+   because it is functional operational information */
+.row-low-stock   { background: #fffbeb !important; }  /* below reorder */
+.row-zero-stock  { background: #fef2f2 !important; }  /* zero stock */
+
+/* ── Party Statement info bar ────────────────────────────────── */
+.party-info-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 12px 0 12px;
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: 12px;
+}
+.party-info-field { display: flex; flex-direction: column; gap: 2px; }
+.party-info-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.party-info-value {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.party-info-value-bold {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── Ratio Analysis ──────────────────────────────────────────── */
+.ratio-benchmark {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+/* ── Chart of Accounts display mode ──────────────────────────── */
+/* Row-level action links — hidden until hover */
+.coa-row-actions {
+  opacity: 0;
+  transition: opacity 120ms ease;
+  display: inline-flex;
+  gap: 8px;
+}
+tr:hover .coa-row-actions { opacity: 1; }
+.coa-action-link {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.coa-code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ── General Ledger / Party Statement Account Selector ──────── */
+.account-selector-input {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 360px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.account-selector-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(21, 87, 176, 0.1);
+}
+
+/* ── Search input (no icon inside) ───────────────────────────── */
+.filter-input {
+  height: 32px;
+  padding: 0 30px 0 10px;             /* right space for × clear button */
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-md);
+  width: 220px;
+  outline: none;
+  transition: border-color 120ms ease;
+}
+.filter-input:focus { border-color: var(--color-primary); }
+.filter-input-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.filter-clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.filter-clear-btn:hover { color: var(--text-secondary); }
+
+/* ── Print overrides ─────────────────────────────────────────── */
+@media print {
+  /* Suppress ALL background colours in table rows during print */
+  .fin-table tbody tr,
+  .tformat-table tbody tr,
+  .data-table tbody tr,
+  .fin-row-group,
+  .fin-row-subgroup,
+  .fin-row-ledger,
+  .fin-row-subtotal,
+  .fin-row-opening,
+  .fin-row-closing,
+  .tformat-group,
+  .tformat-subgroup,
+  .tformat-ledger,
+  .tformat-total,
+  .row-low-stock,
+  .row-zero-stock {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Grand total rows stay dark in print for definition */
+  .fin-row-total td,
+  .tformat-grand-total td {
+    background: black !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Section headings in print — use bold left border, no background */
+  .report-section-heading {
+    background: white !important;
+    border-left: 3px solid black !important;
+    color: black !important;
+  }
+
+  /* Amounts stay right-aligned and monospace */
+  .amount, .running-bal-cell, .kpi-card-amount, .fin-row-total td {
+    font-family: "Courier New", Courier, monospace !important;
+    text-align: right !important;
+  }
+
+  /* Hide toolbars, navigation, sidebar in print */
+  .report-toolbar,
+  .page-toolbar,
+  .no-print,
+  .right-button-bar { display: none !important; }
+
+  @page {
+    size: A4 landscape;
+    margin: 12mm 10mm;
+  }
+}
+
+/* ============================================================
+   SECTION 6: SIDEBAR IMPROVEMENTS
+   ============================================================ */
+
+/* Group title labels — improved visibility */
+.sidebar-group-label {
+  font-size: 11px;                       /* was 10px — increased */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5f7ab3;                        /* was #475c8a — more visible */
+}
+
+/* Active nav item icon — lighter blue for dark background contrast */
+.sidebar-icon-active   { color: #60a5fa; }   /* was #1557b0 — too dark on navy */
+.sidebar-icon-inactive { color: #94a3b8; }
+.sidebar-icon-hover    { color: #cbd5e1; }
+
+/* Count badge — standardised, single style */
+.sidebar-count {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Tooltip in collapsed state — pops against sidebar */
+.sidebar-tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #374151;                   /* was #1e2433 — now pops */
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.sidebar-tooltip::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 4px solid #374151;      /* matches tooltip background */
+}
+
+/* Session expiry dot — subtle pulsing indicator */
+@keyframes sessionPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+.session-expiry-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f87171;
+  animation: sessionPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+/* ============================================================
+   SECTIONS 7, 8, 9 — BUSYMENUBAR, TABLES, FORMS
+   These rules are placed last so they win over all prior
+   declarations, including Tailwind utilities and the old
+   green-palette overrides.
+   ============================================================ */
+
+/* ── SECTION 7: BusyMenuBar ──────────────────────────────────── */
+
+/* 7.1 — Remove shadow from menu bar; use a crisper border only */
+.busy-menu-bar,
+[class*="BusyMenuBar"],
+div[style*="border-b border-gray-200 shadow-sm"] {
+  box-shadow: none !important;
+  border-bottom: 1px solid #d1d5db !important;
+}
+
+/* The menu bar wrapper div — applied via inline style in the component.
+   We set the shadow via the component directly (see Part B below),
+   but this rule provides a CSS fallback. */
+.menu-bar-root {
+  background: #ffffff;
+  border-bottom: 1px solid #d1d5db;
+  box-shadow: none;
+  user-select: none;
+  height: 40px;
+  display: flex;
+  align-items: stretch;
+}
+
+/* 7.2 — Dropdown: child container background must be pure white */
+.menu-dropdown-children {
+  background: #ffffff !important;   /* was bg-gray-50 — now white */
+  border-left: 2px solid rgba(21, 87, 176, 0.2);
+  margin-left: 8px;
+}
+
+/* 7.3 — Scroll gradient height: 12px (was 20px) */
+.menu-scroll-fade-top {
+  height: 12px !important;          /* reduced from 20px */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.menu-scroll-fade-bottom {
+  height: 12px !important;          /* reduced from 20px */
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* 7.4 — Separator lines: tighter vertical margin */
+.menu-separator {
+  margin: 2px 0 !important;         /* was my-1 = 4px each side → now 2px */
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ── SECTION 8: Tables — Global Overrides ─────────────────────── */
+
+/* 8.1 — CRITICAL: Remove black borders from all table cells.
+   The !important is required to override the existing
+   border-right: 1px solid #000000 !important rules. */
+.data-table thead th {
+  border: none !important;
+  border-bottom: 2px solid #e5e7eb !important;  /* replaces #000000 border */
+  border-right: 1px solid #e5e7eb !important;
+  background: #f4f5f7 !important;               /* replaces #c9deb5 */
+  color: #374151 !important;                    /* replaces #000000 */
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 8px 12px !important;
   white-space: nowrap;
 }
-.status-pill-posted  { background: #dcfce7; color: #166534; }
-.status-pill-paid    { background: #dcfce7; color: #166534; }
-.status-pill-active  { background: #dcfce7; color: #166534; }
-.status-pill-draft   { background: #fef9c3; color: #713f12; }
-.status-pill-pending { background: #fef3c7; color: #92400e; }
-.status-pill-cancelled { background: #fee2e2; color: #991b1b; }
-.status-pill-partial   { background: #fef3c7; color: #92400e; }
-.status-pill-inactive  { background: #f1f5f9; color: #64748b; }
+.data-table thead th:last-child {
+  border-right: none !important;
+}
 
-/* ── EMPTY STATE ── */
+.data-table tbody td {
+  border-right: 1px solid #e5e7eb !important;  /* replaces #000000 */
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding: 7px 12px !important;
+  font-size: 12px !important;
+  color: #374151 !important;
+}
+.data-table tbody td:last-child {
+  border-right: none !important;
+}
+
+/* 8.2 — Row striping: remove green, use barely-visible off-white */
+.data-table tbody tr:nth-child(even) td,
+.data-table tbody tr:nth-child(even) {
+  background: #fafbfc !important;               /* replaces #ebf5e2 */
+}
+.data-table tbody tr:nth-child(odd) td,
+.data-table tbody tr:nth-child(odd) {
+  background: #ffffff !important;
+}
+
+/* 8.3 — Hover row: remove green, use light blue */
+.data-table tbody tr:hover td,
+.data-table tbody tr:hover,
+.table-row-hover:hover td,
+.table-row-hover:hover {
+  background: #eef2ff !important;               /* replaces #d4eabd */
+  cursor: pointer;
+}
+
+/* 8.4 — Sticky header shadow — applied when table is scrolled.
+   The .is-sticky class is added via JS (see Part C below).
+   Pure CSS approach: use a persistent very-subtle shadow on sticky th. */
+.data-table thead.is-sticky th,
+.data-table thead th[data-sticky="true"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Fallback: always show a subtle underline shadow on sticky headers */
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  /* Subtle shadow that becomes visible when content scrolls under it */
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.04));
+}
+
+/* 8.5 — Sort indicators: purely CSS, no icon imports needed */
+.sort-asc::after  { content: " ▲"; color: #9ca3af; font-size: 8px; }
+.sort-desc::after { content: " ▼"; color: #9ca3af; font-size: 8px; }
+.sort-active.sort-asc::after  { color: #1557b0; }
+.sort-active.sort-desc::after { color: #1557b0; }
+th.sortable { cursor: pointer; }
+th.sortable:hover { color: #1557b0; }
+
+/* 8.6 — Empty state: neutral gray, no cartoon colours */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 16px;
-  gap: 12px;
-  color: #9dc07a;
+  padding: 48px 24px;
+  gap: 8px;
   text-align: center;
 }
 .empty-state-icon {
-  opacity: 0.6;
+  color: #d1d5db !important;                    /* replaces #9dc07a green */
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  opacity: 0.7;
 }
 .empty-state-title {
   font-size: 13px;
-  font-weight: 700;
-  color: #000000;
+  font-weight: 600;
+  color: #374151;
 }
 .empty-state-sub {
   font-size: 11px;
-  color: rgba(0,0,0,0.45);
+  color: #9ca3af;
+  max-width: 360px;
 }
 
-/* ── BUTTON TIERS ── */
-.btn-primary-dark {
-  height: 30px;
-  padding: 0 16px;
-  background: #2e7d32;
-  color: #ffffff;
-  border: 1px solid #1b5e20;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 150ms ease;
+/* Remove any emoji from empty states — purely typographic fallback */
+.empty-state emoji,
+.empty-state [role="img"] { display: none; }
+
+/* ── SECTION 9: Forms — Global Overrides ──────────────────────── */
+
+/* 9.1 — CRITICAL: Remove green from form section backgrounds */
+.form-section,
+.form-card,
+[class*="form-section"],
+[class*="form-card"] {
+  background: #ffffff !important;               /* replaces #ebf5e2 */
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
 }
-.btn-primary-dark:hover { background: #1b5e20; }
-.btn-secondary {
-  height: 30px;
-  padding: 0 16px;
-  background: #D4EABD;
-  color: #000000;
-  border: 1px solid #000000;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 150ms ease;
+
+.form-header,
+[class*="form-header"] {
+  background: #f9fafb !important;               /* replaces #d4eabd */
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 10px 16px !important;
 }
-.btn-secondary:hover { background: #C9DEB5; }
-.btn-destructive {
-  height: 30px;
-  padding: 0 16px;
-  background: transparent;
+
+.form-footer,
+[class*="form-footer"] {
+  background: #f9fafb !important;               /* replaces #d4eabd */
+  border-top: 1px solid #e5e7eb !important;
+  padding: 10px 16px !important;
+}
+
+/* 9.2 — Input focus: blue ring, no green */
+input:focus,
+select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus {
+  outline: none !important;
+  border-color: #1557b0 !important;             /* replaces #2e7d32 green */
+  box-shadow: 0 0 0 3px rgba(21, 87, 176, 0.12) !important;
+}
+
+/* Covers Tailwind ring utilities used in components */
+.focus\:ring-\[\#1557b0\]\/20:focus,
+.focus\:border-\[\#1557b0\]:focus,
+[class*="focus:ring"]:focus {
+  --tw-ring-color: rgba(21, 87, 176, 0.12) !important;
+  border-color: #1557b0 !important;
+}
+
+/* Override any remaining green focus rings from old palette */
+input:focus,
+select:focus {
+  /* Specifically remove the green 2e7d32 focus that was declared globally */
+  outline-color: #1557b0 !important;
+}
+
+/* 9.3 — Required field asterisk — via ::after on .form-label.required */
+.form-label.required::after,
+label.required::after {
+  content: " *";
   color: #dc2626;
-  border: 1px solid #dc2626;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 150ms ease, color 150ms ease;
+  font-weight: 400;
 }
-.btn-destructive:hover { background: #fee2e2; }
 
-/* src/styles.css — Universal report table header styling */
-.report-table thead th,
-.data-table thead th {
+/* Utility class: apply to any label that marks a required field */
+.required-asterisk {
+  color: #dc2626;
+  margin-left: 2px;
+  font-weight: 400;
+}
+
+/* 9.4 — Line table in vouchers: remove green backgrounds */
+.line-table td,
+.line-table th,
+[class*="line-table"] td,
+[class*="line-table"] th {
+  background: #ffffff !important;               /* replaces #ebf5e2 */
+}
+
+.line-table tr:nth-child(even) td,
+.line-table tbody tr:nth-child(even) td {
+  background: #f9fafb !important;               /* replaces #d4eabd */
+}
+
+.line-table tr:hover td,
+.line-table tbody tr:hover td {
+  background: #eef2ff !important;               /* consistent blue hover */
+}
+
+.line-table thead th {
+  background: #f4f5f7 !important;               /* neutral header */
+  color: #374151 !important;
+  border-bottom: 2px solid #e5e7eb !important;
   font-size: 10px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.06em !important;
-  color: #6b7280 !important;
-  white-space: nowrap;
-  user-select: none;
-}
-.report-table thead,
-.data-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #f5f6fa;
-}
-.report-table thead th,
-.data-table thead th {
-  background: #f5f6fa;
-  box-shadow: 0 1px 0 #e5e7eb;
-}
-
-/* Primary utility for all monetary amount cells */
-.number-cell {
-  font-family: 'Courier New', Courier, monospace !important;
-  font-variant-numeric: tabular-nums !important;
-  text-align: right !important;
-  white-space: nowrap !important;
-  font-size: 12px;
-  padding-right: 12px;
-}
-.number-cell-bold {
-  font-family: 'Courier New', Courier, monospace !important;
-  font-variant-numeric: tabular-nums !important;
-  text-align: right !important;
-  white-space: nowrap !important;
-  font-size: 12px;
-  font-weight: 700 !important;
-  padding-right: 12px;
-}
-.number-cell-dr {
-  font-family: 'Courier New', Courier, monospace !important;
-  font-variant-numeric: tabular-nums !important;
-  text-align: right !important;
-  font-size: 12px;
-  color: #1557b0 !important;
-  font-weight: 600;
-}
-.number-cell-cr {
-  font-family: 'Courier New', Courier, monospace !important;
-  font-variant-numeric: tabular-nums !important;
-  text-align: right !important;
-  font-size: 12px;
-  color: #059669 !important;
-  font-weight: 600;
-}
-.number-cell-neg {
-  font-family: 'Courier New', Courier, monospace !important;
-  font-variant-numeric: tabular-nums !important;
-  text-align: right !important;
-  font-size: 12px;
-  color: #dc2626 !important;
-}
-
-/* src/styles.css — Report section headings */
-.report-section-heading {
-  font-size: 12px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
-  padding: 8px 12px !important;
-  background: #f9fafb !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  color: #374151 !important;
-  /* Left accent stripe in the section color */
-  border-left: 3px solid #1557b0 !important;
 }
-/* Variants by section type */
-.report-section-heading-assets  { border-left-color: #1557b0 !important; }
-.report-section-heading-liab    { border-left-color: #d97706 !important; }
-.report-section-heading-income  { border-left-color: #059669 !important; }
-.report-section-heading-expense { border-left-color: #dc2626 !important; }
-.report-section-heading-capital { border-left-color: #7c3aed !important; }
 
-.report-period-label {
+/* Line table add-row button — place at bottom of table */
+.line-table-add-row {
+  width: 100%;
+  padding: 6px;
+  text-align: left;
   font-size: 11px;
-  color: #6b7280;
-  margin-top: 3px;
-  display: block;
-  font-weight: 400;
-  font-style: italic;
+  font-weight: 500;
+  color: #1557b0;
+  background: #f9fafb;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+.line-table-add-row:hover { background: #eef2ff; }
+
+/* ── Specific Tailwind class overrides ───────────────────────── */
+/* These catch the arbitrary-value Tailwind classes used throughout
+   the component files that couldn't be caught by element selectors */
+
+/* Green backgrounds — purge them all */
+.bg-\[\#ebf5e2\]  { background-color: #ffffff !important; }
+.bg-\[\#EBF5E2\]  { background-color: #ffffff !important; }
+.bg-\[\#d4eabd\]  { background-color: #f9fafb !important; }
+.bg-\[\#D4EABD\]  { background-color: #f9fafb !important; }
+.bg-\[\#c9deb5\]  { background-color: #f4f5f7 !important; }
+.bg-\[\#C9DEB5\]  { background-color: #f4f5f7 !important; }
+.bg-\[\#9dc07a\]  { background-color: #e5e7eb !important; }
+.bg-\[\#9DC07A\]  { background-color: #e5e7eb !important; }
+
+/* Green borders */
+.border-\[\#9dc07a\]  { border-color: #e5e7eb !important; }
+.border-\[\#9DC07A\]  { border-color: #e5e7eb !important; }
+.border-\[\#c9deb5\]  { border-color: #d1d5db !important; }
+.border-\[\#C9DEB5\]  { border-color: #d1d5db !important; }
+.border-\[\#9DC07A\]  { border-color: #d1d5db !important; }
+
+/* Green text — only #3D6B25 and #2D5A1A were used for primary actions;
+   convert to primary blue */
+.text-\[\#3D6B25\]   { color: #1557b0 !important; }
+.text-\[\#2D5A1A\]   { color: #0f4a96 !important; }
+.hover\:text-\[\#2D5A1A\]:hover { color: #0f4a96 !important; }
+.hover\:bg-\[\#2D5A1A\]:hover   { background-color: #0f4a96 !important; }
+
+/* Green button backgrounds — convert to primary blue */
+.bg-\[\#3D6B25\]  { background-color: #1557b0 !important; }
+.bg-\[\#2D5A1A\]  { background-color: #0f4a96 !important; }
+.hover\:bg-\[\#2D5A1A\]:hover { background-color: #0f4a96 !important; }
+.hover\:bg-\[\#3D6B25\]:hover { background-color: #1557b0 !important; }
+
+/* Green focus rings */
+.focus\:ring-\[\#3D6B25\]:focus {
+  --tw-ring-color: rgba(21, 87, 176, 0.12) !important;
+}
+.focus\:border-\[\#3D6B25\]:focus,
+.focus\:border-\[\#2e7d32\]:focus {
+  border-color: #1557b0 !important;
 }
 
-@media print {
-  /* Hide all chrome elements */
-  aside,
-  .top-menu-bar,
-  .busy-menu-bar,
-  .right-button-bar,
-  .sidebar-scroll,
-  header,
-  nav,
-  .no-print,
-  .page-toolbar,
-  .report-toolbar,
-  [role="toolbar"],
-  .modal,
-  [data-dialog],
-  .toaster,
-  button:not(.print-include) {
-    display: none !important;
-  }
-  main,
-  .flex-1,
-  #root {
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-  body,
-  #root,
-  main {
-    background: white !important;
-    color: black !important;
-    font-size: 11pt;
-  }
-  table {
-    page-break-inside: auto;
-    border-collapse: collapse;
-  }
-  tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
-  thead {
-    display: table-header-group;
-  }
-  tfoot {
-    display: table-footer-group;
-  }
-  .number-cell,
-  .number-cell-bold {
-    font-size: 10pt;
-  }
-  @page {
-    size: A4 portrait;
-    margin: 12mm 10mm;
-  }
-  @page :first {
-    margin-top: 8mm;
-  }
+/* The old green primary button class from auth pages */
+.btn-primary {
+  background-color: #1557b0 !important;
+  border-color: #1557b0 !important;
+  color: #ffffff !important;
+}
+.btn-primary:hover {
+  background-color: #0f4a96 !important;
+  border-color: #0f4a96 !important;
 }
 
+/* ── Accordion / Card border cleanup ─────────────────────────── */
+
+/* Radix UI components receive green borders from old global rules */
+[data-radix-collection-item],
+[data-radix-popper-content-wrapper] *,
+[role="dialog"] * {
+  border-color: inherit;                        /* let them use their own borders */
+}
+
+/* Restore white backgrounds for Radix dropdowns/menus/dialogs */
+[data-radix-select-viewport],
+[data-radix-dropdown-menu-content],
+[data-radix-context-menu-content],
+[data-radix-popover-content],
+[role="dialog"],
+[role="listbox"],
+.cmdk-root {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+/* ============================================================
+   SECTIONS 10 / 14 / 15 / 16 — ICONS, TRANSITIONS,
+   PRINT STYLES, GATEWAY FREQUENCY ITEMS
+   ============================================================ */
+
+/* ── SECTION 10: Icon visibility control ────────────────────── */
+
+/* KPI cards: icon slot replaced with nothing.
+   If an .kpi-icon element exists, hide it. */
+.kpi-icon { display: none !important; }
+
+/* Alert icons: smaller (14px) and colour-matched to severity */
+.alert-card .alert-icon {
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0;
+}
+.alert-stripe-danger  ~ * .alert-icon { color: var(--color-danger); }
+.alert-stripe-warning ~ * .alert-icon { color: var(--color-warning); }
+.alert-stripe-info    ~ * .alert-icon { color: var(--color-primary); }
+
+/* Empty state icon — neutral gray only */
+.empty-state svg,
+.empty-state .empty-icon {
+  color: #d1d5db !important;
+  fill: none !important;
+}
+
+/* ── SECTION 14: Transitions ─────────────────────────────────── */
+
+/* Page enter — reduced from 200ms/6px to 150ms/3px */
 @keyframes pageEnter {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(3px);          /* was 6px */
   }
   to {
     opacity: 1;
@@ -1805,31 +2192,300 @@ td.amt::before { content: none; }
   }
 }
 .page-enter {
-  animation: pageEnter 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: pageEnter 150ms ease-out;   /* was 200ms */
 }
 
-@keyframes dropdownEnter {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
+/* FadeIn — unchanged */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 150ms ease-out; }
+
+/* REMOVE bounce — no bouncing in accounting ERP */
+@keyframes bounce { /* intentionally empty — removes the effect */ }
+.animate-bounce { animation: none !important; }
+
+/* Skeleton shimmer — neutral gray (replaces green) */
+@keyframes shimmer {
+  0%   { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+.skeleton,
+.skeleton-shimmer,
+[class*="skeleton"] {
+  background: linear-gradient(
+    to right,
+    #f3f4f6 8%,          /* was #EBF5E2 — now neutral */
+    #e5e7eb 18%,         /* was #D4EABD — now neutral */
+    #f3f4f6 33%
+  ) !important;
+  background-size: 800px 104px !important;
+  animation: shimmer 1.2s linear infinite !important;
+}
+
+/* Table row transitions — keep as-is (100ms is correct) */
+.data-table tbody tr { transition: background-color 80ms ease; }
+
+/* ── SECTION 15: Print Styles — Consolidated ─────────────────── */
+/* This is the SINGLE authoritative @media print block.
+   All prior print blocks in styles.css should be removed
+   and replaced with this one. */
+
+@media print {
+
+  /* ── Layout: hide chrome ── */
+  .no-print,
+  .report-toolbar,
+  .page-toolbar,
+  .right-button-bar,
+  nav,
+  aside,
+  header,
+  .sidebar-root,
+  [class*="Sidebar"],
+  [class*="BusyMenuBar"],
+  [class*="TopMenuBar"],
+  .busy-menu-bar,
+  .menu-bar-root,
+  .status-bar,
+  [class*="StatusBar"],
+  .alert-card,          /* alerts are not relevant on print */
+  .btn,
+  button:not(.print-show) {
+    display: none !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* ── Show print-only elements ── */
+  .print-only { display: block !important; }
+  .print-header { display: block !important; }
+
+  /* ── Page body ── */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11px !important;
+    font-family: "Arial", sans-serif !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
+
+  /* ── Print header (company name + VAT + report title) ── */
+  /* Add a .print-header div inside each report page:
+     <div class="print-header print-only">
+       <strong>{companyName}</strong> · VAT: {vatNo}
+       <br/>{reportTitle} — As at {date}
+     </div> */
+  .print-header {
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    border-bottom: 2px solid black;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+
+  /* ── Tables: clean black-on-white ── */
+
+  /* REMOVE all green and blue row backgrounds */
+  .data-table tbody tr,
+  .data-table tbody tr:nth-child(even),
+  .data-table tbody tr:nth-child(odd),
+  .fin-table tbody tr,
+  .tformat-table tbody tr,
+  .tformat-group,
+  .tformat-subgroup,
+  .tformat-ledger,
+  .tformat-total,
+  .fin-row-group,
+  .fin-row-subgroup,
+  .fin-row-ledger,
+  .fin-row-subtotal,
+  .fin-row-opening,
+  .fin-row-closing,
+  .row-low-stock,
+  .row-zero-stock,
+  .summary-strip,
+  .summary-cell,
+  .profit-pulse-cell,
+  .activity-cell {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Table headers — light gray in print for definition */
+  .data-table thead th,
+  .fin-table thead th,
+  .tformat-table thead th {
+    background: #f4f4f4 !important;
+    color: black !important;
+    border-bottom: 1.5pt solid black !important;
+    font-size: 9px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Grand total rows — keep dark for definition */
+  .fin-row-total td,
+  .tformat-grand-total td {
+    background: black !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Section headings in print */
+  .report-section-heading {
+    background: white !important;
+    border-left: 3pt solid black !important;
+    color: black !important;
+    font-weight: bold;
+  }
+
+  /* All amounts right-aligned monospace */
+  .amount, .amt, .running-bal-cell,
+  td[data-align="right"], .td-right,
+  .data-table td:last-child {
+    font-family: "Courier New", Courier, monospace !important;
+    text-align: right !important;
+  }
+
+  /* Cell borders: hairline rules */
+  .data-table td,
+  .data-table th {
+    border: 0.5pt solid #cccccc !important;
+    padding: 3pt 5pt !important;
+  }
+
+  /* ── Page setup ── */
+
+  /* Portrait: Balance Sheet, P&L, Party Statement, Day Book */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm 12mm 12mm;
+  }
+
+  /* Landscape override — apply .print-landscape to the report root */
+  .print-landscape {
+    /* Cannot change @page dynamically from within a class.
+       In JS, call: document.body.classList.add("print-landscape")
+       before window.print(), and use a separate @page landscape. */
+  }
+
+  /* Landscape page for wide reports (Trial Balance, Aging) */
+  @page :left  { margin-left: 12mm; }
+  @page :right { margin-right: 12mm; }
+
+  /* ── Page breaks ── */
+  .page-break-before { page-break-before: always; }
+  .page-break-after  { page-break-after: always; }
+  .no-break          { page-break-inside: avoid; }
+
+  /* Prevent awkward breaks inside table rows */
+  .data-table tbody tr,
+  .fin-table tbody tr {
+    page-break-inside: avoid;
+  }
+
+  /* Section headers should never be the last line on a page */
+  .report-section-heading,
+  .fin-row-group,
+  .tformat-group {
+    page-break-after: avoid;
+  }
+
+  /* ── Typography in print ── */
+  h1, h2, h3 { color: black !important; font-family: Arial, sans-serif !important; }
+  a { color: black !important; text-decoration: none !important; }
+
+  /* Hide Dr/Cr colour indicators — print in black */
+  .running-bal-dr,
+  .running-bal-cr {
+    color: black !important;
+  }
+
+  /* Variance colours in Budget vs Actual — keep in print
+     via -webkit-print-color-adjust */
+  .variance-positive { color: #2d6a4f !important; }
+  .variance-negative { color: #9b2226 !important; }
+
+} /* end @media print */
+
+/* ── SECTION 16: Gateway Frequency Items ────────────────────── */
+
+/* "Frequently Used" label in Reports section panel */
+.freq-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  padding: 5px 14px 3px;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-.data-table tbody tr:nth-child(even),
-.report-table tbody tr:nth-child(even) {
-  background-color: #fafafa !important;
-}
-.data-table tbody tr:nth-child(odd),
-.report-table tbody tr:nth-child(odd) {
-  background-color: #ffffff !important;
+/* Frequently-used nav item — slightly bolder than regular items */
+.nav-row-frequent span:first-child {
+  font-weight: 600 !important;
+  color: #1f2937 !important;
 }
 
-.report-table tbody tr:hover,
-.data-table tbody tr:hover {
-  background-color: #fafeff !important;
-  border-left: 2px solid #1557b0;
+/* Frequency indicator dot — appears after the item count badge */
+.nav-freq-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #1557b0;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* ── Modal config pill ────────────────────────────────────────── */
+/* Defined here for global availability, primary definition in
+   ReportConfigPills.tsx */
+.config-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  background: #f4f5f7;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 100ms ease, color 100ms ease;
+  user-select: none;
+}
+.config-pill:hover {
+  border-color: #1557b0;
+  color: #1557b0;
+}
+.config-pill-label {
+  color: #9ca3af;
+  font-size: 9px;
+}
+
+/* ── Gateway: per-section colour override (belt-and-suspenders) ─
+   The component already uses #1557b0 for all sections.
+   This CSS ensures no per-section colour leaks in. */
+.gateway-section-icon { color: #374151 !important; }
+.gateway-section-title { color: #1f2937 !important; }
+
+/* ── Final: remove any remaining green from the system ──────────
+   Catch-all for any component not yet updated. Lower specificity
+   than the Tailwind class overrides above, but provides a safety net. */
+[style*="#ebf5e2"],
+[style*="#EBF5E2"],
+[style*="#d4eabd"],
+[style*="#D4EABD"],
+[style*="#c9deb5"],
+[style*="#C9DEB5"],
+[style*="#9dc07a"],
+[style*="#9DC07A"] {
+  /* Cannot override inline styles with CSS rules.
+     These are caught by the Tailwind class overrides above.
+     This comment serves as a documentation marker:
+     search for these values in component files if green persists. */
 }

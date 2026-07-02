@@ -167,30 +167,30 @@ function statusForUtilization(pct: number, blocked: boolean) {
 function statusBadge(status: string) {
   if (status === "Normal")
     return (
-      <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+      <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded text-[10px] font-semibold tracking-wide">
         Normal
       </span>
     );
   if (status === "At Risk")
     return (
-      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[10px] font-semibold tracking-wide">
         At Risk
       </span>
     );
   if (status === "Over Limit")
     return (
-      <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+      <span className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-[10px] font-semibold tracking-wide">
         Over Limit
       </span>
     );
   if (status === "Blocked")
     return (
-      <span className="px-2 py-0.5 bg-gray-800 text-white border border-gray-900 rounded text-[10px] font-semibold uppercase tracking-wide">
+      <span className="px-2 py-0.5 bg-gray-800 text-white border border-gray-900 rounded text-[10px] font-semibold tracking-wide">
         Blocked
       </span>
     );
   return (
-    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 border border-gray-200 rounded text-[10px] font-semibold tracking-wide">
       {status}
     </span>
   );
@@ -447,14 +447,14 @@ export default function CreditLimitManager() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[11px] font-medium text-gray-500 tracking-wide mb-1">
             Total Limit Extended
           </div>
           <div className="text-[20px] font-bold text-gray-800">Rs. {money(stats.totalLimit)}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[11px] font-medium text-gray-500 tracking-wide mb-1">
             Total Outstanding
           </div>
           <div className="text-[20px] font-bold text-gray-800">
@@ -463,14 +463,14 @@ export default function CreditLimitManager() {
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[11px] font-medium text-gray-500 tracking-wide mb-1">
             Overall Utilization
           </div>
           <div className="text-[20px] font-bold text-gray-800">{money(stats.utilization)}%</div>
         </div>
 
         <div className="bg-red-50/50 border border-red-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
-          <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-medium text-red-700 tracking-wide flex items-center gap-1.5 mb-1">
             <AlertTriangle size={14} /> Over Limit / Blocked
           </div>
           <div className="text-[20px] font-bold text-red-800">{stats.overLimit} Parties</div>
@@ -603,7 +603,7 @@ export default function CreditLimitManager() {
                   <tr key={r.party.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{r.party.name}</td>
                     <td className={tableCellClass}>
-                      <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wide">
+                      <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded tracking-wide">
                         {r.party.type || "Other"}
                       </span>
                     </td>
@@ -644,7 +644,7 @@ export default function CreditLimitManager() {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-gray-400 uppercase tracking-wide">
+                        <span className="text-[10px] text-gray-400 tracking-wide">
                           N/A
                         </span>
                       )}
@@ -689,7 +689,7 @@ export default function CreditLimitManager() {
               </div>
               <div className="text-gray-500">
                 Type:{" "}
-                <span className="font-medium text-gray-700 uppercase tracking-wide">
+                <span className="font-medium text-gray-700 tracking-wide">
                   {editingParty.type || "Other"}
                 </span>{" "}
                 • PAN:{" "}

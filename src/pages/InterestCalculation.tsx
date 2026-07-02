@@ -389,7 +389,7 @@ const InterestCalculation: React.FC = () => {
       {!isLoading && filteredRows.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Outstanding Amount
             </p>
             <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
@@ -397,7 +397,7 @@ const InterestCalculation: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Interest @ {interestRate}% p.a.
             </p>
             <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
@@ -405,7 +405,7 @@ const InterestCalculation: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Total with Interest
             </p>
             <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">

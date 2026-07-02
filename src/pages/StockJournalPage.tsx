@@ -286,7 +286,7 @@ const StockJournalPage: React.FC = () => {
                 <Package className="h-5 w-5 text-[#1557b0]" />
                 STOCK JOURNAL TRANSFER
               </h2>
-              <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
+              <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
                 Transfer inventory between warehouses
               </p>
             </div>
@@ -429,7 +429,7 @@ const StockJournalPage: React.FC = () => {
             <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
             STOCK JOURNAL TRANSFERS
           </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-semibold">
+          <p className="text-xs text-[#000000] mt-1 leading-none tracking-wider font-semibold">
             Draft and post warehouse transfer journals
           </p>
         </div>

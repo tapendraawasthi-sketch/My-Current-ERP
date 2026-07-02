@@ -679,6 +679,12 @@ export interface AppState extends MultiGodownStoreSlice {
   goodsReceiptNotes: any[];
   salesOrders: any[];
   purchaseOrders: any[];
+  journalEntries: any[];
+  schemes: any[];
+  billsOfMaterial: any[];
+  stockTransfers: any[];
+  quotationVouchers: any[];
+  inventoryConfig: any;
   users: StoreUser[];
   notifications: Notification[];
   budgets: any[];
@@ -724,7 +730,7 @@ export interface AppState extends MultiGodownStoreSlice {
 
   // Bank Reconciliation state
   bankStatements: any[];
-  journalEntries: any[]; // alias over vouchers for BankReconciliation compatibility
+
   // TDS module state
   tdsEntries: any[];
   tdsRates: any[];

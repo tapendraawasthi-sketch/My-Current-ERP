@@ -339,7 +339,7 @@ const OutstandingReceivables: React.FC = () => {
       {!isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Total Invoiced
             </p>
             <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
@@ -347,7 +347,7 @@ const OutstandingReceivables: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Received
             </p>
             <p className="text-[18px] font-bold text-green-600 mt-0.5 font-mono">
@@ -355,7 +355,7 @@ const OutstandingReceivables: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Outstanding
             </p>
             <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
@@ -363,7 +363,7 @@ const OutstandingReceivables: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               Overdue
             </p>
             <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
@@ -549,7 +549,7 @@ const OutstandingReceivables: React.FC = () => {
                               <td style={{ padding: "7px 10px", fontSize: 11, color: daysOverdue > 0 ? "#dc2626" : "#6b7280" }}>
                                 {inv.dueDate || "—"}
                               </td>
-                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}>
+                              <td className={`td-right ${daysOverdue > 0 ? "age-" + (daysOverdue<=30?30:daysOverdue<=60?60:daysOverdue<=90?90:"over90") : ""}`}>
                                 {daysOverdue > 0 ? (
                                   <span style={{
                                     display: "inline-flex",
@@ -631,19 +631,19 @@ const OutstandingReceivables: React.FC = () => {
             <div className="px-5 py-4 space-y-3 text-[12px]">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Party
                   </p>
                   <p className="text-gray-800 font-semibold">{selectedRow.partyName}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     PAN
                   </p>
                   <p className="text-gray-700 font-mono">{selectedRow.partyPan ?? "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Invoice Date
                   </p>
                   <p className="text-gray-700">
@@ -651,13 +651,13 @@ const OutstandingReceivables: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Due Date
                   </p>
                   <p className="text-gray-700">{selectedRow.dueDate || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Original Amount
                   </p>
                   <p className="text-gray-800 font-mono font-semibold">
@@ -665,7 +665,7 @@ const OutstandingReceivables: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Amount Received
                   </p>
                   <p className="text-green-600 font-mono font-semibold">
@@ -673,7 +673,7 @@ const OutstandingReceivables: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Outstanding
                   </p>
                   <p className="text-[#1557b0] font-mono font-bold text-[14px]">
@@ -681,7 +681,7 @@ const OutstandingReceivables: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">
                     Days Overdue
                   </p>
                   <p className={`font-semibold ${getOverdueClass(selectedRow.daysOverdue)}`}>

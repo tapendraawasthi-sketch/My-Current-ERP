@@ -270,7 +270,7 @@ export default function RecurringVouchers() {
                   {/* Expanded lines */}
                   {isExpanded && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="text-xs font-semibold text-gray-500 uppercase mb-2">Journal Lines</div>
+                      <div className="text-xs font-semibold text-gray-500 mb-2">Journal Lines</div>
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="text-gray-400">

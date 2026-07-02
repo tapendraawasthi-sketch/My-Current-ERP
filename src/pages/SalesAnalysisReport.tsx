@@ -125,17 +125,17 @@ export default function SalesAnalysisReport() {
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">
+          <div className="text-[11px] text-gray-500 font-medium tracking-wide">
             Total {voucherType === "purchase" ? "Purchases" : "Sales"}
           </div>
           <div className="text-[18px] font-bold text-gray-800 mt-1 font-mono">Rs. {formatNumber(totals.totalSales)}</div>
         </div>
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">Total Invoices</div>
+          <div className="text-[11px] text-gray-500 font-medium tracking-wide">Total Invoices</div>
           <div className="text-[18px] font-bold text-gray-800 mt-1">{totals.totalInvoices}</div>
         </div>
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">Avg per Invoice</div>
+          <div className="text-[11px] text-gray-500 font-medium tracking-wide">Avg per Invoice</div>
           <div className="text-[18px] font-bold text-gray-800 mt-1 font-mono">
             Rs. {formatNumber(totals.totalInvoices > 0 ? totals.totalSales / totals.totalInvoices : 0)}
           </div>
@@ -145,7 +145,7 @@ export default function SalesAnalysisReport() {
       {/* Data Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+          <span className="text-[11px] font-semibold text-gray-600 tracking-wide">
             Analysis by {groupBy === "party" ? "Party/Account" : groupBy === "item" ? "Item" : "Month"} — {analysisData.length} records
           </span>
           <TrendingUp className="h-4 w-4 text-gray-400" />

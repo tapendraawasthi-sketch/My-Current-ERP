@@ -437,7 +437,7 @@ export default function StatutoryCompliance() {
                 </h3>
                 <div className="space-y-1">
                   {/* Output VAT section */}
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Output VAT (Sales)</div>
+                  <div className="text-xs font-semibold text-gray-500 tracking-wider mb-2">Output VAT (Sales)</div>
                   <div className="flex justify-between py-2 border-b text-sm">
                     <span className="text-gray-600">Total Taxable Sales</span>
                     <span className="font-medium">{fmt(annexCData.totalSalesTaxable)}</span>
@@ -448,7 +448,7 @@ export default function StatutoryCompliance() {
                   </div>
 
                   {/* Input VAT section */}
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">Input VAT (Purchases)</div>
+                  <div className="text-xs font-semibold text-gray-500 tracking-wider mb-2 mt-4">Input VAT (Purchases)</div>
                   <div className="flex justify-between py-2 border-b text-sm">
                     <span className="text-gray-600">Total Taxable Purchases</span>
                     <span className="font-medium">{fmt(annexCData.totalPurchaseTaxable)}</span>

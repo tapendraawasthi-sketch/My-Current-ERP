@@ -219,7 +219,7 @@ const DEFAULT_MASTER_CONFIG: MasterConfig = {
 // ─── Utility ──────────────────────────────────────────────────────────────────
 const inputCls = "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-0.5 block";
-const sectionHdr = "text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 px-3 py-1.5 border-y border-gray-200 -mx-4 mb-3 mt-3";
+const sectionHdr = "section-header";
 
 function fmt(n: number): string {
   return "Rs. " + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1325,7 +1325,7 @@ const ChartOfAccounts: React.FC = () => {
           className={`cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors ${isSelected ? "bg-blue-50" : ""}`}
         >
           {/* Expand + Name */}
-          <td className="px-2 py-1.5" style={{ paddingLeft: `${8 + (item.depth || 0) * 18}px` }}>
+          <td style={{ paddingLeft: `${8 + (item.depth || 0) * 18}px` }}>
             <div className="flex items-center gap-1.5">
               {isGroup && hasChildren ? (
                 <button onClick={e => { e.stopPropagation(); toggleExpand(item.id); }}
@@ -1349,14 +1349,14 @@ const ChartOfAccounts: React.FC = () => {
           </td>
 
           {/* Group / Parent */}
-          <td className="px-3 py-1.5 text-[11px] text-gray-500 max-w-[160px] truncate">
+          <td className="max-w-[160px] truncate">
             {isGroup
               ? (item.isPrimary ? item.category : allGroups.find(g => g.id === item.parentId)?.name || "—")
               : (group?.name || "—")}
           </td>
 
           {/* Account Type */}
-          <td className="px-3 py-1.5">
+          <td>
             {!isGroup && (
               <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${
                 item.accountType === "Bank" ? "bg-blue-100 text-blue-700" :
@@ -1368,24 +1368,24 @@ const ChartOfAccounts: React.FC = () => {
           </td>
 
           {/* Nature */}
-          <td className="px-3 py-1.5">
+          <td>
             <span className={`text-[10px] font-bold ${nature === "credit" ? "text-green-600" : "text-blue-600"}`}>
               {nature === "credit" ? "Cr" : "Dr"}
             </span>
           </td>
 
           {/* Balance */}
-          <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-700">
+          <td className="td-right td-mono">
             {balance !== 0 ? fmt(balance) : "—"}
           </td>
 
           {/* GSTIN */}
-          <td className="px-3 py-1.5 text-[11px] text-gray-500 font-mono">
+          <td className="td-mono">
             {!isGroup && item.gstin ? item.gstin.slice(0, 15) : ""}
           </td>
 
           {/* Actions */}
-          <td className="px-2 py-1.5 text-right">
+          <td className="td-right">
             <div className="flex items-center gap-0.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={e => { e.stopPropagation(); isGroup ? openEditGroup(item) : openEditLedger(item); }}
                 className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-blue-50">
@@ -1414,7 +1414,7 @@ const ChartOfAccounts: React.FC = () => {
     return (
       <React.Fragment key={cat}>
         <tr className="border-b-2" style={{ borderColor: catColor + "40" }}>
-          <td colSpan={7} className="px-3 py-1.5" style={{ backgroundColor: catColor + "12" }}>
+          <td colSpan={7} style={{ backgroundColor: catColor + "12" }}>
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: catColor }}>{cat}</span>
               <span className="text-[11px] font-mono font-semibold" style={{ color: catColor }}>
@@ -1565,16 +1565,16 @@ const ChartOfAccounts: React.FC = () => {
       {/* ── Table ── */}
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-auto">
-          <table className="w-full text-[12px] border-collapse">
-            <thead className="sticky top-0 bg-gray-50 z-10">
-              <tr className="border-b-2 border-gray-200">
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account Name / Group</th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Under / Category</th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nature</th>
-                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Balance</th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">GSTIN</th>
-                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">Actions</th>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Account Name / Group</th>
+                <th>Under / Category</th>
+                <th>Type</th>
+                <th>Nature</th>
+                <th className="th-right">Balance</th>
+                <th>GSTIN</th>
+                <th className="th-right">Actions</th>
               </tr>
             </thead>
             <tbody>

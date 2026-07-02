@@ -228,8 +228,9 @@ const ReportHub: React.FC = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
+                  color: cat.color,
                 }}>
-                  <Icon size={13} style={{ color: cat.color }} />
+                  <Icon size={13} />
                 </div>
 
                 <span style={{

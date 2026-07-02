@@ -160,7 +160,7 @@ export default function PhysicalStockPage2() {
             { label: "Variance Items", value: summary.totalVarianceItems, color: "text-amber-700", bg: "bg-amber-50" },
           ].map(stat => (
             <div key={stat.label} className={`${stat.bg} border border-gray-200 rounded-lg p-3`}>
-              <div className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">{stat.label}</div>
+              <div className="text-[10px] text-gray-500 font-semibold tracking-wide">{stat.label}</div>
               <div className={`text-[18px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
             </div>
           ))}
@@ -171,7 +171,7 @@ export default function PhysicalStockPage2() {
       {loaded && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
-            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+            <span className="text-[11px] font-semibold text-gray-600 tracking-wide">
               Physical Stock Entry — Enter actual counted quantity for each item
             </span>
           </div>

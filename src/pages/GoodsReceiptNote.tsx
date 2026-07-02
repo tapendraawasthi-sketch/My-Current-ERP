@@ -82,7 +82,7 @@ const GoodsReceiptNote: React.FC = () => {
           <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
             <ClipboardList className="h-5 w-5 text-[#1557b0]" /> Goods Receipt Notes
           </h2>
-          <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
+          <p className="text-[11px] text-[#000000] mt-0.5 tracking-wider font-bold">
             Incoming goods before purchase invoicing
           </p>
         </div>

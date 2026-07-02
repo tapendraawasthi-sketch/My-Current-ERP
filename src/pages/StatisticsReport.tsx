@@ -269,7 +269,7 @@ const StatisticsReport: React.FC = () => {
                 <span className="text-[18px] font-mono font-bold text-[#1557b0] mb-1">
                   {stat.count}
                 </span>
-                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
+                <span className="text-[10px] font-semibold text-gray-500 tracking-wide leading-tight">
                   {stat.label}
                 </span>
               </div>
@@ -284,7 +284,7 @@ const StatisticsReport: React.FC = () => {
           </h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Posted Vouchers
               </div>
               <div className="text-[24px] font-mono font-bold text-[#059669]">
@@ -292,7 +292,7 @@ const StatisticsReport: React.FC = () => {
               </div>
             </div>
             <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Draft Vouchers
               </div>
               <div className="text-[24px] font-mono font-bold text-[#d97706]">
@@ -300,7 +300,7 @@ const StatisticsReport: React.FC = () => {
               </div>
             </div>
             <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Cancelled Vouchers
               </div>
               <div className="text-[24px] font-mono font-bold text-[#dc2626]">

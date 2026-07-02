@@ -157,24 +157,24 @@ const CbmsDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">Today Submitted</div>
+          <div className="text-[10px] font-semibold text-gray-500">Today Submitted</div>
           <div className="text-[22px] font-bold">{summary.todaySubmitted}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">Today Pending</div>
+          <div className="text-[10px] font-semibold text-gray-500">Today Pending</div>
           <div className="text-[22px] font-bold">{summary.todayPending}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">
+          <div className="text-[10px] font-semibold text-gray-500">
             This Month Submitted
           </div>
           <div className="text-[22px] font-bold">{summary.monthSubmitted}</div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-3">
-          <div className="text-[10px] uppercase font-semibold text-gray-500">Failed Count</div>
+          <div className="text-[10px] font-semibold text-gray-500">Failed Count</div>
           <div className="text-[22px] font-bold text-red-600">{summary.failedCount}</div>
         </div>
       </div>

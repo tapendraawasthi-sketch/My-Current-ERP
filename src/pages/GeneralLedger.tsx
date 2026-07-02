@@ -13,6 +13,7 @@ interface Account {
   parentId?: string;
   openingBalanceDr?: number;
   openingBalanceCr?: number;
+  isGroup?: boolean;
 }
 
 interface VoucherLine {
@@ -380,17 +381,16 @@ const GeneralLedger: React.FC = () => {
           </h1>
           <h2 className="text-[13px] font-semibold">Ledger Statement</h2>
           <div className="text-[11px]">
-            {account.code} - {account.name} | {fromBS} to {toBS}
           </div>
         </div>
       )}
 
-      {account && (
-        <div className="bg-[#eef2ff] border-b border-[#c7d2fe] px-4 py-2 text-[12px] font-semibold sticky top-0 z-20">
-          Opening Balance as on {fromBS}: Rs. {money(absBalance(ledgerData.openingSigned))}{" "}
-          {openingIndicator}
-        </div>
-      )}
+        {account && (
+          <div className="fin-row-opening px-4 py-2 text-[12px] font-semibold sticky top-0 z-20">
+            Opening Balance as on {fromBS}: Rs. {money(absBalance(ledgerData.openingSigned))}{" "}
+            {openingIndicator}
+          </div>
+        )}
 
       <table className="report-table w-full border-collapse">
         <thead className="sticky top-[36px] z-10 bg-[#f5f6fa] border-b border-gray-200">
@@ -425,7 +425,7 @@ const GeneralLedger: React.FC = () => {
             >
               {show("date") && (
                 <Td>
-                  <BsDateCell adDate={row.adDate} bsDate={row.bsDate} />
+                  <BsDateCell date={row.adDate} dateNepali={row.bsDate} />
                 </Td>
               )}
 
@@ -460,9 +460,12 @@ const GeneralLedger: React.FC = () => {
 
         {account && (
           <tfoot>
-            <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
-              <td colSpan={10} className="px-4 py-2 text-right">
-                Closing Balance as on {toBS}: Rs. {money(absBalance(ledgerData.closingSigned))}{" "}
+            <tr className="fin-row-closing">
+              <td colSpan={options.showRunningBalance ? 4 : 5} className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">
+                CLOSING BALANCE as on {toBS}
+              </td>
+              <td className="px-3 py-2.5 text-[12px] text-right font-bold">
+                {money(absBalance(ledgerData.closingSigned))}{" "}
                 {closingIndicator}
               </td>
             </tr>

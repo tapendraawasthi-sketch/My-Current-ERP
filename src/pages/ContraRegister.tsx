@@ -211,7 +211,7 @@ const ContraRegister: React.FC = () => {
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-4 mb-4 text-[12px]">
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
             Cash → Bank
           </div>
           <div className="text-[14px] font-mono font-medium text-gray-800">
@@ -219,7 +219,7 @@ const ContraRegister: React.FC = () => {
           </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
             Bank → Cash
           </div>
           <div className="text-[14px] font-mono font-medium text-gray-800">
@@ -227,7 +227,7 @@ const ContraRegister: React.FC = () => {
           </div>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
-          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
             Bank → Bank
           </div>
           <div className="text-[14px] font-mono font-medium text-gray-800">

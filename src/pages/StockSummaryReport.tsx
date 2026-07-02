@@ -132,7 +132,7 @@ export default function StockSummaryReport() {
           { label: "Critical Items", value: totals.criticalItems, color: "text-red-600" },
         ].map(stat => (
           <div key={stat.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <div className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">{stat.label}</div>
+            <div className="text-[10px] text-gray-500 font-semibold tracking-wide">{stat.label}</div>
             <div className={`text-[16px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
           </div>
         ))}

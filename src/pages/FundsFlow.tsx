@@ -291,7 +291,7 @@ export default function FundsFlow() {
           { label: "Statement Balanced", value: isBalanced ? 1 : 0, color: isBalanced ? "text-green-700" : "text-red-600", isLabel: true },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{kpi.label}</p>
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">{kpi.label}</p>
             {kpi.isLabel ? (
               <p className={`text-[14px] font-bold mt-1 ${kpi.color}`}>
                 {isBalanced ? "✓ Balanced" : "⚠ Unbalanced"}
@@ -311,7 +311,7 @@ export default function FundsFlow() {
         {/* Sources */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-2.5 bg-green-50 border-b border-green-200">
-            <span className="text-[11px] font-semibold text-green-800 uppercase tracking-wide">
+            <span className="text-[11px] font-semibold text-green-800 tracking-wide">
               Sources of Funds (Inflows)
             </span>
           </div>
@@ -347,7 +347,7 @@ export default function FundsFlow() {
         {/* Application */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-2.5 bg-red-50 border-b border-red-200">
-            <span className="text-[11px] font-semibold text-red-800 uppercase tracking-wide">
+            <span className="text-[11px] font-semibold text-red-800 tracking-wide">
               Application of Funds (Outflows)
             </span>
           </div>
@@ -384,7 +384,7 @@ export default function FundsFlow() {
       {/* Working Capital Schedule */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="px-4 py-2.5 bg-[#f5f6fa] border-b border-gray-200">
-          <span className="text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+          <span className="text-[11px] font-semibold text-gray-700 tracking-wide">
             Schedule of Changes in Working Capital
           </span>
         </div>

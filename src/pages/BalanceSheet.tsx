@@ -293,8 +293,8 @@ function HorizontalBS({
 
   const renderSection = (section: any) => (
     <div key={section.id} className="border-b border-gray-200">
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">{section.caption}</span>
+      <div className="report-section-heading">
+        {section.caption}
       </div>
       {section.rows.map((row: any, ri: number) => (
         <BSRow key={ri} row={row} onDrillDown={onDrillDown} options={options} showSecond={options.showSecondLevel} />
@@ -357,21 +357,21 @@ function VerticalBS({
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
       <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Particulars</span>
+        <span className="text-[10px] font-bold tracking-wide text-gray-500">Particulars</span>
         <div className="flex gap-4">
-          {options.showPreviousYear && <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500 w-28 text-right">Previous Year</span>}
-          <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500 w-28 text-right">Amount (Rs.)</span>
+          {options.showPreviousYear && <span className="text-[10px] font-bold tracking-wide text-gray-500 w-28 text-right">Previous Year</span>}
+          <span className="text-[10px] font-bold tracking-wide text-gray-500 w-28 text-right">Amount (Rs.)</span>
         </div>
       </div>
 
       {/* Equity + Liabilities */}
       <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">I. EQUITY AND LIABILITIES</span>
+        <span className="text-[10px] font-bold tracking-widest text-[#1557b0]">I. EQUITY AND LIABILITIES</span>
       </div>
       {bs.liabilitiesEquity.map((sec) => (
         <div key={sec.id}>
           <div className="px-3 py-1 bg-gray-50 border-b border-gray-100">
-            <span className="text-[11px] font-semibold text-gray-700 uppercase">{sec.caption}</span>
+            <span className="text-[11px] font-semibold text-gray-700">{sec.caption}</span>
           </div>
           {sec.rows.map((row: any, ri: number) => (
             <BSRow key={ri} row={row} onDrillDown={onDrillDown} options={options} showSecond={options.showSecondLevel} />
@@ -390,7 +390,7 @@ function VerticalBS({
 
       {/* Assets */}
       <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100 mt-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">II. ASSETS</span>
+        <span className="text-[10px] font-bold tracking-widest text-[#1557b0]">II. ASSETS</span>
       </div>
       {bs.assets.map((sec) => (
         <div key={sec.id}>
@@ -458,7 +458,7 @@ function GroupSummaryView({
           <p className="mt-1 text-[10px] text-gray-400">Groups with zero balance are still shown as per settings.</p>
         </div>
       ) : (
-        <table className="report-table w-full">
+        <table className="tformat-table">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
               <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account</th>
@@ -549,13 +549,13 @@ function AccountLedgerView({
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase">Closing Balance</p>
+          <p className="text-[10px] font-semibold text-gray-500">Closing Balance</p>
           <p className={`font-mono text-[14px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
             Rs. {fmt2(Math.abs(ledger.closingBalance))} {ledger.closingBalance >= 0 ? "Cr" : "Dr"}
           </p>
         </div>
       </div>
-      <table className="report-table w-full">
+      <table className="tformat-table">
         <thead>
           <tr className="bg-[#f5f6fa] border-b border-gray-200">
             <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-24">Date</th>
@@ -643,7 +643,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase">Amount</p>
+          <p className="text-[10px] font-semibold text-gray-500">Amount</p>
           <p className="font-mono text-[14px] font-bold text-gray-800">
             Rs. {fmt2(voucher.totalDebit || voucher.grandTotal || 0)}
           </p>
@@ -652,7 +652,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
       <div className="p-4 space-y-4">
         {voucher.narration && (
           <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-[12px] text-gray-700">
-            <span className="font-semibold text-gray-500 text-[10px] uppercase mr-2">Narration:</span>
+            <span className="font-semibold text-gray-500 text-[10px] mr-2">Narration:</span>
             {voucher.narration}
           </div>
         )}
@@ -930,7 +930,7 @@ export default function BalanceSheet() {
             {drillState.level === 0 && (
               <div className="mt-6 text-[10px] text-gray-400 text-center no-print flex items-center justify-center gap-2">
                 <Scale className="h-3.5 w-3.5" />
-                Closing Stock Source: <span className="font-semibold uppercase">{bsData.closingStockSource}</span> 
+                Closing Stock Source: <span className="font-semibold">{bsData.closingStockSource}</span> 
                 (Rs. {fmt2(bsData.closingStock)})
               </div>
             )}

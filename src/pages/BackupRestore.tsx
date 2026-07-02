@@ -910,7 +910,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
               Selected Tables
             </p>
             <p className="text-xl font-semibold mt-1">{totals.tables}</p>
@@ -922,7 +922,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
               Selected Rows
             </p>
             <p className="text-xl font-semibold mt-1">{totals.rows}</p>
@@ -934,7 +934,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
               Approx Size
             </p>
             <p className="text-xl font-semibold mt-1">{bytes(totals.size)}</p>
@@ -946,7 +946,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-[11px] font-medium text-gray-500 tracking-wide">
               Total DB Rows
             </p>
             <p className="text-xl font-semibold mt-1">{totals.allRows}</p>
@@ -1178,14 +1178,14 @@ export default function BackupRestore() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Backup ID
               </p>
               <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Tables
               </p>
               <p className="text-[14px] font-semibold text-gray-800">
@@ -1194,7 +1194,7 @@ export default function BackupRestore() {
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Rows
               </p>
               <p className="text-[14px] font-semibold text-gray-800">
@@ -1206,7 +1206,7 @@ export default function BackupRestore() {
             </div>
 
             <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                 Issues
               </p>
               <p className="text-[14px] font-semibold text-gray-800">{restoreIssues.length}</p>
@@ -1488,14 +1488,14 @@ export default function BackupRestore() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                   Backup ID
                 </p>
                 <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                   Created At
                 </p>
                 <p className="text-[12px] font-medium text-gray-800">
@@ -1504,7 +1504,7 @@ export default function BackupRestore() {
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                   Company
                 </p>
                 <p className="text-[12px] font-medium text-gray-800 truncate">
@@ -1513,7 +1513,7 @@ export default function BackupRestore() {
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-[10px] font-semibold text-gray-500 tracking-wide mb-1">
                   Tables
                 </p>
                 <p className="text-[12px] font-medium text-gray-800">

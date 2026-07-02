@@ -257,13 +257,13 @@ export default function TdsPayment() {
 
             <div className="mt-6 border-t border-[#9DC07A] pt-4 grid grid-cols-3 gap-4">
               <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                <div className="text-[10px] uppercase font-bold text-[#000000]">Gross Amount</div>
+                <div className="text-[10px] font-bold text-[#000000]">Gross Amount</div>
                 <div className="text-[14px] font-bold text-[#000000]">
                   Rs. {formatNumber(grossNum)}
                 </div>
               </div>
               <div className="bg-red-50 p-3 rounded border border-red-200">
-                <div className="text-[10px] uppercase font-bold text-red-700">
+                <div className="text-[10px] font-bold text-red-700">
                   TDS Amount ({tdsRate}%)
                 </div>
                 <div className="text-[14px] font-bold text-red-800">
@@ -271,7 +271,7 @@ export default function TdsPayment() {
                 </div>
               </div>
               <div className="bg-green-50 p-3 rounded border border-green-200">
-                <div className="text-[10px] uppercase font-bold text-green-700">Net Payable</div>
+                <div className="text-[10px] font-bold text-green-700">Net Payable</div>
                 <div className="text-[14px] font-bold text-green-800">
                   Rs. {formatNumber(netAmount)}
                 </div>

@@ -1047,15 +1047,15 @@ export default function CommunicationHub() {
                       <td className={tableCellClass}>{row.oldestDays} Days</td>
                       <td className={tableCellClass}>
                         {row.oldestDays > 90 ? (
-                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+                          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
                             Critical
                           </span>
                         ) : row.oldestDays > 60 ? (
-                          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+                          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
                             Severe
                           </span>
                         ) : (
-                          <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+                          <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
                             Warning
                           </span>
                         )}
@@ -1125,7 +1125,7 @@ export default function CommunicationHub() {
                 <div className="text-[24px] font-bold text-[#1557b0]">
                   {tallyPreview.ledgers.length}
                 </div>
-                <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                <div className="text-[11px] font-medium text-gray-500 tracking-wide">
                   Ledgers Found
                 </div>
                 {tallyConflictCounts.ledgerConflicts > 0 && (
@@ -1138,7 +1138,7 @@ export default function CommunicationHub() {
                 <div className="text-[24px] font-bold text-green-600">
                   {tallyPreview.vouchers.length}
                 </div>
-                <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+                <div className="text-[11px] font-medium text-gray-500 tracking-wide">
                   Vouchers Found
                 </div>
               </div>
@@ -1283,7 +1283,7 @@ export default function CommunicationHub() {
 
             {voucherImportErrors.length > 0 && (
               <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 max-h-32 overflow-y-auto">
-                <div className="text-[11px] font-bold text-red-800 uppercase tracking-wide mb-1">
+                <div className="text-[11px] font-bold text-red-800 tracking-wide mb-1">
                   Validation Errors
                 </div>
                 <ul className="list-disc pl-4 text-[11px] text-red-700 space-y-0.5">
@@ -1452,15 +1452,15 @@ export default function CommunicationHub() {
                         </td>
                         <td className={tableCellClass}>
                           {match?.status === "Matched" ? (
-                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 w-max">
+                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide flex items-center gap-1 w-max">
                               <CheckCircle size={10} /> Matched
                             </span>
                           ) : match?.status === "Possible Match" ? (
-                            <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 w-max">
+                            <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide flex items-center gap-1 w-max">
                               <AlertTriangle size={10} /> Verify
                             </span>
                           ) : (
-                            <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 w-max">
+                            <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide flex items-center gap-1 w-max">
                               Unmatched
                             </span>
                           )}

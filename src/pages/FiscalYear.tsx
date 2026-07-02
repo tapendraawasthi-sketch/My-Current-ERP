@@ -111,7 +111,7 @@ export default function FiscalYear() {
   const getStatusBadge = (status: string, isCurrent: boolean) => {
     if (isCurrent)
       return (
-        <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-green-100 text-green-700">
+        <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-green-100 text-green-700">
           CURRENT
         </span>
       );

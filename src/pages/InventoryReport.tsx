@@ -244,7 +244,7 @@ const InventoryReport: React.FC = () => {
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
             Items with stock &gt;90 days old
           </span>
           <span
@@ -254,7 +254,7 @@ const InventoryReport: React.FC = () => {
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
             Total Slow-Moving Stock Value
           </span>
           <span

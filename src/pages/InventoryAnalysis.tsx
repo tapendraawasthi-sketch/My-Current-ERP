@@ -748,7 +748,7 @@ const InventoryAnalysis: React.FC = () => {
                         <ChevronRight size={16} />
                       )}
                     </span>
-                    <span className="text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+                    <span className="text-[11px] font-semibold text-gray-700 tracking-wide">
                       FAST MOVING ITEMS ({fastMoving.length})
                     </span>
                   </div>
@@ -843,7 +843,7 @@ const InventoryAnalysis: React.FC = () => {
                         <ChevronRight size={16} />
                       )}
                     </span>
-                    <span className="text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+                    <span className="text-[11px] font-semibold text-gray-700 tracking-wide">
                       SLOW MOVING ITEMS ({slowMoving.length})
                     </span>
                   </div>
@@ -938,7 +938,7 @@ const InventoryAnalysis: React.FC = () => {
                         <ChevronRight size={16} />
                       )}
                     </span>
-                    <span className="text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+                    <span className="text-[11px] font-semibold text-gray-700 tracking-wide">
                       NON-MOVING ITEMS ({nonMoving.length})
                     </span>
                   </div>
@@ -1041,7 +1041,7 @@ const InventoryAnalysis: React.FC = () => {
                           className="bg-[#1557b0] h-full rounded-full transition-all duration-500"
                         ></div>
                       </div>
-                      <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <div className="text-[10px] font-semibold text-gray-500 tracking-wide">
                         {["0-30", "31-60", "61-90", "91-180", "181-365", "365+"][index]} days
                       </div>
                       <div className="text-[11px] font-mono font-medium text-gray-800 mt-0.5">

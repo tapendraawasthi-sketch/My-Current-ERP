@@ -139,7 +139,7 @@ const PaymentVoucher: React.FC = () => {
                 <Wallet className="h-5 w-5 text-red-600" />
                 <span>PAYMENT VOUCHERS</span>
               </h2>
-              <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
+              <p className="text-xs text-[#000000] mt-1 leading-none font-semibold tracking-wider">
                 Money paid out — expenses, suppliers & transfers
               </p>
             </div>

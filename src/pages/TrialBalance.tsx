@@ -801,7 +801,7 @@ export default function TrialBalance() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase">Closing Balance</p>
+            <p className="text-[10px] font-semibold text-gray-500">Closing Balance</p>
             <p className={`text-[14px] font-mono font-bold ${closingBal >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}>
               {money(Math.abs(closingBal))} {closingBal >= 0 ? "Dr" : "Cr"}
             </p>
@@ -830,7 +830,7 @@ export default function TrialBalance() {
                 >
                   <td className="px-3 py-2.5 border-r border-gray-200 font-mono text-gray-600">{t.date}</td>
                   <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">{t.particulars}</td>
-                  <td className="px-3 py-2.5 text-center border-r border-gray-200 text-[11px] text-gray-600 uppercase">{t.voucherType}</td>
+                  <td className="px-3 py-2.5 text-center border-r border-gray-200 text-[11px] text-gray-600">{t.voucherType}</td>
                   <td className="px-3 py-2.5 text-center border-r border-gray-200 font-mono text-gray-600">{t.voucherNo}</td>
                   <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{t.debit > 0 ? money(t.debit) : "—"}</td>
                   <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{t.credit > 0 ? money(t.credit) : "—"}</td>
@@ -875,19 +875,19 @@ export default function TrialBalance() {
         </div>
         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 border-b border-gray-200 bg-gray-50">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase">Voucher No</p>
+            <p className="text-[10px] font-semibold text-gray-500">Voucher No</p>
             <p className="text-[12px] font-mono text-gray-800 mt-0.5">{v.voucherNo}</p>
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase">Date</p>
+            <p className="text-[10px] font-semibold text-gray-500">Date</p>
             <p className="text-[12px] font-mono text-gray-800 mt-0.5">{v.date}</p>
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase">Type</p>
-            <p className="text-[12px] text-gray-800 uppercase mt-0.5">{v.type}</p>
+            <p className="text-[10px] font-semibold text-gray-500">Type</p>
+            <p className="text-[12px] text-gray-800 mt-0.5">{v.type}</p>
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase">Narration</p>
+            <p className="text-[10px] font-semibold text-gray-500">Narration</p>
             <p className="text-[12px] text-gray-800 mt-0.5 truncate">{v.narration || "—"}</p>
           </div>
         </div>
@@ -1163,33 +1163,28 @@ export default function TrialBalance() {
               </tbody>
               {flatRows.length > 0 && (
                 <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">GRAND TOTAL</td>
+                  <tr className="fin-row-total">
+                    <td className="px-3 py-2.5 border-r border-gray-200">Grand Total</td>
                     {options.displayMode === "detailed" ? (
                       <>
                         <td className="px-3 py-2.5 border-r border-gray-200" colSpan={4}></td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-right">{money(totals.totalDr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-right">{money(totals.totalCr, options.roundOff)}</td>
                       </>
                     ) : (
                       <>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-right" style={{ fontFamily: "Courier New" }}>{money(totals.totalDr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-right" style={{ fontFamily: "Courier New" }}>{money(totals.totalCr, options.roundOff)}</td>
                       </>
                     )}
-                    {options.showPercentage && <td className="px-3 py-2.5 border-r border-gray-200"></td>}
+                    {options.showPercentage ? <td className="px-3 py-2.5 border-r border-gray-200"></td> : null}
+                    <td style={{ textAlign: "right", paddingRight: 8 }}>
+                      {Math.abs(totals.totalDr - totals.totalCr) < 0.01
+                        ? <span className="tb-balanced-badge">✓ Balanced</span>
+                        : <span className="tb-unbalanced-badge">✗ Mismatch</span>
+                      }
+                    </td>
                   </tr>
-                  {!isBalanced && (
-                    <tr>
-                      <td colSpan={options.displayMode === "detailed" ? 5 : 1} className="num-cell-bold" style={{ color: "#dc2626", textAlign: "left", padding: "8px 10px", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
-                        Difference (should be zero)
-                      </td>
-                      <td colSpan={2} className="num-cell-bold" style={{ color: "#dc2626", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
-                        {balanceDifference.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </td>
-                      {options.showPercentage && <td style={{ background: "#fef2f2", borderTop: "2px solid #fca5a5" }}></td>}
-                    </tr>
-                  )}
                 </tfoot>
               )}
             </table>

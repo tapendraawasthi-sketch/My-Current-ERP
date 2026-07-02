@@ -644,7 +644,7 @@ export default function SerialNumberTracking() {
 
               <div className="grid grid-cols-3 gap-4 text-[12px] mb-4">
                 <div className="border border-gray-200 rounded p-3">
-                  <p className="text-[10px] text-gray-500 uppercase mb-1">Purchase</p>
+                  <p className="text-[10px] text-gray-500 mb-1">Purchase</p>
                   <p>Date: {searchResult.purchaseDate || "—"}</p>
                   <p>Invoice: {searchResult.purchaseInvoiceNo || "—"}</p>
                   <p>Supplier: {searchResult.supplierName || "—"}</p>
@@ -652,7 +652,7 @@ export default function SerialNumberTracking() {
                 </div>
 
                 <div className="border border-gray-200 rounded p-3">
-                  <p className="text-[10px] text-gray-500 uppercase mb-1">Sale</p>
+                  <p className="text-[10px] text-gray-500 mb-1">Sale</p>
                   <p>Date: {searchResult.saleDate || "—"}</p>
                   <p>Invoice: {searchResult.saleInvoiceNo || "—"}</p>
                   <p>Customer: {searchResult.customerName || "—"}</p>
@@ -660,7 +660,7 @@ export default function SerialNumberTracking() {
                 </div>
 
                 <div className="border border-gray-200 rounded p-3">
-                  <p className="text-[10px] text-gray-500 uppercase mb-1">Warranty</p>
+                  <p className="text-[10px] text-gray-500 mb-1">Warranty</p>
                   <p>Months: {searchResult.warrantyMonths}</p>
                   <p>Expiry: {searchResult.warrantyExpiry || "—"}</p>
                   <p className={warrantyTextClass(getWarrantyStatus(searchResult).color)}>
@@ -670,7 +670,7 @@ export default function SerialNumberTracking() {
               </div>
 
               <div className="border border-gray-200 rounded p-3">
-                <p className="text-[10px] text-gray-500 uppercase mb-2">Status Timeline</p>
+                <p className="text-[10px] text-gray-500 mb-2">Status Timeline</p>
                 <div className="flex items-center gap-2 text-[12px] text-gray-700 flex-wrap">
                   <span className="px-2 py-1 rounded bg-green-100 text-green-700">Purchased</span>
                   <span>→</span>
@@ -909,7 +909,7 @@ export default function SerialNumberTracking() {
 
               <div className="grid grid-cols-2 gap-4 text-[12px]">
                 <div className="border rounded p-3">
-                  <p className="text-[10px] uppercase text-gray-500 mb-1">Purchase</p>
+                  <p className="text-[10px] text-gray-500 mb-1">Purchase</p>
                   <p>Date: {selectedSerial.purchaseDate || "—"}</p>
                   <p>Invoice: {selectedSerial.purchaseInvoiceNo || "—"}</p>
                   <p>Supplier: {selectedSerial.supplierName || "—"}</p>
@@ -917,7 +917,7 @@ export default function SerialNumberTracking() {
                 </div>
 
                 <div className="border rounded p-3">
-                  <p className="text-[10px] uppercase text-gray-500 mb-1">Sale / Warranty</p>
+                  <p className="text-[10px] text-gray-500 mb-1">Sale / Warranty</p>
                   <p>Customer: {selectedSerial.customerName || "—"}</p>
                   <p>Sale Date: {selectedSerial.saleDate || "—"}</p>
                   <p>Warranty Expiry: {selectedSerial.warrantyExpiry || "—"}</p>
@@ -928,7 +928,7 @@ export default function SerialNumberTracking() {
               </div>
 
               <div className="mt-4 border rounded p-3">
-                <p className="text-[10px] uppercase text-gray-500 mb-2">Movement Timeline</p>
+                <p className="text-[10px] text-gray-500 mb-2">Movement Timeline</p>
                 <div className="flex flex-wrap items-center gap-2 text-[12px]">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Purchased</span>

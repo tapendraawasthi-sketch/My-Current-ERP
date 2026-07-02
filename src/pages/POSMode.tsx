@@ -475,7 +475,7 @@ export default function POSMode() {
                 <span className="font-mono">Rs. {formatNumber(vatAmount)}</span>
               </div>
               <div className="col-span-2 mt-2 pt-2 border-t border-[#9DC07A] flex justify-between items-end">
-                <span className="text-[14px] font-bold text-[#000000] uppercase tracking-wide">
+                <span className="text-[14px] font-bold text-[#000000] tracking-wide">
                   Grand Total
                 </span>
                 <span className="text-[28px] font-bold text-[#1557b0] font-mono leading-none">
@@ -570,14 +570,14 @@ export default function POSMode() {
                 className="col-span-1 bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 rounded py-2.5 flex flex-col items-center justify-center transition-colors"
               >
                 <Pause className="w-5 h-5 mb-1" />
-                <span className="text-[10px] font-bold uppercase">Hold Bill</span>
+                <span className="text-[10px] font-bold">Hold Bill</span>
               </button>
               <button
                 onClick={clearCart}
                 className="col-span-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded py-2.5 flex flex-col items-center justify-center transition-colors"
               >
                 <Trash2 className="w-5 h-5 mb-1" />
-                <span className="text-[10px] font-bold uppercase">Clear (Esc)</span>
+                <span className="text-[10px] font-bold">Clear (Esc)</span>
               </button>
               <button
                 onClick={handlePrintAndNew}
@@ -585,7 +585,7 @@ export default function POSMode() {
               >
                 <Printer className="w-6 h-6" />
                 <div className="flex flex-col items-start">
-                  <span className="text-[14px] font-bold uppercase leading-none">Print & Save</span>
+                  <span className="text-[14px] font-bold leading-none">Print & Save</span>
                   <span className="text-[10px] text-[#000000] leading-none mt-1">Shortcut: F2</span>
                 </div>
               </button>

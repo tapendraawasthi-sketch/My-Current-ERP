@@ -795,7 +795,7 @@ export default function YearEndProcess() {
                   >
                     {c.label}
                     {!c.automated && (
-                      <span className="ml-2 text-[9px] uppercase tracking-wide bg-white/50 px-1.5 py-0.5 rounded border border-current opacity-70">
+                      <span className="ml-2 text-[9px] tracking-wide bg-white/50 px-1.5 py-0.5 rounded border border-current opacity-70">
                         Manual
                       </span>
                     )}
@@ -898,7 +898,7 @@ export default function YearEndProcess() {
                     <td className={`${tableCellClass} font-medium`}>{a.label}</td>
                     <td className={tableCellClass}>{a.description}</td>
                     <td className={tableCellClass}>
-                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] uppercase tracking-wide border border-gray-200">
+                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] tracking-wide border border-gray-200">
                         {a.source}
                       </span>
                     </td>
@@ -984,7 +984,7 @@ export default function YearEndProcess() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
-              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
+              <div className="text-[11px] text-gray-500 tracking-wide font-medium mb-1">
                 Total Income
               </div>
               <div className="text-[18px] font-bold text-gray-900">
@@ -992,7 +992,7 @@ export default function YearEndProcess() {
               </div>
             </div>
             <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
-              <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
+              <div className="text-[11px] text-gray-500 tracking-wide font-medium mb-1">
                 Total Expenses
               </div>
               <div className="text-[18px] font-bold text-gray-900">

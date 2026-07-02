@@ -244,7 +244,7 @@ export default function StockSummary() {
                     <tr>
                       <td colSpan={13} className="p-0 border-b border-gray-200">
                         <div className="bg-blue-50 p-4">
-                          <div className="text-[11px] font-bold text-[#1557b0] mb-2 uppercase tracking-wide">
+                          <div className="text-[11px] font-bold text-[#1557b0] mb-2 tracking-wide">
                             Stock Ledger — {row.itemName} ({method.replace("_"," ").toUpperCase()})
                           </div>
                           <table className="w-full text-[11px] border-collapse">

@@ -1088,7 +1088,7 @@ const LedgerMaster: React.FC = () => {
 
                   {extForm.interestCalculationApplicable && (
                     <div className="p-3 border border-gray-200 rounded-md bg-gray-50 mt-4">
-                      <div className="text-[11px] font-semibold mb-3 text-gray-800 uppercase tracking-wide">
+                      <div className="text-[11px] font-semibold mb-3 text-gray-800 tracking-wide">
                         Interest Settings
                       </div>
                       <div className="grid grid-cols-2 gap-3">

@@ -845,7 +845,7 @@ const Budgets: React.FC = () => {
                       <tr>
                         <td
                           colSpan={2}
-                          className="px-3 py-2.5 text-right font-bold text-[11px] uppercase tracking-wide text-gray-600"
+                          className="px-3 py-2.5 text-right font-bold text-[11px] tracking-wide text-gray-600"
                         >
                           Total Budget Allocation:
                         </td>
@@ -1188,7 +1188,7 @@ const Budgets: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-blue-200 transition-colors relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-blue-50 rounded-bl-full -mr-8 -mt-8"></div>
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Total Income
                     </div>
                     <div className="text-2xl font-bold text-gray-800 mb-2">
@@ -1213,7 +1213,7 @@ const Budgets: React.FC = () => {
 
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-blue-200 transition-colors relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-orange-50 rounded-bl-full -mr-8 -mt-8"></div>
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Total Expenses
                     </div>
                     <div className="text-2xl font-bold text-gray-800 mb-2">
@@ -1238,7 +1238,7 @@ const Budgets: React.FC = () => {
 
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-blue-200 transition-colors relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-green-50 rounded-bl-full -mr-8 -mt-8"></div>
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Net Performance
                     </div>
                     <div className="text-2xl font-bold text-[#1557b0] mb-2">
@@ -1490,7 +1490,7 @@ const Budgets: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Total Allocation
                     </div>
                     <div className="text-xl font-bold text-gray-800">
@@ -1498,7 +1498,7 @@ const Budgets: React.FC = () => {
                     </div>
                   </div>
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Actual Spent
                     </div>
                     <div className="text-xl font-bold text-gray-800">
@@ -1506,7 +1506,7 @@ const Budgets: React.FC = () => {
                     </div>
                   </div>
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Utilization Rate
                     </div>
                     <div className="text-xl font-bold text-[#1557b0]">
@@ -1514,7 +1514,7 @@ const Budgets: React.FC = () => {
                     </div>
                   </div>
                   <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    <div className="text-[11px] font-semibold text-gray-500 tracking-wide mb-1">
                       Status
                     </div>
                     <div className="flex items-center gap-1.5 mt-1">

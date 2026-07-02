@@ -251,7 +251,7 @@ const StockBook: React.FC = () => {
             },
           ].map((k, i) => (
             <div key={i} className="px-4 py-2 border-r border-black last:border-r-0">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">
+              <div className="text-[9px] font-bold tracking-wide text-gray-600">
                 {k.label}
               </div>
               <div className="text-[16px] font-bold font-mono">{formatNumber(k.val)}</div>
@@ -268,7 +268,7 @@ const StockBook: React.FC = () => {
             </div>
           ))}
           <div className="px-4 py-2">
-            <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">Method</div>
+            <div className="text-[9px] font-bold tracking-wide text-gray-600">Method</div>
             <div className="text-[14px] font-bold">{methodLabel}</div>
             <div className="text-[10px] text-gray-600">{selectedItem?.name}</div>
           </div>
@@ -373,7 +373,7 @@ const StockBook: React.FC = () => {
               {/* ── Closing summary footer ── */}
               <tfoot>
                 <tr className="border-t-2 border-black bg-[#C9DEB5] font-bold">
-                  <td colSpan={3} className="px-3 py-2 text-[12px] uppercase">
+                  <td colSpan={3} className="px-3 py-2 text-[12px]">
                     Period Totals / Closing Stock
                   </td>
                   <td className="px-3 py-2 text-right font-mono text-green-700">
@@ -411,26 +411,26 @@ const StockBook: React.FC = () => {
         <div className="border-t border-black bg-[#EBF5E2] px-4 py-3">
           <div className="flex flex-wrap gap-6 items-center text-[12px]">
             <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
+              <span className="text-gray-600 font-semibold text-[10px] tracking-wide">
                 Item:{" "}
               </span>
               <strong>{selectedItem?.name}</strong>
               <span className="ml-2 text-gray-500">({selectedItem?.unit})</span>
             </div>
             <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
+              <span className="text-gray-600 font-semibold text-[10px] tracking-wide">
                 Closing Qty:{" "}
               </span>
               <strong className="font-mono">{formatNumber(result.closingQty)}</strong>
             </div>
             <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
+              <span className="text-gray-600 font-semibold text-[10px] tracking-wide">
                 {methodLabel} Rate:{" "}
               </span>
               <strong className="font-mono">Rs. {formatNumber(result.weightedAvgRate)}</strong>
             </div>
             <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
+              <span className="text-gray-600 font-semibold text-[10px] tracking-wide">
                 Closing Value:{" "}
               </span>
               <strong className="font-mono text-[#1557b0]">

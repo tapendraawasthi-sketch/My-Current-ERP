@@ -192,12 +192,12 @@ export default function Warehouses() {
                     <div className="flex items-center gap-1.5">
                       <span className="font-medium">{warehouse.name}</span>
                       {warehouse.isDefault && (
-                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold uppercase">
+                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold">
                           Default
                         </span>
                       )}
                       {warehouse.isMainBranch && (
-                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold uppercase">
+                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">
                           Main
                         </span>
                       )}

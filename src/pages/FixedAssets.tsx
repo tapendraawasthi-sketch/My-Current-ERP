@@ -427,7 +427,7 @@ export default function FixedAssets() {
             key={kpi.label}
             className="bg-white border border-gray-200 rounded-lg p-3"
           >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide">
               {kpi.label}
             </p>
             <p className={`text-[15px] font-bold font-mono mt-1 ${kpi.color}`}>
@@ -495,7 +495,7 @@ export default function FixedAssets() {
                     <td className={tdCls}>{row.purchaseDate}</td>
                     <td className={amtCls}>{fmt(row.purchaseCost)}</td>
                     <td className={tdCls}>
-                      <span className="font-semibold uppercase text-[11px]">
+                      <span className="font-semibold text-[11px]">
                         {row.depreciationMethod}
                       </span>
                     </td>
@@ -518,15 +518,15 @@ export default function FixedAssets() {
                     </td>
                     <td className={tdCls}>
                       {row.disposalDate ? (
-                        <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-semibold rounded uppercase">
+                        <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-semibold rounded">
                           Disposed
                         </span>
                       ) : row.isFullyDepreciated ? (
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-semibold rounded uppercase">
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-semibold rounded">
                           Fully Depr.
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-semibold rounded uppercase">
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-semibold rounded">
                           Active
                         </span>
                       )}
@@ -594,7 +594,7 @@ export default function FixedAssets() {
                     </td>
                     <td className={tdCls}>{row.category}</td>
                     <td className={tdCls}>
-                      <span className="font-semibold uppercase text-[11px]">
+                      <span className="font-semibold text-[11px]">
                         {row.depreciationMethod}
                         {row.depreciationMethod === "wdv"
                           ? ` @ ${row.wdvRate}%`
@@ -741,7 +741,7 @@ export default function FixedAssets() {
       {/* ── Depreciation History section ──────────────────────────────────── */}
       {depreciationLedger.length > 0 && (
         <div className="mt-4 bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+          <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 text-[11px] font-semibold text-gray-700 tracking-wide">
             Depreciation Ledger — Posted Entries
           </div>
           <div className="overflow-x-auto">
@@ -769,7 +769,7 @@ export default function FixedAssets() {
                       <td className={tdCls}>{entry.fiscalYear}</td>
                       <td className={tdCls}>{entry.date}</td>
                       <td className={tdCls}>
-                        <span className="uppercase font-semibold text-[11px]">
+                        <span className="font-semibold text-[11px]">
                           {entry.method}
                         </span>
                       </td>
@@ -897,7 +897,7 @@ export default function FixedAssets() {
 
               {/* Depreciation */}
               <div className="border border-gray-200 rounded-lg p-3 space-y-3">
-                <p className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+                <p className="text-[11px] font-semibold text-gray-600 tracking-wide">
                   Depreciation Settings (Nepal IT Act)
                 </p>
                 <div className="grid grid-cols-3 gap-3">
@@ -1014,7 +1014,7 @@ export default function FixedAssets() {
 
               {/* Disposal fields */}
               <div className="border border-gray-200 rounded-lg p-3 space-y-3">
-                <p className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+                <p className="text-[11px] font-semibold text-gray-600 tracking-wide">
                   Disposal (leave blank if not disposed)
                 </p>
                 <div className="grid grid-cols-3 gap-3">

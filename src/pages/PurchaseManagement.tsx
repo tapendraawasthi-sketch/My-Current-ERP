@@ -373,7 +373,7 @@ const PurchaseManagement: React.FC = () => {
       case "approved":
       case "converted":
         return (
-          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
+          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide">
             {status}
           </span>
         );
@@ -381,7 +381,7 @@ const PurchaseManagement: React.FC = () => {
       case "qty variance":
       case "submitted":
         return (
-          <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
+          <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide">
             {status}
           </span>
         );
@@ -389,13 +389,13 @@ const PurchaseManagement: React.FC = () => {
       case "missing po":
       case "rejected":
         return (
-          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
+          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide">
             {status}
           </span>
         );
       default:
         return (
-          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
+          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide">
             {status}
           </span>
         );

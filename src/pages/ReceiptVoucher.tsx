@@ -139,7 +139,7 @@ const ReceiptVoucher: React.FC = () => {
                 <Download className="h-5 w-5 text-green-600" />
                 <span>RECEIPT VOUCHERS</span>
               </h2>
-              <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
+              <p className="text-xs text-[#000000] mt-1 leading-none font-semibold tracking-wider">
                 Money received — customer payments, income & deposits
               </p>
             </div>

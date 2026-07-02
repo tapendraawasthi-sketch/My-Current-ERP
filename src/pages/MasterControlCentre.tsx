@@ -251,25 +251,25 @@ const MasterControlCentre: React.FC = () => {
         {/* Stats Summary Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white border-l-4 border-blue-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[10px] font-semibold text-[#000000] tracking-wide">
               Total Ledgers
             </div>
             <div className="text-2xl font-bold mt-1 text-[#000000]">{totalLedgers}</div>
           </div>
           <div className="bg-white border-l-4 border-green-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[10px] font-semibold text-[#000000] tracking-wide">
               Stock Items
             </div>
             <div className="text-2xl font-bold mt-1 text-[#000000]">{(items || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-amber-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[10px] font-semibold text-[#000000] tracking-wide">
               Total Employees
             </div>
             <div className="text-2xl font-bold mt-1 text-[#000000]">{(employees || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-purple-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[10px] font-semibold text-[#000000] tracking-wide">
               Pay Heads
             </div>
             <div className="text-2xl font-bold mt-1 text-[#000000]">{(payHeads || []).length}</div>

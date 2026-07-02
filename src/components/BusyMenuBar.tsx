@@ -267,7 +267,15 @@ const BusyMenuBar: React.FC = () => {
   const renderItems = (items: MenuItem[], depth = 0) =>
     items.map((item, i) => {
       if (item.separator) {
-        return <div key={`sep-${i}`} className="my-1 border-t border-gray-200" />;
+        return (
+          <div
+            key={`sep-${i}`}
+            style={{
+              margin: "2px 0",
+              borderTop: "1px solid #e5e7eb",
+            }}
+          />
+        );
       }
 
       if (item.children && item.children.length > 0) {
@@ -299,7 +307,11 @@ const BusyMenuBar: React.FC = () => {
             </button>
 
             {isSubOpen && (
-              <div className="bg-gray-50 border-l-2 border-[#1557b0]/20 ml-2">
+              <div style={{
+                background: "#ffffff",
+                borderLeft: "2px solid rgba(21, 87, 176, 0.2)",
+                marginLeft: 8,
+              }}>
                 {renderItems(item.children, depth + 1)}
               </div>
             )}
@@ -328,15 +340,15 @@ const BusyMenuBar: React.FC = () => {
             paddingLeft: depth > 0 ? 32 : 16,
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff";
-            (e.currentTarget as HTMLButtonElement).style.color = "#1557b0";
-            (e.currentTarget as HTMLButtonElement).style.borderLeft = "3px solid #1557b0";
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--color-primary-light)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--color-primary)";
+            (e.currentTarget as HTMLButtonElement).style.borderLeft = "3px solid var(--color-primary)";
             // paddingLeft needs adjustment because of borderLeft addition?
             // standard approach is box-sizing: border-box, but we can set border-left: 3px solid transparent below
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-            (e.currentTarget as HTMLButtonElement).style.color = "#374151";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--text-primary)";
             (e.currentTarget as HTMLButtonElement).style.borderLeft = "3px solid transparent";
           }}
         >
@@ -366,8 +378,14 @@ const BusyMenuBar: React.FC = () => {
   return (
     <div
       ref={barRef}
-      className="bg-white border-b border-gray-200 shadow-sm select-none h-10"
-      style={{ display: "flex", alignItems: "stretch" }}
+      className="select-none h-10"
+      style={{
+        display: "flex",
+        alignItems: "stretch",
+        background: "#ffffff",
+        borderBottom: "1px solid #d1d5db",
+        boxShadow: "none",
+      }}
     >
       {MENU_TREE.map((section, idx) => {
         const isOpen = openMenu === idx;
@@ -380,10 +398,10 @@ const BusyMenuBar: React.FC = () => {
                 height: "100%",
                 fontSize: 12,
                 fontWeight: isOpen ? 700 : 500,
-                background: isOpen ? "#f0f6ff" : "transparent",
+                background: isOpen ? "var(--color-primary-light)" : "transparent",
                 border: "none",
-                borderBottom: isOpen ? "2px solid #1557b0" : "2px solid transparent",
-                color: isOpen ? "#1557b0" : "#374151",
+                borderBottom: isOpen ? "2px solid var(--color-primary)" : "2px solid transparent",
+                color: isOpen ? "var(--color-primary)" : "var(--text-primary)",
                 cursor: "pointer",
                 transition: "all 150ms ease",
                 whiteSpace: "nowrap",
@@ -415,11 +433,11 @@ const BusyMenuBar: React.FC = () => {
                       <div style={{
                         position: "sticky",
                         top: 0,
-                        height: 20,
+                        height: 12,
                         background: "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
                         zIndex: 2,
                         pointerEvents: "none",
-                        marginBottom: -20,
+                        marginBottom: -12,
                       }} />
                     )}
 
@@ -431,11 +449,11 @@ const BusyMenuBar: React.FC = () => {
                       <div style={{
                         position: "sticky",
                         bottom: 0,
-                        height: 20,
+                        height: 12,
                         background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
                         zIndex: 2,
                         pointerEvents: "none",
-                        marginTop: -20,
+                        marginTop: -12,
                       }} />
                     )}
                   </div>

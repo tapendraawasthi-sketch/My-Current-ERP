@@ -699,7 +699,7 @@ const VatReports: React.FC = () => {
                   <tr className="bg-green-50">
                     <td
                       colSpan={3}
-                      className="px-4 py-2 text-[11px] font-bold text-green-800 uppercase tracking-wide"
+                      className="px-4 py-2 text-[11px] font-bold text-green-800 tracking-wide"
                     >
                       Output VAT (Sales)
                     </td>
@@ -742,7 +742,7 @@ const VatReports: React.FC = () => {
                   <tr className="bg-amber-50">
                     <td
                       colSpan={3}
-                      className="px-4 py-2 text-[11px] font-bold text-amber-800 uppercase tracking-wide"
+                      className="px-4 py-2 text-[11px] font-bold text-amber-800 tracking-wide"
                     >
                       Input VAT (Purchases)
                     </td>

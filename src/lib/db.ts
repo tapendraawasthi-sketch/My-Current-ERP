@@ -649,7 +649,7 @@ export interface DBBillSundry {
   code?: string;
   name: string;
   alias?: string;
-  type: "addition" | "deduction" | "additive";
+  type: string;
   nature?: string;
   calculationType?: "fixed" | "percentage";
   rate?: number;
@@ -657,6 +657,13 @@ export interface DBBillSundry {
   accountHeadId?: string;
   accountName?: string;
   defaultValue?: number;
+  affectCostInSale?: boolean;
+  affectCostInPurchase?: boolean;
+  accountingInSale?: string;
+  accountingInPurchase?: string;
+  affectAccountingInStockTransfer?: boolean;
+  gstApplicable?: boolean;
+  taxCategoryId?: string;
   isActive: boolean;
   isTaxable?: boolean;
   applyOn?: string;
@@ -671,7 +678,9 @@ export interface DBStandardNarration {
   id: string;
   code?: string;
   narration: string;
+  category?: string;
   voucherType?: string;
+  voucherTypes?: string[];
   isActive: boolean;
   sortOrder?: number;
   createdAt?: string;
@@ -1109,6 +1118,7 @@ export class SutraERPDatabase extends Dexie {
   auditLogs!: Table<DBAuditLog>;
 
   // ─── Extended / Feature Tables (declared as Table<any> for flexibility) ───
+  voucherSeriesConfig!: Table<any>;
   currencies!: Table<any>;
   recurringVouchers!: Table<any>;
   customFieldDefs!: Table<any>;

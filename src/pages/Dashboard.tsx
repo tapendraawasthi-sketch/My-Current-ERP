@@ -352,7 +352,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className={cardClass}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-gray-600 tracking-wide">
               Today's Revenue
             </div>
             <div className="bg-blue-50 text-blue-600 rounded-md p-2">
@@ -378,7 +378,7 @@ export default function Dashboard() {
 
         <div className={cardClass}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-gray-600 tracking-wide">
               Accounts Receivable
             </div>
             <div className="bg-emerald-50 text-emerald-600 rounded-md p-2">
@@ -398,7 +398,7 @@ export default function Dashboard() {
 
         <div className={cardClass}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-gray-600 tracking-wide">
               Accounts Payable
             </div>
             <div className="bg-amber-50 text-amber-600 rounded-md p-2">
@@ -413,7 +413,7 @@ export default function Dashboard() {
 
         <div className={cardClass}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-gray-600 tracking-wide">
               Available Balance
             </div>
             <div className="bg-gray-100 text-gray-600 rounded-md p-2">
@@ -484,7 +484,7 @@ export default function Dashboard() {
                     title={`Expenses: Rs. ${money(m.expenses)}`}
                   />
                 </div>
-                <div className="text-[10px] font-medium text-gray-500 group-hover:text-gray-900 transition-colors uppercase tracking-wider">
+                <div className="text-[10px] font-medium text-gray-500 group-hover:text-gray-900 transition-colors tracking-wider">
                   {m.month}
                 </div>
               </div>
@@ -566,7 +566,7 @@ export default function Dashboard() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-md p-3 text-center bg-green-50 border border-green-200 shadow-sm transition-transform hover:-translate-y-0.5">
-              <div className="text-[10px] font-semibold text-green-700 uppercase tracking-wide mb-1.5">
+              <div className="text-[10px] font-semibold text-green-700 tracking-wide mb-1.5">
                 1-30 Days
               </div>
               <div className="font-bold text-[14px] text-green-900">
@@ -574,7 +574,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="rounded-md p-3 text-center bg-amber-50 border border-amber-200 shadow-sm transition-transform hover:-translate-y-0.5">
-              <div className="text-[10px] font-semibold text-amber-700 uppercase tracking-wide mb-1.5">
+              <div className="text-[10px] font-semibold text-amber-700 tracking-wide mb-1.5">
                 31-60 Days
               </div>
               <div className="font-bold text-[14px] text-amber-900">
@@ -582,7 +582,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="rounded-md p-3 text-center bg-orange-50 border border-orange-200 shadow-sm transition-transform hover:-translate-y-0.5">
-              <div className="text-[10px] font-semibold text-orange-700 uppercase tracking-wide mb-1.5">
+              <div className="text-[10px] font-semibold text-orange-700 tracking-wide mb-1.5">
                 61-90 Days
               </div>
               <div className="font-bold text-[14px] text-orange-900">
@@ -590,7 +590,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="rounded-md p-3 text-center bg-red-50 border border-red-200 shadow-sm transition-transform hover:-translate-y-0.5 relative overflow-hidden">
-              <div className="text-[10px] font-semibold text-red-700 uppercase tracking-wide mb-1.5 relative z-10">
+              <div className="text-[10px] font-semibold text-red-700 tracking-wide mb-1.5 relative z-10">
                 90+ Days
               </div>
               <div className="font-bold text-[14px] text-red-900 relative z-10">

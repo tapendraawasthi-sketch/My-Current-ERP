@@ -255,7 +255,7 @@ export default function PDCManagement() {
           { label: "Pending Received",  value: stats.pendingReceived + " cheques",      color: "text-gray-700"  },
         ].map((k) => (
           <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">{k.label}</p>
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wide leading-tight">{k.label}</p>
             <p className={`font-bold mt-1 ${k.color} text-[13px]`}>{k.value}</p>
           </div>
         ))}
