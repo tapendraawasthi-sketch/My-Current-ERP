@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useStore } from "./store";
 import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
@@ -84,17 +84,24 @@ import StockSummaryReport from "./pages/StockSummaryReport";
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
 
+  const initCalledRef = useRef(false);
   useEffect(() => {
+    if (initCalledRef.current) return;
+    initCalledRef.current = true;
     initializeApp();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initializeApp]);
 
   useEffect(() => {
-    const handleNav = (e: CustomEvent) => {
-      useStore.getState().setCurrentPage(e.detail);
+    const handleNav = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (customEvent.detail && typeof customEvent.detail === "string") {
+        setCurrentPage(customEvent.detail);
+      }
     };
-    window.addEventListener("navigate", handleNav as EventListener);
-    return () => window.removeEventListener("navigate", handleNav as EventListener);
-  }, []);
+    window.addEventListener("navigate", handleNav);
+    return () => window.removeEventListener("navigate", handleNav);
+  }, [setCurrentPage]);
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -147,10 +154,13 @@ const App: React.FC = () => {
       case "units": return <Units />;
       case "unit-conversion":
       case "unit-conversions": return <UnitConversionMaster />;
+      case "ledgers":
+      case "ledger-master": return <LedgerMaster />;
+      case "price-lists":
+      case "price-list-master": return <PriceLists />;
       case "cost-centers":
       case "cost-centre": return <CostCenters />;
       case "sales-persons": return <SalesPersons />;
-      case "price-lists": return <PriceLists />;
       case "standard-narration":
       case "standard-narrations": return <StandardNarrationMaster />;
       case "budget": return <BudgetMaster />;

@@ -247,6 +247,8 @@ export interface DBInvoiceLine {
 }
 
 // ─── Invoice ──────────────────────────────────────────────────────────────────
+import type { CbmsStatus } from "./cbmsTypes";
+
 export interface DBInvoice {
   id: string;
   invoiceNo: string;
@@ -294,7 +296,7 @@ export interface DBInvoice {
   linkedDcId?: string;
   linkedDocuments?: WorkflowDocRef[];
   workflowStatus?: WorkflowStatus;
-  cbmsStatus?: "pending" | "failed" | "success" | "submitted" | "cancelled";
+  cbmsStatus?: CbmsStatus;
   cbmsIrn?: string;
   cbmsQrCode?: string;
   cbmsQrString?: string;

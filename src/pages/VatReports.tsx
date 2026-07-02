@@ -61,19 +61,29 @@ interface ReportShellProps {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  actions?: React.ReactNode;
+  className?: string;
+  printable?: boolean;
 }
 
-const ReportShell: React.FC<ReportShellProps> = ({ title, subtitle, children }) => (
-  <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-    <div className="flex items-center justify-between mb-4">
-      <div>
-        <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-        {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
+const ReportShell: React.FC<ReportShellProps> = ({
+  title, subtitle, children, actions, className = "", printable = true
+}) => {
+  return (
+    <div className={`p-4 md:p-6 bg-[#f5f6fa] min-h-screen flex flex-col gap-4 ${className}`}>
+      <div className="flex items-center justify-between mb-4 no-print">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
+          {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
+        </div>
+        {actions && (
+          <div className="flex items-center gap-2">{actions}</div>
+        )}
       </div>
+      <div className={printable ? "print-content" : ""}>{children}</div>
     </div>
-    {children}
-  </div>
-);
+  );
+};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -105,7 +115,7 @@ function formatBSDate(adDateStr: string): string {
 function toDate(val: string | Date): Date {
   if (val instanceof Date) return val;
   // Fix: convert string to Date properly — never pass raw string where Date is needed
-  return new Date(val);
+  return new Date(val.includes("T") ? val : val + "T00:00:00");
 }
 
 function isDateInRange(dateStr: string, fromStr: string, toStr: string): boolean {
@@ -114,8 +124,9 @@ function isDateInRange(dateStr: string, fromStr: string, toStr: string): boolean
   const d = toDate(dateStr);
   const from = toDate(fromStr);
   const to = toDate(toStr);
-  // Set to end of day for 'to'
-  to.setHours(23, 59, 59, 999);
+  if (typeof toStr === "string" && !toStr.includes("T")) {
+    to.setHours(23, 59, 59, 999);
+  }
   return d >= from && d <= to;
 }
 

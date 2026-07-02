@@ -37,6 +37,7 @@ export const useStore = create<AppState>()((...a) => {
   return {
     ...createInventorySlice(set, get),
     isDbReady: false,
+    isInitializing: false,
     isAuthenticated: false,
     authStage: "checking" as AuthStage,
     selectedCompanyId: null as string | null,
@@ -58,11 +59,46 @@ export const useStore = create<AppState>()((...a) => {
     fiscalYears: [],
     currentFiscalYear: null,
     salesPersons: [],
-    loadWarehouses: async () => {},
-    addWarehouse: async (w) => w as any,
-    updateWarehouse: async () => {},
-    getNextTransferNo: async () => "",
-    saveStockTransfer: async (t) => t as any,
+    loadWarehouses: async () => {
+      try {
+        const db = getDB();
+        const warehouses = await db.warehouses.toArray();
+        set({ warehouses });
+      } catch (err) {
+        console.error("[loadWarehouses]", err);
+      }
+    },
+    addWarehouse: async (warehouse: Omit<DBWarehouse, "id">) => {
+      const db = getDB();
+      const row: DBWarehouse = { ...warehouse, id: crypto.randomUUID() };
+      await db.warehouses.put(row);
+      set((state: AppState) => ({ warehouses: [...(state.warehouses || []), row] }));
+      return row;
+    },
+    updateWarehouse: async (id: string, updates: Partial<DBWarehouse>) => {
+      const db = getDB();
+      await db.warehouses.update(id, updates);
+      set((state: AppState) => ({
+        warehouses: (state.warehouses || []).map((w) => w.id === id ? { ...w, ...updates } : w),
+      }));
+    },
+    getNextTransferNo: async () => {
+      const db = getDB();
+      const count = await db.stockTransfers.count().catch(() => 0);
+      return `TRF-${String(count + 1).padStart(4, "0")}`;
+    },
+    saveStockTransfer: async (draft: any) => {
+      const db = getDB();
+      const no = await get().getNextTransferNo();
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      const voucher: DBStockTransferVoucher = {
+        ...draft, id, transferNo: no, status: "posted", createdAt: now, updatedAt: now,
+      };
+      await db.stockTransfers.put(voucher);
+      set((state: AppState) => ({ stockTransfers: [...(state.stockTransfers || []), voucher] }));
+      return voucher;
+    },
     deliveryChallans: [],
     goodsReceiptNotes: [],
     salesOrders: [],
@@ -105,6 +141,16 @@ export const useStore = create<AppState>()((...a) => {
     chequeBooks: [],
     cheques: [],
     auditLogs: [],
+    loadAuditLogs: async () => {
+      try {
+        const db = getDB();
+        const logs = await db.table("auditLogs").orderBy("timestamp").reverse().limit(500).toArray();
+        set({ auditLogs: logs });
+      } catch (err) {
+        console.error("[loadAuditLogs]", err);
+        set({ auditLogs: [] });
+      }
+    },
     depositSlips: [],
     pdCheques: [],
     pdcRegister: [],

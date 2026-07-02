@@ -1,4 +1,4 @@
-// @ts-nocheck
+// Removed @ts-nocheck
 import React, { useMemo, useRef, useEffect, useState } from "react";
 import { useStore } from "../store/useStore";
 import { useRecentActivity } from "../hooks/useRecentActivity";
@@ -618,17 +618,32 @@ const Gateway: React.FC = () => {
 
   // ── Search with shortcut hints ────────────────────────────────────────────
 
+  const canAdminRef = React.useRef(canAdmin);
+  const canAccountingRef = React.useRef(canAccounting);
+  React.useEffect(() => { canAdminRef.current = canAdmin; }, [canAdmin]);
+  React.useEffect(() => { canAccountingRef.current = canAccounting; }, [canAccounting]);
+
+  const [authKey, setAuthKey] = useState(() => `${canAdmin}-${canAccounting}`);
+  React.useEffect(() => {
+    setAuthKey(`${canAdmin}-${canAccounting}`);
+  }, [canAdmin, canAccounting]);
+
   const allSearchableItems = useMemo(() => {
     const list: Array<{ section: string; item: GatewayMenuItem; sectionColor: string }> = [];
     for (const section of MENU_SECTIONS) {
       for (const item of section.items) {
-        if (canSee(item)) {
+        const permitted =
+          !item.permission ||
+          item.permission === "all" ||
+          (item.permission === "admin" && canAdminRef.current) ||
+          (item.permission === "accounting" && canAccountingRef.current);
+        if (permitted) {
           list.push({ section: section.title, item, sectionColor: section.color });
         }
       }
     }
     return list;
-  }, [canAccounting, canAdmin]);
+  }, [authKey]);
 
   const filteredItems = useMemo(() => {
     if (!searchQuery.trim()) return [];

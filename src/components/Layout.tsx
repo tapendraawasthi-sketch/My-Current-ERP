@@ -46,9 +46,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useF12Keyboard();
 
   useGlobalKeyboardShortcuts((page: string) => {
-    if (isAuthenticated && isDbReady) {
-      setCurrentPage(page);
-    }
+    if (!isAuthenticated || !isDbReady) return;
+    // Don't navigate if user is typing
+    const activeEl = document.activeElement;
+    const tag = activeEl?.tagName?.toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select") return;
+    if ((activeEl as HTMLElement)?.isContentEditable) return;
+    // Don't navigate if modal is open
+    const hasOpenModal =
+      document.querySelector('[role="dialog"]') !== null ||
+      document.querySelector('[aria-modal="true"]') !== null;
+    if (hasOpenModal) return;
+    setCurrentPage(page);
   });
 
   const isMobile = useIsMobile();
@@ -68,6 +77,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [collapsed]);
 
   const handleSidebarShortcut = (key: string) => {
+    // Guard 1: Don't navigate if user is typing
+    const activeEl = document.activeElement;
+    const tag = activeEl?.tagName?.toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select") return;
+    if ((activeEl as HTMLElement)?.isContentEditable) return;
+
+    // Guard 2: Don't navigate if any modal/dialog is open
+    const openDialog =
+      document.querySelector('[role="dialog"][aria-hidden="false"]') ||
+      document.querySelector('[data-state="open"]') ||
+      document.querySelector('.modal-backdrop');
+    if (openDialog) return;
     const ACTION_VALUE_TO_PAGE: Record<string, string> = {
       journal: "journal",
       billing: "billing",

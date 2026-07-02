@@ -102,27 +102,26 @@ const OutstandingReceivables: React.FC = () => {
     return                        { background: "#fef2f2",    color: "#7f1d1d",  borderLeft: "3px solid #991b1b" };
   };
 
-  // Fix: use getDB() — default import, NOT named { db }
   const db = getDB();
 
   // Fix: useLiveQuery from "dexie-react-hooks" — correct package
   const invoices = useLiveQuery(
     () =>
-      db.invoices
+      getDB().invoices
         .where("type")
         .equals("sales-invoice")
-        .and((inv: any) => inv.status === "posted")
-        .toArray(),
+        .toArray()
+        .then(res => res.filter(inv => inv.status !== "draft" && inv.status !== "cancelled")),
     [],
   );
 
   const receipts = useLiveQuery(
     () =>
-      db.vouchers
+      getDB().vouchers
         .where("type")
         .equals("receipt")
-        .and((v: any) => v.status === "posted")
-        .toArray(),
+        .toArray()
+        .then(res => res.filter(v => v.status === "posted")),
     [],
   );
 

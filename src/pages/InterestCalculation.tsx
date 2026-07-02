@@ -70,12 +70,12 @@ const InterestCalculation: React.FC = () => {
 
   // Fix: useLiveQuery from "dexie-react-hooks" — correct package import
   const invoices = useLiveQuery(
-    () => db.invoices.where("type").equals(invoiceType).toArray(),
+    () => getDB().invoices.where("type").equals(invoiceType).toArray(),
     [invoiceType],
   );
 
-  const payments = useLiveQuery(
-    () => db.vouchers.where("type").equals(paymentType).toArray(),
+  const rawPayments = useLiveQuery(
+    () => getDB().vouchers.where("type").equals(paymentType).toArray(),
     [paymentType],
   );
 
@@ -222,14 +222,14 @@ const InterestCalculation: React.FC = () => {
     try {
       // Fix: use local serial number generator instead of
       // store.generateSerialNumber which does not exist on AppState
-      const existingCount = await db.vouchers.count();
-      const voucherNo = generateLocalSerial("INT-", existingCount);
-
-      const ts = new Date().toISOString();
-      const totalInterest = totals.interest;
-
-      // Find interest income account
-      const allAccounts = await db.accounts.toArray();
+      const existingCount = await getDB().vouchers.count();
+      const voucherNo = `JV-${String(existingCount + 1).padStart(4, "0")}`;
+      const now = new Date().toISOString();
+      
+      // We need to know the 'Interest Income' ledger ID, assume we can find it
+      // For simplicity, let's just pick one or assume user configures it.
+      // In a real scenario, this would be a specific ledger.
+      const allAccounts = await getDB().accounts.toArray();
       const interestAccount = allAccounts.find(
         (a: any) => (a.name ?? "").toLowerCase().includes("interest") && a.type === "income",
       );
@@ -264,7 +264,7 @@ const InterestCalculation: React.FC = () => {
         updatedAt: ts,
       };
 
-      await db.vouchers.add(voucher);
+      await getDB().vouchers.add(voucher);
       toast.success(`Interest voucher ${voucherNo} created for Rs. ${money(totalInterest)}.`);
     } catch (err: any) {
       toast.error(err?.message ?? "Failed to generate vouchers.");

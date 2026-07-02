@@ -27,12 +27,28 @@ const formatShortcutLabel = (shortcut: string): string => {
 const isInputElement = (el: Element | null): boolean => {
   if (!el) return false;
   const tag = el.tagName?.toLowerCase();
-  return (
-    tag === "input" ||
-    tag === "textarea" ||
-    tag === "select" ||
-    el.getAttribute("contenteditable") === "true"
-  );
+  // Standard HTML input elements
+  if (tag === "input" || tag === "textarea" || tag === "select") return true;
+  // ContentEditable (rich text editors, chat UIs)
+  if (el.getAttribute("contenteditable") === "true") return true;
+  if ((el as HTMLElement).isContentEditable) return true;
+  // ARIA roles used by chat UIs, rich text editors, custom inputs
+  const role = el.getAttribute("role");
+  if (role === "textbox" || role === "searchbox" || role === "combobox" || role === "spinbutton") return true;
+  // Check if inside a Falcon/chat container (any ancestor with data-falcon or id containing falcon/chat)
+  let ancestor: Element | null = el;
+  while (ancestor) {
+    const id = ancestor.id?.toLowerCase() || "";
+    const cls = ancestor.className?.toLowerCase?.() || "";
+    const dataCmp = ancestor.getAttribute("data-component") || "";
+    if (
+      id.includes("falcon") || id.includes("chat") || id.includes("ai-input") ||
+      cls.includes("falcon") || cls.includes("chat-input") || cls.includes("ai-chat") ||
+      dataCmp.includes("falcon") || dataCmp.includes("chat")
+    ) return true;
+    ancestor = ancestor.parentElement;
+  }
+  return false;
 };
 
 function getComboString(e: KeyboardEvent): string {
@@ -78,13 +94,24 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      // Skip if F12
+      // Never intercept F12 (browser dev tools + F12 config panel)
       if (e.key === "F12") return;
 
+      // Check if user is actively typing in ANY input-like element
       const typing = isInputElement(document.activeElement);
+      if (typing) return; // EXIT EARLY - never steal keypresses from inputs/chat
+
+      // Check if any modal/dialog is currently open in the DOM
+      const hasOpenModal =
+        document.querySelector('[role="dialog"]') !== null ||
+        document.querySelector('[data-modal-open="true"]') !== null ||
+        document.querySelector(".modal-overlay") !== null ||
+        document.querySelector('[aria-modal="true"]') !== null;
+      if (hasOpenModal) return; // EXIT EARLY - don't navigate away from open modals
+
       const combo = getComboString(e);
 
-      // F-keys always work
+      // F-keys (only when NOT typing - guard already checked above)
       if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
         const btn = visibleButtons.find((b) => b.shortcut === e.key && b.enabled);
         if (btn) {
@@ -94,8 +121,8 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         }
       }
 
-      // Single letter shortcuts - only when not typing
-      if (!typing && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.length === 1) {
+      // Single letter shortcuts - only when not typing (guard already checked above)
+      if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.length === 1) {
         const key = e.key.toUpperCase();
         const btn = visibleButtons.find((b) => b.shortcut === key && b.enabled);
         if (btn) {
@@ -109,9 +136,10 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
       if (onShortcut) onShortcut(combo);
     };
 
-    // Use capture to intercept before other handlers
-    document.addEventListener("keydown", handler, { capture: true });
-    return () => document.removeEventListener("keydown", handler, { capture: true });
+    // CRITICAL FIX: Use BUBBLE phase (capture: false) NOT capture phase
+    // This allows inputs, chat UIs, and custom components to handle events first
+    document.addEventListener("keydown", handler, { capture: false });
+    return () => document.removeEventListener("keydown", handler, { capture: false });
   }, [visibleButtons, onShortcut]);
 
   return (

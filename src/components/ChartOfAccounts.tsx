@@ -1,5 +1,5 @@
 // src/components/ChartOfAccounts.tsx
-// @ts-nocheck
+// Removed @ts-nocheck
 /**
  * BUSY-style Chart of Accounts — Complete Implementation
  * Phases 1-13: All 15 predefined groups, Account Group Master,

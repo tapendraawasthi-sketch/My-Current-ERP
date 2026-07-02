@@ -57,7 +57,7 @@ function isPurchaseInvoice(i: any) {
 
 function stockForItem(item: any, stockMovements: any[]) {
   return (stockMovements || [])
-    .filter((m) => m.itemId === item.id)
+    .filter((m) => m.itemId === item.id && m.voucherType !== "stock-transfer")
     .reduce(
       (s, m) => {
         const qty = Number(m.quantity || m.qty || 0);

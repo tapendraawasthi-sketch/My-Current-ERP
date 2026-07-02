@@ -95,19 +95,33 @@ const InvoiceHub: React.FC = () => {
 
   const handlePrintInvoicePDF = async (i: any) => {
     try {
-      const party = parties.find((p) => p.id === i.partyId);
+      const party = parties.find((p) => p.id === i?.partyId);
       if (!party) {
-        toast.error("Identity Conflict: Party associated with invoice not found.");
+        toast.error("Party not found for this invoice");
+        return;
+      }
+      if (!i?.lines?.length) {
+        toast.error("Invoice has no line items — cannot print");
         return;
       }
       const blob = await generateInvoicePDF(i, companySettings, party, items);
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url);
-      if (win) {
-        win.focus();
+      if (!blob || !(blob instanceof Blob)) {
+        toast.error("Failed to generate PDF — invalid output");
+        return;
       }
-    } catch (e) {
-      toast.error("Failed to generate printable PDF document.");
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      if (!win) {
+        toast.error("Popup blocked. Please allow popups and try again.");
+        URL.revokeObjectURL(url);
+        return;
+      }
+      win.focus();
+      // Clean up URL after use
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (e: any) {
+      console.error("[PrintPDF]", e);
+      toast.error(`Print failed: ${e?.message || "Unknown error"}`);
     }
   };
 

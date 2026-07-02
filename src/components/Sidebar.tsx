@@ -1,4 +1,4 @@
-// @ts-nocheck
+// Removed @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import {

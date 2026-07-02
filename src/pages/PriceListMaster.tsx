@@ -1207,7 +1207,7 @@ export default function PriceListMaster() {
                       <input
                         className={`${inputClass} w-24 font-semibold`}
                         type="number"
-                        value={line.rate}
+                        value={line.rate === 0 ? "" : line.rate}
                         onChange={(e) => updateItemLine(idx, { rate: Number(e.target.value) })}
                       />
                     </td>
@@ -1215,7 +1215,7 @@ export default function PriceListMaster() {
                       <input
                         className={`${inputClass} w-20`}
                         type="number"
-                        value={line.discount}
+                        value={line.discount === 0 ? "" : line.discount}
                         onChange={(e) => updateItemLine(idx, { discount: Number(e.target.value) })}
                       />
                     </td>
@@ -1260,7 +1260,7 @@ export default function PriceListMaster() {
                             <input
                               className={`${inputClass} w-20`}
                               type="number"
-                              value={s.fromQty}
+                              value={s.fromQty === 0 ? "" : s.fromQty}
                               onChange={(e) =>
                                 updateSlab(idx, si, { fromQty: Number(e.target.value) })
                               }
@@ -1269,7 +1269,7 @@ export default function PriceListMaster() {
                             <input
                               className={`${inputClass} w-20`}
                               type="number"
-                              value={s.toQty}
+                              value={s.toQty === 0 ? "" : s.toQty}
                               placeholder="Max"
                               onChange={(e) =>
                                 updateSlab(idx, si, { toQty: Number(e.target.value) })
@@ -1283,7 +1283,7 @@ export default function PriceListMaster() {
                             <input
                               className={`${inputClass} w-24`}
                               type="number"
-                              value={s.rate}
+                              value={s.rate === 0 ? "" : s.rate}
                               onChange={(e) =>
                                 updateSlab(idx, si, { rate: Number(e.target.value) })
                               }
@@ -1296,7 +1296,7 @@ export default function PriceListMaster() {
                             <input
                               className={`${inputClass} w-20`}
                               type="number"
-                              value={s.discount}
+                              value={s.discount === 0 ? "" : s.discount}
                               onChange={(e) =>
                                 updateSlab(idx, si, { discount: Number(e.target.value) })
                               }

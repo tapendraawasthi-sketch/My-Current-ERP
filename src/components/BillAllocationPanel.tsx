@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
+import { useLiveQuery } from "dexie";
 import { Zap, RefreshCw, AlertCircle } from "lucide-react";
 import { getDB } from "../lib/db";
 

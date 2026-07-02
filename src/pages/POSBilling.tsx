@@ -1046,9 +1046,13 @@ export default function POSBilling() {
     toast.success("POS day report exported");
   };
 
-  const printReceipt = (invoice = receiptData) => {
-    if (!invoice) {
-      toast.error("No receipt data");
+  const printReceipt = (invoice: any = receiptData) => {
+    if (!invoice || typeof invoice !== "object") {
+      toast.error("No receipt data available");
+      return;
+    }
+    if (!invoice.invoiceNo) {
+      toast.error("Invalid invoice: missing invoice number");
       return;
     }
 
@@ -1058,85 +1062,61 @@ export default function POSBilling() {
       companySettings?.legalName ||
       "Company";
 
+    const lines: any[] = Array.isArray(invoice.lines) ? invoice.lines : [];
+
     const html = `
       <html>
         <head>
-          <title>${invoice.invoiceNo}</title>
-          ${receiptCss}
+          <title>\${String(invoice.invoiceNo || "Receipt")}</title>
+          \${receiptCss || ""}
         </head>
         <body>
           <div class="receipt">
-            <div class="center bold">${escapeHtml(companyName)}</div>
-            <div class="center">${escapeHtml(companySettings?.address || "")}</div>
-            <div class="center">PAN: ${escapeHtml(normalizePAN(companySettings?.pan || companySettings?.vatNo || "") || "-")}</div>
+            <div class="center bold">\${companyName}</div>
+            <div class="center">\${companySettings?.address || ""}</div>
+            <div class="center">PAN: \${normalizePAN(companySettings?.pan || companySettings?.vatNo || "") || "-"}</div>
             <div class="line"></div>
-
-            <div class="row"><span>Bill No:</span><span>${escapeHtml(invoice.invoiceNo)}</span></div>
-            <div class="row"><span>Date:</span><span>${escapeHtml(invoice.date)}</span></div>
-            <div class="row"><span>Cashier:</span><span>${escapeHtml(invoice.createdByName || "-")}</span></div>
-            <div class="row"><span>Customer:</span><span>${escapeHtml(invoice.partyName || "Walk-in Customer")}</span></div>
-
+            <div class="row"><span>Bill No:</span><span>\${invoice.invoiceNo || "-"}</span></div>
+            <div class="row"><span>Date:</span><span>\${invoice.date || "-"}</span></div>
+            <div class="row"><span>Cashier:</span><span>\${invoice.createdByName || "-"}</span></div>
+            <div class="row"><span>Customer:</span><span>\${invoice.partyName || "Walk-in Customer"}</span></div>
             <div class="line"></div>
-
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th class="right">Qty</th>
-                  <th class="right">Rate</th>
-                  <th class="right">Amt</th>
+                  <th>Item</th><th class="right">Qty</th><th class="right">Rate</th><th class="right">Amt</th>
                 </tr>
               </thead>
               <tbody>
-                ${(invoice.lines || [])
-                  .map(
-                    (l) => `
-                      <tr>
-                        <td>${escapeHtml(l.itemName || itemName(items, l.itemId))}</td>
-                        <td class="right">${Number(l.qty || 0).toFixed(2)}</td>
-                        <td class="right">${Number(l.rate || 0).toFixed(2)}</td>
-                        <td class="right">${Number(l.lineTotal || 0).toFixed(2)}</td>
-                      </tr>
-                    `,
-                  )
-                  .join("")}
+                \${lines.map((l) => `
+                  <tr>
+                    <td>\${String(l?.itemName || (typeof items !== "undefined" ? itemName(items, l?.itemId) : "") || "-")}</td>
+                    <td class="right">\${Number(l?.qty || 0).toFixed(2)}</td>
+                    <td class="right">\${Number(l?.rate || 0).toFixed(2)}</td>
+                    <td class="right">\${Number(l?.lineTotal || 0).toFixed(2)}</td>
+                  </tr>`).join("")}
               </tbody>
             </table>
-
             <div class="line"></div>
-
-            <div class="row"><span>Gross:</span><span>${Number(invoice.grossAmount || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Discount:</span><span>${Number(invoice.discountAmount || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Taxable:</span><span>${Number(invoice.taxableAmount || 0).toFixed(2)}</span></div>
-            <div class="row"><span>VAT 13%:</span><span>${Number(invoice.vatAmount || 0).toFixed(2)}</span></div>
-            <div class="line"></div>
-            <div class="row bold"><span>Grand Total:</span><span>${Number(invoice.grandTotal || 0).toFixed(2)}</span></div>
-
-            <div class="line"></div>
-
-            <div class="row"><span>Cash:</span><span>${Number(invoice.payments?.cash || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Card:</span><span>${Number(invoice.payments?.card || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Wallet:</span><span>${Number(invoice.payments?.wallet || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Bank:</span><span>${Number(invoice.payments?.bank || 0).toFixed(2)}</span></div>
-            <div class="row"><span>Credit:</span><span>${Number(invoice.payments?.credit || 0).toFixed(2)}</span></div>
-
+            <div class="row"><span>Grand Total:</span><span>\${Number(invoice.grandTotal || 0).toFixed(2)}</span></div>
             <div class="line"></div>
             <div class="center">Thank you for shopping!</div>
           </div>
-
-          <script>
-            window.print();
-          </script>
+          <script>window.onload = function(){ window.print(); }</script>
         </body>
-      </html>
-    `;
+      </html>`;
 
-    const w = window.open("", "_blank", "width=420,height=720");
-    if (!w) {
-      toast.error("Popup blocked");
+    let w: Window | null = null;
+    try {
+      w = window.open("", "_blank", "width=420,height=720");
+    } catch {
+      toast.error("Could not open print window");
       return;
     }
-
+    if (!w) {
+      toast.error("Popup blocked. Please allow popups for this site.");
+      return;
+    }
     w.document.write(html);
     w.document.close();
   };

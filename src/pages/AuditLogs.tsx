@@ -372,7 +372,11 @@ const AuditLogs: React.FC = () => {
     setLoading(true);
     try {
       const db = getDB();
-      const logs = await db.auditLogs.orderBy("timestamp").reverse().limit(2000).toArray();
+      if (!db.auditLogs) throw new Error("Table auditLogs not found");
+      const logs = (await db.auditLogs.orderBy("timestamp").reverse().limit(2000).toArray()).map((log) => ({
+        ...log,
+        details: log.details && typeof log.details === "object" ? log.details : {},
+      }));
       setAllLogs(logs);
     } catch {
       setAllLogs(storeLogs ?? []);
