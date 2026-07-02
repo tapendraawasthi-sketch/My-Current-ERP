@@ -92,7 +92,7 @@ function getInitialApiKey() {
     if (saved) return saved;
   }
   // @ts-ignore
-  return typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_TOGETHER_API_KEY || '' : '';
+  return typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GROQ_API_KEY || '' : '';
 }
 
 function buildFallbackResponse(text: string, category: QuestionCategory, route: string = ''): string {
@@ -145,7 +145,7 @@ export const useFalconStore = create<FalconState>()(
       currentThinkingSteps: [],
       context: {},
       apiKey: getInitialApiKey(),
-      apiEndpoint: 'https://api.together.xyz/v1/chat/completions',
+      apiEndpoint: 'https://api.groq.com/openai/v1/chat/completions',
 
       openPanel: () => set({ isOpen: true }),
       closePanel: () => set({ isOpen: false }),
@@ -290,3 +290,4 @@ export const useFalconStore = create<FalconState>()(
     }
   )
 );
+

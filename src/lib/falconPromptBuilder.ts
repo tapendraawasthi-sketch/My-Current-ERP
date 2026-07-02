@@ -118,7 +118,7 @@ export function buildConversationHistory(messages: Array<{ role: string; content
 
 export function getDefaultLLMConfig(): LLMConfig {
   return {
-    model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    model: 'llama-3.3-70b-versatile',
     temperature: 0.7,
     maxTokens: 1024,
     stream: false
@@ -127,7 +127,7 @@ export function getDefaultLLMConfig(): LLMConfig {
 
 export function getERPSpecificConfig(): LLMConfig {
   return {
-    model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    model: 'llama-3.3-70b-versatile',
     temperature: 0.3, // Lower temp for precise instructions
     maxTokens: 1024,
     stream: false
@@ -136,9 +136,10 @@ export function getERPSpecificConfig(): LLMConfig {
 
 export function getCreativeConfig(): LLMConfig {
   return {
-    model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    model: 'llama-3.3-70b-versatile',
     temperature: 0.8, // Higher temp for creative answers
     maxTokens: 2048,
     stream: false
   };
 }
+

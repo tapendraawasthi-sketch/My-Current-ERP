@@ -157,7 +157,7 @@ export const FalconPanel: React.FC = () => {
       {/* Settings Panel */}
       {showSettings && (
         <div className="bg-blue-50 border-b border-blue-100 p-3 shrink-0 animate-in slide-in-from-top-2">
-          <label className="block text-[11px] font-medium text-blue-900 mb-1">Together AI API Key</label>
+          <label className="block text-[11px] font-medium text-blue-900 mb-1">Groq API Key</label>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <input 
@@ -174,8 +174,8 @@ export const FalconPanel: React.FC = () => {
             </button>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <a href="https://api.together.xyz" target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1">
-              <Globe size={10} /> Get free key at together.ai
+            <a href="https://console.groq.com" target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1">
+              <Globe size={10} /> Get free key at groq.com
             </a>
             {apiKey === keyInput && apiKey.length > 10 && (
               <span className="text-[10px] text-green-600 flex items-center gap-1"><Check size={10}/> Configured</span>
@@ -356,3 +356,4 @@ export const FalconPanel: React.FC = () => {
     </div>
   );
 };
+
