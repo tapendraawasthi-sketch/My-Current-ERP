@@ -3,115 +3,16 @@ import { getBSTodayLong } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
 import { RightButtonBar } from "./RightButtonBar";
 
-const S = { background: "#C9DEB5", color: "#000000", border: "1px solid #000000" } as const;
-const S_DARK = { background: "#D4EABD", color: "#000000", border: "1px solid #000000" } as const;
-const S_TEXT = { color: "#000000" } as const;
+// TitleBar (Section 7.1): the fake minimize/maximize/close window-chrome buttons
+// have been removed entirely. This component now renders nothing — it is kept
+// as a no-op export only so any remaining import elsewhere in the codebase does
+// not break the build. Do not render this component; TopMenuBar/BusyMenuBar is
+// the real application header now.
+export const TitleBar: React.FC<{ onMinimize?: () => void }> = () => null;
 
-export const TitleBar: React.FC<{ onMinimize?: () => void }> = ({ onMinimize }) => {
-  const { companySettings, currentFiscalYear } = useStore();
-  const company = companySettings?.companyNameEn || companySettings?.name || "Company";
-  const fy = currentFiscalYear ? `F.Y. ${currentFiscalYear.name}` : "";
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const h = () => setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", h);
-    return () => document.removeEventListener("fullscreenchange", h);
-  }, []);
-
-  const handleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
-  };
-
-  const handleClose = () => {
-    if (window.confirm("Exit Sutra ERP? Any unsaved changes will be lost.")) {
-      // Clear session and redirect to login
-      try {
-        sessionStorage.clear();
-        window.location.reload();
-      } catch {
-        window.location.href = "/";
-      }
-    }
-  };
-
-  const btnHover = (e: React.MouseEvent<HTMLSpanElement>, enter: boolean) => {
-    (e.currentTarget as HTMLSpanElement).style.background = enter ? "#C9DEB5" : "transparent";
-  };
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height: 22,
-        background: "#D4EABD",
-        color: "#000000",
-        fontSize: 11,
-        padding: "0 8px",
-        borderBottom: "1px solid #000000",
-        userSelect: "none",
-        flexShrink: 0,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <div
-          style={{
-            width: 18,
-            height: 18,
-            background: "#C9DEB5",
-            border: "1px solid #000000",
-            color: "#000000",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-            fontSize: 12,
-          }}
-        >
-          S
-        </div>
-        <span>
-          Sutra ERP 2.0 | Nepal Edition | VAT Ready | {company} ({fy})
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 13 }}>
-        {[
-          { label: "—", onClick: onMinimize, title: "Minimize" },
-          {
-            label: isFullscreen ? "❐" : "□",
-            onClick: handleFullscreen,
-            title: isFullscreen ? "Restore" : "Fullscreen",
-          },
-          { label: "✕", onClick: handleClose, title: "Close" },
-        ].map(({ label, onClick, title }) => (
-          <span
-            key={title}
-            onClick={onClick}
-            title={title}
-            style={{
-              cursor: "pointer",
-              padding: "0 6px",
-              lineHeight: "18px",
-              display: "inline-block",
-              borderRadius: 2,
-            }}
-            onMouseEnter={(e) => btnHover(e, true)}
-            onMouseLeave={(e) => btnHover(e, false)}
-          >
-            {label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-};
-
+// StatusBar (Section 7.2): now matches the dark navy chrome of the top bar
+// instead of the Tally-green #D4EABD, creating a professional "bookend" look.
+// The redundant "ACCOUNTING SOFTWARE" badge (Section 15.3) has been removed.
 export const StatusBar: React.FC = () => {
   const { companySettings, currentUser, currentFiscalYear } = useStore();
   const company = companySettings?.companyNameEn || companySettings?.name || "—";
@@ -131,8 +32,8 @@ export const StatusBar: React.FC = () => {
   const cellStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
-    padding: "0 8px",
-    borderRight: "1px solid #000000",
+    padding: "0 10px",
+    borderRight: "1px solid #2d3748",
     height: "100%",
     flexDirection: "column",
     justifyContent: "center",
@@ -145,16 +46,16 @@ export const StatusBar: React.FC = () => {
         alignItems: "center",
         flexShrink: 0,
         height: 28,
-        background: "#D4EABD",
-        borderTop: "1px solid #000000",
+        background: "#1e2433",
+        borderTop: "1px solid #2d3748",
         fontSize: 11,
-        color: "#000000",
+        color: "#cbd5e1",
       }}
     >
-      <div style={{ ...cellStyle, fontWeight: "bold", fontSize: 15 }}>Sutra</div>
+      <div style={{ ...cellStyle, fontWeight: 700, fontSize: 13, color: "#ffffff" }}>Sutra</div>
       <div style={cellStyle}>
-        <div style={{ fontSize: 11 }}>{company}</div>
-        <div style={{ fontSize: 10 }}>F.Y.: {fy}</div>
+        <div style={{ fontSize: 11, color: "#ffffff" }}>{company}</div>
+        <div style={{ fontSize: 10, color: "#94a3b8" }}>F.Y.: {fy}</div>
       </div>
       <div style={cellStyle}>
         <div>VAT No.: {vatNo}</div>
@@ -170,35 +71,27 @@ export const StatusBar: React.FC = () => {
           display: "flex",
           alignItems: "center",
           gap: 6,
-          borderLeft: "1px solid #000000",
+          borderLeft: "1px solid #2d3748",
           padding: "0 12px",
           height: "100%",
         }}
       >
-        <div
-          style={{
-            background: "#C9DEB5",
-            color: "#000000",
-            padding: "1px 5px",
-            fontSize: 10,
-            fontWeight: "bold",
-            border: "1px solid #000000",
-          }}
-        >
-          ACCOUNTING SOFTWARE
-        </div>
-        <span style={{ fontWeight: "bold" }}>{weekday}</span>
+        <span style={{ fontWeight: 600, color: "#ffffff" }}>{weekday}</span>
         <div style={{ flexDirection: "column" }}>
-          <div>BS Date: {bsDate}</div>
-          <div>AD Date: {dateStr}</div>
+          <div>BS: {bsDate}</div>
+          <div>AD: {dateStr}</div>
         </div>
       </div>
     </div>
   );
 };
 
+// CommandHintBar (Section 7.3): kept available for contextual use inside a
+// specific voucher/form screen (pass real hints as props), but is no longer
+// rendered globally in Layout.tsx since RightButtonBar already covers
+// shortcut discovery — two persistent shortcut displays was redundant clutter.
 export const CommandHintBar: React.FC<{ hints?: string[] }> = ({
-  hints = ["Esc - Quit", "F2 - Save", "F5 - List", "F3 - Add New"],
+  hints = ["Esc - Cancel", "F2 - Save", "F5 - List", "F3 - Add New"],
 }) => (
   <div
     style={{
@@ -207,15 +100,15 @@ export const CommandHintBar: React.FC<{ hints?: string[] }> = ({
       gap: 16,
       padding: "0 12px",
       flexShrink: 0,
-      height: 20,
-      background: "#D4EABD",
-      borderTop: "1px solid #000000",
-      color: "#000000",
+      height: 22,
+      background: "#1e2433",
+      borderTop: "1px solid #2d3748",
+      color: "#94a3b8",
       fontSize: 11,
     }}
   >
     {hints.map((h) => (
-      <span key={h}>[ {h} ]</span>
+      <span key={h}>{h}</span>
     ))}
   </div>
 );
@@ -231,116 +124,64 @@ const fKeys = [
   { key: "F8", label: "Add Journal" },
   { key: "F9", label: "Add Sales" },
 ];
-const quickKeys = [
-  { key: "B", label: "Balance Sheet" },
-  { key: "T", label: "Trial Balance" },
-  { key: "S", label: "Stock Status" },
-  { key: "A", label: "Acc. Summary" },
-  { key: "L", label: "Acc. Ledger" },
-  { key: "V", label: "VAT Report" },
-  { key: "D", label: "Day Book" },
-  { key: "G", label: "GST/VAT Summary" },
-  { key: "U", label: "Switch User" },
-  { key: "F", label: "Configuration" },
-  { key: "K", label: "Lock Program" },
-];
 
 export const ShortcutSidebar: React.FC<React.ComponentProps<typeof RightButtonBar>> = (props) => {
   return <RightButtonBar {...props} />;
 };
 
+// PillTitle (Section 1.2 / 1.1): replaced Tally-green pill backgrounds
+// (#C9DEB5 / #D4EABD) with a clean light-blue pill matching your brand accent.
 export const PillTitle: React.FC<{ title: string; variant?: "tally" | "standard" }> = ({
   title,
-  variant = "tally",
 }) => (
-  <div
-    className={variant === "standard" ? "flex justify-center mb-2 mt-1" : ""}
-    style={
-      variant === "tally"
-        ? { display: "flex", justifyContent: "center", marginBottom: 10, marginTop: 4 }
-        : {}
-    }
-  >
-    <span
-      className={
-        variant === "standard"
-          ? "inline-block font-semibold text-[13px] px-[18px] py-[3px] text-center border"
-          : ""
-      }
-      style={
-        variant === "standard"
-          ? {
-              background: "#D4EABD",
-              color: "#000000",
-              border: "1px solid #000000",
-              borderRadius: "4px",
-            }
-          : variant === "tally"
-            ? {
-                display: "inline-block",
-                background: "#C9DEB5",
-                color: "#000000",
-                fontWeight: "bold",
-                fontSize: 13,
-                padding: "3px 18px",
-                textAlign: "center",
-                borderRadius: 4,
-                border: "1px solid #000000",
-              }
-            : {}
-      }
-    >
+  <div className="flex justify-center mb-2 mt-1">
+    <span className="inline-block font-semibold text-[13px] px-4 py-1 text-center rounded-full bg-[#eef2ff] text-[#1557b0] border border-[#c7d2fe]">
       {title}
     </span>
   </div>
 );
 
+// FormPanel (Section 1.2): white background, soft border, rounded — no more
+// #EBF5E2 green fill and hard black border.
 export const FormPanel: React.FC<{
   children: React.ReactNode;
   style?: React.CSSProperties;
   variant?: "tally" | "standard";
-}> = ({ children, style, variant = "tally" }) => (
+}> = ({ children, style }) => (
   <div
-    className={variant === "standard" ? "bg-white border border-gray-200 rounded-md p-3" : ""}
-    style={
-      variant === "tally"
-        ? {
-            background: "#EBF5E2",
-            border: "1px solid #000000",
-            padding: "10px 14px",
-            ...style,
-          }
-        : style
-    }
+    className="bg-white border border-gray-200 rounded-lg"
+    style={{ padding: "14px 16px", ...style }}
   >
     {children}
   </div>
 );
 
+// GroupBox (Section 1.2): white/near-white background, gray-300 border
+// instead of hard black.
 export const GroupBox: React.FC<{ label: string; children: React.ReactNode }> = ({
   label,
   children,
 }) => (
   <div
     style={{
-      border: "1px solid #000000",
-      padding: "12px 10px 8px",
+      border: "1px solid #d1d5db",
+      padding: "14px 12px 10px",
       position: "relative",
-      marginTop: 10,
-      borderRadius: 4,
-      background: "#EBF5E2",
+      marginTop: 12,
+      borderRadius: 6,
+      background: "#f9fafb",
     }}
   >
     <span
       style={{
         position: "absolute",
-        top: -8,
-        left: 8,
-        background: "#EBF5E2",
-        padding: "0 4px",
-        color: "#000000",
-        fontSize: 12,
-        fontWeight: "bold",
+        top: -9,
+        left: 10,
+        background: "#f9fafb",
+        padding: "0 6px",
+        color: "#374151",
+        fontSize: 11,
+        fontWeight: 700,
       }}
     >
       {label}
@@ -353,57 +194,74 @@ export const FieldRow: React.FC<{ label: string; children: React.ReactNode }> = 
   label,
   children,
 }) => (
-  <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 3 }}>
+  <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 6 }}>
     <span
       style={{
-        color: "#000000",
+        color: "#4b5563",
+        fontSize: 11,
+        fontWeight: 500,
         minWidth: 130,
         textAlign: "right",
         paddingRight: 8,
-        paddingTop: 2,
+        paddingTop: 5,
         flexShrink: 0,
       }}
     >
       {label}
     </span>
-    <span style={{ flex: 1, color: "#000000" }}>{children}</span>
+    <span style={{ flex: 1 }}>{children}</span>
   </div>
 );
 
+// BusyInput (Section 1.2 / 4.5): proper modern focus ring added, gray-300
+// border, rounded-md, 32px height — no more Win98-style flat field.
 export const BusyInput: React.FC<
   React.InputHTMLAttributes<HTMLInputElement> & { width?: string | number }
-> = (props) => (
+> = ({ width, style, ...props }) => (
   <input
     {...props}
+    className="transition-shadow duration-100"
     style={{
-      border: "1px solid #000000",
-      background: props.readOnly ? "#EBF5E2" : "#ffffff",
-      color: "#000000",
-      height: 26,
-      padding: "0 6px",
-      width: props.width || "100%",
-      borderRadius: 3,
+      border: "1px solid #d1d5db",
+      background: props.readOnly ? "#f9fafb" : "#ffffff",
+      color: "#111827",
+      height: 32,
+      padding: "0 8px",
+      width: width || "100%",
+      borderRadius: 6,
       fontSize: 12,
-      transition: "border-color 150ms ease, box-shadow 150ms ease",
-      ...props.style,
+      outline: "none",
+      ...style,
+    }}
+    onFocus={(e) => {
+      e.currentTarget.style.borderColor = "#1557b0";
+      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(21,87,176,0.12)";
+      props.onFocus?.(e);
+    }}
+    onBlur={(e) => {
+      e.currentTarget.style.borderColor = "#d1d5db";
+      e.currentTarget.style.boxShadow = "none";
+      props.onBlur?.(e);
     }}
   />
 );
 
+// FlatBtn (Section 6.1): deprecated Tally-green button retired in favor of
+// the canonical primary-blue button style used everywhere else.
 export const FlatBtn: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & { label: string; mnemonic?: string }
 > = ({ label, mnemonic, ...rest }) => {
   const idx = mnemonic ? label.toLowerCase().indexOf(mnemonic.toLowerCase()) : -1;
   return (
     <button
+      className="bg-[#1557b0] hover:bg-[#0f4a96] text-white transition-colors"
       style={{
-        background: "#D4EABD",
-        border: "1px solid #000000",
-        color: "#000000",
-        padding: "4px 12px",
-        borderRadius: 4,
+        border: "none",
+        padding: "6px 14px",
+        borderRadius: 6,
         cursor: "pointer",
         fontSize: 12,
+        fontWeight: 500,
         minWidth: 64,
         textAlign: "center",
       }}

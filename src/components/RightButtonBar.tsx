@@ -64,7 +64,7 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
     { id: "f9", label: "Sales Invoice", shortcut: "F9", action: () => setCurrentPage("billing"), enabled: true, visible: true },
     { id: "f10", label: "Purchase", shortcut: "F10", action: () => setCurrentPage("purchase"), enabled: true, visible: true },
     { id: "f11", label: "Balance Sheet", shortcut: "F11", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
-    { id: "divider1", label: "─── Quick Reports ───", shortcut: "", action: () => {}, enabled: false, visible: true },
+    { id: "divider1", label: "Quick Reports", shortcut: "", action: () => {}, enabled: false, visible: true },
     { id: "b", label: "Balance Sheet", shortcut: "B", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
     { id: "t", label: "Trial Balance", shortcut: "T", action: () => setCurrentPage("trial-balance"), enabled: true, visible: true },
     { id: "s", label: "Stock Status", shortcut: "S", action: () => setCurrentPage("stock-summary"), enabled: true, visible: true },
@@ -115,7 +115,10 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
   }, [visibleButtons, onShortcut]);
 
   return (
-    <div className="right-button-bar w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto">
+    <div
+      className="right-button-bar w-[148px] bg-[#1e2433] border-l border-[#2d3748] text-white flex flex-col shrink-0 overflow-y-auto"
+      style={{ boxShadow: "-2px 0 4px rgba(0,0,0,0.15)" }}
+    >
       <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest shadow-sm">
         Quick Actions
       </div>
@@ -123,8 +126,11 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
       {visibleButtons.map((button) => {
         if (!button.shortcut) {
           return (
-            <div key={button.id} className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-400 tracking-widest mt-1">
-              {button.label}
+            <div key={button.id} className="px-3 py-1.5 mt-1">
+              <hr className="border-t border-[#2d3748] mb-1.5" />
+              <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                {button.label}
+              </span>
             </div>
           );
         }

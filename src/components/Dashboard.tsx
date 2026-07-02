@@ -277,7 +277,7 @@ const Dashboard: React.FC = () => {
   const todayBS = formatADToBS(today);
 
   return (
-    <div className="min-h-screen p-4" style={{ background: "#E4F1D9", color: "#000000" }}>
+    <div className="min-h-screen p-6" style={{ background: "#f5f6fa", color: "#1f2937" }}>
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 style={{ fontSize: 15, fontWeight: 700, color: "#000000" }}>Dashboard</h1>
@@ -287,9 +287,9 @@ const Dashboard: React.FC = () => {
           style={{
             height: 30,
             padding: "0 14px",
-            background: "#2e7d32",
+            background: "#1557b0",
             color: "#ffffff",
-            border: "1px solid #1b5e20",
+            border: "none",
             borderRadius: 4,
             fontSize: 12,
             fontWeight: 600,
@@ -299,8 +299,8 @@ const Dashboard: React.FC = () => {
             cursor: "pointer",
             transition: "background 150ms ease",
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = "#1b5e20")}
-          onMouseLeave={e => (e.currentTarget.style.background = "#2e7d32")}
+          onMouseEnter={e => (e.currentTarget.style.background = "#0f4a96")}
+          onMouseLeave={e => (e.currentTarget.style.background = "#1557b0")}
           onClick={() => window.location.reload()}
         >
           <RefreshCw size={14} />
@@ -311,8 +311,8 @@ const Dashboard: React.FC = () => {
       {/* Quick Stats Strip */}
       <div
         style={{
-          backgroundColor: "#D4EABD",
-          border: "1px solid #000",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e5e7eb",
           padding: "6px 12px",
           display: "flex",
           justifyContent: "space-around",
@@ -358,8 +358,8 @@ const Dashboard: React.FC = () => {
               style={{
                 width: 22,
                 height: 22,
-                background: "#C9DEB5",
-                border: "1px solid #000",
+                background: "transparent",
+                color: "#1557b0",
                 borderRadius: 3,
                 display: "flex",
                 alignItems: "center",
@@ -412,8 +412,8 @@ const Dashboard: React.FC = () => {
           <div
             key={card.label}
             style={{
-              background: "#EBF5E2",
-              border: "1px solid #9dc07a",
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 6,
               padding: "14px 16px",
               display: "flex",
@@ -436,8 +436,8 @@ const Dashboard: React.FC = () => {
                 style={{
                   width: 32,
                   height: 32,
-                  background: "#C9DEB5",
-                  border: "1px solid #000",
+                  background: "transparent",
+                  color: "#1557b0",
                   borderRadius: 4,
                   display: "flex",
                   alignItems: "center",
@@ -472,8 +472,8 @@ const Dashboard: React.FC = () => {
           <div
             key={card.label}
             style={{
-              background: "#EBF5E2",
-              border: "1px solid #9dc07a",
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 6,
               padding: "14px 16px",
               display: "flex",
@@ -494,8 +494,8 @@ const Dashboard: React.FC = () => {
                 style={{
                   width: 32,
                   height: 32,
-                  background: "#C9DEB5",
-                  border: "1px solid #000",
+                  background: "transparent",
+                  color: "#1557b0",
                   borderRadius: 4,
                   display: "flex",
                   alignItems: "center",
@@ -599,8 +599,8 @@ const Dashboard: React.FC = () => {
                 <div
                   key={alert.id}
                   style={{
-                    backgroundColor: "#EBF5E2",
-                    border: "1px solid #9dc07a",
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #e5e7eb",
                     borderLeft: `4px solid ${borderColor}`,
                     borderRadius: "6px",
                     padding: "12px",

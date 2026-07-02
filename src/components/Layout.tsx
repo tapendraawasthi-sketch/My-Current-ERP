@@ -4,7 +4,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { useGlobalKeyboardShortcuts } from "../hooks/useGlobalKeyboardShortcuts";
 import { useF12Keyboard } from "../hooks/useF12Keyboard";
 import Sidebar from "./Sidebar";
-import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./BusyShell";
+import { StatusBar, ShortcutSidebar } from "./BusyShell";
 import BusyMenuBar from "./BusyMenuBar";
 import TopMenuBar from "./topbar/TopMenuBar";
 import { useIsMobile } from "../hooks/use-mobile";
@@ -15,6 +15,20 @@ import FalconProvider from "./falcon/FalconProvider";
 interface LayoutProps {
   children: React.ReactNode;
 }
+
+// Section 1.3 / 7.1 / 7.2: the old TWO_COLOR palette (#E4F1D9 / #D4EABD /
+// #C9DEB5 / hard black borders) has been replaced entirely with a clean
+// white/gray/blue theme. Renamed to THEME to make the intent explicit.
+const THEME = {
+  bg: "#f5f6fa",
+  card: "#ffffff",
+  muted: "#f9fafb",
+  hover: "#eef2ff",
+  border: "#e5e7eb",
+  text: "#374151",
+  accent: "#1557b0",
+  accentHover: "#0f4a96",
+};
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const {
@@ -29,7 +43,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const { rawShortcuts } = useKeyboardShortcuts();
 
-  // Attach global F12 keyboard handler
   useF12Keyboard();
 
   useGlobalKeyboardShortcuts((page: string) => {
@@ -45,13 +58,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return localStorage.getItem("sutra_sidebar_collapsed") === "true";
   });
 
-  const [isMinimized, setIsMinimized] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  // App.tsx handles initialization
 
   useEffect(() => {
     localStorage.setItem("sutra_sidebar_collapsed", String(collapsed));
@@ -73,7 +83,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       "company/settings": "settings",
       "/company/settings": "settings",
       "/reports/ledger": "ledger",
-
       balance_sheet: "balance-sheet",
       "balance-sheet": "balance-sheet",
       trial_balance: "trial-balance",
@@ -88,7 +97,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       "day-book": "day-book",
       gst_vat_summary: "vat-reports",
       "gst-vat-summary": "vat-reports",
-
       AddAccountModal: "accounts",
       AddItemModal: "items",
       AddVoucherModal: "journal",
@@ -130,7 +138,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     if (found) {
       const actionValue = found.action_value;
-
       if (found.action_type === "save" || found.action_type === "search") return;
       if (found.action_type === "help") return;
 
@@ -149,7 +156,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (loading) return; // prevent double-submission
+    if (loading) return;
     if (!username.trim() || !password.trim()) {
       toast.error("Credentials cannot be empty.");
       return;
@@ -158,7 +165,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     try {
       const ok = await login(username.trim(), password.trim());
-      if (ok) toast.success(`Access Granted: Logged in as ${username}.`);
+      if (ok) toast.success(`Signed in as ${username}.`);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Error occurred.";
       toast.error(message);
@@ -167,15 +174,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   };
 
-  const TWO_COLOR = {
-    bg: "#E4F1D9",
-    card: "#EBF5E2",
-    muted: "#D4EABD",
-    hover: "#C9DEB5",
-    border: "#000000",
-    text: "#000000",
-  };
-
+  // ── Database initializing screen (Section 11.3: blue spinner, white bg) ──
   if (!isDbReady) {
     return (
       <div
@@ -184,7 +183,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: TWO_COLOR.bg,
+          background: THEME.bg,
         }}
       >
         <div
@@ -200,15 +199,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             style={{
               width: 56,
               height: 56,
-              background: TWO_COLOR.muted,
-              border: "2px solid #000000",
-              borderRadius: 12,
+              background: THEME.accent,
+              borderRadius: 14,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontWeight: 700,
               fontSize: 28,
-              color: "#000000",
+              color: "#ffffff",
+              boxShadow: "0 4px 14px rgba(21,87,176,0.25)",
             }}
           >
             S
@@ -219,46 +218,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               style={{
                 fontWeight: 700,
                 fontSize: 18,
-                color: "#000000",
-                letterSpacing: 2,
-                textTransform: "uppercase",
+                color: "#1f2937",
+                letterSpacing: 1,
               }}
             >
               Sutra ERP
             </div>
-            <div style={{ fontSize: 12, color: "#000000", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
               Initializing database...
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 6 }}>
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                style={{
-                  width: 8,
-                  height: 8,
-                  background: "#000000",
-                  borderRadius: "50%",
-                  animation: "bounce 1.2s infinite",
-                  animationDelay: `${i * 0.2}s`,
-                }}
-              />
-            ))}
-          </div>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              border: `3px solid ${THEME.hover}`,
+              borderTopColor: THEME.accent,
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+          />
         </div>
       </div>
     );
   }
 
+  // ── Login screen (Section 1.4 / 9.2: gradient branding panel, white card) ──
   if (!isAuthenticated) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", background: TWO_COLOR.bg }}>
+      <div style={{ minHeight: "100vh", display: "flex", background: THEME.bg }}>
         <div
           style={{
             width: 420,
-            background: TWO_COLOR.muted,
-            borderRight: "1px solid #000000",
+            background: "linear-gradient(145deg, #0f2444 0%, #1557b0 60%, #1a6bcc 100%)",
             padding: 40,
             display: "flex",
             flexDirection: "column",
@@ -270,140 +263,113 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 48 }}>
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  background: TWO_COLOR.hover,
-                  border: "2px solid #000000",
-                  borderRadius: 8,
+                  width: 44,
+                  height: 44,
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: 10,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontWeight: 700,
                   fontSize: 20,
-                  color: "#000000",
+                  color: "#ffffff",
                 }}
               >
                 S
               </div>
-
               <div>
-                <div style={{ fontWeight: 700, fontSize: 20, color: "#000000" }}>Sutra ERP</div>
+                <div style={{ fontWeight: 700, fontSize: 20, color: "#ffffff" }}>Sutra ERP</div>
                 <div
                   style={{
                     fontSize: 11,
                     fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: 2,
-                    color: "#000000",
+                    color: "rgba(255,255,255,0.7)",
                   }}
                 >
-                  {"Nepal's Cloud Accounting"}
+                  Nepal's Cloud Accounting
                 </div>
               </div>
             </div>
 
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: "#000000", marginBottom: 8 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: "#ffffff", marginBottom: 8 }}>
               Powerful accounting
               <br />
               built for Nepal
             </h2>
 
-            <p style={{ fontSize: 13, color: "#000000", marginBottom: 32, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 32, lineHeight: 1.6 }}>
               Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.
             </p>
 
             {[
-              {
-                title: "BS Calendar & VAT Ready",
-                desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in",
-              },
-              {
-                title: "Multi-Company & Users",
-                desc: "Role-based access with complete audit trail",
-              },
-              {
-                title: "Inventory + Accounting",
-                desc: "Integrated stock, invoicing and double-entry ledger",
-              },
-              {
-                title: "Reports & Export",
-                desc: "Trial Balance, P&L, Balance Sheet, VAT reports",
-              },
+              { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
+              { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
+              { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
+              { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports" },
             ].map((feature) => (
               <div
                 key={feature.title}
-                style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 14 }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  marginBottom: 12,
+                  background: "rgba(255,255,255,0.08)",
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                }}
               >
                 <span
                   style={{
                     width: 18,
                     height: 18,
-                    background: TWO_COLOR.hover,
-                    border: "1px solid #000000",
+                    background: "rgba(255,255,255,0.2)",
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 10,
                     fontWeight: 700,
-                    color: "#000000",
+                    color: "#ffffff",
                     flexShrink: 0,
                   }}
                 >
                   ✓
                 </span>
-
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>
-                    {feature.title}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#000000" }}>{feature.desc}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>{feature.title}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)" }}>{feature.desc}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ fontSize: 10, color: "#000000" }}>
+          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)" }}>
             © 2081 B.S. Sutra Software Pvt. Ltd. · Kathmandu, Nepal
           </div>
         </div>
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 32,
-          }}
-        >
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 32 }}>
           <div style={{ width: "100%", maxWidth: 380 }}>
             <div
               style={{
-                background: TWO_COLOR.card,
-                border: "1px solid #000000",
-                borderRadius: 4,
+                background: THEME.card,
+                border: `1px solid ${THEME.border}`,
+                borderRadius: 12,
                 padding: 32,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#000000", marginBottom: 4 }}>
-                Sign In
-              </h3>
-              <p style={{ fontSize: 12, color: "#000000", marginBottom: 24 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", marginBottom: 4 }}>Sign In</h3>
+              <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 24 }}>
                 Enter your credentials to access the system
               </p>
 
               <form onSubmit={handleLoginSubmit}>
                 <div style={{ marginBottom: 16 }}>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#000000",
-                      marginBottom: 4,
-                    }}
-                  >
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 4 }}>
                     System Operator ID
                   </label>
                   <input
@@ -417,25 +383,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       height: 36,
                       padding: "0 10px",
                       fontSize: 13,
-                      border: "1px solid #000000",
-                      background: TWO_COLOR.card,
-                      color: "#000000",
-                      borderRadius: 3,
+                      border: `1px solid ${THEME.border}`,
+                      background: "#ffffff",
+                      color: "#111827",
+                      borderRadius: 6,
                       outline: "none",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = THEME.accent;
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(21,87,176,0.12)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = THEME.border;
+                      e.currentTarget.style.boxShadow = "none";
                     }}
                   />
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#000000",
-                      marginBottom: 4,
-                    }}
-                  >
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 4 }}>
                     Access Code
                   </label>
                   <input
@@ -449,11 +415,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       height: 36,
                       padding: "0 10px",
                       fontSize: 13,
-                      border: "1px solid #000000",
-                      background: TWO_COLOR.card,
-                      color: "#000000",
-                      borderRadius: 3,
+                      border: `1px solid ${THEME.border}`,
+                      background: "#ffffff",
+                      color: "#111827",
+                      borderRadius: 6,
                       outline: "none",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = THEME.accent;
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(21,87,176,0.12)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = THEME.border;
+                      e.currentTarget.style.boxShadow = "none";
                     }}
                   />
                 </div>
@@ -464,22 +438,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   style={{
                     width: "100%",
                     height: 38,
-                    background: TWO_COLOR.muted,
-                    border: "1px solid #000000",
-                    borderRadius: 4,
+                    background: THEME.accent,
+                    border: "none",
+                    borderRadius: 6,
                     fontSize: 13,
-                    fontWeight: 700,
-                    color: "#000000",
+                    fontWeight: 600,
+                    color: "#ffffff",
                     cursor: loading ? "not-allowed" : "pointer",
                     opacity: loading ? 0.6 : 1,
+                    transition: "background 150ms ease",
                   }}
                 >
-                  {loading ? "Authorizing..." : "Authorize Entry"}
+                  {loading ? "Authorizing..." : "Sign In"}
                 </button>
               </form>
             </div>
 
-            <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: "#000000" }}>
+            <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: "#9ca3af" }}>
               All activities are logged for compliance.
             </div>
           </div>
@@ -488,19 +463,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
   }
 
+  // ── Mobile layout ──
   if (isMobile) {
     return (
-      <div
-        className="app-layout-with-topbar"
-        style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}
-      >
+      <div className="app-layout-with-topbar" style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
         <TopMenuBar />
 
         <header
           style={{
             height: 48,
-            background: TWO_COLOR.muted,
-            borderBottom: "1px solid #000000",
+            background: THEME.card,
+            borderBottom: `1px solid ${THEME.border}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -513,20 +486,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               style={{
                 width: 28,
                 height: 28,
-                background: TWO_COLOR.hover,
-                border: "1px solid #000000",
-                borderRadius: 4,
+                background: THEME.accent,
+                borderRadius: 6,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 700,
                 fontSize: 14,
-                color: "#000000",
+                color: "#ffffff",
               }}
             >
               S
             </div>
-            <span style={{ fontWeight: 600, color: "#000000", fontSize: 14 }}>
+            <span style={{ fontWeight: 600, color: "#1f2937", fontSize: 14 }}>
               {currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, " ")}
             </span>
           </div>
@@ -535,26 +507,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             onClick={() => setDrawerOpen(true)}
             style={{
               background: "transparent",
-              border: "1px solid #000000",
-              borderRadius: 4,
+              border: `1px solid ${THEME.border}`,
+              borderRadius: 6,
               padding: 6,
               cursor: "pointer",
-              color: "#000000",
+              color: "#374151",
             }}
           >
-            <Menu style={{ width: 18, height: 18, color: "#000000" }} />
+            <Menu style={{ width: 18, height: 18 }} />
           </button>
         </header>
 
-        <main
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: 16,
-            paddingBottom: 72,
-            background: TWO_COLOR.bg,
-          }}
-        >
+        <main style={{ flex: 1, overflowY: "auto", padding: 16, paddingBottom: 72, background: THEME.bg }}
+          className="transition-opacity duration-150">
           {children}
         </main>
 
@@ -565,8 +530,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             left: 0,
             right: 0,
             height: 56,
-            background: TWO_COLOR.muted,
-            borderTop: "1px solid #000000",
+            background: THEME.card,
+            borderTop: `1px solid ${THEME.border}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-around",
@@ -591,47 +556,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 background: "transparent",
                 border: "none",
                 cursor: "pointer",
-                color: "#000000",
+                color: currentPage === page ? THEME.accent : "#6b7280",
                 fontWeight: currentPage === page ? 700 : 400,
               }}
             >
-              <Icon style={{ width: 20, height: 20, color: "#000000" }} />
-              <span style={{ fontSize: 10, color: "#000000" }}>{label}</span>
+              <Icon style={{ width: 20, height: 20 }} />
+              <span style={{ fontSize: 10 }}>{label}</span>
             </button>
           ))}
         </nav>
 
         {drawerOpen && (
           <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex" }}>
-            <div
-              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }}
-              onClick={() => setDrawerOpen(false)}
-            />
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }} onClick={() => setDrawerOpen(false)} />
             <div style={{ position: "relative", width: 272, height: "100%", overflowY: "auto" }}>
               <div
                 style={{
                   padding: "12px 16px",
-                  borderBottom: "1px solid #000000",
+                  borderBottom: `1px solid ${THEME.border}`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  background: TWO_COLOR.muted,
-                  color: "#000000",
+                  background: "#1e2433",
+                  color: "#ffffff",
                 }}
               >
-                <span style={{ fontWeight: 600, color: "#000000" }}>Menu</span>
+                <span style={{ fontWeight: 600 }}>Menu</span>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  style={{
-                    background: "transparent",
-                    border: "1px solid #000000",
-                    borderRadius: 4,
-                    padding: 4,
-                    cursor: "pointer",
-                    color: "#000000",
-                  }}
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: 4, cursor: "pointer", color: "#ffffff" }}
                 >
-                  <X style={{ width: 16, height: 16, color: "#000000" }} />
+                  <X style={{ width: 16, height: 16 }} />
                 </button>
               </div>
               <Sidebar collapsed={false} setCollapsed={() => undefined} />
@@ -643,64 +598,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
   }
 
+  // ── Desktop layout ──
   return (
     <div
       className="app-layout-with-topbar"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        overflow: "hidden",
-        background: TWO_COLOR.muted,
-      }}
+      style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: THEME.bg }}
     >
       <TopMenuBar />
-
-      <TitleBar onMinimize={() => setIsMinimized((prev) => !prev)} />
-
-      {!isMinimized && (
-        <>
-          <BusyMenuBar />
-          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-            <main style={{ flex: 1, overflowY: "auto", padding: 12, background: TWO_COLOR.bg }}>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "#000000",
-                  textAlign: "center",
-                  marginBottom: 6,
-                  fontWeight: 600,
-                }}
-              >
-                {currentPage.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
-              </div>
-              {children}
-            </main>
-            <ShortcutSidebar onShortcut={handleSidebarShortcut} />
-          </div>
-          <CommandHintBar />
-          <StatusBar />
-        </>
-      )}
-
-      {isMinimized && (
-        <div
-          onClick={() => setIsMinimized(false)}
-          style={{
-            flex: 1,
-            background: TWO_COLOR.bg,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#000000",
-            fontSize: 13,
-            cursor: "pointer",
-            userSelect: "none",
-          }}
+      <BusyMenuBar />
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <main
+          className="transition-opacity duration-150"
+          style={{ flex: 1, overflowY: "auto", padding: 20, background: THEME.bg }}
         >
-          Click here or press — again to restore Sutra ERP
-        </div>
-      )}
+          {children}
+        </main>
+        <ShortcutSidebar onShortcut={handleSidebarShortcut} />
+      </div>
+      <StatusBar />
       <FalconProvider />
     </div>
   );

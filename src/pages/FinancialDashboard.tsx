@@ -1,568 +1,429 @@
 // @ts-nocheck
 import React, { useMemo, useState } from "react";
-import { useStore } from "../store";
+import { useStore } from "../store/useStore";
 import {
-  TrendingUp, TrendingDown, DollarSign, ShoppingCart,
-  Users, Package, AlertTriangle, CheckCircle, BarChart2,
-  PieChart, Activity, ArrowUpRight, ArrowDownRight,
-  Calendar, Download, RefreshCw, Target, Zap,
-  CreditCard, FileText, Clock, Shield
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid,
+} from "recharts";
+import {
+  AlertTriangle, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Wallet,
+  Landmark, Users, Package, RefreshCw, FileSpreadsheet,
 } from "lucide-react";
-import * as XLSX from "xlsx";
+import { getBSTodayLong } from "../lib/nepaliDate";
 
-function fmt(n: number) {
-  return n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-function fmtShort(n: number): string {
-  if (Math.abs(n) >= 10000000) return (n / 10000000).toFixed(2) + " Cr";
-  if (Math.abs(n) >= 100000)   return (n / 100000).toFixed(2) + " L";
-  if (Math.abs(n) >= 1000)     return (n / 1000).toFixed(1) + " K";
-  return fmt(n);
-}
-function pct(a: number, b: number): number {
-  return b ? Math.round((a / b) * 1000) / 10 : 0;
+function money(n: number): string {
+  const v = Number(n) || 0;
+  const sign = v < 0 ? "-" : "";
+  return `${sign}Rs. ${Math.abs(v).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
 }
 
-// ── Account classifiers ────────────────────────────────────────────────────
-const kw = {
-  sales:      ["sales","revenue","turnover","income","service income"],
-  purchase:   ["purchase","cost of goods","cogs","raw material"],
-  expense:    ["expense","salary","wages","rent","utility","depreciation","interest paid","insurance","marketing","transport"],
-  asset:      ["asset","fixed asset","property","equipment","receivable","debtor","cash","bank","inventory","stock","prepaid"],
-  liability:  ["liability","payable","creditor","loan","overdraft","tax payable","vat payable"],
-  equity:     ["equity","capital","reserve","retained"],
-  currentAsset: ["cash","bank","receivable","debtor","inventory","stock","prepaid","current asset"],
-  currentLiab:  ["payable","creditor","short term","current liab","vat payable","tax payable"],
-  cash:       ["cash","petty cash"],
-  bank:       ["bank","current account","savings account"],
-  debtor:     ["receivable","debtor","sundry debtor"],
-  creditor:   ["payable","creditor","sundry creditor"],
-};
-
-function matchKw(name: string, grp: string, keys: string[]): boolean {
-  const s = (name + " " + grp).toLowerCase();
-  return keys.some(k => s.includes(k));
+function groupLower(a: any): string {
+  return (a?.group || a?.groupName || "").toString().toLowerCase();
 }
 
-export default function FinancialDashboard() {
-  const {
-    accounts = [], vouchers = [], stockItems = [],
-    stockMovements = [], fixedAssets = [],
-    employees = [], payrollRuns = [],
-    approvalRequests = [], pdcRegister = [],
-    recurringTemplates = [],
-    currentFiscalYear, companySettings,
-  } = useStore();
+const FinancialDashboard: React.FC = () => {
+  const { accounts, vouchers, invoices, items, parties, stockMovements, companySettings, currentFiscalYear } =
+    useStore();
 
-  const [period, setPeriod] = useState<"month" | "quarter" | "ytd" | "custom">("month");
-  const [customFrom, setCustomFrom] = useState(new Date().getFullYear() + "-01-01");
-  const [customTo,   setCustomTo]   = useState(new Date().toISOString().slice(0, 10));
-  const [drillDown, setDrillDown]   = useState<string | null>(null);
+  const [expenseOpen, setExpenseOpen] = useState(false);
+  const [alertsOpen, setAlertsOpen] = useState(true);
 
-  // ── Compute date range ────────────────────────────────────────────────────
-  const { fromDate, toDate, prevFrom, prevTo } = useMemo(() => {
-    const today = new Date();
-    const yyyy  = today.getFullYear();
-    const mm    = today.getMonth();
-    const dd    = today.getDate();
+  const today = new Date().toISOString().split("T")[0];
+  const monthStart = today.slice(0, 8) + "01";
+  const fyStart = currentFiscalYear?.startDate || `${today.slice(0, 4)}-07-16`;
 
-    let from: Date, to: Date, pf: Date, pt: Date;
+  // ── Section 14.2: Today's activity digest ──
+  const todaysVouchers = useMemo(() => (vouchers || []).filter((v: any) => v.date === today && v.status === "posted"), [vouchers, today]);
+  const todaysInvoices = useMemo(() => (invoices || []).filter((i: any) => i.date === today && i.status === "posted"), [invoices, today]);
+  const todaysReceipts = useMemo(() => todaysVouchers.filter((v: any) => v.type === "receipt"), [todaysVouchers]);
+  const todaysPayments = useMemo(() => todaysVouchers.filter((v: any) => v.type === "payment"), [todaysVouchers]);
+  const netCashFlowToday = useMemo(
+    () => todaysReceipts.reduce((s, v: any) => s + (v.grandTotal || v.totalDebit || 0), 0)
+      - todaysPayments.reduce((s, v: any) => s + (v.grandTotal || v.totalDebit || 0), 0),
+    [todaysReceipts, todaysPayments],
+  );
 
-    if (period === "month") {
-      from = new Date(yyyy, mm, 1);
-      to   = new Date(yyyy, mm, dd);
-      pf   = new Date(yyyy, mm - 1, 1);
-      pt   = new Date(yyyy, mm - 1, dd);
-    } else if (period === "quarter") {
-      const q = Math.floor(mm / 3);
-      from = new Date(yyyy, q * 3, 1);
-      to   = today;
-      pf   = new Date(yyyy, (q - 1) * 3, 1);
-      pt   = new Date(yyyy, q * 3, 0);
-    } else if (period === "ytd") {
-      const fyStart = currentFiscalYear?.startDate
-        ? new Date(currentFiscalYear.startDate)
-        : new Date(yyyy, 3, 1); // April 1 for Nepal FY
-      from = fyStart;
-      to   = today;
-      pf   = new Date(fyStart.getFullYear() - 1, fyStart.getMonth(), fyStart.getDate());
-      pt   = new Date(from.getTime() - 1);
-    } else {
-      from = new Date(customFrom);
-      to   = new Date(customTo);
-      const diff = to.getTime() - from.getTime();
-      pf   = new Date(from.getTime() - diff);
-      pt   = new Date(from.getTime() - 1);
-    }
-
-    const iso = (d: Date) => d.toISOString().slice(0, 10);
-    return { fromDate: iso(from), toDate: iso(to), prevFrom: iso(pf), prevTo: iso(pt) };
-  }, [period, customFrom, customTo, currentFiscalYear]);
-
-  // ── Filter vouchers ───────────────────────────────────────────────────────
-  const curVouchers  = useMemo(() => vouchers.filter(v => v.date >= fromDate && v.date <= toDate),  [vouchers, fromDate, toDate]);
-  const prevVouchers = useMemo(() => vouchers.filter(v => v.date >= prevFrom && v.date <= prevTo), [vouchers, prevFrom, prevTo]);
-
-  // ── Sum by keyword classification ─────────────────────────────────────────
-  function sumByKw(voucherList: any[], keys: string[]): number {
-    let total = 0;
-    voucherList.forEach(v => {
-      (v.entries || v.lineItems || []).forEach((e: any) => {
-        const acc = accounts.find((a: any) => String(a.id) === String(e.accountId || e.ledgerId));
-        if (!acc) return;
-        if (matchKw(acc.name || "", acc.group || acc.accountGroup || "", keys)) {
-          total += Math.abs(e.amount || e.debit || e.credit || 0);
-        }
-      });
-    });
-    return total;
-  }
-
-  // ── Balance at date ───────────────────────────────────────────────────────
-  function balanceByKw(upToDate: string, keys: string[]): number {
-    let total = 0;
-    vouchers.filter(v => v.date <= upToDate).forEach(v => {
-      (v.entries || v.lineItems || []).forEach((e: any) => {
-        const acc = accounts.find((a: any) => String(a.id) === String(e.accountId || e.ledgerId));
-        if (!acc) return;
-        if (matchKw(acc.name || "", acc.group || acc.accountGroup || "", keys)) {
-          total += (e.debit || 0) - (e.credit || 0);
-        }
-      });
-    });
-    return Math.abs(total);
-  }
-
-  // ── Core P&L metrics ──────────────────────────────────────────────────────
-  const metrics = useMemo(() => {
-    const revenue      = sumByKw(curVouchers,  kw.sales);
-    const prevRevenue  = sumByKw(prevVouchers, kw.sales);
-    const purchases    = sumByKw(curVouchers,  kw.purchase);
-    const expenses     = sumByKw(curVouchers,  kw.expense);
-    const grossProfit  = revenue - purchases;
-    const netProfit    = grossProfit - expenses;
-    const grossMargin  = pct(grossProfit, revenue);
-    const netMargin    = pct(netProfit, revenue);
-    const revenueGrowth = pct(revenue - prevRevenue, prevRevenue || 1);
-
-    const totalAssets      = balanceByKw(toDate, kw.asset);
-    const totalLiabilities = balanceByKw(toDate, kw.liability);
-    const equity           = totalAssets - totalLiabilities;
-    const currentAssets    = balanceByKw(toDate, kw.currentAsset);
-    const currentLiabs     = balanceByKw(toDate, kw.currentLiab);
-    const currentRatio     = currentLiabs > 0 ? Math.round((currentAssets / currentLiabs) * 100) / 100 : 0;
-    const cashBalance      = balanceByKw(toDate, kw.cash);
-    const bankBalance      = balanceByKw(toDate, kw.bank);
-    const totalReceivables = balanceByKw(toDate, kw.debtor);
-    const totalPayables    = balanceByKw(toDate, kw.creditor);
-    const debtToEquity     = equity > 0 ? Math.round((totalLiabilities / equity) * 100) / 100 : 0;
-    const returnOnAssets   = totalAssets > 0 ? pct(netProfit, totalAssets) : 0;
-    const returnOnEquity   = equity > 0 ? pct(netProfit, equity) : 0;
-
-    const stockValue = (stockItems || []).reduce((s: number, item: any) => {
-      const rate = item.valuationRate || item.purchaseRate || 0;
-      const qty  = item.closingQty || item.openingQty || 0;
-      return s + rate * qty;
-    }, 0);
-
-    return {
-      revenue, prevRevenue, revenueGrowth,
-      purchases, expenses, grossProfit, netProfit,
-      grossMargin, netMargin,
-      totalAssets, totalLiabilities, equity,
-      currentAssets, currentLiabs, currentRatio,
-      cashBalance, bankBalance, totalReceivables, totalPayables,
-      debtToEquity, returnOnAssets, returnOnEquity,
-      stockValue,
-    };
-  }, [curVouchers, prevVouchers, accounts, toDate]);
-
-  // ── Monthly revenue chart data (last 6 months) ────────────────────────────
-  const monthlyData = useMemo(() => {
-    const months: { label: string; from: string; to: string }[] = [];
-    const today = new Date();
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      const from = d.toISOString().slice(0, 10);
-      const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-      const to = last.toISOString().slice(0, 10);
-      months.push({
-        label: d.toLocaleDateString("en-IN", { month: "short" }),
-        from, to,
-      });
-    }
-    return months.map(m => {
-      const mv = vouchers.filter(v => v.date >= m.from && v.date <= m.to);
-      return {
-        label: m.label,
-        revenue:  sumByKw(mv, kw.sales),
-        expense:  sumByKw(mv, kw.expense),
-        profit:   sumByKw(mv, kw.sales) - sumByKw(mv, kw.purchase) - sumByKw(mv, kw.expense),
-      };
-    });
-  }, [vouchers, accounts]);
-
-  const maxMonthlyRevenue = Math.max(...monthlyData.map(m => m.revenue), 1);
-
-  // ── Operational alerts ────────────────────────────────────────────────────
-  const alerts = useMemo(() => {
-    const list: { type: "error" | "warning" | "info"; message: string }[] = [];
-    const pendingApprovals = approvalRequests.filter(r => r.status === "pending").length;
-    if (pendingApprovals > 0) list.push({ type: "warning", message: `${pendingApprovals} voucher(s) pending approval` });
-
-    const overduePDC = (pdcRegister || []).filter((p: any) => {
-      const d = new Date(p.chequeDate || p.dueDate || "");
-      return d < new Date() && (p.status === "pending" || p.status === "received");
-    }).length;
-    if (overduePDC > 0) list.push({ type: "error", message: `${overduePDC} post-dated cheque(s) overdue` });
-
-    const dueRecurring = (recurringTemplates || []).filter((t: any) => {
-      if (!t.isActive) return false;
-      const days = Math.round((new Date(t.nextDueDate).getTime() - Date.now()) / 86400000);
-      return days <= (t.reminderDaysBefore || 3);
-    }).length;
-    if (dueRecurring > 0) list.push({ type: "warning", message: `${dueRecurring} recurring voucher(s) due for posting` });
-
-    if (metrics.currentRatio > 0 && metrics.currentRatio < 1) {
-      list.push({ type: "error", message: `Current ratio ${metrics.currentRatio} below 1 – liquidity risk` });
-    }
-    if (metrics.netMargin < 0) {
-      list.push({ type: "error", message: `Net margin negative (${metrics.netMargin}%) – business is loss-making` });
-    }
-    if (metrics.totalReceivables > metrics.revenue * 0.3) {
-      list.push({ type: "warning", message: "Receivables >30% of revenue – review collection" });
-    }
-    if (list.length === 0) list.push({ type: "info", message: "All key indicators are healthy." });
-    return list;
-  }, [approvalRequests, pdcRegister, recurringTemplates, metrics]);
-
-  // ── Export dashboard snapshot ─────────────────────────────────────────────
-  const exportSnapshot = () => {
-    const data = [
-      { "Metric": "Revenue",            "Value": metrics.revenue },
-      { "Metric": "Gross Profit",        "Value": metrics.grossProfit },
-      { "Metric": "Net Profit",          "Value": metrics.netProfit },
-      { "Metric": "Gross Margin %",      "Value": metrics.grossMargin },
-      { "Metric": "Net Margin %",        "Value": metrics.netMargin },
-      { "Metric": "Revenue Growth %",    "Value": metrics.revenueGrowth },
-      { "Metric": "Total Assets",        "Value": metrics.totalAssets },
-      { "Metric": "Total Liabilities",   "Value": metrics.totalLiabilities },
-      { "Metric": "Equity",              "Value": metrics.equity },
-      { "Metric": "Current Ratio",       "Value": metrics.currentRatio },
-      { "Metric": "Cash Balance",        "Value": metrics.cashBalance },
-      { "Metric": "Bank Balance",        "Value": metrics.bankBalance },
-      { "Metric": "Total Receivables",   "Value": metrics.totalReceivables },
-      { "Metric": "Total Payables",      "Value": metrics.totalPayables },
-      { "Metric": "Debt to Equity",      "Value": metrics.debtToEquity },
-      { "Metric": "Return on Assets %",  "Value": metrics.returnOnAssets },
-      { "Metric": "Return on Equity %",  "Value": metrics.returnOnEquity },
-      { "Metric": "Stock Value",         "Value": metrics.stockValue },
-    ];
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Dashboard Snapshot");
-    XLSX.writeFile(wb, `FinancialDashboard_${fromDate}_to_${toDate}.xlsx`);
+  // ── Section 2.3: Today's Net Profit / MTD Profit / AR-AP / Cash&Bank ──
+  const computeProfitForPeriod = (fromDate: string) => {
+    const salesInv = (invoices || []).filter(
+      (i: any) => i.status === "posted" && i.date >= fromDate && i.date <= today && (i.type === "sales-invoice"),
+    );
+    const purchInv = (invoices || []).filter(
+      (i: any) => i.status === "posted" && i.date >= fromDate && i.date <= today && (i.type === "purchase-invoice"),
+    );
+    const revenue = salesInv.reduce((s, i: any) => s + (i.grandTotal || 0), 0);
+    const cogs = purchInv.reduce((s, i: any) => s + (i.grandTotal || 0), 0);
+    const gross = revenue - cogs;
+    return { revenue, cogs, gross };
   };
 
-  // ── KPI card component ────────────────────────────────────────────────────
-  function KPICard({
-    label, value, sub, trend, trendValue, color, icon: Icon, drillKey, prefix = "NPR"
-  }: any) {
-    const isPositiveTrend = trendValue >= 0;
-    return (
-      <div
-        onClick={() => drillKey && setDrillDown(drillDown === drillKey ? null : drillKey)}
-        className={`bg-white rounded-2xl shadow-sm border p-5 transition-all ${
-          drillKey ? "cursor-pointer hover:shadow-md hover:border-blue-200" : ""
-        } ${drillDown === drillKey ? "border-blue-400 ring-2 ring-blue-100" : "border-gray-200"}`}>
-        <div className="flex items-start justify-between mb-3">
-          <div className={`p-2.5 rounded-xl bg-${color}-50`}>
-            <Icon className={`w-5 h-5 text-${color}-600`}/>
-          </div>
-          {trendValue !== undefined && (
-            <div className={`flex items-center gap-1 text-xs font-medium ${isPositiveTrend?"text-green-600":"text-red-600"}`}>
-              {isPositiveTrend
-                ? <ArrowUpRight className="w-3.5 h-3.5"/>
-                : <ArrowDownRight className="w-3.5 h-3.5"/>}
-              {Math.abs(trendValue)}%
-            </div>
-          )}
-        </div>
-        <div className="text-2xl font-bold text-gray-800 font-mono">{value}</div>
-        <div className="text-xs font-medium text-gray-500 mt-1">{label}</div>
-        {sub && <div className="text-xs text-gray-400 mt-0.5">{sub}</div>}
-      </div>
-    );
-  }
+  const todayProfit = useMemo(() => computeProfitForPeriod(today), [invoices, today]);
+  const mtdProfit = useMemo(() => computeProfitForPeriod(monthStart), [invoices, monthStart, today]);
+  const ytdProfit = useMemo(() => computeProfitForPeriod(fyStart), [invoices, fyStart, today]);
+
+  const receivables = useMemo(
+    () =>
+      (invoices || [])
+        .filter((i: any) => i.type === "sales-invoice" && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+        .reduce((s, i: any) => s + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0),
+    [invoices],
+  );
+  const payables = useMemo(
+    () =>
+      (invoices || [])
+        .filter((i: any) => i.type === "purchase-invoice" && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+        .reduce((s, i: any) => s + ((i.grandTotal || 0) - (i.paidAmount || 0)), 0),
+    [invoices],
+  );
+  const netArAp = receivables - payables;
+
+  const cashBankBalance = useMemo(() => {
+    const cash = (accounts || []).filter((a: any) => groupLower(a).includes("cash") && !a.isGroup);
+    const bank = (accounts || []).filter((a: any) => groupLower(a).includes("bank") && !a.isGroup);
+    return [...cash, ...bank].reduce((s, a: any) => s + (a.balance || 0), 0);
+  }, [accounts]);
+
+  // ── Section 2.4: Balance Sheet Snapshot ──
+  const balanceSheet = useMemo(() => {
+    const live = (accounts || []).filter((a: any) => !a.isGroup);
+    const currentAssets = live.filter((a: any) => groupLower(a).includes("current asset")).reduce((s, a: any) => s + (a.balance || 0), 0);
+    const fixedAssets = live.filter((a: any) => groupLower(a).includes("fixed asset")).reduce((s, a: any) => s + (a.balance || 0), 0);
+    const currentLiabilities = live.filter((a: any) => groupLower(a).includes("current liab")).reduce((s, a: any) => s + (a.balance || 0), 0);
+    const longTermLiabilities = live.filter((a: any) => groupLower(a).includes("loan") || groupLower(a).includes("long term")).reduce((s, a: any) => s + (a.balance || 0), 0);
+    const equity = live.filter((a: any) => groupLower(a).includes("capital") || groupLower(a).includes("equity")).reduce((s, a: any) => s + (a.balance || 0), 0);
+    return {
+      currentAssets, fixedAssets, totalAssets: currentAssets + fixedAssets,
+      currentLiabilities, longTermLiabilities, equity,
+      totalLiabEquity: currentLiabilities + longTermLiabilities + equity,
+    };
+  }, [accounts]);
+
+  // ── Section 2.6: Monthly chart data via recharts ──
+  const chartData = useMemo(() => {
+    const months: { key: string; label: string }[] = [];
+    const d = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const dt = new Date(d.getFullYear(), d.getMonth() - i, 1);
+      months.push({ key: dt.toISOString().slice(0, 7), label: dt.toLocaleDateString("en-US", { month: "short" }) });
+    }
+    return months.map(({ key, label }) => {
+      const sales = (invoices || [])
+        .filter((i: any) => i.type === "sales-invoice" && i.status === "posted" && i.date?.startsWith(key))
+        .reduce((s, i: any) => s + (i.grandTotal || 0), 0);
+      const expenses = (invoices || [])
+        .filter((i: any) => i.type === "purchase-invoice" && i.status === "posted" && i.date?.startsWith(key))
+        .reduce((s, i: any) => s + (i.grandTotal || 0), 0);
+      return { month: label, Sales: sales, Expenses: expenses, Net: sales - expenses };
+    });
+  }, [invoices]);
+
+  // ── Section 2.9: Stock alerts (collapsible banner, not full widget) ──
+  const reorderAlerts = useMemo(() => {
+    return (items || []).filter((item: any) => {
+      const reorderQty = item.reorderLevel || item.minStockLevel || 0;
+      if (reorderQty <= 0) return false;
+      const currentStock = (stockMovements || [])
+        .filter((m: any) => m.itemId === item.id)
+        .reduce((s: number, m: any) => {
+          const qty = Number(m.quantity || m.qty || 0);
+          const t = String(m.type || "").toLowerCase();
+          return t.includes("in") ? s + qty : s - qty;
+        }, 0);
+      return currentStock <= reorderQty;
+    });
+  }, [items, stockMovements]);
+
+  // ── Section 2.8: Aging buckets (horizontal proportional bars) ──
+  const agingBuckets = useMemo(() => {
+    const buckets = [
+      { label: "0-30", from: 0, to: 30, amount: 0, color: "#22c55e" },
+      { label: "31-60", from: 31, to: 60, amount: 0, color: "#f59e0b" },
+      { label: "61-90", from: 61, to: 90, amount: 0, color: "#f97316" },
+      { label: "90+", from: 91, to: Infinity, amount: 0, color: "#ef4444" },
+    ];
+    (invoices || [])
+      .filter((i: any) => i.type === "sales-invoice" && i.status === "posted" && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial"))
+      .forEach((i: any) => {
+        const balance = (i.grandTotal || 0) - (i.paidAmount || 0);
+        if (balance <= 0) return;
+        const days = Math.max(0, Math.floor((Date.now() - new Date(i.date).getTime()) / 86400000));
+        const bucket = buckets.find((b) => days >= b.from && days <= b.to) || buckets[buckets.length - 1];
+        bucket.amount += balance;
+      });
+    const total = buckets.reduce((s, b) => s + b.amount, 0) || 1;
+    return { buckets, total };
+  }, [invoices]);
+
+  // ── Top customers this month ──
+  const topCustomers = useMemo(() => {
+    const map: Record<string, number> = {};
+    (invoices || [])
+      .filter((i: any) => i.type === "sales-invoice" && i.status === "posted" && i.date >= monthStart)
+      .forEach((i: any) => {
+        map[i.partyName] = (map[i.partyName] || 0) + (i.grandTotal || 0);
+      });
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  }, [invoices, monthStart]);
+
+  // ── Section 2.10: Expense breakdown (collapsible) ──
+  const expenseBreakdown = useMemo(() => {
+    const map: Record<string, number> = {};
+    (accounts || []).filter((a: any) => !a.isGroup && groupLower(a).includes("expense")).forEach((a: any) => {
+      map[a.group || "Other"] = (map[a.group || "Other"] || 0) + Math.abs(a.balance || 0);
+    });
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  }, [accounts]);
+
+  const companyName = companySettings?.companyNameEn || companySettings?.name || "Company";
+  const bsDate = getBSTodayLong();
+  const fyLabel = currentFiscalYear?.name || currentFiscalYear?.fiscalYearBS || "—";
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Financial Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {companySettings?.name || "Company"} · {fromDate} to {toDate}
-          </p>
+    <div className="flex flex-col gap-5 pb-8">
+      {/* Section 2.2: Financial Date Banner (replaces the emoji greeting) */}
+      <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-5 py-3">
+        <div className="flex items-center gap-2 text-[13px] text-gray-700 flex-wrap">
+          <span className="font-semibold text-gray-800">{bsDate}</span>
+          <span className="text-gray-300">|</span>
+          <span>AD: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+          <span className="text-gray-300">|</span>
+          <span>FY {fyLabel}</span>
+          <span className="text-gray-300">|</span>
+          <span className="inline-flex items-center gap-1 text-green-700 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Books Open
+          </span>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Period selector */}
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-            {(["month","quarter","ytd","custom"] as const).map(p => (
-              <button key={p} onClick={() => setPeriod(p)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium uppercase transition-all ${
-                  period === p ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"}`}>
-                {p}
-              </button>
-            ))}
+        <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5">
+          <RefreshCw className="h-3.5 w-3.5" /> Refresh
+        </button>
+      </div>
+
+      {/* Section 2.9: Alert banner (only when there are alerts) */}
+      {reorderAlerts.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-[12px] text-amber-800">
+            <AlertTriangle className="h-4 w-4" />
+            <span>{reorderAlerts.length} item(s) below reorder level need attention</span>
           </div>
-          {period === "custom" && (
-            <>
-              <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)}
-                className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs"/>
-              <input type="date" value={customTo}   onChange={e=>setCustomTo(e.target.value)}
-                className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs"/>
-            </>
-          )}
-          <button onClick={exportSnapshot}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-medium hover:bg-purple-700">
-            <Download className="w-3.5 h-3.5"/> Export
+          <button
+            onClick={() => setAlertsOpen((v) => !v)}
+            className="text-[11px] font-medium text-amber-700 hover:text-amber-900 flex items-center gap-1"
+          >
+            View Details {alertsOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           </button>
         </div>
-      </div>
-
-      {/* ── ALERTS BANNER ─────────────────────────────────────────────────── */}
-      <div className="space-y-2">
-        {alerts.map((a, i) => (
-          <div key={i} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm border ${
-            a.type==="error"   ? "bg-red-50 border-red-200 text-red-700" :
-            a.type==="warning" ? "bg-yellow-50 border-yellow-200 text-yellow-700" :
-            "bg-green-50 border-green-200 text-green-700"}`}>
-            {a.type==="error"   ? <AlertTriangle className="w-4 h-4 flex-shrink-0"/> :
-             a.type==="warning" ? <Clock className="w-4 h-4 flex-shrink-0"/> :
-             <CheckCircle className="w-4 h-4 flex-shrink-0"/>}
-            {a.message}
-          </div>
-        ))}
-      </div>
-
-      {/* ── P&L KPI CARDS ─────────────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Income Statement</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KPICard label="Revenue" value={fmtShort(metrics.revenue)}
-            sub={`Prev: ${fmtShort(metrics.prevRevenue)}`}
-            trendValue={metrics.revenueGrowth} color="green" icon={TrendingUp} drillKey="revenue"/>
-          <KPICard label="Gross Profit" value={fmtShort(metrics.grossProfit)}
-            sub={`Margin: ${metrics.grossMargin}%`}
-            color="blue" icon={BarChart2} drillKey="gross-profit"/>
-          <KPICard label="Total Expenses" value={fmtShort(metrics.expenses)}
-            color="orange" icon={TrendingDown} drillKey="expenses"/>
-          <KPICard label="Net Profit / (Loss)" value={fmtShort(metrics.netProfit)}
-            sub={`Margin: ${metrics.netMargin}%`}
-            trendValue={metrics.netMargin} color={metrics.netProfit>=0?"teal":"red"} icon={Activity} drillKey="net-profit"/>
-        </div>
-      </div>
-
-      {/* ── BALANCE SHEET KPIs ────────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Balance Sheet</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KPICard label="Total Assets"      value={fmtShort(metrics.totalAssets)}      color="blue"   icon={DollarSign}/>
-          <KPICard label="Total Liabilities" value={fmtShort(metrics.totalLiabilities)} color="red"    icon={CreditCard}/>
-          <KPICard label="Equity"            value={fmtShort(metrics.equity)}           color="purple" icon={Shield}/>
-          <KPICard label="Stock Value"       value={fmtShort(metrics.stockValue)}       color="amber"  icon={Package}/>
-        </div>
-      </div>
-
-      {/* ── LIQUIDITY & RATIO KPIs ────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Liquidity & Ratios</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KPICard label="Cash Balance" value={fmtShort(metrics.cashBalance)}
-            color="green" icon={DollarSign} drillKey="cash"/>
-          <KPICard label="Bank Balance" value={fmtShort(metrics.bankBalance)}
-            color="teal" icon={CreditCard} drillKey="bank"/>
-          <KPICard label="Receivables"  value={fmtShort(metrics.totalReceivables)}
-            color="blue" icon={Users} drillKey="receivables"/>
-          <KPICard label="Payables"     value={fmtShort(metrics.totalPayables)}
-            color="orange" icon={FileText} drillKey="payables"/>
-          <KPICard label="Current Ratio" value={metrics.currentRatio.toFixed(2)}
-            sub={metrics.currentRatio>=1?"Healthy":"Below 1 – Risk"} color={metrics.currentRatio>=1?"green":"red"} icon={Zap}/>
-          <KPICard label="Debt/Equity"   value={metrics.debtToEquity.toFixed(2)}
-            color="purple" icon={BarChart2}/>
-          <KPICard label="Return on Assets" value={metrics.returnOnAssets + "%"}
-            color="blue" icon={Target}/>
-          <KPICard label="Return on Equity" value={metrics.returnOnEquity + "%"}
-            color="green" icon={TrendingUp}/>
-        </div>
-      </div>
-
-      {/* ── OPERATIONS KPIs ──────────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Operations</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KPICard label="Active Employees"    value={employees.filter((e:any)=>e.isActive).length}  color="blue"   icon={Users}/>
-          <KPICard label="Last Payroll Gross"  value={fmtShort(payrollRuns.slice(-1)[0]?.totalGross||0)} color="green" icon={DollarSign}/>
-          <KPICard label="Pending Approvals"   value={approvalRequests.filter(r=>r.status==="pending").length} color="yellow" icon={Clock}/>
-          <KPICard label="Overdue PDC"         value={(pdcRegister||[]).filter((p:any)=>{
-            const d = new Date(p.chequeDate||p.dueDate||"");
-            return d < new Date() && (p.status==="pending"||p.status==="received");
-          }).length} color="red" icon={AlertTriangle}/>
-        </div>
-      </div>
-
-      {/* ── CHARTS ────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Revenue vs Expense bar chart */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
-          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <BarChart2 className="w-4 h-4 text-blue-600"/> Revenue vs Expense (Last 6 Months)
-          </h3>
-          <div className="flex items-end gap-2 h-36">
-            {monthlyData.map((m, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full flex gap-0.5 items-end h-28">
-                  <div
-                    className="flex-1 bg-blue-400 rounded-t-sm transition-all"
-                    style={{ height: `${pct(m.revenue, maxMonthlyRevenue)}%`, minHeight: m.revenue > 0 ? "4px" : "0" }}
-                    title={`Revenue: ${fmt(m.revenue)}`}/>
-                  <div
-                    className="flex-1 bg-orange-300 rounded-t-sm transition-all"
-                    style={{ height: `${pct(m.expense, maxMonthlyRevenue)}%`, minHeight: m.expense > 0 ? "4px" : "0" }}
-                    title={`Expense: ${fmt(m.expense)}`}/>
-                </div>
-                <div className="text-xs text-gray-400">{m.label}</div>
+      )}
+      {reorderAlerts.length > 0 && alertsOpen && (
+        <div className="bg-white border border-gray-200 rounded-lg p-3 -mt-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {reorderAlerts.slice(0, 8).map((item: any) => (
+              <div key={item.id} className="text-[11px] text-gray-600 border border-gray-100 rounded px-2 py-1.5">
+                {item.name}
               </div>
             ))}
           </div>
-          <div className="flex gap-4 mt-2 text-xs text-gray-500">
-            <span className="flex items-center gap-1"><span className="w-3 h-2 bg-blue-400 rounded inline-block"/>Revenue</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-2 bg-orange-300 rounded inline-block"/>Expense</span>
-          </div>
-        </div>
-
-        {/* P&L donut-style summary */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
-          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <PieChart className="w-4 h-4 text-green-600"/> Cost Structure
-          </h3>
-          <div className="space-y-3">
-            {[
-              { label: "Cost of Goods Sold", value: metrics.purchases, color: "bg-blue-400",   pct: pct(metrics.purchases, metrics.revenue) },
-              { label: "Operating Expenses",  value: metrics.expenses,  color: "bg-orange-400", pct: pct(metrics.expenses,  metrics.revenue) },
-              { label: "Net Profit",          value: metrics.netProfit, color: metrics.netProfit>=0?"bg-green-500":"bg-red-400",
-                pct: Math.abs(pct(metrics.netProfit, metrics.revenue)) },
-            ].map(item => (
-              <div key={item.label}>
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
-                  <span>{item.label}</span>
-                  <span className="font-medium">{fmtShort(item.value)} ({item.pct}%)</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-2.5">
-                  <div className={`h-2.5 rounded-full ${item.color}`}
-                    style={{ width: `${Math.min(Math.abs(item.pct), 100)}%` }}/>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400 text-center">
-            Revenue base: {fmtShort(metrics.revenue)}
-          </div>
-        </div>
-      </div>
-
-      {/* ── DRILL DOWN PANEL ──────────────────────────────────────────────── */}
-      {drillDown && (
-        <div className="bg-white rounded-2xl shadow-sm border border-blue-200 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-700 capitalize flex items-center gap-2">
-              <Activity className="w-4 h-4 text-blue-600"/> Drill-Down: {drillDown.replace(/-/g," ")}
-            </h3>
-            <button onClick={() => setDrillDown(null)} className="text-gray-400 hover:text-gray-600">✕</button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  {["Date","Voucher","Account","Debit","Credit","Narration"]
-                    .map(h=><th key={h} className="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>)}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {(() => {
-                  const kwMap: Record<string, string[]> = {
-                    revenue: kw.sales, expenses: kw.expense,
-                    "gross-profit": kw.purchase, "net-profit": kw.expense,
-                    cash: kw.cash, bank: kw.bank,
-                    receivables: kw.debtor, payables: kw.creditor,
-                  };
-                  const drillKw = kwMap[drillDown] || kw.sales;
-                  const rows: any[] = [];
-                  curVouchers.forEach(v => {
-                    (v.entries || v.lineItems || []).forEach((e: any) => {
-                      const acc = accounts.find((a: any) => String(a.id) === String(e.accountId || e.ledgerId));
-                      if (!acc) return;
-                      if (!matchKw(acc.name||"", acc.group||acc.accountGroup||"", drillKw)) return;
-                      rows.push({
-                        date: v.date,
-                        voucher: v.type || v.voucherType || "—",
-                        account: acc.name,
-                        debit: e.debit || (e.amount > 0 ? e.amount : 0),
-                        credit: e.credit || (e.amount < 0 ? Math.abs(e.amount) : 0),
-                        narration: v.narration || v.description || "—",
-                      });
-                    });
-                  });
-                  return rows.slice(0, 50).map((r, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-3 py-2 font-mono text-xs">{r.date}</td>
-                      <td className="px-3 py-2 capitalize text-xs">{r.voucher}</td>
-                      <td className="px-3 py-2 font-medium text-gray-700">{r.account}</td>
-                      <td className="px-3 py-2 text-right text-blue-700">{r.debit>0?fmt(r.debit):"—"}</td>
-                      <td className="px-3 py-2 text-right text-green-700">{r.credit>0?fmt(r.credit):"—"}</td>
-                      <td className="px-3 py-2 text-xs text-gray-400 max-w-48 truncate">{r.narration}</td>
-                    </tr>
-                  ));
-                })()}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-2 text-xs text-gray-400 text-right">Showing up to 50 transactions. Use dedicated reports for full detail.</div>
         </div>
       )}
 
-      {/* ── QUICK LINKS ───────────────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Quick Navigation</h2>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-          {[
-            { label: "Trial Balance",    page: "trial-balance",       icon: FileText,   color: "blue"   },
-            { label: "P&L Statement",    page: "profit-loss",         icon: TrendingUp,  color: "green"  },
-            { label: "Balance Sheet",    page: "balance-sheet",       icon: BarChart2,   color: "purple" },
-            { label: "Cash Flow",        page: "cash-flow",           icon: DollarSign,  color: "teal"   },
-            { label: "Stock Summary",    page: "stock-summary",       icon: Package,     color: "orange" },
-            { label: "Ratio Analysis",   page: "ratio-analysis",      icon: Activity,    color: "indigo" },
-            { label: "Payroll",          page: "payroll",             icon: Users,       color: "blue"   },
-            { label: "Fixed Assets",     page: "fixed-assets",        icon: Target,      color: "amber"  },
-            { label: "VAT Compliance",   page: "statutory-compliance",icon: Shield,      color: "red"    },
-            { label: "Approvals",        page: "approval-workflow",   icon: CheckCircle, color: "yellow" },
-            { label: "Budget vs Actual", page: "budget-vs-actual",    icon: BarChart2,   color: "purple" },
-            { label: "Recurring",        page: "recurring-vouchers",  icon: RefreshCw,   color: "green"  },
-          ].map(link => (
-            <button key={link.page}
-              onClick={() => {
-                // Trigger navigation via the store's setCurrentPage or dispatch a custom event
-                const event = new CustomEvent("navigate", { detail: link.page });
-                window.dispatchEvent(event);
-              }}
-              className={`flex flex-col items-center gap-2 p-3 bg-${link.color}-50 border border-${link.color}-100 rounded-xl hover:shadow-md hover:border-${link.color}-300 transition-all text-center`}>
-              <link.icon className={`w-5 h-5 text-${link.color}-600`}/>
-              <span className={`text-xs font-medium text-${link.color}-700`}>{link.label}</span>
-            </button>
-          ))}
+      {/* Section 14.2: Today's Activity Digest */}
+      <div className="bg-white border border-gray-200 rounded-lg px-5 py-2.5 flex items-center gap-6 text-[12px] flex-wrap">
+        <span className="text-gray-500">Today's Activity:</span>
+        <span className="text-gray-700">Vouchers Posted: <strong>{todaysVouchers.length}</strong></span>
+        <span className="text-gray-700">Invoices: <strong>{todaysInvoices.length}</strong></span>
+        <span className="text-gray-700">Receipts: <strong>{money(todaysReceipts.reduce((s: number, v: any) => s + (v.grandTotal || v.totalDebit || 0), 0))}</strong></span>
+        <span className="text-gray-700">Payments: <strong>{money(todaysPayments.reduce((s: number, v: any) => s + (v.grandTotal || v.totalDebit || 0), 0))}</strong></span>
+        <span className={netCashFlowToday >= 0 ? "text-green-700" : "text-red-600"}>
+          Net Cash Flow Today: <strong>{money(netCashFlowToday)}</strong>
+        </span>
+      </div>
+
+      {/* Section 2.3: KPI cards — Net Profit / MTD Profit / AR-AP / Cash&Bank */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Today's Net Profit</span>
+            {todayProfit.gross >= 0 ? <TrendingUp className="h-4 w-4 text-green-600" /> : <TrendingDown className="h-4 w-4 text-red-600" />}
+          </div>
+          <div className={`text-[24px] font-bold ${todayProfit.gross >= 0 ? "text-green-600" : "text-red-600"}`}>{money(todayProfit.gross)}</div>
+          <div className="text-[11px] text-gray-500 mt-1">Revenue: {money(todayProfit.revenue)} | COGS: {money(todayProfit.cogs)}</div>
         </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Month-to-Date Profit</span>
+            <TrendingUp className="h-4 w-4 text-[#1557b0]" />
+          </div>
+          <div className="text-[24px] font-bold text-gray-800">{money(mtdProfit.gross)}</div>
+          <div className="text-[11px] text-gray-500 mt-1">Revenue: {money(mtdProfit.revenue)} | COGS: {money(mtdProfit.cogs)}</div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Net AR/AP Position</span>
+            <Landmark className="h-4 w-4 text-[#1557b0]" />
+          </div>
+          <div className={`text-[24px] font-bold ${netArAp >= 0 ? "text-green-600" : "text-red-600"}`}>{money(netArAp)}</div>
+          <div className="text-[11px] text-gray-500 mt-1">Receivables: {money(receivables)} | Payables: {money(payables)}</div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Cash &amp; Bank Position</span>
+            <Wallet className="h-4 w-4 text-[#1557b0]" />
+          </div>
+          <div className="text-[24px] font-bold text-gray-800">{money(cashBankBalance)}</div>
+          <div className="text-[11px] text-gray-500 mt-1">Liquid assets available</div>
+        </div>
+      </div>
+
+      {/* Section 2.4: Balance Sheet Snapshot */}
+      <div className="bg-white border border-gray-200 rounded-lg p-5">
+        <h3 className="text-[13px] font-semibold text-gray-800 mb-4">Balance Sheet Summary as of Today</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Assets</div>
+            {[
+              ["Current Assets", balanceSheet.currentAssets],
+              ["Fixed Assets", balanceSheet.fixedAssets],
+            ].map(([label, val]: any) => (
+              <div key={label} className="flex justify-between py-1.5 border-b border-gray-100 text-[12px]">
+                <span className="text-gray-600">{label}</span>
+                <span className="font-medium text-gray-800">{money(val)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between py-2 text-[13px] font-bold text-gray-800">
+              <span>Total Assets</span>
+              <span>{money(balanceSheet.totalAssets)}</span>
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Liabilities &amp; Equity</div>
+            {[
+              ["Current Liabilities", balanceSheet.currentLiabilities],
+              ["Long-term Liabilities", balanceSheet.longTermLiabilities],
+              ["Equity / Capital", balanceSheet.equity],
+            ].map(([label, val]: any) => (
+              <div key={label} className="flex justify-between py-1.5 border-b border-gray-100 text-[12px]">
+                <span className="text-gray-600">{label}</span>
+                <span className="font-medium text-gray-800">{money(val)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between py-2 text-[13px] font-bold text-gray-800">
+              <span>Total Liabilities + Equity</span>
+              <span>{money(balanceSheet.totalLiabEquity)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2.5: P&L Summary (YTD) */}
+      <div className="bg-white border border-gray-200 rounded-lg p-5">
+        <h3 className="text-[13px] font-semibold text-gray-800 mb-4">Profit &amp; Loss Summary (Year to Date)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div>
+            <div className="text-[24px] font-bold text-gray-800">{money(ytdProfit.revenue)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Total Revenue (FY to date)</div>
+            <div className="text-[11px] text-gray-400 mt-0.5">This month: {money(mtdProfit.revenue)}</div>
+          </div>
+          <div>
+            <div className="text-[24px] font-bold text-gray-800">{money(ytdProfit.cogs)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Total Expenses (FY to date)</div>
+            <div className="text-[11px] text-gray-400 mt-0.5">This month: {money(mtdProfit.cogs)}</div>
+          </div>
+          <div>
+            <div className={`text-[24px] font-bold ${ytdProfit.gross >= 0 ? "text-green-600" : "text-red-600"}`}>{money(ytdProfit.gross)}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Net Profit (FY to date)</div>
+            <div className="text-[11px] text-gray-400 mt-0.5">This month: {money(mtdProfit.gross)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2.6: recharts monthly bar chart */}
+      <div className="bg-white border border-gray-200 rounded-lg p-5">
+        <h3 className="text-[13px] font-semibold text-gray-800 mb-3">Monthly Sales vs Expenses</h3>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6b7280" }} />
+            <YAxis tick={{ fontSize: 11, fill: "#6b7280" }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+            <Tooltip formatter={(v: number) => money(v)} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <Bar dataKey="Sales" fill="#1557b0" radius={[3, 3, 0, 0]} />
+            <Bar dataKey="Expenses" fill="#ef4444" radius={[3, 3, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Section 2.8: Aging (proportional bars) + Top Customers */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-5">
+          <h3 className="text-[13px] font-semibold text-gray-800 mb-4">Receivables Aging</h3>
+          <div className="space-y-3">
+            {agingBuckets.buckets.map((b) => (
+              <div key={b.label}>
+                <div className="flex justify-between text-[11px] text-gray-600 mb-1">
+                  <span>{b.label} days</span>
+                  <span className="font-medium">{money(b.amount)}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${(b.amount / agingBuckets.total) * 100}%`, background: b.color }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-5">
+          <h3 className="text-[13px] font-semibold text-gray-800 mb-4">Top Customers This Month</h3>
+          <table className="w-full text-[12px]">
+            <tbody>
+              {topCustomers.map(([name, total]) => (
+                <tr key={name} className="border-b border-gray-100 last:border-0">
+                  <td className="py-2 text-gray-700">{name}</td>
+                  <td className="py-2 text-right font-medium text-gray-800">{money(total)}</td>
+                </tr>
+              ))}
+              {topCustomers.length === 0 && (
+                <tr><td className="py-4 text-center text-gray-400" colSpan={2}>No sales recorded this month.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Section 2.10: Expense breakdown, collapsible */}
+      <div className="bg-white border border-gray-200 rounded-lg">
+        <button
+          onClick={() => setExpenseOpen((v) => !v)}
+          className="w-full flex items-center justify-between px-5 py-3 text-[13px] font-semibold text-gray-800"
+        >
+          Financial Insights: Expense Breakdown This Month
+          {expenseOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+        </button>
+        {expenseOpen && (
+          <div className="px-5 pb-5 space-y-2">
+            {expenseBreakdown.map(([label, amount]) => (
+              <div key={label} className="flex items-center gap-3">
+                <span className="text-[11px] text-gray-600 w-40 truncate">{label}</span>
+                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#1557b0] rounded-full"
+                    style={{ width: `${Math.min(100, (amount / (expenseBreakdown[0]?.[1] || 1)) * 100)}%` }}
+                  />
+                </div>
+                <span className="text-[11px] font-medium text-gray-700 w-24 text-right">{money(amount)}</span>
+              </div>
+            ))}
+            {expenseBreakdown.length === 0 && (
+              <p className="text-[12px] text-gray-400">No expense data available.</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default FinancialDashboard;

@@ -1,34 +1,34 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from "react";
+import { Inbox } from "lucide-react";
 
 interface EmptyStateProps {
   icon?: React.ComponentType<{ className?: string }>;
-  title: string;
+  title?: string;
   description?: string;
-  action?: { label: string; onClick: () => void };
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ icon: Icon, title, description, action }) => (
-  <div className="flex flex-col items-center py-16 text-center px-4">
-    {Icon && (
-      <div className="h-14 w-14 rounded-full bg-[#EBF5E2] flex items-center justify-center mb-4">
-        <Icon className="h-7 w-7 text-[#000000]" />
-      </div>
-    )}
-    <p className="text-[13px] font-bold text-[#000000] mb-1">{title}</p>
-    {description && <p className="text-[11px] text-[#000000] max-w-xs">{description}</p>}
-    {action && (
+const EmptyState: React.FC<EmptyStateProps> = ({
+  icon: Icon = Inbox,
+  title = "No records found",
+  description = "There is no data to display here yet.",
+  actionLabel,
+  onAction,
+}) => (
+  <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
+    <div className="h-14 w-14 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+      <Icon className="h-6 w-6 text-gray-400" />
+    </div>
+    <p className="text-[13px] font-medium text-gray-700">{title}</p>
+    <p className="text-[12px] text-gray-500 mt-1 max-w-xs">{description}</p>
+    {actionLabel && onAction && (
       <button
         type="button"
-        onClick={action.onClick}
-        className="mt-4 h-8 px-4 text-[12px] font-semibold text-[#000000] rounded-md transition-colors"
-        style={{ background: "#3D6B25" }}
+        onClick={onAction}
+        className="mt-4 h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
       >
-        {action.label}
+        {actionLabel}
       </button>
     )}
   </div>

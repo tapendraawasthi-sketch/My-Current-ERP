@@ -259,17 +259,18 @@ const App: React.FC = () => {
   return (
     <>
       <Toaster
-        position="bottom-right"
+        position="top-right"
         toastOptions={{
           style: {
-            background: "#D4EABD",
-            color: "#000000",
-            border: "1px solid #000000",
+            background: "#ffffff",
+            color: "#1f2937",
+            border: "1px solid #e5e7eb",
             fontSize: "12px",
-            borderRadius: "4px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
           },
           success: {
-            iconTheme: { primary: "#2e7d32", secondary: "#ffffff" },
+            iconTheme: { primary: "#1557b0", secondary: "#ffffff" },
           },
           error: {
             iconTheme: { primary: "#dc2626", secondary: "#ffffff" },

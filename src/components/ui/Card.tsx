@@ -1,63 +1,48 @@
 import React from "react";
 
-interface CardProps {
-  children: React.ReactNode;
+export interface CardProps {
   title?: string;
   subtitle?: string;
   action?: React.ReactNode;
+  actions?: React.ReactNode;
   border?: boolean;
   padding?: "none" | "sm" | "md" | "lg";
   className?: string;
+  children: React.ReactNode;
 }
 
-const PADDING: Record<string, string> = {
-  none: "",
-  sm: "p-2",
+const PADDING_MAP: Record<string, string> = {
+  none: "p-0",
+  sm: "p-3",
   md: "p-4",
   lg: "p-6",
 };
 
 const Card: React.FC<CardProps> = ({
-  children,
   title,
   subtitle,
   action,
-  border,
+  actions,
+  border = true,
   padding = "md",
   className = "",
+  children,
 }) => {
+  const actionNode = action || actions;
   return (
     <div
-      style={{
-        background: "#EBF5E2",
-        border: border !== false ? "1px solid #000000" : "none",
-        borderRadius: 4,
-        overflow: "hidden",
-        color: "#000000",
-      }}
-      className={className}
+      className={`bg-white rounded-lg ${border ? "border border-gray-200" : ""} ${className}`}
     >
-      {(title || subtitle || action) && (
-        <div
-          style={{
-            padding: "10px 16px",
-            background: "#D4EABD",
-            borderBottom: "1px solid #000000",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+      {(title || subtitle || actionNode) && (
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-[#f9fafb] rounded-t-lg">
           <div>
-            {title && (
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{title}</span>
-            )}
-            {subtitle && <p style={{ fontSize: 11, color: "#000000", marginTop: 2 }}>{subtitle}</p>}
+            {title && <h3 className="text-[13px] font-semibold text-gray-800">{title}</h3>}
+            {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
           </div>
-          {action && <div>{action}</div>}
+          {actionNode && <div className="flex items-center gap-2">{actionNode}</div>}
         </div>
       )}
-      <div className={PADDING[padding]}>{children}</div>
+      <div className={PADDING_MAP[padding]}>{children}</div>
     </div>
   );
 };
