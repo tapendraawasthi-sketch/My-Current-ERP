@@ -31,9 +31,14 @@ import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
 import { computeNextDueDate } from "../lib/recurringUtils";
+import { enqueueSyncRecord } from "../lib/syncEngine";
 
 export const useStore = create<AppState>()((...a) => {
   const [set, get, api] = a;
+  const accountSlice = createAccountSlice(set, get, api);
+  const inventorySlice = createInventorySlice(set, get, api);
+  const voucherSlice = createVoucherSlice(set, get, api);
+  const settingsSlice = createSettingsSlice(set, get, api);
   return {
     ...createInventorySlice(set, get, api),
     isDbReady: false,
@@ -929,10 +934,10 @@ export const useStore = create<AppState>()((...a) => {
       set((state) => ({ physicalStocks: [entry, ...state.physicalStocks] }));
     },
 
-    ...createAccountSlice(...a),
-    ...createInventorySlice(...a),
-    ...createVoucherSlice(...a),
-    ...createSettingsSlice(...a),
+    ...accountSlice,
+    ...inventorySlice,
+    ...voucherSlice,
+    ...settingsSlice,
     // ─── Fixed Asset Actions ──────────────────────────────────────────────────────
     addFixedAsset: async (asset: any) => {
       try {
@@ -1559,6 +1564,104 @@ export const useStore = create<AppState>()((...a) => {
       ]);
       const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
       set({ recurringTemplates, recurringPostings });
+    },
+
+    // ─── Sync outbox wrappers (offline-first) ─────────────────────────────────
+    addAccount: async (account) => {
+      const result = await accountSlice.addAccount(account);
+      await enqueueSyncRecord({
+        entityType: "account",
+        entityId: String(result?.id ?? ""),
+        operation: "create",
+        payload: result as Record<string, unknown>,
+      });
+      return result;
+    },
+    updateAccount: async (id, updates) => {
+      await accountSlice.updateAccount(id, updates);
+      await enqueueSyncRecord({
+        entityType: "account",
+        entityId: id,
+        operation: "update",
+        payload: { id, ...updates },
+      });
+    },
+    addParty: async (party) => {
+      const result = await accountSlice.addParty(party);
+      await enqueueSyncRecord({
+        entityType: "party",
+        entityId: String(result?.id ?? ""),
+        operation: "create",
+        payload: result as Record<string, unknown>,
+      });
+      return result;
+    },
+    updateParty: async (id, updates) => {
+      await accountSlice.updateParty(id, updates);
+      await enqueueSyncRecord({
+        entityType: "party",
+        entityId: id,
+        operation: "update",
+        payload: { id, ...updates },
+      });
+    },
+    addItem: async (item) => {
+      const result = await inventorySlice.addItem(item);
+      await enqueueSyncRecord({
+        entityType: "item",
+        entityId: String(result?.id ?? ""),
+        operation: "create",
+        payload: result as Record<string, unknown>,
+      });
+      return result;
+    },
+    updateItem: async (item) => {
+      const result = await inventorySlice.updateItem(item);
+      await enqueueSyncRecord({
+        entityType: "item",
+        entityId: String(item?.id ?? ""),
+        operation: "update",
+        payload: item as Record<string, unknown>,
+      });
+      return result;
+    },
+    addVoucher: async (voucher) => {
+      const result = await voucherSlice.addVoucher(voucher);
+      await enqueueSyncRecord({
+        entityType: "voucher",
+        entityId: String(result?.id ?? ""),
+        operation: "create",
+        payload: result as Record<string, unknown>,
+      });
+      return result;
+    },
+    updateVoucher: async (id, updates) => {
+      await voucherSlice.updateVoucher(id, updates);
+      await enqueueSyncRecord({
+        entityType: "voucher",
+        entityId: id,
+        operation: "update",
+        payload: { id, ...updates },
+      });
+    },
+    addInvoice: async (invoice) => {
+      const result = await voucherSlice.addInvoice(invoice);
+      await enqueueSyncRecord({
+        entityType: "invoice",
+        entityId: String(result?.id ?? ""),
+        operation: "create",
+        payload: result as Record<string, unknown>,
+      });
+      return result;
+    },
+    updateInvoice: async (id, updates) => {
+      await voucherSlice.updateInvoice(id, updates);
+      await enqueueSyncRecord({
+        entityType: "invoice",
+        entityId: id,
+        operation: "update",
+        payload: { id, ...updates },
+      });
     },
 
   };

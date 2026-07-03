@@ -11,6 +11,7 @@ import React, {
   useMemo,
 } from "react";
 import { useStore } from "../../store/useStore";
+import SyncStatusIndicator from "../SyncStatusIndicator";
 import {
   Building2,
   Database,
@@ -395,6 +396,8 @@ const TopMenuBar: React.FC = () => {
 
       {/* Right side status bar */}
       <div className="ml-auto flex items-center gap-2 px-3 shrink-0 border-l border-[#2d3748] h-full">
+        <SyncStatusIndicator />
+
         {/* Online indicator */}
         <div
           className={`flex items-center gap-1 text-[10px] ${isOnline ? "text-green-400" : "text-red-400"}`}

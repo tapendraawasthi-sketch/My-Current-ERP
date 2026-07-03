@@ -1078,6 +1078,20 @@ export interface DBAuditLog {
   [key: string]: any;
 }
 
+// ─── Sync outbox (offline-first) ──────────────────────────────────────────────
+export interface DBSyncOutboxRecord {
+  id: string;
+  entityType: string;
+  entityId: string;
+  operation: "create" | "update";
+  payload: Record<string, unknown>;
+  createdAt: string;
+  syncedAt: string | null;
+  syncAttempts: number;
+  lastError?: string;
+  status?: "pending" | "sync_failed";
+}
+
 // ─── Database Class ───────────────────────────────────────────────────────────
 
 // SCHEMA_VERSION retired — version blocks are now explicit in the constructor
@@ -1186,6 +1200,7 @@ export class SutraERPDatabase extends Dexie {
   approvalActions!: Table<DBApprovalAction>;
   recurringTemplates!: Table<DBRecurringTemplate>;
   recurringPostings!: Table<DBRecurringPosting>;
+  syncOutbox!: Table<DBSyncOutboxRecord>;
 
   constructor() {
     super("SutraERPDatabase");
@@ -1338,6 +1353,11 @@ export class SutraERPDatabase extends Dexie {
       voucherTypeMasters: "++id, name, parentId, type",
       voucherSeriesConfig: "++id, voucherType, seriesName",
       voucherAuditLogs:   "++id, voucherId, action, createdAt",
+    });
+
+    // Version 22 — offline-first sync outbox
+    this.version(22).stores({
+      syncOutbox: "id, entityType, entityId, operation, syncedAt, syncAttempts, createdAt, status",
     });
   }
 }

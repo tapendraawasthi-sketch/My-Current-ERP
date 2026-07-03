@@ -11,6 +11,8 @@ import { useIsMobile } from "../hooks/use-mobile";
 import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 import FalconProvider from "./falcon/FalconProvider";
+import SyncStatusIndicator from "./SyncStatusIndicator";
+import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -75,6 +77,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("sutra_sidebar_collapsed", String(collapsed));
   }, [collapsed]);
+
+  useEffect(() => {
+    if (isAuthenticated && isDbReady) {
+      startSyncLoop();
+      return () => stopSyncLoop();
+    }
+    return undefined;
+  }, [isAuthenticated, isDbReady]);
 
   const handleSidebarShortcut = (key: string) => {
     // Guard 1: Don't navigate if user is typing
