@@ -125,7 +125,7 @@ const App: React.FC = () => {
     if (authStage === "checking") {
       const timer = setTimeout(() => {
         console.error("App.tsx safety net: stuck in checking for 10s, forcing gateway");
-        useStore.setState({ isInitializing: false, authStage: "gateway" });
+        useStore.setState((state) => ({ ...state, isInitializing: false, authStage: "gateway" as AuthStage }));
       }, 10000);
       return () => clearTimeout(timer);
     }

@@ -64,6 +64,15 @@
     <!-- React mounts here -->
     <div id="root"></div>
 
+    <script>
+      // Guard: if this HTML is served without a Vite build, show an error instead of hanging
+      if (document.currentScript && document.currentScript.src.includes('/src/main.tsx')) {
+        // We're running from source without a build — show a clear error
+        document.getElementById('root-loading').innerHTML =
+          '<div style="color:#dc2626;font-family:sans-serif;padding:24px;font-size:13px">' +
+          '⚠️ App served without build. Run <code>npm run build</code> first.</div>';
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
 
     <script>

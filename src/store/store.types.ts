@@ -655,7 +655,7 @@ export interface AppState extends MultiGodownStoreSlice {
   isDbReady: boolean;
   auditLogs?: any[];
   loadAuditLogs: () => Promise<void>;
-  isInitializing?: boolean;
+  isInitializing: boolean;
   // Auth Stage Machine
   authStage: AuthStage;
   selectedCompanyId: string | null;
