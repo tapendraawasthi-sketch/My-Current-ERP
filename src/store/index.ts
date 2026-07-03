@@ -26,7 +26,7 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, resetDB, generateId, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus } from "../lib/db";
+import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus } from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -209,7 +209,10 @@ export const useStore = create<AppState>()((...a) => {
 
         const initPromise = (async () => {
           startCbmsQueueWorker();
-          const db = getDB();
+          // openDB() handles blocked/timeout: if another tab is blocking the
+          // upgrade it will force-delete + recreate the DB, preventing the
+          // forever-loading spinner that was caused by an IndexedDB version hang.
+          const db = await openDB();
           
           // ── Seed default data if tables are empty ──────────────────────────────
           const accountCount = await db.accounts.count();

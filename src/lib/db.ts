@@ -1179,6 +1179,21 @@ export class SutraERPDatabase extends Dexie {
   constructor() {
     super("SutraERPDatabase");
 
+    // ── Handle another tab blocking a DB version upgrade ──────────────────
+    // Without this, the DB open hangs forever when another tab holds an older
+    // version open and refuses to close (the classic "Loading…" forever bug).
+    this.on("versionchange", () => {
+      console.warn("[SutraERP] DB version change detected — closing this connection so the upgrade can proceed.");
+      this.close();
+      // Reload so the new code + DB version takes effect cleanly.
+      window.location.reload();
+    });
+
+    this.on("blocked", () => {
+      console.warn("[SutraERP] DB upgrade blocked by another tab — reloading.");
+      window.location.reload();
+    });
+
     // Version 18 — original schema (must stay for Dexie migration chain)
     this.version(18).stores({
       accounts: "id, code, name, type, level, parentId, isGroup, isActive, createdAt",
@@ -1298,11 +1313,43 @@ export function getDB(): SutraERPDatabase {
 
 export async function resetDB(): Promise<SutraERPDatabase> {
   if (_db) {
-    try { await _db.delete(); } catch (_) {}
+    try { _db.close(); } catch (_) {}
     _db = null;
   }
   _db = new SutraERPDatabase();
   return _db;
+}
+
+/**
+ * Opens the DB and ensures it is actually reachable before returning.
+ * If the DB is blocked (another tab holds an older version), this will
+ * wait up to 8 seconds then force-delete the old DB and create a fresh one.
+ */
+export async function openDB(): Promise<SutraERPDatabase> {
+  const db = getDB();
+  try {
+    // Dexie opens lazily on first query — prod a simple read to trigger open.
+    await Promise.race([
+      db.open(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("DB_OPEN_TIMEOUT")), 8000)
+      ),
+    ]);
+  } catch (err: any) {
+    if (err?.message === "DB_OPEN_TIMEOUT" || err?.name === "VersionError") {
+      console.error("[SutraERP] DB open timed out or version error — deleting and recreating DB.", err);
+      try {
+        if (_db) { _db.close(); }
+        await Dexie.delete("SutraERPDatabase");
+      } catch (_) { /* best effort */ }
+      _db = null;
+      _db = new SutraERPDatabase();
+      await _db.open();
+    } else {
+      throw err;
+    }
+  }
+  return _db!;
 }
 
 // Named alias used by some pages
