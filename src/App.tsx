@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useStore } from "./store/useStore";
 import { Toaster } from "react-hot-toast";
+import { F12Provider } from "./hooks/useF12Config";
 import Layout from "./components/Layout";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import Warehouses from "./pages/Warehouses";
@@ -298,13 +299,15 @@ const App: React.FC = () => {
           },
         }}
       />
-      <Layout>
-        <div className="flex flex-col h-full">
-          <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
-            {renderPage()}
-          </main>
-        </div>
-      </Layout>
+      <F12Provider>
+        <Layout>
+          <div className="flex flex-col h-full">
+            <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
+              {renderPage()}
+            </main>
+          </div>
+        </Layout>
+      </F12Provider>
     </>
   );
 };
