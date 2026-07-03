@@ -30,6 +30,8 @@ export interface ReportShellProps {
   onRefresh?: (() => void) | null;
   // Extra custom actions
   extraActions?: ReportShellAction[];
+  /** Optional header actions rendered beside title/subtitle (AGENTS.md page header pattern) */
+  actions?: React.ReactNode;
   // Content
   children: React.ReactNode;
   // Variant tabs (e.g., Alphabetical / Groupwise in Trial Balance)
@@ -100,6 +102,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
   onOptions,
   onRefresh,
   extraActions,
+  actions,
   children,
   tabs,
   activeTab,
@@ -163,6 +166,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
 
         {/* Right: action buttons cluster */}
         <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+          {actions}
           {/* Refresh */}
           {onRefresh && (
             <ToolbarBtn

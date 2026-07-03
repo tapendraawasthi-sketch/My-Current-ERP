@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Dexie, { Table } from "dexie";
+import { generateSerialNumber } from "./accounting";
 
 export function generateId(): string {
   return crypto.randomUUID();
@@ -1162,7 +1163,7 @@ export class SutraERPDatabase extends Dexie {
   cheques!: Table<any>;
   depositSlips!: Table<any>;
   pdCheques!: Table<any>;
-  pdcRegister!: Table<any>;
+  pdcRegister!: Table<DBPDCEntry>;
   ePaymentBatches!: Table<any>;
   paymentAdvices!: Table<any>;
   branches!: Table<any>;
@@ -1398,8 +1399,10 @@ export async function openDB() {
   return db;
 }
 
-// Named alias used by some pages
-export const db = getDB();
+// Named alias used by some pages — includes accounting helpers for legacy call sites
+export { generateSerialNumber };
+
+export const db = Object.assign(getDB(), { generateSerialNumber });
 
 export default getDB;
 

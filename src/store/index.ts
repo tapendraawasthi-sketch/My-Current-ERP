@@ -26,7 +26,7 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus, DBWarehouse, DBStockTransferVoucher } from "../lib/db";
+import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus, DBWarehouse, DBStockTransferVoucher, DBSalaryStructure, DBPayrollRun, DBPayrollEntry } from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -110,9 +110,9 @@ export const useStore = create<AppState>()((...a) => {
     customFieldDefs: [],
     currencies: [],
     employees: [] as any[],
-    salaryStructures: [] as any[],
-    payrollRuns: [] as any[],
-    payrollEntries: [] as any[],
+    salaryStructures: [] as DBSalaryStructure[],
+    payrollRuns: [] as DBPayrollRun[],
+    payrollEntries: [] as DBPayrollEntry[],
     tdsChallans: [],
     stockCategories: [],
     voucherTypeMasters: [],

@@ -156,6 +156,9 @@ export default function CompanySettings() {
     enable_nepali_date: true,
     show_both_dates: true,
     financial_year_start_month: 4,
+    bank_name: "",
+    bank_account: "",
+    bank_branch: "",
     logo_url: "",
     ward_number: "",
     vat_registration_date: "",
@@ -640,6 +643,53 @@ export default function CompanySettings() {
                           handleChange("decimal_places", parseInt(e.target.value) || 0)
                         }
                         className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 1b - Bank Details (for invoice printing) */}
+                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
+                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                      Bank Details
+                    </h3>
+                  </div>
+                  <div className="p-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                        Bank Name
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.bank_name}
+                        onChange={(e) => handleChange("bank_name", e.target.value)}
+                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        placeholder="e.g. Nepal Bank Ltd."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                        Bank Branch
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.bank_branch}
+                        onChange={(e) => handleChange("bank_branch", e.target.value)}
+                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        placeholder="e.g. Kathmandu Main"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                        Bank Account Number
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.bank_account}
+                        onChange={(e) => handleChange("bank_account", e.target.value)}
+                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        placeholder="Account number"
                       />
                     </div>
                   </div>
