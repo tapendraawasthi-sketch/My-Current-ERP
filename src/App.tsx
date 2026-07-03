@@ -120,6 +120,17 @@ const App: React.FC = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [setCurrentPage]);
 
+  // Hard safety net: If we are stuck on checking for 10 seconds, force gateway
+  useEffect(() => {
+    if (authStage === "checking") {
+      const timer = setTimeout(() => {
+        console.error("App.tsx safety net: stuck in checking for 10s, forcing gateway");
+        useStore.setState({ isInitializing: false, authStage: "gateway" });
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [authStage]);
+
   if (authStage === "checking") {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>

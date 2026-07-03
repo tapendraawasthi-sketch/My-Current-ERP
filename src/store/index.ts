@@ -204,7 +204,7 @@ export const useStore = create<AppState>()((...a) => {
 
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("INDEXEDDB_HANG: Initialization took longer than 15 seconds. Please clear your browser cache or close other tabs.")), 15000);
+          setTimeout(() => reject(new Error("SUTRA_INIT_TIMEOUT")), 8000);
         });
 
         const initPromise = (async () => {
@@ -281,7 +281,16 @@ export const useStore = create<AppState>()((...a) => {
             }
           }
 
-          await migrateWorkflowFields();
+          // Only migrate if there are actual vouchers — bulkPut on large datasets
+          // was eating into the init timeout on every startup.
+          try {
+            const voucherCountForMigration = await db.vouchers.count();
+            if (voucherCountForMigration > 0) {
+              await migrateWorkflowFields();
+            }
+          } catch (migrateErr) {
+            console.warn("[initializeApp] workflow migration failed (non-fatal):", migrateErr);
+          }
 
           // ── Stage gate: check if any company exists ────────────────────────────
           const companyCount = await db.companySettings.count();
@@ -370,11 +379,7 @@ export const useStore = create<AppState>()((...a) => {
         }
       } catch (err: any) {
         console.error("initializeApp failed:", err);
-        // If it's the timeout error we injected, throw it so the global error boundary shows it!
-        if (err && err.message && err.message.includes("INDEXEDDB_HANG")) {
-           setTimeout(() => { throw err; }, 0); 
-           return; 
-        }
+        // Always fall through to gateway so the user is never stuck on the spinner
         set({ isInitializing: false, isDbReady: true, authStage: "gateway" as AuthStage });
       }
     },
