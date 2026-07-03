@@ -1352,36 +1352,31 @@ export async function resetDB(): Promise<SutraERPDatabase> {
  * If the DB is blocked (another tab holds an older version), this will
  * wait up to 8 seconds then force-delete the old DB and create a fresh one.
  */
-export async function openDB(): Promise<SutraERPDatabase> {
+export async function openDB() {
   const db = getDB();
   try {
-    // Dexie opens lazily on first query — prod a simple read to trigger open.
     await Promise.race([
       db.open(),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("DB_OPEN_TIMEOUT")), 8000)
-      ),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("DB_OPEN_TIMEOUT")), 8000)),
     ]);
   } catch (err: any) {
     if (err?.message === "DB_OPEN_TIMEOUT" || err?.name === "VersionError") {
-      console.error("[SutraERP] DB open timed out or version error — deleting and recreating DB.", err);
+      console.error("[SutraERP] DB open failed — deleting and recreating.", err);
       try {
-        if (_db) { _db.close(); }
+        db.close();
         await Dexie.delete("SutraERPDatabase");
-      } catch (_) { /* best effort */ }
-      _db = null;
-      _db = new SutraERPDatabase();
+      } catch {}
+      // Reset singleton
+      const newDb = await resetDB();
       await Promise.race([
-        _db.open(),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("DB_RECOVERY_TIMEOUT")), 5000)
-        ),
+        newDb.open(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("DB_RECOVERY_TIMEOUT")), 5000)),
       ]);
-    } else {
-      throw err;
+      return newDb;
     }
+    throw err;
   }
-  return _db!;
+  return db;
 }
 
 // Named alias used by some pages

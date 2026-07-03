@@ -5,12 +5,12 @@ import Breadcrumb from "./Breadcrumb";
 import { GlobalSearch } from "./GlobalSearch";
 import { Bell, User, LogOut, Settings, HelpCircle, Search, Moon, Sun } from "lucide-react";
 import toast from "react-hot-toast";
-import { useTheme } from "../context/ThemeContext";
+
 
 const Header: React.FC = () => {
   const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } =
     useStore();
-  const { theme, toggleTheme } = useTheme();
+
   const [dateStrBS, setDateStrBS] = useState("");
   const [dateStrAD, setDateStrAD] = useState("");
   const [alertsOpen, setAlertsOpen] = useState(false);

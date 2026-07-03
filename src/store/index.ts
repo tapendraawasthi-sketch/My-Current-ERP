@@ -378,9 +378,8 @@ export const useStore = create<AppState>()((...a) => {
           });
         }
       } catch (err: any) {
-        console.error("initializeApp failed:", err);
-        // Always fall through to gateway so the user is never stuck on the spinner
-        set({ isInitializing: false, isDbReady: true, authStage: "gateway" as AuthStage });
+        console.error("[Sutra ERP] initializeApp failed:", err);
+        set({ authStage: "no-company", isInitializing: false, isDbReady: true });
       }
     },
 

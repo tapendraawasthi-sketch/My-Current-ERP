@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useEffect, useRef } from "react";
-import { useStore } from "./store";
+import { useStore } from "./store/useStore";
 import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
 import ChartOfAccounts from "./components/ChartOfAccounts";
@@ -125,7 +125,7 @@ const App: React.FC = () => {
     if (authStage === "checking") {
       const timer = setTimeout(() => {
         console.error("App.tsx safety net: stuck in checking for 10s, forcing gateway");
-        useStore.setState((state) => ({ ...state, isInitializing: false, authStage: "gateway" as AuthStage }));
+        useStore.setState((state: any) => ({ ...state, isInitializing: false, authStage: "gateway" }));
       }, 10000);
       return () => clearTimeout(timer);
     }
