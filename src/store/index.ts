@@ -204,7 +204,7 @@ export const useStore = create<AppState>()((...a) => {
 
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("SUTRA_INIT_TIMEOUT")), 8000);
+          setTimeout(() => reject(new Error("SUTRA_INIT_TIMEOUT")), 15000);
         });
 
         const initPromise = (async () => {

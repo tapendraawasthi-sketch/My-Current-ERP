@@ -1183,15 +1183,18 @@ export class SutraERPDatabase extends Dexie {
     // Without this, the DB open hangs forever when another tab holds an older
     // version open and refuses to close (the classic "Loading…" forever bug).
     this.on("versionchange", () => {
-      console.warn("[SutraERP] DB version change detected — closing this connection so the upgrade can proceed.");
+      console.warn("[SutraERP] DB version change detected — closing connection.");
       this.close();
-      // Reload so the new code + DB version takes effect cleanly.
-      window.location.reload();
+      // DO NOT call window.location.reload() here. Combined with the
+      // 'blocked' event it creates an infinite reload loop. Closing
+      // the connection is enough to let the upgrading tab proceed.
     });
 
     this.on("blocked", () => {
-      console.warn("[SutraERP] DB upgrade blocked by another tab — reloading.");
-      window.location.reload();
+      console.warn("[SutraERP] DB upgrade blocked — letting openDB() timeout handle recovery.");
+      // DO NOT reload here. Reloading when blocked just reloads into
+      // the same blocked state, causing an infinite loop.
+      // openDB()'s 8-second DB_OPEN_TIMEOUT will delete and recreate the DB.
     });
 
     // Version 18 — original schema (must stay for Dexie migration chain)
@@ -1296,6 +1299,30 @@ export class SutraERPDatabase extends Dexie {
       approvalActions:  "++id, requestId, level, actionAt",
       recurringTemplates: "++id, name, frequency, isActive, nextDueDate",
       recurringPostings:  "++id, templateId, postedDate, voucherId",
+      // ── Tables declared on the class but previously missing from schema ──
+      branches:         "++id, name, isActive, createdAt",
+      cbmsQueue:        "++id, invoiceId, status, createdAt",
+      chequeBounceLogs: "++id, chequeId, date, createdAt",
+      followUpNotes:    "++id, partyId, date, createdAt",
+      jobWorkOrders:    "++id, orderNo, date, status, createdAt",
+      priceFloorPolicies: "++id, itemId, isActive, createdAt",
+      reportSchedules:  "++id, name, isActive, createdAt",
+      salespersons:     "++id, name, isActive, createdAt",
+      voucherAuditLogs: "++id, voucherId, action, createdAt",
+    });
+
+    // Version 21 — adds 9 tables that were declared on the class but
+    // were never included in any schema, causing _loadAllData to crash.
+    this.version(21).stores({
+      branches:           "++id, name, isActive, createdAt",
+      cbmsQueue:          "++id, invoiceId, status, createdAt",
+      chequeBounceLogs:   "++id, chequeId, date, createdAt",
+      followUpNotes:      "++id, partyId, date, createdAt",
+      jobWorkOrders:      "++id, orderNo, date, status, createdAt",
+      priceFloorPolicies: "++id, itemId, isActive, createdAt",
+      reportSchedules:    "++id, name, isActive, createdAt",
+      salespersons:       "++id, name, isActive, createdAt",
+      voucherAuditLogs:   "++id, voucherId, action, createdAt",
     });
   }
 }
@@ -1344,7 +1371,12 @@ export async function openDB(): Promise<SutraERPDatabase> {
       } catch (_) { /* best effort */ }
       _db = null;
       _db = new SutraERPDatabase();
-      await _db.open();
+      await Promise.race([
+        _db.open(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("DB_RECOVERY_TIMEOUT")), 5000)
+        ),
+      ]);
     } else {
       throw err;
     }
