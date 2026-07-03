@@ -13,6 +13,10 @@ import type {
   PLGroupType,
 } from "./plTypes";
 import { GROUP_TYPE_KEYWORDS } from "./plTypes";
+import {
+  computeTotalClosingStockValue,
+  mapConfigMethodToValuation,
+} from "./stockValuation";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -267,33 +271,13 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
   // 5. Closing stock
   let closingStock = 0;
   if (options.updateClosingStock) {
-    // Auto from stock movements
     const stockMovements = await db.table("stockMovements").toArray().catch(() => []);
-    const inwardQty: Map<string, { qty: number; totalCost: number }> = new Map();
-    
-    for (const mov of stockMovements) {
-      if (mov.date > options.toDate) continue;
-      const item = inwardQty.get(mov.itemId) || { qty: 0, totalCost: 0 };
-      const qty = Number(mov.qty || 0);
-      const rate = Number(mov.rate || 0);
-      const movType = String(mov.type || "").toLowerCase();
-      
-      if (movType.includes("in") || movType.includes("purchase") || movType.includes("opening")) {
-        item.qty += qty;
-        item.totalCost += qty * rate;
-      } else if (movType.includes("out") || movType.includes("sale") || movType.includes("transfer-out")) {
-        item.qty -= qty;
-        item.totalCost -= qty * rate;
-      }
-      inwardQty.set(mov.itemId, item);
-    }
-    
-    // Use weighted average for closing stock value
-    for (const [, data] of inwardQty) {
-      if (data.qty > 0 && data.totalCost > 0) {
-        closingStock += data.totalCost;
-      }
-    }
+    const invConfig = await db
+      .table("inventoryConfig")
+      .get("global")
+      .catch(() => null);
+    const valuationMethod = mapConfigMethodToValuation(invConfig?.stockValuationMethod);
+    closingStock = computeTotalClosingStockValue(stockMovements, valuationMethod, options.toDate);
   }
 
   // Opening stock from previous period stock account

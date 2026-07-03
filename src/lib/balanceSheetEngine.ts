@@ -6,6 +6,10 @@ import type {
   AccountLedgerReport, LedgerEntry, BSFormat, BSFormatRow,
 } from "./balanceSheetTypes";
 import { STANDARD_GROUP_SIDES, INCOME_EXPENSE_GROUPS } from "./balanceSheetTypes";
+import {
+  computeTotalClosingStockValue,
+  mapConfigMethodToValuation,
+} from "./stockValuation";
 import * as XLSX from "xlsx";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -155,19 +159,12 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
 
   if (options.stockUpdation === "automatic" || !options.manualClosingStock) {
     const stockMovements = await db.table("stockMovements").toArray().catch(() => []);
-    let autoStock = 0;
-    for (const mov of stockMovements) {
-      if (mov.date > options.toDate) continue;
-      const qty = Number(mov.qty || 0);
-      const rate = Number(mov.rate || mov.costRate || 0);
-      const t = String(mov.type || "").toLowerCase();
-      if (t.includes("in") || t.includes("purchase") || t.includes("opening")) {
-        autoStock += qty * rate;
-      } else if (t.includes("out") || t.includes("sale") || t.includes("transfer-out")) {
-        autoStock -= qty * rate;
-      }
-    }
-    closingStock = Math.max(0, autoStock);
+    const invConfig = await db
+      .table("inventoryConfig")
+      .get("global")
+      .catch(() => null);
+    const valuationMethod = mapConfigMethodToValuation(invConfig?.stockValuationMethod);
+    closingStock = computeTotalClosingStockValue(stockMovements, valuationMethod, options.toDate);
     closingStockSource = "automatic";
   } else if (options.stockUpdation === "gp-ratio") {
     // GP ratio method: Closing Stock = Opening Stock + Purchases - COGS (estimated)

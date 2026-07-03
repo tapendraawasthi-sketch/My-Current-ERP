@@ -767,6 +767,7 @@ export interface AppState extends MultiGodownStoreSlice {
   paymentAdvices: any[];
 
   addStockJournal: (entry: any) => Promise<void>;
+  postStockJournal: (id: string) => Promise<void>;
   addProduction: (entry: any) => Promise<void>;
   addUnassemble: (entry: any) => Promise<void>;
   addMaterialIssued: (entry: any) => Promise<void>;

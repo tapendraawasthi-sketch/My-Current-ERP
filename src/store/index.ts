@@ -905,8 +905,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addStockJournal: async (entry) => {
       const db = getDB();
-      await db.stockJournals.put(entry);
-      set((state) => ({ stockJournals: [entry, ...state.stockJournals] }));
+      const id = entry.id || `sj-${generateId()}`;
+      const record = { ...entry, id };
+      await db.stockJournals.put(record);
+      set((state) => ({ stockJournals: [record, ...state.stockJournals] }));
+      return record;
     },
     addProduction: async (entry) => {
       const db = getDB();

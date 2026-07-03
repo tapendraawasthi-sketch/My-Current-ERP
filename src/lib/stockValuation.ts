@@ -356,3 +356,38 @@ function consumeLayers(
 
   return { consumed: qty - remaining, costOfGoods };
 }
+
+export function mapConfigMethodToValuation(method?: string): ValuationMethod {
+  const m = (method || "fifo").toLowerCase();
+  if (m === "lifo") return "lifo";
+  if (m === "weighted_average" || m === "wa" || m === "average") return "weighted_average";
+  return "fifo";
+}
+
+export function movementsToStockRaw(movements: any[]): StockMovementRaw[] {
+  return (movements || []).map((m) => ({
+    id: m.id,
+    date: m.date,
+    type: m.type || m.movementType || "",
+    itemId: m.itemId,
+    itemName: m.itemName || "",
+    warehouseId: m.warehouseId,
+    warehouseName: m.warehouseName,
+    qty: Math.abs(Number(m.qty ?? m.quantity ?? 0)),
+    rate: Number(m.rate ?? m.costRate ?? 0),
+    amount: Number(m.amount ?? 0) || undefined,
+  }));
+}
+
+/**
+ * Total closing stock value as at a date using FIFO/LIFO/weighted average.
+ */
+export function computeTotalClosingStockValue(
+  movements: any[],
+  method: ValuationMethod = "fifo",
+  asAtDate?: string,
+): number {
+  const raw = movementsToStockRaw(movements).filter((m) => !asAtDate || m.date <= asAtDate);
+  const summaries = computeStockSummary(raw, method, undefined, asAtDate);
+  return Math.round(summaries.reduce((sum, row) => sum + row.closingAmount, 0) * 100) / 100;
+}

@@ -95,6 +95,17 @@ import GratuityCalculation from "./pages/GratuityCalculation";
 import PayHeadMaster from "./pages/PayHeadMaster";
 import VATClassificationMaster from "./pages/VATClassificationMaster";
 import MasterControlCentre from "./pages/MasterControlCentre";
+import UsersManagement from "./pages/UsersManagement";
+import CompanySettings from "./pages/CompanySettings";
+import BankReconciliation from "./pages/BankReconciliation";
+import EmployeeMaster from "./pages/EmployeeMaster";
+import BackupRestore from "./pages/BackupRestore";
+import DataExportImport from "./pages/DataExportImport";
+import SalesRegister from "./pages/SalesRegister";
+import PurchaseRegister from "./pages/PurchaseRegister";
+import CashBook from "./pages/CashBook";
+import BankBook from "./pages/BankBook";
+import PartyLedgerStatement from "./pages/PartyLedgerStatement";
 
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
@@ -268,7 +279,7 @@ const App: React.FC = () => {
       case "budget-vs-actual": return <BudgetVsActual />;
       case "ledger-report":
       case "ledger": return <GeneralLedger />;
-      case "party-statement": return <PartyStatement />;
+      case "party-statement": return <PartyLedgerStatement />;
       
       // Inventory Reports
       case "stock-summary": return <StockSummaryReport />;
@@ -301,6 +312,21 @@ const App: React.FC = () => {
       case "pay-heads": return <PayHeadMaster />;
       case "vat-classifications": return <VATClassificationMaster />;
       case "master-control-centre": return <MasterControlCentre />;
+      case "users":
+      case "users-management": return <UsersManagement />;
+      case "settings":
+      case "company-settings": return <CompanySettings />;
+      case "backup":
+      case "backup-restore": return <BackupRestore />;
+      case "data-import-export":
+      case "data-export-import": return <DataExportImport />;
+      case "bank-reconciliation": return <BankReconciliation />;
+      case "employees":
+      case "employee-master": return <EmployeeMaster />;
+      case "sales-register": return <SalesRegister />;
+      case "purchase-register": return <PurchaseRegister />;
+      case "cash-book": return <CashBook />;
+      case "bank-book": return <BankBook />;
 
       default:
         return <FinancialDashboard />;

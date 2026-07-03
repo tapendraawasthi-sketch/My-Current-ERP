@@ -165,4 +165,103 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     set((s) => ({ goodsReceiptNotes: [...s.goodsReceiptNotes, newGrn] }));
     return newGrn;
   },
+
+  postStockJournal: async (id: string) => {
+    const db = getDB();
+    const journal = await db.stockJournals.get(id);
+    if (!journal) throw new Error("Stock journal not found");
+    if (journal.status === "posted") throw new Error("Stock journal is already posted");
+
+    const { warehouses, inventoryConfig } = get() as any;
+    const allowNegative = inventoryConfig?.allowNegativeStock === true;
+    const newMovements: any[] = [];
+
+    for (const line of journal.lines || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+
+      const fromWh = warehouses.find((w: any) => w.id === line.fromWarehouseId);
+      const toWh = warehouses.find((w: any) => w.id === line.toWarehouseId);
+      const rate = Number(line.rate || 0);
+
+      if (!allowNegative && line.fromWarehouseId) {
+        const existing = await db.stockMovements
+          .where("itemId")
+          .equals(line.itemId)
+          .toArray()
+          .catch(() => []);
+        const onHand = existing
+          .filter((m: any) => m.warehouseId === line.fromWarehouseId && m.date <= journal.date)
+          .reduce((sum: number, m: any) => {
+            const t = String(m.type || "").toLowerCase();
+            const q = Number(m.qty || 0);
+            return isOutwardType(t) ? sum - Math.abs(q) : sum + Math.abs(q);
+          }, 0);
+        if (onHand < qty) {
+          throw new Error(`Insufficient stock for ${line.itemName || line.itemId} in ${fromWh?.name || "source warehouse"}`);
+        }
+      }
+
+      const outMov = {
+        id: `mov-sj-${id}-out-${line.itemId}-${line.fromWarehouseId}`,
+        date: journal.date,
+        dateNepali: journal.dateNepali,
+        type: "transfer-out",
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: line.fromWarehouseId,
+        warehouseName: fromWh?.name,
+        qty,
+        rate,
+        amount: qty * rate,
+        referenceId: id,
+        referenceNo: journal.journalNo,
+        referenceType: "stock-journal",
+        narration: journal.narration,
+      };
+
+      const inMov = {
+        id: `mov-sj-${id}-in-${line.itemId}-${line.toWarehouseId}`,
+        date: journal.date,
+        dateNepali: journal.dateNepali,
+        type: "transfer-in",
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: line.toWarehouseId,
+        warehouseName: toWh?.name,
+        qty,
+        rate,
+        amount: qty * rate,
+        referenceId: id,
+        referenceNo: journal.journalNo,
+        referenceType: "stock-journal",
+        narration: journal.narration,
+      };
+
+      await db.stockMovements.put(outMov);
+      await db.stockMovements.put(inMov);
+      newMovements.push(outMov, inMov);
+    }
+
+    await db.stockJournals.update(id, {
+      status: "posted",
+      postedAt: new Date().toISOString(),
+    });
+
+    set((s) => ({
+      stockJournals: s.stockJournals.map((j: any) =>
+        j.id === id ? { ...j, status: "posted", postedAt: new Date().toISOString() } : j,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
 });
+
+function isOutwardType(type: string): boolean {
+  return (
+    type.includes("sales") ||
+    type.includes("transfer-out") ||
+    type.includes("adjustment-out") ||
+    type === "out"
+  );
+}

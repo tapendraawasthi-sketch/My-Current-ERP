@@ -3,6 +3,11 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { Download, Package, AlertTriangle } from "lucide-react";
+import {
+  computeStockSummary,
+  mapConfigMethodToValuation,
+  movementsToStockRaw,
+} from "../lib/stockValuation";
 
 type ViewMode = "alphabetical" | "group_wise" | "critical_level";
 
@@ -25,36 +30,33 @@ interface StockRow {
 }
 
 export default function StockSummaryReport() {
-  const { items, stockMovements } = useStore();
+  const { items, stockMovements, inventoryConfig } = useStore() as any;
   const [viewMode, setViewMode] = useState<ViewMode>("alphabetical");
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
   const [showZeroBalance, setShowZeroBalance] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const computeStock = (itemId: string) => {
-    return (stockMovements || []).filter((m: any) => m.itemId === itemId && m.date <= asOnDate).reduce((s: number, m: any) => {
-      const qty = Number(m.quantity || m.qty || 0);
-      const t = String(m.type || m.movementType || "").toLowerCase();
-      return (t.includes("in") || t.includes("purchase") || t.includes("opening") || t.includes("received")) ? s + qty : s - qty;
-    }, 0);
-  };
+  const valuationMethod = mapConfigMethodToValuation(inventoryConfig?.stockValuationMethod);
 
-  const computeValue = (itemId: string) => {
-    return (stockMovements || []).filter((m: any) => m.itemId === itemId && m.date <= asOnDate).reduce((s: number, m: any) => {
-      const qty = Number(m.quantity || m.qty || 0);
-      const rate = Number(m.rate || m.costRate || 0);
-      const t = String(m.type || m.movementType || "").toLowerCase();
-      return (t.includes("in") || t.includes("purchase") || t.includes("opening") || t.includes("received")) ? s + qty * rate : s - qty * rate;
-    }, 0);
-  };
+  const stockSummaries = useMemo(() => {
+    const raw = movementsToStockRaw(stockMovements || []);
+    return computeStockSummary(raw, valuationMethod, undefined, asOnDate);
+  }, [stockMovements, valuationMethod, asOnDate]);
+
+  const summaryByItemId = useMemo(() => {
+    const map = new Map<string, (typeof stockSummaries)[number]>();
+    stockSummaries.forEach((s) => map.set(s.itemId, s));
+    return map;
+  }, [stockSummaries]);
 
   const stockData: StockRow[] = useMemo(() => {
     return (items || [])
       .filter((i: any) => i.isActive !== false)
       .map((item: any) => {
-        const qty = Math.max(0, computeStock(item.id));
-        const value = Math.max(0, computeValue(item.id));
-        const avgRate = qty > 0 ? value / qty : 0;
+        const summary = summaryByItemId.get(item.id);
+        const qty = Math.max(0, summary?.closingQty ?? 0);
+        const value = Math.max(0, summary?.closingAmount ?? 0);
+        const avgRate = summary?.closingRate ?? (qty > 0 ? value / qty : 0);
         const reorderLevel = Number(item.reorderLevel || item.minStockLevel || 0);
         const minStock = Number(item.minStock || 0);
         const maxStock = Number(item.maxStock || 0);
@@ -83,7 +85,7 @@ export default function StockSummaryReport() {
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.code.toLowerCase().includes(searchTerm.toLowerCase())
       );
-  }, [items, stockMovements, asOnDate, showZeroBalance, searchTerm]);
+  }, [items, summaryByItemId, showZeroBalance, searchTerm]);
 
   const criticalItems = useMemo(() =>
     stockData.filter(s => s.isBelowReorder || s.isBelowMin || s.isAboveMax),
@@ -116,7 +118,9 @@ export default function StockSummaryReport() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary Report</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Closing stock — Alphabetical / Group-wise / Critical Level view</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Closing stock — {valuationMethod.toUpperCase().replace("_", " ")} valuation
+          </p>
         </div>
         <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md flex items-center gap-1.5 hover:bg-gray-50">
           <Download className="h-3.5 w-3.5" /> Export
