@@ -853,6 +853,7 @@ export const useStore = create<AppState>()((...a) => {
           upgradeErr?.name === "UpgradeError" ||
           msg.toLowerCase().includes("primary key")
         ) {
+          try { await db.delete(); } catch {}
           db = await resetDB();
           await db.open();
         } else {

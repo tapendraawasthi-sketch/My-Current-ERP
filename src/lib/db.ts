@@ -1374,7 +1374,12 @@ export async function openDB() {
       new Promise((_, reject) => setTimeout(() => reject(new Error("DB_OPEN_TIMEOUT")), 8000)),
     ]);
   } catch (err: any) {
-    if (err?.message === "DB_OPEN_TIMEOUT" || err?.name === "VersionError") {
+    if (
+      err?.message === "DB_OPEN_TIMEOUT" ||
+      err?.name === "VersionError" ||
+      err?.name === "UpgradeError" ||
+      (err?.message || "").toLowerCase().includes("primary key")
+    ) {
       console.error("[SutraERP] DB open failed — deleting and recreating.", err);
       try {
         db.close();
