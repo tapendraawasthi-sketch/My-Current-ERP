@@ -26,6 +26,132 @@ export interface VATComputation {
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 export const VAT_RATE = 0.13;
 
+export type VatTaxability = "taxable" | "exempt" | "zero_rated" | "non_vat";
+
+export interface VatClassificationRef {
+  id: string;
+  name?: string;
+  taxability: VatTaxability;
+  vatRate: number;
+}
+
+export interface VatLineInput {
+  qty: number;
+  rate: number;
+  discountPercent?: number;
+  isTaxable?: boolean;
+  vatRate?: number;
+  vatClassificationId?: string;
+}
+
+export interface VatLineResult {
+  grossAmount: number;
+  discountAmount: number;
+  netAmount: number;
+  taxableAmount: number;
+  exemptAmount: number;
+  vatRate: number;
+  vatAmount: number;
+  totalAmount: number;
+  isTaxable: boolean;
+  taxability: VatTaxability;
+  vatClassificationId?: string;
+  vatLabel: string;
+  vatBadgeVariant: "success" | "warning" | "info" | "default";
+}
+
+export function resolveVatClassification(
+  input: Pick<VatLineInput, "isTaxable" | "vatRate" | "vatClassificationId">,
+  classifications: VatClassificationRef[] = [],
+): VatClassificationRef {
+  if (input.vatClassificationId) {
+    const found = classifications.find((c) => c.id === input.vatClassificationId);
+    if (found) return found;
+  }
+
+  if (input.isTaxable === false) {
+    return { id: "", name: "VAT Exempt", taxability: "exempt", vatRate: 0 };
+  }
+
+  return {
+    id: "",
+    name: "Taxable (13%)",
+    taxability: "taxable",
+    vatRate: input.vatRate ?? 13,
+  };
+}
+
+export function computeVatForLine(
+  input: VatLineInput,
+  classifications: VatClassificationRef[] = [],
+): VatLineResult {
+  const cls = resolveVatClassification(input, classifications);
+  const grossAmount = round2((input.qty || 0) * (input.rate || 0));
+  const discountAmount = round2(grossAmount * ((input.discountPercent || 0) / 100));
+  const netAmount = round2(grossAmount - discountAmount);
+
+  let taxableAmount = 0;
+  let exemptAmount = 0;
+  let vatRate = 0;
+  let vatAmount = 0;
+  let isTaxable = false;
+  let vatLabel = "";
+  let vatBadgeVariant: VatLineResult["vatBadgeVariant"] = "default";
+
+  switch (cls.taxability) {
+    case "taxable":
+      taxableAmount = netAmount;
+      vatRate = cls.vatRate ?? 13;
+      vatAmount = round2(netAmount * (vatRate / 100));
+      isTaxable = true;
+      vatLabel = `VAT ${vatRate}%`;
+      vatBadgeVariant = "success";
+      break;
+    case "zero_rated":
+      taxableAmount = netAmount;
+      vatRate = 0;
+      vatAmount = 0;
+      isTaxable = true;
+      vatLabel = "Zero Rated";
+      vatBadgeVariant = "info";
+      break;
+    case "exempt":
+      exemptAmount = netAmount;
+      vatRate = 0;
+      isTaxable = false;
+      vatLabel = "Exempt";
+      vatBadgeVariant = "warning";
+      break;
+    case "non_vat":
+      exemptAmount = netAmount;
+      vatRate = 0;
+      isTaxable = false;
+      vatLabel = "Non-VAT";
+      vatBadgeVariant = "default";
+      break;
+    default:
+      exemptAmount = netAmount;
+      vatLabel = "Non-VAT";
+      break;
+  }
+
+  return {
+    grossAmount,
+    discountAmount,
+    netAmount,
+    taxableAmount,
+    exemptAmount,
+    vatRate,
+    vatAmount,
+    totalAmount: round2(netAmount + vatAmount),
+    isTaxable,
+    taxability: cls.taxability,
+    vatClassificationId: cls.id || input.vatClassificationId,
+    vatLabel,
+    vatBadgeVariant,
+  };
+}
+
 export function computeVatExclusive(baseAmount: number) {
   const taxableAmount = round2(baseAmount);
   const vatAmount = round2(taxableAmount * VAT_RATE);

@@ -18,6 +18,7 @@ export default function TdsReport() {
     addTdsChallan,
     accounts,
     addVoucher,
+    setCurrentPage,
   } = useStore();
 
   const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.fiscalYearBS || "2081/2082");
@@ -183,6 +184,12 @@ export default function TdsReport() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage("tds-certificate")}
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 cursor-pointer"
+              >
+                <FileCheck className="h-3.5 w-3.5" /> TDS Certificate
+              </button>
               <button
                 onClick={handleExport}
                 className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"

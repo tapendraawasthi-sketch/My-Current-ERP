@@ -384,6 +384,9 @@ export interface Party {
   subjectToTds?: boolean;
   tdsType?: TdsType;
   tdsRate?: number;
+  defaultTdsNatureId?: string;
+  personType?: "individual" | "entity";
+  residency?: "resident" | "non-resident";
   isActive?: boolean;
   balance?: number;
   status?: string;
@@ -887,6 +890,7 @@ export interface Employee {
     healthInsurance?: number;
   };
   employmentType: "permanent" | "contract" | "daily";
+  bonusEligible?: boolean;
   status: "active" | "inactive";
 }
 export interface VoucherSeries {

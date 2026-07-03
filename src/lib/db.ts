@@ -36,6 +36,7 @@ export interface DBAccount {
   };
   creditLimit?: number;
   creditPeriod?: number;
+  defaultTdsNatureId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -67,6 +68,10 @@ export interface DBParty {
   accountId?: string;
   salesPersonId?: string;
   priceListId?: string;
+  personType?: "individual" | "entity";
+  residency?: "resident" | "non-resident";
+  defaultTdsNatureId?: string;
+  subjectToTds?: boolean;
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -102,6 +107,7 @@ export interface DBItem {
   maxStockLevel?: number;
   isTaxable?: boolean;
   vatRate?: number;
+  vatClassificationId?: string;
   hsnCode?: string;
   isActive: boolean;
   warehouseId?: string;
@@ -1020,6 +1026,7 @@ export interface DBEmployee {
   bankName?: string;
   pfNo?: string;
   citizenshipNo?: string;
+  bonusEligible?: boolean;
   isActive: boolean;
   notes?: string;
   createdAt?: string;

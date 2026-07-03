@@ -18,6 +18,13 @@ import { Badge } from "../components/ui";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import { computeVatForLine } from "../lib/taxUtils";
+import {
+  calculateNepalTds,
+  getApplicableNepalTdsRates,
+  getNepalTdsRate,
+  type NepalTdsCalculationResult,
+} from "../lib/tdsNepal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,6 +41,10 @@ interface PurchaseLine {
   netAmount: number;
   isTaxable: boolean;
   vatRate: number;
+  vatClassificationId?: string;
+  taxability?: string;
+  vatLabel?: string;
+  vatBadgeVariant?: "success" | "warning" | "info" | "default";
   vatAmount: number;
   totalAmount: number;
   warehouseId?: string;
@@ -42,16 +53,9 @@ interface PurchaseLine {
   costPrice?: number;
 }
 
-interface TdsResult {
-  applicable: boolean;
-  grossAmount: number;
-  tdsAmount: number;
-  netPayable: number;
-  rate: number;
+interface TdsResult extends NepalTdsCalculationResult {
   sectionCode?: string;
   description?: string;
-  reason?: string;
-  sectionId?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -90,17 +94,39 @@ function emptyLine(): PurchaseLine {
   };
 }
 
-function computeLine(line: PurchaseLine): PurchaseLine {
-  const gross = line.qty * line.rate;
-  const discAmt = gross * (line.discountPercent / 100);
-  const net = gross - discAmt;
-  const vat = line.isTaxable ? net * (line.vatRate / 100) : 0;
+function computeLine(
+  line: PurchaseLine,
+  vatClassifications: Array<{ id: string; name?: string; taxability: string; vatRate: number }>,
+): PurchaseLine {
+  const vat = computeVatForLine(
+    {
+      qty: line.qty,
+      rate: line.rate,
+      discountPercent: line.discountPercent,
+      isTaxable: line.isTaxable,
+      vatRate: line.vatRate,
+      vatClassificationId: line.vatClassificationId,
+    },
+    vatClassifications.map((c) => ({
+      id: c.id,
+      name: c.name,
+      taxability: c.taxability as "taxable" | "exempt" | "zero_rated" | "non_vat",
+      vatRate: c.vatRate ?? 0,
+    })),
+  );
+
   return {
     ...line,
-    discountAmount: parseFloat(discAmt.toFixed(2)),
-    netAmount: parseFloat(net.toFixed(2)),
-    vatAmount: parseFloat(vat.toFixed(2)),
-    totalAmount: parseFloat((net + vat).toFixed(2)),
+    discountAmount: vat.discountAmount,
+    netAmount: vat.netAmount,
+    isTaxable: vat.isTaxable,
+    vatRate: vat.vatRate,
+    vatAmount: vat.vatAmount,
+    totalAmount: vat.totalAmount,
+    taxability: vat.taxability,
+    vatLabel: vat.vatLabel,
+    vatBadgeVariant: vat.vatBadgeVariant,
+    vatClassificationId: vat.vatClassificationId || line.vatClassificationId,
   };
 }
 
@@ -120,45 +146,50 @@ function getStatusVariant(status: string): "success" | "warning" | "danger" | "i
   }
 }
 
-// ─── TDS Section options ──────────────────────────────────────────────────────
+// ─── TDS helpers ──────────────────────────────────────────────────────────────
 
-const TDS_SECTIONS = [
-  { code: "50(1)", description: "Payments for contracts / services", rate: 1.5 },
-  { code: "87(1)", description: "House rent payments", rate: 10 },
-  { code: "88(1)", description: "Consultancy / professional services", rate: 15 },
-  { code: "89(1)", description: "Commission payments", rate: 10 },
-  { code: "92(1)", description: "Dividends", rate: 5 },
-  { code: "93(1)", description: "Interest payments", rate: 15 },
-  { code: "95(1)", description: "Royalties", rate: 15 },
-  { code: "95A(1)", description: "Technical service fees", rate: 15 },
-  { code: "95B(1)", description: "Meeting allowances", rate: 15 },
-  { code: "96(1)", description: "Retirement payments", rate: 5 },
-];
-
-function computeTds(grossAmount: number, sectionCode: string): TdsResult {
-  const section = TDS_SECTIONS.find((s) => s.code === sectionCode);
-  if (!section || grossAmount <= 0) {
+function computeTds(
+  grossAmount: number,
+  sectionId: string,
+  party?: { personType?: string; residency?: string },
+): TdsResult {
+  if (!sectionId || grossAmount <= 0) {
     return {
       applicable: false,
+      sectionId: sectionId || "",
+      sectionCode: "",
+      description: "",
+      descriptionNepali: "",
       grossAmount,
+      thresholdAmount: 0,
+      rate: 0,
       tdsAmount: 0,
       netPayable: grossAmount,
-      rate: 0,
-      sectionCode: sectionCode || "",
-      description: "",
     };
   }
-  const tdsAmount = parseFloat((grossAmount * (section.rate / 100)).toFixed(2));
-  const netPayable = parseFloat((grossAmount - tdsAmount).toFixed(2));
-  return {
-    applicable: true,
-    grossAmount,
-    tdsAmount,
-    netPayable,
-    rate: section.rate,
-    sectionCode: section.code,
-    description: section.description,
-  };
+
+  try {
+    return calculateNepalTds({
+      sectionId,
+      grossAmount,
+      personType: (party?.personType as "individual" | "entity") || "entity",
+      residency: (party?.residency as "resident" | "non-resident") || "resident",
+    });
+  } catch {
+    return {
+      applicable: false,
+      sectionId,
+      sectionCode: "",
+      description: "",
+      descriptionNepali: "",
+      grossAmount,
+      thresholdAmount: 0,
+      rate: 0,
+      tdsAmount: 0,
+      netPayable: grossAmount,
+      reason: "Invalid TDS section",
+    };
+  }
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────────
@@ -172,9 +203,11 @@ const PurchaseVoucher: React.FC = () => {
     invoices,
     addInvoice,
     updateInvoice,
+    addTdsEntry,
     companySettings,
     currentFiscalYear,
     currentUser,
+    vatClassifications,
   } = useStore();
 
   // ── Form State ───────────────────────────────────────────────────────────
@@ -190,11 +223,22 @@ const PurchaseVoucher: React.FC = () => {
   const [billDiscountPercent, setBillDiscountPercent] = useState(0);
   const [billDiscountAmount, setBillDiscountAmount] = useState(0);
 
-  // TDS state
   const [enableTds, setEnableTds] = useState(false);
   const [tdsSection, setTdsSection] = useState("");
-  const [tdsRate, setTdsRate] = useState(1.5);
+  const [tdsRate, setTdsRate] = useState(0);
   const [tdsResult, setTdsResult] = useState<TdsResult | null>(null);
+
+  const selectedParty = useMemo(
+    () => parties.find((p) => p.id === partyId),
+    [parties, partyId],
+  );
+
+  const tdsSectionOptions = useMemo(() => {
+    return getApplicableNepalTdsRates({
+      personType: selectedParty?.personType || "entity",
+      residency: selectedParty?.residency || "resident",
+    }).filter((r) => r.rate !== null);
+  }, [selectedParty]);
 
   const [saving, setSaving] = useState(false);
 
@@ -230,7 +274,7 @@ const PurchaseVoucher: React.FC = () => {
     // TDS
     let tdsAmount = 0;
     if (enableTds && tdsSection) {
-      const result = computeTds(grandTotal, tdsSection);
+      const result = computeTds(grandTotal, tdsSection, selectedParty);
       tdsAmount = result.tdsAmount;
     }
 
@@ -246,13 +290,27 @@ const PurchaseVoucher: React.FC = () => {
       tdsAmount,
       netPayable: grandTotal - tdsAmount,
     };
-  }, [lines, billDiscountPercent, billDiscountAmount, enableTds, tdsSection]);
+  }, [lines, billDiscountPercent, billDiscountAmount, enableTds, tdsSection, selectedParty]);
+
+  // Auto-apply TDS when supplier has default nature of payment
+  React.useEffect(() => {
+    if (!partyId || !selectedParty) return;
+    const defaultSection =
+      selectedParty.defaultTdsNatureId ||
+      (selectedParty.subjectToTds ? "sec87_contract_resident_1_5" : "");
+    if (defaultSection) {
+      setEnableTds(true);
+      setTdsSection(defaultSection);
+      const rateDef = getNepalTdsRate(defaultSection);
+      if (rateDef?.rate != null) setTdsRate(rateDef.rate);
+    }
+  }, [partyId, selectedParty]);
 
   // Recompute TDS result whenever relevant state changes
   const currentTdsResult = useMemo<TdsResult | null>(() => {
     if (!enableTds || !tdsSection || totals.grandTotal <= 0) return null;
-    return computeTds(totals.grandTotal, tdsSection);
-  }, [enableTds, tdsSection, totals.grandTotal]);
+    return computeTds(totals.grandTotal, tdsSection, selectedParty);
+  }, [enableTds, tdsSection, totals.grandTotal, selectedParty]);
 
   // ── Line handlers ────────────────────────────────────────────────────────
   const updateLine = (id: string, field: keyof PurchaseLine, value: any) => {
@@ -271,11 +329,15 @@ const PurchaseVoucher: React.FC = () => {
               rate: item.purchaseRate ?? item.costPrice ?? item.rate ?? 0,
               isTaxable: item.isTaxable !== false,
               vatRate: item.vatRate ?? 13,
+              vatClassificationId: item.vatClassificationId,
               costPrice: item.costPrice ?? 0,
             };
           }
         }
-        return computeLine(updated);
+        if (field === "vatClassificationId") {
+          updated = { ...updated, vatClassificationId: value || undefined };
+        }
+        return computeLine(updated, vatClassifications || []);
       }),
     );
   };
@@ -303,7 +365,7 @@ const PurchaseVoucher: React.FC = () => {
     setBillDiscountAmount(0);
     setEnableTds(false);
     setTdsSection("");
-    setTdsRate(1.5);
+    setTdsRate(0);
   };
 
   // ── Save ──────────────────────────────────────────────────────────────────
@@ -342,8 +404,8 @@ const PurchaseVoucher: React.FC = () => {
         grandTotal: totals.grandTotal,
         roundOff: totals.roundOff,
         tdsAmount: enableTds ? totals.tdsAmount : undefined,
-        tdsRate: enableTds ? tdsRate : undefined,
-        tdsSection: enableTds ? tdsSection : undefined,
+        tdsRate: enableTds ? currentTdsResult?.rate : undefined,
+        tdsSection: enableTds ? currentTdsResult?.sectionCode : undefined,
         narration: narration.trim(),
         referenceNo: referenceNo.trim() || undefined,
         referenceDate: referenceDate || undefined,
@@ -361,6 +423,7 @@ const PurchaseVoucher: React.FC = () => {
           vatAmount: l.vatAmount,
           totalAmount: l.totalAmount,
           isTaxable: l.isTaxable,
+          vatClassificationId: l.vatClassificationId,
           warehouseId: l.warehouseId ?? warehouseId,
           batchNo: l.batchNo,
           expiryDate: l.expiryDate,
@@ -369,6 +432,25 @@ const PurchaseVoucher: React.FC = () => {
         createdBy: currentUser?.id,
         createdByName: currentUser?.name,
       });
+
+      if (enableTds && currentTdsResult?.applicable && totals.tdsAmount > 0) {
+        await addTdsEntry({
+          date: voucherDate,
+          dateBS: voucherDateNepali,
+          partyId,
+          partyName: party?.name ?? "",
+          partyPAN: party?.pan ?? "",
+          section: currentTdsResult.sectionCode,
+          paymentNature: currentTdsResult.description,
+          grossAmount: totals.grandTotal,
+          tdsRate: currentTdsResult.rate,
+          tdsAmount: totals.tdsAmount,
+          netAmount: totals.netPayable,
+          status: "pending",
+          fiscalYearBS: currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "",
+          tdsSectionId: currentTdsResult.sectionId,
+        });
+      }
 
       toast.success("Purchase invoice saved successfully.");
       resetForm();
@@ -395,10 +477,10 @@ const PurchaseVoucher: React.FC = () => {
   }, [invoices, statusFilter, searchTerm]);
 
   // ── TDS section change handler ────────────────────────────────────────────
-  const handleTdsSectionChange = (code: string) => {
-    setTdsSection(code);
-    const section = TDS_SECTIONS.find((s) => s.code === code);
-    if (section) {
+  const handleTdsSectionChange = (sectionId: string) => {
+    setTdsSection(sectionId);
+    const section = getNepalTdsRate(sectionId);
+    if (section?.rate != null) {
       setTdsRate(section.rate);
     }
   };
@@ -707,14 +789,29 @@ const PurchaseVoucher: React.FC = () => {
                         {money(line.netAmount)}
                       </td>
 
-                      {/* VAT checkbox */}
+                      {/* VAT classification badge */}
                       <td className="px-2 py-1.5 text-center">
-                        <input
-                          type="checkbox"
-                          checked={line.isTaxable}
-                          onChange={(e) => updateLine(line.id, "isTaxable", e.target.checked)}
-                          className="h-4 w-4 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]/20"
-                        />
+                        <div className="flex flex-col items-center gap-1">
+                          <select
+                            value={line.vatClassificationId || ""}
+                            onChange={(e) =>
+                              updateLine(line.id, "vatClassificationId", e.target.value)
+                            }
+                            className="h-7 px-1.5 text-[10px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-[110px]"
+                          >
+                            <option value="">Default</option>
+                            {(vatClassifications || []).map((vc) => (
+                              <option key={vc.id} value={vc.id}>
+                                {vc.name}
+                              </option>
+                            ))}
+                          </select>
+                          {line.vatLabel && (
+                            <Badge variant={line.vatBadgeVariant || "default"}>
+                              {line.vatLabel}
+                            </Badge>
+                          )}
+                        </div>
                       </td>
 
                       {/* Total */}
@@ -785,9 +882,9 @@ const PurchaseVoucher: React.FC = () => {
                             className="h-8 px-2.5 text-[12px] border border-amber-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 w-full"
                           >
                             <option value="">— Select Section —</option>
-                            {TDS_SECTIONS.map((s) => (
-                              <option key={s.code} value={s.code}>
-                                Sec {s.code} — {s.description} ({s.rate}%)
+                            {tdsSectionOptions.map((s) => (
+                              <option key={s.id} value={s.id}>
+                                Sec {s.sectionCode} — {s.description} ({s.rate ?? "Slab"}%)
                               </option>
                             ))}
                           </select>
@@ -798,19 +895,22 @@ const PurchaseVoucher: React.FC = () => {
                             <label className="text-[10px] font-semibold text-amber-700 mb-0.5 block">
                               TDS Rate (%)
                             </label>
-                            {/* AmountInput replaced with plain input; no className on component */}
                             <div className="w-full">
                               <input
                                 type="number"
                                 min={0}
                                 max={100}
                                 step={0.1}
-                                value={tdsRate}
-                                onChange={(e) => setTdsRate(parseFloat(e.target.value) || 0)}
-                                className="h-8 px-2.5 text-[12px] border border-amber-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 w-full text-right"
+                                value={currentTdsResult?.rate ?? tdsRate}
+                                readOnly
+                                className="h-8 px-2.5 text-[12px] border border-amber-300 rounded-md bg-gray-50 w-full text-right"
                               />
                             </div>
                           </div>
+                        )}
+
+                        {currentTdsResult && !currentTdsResult.applicable && currentTdsResult.reason && (
+                          <p className="text-[10px] text-amber-700">{currentTdsResult.reason}</p>
                         )}
 
                         {currentTdsResult && currentTdsResult.applicable && (

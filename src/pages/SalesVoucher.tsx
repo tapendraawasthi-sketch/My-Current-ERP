@@ -18,6 +18,7 @@ import { Badge } from "../components/ui";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import { computeVatForLine } from "../lib/taxUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,10 @@ interface SalesLine {
   netAmount: number;
   isTaxable: boolean;
   vatRate: number;
+  vatClassificationId?: string;
+  taxability?: string;
+  vatLabel?: string;
+  vatBadgeVariant?: "success" | "warning" | "info" | "default";
   vatAmount: number;
   totalAmount: number;
   warehouseId?: string;
@@ -84,17 +89,39 @@ function emptyLine(): SalesLine {
   };
 }
 
-function computeLine(line: SalesLine): SalesLine {
-  const gross = line.qty * line.rate;
-  const discAmt = gross * (line.discountPercent / 100);
-  const net = gross - discAmt;
-  const vat = line.isTaxable ? net * (line.vatRate / 100) : 0;
+function computeLine(
+  line: SalesLine,
+  vatClassifications: Array<{ id: string; name?: string; taxability: string; vatRate: number }>,
+): SalesLine {
+  const vat = computeVatForLine(
+    {
+      qty: line.qty,
+      rate: line.rate,
+      discountPercent: line.discountPercent,
+      isTaxable: line.isTaxable,
+      vatRate: line.vatRate,
+      vatClassificationId: line.vatClassificationId,
+    },
+    vatClassifications.map((c) => ({
+      id: c.id,
+      name: c.name,
+      taxability: c.taxability as "taxable" | "exempt" | "zero_rated" | "non_vat",
+      vatRate: c.vatRate ?? 0,
+    })),
+  );
+
   return {
     ...line,
-    discountAmount: parseFloat(discAmt.toFixed(2)),
-    netAmount: parseFloat(net.toFixed(2)),
-    vatAmount: parseFloat(vat.toFixed(2)),
-    totalAmount: parseFloat((net + vat).toFixed(2)),
+    discountAmount: vat.discountAmount,
+    netAmount: vat.netAmount,
+    isTaxable: vat.isTaxable,
+    vatRate: vat.vatRate,
+    vatAmount: vat.vatAmount,
+    totalAmount: vat.totalAmount,
+    taxability: vat.taxability,
+    vatLabel: vat.vatLabel,
+    vatBadgeVariant: vat.vatBadgeVariant,
+    vatClassificationId: vat.vatClassificationId || line.vatClassificationId,
   };
 }
 
@@ -128,6 +155,7 @@ const SalesVoucher: React.FC = () => {
     companySettings,
     currentFiscalYear,
     currentUser,
+    vatClassifications,
   } = useStore();
 
   // ── Form State ───────────────────────────────────────────────────────────
@@ -213,11 +241,15 @@ const SalesVoucher: React.FC = () => {
               rate: item.salesRate ?? item.sellingPrice ?? item.mrp ?? item.rate ?? 0,
               isTaxable: item.isTaxable !== false,
               vatRate: item.vatRate ?? 13,
+              vatClassificationId: item.vatClassificationId,
               costPrice: item.costPrice ?? 0,
             };
           }
         }
-        return computeLine(updated);
+        if (field === "vatClassificationId") {
+          updated = { ...updated, vatClassificationId: value || undefined };
+        }
+        return computeLine(updated, vatClassifications || []);
       }),
     );
   };
@@ -295,6 +327,7 @@ const SalesVoucher: React.FC = () => {
           vatAmount: l.vatAmount,
           totalAmount: l.totalAmount,
           isTaxable: l.isTaxable,
+          vatClassificationId: l.vatClassificationId,
           warehouseId: l.warehouseId ?? warehouseId,
           batchNo: l.batchNo,
           costPrice: l.costPrice,
@@ -613,14 +646,29 @@ const SalesVoucher: React.FC = () => {
                         {money(line.netAmount)}
                       </td>
 
-                      {/* VAT checkbox */}
+                      {/* VAT classification badge */}
                       <td className="px-2 py-1.5 text-center">
-                        <input
-                          type="checkbox"
-                          checked={line.isTaxable}
-                          onChange={(e) => updateLine(line.id, "isTaxable", e.target.checked)}
-                          className="h-4 w-4 rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]/20"
-                        />
+                        <div className="flex flex-col items-center gap-1">
+                          <select
+                            value={line.vatClassificationId || ""}
+                            onChange={(e) =>
+                              updateLine(line.id, "vatClassificationId", e.target.value)
+                            }
+                            className="h-7 px-1.5 text-[10px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-[110px]"
+                          >
+                            <option value="">Default</option>
+                            {(vatClassifications || []).map((vc) => (
+                              <option key={vc.id} value={vc.id}>
+                                {vc.name}
+                              </option>
+                            ))}
+                          </select>
+                          {line.vatLabel && (
+                            <Badge variant={line.vatBadgeVariant || "default"}>
+                              {line.vatLabel}
+                            </Badge>
+                          )}
+                        </div>
                       </td>
 
                       {/* Total */}

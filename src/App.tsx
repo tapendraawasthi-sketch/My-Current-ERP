@@ -86,6 +86,13 @@ import PhysicalStockPage2 from "./pages/PhysicalStockPage2";
 import StockLedgerReport from "./pages/StockLedgerReport";
 import SalesAnalysisReport from "./pages/SalesAnalysisReport";
 import StockSummaryReport from "./pages/StockSummaryReport";
+import TdsReport from "./pages/TdsReport";
+import TdsCertificatePage from "./pages/TdsCertificatePage";
+import BonusProvision from "./pages/BonusProvision";
+import GratuityCalculation from "./pages/GratuityCalculation";
+import PayHeadMaster from "./pages/PayHeadMaster";
+import VATClassificationMaster from "./pages/VATClassificationMaster";
+import MasterControlCentre from "./pages/MasterControlCentre";
 
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
@@ -281,6 +288,14 @@ const App: React.FC = () => {
       case "inventory-configuration": return <InventoryConfiguration />;
       case "payroll":
       case "salary-process": return <Payroll />;
+      case "tds-report":
+      case "tds-reports": return <TdsReport />;
+      case "tds-certificate": return <TdsCertificatePage />;
+      case "bonus-provision": return <BonusProvision />;
+      case "gratuity-calculation": return <GratuityCalculation />;
+      case "pay-heads": return <PayHeadMaster />;
+      case "vat-classifications": return <VATClassificationMaster />;
+      case "master-control-centre": return <MasterControlCentre />;
 
       default:
         return <FinancialDashboard />;

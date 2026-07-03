@@ -48,6 +48,7 @@ export default function EmployeeMaster() {
       healthInsurance: 0,
     },
     employmentType: "permanent",
+    bonusEligible: true,
     status: "active",
   };
 
@@ -511,6 +512,20 @@ export default function EmployeeMaster() {
                   }
                   className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md focus:border-[#1557b0] disabled:bg-[#EBF5E2]"
                 />
+              </div>
+              <div className="flex items-center gap-2 col-span-2">
+                <input
+                  type="checkbox"
+                  id="bonusEligible"
+                  checked={formData.bonusEligible !== false}
+                  onChange={(e) =>
+                    setFormData({ ...formData, bonusEligible: e.target.checked })
+                  }
+                  className="rounded border-[#9DC07A] text-[#1557b0] focus:ring-[#1557b0]"
+                />
+                <label htmlFor="bonusEligible" className="text-[12px] font-medium text-[#000000]">
+                  Eligible for annual bonus provision
+                </label>
               </div>
               <div>
                 <label className="block text-[11px] font-medium text-[#000000] mb-1">
