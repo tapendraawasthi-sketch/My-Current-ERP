@@ -203,147 +203,175 @@ export const useStore = create<AppState>()((...a) => {
       set({ isInitializing: true, authStage: "checking" as AuthStage });
 
       try {
-        startCbmsQueueWorker();
-        const db = getDB();
-
-        // ── Seed default data if tables are empty ──────────────────────────────
-        const accountCount = await db.accounts.count();
-        if (accountCount === 0) {
-          try {
-            const { seedNepalNASChartOfAccounts } =
-              await import("../lib/seeders/nepalNasCoaSeeder");
-            await seedNepalNASChartOfAccounts(db as any);
-          } catch (err) {
-            console.error("Error seeding Nepal NAS Chart of Accounts:", err);
-            await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any);
-          }
-        }
-
-        const warehouseCount = await db.warehouses.count();
-        if (warehouseCount === 0) await db.warehouses.bulkAdd(DEFAULT_WAREHOUSES as any);
-
-        const unitCount = await db.units.count();
-        if (unitCount === 0) await db.units.bulkAdd(DEFAULT_UNITS as any);
-
-        const fyCount = await db.fiscalYears.count();
-        if (fyCount === 0) await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as any);
-
-        const currencyCount = await db.currencies.count();
-        if (currencyCount === 0) await db.currencies.add(DEFAULT_CURRENCY as any);
-
-        const shortcutCount = await db.shortcuts.count();
-        if (shortcutCount === 0) await db.shortcuts.bulkAdd(DEFAULT_SHORTCUTS as any);
-
-        const userCount = await db.users.count();
-        if (userCount === 0) {
-          const hash = await hashPassword("admin123");
-          await db.users.add({
-            id: "user-admin",
-            username: "admin",
-            name: "Administrator",
-            email: "admin@company.com",
-            role: "admin",
-            passwordHash: hash,
-            isActive: true,
-          } as any);
-        } else {
-          try {
-            const adminUser = (await db.users.where("username").equals("admin").first()) as any;
-            if (!adminUser) {
-              const hash = await hashPassword("admin123");
-              await db.users.put({
-                id: "user-admin",
-                username: "admin",
-                name: "Administrator",
-                email: "admin@company.com",
-                role: "admin",
-                passwordHash: hash,
-                isActive: true,
-              } as any);
-            } else if (
-              adminUser.passwordHash?.startsWith("fallback_") ||
-              (!adminUser.passwordHash?.startsWith("pbkdf2v2_") &&
-                !adminUser.passwordHash?.startsWith("sha256v1_"))
-            ) {
-              await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
-            }
-          } catch {
-            /* non-critical */
-          }
-        }
-
-        await migrateWorkflowFields();
-
-        // ── Stage gate: check if any company exists ────────────────────────────
-        const companyCount = await db.companySettings.count();
-
-        if (companyCount === 0) {
-          // Seed placeholder company then send to wizard
-          await db.companySettings.add({
-            id: "main",
-            name: "My Company",
-            companyNameEn: "My Company",
-            panNumber: "000000000",
-            currencySymbol: "Rs.",
-            address: "Kathmandu, Nepal",
-            phone: "",
-            email: "",
-            enableCostCenter: false,
-            enableBillWiseTracking: false,
-            enableBillWise: false,
-            enableBatchTracking: false,
-            tdsEnabled: false,
-            enableMultiCurrency: false,
-            cbmsEnabled: false,
-          } as any);
-          set({ isDbReady: true, isInitializing: false, authStage: "no-company" as AuthStage });
-          return;
-        }
-
-        // ── Check for a valid existing session ────────────────────────────────
-        const sessionUserId = sessionStorage.getItem("sutra_user_id");
-        const sessionCompanyId = sessionStorage.getItem("sutra_company_id");
-
-        if (sessionUserId && sessionCompanyId) {
-          try {
-            const sessionUser = (await db.users.get(sessionUserId)) as any;
-            const sessionCompany = (await db.companySettings.get(sessionCompanyId)) as any;
-            if (sessionUser && sessionUser.isActive && sessionCompany) {
-              await get()._loadAllData();
-              set({
-                isDbReady: true,
-                isInitializing: false,
-                isAuthenticated: true,
-                currentUser: sessionUser as StoreUser,
-                selectedCompanyId: sessionCompanyId,
-                authStage: "authenticated" as AuthStage,
-              });
-              return;
-            }
-          } catch {
-            /* session validation failed */
-          }
-          sessionStorage.removeItem("sutra_user_id");
-          sessionStorage.removeItem("sutra_company_id");
-        }
-
-        // ── No valid session → show Gateway (load ONLY companySettings) ────────
-        const settingsArr = await db.companySettings.toArray();
-        const company = settingsArr[0] as any;
-        const lastLoginInfo =
-          company?.lastLoginBy && company?.lastLoginAt
-            ? { username: company.lastLoginBy, loginAt: company.lastLoginAt }
-            : null;
-
-        set({
-          isDbReady: true,
-          isInitializing: false,
-          companySettings: (settingsArr[0] as CompanySettings) || null,
-          lastLoginInfo,
-          authStage: "gateway" as AuthStage,
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("INDEXEDDB_HANG: Initialization took longer than 15 seconds. Please clear your browser cache or close other tabs.")), 15000);
         });
-      } catch (err) {
+
+        const initPromise = (async () => {
+          startCbmsQueueWorker();
+          const db = getDB();
+          
+          // ── Seed default data if tables are empty ──────────────────────────────
+          const accountCount = await db.accounts.count();
+          
+          if (accountCount === 0) {
+            try {
+              const { seedNepalNASChartOfAccounts } =
+                await import("../lib/seeders/nepalNasCoaSeeder");
+              await seedNepalNASChartOfAccounts(db as any);
+            } catch (err) {
+              console.error("Error seeding Nepal NAS Chart of Accounts:", err);
+              await db.accounts.bulkAdd(DEFAULT_ACCOUNTS as any);
+            }
+          }
+
+          const warehouseCount = await db.warehouses.count();
+          if (warehouseCount === 0) await db.warehouses.bulkAdd(DEFAULT_WAREHOUSES as any);
+
+          const unitCount = await db.units.count();
+          if (unitCount === 0) await db.units.bulkAdd(DEFAULT_UNITS as any);
+
+          const fyCount = await db.fiscalYears.count();
+          if (fyCount === 0) await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as any);
+
+          const currencyCount = await db.currencies.count();
+          if (currencyCount === 0) await db.currencies.add(DEFAULT_CURRENCY as any);
+
+          const shortcutCount = await db.shortcuts.count();
+          if (shortcutCount === 0) await db.shortcuts.bulkAdd(DEFAULT_SHORTCUTS as any);
+
+          const userCount = await db.users.count();
+          if (userCount === 0) {
+            const hash = await hashPassword("admin123");
+            await db.users.add({
+              id: "user-admin",
+              username: "admin",
+              name: "Administrator",
+              email: "admin@company.com",
+              role: "admin",
+              passwordHash: hash,
+              isActive: true,
+            } as any);
+          } else {
+            try {
+              const adminUser = (await db.users.where("username").equals("admin").first()) as any;
+              if (!adminUser) {
+                const hash = await hashPassword("admin123");
+                await db.users.put({
+                  id: "user-admin",
+                  username: "admin",
+                  name: "Administrator",
+                  email: "admin@company.com",
+                  role: "admin",
+                  passwordHash: hash,
+                  isActive: true,
+                } as any);
+              } else if (
+                adminUser.passwordHash?.startsWith("fallback_") ||
+                (!adminUser.passwordHash?.startsWith("pbkdf2v2_") &&
+                  !adminUser.passwordHash?.startsWith("sha256v1_"))
+              ) {
+                await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
+              }
+            } catch {
+              /* non-critical */
+            }
+          }
+
+          await migrateWorkflowFields();
+
+          // ── Stage gate: check if any company exists ────────────────────────────
+          const companyCount = await db.companySettings.count();
+
+          if (companyCount === 0) {
+            // Seed placeholder company then send to wizard
+            await db.companySettings.add({
+              id: "main",
+              name: "My Company",
+              companyNameEn: "My Company",
+              panNumber: "000000000",
+              currencySymbol: "Rs.",
+              address: "Kathmandu, Nepal",
+              phone: "",
+              email: "",
+              enableCostCenter: false,
+              enableBillWiseTracking: false,
+              enableBillWise: false,
+              enableBatchTracking: false,
+              tdsEnabled: false,
+              enableMultiCurrency: false,
+              cbmsEnabled: false,
+            } as any);
+            return { action: "no-company" };
+          }
+
+          // ── Check for a valid existing session ────────────────────────────────
+          const sessionUserId = sessionStorage.getItem("sutra_user_id");
+          const sessionCompanyId = sessionStorage.getItem("sutra_company_id");
+
+          if (sessionUserId && sessionCompanyId) {
+            try {
+              const sessionUser = (await db.users.get(sessionUserId)) as any;
+              const sessionCompany = (await db.companySettings.get(sessionCompanyId)) as any;
+              if (sessionUser && sessionUser.isActive && sessionCompany) {
+                await get()._loadAllData();
+                return { 
+                  action: "authenticated", 
+                  user: sessionUser as StoreUser, 
+                  companyId: sessionCompanyId 
+                };
+              }
+            } catch {
+              /* session validation failed */
+            }
+            sessionStorage.removeItem("sutra_user_id");
+            sessionStorage.removeItem("sutra_company_id");
+          }
+
+          // ── No valid session → show Gateway (load ONLY companySettings) ────────
+          const settingsArr = await db.companySettings.toArray();
+          const company = settingsArr[0] as any;
+          const lastLoginInfo =
+            company?.lastLoginBy && company?.lastLoginAt
+              ? { username: company.lastLoginBy, loginAt: company.lastLoginAt }
+              : null;
+
+          return { 
+            action: "gateway", 
+            companySettings: (settingsArr[0] as CompanySettings) || null,
+            lastLoginInfo 
+          };
+        })();
+
+        const result = await Promise.race([initPromise, timeoutPromise]);
+        
+        if (result.action === "no-company") {
+          set({ isDbReady: true, isInitializing: false, authStage: "no-company" as AuthStage });
+        } else if (result.action === "authenticated") {
+          set({
+            isDbReady: true,
+            isInitializing: false,
+            isAuthenticated: true,
+            currentUser: result.user,
+            selectedCompanyId: result.companyId,
+            authStage: "authenticated" as AuthStage,
+          });
+        } else if (result.action === "gateway") {
+          set({
+            isDbReady: true,
+            isInitializing: false,
+            companySettings: result.companySettings,
+            lastLoginInfo: result.lastLoginInfo,
+            authStage: "gateway" as AuthStage,
+          });
+        }
+      } catch (err: any) {
         console.error("initializeApp failed:", err);
+        // If it's the timeout error we injected, throw it so the global error boundary shows it!
+        if (err && err.message && err.message.includes("INDEXEDDB_HANG")) {
+           setTimeout(() => { throw err; }, 0); 
+           return; 
+        }
         set({ isInitializing: false, isDbReady: true, authStage: "gateway" as AuthStage });
       }
     },
