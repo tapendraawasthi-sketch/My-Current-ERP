@@ -43,7 +43,7 @@ interface NavItem {
   label: string;
   nepaliLabel?: string;
   page: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
+  icon: React.ComponentType<any>;
 }
 
 interface MenuGroup {
@@ -388,7 +388,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
             </div>
             {currentFiscalYear && (
               <div className="text-[10px] text-gray-500 truncate mt-0.5">
-                {currentFiscalYear.label}
+                {currentFiscalYear.name}
               </div>
             )}
           </div>

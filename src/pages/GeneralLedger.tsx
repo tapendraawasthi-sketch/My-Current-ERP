@@ -148,9 +148,9 @@ const GeneralLedger: React.FC = () => {
   );
 
     const filteredAccountList = useMemo(() => {
-    if (!searchAccount.trim()) return accountList.filter((a) => !a.isGroup).slice(0, 100);
+    if (!searchAccount.trim()) return accountList.filter((a: any) => !a.isGroup).slice(0, 100);
     return accountList
-      .filter((a) => !a.isGroup)
+      .filter((a: any) => !a.isGroup)
       .map((a) => ({
         account: a,
         score: Math.max(
@@ -425,7 +425,7 @@ const GeneralLedger: React.FC = () => {
             >
               {show("date") && (
                 <Td>
-                  <BsDateCell adDate={row.adDate} bsDate={row.bsDate} />
+                  <BsDateCell date={row.adDate} dateNepali={row.bsDate} />
                 </Td>
               )}
 

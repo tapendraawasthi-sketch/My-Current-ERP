@@ -57,14 +57,14 @@ type PermissionScope = "all" | "accounting" | "admin";
 interface GatewayMenuItem {
   label: string;
   page: string;
-  icon?: React.ComponentType<{ size?: number; className?: string }>;
+  icon?: React.ComponentType<any>;
   shortcut?: string;
   permission?: PermissionScope;
 }
 
 interface MenuSection {
   title: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: React.ComponentType<any>;
   color: string;
   items: GatewayMenuItem[];
 }
@@ -345,7 +345,7 @@ const SectionPanel: React.FC<{
 const NavRow: React.FC<{
   label: string;
   shortcut?: string;
-  icon?: React.ComponentType<{ size?: number; className?: string }>;
+  icon?: React.ComponentType<any>;
   accentColor: string;
   onClick: () => void;
 }> = ({ label, shortcut, icon: Icon, accentColor, onClick }) => {
@@ -407,7 +407,7 @@ const NavRow: React.FC<{
 const ActionTile: React.FC<{
   label: string;
   page: string;
-  icon: React.ComponentType<{ size?: number }>;
+  icon: React.ComponentType<any>;
   shortcut: string;
   color: string;
   onClick: () => void;
@@ -482,6 +482,7 @@ const Gateway: React.FC = () => {
     items,
     parties,
     stockMovements,
+    warehouses,
     setCurrentPage,
   } = useStore();
 
@@ -495,12 +496,12 @@ const Gateway: React.FC = () => {
   const role = currentUser?.role;
 
   const canAdmin = useMemo(() => {
-    try { return isAdminOrOwner(role) || isAdminOrOwner(currentUser); } catch { return false; }
-  }, [role, currentUser]);
+    try { return isAdminOrOwner(role); } catch { return false; }
+  }, [role]);
 
   const canAccounting = useMemo(() => {
-    try { return isAccountantOrAdmin(role) || isAccountantOrAdmin(currentUser) || canAdmin; } catch { return canAdmin; }
-  }, [role, currentUser, canAdmin]);
+    try { return isAccountantOrAdmin(role) || canAdmin; } catch { return canAdmin; }
+  }, [role, canAdmin]);
 
   const canSee = (item: GatewayMenuItem) => {
     if (!item.permission || item.permission === "all") return true;
@@ -588,8 +589,8 @@ const Gateway: React.FC = () => {
   }, [invoices, todayISO]);
 
   const stockPositions = useMemo(() => {
-    try { return computeAllStockPositions(stockMovements, items); } catch { return []; }
-  }, [stockMovements, items]);
+    try { return computeAllStockPositions(stockMovements, items, warehouses); } catch { return []; }
+  }, [stockMovements, items, warehouses]);
 
   const stockValue = useMemo(
     () => stockPositions.reduce((s: number, sp: any) => s + (sp.value || 0), 0),

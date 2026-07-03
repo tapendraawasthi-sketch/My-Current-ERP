@@ -651,15 +651,21 @@ export interface DBBillSundry {
   code?: string;
   name: string;
   alias?: string;
-  type: "addition" | "deduction" | "additive";
+  type: string;
   nature?: string;
   calculationType?: "fixed" | "percentage";
   rate?: number;
   accountId?: string;
   accountHeadId?: string;
   accountName?: string;
-  defaultValue?: number;
-  isActive: boolean;
+  isActive?: boolean;
+  affectCostInSale?: boolean;
+  affectCostInPurchase?: boolean;
+  accountingInSale?: string;
+  accountingInPurchase?: string;
+  affectAccountingInStockTransfer?: boolean;
+  gstApplicable?: boolean;
+  taxCategoryId?: string;
   isTaxable?: boolean;
   applyOn?: string;
   affectsCostInSale?: boolean;
@@ -672,7 +678,10 @@ export interface DBBillSundry {
 export interface DBStandardNarration {
   id: string;
   code?: string;
-  narration: string;
+  narration?: string; // made optional
+  text?: string;
+  category?: string;
+  voucherTypes?: string[];
   voucherType?: string;
   isActive: boolean;
   sortOrder?: number;
@@ -1132,6 +1141,8 @@ export class SutraERPDatabase extends Dexie {
   stockCategories!: Table<any>;
   voucherTypeMasters!: Table<any>;
   scenarios!: Table<any>;
+  voucherSeriesConfig!: Table<any>;
+  voucherAuditLogs!: Table<any>;
   costCategories!: Table<any>;
   costCentreClasses!: Table<any>;
   reorderLevels!: Table<any>;
@@ -1162,7 +1173,6 @@ export class SutraERPDatabase extends Dexie {
   priceFloorPolicies!: Table<any>;
   chequeBounceLogs!: Table<any>;
   cbmsQueue!: Table<any>;
-  voucherAuditLogs!: Table<any>;
   salespersons!: Table<any>;
   loginHistory!: Table<any>;
   salaryStructures!: Table<any>;
@@ -1306,6 +1316,9 @@ export class SutraERPDatabase extends Dexie {
       followUpNotes:    "++id, partyId, date, createdAt",
       jobWorkOrders:    "++id, orderNo, date, status, createdAt",
       priceFloorPolicies: "++id, itemId, isActive, createdAt",
+      stockCategories: "++id, name, parentId",
+      voucherTypeMasters: "++id, name, parentId, type",
+      voucherSeriesConfig: "++id, voucherType, seriesName",
       reportSchedules:  "++id, name, isActive, createdAt",
       salespersons:     "++id, name, isActive, createdAt",
       voucherAuditLogs: "++id, voucherId, action, createdAt",
@@ -1320,8 +1333,9 @@ export class SutraERPDatabase extends Dexie {
       followUpNotes:      "++id, partyId, date, createdAt",
       jobWorkOrders:      "++id, orderNo, date, status, createdAt",
       priceFloorPolicies: "++id, itemId, isActive, createdAt",
-      reportSchedules:    "++id, name, isActive, createdAt",
-      salespersons:       "++id, name, isActive, createdAt",
+      stockCategories:    "++id, name, parentId",
+      voucherTypeMasters: "++id, name, parentId, type",
+      voucherSeriesConfig: "++id, voucherType, seriesName",
       voucherAuditLogs:   "++id, voucherId, action, createdAt",
     });
   }

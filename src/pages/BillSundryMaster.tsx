@@ -58,20 +58,14 @@ export default function BillSundryMaster() {
       const db = getDB();
       let items: BillSundry[] = [];
       if (db.billSundries) {
-        items = await db.billSundries.toArray();
-      }
-      if (items.length === 0) {
-        // Seed defaults
-        const defaults = DEFAULT_BILL_SUNDRIES.map((d, i) => ({
-          ...d,
-          id: `bs-default-${i + 1}`,
-        }));
-        if (db.billSundries) {
-          await db.billSundries.bulkPut(defaults);
-          items = defaults;
-        } else {
-          items = defaults;
-        }
+        const data = await db.billSundries.toArray();
+        if (data.length === 0) {
+          const seeded = DEFAULT_BILL_SUNDRIES.map((d, i) => ({ ...d, id: `bs-${i}` }));
+          await db.billSundries.bulkPut(seeded);
+          items = seeded as any;
+        } else items = data as any;
+      } else {
+        items = DEFAULT_BILL_SUNDRIES.map((d, i) => ({ ...d, id: `bs-default-${i + 1}` }));
       }
       setBillSundries(items);
     } catch {

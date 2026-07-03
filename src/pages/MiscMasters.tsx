@@ -56,7 +56,7 @@ export default function MiscMasters() {
       const db = getDB();
       if (db.warehouses) {
         const wh = await db.warehouses.toArray();
-        setMaterialCentres(wh.length > 0 ? wh : [
+        setMaterialCentres(wh.length > 0 ? (wh as any) : [
           { id: "mc-1", code: "WH-MAIN", name: "Main Warehouse", isDefault: true, isActive: true },
           { id: "mc-2", code: "WH-BRANCH", name: "Branch Store", isDefault: false, isActive: true },
         ]);

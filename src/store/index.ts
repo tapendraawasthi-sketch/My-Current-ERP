@@ -26,16 +26,16 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus } from "../lib/db";
+import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus, DBWarehouse, DBStockTransferVoucher } from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
 import { computeNextDueDate } from "../lib/recurringUtils";
 
 export const useStore = create<AppState>()((...a) => {
-  const [set, get] = a;
+  const [set, get, api] = a;
   return {
-    ...createInventorySlice(set, get),
+    ...createInventorySlice(set, get, api),
     isDbReady: false,
     isInitializing: false,
     isAuthenticated: false,
@@ -659,7 +659,7 @@ export const useStore = create<AppState>()((...a) => {
         stockTransfers: stockTransfersArr,
         quotationVouchers: quotationsArr,
         inventoryConfig: inventoryConfigGlobal,
-      });
+      } as any);
 
       // Stock reorder notifications
       for (const item of items) {

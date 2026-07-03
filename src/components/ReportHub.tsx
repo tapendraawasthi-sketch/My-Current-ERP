@@ -15,7 +15,7 @@ interface Report {
 
 interface ReportCategory {
   title: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: React.ComponentType<any>;
   color: string;
   reports: Report[];
 }

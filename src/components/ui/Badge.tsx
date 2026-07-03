@@ -27,6 +27,7 @@ const VARIANT_CLASSES: Record<BadgeVariant, string> = {
 
 export interface BadgeProps {
   variant?: BadgeVariant;
+  size?: string;
   children: React.ReactNode;
   className?: string;
 }

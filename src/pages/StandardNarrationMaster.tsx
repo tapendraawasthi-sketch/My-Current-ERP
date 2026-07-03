@@ -51,7 +51,7 @@ export default function StandardNarrationMaster() {
           const seeded = DEFAULTS.map((d, i) => ({ ...d, id: `sn-${i}` }));
           await db.standardNarrations.bulkPut(seeded);
           setNarrations(seeded);
-        } else setNarrations(data);
+        } else setNarrations(data as any);
       } else {
         setNarrations(DEFAULTS.map((d, i) => ({ ...d, id: `sn-${i}` })));
       }
