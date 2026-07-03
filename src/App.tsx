@@ -49,6 +49,8 @@ import FixedAssetRegister from "./pages/FixedAssetRegister";
 import PDCRegister from "./pages/PDCRegister";
 import EmployeeLoans from "./pages/EmployeeLoans";
 import NotesToAccounts from "./pages/NotesToAccounts";
+import EquityStatement from "./pages/EquityStatement";
+import FundsFlowStatement from "./pages/FundsFlowStatement";
 import FixedAssets from "./pages/FixedAssets";
 import BatchManagement from "./pages/BatchManagement";
 import PDCManagement from "./pages/PDCManagement";
@@ -168,6 +170,9 @@ const App: React.FC = () => {
       case "pdc-register": return <PDCRegister />;
       case "employee-loans": return <EmployeeLoans />;
       case "notes-to-accounts": return <NotesToAccounts />;
+      case "equity-statement": return <EquityStatement />;
+      case "funds-flow":
+      case "funds-flow-statement": return <FundsFlowStatement />;
 
       // Masters
       case "accounts":

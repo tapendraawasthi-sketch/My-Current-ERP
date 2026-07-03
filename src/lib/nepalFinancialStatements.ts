@@ -354,17 +354,32 @@ export function mapGroupToNepalFormat(groupName: string): NepalGroupMapping {
 
 /**
  * Adapter for unknown computeLedgerTotals() output shapes.
- * Supports:
- * - Record<accountId, number>
- * - Array<{ accountId, closingBalance | balance | amount }>
+ * Supports Map, Record, and array shapes from reportingHierarchy.
  */
+export function shiftDateByYears(date: string, years: number): string {
+  if (!date) return date;
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return date;
+  d.setFullYear(d.getFullYear() + years);
+  return d.toISOString().split("T")[0];
+}
+
 export function normalizeLedgerTotals(raw: any): Record<string, number> {
   if (!raw) return {};
+
+  if (raw instanceof Map) {
+    return Object.fromEntries(
+      Array.from(raw.entries()).map(([id, value]: [string, any]) => [
+        id,
+        Number(value?.net ?? value?.closingBalance ?? value?.balance ?? 0),
+      ]),
+    );
+  }
 
   if (Array.isArray(raw)) {
     return raw.reduce<Record<string, number>>((acc, row) => {
       const id = row.accountId || row.id;
-      acc[id] = Number(row.closingBalance ?? row.balance ?? row.amount ?? 0);
+      acc[id] = Number(row.net ?? row.closingBalance ?? row.balance ?? row.amount ?? 0);
       return acc;
     }, {});
   }
@@ -372,7 +387,7 @@ export function normalizeLedgerTotals(raw: any): Record<string, number> {
   return Object.fromEntries(
     Object.entries(raw).map(([key, value]: [string, any]) => [
       key,
-      Number(value?.closingBalance ?? value?.balance ?? value ?? 0),
+      Number(value?.net ?? value?.closingBalance ?? value?.balance ?? value ?? 0),
     ]),
   );
 }
@@ -697,4 +712,257 @@ export function buildProfitLossData(args: {
     incomeTaxProvision,
     netProfitAfterTax,
   };
+}
+
+function sectionHeader(id: string, label: string, labelNepali?: string): NepalStatementLine {
+  return {
+    id,
+    label,
+    labelNepali,
+    currentYear: 0,
+    previousYear: 0,
+    isTotal: true,
+  };
+}
+
+function sectionTotal(
+  id: string,
+  label: string,
+  current: number,
+  previous: number,
+): NepalStatementLine {
+  return {
+    id,
+    label,
+    currentYear: totalsRound(current),
+    previousYear: totalsRound(previous),
+    isTotal: true,
+  };
+}
+
+export function balanceSheetDataToRows(data: BalanceSheetData): NepalStatementLine[] {
+  const rows: NepalStatementLine[] = [];
+
+  rows.push(sectionHeader("hdr-el", "I. EQUITY AND LIABILITIES", "इक्विटी तथा दायित्व"));
+  rows.push(...data.equity);
+  rows.push(
+    sectionTotal("tot-equity", "Total Equity", data.totalEquity, totalPrevious(data.equity)),
+  );
+  rows.push(...data.nonCurrentLiabilities);
+  rows.push(
+    sectionTotal(
+      "tot-ncl",
+      "Total Non-Current Liabilities",
+      data.totalNonCurrentLiabilities,
+      totalPrevious(data.nonCurrentLiabilities),
+    ),
+  );
+  rows.push(...data.currentLiabilities);
+  rows.push(
+    sectionTotal(
+      "tot-cl",
+      "Total Current Liabilities",
+      data.totalCurrentLiabilities,
+      totalPrevious(data.currentLiabilities),
+    ),
+  );
+  rows.push(
+    sectionTotal(
+      "tot-el",
+      "Total Equity & Liabilities",
+      data.totalEquityAndLiabilities,
+      totalsRound(
+        totalPrevious(data.equity) +
+          totalPrevious(data.nonCurrentLiabilities) +
+          totalPrevious(data.currentLiabilities),
+      ),
+    ),
+  );
+
+  rows.push(sectionHeader("hdr-assets", "II. ASSETS", "सम्पत्ति"));
+  rows.push(...data.fixedAssets);
+  rows.push(
+    sectionTotal("tot-fa", "Total Fixed Assets", data.totalFixedAssets, totalPrevious(data.fixedAssets)),
+  );
+  rows.push(...data.nonCurrentAssets);
+  rows.push(
+    sectionTotal(
+      "tot-nca",
+      "Total Non-Current Assets",
+      data.totalNonCurrentAssets,
+      totalPrevious(data.nonCurrentAssets),
+    ),
+  );
+  rows.push(...data.currentAssets);
+  rows.push(
+    sectionTotal(
+      "tot-ca",
+      "Total Current Assets",
+      data.totalCurrentAssets,
+      totalPrevious(data.currentAssets),
+    ),
+  );
+  rows.push({
+    id: "tot-assets",
+    label: "TOTAL ASSETS",
+    labelNepali: "कुल सम्पत्ति",
+    currentYear: data.totalAssets,
+    previousYear: totalsRound(
+      totalPrevious(data.fixedAssets) +
+        totalPrevious(data.nonCurrentAssets) +
+        totalPrevious(data.currentAssets),
+    ),
+    isGrandTotal: true,
+  });
+
+  return rows;
+}
+
+export function profitLossDataToRows(data: ProfitLossData): NepalStatementLine[] {
+  const rows: NepalStatementLine[] = [];
+
+  rows.push(sectionHeader("hdr-rev", "Revenue from Operations", "सञ्चालनबाट प्राप्त आय"));
+  rows.push(...data.revenue);
+  rows.push(sectionTotal("tot-rev", "Net Sales", data.netSales, totalPrevious(data.revenue)));
+
+  if (data.otherIncome.length) {
+    rows.push(...data.otherIncome);
+    rows.push(
+      sectionTotal(
+        "tot-oi",
+        "Total Other Income",
+        data.totalOtherIncome,
+        totalPrevious(data.otherIncome),
+      ),
+    );
+  }
+
+  rows.push(
+    sectionTotal("tot-income", "Total Income", data.totalIncome, totalsRound(data.netSales + totalPrevious(data.otherIncome))),
+  );
+
+  rows.push(sectionHeader("hdr-cogs", "Cost of Goods Sold", "बिक्री गरिएको मालको लागत"));
+  rows.push(...data.cogs);
+  rows.push(
+    sectionTotal("tot-cogs", "Cost of Goods Sold", data.costOfGoodsSold, totalPrevious(data.cogs)),
+  );
+
+  rows.push(...data.indirectExpenses);
+  rows.push(
+    sectionTotal(
+      "tot-indirect",
+      "Total Indirect Expenses",
+      data.totalIndirectExpenses,
+      totalPrevious(data.indirectExpenses),
+    ),
+  );
+  rows.push(
+    sectionTotal("tot-exp", "Total Expenses", data.totalExpenses, totalsRound(data.costOfGoodsSold + totalPrevious(data.indirectExpenses))),
+  );
+
+  rows.push({
+    id: "pbt",
+    label: "Profit Before Tax",
+    labelNepali: "कर अघिको नाफा",
+    currentYear: data.profitBeforeTax,
+    previousYear: 0,
+    isTotal: true,
+  });
+
+  if (data.incomeTaxProvision) {
+    rows.push({
+      id: "tax",
+      label: "Less: Income Tax Provision",
+      labelNepali: "घटाउनुहोस्: आयकर प्रावधान",
+      currentYear: -data.incomeTaxProvision,
+      previousYear: 0,
+      isDeduction: true,
+    });
+  }
+
+  rows.push({
+    id: "npat",
+    label: "Net Profit After Tax",
+    labelNepali: "कर पछिको खुद नाफा",
+    currentYear: data.netProfitAfterTax,
+    previousYear: 0,
+    isGrandTotal: true,
+  });
+
+  return rows;
+}
+
+export interface AccountNote {
+  id: string;
+  noteNumber: number;
+  title: string;
+  titleNepali?: string;
+  lines: Array<{ label: string; amount: number }>;
+  total: number;
+}
+
+export function buildNotesToAccounts(args: {
+  accounts: DBAccount[];
+  vouchers: DBVoucher[];
+  asAtDate: string;
+  materialityThreshold?: number;
+}): AccountNote[] {
+  const threshold = args.materialityThreshold ?? 1000;
+  const totals = normalizeLedgerTotals(
+    computeLedgerTotals(args.accounts, args.vouchers, { endDate: args.asAtDate }),
+  );
+
+  const ledgers = args.accounts
+    .filter((a) => !a.isGroup && a.isActive !== false)
+    .map((a) => ({
+      account: a,
+      amount: Math.abs(Number(totals[a.id] || 0)),
+      mapping: mapGroupToNepalFormat(
+        args.accounts.find((p) => p.id === a.parentId)?.name || a.name,
+      ),
+    }))
+    .filter((x) => x.amount >= threshold)
+    .sort((a, b) => b.amount - a.amount);
+
+  const bySection = new Map<string, typeof ledgers>();
+  for (const row of ledgers) {
+    const key = row.mapping.section;
+    if (!bySection.has(key)) bySection.set(key, []);
+    bySection.get(key)!.push(row);
+  }
+
+  const sectionTitles: Record<string, { title: string; titleNepali: string }> = {
+    equity: { title: "Share Capital & Reserves", titleNepali: "शेयर पूँजी तथा सुरक्षित कोष" },
+    "non-current-liability": { title: "Non-Current Liabilities", titleNepali: "दीर्घकालीन दायित्व" },
+    "current-liability": { title: "Current Liabilities", titleNepali: "चालु दायित्व" },
+    "fixed-asset": { title: "Property, Plant & Equipment", titleNepali: "स्थायी सम्पत्ति" },
+    "non-current-asset": { title: "Other Non-Current Assets", titleNepali: "अन्य दीर्घकालीन सम्पत्ति" },
+    "current-asset": { title: "Current Assets", titleNepali: "चालु सम्पत्ति" },
+    revenue: { title: "Revenue", titleNepali: "आय" },
+    cogs: { title: "Direct Expenses", titleNepali: "प्रत्यक्ष खर्च" },
+    "indirect-expense": { title: "Administrative Expenses", titleNepali: "प्रशासनिक खर्च" },
+    "other-income": { title: "Other Income", titleNepali: "अन्य आय" },
+  };
+
+  let noteNumber = 1;
+  const notes: AccountNote[] = [];
+
+  for (const [section, items] of bySection.entries()) {
+    const meta = sectionTitles[section] || { title: section, titleNepali: section };
+    const lines = items.map((x) => ({
+      label: `${x.account.code} — ${x.account.name}`,
+      amount: Number(totals[x.account.id] || 0),
+    }));
+    const total = totalsRound(lines.reduce((s, l) => s + l.amount, 0));
+    notes.push({
+      id: `note-${section}`,
+      noteNumber: noteNumber++,
+      title: meta.title,
+      titleNepali: meta.titleNepali,
+      lines,
+      total,
+    });
+  }
+
+  return notes;
 }

@@ -2,6 +2,7 @@
 // @ts-nocheck
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
+import { computeLedgerTotals } from "../lib/reportingHierarchy";
 import * as XLSX from "xlsx";
 import { Download, Info } from "lucide-react";
 
@@ -135,6 +136,19 @@ export default function CashFlowStatement() {
   const closingCash = cashAccounts.reduce(
     (s, acc) => s + (openingBalances[acc.id] || 0) + (movements[acc.id] || 0),
     0
+  );
+
+  const balanceSheetCash = useMemo(() => {
+    const totals = computeLedgerTotals(accounts, vouchers, { endDate: toDate });
+    return cashAccounts.reduce((sum, acc) => {
+      const entry = totals.get(acc.id);
+      return sum + Number(entry?.net || 0);
+    }, 0);
+  }, [accounts, vouchers, toDate, cashAccounts]);
+
+  const cashReconciliationDiff = useMemo(
+    () => Math.abs(closingCash - balanceSheetCash),
+    [closingCash, balanceSheetCash],
   );
 
   // ── INDIRECT METHOD computation ────────────────────────────────────────────
@@ -628,10 +642,10 @@ export default function CashFlowStatement() {
             { label: "Opening Cash & Bank Balance", amount: openingCash },
             { label: "Add: Net Change in Cash (A+B+C)", amount: netChange },
             { label: "Closing Cash & Bank Balance", amount: closingCash, bold: true },
-            { label: "Balance per Balance Sheet", amount: closingCash, bold: true }, // Approximation based on existing logic
-            ...(Math.abs(closingCash - closingCash) > 0.01 // Replace closingCash with balanceSheetCash if available in context
-              ? [{ label: "⚠ Reconciliation Difference", amount: 0, isError: true }]
-              : [{ label: "✓ Reconciliation: No difference", amount: 0, isSuccess: true }]
+            { label: "Balance per Balance Sheet", amount: balanceSheetCash, bold: true },
+            ...(cashReconciliationDiff > 0.01
+              ? [{ label: "Reconciliation Difference", amount: cashReconciliationDiff, isError: true }]
+              : [{ label: "Reconciliation: No difference", amount: 0, isSuccess: true }]
             ),
           ].map((r, i) => (
             <tr key={i} style={{

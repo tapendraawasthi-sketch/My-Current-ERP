@@ -13,6 +13,12 @@ import { computeProfitLoss, exportPLToExcel, exportPLToCSV } from "../lib/profit
 import type { PLReportOptions, PLComputation, PLDrillState } from "../lib/plTypes";
 import { RefreshCw, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
+import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
+import {
+  buildProfitLossData,
+  profitLossDataToRows,
+  shiftDateByYears,
+} from "../lib/nepalFinancialStatements";
 
 const DEFAULT_OPTIONS: PLReportOptions = {
   fromDate: new Date(new Date().getFullYear(), 3, 1).toISOString().split("T")[0], // April 1
@@ -40,7 +46,7 @@ const savePLOptions = (opts: PLReportOptions) => {
 };
 
 export default function ProfitLoss() {
-  const { companySettings, currentFiscalYear } = useStore();
+  const { companySettings, currentFiscalYear, accounts, vouchers } = useStore();
 
   // ── State ─────────────────────────────────────────────────────────────────
   const storedPLOpts = loadPLOptions();
@@ -53,6 +59,7 @@ export default function ProfitLoss() {
     return opts;
   });
   const [plData, setPlData] = useState<PLComputation | null>(null);
+  const [nasPlRows, setNasPlRows] = useState<ReturnType<typeof profitLossDataToRows> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [drillState, setDrillState] = useState<PLDrillState>({ level: 0 });
@@ -80,13 +87,31 @@ export default function ProfitLoss() {
         result.netProfitLabel = result.netProfit >= 0 ? "Net Profit" : "Net Loss";
       }
       setPlData(result);
+
+      if (opts.variant === "vertical") {
+        const prevFrom = shiftDateByYears(opts.fromDate, -1);
+        const prevTo = shiftDateByYears(opts.toDate, -1);
+        const nas = buildProfitLossData({
+          accounts: (accounts || []) as any[],
+          currentVouchers: (vouchers || []) as any[],
+          previousVouchers: (vouchers || []) as any[],
+          fromDate: opts.fromDate,
+          toDate: opts.toDate,
+          previousFromDate: prevFrom,
+          previousToDate: prevTo,
+          closingStockCurrent: result.closingStock,
+        });
+        setNasPlRows(profitLossDataToRows(nas));
+      } else {
+        setNasPlRows(null);
+      }
     } catch (err: any) {
       setError(err?.message || "Failed to compute P&L. Check account groupings.");
       toast.error("P&L computation failed.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [accounts, vouchers]);
 
   const handleOptionsConfirm = useCallback((newOptions: PLReportOptions) => {
     setOptions(newOptions);
@@ -260,13 +285,23 @@ export default function ProfitLoss() {
               onClosingStockUpdate={options.updateClosingStock ? handleClosingStockUpdate : undefined}
             />
           )}
-          {options.variant === "vertical" && (
+          {options.variant === "vertical" && nasPlRows ? (
+            <NepalFinancialStatementView
+              title="Profit & Loss — NAS / Schedule III"
+              subtitle={`For the period ${plData.fromDate} to ${plData.toDate}`}
+              rows={nasPlRows}
+              currentYearLabel={currentFiscalYear?.name || plData.toDate.slice(0, 4)}
+              previousYearLabel={String(
+                Number((currentFiscalYear?.name || plData.toDate.slice(0, 4)) - 1) || "Previous",
+              )}
+            />
+          ) : options.variant === "vertical" ? (
             <PLVertical
               pl={plData}
               options={options}
               onDrillDown={handleDrillDown}
             />
-          )}
+          ) : null}
           {options.variant === "monthly-summary" && (
             <PLMonthlySummary
               pl={plData}

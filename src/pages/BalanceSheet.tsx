@@ -11,6 +11,13 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
+import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
+import {
+  buildBalanceSheetData,
+  balanceSheetDataToRows,
+  shiftDateByYears,
+  type BalanceSheetData,
+} from "../lib/nepalFinancialStatements";
 
 // ─── Default Options ──────────────────────────────────────────────────────────
 
@@ -72,6 +79,21 @@ function OptionsDialog({
         </div>
 
         <div className="p-5 space-y-4 overflow-y-auto max-h-[75vh]">
+          {/* Format */}
+          <div>
+            <label className={lbl}>Reporting Standard</label>
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { v: "standard", l: "Standard (Tally Groups)" },
+                { v: "schedule-iii", l: "NAS / Schedule III" },
+              ].map(({ v, l }) => (
+                <button key={v} type="button" onClick={() => set("formatId", v)} className={tog(opts.formatId === v)}>
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Orientation */}
           <div>
             <label className={lbl}>Report Format / Orientation</label>
@@ -690,20 +712,35 @@ function VoucherView({ voucherId }: { voucherId: string }) {
 // ─── Main Balance Sheet Component ─────────────────────────────────────────────
 
 export default function BalanceSheet() {
-  const { tenant } = useStore();
-  const fy = tenant?.fiscalYears?.[0];
+  const { tenant, accounts, vouchers, currentFiscalYear } = useStore();
+  const fy = currentFiscalYear || tenant?.fiscalYears?.[0];
   
   const [options, setOptions] = useState<BSOptions>(makeDefaultOptions(fy));
   const [showOptions, setShowOptions] = useState(false);
   const [bsData, setBsData] = useState<BSComputation | null>(null);
+  const [nasData, setNasData] = useState<BalanceSheetData | null>(null);
   const [loading, setLoading] = useState(false);
   const [drillState, setDrillState] = useState<DrillState>({ level: 0, path: [] });
 
   const loadBS = useCallback(async (opts: BSOptions = options) => {
     setLoading(true);
     try {
-      const result = await computeBalanceSheet(opts);
-      setBsData(result);
+      if (opts.formatId === "schedule-iii") {
+        const prevTo = shiftDateByYears(opts.toDate, -1);
+        const nas = buildBalanceSheetData({
+          accounts: (accounts || []) as any[],
+          currentVouchers: (vouchers || []) as any[],
+          previousVouchers: (vouchers || []) as any[],
+          asAtDate: opts.toDate,
+          previousAsAtDate: prevTo,
+        });
+        setNasData(nas);
+        setBsData(null);
+      } else {
+        const result = await computeBalanceSheet(opts);
+        setBsData(result);
+        setNasData(null);
+      }
       setOptions(opts);
       setDrillState({ level: 0, path: [] });
     } catch (err) {
@@ -712,7 +749,7 @@ export default function BalanceSheet() {
     } finally {
       setLoading(false);
     }
-  }, [options]);
+  }, [options, accounts, vouchers]);
 
   useEffect(() => {
     loadBS();
@@ -845,12 +882,12 @@ export default function BalanceSheet() {
           <div className="flex items-center justify-center h-64">
             <RefreshCw className="h-8 w-8 animate-spin text-[#1557b0]" />
           </div>
-        ) : !bsData ? (
+        ) : !bsData && !nasData ? (
           <div className="text-center py-20 text-gray-500 text-[12px]">No data generated. Click Options to begin.</div>
         ) : (
           <div className="max-w-[1200px] mx-auto pb-10">
             {/* Imbalance Warning */}
-            {!bsData.isBalanced && drillState.level === 0 && (
+            {bsData && !bsData.isBalanced && drillState.level === 0 && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 no-print">
                 <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
                 <div>
@@ -893,15 +930,24 @@ export default function BalanceSheet() {
 
             {/* Drill State Views */}
             <div className="animate-fadeIn">
-              {drillState.level === 0 && (
+              {options.formatId === "schedule-iii" && nasData && drillState.level === 0 ? (
+                <NepalFinancialStatementView
+                  title="Balance Sheet — NAS / Schedule III"
+                  subtitle={`As at ${options.toDate}`}
+                  rows={balanceSheetDataToRows(nasData)}
+                  currentYearLabel={currentFiscalYear?.name || options.toDate.slice(0, 4)}
+                  previousYearLabel={String(Number((currentFiscalYear?.name || options.toDate.slice(0, 4)) - 1) || "Previous")}
+                  difference={nasData.difference}
+                />
+              ) : drillState.level === 0 && bsData ? (
                 options.orientation === "horizontal" ? (
                   <HorizontalBS bs={bsData} options={options} onDrillDown={handleDrillDown} onClosingStockEdit={() => {}} />
                 ) : (
                   <VerticalBS bs={bsData} options={options} onDrillDown={handleDrillDown} />
                 )
-              )}
+              ) : null}
               
-              {drillState.level === 1 && drillState.groupId && (
+              {drillState.level === 1 && drillState.groupId && bsData && (
                 <GroupSummaryView 
                   groupId={drillState.groupId} 
                   groupName={drillState.groupName || ""} 
@@ -927,7 +973,7 @@ export default function BalanceSheet() {
             </div>
 
             {/* Closing Stock Info (only on main report) */}
-            {drillState.level === 0 && (
+            {drillState.level === 0 && bsData && (
               <div className="mt-6 text-[10px] text-gray-400 text-center no-print flex items-center justify-center gap-2">
                 <Scale className="h-3.5 w-3.5" />
                 Closing Stock Source: <span className="font-semibold uppercase">{bsData.closingStockSource}</span> 
