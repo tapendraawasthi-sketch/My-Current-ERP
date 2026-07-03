@@ -1088,13 +1088,14 @@ export default function POSBilling() {
                 </tr>
               </thead>
               <tbody>
-                \${lines.map((l) => `
-                  <tr>
-                    <td>\${String(l?.itemName || (typeof items !== "undefined" ? itemName(items, l?.itemId) : "") || "-")}</td>
-                    <td class="right">\${Number(l?.qty || 0).toFixed(2)}</td>
-                    <td class="right">\${Number(l?.rate || 0).toFixed(2)}</td>
-                    <td class="right">\${Number(l?.lineTotal || 0).toFixed(2)}</td>
-                  </tr>`).join("")}
+                ${lines.map((l) => (
+                  `<tr>` +
+                  `<td>${String(l?.itemName || (typeof items !== "undefined" ? itemName(items, l?.itemId) : "") || "-")}</td>` +
+                  `<td class="right">${Number(l?.qty || 0).toFixed(2)}</td>` +
+                  `<td class="right">${Number(l?.rate || 0).toFixed(2)}</td>` +
+                  `<td class="right">${Number(l?.lineTotal || 0).toFixed(2)}</td>` +
+                  `</tr>`
+                )).join("")}
               </tbody>
             </table>
             <div class="line"></div>
