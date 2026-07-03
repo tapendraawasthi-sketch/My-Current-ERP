@@ -45,6 +45,10 @@ import CreditNoteVoucher from "./pages/CreditNoteVoucher";
 import PhysicalStockPage from "./pages/PhysicalStockPage";
 import CashFlowStatement from "./pages/CashFlowStatement";
 import RatioAnalysis from "./pages/RatioAnalysis";
+import FixedAssetRegister from "./pages/FixedAssetRegister";
+import PDCRegister from "./pages/PDCRegister";
+import EmployeeLoans from "./pages/EmployeeLoans";
+import NotesToAccounts from "./pages/NotesToAccounts";
 import FixedAssets from "./pages/FixedAssets";
 import BatchManagement from "./pages/BatchManagement";
 import PDCManagement from "./pages/PDCManagement";
@@ -149,9 +153,14 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      // Dashboard
+      // ─── Dashboards ─────────────────────────────────────────────────────────────
       case "financial-dashboard":
       case "dashboard": return <FinancialDashboard />;
+      
+      // New Modules
+      case "pdc-register": return <PDCRegister />;
+      case "employee-loans": return <EmployeeLoans />;
+      case "notes-to-accounts": return <NotesToAccounts />;
 
       // Masters
       case "accounts":
