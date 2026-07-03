@@ -913,28 +913,58 @@ export const useStore = create<AppState>()((...a) => {
     },
     addProduction: async (entry) => {
       const db = getDB();
-      await db.productions.put(entry);
-      set((state) => ({ productions: [entry, ...state.productions] }));
+      const id = entry.id || `prod-${generateId()}`;
+      const record = { ...entry, id, status: "DRAFT" as const };
+      await db.productions.put(record);
+      set((state) => ({ productions: [record, ...state.productions] }));
+      if (entry.status === "POSTED") {
+        await get().postProduction(id);
+      }
+      return record;
     },
     addUnassemble: async (entry) => {
       const db = getDB();
-      await db.unassembles.put(entry);
-      set((state) => ({ unassembles: [entry, ...state.unassembles] }));
+      const id = entry.id || `unasm-${generateId()}`;
+      const record = { ...entry, id, status: "DRAFT" as const };
+      await db.unassembles.put(record);
+      set((state) => ({ unassembles: [record, ...state.unassembles] }));
+      if (entry.status === "POSTED") {
+        await get().postUnassemble(id);
+      }
+      return record;
     },
     addMaterialIssued: async (entry) => {
       const db = getDB();
-      await db.materialIssued.put(entry);
-      set((state) => ({ materialIssued: [entry, ...state.materialIssued] }));
+      const id = entry.id || `mat-out-${generateId()}`;
+      const record = { ...entry, id, status: "DRAFT" as const };
+      await db.materialIssued.put(record);
+      set((state) => ({ materialIssued: [record, ...state.materialIssued] }));
+      if (entry.status === "POSTED") {
+        await get().postMaterialIssued(id);
+      }
+      return record;
     },
     addMaterialReceived: async (entry) => {
       const db = getDB();
-      await db.materialReceived.put(entry);
-      set((state) => ({ materialReceived: [entry, ...state.materialReceived] }));
+      const id = entry.id || `mat-in-${generateId()}`;
+      const record = { ...entry, id, status: "DRAFT" as const };
+      await db.materialReceived.put(record);
+      set((state) => ({ materialReceived: [record, ...state.materialReceived] }));
+      if (entry.status === "POSTED") {
+        await get().postMaterialReceived(id);
+      }
+      return record;
     },
     addPhysicalStock: async (entry) => {
       const db = getDB();
-      await db.physicalStocks.put(entry);
-      set((state) => ({ physicalStocks: [entry, ...state.physicalStocks] }));
+      const id = entry.id || `phys-${generateId()}`;
+      const record = { ...entry, id, status: "DRAFT" as const };
+      await db.physicalStocks.put(record);
+      set((state) => ({ physicalStocks: [record, ...state.physicalStocks] }));
+      if (entry.status === "POSTED") {
+        await get().postPhysicalStock(id);
+      }
+      return record;
     },
 
     ...accountSlice,

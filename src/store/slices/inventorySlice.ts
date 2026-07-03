@@ -255,13 +255,395 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
       stockMovements: [...s.stockMovements, ...newMovements],
     }));
   },
+
+  postProduction: async (id: string) => {
+    const db = getDB();
+    const entry = await db.productions.get(id);
+    if (!entry) throw new Error("Production entry not found");
+    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Production entry is already posted");
+
+    const { warehouses, inventoryConfig } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const allowNegative = inventoryConfig?.allowNegativeStock === true;
+    const newMovements: any[] = [];
+
+    for (const line of entry.rawMaterials || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      await assertStockAvailable(db, line, wh.id, entry.date, qty, allowNegative, wh.name);
+      const mov = buildOutMovement({
+        id: `mov-prod-${id}-raw-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "production",
+        narration: entry.narration || "Production — raw material consumption",
+        movementType: "adjustment-out",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    for (const line of entry.finishedGoods || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      const mov = buildInMovement({
+        id: `mov-prod-${id}-fg-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "production",
+        narration: entry.narration || "Production — finished goods",
+        movementType: "adjustment-in",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    const postedAt = new Date().toISOString();
+    await db.productions.update(id, { status: "POSTED", postedAt });
+    set((s) => ({
+      productions: s.productions.map((p: any) =>
+        p.id === id ? { ...p, status: "POSTED", postedAt } : p,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
+
+  postUnassemble: async (id: string) => {
+    const db = getDB();
+    const entry = await db.unassembles.get(id);
+    if (!entry) throw new Error("Unassemble entry not found");
+    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Unassemble entry is already posted");
+
+    const { warehouses, inventoryConfig } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const allowNegative = inventoryConfig?.allowNegativeStock === true;
+    const newMovements: any[] = [];
+
+    for (const line of entry.finishedGoods || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      await assertStockAvailable(db, line, wh.id, entry.date, qty, allowNegative, wh.name);
+      const mov = buildOutMovement({
+        id: `mov-unasm-${id}-fg-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "unassemble",
+        narration: entry.narration || "Unassemble — finished goods out",
+        movementType: "adjustment-out",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    for (const line of entry.components || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      const mov = buildInMovement({
+        id: `mov-unasm-${id}-comp-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "unassemble",
+        narration: entry.narration || "Unassemble — components in",
+        movementType: "adjustment-in",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    const postedAt = new Date().toISOString();
+    await db.unassembles.update(id, { status: "POSTED", postedAt });
+    set((s) => ({
+      unassembles: s.unassembles.map((p: any) =>
+        p.id === id ? { ...p, status: "POSTED", postedAt } : p,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
+
+  postMaterialIssued: async (id: string) => {
+    const db = getDB();
+    const entry = await db.materialIssued.get(id);
+    if (!entry) throw new Error("Material issued entry not found");
+    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Material issued entry is already posted");
+
+    const { warehouses, inventoryConfig } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const allowNegative = inventoryConfig?.allowNegativeStock === true;
+    const newMovements: any[] = [];
+
+    for (const line of entry.items || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      await assertStockAvailable(db, line, wh.id, entry.date, qty, allowNegative, wh.name);
+      const mov = buildOutMovement({
+        id: `mov-mat-out-${id}-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "material-issued",
+        narration: entry.narration || `Material issued to ${entry.partyName || "party"}`,
+        movementType: "material-issued",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    const postedAt = new Date().toISOString();
+    await db.materialIssued.update(id, { status: "POSTED", postedAt });
+    set((s) => ({
+      materialIssued: s.materialIssued.map((p: any) =>
+        p.id === id ? { ...p, status: "POSTED", postedAt } : p,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
+
+  postMaterialReceived: async (id: string) => {
+    const db = getDB();
+    const entry = await db.materialReceived.get(id);
+    if (!entry) throw new Error("Material received entry not found");
+    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Material received entry is already posted");
+
+    const { warehouses } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const newMovements: any[] = [];
+
+    for (const line of entry.items || []) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+      const mov = buildInMovement({
+        id: `mov-mat-in-${id}-${line.itemId}`,
+        date: entry.date,
+        itemId: line.itemId,
+        itemName: line.itemName,
+        warehouseId: wh.id,
+        warehouseName: wh.name,
+        qty,
+        rate,
+        referenceId: id,
+        referenceNo: entry.refNo,
+        referenceType: "material-received",
+        narration: entry.narration || `Material received from ${entry.partyName || "party"}`,
+        movementType: "material-received",
+      });
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    const postedAt = new Date().toISOString();
+    await db.materialReceived.update(id, { status: "POSTED", postedAt });
+    set((s) => ({
+      materialReceived: s.materialReceived.map((p: any) =>
+        p.id === id ? { ...p, status: "POSTED", postedAt } : p,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
+
+  postPhysicalStock: async (id: string) => {
+    const db = getDB();
+    const entry = (await db.physicalStocks.get(id)) as any;
+    if (!entry) throw new Error("Physical stock entry not found");
+    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Physical stock entry is already posted");
+
+    const { warehouses } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const newMovements: any[] = [];
+    const stockLines: any[] = entry.lines || entry.items || [];
+
+    for (const line of stockLines) {
+      const variance = Number(line.difference ?? line.variance ?? line.qty ?? 0);
+      if (variance === 0) continue;
+      const rate = Number(line.rate || 0);
+      const qty = Math.abs(variance);
+      const isExcess = variance > 0;
+      const refNo = entry.stockNo || entry.refNo;
+
+      const mov = isExcess
+        ? buildInMovement({
+            id: `mov-phys-${id}-${line.itemId}-in`,
+            date: entry.date,
+            itemId: line.itemId,
+            itemName: line.itemName,
+            warehouseId: wh.id,
+            warehouseName: wh.name,
+            qty,
+            rate,
+            referenceId: id,
+            referenceNo: refNo,
+            referenceType: "physical-stock",
+            narration: entry.narration || "Physical stock — excess",
+            movementType: "adjustment-in",
+          })
+        : buildOutMovement({
+            id: `mov-phys-${id}-${line.itemId}-out`,
+            date: entry.date,
+            itemId: line.itemId,
+            itemName: line.itemName,
+            warehouseId: wh.id,
+            warehouseName: wh.name,
+            qty,
+            rate,
+            referenceId: id,
+            referenceNo: refNo,
+            referenceType: "physical-stock",
+            narration: entry.narration || "Physical stock — shortage",
+            movementType: "adjustment-out",
+          });
+
+      await db.stockMovements.put(mov);
+      newMovements.push(mov);
+    }
+
+    const postedAt = new Date().toISOString();
+    await db.physicalStocks.update(id, { status: "POSTED", postedAt } as any);
+    set((s) => ({
+      physicalStocks: s.physicalStocks.map((p: any) =>
+        p.id === id ? { ...p, status: "POSTED", postedAt } : p,
+      ),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
 });
+
+function getDefaultWarehouse(warehouses: any[]): { id: string; name: string } {
+  const wh =
+    warehouses?.find((w: any) => w.isDefault && w.isActive !== false) ||
+    warehouses?.find((w: any) => w.isActive !== false);
+  if (!wh) throw new Error("No active warehouse configured");
+  return { id: wh.id, name: wh.name };
+}
+
+async function assertStockAvailable(
+  db: ReturnType<typeof getDB>,
+  line: { itemId: string; itemName?: string },
+  warehouseId: string,
+  asOfDate: string,
+  qty: number,
+  allowNegative: boolean,
+  warehouseName?: string,
+): Promise<void> {
+  if (allowNegative) return;
+  const existing = await db.stockMovements
+    .where("itemId")
+    .equals(line.itemId)
+    .toArray()
+    .catch(() => []);
+  const onHand = existing
+    .filter((m: any) => m.warehouseId === warehouseId && m.date <= asOfDate)
+    .reduce((sum: number, m: any) => {
+      const t = String(m.type || "").toLowerCase();
+      const q = Number(m.qty || 0);
+      return isOutwardType(t) ? sum - Math.abs(q) : sum + Math.abs(q);
+    }, 0);
+  if (onHand < qty) {
+    throw new Error(
+      `Insufficient stock for ${line.itemName || line.itemId} in ${warehouseName || "warehouse"}`,
+    );
+  }
+}
+
+function buildInMovement(args: {
+  id: string;
+  date: string;
+  itemId: string;
+  itemName?: string;
+  warehouseId: string;
+  warehouseName?: string;
+  qty: number;
+  rate: number;
+  referenceId: string;
+  referenceNo?: string;
+  referenceType: string;
+  narration?: string;
+  movementType: string;
+}) {
+  return {
+    id: args.id,
+    date: args.date,
+    type: args.movementType,
+    itemId: args.itemId,
+    itemName: args.itemName,
+    warehouseId: args.warehouseId,
+    warehouseName: args.warehouseName,
+    qty: args.qty,
+    rate: args.rate,
+    amount: args.qty * args.rate,
+    referenceId: args.referenceId,
+    referenceNo: args.referenceNo,
+    referenceType: args.referenceType,
+    narration: args.narration,
+  };
+}
+
+function buildOutMovement(args: {
+  id: string;
+  date: string;
+  itemId: string;
+  itemName?: string;
+  warehouseId: string;
+  warehouseName?: string;
+  qty: number;
+  rate: number;
+  referenceId: string;
+  referenceNo?: string;
+  referenceType: string;
+  narration?: string;
+  movementType: string;
+}) {
+  return {
+    ...buildInMovement(args),
+    qty: args.qty,
+  };
+}
 
 function isOutwardType(type: string): boolean {
   return (
     type.includes("sales") ||
     type.includes("transfer-out") ||
     type.includes("adjustment-out") ||
+    type.includes("material-issued") ||
+    type.includes("consumption") ||
     type === "out"
   );
 }

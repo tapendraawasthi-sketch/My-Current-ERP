@@ -16,7 +16,7 @@ interface PhysicalStockLine {
 }
 
 export default function PhysicalStockPage2() {
-  const { items, stockMovements } = useStore();
+  const { items, stockMovements, addPhysicalStock } = useStore();
   const [lines, setLines] = useState<PhysicalStockLine[]>([]);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [materialCentre, setMaterialCentre] = useState("Main Warehouse");
@@ -75,16 +75,31 @@ export default function PhysicalStockPage2() {
     totalVarianceItems: lines.filter(l => l.variance !== 0).length,
   }), [lines]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!loaded) { toast.error("Load items first"); return; }
     const variances = lines.filter(l => l.variance !== 0);
-    setSaved(true);
-    toast.success(`Physical Stock saved. ${summary.totalVarianceItems} variance items found. Stock Journal will be auto-created.`);
-    if (variances.length > 0) {
-      toast(
-        `📋 ${variances.filter(v => v.varianceType === "excess").length} excess, ${variances.filter(v => v.varianceType === "shortage").length} shortage items — Stock Journal generated`,
-        { icon: "ℹ️" }
-      );
+    try {
+      await addPhysicalStock({
+        id: crypto.randomUUID(),
+        date,
+        stockNo: `PS-${date.replace(/-/g, "")}`,
+        narration,
+        lines: variances.map((l) => ({
+          itemId: l.itemId,
+          itemName: l.itemName,
+          unit: l.unit,
+          systemQty: l.bookStock,
+          physicalQty: l.physicalStock,
+          difference: l.variance,
+          rate: 0,
+        })),
+        status: "POSTED",
+        createdAt: new Date().toISOString(),
+      });
+      setSaved(true);
+      toast.success(`Physical Stock saved. ${summary.totalVarianceItems} variance items posted to stock.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save physical stock");
     }
   };
 

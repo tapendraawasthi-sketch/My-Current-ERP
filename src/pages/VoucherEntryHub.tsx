@@ -31,6 +31,18 @@ const DebitNoteVoucher = lazy(() => import("./DebitNoteVoucher"));
 const StockJournalVoucher = lazy(() => import("./StockJournalPage"));
 const SalesOrderVoucher = lazy(() => import("./SalesOrderVoucher"));
 const MemorandumVoucher = lazy(() => import("./MemorandumVoucher"));
+const PhysicalStockVoucher = lazy(() => import("./PhysicalStockPage2"));
+const DeliveryChallanVoucher = lazy(() => import("./DeliveryChallan"));
+const GoodsReceiptVoucher = lazy(() => import("./GoodsReceiptNote"));
+const PurchaseOrderVoucher = lazy(() =>
+  import("./OrderVoucherPage").then((m) => ({
+    default: () => <m.default type="purchase_order" />,
+  })),
+);
+const PayrollVoucher = lazy(() => import("./Payroll"));
+const ReversingJournalVoucher = lazy(() => import("./ReversingJournals"));
+const MaterialIssuedVoucher = lazy(() => import("./MaterialIssuedPage"));
+const MaterialReceivedVoucher = lazy(() => import("./MaterialReceivedPage"));
 
 const VoucherEntryHub: React.FC = () => {
   const [activeVoucherType, setActiveVoucherType] = useState<string>("sales-invoice");
@@ -186,6 +198,24 @@ const VoucherEntryHub: React.FC = () => {
         return <DebitNoteVoucher />;
       case "stock-journal":
         return <StockJournalVoucher />;
+      case "physical-stock":
+        return <PhysicalStockVoucher />;
+      case "delivery-note":
+        return <DeliveryChallanVoucher />;
+      case "receipt-note":
+        return <GoodsReceiptVoucher />;
+      case "material-out":
+      case "material-issued":
+        return <MaterialIssuedVoucher />;
+      case "material-in":
+      case "material-received":
+        return <MaterialReceivedVoucher />;
+      case "purchase-order":
+        return <PurchaseOrderVoucher />;
+      case "payroll":
+        return <PayrollVoucher />;
+      case "reversing-journal":
+        return <ReversingJournalVoucher />;
       case "sales-order":
         return <SalesOrderVoucher />;
       case "memorandum":

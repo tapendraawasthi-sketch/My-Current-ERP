@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.js";
 import { sendSuccess } from "../middleware/responseEnvelope.js";
+import { processSyncRecord, type SyncRecordInput } from "../lib/syncHandlers.js";
 
 const router = Router();
 
@@ -16,8 +17,29 @@ router.post("/push", authMiddleware, async (req, res) => {
     return;
   }
 
-  const accepted = records.map((r: { id: string }) => r.id).filter(Boolean);
-  sendSuccess(res, { accepted, count: accepted.length });
+  const accepted: string[] = [];
+  const failed: Array<{ id: string; error: string }> = [];
+
+  for (const record of records as SyncRecordInput[]) {
+    const recordId = record?.id;
+    if (!recordId) continue;
+    try {
+      await processSyncRecord(req.user!, record);
+      accepted.push(recordId);
+    } catch (err) {
+      failed.push({
+        id: recordId,
+        error: err instanceof Error ? err.message : "Sync failed",
+      });
+    }
+  }
+
+  sendSuccess(res, {
+    accepted,
+    count: accepted.length,
+    failed,
+    failedCount: failed.length,
+  });
 });
 
 export default router;

@@ -106,6 +106,15 @@ import PurchaseRegister from "./pages/PurchaseRegister";
 import CashBook from "./pages/CashBook";
 import BankBook from "./pages/BankBook";
 import PartyLedgerStatement from "./pages/PartyLedgerStatement";
+import VoucherEntryHub from "./pages/VoucherEntryHub";
+import ConfigurationHub from "./pages/ConfigurationHub";
+import ChequeRegister from "./pages/ChequeRegister";
+import BankStatementImport from "./pages/BankStatementImport";
+import ChequePrinting from "./pages/ChequePrinting";
+import MaterialIssuedPage from "./pages/MaterialIssuedPage";
+import MaterialReceivedPage from "./pages/MaterialReceivedPage";
+import UnassemblePage from "./pages/UnassemblePage";
+import ReversingJournals from "./pages/ReversingJournals";
 
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
@@ -262,6 +271,20 @@ const App: React.FC = () => {
       case "physical-stock": return <PhysicalStockPage2 />;
       case "stock-journal": return <StockJournalPage />;
       case "production": return <ProductionPage />;
+      case "unassemble": return <UnassemblePage />;
+      case "material-issued":
+      case "material-out": return <MaterialIssuedPage />;
+      case "material-received":
+      case "material-in": return <MaterialReceivedPage />;
+      case "voucher-entry": return <VoucherEntryHub />;
+      case "configuration-hub":
+      case "configuration":
+      case "holidays": return <ConfigurationHub />;
+      case "cheque-register": return <ChequeRegister />;
+      case "bank-statement-import": return <BankStatementImport />;
+      case "cheque-printing": return <ChequePrinting />;
+      case "reversing-journals":
+      case "reversing-journal": return <ReversingJournals />;
 
       // Financial Reports
       case "balance-sheet": return <BalanceSheet />;

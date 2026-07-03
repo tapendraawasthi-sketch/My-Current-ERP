@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../store";
 import { ProductionEntry, StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
+import toast from "react-hot-toast";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -43,19 +44,23 @@ export default function ProductionPage() {
     setEntry((e) => ({ ...e, [key]: items }));
   };
 
-  const handleSave = () => {
-    addProduction({ ...entry, status: "POSTED" });
-    setShowForm(false);
-    setEntry({
-      id: crypto.randomUUID(),
-      date: new Date().toISOString().slice(0, 10),
-      narration: "",
-      refNo: "",
-      finishedGoods: [emptyItem()],
-      rawMaterials: [emptyItem()],
-      status: "DRAFT",
-      createdAt: new Date().toISOString(),
-    });
+  const handleSave = async () => {
+    try {
+      await addProduction({ ...entry, status: "POSTED" });
+      setShowForm(false);
+      setEntry({
+        id: crypto.randomUUID(),
+        date: new Date().toISOString().slice(0, 10),
+        narration: "",
+        refNo: "",
+        finishedGoods: [emptyItem()],
+        rawMaterials: [emptyItem()],
+        status: "DRAFT",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to post production");
+    }
   };
 
   return (
