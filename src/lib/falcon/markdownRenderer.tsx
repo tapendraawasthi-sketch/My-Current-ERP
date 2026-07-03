@@ -155,7 +155,7 @@ export function parseMarkdown(text: string): ParsedBlock[] {
     }
 
     // ── Horizontal rule ─────────────────────────────────────────────────
-    if (/^(-{3,}|_{3,}|*{3,})$/.test(line.trim())) {
+    if (/^(-{3,}|_{3,}|\*{3,})$/.test(line.trim())) {
       blocks.push({ type: "horizontal-rule" });
       i++;
       continue;
@@ -224,7 +224,7 @@ export function parseMarkdown(text: string): ParsedBlock[] {
       lines[i].trim() !== "" &&
       !lines[i].startsWith("```") &&
       !/^#{1,3}s+/.test(lines[i]) &&
-      !/^(-{3,}|_{3,}|*{3,})$/.test(lines[i].trim()) &&
+      !/^(-{3,}|_{3,}|\*{3,})$/.test(lines[i].trim()) &&
       !/^(s*[-•*]s+)/.test(lines[i]) &&
       !/^s*d+[.)]s+/.test(lines[i])
     ) {
