@@ -9,6 +9,7 @@ import Units from "./pages/Units";
 import CostCenters from "./pages/CostCenters";
 import Parties from "./pages/Parties";
 import StockBook from "./pages/StockBook";
+import LedgerMaster from "./pages/LedgerMaster";
 import SalesVoucher from "./pages/SalesVoucher";
 import PurchaseVoucher from "./pages/PurchaseVoucher";
 import PaymentVoucher from "./pages/PaymentVoucher";
