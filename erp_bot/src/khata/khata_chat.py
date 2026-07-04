@@ -12,6 +12,7 @@ from langchain_ollama import ChatOllama
 
 from ..config import MODEL_NAME, OLLAMA_BASE_URL
 from ..falcon_trader import parse_khata_message
+from ..vectorstore.ca_knowledge_store import search_ca_knowledge
 from .system_prompt import KHATA_SYSTEM_PROMPT
 
 _sessions: dict[str, list] = {}
@@ -157,6 +158,38 @@ def _lang_instruction(lang: str) -> str:
     return "\n\n[LANGUAGE] User uses mixed Nepali/English. Match their style."
 
 
+def _framework_context(text: str) -> str:
+    """Retrieve IFRS Conceptual Framework paragraphs relevant to the question."""
+    hits = search_ca_knowledge(text, k=4)
+    if not hits:
+        return ""
+    lines = []
+    for h in hits:
+        pid = h.get("paragraph_id", "")
+        section = h.get("section", "")
+        body = h.get("text", "")
+        if pid:
+            lines.append(f"[Para {pid}] {section}\n{body}")
+        else:
+            lines.append(body)
+    return (
+        "[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — retrieved for this question]\n"
+        + "\n\n".join(lines)
+    )
+
+
+def _is_framework_question(text: str) -> bool:
+    return bool(re.search(
+        r"\b(ifrs|nas|conceptual\s+framework|recognition|derecognition|measurement|"
+        r"faithful|relevance|comparability|materiality|going\s+concern|fair\s+value|"
+        r"historical\s+cost|economic\s+resource|present\s+obligation|unit\s+of\s+account|"
+        r"executory|substance|capital\s+maintenance|accrual\s+accounting|stewardship|"
+        r"sampatti|dayitwo|manyata|mulyankan|biswasilo|sambandhit|nyaya\s+mulya|"
+        r"paribhasha|ko\s+matlab|ko\s+paribhasha|k\s+ho)\b",
+        text, re.I,
+    ))
+
+
 def _invoke_llm(
     message: str,
     session_id: str,
@@ -252,7 +285,8 @@ def khata_chat(
             }
 
     # Accounting language Q&A and general conversation via Ollama
-    reply = _invoke_llm(text, session_id, balance, lang)
+    context = _framework_context(text) if _is_framework_question(text) else ""
+    reply = _invoke_llm(text, session_id, balance, lang, context=context)
     return {
         "kind": "chat",
         "reply": reply,

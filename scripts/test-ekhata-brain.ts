@@ -35,7 +35,7 @@ const classify = understandAccountingLanguage("Is debtors an asset or liability?
 check("classification question", classify.kind === "answer" && classify.reply.toLowerCase().includes("asset"));
 
 const compare = processEKhataMessage("difference between accrual and cash basis");
-check("comparison accrual vs cash", compare.kind === "chat" && compare.engine === "accounting-brain");
+check("comparison accrual vs cash", compare.kind === "chat" && (compare.engine === "accounting-brain" || compare.engine === "framework-brain"));
 
 const enChat = processEKhataMessage("who are you?");
 check("identity English", enChat.kind === "chat" && enChat.reply.toLowerCase().includes("e-khata"));

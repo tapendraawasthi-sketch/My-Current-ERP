@@ -10,12 +10,21 @@ import {
   understandAccountingLanguage,
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { shouldTryWorkParse } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
 export type EKhataEngine =
-  "brain" | "ollama" | "rules" | "hybrid" | "ca" | "accounting-brain" | "autonomous" | "web-search";
+  | "brain"
+  | "ollama"
+  | "rules"
+  | "hybrid"
+  | "ca"
+  | "accounting-brain"
+  | "framework-brain"
+  | "autonomous"
+  | "web-search";
 
 export type EKhataProcessResult =
   | {
@@ -110,7 +119,18 @@ export function processEKhataMessage(
     }
   }
 
-  // 2. Accounting language questions → semantic brain (bilingual)
+  // 2. IFRS/NAS Conceptual Framework — CA-level semantic brain (bilingual, intent-aware)
+  const frameworkAnswer = understandConceptualFramework(trimmed);
+  if (frameworkAnswer.kind === "answer" && frameworkAnswer.confidence >= 0.55) {
+    return {
+      kind: "chat",
+      reply: frameworkAnswer.reply,
+      normalizedText,
+      engine: "framework-brain",
+    };
+  }
+
+  // 3. Accounting language questions → semantic brain (bilingual)
   const accountingAnswer = understandAccountingLanguage(trimmed);
   if (accountingAnswer.kind === "answer" && accountingAnswer.confidence >= 0.6) {
     return {
@@ -121,7 +141,7 @@ export function processEKhataMessage(
     };
   }
 
-  // 3. General conversation → emotional conversational brain
+  // 4. General conversation → emotional conversational brain
   const reply = generateConversationalReply(trimmed, {
     balance: options.balance,
     history: options.history,
