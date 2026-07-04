@@ -4,29 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Contra Voucher — records transfers between Cash and Bank accounts ONLY.
- *
- * Common use cases:
- *   a) Cash deposit to bank      → FROM Cash (Cr), TO Bank (Dr)
- *   b) Cash withdrawal from bank → FROM Bank (Cr), TO Cash (Dr)
- *   c) Bank to bank transfer     → FROM Bank A (Cr), TO Bank B (Dr)
- *
- * Auto-built journal:
- *   FROM A/C ............ Cr (amount)
- *   TO   A/C ............ Dr (amount)
  */
 
 import React, { useState, useMemo, useEffect } from "react";
-import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
-import {
-  Card,
-  Badge,
-  Button,
-  Input,
-  Select,
-  NepaliDatePicker,
-  ConfirmDialog,
-} from "../components/ui";
+import { Input, Select, NepaliDatePicker, ConfirmDialog } from "../components/ui";
 import {
   ArrowRightLeft,
   ArrowLeft,
@@ -46,6 +28,14 @@ import toast from "react-hot-toast";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5 disabled:opacity-60";
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+
 const isCashOrBank = (a: any) => {
   if (!a || a.isGroup || a.isActive === false) return false;
   if (a.parentId === "grp-cash-in-hand" || a.parentId === "grp-bank-accounts") return true;
@@ -60,12 +50,35 @@ const acctKind = (a: any): "Cash" | "Bank" | "" => {
   return "";
 };
 
+const KindBadge = ({ kind }: { kind: "Cash" | "Bank" | "" }) => {
+  if (kind === "Cash") {
+    return (
+      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-amber-100 text-amber-700 inline-flex items-center gap-1">
+        <Banknote className="h-3 w-3" />
+        Cash
+      </span>
+    );
+  }
+  if (kind === "Bank") {
+    return (
+      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700 inline-flex items-center gap-1">
+        <Landmark className="h-3 w-3" />
+        Bank
+      </span>
+    );
+  }
+  return (
+    <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+      —
+    </span>
+  );
+};
+
 const ContraVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
 
-  // -- only Cash & Bank ledgers --
   const cashBankAccounts = useMemo(
     () => accounts.filter(isCashOrBank).sort((a, b) => (a.code || "").localeCompare(b.code || "")),
     [accounts],
@@ -80,11 +93,9 @@ const ContraVoucher: React.FC = () => {
     [cashBankAccounts],
   );
 
-  // -- header --
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [narration, setNarration] = useState("");
 
-  // -- from / to --
   const defaultCashId = useMemo(
     () => cashBankAccounts.find((a) => acctKind(a) === "Cash")?.id || "",
     [cashBankAccounts],
@@ -112,7 +123,6 @@ const ContraVoucher: React.FC = () => {
   const fromBal = useMemo(() => (fromAcct ? getAccountBalance(fromAcct) : null), [fromAcct]);
   const toBal = useMemo(() => (toAcct ? getAccountBalance(toAcct) : null), [toAcct]);
 
-  // available cash/bank balance in Dr (asset positive = Dr)
   const fromAvailable = useMemo(() => {
     if (!fromBal) return 0;
     return fromBal.sign === "Dr" ? fromBal.dr : -fromBal.cr;
@@ -123,11 +133,9 @@ const ContraVoucher: React.FC = () => {
     return toBal.sign === "Dr" ? toBal.dr : -toBal.cr;
   }, [toBal]);
 
-  // running balance after this transaction
   const fromAfter = round2(fromAvailable - (Number(amount) || 0));
   const toAfter = round2(toAvailable + (Number(amount) || 0));
 
-  // -- voucher no preview --
   const voucherNoPreview = useMemo(() => {
     try {
       const { voucherNo } = generateVoucherNo(
@@ -148,7 +156,6 @@ const ContraVoucher: React.FC = () => {
 
   const markDirty = () => setDirty(true);
 
-  // -- validation --
   const validate = (): string | null => {
     if (!fromId) return "Select the FROM (credit) account.";
     if (!toId) return "Select the TO (debit) account.";
@@ -251,339 +258,306 @@ const ContraVoucher: React.FC = () => {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-line react-hooks/exhaustive-deps
   }, [fromId, toId, amount, date, narration, dirty]);
 
-  // ---- success screen ----
   if (savedVoucher) {
     const amt = round2(amount);
     return (
-      <div className="flex flex-col items-center justify-center gap-5 py-20 animate-fadeIn text-center">
-        <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-8 w-8 text-green-600" />
+      <div className="flex h-full min-h-0 flex-col items-center justify-center gap-5 py-16 bg-[#f5f6fa] text-center px-4">
+        <div className="h-14 w-14 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
+          <CheckCircle2 className="h-7 w-7 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-black text-[#000000]">Contra Voucher Saved</h2>
-          <p className="text-xs text-[#000000] mt-1">
+          <h2 className="text-[15px] font-semibold text-gray-800">Contra voucher saved</h2>
+          <p className="text-[12px] text-gray-600 mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(amt)} transferred
           </p>
-          <p className="text-[11px] text-[#000000] mt-1 font-semibold">
+          <p className="text-[11px] text-gray-500 mt-1">
             {fromAcct?.name} → {toAcct?.name}
           </p>
         </div>
-        <div className="flex items-center gap-2.5">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handlePrint}
-            icon={<Printer className="h-4 w-4" />}
-          >
-            Print Voucher
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex items-center gap-2 flex-wrap justify-center">
+          <button type="button" className={btnPrimary} onClick={handlePrint}>
+            <Printer className="h-3.5 w-3.5" />
+            Print voucher
+          </button>
+          <button
+            type="button"
+            className={btnOutline}
             onClick={() => {
-              // reset for a new one
               setSavedVoucher(null);
               setAmount(0);
               setNarration("");
               setDirty(false);
             }}
           >
-            New Contra
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+            New contra
+          </button>
+          <button
+            type="button"
+            className={btnOutline}
             onClick={() => useStore.getState().setCurrentPage?.("vouchers")}
           >
             Done
-          </Button>
+          </button>
         </div>
       </div>
     );
   }
 
-  const KindBadge = ({ kind }: { kind: "Cash" | "Bank" | "" }) => {
-    if (kind === "Cash")
-      return (
-        <Badge variant="warning" size="sm">
-          <span className="inline-flex items-center gap-1">
-            <Banknote className="h-3 w-3" /> CASH
-          </span>
-        </Badge>
-      );
-    if (kind === "Bank")
-      return (
-        <Badge variant="info" size="sm">
-          <span className="inline-flex items-center gap-1">
-            <Landmark className="h-3 w-3" /> BANK
-          </span>
-        </Badge>
-      );
-    return (
-      <Badge variant="default" size="sm">
-        —
-      </Badge>
-    );
-  };
-
   const sameAccount = !!(fromId && toId && fromId === toId);
   const insufficient = !!(fromAcct && Number(amount) > 0 && round2(amount) > round2(fromAvailable));
 
   return (
-    <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
-      <ActionToolbar title="Contra Vouchers" subtitle="Cash/bank transfers" />
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
-            title="Back"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <div>
-            <h2 className="text-lg font-black text-[#000000] tracking-tight flex items-center gap-2">
-              <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
-              NEW CONTRA VOUCHER
-            </h2>
-            <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
-              Transfer between cash &amp; bank accounts only
-            </p>
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto">
+      <div className="p-4 space-y-4 max-w-5xl mx-auto w-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="h-8 w-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+              title="Back"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <div>
+              <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+                <ArrowRightLeft className="h-4 w-4 text-[#1557b0]" />
+                New contra voucher
+              </h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Transfer between cash and bank accounts only
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="info" size="md">
-            CONTRA
-          </Badge>
-          <Badge variant="default">NEW</Badge>
-        </div>
-      </div>
-
-      {/* Meta */}
-      <Card border padding="md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">Voucher No</span>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
-              {voucherNoPreview}
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+              Contra
+            </span>
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+              New
             </span>
           </div>
-          <div>
-            <NepaliDatePicker
-              label="Date (BS)"
-              value={date}
-              onChange={(v) => {
-                setDate(v);
-                markDirty();
-              }}
-              required
-            />
-            <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
-          </div>
         </div>
-      </Card>
 
-      {/* FROM → TO */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
-        {/* FROM */}
-        <Card border padding="md" className="border-l-4 border-l-red-500">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-black text-[#000000] uppercase tracking-wider">
-              From (Credit)
-            </h3>
-            <KindBadge kind={fromKind} />
-          </div>
-          <div className="flex flex-col gap-3">
-            <Select
-              label="Account"
-              options={accountOptions}
-              value={fromId}
-              onChange={(v) => {
-                setFromId(v);
-                markDirty();
-              }}
-              placeholder="Select cash / bank account"
-              searchable
-              required
-            />
-            <Input
-              label="Amount"
-              type="number"
-              value={amount || ""}
-              onChange={(v) => {
-                setAmount(Number(v) || 0);
-                markDirty();
-              }}
-              placeholder="0.00"
-              required
-              error={insufficient ? "Insufficient balance" : undefined}
-            />
-            {fromAcct && (
-              <div className="rounded-md bg-[#EBF5E2] border border-[#9DC07A] p-2.5 text-[11px] font-semibold flex flex-col gap-1">
-                <div className="flex justify-between text-[#000000]">
-                  <span>Available now</span>
-                  <span className="font-mono text-[#000000]">
-                    {symbol} {formatNumber(fromAvailable)}
-                  </span>
-                </div>
-                <div className="flex justify-between border-t border-[#9DC07A] pt-1">
-                  <span className="text-[#000000]">After transfer</span>
-                  <span
-                    className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-[#000000]"}`}
-                  >
-                    {symbol} {formatNumber(fromAfter)}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-        </Card>
-
-        {/* Arrow */}
-        <div className="flex items-center justify-center">
-          <div className="h-10 w-10 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[#000000]">
-            <ArrowRight className="h-5 w-5" />
+        <div className="bg-white border border-gray-200 rounded-md p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium text-gray-600 w-28 shrink-0">
+                Voucher no
+              </span>
+              <span className="inline-flex items-center px-2.5 h-8 rounded-md bg-gray-50 border border-gray-200 font-mono text-[12px] font-medium text-gray-800">
+                {voucherNoPreview}
+              </span>
+            </div>
+            <div>
+              <NepaliDatePicker
+                label="Date (BS)"
+                value={date}
+                onChange={(v) => {
+                  setDate(v);
+                  markDirty();
+                }}
+                required
+              />
+              <p className="text-[11px] text-gray-500 mt-1">AD: {date}</p>
+            </div>
           </div>
         </div>
 
-        {/* TO */}
-        <Card border padding="md" className="border-l-4 border-l-green-500">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-black text-[#000000] uppercase tracking-wider">
-              To (Debit)
-            </h3>
-            <KindBadge kind={toKind} />
-          </div>
-          <div className="flex flex-col gap-3">
-            <Select
-              label="Account"
-              options={accountOptions.filter((o) => o.value !== fromId)}
-              value={toId}
-              onChange={(v) => {
-                setToId(v);
-                markDirty();
-              }}
-              placeholder="Select cash / bank account"
-              searchable
-              required
-              error={sameAccount ? "Cannot match FROM account" : undefined}
-            />
-            <Input
-              label="Amount"
-              type="number"
-              value={amount || ""}
-              onChange={() => {}}
-              placeholder="0.00"
-              disabled
-              hint="Auto-matches FROM amount"
-            />
-            {toAcct && (
-              <div className="rounded-md bg-[#EBF5E2] border border-[#9DC07A] p-2.5 text-[11px] font-semibold flex flex-col gap-1">
-                <div className="flex justify-between text-[#000000]">
-                  <span>Available now</span>
-                  <span className="font-mono text-[#000000]">
-                    {symbol} {formatNumber(toAvailable)}
-                  </span>
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
+          <div className="bg-white border border-gray-200 rounded-md p-4 border-l-[3px] border-l-red-400">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                From (credit)
+              </h3>
+              <KindBadge kind={fromKind} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <Select
+                label="Account"
+                options={accountOptions}
+                value={fromId}
+                onChange={(v) => {
+                  setFromId(v);
+                  markDirty();
+                }}
+                placeholder="Select cash / bank account"
+                searchable
+                required
+              />
+              <Input
+                label="Amount"
+                type="number"
+                value={amount || ""}
+                onChange={(v) => {
+                  setAmount(Number(v) || 0);
+                  markDirty();
+                }}
+                placeholder="0.00"
+                required
+                error={insufficient ? "Insufficient balance" : undefined}
+              />
+              {fromAcct && (
+                <div className="rounded-md bg-gray-50 border border-gray-200 p-2.5 text-[11px] flex flex-col gap-1">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Available now</span>
+                    <span className="font-mono text-gray-800">
+                      {symbol} {formatNumber(fromAvailable)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-200 pt-1">
+                    <span className="text-gray-600">After transfer</span>
+                    <span
+                      className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-gray-800"}`}
+                    >
+                      {symbol} {formatNumber(fromAfter)}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between border-t border-[#9DC07A] pt-1">
-                  <span className="text-[#000000]">After transfer</span>
-                  <span className="font-mono text-green-700">
-                    {symbol} {formatNumber(toAfter)}
-                  </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center">
+            <div className="h-9 w-9 rounded-full bg-[#f5f6fa] border border-gray-200 flex items-center justify-center text-gray-500">
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-md p-4 border-l-[3px] border-l-green-500">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                To (debit)
+              </h3>
+              <KindBadge kind={toKind} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <Select
+                label="Account"
+                options={accountOptions.filter((o) => o.value !== fromId)}
+                value={toId}
+                onChange={(v) => {
+                  setToId(v);
+                  markDirty();
+                }}
+                placeholder="Select cash / bank account"
+                searchable
+                required
+                error={sameAccount ? "Cannot match FROM account" : undefined}
+              />
+              <Input
+                label="Amount"
+                type="number"
+                value={amount || ""}
+                onChange={() => {}}
+                placeholder="0.00"
+                disabled
+                hint="Auto-matches FROM amount"
+              />
+              {toAcct && (
+                <div className="rounded-md bg-gray-50 border border-gray-200 p-2.5 text-[11px] flex flex-col gap-1">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Available now</span>
+                    <span className="font-mono text-gray-800">
+                      {symbol} {formatNumber(toAvailable)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-200 pt-1">
+                    <span className="text-gray-600">After transfer</span>
+                    <span className="font-mono text-green-700">
+                      {symbol} {formatNumber(toAfter)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </Card>
-      </div>
+        </div>
 
-      {/* Narration */}
-      <Card border padding="md">
-        <Input
-          label="Narration"
-          value={narration}
-          onChange={(v) => {
-            setNarration(v);
-            markDirty();
-          }}
-          placeholder="e.g. Being cash deposited to bank"
-        />
-      </Card>
+        <div className="bg-white border border-gray-200 rounded-md p-4">
+          <Input
+            label="Narration"
+            value={narration}
+            onChange={(v) => {
+              setNarration(v);
+              markDirty();
+            }}
+            placeholder="e.g. Being cash deposited to bank"
+          />
+        </div>
 
-      {/* Journal preview */}
-      {fromAcct && toAcct && Number(amount) > 0 && (
-        <Card border padding="md">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[11px] font-black text-[#000000] uppercase tracking-wider">
-              Journal Preview
-            </h3>
-            <Badge variant="success" size="sm">
-              BALANCED
-            </Badge>
+        {fromAcct && toAcct && Number(amount) > 0 && (
+          <div className="bg-white border border-gray-200 rounded-md p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Journal preview
+              </h3>
+              <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700 border border-green-200">
+                Balanced
+              </span>
+            </div>
+            <div className="rounded-md border border-gray-200 overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className={th}>Account</th>
+                    <th className={`${th} text-right`}>Debit</th>
+                    <th className={`${th} text-right`}>Credit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className={`${td} font-medium text-gray-800`}>
+                      {toAcct.name} <span className="text-[10px] text-gray-500">Dr</span>
+                    </td>
+                    <td className={`${td} text-right font-mono text-green-700 font-medium`}>
+                      {symbol} {formatNumber(amount)}
+                    </td>
+                    <td className={`${td} text-right font-mono text-gray-400`}>—</td>
+                  </tr>
+                  <tr>
+                    <td className={`${td} pl-8 text-gray-700`}>
+                      To {fromAcct.name} <span className="text-[10px] text-gray-500">Cr</span>
+                    </td>
+                    <td className={`${td} text-right font-mono text-gray-400`}>—</td>
+                    <td className={`${td} text-right font-mono text-red-600 font-medium`}>
+                      {symbol} {formatNumber(amount)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="rounded-md border border-[#9DC07A] overflow-hidden">
-            <table className="w-full text-xs font-mono">
-              <thead className="bg-[#EBF5E2] text-[11px] font-bold text-[#000000] uppercase">
-                <tr>
-                  <th className="px-3 py-2 text-left">Account</th>
-                  <th className="px-3 py-2 text-right">Debit</th>
-                  <th className="px-3 py-2 text-right">Credit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-t border-[#9DC07A]">
-                  <td className="px-3 py-2 text-[#000000] font-semibold">
-                    {toAcct.name} <span className="text-[10px] text-[#000000]">Dr</span>
-                  </td>
-                  <td className="px-3 py-2 text-right text-green-700 font-bold">
-                    {symbol} {formatNumber(amount)}
-                  </td>
-                  <td className="px-3 py-2 text-right text-[#000000]">—</td>
-                </tr>
-                <tr className="border-t border-[#9DC07A]">
-                  <td className="px-3 py-2 pl-8 text-[#000000]">
-                    To {fromAcct.name} <span className="text-[10px] text-[#000000]">Cr</span>
-                  </td>
-                  <td className="px-3 py-2 text-right text-[#000000]">—</td>
-                  <td className="px-3 py-2 text-right text-red-600 font-bold">
-                    {symbol} {formatNumber(amount)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      )}
+        )}
 
-      {/* Footer actions */}
-      <div className="flex items-center justify-between border-t border-[#9DC07A] pt-4">
-        <p className="text-[11px] text-[#000000] font-semibold">ESC to cancel · F12 to post</p>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleBack}>
-            Cancel
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleSave(VoucherStatus.DRAFT)}
-            loading={saving}
-            icon={<Save className="h-4 w-4" />}
-          >
-            Save Draft
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => handleSave(VoucherStatus.POSTED)}
-            loading={saving}
-            icon={<CheckCircle2 className="h-4 w-4" />}
-          >
-            Post Contra
-          </Button>
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4 pb-2">
+          <p className="text-[11px] text-gray-500">Esc to cancel · F12 to post</p>
+          <div className="flex items-center gap-2">
+            <button type="button" className={btnOutline} onClick={handleBack}>
+              Cancel
+            </button>
+            <button
+              type="button"
+              className={btnOutline}
+              disabled={saving}
+              onClick={() => handleSave(VoucherStatus.DRAFT)}
+            >
+              <Save className="h-3.5 w-3.5" />
+              Save draft
+            </button>
+            <button
+              type="button"
+              className={btnPrimary}
+              disabled={saving}
+              onClick={() => handleSave(VoucherStatus.POSTED)}
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Post contra
+            </button>
+          </div>
         </div>
       </div>
 
