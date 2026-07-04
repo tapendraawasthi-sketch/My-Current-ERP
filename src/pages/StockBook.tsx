@@ -5,10 +5,11 @@
 import React, { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { BarChart2, Download, RefreshCw, TrendingUp, Package, AlertTriangle } from "lucide-react";
+import { Download, Package } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
-import { adToBS, formatBS, todayBS } from "../lib/nepaliDate";
+import { adToBS } from "../lib/nepaliDate";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 import {
   computeWeightedAverage,
   computeFIFO,
@@ -28,7 +29,41 @@ function toBSDisplay(dateStr: string): string {
   }
 }
 
-// ── Amt cell ──────────────────────────────────────────────────────────────────
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const thR = `${th} text-right`;
+const td = "px-3 py-2.5 text-[12px] text-gray-700";
+const tdR = `${td} font-mono text-right`;
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50";
+const inputCls =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600";
+
+function typeBadge(movementType: string, voucherType: string, inQty: number) {
+  if (movementType === "opening") {
+    return (
+      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+        {voucherType}
+      </span>
+    );
+  }
+  if (inQty > 0) {
+    return (
+      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
+        {voucherType}
+      </span>
+    );
+  }
+  return (
+    <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-amber-100 text-amber-700">
+      {voucherType}
+    </span>
+  );
+}
+
 const Amt = ({ v, cls = "" }: { v: number; cls?: string }) =>
   v !== 0 ? (
     <span className={`font-mono text-right ${cls}`}>{formatNumber(v)}</span>
@@ -39,7 +74,7 @@ const Amt = ({ v, cls = "" }: { v: number; cls?: string }) =>
 // ─────────────────────────────────────────────────────────────────────────────
 
 const StockBook: React.FC = () => {
-  const { items, warehouses, stockMovements, currentFiscalYear, companySettings } = useStore();
+  const { items, warehouses, stockMovements, currentFiscalYear } = useStore();
 
   const [selectedItemId, setSelectedItemId] = useState("");
   const [selectedWarehouseId, setSelectedWarehouseId] = useState("");
@@ -114,59 +149,45 @@ const StockBook: React.FC = () => {
   const methodLabel = method === "fifo" ? "FIFO" : "Weighted Average";
 
   return (
-    <div className="page-wrapper">
-      {/* ── Toolbar ── */}
-      <div className="page-toolbar">
-        <div className="page-toolbar-left">
-          <BarChart2 className="h-4 w-4" />
-          <span className="page-title">STOCK LEDGER</span>
-          <span className="badge badge-info" style={{ fontSize: 10 }}>
-            Valuation: {methodLabel}
-          </span>
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock Ledger</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Item-wise movement history with {methodLabel.toLowerCase()} valuation
+          </p>
         </div>
-        <div className="page-toolbar-right">
+        <div className="flex items-center gap-2 no-print">
           <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border rounded ${
-              method === "weighted-average"
-                ? "bg-[#C9DEB5] border-black"
-                : "bg-[#EBF5E2] border-black hover:bg-[#D4EABD]"
-            }`}
+            type="button"
+            className={method === "weighted-average" ? btnPrimary : btnOutline}
             onClick={() => setMethod("weighted-average")}
           >
-            Weighted Avg
+            Weighted avg
           </button>
           <button
-            className={`px-3 py-1 text-[11px] font-bold uppercase border rounded ${
-              method === "fifo"
-                ? "bg-[#C9DEB5] border-black"
-                : "bg-[#EBF5E2] border-black hover:bg-[#D4EABD]"
-            }`}
+            type="button"
+            className={method === "fifo" ? btnPrimary : btnOutline}
             onClick={() => setMethod("fifo")}
           >
             FIFO
           </button>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-1 px-3 py-1 text-[11px] border border-black rounded bg-[#EBF5E2] hover:bg-[#D4EABD]"
-          >
-            <Download className="h-3.5 w-3.5" /> Export
+          <button type="button" className={btnOutline} onClick={handleExport}>
+            <Download className="h-3.5 w-3.5 inline mr-1" />
+            Export
           </button>
         </div>
       </div>
 
-      {/* ── Filter bar ── */}
-      <div className="flex flex-wrap items-center gap-3 px-4 py-2 bg-[#EBF5E2] border-b border-black">
-        {/* Item selector */}
-        <div className="flex flex-col gap-0.5">
-          <label className="text-[9px] font-bold uppercase text-gray-600 tracking-wide">
-            Stock Item *
-          </label>
+      <div className="no-print flex flex-wrap items-end gap-3 mb-4 bg-white border border-gray-200 rounded-md p-3">
+        <div>
+          <label className={labelCls}>Stock item</label>
           <select
             value={selectedItemId}
             onChange={(e) => setSelectedItemId(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[220px]"
+            className={`${inputCls} min-w-[220px]`}
           >
-            <option value="">-- Select Item --</option>
+            <option value="">Select item</option>
             {(items ?? [])
               .filter((i) => i.type !== "service")
               .sort((a, b) => a.name.localeCompare(b.name))
@@ -177,17 +198,14 @@ const StockBook: React.FC = () => {
               ))}
           </select>
         </div>
-        {/* Warehouse */}
-        <div className="flex flex-col gap-0.5">
-          <label className="text-[9px] font-bold uppercase text-gray-600 tracking-wide">
-            Warehouse
-          </label>
+        <div>
+          <label className={labelCls}>Warehouse</label>
           <select
             value={selectedWarehouseId}
             onChange={(e) => setSelectedWarehouseId(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2] min-w-[160px]"
+            className={`${inputCls} min-w-[160px]`}
           >
-            <option value="">All Warehouses</option>
+            <option value="">All warehouses</option>
             {(warehouses ?? []).map((w) => (
               <option key={w.id} value={w.id}>
                 {w.name}
@@ -195,256 +213,136 @@ const StockBook: React.FC = () => {
             ))}
           </select>
         </div>
-        {/* From date */}
-        <div className="flex flex-col gap-0.5">
-          <label className="text-[9px] font-bold uppercase text-gray-600 tracking-wide">
-            From Date
-          </label>
+        <div>
+          <label className={labelCls}>From date</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
+            className={inputCls}
           />
         </div>
-        {/* To date */}
-        <div className="flex flex-col gap-0.5">
-          <label className="text-[9px] font-bold uppercase text-gray-600 tracking-wide">
-            To Date
-          </label>
+        <div>
+          <label className={labelCls}>To date</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2 text-[12px] border border-black rounded bg-[#EBF5E2]"
+            className={inputCls}
           />
         </div>
       </div>
 
-      {/* ── KPI strip ── */}
       {result && (
-        <div className="grid grid-cols-5 gap-0 border-b border-black bg-[#D4EABD]">
+        <div className="flex flex-col sm:flex-row border border-gray-200 rounded-md bg-white overflow-hidden mb-4">
           {[
-            {
-              label: "Opening Qty",
-              val: result.openingQty,
-              rate: result.openingRate,
-              value: result.openingValue,
-            },
-            {
-              label: "Total Inward",
-              val: result.totalInQty,
-              rate: null,
-              value: result.totalInValue,
-            },
-            {
-              label: "Total Outward",
-              val: result.totalOutQty,
-              rate: null,
-              value: result.totalOutValue,
-            },
-            {
-              label: "Closing Qty",
-              val: result.closingQty,
-              rate: result.weightedAvgRate,
-              value: result.closingValue,
-            },
-          ].map((k, i) => (
-            <div key={i} className="px-4 py-2 border-r border-black last:border-r-0">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">
-                {k.label}
+            { label: "Opening qty", val: result.openingQty },
+            { label: "Total inward", val: result.totalInQty },
+            { label: "Total outward", val: result.totalOutQty },
+            { label: "Closing qty", val: result.closingQty },
+          ].map((cell, idx, arr) => (
+            <div
+              key={cell.label}
+              className={`flex-1 px-4 py-3 ${idx < arr.length - 1 ? "border-r border-gray-200" : ""}`}
+            >
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                {cell.label}
               </div>
-              <div className="text-[16px] font-bold font-mono">{formatNumber(k.val)}</div>
-              {k.rate !== null && (
-                <div className="text-[10px] text-gray-600">
-                  @ {formatNumber(k.rate)} = <strong>Rs. {formatNumber(k.value)}</strong>
-                </div>
-              )}
-              {k.rate === null && (
-                <div className="text-[10px] text-gray-600">
-                  Value: <strong>Rs. {formatNumber(k.value)}</strong>
-                </div>
-              )}
+              <div className="text-[15px] font-mono font-semibold text-gray-800 mt-1">
+                {formatNumber(cell.val)}
+              </div>
             </div>
           ))}
-          <div className="px-4 py-2">
-            <div className="text-[9px] font-bold uppercase tracking-wide text-gray-600">Method</div>
-            <div className="text-[14px] font-bold">{methodLabel}</div>
-            <div className="text-[10px] text-gray-600">{selectedItem?.name}</div>
-          </div>
         </div>
       )}
 
-      {/* ── Main content ── */}
-      <div className="page-content-area overflow-auto">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
         {!selectedItemId ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-500">
-            <Package className="h-12 w-12 text-gray-300" />
-            <div className="text-sm font-semibold">Select a stock item to view its ledger</div>
-            <div className="text-xs">Choose an item above to see movement-wise valuation</div>
-          </div>
+          <ReportEmptyState
+            icon={<Package size={28} strokeWidth={1.5} />}
+            message="Select a stock item to view its ledger"
+            hint="Choose an item from the filter bar above."
+          />
         ) : filteredRows.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-500">
-            <RefreshCw className="h-8 w-8 text-gray-300" />
-            <div className="text-sm font-semibold">No movements found for the selected period</div>
-          </div>
+          <ReportEmptyState
+            message="No movements found for the selected period"
+            hint="Adjust the date range or check stock transactions for this item."
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="data-table w-full" style={{ minWidth: 1100 }}>
+            <table className="w-full border-collapse" style={{ minWidth: 1100 }}>
               <thead>
-                <tr>
-                  <th className="px-3 py-2 text-left whitespace-nowrap" style={{ width: 100 }}>
-                    Date (BS)
-                  </th>
-                  <th className="px-3 py-2 text-left whitespace-nowrap" style={{ width: 110 }}>
-                    Voucher No.
-                  </th>
-                  <th className="px-3 py-2 text-left whitespace-nowrap" style={{ width: 130 }}>
-                    Voucher Type
-                  </th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#EBF5E2]">In Qty</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#EBF5E2]">In Rate</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#EBF5E2]">In Value</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#fef3c7]">Out Qty</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#fef3c7]">Out Rate</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#fef3c7]">Out Value</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#D4EABD]">Bal Qty</th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#D4EABD]">
-                    Bal Rate{method === "fifo" ? " (FIFO)" : " (Avg)"}
-                  </th>
-                  <th className="px-3 py-2 text-right whitespace-nowrap bg-[#D4EABD]">Bal Value</th>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className={th}>Date (BS)</th>
+                  <th className={th}>Voucher no.</th>
+                  <th className={th}>Voucher type</th>
+                  <th className={thR}>In qty</th>
+                  <th className={thR}>In rate</th>
+                  <th className={thR}>In value</th>
+                  <th className={thR}>Out qty</th>
+                  <th className={thR}>Out rate</th>
+                  <th className={thR}>Out value</th>
+                  <th className={thR}>Bal qty</th>
+                  <th className={thR}>Bal rate</th>
+                  <th className={thR}>Bal value</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRows.map((row, idx) => (
-                  <tr key={row.movementId} className={idx % 2 === 0 ? "bg-[#EBF5E2]" : "bg-white"}>
-                    <td className="px-3 py-1.5 text-[11px] font-mono whitespace-nowrap">
-                      {toBSDisplay(row.date)}
+                {filteredRows.map((row) => (
+                  <tr key={row.movementId} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className={`${td} font-mono whitespace-nowrap`}>{toBSDisplay(row.date)}</td>
+                    <td className={`${td} font-mono`}>{row.voucherNo}</td>
+                    <td className={td}>{typeBadge(row.type, row.voucherType, row.inQty)}</td>
+                    <td className={tdR}>
+                      <Amt v={row.inQty} />
                     </td>
-                    <td className="px-3 py-1.5 text-[11px] font-mono">{row.voucherNo}</td>
-                    <td className="px-3 py-1.5 text-[11px]">
-                      <span
-                        className={`badge ${
-                          row.type === "opening"
-                            ? "badge-info"
-                            : row.inQty > 0
-                              ? "badge-success"
-                              : "badge-warning"
-                        }`}
-                      >
-                        {row.voucherType}
-                      </span>
-                    </td>
-                    {/* Inward */}
-                    <td className="px-3 py-1.5 text-right bg-[#EBF5E2]">
-                      <Amt v={row.inQty} cls="text-green-700" />
-                    </td>
-                    <td className="px-3 py-1.5 text-right bg-[#EBF5E2]">
+                    <td className={tdR}>
                       <Amt v={row.inRate} />
                     </td>
-                    <td className="px-3 py-1.5 text-right bg-[#EBF5E2]">
-                      <Amt v={row.inValue} cls="text-green-700 font-semibold" />
+                    <td className={tdR}>
+                      <Amt v={row.inValue} />
                     </td>
-                    {/* Outward */}
-                    <td className="px-3 py-1.5 text-right bg-[#fef3c7]">
-                      <Amt v={row.outQty} cls="text-red-700" />
+                    <td className={tdR}>
+                      <Amt v={row.outQty} />
                     </td>
-                    <td className="px-3 py-1.5 text-right bg-[#fef3c7]">
+                    <td className={tdR}>
                       <Amt v={row.outRate} />
                     </td>
-                    <td className="px-3 py-1.5 text-right bg-[#fef3c7]">
-                      <Amt v={row.outValue} cls="text-red-700 font-semibold" />
+                    <td className={tdR}>
+                      <Amt v={row.outValue} />
                     </td>
-                    {/* Balance */}
-                    <td className="px-3 py-1.5 text-right font-bold bg-[#D4EABD]">
-                      <span className={`font-mono ${row.balQty < 0 ? "text-red-700" : ""}`}>
-                        {formatNumber(row.balQty)}
-                      </span>
+                    <td className={`${tdR} font-semibold`}>
+                      <Amt v={row.balQty} cls={row.balQty < 0 ? "text-red-700" : ""} />
                     </td>
-                    <td className="px-3 py-1.5 text-right bg-[#D4EABD]">
-                      <span className="font-mono">{formatNumber(row.balRate)}</span>
+                    <td className={tdR}>
+                      <Amt v={row.balRate} />
                     </td>
-                    <td className="px-3 py-1.5 text-right font-bold bg-[#D4EABD]">
-                      <span className="font-mono">{formatNumber(row.balValue)}</span>
+                    <td className={`${tdR} font-semibold`}>
+                      <Amt v={row.balValue} />
                     </td>
                   </tr>
                 ))}
               </tbody>
-              {/* ── Closing summary footer ── */}
               <tfoot>
-                <tr className="border-t-2 border-black bg-[#C9DEB5] font-bold">
-                  <td colSpan={3} className="px-3 py-2 text-[12px] uppercase">
-                    Period Totals / Closing Stock
+                <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
+                  <td colSpan={3} className={`${td} font-semibold text-gray-800`}>
+                    Period totals / closing stock
                   </td>
-                  <td className="px-3 py-2 text-right font-mono text-green-700">
-                    {formatNumber(totals.inQty)}
-                  </td>
-                  <td />
-                  <td className="px-3 py-2 text-right font-mono text-green-700">
-                    {formatNumber(totals.inValue)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-red-700">
-                    {formatNumber(totals.outQty)}
-                  </td>
-                  <td />
-                  <td className="px-3 py-2 text-right font-mono text-red-700">
-                    {formatNumber(totals.outValue)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[15px]">
-                    {result ? formatNumber(result.closingQty) : "-"}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono">
-                    {result ? formatNumber(result.weightedAvgRate) : "-"}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[15px]">
-                    {result ? formatNumber(result.closingValue) : "-"}
-                  </td>
+                  <td className={tdR}>{formatNumber(totals.inQty)}</td>
+                  <td className={tdR} />
+                  <td className={tdR}>{formatNumber(totals.inValue)}</td>
+                  <td className={tdR}>{formatNumber(totals.outQty)}</td>
+                  <td className={tdR} />
+                  <td className={tdR}>{formatNumber(totals.outValue)}</td>
+                  <td className={tdR}>{result ? formatNumber(result.closingQty) : "-"}</td>
+                  <td className={tdR}>{result ? formatNumber(result.weightedAvgRate) : "-"}</td>
+                  <td className={tdR}>{result ? formatNumber(result.closingValue) : "-"}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         )}
       </div>
-
-      {/* ── Closing stock summary card ── */}
-      {result && (
-        <div className="border-t border-black bg-[#EBF5E2] px-4 py-3">
-          <div className="flex flex-wrap gap-6 items-center text-[12px]">
-            <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
-                Item:{" "}
-              </span>
-              <strong>{selectedItem?.name}</strong>
-              <span className="ml-2 text-gray-500">({selectedItem?.unit})</span>
-            </div>
-            <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
-                Closing Qty:{" "}
-              </span>
-              <strong className="font-mono">{formatNumber(result.closingQty)}</strong>
-            </div>
-            <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
-                {methodLabel} Rate:{" "}
-              </span>
-              <strong className="font-mono">Rs. {formatNumber(result.weightedAvgRate)}</strong>
-            </div>
-            <div>
-              <span className="text-gray-600 font-semibold uppercase text-[10px] tracking-wide">
-                Closing Value:{" "}
-              </span>
-              <strong className="font-mono text-[#1557b0]">
-                Rs. {formatNumber(result.closingValue)}
-              </strong>
-            </div>
-            <div className="ml-auto">
-              <span className="badge badge-info text-[10px]">
-                {filteredRows.length} transactions
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
