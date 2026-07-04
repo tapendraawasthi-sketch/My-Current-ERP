@@ -1,13 +1,25 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { ActionToolbar, Card, Button, Select } from "../components/ui";
-import { FileSpreadsheet, Layers, FileCheck } from "lucide-react";
+import { FileSpreadsheet, FileCheck, X } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { exportTdsReturnToExcel } from "../lib/exportUtils";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
+import { ReportEmptyState } from "../components/ReportEmptyState";
+
+const inputCls =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+const labelCls = "block text-[11px] font-medium text-gray-600 mb-1";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+
+const statusBadgeCls = (status?: string) => {
+  if (status === "challanGenerated") return "bg-green-100 text-green-700";
+  return "bg-amber-100 text-amber-700";
+};
 
 export default function TdsReport() {
   const {
@@ -47,7 +59,6 @@ export default function TdsReport() {
     });
   }, [tdsEntries, fiscalYearBS, sectionFilter, statusFilter]);
 
-  // Group by section
   const groupedBySection = useMemo(() => {
     const groups: Record<string, typeof filteredEntries> = {};
     filteredEntries.forEach((entry) => {
@@ -99,7 +110,6 @@ export default function TdsReport() {
         "acc-tds-payable";
       const bankAcc = accounts.find((a) => a.id === bankAccountId);
 
-      // 1. Create a payment voucher
       const paymentVoucher = {
         id: "pv-" + Date.now(),
         type: VoucherType.PAYMENT,
@@ -129,7 +139,6 @@ export default function TdsReport() {
 
       await addVoucher(paymentVoucher);
 
-      // 2. Add TDS Challan to Dexie
       const newChallan = {
         id: crypto.randomUUID(),
         challanNo,
@@ -145,7 +154,6 @@ export default function TdsReport() {
       };
       await addTdsChallan(newChallan);
 
-      // 3. Update entry status
       await updateTdsEntry(challanEntryId, {
         challanNumber: challanNo,
         status: "challanGenerated",
@@ -172,363 +180,363 @@ export default function TdsReport() {
   }, [filteredEntries]);
 
   return (
-    <div className="p-3 bg-[#f5f6fa] min-h-full">
-      <PillTitle title="TDS Report" />
-      <FormPanel>
-        <div className="flex flex-col gap-6 animate-fadeIn select-none">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-[#000000]">TDS Register</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">
-                Section-wise TDS records for Income Tax Act 2058
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage("tds-certificate")}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 cursor-pointer"
-              >
-                <FileCheck className="h-3.5 w-3.5" /> TDS Certificate
-              </button>
-              <button
-                onClick={handleExport}
-                className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
-              >
-                <FileSpreadsheet className="h-3.5 w-3.5" /> Export TDS Return
-              </button>
-            </div>
-          </div>
-
-          <Card border padding="md">
-            <div className="grid gap-4 md:grid-cols-4 mb-4">
-              <div className="grid gap-1">
-                <label className="text-[11px] font-medium text-[#000000]">Fiscal Year (BS)</label>
-                <input
-                  type="text"
-                  value={fiscalYearBS}
-                  onChange={(e) => setFiscalYearBS(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                />
-              </div>
-              <Select
-                label="Section"
-                value={sectionFilter}
-                onChange={setSectionFilter}
-                options={uniqueSections.map((s) => ({ value: s, label: s }))}
-              />
-              <Select
-                label="Status"
-                value={statusFilter}
-                onChange={setStatusFilter}
-                options={[
-                  { value: "All", label: "All Status" },
-                  { value: "pending", label: "Pending" },
-                  { value: "challanGenerated", label: "Challan Generated" },
-                ]}
-              />
-            </div>
-          </Card>
-
-          <div className="grid gap-6">
-            {Object.keys(groupedBySection).length === 0 ? (
-              <div className="p-8 text-center text-[#000000] text-[12px] bg-white border border-[#9DC07A] rounded-md">
-                No TDS entries found for the selected filters.
-              </div>
-            ) : (
-              Object.keys(groupedBySection).map((sec) => {
-                const entries = groupedBySection[sec];
-                const secGross = entries.reduce((acc, e) => acc + e.grossAmount, 0);
-                const secTds = entries.reduce((acc, e) => acc + e.tdsAmount, 0);
-                const secNet = entries.reduce((acc, e) => acc + e.netAmount, 0);
-
-                return (
-                  <Card key={sec} border padding="none" className="overflow-hidden">
-                    <div className="bg-[#1557b0] px-3 py-2 text-white text-[12px] font-semibold flex justify-between items-center">
-                      <h3 className="text-[13px] font-bold text-white">Section {sec}</h3>
-                      <div className="text-[11px] font-medium text-white/80">
-                        {entries.length} Entries
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left whitespace-nowrap">
-                        <thead className="bg-[#f5f6fa] border-b border-gray-200">
-                          <tr>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              Date (BS)
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              Party
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              PAN
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              Payment Nature
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
-                              Gross Amount
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
-                              TDS Rate
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
-                              TDS Amount
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
-                              Net Paid
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              Status
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                              Challan No
-                            </th>
-                            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-center">
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
-                          {entries.map((entry) => (
-                            <tr key={entry.id} className="hover:bg-[#EBF5E2]/50">
-                              <td className="px-3 py-2 text-[12px] text-[#000000]">
-                                {entry.dateBS}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-medium">
-                                {entry.partyName}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">
-                                {entry.partyPAN || "-"}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000]">
-                                {entry.paymentNature}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
-                                Rs.{formatNumber(entry.grossAmount)}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
-                                {entry.tdsRate}%
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-red-600 font-mono font-bold text-right">
-                                Rs.{formatNumber(entry.tdsAmount)}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono text-right">
-                                Rs.{formatNumber(entry.netAmount)}
-                              </td>
-                              <td className="px-3 py-2 text-[12px]">
-                                <span
-                                  className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${
-                                    entry.status === "challanGenerated"
-                                      ? "bg-green-100 text-green-700"
-                                      : "bg-amber-100 text-amber-700"
-                                  }`}
-                                >
-                                  {entry.status || "pending"}
-                                </span>
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-[#000000] font-mono">
-                                {entry.challanNumber || "-"}
-                              </td>
-                              <td className="px-3 py-2 text-[12px] text-center">
-                                {(!entry.status || entry.status === "pending") && (
-                                  <button
-                                    onClick={() => openChallanModal(entry.id)}
-                                    className="h-6 px-2 bg-white border border-[#9DC07A] text-[#000000] text-[10px] font-medium rounded hover:bg-[#EBF5E2]"
-                                  >
-                                    Generate Challan
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <tfoot className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="px-3 py-2 text-[12px] font-bold text-[#000000] text-right"
-                            >
-                              Section {sec} Total
-                            </td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-[#000000] font-mono text-right">
-                              Rs.{formatNumber(secGross)}
-                            </td>
-                            <td></td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-red-700 font-mono text-right">
-                              Rs.{formatNumber(secTds)}
-                            </td>
-                            <td className="px-3 py-2 text-[12px] font-bold text-green-700 font-mono text-right">
-                              Rs.{formatNumber(secNet)}
-                            </td>
-                            <td colSpan={3}></td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  </Card>
-                );
-              })
-            )}
-          </div>
-
-          {filteredEntries.length > 0 && (
-            <div className="mt-4 bg-white border border-[#9DC07A] rounded-md p-4 grid grid-cols-3 gap-4">
-              <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                <div className="text-[10px] uppercase font-bold text-[#000000]">
-                  Total Gross Amount
-                </div>
-                <div className="text-[16px] font-bold text-[#000000]">
-                  Rs. {formatNumber(totalGross)}
-                </div>
-              </div>
-              <div className="bg-red-50 p-3 rounded border border-red-200">
-                <div className="text-[10px] uppercase font-bold text-red-700">
-                  Total TDS Deducted
-                </div>
-                <div className="text-[16px] font-bold text-red-800">
-                  Rs. {formatNumber(totalTds)}
-                </div>
-              </div>
-              <div className="bg-green-50 p-3 rounded border border-green-200">
-                <div className="text-[10px] uppercase font-bold text-green-700">Total Net Paid</div>
-                <div className="text-[16px] font-bold text-green-800">
-                  Rs. {formatNumber(totalNet)}
-                </div>
-              </div>
-            </div>
-          )}
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">TDS register</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Section-wise TDS records for Income Tax Act 2058
+          </p>
         </div>
-      </FormPanel>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setCurrentPage("tds-certificate")}
+            className={btnOutline}
+          >
+            <FileCheck className="h-3.5 w-3.5" />
+            TDS certificate
+          </button>
+          <button type="button" onClick={handleExport} className={btnPrimary}>
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            Export TDS return
+          </button>
+        </div>
+      </div>
+
+      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+        <div className="grid gap-3 md:grid-cols-3">
+          <div>
+            <label className={labelCls}>Fiscal year (BS)</label>
+            <input
+              type="text"
+              value={fiscalYearBS}
+              onChange={(e) => setFiscalYearBS(e.target.value)}
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label className={labelCls}>Section</label>
+            <select
+              value={sectionFilter}
+              onChange={(e) => setSectionFilter(e.target.value)}
+              className={inputCls}
+            >
+              {uniqueSections.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Status</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className={inputCls}
+            >
+              <option value="All">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="challanGenerated">Challan generated</option>
+            </select>
+          </div>
+        </div>
+        <p className="text-[11px] text-gray-500 mt-2">
+          {filteredEntries.length} TDS entr{filteredEntries.length === 1 ? "y" : "ies"}
+        </p>
+      </div>
+
+      {filteredEntries.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Total gross
+            </p>
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+              Rs. {formatNumber(totalGross)}
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Total TDS deducted
+            </p>
+            <p className="text-[14px] font-semibold text-red-700 mt-0.5 font-mono">
+              Rs. {formatNumber(totalTds)}
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Total net paid
+            </p>
+            <p className="text-[14px] font-semibold text-green-700 mt-0.5 font-mono">
+              Rs. {formatNumber(totalNet)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {Object.keys(groupedBySection).length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-md">
+            <ReportEmptyState
+              message="No TDS entries found"
+              hint="Adjust fiscal year, section, or status filters."
+            />
+          </div>
+        ) : (
+          Object.keys(groupedBySection).map((sec) => {
+            const entries = groupedBySection[sec];
+            const secGross = entries.reduce((acc, e) => acc + e.grossAmount, 0);
+            const secTds = entries.reduce((acc, e) => acc + e.tdsAmount, 0);
+            const secNet = entries.reduce((acc, e) => acc + e.netAmount, 0);
+
+            return (
+              <div
+                key={sec}
+                className="bg-white border border-gray-200 rounded-md overflow-hidden"
+              >
+                <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa] flex justify-between items-center">
+                  <h3 className="text-[12px] font-semibold text-gray-800">Section {sec}</h3>
+                  <span className="text-[11px] text-gray-500">
+                    {entries.length} entr{entries.length === 1 ? "y" : "ies"}
+                  </span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[900px] border-collapse">
+                    <thead>
+                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Date (BS)
+                        </th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Party
+                        </th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          PAN
+                        </th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Payment nature
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Gross amount
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          TDS rate
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          TDS amount
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Net paid
+                        </th>
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Status
+                        </th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          Challan no.
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((entry) => (
+                        <tr
+                          key={entry.id}
+                          className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                        >
+                          <td className="px-3 py-2.5 text-[12px] text-gray-700">{entry.dateBS}</td>
+                          <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                            {entry.partyName}
+                          </td>
+                          <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">
+                            {entry.partyPAN || "—"}
+                          </td>
+                          <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                            {entry.paymentNature}
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                            Rs.{formatNumber(entry.grossAmount)}
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                            {entry.tdsRate}%
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono text-[12px] font-medium text-red-700">
+                            Rs.{formatNumber(entry.tdsAmount)}
+                          </td>
+                          <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                            Rs.{formatNumber(entry.netAmount)}
+                          </td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span
+                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(entry.status)}`}
+                            >
+                              {entry.status || "pending"}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">
+                            {entry.challanNumber || "—"}
+                          </td>
+                          <td className="px-3 py-2.5 text-right">
+                            {(!entry.status || entry.status === "pending") && (
+                              <button
+                                type="button"
+                                onClick={() => openChallanModal(entry.id)}
+                                className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                Generate challan
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                        <td colSpan={4} className="px-3 py-2.5 text-right text-gray-800">
+                          Section {sec} total
+                        </td>
+                        <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                          Rs.{formatNumber(secGross)}
+                        </td>
+                        <td />
+                        <td className="px-3 py-2.5 text-right font-mono text-red-700">
+                          Rs.{formatNumber(secTds)}
+                        </td>
+                        <td className="px-3 py-2.5 text-right font-mono text-green-700">
+                          Rs.{formatNumber(secNet)}
+                        </td>
+                        <td colSpan={3} />
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                  {entries.length} record{entries.length === 1 ? "" : "s"} in section {sec}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
 
       {showChallanModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-white flex items-center gap-2">
-                <FileCheck className="h-4 w-4" />
-                Generate Challan
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowChallanModal(false);
+          }}
+        >
+          <div className="w-full max-w-md bg-white rounded-md shadow-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
+              <h2 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+                <FileCheck className="h-4 w-4 text-[#1557b0]" />
+                Generate challan
               </h2>
               <button
+                type="button"
                 onClick={() => setShowChallanModal(false)}
-                className="text-white hover:text-white/80 transition-colors cursor-pointer"
+                className="text-gray-400 hover:text-gray-600"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <form onSubmit={saveChallan} className="p-5">
-              <div className="grid gap-4">
-                <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-[#000000]">Challan Number *</label>
+            <form onSubmit={saveChallan} className="p-4 space-y-3">
+              <div>
+                <label className={labelCls}>Challan number *</label>
+                <input
+                  type="text"
+                  value={challanNo}
+                  onChange={(e) => setChallanNo(e.target.value)}
+                  className={inputCls}
+                  placeholder="Enter challan number"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Challan date (BS) *</label>
+                <input
+                  type="text"
+                  value={challanDateBS}
+                  onChange={(e) => setChallanDateBS(e.target.value)}
+                  className={inputCls}
+                  placeholder="YYYY-MM-DD"
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Payment bank account *</label>
+                <select
+                  value={bankAccountId}
+                  onChange={(e) => setBankAccountId(e.target.value)}
+                  className={inputCls}
+                >
+                  <option value="">Select bank account</option>
+                  {accounts
+                    .filter(
+                      (a) =>
+                        a.type === "bank" ||
+                        a.type === "cash" ||
+                        a.group?.toLowerCase().includes("bank"),
+                    )
+                    .map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Depositing bank name</label>
                   <input
                     type="text"
-                    value={challanNo}
-                    onChange={(e) => setChallanNo(e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                    placeholder="Enter Challan Number"
-                    autoFocus
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    className={inputCls}
+                    placeholder="e.g. Nabil Bank"
                   />
                 </div>
-                <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-[#000000]">
-                    Challan Date (BS) *
-                  </label>
+                <div>
+                  <label className={labelCls}>Bank branch</label>
                   <input
                     type="text"
-                    value={challanDateBS}
-                    onChange={(e) => setChallanDateBS(e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
+                    value={bankBranch}
+                    onChange={(e) => setBankBranch(e.target.value)}
+                    className={inputCls}
+                    placeholder="e.g. Kathmandu"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Period from (BS) *</label>
+                  <input
+                    type="text"
+                    value={fromBS}
+                    onChange={(e) => setFromBS(e.target.value)}
+                    className={inputCls}
                     placeholder="YYYY-MM-DD"
                   />
                 </div>
-                <div className="grid gap-1">
-                  <label className="text-[11px] font-medium text-[#000000]">
-                    Payment Bank Account *
-                  </label>
-                  <select
-                    value={bankAccountId}
-                    onChange={(e) => setBankAccountId(e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                  >
-                    <option value="">Select Bank Account</option>
-                    {accounts
-                      .filter(
-                        (a) =>
-                          a.type === "bank" ||
-                          a.type === "cash" ||
-                          a.group?.toLowerCase().includes("bank"),
-                      )
-                      .map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">
-                      Depositing Bank Name
-                    </label>
-                    <input
-                      type="text"
-                      value={bankName}
-                      onChange={(e) => setBankName(e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                      placeholder="e.g. Nabil Bank"
-                    />
-                  </div>
-                  <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">Bank Branch</label>
-                    <input
-                      type="text"
-                      value={bankBranch}
-                      onChange={(e) => setBankBranch(e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                      placeholder="e.g. Kathmandu"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">
-                      Period From (BS) *
-                    </label>
-                    <input
-                      type="text"
-                      value={fromBS}
-                      onChange={(e) => setFromBS(e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                      placeholder="YYYY-MM-DD"
-                    />
-                  </div>
-                  <div className="grid gap-1">
-                    <label className="text-[11px] font-medium text-[#000000]">
-                      Period To (BS) *
-                    </label>
-                    <input
-                      type="text"
-                      value={toBS}
-                      onChange={(e) => setToBS(e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white"
-                      placeholder="YYYY-MM-DD"
-                    />
-                  </div>
+                <div>
+                  <label className={labelCls}>Period to (BS) *</label>
+                  <input
+                    type="text"
+                    value={toBS}
+                    onChange={(e) => setToBS(e.target.value)}
+                    className={inputCls}
+                    placeholder="YYYY-MM-DD"
+                  />
                 </div>
               </div>
-
-              <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-[#9DC07A]">
-                <button
-                  type="button"
-                  onClick={() => setShowChallanModal(false)}
-                  className="h-8 px-4 text-[12px] font-medium text-[#000000] bg-white border border-[#9DC07A] rounded-md hover:bg-[#EBF5E2] cursor-pointer"
-                >
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+                <button type="button" onClick={() => setShowChallanModal(false)} className={btnOutline}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="h-8 px-4 text-[12px] font-medium text-white bg-[#3D6B25] rounded-md hover:bg-[#2D5A1A] flex items-center gap-1.5 cursor-pointer"
-                >
-                  Save Challan
+                <button type="submit" className={btnPrimary}>
+                  Save challan
                 </button>
               </div>
             </form>
