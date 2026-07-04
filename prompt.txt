@@ -1,0 +1,696 @@
+================================================================================
+FALCON AI — MASTER BUILD PROMPT FOR CODING AGENT
+================================================================================
+Project: Sutra ERP (Nepal accounting ERP — React/TypeScript SPA + optional Python bot)
+Goal: Build the most intelligent, self-contained ERP chatbot that:
+  1. Reads LIVE ERP source code (not pre-fed Q&A answers) and answers from code evidence
+  2. Understands human language precisely — answers ONLY what was asked
+  3. Requires ZERO cloud API keys (local Ollama + DuckDuckGo web search)
+  4. Stays accurate when ERP code changes (real-time re-indexing)
+  5. Distinguishes intent sharply, e.g.:
+       "journal voucher"           → brief definition/overview (relevant parts only)
+       "what is journal voucher"   → 2–3 sentence definition ONLY
+       "how to make journal entry" → navigation path ONLY (no definition, no steps)
+       "steps to create journal"   → numbered steps ONLY
+       "where is day book"         → one-line path + shortcut ONLY
+
+READ THIS ENTIRE FILE BEFORE WRITING ANY CODE.
+DO NOT invent features, paths, or functions not evidenced in the repo.
+DO NOT rewrite published git history (Lovable-connected repo — no force push/rebase).
+
+================================================================================
+SECTION 0 — CURRENT STATE (WHAT ALREADY EXISTS — DO NOT REBUILD FROM SCRATCH)
+================================================================================
+
+The repo already has TWO parallel Falcon implementations. Your job is to UNIFY them
+into one coherent, intent-precise, code-grounded system.
+
+A) PYTHON CODE-RAG BOT (PRIMARY BRAIN — use when Ollama is running)
+   Location: erp_bot/
+   Stack: FastAPI + LangChain + Ollama (qwen2.5-coder:7b) + ChromaDB + nomic-embed-text
+   Entry: erp_bot/scripts/start.py → uvicorn on port 8765
+   Key files:
+     erp_bot/src/agent/system_prompt.py    — intent-aware response rules (YOUR GUIDE)
+     erp_bot/src/agent/intent_classifier.py — 8 intent labels + priority order
+     erp_bot/src/agent/agent_builder.py    — agent + pre-fetch + answer scoping
+     erp_bot/src/agent/tools.py            — 7 tools (search, read, list, refs, conventions, web)
+     erp_bot/src/ingestion/scanner.py      — walks ERP_PATH for indexable files
+     erp_bot/src/ingestion/parser.py       — chunks TS/TSX/SQL/MD files
+     erp_bot/src/ingestion/embedder.py     — embed + upsert to Chroma
+     erp_bot/src/vectorstore/chroma_store.py — vector search
+     erp_bot/src/watcher/watcher.py        — debounced file watcher (1s) for live re-index
+     erp_bot/src/api/server.py             — /status, /chat, /reindex endpoints
+     erp_bot/scripts/test_intents.py         — regression tests for intent classifier
+
+B) TYPESCRIPT FALLBACK BRAIN (used when erp_bot offline — e.g. Render deploy)
+   Location: src/lib/falcon/
+   Key files:
+     src/lib/falcon/falconBrain.ts         — orchestrator
+     src/lib/falcon/nlpEngine.ts           — tokenization, entities, intent flags
+     src/lib/falcon/smartIntentEngine.ts   — response strategy (navigation/steps/etc.)
+     src/lib/falcon/precisionComposer.ts   — assembles answer sections
+     src/lib/falcon/codeStructureParser.ts — page index + module search
+     src/lib/falcon/erpCodeKnowledge.ts    — static module docs (fallback metadata)
+     src/lib/falcon/knowledgeBase.ts       — static KB entries (LAST RESORT only)
+     src/lib/falcon/generatedPageIndex.ts  — build-time route/menu index
+     src/lib/falconWebSearch.ts            — DuckDuckGo + Wikipedia (no API key)
+     src/lib/builtinErpAssistant.ts        — offline formatted answers
+     src/lib/falcon/smartAssistant.ts      — bridge to falconBrain
+     src/store/falconStore.ts              — chat UI state; tries erp_bot first
+     src/components/falcon/FalconPanel.tsx   — chat UI
+     scripts/build-falcon-page-index.mjs   — regenerates generatedPageIndex.ts
+
+C) FRONTEND ROUTING LOGIC (src/store/falconStore.ts sendMessage):
+   1. Check erp_bot /status
+   2. If online → POST /chat (Python RAG agent)
+   3. If offline → askSmartAssistantAsync (TypeScript falconBrain)
+
+PROBLEM TO FIX:
+  TypeScript fallback treats "how to make journal entry" as steps-only because
+  nlpEngine sets wantsSteps=true for all "how-to" questions. Python bot correctly
+  classifies this as action_path (path only). Both systems must share the SAME
+  8-intent taxonomy and produce identical answer shapes for the same question.
+
+================================================================================
+SECTION 1 — ARCHITECTURE TARGET (FINAL DESIGN)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         USER (FalconPanel.tsx)                              │
+└───────────────────────────────────┬─────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    falconStore.ts — sendMessage()                           │
+│  • Pass currentRoute, screenTitle, companyName as context                     │
+│  • Always classify intent FIRST (shared taxonomy)                             │
+└───────────────┬─────────────────────────────────────┬───────────────────────┘
+                │ erp_bot ONLINE                      │ erp_bot OFFLINE
+                ▼                                     ▼
+┌───────────────────────────────┐    ┌────────────────────────────────────────┐
+│ Python Agent (PRIMARY)        │    │ TypeScript Falcon Brain (FALLBACK)     │
+│ • Ollama LLM (local, no key)  │    │ • Rule-based intent (mirror Python)    │
+│ • Chroma code search          │    │ • generatedPageIndex (from App.tsx)    │
+│ • 7 agent tools               │    │ • erpCodeKnowledge module docs         │
+│ • DuckDuckGo web search       │    │ • DuckDuckGo web search                │
+│ • File watcher re-index       │    │ • NO static KB unless code index miss  │
+│ • intent_classifier.py        │    │ • precisionComposer (intent-scoped)    │
+│ • system_prompt.py rules      │    │                                        │
+└───────────────────────────────┘    └────────────────────────────────────────┘
+                │                                     │
+                └─────────────────┬───────────────────┘
+                                  ▼
+                    ANSWER: intent-scoped, code-grounded,
+                    zero padding, zero unsolicited sections
+
+DATA FLOW FOR "how to make journal entry":
+  1. Intent = action_path
+  2. Search codebase for: App.tsx case "journal", Sidebar menu, PAGE_SHORTCUTS,
+     JournalEntries.tsx, BusyMenuBar MENU_TREE
+  3. Extract REAL path from code: "Transactions → Journal Entry · F5"
+  4. Output ONE LINE: Path: Transactions → Journal Entry · Shortcut: F5
+  5. FORBIDDEN: definition, steps, accounting effect, validation rules
+
+DATA FLOW FOR "journal voucher" (bare topic, no question word):
+  1. Intent = definition (implicit — user naming a feature wants overview)
+  2. Read JournalEntries.tsx header + erpCodeKnowledge journal-voucher doc
+  3. Output: title + 2–3 sentence purpose + open path (compact, not full guide)
+
+DATA FLOW FOR "what is journal voucher":
+  1. Intent = definition
+  2. Output: 2–3 sentences ONLY. No path. No steps.
+
+================================================================================
+SECTION 2 — THE 8 INTENT TAXONOMY (SHARED BY PYTHON AND TYPESCRIPT)
+================================================================================
+
+Copy this EXACT priority order (first match wins):
+
+| Priority | Intent       | Trigger examples                              | Output format                          |
+|----------|--------------|-----------------------------------------------|----------------------------------------|
+| 1        | code         | "which function renders...", "where in code"  | Developer format (see Section 5)       |
+| 2        | troubleshoot | "error", "not working", "can't post"          | Cause (1 sent) + fix (1–3 sent)        |
+| 3        | effect       | "what gets debited", "accounting entry for"   | DEBIT/CREDIT lines only                |
+| 4        | steps        | "steps to", "step by step", "walk me through" | Numbered list ONLY, no preamble        |
+| 5        | nav          | "where is", "how to open/access", "shortcut"| ONE line: Path + Shortcut              |
+| 6        | action_path  | "how to make/create/post/record/enter/add"    | ONE line: Path + Shortcut (NO def!)    |
+| 7        | definition   | "what is", "explain", "tell me about"         | 2–3 sentences ONLY                     |
+| 8        | general      | "hello", "thanks", ambiguous                  | Concise direct answer                    |
+
+CRITICAL DISTINCTION (user's main requirement):
+  "how to make journal entry"  → action_path (path only)
+  "how to open journal entry"  → nav (path only)
+  "steps to create journal"    → steps (numbered list)
+  "journal voucher"            → definition (compact overview)
+  "what is journal voucher"    → definition (2–3 sentences)
+
+Bare-topic detection (no question word):
+  If query is 1–4 words and matches an ERP entity (journal, payment, day book):
+  → intent = definition (NOT comprehensive dump)
+
+Regression tests MUST pass (erp_bot/scripts/test_intents.py — extend, don't break).
+
+================================================================================
+SECTION 3 — IMPLEMENTATION PHASES (EXECUTE IN ORDER)
+================================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 1 — Unify Intent Classification in TypeScript
+──────────────────────────────────────────────────────────────────────────────
+Goal: TypeScript fallback produces same intent as Python for every test case.
+
+FILE: src/lib/falcon/intentTaxonomy.ts  [CREATE NEW]
+  Export:
+    type FalconIntent = "code"|"troubleshoot"|"effect"|"steps"|"nav"|"action_path"|"definition"|"general"
+    function classifyIntent(question: string): FalconIntent
+  Implementation:
+    • Port regex patterns EXACTLY from erp_bot/src/agent/intent_classifier.py
+    • Same priority order (code → troubleshoot → ... → general)
+    • Add bareTopicIntent(query): if no question word and entity detected → definition
+    • Export INTENT_OUTPUT_RULES map (max sentences, allowed sections, forbidden sections)
+
+FILE: src/lib/falcon/smartIntentEngine.ts  [MODIFY]
+  Changes:
+    • Import classifyIntent from intentTaxonomy.ts
+    • Map FalconIntent → ResponseStrategy:
+        action_path → "navigation-only"  (NEW — same as nav)
+        nav         → "navigation-only"
+        definition  → "explanation" but with max 3 sentences enforced
+        steps       → "steps-only"
+        effect      → "accounting-entry"
+        troubleshoot→ "troubleshooting"
+        code        → "code-analysis" (NEW strategy)
+        general     → "comprehensive" with strict brevity
+    • Remove flawed logic: wantsSteps=true for ALL how-to questions
+    • action_path and nav MUST set excludeFromResponse for: steps, fields,
+      accounting-effect, validation, common-errors, tips, related
+
+FILE: src/lib/falcon/nlpEngine.ts  [MODIFY — minimal]
+  • Keep entity extraction (ERP_ENTITY_PATTERNS) — it's good
+  • extractIntent(): delegate primary classification to intentTaxonomy.ts
+  • Do NOT let questionType "how-to" automatically set wantsSteps=true
+
+FILE: src/lib/falcon/precisionComposer.ts  [MODIFY]
+  Add/modify composers:
+
+  composeActionPathResponse(intent):
+    • Same as composeNavigationOnlyResponse
+    • Output format: "Path: {menuPath} · Shortcut: {key}"
+    • Read from getCodeStructureInfo(focus) — filePath in sources
+    • If no match: searchModules() → suggest closest
+    • NEVER include description, steps, or accounting rules
+
+  composeDefinitionResponse(intent):
+    • Max 3 sentences from moduleDoc.description + moduleDoc.purpose
+    • Strip steps, validation, errors even if moduleDoc has them
+    • Include source file path as metadata (not in answer body)
+
+  composeCodeAnalysisResponse(intent):  [NEW]
+    • For intent=code in offline mode (no LLM):
+      - Search generatedPageIndex + grep-like symbol lookup in erpCodeKnowledge
+      - Format: Summary / Files / Key Functions / Notes
+      - If insufficient: "Run erp_bot for full code analysis"
+
+  Add postComposeScope(answer, intent):  [NEW — mirror agent_builder._scope_answer]
+    • action_path/nav: keep first path line only, strip definition sentences
+    • definition: truncate to 3 sentences
+    • steps: keep only lines matching /^\d+[.)]\s/
+    • effect: keep only DEBIT/CREDIT lines
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 2 — Real-Time Code Reading (Both Brains)
+──────────────────────────────────────────────────────────────────────────────
+
+PYTHON SIDE (mostly done — verify and harden):
+
+FILE: erp_bot/src/watcher/watcher.py  [VERIFY]
+  • Already re-indexes on modify/create/delete with 1s debounce
+  • Ensure App.tsx, Sidebar.tsx, BusyMenuBar.tsx changes trigger re-index
+
+FILE: erp_bot/scripts/rebuild_index.py  [VERIFY]
+  • Full rebuild command for manual trigger
+
+FILE: erp_bot/src/agent/agent_builder.py  [ENHANCE]
+  For action_path/nav intents, pre-fetch search query MUST include:
+    "App.tsx currentPage case Sidebar menuGroups BusyMenuBar MENU_TREE
+     PAGE_SHORTCUTS RightButtonBar shortcut"
+  Add navigation-specific search helper in tools.py:
+
+FILE: erp_bot/src/agent/tools.py  [ADD TOOL]
+  @tool find_navigation_path(feature_name: str) -> str
+    Purpose: Deterministic nav lookup without LLM guessing
+    Steps:
+      1. Read src/App.tsx — extract case labels for feature
+      2. Read src/components/Sidebar.tsx — extract menuGroups path
+      3. Read src/components/BusyMenuBar.tsx — extract MENU_TREE path
+      4. Grep PAGE_SHORTCUTS / RightButtonBar for F-key
+      5. Return: "Path: X → Y → Z · Shortcut: Fn · File: src/pages/JournalEntries.tsx"
+    This tool is called FIRST for nav/action_path intents.
+
+TYPESCRIPT SIDE (build-time + runtime):
+
+FILE: scripts/build-falcon-page-index.mjs  [ENHANCE]
+  Also parse:
+    • src/components/BusyMenuBar.tsx (MENU_TREE)
+    • src/components/RightButtonBar.tsx or PAGE_SHORTCUTS constant
+    • Keyboard shortcut map if centralized
+  Output to generatedPageIndex.ts:
+    • Add shortcut?: string field per page entry
+    • Add menuPaths: string[] (all paths if feature appears in multiple menus)
+
+FILE: src/lib/falcon/generatedPageIndex.ts  [REGENERATE via npm script]
+  Run: node scripts/build-falcon-page-index.mjs
+  Add npm script in package.json: "falcon:index": "node scripts/build-falcon-page-index.mjs"
+  Hook into "prebuild" so Render/Vercel deploy always has fresh index.
+
+FILE: src/lib/falcon/codeStructureParser.ts  [ENHANCE]
+  Add:
+    getNavigationPathWithShortcut(focus: string): { path: string; shortcut?: string; file: string }
+    findNavigationFromCode(focus: string): uses GENERATED_PAGE_INDEX only (no static KB)
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 3 — Deprecate Static KB as Primary Answer Source
+──────────────────────────────────────────────────────────────────────────────
+
+RULE: knowledgeBase.ts and kb/*.ts are LAST RESORT only.
+  Use ONLY when:
+    1. No page index match AND
+    2. No erpCodeKnowledge module match AND
+    3. erp_bot is offline
+
+FILE: src/lib/falcon/precisionComposer.ts  [MODIFY]
+  In composeComprehensiveResponse and composeStepsOnlyResponse:
+    • Remove early fallback to FALCON_KB.find() BEFORE code search
+    • Order: generatedPageIndex → erpCodeKnowledge → KB (last)
+
+FILE: src/lib/builtinErpAssistant.ts  [MODIFY]
+  Add intent parameter to buildBuiltinErpAnswer(query, route, intent):
+    • action_path/nav → return ONLY path line from doc.howToAccess[0] + shortcut
+    • definition → return doc.description (max 3 sentences)
+    • steps → return numbered doc.workflow.steps only
+    • Do NOT return full formatModuleAnswer() dump for all queries
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 4 — Web Search (No API Key)
+──────────────────────────────────────────────────────────────────────────────
+
+Already implemented in two places — unify trigger rules:
+
+USE web search when:
+  • Question about Nepal tax law, IRD, accounting standards NOT in codebase
+  • Codebase search returned nothing AND intent is general/definition/effect
+  • User explicitly asks to search Google/web
+  • Current events (news, today, latest)
+
+DO NOT use web search when:
+  • intent is nav, action_path, steps (ERP UI questions — code only)
+  • intent is code (repo only)
+  • Codebase already has answer
+
+PYTHON: erp_bot/src/agent/tools.py
+  • web_search (DuckDuckGo) — already exists
+  • fetch_webpage — already exists
+  • Enforce citation: "Source: <URL>" on last line
+
+TYPESCRIPT: src/lib/falconWebSearch.ts
+  • Already uses DuckDuckGo API + Wikipedia fallback
+  • Wire into falconBrain.ts shouldUseWebSearch() using same rules as Python
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 5 — Python Agent Prompt Hardening
+──────────────────────────────────────────────────────────────────────────────
+
+FILE: erp_bot/src/agent/system_prompt.py  [KEEP AS SOURCE OF TRUTH]
+  This file IS the uploaded guide. Do not weaken its rules.
+  Enhancements to add:
+    • Bare topic rule: "If user sends only a feature name (e.g. 'journal voucher')
+      with no question word → treat as INTENT: definition, 2–3 sentences max."
+    • Code citation rule: "Every nav/action_path answer MUST cite the file where
+      path was found: (src/App.tsx or Sidebar.tsx)"
+    • Nepali/typo tolerance: "Understand common misspellings: voucer→voucher,
+      journel→journal, paymnt→payment"
+
+FILE: erp_bot/src/agent/agent_builder.py  [ENHANCE _scope_answer]
+  Add bare-topic detection before scoping.
+  Strengthen definition scoping: remove lines containing "Steps:", "Open:", "Rules:"
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 6 — Frontend Integration & UX
+──────────────────────────────────────────────────────────────────────────────
+
+FILE: src/store/falconStore.ts  [MODIFY]
+  • Import classifyIntent from intentTaxonomy.ts
+  • Attach intent label to each assistant message (for debugging/display)
+  • When erp_bot online: prepend "INTENT: {intent}\n" is already done server-side
+  • When offline: classify locally, pass intent to smartAssistant
+
+FILE: src/components/falcon/FalconPanel.tsx  [MODIFY — optional UX]
+  • Show intent badge on assistant messages (e.g. "Path lookup" for action_path)
+  • Quick prompts should demonstrate intent variety:
+      "Journal voucher" (definition)
+      "How to make payment voucher" (action_path)
+      "Steps to create sales invoice" (steps)
+      "Where is trial balance" (nav)
+
+FILE: src/lib/erpBotClient.ts  [VERIFY]
+  • ERP_BOT_URL defaults to http://localhost:8765
+  • checkErpBotStatus() polls /status
+  • Document in README how to start: python erp_bot/scripts/start.py
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 7 — Testing & Acceptance Criteria
+──────────────────────────────────────────────────────────────────────────────
+
+FILE: erp_bot/scripts/test_intents.py  [EXTEND]
+  Add cases:
+    ("journal voucher", "definition")           # bare topic
+    ("payment voucher", "definition")
+    ("how to make payment vouche", "action_path")  # typo tolerance
+    ("how to make payment voucher", "action_path")
+
+FILE: src/lib/falcon/intentTaxonomy.test.ts  [CREATE]
+  Mirror ALL test cases from test_intents.py in Vitest
+  Run: npm test -- intentTaxonomy
+
+ACCEPTANCE TESTS (manual — must pass before PR):
+
+| User input                      | Expected output shape                          | Must NOT include        |
+|---------------------------------|----------------------------------------------|-------------------------|
+| journal voucher                 | Title + 2-3 sentence overview                | Full steps, all rules   |
+| what is journal voucher         | 2-3 sentence definition                      | Path, steps             |
+| how to make journal entry       | Path: Transactions → Journal Entry · F5      | Definition, steps       |
+| how to make payment vouche      | Path only (typo tolerant)                    | Definition              |
+| steps to create payment voucher | 1. 2. 3. numbered list                       | Definition, path repeat |
+| where is day book               | One-line path + shortcut                     | Explanation             |
+| why is journal not balanced     | Cause + fix                                  | Feature definition      |
+| what gets debited in payment    | DEBIT/CREDIT lines                           | Navigation              |
+| which file has journal logic    | Files + functions (code format)              | User-facing steps       |
+
+Performance targets:
+  • Offline TS response: < 200ms
+  • Online Python response: < 15s (depends on Ollama hardware)
+  • Index update after file save: < 3s (watcher debounce + embed)
+
+================================================================================
+SECTION 4 — FILE-BY-FILE SPECIFICATION (EVERY FILE TO CREATE OR MODIFY)
+================================================================================
+
+── NEW FILES ──────────────────────────────────────────────────────────────────
+
+1. src/lib/falcon/intentTaxonomy.ts
+   Purpose: Single source of truth for intent classification in TypeScript
+   Exports:
+     - type FalconIntent (8 values)
+     - classifyIntent(question: string): FalconIntent
+     - isBareTopicQuery(question: string): boolean
+     - getIntentOutputRules(intent: FalconIntent): IntentOutputRules
+     - formatNavAnswer(path: string, shortcut?: string): string
+   Rules object shape:
+     { maxSentences, allowedSections[], forbiddenSections[], oneLineOnly: boolean }
+
+2. src/lib/falcon/intentTaxonomy.test.ts
+   Purpose: Vitest mirror of erp_bot/scripts/test_intents.py
+
+3. erp_bot/src/agent/nav_resolver.py  [optional but recommended]
+   Purpose: Deterministic navigation path extraction from App.tsx + Sidebar.tsx
+   Exports: resolve_navigation(feature_query: str) -> dict[path, shortcut, sources]
+
+── MODIFY FILES ───────────────────────────────────────────────────────────────
+
+4. src/lib/falcon/smartIntentEngine.ts
+   - Import classifyIntent from intentTaxonomy.ts
+   - Add ResponseStrategy: "code-analysis"
+   - Map all 8 intents to strategies and exclusion rules
+   - Remove wantsSteps=true default for all how-to
+
+5. src/lib/falcon/nlpEngine.ts
+   - extractIntent() calls classifyIntent() for primary intent
+   - Keep entity extraction unchanged
+
+6. src/lib/falcon/precisionComposer.ts
+   - Add composeActionPathResponse (alias nav, one-line format)
+   - Add composeCodeAnalysisResponse
+   - Add postComposeScope(answer, intent) — trim enforcement
+   - Reorder fallback chain: pageIndex → erpCodeKnowledge → KB
+
+7. src/lib/falcon/falconBrain.ts
+   - Import classifyIntent, pass through metadata
+   - Align shouldUseWebSearch with Python rules
+
+8. src/lib/falcon/codeStructureParser.ts
+   - Add getNavigationPathWithShortcut()
+   - Use shortcut from generatedPageIndex when available
+
+9. src/lib/builtinErpAssistant.ts
+   - Add intent-aware buildBuiltinErpAnswer(query, route, intent)
+   - formatModuleAnswer() split into formatByIntent()
+
+10. scripts/build-falcon-page-index.mjs
+    - Parse BusyMenuBar.tsx, shortcut constants
+    - Emit shortcut field per page entry
+
+11. src/lib/falcon/generatedPageIndex.ts
+    - Regenerate (auto via script, do not hand-edit)
+
+12. package.json
+    - Add "falcon:index": "node scripts/build-falcon-page-index.mjs"
+    - Add to "prebuild" script chain
+
+13. erp_bot/src/agent/tools.py
+    - Add find_navigation_path tool
+    - Register in agent_builder._tools list
+
+14. erp_bot/src/agent/agent_builder.py
+    - Call find_navigation_path for nav/action_path before LLM
+    - If tool returns path, short-circuit LLM with formatted answer
+
+15. erp_bot/src/agent/system_prompt.py
+    - Add bare-topic rule
+    - Add typo tolerance note
+    - Add file citation requirement for nav answers
+
+16. erp_bot/scripts/test_intents.py
+    - Add bare-topic and typo test cases
+
+17. src/store/falconStore.ts
+    - Store intent on messages
+    - Pass intent to offline fallback
+
+18. src/components/falcon/FalconPanel.tsx
+    - Update quick prompts to showcase intent types
+    - Optional: intent badge on assistant bubbles
+
+── DO NOT MODIFY (per AGENTS.md scope rules) ──────────────────────────────────
+  • src/components/StockItems.tsx (dead file)
+  • src/components/invoice/PurchaseInvoiceForm.tsx (dead)
+  • src/components/invoice/ReturnInvoiceForm.tsx (dead)
+  • node_modules, dist, .git, .tanstack
+
+── DO NOT USE AS PRIMARY ANSWER SOURCE ───────────────────────────────────────
+  • src/lib/falcon/knowledgeBase.ts (fallback only)
+  • src/lib/falcon/kb/*.ts (fallback only)
+  • src/lib/falcon/masterSystemPrompt.ts (Groq/API-era prompt — not for offline brain)
+
+================================================================================
+SECTION 5 — ANSWER FORMAT TEMPLATES (EXACT OUTPUT SHAPES)
+================================================================================
+
+INTENT: action_path / nav
+─────────────────────────
+Path: Transactions → Journal Entry · Shortcut: F5
+
+Rules:
+  • ONE line (two if shortcut missing: omit shortcut segment)
+  • No markdown headers
+  • No "Here's how..." preamble
+  • No definition sentences
+  • Sources tracked internally: ["src/pages/JournalEntries.tsx"]
+
+INTENT: definition
+──────────────────
+**Journal Voucher**
+General-purpose double-entry voucher for manual adjustments, provisions,
+accruals, and entries not covered by other voucher types.
+
+Rules:
+  • 2–3 sentences maximum after title
+  • No "Open:", no "Steps:", no "Rules:" sections
+  • No keyboard shortcuts unless user asked about the feature generally
+
+INTENT: steps
+─────────────
+1. Set the voucher date
+2. Add the first debit line: select account and enter debit amount
+3. Add the corresponding credit line: select account and enter credit amount
+4. Verify totals: Total Debits MUST equal Total Credits
+5. Add narration for each line
+6. Press F2 to post the journal
+
+Rules:
+  • Start with "1." — no intro sentence
+  • No definition paragraph before steps
+  • Steps sourced from code comments / erpCodeKnowledge.workflow.steps
+
+INTENT: effect
+──────────────
+DEBIT: Supplier/Expense Ledger — Gross Amount
+CREDIT: Cash/Bank Account — Net Amount (Gross − TDS)
+CREDIT: TDS Payable Account — TDS Amount (if applicable)
+
+INTENT: troubleshoot
+────────────────────
+**Problem:** Entry not balanced on posting
+**Solution:** Ensure sum of all debit amounts exactly equals sum of all credit
+amounts. Even a 1 paisa difference prevents posting.
+
+INTENT: code
+────────────
+**Summary:** Journal entries are rendered by JournalEntries.tsx, posted via
+voucherSlice.postVoucher() which validates debit=credit before Dexie write.
+
+**Files Involved:**
+- src/pages/JournalEntries.tsx
+- src/store/slices/voucherSlice.ts
+- src/lib/db.ts (vouchers, voucherLines tables)
+
+**Key Functions/Components:**
+- JournalEntries — main voucher form UI
+- postVoucher — validates balance, writes to IndexedDB
+- computeTrialBalance — reads posted vouchers for reports
+
+**Code Evidence:** (max 30 lines from actual file)
+
+**Notes:** Route key in App.tsx is "journal" (also alias "journal-entry").
+
+INTENT: general
+───────────────
+Direct concise answer. No padding. No unsolicited ERP feature suggestions.
+
+WEB SEARCH (when used):
+───────────────────────
+According to recent search results: [answer from snippet]
+Source: https://...
+
+================================================================================
+SECTION 6 — LOCAL SETUP (NO API KEYS)
+================================================================================
+
+Requirements:
+  • Ollama installed locally (NOT a cloud API key)
+  • Models: qwen2.5-coder:7b (chat), nomic-embed-text (embeddings)
+  • Python 3.11+ with erp_bot/requirements.txt installed
+
+Setup commands:
+  bash erp_bot/scripts/setup_ollama.sh
+  cd erp_bot && pip install -r requirements.txt
+  python erp_bot/scripts/start.py
+
+Environment (.env in erp_bot/):
+  ERP_PATH=/absolute/path/to/sutra-erp-repo
+  MODEL_NAME=qwen2.5-coder:7b
+  EMBED_MODEL=nomic-embed-text
+  OLLAMA_BASE_URL=http://localhost:8765
+  API_PORT=8765
+
+Frontend connects to http://localhost:8765 (src/lib/erpBotClient.ts).
+When bot is offline, TypeScript fallback runs entirely in browser — no keys.
+
+Web search uses DuckDuckGo (Python: duckduckgo-search package;
+TypeScript: DDG instant answer API via allorigins proxy) — no API key.
+
+================================================================================
+SECTION 7 — IMPLEMENTATION CONSTRAINTS (MANDATORY)
+================================================================================
+
+1. MINIMAL DIFF: Only touch files listed in Section 4. No drive-by refactors.
+
+2. NO HALLUCINATION: Never invent file paths, function names, menu paths, or
+   shortcuts. Every nav answer must come from App.tsx, Sidebar.tsx, BusyMenuBar.tsx,
+   or PAGE_SHORTCUTS — read from code, not memory.
+
+3. NO CLOUD API KEYS: Do not add OpenAI, Groq, Gemini, or Anthropic dependencies.
+   LLM = Ollama only. Embeddings = Ollama nomic-embed-text only.
+
+4. REAL-TIME: File watcher must stay active. Build script must regenerate page
+   index on deploy. Never ship stale generatedPageIndex.ts after route changes.
+
+5. INTENT FIRST: Always classify intent before composing answer. Apply
+   postComposeScope() as final trim even if LLM is used.
+
+6. DESIGN SYSTEM: Any UI changes in FalconPanel follow AGENTS.md — primary
+   #1557b0, text-[12px], h-8 buttons, no purple/indigo.
+
+7. LOVABLE GIT: No force push. No rebase/amend of pushed commits. Normal commits.
+
+8. TEST BEFORE PR:
+   python erp_bot/scripts/test_intents.py   # must exit 0
+   npm test -- intentTaxonomy               # must pass
+   Manual acceptance table (Section 3 Phase 7)
+
+================================================================================
+SECTION 8 — EXAMPLE WALKTHROUGH (HOW THE FINISHED BOT THINKS)
+================================================================================
+
+User: "how to make journal entry"
+
+Step 1 — Classify: action_path (regex: "how to make")
+Step 2 — Extract entity: journal-entry (from ERP_ENTITY_PATTERNS)
+Step 3 — Search code:
+         • generatedPageIndex: route "journal", menuPath "Transactions → Journal Entry"
+         • App.tsx: case "journal": return <JournalEntries />
+         • RightButtonBar/PAGE_SHORTCUTS: F5 → journal
+Step 4 — Compose (action_path):
+         Path: Transactions → Journal Entry · Shortcut: F5
+Step 5 — Scope: one line only, strip any definition sentences
+Step 6 — Return with sources: ["src/pages/JournalEntries.tsx"]
+
+User: "journal voucher"
+
+Step 1 — Classify: definition (bare topic, 2 words, entity detected)
+Step 2 — Read moduleDoc for journal-voucher
+Step 3 — Compose: title + description (max 3 sentences)
+Step 4 — Scope: remove steps, rules, open path sections
+Step 5 — Return
+
+User: "why is my journal not balanced"
+
+Step 1 — Classify: troubleshoot
+Step 2 — Search commonErrors in erpCodeKnowledge + codebase validation logic
+Step 3 — Compose: problem + solution from journal-voucher.commonErrors
+Step 4 — Return
+
+User: "which function validates journal balance"
+
+Step 1 — Classify: code
+Step 2 — search_codebase("journal balance validation postVoucher")
+Step 3 — read_full_file(voucherSlice.ts), find_references("postVoucher")
+Step 4 — Compose developer format with real snippet
+Step 5 — Return
+
+User: "what is TDS rate for rent in Nepal"
+
+Step 1 — Classify: definition
+Step 2 — search_codebase → no specific rate in code
+Step 3 — web_search("Nepal TDS rate house rent Income Tax Act")
+Step 4 — Compose answer + Source: URL
+Step 5 — Return
+
+================================================================================
+SECTION 9 — COMMIT & PR CHECKLIST
+================================================================================
+
+[ ] intentTaxonomy.ts created with 8-intent parity to Python
+[ ] All test_intents.py cases pass (including new bare-topic cases)
+[ ] Vitest intentTaxonomy.test.ts passes
+[ ] "how to make journal entry" returns ONE path line (offline AND online)
+[ ] "journal voucher" returns compact definition (not full guide dump)
+[ ] build-falcon-page-index.mjs extracts shortcuts
+[ ] find_navigation_path tool added (Python)
+[ ] KB fallback demoted to last resort
+[ ] No cloud API keys added
+[ ] falcon:index npm script added to prebuild
+[ ] PR description includes before/after examples for 5 key queries
+
+================================================================================
+END OF PROMPT — execute phases 1→7 in order, commit after each phase, test continuously.
+================================================================================
