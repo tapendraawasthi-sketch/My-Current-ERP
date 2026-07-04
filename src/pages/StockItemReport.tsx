@@ -294,37 +294,37 @@ const StockItemReport: React.FC = () => {
 
       {/* Summary section */}
       <div className="grid grid-cols-4 gap-4 text-[12px] mb-4">
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Inward Qty
           </div>
-          <div className="text-[16px] font-mono font-bold text-[#1557b0]">
+          <div className="text-[14px] font-mono font-semibold text-[#1557b0]">
             {formatNumber(reportData.summary.totalInwardQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Outward Qty
           </div>
-          <div className="text-[16px] font-mono font-bold text-[#d97706]">
+          <div className="text-[14px] font-mono font-semibold text-[#d97706]">
             {formatNumber(reportData.summary.totalOutwardQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Qty
           </div>
           <div
-            className={`text-[16px] font-mono font-bold ${reportData.summary.closingQty < 0 ? "text-red-600" : "text-[#059669]"}`}
+            className={`text-[14px] font-mono font-semibold ${reportData.summary.closingQty < 0 ? "text-red-600" : "text-[#059669]"}`}
           >
             {formatNumber(reportData.summary.closingQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Value
           </div>
-          <div className="text-[16px] font-mono font-bold text-gray-800">
+          <div className="text-[14px] font-mono font-semibold text-gray-800">
             Rs. {formatNumber(reportData.summary.closingValue)}
           </div>
         </div>

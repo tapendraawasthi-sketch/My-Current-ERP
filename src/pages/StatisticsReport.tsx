@@ -264,9 +264,9 @@ const StatisticsReport: React.FC = () => {
             {statsData.masterStats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center text-center"
+                className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center text-center"
               >
-                <span className="text-[18px] font-mono font-bold text-[#1557b0] mb-1">
+                <span className="text-[14px] font-mono font-semibold text-[#1557b0] mb-1">
                   {stat.count}
                 </span>
                 <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
@@ -283,7 +283,7 @@ const StatisticsReport: React.FC = () => {
             Transaction Status Summary
           </h3>
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
               <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Posted Vouchers
               </div>
@@ -291,7 +291,7 @@ const StatisticsReport: React.FC = () => {
                 {formatNumber(statsData.transactionSummary.posted)}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
               <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Draft Vouchers
               </div>
@@ -299,7 +299,7 @@ const StatisticsReport: React.FC = () => {
                 {formatNumber(statsData.transactionSummary.draft)}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
               <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Cancelled Vouchers
               </div>

@@ -337,10 +337,10 @@ const GroupSummaryReport: React.FC = () => {
               const isGroup = row.isGroup;
               const isExpandable = row.isExpandable;
 
-              let rowStyle = "bg-white hover:bg-gray-50 text-gray-700";
+              let rowStyle = "bg-white group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]";
               if (row.type === "group")
-                rowStyle = "bg-[#f1f5f9] font-semibold text-gray-800 border-y border-gray-200";
-              if (row.type === "subgroup") rowStyle = "bg-[#f8fafc] font-medium text-gray-800";
+                rowStyle = "bg-[#f5f6fa] font-semibold text-gray-800 border-y border-gray-200";
+              if (row.type === "subgroup") rowStyle = "bg-gray-50 font-medium text-gray-800";
 
               return (
                 <tr
@@ -362,26 +362,30 @@ const GroupSummaryReport: React.FC = () => {
                     {row.name}
                   </td>
                   <td
-                    className="px-3 py-2.5 text-[12px] text-right font-mono"
-                    style={{ color: row.opening >= 0 ? "#059669" : "#dc2626" }}
+                    className={`px-3 py-2.5 text-[12px] text-right font-mono ${
+                      row.opening >= 0 ? "text-green-700" : "text-red-700"
+                    }`}
                   >
                     {formatDrCr(row.opening)}
                   </td>
                   <td
-                    className="px-3 py-2.5 text-[12px] text-right font-mono"
-                    style={{ color: row.debit > 0 ? "#1557b0" : "inherit" }}
+                    className={`px-3 py-2.5 text-[12px] text-right font-mono ${
+                      row.debit > 0 ? "text-[#1557b0]" : "text-gray-700"
+                    }`}
                   >
                     {row.debit > 0 ? formatNumber(row.debit) : "—"}
                   </td>
                   <td
-                    className="px-3 py-2.5 text-[12px] text-right font-mono"
-                    style={{ color: row.credit > 0 ? "#dc2626" : "inherit" }}
+                    className={`px-3 py-2.5 text-[12px] text-right font-mono ${
+                      row.credit > 0 ? "text-red-700" : "text-gray-700"
+                    }`}
                   >
                     {row.credit > 0 ? formatNumber(row.credit) : "—"}
                   </td>
                   <td
-                    className="px-3 py-2.5 text-[12px] text-right font-mono"
-                    style={{ color: row.closing >= 0 ? "#059669" : "#dc2626" }}
+                    className={`px-3 py-2.5 text-[12px] text-right font-mono ${
+                      row.closing >= 0 ? "text-green-700" : "text-red-700"
+                    }`}
                   >
                     {formatDrCr(row.closing)}
                   </td>
@@ -412,8 +416,11 @@ const GroupSummaryReport: React.FC = () => {
 
             {rows.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-500 text-[12px]">
-                  No accounts found for the selected group.
+                <td colSpan={5}>
+                  <ReportEmptyState
+                    message="No accounts found for the selected group"
+                    hint="Choose a different group or date range."
+                  />
                 </td>
               </tr>
             )}

@@ -243,29 +243,29 @@ const InventoryReport: React.FC = () => {
     >
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Items with stock &gt;90 days old
           </span>
           <span
-            className={`text-2xl font-bold mt-1 ${reportData.summary.slowMovingCount > 0 ? "text-[#d97706]" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 ${reportData.summary.slowMovingCount > 0 ? "text-[#d97706]" : "text-gray-900"}`}
           >
             {reportData.summary.slowMovingCount}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Slow-Moving Stock Value
           </span>
           <span
-            className={`text-2xl font-bold mt-1 font-mono ${reportData.summary.totalSlowValue > 0 ? "text-[#dc2626]" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 font-mono ${reportData.summary.totalSlowValue > 0 ? "text-[#dc2626]" : "text-gray-900"}`}
           >
             Rs. {formatNumber(reportData.summary.totalSlowValue)}
           </span>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
         <ReportGrid
           columns={[
             { key: "itemName", label: "Item Name" },

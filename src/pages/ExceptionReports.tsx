@@ -448,41 +448,41 @@ const ExceptionReports: React.FC = () => {
     >
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Issues
           </span>
           <span
-            className={`text-2xl font-bold mt-1 ${summaryCounts.totalIssues > 0 ? "text-red-600" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 ${summaryCounts.totalIssues > 0 ? "text-red-600" : "text-gray-900"}`}
           >
             {summaryCounts.totalIssues}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Negative Stock
           </span>
           <span
-            className={`text-2xl font-bold mt-1 ${summaryCounts.negativeStock > 0 ? "text-red-600" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 ${summaryCounts.negativeStock > 0 ? "text-red-600" : "text-gray-900"}`}
           >
             {summaryCounts.negativeStock}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Overdue &gt; 60 days
           </span>
           <span
-            className={`text-2xl font-bold mt-1 ${summaryCounts.overdueGT60 > 0 ? "text-amber-600" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 ${summaryCounts.overdueGT60 > 0 ? "text-amber-600" : "text-gray-900"}`}
           >
             {summaryCounts.overdueGT60}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Post-Dated
           </span>
-          <span className="text-2xl font-bold mt-1 text-[#1557b0]">{summaryCounts.postDated}</span>
+          <span className="text-[14px] font-semibold mt-1 text-[#1557b0]">{summaryCounts.postDated}</span>
         </div>
       </div>
 
@@ -554,7 +554,7 @@ const ExceptionReports: React.FC = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
           <ReportGrid
             columns={getColumns()}
             data={activeData}
