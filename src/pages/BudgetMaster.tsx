@@ -1,8 +1,9 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
-import { Plus, X, Search, FileEdit } from "lucide-react";
+import { Plus, X, Search, Save } from "lucide-react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const BS_MONTHS = [
   "Baisakh",
@@ -19,21 +20,29 @@ const BS_MONTHS = [
   "Chaitra",
 ];
 
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+const inputCls =
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+
 export default function BudgetMaster() {
   const { budgets, accounts, costCenters, currentFiscalYear, setBudgetEntries } = useStore();
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
-  // Form State
   const [accountId, setAccountId] = useState("");
   const [costCenterId, setCostCenterId] = useState("");
   const [budgetMode, setBudgetMode] = useState<"ANNUAL" | "MONTHLY">("ANNUAL");
   const [annualAmount, setAnnualAmount] = useState<number | "">("");
   const [monthlyAmounts, setMonthlyAmounts] = useState<Record<string, number | "">>({});
 
-  // Flattened budget list for display
   const budgetList = useMemo(() => {
-    // Group budgets by Account + CostCenter
     const grouped: Record<
       string,
       { accountId: string; costCenterId?: string; total: number; months: number }
@@ -64,13 +73,22 @@ export default function BudgetMaster() {
       .filter((g) => g.accountName.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [budgets, currentFiscalYear, accounts, costCenters, searchTerm]);
 
-  const handleOpenModal = () => {
+  const resetForm = () => {
     setAccountId("");
     setCostCenterId("");
     setBudgetMode("ANNUAL");
     setAnnualAmount("");
     setMonthlyAmounts({});
-    setShowModal(true);
+    setShowForm(false);
+  };
+
+  const handleOpenForm = () => {
+    setAccountId("");
+    setCostCenterId("");
+    setBudgetMode("ANNUAL");
+    setAnnualAmount("");
+    setMonthlyAmounts({});
+    setShowForm(true);
   };
 
   const handleAnnualChange = (val: string) => {
@@ -147,258 +165,237 @@ export default function BudgetMaster() {
     try {
       await setBudgetEntries(entriesToSave);
       toast.success("Budget saved successfully");
-      setShowModal(false);
+      resetForm();
     } catch (err: any) {
       toast.error(err.message || "Failed to save budget");
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn h-[calc(100vh-100px)]">
-      <div className="flex items-center justify-between shrink-0">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Budget Master</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
-            Set monthly or annual limits for income and expense accounts
-          </p>
-        </div>
-        <button
-          onClick={handleOpenModal}
-          className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm"
-        >
-          <Plus className="w-4 h-4" /> Set Budget
-        </button>
-      </div>
+    <div className="flex h-full min-h-0 bg-[#f5f6fa] overflow-hidden">
+      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
+        <div className="p-4 pb-0 shrink-0">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-[15px] font-semibold text-gray-800">Budget Master</h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Set monthly or annual limits for income and expense accounts
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-gray-500">
+                FY{" "}
+                <span className="font-semibold text-[#1557b0]">
+                  {currentFiscalYear?.name || "N/A"}
+                </span>
+              </span>
+              <button type="button" className={btnPrimary} onClick={handleOpenForm}>
+                <Plus className="h-3.5 w-3.5" />
+                Set budget
+              </button>
+            </div>
+          </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-[#9DC07A] flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between bg-[#EBF5E2] shrink-0">
-          <div className="relative w-64">
-            <Search className="w-4 h-4 text-[#000000] absolute left-2.5 top-2" />
+          <div className="relative mb-3 max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               type="text"
               placeholder="Search by account..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-8 pl-8 pr-3 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+              className={`${inputCls} pl-8`}
             />
-          </div>
-          <div className="text-[11px] text-[#000000] font-medium">
-            Fiscal Year:{" "}
-            <span className="font-bold text-[#1557b0]">{currentFiscalYear?.name || "N/A"}</span>
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-[#f5f6fa] border-b border-[#9DC07A] sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
-                  Account Name
-                </th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
-                  Cost Center
-                </th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-center">
-                  Period
-                </th>
-                <th className="px-4 py-2.5 text-[10px] font-semibold text-[#000000] uppercase tracking-wide text-right">
-                  Total Budgeted Amount (Rs)
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {budgetList.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-4 py-12 text-center">
-                    <FileEdit className="w-12 h-12 text-[#000000] mx-auto mb-3" />
-                    <p className="text-[13px] font-medium text-[#000000]">No Budgets Configured</p>
-                    <p className="text-[11px] text-[#000000] mt-1">
-                      Click 'Set Budget' to create limits.
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                budgetList.map((b, i) => (
-                  <tr key={i} className="hover:bg-[#EBF5E2] transition-colors">
-                    <td className="px-4 py-2.5 text-[12px] font-medium text-[#000000]">
-                      {b.accountName}
-                    </td>
-                    <td className="px-4 py-2.5 text-[12px] text-[#000000]">{b.costCenterName}</td>
-                    <td className="px-4 py-2.5 text-[12px] text-[#000000] text-center">
-                      {b.months === 12 ? "Annual" : `${b.months} Months`}
-                    </td>
-                    <td className="px-4 py-2.5 text-[12px] font-mono text-right font-medium text-[#000000]">
-                      {b.total.toLocaleString()}
-                    </td>
+        <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
+          {budgetList.length === 0 ? (
+            <div className="bg-white border border-gray-200 rounded-md">
+              <ReportEmptyState
+                message={searchTerm ? "No budgets match your search" : "No budgets configured"}
+                hint={
+                  searchTerm
+                    ? "Try a different search term."
+                    : 'Click "Set budget" to create limits for the current fiscal year.'
+                }
+              />
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className={th}>Account name</th>
+                    <th className={th}>Cost center</th>
+                    <th className={`${th} text-center`}>Period</th>
+                    <th className={`${th} text-right`}>Total budgeted (Rs)</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {budgetList.map((b, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className={`${td} font-medium text-gray-800`}>{b.accountName}</td>
+                      <td className={td}>{b.costCenterName}</td>
+                      <td className={`${td} text-center`}>
+                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+                          {b.months === 12 ? "Annual" : `${b.months} months`}
+                        </span>
+                      </td>
+                      <td className={`${td} text-right font-mono font-medium text-gray-800`}>
+                        {b.total.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {budgetList.length} budget{budgetList.length === 1 ? "" : "s"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center animate-fadeIn">
-          <div className="bg-white rounded-lg shadow-xl w-[600px] flex flex-col max-h-[90vh]">
-            <div className="p-4 border-b border-[#9DC07A] flex items-center justify-between shrink-0">
-              <h2 className="text-[15px] font-semibold text-[#000000]">
-                Set Budget for FY {currentFiscalYear?.name}
-              </h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-[#000000] hover:text-[#000000]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {showForm && (
+        <div className="w-full lg:w-[560px] xl:w-[600px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+            <span className="text-[13px] font-semibold text-gray-800">
+              Set budget — FY {currentFiscalYear?.name}
+            </span>
+            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
+              <X className="h-4 w-4" />
+            </button>
+          </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-              <div className="p-5 overflow-y-auto space-y-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Account <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      required
-                      value={accountId}
-                      onChange={(e) => setAccountId(e.target.value)}
-                      className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]"
-                    >
-                      <option value="">-- Select Account --</option>
-                      {accounts
-                        .filter((a) => a.type === "Ledger")
-                        .map((a) => (
-                          <option key={a.id} value={a.id}>
-                            {a.name} ({a.group})
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Cost Center (Optional)
-                    </label>
-                    <select
-                      value={costCenterId}
-                      onChange={(e) => setCostCenterId(e.target.value)}
-                      className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded bg-white focus:outline-none focus:border-[#1557b0]"
-                    >
-                      <option value="">-- Apply to All / None --</option>
-                      {costCenters.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
+          <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>
+                    Account <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={accountId}
+                    onChange={(e) => setAccountId(e.target.value)}
+                    className={inputCls}
+                  >
+                    <option value="">Select account</option>
+                    {accounts
+                      .filter((a) => a.type === "Ledger")
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name} ({a.group})
                         </option>
                       ))}
-                    </select>
-                  </div>
+                  </select>
                 </div>
-
                 <div>
-                  <label className="block text-[11px] font-medium text-[#000000] mb-2">
-                    Budget Distribution Mode
+                  <label className={labelCls}>Cost center (optional)</label>
+                  <select
+                    value={costCenterId}
+                    onChange={(e) => setCostCenterId(e.target.value)}
+                    className={inputCls}
+                  >
+                    <option value="">Apply to all / none</option>
+                    {costCenters.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className={labelCls}>Budget distribution mode</label>
+                <div className="flex flex-col gap-2 mt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
+                    <input
+                      type="radio"
+                      name="mode"
+                      checked={budgetMode === "ANNUAL"}
+                      onChange={() => {
+                        setBudgetMode("ANNUAL");
+                        setMonthlyAmounts({});
+                      }}
+                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                    Annual (equally divided into 12 months)
                   </label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="mode"
-                        checked={budgetMode === "ANNUAL"}
-                        onChange={() => {
-                          setBudgetMode("ANNUAL");
-                          setMonthlyAmounts({});
-                        }}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
-                      />
-                      <span className="text-[12px] text-[#000000]">
-                        Annual (Equally divided into 12 months)
-                      </span>
-                    </label>
-                    <label className="flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="mode"
-                        checked={budgetMode === "MONTHLY"}
-                        onChange={() => {
-                          setBudgetMode("MONTHLY");
-                          setAnnualAmount("");
-                        }}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
-                      />
-                      <span className="text-[12px] text-[#000000]">
-                        Monthly (Specify for each month)
-                      </span>
-                    </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
+                    <input
+                      type="radio"
+                      name="mode"
+                      checked={budgetMode === "MONTHLY"}
+                      onChange={() => {
+                        setBudgetMode("MONTHLY");
+                        setAnnualAmount("");
+                      }}
+                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                    />
+                    Monthly (specify for each month)
+                  </label>
+                </div>
+              </div>
+
+              {budgetMode === "ANNUAL" && (
+                <div>
+                  <label className={labelCls}>Total annual amount</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={annualAmount}
+                    onChange={(e) => handleAnnualChange(e.target.value)}
+                    className={`${inputCls} max-w-xs font-mono`}
+                  />
+                </div>
+              )}
+
+              {budgetMode === "MONTHLY" && (
+                <div className="bg-[#f5f6fa] border border-gray-200 rounded-md p-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-3">
+                    {BS_MONTHS.map((month, idx) => {
+                      const mStr = String(idx + 1).padStart(2, "0");
+                      return (
+                        <div key={mStr}>
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                            {month}
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={monthlyAmounts[mStr] || ""}
+                            onChange={(e) => handleMonthlyChange(mStr, e.target.value)}
+                            className={`${inputCls} font-mono`}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center bg-[#eef2ff] -mx-4 -mb-4 px-4 py-2.5 rounded-b-md border-t-2 border-[#c7d2fe]">
+                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Total calculated annual
+                    </span>
+                    <span className="text-[12px] font-mono font-bold text-gray-800">
+                      Rs. {calculateTotalMonthly().toLocaleString()}
+                    </span>
                   </div>
                 </div>
+              )}
+            </div>
 
-                {budgetMode === "ANNUAL" && (
-                  <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Total Annual Amount
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      required
-                      value={annualAmount}
-                      onChange={(e) => handleAnnualChange(e.target.value)}
-                      className="w-1/2 h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] font-mono"
-                    />
-                  </div>
-                )}
-
-                {budgetMode === "MONTHLY" && (
-                  <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded p-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3">
-                      {BS_MONTHS.map((month, idx) => {
-                        const mStr = String(idx + 1).padStart(2, "0");
-                        return (
-                          <div key={mStr}>
-                            <label className="block text-[10px] font-medium text-[#000000] mb-1 uppercase">
-                              {month}
-                            </label>
-                            <input
-                              type="number"
-                              min="0"
-                              value={monthlyAmounts[mStr] || ""}
-                              onChange={(e) => handleMonthlyChange(mStr, e.target.value)}
-                              className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] font-mono"
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[#9DC07A] flex justify-between items-center">
-                      <span className="text-[11px] font-bold text-[#000000] uppercase tracking-wide">
-                        Total Calculated Annual:
-                      </span>
-                      <span className="text-[14px] font-mono font-bold text-[#1557b0]">
-                        Rs. {calculateTotalMonthly().toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4 border-t border-[#9DC07A] flex justify-end gap-2 bg-[#EBF5E2] shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="h-8 px-4 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded hover:bg-[#EBF5E2]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="h-8 px-4 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded shadow-sm"
-                >
-                  Save Budget
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="flex justify-end gap-2 p-4 border-t border-gray-200 shrink-0">
+              <button type="button" className={btnOutline} onClick={resetForm}>
+                Cancel
+              </button>
+              <button type="submit" className={btnPrimary}>
+                <Save className="h-3.5 w-3.5" />
+                Save budget
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
