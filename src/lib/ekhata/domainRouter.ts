@@ -3,6 +3,8 @@
  * Prevents accounting terms (sampatti, capital, provision) from hitting Wikipedia.
  */
 
+import { normalizeNepaliText } from "./normalizeNepali";
+
 export type EKhataDomain =
   | "journal_entry"
   | "accounting_qa"
@@ -29,7 +31,10 @@ const COMPLIANCE_TERMS =
   /\b(ird|vat\s*act|income\s*tax|tds\s*rate|ssf\s*rate|gratuity\s*act|labour\s*act|companies\s*act|presumptive\s*tax|advance\s*tax|tax\s*invoice|blacklist|zero\s*rated|exempt\s*supply|reverse\s*charge|excise|customs|withholding|remittance|form\s*13|anna\s*13|pan\s*number|fiscal\s*year|shrawan|ashadh|bs\s*date|nepal\s*tax|statutory|compliance)\b/i;
 
 const ENTRY_SIGNALS =
-  /\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyo|kineko|kinyo|kharid|becheko|bikri|kharcha|expense|salary|talab|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|refund|return|write\s*off|recover\w*|commission|advance|opening|jama|tirna|bhugtan|firta|firtayo)\b.*\d|\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|becheko|kharcha|salary|vat|tds|loan|capital|stock|discount|return|write\s*off|commission|advance|jama|tiryo|diyo)\b/i;
+  /\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyo|kineko|kinyo|kharid|becheko|bechy|bikri|kharcha|expense|salary|talab|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|refund|return|write\s*off|recover\w*|commission|advance|opening|jama|tirna|bhugtan|firta|firtayo|udhaar|udhar|hajar|saya|lakh|aayo|aayeko)\b.*\d|\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|becheko|bechy|kharcha|salary|vat|tds|loan|capital|stock|discount|return|write\s*off|commission|advance|jama|tiryo|diyo|hajar|saya|lakh)\b/i;
+
+const NEPALI_ENTRY_WITHOUT_DIGIT =
+  /\b(hajar|saya|lakh|udhaar|udhar|becheko|bechy|kineko|tiryo|kharcha|rent|loan|write\s*off|bad\s*debt|aayo|aayeko|diye|bikri)\b/i;
 
 const META_SYSTEM =
   /\b(am\s+i\s+online|online\s*du|online\s*chu|who\s+are\s+you|what\s+are\s+you|what\s+can\s+you|timi\s+ko\s+ho|ke\s+ho\s+timi|your\s+brain|mero\s+brain|ollama|connected|connection)\b/i;
@@ -45,46 +50,48 @@ const QUESTION =
 
 export function classifyDomain(text: string): DomainRouteResult {
   const t = text.trim();
+  const normalized = normalizeNepaliText(t);
+  const probe = normalized ? `${t} ${normalized}` : t;
   if (!t) {
     return { domain: "emotional_chat", confidence: 1, blockWebSearch: true };
   }
 
-  if (META_SYSTEM.test(t)) {
+  if (META_SYSTEM.test(probe)) {
     return { domain: "meta_system", confidence: 0.95, blockWebSearch: true };
   }
 
-  if (ENTRY_SIGNALS.test(t) && !QUESTION.test(t)) {
+  if ((ENTRY_SIGNALS.test(probe) || NEPALI_ENTRY_WITHOUT_DIGIT.test(probe)) && !QUESTION.test(probe)) {
     return { domain: "journal_entry", confidence: 0.9, blockWebSearch: true };
   }
 
-  if (FRAMEWORK_TERMS.test(t)) {
+  if (FRAMEWORK_TERMS.test(probe)) {
     return { domain: "framework_qa", confidence: 0.88, blockWebSearch: true };
   }
 
-  if (COMPLIANCE_TERMS.test(t)) {
+  if (COMPLIANCE_TERMS.test(probe)) {
     return { domain: "compliance_qa", confidence: 0.85, blockWebSearch: true };
   }
 
-  if (ACCOUNTING_TERMS.test(t)) {
-    const isQuestion = QUESTION.test(t);
+  if (ACCOUNTING_TERMS.test(probe)) {
+    const isQuestion = QUESTION.test(probe);
     if (isQuestion) {
       return { domain: "accounting_qa", confidence: 0.82, blockWebSearch: true };
     }
-    if (/\d/.test(t)) {
+    if (/\d/.test(probe) || NEPALI_ENTRY_WITHOUT_DIGIT.test(probe)) {
       return { domain: "journal_entry", confidence: 0.75, blockWebSearch: true };
     }
     return { domain: "accounting_qa", confidence: 0.7, blockWebSearch: true };
   }
 
-  if (EMOTIONAL.test(t) && !ACCOUNTING_TERMS.test(t)) {
+  if (EMOTIONAL.test(probe) && !ACCOUNTING_TERMS.test(probe)) {
     return { domain: "emotional_chat", confidence: 0.7, blockWebSearch: true };
   }
 
-  if (EXTERNAL_FACT.test(t)) {
+  if (EXTERNAL_FACT.test(probe)) {
     return { domain: "external_fact", confidence: 0.75, blockWebSearch: false };
   }
 
-  if (QUESTION.test(t)) {
+  if (QUESTION.test(probe)) {
     return { domain: "external_fact", confidence: 0.5, blockWebSearch: false };
   }
 

@@ -43,6 +43,22 @@ FILLER_WORDS = {
     "bhayo",
 }
 
+SPELLING_ALIASES: dict[str, str] = {
+    "teen": "tin",
+    "paach": "panch",
+    "paanch": "panch",
+    "pach": "panch",
+    "bechy": "becheko",
+    "aayo": "tiryo",
+    "aayeko": "tiryo",
+    "hazar": "hajar",
+    "sau": "saya",
+}
+
+
+def fold_spelling(text: str) -> str:
+    return " ".join(SPELLING_ALIASES.get(token, token) for token in text.split())
+
 
 def normalize_unicode_digits(text: str) -> str:
     return text.translate(NEPALI_DIGIT_MAP)
@@ -63,13 +79,17 @@ def normalize(text: str) -> str:
     text = strip_punctuation(text)
     text = re.sub(r"\s+", " ", text).strip()
     tokens = remove_fillers(text.split())
-    return " ".join(tokens)
+    return fold_spelling(" ".join(tokens))
 
 
 def parse_amount_words(text: str) -> int | None:
     normalized = normalize(text)
     if not normalized:
         return None
+
+    k_match = re.search(r"(\d+(?:\.\d+)?)\s*k\b", normalized)
+    if k_match:
+        return int(float(k_match.group(1)) * 1000)
 
     # saadhe teen hajar = 3500, saadhe paanch hajar = 5500
     saadhe_match = re.search(
@@ -83,10 +103,6 @@ def parse_amount_words(text: str) -> int | None:
         unit_val = WORD_TO_NUMBER.get(unit)
         if base is not None and unit_val is not None:
             return int((base + 0.5) * unit_val)
-
-    k_match = re.search(r"(\d+(?:\.\d+)?)\s*k\b", normalized)
-    if k_match:
-        return int(float(k_match.group(1)) * 1000)
 
     digit_match = re.search(r"\b(\d+(?:\.\d+)?)\b", normalized)
     if digit_match and not re.search(r"\b(hajar|saya|lakh|karod|crore|arab)\b", normalized):

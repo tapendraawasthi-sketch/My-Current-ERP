@@ -89,7 +89,10 @@ const PARA_BY_ID = ITEM_BY_ID;
 const GLOSSARY_BY_TERM = new Map(
   (KB.glossary ?? []).flatMap((g) => {
     const term = (g.term ?? g.id.replace("glossary-", "").replace(/_/g, " ")).toLowerCase();
-    return [[term, g] as const];
+    const head = term.split(":")[0].trim().split(/\s+/)[0];
+    const entries: Array<readonly [string, KnowledgeItem]> = [[term, g]];
+    if (head.length >= 5 && head !== term) entries.push([head, g]);
+    return entries;
   }),
 );
 
@@ -266,8 +269,99 @@ function scoreConcepts(text: string, tokens: Set<string>): Array<{ id: string; s
   return results.sort((a, b) => b.score - a.score);
 }
 
+function isGlossaryPrimaryQuery(text: string, glossaryHit: KnowledgeItem): boolean {
+  const head = (glossaryHit.term ?? glossaryHit.id.replace("glossary-", ""))
+    .split(":")[0]
+    .trim()
+    .split(/\s+/)[0]
+    .toLowerCase();
+  if (!head || head.length < 5) return false;
+
+  const stopwords = new Set([
+    "what",
+    "is",
+    "are",
+    "the",
+    "a",
+    "an",
+    "in",
+    "under",
+    "ifrs",
+    "framework",
+    "conceptual",
+    "define",
+    "definition",
+    "of",
+    "k",
+    "ho",
+    "hunchha",
+    "ko",
+    "matlab",
+    "paribhasha",
+    "for",
+    "and",
+    "or",
+    "elements",
+  ]);
+  const tokens = tokenize(text).filter((t) => !stopwords.has(t));
+  const lower = text.toLowerCase();
+
+  const compounds = [
+    "fair value",
+    "faithful representation",
+    "going concern",
+    "present obligation",
+    "economic resource",
+    "historical cost",
+    "accrual accounting",
+    "financial statements",
+  ];
+  for (const compound of compounds) {
+    if (!lower.includes(compound)) continue;
+    const parts = compound.split(/\s+/);
+    if (parts.includes(head) && head !== compound.replace(/\s+/g, "")) return false;
+  }
+
+  const headRegex = new RegExp(`\\b${head.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+  if (!headRegex.test(text)) return false;
+
+  const longerTokens = tokens.filter((t) => t.length > head.length);
+  if (longerTokens.length > 0) return false;
+
+  return tokens.some((t) => t === head || head.startsWith(t));
+}
+
+function conceptOverridesGlossary(
+  concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
+  glossaryHit: KnowledgeItem,
+): boolean {
+  const head = (glossaryHit.term ?? "")
+    .split(":")[0]
+    .trim()
+    .split(/\s+/)[0]
+    .toLowerCase();
+  return concepts.some(
+    (c) =>
+      c.score >= 10 &&
+      (c.id.includes(head) ||
+        c.concept.en.some((en) => en.toLowerCase() === head || en.toLowerCase().includes(head))),
+  );
+}
+
 function lookupGlossary(text: string): KnowledgeItem | null {
   const lower = text.toLowerCase();
+  let best: { entry: KnowledgeItem; term: string } | null = null;
+
+  for (const [term, entry] of GLOSSARY_BY_TERM) {
+    const termRegex = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+    if (!termRegex.test(text)) continue;
+    if (!best || term.length > best.term.length) {
+      best = { entry, term };
+    }
+  }
+
+  if (best) return best.entry;
+
   for (const [term, entry] of GLOSSARY_BY_TERM) {
     if (lower.includes(term) && term.length >= 4) return entry;
   }
@@ -282,12 +376,6 @@ function retrieveKnowledgeItems(
 ): KnowledgeItem[] {
   const itemScores = new Map<string, number>();
 
-  const paraRef = text.match(/\b(SP\d+\.\d+|\d+\.\d+)\b/);
-  if (paraRef) {
-    const p = ITEM_BY_ID.get(paraRef[1]);
-    if (p) return [p];
-  }
-
   if (/\btable\s+4\.1\b/i.test(text)) {
     const t = ITEM_BY_ID.get("Table 4.1");
     if (t) return [t];
@@ -295,6 +383,12 @@ function retrieveKnowledgeItems(
   if (/\btable\s+6\.1\b/i.test(text)) {
     const t = ITEM_BY_ID.get("Table 6.1");
     if (t) return [t];
+  }
+
+  const paraRef = text.match(/\b(SP\d+\.\d+|\d+\.\d+)\b/);
+  if (paraRef && !/\btable\s+${paraRef[1].replace(".", "\\.")}\b/i.test(text)) {
+    const p = ITEM_BY_ID.get(paraRef[1]);
+    if (p) return [p];
   }
 
   for (const { concept, score } of concepts.slice(0, 5)) {
@@ -384,39 +478,62 @@ function formatParagraphRef(id: string): string {
   return `**Para ${id}** (Ch ${id.split(".")[0]})`;
 }
 
+function isSimplificationRequest(text: string): boolean {
+  return /\b(simple|saral|sajhilo|layman|easy|clear|bujhena|nabujheko|aru\s+palta|pheri\s+bhannus|explain\s+again|give\s+in\s+simple)\b/i.test(
+    text,
+  );
+}
+
+function truncateToSentences(text: string, maxSentences: number, maxChars = 320): string {
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  if (!cleaned) return "";
+  const sentences = cleaned.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const picked = sentences.slice(0, maxSentences).join(" ");
+  return picked.length > maxChars ? `${picked.slice(0, maxChars).replace(/\s+\S*$/, "")}…` : picked;
+}
+
 function synthesizeDefinitionAnswer(
   concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
   items: KnowledgeItem[],
   lang: UserLanguage,
+  simple = false,
 ): string {
   const top = concepts[0]?.concept;
-  const paras = items.slice(0, 3);
+  const paras = items.slice(0, simple ? 1 : 2);
 
-  if (lang === "english") {
-    let reply = top
-      ? `**${top.en[0].replace(/^definition of /i, "").replace(/^the /i, "").replace(/\b\w/g, (c) => c.toUpperCase())}** (IFRS Conceptual Framework)\n\n`
-      : "**IFRS Conceptual Framework**\n\n";
-    for (const p of paras) {
-      reply += formatItemRef(p);
-      if (p.section) reply += ` — ${p.section}`;
-      reply += `\n> ${p.definition ?? p.text}\n\n`;
-    }
-    if (top) {
-      reply += `_Source: IFRS Conceptual Framework 2018, Chapter ${top.chapter} — ${CHAPTER_TITLES[top.chapter]}_`;
-    } else if (KB.metadata.complete) {
-      reply += `_Source: IFRS Conceptual Framework 2018 (complete corpus — ${KB.metadata.total_paragraphs} paragraphs, ${KB.metadata.total_glossary_terms} glossary terms)_`;
-    }
-    return reply.trim();
-  }
+  const label =
+    lang === "english"
+      ? top?.en[0]?.replace(/^definition of /i, "").replace(/^the /i, "") ?? "Concept"
+      : top?.ne[0] ?? top?.en[0] ?? "Concept";
 
-  const neLabel = top?.ne[0] ?? top?.en[0] ?? "Conceptual Framework";
-  let reply = `**${neLabel}** (IFRS Conceptual Framework / NAS)\n\n`;
+  const lead =
+    lang === "english"
+      ? `**${label}** — in plain terms, this is how the IFRS Conceptual Framework defines it for financial reporting.`
+      : `**${label}** — saral bhasa ma, IFRS Conceptual Framework le financial reporting ko lagi yo paribhasha dincha.`;
+
+  const bodyParts: string[] = [];
   for (const p of paras) {
-    reply += formatItemRef(p);
-    if (p.section) reply += ` — ${p.section}`;
-    reply += `\n> ${p.definition ?? p.text}\n\n`;
+    const snippet = truncateToSentences(p.summary ?? p.definition ?? p.text, simple ? 1 : 2);
+    if (!snippet) continue;
+    const ref = p.id ? ` (${formatParagraphRef(p.id).replace(/\*\*/g, "")})` : "";
+    bodyParts.push(simple ? snippet : `${snippet}${ref}`);
   }
-  reply += `_Srot: IFRS Conceptual Framework 2018, Chapter ${paras[0]?.chapter ?? top?.chapter} — ${CHAPTER_TITLES[paras[0]?.chapter ?? top?.chapter ?? 1]}_`;
+
+  if (simple) {
+    const analogy =
+      lang === "english"
+        ? "Think of it like your shop khata — record what truly happened, don't hide or inflate figures."
+        : "Dukhan ko khata jastai sochnus — bhayeko kura nai lekhnu, lukaaunu wa badhaunu hoina.";
+    return [lead, bodyParts[0] ?? "", analogy].filter(Boolean).join("\n\n").trim();
+  }
+
+  let reply = `${lead}\n\n${bodyParts.join("\n\n")}`;
+  if (top) {
+    reply +=
+      lang === "english"
+        ? `\n\n_Nepal example: apply this when classifying entries in your khata (NAS/IFRS-aligned)._`
+        : `\n\n_Nepal udaharan: afno khata ma entry classify garda yo sidhanta lagau (NAS/IFRS-aligned)._`;
+  }
   return reply.trim();
 }
 
@@ -489,17 +606,38 @@ function synthesizeChapterOverview(text: string, lang: UserLanguage): string | n
   );
 }
 
+function synthesizeGlossaryAnswer(item: KnowledgeItem, lang: UserLanguage, simple = false): string {
+  const label = (item.term ?? item.id.replace("glossary-", "").replace(/_/g, " ")).split(":")[0].trim();
+  const snippet = truncateToSentences(item.definition ?? item.summary ?? item.text, simple ? 1 : 2);
+  const lead =
+    lang === "english"
+      ? `**${label}** — IFRS Conceptual Framework glossary definition:`
+      : `**${label}** — IFRS Conceptual Framework ko glossary paribhasha:`;
+  const ref = formatItemRef(item).replace(/\*\*/g, "");
+  return simple ? `${lead}\n\n${snippet}` : `${lead}\n\n${snippet} (${ref})`;
+}
+
+function synthesizeTableAnswer(item: KnowledgeItem, lang: UserLanguage, simple = false): string {
+  const snippet = truncateToSentences(item.summary ?? item.text, simple ? 2 : 4, 520);
+  const lead =
+    lang === "english"
+      ? `**${item.id}** — elements of financial statements under the IFRS Conceptual Framework:`
+      : `**${item.id}** — IFRS Conceptual Framework ma financial statement ko tatwa haru:`;
+  return `${lead}\n\n${snippet}`;
+}
+
 function synthesizeGeneralAnswer(
   concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
   items: KnowledgeItem[],
   lang: UserLanguage,
+  simple = false,
 ): string {
   if (items.length === 0) {
     return lang === "english"
       ? `I have the complete IFRS Conceptual Framework (2018) — ${KB.metadata.total_paragraphs ?? 316} paragraphs, SP sections, tables, and glossary. Ask about any concept, paragraph, or defined term.`
       : `Ma IFRS Conceptual Framework (2018) ko pura document rakheko chhu — ${KB.metadata.total_paragraphs ?? 316} paragraphs, tables, ra glossary. Kunai pani concept, paragraph, wa defined term sodhnus.`;
   }
-  return synthesizeDefinitionAnswer(concepts, items, lang);
+  return synthesizeDefinitionAnswer(concepts, items, lang, simple);
 }
 
 /** Main entry — semantic CA framework understanding */
@@ -561,6 +699,20 @@ export function understandConceptualFramework(text: string): FrameworkBrainResul
     }
   }
 
+  const glossaryHit = lookupGlossary(text);
+  if (glossaryHit && isGlossaryPrimaryQuery(text, glossaryHit) && !conceptOverridesGlossary(concepts, glossaryHit)) {
+    const simple = isSimplificationRequest(text);
+    return {
+      kind: "answer",
+      reply: synthesizeGlossaryAnswer(glossaryHit, lang, simple),
+      confidence: 0.9,
+      language: lang,
+      intent: intent === "general" ? "definition" : intent,
+      concepts: [glossaryHit.id],
+      paragraphs: [glossaryHit.id],
+    };
+  }
+
   const paragraphs = retrieveParagraphs(concepts, intent, text);
   const conceptIds = concepts.slice(0, 3).map((c) => c.id);
   const paraIds = paragraphs.map((p) => p.id);
@@ -570,7 +722,11 @@ export function understandConceptualFramework(text: string): FrameworkBrainResul
   }
 
   const confidence = Math.min(0.95, 0.55 + (concepts[0]?.score ?? 0) * 0.02 + paragraphs.length * 0.05);
-  const reply = synthesizeGeneralAnswer(concepts, paragraphs, lang);
+  const simple = isSimplificationRequest(text);
+  const tableItem = paragraphs.find((p) => p.type === "table");
+  const reply = tableItem
+    ? synthesizeTableAnswer(tableItem, lang, simple)
+    : synthesizeGeneralAnswer(concepts, paragraphs, lang, simple);
 
   return {
     kind: "answer",
