@@ -317,7 +317,10 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
       rawIntent: "when",
     };
   }
-  if (/\b(where|kaha|k\s*ma)\b/i.test(t)) {
+  if (
+    /\b(where|kaha)\b/i.test(t) &&
+    !/\b(online|connected|internet|llm|ollama)\b/i.test(t)
+  ) {
     return {
       kind: "factual_where",
       topic: extractTopic(t),

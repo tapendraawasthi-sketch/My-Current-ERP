@@ -8,10 +8,10 @@ import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 function statusLabel(llmOnline: boolean, llmModel?: string): string {
   if (llmOnline) {
     return llmModel
-      ? `Ollama LLM · ${llmModel} · CA + Emotional AI`
-      : "Ollama LLM · CA + Emotional AI";
+      ? `Autonomous AI · Ollama ${llmModel} · Web Search`
+      : "Autonomous AI · Ollama · Web Search";
   }
-  return "CA + Smart Work + Emotional AI";
+  return "Autonomous AI · Web Search · CA Brain";
 }
 
 const EKhataPanel: React.FC = () => {
@@ -271,7 +271,7 @@ const EKhataPanel: React.FC = () => {
           </button>
         </div>
         <p className="mt-1 text-[10px] text-gray-400">
-          Ctrl+Shift+K · {llmOnline ? "Ollama LLM" : "CA + Emotional AI"} · Saves to ledger
+          Ctrl+Shift+K · Autonomous AI · Web Search · Saves to ledger
         </p>
       </div>
     </div>

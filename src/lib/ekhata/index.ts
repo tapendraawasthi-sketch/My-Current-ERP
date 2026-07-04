@@ -65,3 +65,5 @@ export {
   isConversationalOnly,
 } from "./smartWorkBrain";
 export type { WorkSignals } from "./smartWorkBrain";
+export { askAutonomousBrain, shouldAutonomousWebSearch } from "./autonomousBrain";
+export type { AutonomousBrainOptions, AutonomousBrainResult } from "./autonomousBrain";

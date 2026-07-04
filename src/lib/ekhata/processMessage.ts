@@ -14,7 +14,8 @@ import { shouldTryWorkParse } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
-export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid" | "ca" | "accounting-brain";
+export type EKhataEngine =
+  "brain" | "ollama" | "rules" | "hybrid" | "ca" | "accounting-brain" | "autonomous" | "web-search";
 
 export type EKhataProcessResult =
   | {
@@ -44,6 +45,9 @@ export interface ProcessMessageOptions {
   preferLlm?: boolean;
   /** Recent chat turns for conversational context */
   history?: ConversationTurn[];
+  /** LLM status for meta questions */
+  llmOnline?: boolean;
+  llmModel?: string;
 }
 
 function localizeClarify(question: string, lang: ReturnType<typeof detectUserLanguage>): string {
@@ -183,7 +187,37 @@ export async function processEKhataMessageAsync(
     }
   }
 
-  return processEKhataMessage(rawText, options);
+  return processWithAutonomousBrain(rawText, options);
+}
+
+async function processWithAutonomousBrain(
+  rawText: string,
+  options: ProcessMessageOptions,
+): Promise<EKhataProcessResult> {
+  const trimmed = rawText.trim();
+  const normalizedText = normalizeNepaliText(trimmed);
+
+  // Sync path: accounting work + entries first
+  const syncResult = processEKhataMessage(trimmed, options);
+  if (syncResult.kind !== "chat" || syncResult.engine !== "brain") {
+    return syncResult;
+  }
+
+  // Chat fallback → autonomous brain (web search + reasoning)
+  const { askAutonomousBrain } = await import("./autonomousBrain");
+  const autonomous = await askAutonomousBrain(trimmed, {
+    balance: options.balance,
+    history: options.history,
+    llmOnline: options.llmOnline,
+    llmModel: options.llmModel,
+  });
+
+  return {
+    kind: "chat",
+    reply: autonomous.reply,
+    normalizedText,
+    engine: autonomous.engine,
+  };
 }
 
 export async function checkEKhataLlmStatus() {

@@ -11,6 +11,7 @@ import {
   generateConversationalReply,
 } from "../src/lib/ekhata/conversationalBrain";
 import { detectEmotionalContext, isEmotionalMessage } from "../src/lib/ekhata/emotionalBrain";
+import { askAutonomousBrain } from "../src/lib/ekhata/autonomousBrain";
 
 let passed = 0;
 let failed = 0;
@@ -172,6 +173,13 @@ const momoLike = generateConversationalReply("do you like momo");
 check(
   "do you like momo conversational",
   momoLike.toLowerCase().includes("momo") || momoLike.toLowerCase().includes("khana"),
+);
+
+const onlineQ = await askAutonomousBrain("k ma ahile online du", { llmOnline: false });
+check(
+  "online status meta question",
+  onlineQ.reply.includes("online") && !onlineQ.reply.includes("Kaha ko barema"),
+  onlineQ.reply.slice(0, 80),
 );
 
 console.log(`\n${passed} passed, ${failed} failed`);

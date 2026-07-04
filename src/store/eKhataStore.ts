@@ -12,12 +12,12 @@ function genId(): string {
 
 function buildWelcome(): string {
   return (
-    "Namaste! Ma e-Khata — tapaiko **accounting language** ra **emotional AI** sahayogi.\n\n" +
-    "Ma Nepali ra English duitai accounting bhasha bujhchhu, tapai ko mood pani bujhchhu. Sodhnus wa entry lekhnu hos:\n" +
-    "• 'What entry for bad debt write off?' / 'Bad debt ko entry k hunchha?'\n" +
-    "• 'i sold 200 cups for Rs 50 each' / 'bought stationery 1200'\n" +
-    "• 'received payment 3000 from Ram' / 'Ram lai 500 udhaar'\n\n" +
-    "🧠 Smart Work Brain · CA entries · Emotional AI · Ollama when online"
+    "Namaste! Ma **e-Khata Autonomous Brain** — tapaiko self-contained AI sahayogi.\n\n" +
+    "Ma afai sochchhu, internet bata khojchhu, ra jawaf dinchhu:\n" +
+    "• Accounting entries — natural language ('sold 200 cups @ Rs 50')\n" +
+    "• Web search — news, weather, facts, current info\n" +
+    "• Emotional chat — tapai ko mood bujhchhu\n\n" +
+    "🧠 Autonomous Brain · 🌐 Web Search · 📒 CA Entries · Ollama when online"
   );
 }
 
@@ -103,6 +103,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         balance: getKhataBalance(),
         preferLlm: true,
         history,
+        llmOnline: get().llmOnline,
+        llmModel: get().llmModel,
       });
 
       if (result.kind === "entry" && result.card) {
