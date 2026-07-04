@@ -1,6 +1,9 @@
 import React from "react";
 import NepalStatementTable from "./NepalStatementTable";
 import type { NepalStatementLine } from "../../lib/nepalFinancialStatements";
+import {
+  FinancialStatementShell,
+} from "./FinancialStatementChrome";
 
 interface Props {
   title: string;
@@ -20,14 +23,16 @@ const NepalFinancialStatementView: React.FC<Props> = ({
   difference,
 }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-        <h3 className="text-[13px] font-semibold text-gray-800">{title}</h3>
-        {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
-      </div>
+    <FinancialStatementShell>
+      {subtitle && (
+        <div className="px-4 py-2 border-b border-[#cbd5e1] bg-[#e8eef4] text-[11px] font-semibold text-[#002d56] uppercase tracking-wide">
+          {title}
+          {subtitle ? ` · ${subtitle}` : ""}
+        </div>
+      )}
 
       {typeof difference === "number" && Math.abs(difference) > 0.01 && (
-        <div className="px-4 py-2 bg-amber-50 border-b border-amber-200 text-[11px] text-amber-800">
+        <div className="px-4 py-2 bg-amber-50 border-b border-amber-200 text-[11px] text-amber-800 no-print">
           Tie-out difference: Rs.{" "}
           {Math.abs(difference).toLocaleString("en-NP", { minimumFractionDigits: 2 })}
         </div>
@@ -40,7 +45,7 @@ const NepalFinancialStatementView: React.FC<Props> = ({
           previousYearLabel={previousYearLabel}
         />
       </div>
-    </div>
+    </FinancialStatementShell>
   );
 };
 

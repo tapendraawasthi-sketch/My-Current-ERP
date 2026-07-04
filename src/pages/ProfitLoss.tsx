@@ -16,6 +16,11 @@ import toast from "react-hot-toast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
+  FinancialStatementHeader,
+  FinancialStatementFooter,
+  formatPeriodRange,
+} from "../components/reports/FinancialStatementChrome";
+import {
   buildProfitLossData,
   profitLossDataToRows,
   shiftDateByYears,
@@ -350,13 +355,18 @@ export default function ProfitLoss() {
 
       {!loading && !error && plData && drillState.level === 0 && (
         <div ref={reportRef} className="flex-1 overflow-auto p-4 min-h-0">
-          <div className="text-center mb-4 print-only hidden">
-            <div className="text-[15px] font-semibold">{companyName}</div>
-            <div className="text-[12px] font-semibold mt-1">Trading and Profit & Loss Account</div>
-            <div className="text-[11px] text-gray-500 mt-0.5">
-              For the period: {plData.fromDate} to {plData.toDate}
-            </div>
-          </div>
+          <FinancialStatementHeader
+            companyName={companyName}
+            companyNameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+            address={companySettings?.address}
+            pan={companySettings?.panNumber || companySettings?.vatNumber}
+            reportTitle={
+              options.variant === "horizontal"
+                ? "Trading and Profit & Loss Account"
+                : "Profit & Loss Account"
+            }
+            period={formatPeriodRange(plData.fromDate, plData.toDate)}
+          />
 
           {options.variant === "horizontal" && (
             <PLHorizontal
@@ -386,6 +396,10 @@ export default function ProfitLoss() {
           )}
           {options.variant === "detailed-monthly" && (
             <PLDetailedMonthly pl={plData} options={options} onDrillDown={handleDrillDown} />
+          )}
+
+          {(options.variant === "horizontal" || options.variant === "vertical") && (
+            <FinancialStatementFooter />
           )}
 
           <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print">

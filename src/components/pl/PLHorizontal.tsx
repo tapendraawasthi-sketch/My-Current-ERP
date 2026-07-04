@@ -8,19 +8,21 @@ import type {
   PLDrillState,
 } from "../../lib/plTypes";
 import { ChevronRight, ChevronDown, Edit3 } from "lucide-react";
+import {
+  FinancialStatementShell,
+  fsClasses as fs,
+} from "../reports/FinancialStatementChrome";
 
 const fmt = (n: number) =>
   n === 0
     ? "—"
     : Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const amtCls = "text-right font-mono text-[12px] font-semibold text-gray-800 whitespace-nowrap";
-const amtCls0 = "text-right font-mono text-[12px] text-gray-400 whitespace-nowrap";
-const thCls =
-  "px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 border-b border-gray-200 bg-[#f5f6fa]";
-const tdCls = "px-3 py-1.5 text-[12px]";
-const rowHover =
-  "hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] transition-colors";
+const amtCls = `${fs.cellAmount}`;
+const amtCls0 = `${fs.cellAmount} text-gray-400 font-normal`;
+const tdCls = fs.cellParticulars;
+const thCls = fs.theadCell;
+const rowHover = fs.rowHover;
 
 interface Props {
   mode?: "pl" | "ie"; // "ie" = Income & Expenditure mode
@@ -139,45 +141,8 @@ export default function PLHorizontal({
   const totalColSpan = colCount;
 
   const SectionDivider = ({ label }: { label: string }) => (
-    <tr>
-      <td colSpan={totalColSpan} style={{ padding: "0", lineHeight: 0 }}>
-        <div
-          style={{
-            position: "relative",
-            height: 28,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "8px 0",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: "50%",
-              borderTop: "2px solid #d1d5db",
-            }}
-          />
-          <div
-            style={{
-              position: "relative",
-              background: "#ffffff",
-              padding: "2px 16px",
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: "#6b7280",
-              border: "1px solid #d1d5db",
-              borderRadius: 3,
-            }}
-          >
-            {label}
-          </div>
-        </div>
-      </td>
+    <tr className={fs.sectionHead}>
+      <td colSpan={totalColSpan}>{label}</td>
     </tr>
   );
 
@@ -190,24 +155,18 @@ export default function PLHorizontal({
     amount: number;
     highlight?: boolean;
   }) => (
-    <tr className={highlight ? "bg-[#eef2ff] font-bold" : "bg-[#f5f6fa] font-semibold"}>
-      <td
-        className={`${tdCls} ${highlight ? "text-[#1557b0]" : "text-gray-700"} text-[12px] font-bold`}
-      >
-        {label}
-      </td>
-      <td className={`${amtCls} ${highlight ? "text-[#1557b0]" : ""} border-t border-gray-200`}>
-        {fmt(Math.abs(amount))}
-      </td>
-      {options.showPercentage && <td />}
+    <tr className={highlight ? fs.grandTotalRow : fs.subtotalRow}>
+      <td className={fs.cellParticulars}>{label}</td>
+      <td className={fs.cellAmount}>{fmt(Math.abs(amount))}</td>
+      {options.showPercentage && <td className={fs.cellNote} />}
     </tr>
   );
 
   const GrandTotal = ({ amount, side }: { amount: number; side: string }) => (
-    <tr className="bg-[#1557b0] text-white">
-      <td className="px-3 py-2 text-[12px] font-bold">Total ({side})</td>
-      <td className="text-right font-mono text-[13px] font-bold px-3 py-2">{fmt(amount)}</td>
-      {options.showPercentage && <td />}
+    <tr className={fs.grandTotalRow}>
+      <td className={fs.cellParticulars}>Total ({side})</td>
+      <td className={fs.cellAmount}>{fmt(amount)}</td>
+      {options.showPercentage && <td className={fs.cellNote} />}
     </tr>
   );
 
@@ -288,39 +247,26 @@ export default function PLHorizontal({
 
   return (
     <div className="space-y-4">
-      {/* Report Header */}
-      <div className="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between">
-        <div>
-          <h2 className="text-[15px] font-semibold text-gray-800">{reportTitle}</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            For the period: <strong>{pl.fromDate}</strong> to <strong>{pl.toDate}</strong>
-            {options.showSecondLevel && " · Detailed view"}
-          </p>
+      <FinancialStatementShell>
+        <div className={fs.unifiedThead}>
+          <div className="fs-unified-thead__side">
+            <span>{leftHeader}</span>
+            <span>{options.showPercentage ? "%" : ""}</span>
+            <span>Amount (₹)</span>
+          </div>
+          <div className="fs-unified-thead__side">
+            <span>{rightHeader}</span>
+            <span>{options.showPercentage ? "%" : ""}</span>
+            <span>Amount (₹)</span>
+          </div>
         </div>
-        <div
-          className={`rounded-md px-3 py-1.5 border text-[12px] font-semibold ${
-            pl.netProfit >= 0
-              ? "bg-green-50 text-green-700 border-green-200"
-              : "bg-red-50 text-red-700 border-red-200"
-          }`}
-        >
-          {netResultLabel}: Rs. {fmt(Math.abs(pl.netProfit))}
-        </div>
-      </div>
 
-      {/* T-Format Table */}
-      <div className="grid grid-cols-2 gap-4 items-stretch">
+        {/* T-Format Table */}
+        <div className={fs.tformatGrid}>
         {/* ── DEBIT (LEFT) ── */}
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
-          <table className="w-full border-collapse flex-1">
-            <thead>
-              <tr>
-                <th className={`${thCls} text-left`}>{leftHeader}</th>
-                <th className={`${thCls} text-right`}>Amount (Rs.)</th>
-                {options.showPercentage && <th className={`${thCls} text-right`}>%</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+        <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
+          <table className={`${fs.table} flex-1`}>
+            <tbody>
               {/* === TRADING ACCOUNT — DEBIT === */}
               <SectionDivider label={sec1Label} />
 
@@ -464,16 +410,9 @@ export default function PLHorizontal({
         </div>
 
         {/* ── CREDIT (RIGHT) ── */}
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
-          <table className="w-full border-collapse flex-1">
-            <thead>
-              <tr>
-                <th className={`${thCls} text-left`}>{rightHeader}</th>
-                <th className={`${thCls} text-right`}>Amount (Rs.)</th>
-                {options.showPercentage && <th className={`${thCls} text-right`}>%</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+        <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
+          <table className={`${fs.table} flex-1`}>
+            <tbody>
               {/* === TRADING ACCOUNT — CREDIT === */}
               <SectionDivider label={sec1Label} />
 
@@ -617,6 +556,18 @@ export default function PLHorizontal({
             </tbody>
           </table>
         </div>
+        </div>
+      </FinancialStatementShell>
+
+      {/* Net result summary (screen only) */}
+      <div
+        className={`no-print rounded-md px-3 py-2 border text-[12px] font-semibold text-center ${
+          pl.netProfit >= 0
+            ? "bg-green-50 text-green-700 border-green-200"
+            : "bg-red-50 text-red-700 border-red-200"
+        }`}
+      >
+        {netResultLabel}: ₹ {fmt(Math.abs(pl.netProfit))}
       </div>
 
       {/* Closing Stock Edit Modal */}
