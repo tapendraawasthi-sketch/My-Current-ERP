@@ -30,7 +30,9 @@
     "test:ekhata-corpus-benchmark": "npx tsx scripts/test-ekhata-corpus-benchmark.ts",
     "test:ekhata-parser-parity": "npx tsx scripts/test-ekhata-parser-parity.ts",
     "test:ekhata-structured-parse": "python3 erp_bot/scripts/test_structured_parse.py",
-    "test:ekhata-all": "npm run test:ekhata-benchmark && npm run test:ekhata-corpus-benchmark && npm run test:ekhata-parser-parity && npm run test:ekhata-structured-parse && npm run validate:ekhata-corpus",
+    "test:ekhata-eval": "npx tsx scripts/test-ekhata-eval.ts && python3 erp_bot/scripts/eval_khata.py",
+    "eval:ekhata": "python3 erp_bot/scripts/eval_khata.py --verbose",
+    "test:ekhata-all": "npm run test:ekhata-benchmark && npm run test:ekhata-corpus-benchmark && npm run test:ekhata-parser-parity && npm run test:ekhata-structured-parse && npm run test:ekhata-eval && npm run validate:ekhata-corpus",
     "generate:ekhata-corpus": "npx tsx scripts/generate-ekhata-training-corpus.ts",
     "validate:ekhata-corpus": "npx tsx scripts/validate-ekhata-corpus.ts",
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs"
