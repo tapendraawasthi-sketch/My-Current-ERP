@@ -5,6 +5,42 @@ import unicodedata
 
 NEPALI_DIGIT_MAP = str.maketrans("०१२३४५६७८९", "0123456789")
 
+DEVANAGARI_WORDS: dict[str, str] = {
+    "उधार": "udhaar",
+    "दिए": "diye",
+    "दियो": "diye",
+    "लाई": "lai",
+    "ले": "le",
+    "बाट": "bata",
+    "हजार": "hajar",
+    "दश": "das",
+    "तीन": "tin",
+    "पाँच": "panch",
+    "पांच": "panch",
+    "तिर्यो": "tiryo",
+    "आज": "aja",
+    "भाडा": "bhaada",
+    "सामान": "saman",
+    "राम": "ram",
+    "श्याम": "shyam",
+    "बेचेको": "becheko",
+    "किनेको": "kineko",
+    "खर्च": "kharcha",
+    "खर्चा": "kharcha",
+    "नगद": "nagad",
+}
+
+
+def transliterate_devanagari(text: str) -> str:
+    if not re.search(r"[\u0900-\u097F]", text):
+        return text
+    out = text
+    for word in sorted(DEVANAGARI_WORDS, key=len, reverse=True):
+        out = out.replace(word, f" {DEVANAGARI_WORDS[word]} ")
+    out = normalize_unicode_digits(out)
+    out = re.sub(r"[\u0900-\u097F]", " ", out)
+    return re.sub(r"\s+", " ", out).strip()
+
 WORD_TO_NUMBER: dict[str, int] = {
     "ek": 1,
     "dui": 2,
@@ -74,6 +110,7 @@ def remove_fillers(tokens: list[str]) -> list[str]:
 
 def normalize(text: str) -> str:
     text = unicodedata.normalize("NFKC", text)
+    text = transliterate_devanagari(text)
     text = normalize_unicode_digits(text)
     text = text.lower().strip()
     text = strip_punctuation(text)

@@ -84,7 +84,7 @@ CA_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("khata_other_income", re.compile(r"\b(interest\s*received|rent\s*received|other\s*income)\b", re.I)),
     ("khata_capital_introduced", re.compile(r"\bcapital\s*introduced\b", re.I)),
     ("khata_drawings", re.compile(r"\bdrawings\b", re.I)),
-    ("khata_loan_received", re.compile(r"\bloan\s*received\b", re.I)),
+    ("khata_loan_received", re.compile(r"\b(loan\s*(received|liyo|liye)|rin\s*liyo)\b", re.I)),
     ("khata_loan_repayment", re.compile(r"\bloan\s*(repay\w*|payment|tiryo)\b", re.I)),
     ("khata_credit_purchase", re.compile(r"\b(udhaar\s*ma\b.*\b(kineko|kharid)\b|credit\s*purchase)\b", re.I)),
     ("khata_inventory_write_down", re.compile(
@@ -107,7 +107,9 @@ _SALE_TERMS = r"(becheko|beche|bikri|bik|sale|sold|diye|die|diya|extended|invoic
 
 
 def _has_credit_sale_cue(text: str) -> bool:
-    if re.search(r"\b(kineko|kine|kiniyo|kharid|purchase|saman)\b", text, re.I):
+    if re.search(r"\b(kineko|kine|kiniyo|kharid|purchase)\b", text, re.I):
+        return False
+    if re.search(r"\bsaman\s*kineko\b", text, re.I):
         return False
     if re.search(r"\b(tiryo|tireko|tira|clear|jama|payment\s+received|paisa\s+aayo|collected|outstanding\s+dues)\b", text, re.I):
         return False
@@ -119,6 +121,15 @@ def _has_credit_sale_cue(text: str) -> bool:
             re.search(r"\b(diye|die|diya|diae|दिए)\b", text, re.I)
             and re.search(r"\b(lai|लाई)\b", text, re.I)
             and not re.search(r"\b(tiryo|tireko)\b", text, re.I)
+        )
+        or (
+            re.search(r"\blai\b", text, re.I)
+            and re.search(r"\b(becheko|beche|bechy|bikri|bik)\b", text, re.I)
+            and not re.search(r"\b(cash|nagad|nakit|nakad)\b", text, re.I)
+        )
+        or (
+            re.search(r"\bko\s+maal\b", text, re.I)
+            and re.search(r"\b(becheko|beche|bechy|bikri)\b", text, re.I)
         )
     )
 
@@ -205,7 +216,7 @@ def _classify_work_intent(text: str) -> str | None:
 
 
 def classify(text: str, raw_text: str | None = None) -> str | None:
-    sources = [s.strip() for s in [raw_text or "", text] if s.strip()]
+    sources = [s.strip() for s in [text, raw_text or ""] if s.strip()]
 
     for source in sources:
         for intent, pattern in CA_PATTERNS:
