@@ -1077,7 +1077,7 @@ export default function ChequeRegister() {
               const relatedVoucher = vouchers.find((v) => v.id === cheque.voucherId);
               const party = parties.find((p) => p.id === relatedVoucher?.partyId);
 
-              let rowStyle = {};
+              const rowStyle = {};
               if (cheque.status === "bounced") {
                 rowStyle.backgroundColor = "#fee2e2";
               } else if (cheque.status === "cleared") {

@@ -64,7 +64,6 @@ const PartyLedgerStatement: React.FC = () => {
     return Math.min(100, Math.max(0, Math.round(pct)));
   }, [selectedParty, outstandingSummary]);
 
-  
   const partyOutstanding = useMemo(() => {
     if (!selectedPartyId) return null;
 
@@ -76,8 +75,14 @@ const PartyLedgerStatement: React.FC = () => {
       if (inv.status !== "posted") continue;
       const t = String(inv.type || "").toLowerCase();
       const outstanding = Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
-      if (t.includes("sales-invoice")) { balance += outstanding; type = "debtor"; }
-      if (t.includes("purchase-invoice")) { balance -= outstanding; type = "creditor"; }
+      if (t.includes("sales-invoice")) {
+        balance += outstanding;
+        type = "debtor";
+      }
+      if (t.includes("purchase-invoice")) {
+        balance -= outstanding;
+        type = "creditor";
+      }
     }
 
     return { balance: Math.abs(balance), type: balance >= 0 ? "debtor" : "creditor" };

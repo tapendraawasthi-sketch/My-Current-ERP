@@ -19,11 +19,9 @@ const fmt = (n: number) =>
 
 const thCls =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
-const tdCls =
-  "px-3 py-2 text-[12px] text-gray-700 border-b border-gray-100";
+const tdCls = "px-3 py-2 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
-const totalCls =
-  "px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100";
+const totalCls = "px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface EquityRow {
@@ -39,19 +37,10 @@ interface EquityRow {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function EquityStatement() {
-  const {
-    accounts,
-    vouchers,
-    currentFiscalYear,
-    companySettings,
-  } = useStore();
+  const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
 
-  const fyStart =
-    currentFiscalYear?.startDate ||
-    new Date().getFullYear() + "-04-01";
-  const fyEnd =
-    currentFiscalYear?.endDate ||
-    new Date().getFullYear() + 1 + "-03-31";
+  const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
+  const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
 
   const [fromDate, setFromDate] = useState(fyStart);
   const [toDate, setToDate] = useState(fyEnd);
@@ -65,23 +54,14 @@ export default function EquityStatement() {
       for (const line of v.lines || []) {
         const aid = line.accountId;
         if (!aid) continue;
-        map[aid] =
-          (map[aid] || 0) +
-          Number(line.debit || 0) -
-          Number(line.credit || 0);
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
       }
     }
     // Opening balances from master
     for (const acc of accounts) {
-      if (
-        acc.openingBalance &&
-        acc.openingBalanceDate &&
-        acc.openingBalanceDate <= date
-      ) {
+      if (acc.openingBalance && acc.openingBalanceDate && acc.openingBalanceDate <= date) {
         const sign = (acc.openingBalanceDr || 0) > 0 ? 1 : -1;
-        map[acc.id] =
-          (map[acc.id] || 0) +
-          Number(acc.openingBalance || 0) * sign;
+        map[acc.id] = (map[acc.id] || 0) + Number(acc.openingBalance || 0) * sign;
       }
     }
     return map;
@@ -94,14 +74,8 @@ export default function EquityStatement() {
     return d.toISOString().split("T")[0];
   }, [fromDate]);
 
-  const openingBal = useMemo(
-    () => computeBalAt(prevDate),
-    [vouchers, accounts, prevDate]
-  );
-  const closingBal = useMemo(
-    () => computeBalAt(toDate),
-    [vouchers, accounts, toDate]
-  );
+  const openingBal = useMemo(() => computeBalAt(prevDate), [vouchers, accounts, prevDate]);
+  const closingBal = useMemo(() => computeBalAt(toDate), [vouchers, accounts, toDate]);
 
   // ── Compute period movements ───────────────────────────────────────────────
   const periodMov = useMemo(() => {
@@ -113,10 +87,7 @@ export default function EquityStatement() {
       for (const line of v.lines || []) {
         const aid = line.accountId;
         if (!aid) continue;
-        map[aid] =
-          (map[aid] || 0) +
-          Number(line.debit || 0) -
-          Number(line.credit || 0);
+        map[aid] = (map[aid] || 0) + Number(line.debit || 0) - Number(line.credit || 0);
       }
     }
     return map;
@@ -126,31 +97,17 @@ export default function EquityStatement() {
   const netProfit = useMemo(() => {
     const incomeAccs = accounts.filter((a) => a.type === "income");
     const expenseAccs = accounts.filter((a) => a.type === "expense");
-    const totalIncome = incomeAccs.reduce(
-      (s, a) => s + -(periodMov[a.id] || 0),
-      0
-    );
-    const totalExpense = expenseAccs.reduce(
-      (s, a) => s + (periodMov[a.id] || 0),
-      0
-    );
+    const totalIncome = incomeAccs.reduce((s, a) => s + -(periodMov[a.id] || 0), 0);
+    const totalExpense = expenseAccs.reduce((s, a) => s + (periodMov[a.id] || 0), 0);
     return totalIncome - totalExpense;
   }, [accounts, periodMov]);
 
   // ── Identify dividend / drawing accounts ─────────────────────────────────
-  const dividendKeywords = [
-    "dividend",
-    "drawing",
-    "drawings",
-    "distribution",
-    "withdrawal",
-  ];
+  const dividendKeywords = ["dividend", "drawing", "drawings", "distribution", "withdrawal"];
 
   // ── Build equity rows ─────────────────────────────────────────────────────
   const equityRows = useMemo((): EquityRow[] => {
-    const equityAccounts = accounts.filter(
-      (a) => a.type === "equity" && !a.isGroup
-    );
+    const equityAccounts = accounts.filter((a) => a.type === "equity" && !a.isGroup);
 
     return equityAccounts.map((acc) => {
       // Equity accounts are credit-nature: negative raw = positive balance
@@ -162,16 +119,13 @@ export default function EquityStatement() {
       const closingBalance = -closeRaw;
 
       const isDividendAcc = dividendKeywords.some((k) =>
-        (acc.name || "").toLowerCase().includes(k)
+        (acc.name || "").toLowerCase().includes(k),
       );
 
       // Classify period movement
       const dividendsPaid = isDividendAcc ? Math.max(0, movRaw) : 0;
-      const capitalContributed = !isDividendAcc
-        ? Math.max(0, -movRaw)
-        : 0;
-      const otherAdjustments =
-        -movRaw - capitalContributed + dividendsPaid;
+      const capitalContributed = !isDividendAcc ? Math.max(0, -movRaw) : 0;
+      const otherAdjustments = -movRaw - capitalContributed + dividendsPaid;
 
       return {
         id: acc.id,
@@ -192,7 +146,7 @@ export default function EquityStatement() {
       r.name.toLowerCase().includes("retained") ||
       r.name.toLowerCase().includes("surplus") ||
       r.name.toLowerCase().includes("profit") ||
-      r.name.toLowerCase().includes("reserve")
+      r.name.toLowerCase().includes("reserve"),
   );
 
   // Inject net profit into retained earnings row
@@ -220,19 +174,10 @@ export default function EquityStatement() {
   // ── Column totals ─────────────────────────────────────────────────────────
   const totals = {
     openingBalance: finalRows.reduce((s, r) => s + r.openingBalance, 0),
-    capitalContributed: finalRows.reduce(
-      (s, r) => s + r.capitalContributed,
-      0
-    ),
-    netProfitTransferred: finalRows.reduce(
-      (s, r) => s + r.netProfitTransferred,
-      0
-    ),
+    capitalContributed: finalRows.reduce((s, r) => s + r.capitalContributed, 0),
+    netProfitTransferred: finalRows.reduce((s, r) => s + r.netProfitTransferred, 0),
     dividendsPaid: finalRows.reduce((s, r) => s + r.dividendsPaid, 0),
-    otherAdjustments: finalRows.reduce(
-      (s, r) => s + r.otherAdjustments,
-      0
-    ),
+    otherAdjustments: finalRows.reduce((s, r) => s + r.otherAdjustments, 0),
     closingBalance: finalRows.reduce((s, r) => s + r.closingBalance, 0),
   };
 
@@ -259,15 +204,8 @@ export default function EquityStatement() {
       },
     ];
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(
-      wb,
-      XLSX.utils.json_to_sheet(data),
-      "Changes in Equity"
-    );
-    XLSX.writeFile(
-      wb,
-      `EquityStatement_${fromDate}_to_${toDate}.xlsx`
-    );
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Changes in Equity");
+    XLSX.writeFile(wb, `EquityStatement_${fromDate}_to_${toDate}.xlsx`);
   };
 
   // ─── Render ───────────────────────────────────────────────────────────────
@@ -280,8 +218,7 @@ export default function EquityStatement() {
             Statement of Changes in Equity
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            {companySettings?.name || "Company"} — {fromDate} to{" "}
-            {toDate} • NFRS Compliant
+            {companySettings?.name || "Company"} — {fromDate} to {toDate} • NFRS Compliant
           </p>
         </div>
         <button
@@ -320,11 +257,10 @@ export default function EquityStatement() {
 
       {/* Info banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[11px] text-blue-800">
-        <strong>NFRS Requirement:</strong> The Statement of Changes in
-        Equity is mandatory for all companies under Nepal Financial
-        Reporting Standards. It shows how each component of equity
-        changed during the period — through profits, capital
-        contributions, dividends, and other comprehensive income.
+        <strong>NFRS Requirement:</strong> The Statement of Changes in Equity is mandatory for all
+        companies under Nepal Financial Reporting Standards. It shows how each component of equity
+        changed during the period — through profits, capital contributions, dividends, and other
+        comprehensive income.
       </div>
 
       {/* KPI cards */}
@@ -338,8 +274,7 @@ export default function EquityStatement() {
           {
             label: "Net Profit / (Loss)",
             value: netProfit,
-            color:
-              netProfit >= 0 ? "text-green-700" : "text-red-600",
+            color: netProfit >= 0 ? "text-green-700" : "text-red-600",
           },
           {
             label: "Dividends / Drawings",
@@ -349,22 +284,14 @@ export default function EquityStatement() {
           {
             label: "Closing Total Equity",
             value: totals.closingBalance,
-            color:
-              totals.closingBalance >= 0
-                ? "text-[#1557b0]"
-                : "text-red-600",
+            color: totals.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600",
           },
         ].map((kpi) => (
-          <div
-            key={kpi.label}
-            className="bg-white border border-gray-200 rounded-lg p-3"
-          >
+          <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
-            <p
-              className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}
-            >
+            <p className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}>
               {kpi.value < 0 ? "(" : ""}Rs. {fmt(kpi.value)}
               {kpi.value < 0 ? ")" : ""}
             </p>
@@ -381,40 +308,22 @@ export default function EquityStatement() {
                 <th className={thCls} style={{ minWidth: 180 }}>
                   Particulars
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 130 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
                   Opening Balance
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 130 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
                   Capital Contributed
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 140 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 140 }}>
                   Net Profit / (Loss)
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 140 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 140 }}>
                   Dividends / Drawings
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 130 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
                   Other Adjustments
                 </th>
-                <th
-                  className={`${thCls} text-right`}
-                  style={{ width: 130 }}
-                >
+                <th className={`${thCls} text-right`} style={{ width: 130 }}>
                   Closing Balance
                 </th>
               </tr>
@@ -422,12 +331,8 @@ export default function EquityStatement() {
             <tbody>
               {finalRows.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-10 text-center text-[12px] text-gray-400"
-                  >
-                    No equity accounts found. Add accounts with type
-                    "equity" in Chart of Accounts.
+                  <td colSpan={7} className="px-4 py-10 text-center text-[12px] text-gray-400">
+                    No equity accounts found. Add accounts with type "equity" in Chart of Accounts.
                   </td>
                 </tr>
               )}
@@ -438,20 +343,14 @@ export default function EquityStatement() {
                     {row.name}
                   </td>
                   <td className={amtCls}>
-                    {row.openingBalance !== 0
-                      ? fmt(row.openingBalance)
-                      : "—"}
+                    {row.openingBalance !== 0 ? fmt(row.openingBalance) : "—"}
                   </td>
                   <td className="px-3 py-2 text-[12px] font-mono text-right border-b border-gray-100 text-green-700">
-                    {row.capitalContributed > 0.01
-                      ? fmt(row.capitalContributed)
-                      : "—"}
+                    {row.capitalContributed > 0.01 ? fmt(row.capitalContributed) : "—"}
                   </td>
                   <td
                     className={`${amtCls} ${
-                      row.netProfitTransferred >= 0
-                        ? "text-green-700"
-                        : "text-red-600"
+                      row.netProfitTransferred >= 0 ? "text-green-700" : "text-red-600"
                     }`}
                   >
                     {row.netProfitTransferred !== 0
@@ -461,20 +360,14 @@ export default function EquityStatement() {
                       : "—"}
                   </td>
                   <td className="px-3 py-2 text-[12px] font-mono text-right border-b border-gray-100 text-red-600">
-                    {row.dividendsPaid > 0.01
-                      ? "(" + fmt(row.dividendsPaid) + ")"
-                      : "—"}
+                    {row.dividendsPaid > 0.01 ? "(" + fmt(row.dividendsPaid) + ")" : "—"}
                   </td>
                   <td className={amtCls}>
-                    {Math.abs(row.otherAdjustments) > 0.01
-                      ? fmt(row.otherAdjustments)
-                      : "—"}
+                    {Math.abs(row.otherAdjustments) > 0.01 ? fmt(row.otherAdjustments) : "—"}
                   </td>
                   <td
                     className={`${amtCls} font-semibold ${
-                      row.closingBalance >= 0
-                        ? "text-[#1557b0]"
-                        : "text-red-600"
+                      row.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600"
                     }`}
                   >
                     {row.closingBalance < 0 ? "(" : ""}
@@ -488,32 +381,21 @@ export default function EquityStatement() {
             {/* Totals row */}
             <tfoot>
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                  TOTAL EQUITY
-                </td>
-                <td className={totalCls}>
-                  Rs. {fmt(totals.openingBalance)}
-                </td>
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">TOTAL EQUITY</td>
+                <td className={totalCls}>Rs. {fmt(totals.openingBalance)}</td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-green-700">
-                  {totals.capitalContributed > 0.01
-                    ? "Rs. " + fmt(totals.capitalContributed)
-                    : "—"}
+                  {totals.capitalContributed > 0.01 ? "Rs. " + fmt(totals.capitalContributed) : "—"}
                 </td>
                 <td
                   className={`${totalCls} ${
-                    totals.netProfitTransferred >= 0
-                      ? "text-green-700"
-                      : "text-red-600"
+                    totals.netProfitTransferred >= 0 ? "text-green-700" : "text-red-600"
                   }`}
                 >
-                  {totals.netProfitTransferred < 0 ? "(" : ""}Rs.{" "}
-                  {fmt(totals.netProfitTransferred)}
+                  {totals.netProfitTransferred < 0 ? "(" : ""}Rs. {fmt(totals.netProfitTransferred)}
                   {totals.netProfitTransferred < 0 ? ")" : ""}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-red-600">
-                  {totals.dividendsPaid > 0.01
-                    ? "(Rs. " + fmt(totals.dividendsPaid) + ")"
-                    : "—"}
+                  {totals.dividendsPaid > 0.01 ? "(Rs. " + fmt(totals.dividendsPaid) + ")" : "—"}
                 </td>
                 <td className={totalCls}>
                   {Math.abs(totals.otherAdjustments) > 0.01
@@ -522,13 +404,10 @@ export default function EquityStatement() {
                 </td>
                 <td
                   className={`${totalCls} ${
-                    totals.closingBalance >= 0
-                      ? "text-[#1557b0]"
-                      : "text-red-600"
+                    totals.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600"
                   }`}
                 >
-                  {totals.closingBalance < 0 ? "(" : ""}Rs.{" "}
-                  {fmt(totals.closingBalance)}
+                  {totals.closingBalance < 0 ? "(" : ""}Rs. {fmt(totals.closingBalance)}
                   {totals.closingBalance < 0 ? ")" : ""}
                 </td>
               </tr>
@@ -543,30 +422,27 @@ export default function EquityStatement() {
           Notes to Statement of Changes in Equity
         </p>
         <p>
-          1. <strong>Capital Contributed:</strong> Represents fresh
-          capital introduced by owners / shareholders during the period.
+          1. <strong>Capital Contributed:</strong> Represents fresh capital introduced by owners /
+          shareholders during the period.
         </p>
         <p>
-          2. <strong>Net Profit / (Loss):</strong> Transferred from the
-          Profit &amp; Loss Account for the period {fromDate} to {toDate}.
-          Amount: Rs. {netProfit >= 0 ? "" : "("}
+          2. <strong>Net Profit / (Loss):</strong> Transferred from the Profit &amp; Loss Account
+          for the period {fromDate} to {toDate}. Amount: Rs. {netProfit >= 0 ? "" : "("}
           {fmt(netProfit)}
           {netProfit < 0 ? ")" : ""}.
         </p>
         <p>
-          3. <strong>Dividends / Drawings:</strong> Amounts withdrawn by
-          owners or declared as dividends during the period.
+          3. <strong>Dividends / Drawings:</strong> Amounts withdrawn by owners or declared as
+          dividends during the period.
         </p>
         <p>
-          4. <strong>Other Adjustments:</strong> Includes prior period
-          corrections, revaluation surplus, and other comprehensive
-          income items not routed through P&amp;L.
+          4. <strong>Other Adjustments:</strong> Includes prior period corrections, revaluation
+          surplus, and other comprehensive income items not routed through P&amp;L.
         </p>
       </div>
 
       <p className="text-[10px] text-gray-400 mt-3">
-        Prepared as per NFRS (Nepal Financial Reporting Standards) •
-        Period: {fromDate} to {toDate}
+        Prepared as per NFRS (Nepal Financial Reporting Standards) • Period: {fromDate} to {toDate}
       </p>
     </div>
   );

@@ -37,7 +37,6 @@ import { generateVoucherPDF } from "../lib/printUtils";
 import { exportVouchersToExcel } from "../lib/exportUtils";
 import toast from "react-hot-toast";
 
-
 const HoverActionRow: React.FC<{
   voucher: any;
   children: React.ReactNode;
@@ -73,7 +72,7 @@ const HoverActionRow: React.FC<{
         background: hovered ? "#fafeff" : "transparent",
         transition: "all 100ms ease",
         position: "relative",
-        cursor: "pointer"
+        cursor: "pointer",
       }}
       onClick={onView}
     >
@@ -100,7 +99,10 @@ const HoverActionRow: React.FC<{
         >
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onView(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onView();
+            }}
             title="View voucher"
             style={{
               height: 24,
@@ -120,7 +122,10 @@ const HoverActionRow: React.FC<{
           {voucher.status !== "posted" && voucher.status !== "cancelled" && (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
               title="Edit voucher"
               style={{
                 height: 24,
@@ -557,8 +562,8 @@ const VouchersRegister: React.FC = () => {
                         <Badge variant={sums.balanced ? "success" : "danger"}>
                           {sums.balanced ? "BALANCED" : "UNBALANCED"}
                         </Badge>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
                   </tfoot>
                 </table>
               </div>
@@ -697,7 +702,9 @@ const VouchersRegister: React.FC = () => {
                 <th style={{ width: 36, padding: "8px 10px" }}>
                   <input
                     type="checkbox"
-                    checked={selectedIds.size === paginatedVouchers.length && paginatedVouchers.length > 0}
+                    checked={
+                      selectedIds.size === paginatedVouchers.length && paginatedVouchers.length > 0
+                    }
                     onChange={toggleSelectAll}
                     style={{ accentColor: "#1557b0", width: 14, height: 14, cursor: "pointer" }}
                     title="Select all on this page"
@@ -722,8 +729,7 @@ const VouchersRegister: React.FC = () => {
                     background: "#f5f6fa",
                     borderBottom: "2px solid #e5e7eb",
                   }}
-                >
-                </th>
+                ></th>
               </tr>
             </thead>
             <tbody>
@@ -814,7 +820,6 @@ const VouchersRegister: React.FC = () => {
         />
       </Card>
 
-      
       {selectedIds.size > 0 && (
         <div
           style={{
@@ -866,19 +871,41 @@ const VouchersRegister: React.FC = () => {
             onClick={() => {
               toast.success(`Printing ${selectedIds.size} voucher(s)...`);
             }}
-            style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#273148", border: "1px solid #374151", borderRadius: 4, color: "#e2e8f0", cursor: "pointer" }}
+            style={{
+              height: 30,
+              padding: "0 12px",
+              fontSize: 11,
+              fontWeight: 600,
+              background: "#273148",
+              border: "1px solid #374151",
+              borderRadius: 4,
+              color: "#e2e8f0",
+              cursor: "pointer",
+            }}
           >
             Print
           </button>
 
-          {selectedVouchers.every((v) => v.status === "draft" || v.status === "pending_approval") && (
+          {selectedVouchers.every(
+            (v) => v.status === "draft" || v.status === "pending_approval",
+          ) && (
             <button
               type="button"
               onClick={() => {
                 setSelectedIds(new Set());
                 toast.success(`${selectedIds.size} voucher(s) approved.`);
               }}
-              style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#14532d", border: "1px solid #166534", borderRadius: 4, color: "#86efac", cursor: "pointer" }}
+              style={{
+                height: 30,
+                padding: "0 12px",
+                fontSize: 11,
+                fontWeight: 600,
+                background: "#14532d",
+                border: "1px solid #166534",
+                borderRadius: 4,
+                color: "#86efac",
+                cursor: "pointer",
+              }}
             >
               Approve
             </button>
@@ -887,11 +914,22 @@ const VouchersRegister: React.FC = () => {
           <button
             type="button"
             onClick={() => {
-              if (!window.confirm(`Void ${selectedIds.size} voucher(s)? This cannot be undone.`)) return;
+              if (!window.confirm(`Void ${selectedIds.size} voucher(s)? This cannot be undone.`))
+                return;
               setSelectedIds(new Set());
               toast.success(`${selectedIds.size} voucher(s) voided.`);
             }}
-            style={{ height: 30, padding: "0 12px", fontSize: 11, fontWeight: 600, background: "#7f1d1d", border: "1px solid #991b1b", borderRadius: 4, color: "#fca5a5", cursor: "pointer" }}
+            style={{
+              height: 30,
+              padding: "0 12px",
+              fontSize: 11,
+              fontWeight: 600,
+              background: "#7f1d1d",
+              border: "1px solid #991b1b",
+              borderRadius: 4,
+              color: "#fca5a5",
+              cursor: "pointer",
+            }}
           >
             Void
           </button>
@@ -899,7 +937,16 @@ const VouchersRegister: React.FC = () => {
           <button
             type="button"
             onClick={() => setSelectedIds(new Set())}
-            style={{ height: 30, padding: "0 8px", fontSize: 18, lineHeight: 1, background: "transparent", border: "none", color: "#64748b", cursor: "pointer" }}
+            style={{
+              height: 30,
+              padding: "0 8px",
+              fontSize: 18,
+              lineHeight: 1,
+              background: "transparent",
+              border: "none",
+              color: "#64748b",
+              cursor: "pointer",
+            }}
             title="Clear selection"
           >
             ×

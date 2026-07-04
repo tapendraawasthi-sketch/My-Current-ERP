@@ -2,13 +2,7 @@
 // Falcon AI — Main Chat Panel UI
 // Replaces existing FalconPanel.tsx with streaming, markdown, and enhanced UX.
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  memo,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import {
   Send,
   ThumbsUp,
@@ -84,15 +78,26 @@ function formatTime(ts: Date | string): string {
 function getDomainBadge(domain?: string): { label: string; cls: string } | null {
   if (!domain) return null;
   const map: Record<string, { label: string; cls: string }> = {
-    erp:        { label: "🏢 ERP Expert Mode",    cls: "bg-blue-50 text-blue-700 border-blue-200" },
-    accounting: { label: "📊 Finance Mode",        cls: "bg-green-50 text-green-700 border-green-200" },
-    "web-search":{ label: "🌐 Web Search Mode",   cls: "bg-orange-50 text-orange-700 border-orange-200" },
-    math:       { label: "🧮 Calculator Mode",     cls: "bg-teal-50 text-teal-700 border-teal-200" },
-    code:       { label: "💻 Code Mode",           cls: "bg-violet-50 text-violet-700 border-violet-200" },
-    greeting:   { label: "👋 Conversation",        cls: "bg-gray-50 text-gray-600 border-gray-200" },
-    general:    { label: "💡 General Knowledge",   cls: "bg-purple-50 text-purple-700 border-purple-200" },
+    erp: { label: "🏢 ERP Expert Mode", cls: "bg-blue-50 text-blue-700 border-blue-200" },
+    accounting: { label: "📊 Finance Mode", cls: "bg-green-50 text-green-700 border-green-200" },
+    "web-search": {
+      label: "🌐 Web Search Mode",
+      cls: "bg-orange-50 text-orange-700 border-orange-200",
+    },
+    math: { label: "🧮 Calculator Mode", cls: "bg-teal-50 text-teal-700 border-teal-200" },
+    code: { label: "💻 Code Mode", cls: "bg-violet-50 text-violet-700 border-violet-200" },
+    greeting: { label: "👋 Conversation", cls: "bg-gray-50 text-gray-600 border-gray-200" },
+    general: {
+      label: "💡 General Knowledge",
+      cls: "bg-purple-50 text-purple-700 border-purple-200",
+    },
   };
-  return map[domain] ?? { label: "💡 General Knowledge", cls: "bg-purple-50 text-purple-700 border-purple-200" };
+  return (
+    map[domain] ?? {
+      label: "💡 General Knowledge",
+      cls: "bg-purple-50 text-purple-700 border-purple-200",
+    }
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -100,13 +105,7 @@ function getDomainBadge(domain?: string): { label: string; cls: string } | null 
 // ─────────────────────────────────────────────────────────────────────────────
 
 const MessageBubble = memo(
-  ({
-    msg,
-    onRate,
-  }: {
-    msg: FalconChatMessage;
-    onRate: (id: string, v: 1 | -1) => void;
-  }) => {
+  ({ msg, onRate }: { msg: FalconChatMessage; onRate: (id: string, v: 1 | -1) => void }) => {
     const [copied, setCopied] = useState(false);
     const isUser = msg.role === "user";
     const isStreaming = !!msg.isStreaming;
@@ -131,9 +130,7 @@ const MessageBubble = memo(
               ? "bg-[#1557b0] text-white rounded-tr-sm"
               : [
                   "bg-white text-gray-800 rounded-tl-sm border",
-                  isStreaming
-                    ? "border-blue-300 shadow-blue-100"
-                    : "border-gray-200",
+                  isStreaming ? "border-blue-300 shadow-blue-100" : "border-gray-200",
                 ].join(" "),
           ].join(" ")}
         >
@@ -141,11 +138,7 @@ const MessageBubble = memo(
             <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
           ) : (
             <>
-              <MarkdownRenderer
-                content={msg.content}
-                compact
-                animate={isStreaming}
-              />
+              <MarkdownRenderer content={msg.content} compact animate={isStreaming} />
               {/* Blinking cursor while streaming */}
               {isStreaming && (
                 <span className="inline-block w-[7px] h-[13px] bg-blue-500 ml-0.5 animate-pulse rounded-sm align-text-bottom" />
@@ -160,20 +153,14 @@ const MessageBubble = memo(
               title="Copy response"
               className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100"
             >
-              {copied ? (
-                <Check className="h-3 w-3 text-green-500" />
-              ) : (
-                <Copy className="h-3 w-3" />
-              )}
+              {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
             </button>
           )}
         </div>
 
         {/* Timestamp */}
         {msg.timestamp && (
-          <span className="text-[10px] text-gray-400 px-1">
-            {formatTime(msg.timestamp)}
-          </span>
+          <span className="text-[10px] text-gray-400 px-1">{formatTime(msg.timestamp)}</span>
         )}
 
         {/* Badges — web search + domain */}
@@ -182,7 +169,8 @@ const MessageBubble = memo(
             {msg.webSearchUsed && msg.searchQuery && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-orange-50 text-orange-700 border border-orange-200">
                 <Search className="h-2.5 w-2.5" />
-                Searched: {msg.searchQuery.slice(0, 40)}{msg.searchQuery.length > 40 ? "…" : ""}
+                Searched: {msg.searchQuery.slice(0, 40)}
+                {msg.searchQuery.length > 40 ? "…" : ""}
               </span>
             )}
             {domainBadge && (
@@ -330,10 +318,7 @@ const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
         </p>
       </div>
 
-      <button
-        onClick={onClose}
-        className="text-[11px] text-gray-500 hover:text-gray-700 underline"
-      >
+      <button onClick={onClose} className="text-[11px] text-gray-500 hover:text-gray-700 underline">
         Close settings
       </button>
     </div>
@@ -433,14 +418,19 @@ export const FalconPanel: React.FC = () => {
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => { setShowSettings((p) => !p); setShowQuick(false); }}
+            onClick={() => {
+              setShowSettings((p) => !p);
+              setShowQuick(false);
+            }}
             title="Settings"
             className="p-1 rounded hover:bg-white/20 transition-colors"
           >
             <Settings className="h-3.5 w-3.5" />
           </button>
           <button
-            onClick={() => { if (window.confirm("Clear all messages?")) clearHistory(); }}
+            onClick={() => {
+              if (window.confirm("Clear all messages?")) clearHistory();
+            }}
             title="Clear history"
             className="p-1 rounded hover:bg-white/20 transition-colors"
           >
@@ -489,9 +479,7 @@ export const FalconPanel: React.FC = () => {
 
         {/* Streaming indicator (once content starts flowing) */}
         {isStreaming && (
-          <p className="text-[10px] text-blue-400 animate-pulse px-1">
-            Streaming response…
-          </p>
+          <p className="text-[10px] text-blue-400 animate-pulse px-1">Streaming response…</p>
         )}
 
         <div ref={messagesEndRef} />

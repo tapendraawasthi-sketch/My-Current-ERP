@@ -7,71 +7,142 @@ import { Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface NepaliDatePickerProps {
-  value: string;           // AD "YYYY-MM-DD" — this is what the app stores
+  value: string; // AD "YYYY-MM-DD" — this is what the app stores
   onChange: (adDate: string) => void;
   label?: string;
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
   className?: string;
-  minDate?: string;        // AD
-  maxDate?: string;        // AD
+  minDate?: string; // AD
+  maxDate?: string; // AD
   error?: string;
 }
 
 // ── BS calendar data 2000–2090 ────────────────────────────────────────────────
 const BS_DATA: Record<number, number[]> = {
-  2000:[30,32,31,32,31,30,30,30,29,30,29,31],2001:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2002:[31,31,32,32,31,30,30,29,30,29,30,30],2003:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2004:[30,32,31,32,31,30,30,30,29,30,29,31],2005:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2006:[31,31,32,32,31,30,30,29,30,29,30,30],2007:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2008:[31,31,31,32,31,31,29,30,30,29,29,31],2009:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2010:[31,31,32,32,31,30,30,29,30,29,30,30],2011:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2012:[31,31,31,32,31,31,29,30,30,29,30,30],2013:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2014:[31,31,32,32,31,30,30,29,30,29,30,30],2015:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2016:[31,31,31,32,31,31,29,30,30,29,30,30],2017:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2018:[31,32,31,32,31,30,30,29,30,29,30,30],2019:[31,32,31,32,31,30,30,30,29,30,29,31],
-  2020:[31,31,31,32,31,31,30,29,30,29,30,30],2021:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2022:[31,32,31,32,31,30,30,30,29,29,30,30],2023:[31,32,31,32,31,30,30,30,29,30,29,31],
-  2024:[31,31,31,32,31,31,30,29,30,29,30,30],2025:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2026:[31,32,31,32,31,30,30,30,29,29,30,31],2027:[30,32,31,32,31,30,30,30,29,30,29,31],
-  2028:[31,31,32,31,31,31,30,29,30,29,30,30],2029:[31,31,32,31,32,30,30,29,30,29,30,30],
-  2030:[31,32,31,32,31,30,30,30,29,29,30,31],2031:[30,32,31,32,31,30,30,30,29,30,29,31],
-  2032:[31,31,32,31,31,31,30,29,30,29,30,30],2033:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2034:[31,32,31,32,31,30,30,30,29,29,30,31],2035:[30,32,31,32,31,31,29,30,30,29,29,31],
-  2036:[31,31,32,31,31,31,30,29,30,29,30,30],2037:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2038:[31,32,31,32,31,30,30,30,29,29,30,31],2039:[31,31,31,32,31,31,29,30,30,29,30,30],
-  2040:[31,31,32,31,31,31,30,29,30,29,30,30],2041:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2042:[31,32,31,32,31,30,30,30,29,29,30,31],2043:[31,31,31,32,31,31,29,30,30,29,30,30],
-  2044:[31,31,32,31,31,31,30,29,30,29,30,30],2045:[31,32,31,32,31,30,30,29,30,29,30,30],
-  2046:[31,32,31,32,31,30,30,30,29,29,30,31],2047:[31,31,31,32,31,31,30,29,29,30,30,30],
-  2048:[30,31,32,31,31,31,30,29,30,29,30,30],2049:[31,31,32,31,31,31,30,30,29,29,30,30],
-  2050:[31,32,31,32,31,30,30,30,29,29,30,31],2051:[31,31,31,32,31,31,29,30,30,29,30,30],
-  2052:[31,31,32,31,31,31,30,29,30,29,30,30],2053:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2054:[31,32,31,32,31,30,30,30,29,29,30,31],2055:[31,31,31,32,31,31,29,30,29,30,29,31],
-  2056:[31,31,32,31,31,31,30,29,30,29,30,30],2057:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2058:[31,32,31,32,31,30,30,30,29,29,30,31],2059:[31,31,31,32,31,31,29,29,30,29,30,30],
-  2060:[31,31,32,31,31,31,30,29,30,29,30,30],2061:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2062:[31,32,31,32,31,30,30,30,29,29,30,31],2063:[31,31,31,32,31,31,29,30,30,29,29,31],
-  2064:[31,31,32,31,31,31,30,29,30,29,30,30],2065:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2066:[31,32,31,32,31,30,30,30,29,29,30,31],2067:[31,31,31,32,31,31,29,30,30,29,30,30],
-  2068:[31,31,32,31,31,31,30,29,30,29,30,30],2069:[31,31,32,32,31,30,30,29,30,29,30,30],
-  2070:[31,32,31,32,31,30,30,30,29,29,30,31],2071:[31,31,31,32,31,31,29,30,30,29,30,30],
-  2072:[31,31,32,31,31,31,30,29,30,29,30,30],2073:[31,32,31,32,31,30,30,29,30,29,30,30],
-  2074:[31,32,31,32,31,30,30,30,29,29,30,30],2075:[31,32,31,32,31,30,30,30,29,30,29,31],
-  2076:[31,31,31,32,31,31,30,29,30,29,30,30],2077:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2078:[31,31,32,32,31,30,30,29,30,29,30,30],2079:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2080:[31,31,31,32,31,31,29,30,30,29,30,30],2081:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2082:[31,31,32,32,31,30,30,29,30,29,30,30],2083:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2084:[31,31,31,32,31,31,29,30,30,29,30,30],2085:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2086:[31,32,31,32,31,30,30,29,30,29,30,30],2087:[31,32,31,32,31,30,30,30,29,29,30,31],
-  2088:[30,32,31,32,31,30,30,30,29,30,29,31],2089:[31,31,32,31,31,31,30,29,30,29,30,30],
-  2090:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2000: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2001: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2002: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2003: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2004: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2005: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2006: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2007: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2008: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 29, 31],
+  2009: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2010: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2011: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2012: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2013: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2014: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2015: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2016: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2017: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2018: [31, 32, 31, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2019: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2020: [31, 31, 31, 32, 31, 31, 30, 29, 30, 29, 30, 30],
+  2021: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2022: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30],
+  2023: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2024: [31, 31, 31, 32, 31, 31, 30, 29, 30, 29, 30, 30],
+  2025: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2026: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2027: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2028: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2029: [31, 31, 32, 31, 32, 30, 30, 29, 30, 29, 30, 30],
+  2030: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2031: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2032: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2033: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2034: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2035: [30, 32, 31, 32, 31, 31, 29, 30, 30, 29, 29, 31],
+  2036: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2037: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2038: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2039: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2040: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2041: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2042: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2043: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2044: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2045: [31, 32, 31, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2046: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2047: [31, 31, 31, 32, 31, 31, 30, 29, 29, 30, 30, 30],
+  2048: [30, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2049: [31, 31, 32, 31, 31, 31, 30, 30, 29, 29, 30, 30],
+  2050: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2051: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2052: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2053: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2054: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2055: [31, 31, 31, 32, 31, 31, 29, 30, 29, 30, 29, 31],
+  2056: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2057: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2058: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2059: [31, 31, 31, 32, 31, 31, 29, 29, 30, 29, 30, 30],
+  2060: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2061: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2062: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2063: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 29, 31],
+  2064: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2065: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2066: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2067: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2068: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2069: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2070: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2071: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2072: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2073: [31, 32, 31, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2074: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30],
+  2075: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2076: [31, 31, 31, 32, 31, 31, 30, 29, 30, 29, 30, 30],
+  2077: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2078: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2079: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2080: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2081: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2082: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2083: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2084: [31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30],
+  2085: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2086: [31, 32, 31, 32, 31, 30, 30, 29, 30, 29, 30, 30],
+  2087: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31],
+  2088: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
+  2089: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+  2090: [31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30],
 };
 
-const BS_MONTHS_EN = ["Baisakh","Jestha","Ashadh","Shrawan","Bhadra","Ashwin","Kartik","Mangsir","Poush","Magh","Falgun","Chaitra"];
-const BS_MONTHS_NP = ["बैशाख","जेठ","असार","श्रावण","भाद्र","आश्विन","कार्तिक","मंसिर","पुष","माघ","फाल्गुन","चैत्र"];
-const DOW_EN = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const BS_MONTHS_EN = [
+  "Baisakh",
+  "Jestha",
+  "Ashadh",
+  "Shrawan",
+  "Bhadra",
+  "Ashwin",
+  "Kartik",
+  "Mangsir",
+  "Poush",
+  "Magh",
+  "Falgun",
+  "Chaitra",
+];
+const BS_MONTHS_NP = [
+  "बैशाख",
+  "जेठ",
+  "असार",
+  "श्रावण",
+  "भाद्र",
+  "आश्विन",
+  "कार्तिक",
+  "मंसिर",
+  "पुष",
+  "माघ",
+  "फाल्गुन",
+  "चैत्र",
+];
+const DOW_EN = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 // BS 2000/1/1 = AD 1943/04/14
 const AD_EPOCH = new Date(1943, 3, 14);
@@ -82,21 +153,31 @@ function adToBS(adDate: Date): { y: number; m: number; d: number } | null {
   try {
     const diff = Math.floor((adDate.getTime() - AD_EPOCH.getTime()) / 86400000);
     if (diff < 0) return null;
-    let rem = diff, y = BS_EPOCH;
+    let rem = diff,
+      y = BS_EPOCH;
     while (true) {
-      const yd = BS_DATA[y]; if (!yd) return null;
+      const yd = BS_DATA[y];
+      if (!yd) return null;
       const total = yd.reduce((a, b) => a + b, 0);
       if (rem < total) break;
-      rem -= total; y++;
+      rem -= total;
+      y++;
     }
     const md = BS_DATA[y]!;
-    let m = 0, d = 1;
+    let m = 0,
+      d = 1;
     for (let i = 0; i < 12; i++) {
-      if (rem < md[i]) { m = i; d = rem + 1; break; }
+      if (rem < md[i]) {
+        m = i;
+        d = rem + 1;
+        break;
+      }
       rem -= md[i];
     }
     return { y, m, d };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 function bsToAd(y: number, m: number, d: number): Date | null {
@@ -104,18 +185,21 @@ function bsToAd(y: number, m: number, d: number): Date | null {
     if (y < 2000 || y > 2090) return null;
     let total = 0;
     for (let yr = BS_EPOCH; yr < y; yr++) {
-      const yd = BS_DATA[yr]; if (!yd) return null;
+      const yd = BS_DATA[yr];
+      if (!yd) return null;
       total += yd.reduce((a, b) => a + b, 0);
     }
     const md = BS_DATA[y]!;
     for (let i = 0; i < m; i++) total += md[i];
     total += d - 1;
     return new Date(AD_EPOCH.getTime() + total * 86400000);
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 function fmtAD(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function parseAD(s: string): Date | null {
@@ -126,12 +210,20 @@ function parseAD(s: string): Date | null {
 }
 
 // AD month abbreviations for the small sub-label
-const AD_MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const AD_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
-  value, onChange, label, placeholder = "Select BS date",
-  disabled = false, required = false, className = "", minDate, maxDate, error,
+  value,
+  onChange,
+  label,
+  placeholder = "Select BS date",
+  disabled = false,
+  required = false,
+  className = "",
+  minDate,
+  maxDate,
+  error,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -141,12 +233,15 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
   const selBS = value ? adToBS(parseAD(value)!) : null;
   const [vy, setVy] = useState(selBS?.y ?? todayBS.y);
-  const [vm, setVm] = useState((selBS?.m ?? todayBS.m) ); // 0-indexed
+  const [vm, setVm] = useState(selBS?.m ?? todayBS.m); // 0-indexed
 
   // Sync view when value changes externally
   useEffect(() => {
-    if (selBS) { setVy(selBS.y); setVm(selBS.m); }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (selBS) {
+      setVy(selBS.y);
+      setVm(selBS.m);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   // Close on outside click
@@ -162,37 +257,54 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
   // Close on Escape
   useEffect(() => {
     if (!open) return;
-    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const fn = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     document.addEventListener("keydown", fn);
     return () => document.removeEventListener("keydown", fn);
   }, [open]);
 
   // Navigation
-  const prevMonth = () => { if (vm === 0) { setVm(11); setVy(y => y-1); } else setVm(m => m-1); };
-  const nextMonth = () => { if (vm === 11) { setVm(0); setVy(y => y+1); } else setVm(m => m+1); };
+  const prevMonth = () => {
+    if (vm === 0) {
+      setVm(11);
+      setVy((y) => y - 1);
+    } else setVm((m) => m - 1);
+  };
+  const nextMonth = () => {
+    if (vm === 11) {
+      setVm(0);
+      setVy((y) => y + 1);
+    } else setVm((m) => m + 1);
+  };
 
   // Calendar grid data
   const daysInMonth = BS_DATA[vy]?.[vm] ?? 30;
   const firstAD = bsToAd(vy, vm, 1);
   const firstDow = firstAD ? firstAD.getDay() : 0;
 
-  const selectDay = useCallback((bsDay: number) => {
-    const ad = bsToAd(vy, vm, bsDay);
-    if (!ad) return;
-    const s = fmtAD(ad);
-    if (minDate && s < minDate) return;
-    if (maxDate && s > maxDate) return;
-    onChange(s);
-    setOpen(false);
-  }, [vy, vm, onChange, minDate, maxDate]);
+  const selectDay = useCallback(
+    (bsDay: number) => {
+      const ad = bsToAd(vy, vm, bsDay);
+      if (!ad) return;
+      const s = fmtAD(ad);
+      if (minDate && s < minDate) return;
+      if (maxDate && s > maxDate) return;
+      onChange(s);
+      setOpen(false);
+    },
+    [vy, vm, onChange, minDate, maxDate],
+  );
 
   // Display value in input trigger
   const displayStr = selBS
-    ? `${selBS.y}-${String(selBS.m+1).padStart(2,"0")}-${String(selBS.d).padStart(2,"0")} B.S.  (${value} A.D.)`
+    ? `${selBS.y}-${String(selBS.m + 1).padStart(2, "0")}-${String(selBS.d).padStart(2, "0")} B.S.  (${value} A.D.)`
     : "";
 
   // Years for dropdown
-  const years = Object.keys(BS_DATA).map(Number).filter(y => y >= 2060 && y <= 2090);
+  const years = Object.keys(BS_DATA)
+    .map(Number)
+    .filter((y) => y >= 2060 && y <= 2090);
 
   // Input style
   const inputCls = [
@@ -205,10 +317,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
   ].join(" ");
 
   return (
-    <div className="flex flex-col gap-1" ref={ref} style={{ position:"relative" }}>
+    <div className="flex flex-col gap-1" ref={ref} style={{ position: "relative" }}>
       {label && (
         <label className="text-[11px] font-medium text-gray-600 flex items-center gap-0.5">
-          {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+          {label}
+          {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
 
@@ -221,17 +334,24 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           placeholder={placeholder}
           disabled={disabled}
           className={inputCls}
-          onClick={() => !disabled && setOpen(v => !v)}
-          onKeyDown={e => {
+          onClick={() => !disabled && setOpen((v) => !v)}
+          onKeyDown={(e) => {
             if ((e.key === "Enter" || e.key === " ") && !disabled) {
-              e.preventDefault(); setOpen(v => !v);
+              e.preventDefault();
+              setOpen((v) => !v);
             }
           }}
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {value && !disabled && (
-            <button type="button" className="text-gray-300 hover:text-gray-600 transition-colors"
-              onClick={e => { e.stopPropagation(); onChange(""); }}>
+            <button
+              type="button"
+              className="text-gray-300 hover:text-gray-600 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("");
+              }}
+            >
               <X className="h-3 w-3" />
             </button>
           )}
@@ -248,8 +368,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
         >
           {/* Header row */}
           <div className="flex items-center justify-between px-3 py-2 bg-[#1557b0] rounded-t-xl">
-            <button type="button" onClick={prevMonth}
-              className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors">
+            <button
+              type="button"
+              onClick={prevMonth}
+              className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+            >
               <ChevronLeft className="h-4 w-4" />
             </button>
 
@@ -257,12 +380,12 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
               {/* Month dropdown */}
               <select
                 value={vm}
-                onChange={e => setVm(Number(e.target.value))}
+                onChange={(e) => setVm(Number(e.target.value))}
                 className="text-[11px] font-bold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
-                style={{ WebkitAppearance:"none" }}
+                style={{ WebkitAppearance: "none" }}
               >
                 {BS_MONTHS_EN.map((name, i) => (
-                  <option key={i} value={i} style={{ background:"#1e3a5f", color:"#fff" }}>
+                  <option key={i} value={i} style={{ background: "#1e3a5f", color: "#fff" }}>
                     {name} ({BS_MONTHS_NP[i]})
                   </option>
                 ))}
@@ -270,27 +393,36 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
               {/* Year dropdown */}
               <select
                 value={vy}
-                onChange={e => setVy(Number(e.target.value))}
+                onChange={(e) => setVy(Number(e.target.value))}
                 className="text-[11px] font-bold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
-                style={{ WebkitAppearance:"none" }}
+                style={{ WebkitAppearance: "none" }}
               >
-                {years.map(y => (
-                  <option key={y} value={y} style={{ background:"#1e3a5f", color:"#fff" }}>{y}</option>
+                {years.map((y) => (
+                  <option key={y} value={y} style={{ background: "#1e3a5f", color: "#fff" }}>
+                    {y}
+                  </option>
                 ))}
               </select>
             </div>
 
-            <button type="button" onClick={nextMonth}
-              className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors">
+            <button
+              type="button"
+              onClick={nextMonth}
+              className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+            >
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
           {/* Sub-header: BS month label */}
           <div className="text-center py-1 text-[10px] text-gray-500 border-b border-gray-100 bg-gray-50">
-            <span className="font-semibold text-[#1557b0]">{BS_MONTHS_NP[vm]} {vy}</span>
+            <span className="font-semibold text-[#1557b0]">
+              {BS_MONTHS_NP[vm]} {vy}
+            </span>
             <span className="mx-1 text-gray-400">/</span>
-            <span>{BS_MONTHS_EN[vm]} {vy} B.S.</span>
+            <span>
+              {BS_MONTHS_EN[vm]} {vy} B.S.
+            </span>
             {firstAD && (
               <span className="text-gray-400 ml-1">
                 · {AD_MON[firstAD.getMonth()]} {firstAD.getFullYear()} A.D.
@@ -300,9 +432,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
           {/* Day-of-week headers */}
           <div className="grid grid-cols-7 px-1 pt-2 pb-0">
-            {DOW_EN.map(d => (
-              <div key={d}
-                className="text-center text-[9px] font-bold text-gray-400 uppercase tracking-wide pb-1">
+            {DOW_EN.map((d) => (
+              <div
+                key={d}
+                className="text-center text-[9px] font-bold text-gray-400 uppercase tracking-wide pb-1"
+              >
                 {d}
               </div>
             ))}
@@ -324,7 +458,8 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
               const isSelected = adStr === value;
               const isToday = todayBS.y === vy && todayBS.m === vm && todayBS.d === bsDay;
-              const isDisabled = (minDate && adStr < minDate) || (maxDate && adStr > maxDate) || !adDate;
+              const isDisabled =
+                (minDate && adStr < minDate) || (maxDate && adStr > maxDate) || !adDate;
 
               // Is last day of AD month? Show month label
               const nextAdDate = adDate ? new Date(adDate.getTime() + 86400000) : null;
@@ -349,20 +484,25 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
                   ].join(" ")}
                 >
                   {/* BS day — LARGE */}
-                  <span className={[
-                    "font-bold leading-none",
-                    isSelected ? "text-[15px] text-white" : "text-[14px] text-gray-800",
-                    isToday && !isSelected ? "text-[#1557b0]" : "",
-                  ].join(" ")}>
+                  <span
+                    className={[
+                      "font-bold leading-none",
+                      isSelected ? "text-[15px] text-white" : "text-[14px] text-gray-800",
+                      isToday && !isSelected ? "text-[#1557b0]" : "",
+                    ].join(" ")}
+                  >
                     {bsDay}
                   </span>
                   {/* AD day — SMALL below */}
-                  <span className={[
-                    "text-[8.5px] leading-none mt-0.5 font-medium",
-                    isSelected ? "text-blue-100" : "text-gray-400",
-                    isToday && !isSelected ? "text-blue-400" : "",
-                  ].join(" ")}>
-                    {adDay}{isMonthBoundary || adDay === 1 ? ` ${adMon}` : ""}
+                  <span
+                    className={[
+                      "text-[8.5px] leading-none mt-0.5 font-medium",
+                      isSelected ? "text-blue-100" : "text-gray-400",
+                      isToday && !isSelected ? "text-blue-400" : "",
+                    ].join(" ")}
+                  >
+                    {adDay}
+                    {isMonthBoundary || adDay === 1 ? ` ${adMon}` : ""}
                   </span>
                 </button>
               );
@@ -372,21 +512,30 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           {/* Footer */}
           <div className="border-t border-gray-100 px-3 py-2 flex items-center justify-between bg-gray-50 rounded-b-xl">
             <div className="text-[10px] text-gray-500">
-              Today: <span className="font-semibold text-gray-700">
-                {todayBS.y}-{String(todayBS.m+1).padStart(2,"0")}-{String(todayBS.d).padStart(2,"0")} B.S.
+              Today:{" "}
+              <span className="font-semibold text-gray-700">
+                {todayBS.y}-{String(todayBS.m + 1).padStart(2, "0")}-
+                {String(todayBS.d).padStart(2, "0")} B.S.
               </span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => { setOpen(false); }}
-                className="text-[10px] text-gray-500 hover:text-gray-700 px-2 py-0.5 rounded hover:bg-gray-200 transition-colors">
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="text-[10px] text-gray-500 hover:text-gray-700 px-2 py-0.5 rounded hover:bg-gray-200 transition-colors"
+              >
                 Close
               </button>
               <button
                 type="button"
-                onClick={() => { onChange(fmtAD(todayAD)); setOpen(false); }}
-                className="text-[10px] font-semibold text-[#1557b0] hover:underline px-2 py-0.5 rounded hover:bg-blue-50 transition-colors">
+                onClick={() => {
+                  onChange(fmtAD(todayAD));
+                  setOpen(false);
+                }}
+                className="text-[10px] font-semibold text-[#1557b0] hover:underline px-2 py-0.5 rounded hover:bg-blue-50 transition-colors"
+              >
                 Today
               </button>
             </div>

@@ -10,11 +10,11 @@ interface ReportHeaderProps {
   email?: string;
   reportTitle: string;
   reportSubtitle?: string;
-  period?: string;              // "For the period 2081 Shrawan 1 to 2081 Ashadh 32"
-  asAt?: string;                // "As at 2081 Ashadh 32 (July 16, 2025)" — for point-in-time reports
+  period?: string; // "For the period 2081 Shrawan 1 to 2081 Ashadh 32"
+  asAt?: string; // "As at 2081 Ashadh 32 (July 16, 2025)" — for point-in-time reports
   // Screen vs print behavior
   screenMode?: "always" | "print-only"; // default: "print-only"
-  companyLogo?: string;         // base64 or URL
+  companyLogo?: string; // base64 or URL
 }
 
 const ReportHeader: React.FC<ReportHeaderProps> = ({
@@ -75,11 +75,7 @@ const ReportHeader: React.FC<ReportHeaderProps> = ({
       )}
 
       {/* Address */}
-      {address && (
-        <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
-          {address}
-        </div>
-      )}
+      {address && <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>{address}</div>}
 
       {/* Contact line: PAN | Phone | Email */}
       <div
@@ -129,9 +125,7 @@ const ReportHeader: React.FC<ReportHeaderProps> = ({
 
       {/* Subtitle (e.g., "Schedule III Format") */}
       {reportSubtitle && (
-        <div style={{ fontSize: 11, color: "#374151", marginTop: 2 }}>
-          {reportSubtitle}
-        </div>
+        <div style={{ fontSize: 11, color: "#374151", marginTop: 2 }}>{reportSubtitle}</div>
       )}
 
       {/* Period or As-At — mandatory, never omit */}

@@ -2,8 +2,15 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import {
-  RefreshCw, Settings, Download, Printer, ArrowLeft,
-  FileSpreadsheet, FileText, ChevronDown, BarChart2
+  RefreshCw,
+  Settings,
+  Download,
+  Printer,
+  ArrowLeft,
+  FileSpreadsheet,
+  FileText,
+  ChevronDown,
+  BarChart2,
 } from "lucide-react";
 import type { PLReportOptions, PLComputation, PLDrillState } from "../../lib/plTypes";
 
@@ -32,13 +39,25 @@ const VARIANT_LABELS = {
 };
 
 export default function PLToolbar({
-  options, onOpenOptions, onRefresh, onExportExcel,
-  onExportCSV, onExportPDF, loading, hasDrill, onBack, drillState,
-  companyName, plData, closingStock, onClosingStockChange,
+  options,
+  onOpenOptions,
+  onRefresh,
+  onExportExcel,
+  onExportCSV,
+  onExportPDF,
+  loading,
+  hasDrill,
+  onBack,
+  drillState,
+  companyName,
+  plData,
+  closingStock,
+  onClosingStockChange,
 }: Props) {
   const [exportOpen, setExportOpen] = useState(false);
 
-  const btn = "inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-medium transition-colors";
+  const btn =
+    "inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-medium transition-colors";
   const btnSec = `${btn} bg-white border border-gray-300 text-gray-700 hover:bg-gray-50`;
   const btnPri = `${btn} bg-[#1557b0] text-white hover:bg-[#0f4a96]`;
 
@@ -92,19 +111,31 @@ export default function PLToolbar({
       {/* Right */}
       <div className="flex items-center gap-1.5">
         {plData && (
-          <div className={`px-3 py-1 rounded-md text-[11px] font-bold border ${
-            plData.netProfit >= 0
-              ? "bg-green-50 text-green-700 border-green-200"
-              : "bg-red-50 text-red-700 border-red-200"
-          }`}>
+          <div
+            className={`px-3 py-1 rounded-md text-[11px] font-bold border ${
+              plData.netProfit >= 0
+                ? "bg-green-50 text-green-700 border-green-200"
+                : "bg-red-50 text-red-700 border-red-200"
+            }`}
+          >
             {plData.netProfitLabel}: Rs.{" "}
             {Math.abs(plData.netProfit).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
           </div>
         )}
 
         {onClosingStockChange && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 8px", borderLeft: "1px solid #e5e7eb" }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#374151", whiteSpace: "nowrap" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "0 8px",
+              borderLeft: "1px solid #e5e7eb",
+            }}
+          >
+            <label
+              style={{ fontSize: 11, fontWeight: 600, color: "#374151", whiteSpace: "nowrap" }}
+            >
               Closing Stock:
             </label>
             <div style={{ position: "relative" }}>
@@ -123,11 +154,24 @@ export default function PLToolbar({
                   borderRadius: 4,
                   textAlign: "right",
                   background: "#fff9f0",
-                  borderColor: closingStock !== undefined && closingStock > 0 ? "#d97706" : "#d1d5db",
+                  borderColor:
+                    closingStock !== undefined && closingStock > 0 ? "#d97706" : "#d1d5db",
                   outline: "none",
                 }}
               />
-              <span style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", fontSize: 10, color: "#9ca3af", pointerEvents: "none" }}>✎</span>
+              <span
+                style={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  fontSize: 10,
+                  color: "#9ca3af",
+                  pointerEvents: "none",
+                }}
+              >
+                ✎
+              </span>
             </div>
           </div>
         )}
@@ -155,21 +199,30 @@ export default function PLToolbar({
             >
               <button
                 className="w-full flex items-center gap-2 px-3 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
-                onClick={() => { onExportExcel(); setExportOpen(false); }}
+                onClick={() => {
+                  onExportExcel();
+                  setExportOpen(false);
+                }}
               >
                 <FileSpreadsheet className="h-3.5 w-3.5 text-green-600" />
                 Excel (.xlsx)
               </button>
               <button
                 className="w-full flex items-center gap-2 px-3 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
-                onClick={() => { onExportCSV(); setExportOpen(false); }}
+                onClick={() => {
+                  onExportCSV();
+                  setExportOpen(false);
+                }}
               >
                 <FileText className="h-3.5 w-3.5 text-blue-600" />
                 CSV
               </button>
               <button
                 className="w-full flex items-center gap-2 px-3 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
-                onClick={() => { onExportPDF(); setExportOpen(false); }}
+                onClick={() => {
+                  onExportPDF();
+                  setExportOpen(false);
+                }}
               >
                 <FileText className="h-3.5 w-3.5 text-red-600" />
                 Print / PDF

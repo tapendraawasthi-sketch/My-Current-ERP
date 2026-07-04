@@ -1,16 +1,23 @@
 // src/components/pl/PLHorizontal.tsx
 // @ts-nocheck
 import React, { useState } from "react";
-import type { PLComputation, PLReportOptions, PLAccountLine, PLDrillState } from "../../lib/plTypes";
+import type {
+  PLComputation,
+  PLReportOptions,
+  PLAccountLine,
+  PLDrillState,
+} from "../../lib/plTypes";
 import { ChevronRight, ChevronDown, Edit3 } from "lucide-react";
 
 const fmt = (n: number) =>
-  n === 0 ? "—" :
-  Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  n === 0
+    ? "—"
+    : Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const amtCls = "text-right font-mono text-[12px] font-semibold text-gray-800 whitespace-nowrap";
 const amtCls0 = "text-right font-mono text-[12px] text-gray-400 whitespace-nowrap";
-const thCls = "px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-gray-500 border-b border-gray-200 bg-[#f5f6fa]";
+const thCls =
+  "px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-gray-500 border-b border-gray-200 bg-[#f5f6fa]";
 const tdCls = "px-3 py-1.5 text-[12px]";
 
 interface Props {
@@ -51,7 +58,7 @@ function AccountLines({
       {lines.map((line) => {
         const isExp = expanded[line.accountId];
         const hasChildren = (line.children?.length || 0) > 0;
-        const amt = side === "debit" ? (line.debit - line.credit) : (line.credit - line.debit);
+        const amt = side === "debit" ? line.debit - line.credit : line.credit - line.debit;
         const absAmt = Math.abs(amt);
         const isZero = absAmt < 0.005;
 
@@ -78,17 +85,21 @@ function AccountLines({
                 <div className="flex items-center gap-1.5">
                   {hasChildren && (
                     <span className="text-gray-400">
-                      {isExp ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                      {isExp ? (
+                        <ChevronDown className="h-3 w-3" />
+                      ) : (
+                        <ChevronRight className="h-3 w-3" />
+                      )}
                     </span>
                   )}
-                  <span className={`${line.isGroup ? "font-semibold text-gray-700" : "text-gray-600"} text-[12px]`}>
+                  <span
+                    className={`${line.isGroup ? "font-semibold text-gray-700" : "text-gray-600"} text-[12px]`}
+                  >
                     {line.accountName}
                   </span>
                 </div>
               </td>
-              <td className={isZero ? amtCls0 : amtCls}>
-                {isZero ? "—" : fmt(absAmt)}
-              </td>
+              <td className={isZero ? amtCls0 : amtCls}>{isZero ? "—" : fmt(absAmt)}</td>
               {options.showPercentage && (
                 <td className="text-right text-[11px] text-gray-400 px-2">
                   {line.percentage ? `${line.percentage.toFixed(1)}%` : ""}
@@ -111,7 +122,13 @@ function AccountLines({
   );
 }
 
-export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, onClosingStockUpdate }: Props) {
+export default function PLHorizontal({
+  mode = "pl",
+  pl,
+  options,
+  onDrillDown,
+  onClosingStockUpdate,
+}: Props) {
   const [editingClosingStock, setEditingClosingStock] = useState(false);
   const [closingStockInput, setClosingStockInput] = useState(pl.closingStock);
 
@@ -122,27 +139,39 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
   const SectionDivider = ({ label }: { label: string }) => (
     <tr>
       <td colSpan={totalColSpan} style={{ padding: "0", lineHeight: 0 }}>
-        <div style={{
-          position: "relative",
-          height: 28,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "8px 0",
-        }}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: "50%", borderTop: "2px solid #d1d5db" }} />
-          <div style={{
+        <div
+          style={{
             position: "relative",
-            background: "#ffffff",
-            padding: "2px 16px",
-            fontSize: 10,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-            color: "#6b7280",
-            border: "1px solid #d1d5db",
-            borderRadius: 3,
-          }}>
+            height: 28,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "8px 0",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "50%",
+              borderTop: "2px solid #d1d5db",
+            }}
+          />
+          <div
+            style={{
+              position: "relative",
+              background: "#ffffff",
+              padding: "2px 16px",
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              color: "#6b7280",
+              border: "1px solid #d1d5db",
+              borderRadius: 3,
+            }}
+          >
             {label}
           </div>
         </div>
@@ -150,9 +179,21 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
     </tr>
   );
 
-  const SubtotalRow = ({ label, amount, highlight = false }: { label: string; amount: number; highlight?: boolean }) => (
+  const SubtotalRow = ({
+    label,
+    amount,
+    highlight = false,
+  }: {
+    label: string;
+    amount: number;
+    highlight?: boolean;
+  }) => (
     <tr className={highlight ? "bg-[#eef2ff] font-bold" : "bg-[#f5f6fa] font-semibold"}>
-      <td className={`${tdCls} ${highlight ? "text-[#1557b0]" : "text-gray-700"} text-[12px] font-bold`}>{label}</td>
+      <td
+        className={`${tdCls} ${highlight ? "text-[#1557b0]" : "text-gray-700"} text-[12px] font-bold`}
+      >
+        {label}
+      </td>
       <td className={`${amtCls} ${highlight ? "text-[#1557b0]" : ""} border-t border-gray-200`}>
         {fmt(Math.abs(amount))}
       </td>
@@ -173,18 +214,23 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
     const absGrossProfit = Math.abs(grossProfit);
     const profitText = isIE ? "Excess of Income over Expenditure" : "Gross Profit";
     const lossText = isIE ? "Excess of Expenditure over Income" : "Gross Loss";
-    
+
     return (
-      <tr style={{
-        background: isGrossProfit ? "#f0fdf4" : "#fef2f2",
-        borderTop: "1px solid #d1d5db",
-        boxShadow: `inset 0 -4px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}, inset 0 -7px 0 0 ${isGrossProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}`,
-        paddingBottom: 8,
-      }}>
+      <tr
+        style={{
+          background: isGrossProfit ? "#f0fdf4" : "#fef2f2",
+          borderTop: "1px solid #d1d5db",
+          boxShadow: `inset 0 -4px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}, inset 0 -7px 0 0 ${isGrossProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isGrossProfit ? "#bbf7d0" : "#fecaca"}`,
+          paddingBottom: 8,
+        }}
+      >
         <td style={{ padding: "10px 16px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
           {isGrossProfit ? profitText : lossText} {isCD ? "c/d" : "b/d"}
         </td>
-        <td className="num-cell-bold" style={{ color: isGrossProfit ? "#059669" : "#dc2626", padding: "10px 16px" }}>
+        <td
+          className="num-cell-bold"
+          style={{ color: isGrossProfit ? "#059669" : "#dc2626", padding: "10px 16px" }}
+        >
           {absGrossProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
         </td>
         {options.showPercentage && <td />}
@@ -195,26 +241,35 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
   const renderNetProfitRow = (netProfit: number) => {
     const isNetProfit = netProfit >= 0;
     const absNetProfit = Math.abs(netProfit);
-    
+
     return (
-      <tr style={{
-        background: isNetProfit ? "#f0fdf4" : "#fef2f2",
-        borderTop: "2px solid #d1d5db",
-        boxShadow: `inset 0 -4px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${isNetProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}`,
-      }}>
+      <tr
+        style={{
+          background: isNetProfit ? "#f0fdf4" : "#fef2f2",
+          borderTop: "2px solid #d1d5db",
+          boxShadow: `inset 0 -4px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${isNetProfit ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${isNetProfit ? "#86efac" : "#fca5a5"}`,
+        }}
+      >
         <td style={{ padding: "12px 16px" }}>
           <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
-            {isIE 
-              ? (isNetProfit ? "Surplus for the Period" : "Deficit for the Period")
+            {isIE
+              ? isNetProfit
+                ? "Surplus for the Period"
+                : "Deficit for the Period"
               : `Net ${isNetProfit ? "Profit" : "(Loss)"}`}
           </div>
           <div style={{ fontSize: 10, color: "#9ca3af", fontStyle: "italic", marginTop: 2 }}>
             {isIE
-              ? (isNetProfit ? "Transferred to Corpus / General Fund" : "Charged to Corpus / General Fund")
+              ? isNetProfit
+                ? "Transferred to Corpus / General Fund"
+                : "Charged to Corpus / General Fund"
               : "Transferred to Balance Sheet"}
           </div>
         </td>
-        <td className="num-cell-bold" style={{ color: isNetProfit ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px" }}>
+        <td
+          className="num-cell-bold"
+          style={{ color: isNetProfit ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px" }}
+        >
           {absNetProfit.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
         </td>
         {options.showPercentage && <td />}
@@ -223,9 +278,7 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
   };
 
   const reportTitle = isIE ? "Income & Expenditure Account" : "Trading and Profit & Loss Account";
-  const netResultLabel = isIE 
-    ? (pl.netProfit >= 0 ? "Surplus" : "Deficit")
-    : pl.netProfitLabel;
+  const netResultLabel = isIE ? (pl.netProfit >= 0 ? "Surplus" : "Deficit") : pl.netProfitLabel;
   const leftHeader = isIE ? "EXPENDITURE" : "DEBIT / EXPENDITURE";
   const rightHeader = isIE ? "INCOME" : "CREDIT / INCOME";
   const sec1Label = isIE ? "Operating Account" : "Trading Account";
@@ -242,11 +295,13 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
             {options.showSecondLevel && " · Detailed View"}
           </p>
         </div>
-        <div className={`px-4 py-2 rounded-lg border text-[13px] font-bold ${
-          pl.netProfit >= 0
-            ? "bg-green-50 text-green-700 border-green-200"
-            : "bg-red-50 text-red-700 border-red-200"
-        }`}>
+        <div
+          className={`px-4 py-2 rounded-lg border text-[13px] font-bold ${
+            pl.netProfit >= 0
+              ? "bg-green-50 text-green-700 border-green-200"
+              : "bg-red-50 text-red-700 border-red-200"
+          }`}
+        >
           {netResultLabel}: Rs. {fmt(Math.abs(pl.netProfit))}
         </div>
       </div>
@@ -264,27 +319,52 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-
               {/* === TRADING ACCOUNT — DEBIT === */}
               <SectionDivider label={sec1Label} />
 
               {/* Opening Stock */}
-              <tr className="hover:bg-[#f5f8ff] cursor-pointer" onClick={() => onDrillDown({ level: 1, selectedGroupId: "opening-stock", selectedGroupLabel: "Opening Stock" })}>
-                <td className={tdCls}><span className="text-gray-600">Opening Stock</span></td>
+              <tr
+                className="hover:bg-[#f5f8ff] cursor-pointer"
+                onClick={() =>
+                  onDrillDown({
+                    level: 1,
+                    selectedGroupId: "opening-stock",
+                    selectedGroupLabel: "Opening Stock",
+                  })
+                }
+              >
+                <td className={tdCls}>
+                  <span className="text-gray-600">Opening Stock</span>
+                </td>
                 <td className={pl.openingStock === 0 ? amtCls0 : amtCls}>{fmt(pl.openingStock)}</td>
                 {options.showPercentage && <td />}
               </tr>
 
               {/* Purchases */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.purchases.lines} options={options} onDrillDown={onDrillDown} side="debit" />
+                <AccountLines
+                  lines={pl.purchases.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="debit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "purchases", selectedGroupLabel: "Purchase Accounts" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "purchases",
+                      selectedGroupLabel: "Purchase Accounts",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Purchases</span></td>
-                  <td className={pl.purchases.total === 0 ? amtCls0 : amtCls}>{fmt(pl.purchases.total)}</td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Purchases</span>
+                  </td>
+                  <td className={pl.purchases.total === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.purchases.total)}
+                  </td>
                   {options.showPercentage && <td />}
                 </tr>
               )}
@@ -294,14 +374,29 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
 
               {/* Direct Expenses */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.directExpenses.lines} options={options} onDrillDown={onDrillDown} side="debit" />
+                <AccountLines
+                  lines={pl.directExpenses.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="debit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "direct-expenses", selectedGroupLabel: "Direct Expenses" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "direct-expenses",
+                      selectedGroupLabel: "Direct Expenses",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Direct Expenses</span></td>
-                  <td className={pl.directExpenses.total === 0 ? amtCls0 : amtCls}>{fmt(pl.directExpenses.total)}</td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Direct Expenses</span>
+                  </td>
+                  <td className={pl.directExpenses.total === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.directExpenses.total)}
+                  </td>
                   {options.showPercentage && <td />}
                 </tr>
               )}
@@ -312,7 +407,10 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
               {/* Gross Loss if applicable */}
               {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, true)}
 
-              <SubtotalRow label={`Total (${sec1Label.split(" ")[0]})`} amount={pl.tradingDebitTotal} />
+              <SubtotalRow
+                label={`Total (${sec1Label.split(" ")[0]})`}
+                amount={pl.tradingDebitTotal}
+              />
 
               {/* === P&L ACCOUNT — DEBIT === */}
               <SectionDivider label={sec2Label} />
@@ -322,14 +420,29 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
 
               {/* Indirect Expenses */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.indirectExpenses.lines} options={options} onDrillDown={onDrillDown} side="debit" />
+                <AccountLines
+                  lines={pl.indirectExpenses.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="debit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "indirect-expenses", selectedGroupLabel: "Indirect Expenses" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "indirect-expenses",
+                      selectedGroupLabel: "Indirect Expenses",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Indirect Expenses</span></td>
-                  <td className={pl.indirectExpenses.total === 0 ? amtCls0 : amtCls}>{fmt(pl.indirectExpenses.total)}</td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Indirect Expenses</span>
+                  </td>
+                  <td className={pl.indirectExpenses.total === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.indirectExpenses.total)}
+                  </td>
                   {options.showPercentage && <td />}
                 </tr>
               )}
@@ -356,19 +469,31 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-
               {/* === TRADING ACCOUNT — CREDIT === */}
               <SectionDivider label={sec1Label} />
 
               {/* Sales */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.sales.lines} options={options} onDrillDown={onDrillDown} side="credit" />
+                <AccountLines
+                  lines={pl.sales.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="credit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "sales", selectedGroupLabel: "Sales Accounts" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "sales",
+                      selectedGroupLabel: "Sales Accounts",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Sales (Revenue from Operations)</span></td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Sales (Revenue from Operations)</span>
+                  </td>
                   <td className={pl.sales.total === 0 ? amtCls0 : amtCls}>{fmt(pl.sales.total)}</td>
                   {options.showPercentage && <td />}
                 </tr>
@@ -379,14 +504,29 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
 
               {/* Direct Income */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.directIncome.lines} options={options} onDrillDown={onDrillDown} side="credit" />
+                <AccountLines
+                  lines={pl.directIncome.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="credit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "direct-income", selectedGroupLabel: "Direct Income" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "direct-income",
+                      selectedGroupLabel: "Direct Income",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Direct Income</span></td>
-                  <td className={pl.directIncome.total === 0 ? amtCls0 : amtCls}>{fmt(pl.directIncome.total)}</td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Direct Income</span>
+                  </td>
+                  <td className={pl.directIncome.total === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.directIncome.total)}
+                  </td>
                   {options.showPercentage && <td />}
                 </tr>
               )}
@@ -405,7 +545,10 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
                   <div className="flex items-center gap-1.5">
                     <span className="text-gray-600">Closing Stock</span>
                     {onClosingStockUpdate && (
-                      <Edit3 className="h-3 w-3 text-gray-400" title="Click to update closing stock" />
+                      <Edit3
+                        className="h-3 w-3 text-gray-400"
+                        title="Click to update closing stock"
+                      />
                     )}
                   </div>
                 </td>
@@ -416,7 +559,10 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
               {/* Gross Profit c/d if applicable */}
               {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, true)}
 
-              <SubtotalRow label={`Total (${sec1Label.split(" ")[0]})`} amount={pl.tradingCreditTotal} />
+              <SubtotalRow
+                label={`Total (${sec1Label.split(" ")[0]})`}
+                amount={pl.tradingCreditTotal}
+              />
 
               {/* === P&L ACCOUNT — CREDIT === */}
               <SectionDivider label={sec2Label} />
@@ -426,14 +572,29 @@ export default function PLHorizontal({ mode = "pl", pl, options, onDrillDown, on
 
               {/* Indirect Income */}
               {options.showSecondLevel ? (
-                <AccountLines lines={pl.indirectIncome.lines} options={options} onDrillDown={onDrillDown} side="credit" />
+                <AccountLines
+                  lines={pl.indirectIncome.lines}
+                  options={options}
+                  onDrillDown={onDrillDown}
+                  side="credit"
+                />
               ) : (
                 <tr
                   className="hover:bg-[#f5f8ff] cursor-pointer"
-                  onClick={() => onDrillDown({ level: 1, selectedGroupId: "indirect-income", selectedGroupLabel: "Indirect Income" })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 1,
+                      selectedGroupId: "indirect-income",
+                      selectedGroupLabel: "Indirect Income",
+                    })
+                  }
                 >
-                  <td className={tdCls}><span className="text-gray-600">Indirect Income (Other Income)</span></td>
-                  <td className={pl.indirectIncome.total === 0 ? amtCls0 : amtCls}>{fmt(pl.indirectIncome.total)}</td>
+                  <td className={tdCls}>
+                    <span className="text-gray-600">Indirect Income (Other Income)</span>
+                  </td>
+                  <td className={pl.indirectIncome.total === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.indirectIncome.total)}
+                  </td>
                   {options.showPercentage && <td />}
                 </tr>
               )}

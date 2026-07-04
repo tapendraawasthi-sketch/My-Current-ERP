@@ -11,13 +11,7 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type AgingBucket =
-  | "not-due"
-  | "0-30"
-  | "31-60"
-  | "61-90"
-  | "91-180"
-  | "181-365"
-  | "above-365";
+  "not-due" | "0-30" | "31-60" | "61-90" | "91-180" | "181-365" | "above-365";
 
 export interface BillAllocation {
   billRefNo: string;

@@ -19,7 +19,11 @@ export const FALCON_KB: FalconKBEntry[] = [
     keywords: ["falcon", "who are you", "what are you", "chatbot", "assistant", "help bot"],
     answer:
       "I'm Falcon, the built-in assistant for Sutra ERP. I can explain any screen, walk you through vouchers, ledgers, inventory, VAT, payroll, reports and settings, and suggest what to do next on whichever page you're on. I only know about Sutra ERP — ask me anything about how to use it.",
-    followups: ["How do I pass a journal entry?", "How do I create a sales invoice?", "What reports are available?"],
+    followups: [
+      "How do I pass a journal entry?",
+      "How do I create a sales invoice?",
+      "What reports are available?",
+    ],
   },
   {
     id: "nav-basics",
@@ -41,7 +45,14 @@ export const FALCON_KB: FalconKBEntry[] = [
     id: "coa-overview",
     module: "accounts",
     title: "Chart of Accounts",
-    keywords: ["chart of accounts", "account group", "ledger master", "coa", "add ledger", "create account"],
+    keywords: [
+      "chart of accounts",
+      "account group",
+      "ledger master",
+      "coa",
+      "add ledger",
+      "create account",
+    ],
     answer:
       "Chart of Accounts is under Masters. It has 15 predefined primary groups (Capital, Loans, Current Liabilities, Fixed Assets, Current Assets, Investments, Direct/Indirect Income, Direct/Indirect Expenses, Purchase, Suspense, etc.). Press F3 to add a new ledger, double-click any row to edit, and use the Group/Ledger toggle in the Add form to create either a sub-group or an account.",
     followups: ["How do I set an opening balance on a ledger?", "What is bill-by-bill tracking?"],
@@ -147,7 +158,13 @@ export const FALCON_KB: FalconKBEntry[] = [
     id: "journal-voucher",
     module: "journal",
     title: "Journal Entry",
-    keywords: ["journal entry", "journal voucher", "pass journal", "adjustment entry", "depreciation entry"],
+    keywords: [
+      "journal entry",
+      "journal voucher",
+      "pass journal",
+      "adjustment entry",
+      "depreciation entry",
+    ],
     answer:
       "Journal Voucher (Transactions → Finance → Journal) is for non-cash adjustments like depreciation, provisions, or corrections. Add at least two ledger lines, put the amount under Debit on one line and Credit on another — the footer shows a Balanced/Unbalanced badge, and you cannot post until total debit equals total credit.",
   },
@@ -163,7 +180,12 @@ export const FALCON_KB: FalconKBEntry[] = [
     id: "voucher-unbalanced",
     module: "journal",
     title: "Why is my voucher not balancing",
-    keywords: ["voucher not balancing", "debit credit mismatch", "unbalanced voucher", "why cant i save voucher"],
+    keywords: [
+      "voucher not balancing",
+      "debit credit mismatch",
+      "unbalanced voucher",
+      "why cant i save voucher",
+    ],
     answer:
       "A voucher can only be posted when total Debit equals total Credit exactly. Check the footer badge — if it shows UNBALANCED, review each line: a common cause is typing an amount in both the Debit and Credit cell of the same line, or leaving a line's account blank while it still has an amount.",
   },

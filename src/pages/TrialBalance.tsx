@@ -2,18 +2,10 @@ import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import {
-  ChevronRight,
-  ChevronDown,
-  ArrowLeft,
-  Settings,
-} from "lucide-react";
+import { ChevronRight, ChevronDown, ArrowLeft, Settings } from "lucide-react";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 
-type TBVariant =
-  | "closing-alphabetical"
-  | "closing-groupwise"
-  | "opening";
+type TBVariant = "closing-alphabetical" | "closing-groupwise" | "opening";
 
 type DisplayMode = "balance-only" | "detailed";
 type GroupFilter = "all" | "specific";
@@ -199,10 +191,13 @@ export default function TrialBalance() {
       if (hasLinkedVoucher) continue;
 
       if (inv.partyId && (isBeforeFrom || isInRange)) {
-        const partyAcc = accounts.find((a) => a.id === inv.partyId || (a as any).partyId === inv.partyId);
+        const partyAcc = accounts.find(
+          (a) => a.id === inv.partyId || (a as any).partyId === inv.partyId,
+        );
         if (partyAcc) {
           const total = Number(inv.grandTotal || 0);
-          const isSales = inv.type === "sales-invoice" || inv.type === "sales" || inv.type === "SALES_INVOICE";
+          const isSales =
+            inv.type === "sales-invoice" || inv.type === "sales" || inv.type === "SALES_INVOICE";
           const buckets = isBeforeFrom ? opening : txn;
           const bals = balances;
           if (!buckets[partyAcc.id]) {
@@ -244,10 +239,10 @@ export default function TrialBalance() {
           const bal = getBalance(la.id);
           const op = getOpening(la.id);
           const tx = getTxn(la.id);
-          
+
           let debit = 0;
           let credit = 0;
-          
+
           if (options.variant === "opening") {
             debit = Math.max(0, op.dr - op.cr);
             credit = Math.max(0, op.cr - op.dr);
@@ -269,14 +264,29 @@ export default function TrialBalance() {
             openingCredit: Math.max(0, op.cr - op.dr),
             txnDebit: tx.dr,
             txnCredit: tx.cr,
-            prevYearDebit: Number((la as any).prevYearBalance || 0) > 0 && isDebitNature(la.type) ? Number((la as any).prevYearBalance) : 0,
-            prevYearCredit: Number((la as any).prevYearBalance || 0) > 0 && !isDebitNature(la.type) ? Number((la as any).prevYearBalance) : 0,
+            prevYearDebit:
+              Number((la as any).prevYearBalance || 0) > 0 && isDebitNature(la.type)
+                ? Number((la as any).prevYearBalance)
+                : 0,
+            prevYearCredit:
+              Number((la as any).prevYearBalance || 0) > 0 && !isDebitNature(la.type)
+                ? Number((la as any).prevYearBalance)
+                : 0,
             children: [],
             hasChildren: false,
             accountType: la.type,
           };
         })
-        .filter((l) => options.showZeroBalance || l.debit !== 0 || l.credit !== 0 || l.openingDebit !== 0 || l.openingCredit !== 0 || l.txnDebit !== 0 || l.txnCredit !== 0);
+        .filter(
+          (l) =>
+            options.showZeroBalance ||
+            l.debit !== 0 ||
+            l.credit !== 0 ||
+            l.openingDebit !== 0 ||
+            l.openingCredit !== 0 ||
+            l.txnDebit !== 0 ||
+            l.txnCredit !== 0,
+        );
 
       const allChildren = [...children, ...ledgerChildren];
 
@@ -298,7 +308,7 @@ export default function TrialBalance() {
 
       let totalDr = 0;
       let totalCr = 0;
-      
+
       if (options.variant === "opening") {
         totalDr = rollup.opDr + Math.max(0, ownOp.dr - ownOp.cr);
         totalCr = rollup.opCr + Math.max(0, ownOp.cr - ownOp.dr);
@@ -369,7 +379,8 @@ export default function TrialBalance() {
       for (const node of nodes) {
         const isExp = expanded[node.id] !== false;
         const q = searchQuery.toLowerCase().trim();
-        const matchSearch = !q || node.name.toLowerCase().includes(q) || node.code.toLowerCase().includes(q);
+        const matchSearch =
+          !q || node.name.toLowerCase().includes(q) || node.code.toLowerCase().includes(q);
 
         if (options.variant === "closing-alphabetical") {
           if (node.type === "ledger" && matchSearch) {
@@ -412,8 +423,9 @@ export default function TrialBalance() {
 
   // ─── Totals ────────────────────────────────────────────────────────────────
   const totals = useMemo(() => {
-    let totalDr = 0, totalCr = 0;
-    
+    let totalDr = 0,
+      totalCr = 0;
+
     if (options.variant === "closing-groupwise" || options.variant === "opening") {
       for (const r of tbTree) {
         totalDr += r.debit;
@@ -425,7 +437,7 @@ export default function TrialBalance() {
         totalCr += r.credit;
       }
     }
-    
+
     const diff = Math.abs(totalDr - totalCr);
     const balanced = diff < 0.01;
     return { totalDr, totalCr, diff, balanced };
@@ -453,10 +465,7 @@ export default function TrialBalance() {
     if (row.type === "ledger") {
       const acc = accounts.find((a) => a.id === row.id);
       setSelectedAccount(acc);
-      setDrillStack((prev) => [
-        ...prev,
-        { type: "ledger", id: row.id, name: row.name, data: acc },
-      ]);
+      setDrillStack((prev) => [...prev, { type: "ledger", id: row.id, name: row.name, data: acc }]);
     } else {
       toggleExpand(row.id);
     }
@@ -546,12 +555,7 @@ export default function TrialBalance() {
     const addRows = (nodes: TBRow[], indent: number) => {
       for (const n of nodes) {
         const prefix = "  ".repeat(indent);
-        rows.push([
-          prefix + n.name,
-          n.code,
-          n.debit || "",
-          n.credit || "",
-        ]);
+        rows.push([prefix + n.name, n.code, n.debit || "", n.credit || ""]);
         if (n.hasChildren && expanded[n.id] !== false) {
           addRows(n.children, indent + 1);
         }
@@ -604,11 +608,27 @@ export default function TrialBalance() {
           overflow: "hidden",
         }}
       >
-        <div style={{ padding: "14px 16px", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#f5f6fa" }}>
+        <div
+          style={{
+            padding: "14px 16px",
+            borderBottom: "1px solid #e5e7eb",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            background: "#f5f6fa",
+          }}
+        >
           <span style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>Report Options</span>
           <button
             onClick={() => setShowOptions(false)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: 18, lineHeight: 1 }}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "#6b7280",
+              fontSize: 18,
+              lineHeight: 1,
+            }}
           >
             ×
           </button>
@@ -655,7 +675,9 @@ export default function TrialBalance() {
 
           {options.groupFilter === "specific" && (
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Select Group</label>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                Select Group
+              </label>
               <select
                 value={options.selectedGroupId}
                 onChange={(e) => setOpt("selectedGroupId", e.target.value)}
@@ -675,7 +697,9 @@ export default function TrialBalance() {
           )}
 
           <div className="flex flex-col gap-2 pt-1">
-            <label className="block text-[11px] font-medium text-gray-600 mb-0.5">Additional Options</label>
+            <label className="block text-[11px] font-medium text-gray-600 mb-0.5">
+              Additional Options
+            </label>
             <div className="flex flex-col gap-2">
               {[
                 { key: "showZeroBalance", label: "Show Zero Balance" },
@@ -683,7 +707,10 @@ export default function TrialBalance() {
                 { key: "showPrevYear", label: "Prev Year" },
                 { key: "roundOff", label: "Round Off" },
               ].map(({ key, label }) => (
-                <label key={key} className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700">
+                <label
+                  key={key}
+                  className="flex items-center gap-1.5 cursor-pointer text-[12px] text-gray-700"
+                >
                   <input
                     type="checkbox"
                     checked={options[key as keyof TBOptions] as boolean}
@@ -697,13 +724,43 @@ export default function TrialBalance() {
           </div>
         </div>
 
-        <div style={{ padding: "12px 16px", borderTop: "1px solid #e5e7eb", display: "flex", gap: 8, justifyContent: "flex-end" }}>
-          <button onClick={() => setShowOptions(false)}
-            style={{ height: 32, padding: "0 14px", background: "#ffffff", border: "1px solid #d1d5db", borderRadius: 5, fontSize: 12, cursor: "pointer" }}>
+        <div
+          style={{
+            padding: "12px 16px",
+            borderTop: "1px solid #e5e7eb",
+            display: "flex",
+            gap: 8,
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            onClick={() => setShowOptions(false)}
+            style={{
+              height: 32,
+              padding: "0 14px",
+              background: "#ffffff",
+              border: "1px solid #d1d5db",
+              borderRadius: 5,
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
             Cancel
           </button>
-          <button onClick={handleGenerate}
-            style={{ height: 32, padding: "0 14px", background: "#1557b0", color: "#ffffff", border: "none", borderRadius: 5, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+          <button
+            onClick={handleGenerate}
+            style={{
+              height: 32,
+              padding: "0 14px",
+              background: "#1557b0",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: 5,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
             Generate Report
           </button>
         </div>
@@ -716,7 +773,8 @@ export default function TrialBalance() {
     const isSubGroup = row.type === "sub-group";
     const indentPx = row.indent * 20;
     const isExpanded = expanded[row.id] !== false;
-    const totalPct = totals.totalDr > 0 ? ((row.debit + row.credit) / (totals.totalDr + totals.totalCr)) * 100 : 0;
+    const totalPct =
+      totals.totalDr > 0 ? ((row.debit + row.credit) / (totals.totalDr + totals.totalCr)) * 100 : 0;
 
     return (
       <tr
@@ -735,12 +793,18 @@ export default function TrialBalance() {
                 }}
                 className="inline-flex items-center justify-center w-4 h-4 shrink-0 text-gray-500 hover:text-gray-700"
               >
-                {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                {isExpanded ? (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronRight className="w-3.5 h-3.5" />
+                )}
               </span>
             ) : (
               <span className="w-4 shrink-0" />
             )}
-            <span className={`text-[12px] text-gray-800 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
+            <span
+              className={`text-[12px] text-gray-800 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}
+            >
               {row.name}
             </span>
             {row.code && <span className="text-[10px] text-gray-500 font-mono">{row.code}</span>}
@@ -749,17 +813,29 @@ export default function TrialBalance() {
 
         {options.displayMode === "detailed" ? (
           <>
-            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.openingDebit > 0 ? money(row.openingDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.openingCredit > 0 ? money(row.openingCredit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.txnDebit > 0 ? money(row.txnDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">{row.txnCredit > 0 ? money(row.txnCredit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">
+              {row.openingDebit > 0 ? money(row.openingDebit, options.roundOff) : "—"}
+            </td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">
+              {row.openingCredit > 0 ? money(row.openingCredit, options.roundOff) : "—"}
+            </td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">
+              {row.txnDebit > 0 ? money(row.txnDebit, options.roundOff) : "—"}
+            </td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700">
+              {row.txnCredit > 0 ? money(row.txnCredit, options.roundOff) : "—"}
+            </td>
           </>
         ) : null}
 
-        <td className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
+        <td
+          className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}
+        >
           {row.debit > 0 ? money(row.debit, options.roundOff) : "—"}
         </td>
-        <td className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}>
+        <td
+          className={`px-3 py-2.5 border-r border-gray-200 num-cell text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}
+        >
           {row.credit > 0 ? money(row.credit, options.roundOff) : "—"}
         </td>
 
@@ -771,8 +847,12 @@ export default function TrialBalance() {
 
         {options.showPrevYear && (
           <>
-            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-500">{row.prevYearDebit > 0 ? money(row.prevYearDebit, options.roundOff) : "—"}</td>
-            <td className="px-3 py-2.5 border-gray-200 num-cell text-gray-500">{row.prevYearCredit > 0 ? money(row.prevYearCredit, options.roundOff) : "—"}</td>
+            <td className="px-3 py-2.5 border-r border-gray-200 num-cell text-gray-500">
+              {row.prevYearDebit > 0 ? money(row.prevYearDebit, options.roundOff) : "—"}
+            </td>
+            <td className="px-3 py-2.5 border-gray-200 num-cell text-gray-500">
+              {row.prevYearCredit > 0 ? money(row.prevYearCredit, options.roundOff) : "—"}
+            </td>
           </>
         )}
       </tr>
@@ -797,12 +877,16 @@ export default function TrialBalance() {
             </button>
             <div>
               <h3 className="text-[14px] font-semibold text-gray-800">Ledger: {acc.name}</h3>
-              <p className="text-[11px] text-gray-500">{options.fromDate} to {options.toDate}</p>
+              <p className="text-[11px] text-gray-500">
+                {options.fromDate} to {options.toDate}
+              </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-semibold text-gray-500 uppercase">Closing Balance</p>
-            <p className={`text-[14px] font-mono font-bold ${closingBal >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}>
+            <p
+              className={`text-[14px] font-mono font-bold ${closingBal >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}
+            >
               {money(Math.abs(closingBal))} {closingBal >= 0 ? "Dr" : "Cr"}
             </p>
           </div>
@@ -812,13 +896,27 @@ export default function TrialBalance() {
           <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Date</th>
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Particulars</th>
-                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">Type</th>
-                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">Vch No</th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">Debit</th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">Credit</th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">Balance</th>
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  Date
+                </th>
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  Particulars
+                </th>
+                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  Type
+                </th>
+                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  Vch No
+                </th>
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  Debit
+                </th>
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  Credit
+                </th>
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  Balance
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -828,22 +926,44 @@ export default function TrialBalance() {
                   className={`border-b border-gray-200 cursor-pointer hover:bg-gray-50 ${t.isOpening ? "bg-gray-50 font-medium" : "bg-white"}`}
                   onClick={() => !t.isOpening && t.voucher && drillIntoVoucher(t.voucher)}
                 >
-                  <td className="px-3 py-2.5 border-r border-gray-200 font-mono text-gray-600">{t.date}</td>
-                  <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">{t.particulars}</td>
-                  <td className="px-3 py-2.5 text-center border-r border-gray-200 text-[11px] text-gray-600 uppercase">{t.voucherType}</td>
-                  <td className="px-3 py-2.5 text-center border-r border-gray-200 font-mono text-gray-600">{t.voucherNo}</td>
-                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{t.debit > 0 ? money(t.debit) : "—"}</td>
-                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{t.credit > 0 ? money(t.credit) : "—"}</td>
-                  <td className={`px-3 py-2.5 text-right font-mono font-medium ${t.balance >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}>
+                  <td className="px-3 py-2.5 border-r border-gray-200 font-mono text-gray-600">
+                    {t.date}
+                  </td>
+                  <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">
+                    {t.particulars}
+                  </td>
+                  <td className="px-3 py-2.5 text-center border-r border-gray-200 text-[11px] text-gray-600 uppercase">
+                    {t.voucherType}
+                  </td>
+                  <td className="px-3 py-2.5 text-center border-r border-gray-200 font-mono text-gray-600">
+                    {t.voucherNo}
+                  </td>
+                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                    {t.debit > 0 ? money(t.debit) : "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                    {t.credit > 0 ? money(t.credit) : "—"}
+                  </td>
+                  <td
+                    className={`px-3 py-2.5 text-right font-mono font-medium ${t.balance >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}
+                  >
                     {money(Math.abs(t.balance))} {t.balance >= 0 ? "Dr" : "Cr"}
                   </td>
                 </tr>
               ))}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800" colSpan={4}>Closing Balance</td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{money(accountTxn[acc.id]?.dr || 0)}</td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{money(accountTxn[acc.id]?.cr || 0)}</td>
-                <td className={`px-3 py-2.5 text-right font-mono ${closingBal >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}>
+                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800" colSpan={4}>
+                  Closing Balance
+                </td>
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  {money(accountTxn[acc.id]?.dr || 0)}
+                </td>
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  {money(accountTxn[acc.id]?.cr || 0)}
+                </td>
+                <td
+                  className={`px-3 py-2.5 text-right font-mono ${closingBal >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}
+                >
                   {money(Math.abs(closingBal))} {closingBal >= 0 ? "Dr" : "Cr"}
                 </td>
               </tr>
@@ -869,7 +989,9 @@ export default function TrialBalance() {
             </button>
             <div>
               <h3 className="text-[14px] font-semibold text-gray-800">Voucher: {v.voucherNo}</h3>
-              <p className="text-[11px] text-gray-500">{v.date} · {v.type?.toUpperCase()} · {v.status?.toUpperCase()}</p>
+              <p className="text-[11px] text-gray-500">
+                {v.date} · {v.type?.toUpperCase()} · {v.status?.toUpperCase()}
+              </p>
             </div>
           </div>
         </div>
@@ -895,10 +1017,18 @@ export default function TrialBalance() {
           <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Account</th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">Debit</th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">Credit</th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Narration</th>
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  Account
+                </th>
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  Debit
+                </th>
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  Credit
+                </th>
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  Narration
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -906,17 +1036,27 @@ export default function TrialBalance() {
                 const acc = accounts.find((a) => a.id === line.accountId);
                 return (
                   <tr key={idx} className="border-b border-gray-200 bg-white">
-                    <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">{acc?.name || line.accountName || line.accountId}</td>
-                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{Number(line.debit || 0) > 0 ? money(Number(line.debit)) : "—"}</td>
-                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{Number(line.credit || 0) > 0 ? money(Number(line.credit)) : "—"}</td>
+                    <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">
+                      {acc?.name || line.accountName || line.accountId}
+                    </td>
+                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                      {Number(line.debit || 0) > 0 ? money(Number(line.debit)) : "—"}
+                    </td>
+                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                      {Number(line.credit || 0) > 0 ? money(Number(line.credit)) : "—"}
+                    </td>
                     <td className="px-3 py-2.5 text-gray-600">{line.narration || "—"}</td>
                   </tr>
                 );
               })}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
                 <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">TOTAL</td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{money(v.totalDebit || v.amount || 0)}</td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">{money(v.totalCredit || v.amount || 0)}</td>
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  {money(v.totalDebit || v.amount || 0)}
+                </td>
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  {money(v.totalCredit || v.amount || 0)}
+                </td>
                 <td className="px-3 py-2.5"></td>
               </tr>
             </tbody>
@@ -928,11 +1068,11 @@ export default function TrialBalance() {
 
   const totalClosingDebit = useMemo(
     () => flatRows.reduce((s, r) => s + (r.debit || 0), 0),
-    [flatRows]
+    [flatRows],
   );
   const totalClosingCredit = useMemo(
     () => flatRows.reduce((s, r) => s + (r.credit || 0), 0),
-    [flatRows]
+    [flatRows],
   );
   const balanceDifference = Math.abs(totalClosingDebit - totalClosingCredit);
   const isBalanced = balanceDifference < 0.005;
@@ -943,9 +1083,11 @@ export default function TrialBalance() {
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            {currentDrill.type === "tb" ? `Period: ${options.fromDate} to ${options.toDate}` :
-             currentDrill.type === "ledger" ? `Ledger: ${selectedAccount?.name}` :
-             `Voucher: ${selectedVoucher?.voucherNo}`}
+            {currentDrill.type === "tb"
+              ? `Period: ${options.fromDate} to ${options.toDate}`
+              : currentDrill.type === "ledger"
+                ? `Ledger: ${selectedAccount?.name}`
+                : `Voucher: ${selectedVoucher?.voucherNo}`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -979,15 +1121,21 @@ export default function TrialBalance() {
       <Drawer />
 
       {currentDrill.type === "tb" && generated && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" ref={printRef}>
-          <div style={{
-            display: "flex",
-            gap: 0,
-            borderBottom: "2px solid #e5e7eb",
-            background: "#ffffff",
-            padding: "0 16px",
-            marginBottom: 0,
-          }} className="no-print">
+        <div
+          className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
+          ref={printRef}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              borderBottom: "2px solid #e5e7eb",
+              background: "#ffffff",
+              padding: "0 16px",
+              marginBottom: 0,
+            }}
+            className="no-print"
+          >
             {[
               { key: "closing-alphabetical", label: "Alphabetical" },
               { key: "closing-groupwise", label: "Group-wise" },
@@ -1013,7 +1161,8 @@ export default function TrialBalance() {
                     padding: "0 16px",
                     background: "transparent",
                     border: "none",
-                    borderBottom: activeKey === v.key ? "2px solid #1557b0" : "2px solid transparent",
+                    borderBottom:
+                      activeKey === v.key ? "2px solid #1557b0" : "2px solid transparent",
                     color: activeKey === v.key ? "#1557b0" : "#6b7280",
                     fontSize: 12,
                     fontWeight: activeKey === v.key ? 700 : 400,
@@ -1027,17 +1176,41 @@ export default function TrialBalance() {
                 </button>
               );
             })}
-            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, paddingBottom: 4 }}>
+            <div
+              style={{
+                marginLeft: "auto",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                paddingBottom: 4,
+              }}
+            >
               <button
                 onClick={() => setShowOptions(true)}
-                style={{ height: 28, padding: "0 10px", background: "#f5f6fa", border: "1px solid #e5e7eb", borderRadius: 4, fontSize: 11, fontWeight: 600, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                style={{
+                  height: 28,
+                  padding: "0 10px",
+                  background: "#f5f6fa",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#374151",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                }}
               >
                 ⚙ Options
               </button>
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="report-table w-full border-collapse" style={{ tableLayout: "fixed", width: "100%" }}>
+            <table
+              className="report-table w-full border-collapse"
+              style={{ tableLayout: "fixed", width: "100%" }}
+            >
               <colgroup>
                 {options.displayMode === "detailed" ? (
                   <>
@@ -1060,7 +1233,10 @@ export default function TrialBalance() {
               {options.showPrevYear ? (
                 <thead>
                   <tr>
-                    <th colSpan={1} style={{ background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }} />
+                    <th
+                      colSpan={1}
+                      style={{ background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }}
+                    />
                     <th
                       colSpan={2}
                       style={{
@@ -1093,59 +1269,280 @@ export default function TrialBalance() {
                     )}
                   </tr>
                   <tr>
-                    <th style={{ background: "#f5f6fa", color: "#374151", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "left", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap", borderRight: "1px solid #e5e7eb" }}>Account Name</th>
-                    <th style={{ background: "#64748b", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Prev Dr</th>
-                    <th style={{ background: "#64748b", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap", borderRight: "1px solid #e5e7eb" }}>Prev Cr</th>
+                    <th
+                      style={{
+                        background: "#f5f6fa",
+                        color: "#374151",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "8px 10px",
+                        textAlign: "left",
+                        borderBottom: "2px solid #e5e7eb",
+                        whiteSpace: "nowrap",
+                        borderRight: "1px solid #e5e7eb",
+                      }}
+                    >
+                      Account Name
+                    </th>
+                    <th
+                      style={{
+                        background: "#64748b",
+                        color: "#ffffff",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "8px 10px",
+                        textAlign: "right",
+                        borderBottom: "2px solid #e5e7eb",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Prev Dr
+                    </th>
+                    <th
+                      style={{
+                        background: "#64748b",
+                        color: "#ffffff",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "8px 10px",
+                        textAlign: "right",
+                        borderBottom: "2px solid #e5e7eb",
+                        whiteSpace: "nowrap",
+                        borderRight: "1px solid #e5e7eb",
+                      }}
+                    >
+                      Prev Cr
+                    </th>
                     {options.displayMode === "detailed" ? (
                       <>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Op Dr</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Op Cr</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Txn Dr</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Txn Cr</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Cl Dr</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Cl Cr</th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Op Dr
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Op Cr
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Txn Dr
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Txn Cr
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Cl Dr
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Cl Cr
+                        </th>
                       </>
                     ) : (
                       <>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Debit (Dr)</th>
-                        <th style={{ background: "#1e40af", color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>Credit (Cr)</th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Debit (Dr)
+                        </th>
+                        <th
+                          style={{
+                            background: "#1e40af",
+                            color: "#ffffff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom: "2px solid #e5e7eb",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Credit (Cr)
+                        </th>
                       </>
                     )}
                     {options.showPercentage && (
-                      <th style={{ background: "#f5f6fa", color: "#374151", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "8px 10px", textAlign: "right", borderBottom: "2px solid #e5e7eb", whiteSpace: "nowrap" }}>%</th>
+                      <th
+                        style={{
+                          background: "#f5f6fa",
+                          color: "#374151",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          padding: "8px 10px",
+                          textAlign: "right",
+                          borderBottom: "2px solid #e5e7eb",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        %
+                      </th>
                     )}
                   </tr>
                 </thead>
               ) : (
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" rowSpan={options.displayMode === "detailed" ? 2 : 1}>
+                    <th
+                      className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200"
+                      rowSpan={options.displayMode === "detailed" ? 2 : 1}
+                    >
                       Account Name
                     </th>
                     {options.displayMode === "detailed" ? (
                       <>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Opening Balance</th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Transactions</th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200" colSpan={2}>Closing Balance</th>
+                        <th
+                          className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200"
+                          colSpan={2}
+                        >
+                          Opening Balance
+                        </th>
+                        <th
+                          className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200"
+                          colSpan={2}
+                        >
+                          Transactions
+                        </th>
+                        <th
+                          className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 border-b border-gray-200"
+                          colSpan={2}
+                        >
+                          Closing Balance
+                        </th>
                       </>
                     ) : (
                       <>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Debit (Dr)</th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Credit (Cr)</th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">
+                          Debit (Dr)
+                        </th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">
+                          Credit (Cr)
+                        </th>
                       </>
                     )}
                     {options.showPercentage && (
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-20" rowSpan={options.displayMode === "detailed" ? 2 : 1}>%</th>
+                      <th
+                        className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-20"
+                        rowSpan={options.displayMode === "detailed" ? 2 : 1}
+                      >
+                        %
+                      </th>
                     )}
                   </tr>
                   {options.displayMode === "detailed" && (
                     <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Dr</th>
-                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">Cr</th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Dr
+                      </th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Cr
+                      </th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Dr
+                      </th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Cr
+                      </th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Dr
+                      </th>
+                      <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                        Cr
+                      </th>
                     </tr>
                   )}
                 </thead>
@@ -1164,30 +1561,65 @@ export default function TrialBalance() {
               {flatRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">GRAND TOTAL</td>
+                    <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">
+                      GRAND TOTAL
+                    </td>
                     {options.displayMode === "detailed" ? (
                       <>
                         <td className="px-3 py-2.5 border-r border-gray-200" colSpan={4}></td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">
+                          {money(totals.totalDr, options.roundOff)}
+                        </td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">
+                          {money(totals.totalCr, options.roundOff)}
+                        </td>
                       </>
                     ) : (
                       <>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalDr, options.roundOff)}</td>
-                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">{money(totals.totalCr, options.roundOff)}</td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">
+                          {money(totals.totalDr, options.roundOff)}
+                        </td>
+                        <td className="px-3 py-2.5 border-r border-gray-200 num-cell-bold text-[#1557b0]">
+                          {money(totals.totalCr, options.roundOff)}
+                        </td>
                       </>
                     )}
-                    {options.showPercentage && <td className="px-3 py-2.5 border-r border-gray-200"></td>}
+                    {options.showPercentage && (
+                      <td className="px-3 py-2.5 border-r border-gray-200"></td>
+                    )}
                   </tr>
                   {!isBalanced && (
                     <tr>
-                      <td colSpan={options.displayMode === "detailed" ? 5 : 1} className="num-cell-bold" style={{ color: "#dc2626", textAlign: "left", padding: "8px 10px", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
+                      <td
+                        colSpan={options.displayMode === "detailed" ? 5 : 1}
+                        className="num-cell-bold"
+                        style={{
+                          color: "#dc2626",
+                          textAlign: "left",
+                          padding: "8px 10px",
+                          background: "#fef2f2",
+                          borderTop: "2px solid #fca5a5",
+                        }}
+                      >
                         Difference (should be zero)
                       </td>
-                      <td colSpan={2} className="num-cell-bold" style={{ color: "#dc2626", background: "#fef2f2", borderTop: "2px solid #fca5a5" }}>
-                        {balanceDifference.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <td
+                        colSpan={2}
+                        className="num-cell-bold"
+                        style={{
+                          color: "#dc2626",
+                          background: "#fef2f2",
+                          borderTop: "2px solid #fca5a5",
+                        }}
+                      >
+                        {balanceDifference.toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
-                      {options.showPercentage && <td style={{ background: "#fef2f2", borderTop: "2px solid #fca5a5" }}></td>}
+                      {options.showPercentage && (
+                        <td style={{ background: "#fef2f2", borderTop: "2px solid #fca5a5" }}></td>
+                      )}
                     </tr>
                   )}
                 </tfoot>

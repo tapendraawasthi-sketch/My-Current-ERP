@@ -21,7 +21,7 @@ if (!rootElement) {
 // Global error handler for uncaught errors (shows error instead of blank page)
 window.addEventListener("error", (event) => {
   console.error("[Sutra ERP] Uncaught error:", event.error || event.message);
-  
+
   const rootElement = document.getElementById("root");
   if (rootElement) {
     rootElement.innerHTML = `
@@ -35,14 +35,14 @@ window.addEventListener("error", (event) => {
         </button>
       </div>`;
   }
-  
-  const loading = document.getElementById('root-loading');
-  if (loading) loading.style.display = 'none';
+
+  const loading = document.getElementById("root-loading");
+  if (loading) loading.style.display = "none";
 });
 
 window.addEventListener("unhandledrejection", (event) => {
   console.error("[Sutra ERP] Unhandled promise rejection:", event.reason);
-  
+
   const rootElement = document.getElementById("root");
   if (rootElement) {
     rootElement.innerHTML = `
@@ -56,15 +56,15 @@ window.addEventListener("unhandledrejection", (event) => {
         </button>
       </div>`;
   }
-  
-  const loading = document.getElementById('root-loading');
-  if (loading) loading.style.display = 'none';
+
+  const loading = document.getElementById("root-loading");
+  if (loading) loading.style.display = "none";
 });
 
 try {
   ReactDOM.createRoot(rootElement).render(
     // NOTE: StrictMode causes double-renders in development - remove if causing issues
-    <App />
+    <App />,
   );
 } catch (err) {
   console.error("[Sutra ERP] Fatal render error:", err);

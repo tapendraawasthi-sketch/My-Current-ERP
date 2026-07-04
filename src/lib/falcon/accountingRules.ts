@@ -47,7 +47,14 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "Accrual vs Cash Basis Accounting",
-    keywords: ["accrual", "cash basis", "revenue recognition", "expense recognition", "realised", "unrealised"],
+    keywords: [
+      "accrual",
+      "cash basis",
+      "revenue recognition",
+      "expense recognition",
+      "realised",
+      "unrealised",
+    ],
     explanation:
       "Under the accrual basis (Sutra ERP's default), income is recognised when an invoice is " +
       "raised and expenses when a bill is received — regardless of when cash changes hands. Cash " +
@@ -56,7 +63,16 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "VAT (Value Added Tax) Accounting",
-    keywords: ["vat", "output vat", "input vat", "tax credit", "vat return", "ird", "13%", "vat payable"],
+    keywords: [
+      "vat",
+      "output vat",
+      "input vat",
+      "tax credit",
+      "vat return",
+      "ird",
+      "13%",
+      "vat payable",
+    ],
     explanation:
       "Nepal imposes 13% VAT on most goods and services. Sutra ERP tracks Output VAT (collected " +
       "from customers on sales invoices) and Input VAT (paid to suppliers on purchase invoices) " +
@@ -65,7 +81,15 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "TDS (Tax Deducted at Source) / Withholding Tax",
-    keywords: ["tds", "withholding", "advance tax", "tax deducted", "tds certificate", "15%", "ird tds"],
+    keywords: [
+      "tds",
+      "withholding",
+      "advance tax",
+      "tax deducted",
+      "tds certificate",
+      "15%",
+      "ird tds",
+    ],
     explanation:
       "TDS is a mechanism under the Nepal Income Tax Act where the payer deducts tax at a " +
       "prescribed rate before making a payment. Common rates are 1.5% on domestic goods, 5% on " +
@@ -75,7 +99,15 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "Matching Principle",
-    keywords: ["matching", "expense recognition", "period", "fiscal year", "accrual expense", "prepaid", "outstanding"],
+    keywords: [
+      "matching",
+      "expense recognition",
+      "period",
+      "fiscal year",
+      "accrual expense",
+      "prepaid",
+      "outstanding",
+    ],
     explanation:
       "The matching principle requires that expenses be recorded in the same accounting period as " +
       "the revenue they help generate. In Sutra ERP, prepaid expenses and accrued liabilities can " +
@@ -93,7 +125,14 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "Conservatism (Prudence) Principle",
-    keywords: ["conservatism", "prudence", "provision", "write off", "bad debt", "stock write down"],
+    keywords: [
+      "conservatism",
+      "prudence",
+      "provision",
+      "write off",
+      "bad debt",
+      "stock write down",
+    ],
     explanation:
       "Under the conservatism principle, potential losses should be recognised as soon as they " +
       "are anticipated, while gains are only recorded when realised. In Sutra ERP this is applied " +
@@ -103,7 +142,15 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
   },
   {
     topic: "Bill-by-Bill (Outstanding) Tracking",
-    keywords: ["bill wise", "bill-by-bill", "outstanding", "allocation", "ageing", "fifo", "advance"],
+    keywords: [
+      "bill wise",
+      "bill-by-bill",
+      "outstanding",
+      "allocation",
+      "ageing",
+      "fifo",
+      "advance",
+    ],
     explanation:
       "Bill-by-bill tracking links each payment or receipt to specific invoices rather than " +
       "netting totals on a party ledger. Enable it per ledger in the ledger master. Once active, " +
@@ -118,8 +165,7 @@ export const ACCOUNTING_PRINCIPLES: AccountingPrinciple[] = [
 export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
   {
     scenario: "Payment against multiple bills (FIFO allocation)",
-    condition:
-      "A party has several open invoices and a partial payment is received.",
+    condition: "A party has several open invoices and a partial payment is received.",
     consequence:
       "Without proper bill allocation the outstanding report shows incorrect ageing and the " +
       "party's balance may not reconcile.",
@@ -127,7 +173,16 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "Open the Receipt/Payment voucher, click 'Auto-Fill (FIFO)' in the Bill Allocation panel " +
       "to let Sutra ERP apply the payment to the oldest invoices first. Manually adjust the split " +
       "if needed, then save.",
-    keywords: ["bill", "allocation", "fifo", "payment", "outstanding", "receipt", "ageing", "multiple"],
+    keywords: [
+      "bill",
+      "allocation",
+      "fifo",
+      "payment",
+      "outstanding",
+      "receipt",
+      "ageing",
+      "multiple",
+    ],
   },
   {
     scenario: "VAT return filing period closure",
@@ -154,7 +209,15 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "Go to Masters → Inventory, open the item, and check the reorder level. Then raise a " +
       "Purchase Order (Transactions → Purchase → Purchase Order) for the supplier and convert it " +
       "to a Purchase Invoice once goods arrive via GRN.",
-    keywords: ["low stock", "reorder", "stock alert", "inventory", "purchase order", "reorder level", "item"],
+    keywords: [
+      "low stock",
+      "reorder",
+      "stock alert",
+      "inventory",
+      "purchase order",
+      "reorder level",
+      "item",
+    ],
   },
   {
     scenario: "Voucher approval workflow",
@@ -168,12 +231,20 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "A user with Approve Vouchers permission should go to Transactions → Voucher Approval, " +
       "review the pending list, and click Approve or Reject. Rejected vouchers return to the " +
       "originator with a note.",
-    keywords: ["approval", "voucher", "pending", "approve", "reject", "workflow", "supervisor", "permission"],
+    keywords: [
+      "approval",
+      "voucher",
+      "pending",
+      "approve",
+      "reject",
+      "workflow",
+      "supervisor",
+      "permission",
+    ],
   },
   {
     scenario: "Inter-branch / inter-warehouse stock transfer",
-    condition:
-      "Stock needs to move from one warehouse or branch to another.",
+    condition: "Stock needs to move from one warehouse or branch to another.",
     consequence:
       "Simply editing opening stock is wrong — it breaks the audit trail and inventory history.",
     action:
@@ -181,7 +252,16 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "warehouse, items and quantities. On saving, Sutra ERP posts an Inventory Out from the " +
       "source and Inventory In at the destination. For inter-branch transfers an accounting " +
       "journal posting branch transfer receivable/payable is generated automatically.",
-    keywords: ["stock transfer", "warehouse", "godown", "branch", "inter-branch", "inventory", "movement", "transfer"],
+    keywords: [
+      "stock transfer",
+      "warehouse",
+      "godown",
+      "branch",
+      "inter-branch",
+      "inventory",
+      "movement",
+      "transfer",
+    ],
   },
   {
     scenario: "Credit limit exceeded on sales",
@@ -195,12 +275,20 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "Either reduce the invoice amount / request a payment first, or temporarily raise the " +
       "credit limit in Masters → Parties → (party) → Credit Limit field. Supervisor override " +
       "may be required if voucher approval is enabled.",
-    keywords: ["credit limit", "outstanding", "block", "party", "customer", "sales invoice", "credit", "overdue"],
+    keywords: [
+      "credit limit",
+      "outstanding",
+      "block",
+      "party",
+      "customer",
+      "sales invoice",
+      "credit",
+      "overdue",
+    ],
   },
   {
     scenario: "TDS deduction on supplier payment",
-    condition:
-      "A payment is made to a supplier who is subject to TDS under Nepal Income Tax Act.",
+    condition: "A payment is made to a supplier who is subject to TDS under Nepal Income Tax Act.",
     consequence:
       "The full payment amount is recorded as the expense, but only the net amount is paid to " +
       "the supplier; the TDS amount is a liability payable to IRD.",
@@ -209,7 +297,17 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "services). Sutra ERP splits the entry: Supplier ledger Dr (full), Bank/Cash Cr (net), " +
       "TDS Payable Cr (withheld amount). Later pay TDS Payable to IRD and print a TDS Certificate " +
       "from Reports → TDS Certificate.",
-    keywords: ["tds", "withholding", "supplier", "payment", "ird", "certificate", "deduct", "tax", "payable"],
+    keywords: [
+      "tds",
+      "withholding",
+      "supplier",
+      "payment",
+      "ird",
+      "certificate",
+      "deduct",
+      "tax",
+      "payable",
+    ],
   },
   {
     scenario: "Year-end closing and opening balance carry-forward",
@@ -222,7 +320,15 @@ export const ERP_WORKFLOW_RULES: WorkflowRule[] = [
       "Go to Utilities → Year End Closing. Sutra ERP will transfer net profit/loss to the " +
       "Retained Earnings (or Partners' Capital) ledger, carry forward all balance sheet balances " +
       "as opening balances, and reset income/expense ledgers to zero for the new year.",
-    keywords: ["year end", "closing", "fiscal year", "opening balance", "retained earnings", "carry forward", "fy"],
+    keywords: [
+      "year end",
+      "closing",
+      "fiscal year",
+      "opening balance",
+      "retained earnings",
+      "carry forward",
+      "fy",
+    ],
   },
 ];
 
@@ -334,7 +440,16 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
       "remitted to IRD.",
     example:
       "Gross invoice = NPR 50,000, TDS rate = 5% (services) → TDS = 50,000 × 5 / 100 = NPR 2,500 → Net paid = NPR 47,500.",
-    keywords: ["tds", "withholding", "rate", "deduct", "supplier", "services", "goods", "calculate"],
+    keywords: [
+      "tds",
+      "withholding",
+      "rate",
+      "deduct",
+      "supplier",
+      "services",
+      "goods",
+      "calculate",
+    ],
   },
   {
     name: "Gross Profit",
@@ -356,7 +471,15 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
       "selected date range.",
     example:
       "Gross Profit = NPR 1,80,000 | Operating Expenses = NPR 80,000 | Tax = NPR 15,000 → Net Profit = NPR 85,000.",
-    keywords: ["net profit", "profit loss", "p&l", "operating", "expenses", "bottom line", "income"],
+    keywords: [
+      "net profit",
+      "profit loss",
+      "p&l",
+      "operating",
+      "expenses",
+      "bottom line",
+      "income",
+    ],
   },
   {
     name: "Outstanding Amount (Party)",
@@ -367,7 +490,16 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
       "tracking is enabled. The Party Outstanding Report and Ageing Report use this formula.",
     example:
       "Customer has invoices totalling NPR 2,00,000 and payments of NPR 1,20,000 → Outstanding = NPR 80,000.",
-    keywords: ["outstanding", "due", "balance", "party", "ageing", "collection", "payable", "receivable"],
+    keywords: [
+      "outstanding",
+      "due",
+      "balance",
+      "party",
+      "ageing",
+      "collection",
+      "payable",
+      "receivable",
+    ],
   },
   {
     name: "Closing Stock Value",
@@ -379,7 +511,15 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
     example:
       "Opening stock 100 units @ NPR 10 = NPR 1,000. Purchased 50 @ NPR 12 = NPR 600. " +
       "New WAC = (1,000 + 600) / 150 = NPR 10.67 per unit.",
-    keywords: ["closing stock", "stock value", "weighted average", "wac", "inventory", "valuation", "cost"],
+    keywords: [
+      "closing stock",
+      "stock value",
+      "weighted average",
+      "wac",
+      "inventory",
+      "valuation",
+      "cost",
+    ],
   },
   {
     name: "Discount Amount",
@@ -391,7 +531,15 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
       "the item or invoice discount account to avoid misposting.",
     example:
       "List Price = NPR 5,00,000, Discount = 10% → Discount Amount = NPR 50,000 → Net Price = NPR 4,50,000.",
-    keywords: ["discount", "trade discount", "rate", "list price", "invoice discount", "item discount", "calculate"],
+    keywords: [
+      "discount",
+      "trade discount",
+      "rate",
+      "list price",
+      "invoice discount",
+      "item discount",
+      "calculate",
+    ],
   },
   {
     name: "Depreciation (Straight-Line Method)",
@@ -404,7 +552,15 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
     example:
       "Machine cost NPR 1,00,000, salvage value NPR 10,000, life 9 years → Annual depreciation = " +
       "(1,00,000 − 10,000) / 9 = NPR 10,000 per year.",
-    keywords: ["depreciation", "fixed asset", "straight line", "salvage", "useful life", "wdv", "asset"],
+    keywords: [
+      "depreciation",
+      "fixed asset",
+      "straight line",
+      "salvage",
+      "useful life",
+      "wdv",
+      "asset",
+    ],
   },
   {
     name: "Input VAT Credit",
@@ -416,6 +572,15 @@ export const FORMULA_LIBRARY: FormulaEntry[] = [
       "computes this automatically.",
     example:
       "Output VAT = NPR 26,000 | Input VAT = NPR 18,000 → Net VAT payable to IRD = NPR 8,000.",
-    keywords: ["input vat", "output vat", "credit", "net vat", "payable", "refund", "ird", "return"],
+    keywords: [
+      "input vat",
+      "output vat",
+      "credit",
+      "net vat",
+      "payable",
+      "refund",
+      "ird",
+      "return",
+    ],
   },
 ];

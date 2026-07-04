@@ -110,9 +110,15 @@ const PayrollRun: React.FC = () => {
     // OT pay (1.5x hourly rate).
     // When employee is prorated (presentDays < workingDays), derive the daily rate
     // from the effective prorated basic so OT is consistent with their actual pay basis.
-    const effectiveDailyBasic = workingDays > 0
-      ? (basic / workingDays) * (presentDays > 0 ? Math.min(presentDays, workingDays) / workingDays * workingDays : workingDays) / (presentDays > 0 ? presentDays : workingDays) * workingDays
-      : basic;
+    const effectiveDailyBasic =
+      workingDays > 0
+        ? (((basic / workingDays) *
+            (presentDays > 0
+              ? (Math.min(presentDays, workingDays) / workingDays) * workingDays
+              : workingDays)) /
+            (presentDays > 0 ? presentDays : workingDays)) *
+          workingDays
+        : basic;
     // Simplified: standard daily rate is basic / workingDays regardless of attendance.
     const dailyRate = workingDays > 0 ? basic / workingDays : 0;
     const hourlyRate = dailyRate / 8;
@@ -136,7 +142,10 @@ const PayrollRun: React.FC = () => {
     const pfDeductionAnnual = empPF * 12;
     // Section 63(B): Employee SSF contribution is also deductible from taxable income.
     const empSSFAnnual = empSSF * 12;
-    const taxableIncome = Math.max(0, annualGross - ssaDeduction - pfDeductionAnnual - empSSFAnnual);
+    const taxableIncome = Math.max(
+      0,
+      annualGross - ssaDeduction - pfDeductionAnnual - empSSFAnnual,
+    );
 
     function computeAnnualTax(income, isWoman) {
       let tax = 0;
@@ -349,7 +358,9 @@ const PayrollRun: React.FC = () => {
             credit: totalOtherDeduct,
             narration: "Other Deductions",
           },
-        ].filter(Boolean).filter((line: any) => line.debit > 0 || line.credit > 0),
+        ]
+          .filter(Boolean)
+          .filter((line: any) => line.debit > 0 || line.credit > 0),
       };
 
       await addVoucher(journalVoucher);

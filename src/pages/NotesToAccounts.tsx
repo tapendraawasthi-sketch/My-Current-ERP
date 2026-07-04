@@ -8,7 +8,9 @@ export default function NotesToAccounts() {
       subtitle="Manage notes for financial statements"
       hasData={false}
     >
-      <div className="p-4 text-gray-500 text-sm">Notes to Accounts module is under construction.</div>
+      <div className="p-4 text-gray-500 text-sm">
+        Notes to Accounts module is under construction.
+      </div>
     </ReportShell>
   );
 }

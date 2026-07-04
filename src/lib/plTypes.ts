@@ -1,11 +1,7 @@
 // src/lib/plTypes.ts
 // Type definitions for the Profit & Loss reporting engine
 
-export type PLReportVariant =
-  | "horizontal"
-  | "vertical"
-  | "monthly-summary"
-  | "detailed-monthly";
+export type PLReportVariant = "horizontal" | "vertical" | "monthly-summary" | "detailed-monthly";
 
 export type PLViewMode = "group" | "detail";
 
@@ -161,10 +157,51 @@ export type PLGroupType =
 export const GROUP_TYPE_KEYWORDS: Record<PLGroupType, string[]> = {
   sales: ["sales", "revenue", "turnover", "income from operations"],
   purchase: ["purchase", "buying", "procurement"],
-  "direct-expense": ["direct expense", "manufacturing expense", "cost of production", "direct cost", "factory"],
+  "direct-expense": [
+    "direct expense",
+    "manufacturing expense",
+    "cost of production",
+    "direct cost",
+    "factory",
+  ],
   "direct-income": ["direct income", "job work", "processing charges", "scrap"],
-  "indirect-expense": ["indirect expense", "indirect cost", "operating expense", "admin expense", "selling expense", "general expense", "overhead", "salary", "rent", "depreciation", "interest expense", "bank charge", "audit fee", "advertisement", "telephone", "electricity", "insurance", "vehicle", "printing", "stationery", "postage", "freight outward", "legal", "professional", "bad debt"],
-  "indirect-income": ["indirect income", "other income", "non-operating income", "interest received", "discount received", "commission received", "rent received", "dividend"],
+  "indirect-expense": [
+    "indirect expense",
+    "indirect cost",
+    "operating expense",
+    "admin expense",
+    "selling expense",
+    "general expense",
+    "overhead",
+    "salary",
+    "rent",
+    "depreciation",
+    "interest expense",
+    "bank charge",
+    "audit fee",
+    "advertisement",
+    "telephone",
+    "electricity",
+    "insurance",
+    "vehicle",
+    "printing",
+    "stationery",
+    "postage",
+    "freight outward",
+    "legal",
+    "professional",
+    "bad debt",
+  ],
+  "indirect-income": [
+    "indirect income",
+    "other income",
+    "non-operating income",
+    "interest received",
+    "discount received",
+    "commission received",
+    "rent received",
+    "dividend",
+  ],
   stock: ["stock", "inventory", "closing stock", "opening stock"],
   "balance-sheet": [], // catch-all for anything else
 };

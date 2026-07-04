@@ -48,11 +48,11 @@ export function scoreEntry(entry: KBEntry, input: FalconReasoningInput): number 
   const route = input.currentRoute ?? "";
   if (
     score > 0 &&
-    ((route.includes("billing") ||
+    (route.includes("billing") ||
       route.includes("invoice") ||
       route.includes("voucher") ||
       route.includes("pos")) &&
-      entry.category === "transactions")
+    entry.category === "transactions"
   ) {
     score *= 1.2;
   } else if (
@@ -77,11 +77,7 @@ export function scoreEntry(entry: KBEntry, input: FalconReasoningInput): number 
  * findTopKEntries — returns the top-k KB entries by score, sorted descending.
  * Entries with score === 0 are excluded.
  */
-export function findTopKEntries(
-  input: FalconReasoningInput,
-  kb: KBEntry[],
-  k: number
-): KBEntry[] {
+export function findTopKEntries(input: FalconReasoningInput, kb: KBEntry[], k: number): KBEntry[] {
   return kb
     .map((entry) => ({ entry, score: scoreEntry(entry, input) }))
     .filter(({ score }) => score > 0)
@@ -97,7 +93,7 @@ export function findTopKEntries(
  */
 export function synthesizeAnswer(
   entries: KBEntry[],
-  input: FalconReasoningInput
+  input: FalconReasoningInput,
 ): FalconReasoningResult {
   if (entries.length === 0) {
     return buildFallback(input);
@@ -115,9 +111,7 @@ export function synthesizeAnswer(
 
   // Build a synthesised answer by combining entries
   const intro = `Here's what I found across ${entries.length} related topics:\n\n`;
-  const sections = entries
-    .map((e, i) => `**${i + 1}. ${e.q}**\n${e.a}`)
-    .join("\n\n---\n\n");
+  const sections = entries.map((e, i) => `**${i + 1}. ${e.q}**\n${e.a}`).join("\n\n---\n\n");
 
   return {
     answer: intro + sections,
@@ -136,32 +130,33 @@ export function synthesizeAnswer(
  */
 export function composeComparisonAnswer(
   termA: string,
-  termB: string
+  termB: string,
 ): FalconReasoningResult | null {
   const normA = termA.toLowerCase().trim();
   const normB = termB.toLowerCase().trim();
 
-  const match = COMPARISON_TABLE.find(
-    (c) =>
-      (c.termA.toLowerCase().includes(normA) || normA.includes(c.termA.toLowerCase())) &&
-      (c.termB.toLowerCase().includes(normB) || normB.includes(c.termB.toLowerCase()))
-  ) ?? COMPARISON_TABLE.find(
-    (c) =>
-      (c.termA.toLowerCase().includes(normB) || normB.includes(c.termA.toLowerCase())) &&
-      (c.termB.toLowerCase().includes(normA) || normA.includes(c.termB.toLowerCase()))
-  ) ?? COMPARISON_TABLE.find(
-    (c) =>
-      c.termA.toLowerCase().includes(normA) ||
-      c.termB.toLowerCase().includes(normA) ||
-      c.termA.toLowerCase().includes(normB) ||
-      c.termB.toLowerCase().includes(normB)
-  );
+  const match =
+    COMPARISON_TABLE.find(
+      (c) =>
+        (c.termA.toLowerCase().includes(normA) || normA.includes(c.termA.toLowerCase())) &&
+        (c.termB.toLowerCase().includes(normB) || normB.includes(c.termB.toLowerCase())),
+    ) ??
+    COMPARISON_TABLE.find(
+      (c) =>
+        (c.termA.toLowerCase().includes(normB) || normB.includes(c.termA.toLowerCase())) &&
+        (c.termB.toLowerCase().includes(normA) || normA.includes(c.termB.toLowerCase())),
+    ) ??
+    COMPARISON_TABLE.find(
+      (c) =>
+        c.termA.toLowerCase().includes(normA) ||
+        c.termB.toLowerCase().includes(normA) ||
+        c.termA.toLowerCase().includes(normB) ||
+        c.termB.toLowerCase().includes(normB),
+    );
 
   if (!match) return null;
 
-  const points = match.differencePoints
-    .map((p, i) => `**${i + 1}.** ${p}`)
-    .join("\n\n");
+  const points = match.differencePoints.map((p, i) => `**${i + 1}.** ${p}`).join("\n\n");
 
   return {
     answer: `**${match.termA} vs ${match.termB}**\n\n${points}`,
@@ -190,7 +185,7 @@ export function composeFormulaAnswer(normalizedQuery: string): FalconReasoningRe
 
   for (const formula of FORMULA_LIBRARY) {
     const hits = formula.keywords.filter((kw) =>
-      queryTokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase()))
+      queryTokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase())),
     ).length;
     if (hits > bestHits) {
       bestHits = hits;
@@ -227,18 +222,17 @@ export function composeFormulaAnswer(normalizedQuery: string): FalconReasoningRe
  */
 export function composeWorkflowAnswer(
   normalizedQuery: string,
-  tokens: string[]
+  tokens: string[],
 ): FalconReasoningResult | null {
   let bestRule = ERP_WORKFLOW_RULES[0];
   let bestHits = 0;
 
   for (const rule of ERP_WORKFLOW_RULES) {
     const hits = rule.keywords.filter((kw) =>
-      tokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase()))
+      tokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase())),
     ).length;
     // Also check phrase match in scenario/condition
-    const phraseHit =
-      normalizedQuery.includes(rule.scenario.toLowerCase().slice(0, 20)) ? 2 : 0;
+    const phraseHit = normalizedQuery.includes(rule.scenario.toLowerCase().slice(0, 20)) ? 2 : 0;
     const total = hits + phraseHit;
     if (total > bestHits) {
       bestHits = total;
@@ -275,18 +269,16 @@ export function composeWorkflowAnswer(
  */
 export function composePrincipleAnswer(
   normalizedQuery: string,
-  tokens: string[]
+  tokens: string[],
 ): FalconReasoningResult | null {
   let bestPrinciple = ACCOUNTING_PRINCIPLES[0];
   let bestHits = 0;
 
   for (const principle of ACCOUNTING_PRINCIPLES) {
     const hits = principle.keywords.filter((kw) =>
-      tokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase()))
+      tokens.some((t) => kw.toLowerCase().includes(t) || t.includes(kw.toLowerCase())),
     ).length;
-    const topicHit = normalizedQuery.includes(principle.topic.toLowerCase().slice(0, 15))
-      ? 3
-      : 0;
+    const topicHit = normalizedQuery.includes(principle.topic.toLowerCase().slice(0, 15)) ? 3 : 0;
     const total = hits + topicHit;
     if (total > bestHits) {
       bestHits = total;

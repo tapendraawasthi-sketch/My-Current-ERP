@@ -67,7 +67,12 @@ interface ReportShellProps {
 }
 
 const ReportShell: React.FC<ReportShellProps> = ({
-  title, subtitle, children, actions, className = "", printable = true
+  title,
+  subtitle,
+  children,
+  actions,
+  className = "",
+  printable = true,
 }) => {
   return (
     <div className={`p-4 md:p-6 bg-[#f5f6fa] min-h-screen flex flex-col gap-4 ${className}`}>
@@ -76,9 +81,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
           {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
         </div>
-        {actions && (
-          <div className="flex items-center gap-2">{actions}</div>
-        )}
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
       <div className={printable ? "print-content" : ""}>{children}</div>
     </div>
@@ -204,7 +207,6 @@ const DataTable: React.FC<DataTableProps> = ({
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-
 const VatReports: React.FC = () => {
   const { invoices, parties, companySettings, currentFiscalYear } = useStore();
 
@@ -318,8 +320,12 @@ const VatReports: React.FC = () => {
 
   // ── VAT Summary ───────────────────────────────────────────────────────────
   const vatSummary = useMemo(() => {
-    let outputVat = 0, inputVat = 0, outputTaxable = 0, inputTaxable = 0;
-    let outputCount = 0, inputCount = 0;
+    let outputVat = 0,
+      inputVat = 0,
+      outputTaxable = 0,
+      inputTaxable = 0;
+    let outputCount = 0,
+      inputCount = 0;
 
     for (const inv of filteredInvoices) {
       if (inv.status !== "posted") continue;
@@ -344,7 +350,8 @@ const VatReports: React.FC = () => {
   }, [filteredInvoices]);
 
   const fmtVat = (n: number) =>
-    "Rs. " + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    "Rs. " +
+    Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   // ── Column definitions — using "label" not "header" ────────────────────────
 
@@ -513,12 +520,7 @@ const VatReports: React.FC = () => {
       {/* Toolbar — rendered as children, NOT as "actions" prop */}
       <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
-          <ReportDateRangePicker
-            value={dateRange}
-            onChange={setDateRange}
-            label=""
-            compact
-          />
+          <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="" compact />
         </div>
 
         <div className="flex items-center gap-2">
@@ -557,20 +559,39 @@ const VatReports: React.FC = () => {
         </div>
       </div>
 
-            {/* KPI cells */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        borderBottom: "2px solid #e5e7eb",
-        background: "#ffffff",
-        marginBottom: 16
-      }}>
+      {/* KPI cells */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          borderBottom: "2px solid #e5e7eb",
+          background: "#ffffff",
+          marginBottom: 16,
+        }}
+      >
         {/* Output VAT */}
         <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
-          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+          <div
+            style={{
+              fontSize: 9,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              color: "#6b7280",
+            }}
+          >
             Output VAT (Sales)
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#1557b0", marginTop: 4, lineHeight: 1.2 }}>
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              fontFamily: "'Courier New', monospace",
+              color: "#1557b0",
+              marginTop: 4,
+              lineHeight: 1.2,
+            }}
+          >
             {fmtVat(vatSummary.outputVat)}
           </div>
           <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
@@ -580,10 +601,27 @@ const VatReports: React.FC = () => {
 
         {/* Input VAT */}
         <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
-          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+          <div
+            style={{
+              fontSize: 9,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              color: "#6b7280",
+            }}
+          >
             Input VAT (Purchases)
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#059669", marginTop: 4, lineHeight: 1.2 }}>
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              fontFamily: "'Courier New', monospace",
+              color: "#059669",
+              marginTop: 4,
+              lineHeight: 1.2,
+            }}
+          >
             {fmtVat(vatSummary.inputVat)}
           </div>
           <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
@@ -592,21 +630,33 @@ const VatReports: React.FC = () => {
         </div>
 
         {/* Net VAT Payable */}
-        <div style={{
-          padding: "14px 20px",
-          background: vatSummary.netVat >= 0 ? "#fef9f0" : "#f0fdf4",
-        }}>
-          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+        <div
+          style={{
+            padding: "14px 20px",
+            background: vatSummary.netVat >= 0 ? "#fef9f0" : "#f0fdf4",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 9,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              color: "#6b7280",
+            }}
+          >
             {vatSummary.netVat >= 0 ? "Net VAT Payable to IRD" : "Net VAT Refundable"}
           </div>
-          <div style={{
-            fontSize: 20,
-            fontWeight: 700,
-            fontFamily: "'Courier New', monospace",
-            color: vatSummary.netVat >= 0 ? "#dc2626" : "#059669",
-            marginTop: 4,
-            lineHeight: 1.2,
-          }}>
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              fontFamily: "'Courier New', monospace",
+              color: vatSummary.netVat >= 0 ? "#dc2626" : "#059669",
+              marginTop: 4,
+              lineHeight: 1.2,
+            }}
+          >
             {fmtVat(Math.abs(vatSummary.netVat))}
           </div>
           <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
@@ -616,19 +666,45 @@ const VatReports: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{
-        display: "flex",
-        borderBottom: "2px solid #e5e7eb",
-        background: "#ffffff",
-        overflowX: "auto",
-        marginBottom: 16
-      }}>
+      <div
+        style={{
+          display: "flex",
+          borderBottom: "2px solid #e5e7eb",
+          background: "#ffffff",
+          overflowX: "auto",
+          marginBottom: 16,
+        }}
+      >
         {[
-          { key: "summary" as const, label: "Summary",    sub: "VAT Computation",   total: vatSummary.netVat,     color: "#7c3aed" },
-          { key: "A" as const,       label: "Annex A",    sub: "Sales Register",    total: vatSummary.outputVat,  color: "#1557b0" },
-          { key: "B" as const,       label: "Annex B",    sub: "Retail Sales",      total: 0,                     color: "#059669" },
-          { key: "C" as const,       label: "Annex C",    sub: "Purchases",         total: vatSummary.inputVat,   color: "#d97706" },
-          { key: "D" as const,       label: "Annex D",    sub: "Import Purchases",  total: 0,                     color: "#4f46e5" },
+          {
+            key: "summary" as const,
+            label: "Summary",
+            sub: "VAT Computation",
+            total: vatSummary.netVat,
+            color: "#7c3aed",
+          },
+          {
+            key: "A" as const,
+            label: "Annex A",
+            sub: "Sales Register",
+            total: vatSummary.outputVat,
+            color: "#1557b0",
+          },
+          { key: "B" as const, label: "Annex B", sub: "Retail Sales", total: 0, color: "#059669" },
+          {
+            key: "C" as const,
+            label: "Annex C",
+            sub: "Purchases",
+            total: vatSummary.inputVat,
+            color: "#d97706",
+          },
+          {
+            key: "D" as const,
+            label: "Annex D",
+            sub: "Import Purchases",
+            total: 0,
+            color: "#4f46e5",
+          },
         ].map((tab) => {
           const isActive = activeAnnex === tab.key;
           return (
@@ -653,19 +729,23 @@ const VatReports: React.FC = () => {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: isActive ? tab.color : "#374151" }}>
+                <span
+                  style={{ fontSize: 12, fontWeight: 700, color: isActive ? tab.color : "#374151" }}
+                >
                   {tab.label}
                 </span>
                 {tab.total !== 0 && (
-                  <span style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    background: isActive ? `${tab.color}18` : "#f3f4f6",
-                    color: isActive ? tab.color : "#9ca3af",
-                    border: `1px solid ${isActive ? tab.color + "40" : "#e5e7eb"}`,
-                    borderRadius: 10,
-                    padding: "0 6px",
-                  }}>
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      background: isActive ? `${tab.color}18` : "#f3f4f6",
+                      color: isActive ? tab.color : "#9ca3af",
+                      border: `1px solid ${isActive ? tab.color + "40" : "#e5e7eb"}`,
+                      borderRadius: 10,
+                      padding: "0 6px",
+                    }}
+                  >
                     {Math.abs(tab.total).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                   </span>
                 )}
@@ -814,7 +894,7 @@ const VatReports: React.FC = () => {
         </div>
       )}
 
-{/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
+      {/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
       {activeAnnex === "A" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">

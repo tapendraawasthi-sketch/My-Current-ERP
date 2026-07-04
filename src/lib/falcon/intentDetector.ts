@@ -8,10 +8,7 @@
  * @param tokens           Stop-word-filtered token array derived from the query.
  * @returns                The best-matching intent label string.
  */
-export function detectIntent(
-  normalizedQuery: string,
-  tokens: string[]
-): string {
+export function detectIntent(normalizedQuery: string, tokens: string[]): string {
   // ── RULE 1 — troubleshoot (phrase-based) ─────────────────────────────────
   const troubleshootPhrases = [
     "not working",

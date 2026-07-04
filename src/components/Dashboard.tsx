@@ -86,22 +86,18 @@ const Dashboard: React.FC = () => {
       (acc) =>
         !acc.isGroup &&
         acc.isActive &&
-        (
-          acc.name.toLowerCase().includes("cash") ||
+        (acc.name.toLowerCase().includes("cash") ||
           acc.group?.toLowerCase().includes("cash") ||
-          acc.groupName?.toLowerCase().includes("cash")
-        ),
+          acc.groupName?.toLowerCase().includes("cash")),
     );
     const bankAccounts = accounts.filter(
       (acc) =>
         !acc.isGroup &&
         acc.isActive &&
-        (
-          acc.name.toLowerCase().includes("bank") ||
+        (acc.name.toLowerCase().includes("bank") ||
           acc.group?.toLowerCase().includes("bank") ||
           acc.groupName?.toLowerCase().includes("bank") ||
-          (acc as any).bankDetails
-        ),
+          (acc as any).bankDetails),
     );
 
     const cashBalance = cashAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
@@ -125,16 +121,18 @@ const Dashboard: React.FC = () => {
   // VAT liability (simplified)
   const vatLiability = useMemo(() => {
     const outputVat = invoices
-      .filter((inv) =>
-        (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
-        inv.status === "posted"
+      .filter(
+        (inv) =>
+          (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
+          inv.status === "posted",
       )
       .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
 
     const inputVat = invoices
-      .filter((inv) =>
-        (inv.type === VoucherType.PURCHASE_INVOICE || inv.type === "purchase-invoice") &&
-        inv.status === "posted"
+      .filter(
+        (inv) =>
+          (inv.type === VoucherType.PURCHASE_INVOICE || inv.type === "purchase-invoice") &&
+          inv.status === "posted",
       )
       .reduce((sum, inv) => sum + (Number(inv.vatAmount) || 0), 0);
 
@@ -249,8 +247,9 @@ const Dashboard: React.FC = () => {
     const thirtyDaysStr = thirtyDaysFromNow.toISOString().split("T")[0];
 
     // Note: batches are loaded by the BatchManagement page — check stockMovements for near-expiry
-    const nearExpiryCount = (items || []).filter((item: any) =>
-      item.expiryDate && item.expiryDate <= thirtyDaysStr && item.expiryDate >= today
+    const nearExpiryCount = (items || []).filter(
+      (item: any) =>
+        item.expiryDate && item.expiryDate <= thirtyDaysStr && item.expiryDate >= today,
     ).length;
 
     if (nearExpiryCount > 0) {
@@ -281,7 +280,9 @@ const Dashboard: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 style={{ fontSize: 15, fontWeight: 700, color: "#000000" }}>Dashboard</h1>
-          <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", marginTop: 2 }}>Business overview for {todayBS}</p>
+          <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", marginTop: 2 }}>
+            Business overview for {todayBS}
+          </p>
         </div>
         <button
           style={{
@@ -299,8 +300,8 @@ const Dashboard: React.FC = () => {
             cursor: "pointer",
             transition: "background 150ms ease",
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = "#0f4a96")}
-          onMouseLeave={e => (e.currentTarget.style.background = "#1557b0")}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#0f4a96")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "#1557b0")}
           onClick={() => window.location.reload()}
         >
           <RefreshCw size={14} />
@@ -341,7 +342,9 @@ const Dashboard: React.FC = () => {
           {
             icon: <Package size={12} />,
             label: "PURCHASES TODAY",
-            value: formatCurrency(todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0)),
+            value: formatCurrency(
+              todaysPurchases.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0),
+            ),
           },
         ].map((stat, i, arr) => (
           <div
@@ -370,7 +373,15 @@ const Dashboard: React.FC = () => {
               {stat.icon}
             </div>
             <div>
-              <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.5)" }}>
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  color: "rgba(0,0,0,0.5)",
+                }}
+              >
                 {stat.label}
               </div>
               <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
@@ -386,7 +397,9 @@ const Dashboard: React.FC = () => {
         {[
           {
             label: "Today's Sales",
-            value: formatCurrency(todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0)),
+            value: formatCurrency(
+              todaysInvoices.reduce((sum, inv) => sum + (inv.grandTotal || 0), 0),
+            ),
             meta: `${todaysInvoices.length} invoices`,
             icon: <TrendingDown size={16} />,
           },
@@ -423,12 +436,30 @@ const Dashboard: React.FC = () => {
               overflow: "hidden",
             }}
           >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+            <div
+              style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}
+            >
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.55)" }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    color: "rgba(0,0,0,0.55)",
+                  }}
+                >
                   {card.label}
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontVariantNumeric: "tabular-nums", fontFamily: "'Courier New', monospace" }}>
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    marginTop: 4,
+                    fontVariantNumeric: "tabular-nums",
+                    fontFamily: "'Courier New', monospace",
+                  }}
+                >
                   {card.value}
                 </div>
               </div>
@@ -481,12 +512,30 @@ const Dashboard: React.FC = () => {
               gap: 6,
             }}
           >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+            <div
+              style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}
+            >
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(0,0,0,0.55)" }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    color: "rgba(0,0,0,0.55)",
+                  }}
+                >
                   {card.label}
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontVariantNumeric: "tabular-nums", fontFamily: "'Courier New', monospace" }}>
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    marginTop: 4,
+                    fontVariantNumeric: "tabular-nums",
+                    fontFamily: "'Courier New', monospace",
+                  }}
+                >
                   {card.value}
                 </div>
               </div>
@@ -524,7 +573,14 @@ const Dashboard: React.FC = () => {
           }}
         >
           <Bell size={13} />
-          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+            }}
+          >
             Alerts &amp; Action Required
           </span>
         </div>

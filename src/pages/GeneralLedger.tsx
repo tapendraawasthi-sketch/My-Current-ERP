@@ -35,15 +35,14 @@ interface Voucher {
   lines: VoucherLine[];
 }
 
-
 const fuzzyScore = (query: string, target: string): number => {
   const q = query.toLowerCase().trim();
   const t = (target || "").toLowerCase();
   if (!q) return 1;
-  if (t === q) return 100;                                   // exact match
-  if (t.startsWith(q)) return 90;                           // prefix match
-  if (t.includes(" " + q)) return 80;                       // word-start match
-  if (t.includes(q)) return 60;                             // substring match
+  if (t === q) return 100; // exact match
+  if (t.startsWith(q)) return 90; // prefix match
+  if (t.includes(" " + q)) return 80; // word-start match
+  if (t.includes(q)) return 60; // substring match
 
   // Character sequence match (fuzzy):
   let score = 0;
@@ -147,7 +146,7 @@ const GeneralLedger: React.FC = () => {
     [accountList, accountId],
   );
 
-    const filteredAccountList = useMemo(() => {
+  const filteredAccountList = useMemo(() => {
     if (!searchAccount.trim()) return accountList.filter((a: any) => !a.isGroup).slice(0, 100);
     return accountList
       .filter((a: any) => !a.isGroup)
@@ -330,19 +329,21 @@ const GeneralLedger: React.FC = () => {
             className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           />
           {searchAccount && !accountId && (
-            <div style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              background: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "0 0 6px 6px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-              maxHeight: 300,
-              overflowY: "auto",
-              zIndex: 50,
-            }}>
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "0 0 6px 6px",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                maxHeight: 300,
+                overflowY: "auto",
+                zIndex: 50,
+              }}
+            >
               {filteredAccountList.map((a) => (
                 <div
                   key={a.id}
@@ -350,7 +351,12 @@ const GeneralLedger: React.FC = () => {
                     setAccountId(a.id);
                     setSearchAccount(a.name);
                   }}
-                  style={{ padding: "6px 12px", cursor: "pointer", fontSize: 12, borderBottom: "1px solid #f3f4f6" }}
+                  style={{
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    fontSize: 12,
+                    borderBottom: "1px solid #f3f4f6",
+                  }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
@@ -359,12 +365,19 @@ const GeneralLedger: React.FC = () => {
                   </div>
                   <div style={{ fontSize: 10, color: "#6b7280" }}>
                     <HighlightMatch text={a.code} query={searchAccount} />
-                    {a.group && <span> • <HighlightMatch text={a.group} query={searchAccount} /></span>}
+                    {a.group && (
+                      <span>
+                        {" "}
+                        • <HighlightMatch text={a.group} query={searchAccount} />
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
               {filteredAccountList.length === 0 && (
-                <div style={{ padding: "12px", fontSize: 12, color: "#6b7280", textAlign: "center" }}>
+                <div
+                  style={{ padding: "12px", fontSize: 12, color: "#6b7280", textAlign: "center" }}
+                >
                   No accounts found.
                 </div>
               )}

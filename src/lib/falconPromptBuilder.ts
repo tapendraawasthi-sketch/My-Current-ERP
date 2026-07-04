@@ -1,8 +1,8 @@
-import { ERP_MODULE_KNOWLEDGE, ACCOUNTING_CONCEPTS, KEYBOARD_SHORTCUTS } from './falconKnowledge';
-import type { QuestionCategory, ReasoningStep } from './falconReasoning';
+import { ERP_MODULE_KNOWLEDGE, ACCOUNTING_CONCEPTS, KEYBOARD_SHORTCUTS } from "./falconKnowledge";
+import type { QuestionCategory, ReasoningStep } from "./falconReasoning";
 
 export interface FalconMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -88,16 +88,20 @@ If a question is completely unrelated to ERP and you don't know the answer, say 
   return prompt;
 }
 
-export function buildUserMessage(query: string, reasoningSteps: ReasoningStep[], context?: { currentRoute?: string }): string {
-  let message = '';
-  
+export function buildUserMessage(
+  query: string,
+  reasoningSteps: ReasoningStep[],
+  context?: { currentRoute?: string },
+): string {
+  let message = "";
+
   if (context?.currentRoute) {
     message += `[System Context: The user is currently on the '${context.currentRoute}' page.]\n\n`;
   }
 
   if (reasoningSteps.length > 0) {
     message += `[My Reasoning Process before answering]:\n`;
-    reasoningSteps.forEach(step => {
+    reasoningSteps.forEach((step) => {
       message += `- Step ${step.stepNumber}: ${step.title}. Conclusion: ${step.conclusion}\n`;
     });
     message += `\n`;
@@ -107,39 +111,41 @@ export function buildUserMessage(query: string, reasoningSteps: ReasoningStep[],
   return message;
 }
 
-export function buildConversationHistory(messages: Array<{ role: string; content: string }>, maxMessages: number = 8): FalconMessage[] {
+export function buildConversationHistory(
+  messages: Array<{ role: string; content: string }>,
+  maxMessages: number = 8,
+): FalconMessage[] {
   // Ensure we only grab the last N messages
   const recent = messages.slice(-maxMessages);
-  return recent.map(m => ({
-    role: m.role as 'system' | 'user' | 'assistant',
-    content: m.content
+  return recent.map((m) => ({
+    role: m.role as "system" | "user" | "assistant",
+    content: m.content,
   }));
 }
 
 export function getDefaultLLMConfig(): LLMConfig {
   return {
-    model: 'llama-3.3-70b-versatile',
+    model: "llama-3.3-70b-versatile",
     temperature: 0.7,
     maxTokens: 1024,
-    stream: false
+    stream: false,
   };
 }
 
 export function getERPSpecificConfig(): LLMConfig {
   return {
-    model: 'llama-3.3-70b-versatile',
+    model: "llama-3.3-70b-versatile",
     temperature: 0.3, // Lower temp for precise instructions
     maxTokens: 1024,
-    stream: false
+    stream: false,
   };
 }
 
 export function getCreativeConfig(): LLMConfig {
   return {
-    model: 'llama-3.3-70b-versatile',
+    model: "llama-3.3-70b-versatile",
     temperature: 0.8, // Higher temp for creative answers
     maxTokens: 2048,
-    stream: false
+    stream: false,
   };
 }
-

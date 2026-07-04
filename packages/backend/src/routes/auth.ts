@@ -173,7 +173,10 @@ router.post("/logout", authMiddleware, async (req, res) => {
 
     if (refreshToken) {
       try {
-        const payload = verifyToken(refreshToken) as AuthTokenPayload & { type?: string; exp?: number };
+        const payload = verifyToken(refreshToken) as AuthTokenPayload & {
+          type?: string;
+          exp?: number;
+        };
         const redis = getRedis();
         const ttlSeconds = payload.exp
           ? Math.max(payload.exp - Math.floor(Date.now() / 1000), 60)

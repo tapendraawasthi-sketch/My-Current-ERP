@@ -723,7 +723,8 @@ export default function OpeningBalance() {
               const acc = await db.accounts.get(line.accountId);
               if (acc) {
                 const reversed =
-                  Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) / 100;
+                  Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) /
+                  100;
                 await db.accounts.update(line.accountId, { balance: reversed });
               }
             }

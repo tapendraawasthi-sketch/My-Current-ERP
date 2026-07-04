@@ -2,423 +2,493 @@ import type { KBEntry } from "../types";
 
 export const KB_EXTENDED6: KBEntry[] = [
   {
-    id: "ext-761", category: "general",
+    id: "ext-761",
+    category: "general",
     q: "What are the fastest ways to create multiple entries?",
     keywords: ["fast multiple entries", "power user tips", "speed up data entry"],
-    a: "Save & New, Clone Voucher, Ctrl+S for quick save, Tab navigation, auto-add line (Tab on last field of last row), F9 to delete row, full keyboard navigation, Bulk Import via Excel."
+    a: "Save & New, Clone Voucher, Ctrl+S for quick save, Tab navigation, auto-add line (Tab on last field of last row), F9 to delete row, full keyboard navigation, Bulk Import via Excel.",
   },
   {
-    id: "ext-762", category: "general",
+    id: "ext-762",
+    category: "general",
     q: "How do I navigate without a mouse?",
     keywords: ["keyboard navigation", "use without mouse"],
-    a: "Tab/Shift+Tab (move fields), Enter (select in dropdowns), Arrow keys (lists/dropdowns), Space (toggle checkboxes), Esc (close modals), F-keys (quick actions), Single letters (report nav)."
+    a: "Tab/Shift+Tab (move fields), Enter (select in dropdowns), Arrow keys (lists/dropdowns), Space (toggle checkboxes), Esc (close modals), F-keys (quick actions), Single letters (report nav).",
   },
   {
-    id: "ext-763", category: "general",
+    id: "ext-763",
+    category: "general",
     q: "How do I search quickly within dropdowns?",
     keywords: ["search dropdown", "filter select options"],
-    a: "Click dropdown to open, start typing to filter options by name or code. Use arrow keys to navigate and Enter to select. Works in Party, Account, and Item selects."
+    a: "Click dropdown to open, start typing to filter options by name or code. Use arrow keys to navigate and Enter to select. Works in Party, Account, and Item selects.",
   },
   {
-    id: "ext-764", category: "general",
+    id: "ext-764",
+    category: "general",
     q: "What are the most common data entry mistakes?",
     keywords: ["common data entry mistakes", "frequent errors fix"],
-    a: "Wrong date/FY, wrong party, wrong qty/rate, missing VAT check, unbalanced journal, wrong ledger. Fix by cancelling and re-entering, or creating a correction journal."
+    a: "Wrong date/FY, wrong party, wrong qty/rate, missing VAT check, unbalanced journal, wrong ledger. Fix by cancelling and re-entering, or creating a correction journal.",
   },
   {
-    id: "ext-765", category: "general",
+    id: "ext-765",
+    category: "general",
     q: "How do I avoid duplicate entries?",
     keywords: ["avoid duplicate entries", "prevent double entry"],
-    a: "Check reference numbers before posting. Review Day Book for similar entries. Use standard narrations. Verify with source documents. Check party statements. Reconcile regularly."
+    a: "Check reference numbers before posting. Review Day Book for similar entries. Use standard narrations. Verify with source documents. Check party statements. Reconcile regularly.",
   },
   {
-    id: "ext-766", category: "general",
+    id: "ext-766",
+    category: "general",
     q: "What should I check before posting?",
     keywords: ["pre posting checklist", "verify before save"],
-    a: "Correct date/FY, party/account, qty/rates, VAT, payment mode, clear narration. Ensure journals balance (Dr=Cr) and invoices have valid lines. Add attachments/references if needed."
+    a: "Correct date/FY, party/account, qty/rates, VAT, payment mode, clear narration. Ensure journals balance (Dr=Cr) and invoices have valid lines. Add attachments/references if needed.",
   },
   {
-    id: "ext-767", category: "general",
+    id: "ext-767",
+    category: "general",
     q: "What is the complete year-end closing procedure?",
     keywords: ["year end closing procedure", "annual close process"],
-    a: "Complete transactions, record adjustments (depreciation, accruals), verify reconciliations/stock. Review TB/P&L/BS. Close P&L to Retained Earnings via journal. Set old FY to 'Closed'. Create new FY. Backup."
+    a: "Complete transactions, record adjustments (depreciation, accruals), verify reconciliations/stock. Review TB/P&L/BS. Close P&L to Retained Earnings via journal. Set old FY to 'Closed'. Create new FY. Backup.",
   },
   {
-    id: "ext-768", category: "general",
+    id: "ext-768",
+    category: "general",
     q: "How do I create the new fiscal year?",
     keywords: ["create new fiscal year", "add financial year"],
-    a: "Fiscal Year page → Add Fiscal Year. Enter FY name (e.g. 2082/83), Start Date (Shrawan 1), End Date (Ashadh end). Set status 'Open'."
+    a: "Fiscal Year page → Add Fiscal Year. Enter FY name (e.g. 2082/83), Start Date (Shrawan 1), End Date (Ashadh end). Set status 'Open'.",
   },
   {
-    id: "ext-769", category: "general",
+    id: "ext-769",
+    category: "general",
     q: "How are opening balances carried forward?",
     keywords: ["opening balance carry forward", "next year balance"],
-    a: "BS accounts carry closing balance forward. Income/Expense accounts close to zero (Retained Earnings updated). Verify Trial Balance after carry-forward."
+    a: "BS accounts carry closing balance forward. Income/Expense accounts close to zero (Retained Earnings updated). Verify Trial Balance after carry-forward.",
   },
   {
-    id: "ext-770", category: "general",
+    id: "ext-770",
+    category: "general",
     q: "How should I secure my Sutra ERP installation?",
     keywords: ["secure erp installation", "security best practices"],
-    a: "Strong/unique passwords changed every 90 days. Minimum required permissions per user. Regular audit log review. Encrypted backups. HTTPS for backend. Log out when unattended."
+    a: "Strong/unique passwords changed every 90 days. Minimum required permissions per user. Regular audit log review. Encrypted backups. HTTPS for backend. Log out when unattended.",
   },
   {
-    id: "ext-771", category: "general",
+    id: "ext-771",
+    category: "general",
     q: "How do I monitor for unauthorized access?",
     keywords: ["monitor unauthorized access", "audit log review"],
-    a: "Review Audit Logs regularly for unusual login times, failed attempts, unexpected changes to masters/vouchers, or deleted records."
+    a: "Review Audit Logs regularly for unusual login times, failed attempts, unexpected changes to masters/vouchers, or deleted records.",
   },
   {
-    id: "ext-772", category: "general",
+    id: "ext-772",
+    category: "general",
     q: "How do I handle employee termination?",
     keywords: ["employee termination offboarding", "remove user access"],
-    a: "Immediately deactivate user account. Change shared passwords. Review recent transactions. Export audit trail. Reassign approvals. Document offboarding."
+    a: "Immediately deactivate user account. Change shared passwords. Review recent transactions. Export audit trail. Reassign approvals. Document offboarding.",
   },
   {
-    id: "ext-773", category: "general",
+    id: "ext-773",
+    category: "general",
     q: "Can I use Sutra ERP in other languages besides English/Nepali?",
     keywords: ["language support", "nepali localization"],
-    a: "Primary: English. Secondary: Nepali (Devanagari supported in narrations/names). BS calendar supported. Other languages not built-in but Unicode text works in text fields."
+    a: "Primary: English. Secondary: Nepali (Devanagari supported in narrations/names). BS calendar supported. Other languages not built-in but Unicode text works in text fields.",
   },
   {
-    id: "ext-774", category: "general",
+    id: "ext-774",
+    category: "general",
     q: "Can I customize the invoice format?",
     keywords: ["customize invoice format", "print pdf template"],
-    a: "Upload logo, toggle bank details/PAN, edit terms/footer/signatory in Company Settings. For deep customization, modify printUtils.ts or InvoicePrint component CSS."
+    a: "Upload logo, toggle bank details/PAN, edit terms/footer/signatory in Company Settings. For deep customization, modify printUtils.ts or InvoicePrint component CSS.",
   },
   {
-    id: "ext-775", category: "general",
+    id: "ext-775",
+    category: "general",
     q: "Can I add custom fields to forms?",
     keywords: ["add custom fields", "extra form inputs"],
-    a: "Use Optional Fields in Master Config (for ledgers), F12 Screen Configs, Bill Sundries (for charges), Narrations, and Attachments. Customizing core fields requires source code changes."
+    a: "Use Optional Fields in Master Config (for ledgers), F12 Screen Configs, Bill Sundries (for charges), Narrations, and Attachments. Customizing core fields requires source code changes.",
   },
   {
-    id: "ext-776", category: "general",
+    id: "ext-776",
+    category: "general",
     q: "How do I migrate from Tally?",
     keywords: ["migrate from tally", "tally data import"],
-    a: "Export masters from Tally. Map groups. Import into Sutra: Groups → Ledgers → Stock Items (with opening stock). Enter opening TB via journal. Verify balances."
+    a: "Export masters from Tally. Map groups. Import into Sutra: Groups → Ledgers → Stock Items (with opening stock). Enter opening TB via journal. Verify balances.",
   },
   {
-    id: "ext-777", category: "general",
+    id: "ext-777",
+    category: "general",
     q: "How do I migrate from BUSY?",
     keywords: ["migrate from busy", "busy data import"],
-    a: "BUSY shares similar structure (15 predefined groups). Export data, map, import. Verify TB. Ensure stock valuation methods match."
+    a: "BUSY shares similar structure (15 predefined groups). Export data, map, import. Verify TB. Ensure stock valuation methods match.",
   },
   {
-    id: "ext-778", category: "general",
+    id: "ext-778",
+    category: "general",
     q: "How do I migrate from Excel/spreadsheet accounting?",
     keywords: ["migrate from excel", "spreadsheet import"],
-    a: "Organize data into Sutra import templates (COA, Parties, Items). Enter opening TB via journal. Verify all balances match."
+    a: "Organize data into Sutra import templates (COA, Parties, Items). Enter opening TB via journal. Verify all balances match.",
   },
   {
-    id: "ext-779", category: "general",
+    id: "ext-779",
+    category: "general",
     q: "What is a Ledger?",
     keywords: ["ledger definition", "what is a ledger", "glossary account"],
-    a: "An individual account in the Chart of Accounts (e.g., Cash, Rent Expense) that tracks debit/credit entries. Ledgers roll up into Groups for reporting."
+    a: "An individual account in the Chart of Accounts (e.g., Cash, Rent Expense) that tracks debit/credit entries. Ledgers roll up into Groups for reporting.",
   },
   {
-    id: "ext-780", category: "general",
+    id: "ext-780",
+    category: "general",
     q: "What is a Voucher?",
     keywords: ["voucher definition", "what is a voucher", "glossary journal"],
-    a: "A documented financial transaction (Journal, Payment, Receipt, Contra) that creates debit and credit entries in ledgers."
+    a: "A documented financial transaction (Journal, Payment, Receipt, Contra) that creates debit and credit entries in ledgers.",
   },
   {
-    id: "ext-781", category: "general",
+    id: "ext-781",
+    category: "general",
     q: "What is an Invoice?",
     keywords: ["invoice definition", "what is an invoice", "glossary bill"],
-    a: "A bill for goods/services (Sales/Purchase). Includes items, qty, rate, tax. Auto-creates accounting entries and inventory movements."
+    a: "A bill for goods/services (Sales/Purchase). Includes items, qty, rate, tax. Auto-creates accounting entries and inventory movements.",
   },
   {
-    id: "ext-782", category: "general",
+    id: "ext-782",
+    category: "general",
     q: "What is a Bill Sundry?",
     keywords: ["bill sundry definition", "what is a bill sundry", "glossary extra charge"],
-    a: "An additional charge or deduction on an invoice beyond line items (freight, discount). Additive sundries increase total; subtractive decrease it."
+    a: "An additional charge or deduction on an invoice beyond line items (freight, discount). Additive sundries increase total; subtractive decrease it.",
   },
   {
-    id: "ext-783", category: "general",
+    id: "ext-783",
+    category: "general",
     q: "What is a Cost Center?",
     keywords: ["cost center definition", "what is a cost center", "glossary dimension"],
-    a: "A tracking dimension for expenses/revenues (e.g., departments, projects). Tags transactions for detailed profitability analysis."
+    a: "A tracking dimension for expenses/revenues (e.g., departments, projects). Tags transactions for detailed profitability analysis.",
   },
   {
-    id: "ext-784", category: "general",
+    id: "ext-784",
+    category: "general",
     q: "What is TDS (Tax Deducted at Source)?",
     keywords: ["tds definition", "what is tds", "glossary withholding"],
-    a: "Tax deducted by payer at time of payment (contractor fees, rent). Deducted amount deposited to IRD. Certificates issued to deductee."
+    a: "Tax deducted by payer at time of payment (contractor fees, rent). Deducted amount deposited to IRD. Certificates issued to deductee.",
   },
   {
-    id: "ext-785", category: "general",
+    id: "ext-785",
+    category: "general",
     q: "What is CBMS?",
     keywords: ["cbms definition", "what is cbms", "glossary ird system"],
-    a: "Central Billing Management System by Nepal's IRD. Sales invoices submitted to CBMS get a unique IRN and QR code for authenticity."
+    a: "Central Billing Management System by Nepal's IRD. Sales invoices submitted to CBMS get a unique IRN and QR code for authenticity.",
   },
   {
-    id: "ext-786", category: "general",
+    id: "ext-786",
+    category: "general",
     q: "IndexedDB error 'QuotaExceededError' — what to do?",
     keywords: ["quotaexceedederror", "storage quota full error", "indexeddb error"],
-    a: "Clear old data/close FYs, export/archive old transactions, delete old POS sessions. Factory reset with caution. Or switch to PostgreSQL backend."
+    a: "Clear old data/close FYs, export/archive old transactions, delete old POS sessions. Factory reset with caution. Or switch to PostgreSQL backend.",
   },
   {
-    id: "ext-787", category: "general",
+    id: "ext-787",
+    category: "general",
     q: "Database won't load — stuck on 'Initializing database'",
     keywords: ["stuck initializing database", "app wont load", "db stuck"],
-    a: "Check console errors. Clear site data. Try different browser or incognito. Check IndexedDB permissions. Disable extensions."
+    a: "Check console errors. Clear site data. Try different browser or incognito. Check IndexedDB permissions. Disable extensions.",
   },
   {
-    id: "ext-788", category: "general",
+    id: "ext-788",
+    category: "general",
     q: "Print preview shows blank or incomplete",
     keywords: ["print preview blank", "pdf incomplete", "print error"],
-    a: "Allow popups. Disable ad blockers. Wait for data to load. Try Chrome/Edge. Export to PDF instead of direct print."
+    a: "Allow popups. Disable ad blockers. Wait for data to load. Try Chrome/Edge. Export to PDF instead of direct print.",
   },
   {
-    id: "ext-789", category: "general",
+    id: "ext-789",
+    category: "general",
     q: "Data not saving to IndexedDB",
     keywords: ["data not saving", "save error indexeddb"],
-    a: "Check storage permissions and disk space. Private browsing may block it. Try different browser. Clear site data. Check console."
+    a: "Check storage permissions and disk space. Private browsing may block it. Try different browser. Clear site data. Check console.",
   },
   {
-    id: "ext-790", category: "general",
+    id: "ext-790",
+    category: "general",
     q: "Is my data safe in the browser?",
     keywords: ["is data safe", "browser storage security"],
-    a: "IndexedDB persists locally across restarts. Backup to JSON files regularly. For multi-device/production use, backend PostgreSQL is recommended."
+    a: "IndexedDB persists locally across restarts. Backup to JSON files regularly. For multi-device/production use, backend PostgreSQL is recommended.",
   },
   {
-    id: "ext-791", category: "general",
+    id: "ext-791",
+    category: "general",
     q: "Can I access Sutra ERP from multiple computers?",
     keywords: ["access multiple computers", "network erp access"],
-    a: "Frontend IndexedDB is single-computer only. To share data across computers, deploy the backend (Render/PostgreSQL) to the cloud."
+    a: "Frontend IndexedDB is single-computer only. To share data across computers, deploy the backend (Render/PostgreSQL) to the cloud.",
   },
   {
-    id: "ext-792", category: "general",
+    id: "ext-792",
+    category: "general",
     q: "What happens if my computer crashes?",
     keywords: ["computer crash data loss", "hard drive failure"],
-    a: "Local IndexedDB data may be lost if drive fails. Take regular JSON backups and store them off-device (cloud/USB) to mitigate risk."
+    a: "Local IndexedDB data may be lost if drive fails. Take regular JSON backups and store them off-device (cloud/USB) to mitigate risk.",
   },
   {
-    id: "ext-793", category: "general",
+    id: "ext-793",
+    category: "general",
     q: "Is Sutra ERP free?",
     keywords: ["is sutra erp free", "pricing open source"],
-    a: "Yes, it is open-source. Frontend runs free in the browser. Backend hosting (Render/Vercel) may incur costs depending on usage tiers."
+    a: "Yes, it is open-source. Frontend runs free in the browser. Backend hosting (Render/Vercel) may incur costs depending on usage tiers.",
   },
   {
-    id: "ext-794", category: "general",
+    id: "ext-794",
+    category: "general",
     q: "Can I modify the source code?",
     keywords: ["modify source code", "customization dev"],
-    a: "Yes. Modify for custom templates, reports, fields. Requires React/TS knowledge. Build via 'npm run build'. Keep backups."
+    a: "Yes. Modify for custom templates, reports, fields. Requires React/TS knowledge. Build via 'npm run build'. Keep backups.",
   },
   {
-    id: "ext-795", category: "general",
+    id: "ext-795",
+    category: "general",
     q: "Does Sutra ERP integrate with e-commerce platforms?",
     keywords: ["ecommerce integration", "woocommerce shopify"],
-    a: "No built-in integrations. Use data import/export manually, or build custom API integrations using the backend."
+    a: "No built-in integrations. Use data import/export manually, or build custom API integrations using the backend.",
   },
   {
-    id: "ext-796", category: "general",
+    id: "ext-796",
+    category: "general",
     q: "Can I connect Sutra ERP to payment gateways?",
     keywords: ["payment gateway integration", "esewa khalti"],
-    a: "POS supports payment mode labels (eSewa/Khalti) for tracking, but actual payment processing requires custom API integration."
+    a: "POS supports payment mode labels (eSewa/Khalti) for tracking, but actual payment processing requires custom API integration.",
   },
   {
-    id: "ext-797", category: "general",
+    id: "ext-797",
+    category: "general",
     q: "Does Sutra ERP have an API?",
     keywords: ["erp api endpoints", "rest api access"],
-    a: "The backend (server.js) provides REST APIs for company, FY, logs, backup, etc. Custom endpoints can be added. Frontend uses local DB directly."
+    a: "The backend (server.js) provides REST APIs for company, FY, logs, backup, etc. Custom endpoints can be added. Frontend uses local DB directly.",
   },
   {
-    id: "ext-798", category: "general",
+    id: "ext-798",
+    category: "general",
     q: "Can I connect Sutra to external reporting tools?",
     keywords: ["external reporting bi", "powerbi tableau"],
-    a: "Export Excel data to import into PowerBI/Tableau, or connect tools directly to the PostgreSQL backend database."
+    a: "Export Excel data to import into PowerBI/Tableau, or connect tools directly to the PostgreSQL backend database.",
   },
   {
-    id: "ext-799", category: "general",
+    id: "ext-799",
+    category: "general",
     q: "What are the top 10 best practices for Sutra ERP?",
     keywords: ["best practices", "top tips"],
-    a: "1. Backup daily off-device. 2. Use descriptive narrations. 3. Post promptly. 4. Reconcile monthly. 5. Review TB regularly. 6. Maintain standardized COA. 7. Train users. 8. Check VAT calculations. 9. Close POS sessions daily. 10. Keep software updated."
+    a: "1. Backup daily off-device. 2. Use descriptive narrations. 3. Post promptly. 4. Reconcile monthly. 5. Review TB regularly. 6. Maintain standardized COA. 7. Train users. 8. Check VAT calculations. 9. Close POS sessions daily. 10. Keep software updated.",
   },
   {
-    id: "ext-800", category: "general",
+    id: "ext-800",
+    category: "general",
     q: "What is the recommended daily workflow?",
     keywords: ["daily workflow", "routine tasks"],
-    a: "Morning: Open POS, process recurring vouchers. Day: Enter invoices/payments. Review: Check Day Book. End of day: Close POS, reconcile cash, verify TB, take daily backup."
+    a: "Morning: Open POS, process recurring vouchers. Day: Enter invoices/payments. Review: Check Day Book. End of day: Close POS, reconcile cash, verify TB, take daily backup.",
   },
   {
-    id: "ext-801", category: "general",
+    id: "ext-801",
+    category: "general",
     q: "Error: 'Account group not found' — what does this mean?",
     keywords: ["error account group not found", "ledger creation fail"],
-    a: "Trying to create ledger under non-existent group. Ensure group exists in Chart of Accounts, especially during Excel import."
+    a: "Trying to create ledger under non-existent group. Ensure group exists in Chart of Accounts, especially during Excel import.",
   },
   {
-    id: "ext-802", category: "general",
+    id: "ext-802",
+    category: "general",
     q: "Error: 'Fiscal year not set' — how to resolve?",
     keywords: ["error fiscal year not set", "fy missing"],
-    a: "Go to Fiscal Year page and ensure there is an 'Open' or 'Active' fiscal year. All transactions require it."
+    a: "Go to Fiscal Year page and ensure there is an 'Open' or 'Active' fiscal year. All transactions require it.",
   },
   {
-    id: "ext-803", category: "general",
+    id: "ext-803",
+    category: "general",
     q: "Error: 'Voucher number already exists' — what to do?",
     keywords: ["error voucher number exists", "duplicate serial"],
-    a: "Auto-serial conflicted with existing voucher. Try saving again to auto-increment, or check voucher numbering config if it persists."
+    a: "Auto-serial conflicted with existing voucher. Try saving again to auto-increment, or check voucher numbering config if it persists.",
   },
   {
-    id: "ext-804", category: "general",
+    id: "ext-804",
+    category: "general",
     q: "Error: 'Total Debit must equal Total Credit' — how to fix?",
     keywords: ["error debit must equal credit", "unbalanced journal fix"],
-    a: "Review all lines in the journal. Adjust amounts until sum of Debits exactly matches sum of Credits (difference < 0.005)."
+    a: "Review all lines in the journal. Adjust amounts until sum of Debits exactly matches sum of Credits (difference < 0.005).",
   },
   {
-    id: "ext-805", category: "general",
+    id: "ext-805",
+    category: "general",
     q: "Error: 'Cannot post: party ledger is inactive'",
     keywords: ["error party ledger inactive", "cannot post invoice"],
-    a: "The party's linked ledger account is deactivated. Go to Chart of Accounts, edit the party's ledger, check 'Active', and retry."
+    a: "The party's linked ledger account is deactivated. Go to Chart of Accounts, edit the party's ledger, check 'Active', and retry.",
   },
   {
-    id: "ext-806", category: "general",
+    id: "ext-806",
+    category: "general",
     q: "All F-key shortcuts",
     keywords: ["all f key shortcuts", "f keys list"],
-    a: "F1: Help, F2: Save, F3: Items/Add Ledger, F4: Accounts, F5: Journal, F6: Payment, F7: Receipt, F8: Contra, F9: Sales/Delete Row, F10: Purchase, F11: Balance Sheet, F12: Config, Esc: Cancel."
+    a: "F1: Help, F2: Save, F3: Items/Add Ledger, F4: Accounts, F5: Journal, F6: Payment, F7: Receipt, F8: Contra, F9: Sales/Delete Row, F10: Purchase, F11: Balance Sheet, F12: Config, Esc: Cancel.",
   },
   {
-    id: "ext-807", category: "general",
+    id: "ext-807",
+    category: "general",
     q: "All single-letter shortcuts (when not typing)",
     keywords: ["all single letter shortcuts", "keyboard reports shortcuts"],
-    a: "B: Balance Sheet, T: Trial Balance, S: Stock Status, A: Account Ledger, L: General Ledger, V: VAT Report, D: Day Book, G: GST Summary, U: Users, F: Config, K: Lock."
+    a: "B: Balance Sheet, T: Trial Balance, S: Stock Status, A: Account Ledger, L: General Ledger, V: VAT Report, D: Day Book, G: GST Summary, U: Users, F: Config, K: Lock.",
   },
   {
-    id: "ext-808", category: "general",
+    id: "ext-808",
+    category: "general",
     q: "All Ctrl shortcuts",
     keywords: ["all ctrl shortcuts", "control combinations"],
-    a: "Ctrl+B: Balance Sheet, Ctrl+T: Trial Balance, Ctrl+L: Ledger, Ctrl+G: VAT, Ctrl+U: Users, Ctrl+K or /: Search, Ctrl+S: Save."
+    a: "Ctrl+B: Balance Sheet, Ctrl+T: Trial Balance, Ctrl+L: Ledger, Ctrl+G: VAT, Ctrl+U: Users, Ctrl+K or /: Search, Ctrl+S: Save.",
   },
   {
-    id: "ext-809", category: "masters",
+    id: "ext-809",
+    category: "masters",
     q: "All party fields explained",
     keywords: ["party fields list", "customer supplier inputs"],
-    a: "Code, Name (req), Type (req), PAN (9-digits), Phone, Email, Address, Province, District, Municipality, Ward, Opening Balance, Is Active."
+    a: "Code, Name (req), Type (req), PAN (9-digits), Phone, Email, Address, Province, District, Municipality, Ward, Opening Balance, Is Active.",
   },
   {
-    id: "ext-810", category: "masters",
+    id: "ext-810",
+    category: "masters",
     q: "All item fields explained",
     keywords: ["item fields list", "product inputs"],
-    a: "Code/SKU, Name (req), Group, Unit, Purchase Rate, Sales Rate, VAT applicable (req), VAT Rate (13%), HSN, Barcode, Opening Stock/Rate, Reorder/Min Levels."
+    a: "Code/SKU, Name (req), Group, Unit, Purchase Rate, Sales Rate, VAT applicable (req), VAT Rate (13%), HSN, Barcode, Opening Stock/Rate, Reorder/Min Levels.",
   },
   {
-    id: "ext-811", category: "transactions",
+    id: "ext-811",
+    category: "transactions",
     q: "All voucher fields explained",
     keywords: ["voucher fields list", "journal inputs"],
-    a: "Voucher No (auto), Date (req), Type (req), Narration (req), Reference No, Lines (min 2: Account, Dr or Cr amount, line narration)."
+    a: "Voucher No (auto), Date (req), Type (req), Narration (req), Reference No, Lines (min 2: Account, Dr or Cr amount, line narration).",
   },
   {
-    id: "ext-812", category: "transactions",
+    id: "ext-812",
+    category: "transactions",
     q: "All invoice fields explained",
     keywords: ["invoice fields list", "billing inputs"],
-    a: "Invoice No (auto), Date (req), Due Date, Party (req), Ref No, Payment Mode (req), Lines (min 1: Item, Qty>0, Rate, Disc, Taxable flag), Narration, Sundries, Attachments."
+    a: "Invoice No (auto), Date (req), Due Date, Party (req), Ref No, Payment Mode (req), Lines (min 1: Item, Qty>0, Rate, Disc, Taxable flag), Narration, Sundries, Attachments.",
   },
   {
-    id: "ext-813", category: "reports",
+    id: "ext-813",
+    category: "reports",
     q: "Which report shows customer balances?",
     keywords: ["report customer balances", "receivables reports"],
-    a: "Party Statement (individual), Outstanding Receivables (all unpaid), Aging Report (by age bucket), Trial Balance, Balance Sheet."
+    a: "Party Statement (individual), Outstanding Receivables (all unpaid), Aging Report (by age bucket), Trial Balance, Balance Sheet.",
   },
   {
-    id: "ext-814", category: "reports",
+    id: "ext-814",
+    category: "reports",
     q: "Which report shows supplier balances?",
     keywords: ["report supplier balances", "payables reports"],
-    a: "Party Statement (individual), Outstanding Payables (all unpaid), Aging Report (by age bucket), Trial Balance, Balance Sheet."
+    a: "Party Statement (individual), Outstanding Payables (all unpaid), Aging Report (by age bucket), Trial Balance, Balance Sheet.",
   },
   {
-    id: "ext-815", category: "reports",
+    id: "ext-815",
+    category: "reports",
     q: "Which report shows profitability?",
     keywords: ["report profitability", "income reports"],
-    a: "Profit & Loss (overall), Cost Center Report (dept), Sales Analysis (product/customer), Ratio Analysis (margins), Budget vs Actual."
+    a: "Profit & Loss (overall), Cost Center Report (dept), Sales Analysis (product/customer), Ratio Analysis (margins), Budget vs Actual.",
   },
   {
-    id: "ext-816", category: "reports",
+    id: "ext-816",
+    category: "reports",
     q: "Which report shows tax liability?",
     keywords: ["report tax liability", "vat tds reports"],
-    a: "VAT Reports (Net Payable), TDS Reports (Deducted/Payable), GST Summary. Feeds into IRD filing."
+    a: "VAT Reports (Net Payable), TDS Reports (Deducted/Payable), GST Summary. Feeds into IRD filing.",
   },
   {
-    id: "ext-817", category: "general",
+    id: "ext-817",
+    category: "general",
     q: "What is the single most important daily task?",
     keywords: ["most important task", "daily priority"],
-    a: "TAKE A DAILY BACKUP. Export the JSON backup file and store it off-device (cloud/USB). It saves weeks of work if data is lost."
+    a: "TAKE A DAILY BACKUP. Export the JSON backup file and store it off-device (cloud/USB). It saves weeks of work if data is lost.",
   },
   {
-    id: "ext-818", category: "general",
+    id: "ext-818",
+    category: "general",
     q: "What should I learn first in Sutra ERP?",
     keywords: ["learn first", "getting started guide"],
-    a: "1. Company Setup. 2. Chart of Accounts. 3. Parties. 4. Items. 5. Sales Invoice. 6. Vouchers. 7. Reports (TB/P&L). 8. Shortcuts."
+    a: "1. Company Setup. 2. Chart of Accounts. 3. Parties. 4. Items. 5. Sales Invoice. 6. Vouchers. 7. Reports (TB/P&L). 8. Shortcuts.",
   },
   {
-    id: "ext-819", category: "general",
+    id: "ext-819",
+    category: "general",
     q: "What support resources are available?",
     keywords: ["support resources", "help assistance"],
-    a: "Falcon AI (chat), Shortcut Panel (press ?), F12 Config, Audit Logs, Documentation (README.md), and the self-hosted community."
+    a: "Falcon AI (chat), Shortcut Panel (press ?), F12 Config, Audit Logs, Documentation (README.md), and the self-hosted community.",
   },
   {
-    id: "ext-820", category: "general",
+    id: "ext-820",
+    category: "general",
     q: "How do I provide feedback or report bugs?",
     keywords: ["report bugs", "provide feedback"],
-    a: "Document steps to reproduce, expected vs actual behavior, browser version, screenshots, and console errors. Report through project channels."
+    a: "Document steps to reproduce, expected vs actual behavior, browser version, screenshots, and console errors. Report through project channels.",
   },
   {
-    id: "ext-821", category: "general",
+    id: "ext-821",
+    category: "general",
     q: "Complete Masters menu structure",
     keywords: ["masters menu structure", "menu tree masters"],
-    a: "Accounts (COA, Cost Centers, Budget), Parties (Directory, Sales Persons), Inventory (Groups, Items, Units, Price Lists, BOM, Schemes), Operations (Narrations, Sundries)."
+    a: "Accounts (COA, Cost Centers, Budget), Parties (Directory, Sales Persons), Inventory (Groups, Items, Units, Price Lists, BOM, Schemes), Operations (Narrations, Sundries).",
   },
   {
-    id: "ext-822", category: "general",
+    id: "ext-822",
+    category: "general",
     q: "Complete Transactions menu structure",
     keywords: ["transactions menu structure", "menu tree transactions"],
-    a: "Sales (Invoice, Return, Challan, Order), Purchase (Invoice, Return, GRN, Order), Inventory (Transfer, Journal, Production, Physical), Finance (Vouchers, Credit/Debit Note)."
+    a: "Sales (Invoice, Return, Challan, Order), Purchase (Invoice, Return, GRN, Order), Inventory (Transfer, Journal, Production, Physical), Finance (Vouchers, Credit/Debit Note).",
   },
   {
-    id: "ext-823", category: "general",
+    id: "ext-823",
+    category: "general",
     q: "Complete Reports menu structure",
     keywords: ["reports menu structure", "menu tree reports"],
-    a: "Financial (BS, P&L, TB, Cash Flow, Day Book, Ledger), Party (Outstanding, Aging, Statement), Inventory (Stock Status/Ledger/Aging, Sales Analysis), GST/VAT."
+    a: "Financial (BS, P&L, TB, Cash Flow, Day Book, Ledger), Party (Outstanding, Aging, Statement), Inventory (Stock Status/Ledger/Aging, Sales Analysis), GST/VAT.",
   },
   {
-    id: "ext-824", category: "general",
+    id: "ext-824",
+    category: "general",
     q: "Quick fix — Invoice not posting",
     keywords: ["quick fix invoice not posting", "troubleshoot save"],
-    a: "Check required fields, date within FY, line qty > 0, party ledger is active, payment allocation (if applicable)."
+    a: "Check required fields, date within FY, line qty > 0, party ledger is active, payment allocation (if applicable).",
   },
   {
-    id: "ext-825", category: "general",
+    id: "ext-825",
+    category: "general",
     q: "Quick fix — Trial Balance not balancing",
     keywords: ["quick fix tb not balancing", "troubleshoot mismatch"],
-    a: "Check for unbalanced journal vouchers, verify opening balances, review Day Book, check for cancelled vouchers without reversals."
+    a: "Check for unbalanced journal vouchers, verify opening balances, review Day Book, check for cancelled vouchers without reversals.",
   },
   {
-    id: "ext-826", category: "general",
+    id: "ext-826",
+    category: "general",
     q: "Quick fix — Stock quantity wrong",
     keywords: ["quick fix stock wrong", "troubleshoot inventory"],
-    a: "Check all purchase/sales invoices posted. Review stock transfers and stock journals. Run physical stock reconciliation."
+    a: "Check all purchase/sales invoices posted. Review stock transfers and stock journals. Run physical stock reconciliation.",
   },
   {
-    id: "ext-827", category: "general",
+    id: "ext-827",
+    category: "general",
     q: "Quick fix — Can't find a transaction",
     keywords: ["quick fix find transaction", "troubleshoot missing entry"],
-    a: "Clear all filters (date/search). Check both vouchers and invoices registers. Check draft status. Verify FY. Review audit log."
+    a: "Clear all filters (date/search). Check both vouchers and invoices registers. Check draft status. Verify FY. Review audit log.",
   },
   {
-    id: "ext-828", category: "general",
+    id: "ext-828",
+    category: "general",
     q: "Quick fix — Button not working",
     keywords: ["quick fix button not working", "troubleshoot ui"],
-    a: "Refresh page, clear cache. Verify user permission. Check if form is read-only. Check browser console for errors."
+    a: "Refresh page, clear cache. Verify user permission. Check if form is read-only. Check browser console for errors.",
   },
   {
-    id: "ext-829", category: "general",
+    id: "ext-829",
+    category: "general",
     q: "Quick fix — POS not opening",
     keywords: ["quick fix pos not opening", "troubleshoot pos"],
-    a: "Check DB is ready. Verify auth. Refresh. Clear POS session data if corrupted (DevTools IndexedDB)."
+    a: "Check DB is ready. Verify auth. Refresh. Clear POS session data if corrupted (DevTools IndexedDB).",
   },
   {
-    id: "ext-830", category: "general",
+    id: "ext-830",
+    category: "general",
     q: "Quick fix — Printing not working",
     keywords: ["quick fix printing not working", "troubleshoot print"],
-    a: "Allow popups. Disable ad blockers. Use Chrome/Edge. Refresh before printing. Use Export to PDF as alternative."
-  }
+    a: "Allow popups. Disable ad blockers. Use Chrome/Edge. Refresh before printing. Use Export to PDF as alternative.",
+  },
 ];

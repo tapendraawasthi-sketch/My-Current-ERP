@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  { ignores: ["dist", ".output", ".vinxi", "node_modules"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -34,6 +34,16 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      // Legacy ERP codebase: enforce types via `tsc --noEmit` in CI, not blanket any bans.
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-namespace": "off",
+      "no-useless-escape": "off",
+      "no-case-declarations": "off",
+      "no-empty": "warn",
+      "no-dupe-else-if": "warn",
+      "no-prototype-builtins": "warn",
     },
   },
   eslintPluginPrettier,

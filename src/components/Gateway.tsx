@@ -94,8 +94,20 @@ const MENU_SECTIONS: MenuSection[] = [
     icon: BookOpen,
     color: "#1557b0",
     items: [
-      { label: "Chart of Accounts", page: "accounts", icon: BookOpen, shortcut: "F4", permission: "accounting" },
-      { label: "Parties Directory", page: "parties", icon: Users, shortcut: "F3", permission: "accounting" },
+      {
+        label: "Chart of Accounts",
+        page: "accounts",
+        icon: BookOpen,
+        shortcut: "F4",
+        permission: "accounting",
+      },
+      {
+        label: "Parties Directory",
+        page: "parties",
+        icon: Users,
+        shortcut: "F3",
+        permission: "accounting",
+      },
       { label: "Item Groups", page: "item-groups", icon: Layers, permission: "accounting" },
       { label: "Item Master", page: "item-master", icon: Package, permission: "accounting" },
       { label: "Units of Measure", page: "units", icon: Calculator, permission: "accounting" },
@@ -103,7 +115,12 @@ const MENU_SECTIONS: MenuSection[] = [
       { label: "Price List Master", page: "price-lists", icon: Tags, permission: "accounting" },
       { label: "Cost Centers", page: "cost-centers", icon: Map, permission: "accounting" },
       { label: "Budget Master", page: "budget", icon: Wallet, permission: "accounting" },
-      { label: "Standard Narrations", page: "standard-narration", icon: ScrollText, permission: "accounting" },
+      {
+        label: "Standard Narrations",
+        page: "standard-narration",
+        icon: ScrollText,
+        permission: "accounting",
+      },
       { label: "Warehouses", page: "warehouses", icon: Archive, permission: "accounting" },
       { label: "Sales Persons", page: "sales-persons", icon: Users, permission: "accounting" },
     ],
@@ -113,22 +130,83 @@ const MENU_SECTIONS: MenuSection[] = [
     icon: Receipt,
     color: "#059669",
     items: [
-      { label: "Sales Invoice", page: "billing", icon: TrendingUp, shortcut: "F9", permission: "accounting" },
-      { label: "Purchase Invoice", page: "purchase", icon: TrendingDown, shortcut: "F10", permission: "accounting" },
-      { label: "Journal Entry", page: "journal", icon: FileText, shortcut: "F5", permission: "accounting" },
-      { label: "Payment Voucher", page: "payment", icon: Banknote, shortcut: "F6", permission: "accounting" },
-      { label: "Receipt Voucher", page: "receipt", icon: Receipt, shortcut: "F7", permission: "accounting" },
-      { label: "Contra Voucher", page: "contra", icon: ArrowLeftRight, shortcut: "F8", permission: "accounting" },
+      {
+        label: "Sales Invoice",
+        page: "billing",
+        icon: TrendingUp,
+        shortcut: "F9",
+        permission: "accounting",
+      },
+      {
+        label: "Purchase Invoice",
+        page: "purchase",
+        icon: TrendingDown,
+        shortcut: "F10",
+        permission: "accounting",
+      },
+      {
+        label: "Journal Entry",
+        page: "journal",
+        icon: FileText,
+        shortcut: "F5",
+        permission: "accounting",
+      },
+      {
+        label: "Payment Voucher",
+        page: "payment",
+        icon: Banknote,
+        shortcut: "F6",
+        permission: "accounting",
+      },
+      {
+        label: "Receipt Voucher",
+        page: "receipt",
+        icon: Receipt,
+        shortcut: "F7",
+        permission: "accounting",
+      },
+      {
+        label: "Contra Voucher",
+        page: "contra",
+        icon: ArrowLeftRight,
+        shortcut: "F8",
+        permission: "accounting",
+      },
       { label: "Debit Note", page: "debit-note", icon: FileText, permission: "accounting" },
       { label: "Credit Note", page: "credit-note", icon: FileText, permission: "accounting" },
       { label: "Sales Order", page: "sales-order", icon: ClipboardList, permission: "accounting" },
-      { label: "Purchase Order", page: "purchase-order", icon: ClipboardList, permission: "accounting" },
-      { label: "Delivery Challan", page: "delivery-challan", icon: Truck, permission: "accounting" },
-      { label: "Goods Receipt Note", page: "goods-receipt", icon: Archive, permission: "accounting" },
-      { label: "Stock Transfer", page: "stock-transfer", icon: ArrowLeftRight, permission: "accounting" },
+      {
+        label: "Purchase Order",
+        page: "purchase-order",
+        icon: ClipboardList,
+        permission: "accounting",
+      },
+      {
+        label: "Delivery Challan",
+        page: "delivery-challan",
+        icon: Truck,
+        permission: "accounting",
+      },
+      {
+        label: "Goods Receipt Note",
+        page: "goods-receipt",
+        icon: Archive,
+        permission: "accounting",
+      },
+      {
+        label: "Stock Transfer",
+        page: "stock-transfer",
+        icon: ArrowLeftRight,
+        permission: "accounting",
+      },
       { label: "Stock Journal", page: "stock-journal", icon: BookOpen, permission: "accounting" },
       { label: "Physical Stock", page: "physical-stock", icon: Package, permission: "accounting" },
-      { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat, permission: "accounting" },
+      {
+        label: "Recurring Vouchers",
+        page: "recurring-vouchers",
+        icon: Repeat,
+        permission: "accounting",
+      },
     ],
   },
   {
@@ -136,22 +214,66 @@ const MENU_SECTIONS: MenuSection[] = [
     icon: BarChart2,
     color: "#7c3aed",
     items: [
-      { label: "Balance Sheet", page: "balance-sheet", icon: PieChart, shortcut: "Ctrl+B", permission: "accounting" },
+      {
+        label: "Balance Sheet",
+        page: "balance-sheet",
+        icon: PieChart,
+        shortcut: "Ctrl+B",
+        permission: "accounting",
+      },
       { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp, permission: "accounting" },
-      { label: "Trial Balance", page: "trial-balance", icon: FileBarChart, shortcut: "Ctrl+T", permission: "accounting" },
-      { label: "General Ledger", page: "ledger", icon: BookOpen, shortcut: "Ctrl+L", permission: "accounting" },
+      {
+        label: "Trial Balance",
+        page: "trial-balance",
+        icon: FileBarChart,
+        shortcut: "Ctrl+T",
+        permission: "accounting",
+      },
+      {
+        label: "General Ledger",
+        page: "ledger",
+        icon: BookOpen,
+        shortcut: "Ctrl+L",
+        permission: "accounting",
+      },
       { label: "Day Book", page: "day-book", icon: BookMarked, permission: "accounting" },
       { label: "Cash Flow", page: "cash-flow", icon: Activity, permission: "accounting" },
-      { label: "Outstanding Receivables", page: "outstanding-receivables", icon: TrendingUp, permission: "accounting" },
-      { label: "Outstanding Payables", page: "outstanding-payables", icon: TrendingDown, permission: "accounting" },
+      {
+        label: "Outstanding Receivables",
+        page: "outstanding-receivables",
+        icon: TrendingUp,
+        permission: "accounting",
+      },
+      {
+        label: "Outstanding Payables",
+        page: "outstanding-payables",
+        icon: TrendingDown,
+        permission: "accounting",
+      },
       { label: "Aging Report", page: "aging-report", icon: Calendar, permission: "accounting" },
       { label: "Party Statement", page: "party-statement", icon: Users, permission: "accounting" },
       { label: "Stock Summary", page: "stock-summary", icon: Package, permission: "accounting" },
       { label: "Stock Ledger", page: "stock-ledger", icon: BookOpen, permission: "accounting" },
-      { label: "Sales Analysis", page: "sales-analysis", icon: BarChart2, permission: "accounting" },
-      { label: "VAT Reports", page: "vat-reports", icon: FileText, shortcut: "Ctrl+G", permission: "accounting" },
+      {
+        label: "Sales Analysis",
+        page: "sales-analysis",
+        icon: BarChart2,
+        permission: "accounting",
+      },
+      {
+        label: "VAT Reports",
+        page: "vat-reports",
+        icon: FileText,
+        shortcut: "Ctrl+G",
+        permission: "accounting",
+      },
       { label: "Ratio Analysis", page: "ratio-analysis", icon: PieChart, permission: "accounting" },
-      { label: "Budget vs Actual", page: "budget-vs-actual", icon: BarChart2, permission: "accounting" },
+      {
+        label: "Budget vs Actual",
+        page: "budget-vs-actual",
+        icon: BarChart2,
+        permission: "accounting",
+      },
     ],
   },
   {
@@ -160,10 +282,25 @@ const MENU_SECTIONS: MenuSection[] = [
     color: "#0284c7",
     items: [
       { label: "PDC Summary", page: "pdc-management", icon: CreditCard, permission: "accounting" },
-      { label: "Bank Reconciliation", page: "bank-reconciliation", icon: Landmark, permission: "accounting" },
-      { label: "Batch Management", page: "batch-management", icon: Layers, permission: "accounting" },
+      {
+        label: "Bank Reconciliation",
+        page: "bank-reconciliation",
+        icon: Landmark,
+        permission: "accounting",
+      },
+      {
+        label: "Batch Management",
+        page: "batch-management",
+        icon: Layers,
+        permission: "accounting",
+      },
       { label: "Fixed Assets", page: "fixed-assets", icon: Building2, permission: "accounting" },
-      { label: "Interest Calculation", page: "interest-calculation", icon: Calculator, permission: "accounting" },
+      {
+        label: "Interest Calculation",
+        page: "interest-calculation",
+        icon: Calculator,
+        permission: "accounting",
+      },
       { label: "Payroll", page: "payroll", icon: Wallet, permission: "accounting" },
     ],
   },
@@ -173,12 +310,33 @@ const MENU_SECTIONS: MenuSection[] = [
     color: "#374151",
     items: [
       { label: "Fiscal Year", page: "fiscal-year", icon: Calendar, permission: "admin" },
-      { label: "Audit Log", page: "audit-log", icon: FileClock, shortcut: "Ctrl+U", permission: "admin" },
-      { label: "Accounts Configuration", page: "accounts-configuration", icon: Settings, permission: "admin" },
-      { label: "Inventory Configuration", page: "inventory-config", icon: Settings, permission: "admin" },
+      {
+        label: "Audit Log",
+        page: "audit-log",
+        icon: FileClock,
+        shortcut: "Ctrl+U",
+        permission: "admin",
+      },
+      {
+        label: "Accounts Configuration",
+        page: "accounts-configuration",
+        icon: Settings,
+        permission: "admin",
+      },
+      {
+        label: "Inventory Configuration",
+        page: "inventory-config",
+        icon: Settings,
+        permission: "admin",
+      },
       { label: "Company Settings", page: "settings", icon: Building2, permission: "admin" },
       { label: "Users Management", page: "users", icon: Shield, permission: "admin" },
-      { label: "Data Export/Import", page: "data-import-export", icon: Download, permission: "admin" },
+      {
+        label: "Data Export/Import",
+        page: "data-import-export",
+        icon: Download,
+        permission: "admin",
+      },
     ],
   },
 ];
@@ -191,21 +349,51 @@ const QUICK_ACTIONS: Array<{
   color: string;
   permission?: PermissionScope;
 }> = [
-  { label: "New Sales Invoice", page: "billing", icon: TrendingUp, shortcut: "F9", color: "#059669" },
-  { label: "New Purchase Invoice", page: "purchase", icon: TrendingDown, shortcut: "F10", color: "#d97706" },
+  {
+    label: "New Sales Invoice",
+    page: "billing",
+    icon: TrendingUp,
+    shortcut: "F9",
+    color: "#059669",
+  },
+  {
+    label: "New Purchase Invoice",
+    page: "purchase",
+    icon: TrendingDown,
+    shortcut: "F10",
+    color: "#d97706",
+  },
   { label: "New Journal Entry", page: "journal", icon: FileText, shortcut: "F5", color: "#1557b0" },
   { label: "New Payment", page: "payment", icon: Banknote, shortcut: "F6", color: "#7c3aed" },
   { label: "New Receipt", page: "receipt", icon: Receipt, shortcut: "F7", color: "#0284c7" },
   { label: "New Contra", page: "contra", icon: ArrowLeftRight, shortcut: "F8", color: "#374151" },
-  { label: "VAT Reports", page: "vat-reports", icon: BarChart2, shortcut: "Ctrl+G", color: "#059669" },
+  {
+    label: "VAT Reports",
+    page: "vat-reports",
+    icon: BarChart2,
+    shortcut: "Ctrl+G",
+    color: "#059669",
+  },
   { label: "Day Book", page: "day-book", icon: BookMarked, shortcut: "D", color: "#6b7280" },
 ];
 
 // ─── Pulse Cell ──────────────────────────────────────────────────────────────
 
-const PulseCell: React.FC<{ label: string; value: number; note: string }> = ({ label, value, note }) => (
+const PulseCell: React.FC<{ label: string; value: number; note: string }> = ({
+  label,
+  value,
+  note,
+}) => (
   <div style={{ flex: 1, padding: "10px 14px", borderRight: "1px solid #e5e7eb" }}>
-    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#6b7280" }}>
+    <div
+      style={{
+        fontSize: 9,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.07em",
+        color: "#6b7280",
+      }}
+    >
       {label}
     </div>
     <div
@@ -243,13 +431,34 @@ const MetricCell: React.FC<{
       cursor: onClick ? "pointer" : "default",
       transition: "background 120ms ease",
     }}
-    onMouseEnter={(e) => { if (onClick) (e.currentTarget as HTMLDivElement).style.background = "#f9fafb"; }}
-    onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
+    onMouseEnter={(e) => {
+      if (onClick) (e.currentTarget as HTMLDivElement).style.background = "#f9fafb";
+    }}
+    onMouseLeave={(e) => {
+      (e.currentTarget as HTMLDivElement).style.background = "transparent";
+    }}
   >
-    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#6b7280" }}>
+    <div
+      style={{
+        fontSize: 9,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.07em",
+        color: "#6b7280",
+      }}
+    >
       {label}
     </div>
-    <div style={{ fontSize: 15, fontWeight: 700, fontFamily: "'Courier New', monospace", color, marginTop: 3, lineHeight: 1.2 }}>
+    <div
+      style={{
+        fontSize: 15,
+        fontWeight: 700,
+        fontFamily: "'Courier New', monospace",
+        color,
+        marginTop: 3,
+        lineHeight: 1.2,
+      }}
+    >
       {value}
     </div>
     {sub && <div style={{ fontSize: 9, color: "#9ca3af", marginTop: 2 }}>{sub}</div>}
@@ -302,7 +511,15 @@ const SectionPanel: React.FC<{
         >
           <Icon size={13} style={{ color: section.color }} />
         </div>
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: "#374151",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+          }}
+        >
           {section.title}
         </span>
         <span
@@ -374,9 +591,24 @@ const NavRow: React.FC<{
       }}
     >
       {Icon && (
-        <Icon size={12} style={{ color: hovered ? accentColor : "#9ca3af", flexShrink: 0, transition: "color 100ms ease" }} />
+        <Icon
+          size={12}
+          style={{
+            color: hovered ? accentColor : "#9ca3af",
+            flexShrink: 0,
+            transition: "color 100ms ease",
+          }}
+        />
       )}
-      <span style={{ flex: 1, fontSize: 12, color: hovered ? "#111827" : "#374151", fontWeight: hovered ? 600 : 400, transition: "color 100ms ease, font-weight 100ms ease" }}>
+      <span
+        style={{
+          flex: 1,
+          fontSize: 12,
+          color: hovered ? "#111827" : "#374151",
+          fontWeight: hovered ? 600 : 400,
+          transition: "color 100ms ease, font-weight 100ms ease",
+        }}
+      >
         {label}
       </span>
       {shortcut && (
@@ -397,7 +629,14 @@ const NavRow: React.FC<{
           {shortcut}
         </span>
       )}
-      <ChevronRight size={10} style={{ color: hovered ? accentColor : "#d1d5db", flexShrink: 0, transition: "color 100ms ease" }} />
+      <ChevronRight
+        size={10}
+        style={{
+          color: hovered ? accentColor : "#d1d5db",
+          flexShrink: 0,
+          transition: "color 100ms ease",
+        }}
+      />
     </button>
   );
 };
@@ -496,11 +735,19 @@ const Gateway: React.FC = () => {
   const role = currentUser?.role;
 
   const canAdmin = useMemo(() => {
-    try { return isAdminOrOwner(role); } catch { return false; }
+    try {
+      return isAdminOrOwner(role);
+    } catch {
+      return false;
+    }
   }, [role]);
 
   const canAccounting = useMemo(() => {
-    try { return isAccountantOrAdmin(role) || canAdmin; } catch { return canAdmin; }
+    try {
+      return isAccountantOrAdmin(role) || canAdmin;
+    } catch {
+      return canAdmin;
+    }
   }, [role, canAdmin]);
 
   const canSee = (item: GatewayMenuItem) => {
@@ -525,7 +772,12 @@ const Gateway: React.FC = () => {
       if (acc.isGroup || acc.isActive === false) continue;
       const name = (acc.name || "").toLowerCase();
       const group = (acc.group || acc.groupName || "").toLowerCase();
-      if (name.includes("cash") || name.includes("bank") || group.includes("cash") || group.includes("bank")) {
+      if (
+        name.includes("cash") ||
+        name.includes("bank") ||
+        group.includes("cash") ||
+        group.includes("bank")
+      ) {
         total += Number(acc.balance || 0);
       }
     }
@@ -559,7 +811,8 @@ const Gateway: React.FC = () => {
   }, [invoices]);
 
   const vatPayable = useMemo(() => {
-    let out = 0, inp = 0;
+    let out = 0,
+      inp = 0;
     for (const inv of invoices) {
       if (inv.status !== "posted") continue;
       const t = String(inv.type || "").toLowerCase();
@@ -574,7 +827,11 @@ const Gateway: React.FC = () => {
     return invoices
       .filter((inv) => {
         const t = String(inv.type || "").toLowerCase();
-        return inv.date === todayISO && inv.status === "posted" && (t.includes("sales-invoice") || t === "sales_invoice");
+        return (
+          inv.date === todayISO &&
+          inv.status === "posted" &&
+          (t.includes("sales-invoice") || t === "sales_invoice")
+        );
       })
       .reduce((s, inv) => s + Number(inv.grandTotal || 0), 0);
   }, [invoices, todayISO]);
@@ -583,13 +840,21 @@ const Gateway: React.FC = () => {
     return invoices
       .filter((inv) => {
         const t = String(inv.type || "").toLowerCase();
-        return inv.date === todayISO && inv.status === "posted" && (t.includes("purchase-invoice") || t === "purchase_invoice");
+        return (
+          inv.date === todayISO &&
+          inv.status === "posted" &&
+          (t.includes("purchase-invoice") || t === "purchase_invoice")
+        );
       })
       .reduce((s, inv) => s + Number(inv.grandTotal || 0), 0);
   }, [invoices, todayISO]);
 
   const stockPositions = useMemo(() => {
-    try { return computeAllStockPositions(stockMovements, items, warehouses); } catch { return []; }
+    try {
+      return computeAllStockPositions(stockMovements, items, warehouses);
+    } catch {
+      return [];
+    }
   }, [stockMovements, items, warehouses]);
 
   const stockValue = useMemo(
@@ -602,27 +867,36 @@ const Gateway: React.FC = () => {
   const mtdStart = todayISO.substring(0, 7) + "-01";
 
   const computeMargin = (from: string, to: string) => {
-    let s = 0, p = 0;
+    let s = 0,
+      p = 0;
     for (const inv of invoices) {
       if (!inv.date || inv.status !== "posted") continue;
       if (inv.date < from || inv.date > to) continue;
       const t = String(inv.type || "").toLowerCase();
       if (t.includes("sales-invoice") || t === "sales_invoice") s += Number(inv.grandTotal || 0);
-      if (t.includes("purchase-invoice") || t === "purchase_invoice") p += Number(inv.grandTotal || 0);
+      if (t.includes("purchase-invoice") || t === "purchase_invoice")
+        p += Number(inv.grandTotal || 0);
     }
     return s - p;
   };
 
   const todayMargin = useMemo(() => computeMargin(todayISO, todayISO), [invoices, todayISO]);
-  const mtdMargin = useMemo(() => computeMargin(mtdStart, todayISO), [invoices, mtdStart, todayISO]);
+  const mtdMargin = useMemo(
+    () => computeMargin(mtdStart, todayISO),
+    [invoices, mtdStart, todayISO],
+  );
   const ytdMargin = useMemo(() => computeMargin(fyStart, todayISO), [invoices, fyStart, todayISO]);
 
   // ── Search with shortcut hints ────────────────────────────────────────────
 
   const canAdminRef = React.useRef(canAdmin);
   const canAccountingRef = React.useRef(canAccounting);
-  React.useEffect(() => { canAdminRef.current = canAdmin; }, [canAdmin]);
-  React.useEffect(() => { canAccountingRef.current = canAccounting; }, [canAccounting]);
+  React.useEffect(() => {
+    canAdminRef.current = canAdmin;
+  }, [canAdmin]);
+  React.useEffect(() => {
+    canAccountingRef.current = canAccounting;
+  }, [canAccounting]);
 
   const [authKey, setAuthKey] = useState(() => `${canAdmin}-${canAccounting}`);
   React.useEffect(() => {
@@ -650,9 +924,7 @@ const Gateway: React.FC = () => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
     return allSearchableItems.filter(
-      ({ item }) =>
-        item.label.toLowerCase().includes(q) ||
-        item.page.toLowerCase().includes(q),
+      ({ item }) => item.label.toLowerCase().includes(q) || item.page.toLowerCase().includes(q),
     );
   }, [searchQuery, allSearchableItems]);
 
@@ -679,8 +951,15 @@ const Gateway: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#f5f6fa", overflow: "hidden" }}>
-
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        background: "#f5f6fa",
+        overflow: "hidden",
+      }}
+    >
       {/* ── Top command bar ─────────────────────────────────────────────── */}
       <div
         style={{
@@ -704,7 +983,14 @@ const Gateway: React.FC = () => {
         <div style={{ position: "relative", width: 320 }}>
           <Search
             size={13}
-            style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8", pointerEvents: "none" }}
+            style={{
+              position: "absolute",
+              left: 10,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#94a3b8",
+              pointerEvents: "none",
+            }}
           />
           <input
             ref={searchRef}
@@ -724,8 +1010,12 @@ const Gateway: React.FC = () => {
               color: "#e2e8f0",
               outline: "none",
             }}
-            onFocus={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0"; }}
-            onBlur={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#2d3748"; }}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0";
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLInputElement).style.borderColor = "#2d3748";
+            }}
           />
           {searchQuery && (
             <button
@@ -784,8 +1074,12 @@ const Gateway: React.FC = () => {
                     textAlign: "left",
                     cursor: "pointer",
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#f5f6fa"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "#f5f6fa";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
                 >
                   <div
                     style={{
@@ -797,10 +1091,20 @@ const Gateway: React.FC = () => {
                     }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>{item.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>
+                      {item.label}
+                    </div>
                     <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>{section}</div>
                     {item.shortcut && (
-                      <div style={{ fontSize: 9, color: sectionColor, marginTop: 1, fontFamily: "monospace", fontWeight: 700 }}>
+                      <div
+                        style={{
+                          fontSize: 9,
+                          color: sectionColor,
+                          marginTop: 1,
+                          fontFamily: "monospace",
+                          fontWeight: 700,
+                        }}
+                      >
                         Shortcut: {item.shortcut}
                       </div>
                     )}
@@ -820,7 +1124,6 @@ const Gateway: React.FC = () => {
 
       {/* ── Main body (two-column: left panel + right content) ───────────── */}
       <div style={{ flex: 1, overflow: "hidden", display: "flex", gap: 0 }}>
-
         {/* ── LEFT COLUMN: Financial Position + Quick Actions ──────────── */}
         <div
           style={{
@@ -836,8 +1139,22 @@ const Gateway: React.FC = () => {
         >
           {/* Profit Pulse */}
           <div style={{ borderBottom: "1px solid #e5e7eb" }}>
-            <div style={{ padding: "8px 14px", background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }}>
-              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280" }}>
+            <div
+              style={{
+                padding: "8px 14px",
+                background: "#f5f6fa",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  color: "#6b7280",
+                }}
+              >
                 Profit Pulse
               </span>
             </div>
@@ -848,8 +1165,22 @@ const Gateway: React.FC = () => {
 
           {/* Quick Actions */}
           <div style={{ borderBottom: "1px solid #e5e7eb" }}>
-            <div style={{ padding: "8px 14px", background: "#f5f6fa", borderBottom: "1px solid #e5e7eb" }}>
-              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280" }}>
+            <div
+              style={{
+                padding: "8px 14px",
+                background: "#f5f6fa",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  color: "#6b7280",
+                }}
+              >
                 Quick Actions
               </span>
             </div>
@@ -867,7 +1198,6 @@ const Gateway: React.FC = () => {
 
         {/* ── RIGHT COLUMN: Metrics strip + All sections ────────────────── */}
         <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-
           {/* Metrics strip (borderless, separator-only) */}
           <div
             style={{

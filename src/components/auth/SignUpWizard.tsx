@@ -48,17 +48,20 @@ export default function SignUpWizard() {
     const errors: Record<string, string> = {};
     switch (step) {
       case 1:
-        if (!formData.companyNameEn.trim()) errors.companyNameEn = "Company name (English) is required";
+        if (!formData.companyNameEn.trim())
+          errors.companyNameEn = "Company name (English) is required";
         if (!formData.businessType) errors.businessType = "Business type is required";
         if (!formData.address.trim()) errors.address = "Address is required";
         if (!formData.city.trim()) errors.city = "City is required";
         if (!formData.phone.trim()) errors.phone = "Phone number is required";
         if (!formData.email.trim()) errors.email = "Email is required";
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = "Enter a valid email address";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+          errors.email = "Enter a valid email address";
         break;
       case 2:
         if (!formData.panNumber) errors.panNumber = "PAN number is required";
-        else if (!/^\d{9}$/.test(formData.panNumber)) errors.panNumber = "PAN must be exactly 9 digits";
+        else if (!/^\d{9}$/.test(formData.panNumber))
+          errors.panNumber = "PAN must be exactly 9 digits";
         if (!formData.irdProvince) errors.irdProvince = "IRD Province is required";
         if (!formData.fiscalYear) errors.fiscalYear = "Fiscal year is required";
         break;
@@ -68,12 +71,16 @@ export default function SignUpWizard() {
       case 4:
         if (!formData.fullName.trim()) errors.fullName = "Full name is required";
         if (!formData.username.trim()) errors.username = "Username is required";
-        else if (!/^[a-zA-Z0-9]{4,}$/.test(formData.username)) errors.username = "Username must be alphanumeric, min 4 characters";
+        else if (!/^[a-zA-Z0-9]{4,}$/.test(formData.username))
+          errors.username = "Username must be alphanumeric, min 4 characters";
         if (!formData.password) errors.password = "Password is required";
-        else if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
-        else if (!/[a-zA-Z]/.test(formData.password) || !/\d/.test(formData.password)) errors.password = "Password must contain both letters and numbers";
+        else if (formData.password.length < 6)
+          errors.password = "Password must be at least 6 characters";
+        else if (!/[a-zA-Z]/.test(formData.password) || !/\d/.test(formData.password))
+          errors.password = "Password must contain both letters and numbers";
         if (!formData.confirmPassword) errors.confirmPassword = "Please confirm your password";
-        else if (formData.password !== formData.confirmPassword) errors.confirmPassword = "Passwords do not match";
+        else if (formData.password !== formData.confirmPassword)
+          errors.confirmPassword = "Passwords do not match";
         break;
     }
     return errors;
@@ -137,7 +144,9 @@ export default function SignUpWizard() {
         },
       });
     } catch (error: any) {
-      setSubmitError(error?.message || "Failed to setup company. Please check your inputs and try again.");
+      setSubmitError(
+        error?.message || "Failed to setup company. Please check your inputs and try again.",
+      );
     } finally {
       setSubmitLoading(false);
     }
@@ -172,7 +181,9 @@ export default function SignUpWizard() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-[22px] font-bold text-gray-800 mb-1">Welcome to Sutra ERP</h1>
-          <p className="text-[13px] text-gray-500">Let's set up your accounting system in just 4 steps</p>
+          <p className="text-[13px] text-gray-500">
+            Let's set up your accounting system in just 4 steps
+          </p>
         </div>
 
         {/* Step indicators */}
@@ -186,16 +197,14 @@ export default function SignUpWizard() {
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-[13px] transition-colors"
                       style={{
-                        background:
-                          hasErrors
-                            ? "#dc2626"
-                            : currentStep > step.id
+                        background: hasErrors
+                          ? "#dc2626"
+                          : currentStep > step.id
                             ? "#059669"
                             : currentStep === step.id
-                            ? "#1557b0"
-                            : "#e5e7eb",
-                        color:
-                          currentStep >= step.id || hasErrors ? "#ffffff" : "#6b7280",
+                              ? "#1557b0"
+                              : "#e5e7eb",
+                        color: currentStep >= step.id || hasErrors ? "#ffffff" : "#6b7280",
                       }}
                     >
                       {hasErrors ? (
@@ -261,7 +270,10 @@ export default function SignUpWizard() {
         )}
 
         {/* Navigation buttons */}
-        <div className="flex justify-between items-center pt-4" style={{ borderTop: "1px solid #e5e7eb" }}>
+        <div
+          className="flex justify-between items-center pt-4"
+          style={{ borderTop: "1px solid #e5e7eb" }}
+        >
           <button
             onClick={handleBack}
             disabled={currentStep === 1}

@@ -7,13 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type QuestionDomain =
-  | "erp"
-  | "accounting"
-  | "math"
-  | "general"
-  | "web-search"
-  | "greeting"
-  | "code";
+  "erp" | "accounting" | "math" | "general" | "web-search" | "greeting" | "code";
 
 export type QuestionIntent =
   | "how-to"
@@ -53,62 +47,233 @@ export interface ReasoningPlan {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ERP_KEYWORDS = [
-  "invoice", "voucher", "ledger", "party", "customer", "supplier",
-  "stock", "inventory", "warehouse", "payroll", "vat", "tds",
-  "trial balance", "balance sheet", "profit", "loss", "receipt",
-  "payment", "journal", "contra", "batch", "serial", "day book",
-  "fiscal year", "pan", "ird", "cbms", "narration", "account",
-  "debit", "credit", "posting", "sutra", "erp", "report",
-  "challan", "grn", "goods receipt", "delivery challan", "bill",
-  "sales", "purchase", "income", "expense", "bank reconciliation",
-  "fixed assets", "depreciation", "cost center", "outstanding",
-  "receivable", "payable", "aging", "register", "statement",
-  "opening balance", "closing balance", "f2", "f3", "f8", "f9", "f10",
-  "voucher type", "item master", "chart of accounts", "party master",
-  "recurring", "pdc", "cheque", "narration", "bill sundry",
-  "reorder", "unit", "hsn", "round off", "fiscal",
+  "invoice",
+  "voucher",
+  "ledger",
+  "party",
+  "customer",
+  "supplier",
+  "stock",
+  "inventory",
+  "warehouse",
+  "payroll",
+  "vat",
+  "tds",
+  "trial balance",
+  "balance sheet",
+  "profit",
+  "loss",
+  "receipt",
+  "payment",
+  "journal",
+  "contra",
+  "batch",
+  "serial",
+  "day book",
+  "fiscal year",
+  "pan",
+  "ird",
+  "cbms",
+  "narration",
+  "account",
+  "debit",
+  "credit",
+  "posting",
+  "sutra",
+  "erp",
+  "report",
+  "challan",
+  "grn",
+  "goods receipt",
+  "delivery challan",
+  "bill",
+  "sales",
+  "purchase",
+  "income",
+  "expense",
+  "bank reconciliation",
+  "fixed assets",
+  "depreciation",
+  "cost center",
+  "outstanding",
+  "receivable",
+  "payable",
+  "aging",
+  "register",
+  "statement",
+  "opening balance",
+  "closing balance",
+  "f2",
+  "f3",
+  "f8",
+  "f9",
+  "f10",
+  "voucher type",
+  "item master",
+  "chart of accounts",
+  "party master",
+  "recurring",
+  "pdc",
+  "cheque",
+  "narration",
+  "bill sundry",
+  "reorder",
+  "unit",
+  "hsn",
+  "round off",
+  "fiscal",
 ];
 
 const ACCOUNTING_KEYWORDS = [
-  "double entry", "bookkeeping", "accrual", "gaap", "ifrs",
-  "fifo", "lifo", "amortization", "provision", "prepaid", "accrued",
-  "goodwill", "equity", "liability", "asset", "revenue",
-  "working capital", "ratio", "liquidity", "solvency",
-  "gross profit", "net profit", "ebit", "ebitda", "cash flow",
-  "accounts receivable", "accounts payable", "retained earnings",
-  "capital", "dividend", "auditing", "tax",
+  "double entry",
+  "bookkeeping",
+  "accrual",
+  "gaap",
+  "ifrs",
+  "fifo",
+  "lifo",
+  "amortization",
+  "provision",
+  "prepaid",
+  "accrued",
+  "goodwill",
+  "equity",
+  "liability",
+  "asset",
+  "revenue",
+  "working capital",
+  "ratio",
+  "liquidity",
+  "solvency",
+  "gross profit",
+  "net profit",
+  "ebit",
+  "ebitda",
+  "cash flow",
+  "accounts receivable",
+  "accounts payable",
+  "retained earnings",
+  "capital",
+  "dividend",
+  "auditing",
+  "tax",
 ];
 
 const MATH_KEYWORDS = [
-  "calculate", "compute", "how much", "percentage", "formula",
-  "total", "sum", "multiply", "divide", "interest", "compound",
-  "emi", "rate", "convert", "math", "arithmetic", "algebra",
-  "equation", "solve", "%", "×", "÷", "√", "squared",
-  "what is x", "how many", "average", "mean", "median",
+  "calculate",
+  "compute",
+  "how much",
+  "percentage",
+  "formula",
+  "total",
+  "sum",
+  "multiply",
+  "divide",
+  "interest",
+  "compound",
+  "emi",
+  "rate",
+  "convert",
+  "math",
+  "arithmetic",
+  "algebra",
+  "equation",
+  "solve",
+  "%",
+  "×",
+  "÷",
+  "√",
+  "squared",
+  "what is x",
+  "how many",
+  "average",
+  "mean",
+  "median",
 ];
 
 const WEB_SEARCH_KEYWORDS = [
-  "today", "latest", "current news", "price of", "weather",
-  "who won", "recent", "2024", "2025", "2026", "search",
-  "find online", "google", "right now", "live", "breaking",
-  "update", "news", "stock price", "exchange rate", "trending",
-  "this week", "this month", "currently", "at the moment",
+  "today",
+  "latest",
+  "current news",
+  "price of",
+  "weather",
+  "who won",
+  "recent",
+  "2024",
+  "2025",
+  "2026",
+  "search",
+  "find online",
+  "google",
+  "right now",
+  "live",
+  "breaking",
+  "update",
+  "news",
+  "stock price",
+  "exchange rate",
+  "trending",
+  "this week",
+  "this month",
+  "currently",
+  "at the moment",
 ];
 
 const CODE_KEYWORDS = [
-  "function", "component", "react", "typescript", "usestate",
-  "useeffect", "npm", "package", "code", "implement", "api",
-  "javascript", "python", "html", "css", "git", "github",
-  "debug", "compile", "error", "import", "export", "class",
-  "interface", "type", "props", "hook", "async", "await",
-  "fetch", "axios", "database", "sql", "query",
+  "function",
+  "component",
+  "react",
+  "typescript",
+  "usestate",
+  "useeffect",
+  "npm",
+  "package",
+  "code",
+  "implement",
+  "api",
+  "javascript",
+  "python",
+  "html",
+  "css",
+  "git",
+  "github",
+  "debug",
+  "compile",
+  "error",
+  "import",
+  "export",
+  "class",
+  "interface",
+  "type",
+  "props",
+  "hook",
+  "async",
+  "await",
+  "fetch",
+  "axios",
+  "database",
+  "sql",
+  "query",
 ];
 
 const GREETING_KEYWORDS = [
-  "hi", "hello", "hey", "good morning", "good afternoon",
-  "good evening", "namaste", "namaskar", "how are you",
-  "what can you do", "who are you", "what are you", "help me",
-  "introduce yourself", "sup", "howdy", "greetings",
+  "hi",
+  "hello",
+  "hey",
+  "good morning",
+  "good afternoon",
+  "good evening",
+  "namaste",
+  "namaskar",
+  "how are you",
+  "what can you do",
+  "who are you",
+  "what are you",
+  "help me",
+  "introduce yourself",
+  "sup",
+  "howdy",
+  "greetings",
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -130,10 +295,32 @@ function containsAny(query: string, keywords: string[]): boolean {
 function extractTopics(query: string): string[] {
   // Extract meaningful words (length > 3, not stop words)
   const stopWords = new Set([
-    "what", "when", "where", "which", "with", "that", "this",
-    "from", "have", "does", "will", "been", "them", "they",
-    "your", "about", "would", "could", "should", "into",
-    "more", "also", "just", "like", "than", "then",
+    "what",
+    "when",
+    "where",
+    "which",
+    "with",
+    "that",
+    "this",
+    "from",
+    "have",
+    "does",
+    "will",
+    "been",
+    "them",
+    "they",
+    "your",
+    "about",
+    "would",
+    "could",
+    "should",
+    "into",
+    "more",
+    "also",
+    "just",
+    "like",
+    "than",
+    "then",
   ]);
   return query
     .toLowerCase()
@@ -182,9 +369,24 @@ export function classifyQuestion(
   // ── Signal 3: Route boosting ──────────────────────────────────────────
   if (currentRoute) {
     const routeSignals = [
-      "invoice", "voucher", "ledger", "parties", "items", "stock",
-      "payment", "receipt", "journal", "contra", "balance", "profit",
-      "trial", "vat", "payroll", "assets", "batch", "warehouse",
+      "invoice",
+      "voucher",
+      "ledger",
+      "parties",
+      "items",
+      "stock",
+      "payment",
+      "receipt",
+      "journal",
+      "contra",
+      "balance",
+      "profit",
+      "trial",
+      "vat",
+      "payroll",
+      "assets",
+      "batch",
+      "warehouse",
     ];
     const routeLower = currentRoute.toLowerCase();
     if (routeSignals.some((s) => routeLower.includes(s))) {
@@ -218,17 +420,29 @@ export function classifyQuestion(
 
   if (/b(how do i|how to|steps to|guide me|walk me through|show me how)b/.test(lower)) {
     intent = "how-to";
-  } else if (/b(not working|error|problem|issue|can'?t|cannot|why is|why does|fails|broken)b/.test(lower)) {
+  } else if (
+    /b(not working|error|problem|issue|can'?t|cannot|why is|why does|fails|broken)b/.test(lower)
+  ) {
     intent = "troubleshoot";
-  } else if (/b(calculate|compute|what iss+d|how much|formula|total|sum of)b/.test(lower) || /d+s*[%×÷+-]s*d+/.test(lower)) {
+  } else if (
+    /b(calculate|compute|what iss+d|how much|formula|total|sum of)b/.test(lower) ||
+    /d+s*[%×÷+-]s*d+/.test(lower)
+  ) {
     intent = "calculate";
-  } else if (/b(compare|difference between|vs.?|versus|which is better|what'?s the difference)b/.test(lower)) {
+  } else if (
+    /b(compare|difference between|vs.?|versus|which is better|what'?s the difference)b/.test(lower)
+  ) {
     intent = "compare";
-  } else if (/b(list|what are all|show me all|give me all|types of|kinds of|examples of)b/.test(lower)) {
+  } else if (
+    /b(list|what are all|show me all|give me all|types of|kinds of|examples of)b/.test(lower)
+  ) {
     intent = "list";
   } else if (/b(define|definition|meaning of|what does.+mean)b/.test(lower)) {
     intent = "define";
-  } else if (/b(search|find online|what'?s the price|latest|current|today'?s)b/.test(lower) || topDomain === "web-search") {
+  } else if (
+    /b(search|find online|what'?s the price|latest|current|today'?s)b/.test(lower) ||
+    topDomain === "web-search"
+  ) {
     intent = "search";
   } else if (topDomain === "greeting") {
     intent = "casual";
@@ -238,14 +452,25 @@ export function classifyQuestion(
 
   // ── Signal 4: shouldSearchWeb ─────────────────────────────────────────
   const webTriggers = [
-    "today", "latest", "current news", "right now", "live", "breaking",
-    "price of", "exchange rate", "weather", "who won", "2025", "2026",
-    "this week", "trending", "recently", "just announced",
+    "today",
+    "latest",
+    "current news",
+    "right now",
+    "live",
+    "breaking",
+    "price of",
+    "exchange rate",
+    "weather",
+    "who won",
+    "2025",
+    "2026",
+    "this week",
+    "trending",
+    "recently",
+    "just announced",
   ];
   const shouldSearchWeb =
-    topDomain === "web-search" ||
-    containsAny(lower, webTriggers) ||
-    intent === "search";
+    topDomain === "web-search" || containsAny(lower, webTriggers) || intent === "search";
 
   // ── Build search query if needed ──────────────────────────────────────
   const searchQuery = shouldSearchWeb ? extractSearchQuery(query, topDomain) : undefined;
@@ -266,9 +491,20 @@ export function classifyQuestion(
 export function extractSearchQuery(query: string, domain: QuestionDomain): string {
   // Remove filler phrases to make a cleaner search query
   const fillers = [
-    "can you", "could you", "please", "i want to know", "tell me",
-    "what is the", "what are the", "search for", "find", "google",
-    "look up", "i need", "help me with", "do you know",
+    "can you",
+    "could you",
+    "please",
+    "i want to know",
+    "tell me",
+    "what is the",
+    "what are the",
+    "search for",
+    "find",
+    "google",
+    "look up",
+    "i need",
+    "help me with",
+    "do you know",
   ];
 
   let cleaned = query.toLowerCase().trim();
@@ -306,28 +542,28 @@ export function buildReasoningPlan(
   let complexity: "simple" | "moderate" | "complex" = "simple";
   if (wordCount > 25 || intent === "troubleshoot" || intent === "compare") complexity = "moderate";
   if (wordCount > 40 || intent === "calculate" || domain === "accounting") complexity = "moderate";
-  if (lower.includes("explain") && lower.includes("difference") && lower.includes("and")) complexity = "complex";
-  if (domain === "erp" && (intent === "how-to" || intent === "troubleshoot")) complexity = "moderate";
+  if (lower.includes("explain") && lower.includes("difference") && lower.includes("and"))
+    complexity = "complex";
+  if (domain === "erp" && (intent === "how-to" || intent === "troubleshoot"))
+    complexity = "moderate";
 
   // ── Build ThoughtSteps ────────────────────────────────────────────────
   const steps: ThoughtStep[] = [];
   let stepCounter = 1;
 
   // ── STEP 1: Analyze ────────────────────────────────────────────────────
-  const routeContext = currentRoute
-    ? ` The user is currently on the "${currentRoute}" page.`
-    : "";
+  const routeContext = currentRoute ? ` The user is currently on the "${currentRoute}" page.` : "";
 
   const intentLabel: Record<QuestionIntent, string> = {
     "how-to": "a step-by-step how-to guide",
-    "explain": "an explanation of a concept",
-    "troubleshoot": "a troubleshooting diagnosis",
-    "calculate": "a calculation with worked steps",
-    "compare": "a comparison of two or more things",
-    "list": "a structured list of items",
-    "define": "a definition",
-    "search": "real-time information from the web",
-    "casual": "a conversational response",
+    explain: "an explanation of a concept",
+    troubleshoot: "a troubleshooting diagnosis",
+    calculate: "a calculation with worked steps",
+    compare: "a comparison of two or more things",
+    list: "a structured list of items",
+    define: "a definition",
+    search: "real-time information from the web",
+    casual: "a conversational response",
   };
 
   const domainDescription: Record<QuestionDomain, string> = {
@@ -344,7 +580,8 @@ export function buildReasoningPlan(
     stepNumber: stepCounter++,
     phase: "analyze",
     title: "Analyzing your question",
-    thinking: `Parsing query: "${query.slice(0, 80)}${query.length > 80 ? "..." : ""}"n` +
+    thinking:
+      `Parsing query: "${query.slice(0, 80)}${query.length > 80 ? "..." : ""}"n` +
       `Detected domain signals for: ${domainDescription[domain]} (confidence: ${classification.confidence}%)n` +
       `Intent pattern: "${intent}" — user is looking for ${intentLabel[intent]}n` +
       `Key topics identified: ${topicStr}n` +
@@ -540,8 +777,7 @@ export function buildReasoningPlan(
         `Verifying: All factual claims are accuraten` +
         `Checking: Answer is complete and addresses all parts of the questionn` +
         `Ensuring: No misleading simplifications`,
-      greeting:
-        `Checking: Response is warm but not overly verbose`,
+      greeting: `Checking: Response is warm but not overly verbose`,
     };
 
     steps.push({
@@ -572,9 +808,12 @@ export function buildReasoningPlan(
 
   // ── Build promptAdditions ─────────────────────────────────────────────
   const complexityInstructions: Record<"simple" | "moderate" | "complex", string> = {
-    simple: "Keep the answer concise and direct (2-5 sentences for factual, numbered steps for how-to).",
-    moderate: "Provide a complete, well-structured answer. Use headers only if the answer covers 3+ distinct topics.",
-    complex: "This is a complex question. Provide a thorough, multi-section answer with examples. Use headers to organize sections.",
+    simple:
+      "Keep the answer concise and direct (2-5 sentences for factual, numbered steps for how-to).",
+    moderate:
+      "Provide a complete, well-structured answer. Use headers only if the answer covers 3+ distinct topics.",
+    complex:
+      "This is a complex question. Provide a thorough, multi-section answer with examples. Use headers to organize sections.",
   };
 
   const domainInstructions: Record<QuestionDomain, string> = {
@@ -592,7 +831,9 @@ export function buildReasoningPlan(
     `Domain: ${domain.toUpperCase()} | Intent: ${intent} | Complexity: ${complexity} | Confidence: ${classification.confidence}%n` +
     `Key topics: ${topicStr}n` +
     (currentRoute ? `Active page: ${currentRoute}n` : "") +
-    (classification.shouldSearchWeb ? `Web search performed: YES (query: "${classification.searchQuery}")n` : "") +
+    (classification.shouldSearchWeb
+      ? `Web search performed: YES (query: "${classification.searchQuery}")n`
+      : "") +
     `nAnswer instructions: ${complexityInstructions[complexity]}n` +
     `Domain-specific guidance: ${domainInstructions[domain]}`;
 
@@ -787,14 +1028,14 @@ export function buildEnhancedUserMessage(
 
   parts.push(
     `[REASONING PLAN: Domain=${plan.domain.toUpperCase()}, Intent=${plan.intent}, ` +
-    `Complexity=${plan.estimatedComplexity}, Confidence=${plan.confidence}%]`,
+      `Complexity=${plan.estimatedComplexity}, Confidence=${plan.confidence}%]`,
   );
 
   // ── Web data block ────────────────────────────────────────────────────
   if (context.webResults && context.webResults.trim()) {
     parts.push(
       `[WEB SEARCH DATA AVAILABLE — use this for current information, cite as "According to recent search results:"]n` +
-      context.webResults.trim(),
+        context.webResults.trim(),
     );
   }
 

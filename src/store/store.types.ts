@@ -1264,4 +1264,3 @@ export const DEFAULT_TDS_RATES = [
   { id: "tds-8", section: "88", natureOfPayment: "Royalty", rate: 15, threshold: 0 },
   { id: "tds-9", section: "88", natureOfPayment: "Other", rate: 1.5, threshold: 0 },
 ];
-

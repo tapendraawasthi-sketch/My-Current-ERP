@@ -1,7 +1,12 @@
 // src/components/reporting/ReportShell.tsx
 import React, { useState, useCallback } from "react";
 import {
-  Download, Printer, Settings, RefreshCw, FileText, FileSpreadsheet,
+  Download,
+  Printer,
+  Settings,
+  RefreshCw,
+  FileText,
+  FileSpreadsheet,
   ChevronDown,
 } from "lucide-react";
 
@@ -18,7 +23,7 @@ export interface ReportShellProps {
   // Identity
   title: string;
   subtitle?: string;
-  period?: string;           // "2081 Shrawan 1 — 2081 Ashadh 32" — always shown
+  period?: string; // "2081 Shrawan 1 — 2081 Ashadh 32" — always shown
   // Data state
   hasData: boolean;
   isLoading?: boolean;
@@ -67,11 +72,13 @@ const ToolbarBtn: React.FC<{
         fontSize: 11,
         fontWeight: 600,
         background: primary
-          ? hovered && !disabled ? "#0f4a96" : "#1557b0"
-          : hovered && !disabled ? "#f0f6ff" : "#ffffff",
-        color: primary
-          ? "#ffffff"
-          : disabled ? "#9ca3af" : hovered ? "#1557b0" : "#374151",
+          ? hovered && !disabled
+            ? "#0f4a96"
+            : "#1557b0"
+          : hovered && !disabled
+            ? "#f0f6ff"
+            : "#ffffff",
+        color: primary ? "#ffffff" : disabled ? "#9ca3af" : hovered ? "#1557b0" : "#374151",
         border: primary
           ? "none"
           : `1px solid ${disabled ? "#e5e7eb" : hovered ? "#bfdbfe" : "#d1d5db"}`,
@@ -228,12 +235,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
 
           {/* Options — primary style, always enabled */}
           {onOptions && (
-            <ToolbarBtn
-              label="Options"
-              icon={<Settings size={13} />}
-              onClick={onOptions}
-              primary
-            />
+            <ToolbarBtn label="Options" icon={<Settings size={13} />} onClick={onOptions} primary />
           )}
         </div>
       </div>
@@ -262,9 +264,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
                   padding: "0 16px",
                   background: "transparent",
                   border: "none",
-                  borderBottom: isActive
-                    ? "2px solid #1557b0"
-                    : "2px solid transparent",
+                  borderBottom: isActive ? "2px solid #1557b0" : "2px solid transparent",
                   color: isActive ? "#1557b0" : "#6b7280",
                   fontSize: 12,
                   fontWeight: isActive ? 700 : 400,

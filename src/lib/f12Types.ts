@@ -64,11 +64,7 @@ export interface F12CharFieldDef extends F12BaseFieldDef {
 
 /** Discriminated union for field definitions ensures strict type safety based on field `type`. */
 export type F12FieldDef =
-  | F12BooleanFieldDef
-  | F12DropdownFieldDef
-  | F12IntegerFieldDef
-  | F12TextFieldDef
-  | F12CharFieldDef;
+  F12BooleanFieldDef | F12DropdownFieldDef | F12IntegerFieldDef | F12TextFieldDef | F12CharFieldDef;
 
 export interface F12SectionDef {
   sectionKey: string;

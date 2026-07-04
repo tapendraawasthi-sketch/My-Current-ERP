@@ -2,8 +2,13 @@
 import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import {
-  BarChart2, Package, FileBarChart, TrendingUp, BookOpen,
-  ShieldCheck, ChevronRight,
+  BarChart2,
+  Package,
+  FileBarChart,
+  TrendingUp,
+  BookOpen,
+  ShieldCheck,
+  ChevronRight,
 } from "lucide-react";
 
 interface Report {
@@ -26,11 +31,16 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: BookOpen,
     color: "#1557b0",
     reports: [
-      { label: "Day Book",       page: "day-book",        desc: "All transactions by date",     shortcut: "D" },
-      { label: "General Ledger", page: "ledger",          desc: "Account-wise running balance",  shortcut: "Ctrl+L" },
-      { label: "Party Ledger",   page: "party-statement", desc: "Customer / Supplier statement" },
-      { label: "Cash Book",      page: "cash-flow",       desc: "Cash receipts and payments" },
-      { label: "Bank Book",      page: "ledger",          desc: "Bank account transactions" },
+      { label: "Day Book", page: "day-book", desc: "All transactions by date", shortcut: "D" },
+      {
+        label: "General Ledger",
+        page: "ledger",
+        desc: "Account-wise running balance",
+        shortcut: "Ctrl+L",
+      },
+      { label: "Party Ledger", page: "party-statement", desc: "Customer / Supplier statement" },
+      { label: "Cash Book", page: "cash-flow", desc: "Cash receipts and payments" },
+      { label: "Bank Book", page: "ledger", desc: "Bank account transactions" },
     ],
   },
   {
@@ -38,11 +48,25 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: BarChart2,
     color: "#7c3aed",
     reports: [
-      { label: "Trial Balance",   page: "trial-balance",  desc: "Debit / Credit balance summary", shortcut: "Ctrl+T" },
-      { label: "Profit & Loss",   page: "profit-loss",    desc: "Income and expense statement" },
-      { label: "Balance Sheet",   page: "balance-sheet",  desc: "Assets, liabilities & equity",   shortcut: "Ctrl+B" },
-      { label: "Cash Flow",       page: "cash-flow",      desc: "Cash inflow and outflow" },
-      { label: "Ratio Analysis",  page: "ratio-analysis", desc: "Liquidity, profitability & solvency" },
+      {
+        label: "Trial Balance",
+        page: "trial-balance",
+        desc: "Debit / Credit balance summary",
+        shortcut: "Ctrl+T",
+      },
+      { label: "Profit & Loss", page: "profit-loss", desc: "Income and expense statement" },
+      {
+        label: "Balance Sheet",
+        page: "balance-sheet",
+        desc: "Assets, liabilities & equity",
+        shortcut: "Ctrl+B",
+      },
+      { label: "Cash Flow", page: "cash-flow", desc: "Cash inflow and outflow" },
+      {
+        label: "Ratio Analysis",
+        page: "ratio-analysis",
+        desc: "Liquidity, profitability & solvency",
+      },
     ],
   },
   {
@@ -50,11 +74,19 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: TrendingUp,
     color: "#059669",
     reports: [
-      { label: "Sales Analysis",          page: "sales-analysis",          desc: "Sales by party, item, period" },
-      { label: "Outstanding Receivables", page: "outstanding-receivables", desc: "Unpaid sales invoices" },
-      { label: "Outstanding Payables",    page: "outstanding-payables",    desc: "Unpaid purchase invoices" },
-      { label: "Aging Report",            page: "aging-report",            desc: "Debtor / creditor aging" },
-      { label: "Party Statement",         page: "party-statement",         desc: "Individual party account" },
+      { label: "Sales Analysis", page: "sales-analysis", desc: "Sales by party, item, period" },
+      {
+        label: "Outstanding Receivables",
+        page: "outstanding-receivables",
+        desc: "Unpaid sales invoices",
+      },
+      {
+        label: "Outstanding Payables",
+        page: "outstanding-payables",
+        desc: "Unpaid purchase invoices",
+      },
+      { label: "Aging Report", page: "aging-report", desc: "Debtor / creditor aging" },
+      { label: "Party Statement", page: "party-statement", desc: "Individual party account" },
     ],
   },
   {
@@ -62,9 +94,9 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: Package,
     color: "#d97706",
     reports: [
-      { label: "Stock Summary",  page: "stock-summary",   desc: "Item-wise stock position" },
-      { label: "Stock Ledger",   page: "stock-ledger",    desc: "Detailed stock movements" },
-      { label: "Inventory Report",page: "inventory-report",desc: "Closing stock valuation" },
+      { label: "Stock Summary", page: "stock-summary", desc: "Item-wise stock position" },
+      { label: "Stock Ledger", page: "stock-ledger", desc: "Detailed stock movements" },
+      { label: "Inventory Report", page: "inventory-report", desc: "Closing stock valuation" },
     ],
   },
   {
@@ -72,9 +104,17 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: FileBarChart,
     color: "#0284c7",
     reports: [
-      { label: "Budget vs Actual",       page: "budget-vs-actual",    desc: "Budget deviation analysis" },
-      { label: "Interest Calculation",   page: "interest-calculation",desc: "Interest on overdue bills" },
-      { label: "Income & Expenditure",   page: "income-expenditure",  desc: "For non-profit entities" },
+      { label: "Budget vs Actual", page: "budget-vs-actual", desc: "Budget deviation analysis" },
+      {
+        label: "Interest Calculation",
+        page: "interest-calculation",
+        desc: "Interest on overdue bills",
+      },
+      {
+        label: "Income & Expenditure",
+        page: "income-expenditure",
+        desc: "For non-profit entities",
+      },
     ],
   },
   {
@@ -82,12 +122,17 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     icon: ShieldCheck,
     color: "#dc2626",
     reports: [
-      { label: "VAT Reports",   page: "vat-reports",   desc: "Annex-A, B, C — IRD Nepal filing",   shortcut: "Ctrl+G" },
-      { label: "GSTR-1",        page: "gstr1",         desc: "Outward supplies statement" },
-      { label: "GSTR-3B",       page: "gstr3b",        desc: "Monthly return summary" },
-      { label: "GST Summary",   page: "gst-summary",   desc: "Consolidated GST position" },
-      { label: "TDS Report",    page: "tds-reports",   desc: "Tax deducted at source" },
-      { label: "Audit Log",     page: "audit-log",     desc: "Immutable activity trail" },
+      {
+        label: "VAT Reports",
+        page: "vat-reports",
+        desc: "Annex-A, B, C — IRD Nepal filing",
+        shortcut: "Ctrl+G",
+      },
+      { label: "GSTR-1", page: "gstr1", desc: "Outward supplies statement" },
+      { label: "GSTR-3B", page: "gstr3b", desc: "Monthly return summary" },
+      { label: "GST Summary", page: "gst-summary", desc: "Consolidated GST position" },
+      { label: "TDS Report", page: "tds-reports", desc: "Tax deducted at source" },
+      { label: "Audit Log", page: "audit-log", desc: "Immutable activity trail" },
     ],
   },
 ];
@@ -123,37 +168,39 @@ const ReportRow: React.FC<{
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontSize: 12,
-          fontWeight: hovered ? 600 : 500,
-          color: hovered ? "#111827" : "#374151",
-          transition: "font-weight 120ms ease, color 120ms ease",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: hovered ? 600 : 500,
+            color: hovered ? "#111827" : "#374151",
+            transition: "font-weight 120ms ease, color 120ms ease",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
           {report.label}
         </div>
-        <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>
-          {report.desc}
-        </div>
+        <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>{report.desc}</div>
       </div>
 
       {/* Shortcut badge */}
       {report.shortcut && (
-        <span style={{
-          fontSize: 9,
-          fontWeight: 700,
-          color: hovered ? accentColor : "#9ca3af",
-          background: hovered ? `${accentColor}12` : "#f3f4f6",
-          border: `1px solid ${hovered ? accentColor + "40" : "#e5e7eb"}`,
-          borderRadius: 3,
-          padding: "1px 5px",
-          fontFamily: "monospace",
-          flexShrink: 0,
-          transition: "all 120ms ease",
-          whiteSpace: "nowrap",
-        }}>
+        <span
+          style={{
+            fontSize: 9,
+            fontWeight: 700,
+            color: hovered ? accentColor : "#9ca3af",
+            background: hovered ? `${accentColor}12` : "#f3f4f6",
+            border: `1px solid ${hovered ? accentColor + "40" : "#e5e7eb"}`,
+            borderRadius: 3,
+            padding: "1px 5px",
+            fontFamily: "monospace",
+            flexShrink: 0,
+            transition: "all 120ms ease",
+            whiteSpace: "nowrap",
+          }}
+        >
           {report.shortcut}
         </span>
       )}
@@ -180,7 +227,14 @@ const ReportHub: React.FC = () => {
   return (
     <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 0 }}>
       {/* Page header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 20,
+        }}
+      >
         <div>
           <h1 style={{ fontSize: 15, fontWeight: 700, color: "#111827", margin: 0 }}>Reports</h1>
           <p style={{ fontSize: 11, color: "#6b7280", marginTop: 3 }}>
@@ -190,12 +244,14 @@ const ReportHub: React.FC = () => {
       </div>
 
       {/* Category grid — responsive: 1 col on narrow, 2 on medium, 3 on wide */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-        gap: 16,
-        alignItems: "start",
-      }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+          gap: 16,
+          alignItems: "start",
+        }}
+      >
         {REPORT_CATEGORIES.map((cat) => {
           const Icon = cat.icon;
           return (
@@ -211,49 +267,57 @@ const ReportHub: React.FC = () => {
               }}
             >
               {/* Category header */}
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "10px 14px",
-                background: "#f5f6fa",
-                borderBottom: "1px solid #e5e7eb",
-              }}>
-                <div style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: 5,
-                  background: `${cat.color}18`,
+              <div
+                style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}>
+                  gap: 8,
+                  padding: "10px 14px",
+                  background: "#f5f6fa",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <div
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 5,
+                    background: `${cat.color}18`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
                   <Icon size={13} style={{ color: cat.color }} />
                 </div>
 
-                <span style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#374151",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  flex: 1,
-                }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    flex: 1,
+                  }}
+                >
                   {cat.title}
                 </span>
 
                 {/* Item count badge */}
-                <span style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: cat.color,
-                  background: `${cat.color}15`,
-                  border: `1px solid ${cat.color}30`,
-                  borderRadius: 10,
-                  padding: "1px 7px",
-                  flexShrink: 0,
-                }}>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: cat.color,
+                    background: `${cat.color}15`,
+                    border: `1px solid ${cat.color}30`,
+                    borderRadius: 10,
+                    padding: "1px 7px",
+                    flexShrink: 0,
+                  }}
+                >
                   {cat.reports.length}
                 </span>
               </div>

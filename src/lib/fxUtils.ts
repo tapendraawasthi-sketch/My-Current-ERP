@@ -19,10 +19,10 @@ export interface ExchangeRateRecord {
 export function getEffectiveRate(
   rates: ExchangeRateRecord[],
   currencyCode: string,
-  date: string
+  date: string,
 ): ExchangeRateRecord | null {
   const filtered = rates
-    .filter(r => r.currencyCode === currencyCode && r.date <= date)
+    .filter((r) => r.currencyCode === currencyCode && r.date <= date)
     .sort((a, b) => b.date.localeCompare(a.date));
   return filtered[0] || null;
 }
@@ -52,7 +52,7 @@ export function toForeign(baseAmount: number, midRate: number): number {
 export function computeRealizedGainLoss(
   foreignAmount: number,
   rateAtTransaction: number,
-  rateAtSettlement: number
+  rateAtSettlement: number,
 ): number {
   return Math.round((rateAtSettlement - rateAtTransaction) * foreignAmount * 100) / 100;
 }
@@ -64,7 +64,7 @@ export function computeRealizedGainLoss(
 export function computeUnrealizedGainLoss(
   foreignAmount: number,
   rateAtTransaction: number,
-  rateAtRevaluation: number
+  rateAtRevaluation: number,
 ): number {
   return Math.round((rateAtRevaluation - rateAtTransaction) * foreignAmount * 100) / 100;
 }
@@ -77,19 +77,19 @@ export function fmtFX(n: number, symbol = ""): string {
 
 /** Common world currencies relevant to Nepal trade */
 export const COMMON_CURRENCIES = [
-  { code: "USD", name: "US Dollar",          symbol: "$"  },
-  { code: "EUR", name: "Euro",               symbol: "€"  },
-  { code: "GBP", name: "British Pound",      symbol: "£"  },
-  { code: "INR", name: "Indian Rupee",       symbol: "₹"  },
-  { code: "CNY", name: "Chinese Yuan",       symbol: "¥"  },
-  { code: "AED", name: "UAE Dirham",         symbol: "AED"},
-  { code: "SGD", name: "Singapore Dollar",   symbol: "S$" },
-  { code: "JPY", name: "Japanese Yen",       symbol: "¥"  },
-  { code: "AUD", name: "Australian Dollar",  symbol: "A$" },
-  { code: "CAD", name: "Canadian Dollar",    symbol: "C$" },
-  { code: "CHF", name: "Swiss Franc",        symbol: "CHF"},
-  { code: "QAR", name: "Qatari Riyal",       symbol: "QR" },
-  { code: "SAR", name: "Saudi Riyal",        symbol: "SR" },
-  { code: "MYR", name: "Malaysian Ringgit",  symbol: "RM" },
-  { code: "KWD", name: "Kuwaiti Dinar",      symbol: "KD" },
+  { code: "USD", name: "US Dollar", symbol: "$" },
+  { code: "EUR", name: "Euro", symbol: "€" },
+  { code: "GBP", name: "British Pound", symbol: "£" },
+  { code: "INR", name: "Indian Rupee", symbol: "₹" },
+  { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+  { code: "AED", name: "UAE Dirham", symbol: "AED" },
+  { code: "SGD", name: "Singapore Dollar", symbol: "S$" },
+  { code: "JPY", name: "Japanese Yen", symbol: "¥" },
+  { code: "AUD", name: "Australian Dollar", symbol: "A$" },
+  { code: "CAD", name: "Canadian Dollar", symbol: "C$" },
+  { code: "CHF", name: "Swiss Franc", symbol: "CHF" },
+  { code: "QAR", name: "Qatari Riyal", symbol: "QR" },
+  { code: "SAR", name: "Saudi Riyal", symbol: "SR" },
+  { code: "MYR", name: "Malaysian Ringgit", symbol: "RM" },
+  { code: "KWD", name: "Kuwaiti Dinar", symbol: "KD" },
 ];

@@ -225,7 +225,7 @@ const InterestCalculation: React.FC = () => {
       const existingCount = await getDB().vouchers.count();
       const voucherNo = `JV-${String(existingCount + 1).padStart(4, "0")}`;
       const now = new Date().toISOString();
-      
+
       // We need to know the 'Interest Income' ledger ID, assume we can find it
       // For simplicity, let's just pick one or assume user configures it.
       // In a real scenario, this would be a specific ledger.

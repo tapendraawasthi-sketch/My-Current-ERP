@@ -11,8 +11,8 @@
 import NepaliDate from "nepali-date-converter";
 
 function toLocalADString(d: Date): string {
-  if (isNaN(d.getTime())) return '';
-  const pad = (n: number) => String(n).padStart(2, '0');
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
@@ -415,13 +415,7 @@ export function getFiscalYearMonths(
 // ─────────────────────────────────────────────────────────────────────────────
 
 type BSDateFormat =
-  | "YYYY-MM-DD"
-  | "YYYY/MM/DD"
-  | "DD MMMM YYYY"
-  | "DD/MM/YYYY"
-  | "NEPALI"
-  | "SHORT"
-  | "ISO";
+  "YYYY-MM-DD" | "YYYY/MM/DD" | "DD MMMM YYYY" | "DD/MM/YYYY" | "NEPALI" | "SHORT" | "ISO";
 
 export function formatBSDate(
   adDateParam: string | Date,
@@ -429,7 +423,9 @@ export function formatBSDate(
 ): string {
   const adDate =
     typeof adDateParam === "string"
-      ? (adDateParam.includes("T") ? new Date(adDateParam) : parseLocalADString(adDateParam))
+      ? adDateParam.includes("T")
+        ? new Date(adDateParam)
+        : parseLocalADString(adDateParam)
       : adDateParam;
 
   if (isNaN(adDate.getTime())) return "";

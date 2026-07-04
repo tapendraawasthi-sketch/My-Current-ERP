@@ -317,7 +317,7 @@ export default function YearEndProcess() {
     const fyEnd = currentFiscalYear?.endDate;
 
     const balances: Record<string, number> = {};
-    for (const v of (vouchers || [])) {
+    for (const v of vouchers || []) {
       if (v.status !== "posted") continue;
       if (fyStart && v.date < fyStart) continue;
       if (fyEnd && v.date > fyEnd) continue;
@@ -346,7 +346,7 @@ export default function YearEndProcess() {
     const fyStart = currentFiscalYear?.startDate;
     const fyEnd = currentFiscalYear?.endDate;
     const creditBals: Record<string, number> = {};
-    for (const v of (vouchers || [])) {
+    for (const v of vouchers || []) {
       if (v.status !== "posted") continue;
       if (fyStart && v.date < fyStart) continue;
       if (fyEnd && v.date > fyEnd) continue;
@@ -385,7 +385,7 @@ export default function YearEndProcess() {
     const fyEnd = currentFiscalYear?.endDate;
 
     const balances: Record<string, number> = {};
-    for (const v of (vouchers || [])) {
+    for (const v of vouchers || []) {
       if (v.status !== "posted") continue;
       if (fyEnd && v.date > fyEnd) continue;
       for (const line of v.lines || []) {

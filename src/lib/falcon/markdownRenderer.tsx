@@ -99,10 +99,7 @@ function renderInline(text: string, compact: boolean): React.ReactNode[] {
         );
       case "code":
         return (
-          <code
-            key={i}
-            className="bg-gray-100 text-red-600 rounded px-1 text-[11px] font-mono"
-          >
+          <code key={i} className="bg-gray-100 text-red-600 rounded px-1 text-[11px] font-mono">
             {token.value}
           </code>
         );
@@ -286,10 +283,7 @@ export const MarkdownRenderer: React.FC<MarkdownProps> = memo(
         // ── Bullet list ───────────────────────────────────────────────────
         case "bullet-list":
           return (
-            <ul
-              key={index}
-              className={compact ? "space-y-0 my-1" : "space-y-0.5 my-1.5"}
-            >
+            <ul key={index} className={compact ? "space-y-0 my-1" : "space-y-0.5 my-1.5"}>
               {block.items.map((item, j) => (
                 <li
                   key={j}
@@ -305,10 +299,7 @@ export const MarkdownRenderer: React.FC<MarkdownProps> = memo(
         // ── Numbered list ──────────────────────────────────────────────────
         case "numbered-list":
           return (
-            <ol
-              key={index}
-              className={compact ? "space-y-0 my-1" : "space-y-0.5 my-1.5"}
-            >
+            <ol key={index} className={compact ? "space-y-0 my-1" : "space-y-0.5 my-1.5"}>
               {block.items.map((item, j) => (
                 <li
                   key={j}
@@ -326,10 +317,7 @@ export const MarkdownRenderer: React.FC<MarkdownProps> = memo(
         // ── Code block ────────────────────────────────────────────────────
         case "code-block":
           return (
-            <div
-              key={index}
-              className={compact ? "relative my-1" : "relative my-2"}
-            >
+            <div key={index} className={compact ? "relative my-1" : "relative my-2"}>
               {block.language && block.language !== "text" && (
                 <div className="absolute top-1.5 right-2 text-[10px] text-gray-400 font-mono select-none uppercase">
                   {block.language}
@@ -346,7 +334,9 @@ export const MarkdownRenderer: React.FC<MarkdownProps> = memo(
           return (
             <hr
               key={index}
-              className={compact ? "border-t border-gray-200 my-1" : "border-t border-gray-200 my-2"}
+              className={
+                compact ? "border-t border-gray-200 my-1" : "border-t border-gray-200 my-2"
+              }
             />
           );
 

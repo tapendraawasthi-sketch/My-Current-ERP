@@ -8,8 +8,8 @@ const AccountsConfiguration: React.FC = () => {
   const [stockUpdation, setStockUpdation] = useState(
     () => localStorage.getItem("cfg_bs_stock_updation") ?? "Automatic (from stock ledger)",
   );
-  const [decimalPlaces, setDecimalPlaces] = useState(
-    () => parseInt(localStorage.getItem("cfg_decimal_places") ?? "2", 10),
+  const [decimalPlaces, setDecimalPlaces] = useState(() =>
+    parseInt(localStorage.getItem("cfg_decimal_places") ?? "2", 10),
   );
   const [gstNature, setGstNature] = useState(
     () => localStorage.getItem("cfg_gst_nature_journal") ?? "Not Applicable",
@@ -51,9 +51,7 @@ const AccountsConfiguration: React.FC = () => {
               value={stockUpdation}
               onChange={(e) => setStockUpdation(e.target.value)}
             >
-              <option value="Automatic (from stock ledger)">
-                Automatic (from stock ledger)
-              </option>
+              <option value="Automatic (from stock ledger)">Automatic (from stock ledger)</option>
               <option value="Manually">Manually</option>
             </select>
             <p className="text-[10px] text-gray-400 mt-1">
@@ -103,9 +101,7 @@ const AccountsConfiguration: React.FC = () => {
               Save Settings
             </button>
             {saved && (
-              <span className="text-[12px] text-green-600 font-medium">
-                ✓ Saved successfully
-              </span>
+              <span className="text-[12px] text-green-600 font-medium">✓ Saved successfully</span>
             )}
           </div>
         </div>
