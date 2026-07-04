@@ -16,7 +16,9 @@ export default function MissingVoucherReport() {
   const gaps = useMemo(() => {
     const posted = (vouchers || [])
       .filter((v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate)
-      .sort((a: any, b: any) => String(a.voucherNo).localeCompare(String(b.voucherNo), undefined, { numeric: true }));
+      .sort((a: any, b: any) =>
+        String(a.voucherNo).localeCompare(String(b.voucherNo), undefined, { numeric: true }),
+      );
 
     const missing: { expected: string; after: string; type: string }[] = [];
     for (let i = 1; i < posted.length; i++) {

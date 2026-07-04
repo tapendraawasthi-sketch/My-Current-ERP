@@ -65,8 +65,7 @@ const DEFAULTS: Omit<SaleTypeMasterItem, "id">[] = [
   },
 ];
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -117,9 +116,7 @@ export default function SaleTypeMaster() {
     const q = search.trim().toLowerCase();
     if (!q) return items;
     return items.filter(
-      (item) =>
-        item.name.toLowerCase().includes(q) ||
-        item.saleType.toLowerCase().includes(q),
+      (item) => item.name.toLowerCase().includes(q) || item.saleType.toLowerCase().includes(q),
     );
   }, [items, search]);
 
@@ -243,7 +240,9 @@ export default function SaleTypeMaster() {
                       onClick={() => openEdit(item)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{item.name}</td>
-                      <td className={`${td} text-[11px] text-gray-600`}>{saleTypeLabel(item.saleType)}</td>
+                      <td className={`${td} text-[11px] text-gray-600`}>
+                        {saleTypeLabel(item.saleType)}
+                      </td>
                       <td className={`${td} text-right font-mono`}>{item.defaultTaxRate}%</td>
                       <td className={`${td} text-center`}>
                         {item.isDefault ? (
@@ -349,7 +348,10 @@ export default function SaleTypeMaster() {
                 { key: "isDefault", label: "Set as default" },
                 { key: "isActive", label: "Active" },
               ].map(({ key, label }) => (
-                <label key={key} className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
+                <label
+                  key={key}
+                  className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700"
+                >
                   <input
                     type="checkbox"
                     checked={!!(form as any)[key]}

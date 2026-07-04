@@ -62,7 +62,9 @@ const ReportShell: React.FC<ReportShellProps> = ({
         </div>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
-      <div className={printable ? "print-content flex-1 min-h-0 flex flex-col" : ""}>{children}</div>
+      <div className={printable ? "print-content flex-1 min-h-0 flex flex-col" : ""}>
+        {children}
+      </div>
     </div>
   );
 };
@@ -568,9 +570,7 @@ const VatReports: React.FC = () => {
         </div>
         <div
           className={`border rounded-md px-3 py-2.5 ${
-            vatSummary.netVat >= 0
-              ? "bg-red-50 border-red-200"
-              : "bg-green-50 border-green-200"
+            vatSummary.netVat >= 0 ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200"
           }`}
         >
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">

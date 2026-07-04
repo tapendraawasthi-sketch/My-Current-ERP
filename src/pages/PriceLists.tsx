@@ -16,8 +16,7 @@ import {
 } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
@@ -36,13 +35,7 @@ const emptyLine = (): DBPriceListLine & { _id: string } => ({
 });
 
 export default function PriceLists() {
-  const {
-    priceLists,
-    addPriceList,
-    updatePriceList,
-    deletePriceList,
-    items,
-  } = useStore();
+  const { priceLists, addPriceList, updatePriceList, deletePriceList, items } = useStore();
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -547,9 +540,7 @@ export default function PriceLists() {
                             min={0}
                             step={1}
                             value={line.minQty ?? 1}
-                            onChange={(e) =>
-                              updateLine(line._id, "minQty", Number(e.target.value))
-                            }
+                            onChange={(e) => updateLine(line._id, "minQty", Number(e.target.value))}
                             className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
                           />
                         </td>
@@ -582,12 +573,7 @@ export default function PriceLists() {
           </form>
 
           <div className="flex gap-2 p-4 border-t border-gray-200">
-            <button
-              type="button"
-              className={btnPrimary}
-              disabled={saving}
-              onClick={handleSubmit}
-            >
+            <button type="button" className={btnPrimary} disabled={saving} onClick={handleSubmit}>
               <Save className="h-3.5 w-3.5" />
               {saving ? "Saving..." : editingId ? "Update" : "Save"}
             </button>
@@ -612,7 +598,11 @@ export default function PriceLists() {
                 {(deleteTarget.lines ?? []).length !== 1 ? "s" : ""} and cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
-                <button type="button" className={btnOutline} onClick={() => setDeleteTargetId(null)}>
+                <button
+                  type="button"
+                  className={btnOutline}
+                  onClick={() => setDeleteTargetId(null)}
+                >
                   Cancel
                 </button>
                 <button

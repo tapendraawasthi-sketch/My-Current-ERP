@@ -4,8 +4,7 @@ import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -82,9 +81,7 @@ const VATClassificationMaster: React.FC = () => {
     const list = vatClassifications || [];
     if (!q) return list;
     return list.filter(
-      (cls) =>
-        cls.name.toLowerCase().includes(q) ||
-        cls.taxability.toLowerCase().includes(q),
+      (cls) => cls.name.toLowerCase().includes(q) || cls.taxability.toLowerCase().includes(q),
     );
   }, [vatClassifications, searchTerm]);
 
@@ -263,12 +260,8 @@ const VATClassificationMaster: React.FC = () => {
                           {getTaxabilityLabel(classification.taxability)}
                         </span>
                       </td>
-                      <td className={`${td} text-right font-mono`}>
-                        {classification.vatRate}%
-                      </td>
-                      <td className={td}>
-                        {getInputOutputLabel(classification.inputOutput)}
-                      </td>
+                      <td className={`${td} text-right font-mono`}>{classification.vatRate}%</td>
+                      <td className={td}>{getInputOutputLabel(classification.inputOutput)}</td>
                       <td className={`${td} text-center`}>
                         <span
                           className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${

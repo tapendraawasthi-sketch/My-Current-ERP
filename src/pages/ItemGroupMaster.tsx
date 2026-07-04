@@ -15,8 +15,7 @@ const DEFAULT_FORM = {
   taxCategoryId: "",
 };
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -36,16 +35,11 @@ export default function ItemGroupMaster() {
 
   const filtered = useMemo(
     () =>
-      (itemGroups || []).filter((g: any) =>
-        g.name.toLowerCase().includes(search.toLowerCase()),
-      ),
+      (itemGroups || []).filter((g: any) => g.name.toLowerCase().includes(search.toLowerCase())),
     [itemGroups, search],
   );
 
-  const ledgerAccounts = useMemo(
-    () => (accounts || []).filter((a: any) => !a.isGroup),
-    [accounts],
-  );
+  const ledgerAccounts = useMemo(() => (accounts || []).filter((a: any) => !a.isGroup), [accounts]);
 
   const resetForm = () => {
     setForm(DEFAULT_FORM);
@@ -212,11 +206,7 @@ export default function ItemGroupMaster() {
             <span className="text-[13px] font-semibold text-gray-800">
               {selected ? "Edit item group" : "Add item group"}
             </span>
-            <button
-              type="button"
-              className="text-gray-500 hover:text-gray-700"
-              onClick={resetForm}
-            >
+            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
               <X className="h-4 w-4" />
             </button>
           </div>

@@ -726,7 +726,8 @@ export default function BranchReports() {
                       <div>
                         <div className="text-[12px] font-medium text-gray-800">{branch.name}</div>
                         <div className="text-[11px] text-gray-500">
-                          {rows.length} item{rows.length === 1 ? "" : "s"} · Value {money(totalValue)}
+                          {rows.length} item{rows.length === 1 ? "" : "s"} · Value{" "}
+                          {money(totalValue)}
                         </div>
                       </div>
                       {expandedSections[sectionKey] ? (

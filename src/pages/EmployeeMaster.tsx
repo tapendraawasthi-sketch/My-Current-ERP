@@ -12,8 +12,7 @@ import { ConfirmDialog } from "../components/ui";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { Employee } from "../lib/types";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -166,9 +165,7 @@ export default function EmployeeMaster() {
           {filteredEmployees.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-md">
               <ReportEmptyState
-                message={
-                  searchTerm ? "No employees match your search" : "No employees found"
-                }
+                message={searchTerm ? "No employees match your search" : "No employees found"}
                 hint={
                   searchTerm
                     ? "Try a different search term."
@@ -267,11 +264,7 @@ export default function EmployeeMaster() {
             <span className="text-[13px] font-semibold text-gray-800">
               {selectedEmp ? "Edit employee" : "Add employee"}
             </span>
-            <button
-              type="button"
-              className="text-gray-500 hover:text-gray-700"
-              onClick={resetForm}
-            >
+            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -359,9 +352,7 @@ export default function EmployeeMaster() {
                     type="text"
                     placeholder="YYYY-MM-DD"
                     value={formData.dateOfJoiningBS}
-                    onChange={(e) =>
-                      setFormData({ ...formData, dateOfJoiningBS: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, dateOfJoiningBS: e.target.value })}
                     className={inputCls}
                   />
                 </div>

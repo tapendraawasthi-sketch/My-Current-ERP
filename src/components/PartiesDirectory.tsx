@@ -14,8 +14,7 @@ import { ReportEmptyState } from "./ReportEmptyState";
 
 const PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -226,9 +225,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
                     setPage(1);
                   }}
                   className={`h-7 px-2.5 text-[11px] font-medium rounded transition-colors ${
-                    typeFilter === t
-                      ? "bg-[#1557b0] text-white"
-                      : "text-gray-600 hover:bg-gray-50"
+                    typeFilter === t ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   {t === "ALL" ? "All" : t.charAt(0).toUpperCase() + t.slice(1)}
@@ -361,11 +358,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
             <span className="text-[13px] font-semibold text-gray-800">
               {selectedParty ? "Edit party" : "Add party"}
             </span>
-            <button
-              type="button"
-              className="text-gray-500 hover:text-gray-700"
-              onClick={resetForm}
-            >
+            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -444,7 +437,11 @@ const PartiesDirectory: React.FC = React.memo(() => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelCls}>Province</label>
-                <select value={province} onChange={(e) => setProvince(e.target.value)} className={inputCls}>
+                <select
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  className={inputCls}
+                >
                   <option value="">Select province</option>
                   {PROVINCES.map((p) => (
                     <option key={p} value={p}>

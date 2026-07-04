@@ -60,9 +60,7 @@ const renderColumn = (
   total?: string,
   showBorderRight = true,
 ) => (
-  <div
-    className={`flex flex-col min-h-full ${showBorderRight ? "border-r border-black" : ""}`}
-  >
+  <div className={`flex flex-col min-h-full ${showBorderRight ? "border-r border-black" : ""}`}>
     <table className="tformat-table">
       <thead>
         <tr>
@@ -82,13 +80,8 @@ const renderColumn = (
       <table className="tformat-table mt-auto shrink-0">
         <tbody>
           <tr>
-            {renderCell(
-              { id: "total-label", label: "Total", amount: total, isTotal: true },
-            )}
-            {renderCell(
-              { id: "total-amount", label: "", amount: total, isTotal: true },
-              true,
-            )}
+            {renderCell({ id: "total-label", label: "Total", amount: total, isTotal: true })}
+            {renderCell({ id: "total-amount", label: "", amount: total, isTotal: true }, true)}
           </tr>
         </tbody>
       </table>

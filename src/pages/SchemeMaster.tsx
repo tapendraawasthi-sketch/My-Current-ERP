@@ -43,8 +43,7 @@ const DEFAULTS: Omit<Scheme, "id">[] = [
   },
 ];
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -73,8 +72,7 @@ const typeLabel = (type: Scheme["type"]) =>
 const schemeValue = (scheme: Scheme) => {
   if (scheme.type === "discount_percent") return `${scheme.discountPercent ?? 0}%`;
   if (scheme.type === "discount_amount") return `₹${scheme.discountAmount ?? 0}`;
-  if (scheme.type === "qty_bonus")
-    return `Buy ${scheme.minQty ?? 0} Get ${scheme.bonusQty ?? 0}`;
+  if (scheme.type === "qty_bonus") return `Buy ${scheme.minQty ?? 0} Get ${scheme.bonusQty ?? 0}`;
   return "—";
 };
 
@@ -124,9 +122,7 @@ export default function SchemeMaster() {
       return;
     }
     if (editItem) {
-      setSchemes((prev) =>
-        prev.map((s) => (s.id === editItem.id ? { ...editItem, ...form } : s)),
-      );
+      setSchemes((prev) => prev.map((s) => (s.id === editItem.id ? { ...editItem, ...form } : s)));
       toast.success("Scheme updated");
     } else {
       setSchemes((prev) => [...prev, { ...form, id: `sch-${Date.now()}` }]);
@@ -286,7 +282,9 @@ export default function SchemeMaster() {
                 <label className={labelCls}>Scheme type</label>
                 <select
                   value={form.type}
-                  onChange={(e) => setForm((p) => ({ ...p, type: e.target.value as Scheme["type"] }))}
+                  onChange={(e) =>
+                    setForm((p) => ({ ...p, type: e.target.value as Scheme["type"] }))
+                  }
                   className={inputCls}
                 >
                   <option value="discount_percent">Discount %</option>

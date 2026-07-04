@@ -374,7 +374,9 @@ const DayBook: React.FC = () => {
               type="button"
               onClick={() => setViewMode("detailed")}
               className={`h-8 px-3 text-[11px] font-medium transition-colors ${
-                viewMode === "detailed" ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
+                viewMode === "detailed"
+                  ? "bg-[#1557b0] text-white"
+                  : "text-gray-600 hover:bg-gray-50"
               }`}
             >
               Detailed
@@ -412,7 +414,9 @@ const DayBook: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Vouchers
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5">{summary.totalVouchers}</p>
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5">
+              {summary.totalVouchers}
+            </p>
           </div>
           <BookOpen className="h-6 w-6 text-[#1557b0] opacity-20" />
         </div>
@@ -546,76 +550,71 @@ const DayBook: React.FC = () => {
 
                       {viewMode === "detailed" &&
                         (entry.lines ?? []).length > 0 &&
-                        (entry.lines as DayBookLine[]).map(
-                          (line: DayBookLine, lineIdx: number) => (
-                            <tr
-                              key={`${String(entry.id)}-line-${lineIdx}`}
-                              className="bg-gray-50/60"
+                        (entry.lines as DayBookLine[]).map((line: DayBookLine, lineIdx: number) => (
+                          <tr key={`${String(entry.id)}-line-${lineIdx}`} className="bg-gray-50/60">
+                            <td className="px-3 py-1.5 pl-8 text-[10px] text-gray-400 font-mono border-b border-gray-100">
+                              ↳
+                            </td>
+                            <td className="px-3 py-1.5 border-b border-gray-100" />
+                            <td
+                              colSpan={2}
+                              className="px-3 py-1.5 text-[11px] text-gray-500 border-b border-gray-100"
                             >
-                              <td className="px-3 py-1.5 pl-8 text-[10px] text-gray-400 font-mono border-b border-gray-100">
-                                ↳
-                              </td>
-                              <td className="px-3 py-1.5 border-b border-gray-100" />
-                              <td
-                                colSpan={2}
-                                className="px-3 py-1.5 text-[11px] text-gray-500 border-b border-gray-100"
-                              >
-                                {line.accountName ? String(line.accountName) : "—"}
-                                {line.narration ? ` — ${String(line.narration)}` : ""}
-                              </td>
-                              <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
-                                {line.debit > 0 ? money(line.debit) : "—"}
-                              </td>
-                              <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
-                                {line.credit > 0 ? money(line.credit) : "—"}
-                              </td>
-                              <td className="border-b border-gray-100" />
-                            </tr>
-                          ),
-                        )}
+                              {line.accountName ? String(line.accountName) : "—"}
+                              {line.narration ? ` — ${String(line.narration)}` : ""}
+                            </td>
+                            <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
+                              {line.debit > 0 ? money(line.debit) : "—"}
+                            </td>
+                            <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
+                              {line.credit > 0 ? money(line.credit) : "—"}
+                            </td>
+                            <td className="border-b border-gray-100" />
+                          </tr>
+                        ))}
                     </React.Fragment>
                   );
                 })}
               </tbody>
 
-            {/* Footer totals */}
-            {filteredEntries.length > 0 && (
-              <tfoot>
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                    Total ({summary.totalVouchers} vouchers)
-                  </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
-                    {money(summary.totalDebit)}
-                  </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                    {money(summary.totalCredit)}
-                  </td>
-                  <td />
-                </tr>
-
-                {/* Balance check row */}
-                {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
-                  <tr className="bg-red-50 border-t border-red-200">
-                    <td colSpan={4} className="px-3 py-2 text-[11px] font-semibold text-red-700">
-                      ⚠ Imbalance detected
+              {/* Footer totals */}
+              {filteredEntries.length > 0 && (
+                <tfoot>
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                    <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                      Total ({summary.totalVouchers} vouchers)
                     </td>
-                    <td
-                      colSpan={3}
-                      className="px-3 py-2 text-right font-mono text-[11px] font-bold text-red-700"
-                    >
-                      Difference: {money(Math.abs(summary.totalDebit - summary.totalCredit))}
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                      {money(summary.totalDebit)}
                     </td>
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                      {money(summary.totalCredit)}
+                    </td>
+                    <td />
                   </tr>
-                )}
-              </tfoot>
-            )}
-          </table>
+
+                  {/* Balance check row */}
+                  {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
+                    <tr className="bg-red-50 border-t border-red-200">
+                      <td colSpan={4} className="px-3 py-2 text-[11px] font-semibold text-red-700">
+                        ⚠ Imbalance detected
+                      </td>
+                      <td
+                        colSpan={3}
+                        className="px-3 py-2 text-right font-mono text-[11px] font-bold text-red-700"
+                      >
+                        Difference: {money(Math.abs(summary.totalDebit - summary.totalCredit))}
+                      </td>
+                    </tr>
+                  )}
+                </tfoot>
+              )}
+            </table>
+          </div>
+          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            {filteredEntries.length} day book entr{filteredEntries.length === 1 ? "y" : "ies"}
+          </div>
         </div>
-        <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-          {filteredEntries.length} day book entr{filteredEntries.length === 1 ? "y" : "ies"}
-        </div>
-      </div>
       )}
 
       {Object.keys(summary.byType).length > 1 && (

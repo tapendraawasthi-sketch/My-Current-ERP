@@ -83,9 +83,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 sticky left-0 z-10 w-48">
               Particulars
             </th>
-            <th className={`${thCls} w-20 text-center`}>
-              Trend
-            </th>
+            <th className={`${thCls} w-20 text-center`}>Trend</th>
             {pl.monthLabels.map((label) => (
               <th key={label} className={thCls}>
                 {label}
@@ -264,9 +262,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             <td className="px-3 py-2 text-[12px] font-bold sticky left-0 bg-[#1557b0] z-10 border-r border-[#0f4a96]">
               Net Profit
             </td>
-            <td
-              className="px-2 py-1 text-center w-20 bg-[#1557b0] border-r border-[#0f4a96]"
-            >
+            <td className="px-2 py-1 text-center w-20 bg-[#1557b0] border-r border-[#0f4a96]">
               <Sparkline
                 values={pl.monthlyData.map((m) => Math.abs(m.netProfit))}
                 color="#ffffff"

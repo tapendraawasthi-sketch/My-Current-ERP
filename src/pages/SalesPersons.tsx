@@ -3,22 +3,10 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import toast from "react-hot-toast";
 import { DBSalesPerson } from "../lib/db";
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  X,
-  Save,
-  Search,
-  User,
-  Phone,
-  Mail,
-  Percent,
-} from "lucide-react";
+import { Plus, Edit2, Trash2, X, Save, Search, User, Phone, Mail, Percent } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
@@ -251,9 +239,7 @@ export default function SalesPersons() {
                       <td className={`${td} text-center`}>
                         <span
                           className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            sp.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                            sp.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                           }`}
                         >
                           {sp.isActive ? "Active" : "Inactive"}
@@ -384,12 +370,7 @@ export default function SalesPersons() {
           </form>
 
           <div className="flex gap-2 p-4 border-t border-gray-200">
-            <button
-              type="button"
-              className={btnPrimary}
-              disabled={saving}
-              onClick={handleSubmit}
-            >
+            <button type="button" className={btnPrimary} disabled={saving} onClick={handleSubmit}>
               <Save className="h-3.5 w-3.5" />
               {saving ? "Saving..." : editingId ? "Update" : "Save"}
             </button>
@@ -413,7 +394,11 @@ export default function SalesPersons() {
                 action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
-                <button type="button" className={btnOutline} onClick={() => setDeleteTargetId(null)}>
+                <button
+                  type="button"
+                  className={btnOutline}
+                  onClick={() => setDeleteTargetId(null)}
+                >
                   Cancel
                 </button>
                 <button

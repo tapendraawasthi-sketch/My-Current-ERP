@@ -215,9 +215,7 @@ export default function CostCenters() {
                 </div>
                 <div className="text-[11px] font-mono text-gray-600 flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
                   <span
-                    className={
-                      balance > 0 ? "text-[#059669]" : balance < 0 ? "text-red-600" : ""
-                    }
+                    className={balance > 0 ? "text-[#059669]" : balance < 0 ? "text-red-600" : ""}
                   >
                     Rs. {Math.abs(balance).toLocaleString()}{" "}
                     {balance > 0 ? "Dr" : balance < 0 ? "Cr" : ""}

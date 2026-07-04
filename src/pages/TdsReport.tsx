@@ -292,10 +292,7 @@ export default function TdsReport() {
             const secNet = entries.reduce((acc, e) => acc + e.netAmount, 0);
 
             return (
-              <div
-                key={sec}
-                className="bg-white border border-gray-200 rounded-md overflow-hidden"
-              >
+              <div key={sec} className="bg-white border border-gray-200 rounded-md overflow-hidden">
                 <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa] flex justify-between items-center">
                   <h3 className="text-[12px] font-semibold text-gray-800">Section {sec}</h3>
                   <span className="text-[11px] text-gray-500">
@@ -532,7 +529,11 @@ export default function TdsReport() {
                 </div>
               </div>
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
-                <button type="button" onClick={() => setShowChallanModal(false)} className={btnOutline}>
+                <button
+                  type="button"
+                  onClick={() => setShowChallanModal(false)}
+                  className={btnOutline}
+                >
                   Cancel
                 </button>
                 <button type="submit" className={btnPrimary}>

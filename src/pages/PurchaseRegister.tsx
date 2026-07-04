@@ -156,9 +156,7 @@ const PurchaseRegister: React.FC = () => {
   const renderCell = (col: ColumnDef, invoice: any) => {
     switch (col.key) {
       case "invoiceNo":
-        return (
-          <span className="font-mono font-medium text-gray-800">{invoice.invoiceNo}</span>
-        );
+        return <span className="font-mono font-medium text-gray-800">{invoice.invoiceNo}</span>;
       case "date":
         return <DualDate date={invoice.date} dateNepali={invoice.dateNepali} />;
       case "party":
@@ -339,9 +337,7 @@ const PurchaseRegister: React.FC = () => {
               </label>
               <select
                 value={filters.paymentStatus}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, paymentStatus: e.target.value }))
-                }
+                onChange={(e) => setFilters((prev) => ({ ...prev, paymentStatus: e.target.value }))}
                 className={`${inputCls} w-full`}
               >
                 <option value="all">All statuses</option>
@@ -366,9 +362,7 @@ const PurchaseRegister: React.FC = () => {
               </label>
               <select
                 value={filters.taxCategory}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, taxCategory: e.target.value }))
-                }
+                onChange={(e) => setFilters((prev) => ({ ...prev, taxCategory: e.target.value }))}
                 className={`${inputCls} w-full`}
               >
                 <option value="all">All categories</option>

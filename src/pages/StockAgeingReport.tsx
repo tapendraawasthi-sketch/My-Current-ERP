@@ -385,10 +385,7 @@ export default function StockAgeingReport() {
         {summaryCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div
-              key={card.title}
-              className={`rounded-md border ${card.border} ${card.bg} p-3`}
-            >
+            <div key={card.title} className={`rounded-md border ${card.border} ${card.bg} p-3`}>
               <div className="mb-2 flex items-start justify-between gap-3">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
@@ -568,7 +565,9 @@ export default function StockAgeingReport() {
             </div>
             <div className="text-right text-[11px] text-red-700">
               <span className="font-medium">Total dead stock value</span>
-              <div className="font-mono text-[12px] font-semibold">{money(deadStockTotalValue)}</div>
+              <div className="font-mono text-[12px] font-semibold">
+                {money(deadStockTotalValue)}
+              </div>
             </div>
           </div>
 

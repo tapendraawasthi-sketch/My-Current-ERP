@@ -4,8 +4,7 @@ import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -226,9 +225,7 @@ const PayHeadMaster: React.FC = () => {
     const list = payHeads || [];
     if (!q) return list;
     return list.filter(
-      (head) =>
-        head.name.toLowerCase().includes(q) ||
-        head.payHeadType.toLowerCase().includes(q),
+      (head) => head.name.toLowerCase().includes(q) || head.payHeadType.toLowerCase().includes(q),
     );
   }, [payHeads, searchTerm]);
 
@@ -390,9 +387,7 @@ const PayHeadMaster: React.FC = () => {
           {filteredHeads.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-md">
               <ReportEmptyState
-                message={
-                  searchTerm ? "No pay heads match your search" : "No pay heads found"
-                }
+                message={searchTerm ? "No pay heads match your search" : "No pay heads found"}
                 hint={
                   searchTerm
                     ? "Try a different search term."

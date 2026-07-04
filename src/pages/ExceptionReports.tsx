@@ -482,7 +482,9 @@ const ExceptionReports: React.FC = () => {
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Post-Dated
           </span>
-          <span className="text-[14px] font-semibold mt-1 text-[#1557b0]">{summaryCounts.postDated}</span>
+          <span className="text-[14px] font-semibold mt-1 text-[#1557b0]">
+            {summaryCounts.postDated}
+          </span>
         </div>
       </div>
 

@@ -337,7 +337,8 @@ const GroupSummaryReport: React.FC = () => {
               const isGroup = row.isGroup;
               const isExpandable = row.isExpandable;
 
-              let rowStyle = "bg-white group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]";
+              let rowStyle =
+                "bg-white group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]";
               if (row.type === "group")
                 rowStyle = "bg-[#f5f6fa] font-semibold text-gray-800 border-y border-gray-200";
               if (row.type === "subgroup") rowStyle = "bg-gray-50 font-medium text-gray-800";
