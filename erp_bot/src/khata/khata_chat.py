@@ -13,6 +13,7 @@ from langchain_ollama import ChatOllama
 from ..config import KHATA_STRUCTURED_PARSE, MODEL_NAME, OLLAMA_BASE_URL
 from ..falcon_trader import parse_khata_message
 from ..vectorstore.ca_knowledge_store import search_ca_knowledge
+from ..vectorstore.nepali_grammar_store import format_grammar_context, search_nepali_grammar
 from .structured_parse import STRUCTURED_PARSE_INSTRUCTION, parse_llm_response
 from .system_prompt import KHATA_SYSTEM_PROMPT
 
@@ -188,6 +189,38 @@ def _framework_context(text: str) -> str:
     )
 
 
+def _is_nepali_input(text: str) -> bool:
+    """True when message uses Devanagari or common Roman Nepali patterns."""
+    if re.search(r"[\u0900-\u097F]", text):
+        return True
+    return bool(re.search(
+        r"\b(k\s*ho|k\s*xa|kasari|udhaar|kharcha|bikri|tiryo|diyo|liyo|kinyo|beche|"
+        r"hisab|lekha|chha|hunchha|xaina|garchu|garxu|tapai|timi|paisa|saya|hajar|"
+        r"lakh|malai|lai|le\s|ko\s|ma\s|bata|sanga|ni\b|ta\b|hai\b|yaar|bhai|dai)\b",
+        text, re.I,
+    ))
+
+
+def _grammar_context(text: str) -> str:
+    """Retrieve Nepali grammar reference sections for NLU interpretation."""
+    if not _is_nepali_input(text):
+        return ""
+    hits = search_nepali_grammar(text, k=3)
+    return format_grammar_context(hits)
+
+
+def _combined_context(text: str) -> str:
+    """Merge IFRS and Nepali grammar context blocks for the LLM."""
+    parts = []
+    fw = _framework_context(text) if _is_framework_question(text) else ""
+    gr = _grammar_context(text)
+    if gr:
+        parts.append(gr)
+    if fw:
+        parts.append(fw)
+    return "\n\n".join(parts)
+
+
 def _is_framework_question(text: str) -> bool:
     return bool(re.search(
         r"\b(ifrs|nas|conceptual\s+framework|recognition|derecognition|measurement|"
@@ -277,13 +310,15 @@ def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, l
 
     card = _parsed_to_card(parsed, text)
     if card:
+        grammar_hint = _grammar_context(text)
         llm_reply = _invoke_llm(
             text,
             session_id,
             balance,
             lang,
             context=(
-                f"User posted a transaction. Parsed entry (DO NOT change amounts): "
+                (grammar_hint + "\n\n" if grammar_hint else "")
+                + f"User posted a transaction. Parsed entry (DO NOT change amounts): "
                 f"{json.dumps(card, ensure_ascii=False)}. "
                 f"Confirm the entry in {'English' if lang == 'english' else 'Nepali'} "
                 f"with Dr/Cr explanation. Tell them to click Confirm."
@@ -345,7 +380,7 @@ def khata_chat(
             return entry_result
 
     # Accounting language Q&A and general conversation via Ollama
-    context = _framework_context(text) if _is_framework_question(text) else ""
+    context = _combined_context(text)
     reply = _invoke_llm(text, session_id, balance, lang, context=context)
     return {
         "kind": "chat",

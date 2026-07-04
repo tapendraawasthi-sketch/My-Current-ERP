@@ -741,183 +741,158 @@ RULE 15 — MULTI-TRANSACTION:
 SECTION 27: 500 Real-World Sentence Patterns
 
 
-150 REPRESENTATIVE TRAINING EXAMPLES (subset of 500-pattern bank):
+150 REAL-WORLD TRAINING EXAMPLES (categories A–M):
 
-Format: [ID] Sentence → Intent hint
-
-[001] Shyam le 500 tiryo  →  payment_in
-[002] Gita le 750 diyo  →  payment_out_or_gave
-[003] Hari lai 1000 udhaar becheko  →  credit_sale
-[004] ABC Traders lai 1500 udhaar diye  →  credit_sale
-[005] Nepal Suppliers bata 2000 aayo  →  payment_in
-[006] 3500 ko saman kineko  →  purchase
-[007] Shyam le 5000 ko saman kinyo  →  purchase
-[008] Gita bata 10000 udhaar ma saman kineko  →  credit_purchase
-[009] aaja 25000 ko nagad bikri  →  cash_sale
-[010] cash sale 200  →  cash_sale
-[011] 500 ko bikri vayo  →  cash_sale
-[012] Ram lai 750 payment garyo  →  payment_out
-[013] payment received 1000 from Shyam  →  payment_in
-[014] Gita le 1500 jama gareko  →  payment_in
-[015] electricity kharcha 2000  →  expense
-[016] 3500 kharcha garyo  →  expense
-[017] rent kharcha 5000  →  expense
-[018] talab 10000 diyo  →  salary
-[019] salary payment 25000  →  salary
-[020] Gita ko udhaar 200  →  balance_query
-[021] Hari ko balance kati  →  balance_query
-[022] vat sanga becheko 750  →  vat_sale
-[023] input vat purchase 1000  →  vat_purchase
-[024] stock purchase 1500  →  stock_purchase
-[025] Shyam le 2000 udhaar tiryo  →  payment_in
-[026] 3500 udhaar ma becheko Gita lai  →  credit_sale
-[027] nagad ma 5000 kineko  →  purchase
-[028] ABC Traders 500 tiryo ta  →  payment_in_halkhabar
-[029] 25000 tiryo ni  →  payment_in_halkhabar
-[030] Ram lai 200 diye udhaar ma  →  credit_sale
-[031] Shyam le 500 tiryo  →  payment_in
-[032] Gita le 750 diyo  →  payment_out_or_gave
-[033] Hari lai 1000 udhaar becheko  →  credit_sale
-[034] ABC Traders lai 1500 udhaar diye  →  credit_sale
-[035] Nepal Suppliers bata 2000 aayo  →  payment_in
-[036] 3500 ko saman kineko  →  purchase
-[037] Shyam le 5000 ko saman kinyo  →  purchase
-[038] Gita bata 10000 udhaar ma saman kineko  →  credit_purchase
-[039] aaja 25000 ko nagad bikri  →  cash_sale
-[040] cash sale 200  →  cash_sale
-[041] 500 ko bikri vayo  →  cash_sale
-[042] Ram lai 750 payment garyo  →  payment_out
-[043] payment received 1000 from Shyam  →  payment_in
-[044] Gita le 1500 jama gareko  →  payment_in
-[045] electricity kharcha 2000  →  expense
-[046] 3500 kharcha garyo  →  expense
-[047] rent kharcha 5000  →  expense
-[048] talab 10000 diyo  →  salary
-[049] salary payment 25000  →  salary
-[050] Gita ko udhaar 200  →  balance_query
-[051] Hari ko balance kati  →  balance_query
-[052] vat sanga becheko 750  →  vat_sale
-[053] input vat purchase 1000  →  vat_purchase
-[054] stock purchase 1500  →  stock_purchase
-[055] Shyam le 2000 udhaar tiryo  →  payment_in
-[056] 3500 udhaar ma becheko Gita lai  →  credit_sale
-[057] nagad ma 5000 kineko  →  purchase
-[058] ABC Traders 500 tiryo ta  →  payment_in_halkhabar
-[059] 25000 tiryo ni  →  payment_in_halkhabar
-[060] Ram lai 200 diye udhaar ma  →  credit_sale
-[061] Shyam le 500 tiryo  →  payment_in
-[062] Gita le 750 diyo  →  payment_out_or_gave
-[063] Hari lai 1000 udhaar becheko  →  credit_sale
-[064] ABC Traders lai 1500 udhaar diye  →  credit_sale
-[065] Nepal Suppliers bata 2000 aayo  →  payment_in
-[066] 3500 ko saman kineko  →  purchase
-[067] Shyam le 5000 ko saman kinyo  →  purchase
-[068] Gita bata 10000 udhaar ma saman kineko  →  credit_purchase
-[069] aaja 25000 ko nagad bikri  →  cash_sale
-[070] cash sale 200  →  cash_sale
-[071] 500 ko bikri vayo  →  cash_sale
-[072] Ram lai 750 payment garyo  →  payment_out
-[073] payment received 1000 from Shyam  →  payment_in
-[074] Gita le 1500 jama gareko  →  payment_in
-[075] electricity kharcha 2000  →  expense
-[076] 3500 kharcha garyo  →  expense
-[077] rent kharcha 5000  →  expense
-[078] talab 10000 diyo  →  salary
-[079] salary payment 25000  →  salary
-[080] Gita ko udhaar 200  →  balance_query
-[081] Hari ko balance kati  →  balance_query
-[082] vat sanga becheko 750  →  vat_sale
-[083] input vat purchase 1000  →  vat_purchase
-[084] stock purchase 1500  →  stock_purchase
-[085] Shyam le 2000 udhaar tiryo  →  payment_in
-[086] 3500 udhaar ma becheko Gita lai  →  credit_sale
-[087] nagad ma 5000 kineko  →  purchase
-[088] ABC Traders 500 tiryo ta  →  payment_in_halkhabar
-[089] 25000 tiryo ni  →  payment_in_halkhabar
-[090] Ram lai 200 diye udhaar ma  →  credit_sale
-[091] Shyam le 500 tiryo  →  payment_in
-[092] Gita le 750 diyo  →  payment_out_or_gave
-[093] Hari lai 1000 udhaar becheko  →  credit_sale
-[094] ABC Traders lai 1500 udhaar diye  →  credit_sale
-[095] Nepal Suppliers bata 2000 aayo  →  payment_in
-[096] 3500 ko saman kineko  →  purchase
-[097] Shyam le 5000 ko saman kinyo  →  purchase
-[098] Gita bata 10000 udhaar ma saman kineko  →  credit_purchase
-[099] aaja 25000 ko nagad bikri  →  cash_sale
-[100] cash sale 200  →  cash_sale
-[101] 500 ko bikri vayo  →  cash_sale
-[102] Ram lai 750 payment garyo  →  payment_out
-[103] payment received 1000 from Shyam  →  payment_in
-[104] Gita le 1500 jama gareko  →  payment_in
-[105] electricity kharcha 2000  →  expense
-[106] 3500 kharcha garyo  →  expense
-[107] rent kharcha 5000  →  expense
-[108] talab 10000 diyo  →  salary
-[109] salary payment 25000  →  salary
-[110] Gita ko udhaar 200  →  balance_query
-[111] Hari ko balance kati  →  balance_query
-[112] vat sanga becheko 750  →  vat_sale
-[113] input vat purchase 1000  →  vat_purchase
-[114] stock purchase 1500  →  stock_purchase
-[115] Shyam le 2000 udhaar tiryo  →  payment_in
-[116] 3500 udhaar ma becheko Gita lai  →  credit_sale
-[117] nagad ma 5000 kineko  →  purchase
-[118] ABC Traders 500 tiryo ta  →  payment_in_halkhabar
-[119] 25000 tiryo ni  →  payment_in_halkhabar
-[120] Ram lai 200 diye udhaar ma  →  credit_sale
-[121] Shyam le 500 tiryo  →  payment_in
-[122] Gita le 750 diyo  →  payment_out_or_gave
-[123] Hari lai 1000 udhaar becheko  →  credit_sale
-[124] ABC Traders lai 1500 udhaar diye  →  credit_sale
-[125] Nepal Suppliers bata 2000 aayo  →  payment_in
-[126] 3500 ko saman kineko  →  purchase
-[127] Shyam le 5000 ko saman kinyo  →  purchase
-[128] Gita bata 10000 udhaar ma saman kineko  →  credit_purchase
-[129] aaja 25000 ko nagad bikri  →  cash_sale
-[130] cash sale 200  →  cash_sale
-[131] 500 ko bikri vayo  →  cash_sale
-[132] Ram lai 750 payment garyo  →  payment_out
-[133] payment received 1000 from Shyam  →  payment_in
-[134] Gita le 1500 jama gareko  →  payment_in
-[135] electricity kharcha 2000  →  expense
-[136] 3500 kharcha garyo  →  expense
-[137] rent kharcha 5000  →  expense
-[138] talab 10000 diyo  →  salary
-[139] salary payment 25000  →  salary
-[140] Gita ko udhaar 200  →  balance_query
-[141] Hari ko balance kati  →  balance_query
-[142] vat sanga becheko 750  →  vat_sale
-[143] input vat purchase 1000  →  vat_purchase
-[144] stock purchase 1500  →  stock_purchase
-[145] Shyam le 2000 udhaar tiryo  →  payment_in
-[146] 3500 udhaar ma becheko Gita lai  →  credit_sale
-[147] nagad ma 5000 kineko  →  purchase
-[148] ABC Traders 500 tiryo ta  →  payment_in_halkhabar
-[149] 25000 tiryo ni  →  payment_in_halkhabar
-[150] Ram lai 200 diye udhaar ma  →  credit_sale
-
-ADDITIONAL HALKHABAR/MIXED VARIANTS:
-
-[151] 500 tiryo ram bata
-[152] ram 500 kinyo ta
-[153] udhaar ma becheko 2000 gita lai
-[154] aaja ko sale 5000 vayo
-[155] payment garyo 1500 supplier lai
-[156] kharcha 750 bijuli ko
-[157] talab diyo 10000
-[158] k xa ram ko udhaar
-[159] thaha xaina kati ho
-[160] 500 paisa tiryo ni
-[161] credit diye 2000 customer lai
-[162] cash ma kinyo saman
-[163] shym le 500 tiryo
-[164] 500 tireko ram le
-[165] aayo 2000 ram bata
-[166] gita lai 3500 udhaar
-[167] expense record garyo 500
-[168] nagad bikri 8500 aaja
-[169] hijo 2000 ko kharid
-[170] bholi tirna baki 5000
+[001] Ram le 500 ko saman kinyo  →  purchase
+[002] Ramle paach saya ko maal kine  →  purchase
+[003] 500 ko stuff Ram le kinyo  →  purchase
+[004] Ram 500 ko saman kineko  →  purchase
+[005] Ramle kharid garyo 500 ko  →  purchase
+[006] Ram le dal chawal kinyo hajar ko  →  purchase
+[007] Ramle 2000 ko tarkari kine  →  purchase
+[008] Ram 2k ko groceries kine  →  purchase
+[009] hajar ko daal Ramle kinyo  →  purchase
+[010] Ram le 1000 rupaiyama daal kine  →  purchase
+[011] Ram bata 500 ko maal kinyo  →  purchase
+[012] Ramle 5 hajar ko maal aako xa  →  purchase
+[013] Ramle 500 ko kharid gareko xa  →  purchase
+[014] Ram ne 500 ka saman kharida kiya  →  purchase
+[015] Ram ko 500 ko kharid  →  purchase
+[016] Ram lai udhaar ma 500 ko saman diye  →  credit_sale
+[017] Ram lai 500 udhaar diye  →  credit_sale
+[018] Ram udhaar 500 liyo  →  credit_sale
+[019] Ram lai credit ma 500 diyo  →  credit_sale
+[020] 500 ko udhaar Ram lai diye  →  credit_sale
+[021] Ram lai 500 ko maal credit ma diye  →  credit_sale
+[022] Ram khasai 500 ko maal liyo  →  credit_sale
+[023] Ramko account ma 500 dhalne  →  credit_sale
+[024] Ram lai 500 bujhaaidiyou  →  credit_sale
+[025] Ram lai saman diye paisa pachhi tirncha vanera  →  credit_sale
+[026] Ram lai paisa nabujhai maal diye  →  credit_sale
+[027] Ram lai 500 ko maal udhaarma  →  credit_sale
+[028] Ram le 500 ko udhaar liye  →  credit_sale
+[029] Ram lai 500 credit diye  →  credit_sale
+[030] Ram lai 500 ko account ma rakhne  →  credit_sale
+[031] Ram le 500 tiryo  →  payment_in
+[032] Ramle 500 paisa diye  →  payment_in
+[033] Ram ko paisa aayo 500  →  payment_in
+[034] Ram le payment garyo 500  →  payment_in
+[035] Ram le 500 bujhayo  →  payment_in
+[036] Ram le paisa tireko xa  →  payment_in
+[037] Ram ko udhaar tiryo  →  payment_in
+[038] Ram le 500 settle garyo  →  payment_in
+[039] 500 Ram le diye  →  payment_in
+[040] Ram le paisa pathaayo 500  →  payment_in
+[041] Ram bata 500 aayo  →  payment_in
+[042] Ram ko 500 paayo maile  →  payment_in
+[043] Ram le finally tiryo paisa  →  payment_in
+[044] Ram le 1k tiryo 500 baki xa  →  payment_in
+[045] Ram ko udhaar tiryo  →  payment_in
+[046] cash ma 500 ko chai bechein  →  cash_sale
+[047] 500 ma chai becheko  →  cash_sale
+[048] 500 ko tea sell garein  →  cash_sale
+[049] chai nakit ma bechein 500  →  cash_sale
+[050] 500 ko chiiya cash ma bechyo  →  cash_sale
+[051] cash ma bechyo 500 ko saman  →  cash_sale
+[052] nagad 500 ma bechein  →  cash_sale
+[053] 500 nakit liera chai diye  →  cash_sale
+[054] chai 500 ma bechyo nakit  →  cash_sale
+[055] 500 chai nagi paisa liera  →  cash_sale
+[056] bijuli kharcha 300  →  expense
+[057] 300 bijuli kharcha  →  expense
+[058] bijuli ko lagi 300 tiryo  →  expense
+[059] light bill 300 aayo  →  expense
+[060] 300 electricity ko kharcha  →  expense
+[061] bijuli 300 ko bill tiryo  →  expense
+[062] 300 bijuli kharcha vayo  →  expense
+[063] bijuli kharcha 300 diyo  →  expense
+[064] NEA bill 300 tiryo  →  expense
+[065] bijuli 300 paisa kharcha vayo  →  expense
+[066] petrol 500 ko kharcha garein  →  expense
+[067] 500 ko petrol kharcha  →  expense
+[068] pasal bhada tiryo 5000  →  expense
+[069] bhada kharcha 5000  →  expense
+[070] rent tiryo 5000  →  expense
+[071] staff lai salary diye 25000  →  salary
+[072] 25k talab diye karmachari lai  →  salary
+[073] staff ko salary 25 hajar tiryo  →  salary
+[074] talab diye sab lai 25 hajar  →  salary
+[075] 25000 salary payment garein  →  salary
+[076] karmachari lai 25k pay garein  →  salary
+[077] staff payment 25000 ko  →  salary
+[078] talab tirein sabailai 25 hajar  →  salary
+[079] salary 25 hajar diye aaja  →  salary
+[080] karmachari talab 25000 settle garein  →  salary
+[081] Ram bata 10000 saapo liye  →  loan
+[082] 10k loan liye Ram bata  →  loan
+[083] Ram le loan diye 10000  →  loan
+[084] 10 hajar saapo liye  →  loan
+[085] loan liye Ram le diyeko  →  loan
+[086] bank bata 50000 loan liye  →  loan
+[087] 50k loan bhayo bank bata  →  loan
+[088] Ram lai 10 hajar udhar diye  →  loan_or_credit
+[089] Ram ko 10k tiryo saapo  →  loan_repayment
+[090] saapo tiryo Ram lai 5000  →  loan_repayment
+[091] maal aayo 5000 ko  →  stock_in
+[092] 5k ko stock aayo  →  stock_in
+[093] new stock aayo 50k ko  →  stock_in
+[094] maal saakiyo  →  stock_out
+[095] stock out vayo  →  stock_out
+[096] maal baraabar sakiyo  →  stock_out
+[097] inventory 5000 ko kinyo  →  stock_purchase
+[098] store ma maal bharna 5000 ko  →  stock_in
+[099] godam bhari maal aayo  →  stock_in
+[100] maal pharkayo  →  stock_return
+[101] 13% VAT sanga 500 ko maal  →  vat
+[102] VAT sametako 500 thiyo  →  vat
+[103] 500 ma VAT jodda kati huncha?  →  vat_query
+[104] VAT nikaal 500 bata  →  vat
+[105] ex-VAT price 443 VAT 57 total 500  →  vat
+[106] TDS 15% kaatyo 1000 bata  →  tds
+[107] 150 TDS kaatyo 1000 ko payment ma  →  tds
+[108] withholding tax 15% katyo  →  tds
+[109] TDS katyo pheri tirnu parcha IRD ma  →  tds
+[110] VAT return file garnu parcha  →  vat
+[111] Ram ko kati baaki xa?  →  balance_query
+[112] Ram lai kati diyeko thiyo?  →  balance_query
+[113] Ram bata kati receivable xa?  →  balance_query
+[114] Ram ko udhaar kati xa?  →  balance_query
+[115] kati paisa baaki xa Ramko?  →  balance_query
+[116] aaj ko sales kati vayo?  →  report_query
+[117] total kharcha kati xa?  →  report_query
+[118] naafa kati vayo?  →  report_query
+[119] ghaata xa ki naafa xa?  →  report_query
+[120] balance sheet ma kati asset xa?  →  report_query
+[121] Ram ko account hera  →  info_request
+[122] Ram ko hisab dekhaunus  →  info_request
+[123] Ram ko ledger check garnus  →  info_request
+[124] Ram sanga kati lenden xa?  →  info_request
+[125] Ram bata kati receivable xa?  →  info_request
+[126] kati kasle diyeka xan?  →  info_request
+[127] kati kasle tireka xan?  →  info_request
+[128] aajko sales report dekhaunus  →  info_request
+[129] monthly kharcha kati xa?  →  info_request
+[130] profit loss dekhaunu  →  info_request
+[131] Ram lai 500 udhaar diye aaja ani tiryo 200 voli  →  multi_transaction
+[132] Ram le 500 ko maal kinyo aani 200 le return garyo  →  multi_transaction
+[133] Ram le ek hajar diye tin saya baaki xa  →  partial_payment
+[134] Ram ko total 2000 baaki thiyo 500 tiryo 1500 xu  →  partial_payment
+[135] pasal ma 5000 ko maal kinyo 3000 cash 2000 udhaar  →  split_payment
+[136] saman 10000 ko ayo 5000 nakit 5000 udhaar ma  →  split_payment
+[137] Ram lai 1000 diye 500 chai 500 momo ko  →  itemized
+[138] Ram 1000 le kinyo 500 sell garyo baaki 500 ko maal xa  →  mixed
+[139] aaj 5 jana customer aaye sabailai 2000 ko kharid garyo  →  multi_customer
+[140] total 10000 ko bikri aaj cash 7000 udhaar 3000  →  split_sale
+[141] dai ke xa halkhaabar? paisa tirnu paryo hai  →  informal_reminder
+[142] bhai 500 ko kaam gareko thiyo tyo tiryo?  →  informal_query
+[143] yaar Ram ko 1000 baaki xa bhanideu  →  informal_reminder
+[144] sathi payment garyo ki xaina?  →  informal_query
+[145] yaar 5k ugauna parcha Ram bata  →  informal_collect
+[146] dai Ram lai bhanunu 500 tirnu parcha  →  informal_reminder
+[147] sathi Ram bata kati aaucha jasto lagcha?  →  informal_query
+[148] bhai aaj kaam kasto vayo kasai paisa aayo?  →  informal_query
+[149] dai aaj dherei bikri vayo 10k ko  →  informal_report
+[150] yaar naafa dherei bhayo aaj  →  informal_report
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 खण्ड 28: क्रिया संयुग्मन तालिका

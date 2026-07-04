@@ -68,7 +68,18 @@ MODEL_NAME=ekhata-ca:7b
 KHATA_USE_STRUCTURED_PARSE=true
 ```
 
-## 5. User feedback loop
+## 6. Nepali grammar reference (NLU / Ollama)
+
+Complete Nepali grammar knowledge for interpreting user messages (Devanagari, Roman, Halkhabar, code-switch):
+
+- **Source:** `data/ekhata/source/nepali-grammar-reference.txt` (33 sections)
+- **Index:** `data/ekhata/nepali-grammar-index.json`
+- **Rebuild:** `python3 scripts/build_nepali_grammar_reference.py --force`
+- **Ingest to ChromaDB:** `python3 erp_bot/scripts/ingest_nepali_grammar.py`
+
+Ollama chat (`erp_bot/src/khata/khata_chat.py`) retrieves relevant grammar sections automatically for Nepali/mixed input.
+
+## 7. User feedback loop
 
 Confirmed entries in the e-KHATA panel are saved to:
 - Browser `localStorage` (`ekhata-training-feedback-v1`)

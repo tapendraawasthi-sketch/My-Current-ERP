@@ -718,83 +718,177 @@ RULE 15 — MULTI-TRANSACTION:
 
 
 def section_27_examples() -> str:
-    parties = ["Ram", "Shyam", "Gita", "Hari", "ABC Traders", "Nepal Suppliers"]
-    amounts = [200, 500, 750, 1000, 1500, 2000, 3500, 5000, 10000, 25000]
     lines = [hdr(27, "५०० वटा वास्तविक-संसारका वाक्य", "500 Real-World Sentence Patterns")]
-    lines.append("150 REPRESENTATIVE TRAINING EXAMPLES (subset of 500-pattern bank):\n")
-    lines.append("Format: [ID] Sentence → Intent hint\n")
+    lines.append("150 REAL-WORLD TRAINING EXAMPLES (categories A–M):\n")
 
-    patterns: list[tuple[str, str]] = [
-        ("{p} le {a} tiryo", "payment_in"),
-        ("{p} le {a} diyo", "payment_out_or_gave"),
-        ("{p} lai {a} udhaar becheko", "credit_sale"),
-        ("{p} lai {a} udhaar diye", "credit_sale"),
-        ("{p} bata {a} aayo", "payment_in"),
-        ("{a} ko saman kineko", "purchase"),
-        ("{p} le {a} ko saman kinyo", "purchase"),
-        ("{p} bata {a} udhaar ma saman kineko", "credit_purchase"),
-        ("aaja {a} ko nagad bikri", "cash_sale"),
-        ("cash sale {a}", "cash_sale"),
-        ("{a} ko bikri vayo", "cash_sale"),
-        ("{p} lai {a} payment garyo", "payment_out"),
-        ("payment received {a} from {p}", "payment_in"),
-        ("{p} le {a} jama gareko", "payment_in"),
-        ("electricity kharcha {a}", "expense"),
-        ("{a} kharcha garyo", "expense"),
-        ("rent kharcha {a}", "expense"),
-        ("talab {a} diyo", "salary"),
-        ("salary payment {a}", "salary"),
-        ("{p} ko udhaar {a}", "balance_query"),
-        ("{p} ko balance kati", "balance_query"),
-        ("vat sanga becheko {a}", "vat_sale"),
-        ("input vat purchase {a}", "vat_purchase"),
-        ("stock purchase {a}", "stock_purchase"),
-        ("{p} le {a} udhaar tiryo", "payment_in"),
-        ("{a} udhaar ma becheko {p} lai", "credit_sale"),
-        ("nagad ma {a} kineko", "purchase"),
-        ("{p} 500 tiryo ta", "payment_in_halkhabar"),
-        ("{a} tiryo ni", "payment_in_halkhabar"),
-        ("{p} lai {a} diye udhaar ma", "credit_sale"),
+    examples = [
+        # [A] PURCHASE
+        ("Ram le 500 ko saman kinyo", "purchase"),
+        ("Ramle paach saya ko maal kine", "purchase"),
+        ("500 ko stuff Ram le kinyo", "purchase"),
+        ("Ram 500 ko saman kineko", "purchase"),
+        ("Ramle kharid garyo 500 ko", "purchase"),
+        ("Ram le dal chawal kinyo hajar ko", "purchase"),
+        ("Ramle 2000 ko tarkari kine", "purchase"),
+        ("Ram 2k ko groceries kine", "purchase"),
+        ("hajar ko daal Ramle kinyo", "purchase"),
+        ("Ram le 1000 rupaiyama daal kine", "purchase"),
+        ("Ram bata 500 ko maal kinyo", "purchase"),
+        ("Ramle 5 hajar ko maal aako xa", "purchase"),
+        ("Ramle 500 ko kharid gareko xa", "purchase"),
+        ("Ram ne 500 ka saman kharida kiya", "purchase"),
+        ("Ram ko 500 ko kharid", "purchase"),
+        # [B] CREDIT SALE / UDHAAR
+        ("Ram lai udhaar ma 500 ko saman diye", "credit_sale"),
+        ("Ram lai 500 udhaar diye", "credit_sale"),
+        ("Ram udhaar 500 liyo", "credit_sale"),
+        ("Ram lai credit ma 500 diyo", "credit_sale"),
+        ("500 ko udhaar Ram lai diye", "credit_sale"),
+        ("Ram lai 500 ko maal credit ma diye", "credit_sale"),
+        ("Ram khasai 500 ko maal liyo", "credit_sale"),
+        ("Ramko account ma 500 dhalne", "credit_sale"),
+        ("Ram lai 500 bujhaaidiyou", "credit_sale"),
+        ("Ram lai saman diye paisa pachhi tirncha vanera", "credit_sale"),
+        ("Ram lai paisa nabujhai maal diye", "credit_sale"),
+        ("Ram lai 500 ko maal udhaarma", "credit_sale"),
+        ("Ram le 500 ko udhaar liye", "credit_sale"),
+        ("Ram lai 500 credit diye", "credit_sale"),
+        ("Ram lai 500 ko account ma rakhne", "credit_sale"),
+        # [C] PAYMENT RECEIVED
+        ("Ram le 500 tiryo", "payment_in"),
+        ("Ramle 500 paisa diye", "payment_in"),
+        ("Ram ko paisa aayo 500", "payment_in"),
+        ("Ram le payment garyo 500", "payment_in"),
+        ("Ram le 500 bujhayo", "payment_in"),
+        ("Ram le paisa tireko xa", "payment_in"),
+        ("Ram ko udhaar tiryo", "payment_in"),
+        ("Ram le 500 settle garyo", "payment_in"),
+        ("500 Ram le diye", "payment_in"),
+        ("Ram le paisa pathaayo 500", "payment_in"),
+        ("Ram bata 500 aayo", "payment_in"),
+        ("Ram ko 500 paayo maile", "payment_in"),
+        ("Ram le finally tiryo paisa", "payment_in"),
+        ("Ram le 1k tiryo 500 baki xa", "payment_in"),
+        ("Ram ko udhaar tiryo", "payment_in"),
+        # [D] CASH SALE
+        ("cash ma 500 ko chai bechein", "cash_sale"),
+        ("500 ma chai becheko", "cash_sale"),
+        ("500 ko tea sell garein", "cash_sale"),
+        ("chai nakit ma bechein 500", "cash_sale"),
+        ("500 ko chiiya cash ma bechyo", "cash_sale"),
+        ("cash ma bechyo 500 ko saman", "cash_sale"),
+        ("nagad 500 ma bechein", "cash_sale"),
+        ("500 nakit liera chai diye", "cash_sale"),
+        ("chai 500 ma bechyo nakit", "cash_sale"),
+        ("500 chai nagi paisa liera", "cash_sale"),
+        # [E] EXPENSE
+        ("bijuli kharcha 300", "expense"),
+        ("300 bijuli kharcha", "expense"),
+        ("bijuli ko lagi 300 tiryo", "expense"),
+        ("light bill 300 aayo", "expense"),
+        ("300 electricity ko kharcha", "expense"),
+        ("bijuli 300 ko bill tiryo", "expense"),
+        ("300 bijuli kharcha vayo", "expense"),
+        ("bijuli kharcha 300 diyo", "expense"),
+        ("NEA bill 300 tiryo", "expense"),
+        ("bijuli 300 paisa kharcha vayo", "expense"),
+        ("petrol 500 ko kharcha garein", "expense"),
+        ("500 ko petrol kharcha", "expense"),
+        ("pasal bhada tiryo 5000", "expense"),
+        ("bhada kharcha 5000", "expense"),
+        ("rent tiryo 5000", "expense"),
+        # [F] SALARY
+        ("staff lai salary diye 25000", "salary"),
+        ("25k talab diye karmachari lai", "salary"),
+        ("staff ko salary 25 hajar tiryo", "salary"),
+        ("talab diye sab lai 25 hajar", "salary"),
+        ("25000 salary payment garein", "salary"),
+        ("karmachari lai 25k pay garein", "salary"),
+        ("staff payment 25000 ko", "salary"),
+        ("talab tirein sabailai 25 hajar", "salary"),
+        ("salary 25 hajar diye aaja", "salary"),
+        ("karmachari talab 25000 settle garein", "salary"),
+        # [G] LOAN
+        ("Ram bata 10000 saapo liye", "loan"),
+        ("10k loan liye Ram bata", "loan"),
+        ("Ram le loan diye 10000", "loan"),
+        ("10 hajar saapo liye", "loan"),
+        ("loan liye Ram le diyeko", "loan"),
+        ("bank bata 50000 loan liye", "loan"),
+        ("50k loan bhayo bank bata", "loan"),
+        ("Ram lai 10 hajar udhar diye", "loan_or_credit"),
+        ("Ram ko 10k tiryo saapo", "loan_repayment"),
+        ("saapo tiryo Ram lai 5000", "loan_repayment"),
+        # [H] STOCK
+        ("maal aayo 5000 ko", "stock_in"),
+        ("5k ko stock aayo", "stock_in"),
+        ("new stock aayo 50k ko", "stock_in"),
+        ("maal saakiyo", "stock_out"),
+        ("stock out vayo", "stock_out"),
+        ("maal baraabar sakiyo", "stock_out"),
+        ("inventory 5000 ko kinyo", "stock_purchase"),
+        ("store ma maal bharna 5000 ko", "stock_in"),
+        ("godam bhari maal aayo", "stock_in"),
+        ("maal pharkayo", "stock_return"),
+        # [I] VAT / TAX
+        ("13% VAT sanga 500 ko maal", "vat"),
+        ("VAT sametako 500 thiyo", "vat"),
+        ("500 ma VAT jodda kati huncha?", "vat_query"),
+        ("VAT nikaal 500 bata", "vat"),
+        ("ex-VAT price 443 VAT 57 total 500", "vat"),
+        ("TDS 15% kaatyo 1000 bata", "tds"),
+        ("150 TDS kaatyo 1000 ko payment ma", "tds"),
+        ("withholding tax 15% katyo", "tds"),
+        ("TDS katyo pheri tirnu parcha IRD ma", "tds"),
+        ("VAT return file garnu parcha", "vat"),
+        # [J] ACCOUNTING QUESTIONS
+        ("Ram ko kati baaki xa?", "balance_query"),
+        ("Ram lai kati diyeko thiyo?", "balance_query"),
+        ("Ram bata kati receivable xa?", "balance_query"),
+        ("Ram ko udhaar kati xa?", "balance_query"),
+        ("kati paisa baaki xa Ramko?", "balance_query"),
+        ("aaj ko sales kati vayo?", "report_query"),
+        ("total kharcha kati xa?", "report_query"),
+        ("naafa kati vayo?", "report_query"),
+        ("ghaata xa ki naafa xa?", "report_query"),
+        ("balance sheet ma kati asset xa?", "report_query"),
+        # [K] INFORMATION REQUESTS
+        ("Ram ko account hera", "info_request"),
+        ("Ram ko hisab dekhaunus", "info_request"),
+        ("Ram ko ledger check garnus", "info_request"),
+        ("Ram sanga kati lenden xa?", "info_request"),
+        ("Ram bata kati receivable xa?", "info_request"),
+        ("kati kasle diyeka xan?", "info_request"),
+        ("kati kasle tireka xan?", "info_request"),
+        ("aajko sales report dekhaunus", "info_request"),
+        ("monthly kharcha kati xa?", "info_request"),
+        ("profit loss dekhaunu", "info_request"),
+        # [L] COMPLEX
+        ("Ram lai 500 udhaar diye aaja ani tiryo 200 voli", "multi_transaction"),
+        ("Ram le 500 ko maal kinyo aani 200 le return garyo", "multi_transaction"),
+        ("Ram le ek hajar diye tin saya baaki xa", "partial_payment"),
+        ("Ram ko total 2000 baaki thiyo 500 tiryo 1500 xu", "partial_payment"),
+        ("pasal ma 5000 ko maal kinyo 3000 cash 2000 udhaar", "split_payment"),
+        ("saman 10000 ko ayo 5000 nakit 5000 udhaar ma", "split_payment"),
+        ("Ram lai 1000 diye 500 chai 500 momo ko", "itemized"),
+        ("Ram 1000 le kinyo 500 sell garyo baaki 500 ko maal xa", "mixed"),
+        ("aaj 5 jana customer aaye sabailai 2000 ko kharid garyo", "multi_customer"),
+        ("total 10000 ko bikri aaj cash 7000 udhaar 3000", "split_sale"),
+        # [M] INFORMAL GREETINGS + BUSINESS
+        ("dai ke xa halkhaabar? paisa tirnu paryo hai", "informal_reminder"),
+        ("bhai 500 ko kaam gareko thiyo tyo tiryo?", "informal_query"),
+        ("yaar Ram ko 1000 baaki xa bhanideu", "informal_reminder"),
+        ("sathi payment garyo ki xaina?", "informal_query"),
+        ("yaar 5k ugauna parcha Ram bata", "informal_collect"),
+        ("dai Ram lai bhanunu 500 tirnu parcha", "informal_reminder"),
+        ("sathi Ram bata kati aaucha jasto lagcha?", "informal_query"),
+        ("bhai aaj kaam kasto vayo kasai paisa aayo?", "informal_query"),
+        ("dai aaj dherei bikri vayo 10k ko", "informal_report"),
+        ("yaar naafa dherei bhayo aaj", "informal_report"),
     ]
 
-    n = 1
-    pi = 0
-    while n <= 150:
-        pat, hint = patterns[pi % len(patterns)]
-        p = parties[n % len(parties)]
-        a = amounts[n % len(amounts)]
-        sent = pat.format(p=p, a=a)
-        lines.append(f"[{n:03d}] {sent}  →  {hint}")
-        n += 1
-        pi += 1
-
-    lines.append("\nADDITIONAL HALKHABAR/MIXED VARIANTS:\n")
-    extras = [
-        "500 tiryo ram bata",
-        "ram 500 kinyo ta",
-        "udhaar ma becheko 2000 gita lai",
-        "aaja ko sale 5000 vayo",
-        "payment garyo 1500 supplier lai",
-        "kharcha 750 bijuli ko",
-        "talab diyo 10000",
-        "k xa ram ko udhaar",
-        "thaha xaina kati ho",
-        "500 paisa tiryo ni",
-        "credit diye 2000 customer lai",
-        "cash ma kinyo saman",
-        "shym le 500 tiryo",
-        "500 tireko ram le",
-        "aayo 2000 ram bata",
-        "gita lai 3500 udhaar",
-        "expense record garyo 500",
-        "nagad bikri 8500 aaja",
-        "hijo 2000 ko kharid",
-        "bholi tirna baki 5000",
-    ]
-    for i, ex in enumerate(extras, 151):
-        if i > 170:
-            break
-        lines.append(f"[{i:03d}] {ex}")
+    for i, (sent, hint) in enumerate(examples, 1):
+        lines.append(f"[{i:03d}] {sent}  →  {hint}")
 
     return "\n".join(lines) + "\n"
 
@@ -1012,18 +1106,26 @@ BUILDERS = [
 
 
 def main() -> None:
-    header = OUT.read_text(encoding="utf-8")
-    if not header.strip():
+    import sys
+    force = "--force" in sys.argv
+
+    header_lines = []
+    if OUT.exists():
+        existing = OUT.read_text(encoding="utf-8")
+        if force:
+            # Keep only the document header block (before first section delimiter)
+            cut = existing.find(DELIM)
+            header_lines = [existing[:cut].rstrip()] if cut > 0 else [existing.split(DELIM)[0].rstrip()]
+        elif "खण्ड 1:" in existing:
+            print("Sections already present; use --force to rebuild.")
+            return
+        else:
+            header_lines = [existing.rstrip()]
+    else:
         raise SystemExit("Expected existing header in nepali-grammar-reference.txt")
 
     body = "".join(fn() for fn in BUILDERS) + footer()
-
-    # Avoid duplicating if re-run
-    if "खण्ड 1:" in header:
-        print("Sections already present; skipping append.")
-        return
-
-    OUT.write_text(header.rstrip() + "\n" + body, encoding="utf-8")
+    OUT.write_text(header_lines[0] + "\n" + body, encoding="utf-8")
 
     text = OUT.read_text(encoding="utf-8")
     size = OUT.stat().st_size
