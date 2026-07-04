@@ -1,4 +1,5 @@
-// Falcon AI — powered by local erp_bot (Ollama + ChromaDB, no API keys)
+// Falcon AI — Enhanced with Falcon Brain (no API keys required)
+// Now powered by advanced NLP, code structure parsing, and precision response composition
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -11,9 +12,11 @@ import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/
 import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId } from "../lib/erpBotClient";
 import {
   askSmartAssistant,
+  askSmartAssistantAsync,
   buildErpBotContextBlock,
   type SmartAssistantContext,
 } from "../lib/falcon/smartAssistant";
+import { getCodebaseStats } from "../lib/falcon/codeStructureParser";
 
 let _activeController: AbortController | null = null;
 
@@ -32,7 +35,16 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your ERP guide for Sutra. I read your app's screens and code structure to answer questions about vouchers, reports, and navigation.`;
+const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your intelligent ERP assistant for Sutra.
+
+**What I can do:**
+- Answer questions about any ERP module, voucher, or report
+- Provide step-by-step instructions tailored to your question
+- Navigate you to any screen in the system
+- Explain accounting concepts and Nepal tax rules
+- Troubleshoot common errors
+
+I read your ERP's code structure in real-time, so I always give you accurate, up-to-date answers. **Ask me anything!**`;
 
 function toAssistantContext(ctx: FalconContext): SmartAssistantContext {
   return {
@@ -42,17 +54,18 @@ function toAssistantContext(ctx: FalconContext): SmartAssistantContext {
   };
 }
 
-function buildSmartReply(
+async function buildSmartReply(
   text: string,
   context: FalconContext,
   history: FalconChatMessage[],
-): FalconChatMessage {
+): Promise<FalconChatMessage> {
   const convo = history
     .filter((m) => m.role === "user" || m.role === "assistant")
     .slice(-6)
     .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
 
-  const result = askSmartAssistant(text, toAssistantContext(context), convo);
+  // Use async version for web search support
+  const result = await askSmartAssistantAsync(text, toAssistantContext(context), convo);
 
   return {
     id: genId(),
@@ -190,7 +203,7 @@ export const useFalconStore = create<FalconState>()(
         set({ botOnline: status.online, indexedFiles: status.indexedFiles });
 
         if (!status.online) {
-          const smartMsg = buildSmartReply(cleanText, state.context, state.messages);
+          const smartMsg = await buildSmartReply(cleanText, state.context, state.messages);
           set((s) => ({
             messages: [...s.messages, smartMsg],
             isTyping: false,
@@ -268,7 +281,8 @@ export const useFalconStore = create<FalconState>()(
           if (isAbort) {
             errorContent = "_(Response cancelled)_";
           } else if (err?.message?.includes("Failed to fetch")) {
-            const smart = buildSmartReply(cleanText, state.context, state.messages);
+            // Fall back to local Falcon Brain when remote bot fails
+            const smart = await buildSmartReply(cleanText, state.context, state.messages);
             errorContent = smart.content;
           } else {
             errorContent = `**Error:** ${err?.message || "Could not reach ERP bot."}`;

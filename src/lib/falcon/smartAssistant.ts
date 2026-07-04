@@ -1,11 +1,16 @@
 /**
- * Falcon smart assistant — answers from your actual ERP structure:
- * 1. Reasoning engine + 836-entry knowledge base (intent + entity matching)
- * 2. Build-time page index (App.tsx routes + page headers)
- * 3. Curated module docs (erpCodeKnowledge)
+ * Falcon smart assistant — ENHANCED with Falcon Brain AI
+ * 
+ * This is the unified intelligent assistant that:
+ * 1. Uses advanced NLP to understand user intent
+ * 2. Reads ERP code structure in real-time
+ * 3. Answers ONLY what is asked (precision responses)
+ * 4. Supports web search when needed
+ * 
+ * Now powered by the Falcon Brain engine for superior intelligence.
  */
 
-import { askFalcon } from "./engine";
+import { askFalconBrainSync, askFalconBrain, type FalconResponse, type FalconContext } from "./falconBrain";
 import { findPagesByQuery, findPageByRoute, formatPageAnswer } from "./pageIndexSearch";
 import { getModuleContext } from "./erpCodeKnowledge";
 import {
@@ -26,139 +31,74 @@ export interface SmartAssistantResult {
   sources: string[];
   suggestions: string[];
   confidence: number;
-  mode: "knowledge-base" | "page-index" | "module-docs" | "hybrid";
+  mode: "falcon-brain" | "knowledge-base" | "page-index" | "module-docs" | "hybrid";
   matchedId?: string;
-}
-
-const NAV_INTENT =
-  /\b(where|how\s+to\s+(open|go|find|reach)|navigate|menu|screen|page|open)\b/i;
-const CODE_INTENT = /\b(code|component|file|implement|function|typescript|react)\b/i;
-
-function isNavigationQuestion(query: string): boolean {
-  return NAV_INTENT.test(query);
-}
-
-function isCodeQuestion(query: string): boolean {
-  return CODE_INTENT.test(query);
-}
-
-function buildPageIndexAnswer(query: string, route?: string): SmartAssistantResult | null {
-  const pages = findPagesByQuery(query, 3);
-  const current = findPageByRoute(route);
-
-  if (pages.length === 0 && !current) return null;
-
-  const primary = pages[0] ?? current!;
-  const lines = [formatPageAnswer(primary)];
-
-  if (pages.length > 1) {
-    lines.push("", "**Related screens:**");
-    pages.slice(1).forEach((p) => {
-      lines.push(`- **${p.title}** — ${p.menuPath || p.route}`);
-    });
-  }
-
-  if (isCodeQuestion(query)) {
-    lines.push(
-      "",
-      "_This answer is from your indexed source code (App.tsx routing + page headers)._",
-    );
-  }
-
-  return {
-    answer: lines.join("\n"),
-    sources: [primary.file, "App.tsx", `page-index (${GENERATED_PAGE_INDEX_BUILT_AT.slice(0, 10)})`],
-    suggestions: pages.slice(0, 3).map((p) => `How do I use ${p.title}?`),
-    confidence: 70,
-    mode: "page-index",
-  };
-}
-
-function buildHybridAnswer(
-  kbAnswer: string,
-  pageEntry: ReturnType<typeof findPageByRoute>,
-  moduleKey?: string,
-): SmartAssistantResult {
-  const parts = [kbAnswer];
-  const sources = ["knowledge-base"];
-
-  if (pageEntry) {
-    parts.push("", "---", formatPageAnswer(pageEntry));
-    sources.push(pageEntry.file);
-  }
-
-  return {
-    answer: parts.join("\n"),
-    sources,
-    suggestions: buildModuleSuggestions(moduleKey),
-    confidence: 80,
-    mode: "hybrid",
-  };
+  responseType?: string;
+  processingTimeMs?: number;
 }
 
 /**
- * Offline / built-in Falcon brain. Uses query intent + ERP code index + KB.
+ * Main entry point for the enhanced Falcon AI assistant.
+ * Uses the new Falcon Brain engine for intelligent responses.
  */
 export function askSmartAssistant(
   query: string,
   context: SmartAssistantContext = {},
   conversationHistory?: Array<{ role: "user" | "assistant"; content: string }>,
 ): SmartAssistantResult {
-  const route = context.route;
+  // Build Falcon context
+  const falconContext: FalconContext = {
+    currentRoute: context.route,
+    screenTitle: context.screenTitle,
+    companyName: context.companyName,
+    conversationHistory,
+  };
 
-  // 1. Navigation / "where is X" → page index from actual routes
-  if (isNavigationQuestion(query) || isCodeQuestion(query)) {
-    const pageResult = buildPageIndexAnswer(query, route);
-    if (pageResult && pageResult.confidence >= 50) return pageResult;
-  }
+  // Use the new Falcon Brain engine (synchronous version for compatibility)
+  const response = askFalconBrainSync(query, falconContext);
 
-  // 2. Knowledge base engine (836 Q&A, intent + entity detection)
-  const kb = askFalcon(query, route, conversationHistory);
-
-  // 3. Enrich with current screen from code index when on a known page
-  const pageEntry = findPageByRoute(route);
-  const moduleKey = resolveBuiltinModuleKey(query, route);
-
-  if (kb.confidence >= 45) {
-    if (pageEntry && kb.confidence < 75) {
-      return {
-        ...buildHybridAnswer(kb.answer, pageEntry, moduleKey),
-        matchedId: kb.matchedId,
-        suggestions: kb.suggestions.length ? kb.suggestions : buildModuleSuggestions(moduleKey),
-      };
-    }
-    return {
-      answer: kb.answer,
-      sources: ["knowledge-base", kb.matchedId ? `kb:${kb.matchedId}` : "kb"],
-      suggestions: kb.suggestions,
-      confidence: kb.confidence,
-      mode: "knowledge-base",
-      matchedId: kb.matchedId,
-    };
-  }
-
-  // 4. Page index fallback for module-like questions
-  const pageFallback = buildPageIndexAnswer(query, route);
-  if (pageFallback) return pageFallback;
-
-  // 5. Curated module documentation
-  const moduleAnswer = buildBuiltinErpAnswer(query, route);
-  if (!moduleAnswer.includes("Ask about a specific screen")) {
-    return {
-      answer: moduleAnswer,
-      sources: ["module-docs", moduleKey ?? "overview"],
-      suggestions: buildModuleSuggestions(moduleKey),
-      confidence: 55,
-      mode: "module-docs",
-    };
-  }
-
+  // Convert to SmartAssistantResult format
   return {
-    answer: moduleAnswer,
-    sources: ["module-docs"],
-    suggestions: buildModuleSuggestions(),
-    confidence: 30,
-    mode: "module-docs",
+    answer: response.answer,
+    sources: response.sources,
+    suggestions: response.suggestions,
+    confidence: Math.round(response.confidence * 100),
+    mode: "falcon-brain",
+    matchedId: response.metadata.matchedModule,
+    responseType: response.metadata.responseType,
+    processingTimeMs: response.reasoning.processingTimeMs,
+  };
+}
+
+/**
+ * Async version that supports web search for current events.
+ */
+export async function askSmartAssistantAsync(
+  query: string,
+  context: SmartAssistantContext = {},
+  conversationHistory?: Array<{ role: "user" | "assistant"; content: string }>,
+): Promise<SmartAssistantResult> {
+  // Build Falcon context
+  const falconContext: FalconContext = {
+    currentRoute: context.route,
+    screenTitle: context.screenTitle,
+    companyName: context.companyName,
+    conversationHistory,
+  };
+
+  // Use the async Falcon Brain engine (supports web search)
+  const response = await askFalconBrain(query, falconContext);
+
+  // Convert to SmartAssistantResult format
+  return {
+    answer: response.answer,
+    sources: response.sources,
+    suggestions: response.suggestions,
+    confidence: Math.round(response.confidence * 100),
+    mode: response.metadata.webSearchUsed ? "hybrid" : "falcon-brain",
+    matchedId: response.metadata.matchedModule,
+    responseType: response.metadata.responseType,
+    processingTimeMs: response.reasoning.processingTimeMs,
   };
 }
 
