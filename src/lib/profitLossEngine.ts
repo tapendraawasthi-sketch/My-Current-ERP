@@ -1,7 +1,7 @@
 // src/lib/profitLossEngine.ts
 // Core computation engine for Profit & Loss reports
 
-import { getDB } from "./db";
+import { getDB, safeTableGet } from "./db";
 import type {
   PLReportOptions,
   PLComputation,
@@ -285,10 +285,7 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
       .table("stockMovements")
       .toArray()
       .catch(() => []);
-    const invConfig = await db
-      .table("inventoryConfig")
-      .get("global")
-      .catch(() => null);
+    const invConfig = await safeTableGet("inventoryConfig", "global");
     const valuationMethod = mapConfigMethodToValuation(invConfig?.stockValuationMethod);
     closingStock = computeTotalClosingStockValue(stockMovements, valuationMethod, options.toDate);
   }

@@ -1,6 +1,6 @@
 // src/lib/balanceSheetEngine.ts
 // @ts-nocheck
-import { getDB } from "./db";
+import { getDB, openDB, safeTableGet } from "./db";
 import type {
   BSComputation,
   BSOptions,
@@ -8,10 +8,9 @@ import type {
   BSRowData,
   AccountLedgerReport,
   LedgerEntry,
-  BSFormat,
-  BSFormatRow,
 } from "./balanceSheetTypes";
 import { STANDARD_GROUP_SIDES, INCOME_EXPENSE_GROUPS } from "./balanceSheetTypes";
+import { buildAccountTree, type AccountNode } from "./reportingHierarchy";
 import { computeTotalClosingStockValue, mapConfigMethodToValuation } from "./stockValuation";
 import * as XLSX from "xlsx";
 
@@ -29,28 +28,23 @@ function getGroupSide(
   const ltype = (groupType || "").toLowerCase().trim();
   const lparent = (parentName || "").toLowerCase().trim();
 
-  // Income/Expense groups → P&L, not BS
   for (const ig of INCOME_EXPENSE_GROUPS) {
     if (lname.includes(ig) || ltype.includes(ig) || lparent.includes(ig)) return null;
   }
 
-  // Check against known groups
   for (const [key, side] of Object.entries(STANDARD_GROUP_SIDES)) {
     if (lname.includes(key) || ltype.includes(key)) return side;
   }
 
-  // Check parent
   for (const [key, side] of Object.entries(STANDARD_GROUP_SIDES)) {
     if (lparent.includes(key)) return side;
   }
 
-  // Fallback by account type
   if (ltype === "asset") return "assets";
   if (ltype === "liability") return "liabilities";
   if (ltype === "equity") return "equity";
   if (ltype === "income" || ltype === "expense") return null;
 
-  // Check names with broader keywords
   if (lname.includes("asset") || lname.includes("receivable") || lname.includes("deposit"))
     return "assets";
   if (lname.includes("liability") || lname.includes("payable") || lname.includes("loan"))
@@ -58,15 +52,172 @@ function getGroupSide(
   if (lname.includes("capital") || lname.includes("reserve") || lname.includes("equity"))
     return "equity";
 
-  return null; // exclude from BS
+  return null;
+}
+
+function getAccountNetBalance(
+  accId: string,
+  balanceMap: Map<string, { debit: number; credit: number }>,
+  accountMap: Map<string, any>,
+): number {
+  const acc = accountMap.get(accId);
+  if (!acc) return 0;
+  const bal = balanceMap.get(accId) || { debit: 0, credit: 0 };
+  const openingDr = Number(acc.openingBalanceDr || acc.openingBalance || 0);
+  const openingCr = Number(acc.openingBalanceCr || 0);
+  return bal.credit + openingCr - (bal.debit + openingDr);
+}
+
+function toBSAmount(
+  netBalance: number,
+  side: "assets" | "liabilities" | "equity",
+): number {
+  return side === "assets" ? -netBalance : netBalance;
+}
+
+/** Build hierarchical BS rows from chart-of-accounts tree — groups always shown. */
+function buildNodeRow(
+  node: AccountNode,
+  side: "assets" | "liabilities" | "equity",
+  showZeroLedgers: boolean,
+  depth: number,
+  balanceMap: Map<string, { debit: number; credit: number }>,
+  accountMap: Map<string, any>,
+  getParentName: (a: any) => string,
+): BSRowData | null {
+  if (node.isGroup) {
+    const childRows: BSRowData[] = [];
+    for (const child of node.children || []) {
+      const childSide =
+        getGroupSide(child.name, child.type || (child as any).group || "", getParentName(child)) ||
+        side;
+      if (childSide !== side) continue;
+      const row = buildNodeRow(
+        child,
+        side,
+        showZeroLedgers,
+        depth + 1,
+        balanceMap,
+        accountMap,
+        getParentName,
+      );
+      if (row) childRows.push(row);
+    }
+
+    const groupTotal = childRows.reduce((s, r) => s + (r.amount || 0), 0);
+
+    return {
+      id: node.id,
+      caption: node.name,
+      amount: groupTotal,
+      level: depth,
+      indent: depth,
+      bold: true,
+      isClickable: true,
+      groupId: node.id,
+      children: childRows.length > 0 ? childRows : undefined,
+      zeroBalance: Math.abs(groupTotal) < 0.005,
+      hideIfZero: false,
+    };
+  }
+
+  const netBal = getAccountNetBalance(node.id, balanceMap, accountMap);
+  const amount = toBSAmount(netBal, side);
+  const isZero = Math.abs(amount) < 0.005;
+  if (!showZeroLedgers && isZero) return null;
+
+  return {
+    id: node.id,
+    caption: node.name,
+    amount,
+    level: depth,
+    indent: depth,
+    bold: false,
+    isClickable: true,
+    accountId: node.id,
+    zeroBalance: isZero,
+    hideIfZero: false,
+  };
+}
+
+function collectSideRows(
+  roots: AccountNode[],
+  side: "assets" | "liabilities" | "equity",
+  showZeroLedgers: boolean,
+  balanceMap: Map<string, { debit: number; credit: number }>,
+  accountMap: Map<string, any>,
+  getParentName: (a: any) => string,
+): BSRowData[] {
+  const rows: BSRowData[] = [];
+  for (const root of roots) {
+    const rootSide = getGroupSide(
+      root.name,
+      root.type || (root as any).group || "",
+      getParentName(root),
+    );
+    if (rootSide !== side) continue;
+    const row = buildNodeRow(
+      root,
+      side,
+      showZeroLedgers,
+      0,
+      balanceMap,
+      accountMap,
+      getParentName,
+    );
+    if (row) rows.push(row);
+  }
+  return rows;
+}
+
+/** Include ledgers whose parent group was not placed in the tree (orphans). */
+function collectOrphanLedgers(
+  allAccounts: any[],
+  side: "assets" | "liabilities" | "equity",
+  showZeroLedgers: boolean,
+  balanceMap: Map<string, { debit: number; credit: number }>,
+  accountMap: Map<string, any>,
+  getParentName: (a: any) => string,
+  existingIds: Set<string>,
+): BSRowData[] {
+  const rows: BSRowData[] = [];
+  for (const acc of allAccounts) {
+    if (acc.isGroup || existingIds.has(acc.id)) continue;
+    const accSide = getGroupSide(acc.name, acc.type || acc.group || "", getParentName(acc));
+    if (accSide !== side) continue;
+    const amount = toBSAmount(getAccountNetBalance(acc.id, balanceMap, accountMap), side);
+    const isZero = Math.abs(amount) < 0.005;
+    if (!showZeroLedgers && isZero) continue;
+    rows.push({
+      id: acc.id,
+      caption: acc.name,
+      amount,
+      level: 1,
+      indent: 1,
+      bold: false,
+      isClickable: true,
+      accountId: acc.id,
+      zeroBalance: isZero,
+      hideIfZero: false,
+    });
+  }
+  return rows;
+}
+
+function collectRowIds(rows: BSRowData[], ids: Set<string>) {
+  for (const row of rows) {
+    ids.add(row.id);
+    if (row.children) collectRowIds(row.children, ids);
+  }
 }
 
 // ─── Core Balance Sheet Computation ──────────────────────────────────────────
 
 export async function computeBalanceSheet(options: BSOptions): Promise<BSComputation> {
+  await openDB();
   const db = getDB();
 
-  const [allAccounts, allVouchers, allInvoices] = await Promise.all([
+  const [allAccounts, allVouchers] = await Promise.all([
     db
       .table("accounts")
       .toArray()
@@ -75,24 +226,15 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
       .table("vouchers")
       .toArray()
       .catch(() => []),
-    db
-      .table("invoices")
-      .toArray()
-      .catch(() => []),
   ]);
 
-  // Filter posted vouchers up to toDate
   const vouchers = allVouchers.filter(
     (v: any) => v.status === "posted" && v.date <= options.toDate,
   );
-  const invoices = allInvoices.filter(
-    (v: any) => v.status === "posted" && v.date <= options.toDate,
-  );
 
-  // Build account balance map
   const balanceMap = new Map<string, { debit: number; credit: number }>();
-
   const addBalance = (accountId: string, debit: number, credit: number) => {
+    if (!accountId) return;
     const cur = balanceMap.get(accountId) || { debit: 0, credit: 0 };
     balanceMap.set(accountId, {
       debit: cur.debit + (debit || 0),
@@ -106,59 +248,21 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
     }
   }
 
-  // Build account map
   const accountMap = new Map<string, any>();
   allAccounts.forEach((a: any) => accountMap.set(a.id, a));
 
   const getParentName = (a: any): string => {
-    if (!a.parentId) return "";
+    if (!a?.parentId) return "";
     const p = accountMap.get(a.parentId);
     return p ? `${p.name} ${p.group || ""} ${p.type || ""}` : "";
   };
 
-  // Separate accounts into BS vs P&L
-  const assetsMap = new Map<string, any[]>();
-  const liabilitiesMap = new Map<string, any[]>();
-  const equityMap = new Map<string, any[]>();
-  const plAccounts: any[] = [];
-
-  for (const acc of allAccounts) {
+  const plAccounts = allAccounts.filter((acc: any) => {
+    if (acc.isGroup) return false;
     const parentName = getParentName(acc);
-    const side = getGroupSide(acc.name, acc.type || acc.group || "", parentName);
+    return getGroupSide(acc.name, acc.type || acc.group || "", parentName) === null;
+  });
 
-    if (side === null) {
-      // P&L account
-      plAccounts.push(acc);
-      continue;
-    }
-
-    const bal = balanceMap.get(acc.id) || { debit: 0, credit: 0 };
-    const openingDr = Number(acc.openingBalanceDr || acc.openingBalance || 0);
-    const openingCr = Number(acc.openingBalanceCr || 0);
-    const totalDebit = bal.debit + openingDr;
-    const totalCredit = bal.credit + openingCr;
-    const netBalance = totalCredit - totalDebit; // positive = credit
-
-    const entry = {
-      ...acc,
-      balance: netBalance,
-      debit: totalDebit,
-      credit: totalCredit,
-      side,
-    };
-
-    const target = side === "assets" ? assetsMap : side === "equity" ? equityMap : liabilitiesMap;
-    const groupKey = acc.parentId
-      ? accountMap.get(acc.parentId)?.name || "Ungrouped"
-      : acc.isGroup
-        ? acc.name
-        : "Ungrouped";
-
-    if (!target.has(groupKey)) target.set(groupKey, []);
-    target.get(groupKey)!.push(entry);
-  }
-
-  // Compute P&L result
   let plDebit = 0;
   let plCredit = 0;
   for (const acc of plAccounts) {
@@ -168,107 +272,95 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
     plDebit += bal.debit + openingDr;
     plCredit += bal.credit + openingCr;
   }
-  const currentPeriodPL = plCredit - plDebit; // positive = profit
+  const currentPeriodPL = plCredit - plDebit;
 
-  // Closing stock
   let closingStock = options.manualClosingStock || 0;
   let closingStockSource: "automatic" | "manual" | "gp-ratio" = "manual";
 
-  if (options.stockUpdation === "automatic" || !options.manualClosingStock) {
+  if (options.stockUpdation === "automatic" || options.manualClosingStock == null) {
     const stockMovements = await db
       .table("stockMovements")
       .toArray()
       .catch(() => []);
-    const invConfig = await db
-      .table("inventoryConfig")
-      .get("global")
-      .catch(() => null);
+    const invConfig = await safeTableGet("inventoryConfig", "global");
     const valuationMethod = mapConfigMethodToValuation(invConfig?.stockValuationMethod);
     closingStock = computeTotalClosingStockValue(stockMovements, valuationMethod, options.toDate);
     closingStockSource = "automatic";
   } else if (options.stockUpdation === "gp-ratio") {
-    // GP ratio method: Closing Stock = Opening Stock + Purchases - COGS (estimated)
     closingStockSource = "gp-ratio";
   }
 
-  // Build sections
-  const buildRows = (
-    groupMap: Map<string, any[]>,
-    side: string,
-    showZero: boolean,
-  ): BSRowData[] => {
-    const rows: BSRowData[] = [];
+  const tree = buildAccountTree(allAccounts);
+  const showZero = options.showZeroBalances !== false;
 
-    // Group by primary group name
-    const primaryGroups = new Map<string, any[]>();
-    for (const [groupName, accounts] of groupMap) {
-      // Find parent group
-      const firstAcc = accounts[0];
-      let primaryGroupName = groupName;
-      if (firstAcc?.parentId) {
-        const parent = accountMap.get(firstAcc.parentId);
-        const grandparent = parent?.parentId ? accountMap.get(parent.parentId) : null;
-        primaryGroupName = grandparent?.name || parent?.name || groupName;
-      }
-      if (!primaryGroups.has(primaryGroupName)) primaryGroups.set(primaryGroupName, []);
-      primaryGroups.get(primaryGroupName)!.push(...accounts);
-    }
+  let assetRows = collectSideRows(
+    tree.roots,
+    "assets",
+    showZero,
+    balanceMap,
+    accountMap,
+    getParentName,
+  );
+  let liabilityRows = collectSideRows(
+    tree.roots,
+    "liabilities",
+    showZero,
+    balanceMap,
+    accountMap,
+    getParentName,
+  );
+  let equityRows = collectSideRows(
+    tree.roots,
+    "equity",
+    showZero,
+    balanceMap,
+    accountMap,
+    getParentName,
+  );
 
-    for (const [pgName, accounts] of primaryGroups) {
-      const groupTotal = accounts.reduce((s, a) => {
-        const netBal = side === "assets" ? -a.balance : a.balance;
-        return s + netBal;
-      }, 0);
+  const placedIds = new Set<string>();
+  collectRowIds(assetRows, placedIds);
+  collectRowIds(liabilityRows, placedIds);
+  collectRowIds(equityRows, placedIds);
 
-      if (!showZero && Math.abs(groupTotal) < 0.005 && !accounts.some((a) => a.isGroup)) {
-        // Still show groups with 0 balance as per spec
-      }
+  assetRows = [
+    ...assetRows,
+    ...collectOrphanLedgers(
+      allAccounts,
+      "assets",
+      showZero,
+      balanceMap,
+      accountMap,
+      getParentName,
+      placedIds,
+    ),
+  ];
+  liabilityRows = [
+    ...liabilityRows,
+    ...collectOrphanLedgers(
+      allAccounts,
+      "liabilities",
+      showZero,
+      balanceMap,
+      accountMap,
+      getParentName,
+      placedIds,
+    ),
+  ];
+  equityRows = [
+    ...equityRows,
+    ...collectOrphanLedgers(
+      allAccounts,
+      "equity",
+      showZero,
+      balanceMap,
+      accountMap,
+      getParentName,
+      placedIds,
+    ),
+  ];
 
-      const subRows: BSRowData[] = [];
-      for (const acc of accounts) {
-        const netBal = side === "assets" ? -acc.balance : acc.balance;
-        if (!showZero && Math.abs(netBal) < 0.005 && !acc.isGroup) continue;
-
-        subRows.push({
-          id: acc.id,
-          caption: acc.name,
-          amount: netBal,
-          level: 2,
-          indent: 2,
-          bold: acc.isGroup,
-          isClickable: true,
-          accountId: acc.isGroup ? undefined : acc.id,
-          groupId: acc.isGroup ? acc.id : undefined,
-          zeroBalance: Math.abs(netBal) < 0.005,
-          hideIfZero: false, // always show groups with 0
-        });
-      }
-
-      rows.push({
-        id: `grp-${pgName}`,
-        caption: pgName,
-        amount: groupTotal,
-        level: 1,
-        indent: 1,
-        bold: true,
-        isClickable: true,
-        groupId: pgName,
-        children: subRows,
-        isSubtotal: false,
-        zeroBalance: Math.abs(groupTotal) < 0.005,
-        hideIfZero: false,
-      });
-    }
-
-    return rows;
-  };
-
-  const assetRows = buildRows(assetsMap, "assets", options.showZeroBalances);
-  const liabilityRows = buildRows(liabilitiesMap, "liabilities", options.showZeroBalances);
-  const equityRows = buildRows(equityMap, "equity", options.showZeroBalances);
-
-  // Add closing stock to assets (Stock-in-hand group)
-  if (closingStock > 0 || options.showZeroBalances) {
+  if (closingStock > 0 || showZero) {
     const stockRow: BSRowData = {
       id: "closing-stock",
       caption: "Closing Stock",
@@ -293,14 +385,14 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
         level: 1,
         indent: 1,
         bold: true,
-        isClickable: false,
+        isClickable: true,
         children: [stockRow],
-        zeroBalance: false,
+        zeroBalance: closingStock === 0,
+        hideIfZero: false,
       });
     }
   }
 
-  // P&L line on liabilities/equity side
   const plRow: BSRowData = {
     id: "pl-result",
     caption: currentPeriodPL >= 0 ? "Net Profit for the Period" : "Net Loss for the Period",
@@ -313,7 +405,6 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
     zeroBalance: Math.abs(currentPeriodPL) < 0.005,
   };
 
-  // Add P&L to Reserves & Surplus or Capital section
   const capitalSection = equityRows.find(
     (r) =>
       r.caption.toLowerCase().includes("capital") ||
@@ -335,15 +426,18 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
       isClickable: true,
       isPLLine: true,
       children: [plRow],
-      zeroBalance: false,
+      zeroBalance: Math.abs(currentPeriodPL) < 0.005,
+      hideIfZero: false,
     });
   }
 
-  // Build sections
+  const sumRows = (rows: BSRowData[]) =>
+    rows.reduce((s, r) => s + (r.amount || 0), 0);
+
   const liabilitiesSection: BSSection = {
     id: "liabilities",
     caption: "Liabilities",
-    total: liabilityRows.reduce((s, r) => s + r.amount, 0),
+    total: sumRows(liabilityRows),
     rows: liabilityRows,
     level: 0,
     bold: true,
@@ -352,7 +446,7 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   const equitySection: BSSection = {
     id: "equity",
     caption: "Capital & Equity",
-    total: equityRows.reduce((s, r) => s + r.amount, 0),
+    total: sumRows(equityRows),
     rows: equityRows,
     level: 0,
     bold: true,
@@ -361,7 +455,7 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   const assetsSection: BSSection = {
     id: "assets",
     caption: "Assets",
-    total: assetRows.reduce((s, r) => s + (r.amount || 0), 0),
+    total: sumRows(assetRows),
     rows: assetRows,
     level: 0,
     bold: true,
@@ -372,17 +466,15 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   const difference = totalLE - totalA;
   const isBalanced = Math.abs(difference) < 1;
 
-  // Pl Adjusted (screen-only balancing) if needed
   let plAdjustedAmount = 0;
   if (!isBalanced) {
     plAdjustedAmount = difference;
   }
 
-  // Percentage calculation
   if (options.showPercentage && totalA > 0) {
     const addPct = (rows: BSRowData[], base: number) => {
       rows.forEach((r) => {
-        r.percentage = totalA > 0 ? (Math.abs(r.amount) / base) * 100 : 0;
+        r.percentage = base > 0 ? (Math.abs(r.amount) / base) * 100 : 0;
         if (r.children) addPct(r.children, base);
       });
     };
@@ -417,6 +509,7 @@ export async function getAccountLedger(
   fromDate: string,
   toDate: string,
 ): Promise<AccountLedgerReport> {
+  await openDB();
   const db = getDB();
   const [allVouchers, allAccounts] = await Promise.all([
     db
@@ -433,7 +526,6 @@ export async function getAccountLedger(
   const accountName = acc?.name || accountId;
   const accountCode = acc?.code || "";
 
-  // Opening balance before fromDate
   const beforeVouchers = allVouchers.filter((v: any) => v.status === "posted" && v.date < fromDate);
   let openingDr = Number(acc?.openingBalanceDr || acc?.openingBalance || 0);
   let openingCr = Number(acc?.openingBalanceCr || 0);
@@ -448,7 +540,6 @@ export async function getAccountLedger(
   }
   const openingBalance = openingCr - openingDr;
 
-  // Period vouchers
   const periodVouchers = allVouchers.filter(
     (v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate,
   );
@@ -538,7 +629,7 @@ export function exportBSToExcel(bs: BSComputation, companyName: string, orientat
             }
           }
         }
-        const totalLabel = side === "le" ? `Total ${sec.caption}` : `Total ${sec.caption}`;
+        const totalLabel = `Total ${sec.caption}`;
         if (side === "le") rows.push([totalLabel, sec.total, "", "", ""]);
         else rows.push(["", "", "", totalLabel, sec.total]);
       }

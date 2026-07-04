@@ -47,7 +47,7 @@ const makeDefaultOptions = (fy: any): BSOptions => ({
   toDate: fy?.endDate || new Date().toISOString().split("T")[0],
   orientation: "horizontal",
   formatId: "standard",
-  showSecondLevel: false,
+  showSecondLevel: true,
   showZeroBalances: true,
   showPercentage: false,
   showPreviousYear: false,
@@ -966,7 +966,9 @@ export default function BalanceSheet() {
         setDrillState({ level: 0, path: [] });
       } catch (err) {
         console.error(err);
-        toast.error("Failed to generate Balance Sheet");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to generate Balance Sheet",
+        );
       } finally {
         setLoading(false);
       }
@@ -975,8 +977,15 @@ export default function BalanceSheet() {
   );
 
   useEffect(() => {
+    if (fy) {
+      setOptions((prev) => ({
+        ...prev,
+        fromDate: fy.startDate || prev.fromDate,
+        toDate: fy.endDate || prev.toDate,
+      }));
+    }
     loadBS();
-  }, []);
+  }, [accounts?.length, vouchers?.length, fy?.id]);
 
   const handleDrillDown = (id: string, name: string, isAccount: boolean) => {
     if (isAccount) {

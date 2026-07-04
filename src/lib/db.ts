@@ -1437,6 +1437,17 @@ export const db = Object.assign(getDB(), { generateSerialNumber });
 
 export default getDB;
 
+/** Read a Dexie row when the table may not exist in the schema (e.g. inventoryConfig). */
+export async function safeTableGet(tableName: string, key: string | number): Promise<any> {
+  try {
+    const database = getDB();
+    if (!database.tables.some((t) => t.name === tableName)) return null;
+    return await database.table(tableName).get(key);
+  } catch {
+    return null;
+  }
+}
+
 // ─── Seed Helpers ─────────────────────────────────────────────────────────────
 
 export async function seedPredefinedVoucherTypes(): Promise<void> {
