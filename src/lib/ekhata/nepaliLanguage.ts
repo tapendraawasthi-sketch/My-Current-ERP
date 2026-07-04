@@ -127,16 +127,25 @@ export const SPELLING_ALIASES: Record<string, string> = {
   sale: "bikri",
   sold: "bikri",
 
-  // Purchase
+  // Purchase — all kinne/kinnu conjugations → kineko
   kineko: "kineko",
   kine: "kineko",
+  kinye: "kineko",
+  kinchhu: "kineko",
+  kinxu: "kineko",
   kiniyo: "kineko",
   kinyo: "kineko",
   kinna: "kineko",
+  kinne: "kineko",
+  kinnu: "kineko",
+  kina: "kineko",
   kharid: "kineko",
   kharido: "kineko",
   kharidyo: "kineko",
+  kharideko: "kineko",
   purchase: "kineko",
+  bought: "kineko",
+  buy: "kineko",
 
   // Payment in
   tiryo: "tiryo",
@@ -200,13 +209,17 @@ export const SPELLING_ALIASES: Record<string, string> = {
   bata: "bata",
   bhand: "bata",
 
-  // Money
+  // Money — all currency spellings → rs
   rs: "rs",
   rupees: "rs",
+  rupee: "rs",
   rupiya: "rs",
   rupya: "rs",
+  rupaye: "rs",
   rupiye: "rs",
   rupiah: "rs",
+  rupaya: "rs",
+  rupaiya: "rs",
   npr: "rs",
   "₨": "rs",
 

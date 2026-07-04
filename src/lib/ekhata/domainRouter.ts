@@ -3,6 +3,8 @@
  * Prevents accounting terms (sampatti, capital, provision) from hitting Wikipedia.
  */
 
+import { isSemanticTransaction, parseSemanticFrame } from "./semanticNepaliBrain";
+
 export type EKhataDomain =
   | "journal_entry"
   | "accounting_qa"
@@ -29,7 +31,7 @@ const COMPLIANCE_TERMS =
   /\b(ird|vat\s*act|income\s*tax|tds\s*rate|ssf\s*rate|gratuity\s*act|labour\s*act|companies\s*act|presumptive\s*tax|advance\s*tax|tax\s*invoice|blacklist|zero\s*rated|exempt\s*supply|reverse\s*charge|excise|customs|withholding|remittance|form\s*13|anna\s*13|pan\s*number|fiscal\s*year|shrawan|ashadh|bs\s*date|nepal\s*tax|statutory|compliance)\b/i;
 
 const ENTRY_SIGNALS =
-  /\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyo|kineko|kinyo|kharid|becheko|bikri|kharcha|expense|salary|talab|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|refund|return|write\s*off|recover\w*|commission|advance|opening|jama|tirna|bhugtan|firta|firtayo)\b.*\d|\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|becheko|kharcha|salary|vat|tds|loan|capital|stock|discount|return|write\s*off|commission|advance|jama|tiryo|diyo)\b/i;
+  /\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyo|kineko|kinyo|kinye|kine|kiniyo|kharid|becheko|bikri|kharcha|expense|salary|talab|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|refund|return|write\s*off|recover\w*|commission|advance|opening|jama|tirna|bhugtan|firta|firtayo|rupaya|rupiya)\b.*\d|\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|kinye|kine|kinyo|becheko|kharcha|salary|vat|tds|loan|capital|stock|discount|return|write\s*off|commission|advance|jama|tiryo|diyo|kin)\b/i;
 
 const META_SYSTEM =
   /\b(am\s+i\s+online|online\s*du|online\s*chu|who\s+are\s+you|what\s+are\s+you|what\s+can\s+you|timi\s+ko\s+ho|ke\s+ho\s+timi|your\s+brain|mero\s+brain|ollama|connected|connection)\b/i;
@@ -51,6 +53,21 @@ export function classifyDomain(text: string): DomainRouteResult {
 
   if (META_SYSTEM.test(t)) {
     return { domain: "meta_system", confidence: 0.95, blockWebSearch: true };
+  }
+
+  // Semantic transaction detection — understands meaning, not just keyword co-occurrence
+  if (isSemanticTransaction(t) && !QUESTION.test(t)) {
+    return { domain: "journal_entry", confidence: 0.92, blockWebSearch: true };
+  }
+
+  const semanticFrame = parseSemanticFrame(t);
+  if (
+    semanticFrame.action !== "UNKNOWN" &&
+    semanticFrame.amount !== null &&
+    !semanticFrame.isQuestion &&
+    !semanticFrame.isNegated
+  ) {
+    return { domain: "journal_entry", confidence: 0.88, blockWebSearch: true };
   }
 
   if (ENTRY_SIGNALS.test(t) && !QUESTION.test(t)) {

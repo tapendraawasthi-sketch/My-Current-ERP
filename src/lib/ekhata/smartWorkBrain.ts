@@ -7,6 +7,7 @@
  */
 
 import type { KhataIntent } from "./types";
+import { isSemanticTransaction, parseSemanticTransaction } from "./semanticNepaliBrain";
 
 export interface WorkSignals {
   hasNumbers: boolean;
@@ -34,6 +35,9 @@ export function shouldTryWorkParse(text: string): boolean {
   const t = text.toLowerCase().trim();
   if (!t || t.length < 3) return false;
 
+  // Semantic understanding — if the brain understands meaning, always try parse
+  if (isSemanticTransaction(t)) return true;
+
   if (QUESTION.test(t) && !WORK_VERBS.test(t)) return false;
   if (CONVERSATIONAL.test(t) && !WORK_VERBS.test(t) && !/\d/.test(t)) return false;
 
@@ -42,11 +46,20 @@ export function shouldTryWorkParse(text: string): boolean {
   if (WORK_VERBS.test(t) && /\b(for|worth|total|amount|rs|npr|rupees|each|per)\b/i.test(t))
     return true;
 
-  // Nepali/English amount + weak verb
-  if (hasNumber && /\b(diye|diya|liye|aayo|gayo|diyo|tiryo|kineko|becheko)\b/i.test(t)) return true;
+  // Nepali/English amount + weak verb (including all kinne conjugations)
+  if (
+    hasNumber &&
+    /\b(diye|diya|liye|aayo|gayo|diyo|tiryo|kineko|kinyo|kinye|kine|kiniyo|kharid|becheko|kin)\b/i.test(
+      t,
+    )
+  )
+    return true;
 
   // Qty × rate pattern without explicit verb
   if (/\d+\s+\w+\s+(for|at|@)\s*(rs\.?\s*)?\d+/i.test(t)) return true;
+
+  // Nepali genitive price: "50 rupaya ko bag"
+  if (/\d+\s+(?:rs|npr|rupees|rupiya|rupya|rupaye|rupaya)\s+ko\s+\w/i.test(t)) return true;
 
   return false;
 }
@@ -138,6 +151,11 @@ export function parseSmartAmount(text: string): {
 
 /** Classify work intent from natural language (English + Nepali) */
 export function classifyWorkIntent(text: string): KhataIntent | null {
+  const semantic = parseSemanticTransaction(text);
+  if (semantic.intent && semantic.confidence >= 0.65) {
+    return semantic.intent;
+  }
+
   const t = text.toLowerCase();
 
   // Credit sale
@@ -167,8 +185,12 @@ export function classifyWorkIntent(text: string): KhataIntent | null {
     return "khata_payment_out";
   }
 
-  // Purchase / bought
-  if (/\b(bought|buy|purchase|purchased|kineko|kharid|kiniyo|procured)\b/i.test(t)) {
+  // Purchase / bought — all kinne conjugations
+  if (
+    /\b(bought|buy|purchase|purchased|kineko|kharid|kiniyo|kinyo|kinye|kine|kinna|kinne|procured)\b/i.test(
+      t,
+    )
+  ) {
     if (/\b(udhaar|udhar|credit)\b/i.test(t)) return "khata_credit_purchase";
     return "khata_purchase";
   }

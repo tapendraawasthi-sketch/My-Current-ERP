@@ -10,6 +10,7 @@ import {
   parseSmartAmount,
   shouldTryWorkParse,
 } from "./smartWorkBrain";
+import { parseSemanticTransaction } from "./semanticNepaliBrain";
 
 const CLARIFYING_QUESTION = "Aaple diye ki unle diye?";
 
@@ -477,7 +478,7 @@ function hasPaymentInCue(text: string): boolean {
 
 function hasPurchaseCue(text: string): boolean {
   return (
-    /\b(kineko|kine|kiniyo|kinyo|kinna|kharid|kharido|purchase|bought|buy|purchased|procured|extended\s+credit\s+to\s+buy)\b/i.test(
+    /\b(kineko|kine|kiniyo|kinyo|kinye|kinna|kinne|kharid|kharido|purchase|bought|buy|purchased|procured)\b/i.test(
       text,
     ) && !/\b(udhaar|udhar|credit\s+sale|becheko|sold)\b/i.test(text)
   );
@@ -543,10 +544,19 @@ function partyClarifyingQuestion(intent: KhataIntent): string {
 function classifyIntent(rawText: string, normalizedText: string): KhataIntent | null {
   const sources = [rawText.trim(), normalizedText.trim()].filter(Boolean);
 
+  // 1. Specialized CA regex patterns (VAT, SSF, TDS, etc.) — highest priority
   for (const q of sources) {
     if (!q) continue;
     for (const pattern of CA_INTENT_PATTERNS) {
       if (pattern.test(q)) return pattern.intent;
+    }
+  }
+
+  // 2. Semantic frame parse — understands meaning for natural Nepali/English
+  for (const q of sources) {
+    const semantic = parseSemanticTransaction(q);
+    if (semantic.intent && semantic.confidence >= 0.65 && !semantic.frame.isQuestion) {
+      return semantic.intent;
     }
   }
 
@@ -597,6 +607,7 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
   }
 
   const intent = classifyIntent(displayText, text);
+
   if (!intent) {
     if (shouldTryWorkParse(displayText)) {
       return {
@@ -610,17 +621,21 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
     };
   }
 
-  const amount = resolveAmount(displayText) ?? resolveAmount(text);
+  const semantic = parseSemanticTransaction(displayText);
+  const amount =
+    semantic.amount ?? resolveAmount(displayText) ?? resolveAmount(text);
   if (!amount || amount <= 0) {
     return { clarifying_question: "Rakam kati ho? Number lekhnus." };
   }
 
-  const party = extractParty(displayText, text);
+  const party =
+    semantic.party ?? extractParty(displayText, text);
   if (needsPartyName(intent, party)) {
     return { clarifying_question: partyClarifyingQuestion(intent) };
   }
 
-  const item = extractItem(text, intent) ?? extractWorkItem(displayText, intent);
+  const item =
+    semantic.item ?? extractItem(text, intent) ?? extractWorkItem(displayText, intent);
   const date = extractDate(text);
 
   const { card } = generateCAEntry(intent, {

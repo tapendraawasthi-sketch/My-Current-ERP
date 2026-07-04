@@ -65,6 +65,14 @@ export {
   isConversationalOnly,
 } from "./smartWorkBrain";
 export type { WorkSignals } from "./smartWorkBrain";
+export {
+  parseSemanticFrame,
+  parseSemanticTransaction,
+  isSemanticTransaction,
+  detectSemanticAction,
+  mapFrameToIntent,
+} from "./semanticNepaliBrain";
+export type { SemanticFrame, SemanticAction, SemanticParseResult, PaymentMode } from "./semanticNepaliBrain";
 export { askAutonomousBrain, shouldAutonomousWebSearch } from "./autonomousBrain";
 export type { AutonomousBrainOptions, AutonomousBrainResult } from "./autonomousBrain";
 export { classifyDomain, isAccountingDomain, shouldBlockWebSearch } from "./domainRouter";
