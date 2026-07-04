@@ -29,10 +29,8 @@ WORD_TO_NUMBER: dict[str, int] = {
     "lakh": 100000,
 }
 
+# Postpositions (le, lai, bata, ma) are semantic role markers — never strip them.
 FILLER_WORDS = {
-    "le",
-    "lai",
-    "ma",
     "ko",
     "ki",
     "ho",
