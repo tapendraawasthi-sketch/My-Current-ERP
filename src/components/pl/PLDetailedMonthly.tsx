@@ -62,9 +62,9 @@ export default function PLDetailedMonthly({ pl, options, onDrillDown }: Props) {
   let currentGroup = "";
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto shadow-sm">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb]">
-        <h3 className="text-[14px] font-semibold text-gray-800">Detailed Monthly Breakup</h3>
+    <div className="bg-white border border-gray-200 rounded-md overflow-x-auto">
+      <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
+        <h3 className="text-[12px] font-semibold text-gray-800">Detailed monthly breakup</h3>
         <p className="text-[11px] text-gray-500 mt-0.5">
           For the period: {pl.fromDate} to {pl.toDate}
         </p>
@@ -97,14 +97,14 @@ export default function PLDetailedMonthly({ pl, options, onDrillDown }: Props) {
                   <tr className="bg-gray-50 border-y border-gray-200">
                     <td
                       colSpan={pl.monthLabels!.length + 2}
-                      className="px-3 py-1.5 text-[11px] font-bold text-[#1557b0] uppercase tracking-wider sticky left-0 bg-gray-50 z-10"
+                      className="px-3 py-1.5 text-[11px] font-semibold text-[#1557b0] uppercase tracking-wide sticky left-0 bg-gray-50 z-10"
                     >
                       {acc.group}
                     </td>
                   </tr>
                 )}
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer"
                   onClick={() =>
                     onDrillDown({
                       level: 2,
@@ -118,7 +118,7 @@ export default function PLDetailedMonthly({ pl, options, onDrillDown }: Props) {
                   }
                 >
                   <td
-                    className="px-3 py-1.5 text-[11px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100 hover:bg-[#f5f8ff] truncate max-w-[250px]"
+                    className="px-3 py-1.5 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100 group-hover:bg-gray-50 truncate max-w-[250px]"
                     title={acc.name}
                   >
                     {acc.name}

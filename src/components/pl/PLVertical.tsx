@@ -49,7 +49,7 @@ function VRow({
       className={`
         ${isTotal ? "border-t-2 border-gray-300" : "border-b border-gray-100"}
         ${highlight ? "bg-[#eef2ff]" : ""}
-        ${clickable && !isZero ? "cursor-pointer hover:bg-[#f5f8ff]" : ""}
+        ${clickable && !isZero ? "cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]" : ""}
       `}
       onClick={clickable && !isZero ? onClick : undefined}
     >
@@ -148,10 +148,10 @@ export default function PLVertical({ pl, options, onDrillDown, mode = "pl" }: Pr
       : pl.netProfitLabel;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm max-w-4xl mx-auto">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-4xl mx-auto">
+      <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-semibold text-gray-800">{title}</h3>
+          <h3 className="text-[12px] font-semibold text-gray-800">{title}</h3>
           <p className="text-[11px] text-gray-500 mt-0.5">
             For the period: {pl.fromDate} to {pl.toDate}
           </p>
