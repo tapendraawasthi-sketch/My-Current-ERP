@@ -272,7 +272,7 @@ const SalesRegister: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Total sales
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
               {formatCurrency(filteredInvoices.reduce((s, r) => s + (r.grandTotal || 0), 0))}
             </p>
           </div>
@@ -288,7 +288,7 @@ const SalesRegister: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Total VAT
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
               {formatCurrency(filteredInvoices.reduce((s, r) => s + (r.vatAmount || 0), 0))}
             </p>
           </div>
@@ -399,7 +399,7 @@ const SalesRegister: React.FC = () => {
         ) : (
           <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="overflow-auto flex-1 min-h-0">
-              <table className="w-full border-collapse min-w-[900px]">
+              <table className="data-table w-full min-w-[900px]">
                 <colgroup>
                   {visibleColumnList.map((c) => (
                     <col key={c.key} style={{ width: c.width }} />
@@ -426,7 +426,7 @@ const SalesRegister: React.FC = () => {
                       {visibleColumnList.map((col) => (
                         <td
                           key={col.key}
-                          className={`${td} ${AMOUNT_KEYS.has(col.key) ? "text-right font-mono" : ""} ${col.key === "status" ? "text-center" : ""}`}
+                          className={`${td} ${AMOUNT_KEYS.has(col.key) ? "number-cell" : ""} ${col.key === "status" ? "text-center" : ""}`}
                         >
                           {renderCell(col, invoice)}
                         </td>
@@ -463,7 +463,7 @@ const SalesRegister: React.FC = () => {
                         return (
                           <td
                             key={col.key}
-                            className="px-3 py-2.5 text-right font-mono text-[#1557b0]"
+                            className="number-cell-bold text-[#1557b0]"
                           >
                             {renderTotalCell(col)}
                           </td>

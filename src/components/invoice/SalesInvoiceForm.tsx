@@ -697,8 +697,10 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </div>
           </div>
 
-          {/* Header & Party details (3-column grid card) */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-white border border-[#9DC07A] rounded-md mb-3">
+          {/* Header & Party details */}
+          <div className="form-section mb-3">
+            <div className="form-section-title">Party Details</div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <PartySelect
               label={meta.isSales ? "Customer" : "Supplier"}
               partyType={meta.party}
@@ -764,14 +766,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               placeholder="Optional"
               disabled={readOnly}
             />
+            </div>
           </div>
 
           {/* Line items */}
-          <Card border padding="md">
+          <div className="form-section mb-3">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider">
-                Line Items
-              </h3>
+              <div className="form-section-title mb-0 pb-0 border-0">Line Items</div>
               <Button
                 variant="outline"
                 size="xs"
@@ -783,7 +784,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </Button>
             </div>
             <div className="overflow-x-auto rounded-md border border-[#9DC07A]">
-              <table className="w-full text-xs">
+              <table className="line-table">
                 <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                   <tr>
                     <th className="px-2 py-2 text-center">#</th>
@@ -829,7 +830,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
 
           {/* Bill Sundries */}
           <Card border padding="md">
@@ -1144,57 +1145,53 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </div>
             </Card>
 
-            {/* Totals Box, right-aligned in a w-64 card */}
+            {/* Totals */}
             <div className="flex justify-end">
-              <div
-                className={`w-64 p-3 rounded-md flex flex-col gap-1.5 shadow-sm border ${computation.vatAmount > 0 ? "bg-green-50 text-green-700 border-green-200" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A]"}`}
-              >
-                <div className="flex justify-between items-baseline text-[12px]">
+              <div className="totals-panel">
+                <div className="totals-row">
                   <span className="font-medium">Subtotal</span>
-                  <span className="font-mono">
+                  <span className="number-cell">
                     {symbol} {formatNumber(computation.subtotal)}
                   </span>
                 </div>
-                <div className="flex justify-between items-baseline text-[12px]">
+                <div className="totals-row">
                   <span className="font-medium">Discount</span>
-                  <span className="font-mono">
+                  <span className="number-cell">
                     - {symbol} {formatNumber(discountAmount)}
                   </span>
                 </div>
-                <div className="flex justify-between items-baseline text-[12px]">
+                <div className="totals-row">
                   <span className="font-medium">Taxable Amount</span>
-                  <span className="font-mono">
+                  <span className="number-cell">
                     {symbol} {formatNumber(computation.taxableAmount)}
                   </span>
                 </div>
-                <div className="flex justify-between items-baseline text-[12px]">
+                <div className="totals-row">
                   <span className="font-medium">VAT 13%</span>
-                  <span className="font-mono">
+                  <span className="number-cell">
                     {symbol} {formatNumber(computation.vatAmount)}
                   </span>
                 </div>
                 {tdsEnabled && (
-                  <div className="flex justify-between items-baseline text-[12px] text-orange-600">
+                  <div className="totals-row">
                     <span className="font-medium">TDS Deducted</span>
-                    <span className="font-mono">
+                    <span className="number-cell">
                       - {symbol} {formatNumber(tdsAmount)}
                     </span>
                   </div>
                 )}
                 {roundOff !== 0 && (
-                  <div className="flex justify-between items-baseline text-[12px]">
+                  <div className="totals-row">
                     <span className="font-medium">Round Off</span>
-                    <span className="font-mono">
+                    <span className="number-cell">
                       {roundOff > 0 ? "+" : ""}
                       {symbol} {formatNumber(roundOff)}
                     </span>
                   </div>
                 )}
-                <div
-                  className={`border-t-2 mt-1 pt-2 flex justify-between items-baseline rounded-sm ${computation.vatAmount > 0 ? "border-green-200" : "border-[#9DC07A]"}`}
-                >
-                  <span className="text-[12px] font-bold uppercase">Grand Total</span>
-                  <span className="font-mono font-bold text-[12px] text-right">
+                <div className="totals-row total-final">
+                  <span>Grand Total</span>
+                  <span className="number-cell-bold">
                     {symbol} {formatNumber(grandTotal)}
                   </span>
                 </div>
@@ -1203,9 +1200,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           </div>
 
           {/* Footer actions */}
-          <div className="flex items-center justify-between border-t border-[#9DC07A] pt-4">
-            <p className="text-[11px] text-[#000000] font-semibold">
-              ESC to cancel · Ctrl+S to save draft · F12 to post
+          <div className="form-footer">
+            <p className="text-[11px] text-gray-500">
+              Esc Cancel · Ctrl+S Save draft · F2 Save · F9 Remove last line
             </p>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleBack}>

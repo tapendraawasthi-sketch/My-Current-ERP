@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import { Download, FileSpreadsheet, RefreshCw, TrendingUp, Printer } from "lucide-react";
+import { Download, FileSpreadsheet, RefreshCw, Printer } from "lucide-react";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
@@ -327,12 +327,9 @@ const OutstandingPayables: React.FC = () => {
       {/* Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-[#1557b0]" />
-            Outstanding Payables
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Outstanding Payables</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            Unpaid and partially paid sales invoices
+            Unpaid and partially paid purchase invoices
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -355,7 +352,7 @@ const OutstandingPayables: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Total Invoiced
             </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
               {money(totals.original)}
             </p>
           </div>
@@ -363,7 +360,7 @@ const OutstandingPayables: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Received
             </p>
-            <p className="text-[18px] font-bold text-green-600 mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-green-700 mt-0.5">
               {money(totals.paid)}
             </p>
           </div>
@@ -371,7 +368,7 @@ const OutstandingPayables: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Outstanding
             </p>
-            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-[#1557b0] mt-0.5">
               {money(totals.outstanding)}
             </p>
           </div>
@@ -379,7 +376,7 @@ const OutstandingPayables: React.FC = () => {
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Overdue
             </p>
-            <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
+            <p className="text-[12px] number-cell-bold text-red-700 mt-0.5">
               {money(totals.overdue)}
             </p>
           </div>
@@ -590,7 +587,7 @@ const OutstandingPayables: React.FC = () => {
                             Avg overdue: {Math.round(group.avgDaysOverdue)} days
                           </td>
                           <td
-                            className="px-3 py-2.5 text-right font-mono font-bold"
+                            className="number-cell-bold"
                             style={{ color: avgStyle.color }}
                           >
                             Rs. {group.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
@@ -647,7 +644,7 @@ const OutstandingPayables: React.FC = () => {
                                   {inv.dueDate || "—"}
                                 </td>
                                 <td
-                                  className="px-3 py-2.5 text-right font-mono text-[11px]"
+                                  className="number-cell"
                                   style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}
                                 >
                                   {daysOverdue > 0 ? (
@@ -674,7 +671,7 @@ const OutstandingPayables: React.FC = () => {
                                   )}
                                 </td>
                                 <td
-                                  className="px-3 py-2.5 text-right font-mono text-[11px]"
+                                  className="number-cell"
                                   style={{ fontWeight: 600, color: rowStyle.color }}
                                 >
                                   {outstanding.toLocaleString("en-IN", {
@@ -715,7 +712,7 @@ const OutstandingPayables: React.FC = () => {
                       Total ({filteredRows.length} invoices)
                     </td>
                     <td colSpan={4} />
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                    <td className="number-cell-bold text-[#1557b0]">
                       {money(totals.outstanding)}
                     </td>
                     <td />

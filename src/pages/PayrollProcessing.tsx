@@ -475,10 +475,7 @@ export default function PayrollProcessing() {
     <div className="p-6 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Users className="h-4 w-4 text-[#1557b0]" />
-            Payroll Processing
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Payroll Processing</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Process monthly salary with Nepal income tax, SSF, PF deductions
           </p>
@@ -574,7 +571,7 @@ export default function PayrollProcessing() {
               + Add Employee
             </button>
           </div>
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 {[
@@ -613,10 +610,10 @@ export default function PayrollProcessing() {
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{emp.designation}</td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{emp.department}</td>
-                    <td className="px-3 py-2.5 font-mono text-right text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(emp.basicSalary)}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-right text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(totalAllowances(emp))}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">
@@ -668,7 +665,7 @@ export default function PayrollProcessing() {
 
       {activeTab === "process" && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 {[
@@ -775,7 +772,7 @@ export default function PayrollProcessing() {
               </p>
             </div>
           ) : (
-            <table className="w-full border-collapse">
+            <table className="data-table w-full">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   {[
@@ -810,22 +807,22 @@ export default function PayrollProcessing() {
                         <ChevronRight className="h-3.5 w-3.5" />
                         {r.employeeName}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                      <td className="number-cell">
                         {money(r.grossEarnings)}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                      <td className="number-cell">
                         {money(r.employeePF)}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                      <td className="number-cell">
                         {money(r.employeeSSF)}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                      <td className="number-cell">
                         {money(r.incomeTax)}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                      <td className="number-cell">
                         {money(r.totalDeductions)}
                       </td>
-                      <td className="px-3 py-2.5 font-mono text-right text-[12px] font-semibold text-[#1557b0]">
+                      <td className="number-cell-bold text-[#1557b0]">
                         {money(r.netSalary)}
                       </td>
                       <td className="px-3 py-2.5">
@@ -863,7 +860,7 @@ export default function PayrollProcessing() {
                               ].map(([label, value]) => (
                                 <div key={String(label)} className="flex justify-between py-0.5">
                                   <span>{label}</span>
-                                  <span className="font-mono">{money(Number(value))}</span>
+                                  <span className="number-cell">{money(Number(value))}</span>
                                 </div>
                               ))}
                             </div>
@@ -878,7 +875,7 @@ export default function PayrollProcessing() {
                               ].map(([label, value]) => (
                                 <div key={String(label)} className="flex justify-between py-0.5">
                                   <span>{label}</span>
-                                  <span className="font-mono">{money(Number(value))}</span>
+                                  <span className="number-cell">{money(Number(value))}</span>
                                 </div>
                               ))}
                             </div>
@@ -891,22 +888,22 @@ export default function PayrollProcessing() {
 
                 <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
                   <td className="px-3 py-2.5 text-[12px]">Total</td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalGrossEarnings)}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalEmployeePF)}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalEmployeeSSF)}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalIncomeTax)}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalDeductions)}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-right text-[12px]">
+                  <td className="number-cell">
                     {money(payrollSummary.totalNetSalary)}
                   </td>
                   <td />
@@ -932,7 +929,7 @@ export default function PayrollProcessing() {
                 className="flex justify-between py-2 text-[12px] border-b border-gray-100"
               >
                 <span className="text-gray-700">{label}</span>
-                <span className="font-mono text-gray-800">{money(Number(value))}</span>
+                <span className="number-cell text-gray-800">{money(Number(value))}</span>
               </div>
             ))}
           </div>
@@ -955,7 +952,7 @@ export default function PayrollProcessing() {
                 className="flex justify-between py-2 text-[12px] border-b border-gray-100"
               >
                 <span className="text-gray-700">{label}</span>
-                <span className="font-mono text-gray-800">{money(Number(value))}</span>
+                <span className="number-cell text-gray-800">{money(Number(value))}</span>
               </div>
             ))}
           </div>

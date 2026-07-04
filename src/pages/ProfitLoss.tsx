@@ -301,7 +301,7 @@ export default function ProfitLoss() {
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Sales
               </p>
-              <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+              <p className="text-[12px] text-gray-800 mt-0.5 number-cell-bold">
                 {fmtMoney(plData.sales.total)}
               </p>
             </div>
@@ -309,7 +309,7 @@ export default function ProfitLoss() {
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Purchases
               </p>
-              <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+              <p className="text-[12px] text-gray-800 mt-0.5 number-cell-bold">
                 {fmtMoney(plData.purchases.total)}
               </p>
             </div>
@@ -318,7 +318,7 @@ export default function ProfitLoss() {
                 {plData.grossProfitLabel}
               </p>
               <p
-                className={`text-[14px] font-semibold mt-0.5 font-mono ${
+                className={`text-[12px] mt-0.5 number-cell-bold ${
                   plData.grossProfit >= 0 ? "text-[#1557b0]" : "text-red-700"
                 }`}
               >
@@ -330,7 +330,7 @@ export default function ProfitLoss() {
                 {plData.netProfitLabel}
               </p>
               <p
-                className={`text-[14px] font-semibold mt-0.5 font-mono ${
+                className={`text-[12px] mt-0.5 number-cell-bold ${
                   plData.netProfit >= 0 ? "text-green-700" : "text-red-700"
                 }`}
               >

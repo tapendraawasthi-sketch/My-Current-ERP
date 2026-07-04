@@ -465,7 +465,7 @@ const DayBook: React.FC = () => {
           </div>
 
           <div className="overflow-x-auto" ref={tableRef}>
-            <table className="w-full min-w-[700px] border-collapse">
+            <table className="data-table w-full min-w-[700px]">
               <thead>
                 <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
@@ -526,11 +526,11 @@ const DayBook: React.FC = () => {
                           </span>
                         </td>
 
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700 border-b border-gray-100">
+                        <td className="number-cell-dr border-b border-gray-100">
                           {entry.debit > 0 ? money(entry.debit) : "—"}
                         </td>
 
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700 border-b border-gray-100">
+                        <td className="number-cell-cr border-b border-gray-100">
                           {entry.credit > 0 ? money(entry.credit) : "—"}
                         </td>
 
@@ -584,10 +584,10 @@ const DayBook: React.FC = () => {
                     <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Total ({summary.totalVouchers} vouchers)
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                    <td className="number-cell-bold">
                       {money(summary.totalDebit)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    <td className="number-cell-bold">
                       {money(summary.totalCredit)}
                     </td>
                     <td />
