@@ -1,6 +1,7 @@
 // src/pages/BalanceSheet.tsx
 // @ts-nocheck
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useStore } from "../store/useStore";
 import {
   computeBalanceSheet,
@@ -94,9 +95,9 @@ function OptionsDialog({
         : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
     }`;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center p-4 pt-6 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden my-auto">
         <div className="bg-[#1e2433] px-5 py-4">
           <h2 className="text-[15px] font-semibold text-white">Balance Sheet — Report Options</h2>
           <p className="text-[11px] text-gray-400 mt-0.5">{companyName}</p>
@@ -284,7 +285,8 @@ function OptionsDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -436,25 +438,27 @@ function HorizontalBS({
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 items-stretch">
       {/* Left: Liabilities + Equity */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-        <div className={`${thCls} text-left flex items-center justify-between`}>
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
+        <div className={`${thCls} text-left flex items-center justify-between shrink-0`}>
           <span>Liabilities & Capital</span>
           <span>Amount (Rs.)</span>
         </div>
-        {bs.liabilitiesEquity.map(renderSection)}
-        {bs.plAdjustedAmount !== 0 && (
-          <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-50 border-t border-yellow-200">
-            <span className="text-[11px] text-amber-700">
-              Profit & Loss Adjusted <span className="text-[9px]">[screen only, not printed]</span>
-            </span>
-            <span className="text-[11px] font-mono text-amber-700">
-              {fmt(Math.abs(bs.plAdjustedAmount))}
-            </span>
-          </div>
-        )}
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
+        <div className="flex-1 flex flex-col min-h-0">
+          {bs.liabilitiesEquity.map(renderSection)}
+          {bs.plAdjustedAmount !== 0 && (
+            <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-50 border-t border-yellow-200">
+              <span className="text-[11px] text-amber-700">
+                Profit & Loss Adjusted <span className="text-[9px]">[screen only, not printed]</span>
+              </span>
+              <span className="text-[11px] font-mono text-amber-700">
+                {fmt(Math.abs(bs.plAdjustedAmount))}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white shrink-0 mt-auto">
           <span className="text-[12px] font-bold">TOTAL</span>
           <span className="text-[13px] font-mono font-bold">
             {fmt(bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount))}
@@ -463,13 +467,13 @@ function HorizontalBS({
       </div>
 
       {/* Right: Assets */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-        <div className={`${thCls} text-left flex items-center justify-between`}>
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
+        <div className={`${thCls} text-left flex items-center justify-between shrink-0`}>
           <span>Assets</span>
           <span>Amount (Rs.)</span>
         </div>
-        {bs.assets.map(renderSection)}
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
+        <div className="flex-1 flex flex-col min-h-0">{bs.assets.map(renderSection)}</div>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white shrink-0 mt-auto">
           <span className="text-[12px] font-bold">TOTAL</span>
           <span className="text-[13px] font-mono font-bold">{fmt(bs.totalAssets)}</span>
         </div>

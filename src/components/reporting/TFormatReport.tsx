@@ -54,6 +54,48 @@ const renderCell = (row?: TFormatRow, isAmount = false) => {
   );
 };
 
+const renderColumn = (
+  title: string,
+  rows: TFormatRow[],
+  total?: string,
+  showBorderRight = true,
+) => (
+  <div
+    className={`flex flex-col min-h-full ${showBorderRight ? "border-r border-black" : ""}`}
+  >
+    <table className="tformat-table">
+      <thead>
+        <tr>
+          <th colSpan={2}>{title}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, idx) => (
+          <tr key={row.id || idx}>
+            {renderCell(row)}
+            {renderCell(row, true)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {total && (
+      <table className="tformat-table mt-auto shrink-0">
+        <tbody>
+          <tr>
+            {renderCell(
+              { id: "total-label", label: "Total", amount: total, isTotal: true },
+            )}
+            {renderCell(
+              { id: "total-amount", label: "", amount: total, isTotal: true },
+              true,
+            )}
+          </tr>
+        </tbody>
+      </table>
+    )}
+  </div>
+);
+
 const TFormatReport: React.FC<TFormatReportProps> = ({
   leftTitle,
   rightTitle,
@@ -62,58 +104,12 @@ const TFormatReport: React.FC<TFormatReportProps> = ({
   leftTotal,
   rightTotal,
 }) => {
-  const rowCount = Math.max(leftRows.length, rightRows.length);
-
   return (
     <div className="tformat-wrapper">
-      <table className="tformat-table">
-        <thead>
-          <tr>
-            <th colSpan={2}>{leftTitle}</th>
-            <th colSpan={2}>{rightTitle}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: rowCount }).map((_, idx) => {
-            const left = leftRows[idx];
-            const right = rightRows[idx];
-            return (
-              <tr key={idx}>
-                {renderCell(left)}
-                {renderCell(left, true)}
-                {renderCell(right)}
-                {renderCell(right, true)}
-              </tr>
-            );
-          })}
-          {(leftTotal || rightTotal) && (
-            <tr>
-              {renderCell(
-                leftTotal
-                  ? { id: "left-total", label: "Total", amount: leftTotal, isTotal: true }
-                  : undefined,
-              )}
-              {renderCell(
-                leftTotal
-                  ? { id: "left-total-amt", label: "", amount: leftTotal, isTotal: true }
-                  : undefined,
-                true,
-              )}
-              {renderCell(
-                rightTotal
-                  ? { id: "right-total", label: "Total", amount: rightTotal, isTotal: true }
-                  : undefined,
-              )}
-              {renderCell(
-                rightTotal
-                  ? { id: "right-total-amt", label: "", amount: rightTotal, isTotal: true }
-                  : undefined,
-                true,
-              )}
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <div className="grid grid-cols-2 items-stretch min-h-[240px]">
+        {renderColumn(leftTitle, leftRows, leftTotal, true)}
+        {renderColumn(rightTitle, rightRows, rightTotal, false)}
+      </div>
     </div>
   );
 };

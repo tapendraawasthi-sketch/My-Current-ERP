@@ -309,10 +309,10 @@ export default function PLHorizontal({
       </div>
 
       {/* T-Format Table */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 items-stretch">
         {/* ── DEBIT (LEFT) ── */}
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full border-collapse">
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
+          <table className="w-full border-collapse flex-1">
             <thead>
               <tr>
                 <th className={`${thCls} text-left`}>{leftHeader}</th>
@@ -454,15 +454,18 @@ export default function PLHorizontal({
 
               {/* Net Profit */}
               {pl.netProfit >= 0 && renderNetProfitRow(pl.netProfit)}
-
+            </tbody>
+          </table>
+          <table className="w-full border-collapse shrink-0 mt-auto">
+            <tbody>
               <GrandTotal amount={pl.grandDebitTotal} side="Dr" />
             </tbody>
           </table>
         </div>
 
         {/* ── CREDIT (RIGHT) ── */}
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full border-collapse">
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
+          <table className="w-full border-collapse flex-1">
             <thead>
               <tr>
                 <th className={`${thCls} text-left`}>{rightHeader}</th>
@@ -606,7 +609,10 @@ export default function PLHorizontal({
 
               {/* Net Loss */}
               {pl.netProfit < 0 && renderNetProfitRow(pl.netProfit)}
-
+            </tbody>
+          </table>
+          <table className="w-full border-collapse shrink-0 mt-auto">
+            <tbody>
               <GrandTotal amount={pl.grandCreditTotal} side="Cr" />
             </tbody>
           </table>

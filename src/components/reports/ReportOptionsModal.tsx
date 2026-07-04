@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import ReportDateRangePicker from "../ui/ReportDateRangePicker";
 
 export interface ReportOptions {
@@ -80,9 +81,9 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   const cardActive = "border-[#1557b0] bg-[#e8f0fe] text-[#1557b0]";
   const cardInactive = "border-gray-200 bg-white text-gray-700 hover:border-gray-300";
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-start justify-center bg-black/40 p-4 pt-6 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden my-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 bg-[#1557b0] text-white">
           <span className="text-[13px] font-semibold">{title} — Report Options</span>
@@ -212,7 +213,8 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

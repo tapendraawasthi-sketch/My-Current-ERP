@@ -294,6 +294,28 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         Quick Actions
       </div>
 
+      <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest">
+        Configuration
+      </div>
+      <button
+        type="button"
+        onClick={toggleF12}
+        className={`h-[26px] border-b border-[#2d3748] flex items-center select-none w-full text-left transition-colors ${
+          f12IsOpen ? "bg-[#1557b0] text-white" : "bg-[#1e2433] hover:bg-[#273148] text-white"
+        }`}
+        title="F12: Open screen configuration settings"
+      >
+        <span
+          className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}
+        >
+          F12
+        </span>
+        <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
+          {f12IsOpen && <span className="text-blue-200 text-[9px]">✓</span>}
+          Configure
+        </span>
+      </button>
+
       {visibleButtons.map((button) => {
         if (!button.shortcut) {
           return (
@@ -329,28 +351,6 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
           </button>
         );
       })}
-
-      <div className="bg-[#273148] text-center py-1 font-bold border-y border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest mt-1">
-        Configuration
-      </div>
-      <button
-        type="button"
-        onClick={toggleF12}
-        className={`h-[26px] border-b border-[#2d3748] flex items-center select-none w-full text-left transition-colors ${
-          f12IsOpen ? "bg-[#1557b0] text-white" : "bg-[#1e2433] hover:bg-[#273148] text-white"
-        }`}
-        title="F12: Open screen configuration settings"
-      >
-        <span
-          className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}
-        >
-          F12
-        </span>
-        <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
-          {f12IsOpen && <span className="text-blue-200 text-[9px]">✓</span>}
-          Configure
-        </span>
-      </button>
 
       <div className="mt-auto border-t border-[#2d3748] bg-[#1e2433] pt-1">
         <div className="bg-[#273148] text-center py-1 font-bold border-b border-[#2d3748] text-[10px] text-gray-300 uppercase tracking-widest">

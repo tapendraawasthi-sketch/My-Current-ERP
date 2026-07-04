@@ -243,16 +243,18 @@ const IncomeExpenditureAccount: React.FC = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
                 {/* Income */}
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200">
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col min-h-full">
+                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 shrink-0">
                     <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                       Indirect Income
                     </h3>
                   </div>
-                  <table className="w-full">
+                  <table className="w-full flex-1">
                     <AccountTreeRenderer nodes={incomeTree} {...treeProps} depth={depth} />
+                  </table>
+                  <table className="w-full shrink-0 mt-auto">
                     <tfoot>
                       <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
                         <td className="px-3 py-2 text-gray-800">Total Income</td>
@@ -265,14 +267,16 @@ const IncomeExpenditureAccount: React.FC = () => {
                 </div>
 
                 {/* Expenses */}
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200">
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col min-h-full">
+                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 shrink-0">
                     <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                       Indirect / Admin Expenses
                     </h3>
                   </div>
-                  <table className="w-full">
+                  <table className="w-full flex-1">
                     <AccountTreeRenderer nodes={expenseTree} {...treeProps} depth={depth} />
+                  </table>
+                  <table className="w-full shrink-0 mt-auto">
                     <tfoot>
                       <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
                         <td className="px-3 py-2 text-gray-800">Total Expenses</td>

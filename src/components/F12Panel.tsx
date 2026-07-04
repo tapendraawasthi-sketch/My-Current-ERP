@@ -2,6 +2,7 @@
 // F12 Configuration Panel — Modal overlay UI
 
 import React, { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useF12Config } from "../hooks/useF12Config";
 import { type F12FieldDef, type F12SectionDef, type F12ValueMap } from "../lib/f12Types";
 
@@ -191,15 +192,15 @@ const F12Panel: React.FC = () => {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 z-[9999] flex items-start justify-center p-4 pt-6 overflow-y-auto"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeF12();
       }}
     >
       <div
-        className="w-[680px] max-h-[85vh] bg-white rounded-md shadow-2xl flex flex-col overflow-hidden"
+        className="w-[680px] max-h-[85vh] bg-white rounded-md shadow-2xl flex flex-col overflow-hidden my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Title Bar */}
@@ -283,7 +284,8 @@ const F12Panel: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

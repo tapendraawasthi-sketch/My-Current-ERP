@@ -1,6 +1,7 @@
 // src/components/pl/PLOptionsDialog.tsx
 // @ts-nocheck
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import type { PLReportOptions, PLReportVariant } from "../../lib/plTypes";
 import { BarChart2, TrendingUp, Calendar, Table } from "lucide-react";
 import ReportDateRangePicker from "../ui/ReportDateRangePicker";
@@ -66,9 +67,9 @@ export default function PLOptionsDialog({
   const inputCls =
     "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center p-4 pt-6 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden my-auto">
         {/* Header */}
         <div className="bg-[#1e2433] px-5 py-4">
           <h2 className="text-[15px] font-semibold text-white">
@@ -258,6 +259,7 @@ export default function PLOptionsDialog({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
