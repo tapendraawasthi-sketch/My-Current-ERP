@@ -218,9 +218,9 @@ const PurchaseRegister: React.FC = () => {
   const amountStartIdx = visibleColumnList.findIndex((c) => c.key === "subTotal");
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
       <div className="p-4 pb-0 shrink-0">
-        <div className="flex items-center justify-between mb-4">
+        <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800">Purchase register</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">All purchase invoices and returns</p>

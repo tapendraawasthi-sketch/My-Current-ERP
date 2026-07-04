@@ -242,7 +242,7 @@ export default function ProfitLoss() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
       <PLToolbar
         options={options}
         onOpenOptions={() => setShowOptionsDialog(true)}

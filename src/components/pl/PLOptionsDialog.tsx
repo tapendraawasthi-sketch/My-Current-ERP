@@ -68,17 +68,19 @@ export default function PLOptionsDialog({
     "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center p-4 pt-6 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden my-auto">
-        {/* Header */}
-        <div className="bg-[#1e2433] px-5 py-4">
-          <h2 className="text-[15px] font-semibold text-white">
-            Profit & Loss Account — Report Options
-          </h2>
-          <p className="text-[11px] text-gray-400 mt-0.5">{companyName}</p>
+    <div
+      className="erp-report-modal-overlay no-print"
+      data-modal-open="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="erp-report-modal">
+        <div className="erp-report-modal-header">
+          <h2>Profit & Loss Account — Report Options</h2>
+          <p>{companyName}</p>
         </div>
 
-        <form onSubmit={handleConfirm} className="p-5 space-y-5">
+        <form onSubmit={handleConfirm} className="erp-report-modal-body space-y-5">
           {/* Variant Selection */}
           <div>
             <label className={labelCls}>Report Type</label>
@@ -241,8 +243,7 @@ export default function PLOptionsDialog({
             </div>
           )}
 
-          {/* Footer */}
-          <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+          <div className="erp-report-modal-footer">
             <button
               type="button"
               onClick={onCancel}

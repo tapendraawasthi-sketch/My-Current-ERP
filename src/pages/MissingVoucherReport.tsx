@@ -49,8 +49,8 @@ export default function MissingVoucherReport() {
   }, [vouchers, fromDate, toDate, search]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Missing voucher report</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">

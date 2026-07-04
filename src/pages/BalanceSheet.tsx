@@ -35,13 +35,6 @@ import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
-  FinancialStatementHeader,
-  FinancialStatementFooter,
-  FinancialStatementShell,
-  formatAsAtDate,
-  fsClasses as fs,
-} from "../components/reports/FinancialStatementChrome";
-import {
   buildBalanceSheetData,
   balanceSheetDataToRows,
   shiftDateByYears,
@@ -103,14 +96,20 @@ function OptionsDialog({
     }`;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center p-4 pt-6 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden my-auto">
-        <div className="bg-[#1e2433] px-5 py-4">
-          <h2 className="text-[15px] font-semibold text-white">Balance Sheet — Report Options</h2>
-          <p className="text-[11px] text-gray-400 mt-0.5">{companyName}</p>
+    <div
+      className="erp-report-modal-overlay no-print"
+      data-modal-open="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bs-options-title"
+    >
+      <div className="erp-report-modal">
+        <div className="erp-report-modal-header">
+          <h2 id="bs-options-title">Balance Sheet — Report Options</h2>
+          <p>{companyName}</p>
         </div>
 
-        <div className="p-5 space-y-4 overflow-y-auto max-h-[75vh]">
+        <div className="erp-report-modal-body space-y-4">
           {/* Format */}
           <div>
             <label className={lbl}>Reporting Standard</label>
@@ -275,7 +274,7 @@ function OptionsDialog({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 px-5 py-3 border-t border-gray-200">
+        <div className="erp-report-modal-footer">
           <button
             type="button"
             onClick={onCancel}
@@ -315,141 +314,36 @@ function BSRow({
   const [expanded, setExpanded] = useState(showSecond);
   const hasChildren = (row.children?.length || 0) > 0;
   const isZero = Math.abs(row.amount || 0) < 0.005;
-  const indent = depth * 16;
-
-  const cls = `flex items-center justify-between px-3 py-1.5 border-b border-gray-100 border-l-[3px] transition-colors ${
-    row.bold ? "bg-[#f9fafb] font-semibold" : "bg-white"
-  } ${row.isClickable ? "cursor-pointer border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50" : "border-l-transparent"} ${
-    row.isPLLine ? "bg-green-50" : ""
-  } ${row.isPLAdjusted ? "bg-yellow-50" : ""}`;
-
-  const handleClick = () => {
-    if (!row.isClickable) return;
-    if (hasChildren) {
-      setExpanded((p) => !p);
-    } else if (row.accountId) {
-      onDrillDown(row.accountId, row.caption, true);
-    } else if (row.groupId) {
-      onDrillDown(row.groupId, row.caption, false);
-    }
-  };
-
-  return (
-    <>
-      <div className={cls} onClick={handleClick} style={{ paddingLeft: `${12 + indent}px` }}>
-        <div className="flex items-center gap-1.5 min-w-0 flex-1">
-          {hasChildren && (
-            <span className="text-gray-400 shrink-0">
-              {expanded ? (
-                <ChevronDown className="h-3 w-3" />
-              ) : (
-                <ChevronRight className="h-3 w-3" />
-              )}
-            </span>
-          )}
-          <span
-            className={`text-[12px] truncate ${row.bold ? "font-semibold text-gray-800" : "text-gray-600"} ${
-              isZero ? "text-gray-400" : ""
-            } ${row.isPLLine ? "text-green-700 font-semibold" : ""} ${
-              row.isClosingStock ? "text-blue-700" : ""
-            }`}
-          >
-            {row.caption}
-            {isZero && !row.isClosingStock && (
-              <span className="ml-1.5 text-[10px] text-gray-300 font-normal">(0)</span>
-            )}
-            {row.isPLAdjusted && (
-              <span className="ml-1.5 text-[9px] text-amber-600 font-normal">[screen only]</span>
-            )}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          {options.showPercentage && row.percentage !== undefined && (
-            <span className="text-[10px] text-gray-400 w-10 text-right">
-              {isZero ? "" : `${row.percentage?.toFixed(1)}%`}
-            </span>
-          )}
-          {options.showPreviousYear && (
-            <span className="text-[11px] font-mono text-gray-400 w-24 text-right">
-              {row.prevYearAmount !== undefined ? fmt(row.prevYearAmount) : ""}
-            </span>
-          )}
-          <span
-            className={`text-[12px] font-mono font-semibold w-28 text-right ${
-              isZero ? "text-gray-300" : row.bold ? "text-gray-800" : "text-gray-700"
-            } ${row.isPLLine ? "text-green-700" : ""}`}
-          >
-            {fmt(Math.abs(row.amount || 0))}
-          </span>
-        </div>
-      </div>
-
-      {expanded && hasChildren && (
-        <div>
-          {(row.children || []).map((child: any, ci: number) => (
-            <BSRow
-              key={ci}
-              row={child}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={showSecond}
-              depth={depth + 1}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
-}
-
-function BSRowTr({
-  row,
-  onDrillDown,
-  options,
-  showSecond,
-  depth = 0,
-  layout = "tformat",
-}: {
-  row: any;
-  onDrillDown: (id: string, name: string, isAccount: boolean) => void;
-  options: BSOptions;
-  showSecond: boolean;
-  depth?: number;
-  layout?: "tformat" | "vertical";
-}) {
-  const [expanded, setExpanded] = useState(showSecond);
-  const hasChildren = (row.children?.length || 0) > 0;
-  const isZero = Math.abs(row.amount || 0) < 0.005;
-  const indent = 10 + depth * 14;
-
-  const handleClick = () => {
-    if (!row.isClickable) return;
-    if (hasChildren) {
-      setExpanded((p) => !p);
-    } else if (row.accountId) {
-      onDrillDown(row.accountId, row.caption, true);
-    } else if (row.groupId) {
-      onDrillDown(row.groupId, row.caption, false);
-    }
-  };
+  const indent = depth * 14;
 
   const rowClass = [
-    row.isClickable ? `${fs.rowHover} cursor-pointer` : "",
-    row.isGroup || row.bold ? fs.rowGroup : fs.rowLedger,
-    row.isPLLine ? "bg-green-50" : "",
-    row.isPLAdjusted ? "bg-amber-50 no-print" : "",
+    row.bold ? "erp-bs-group-row" : "",
+    row.isClickable ? "erp-bs-clickable" : "",
+    row.isPLLine ? "erp-bs-pl-row" : "",
+    row.isPLAdjusted ? "erp-bs-adjust-row" : "",
+    isZero ? "erp-bs-zero" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
+  const handleClick = () => {
+    if (!row.isClickable) return;
+    if (hasChildren) {
+      setExpanded((p) => !p);
+    } else if (row.accountId) {
+      onDrillDown(row.accountId, row.caption, true);
+    } else if (row.groupId) {
+      onDrillDown(row.groupId, row.caption, false);
+    }
+  };
+
   return (
     <>
       <tr className={rowClass} onClick={handleClick}>
-        <td className={fs.cellParticulars} style={{ paddingLeft: `${indent}px` }}>
-          <div className="flex items-center gap-1.5">
+        <td style={{ paddingLeft: `${10 + indent}px` }}>
+          <div className="flex items-center gap-1.5 min-w-0">
             {hasChildren && (
-              <span className="text-gray-400 shrink-0 no-print">
+              <span className="text-gray-500 shrink-0">
                 {expanded ? (
                   <ChevronDown className="h-3 w-3" />
                 ) : (
@@ -458,45 +352,43 @@ function BSRowTr({
               </span>
             )}
             <span
-              className={`${row.bold ? "font-semibold" : ""} ${isZero ? "text-gray-400" : ""} ${
+              className={`truncate ${row.bold ? "font-semibold text-gray-900" : "text-gray-800"} ${
                 row.isPLLine ? "text-green-700 font-semibold" : ""
-              }`}
+              } ${row.isClosingStock ? "text-[#1557b0] font-medium" : ""}`}
             >
               {row.caption}
+              {isZero && !row.isClosingStock && (
+                <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(0)</span>
+              )}
               {row.isPLAdjusted && (
-                <span className="ml-1.5 text-[9px] text-amber-600 font-normal no-print">
-                  [screen only]
-                </span>
+                <span className="ml-1.5 text-[9px] text-amber-600 font-normal">[screen only]</span>
               )}
             </span>
           </div>
         </td>
-        <td className={fs.cellNote}>—</td>
-        {layout === "vertical" && options.showPreviousYear && (
-          <td className={`${fs.cellAmount} text-gray-400 font-normal`}>
-            {row.prevYearAmount !== undefined ? fmt(row.prevYearAmount) : "—"}
-          </td>
-        )}
-        <td className={`${fs.cellAmount} ${isZero ? "text-gray-300 font-normal" : ""}`}>
-          {isZero ? "—" : fmt(Math.abs(row.amount || 0))}
+        <td className={`erp-bs-amount ${isZero ? "erp-bs-amount-zero" : ""}`}>
+          {options.showPercentage && row.percentage !== undefined && !isZero && (
+            <span className="text-[10px] text-gray-500 mr-2">{row.percentage?.toFixed(1)}%</span>
+          )}
+          {options.showPreviousYear && row.prevYearAmount !== undefined && (
+            <span className="text-[10px] text-gray-500 mr-2 block">
+              PY: {fmt(row.prevYearAmount)}
+            </span>
+          )}
+          {fmt(Math.abs(row.amount || 0))}
         </td>
-        {layout === "vertical" && options.showPercentage && (
-          <td className={`${fs.cellNote} text-right`}>
-            {isZero || row.percentage === undefined ? "" : `${row.percentage?.toFixed(1)}%`}
-          </td>
-        )}
       </tr>
+
       {expanded &&
         hasChildren &&
         (row.children || []).map((child: any, ci: number) => (
-          <BSRowTr
+          <BSRow
             key={ci}
             row={child}
             onDrillDown={onDrillDown}
             options={options}
             showSecond={showSecond}
             depth={depth + 1}
-            layout={layout}
           />
         ))}
     </>
@@ -516,71 +408,68 @@ function HorizontalBS({
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
   onClosingStockEdit: () => void;
 }) {
-  const renderSide = (sections: any[], sideTotal: number, sideLabel: string) => (
-    <div className={fs.tformatCol}>
-      <table className={fs.table}>
-        <tbody>
-          {sections.map((section) => (
-            <React.Fragment key={section.id}>
-              <tr className={fs.sectionHead}>
-                <td colSpan={3}>{section.caption}</td>
-              </tr>
-              {section.rows.map((row: any, ri: number) => (
-                <BSRowTr
-                  key={ri}
-                  row={row}
-                  onDrillDown={onDrillDown}
-                  options={options}
-                  showSecond={options.showSecondLevel}
-                />
-              ))}
-              <tr className={fs.subtotalRow}>
-                <td className={fs.cellParticulars}>Total {section.caption}</td>
-                <td className={fs.cellNote} />
-                <td className={fs.cellAmount}>{fmt(Math.abs(section.total))}</td>
-              </tr>
-            </React.Fragment>
-          ))}
-          {bs.plAdjustedAmount !== 0 && (
-            <tr className="bg-amber-50 no-print">
-              <td className={fs.cellParticulars}>Profit & Loss Adjusted</td>
-              <td className={fs.cellNote}>—</td>
-              <td className={fs.cellAmount}>{fmt(Math.abs(bs.plAdjustedAmount))}</td>
-            </tr>
-          )}
-          <tr className={fs.grandTotalRow}>
-            <td className={fs.cellParticulars}>TOTAL</td>
-            <td className={fs.cellNote} />
-            <td className={fs.cellAmount}>
-              {sideLabel === "Liabilities"
-                ? fmt(bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount))
-                : fmt(sideTotal)}
-            </td>
+  const renderSection = (section: any) => (
+    <React.Fragment key={section.id}>
+      <tr className="erp-bs-section-row">
+        <td colSpan={2}>{section.caption}</td>
+      </tr>
+      {section.rows.map((row: any, ri: number) => (
+        <BSRow
+          key={ri}
+          row={row}
+          onDrillDown={onDrillDown}
+          options={options}
+          showSecond={options.showSecondLevel}
+        />
+      ))}
+      <tr className="erp-bs-subtotal-row">
+        <td>Total {section.caption}</td>
+        <td className="erp-bs-amount">{fmt(Math.abs(section.total))}</td>
+      </tr>
+    </React.Fragment>
+  );
+
+  const renderSide = (title: string, sections: any[], total: number, extraRow?: React.ReactNode) => (
+    <div className="erp-bs-side">
+      <table className="erp-bs-table">
+        <thead>
+          <tr>
+            <th className="text-left">{title}</th>
+            <th className="text-right">Amount (Rs.)</th>
           </tr>
+        </thead>
+        <tbody>
+          {sections.map(renderSection)}
+          {extraRow}
         </tbody>
+        <tfoot>
+          <tr>
+            <td>TOTAL</td>
+            <td className="erp-bs-amount">{fmt(total)}</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );
 
   return (
-    <FinancialStatementShell>
-      <div className={fs.unifiedThead}>
-        <div className="fs-unified-thead__side">
-          <span>Liabilities</span>
-          <span>Notes No.</span>
-          <span>Amount (₹)</span>
-        </div>
-        <div className="fs-unified-thead__side">
-          <span>Assets</span>
-          <span>Notes No.</span>
-          <span>Amount (₹)</span>
-        </div>
-      </div>
-      <div className={fs.tformatGrid}>
-        {renderSide(bs.liabilitiesEquity, bs.totalLiabilitiesEquity, "Liabilities")}
-        {renderSide(bs.assets, bs.totalAssets, "Assets")}
-      </div>
-    </FinancialStatementShell>
+    <div className="erp-bs-tformat">
+      {renderSide(
+        "Liabilities & Capital",
+        bs.liabilitiesEquity,
+        bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount),
+        bs.plAdjustedAmount !== 0 ? (
+          <tr className="erp-bs-adjust-row" key="pl-adjust">
+            <td>
+              Profit & Loss Adjusted{" "}
+              <span className="text-[9px] font-normal">[screen only, not printed]</span>
+            </td>
+            <td className="erp-bs-amount">{fmt(Math.abs(bs.plAdjustedAmount))}</td>
+          </tr>
+        ) : null,
+      )}
+      {renderSide("Assets", bs.assets, bs.totalAssets)}
+    </div>
   );
 }
 
@@ -595,93 +484,71 @@ function VerticalBS({
   options: BSOptions;
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
 }) {
-  const colCount = 2 + (options.showPreviousYear ? 1 : 0) + (options.showPercentage ? 1 : 0);
-
   return (
-    <FinancialStatementShell>
-      <table className={fs.table}>
-        <thead>
-          <tr className={fs.thead}>
-            <th className={fs.theadCell}>Particulars</th>
-            <th className={`${fs.theadCell} text-center`} style={{ width: 56 }}>
-              Notes No.
-            </th>
-            {options.showPreviousYear && (
-              <th className={`${fs.theadCell} text-right`}>Previous Year (₹)</th>
-            )}
-            <th className={`${fs.theadCell} text-right`} style={{ width: 140 }}>
-              Amount (₹)
-            </th>
-            {options.showPercentage && (
-              <th className={`${fs.theadCell} text-right`} style={{ width: 56 }}>
-                %
-              </th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className={fs.sectionHead}>
-            <td colSpan={colCount}>I. Equity and Liabilities</td>
-          </tr>
-          {bs.liabilitiesEquity.map((sec) => (
-            <React.Fragment key={sec.id}>
-              <tr className={fs.sectionHead}>
-                <td colSpan={colCount}>{sec.caption}</td>
-              </tr>
-              {sec.rows.map((row: any, ri: number) => (
-                <BSRowTr
-                  key={ri}
-                  row={row}
-                  onDrillDown={onDrillDown}
-                  options={options}
-                  showSecond={options.showSecondLevel}
-                  layout="vertical"
-                />
-              ))}
-              <tr className={fs.subtotalRow}>
-                <td className={fs.cellParticulars}>Total {sec.caption}</td>
-                <td className={fs.cellNote} />
-                {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
-                <td className={fs.cellAmount}>{fmt(sec.total)}</td>
-                {options.showPercentage && <td className={fs.cellNote} />}
-              </tr>
-            </React.Fragment>
-          ))}
-          <tr className={fs.subtotalRow}>
-            <td className={fs.cellParticulars}>Total Liabilities & Equity</td>
-            <td className={fs.cellNote} />
-            {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
-            <td className={fs.cellAmount}>{fmt(bs.totalLiabilitiesEquity)}</td>
-            {options.showPercentage && <td className={fs.cellNote} />}
-          </tr>
+    <table className="erp-bs-table">
+      <thead>
+        <tr>
+          <th className="text-left">Particulars</th>
+          {options.showPreviousYear && <th className="text-right">Previous Year</th>}
+          <th className="text-right">Amount (Rs.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="erp-bs-section-row">
+          <td colSpan={options.showPreviousYear ? 3 : 2}>I. Equity and Liabilities</td>
+        </tr>
+        {bs.liabilitiesEquity.map((sec) => (
+          <React.Fragment key={sec.id}>
+            <tr className="erp-bs-group-row">
+              <td colSpan={options.showPreviousYear ? 3 : 2}>{sec.caption}</td>
+            </tr>
+            {sec.rows.map((row: any, ri: number) => (
+              <BSRow
+                key={ri}
+                row={row}
+                onDrillDown={onDrillDown}
+                options={options}
+                showSecond={options.showSecondLevel}
+              />
+            ))}
+            <tr className="erp-bs-subtotal-row">
+              <td>Total {sec.caption}</td>
+              {options.showPreviousYear && <td />}
+              <td className="erp-bs-amount">{fmt(sec.total)}</td>
+            </tr>
+          </React.Fragment>
+        ))}
+        <tr className="erp-bs-subtotal-row">
+          <td className="text-[#1557b0] font-bold">Total Liabilities & Equity</td>
+          {options.showPreviousYear && <td />}
+          <td className="erp-bs-amount text-[#1557b0]">{fmt(bs.totalLiabilitiesEquity)}</td>
+        </tr>
 
-          <tr className={fs.sectionHead}>
-            <td colSpan={colCount}>II. Assets</td>
-          </tr>
-          {bs.assets.map((sec) => (
-            <React.Fragment key={sec.id}>
-              {sec.rows.map((row: any, ri: number) => (
-                <BSRowTr
-                  key={ri}
-                  row={row}
-                  onDrillDown={onDrillDown}
-                  options={options}
-                  showSecond={options.showSecondLevel}
-                  layout="vertical"
-                />
-              ))}
-            </React.Fragment>
-          ))}
-          <tr className={fs.grandTotalRow}>
-            <td className={fs.cellParticulars}>TOTAL ASSETS</td>
-            <td className={fs.cellNote} />
-            {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
-            <td className={fs.cellAmount}>{fmt(bs.totalAssets)}</td>
-            {options.showPercentage && <td className={fs.cellNote} />}
-          </tr>
-        </tbody>
-      </table>
-    </FinancialStatementShell>
+        <tr className="erp-bs-section-row">
+          <td colSpan={options.showPreviousYear ? 3 : 2}>II. Assets</td>
+        </tr>
+        {bs.assets.map((sec) => (
+          <React.Fragment key={sec.id}>
+            {sec.rows.map((row: any, ri: number) => (
+              <BSRow
+                key={ri}
+                row={row}
+                onDrillDown={onDrillDown}
+                options={options}
+                showSecond={options.showSecondLevel}
+              />
+            ))}
+          </React.Fragment>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>TOTAL ASSETS</td>
+          {options.showPreviousYear && <td />}
+          <td className="erp-bs-amount">{fmt(bs.totalAssets)}</td>
+        </tr>
+      </tfoot>
+    </table>
   );
 }
 
@@ -759,7 +626,9 @@ function GroupSummaryView({
                 <tr
                   key={i}
                   className={`transition-colors border-l-[3px] border-l-transparent ${
-                    row.accountId ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer" : ""
+                    row.accountId
+                      ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer"
+                      : ""
                   }`}
                   onClick={() => row.accountId && onDrillAccount(row.accountId, row.caption)}
                 >
@@ -1046,12 +915,8 @@ function VoucherView({ voucherId }: { voucherId: string }) {
 // ─── Main Balance Sheet Component ─────────────────────────────────────────────
 
 export default function BalanceSheet() {
-  const { tenant, companySettings, accounts, vouchers, currentFiscalYear } = useStore();
+  const { tenant, accounts, vouchers, currentFiscalYear } = useStore();
   const fy = currentFiscalYear || tenant?.fiscalYears?.[0];
-  const companyName =
-    companySettings?.name || companySettings?.companyNameEn || tenant?.name || "Company";
-  const companyAddress = companySettings?.address;
-  const companyPan = companySettings?.panNumber || companySettings?.vatNumber;
 
   const [options, setOptions] = useState<BSOptions>(makeDefaultOptions(fy));
   const [showOptions, setShowOptions] = useState(false);
@@ -1084,7 +949,9 @@ export default function BalanceSheet() {
         setDrillState({ level: 0, path: [] });
       } catch (err) {
         console.error(err);
-        toast.error(err instanceof Error ? err.message : "Failed to generate Balance Sheet");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to generate Balance Sheet",
+        );
       } finally {
         setLoading(false);
       }
@@ -1166,7 +1033,7 @@ export default function BalanceSheet() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
       {/* Options Dialog */}
       {showOptions && (
         <OptionsDialog
@@ -1181,7 +1048,7 @@ export default function BalanceSheet() {
         />
       )}
 
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
+      <div className="erp-report-toolbar flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
         <div className="flex items-center gap-4">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800">Balance Sheet</h1>
@@ -1236,7 +1103,7 @@ export default function BalanceSheet() {
 
           <button
             onClick={() => setShowOptions(true)}
-            className="h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
+            className="erp-btn-primary h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
           >
             <Settings className="h-3.5 w-3.5" />
             Options
@@ -1256,30 +1123,30 @@ export default function BalanceSheet() {
           <div className="bg-white border border-gray-200 rounded-md">
             <ReportEmptyState
               message="Balance sheet not generated"
-              hint="Click Options to configure the report and generate balances."
+              hint='Click Options to configure the report and generate balances.'
             />
           </div>
         ) : (
           <div className="max-w-[1200px] mx-auto pb-10">
             {bsData && drillState.level === 0 && (
               <div className="no-print grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total assets
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[14px] font-semibold text-gray-900 mt-0.5 font-mono">
                     {fmt2(bsData.totalAssets)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Liabilities & equity
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[14px] font-semibold text-gray-900 mt-0.5 font-mono">
                     {fmt2(bsData.totalLiabilitiesEquity)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Closing stock
                   </p>
@@ -1287,7 +1154,7 @@ export default function BalanceSheet() {
                     {fmt2(bsData.closingStock)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Status
                   </p>
@@ -1296,9 +1163,7 @@ export default function BalanceSheet() {
                       bsData.isBalanced ? "text-green-700" : "text-red-700"
                     }`}
                   >
-                    {bsData.isBalanced
-                      ? "Balanced"
-                      : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
+                    {bsData.isBalanced ? "Balanced" : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
                   </p>
                 </div>
               </div>
@@ -1327,17 +1192,12 @@ export default function BalanceSheet() {
               </div>
             )}
 
-            {/* Statutory report header + body */}
-            {drillState.level === 0 && (bsData || nasData) && (
-              <FinancialStatementHeader
-                companyName={companyName}
-                companyNameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
-                address={companyAddress}
-                pan={companyPan}
-                reportTitle="Balance Sheet"
-                asAt={formatAsAtDate(options.toDate)}
-              />
-            )}
+            {/* Print Header */}
+            <div className="print-only hidden mb-6 text-center">
+              <h2 className="text-[18px] font-bold uppercase">{tenant?.name}</h2>
+              <h3 className="text-[14px] font-semibold mt-1">Balance Sheet</h3>
+              <p className="text-[12px] mt-1">As at {options.toDate}</p>
+            </div>
 
             {/* Navigation Breadcrumbs */}
             {drillState.level > 0 && (
@@ -1420,8 +1280,6 @@ export default function BalanceSheet() {
                 <VoucherView voucherId={drillState.voucherId} />
               )}
             </div>
-
-            {drillState.level === 0 && bsData && <FinancialStatementFooter />}
 
             {drillState.level === 0 && bsData && (
               <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">

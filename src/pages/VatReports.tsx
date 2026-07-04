@@ -53,9 +53,9 @@ const ReportShell: React.FC<ReportShellProps> = ({
 }) => {
   return (
     <div
-      className={`flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6 ${className}`}
+      className={`erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6 ${className}`}
     >
-      <div className="flex items-center justify-between mb-4 no-print">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
           {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
@@ -140,7 +140,7 @@ const DataTable: React.FC<DataTableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-max border-collapse">
+      <table className="erp-bs-table report-table w-full min-w-max border-collapse">
         <thead>
           <tr className="bg-[#f5f6fa] border-b border-gray-200">
             {columns.map((col) => (

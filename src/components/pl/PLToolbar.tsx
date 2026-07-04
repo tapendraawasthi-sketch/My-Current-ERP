@@ -62,7 +62,7 @@ export default function PLToolbar({
   const btnPri = `${btn} bg-[#1557b0] text-white hover:bg-[#0f4a96]`;
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 no-print shrink-0 flex-wrap gap-2">
+    <div className="erp-report-toolbar flex items-center justify-between px-4 py-2 bg-white border-b border-gray-300 no-print shrink-0 flex-wrap gap-2">
       {/* Left */}
       <div className="flex items-center gap-2">
         {hasDrill && (

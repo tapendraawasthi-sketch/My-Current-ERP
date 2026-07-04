@@ -82,22 +82,34 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   const cardInactive = "border-gray-200 bg-white text-gray-700 hover:border-gray-300";
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-start justify-center bg-black/40 p-4 pt-6 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden my-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#1557b0] text-white">
-          <span className="text-[13px] font-semibold">{title} — Report Options</span>
+    <div
+      className="erp-report-modal-overlay no-print"
+      data-modal-open="true"
+      role="dialog"
+      aria-modal="true"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="erp-report-modal"
+        style={{ maxWidth: "28rem" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="erp-report-modal-header flex items-center justify-between gap-3">
+          <div>
+            <h2>{title} — Report Options</h2>
+          </div>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 text-lg leading-none"
+            className="text-gray-400 hover:text-white text-lg leading-none p-1"
             aria-label="Close"
           >
             ✕
           </button>
         </div>
 
-        {/* Body */}
-        <div className="p-4 space-y-4">
+        <div className="erp-report-modal-body space-y-4">
           {/* Layout selector */}
           <div>
             <label className="text-[11px] font-medium text-gray-600 block mb-1.5">
@@ -197,8 +209,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-gray-200">
+        <div className="erp-report-modal-footer">
           <button
             onClick={onClose}
             className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"

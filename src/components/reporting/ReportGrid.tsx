@@ -16,14 +16,14 @@ interface ReportGridProps {
 
 const ReportGrid: React.FC<ReportGridProps> = ({ columns, data, onRowClick, getRowClassName }) => {
   return (
-    <div className="overflow-x-auto w-full border border-gray-200 rounded-md bg-white">
-      <table className="w-full text-left whitespace-nowrap">
+    <div className="overflow-x-auto w-full">
+      <table className="erp-bs-table report-table w-full text-left whitespace-nowrap">
         <thead>
-          <tr className="bg-[#f5f6fa] border-b border-gray-200">
+          <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${
+                className={`text-[10px] font-semibold text-gray-600 uppercase tracking-wide ${
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"
@@ -36,7 +36,7 @@ const ReportGrid: React.FC<ReportGridProps> = ({ columns, data, onRowClick, getR
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody>
           {data.map((row, rowIdx) => {
             const isSummary =
               row.section === "Total" ||
@@ -49,9 +49,9 @@ const ReportGrid: React.FC<ReportGridProps> = ({ columns, data, onRowClick, getR
               <tr
                 key={rowIdx}
                 onClick={() => onRowClick?.(row)}
-                className={`hover:bg-gray-50 transition-colors ${
+                className={`erp-bs-clickable ${
                   onRowClick ? "cursor-pointer" : ""
-                } ${isSummary ? "bg-[#eef2ff] border-t-2 border-[#c7d2fe]" : ""} ${getRowClassName?.(row) || ""}`}
+                } ${isSummary ? "erp-bs-subtotal-row" : ""} ${getRowClassName?.(row) || ""}`}
               >
                 {columns.map((col) => {
                   const isAmount = col.align === "right";
@@ -59,13 +59,9 @@ const ReportGrid: React.FC<ReportGridProps> = ({ columns, data, onRowClick, getR
                   return (
                     <td
                       key={col.key}
-                      className={`px-3 py-2.5 text-[12px] text-gray-700 ${
-                        isAmount
-                          ? "text-right font-mono"
-                          : col.align === "center"
-                            ? "text-center"
-                            : "text-left"
-                      } ${isSummary ? "font-bold text-gray-800" : ""}`}
+                      className={`text-[12px] text-gray-800 ${
+                        isAmount ? "erp-bs-amount" : col.align === "center" ? "text-center" : "text-left"
+                      } ${isSummary ? "font-bold" : ""}`}
                     >
                       {col.render
                         ? col.render(row[col.key], row)

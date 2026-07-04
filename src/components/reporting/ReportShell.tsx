@@ -116,63 +116,24 @@ const ReportShell: React.FC<ReportShellProps> = ({
   onTabChange,
 }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#f5f6fa",
-      }}
-    >
+    <div className="erp-report flex flex-col h-full bg-[#f5f6fa]">
       {/* ── Toolbar ───────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "8px 16px",
-          background: "#ffffff",
-          borderBottom: "1px solid #e5e7eb",
-          flexShrink: 0,
-          flexWrap: "wrap",
-          minHeight: 48,
-        }}
-      >
+      <div className="erp-report-toolbar no-print flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-300 shrink-0 flex-wrap min-h-[48px]">
         {/* Left: title + period */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-            <span
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#111827",
-                letterSpacing: "-0.01em",
-                whiteSpace: "nowrap",
-              }}
-            >
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline gap-2.5 flex-wrap">
+            <span className="text-[15px] font-semibold text-gray-800 whitespace-nowrap">
               {title}
             </span>
-            {/* Period — always shown immediately after title */}
             {period && (
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "#6b7280",
-                  fontWeight: 400,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {period}
-              </span>
+              <span className="text-[11px] text-gray-500 whitespace-nowrap">{period}</span>
             )}
           </div>
-          {subtitle && (
-            <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>{subtitle}</div>
-          )}
+          {subtitle && <div className="text-[11px] text-gray-500 mt-0.5">{subtitle}</div>}
         </div>
 
         {/* Right: action buttons cluster */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+        <div className="flex items-center gap-1.5 shrink-0">
           {actions}
           {/* Refresh */}
           {onRefresh && (
@@ -242,16 +203,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
 
       {/* ── Variant Tabs (optional) ────────────────────────────────────────── */}
       {tabs && tabs.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            background: "#ffffff",
-            borderBottom: "2px solid #e5e7eb",
-            padding: "0 16px",
-            flexShrink: 0,
-            overflowX: "auto",
-          }}
-        >
+        <div className="no-print flex bg-white border-b-2 border-gray-200 px-4 shrink-0 overflow-x-auto">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.key;
             return (
@@ -259,20 +211,11 @@ const ReportShell: React.FC<ReportShellProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => onTabChange?.(tab.key)}
-                style={{
-                  height: 36,
-                  padding: "0 16px",
-                  background: "transparent",
-                  border: "none",
-                  borderBottom: isActive ? "2px solid #1557b0" : "2px solid transparent",
-                  color: isActive ? "#1557b0" : "#6b7280",
-                  fontSize: 12,
-                  fontWeight: isActive ? 700 : 400,
-                  cursor: "pointer",
-                  marginBottom: -2,
-                  whiteSpace: "nowrap",
-                  transition: "all 150ms ease",
-                }}
+                className={`h-9 px-4 bg-transparent border-0 border-b-2 -mb-0.5 text-[12px] whitespace-nowrap transition-colors ${
+                  isActive
+                    ? "border-[#1557b0] text-[#1557b0] font-bold"
+                    : "border-transparent text-gray-500 hover:text-gray-700 font-medium"
+                }`}
               >
                 {tab.label}
               </button>
@@ -282,13 +225,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
       )}
 
       {/* ── Report Content ─────────────────────────────────────────────────── */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          position: "relative",
-        }}
-      >
+      <div className="flex-1 overflow-y-auto relative p-4">
         {/* Loading skeleton overlay */}
         {isLoading && (
           <div

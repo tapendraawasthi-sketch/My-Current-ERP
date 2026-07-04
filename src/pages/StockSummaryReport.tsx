@@ -131,8 +131,8 @@ export default function StockSummaryReport() {
     "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
-      <div className="flex items-center justify-between mb-4">
+    <div className="erp-report p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary Report</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">

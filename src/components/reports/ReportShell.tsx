@@ -40,9 +40,8 @@ const ReportShell: React.FC<ReportShellProps> = ({
   const actionsToRender = extraActions ?? actions;
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
-      {/* Page header */}
-      <div className="flex items-center justify-between mb-4 no-print">
+    <div className="erp-report p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
           {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}

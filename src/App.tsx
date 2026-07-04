@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { useStore } from "./store/useStore";
 import { Toaster } from "react-hot-toast";
 import { F12Provider } from "./hooks/useF12Config";
+import F12Panel from "./components/F12Panel";
 import Layout from "./components/Layout";
 import ChartOfAccounts from "./components/ChartOfAccounts";
 import Warehouses from "./pages/Warehouses";
@@ -549,6 +550,7 @@ const App: React.FC = () => {
             </main>
           </div>
         </Layout>
+        <F12Panel />
       </F12Provider>
     </>
   );

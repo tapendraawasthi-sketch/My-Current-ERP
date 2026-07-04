@@ -116,13 +116,12 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
 
   return (
     <div
-      className="flex flex-col h-full bg-[#f5f6fa] text-gray-800"
+      className="erp-report flex flex-col h-full bg-[#f5f6fa] text-gray-800"
       style={{
         fontSize: zoom === 80 ? "11px" : zoom === 120 ? "14px" : "12px",
       }}
     >
-      {/* Header */}
-      <div className="no-print bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between gap-3">
+      <div className="erp-report-toolbar no-print bg-white border-b border-gray-300 px-4 py-3 flex items-center justify-between gap-3">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
           {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
@@ -155,8 +154,7 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
         </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="no-print bg-white border-b border-gray-200 px-4 py-2 flex flex-wrap items-center gap-3">
+      <div className="erp-report-toolbar no-print bg-white border-b border-gray-300 px-4 py-2 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1">
           <label className="text-[11px] font-medium text-gray-600">From BS</label>
           <input
