@@ -482,6 +482,20 @@ export function extractSemanticRoles(text: string): {
 export function extractSemanticAmount(text: string): number | null {
   const t = text.toLowerCase().replace(/,/g, "");
 
+  // Qty × unit price — "200 cups for Rs 50 each" / "200 @ 50"
+  const qtyEach =
+    t.match(
+      /(\d+(?:\.\d+)?)\s+[a-zA-Z\u0900-\u097F]+(?:s|es|haru)?\s+(?:for|at|@)\s*(?:rs\.?\s*|npr\s*)?(\d+(?:\.\d+)?)\s*(?:each|per|a\s+piece)?/i,
+    ) ??
+    t.match(
+      /(\d+(?:\.\d+)?)\s+(?:units?|items?|pcs?|pieces?|ota)\s+(?:at|@|for)\s*(?:rs\.?\s*)?(\d+(?:\.\d+)?)/i,
+    );
+  if (qtyEach) {
+    const qty = parseFloat(qtyEach[1]);
+    const unit = parseFloat(qtyEach[2]);
+    if (qty > 0 && unit > 0) return Math.round(qty * unit);
+  }
+
   // "50 rupaya/rupiya ko bag" — amount before currency + ko
   const priceKoMatch = t.match(
     /\b(\d+(?:\.\d+)?)\s*(?:rs\.?|npr|rupees?|rupiya|rupya|rupaye?|rupaya|rupaiya|₨)?\s+ko\b/i,

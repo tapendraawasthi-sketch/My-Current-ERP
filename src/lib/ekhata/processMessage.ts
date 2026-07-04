@@ -12,6 +12,8 @@ import {
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { classifyDomain } from "./domainRouter";
+import { analyzeMessageMeaning } from "./meaningEngine";
+import { answerFromGrammarKnowledge } from "./grammarKnowledgeBrain";
 import { detectNegation } from "./negationDetector";
 import {
   applyAmountDelta,
@@ -134,7 +136,8 @@ function tryJournalEntry(
   normalizedText: string,
   lang: ReturnType<typeof detectUserLanguage>,
 ): EKhataProcessResult | null {
-  const domain = classifyDomain(trimmed);
+  const meaning = analyzeMessageMeaning(trimmed);
+  const domain = meaning.domain;
   const negation = detectNegation(trimmed);
 
   if (negation.blockEntry) {

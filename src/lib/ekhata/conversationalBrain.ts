@@ -564,8 +564,13 @@ const BOT_RESPONSES: Record<QuestionKind, string[]> = {
   ],
 };
 
-function pick(arr: string[]): string {
-  return arr[Math.floor(Math.random() * arr.length)];
+function pick(arr: string[], seed = ""): string {
+  if (arr.length <= 1) return arr[0] ?? "";
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash * 31 + seed.charCodeAt(i)) | 0;
+  }
+  return arr[Math.abs(hash) % arr.length];
 }
 
 function tryMath(text: string): string | null {
@@ -595,19 +600,47 @@ function tryMath(text: string): string | null {
   return `${a} ${mathMatch[2]} ${b} = ${result.toLocaleString()}`;
 }
 
-function getGreeting(): string {
+function getGreeting(userText?: string): string {
+  const t = (userText ?? "").toLowerCase();
+  const hasHajur = /\bhajur\b/.test(t);
+  const hasNamaste = /\bnamaste\b|\bnamaskar\b/.test(t);
   const hour = new Date().getHours();
-  if (hour < 12)
-    return pick([
-      "Subha prabhat! Bihanai ko energy ramro! Aaja ko khata suru garau?",
-      "Good morning! Aja ramro din huncha. K kaam chha?",
-    ]);
-  if (hour >= 17)
-    return pick([
-      "Subha sandhya! Din ramro bityo? Hisab milaaune bela bhayo hola.",
-      "Good evening! Beluka ko aram kaisi?",
-    ]);
-  return pick(BOT_RESPONSES.greeting);
+
+  if (hasHajur || hasNamaste) {
+    if (hour < 12) {
+      return hasHajur
+        ? "Namaste Hajur! Subha prabhat — aaja khata ma ke help garna sakchhu?"
+        : "Namaste! Subha prabhat — aaja ke kaam chha?";
+    }
+    if (hour >= 17) {
+      return hasHajur
+        ? "Namaste Hajur! Subha sandhya — hisab milaaune bela bhayo hola. Ke chahiyo?"
+        : "Namaste! Subha sandhya — ke help garna sakchhu?";
+    }
+    return hasHajur
+      ? "Namaste Hajur! Kasto hunuhunchha? e-Khata tayar chha tapaiko laagi."
+      : "Namaste! Kasto cha? e-Khata ma swagat chha!";
+  }
+
+  if (hour < 12) {
+    return pick(
+      [
+        "Subha prabhat! Bihanai ko energy ramro! Aaja ko khata suru garau?",
+        "Good morning! Aja ramro din huncha. K kaam chha?",
+      ],
+      userText ?? "morning",
+    );
+  }
+  if (hour >= 17) {
+    return pick(
+      [
+        "Subha sandhya! Din ramro bityo? Hisab milaaune bela bhayo hola.",
+        "Good evening! Beluka ko aram kaisi?",
+      ],
+      userText ?? "evening",
+    );
+  }
+  return pick(BOT_RESPONSES.greeting, userText ?? "day");
 }
 
 function handleFollowUp(text: string, history: ConversationTurn[]): string {
@@ -615,7 +648,7 @@ function handleFollowUp(text: string, history: ConversationTurn[]): string {
   const lastTopic = lastUser ? extractTopic(lastUser.text) : null;
 
   if (lastTopic && OPINION_RESPONSES[lastTopic]) {
-    return pick(OPINION_RESPONSES[lastTopic]);
+    return pick(OPINION_RESPONSES[lastTopic], text);
   }
 
   // User answering a question we asked
@@ -624,7 +657,7 @@ function handleFollowUp(text: string, history: ConversationTurn[]): string {
     return `Oh ${t}! Ramro choice. ${t === "comedy" ? "Chhakka Panja ra Kabaddi hernu — hasai hasai!" : t === "action" ? "Loot series hernu — Nepali action ma ramro!" : "Nepali cinema ma dherai options chhan. Aru kei sodhnus!"}`;
   }
 
-  return pick(BOT_RESPONSES.follow_up);
+  return pick(BOT_RESPONSES.follow_up, text);
 }
 
 // ─── Main entry ──────────────────────────────────────────────────────────────
@@ -647,14 +680,14 @@ function buildBaseReply(
   const mathAnswer = tryMath(text);
   if (mathAnswer) return mathAnswer;
 
-  if (analysis.kind === "greeting") return getGreeting();
+  if (analysis.kind === "greeting") return getGreeting(text);
 
   if (
     analysis.kind === "opinion_preference" &&
     analysis.topic &&
     OPINION_RESPONSES[analysis.topic]
   ) {
-    return pick(OPINION_RESPONSES[analysis.topic]);
+    return pick(OPINION_RESPONSES[analysis.topic], text);
   }
 
   if (analysis.kind === "follow_up") {
@@ -668,12 +701,12 @@ function buildBaseReply(
 
   const responses = BOT_RESPONSES[analysis.kind];
   if (responses && responses.length > 0) {
-    return pick(responses);
+    return pick(responses, text);
   }
 
   if (knowledgeAnswer) return knowledgeAnswer;
 
-  return pick(BOT_RESPONSES.unknown);
+  return pick(BOT_RESPONSES.unknown, text);
 }
 
 export function generateConversationalReply(
@@ -690,7 +723,7 @@ export function generateConversationalReply(
   const baseReply = buildBaseReply(text, analysis, history, options.balance);
 
   // Apply emotional intelligence layer — empathy, politeness, tone
-  return composeEmotionalReply(baseReply || pick(BOT_RESPONSES.unknown), emotional, {
+  return composeEmotionalReply(baseReply || pick(BOT_RESPONSES.unknown, text), emotional, {
     isQuestion: analysis.isQuestion,
     userText: text,
   });

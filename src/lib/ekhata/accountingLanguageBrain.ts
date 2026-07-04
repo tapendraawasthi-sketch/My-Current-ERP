@@ -8,6 +8,7 @@ import { findTemplateByKeywords, getEntryTemplate } from "./caEntryTemplates";
 import { CLASSIFICATION_GUIDE } from "./caAccountClassification";
 import { formatJournalPreview } from "./caEntryEngine";
 import { isAccountingDomain } from "./domainRouter";
+import { answerFromGrammarKnowledge } from "./grammarKnowledgeBrain";
 import type { KhataIntent, KhataConfirmationCard } from "./types";
 import { KHATA_INTENT_LABELS } from "./types";
 
@@ -416,6 +417,17 @@ export function understandAccountingLanguage(text: string): AccountingLanguageRe
   if (relatedIntent) {
     const reply = answerEntryEffect(topConcept!.concept, relatedIntent, lang);
     return { kind: "answer", reply, language: lang, confidence: 0.75, questionType: "general", relatedIntent };
+  }
+
+  const grammarAnswer = answerFromGrammarKnowledge(text, lang);
+  if (grammarAnswer && grammarAnswer.confidence >= 0.55) {
+    return {
+      kind: "answer",
+      reply: grammarAnswer.reply,
+      language: lang,
+      confidence: grammarAnswer.confidence,
+      questionType: qType,
+    };
   }
 
   const fallback =

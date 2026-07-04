@@ -78,6 +78,14 @@ export type { AutonomousBrainOptions, AutonomousBrainResult } from "./autonomous
 export { classifyDomain, isAccountingDomain, shouldBlockWebSearch } from "./domainRouter";
 export type { EKhataDomain, DomainRouteResult } from "./domainRouter";
 export { detectNegation } from "./negationDetector";
+export { analyzeMessageMeaning, resolveBestAmount, cleanPartyName } from "./meaningEngine";
+export type { MessageMeaning } from "./meaningEngine";
+export {
+  searchNepaliGrammar,
+  synthesizeGrammarContext,
+  answerFromGrammarKnowledge,
+} from "./grammarKnowledgeBrain";
+export type { GrammarHit } from "./grammarKnowledgeBrain";
 export type { NegationResult } from "./negationDetector";
 export { computeVat, computeSsf, computeTds, computeDiscount, isVatInclusiveText } from "./calculationEngine";
 export type { VatBreakdown, SsfBreakdown, TdsBreakdown } from "./calculationEngine";
