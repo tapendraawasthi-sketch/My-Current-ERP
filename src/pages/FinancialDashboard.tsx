@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
 import { mergeSystemConfiguration } from "../lib/systemConfiguration";
+import { computeOutstandingAnalysis } from "../lib/accounting";
 
 // ─── Formatting helpers ────────────────────────────────────────────────────────
 
@@ -368,6 +369,7 @@ const FinancialDashboard: React.FC = () => {
     accounts,
     items,
     stockMovements,
+    parties,
     initializeApp,
     setCurrentPage,
   } = useStore();
@@ -693,7 +695,7 @@ const FinancialDashboard: React.FC = () => {
         v.pdcDate >= todayISO &&
         v.status === "posted",
     );
-    if (pdcDue.length > 0) {
+    if (warningAlarms.pdcDueReminder && pdcDue.length > 0) {
       list.push({
         type: "info",
         icon: <Clock size={16} />,
@@ -704,8 +706,73 @@ const FinancialDashboard: React.FC = () => {
       });
     }
 
+    if (warningAlarms.creditLimitExceeded) {
+      const creditBreaches = parties.filter((p) => {
+        const limit = Number(p.creditLimit || 0);
+        if (limit <= 0) return false;
+        const analysis = computeOutstandingAnalysis(p.id, invoices);
+        return analysis.totalReceivable > limit;
+      });
+      if (creditBreaches.length > 0) {
+        list.push({
+          type: "danger",
+          icon: <AlertTriangle size={16} />,
+          title: `${creditBreaches.length} Part${creditBreaches.length > 1 ? "ies" : "y"} Over Credit Limit`,
+          message:
+            creditBreaches
+              .slice(0, 3)
+              .map((p) => p.name)
+              .join(", ") +
+            (creditBreaches.length > 3 ? ` + ${creditBreaches.length - 3} more` : ""),
+          action: "VIEW PARTIES",
+          onAction: () => setCurrentPage("parties"),
+        });
+      }
+    }
+
+    if (warningAlarms.belowMinimumPrice) {
+      const itemById = new Map(items.map((i) => [i.id, i]));
+      const violations = new Set<string>();
+      for (const inv of invoices) {
+        const t = String(inv.type || "").toLowerCase();
+        if (!(t.includes("sales-invoice") || t === "sales_invoice") || inv.status !== "posted")
+          continue;
+        for (const line of inv.lines || inv.items || []) {
+          const item = itemById.get(line.itemId);
+          if (!item) continue;
+          const floor = Number(item.salePrice ?? item.sellingPrice ?? item.mrp ?? 0);
+          const rate = Number(line.rate ?? line.price ?? 0);
+          if (floor > 0 && rate > 0 && rate < floor) {
+            violations.add(item.name || item.id);
+          }
+        }
+      }
+      if (violations.size > 0) {
+        const names = Array.from(violations);
+        list.push({
+          type: "warning",
+          icon: <Receipt size={16} />,
+          title: `${violations.size} Item${violations.size > 1 ? "s" : ""} Sold Below Minimum Price`,
+          message:
+            names.slice(0, 3).join(", ") + (names.length > 3 ? ` + ${names.length - 3} more` : ""),
+          action: "VIEW SALES",
+          onAction: () => setCurrentPage("sales-register"),
+        });
+      }
+    }
+
     return list;
-  }, [invoices, items, stockMovements, vouchers, todayISO, today, setCurrentPage, warningAlarms]);
+  }, [
+    invoices,
+    items,
+    stockMovements,
+    vouchers,
+    parties,
+    todayISO,
+    today,
+    setCurrentPage,
+    warningAlarms,
+  ]);
 
   // ── Refresh (calls initializeApp, NOT page reload) ──────────────────────────
 

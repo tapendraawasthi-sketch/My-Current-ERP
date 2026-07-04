@@ -18,6 +18,7 @@ export interface WarningAlarmsConfig {
   overduePayment: boolean;
   lowStock: boolean;
   belowMinimumPrice: boolean;
+  pdcDueReminder: boolean;
 }
 
 export interface PartyDashboardConfig {
@@ -128,6 +129,7 @@ export const DEFAULT_SYSTEM_CONFIGURATION: SystemConfiguration = {
     overduePayment: true,
     lowStock: true,
     belowMinimumPrice: true,
+    pdcDueReminder: true,
   },
   ageingSlabs: [
     { label: "Current", fromDays: 0, toDays: 0 },

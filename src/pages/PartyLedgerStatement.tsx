@@ -17,6 +17,7 @@ import { generatePartyStatementPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { VoucherType, VoucherStatus, PaymentStatus, Party, ReportPeriodPreset } from "../lib/types";
 import toast from "react-hot-toast";
+import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
 
 const PartyLedgerStatement: React.FC = () => {
   const {
@@ -29,6 +30,11 @@ const PartyLedgerStatement: React.FC = () => {
     reportFilters,
     setReportFilters,
   } = useStore();
+
+  const partyDashboard = mergeSystemConfiguration(
+    companySettings?.systemConfiguration,
+  ).partyDashboard;
+  const ageingSlabs = mergeSystemConfiguration(companySettings?.systemConfiguration).ageingSlabs;
 
   const [selectedPartyId, setSelectedPartyId] = useState<string>(reportFilters.partyId || "");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || dateToAD(new Date()));
@@ -94,6 +100,36 @@ const PartyLedgerStatement: React.FC = () => {
     }
     return computePartyStatement(selectedParty, accounts, vouchers, invoices, startDate, endDate);
   }, [selectedParty, accounts, vouchers, invoices, startDate, endDate]);
+
+  const lastInvoice = useMemo(() => {
+    if (!selectedPartyId) return null;
+    return [...invoices]
+      .filter((inv) => inv.partyId === selectedPartyId && inv.status === "posted")
+      .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))[0];
+  }, [invoices, selectedPartyId]);
+
+  const partyAgingBuckets = useMemo(() => {
+    if (!selectedPartyId) return [];
+    const today = new Date().toISOString().slice(0, 10);
+    const buckets = ageingSlabs.map((s) => ({ label: s.label, amount: 0 }));
+    for (const inv of invoices) {
+      if (inv.partyId !== selectedPartyId || inv.status !== "posted") continue;
+      const ps = String(inv.paymentStatus || "").toLowerCase();
+      if (ps !== "unpaid" && ps !== "partial") continue;
+      const outstanding = Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
+      if (outstanding <= 0) continue;
+      const refDate = inv.dueDate || inv.date;
+      const days = refDate
+        ? Math.max(
+            0,
+            Math.floor((new Date(today).getTime() - new Date(refDate).getTime()) / 86400000),
+          )
+        : 0;
+      const idx = getAgeingBucketIndex(days, ageingSlabs);
+      buckets[idx].amount += outstanding;
+    }
+    return buckets.filter((b) => b.amount > 0);
+  }, [invoices, selectedPartyId, ageingSlabs]);
 
   const handlePrint = () => {
     if (!selectedParty || !statement) {
@@ -297,88 +333,133 @@ const PartyLedgerStatement: React.FC = () => {
             </div>
 
             {summaryExpanded && outstandingSummary && (
-              <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-[#9DC07A] animate-fadeIn">
-                <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">
-                    Total Receivable / Payable
-                  </div>
-                  <div className="flex items-center gap-4 text-[11px] mt-0.5">
-                    <div>
-                      <span className="text-[#000000] mr-1">Receivable:</span>
-                      <strong className="text-green-700 font-mono">
-                        रू {formatNumber(outstandingSummary.totalReceivable)}
-                      </strong>
+              <div className="mt-3 pt-3 border-t border-[#9DC07A] animate-fadeIn space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {partyDashboard.showOutstanding && (
+                    <div className="flex flex-col gap-1">
+                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                        Total Receivable / Payable
+                      </div>
+                      <div className="flex items-center gap-4 text-[11px] mt-0.5">
+                        <div>
+                          <span className="text-[#000000] mr-1">Receivable:</span>
+                          <strong className="text-green-700 font-mono">
+                            रू {formatNumber(outstandingSummary.totalReceivable)}
+                          </strong>
+                        </div>
+                        <div>
+                          <span className="text-[#000000] mr-1">Payable:</span>
+                          <strong className="text-red-600 font-mono">
+                            रू {formatNumber(outstandingSummary.totalPayable)}
+                          </strong>
+                        </div>
+                      </div>
+                      <div className="text-[10px] text-[#000000] mt-1">
+                        Net Outstanding:{" "}
+                        <strong
+                          className={
+                            outstandingSummary.netOutstanding >= 0
+                              ? "text-green-700 font-mono"
+                              : "text-red-600 font-mono"
+                          }
+                        >
+                          रू {formatNumber(Math.abs(outstandingSummary.netOutstanding))}{" "}
+                          {outstandingSummary.netOutstanding >= 0 ? "Dr" : "Cr"}
+                        </strong>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-[#000000] mr-1">Payable:</span>
-                      <strong className="text-red-600 font-mono">
-                        रू {formatNumber(outstandingSummary.totalPayable)}
-                      </strong>
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-[#000000] mt-1">
-                    Net Outstanding:{" "}
-                    <strong
-                      className={
-                        outstandingSummary.netOutstanding >= 0
-                          ? "text-green-700 font-mono"
-                          : "text-red-600 font-mono"
-                      }
-                    >
-                      रू {formatNumber(Math.abs(outstandingSummary.netOutstanding))}{" "}
-                      {outstandingSummary.netOutstanding >= 0 ? "Dr" : "Cr"}
-                    </strong>
-                  </div>
-                </div>
+                  )}
 
-                <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">
-                    Oldest Pending Bill
-                  </div>
-                  {outstandingSummary.oldestBillNo ? (
-                    <div className="text-[11px] text-[#000000] mt-0.5">
-                      <strong>{outstandingSummary.oldestBillNo}</strong> dated{" "}
-                      <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
-                      <span className="text-red-600 font-semibold ml-2">
-                        ({outstandingSummary.oldestDays} days old)
-                      </span>
+                  {partyDashboard.showLastInvoice && (
+                    <div className="flex flex-col gap-1">
+                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                        Last Invoice
+                      </div>
+                      {lastInvoice ? (
+                        <div className="text-[11px] text-[#000000] mt-0.5">
+                          <strong>{lastInvoice.invoiceNo || lastInvoice.voucherNo}</strong> dated{" "}
+                          <span className="font-mono">{lastInvoice.date}</span>
+                          <span className="ml-2 font-mono font-semibold">
+                            रू {formatNumber(lastInvoice.grandTotal || 0)}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="text-[11px] text-[#000000] italic mt-0.5">
+                          No invoices found.
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="text-[11px] text-[#000000] italic mt-0.5">
-                      No pending bills.
+                  )}
+
+                  <div className="flex flex-col gap-1">
+                    <div className="text-[10px] text-[#000000] font-bold uppercase">
+                      Oldest Pending Bill
+                    </div>
+                    {outstandingSummary.oldestBillNo ? (
+                      <div className="text-[11px] text-[#000000] mt-0.5">
+                        <strong>{outstandingSummary.oldestBillNo}</strong> dated{" "}
+                        <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
+                        <span className="text-red-600 font-semibold ml-2">
+                          ({outstandingSummary.oldestDays} days old)
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-[#000000] italic mt-0.5">
+                        No pending bills.
+                      </div>
+                    )}
+                  </div>
+
+                  {partyDashboard.showCreditLimit && (
+                    <div className="flex flex-col gap-1">
+                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                        Credit Limit Utilization
+                      </div>
+                      {selectedParty.creditLimit && selectedParty.creditLimit > 0 ? (
+                        <div className="mt-1">
+                          <div className="flex justify-between text-[9px] text-[#000000] mb-1">
+                            <span>Limit: रू {formatNumber(selectedParty.creditLimit)}</span>
+                            <span>{creditLimitPercent}% Used</span>
+                          </div>
+                          <div className="w-full bg-[#EBF5E2] rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className={`h-1.5 rounded-full transition-all duration-300 ${
+                                creditLimitPercent > 90
+                                  ? "bg-red-600"
+                                  : creditLimitPercent > 50
+                                    ? "bg-amber-500"
+                                    : "bg-green-600"
+                              }`}
+                              style={{ width: `${creditLimitPercent}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-[11px] text-[#000000] italic mt-0.5">
+                          No credit limit set.
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-[#000000] font-bold uppercase">
-                    Credit Limit Utilization
+                {partyDashboard.showAgingSummary && partyAgingBuckets.length > 0 && (
+                  <div>
+                    <div className="text-[10px] text-[#000000] font-bold uppercase mb-2">
+                      Ageing Summary
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {partyAgingBuckets.map((b) => (
+                        <span
+                          key={b.label}
+                          className="px-2 py-1 bg-[#EBF5E2] border border-[#9DC07A] rounded text-[11px] font-mono"
+                        >
+                          {b.label}: रू {formatNumber(b.amount)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  {selectedParty.creditLimit && selectedParty.creditLimit > 0 ? (
-                    <div className="mt-1">
-                      <div className="flex justify-between text-[9px] text-[#000000] mb-1">
-                        <span>Limit: रू {formatNumber(selectedParty.creditLimit)}</span>
-                        <span>{creditLimitPercent}% Used</span>
-                      </div>
-                      <div className="w-full bg-[#EBF5E2] rounded-full h-1.5 overflow-hidden">
-                        <div
-                          className={`h-1.5 rounded-full transition-all duration-300 ${
-                            creditLimitPercent > 90
-                              ? "bg-red-600"
-                              : creditLimitPercent > 50
-                                ? "bg-amber-500"
-                                : "bg-green-600"
-                          }`}
-                          style={{ width: `${creditLimitPercent}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-[11px] text-[#000000] italic mt-0.5">
-                      No credit limit set.
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             )}
           </Card>

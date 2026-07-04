@@ -257,6 +257,39 @@ async function upsertInvoice(
       num(payload.grandTotal ?? payload.total),
     ],
   );
+
+  const lines = Array.isArray(payload.lines)
+    ? payload.lines
+    : Array.isArray(payload.items)
+      ? payload.items
+      : [];
+  for (const [idx, line] of lines.entries()) {
+    if (!line || typeof line !== "object") continue;
+    const row = line as Record<string, unknown>;
+    const lineId = clientIdToUuid(str(row.id, `${entityId}-line-${idx}`));
+    const itemId = row.itemId ? clientIdToUuid(str(row.itemId)) : null;
+    await query(
+      `INSERT INTO invoice_lines (
+        id, tenant_id, company_id, invoice_id, item_id, quantity, rate, amount, vat_amount
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      ON CONFLICT (id) DO UPDATE SET
+        quantity = EXCLUDED.quantity,
+        rate = EXCLUDED.rate,
+        amount = EXCLUDED.amount,
+        vat_amount = EXCLUDED.vat_amount`,
+      [
+        lineId,
+        tenantId,
+        companyId,
+        id,
+        itemId,
+        num(row.qty ?? row.quantity),
+        num(row.rate ?? row.price),
+        num(row.amount ?? row.total),
+        num(row.vatAmount ?? row.taxAmount),
+      ],
+    );
+  }
 }
 
 export async function processSyncRecord(

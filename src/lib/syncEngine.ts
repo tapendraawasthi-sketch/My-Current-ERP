@@ -77,6 +77,70 @@ export async function enqueueSyncRecord(input: EnqueueSyncInput): Promise<void> 
   void notifyStatus();
 }
 
+const SYNC_PULL_KEY = "sutra_last_sync_pull";
+
+async function pullRemoteChanges(): Promise<void> {
+  const token = getAuthToken();
+  if (!token) return;
+
+  const since = localStorage.getItem(SYNC_PULL_KEY);
+  const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+  const url = since
+    ? `${apiBase()}/api/sync/pull?since=${encodeURIComponent(since)}`
+    : `${apiBase()}/api/sync/pull`;
+
+  const res = await fetch(url, { headers });
+  if (!res.ok) return;
+
+  const body = await res.json();
+  const data = body?.data;
+  if (!data) return;
+
+  const db = getDB();
+  const now = data.pulledAt || new Date().toISOString();
+
+  for (const row of data.parties || []) {
+    await db.parties.put({
+      id: String(row.id),
+      name: String(row.name || ""),
+      type:
+        row.party_type === "supplier"
+          ? "supplier"
+          : row.party_type === "both"
+            ? "both"
+            : "customer",
+      creditPeriod: Number(row.credit_days || 0),
+      isActive: row.is_active !== false,
+    } as any);
+  }
+
+  for (const row of data.items || []) {
+    await db.items.put({
+      id: String(row.id),
+      code: String(row.code || ""),
+      name: String(row.name || ""),
+      unit: row.unit ? String(row.unit) : undefined,
+      isActive: row.is_active !== false,
+    } as any);
+  }
+
+  for (const row of data.accounts || []) {
+    await db.accounts.put({
+      id: String(row.id),
+      code: String(row.code || ""),
+      name: String(row.name || ""),
+      type: String(row.account_type || "asset"),
+      level: String(row.level || "ledger"),
+      isGroup: row.is_group === true,
+      isActive: row.is_active !== false,
+      parentId: row.parent_id ? String(row.parent_id) : undefined,
+      balance: 0,
+    } as any);
+  }
+
+  localStorage.setItem(SYNC_PULL_KEY, now);
+}
+
 async function pushBatch(records: DBSyncOutboxRecord[]): Promise<boolean> {
   const token = getAuthToken();
   const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -118,6 +182,11 @@ export async function runSyncCycle(): Promise<void> {
         await Promise.all(
           pending.map((r) => db.syncOutbox.update(r.id, { syncedAt: now, status: "pending" })),
         );
+        try {
+          await pullRemoteChanges();
+        } catch {
+          /* pull is best-effort after push */
+        }
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Sync failed";
@@ -152,6 +221,10 @@ export async function retryFailedSync(): Promise<void> {
 export async function getPendingSyncCount(): Promise<number> {
   const db = getDB();
   return db.syncOutbox.filter((r) => !r.syncedAt && r.status !== "sync_failed").count();
+}
+
+export async function pullSyncNow(): Promise<void> {
+  await pullRemoteChanges();
 }
 
 export function startSyncLoop(): void {

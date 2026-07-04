@@ -2,8 +2,24 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.js";
 import { sendSuccess } from "../middleware/responseEnvelope.js";
 import { processSyncRecord, type SyncRecordInput } from "../lib/syncHandlers.js";
+import { fetchSyncPull } from "../lib/syncPull.js";
 
 const router = Router();
+
+/** Returns server-side master changes since optional ISO timestamp. */
+router.get("/pull", authMiddleware, async (req, res) => {
+  try {
+    const since = typeof req.query.since === "string" ? req.query.since : null;
+    const data = await fetchSyncPull(req.user!, since);
+    sendSuccess(res, data);
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      error: err instanceof Error ? err.message : "Sync pull failed",
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
 
 /** Accepts batched outbox records from the offline-first sync engine. */
 router.post("/push", authMiddleware, async (req, res) => {

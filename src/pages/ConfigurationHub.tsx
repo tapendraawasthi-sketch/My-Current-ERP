@@ -418,6 +418,16 @@ export default function ConfigurationHub() {
                 })
               }
             />
+            <ToggleRow
+              label="PDC cheque due for deposit"
+              checked={draft.warningAlarms.pdcDueReminder}
+              onChange={(v) =>
+                setDraft({
+                  ...draft,
+                  warningAlarms: { ...draft.warningAlarms, pdcDueReminder: v },
+                })
+              }
+            />
           </div>
         );
       case "ageing-slabs":
