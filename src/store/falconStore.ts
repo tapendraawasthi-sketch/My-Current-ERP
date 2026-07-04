@@ -138,18 +138,18 @@ function buildFallbackResponse(query: string, domain: QuestionDomain, route?: st
   if (domain === "erp") {
     const moduleCtx = route ? getModuleContext(route) : "";
     return (
-      `I'd love to give you a detailed answer about **${query}**, but I need a Groq API key to power my full reasoning.nn` +
-      `${moduleCtx ? `Here is what I know about the current page:nn${moduleCtx}nn` : ""}` +
-      `🔑 **To enable Falcon AI:**n` +
-      `1. Visit [console.groq.com](https://console.groq.com) (free)n` +
-      `2. Create a free account and generate an API keyn` +
-      `3. Open Falcon settings (⚙️ icon) and paste your keynn` +
+      `I'd love to give you a detailed answer about **${query}**, but I need a Groq API key to power my full reasoning.\n\n` +
+      `${moduleCtx ? `Here is what I know about the current page:\n\n${moduleCtx}\n\n` : ""}` +
+      `🔑 **To enable Falcon AI:**\n` +
+      `1. Visit [console.groq.com](https://console.groq.com) (free)\n` +
+      `2. Create a free account and generate an API key\n` +
+      `3. Open Falcon settings (⚙️ icon) and paste your key\n\n` +
       `Once configured, I can give you step-by-step ERP guidance, accounting help, web search, and much more!`
     );
   }
 
   return (
-    `I need a Groq API key to answer **"${query}"** fully.${routeCtx}nn` +
+    `I need a Groq API key to answer **"${query}"** fully.${routeCtx}\n\n` +
     `Get your free key at [console.groq.com](https://console.groq.com), then add it in Falcon settings (⚙️).`
   );
 }
@@ -414,16 +414,19 @@ export const useFalconStore = create<FalconState>()(
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
           let fullContent = "";
+          let sseBuffer = "";
 
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
 
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("n").filter((l) => l.startsWith("data: "));
+            sseBuffer += decoder.decode(value, { stream: true });
+            const lines = sseBuffer.split("\n");
+            sseBuffer = lines.pop() || "";
 
             for (const line of lines) {
-              const data = line.replace(/^data:s*/, "").trim();
+              if (!line.startsWith("data: ")) continue;
+              const data = line.replace(/^data:\s*/, "").trim();
               if (data === "[DONE]") break;
               if (!data) continue;
 
