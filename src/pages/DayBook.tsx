@@ -2,22 +2,17 @@
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useStore } from "../store/useStore";
 import {
-  Download,
   FileSpreadsheet,
   Printer,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
   Eye,
   X,
   TrendingUp,
   TrendingDown,
   BookOpen,
-  Filter,
-  Edit2,
-  Trash2,
+  Search,
 } from "lucide-react";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
@@ -98,9 +93,9 @@ function getTypeColor(type: string): { bg: string; text: string; border: string 
     };
   if (t.includes("contra"))
     return {
-      bg: "bg-purple-50",
-      text: "text-purple-700",
-      border: "border-purple-200",
+      bg: "bg-blue-50",
+      text: "text-blue-700",
+      border: "border-blue-200",
     };
   return {
     bg: "bg-gray-100",
@@ -305,14 +300,10 @@ const DayBook: React.FC = () => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      {/* Page Header */}
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-[#1557b0]" />
-            Day Book
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Day Book</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             All vouchers and transactions for a selected date
           </p>
@@ -337,290 +328,255 @@ const DayBook: React.FC = () => {
         </div>
       </div>
 
-      {/* Date Navigation + Filters */}
-      <div className="mb-4">
+      <div className="no-print mb-4">
         <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="Day Book Period" />
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {/* Search */}
-        <div className="flex-1 min-w-[160px]">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search voucher, narration, party…"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
-          />
+      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4 space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[160px] max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search voucher, narration, party…"
+              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            />
+          </div>
+
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          >
+            <option value="all">All types</option>
+            {uniqueTypes.map((t: string) => (
+              <option key={t} value={t}>
+                {formatVoucherType(t)}
+              </option>
+            ))}
+          </select>
+
+          <div className="flex items-center rounded-md border border-gray-300 bg-white overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setViewMode("condensed")}
+              className={`h-8 px-3 text-[11px] font-medium transition-colors ${
+                viewMode === "condensed"
+                  ? "bg-[#1557b0] text-white"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Condensed
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("detailed")}
+              className={`h-8 px-3 text-[11px] font-medium transition-colors ${
+                viewMode === "detailed" ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Detailed
+            </button>
+          </div>
+
+          <span className="text-[11px] text-gray-500">
+            {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
+          </span>
         </div>
 
-        {/* Type filter */}
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-        >
-          <option value="all">All Types</option>
-          {uniqueTypes.map((t: string) => (
-            <option key={t} value={t}>
-              {formatVoucherType(t)}
-            </option>
-          ))}
-        </select>
-
-        {/* View mode */}
-        <div className="flex items-center rounded-md border border-gray-300 bg-white overflow-hidden">
-          <button
-            type="button"
-            onClick={() => setViewMode("condensed")}
-            className={`h-8 px-3 text-[11px] font-medium transition-colors ${
-              viewMode === "condensed"
-                ? "bg-[#1557b0] text-white"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            Condensed
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("detailed")}
-            className={`h-8 px-3 text-[11px] font-medium transition-colors ${
-              viewMode === "detailed" ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            Detailed
-          </button>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+        <div className="flex flex-wrap items-center gap-2">
           <input
             ref={jumpInputRef}
             type="text"
             value={jumpQuery}
             onChange={(e) => setJumpQuery(e.target.value)}
             onKeyDown={handleJump}
-            placeholder="Jump to voucher #"
-            style={{
-              width: 160,
-              height: 30,
-              padding: "0 10px",
-              fontSize: 12,
-              border: "1px solid #d1d5db",
-              borderRadius: 4,
-              background: "#ffffff",
-              outline: "none",
-            }}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0";
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLInputElement).style.borderColor = "#d1d5db";
-            }}
+            placeholder="Jump to voucher no."
+            className="h-8 w-40 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           />
           <button
-            onClick={() => handleJump({ key: "Enter" } as any)}
-            style={{
-              height: 30,
-              padding: "0 10px",
-              background: "#f5f6fa",
-              border: "1px solid #d1d5db",
-              borderRadius: 4,
-              fontSize: 11,
-              cursor: "pointer",
-            }}
+            type="button"
+            onClick={() => handleJump({ key: "Enter" } as React.KeyboardEvent<HTMLInputElement>)}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
           >
             Find
           </button>
         </div>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Vouchers
             </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5">{summary.totalVouchers}</p>
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5">{summary.totalVouchers}</p>
           </div>
-          <BookOpen className="h-7 w-7 text-[#1557b0] opacity-20" />
+          <BookOpen className="h-6 w-6 text-[#1557b0] opacity-20" />
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-              Total Debit
+              Total debit
             </p>
-            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
+            <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
               {money(summary.totalDebit)}
             </p>
           </div>
-          <TrendingUp className="h-7 w-7 text-[#1557b0] opacity-20" />
+          <TrendingUp className="h-6 w-6 text-[#1557b0] opacity-20" />
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-              Total Credit
+              Total credit
             </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
               {money(summary.totalCredit)}
             </p>
           </div>
-          <TrendingDown className="h-7 w-7 text-gray-400 opacity-30" />
+          <TrendingDown className="h-6 w-6 text-gray-400 opacity-30" />
         </div>
       </div>
 
-      {/* Main Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <h3 className="text-[12px] font-semibold text-gray-700">
-            Day Book ({dateRange.fromDate} to {dateRange.toDate})
-          </h3>
-          <p className="text-[11px] text-gray-500">
-            {filteredEntries.length} entr
-            {filteredEntries.length === 1 ? "y" : "ies"}
-          </p>
+      {filteredEntries.length === 0 ? (
+        <div className="bg-white border border-gray-200 rounded-md">
+          <ReportEmptyState
+            message="No vouchers recorded in this period"
+            hint="Adjust the date range or filter settings."
+          />
         </div>
+      ) : (
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
+            <h3 className="text-[12px] font-semibold text-gray-700">
+              Day Book ({dateRange.fromDate} to {dateRange.toDate})
+            </h3>
+            <p className="text-[11px] text-gray-500">
+              {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
+            </p>
+          </div>
 
-        <div className="overflow-x-auto" ref={tableRef}>
-          <table className="report-table w-full min-w-[700px]">
-            <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                  Voucher No.
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                  Type
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  Narration
-                </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
-                  Party
-                </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
-                  Debit
-                </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
-                  Credit
-                </th>
-                <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-14">
-                  View
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-gray-100">
-              {filteredEntries.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-3 py-16 text-center text-[12px] text-gray-400">
-                    <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                    No vouchers recorded in this period.
-                  </td>
+          <div className="overflow-x-auto" ref={tableRef}>
+            <table className="w-full min-w-[700px] border-collapse">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Voucher no.
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    Type
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Narration
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                    Party
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                    Debit
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                    Credit
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                    Actions
+                  </th>
                 </tr>
-              ) : (
-                <>
-                  {/* Fix: explicit type annotation (entry: DayBookEntry) eliminates
-                      'unknown' assignability errors on lines 215, 216, 287 */}
-                  {filteredEntries.map((entry: DayBookEntry) => {
-                    const typeColor = getTypeColor(entry.type);
-                    return (
-                      <React.Fragment key={entry.id as string}>
-                        <tr
-                          data-voucher-no={String(entry.voucherNo) || ""}
-                          className="hover:bg-gray-50 cursor-pointer"
-                          onClick={() => setSelectedEntry(entry)}
-                        >
-                          {/* Voucher No — cast to string to avoid 'unknown' Key error */}
-                          <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-[#1557b0]">
-                            {String(entry.voucherNo)}
-                          </td>
+              </thead>
 
-                          {/* Type badge */}
-                          <td className="px-3 py-2.5">
-                            <span
-                              className={`inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
-                            >
-                              {formatVoucherType(entry.type)}
-                            </span>
-                          </td>
+              <tbody>
+                {filteredEntries.map((entry: DayBookEntry) => {
+                  const typeColor = getTypeColor(entry.type);
+                  return (
+                    <React.Fragment key={entry.id as string}>
+                      <tr
+                        data-voucher-no={String(entry.voucherNo) || ""}
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                        onClick={() => setSelectedEntry(entry)}
+                      >
+                        <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-[#1557b0] border-b border-gray-100">
+                          {String(entry.voucherNo)}
+                        </td>
 
-                          {/* Narration — cast to ReactNode string */}
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[240px]">
-                            <span className="block truncate" title={String(entry.narration)}>
-                              {String(entry.narration || "—")}
-                            </span>
-                          </td>
+                        <td className="px-3 py-2.5 border-b border-gray-100">
+                          <span
+                            className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
+                          >
+                            {formatVoucherType(entry.type)}
+                          </span>
+                        </td>
 
-                          {/* Party */}
-                          <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[140px]">
-                            <span className="block truncate" title={String(entry.partyName ?? "")}>
-                              {entry.partyName ? String(entry.partyName) : "—"}
-                            </span>
-                          </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[240px] border-b border-gray-100">
+                          <span className="block truncate" title={String(entry.narration)}>
+                            {String(entry.narration || "—")}
+                          </span>
+                        </td>
 
-                          {/* Debit */}
-                          <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                            {entry.debit > 0 ? money(entry.debit) : "—"}
-                          </td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[140px] border-b border-gray-100">
+                          <span className="block truncate" title={String(entry.partyName ?? "")}>
+                            {entry.partyName ? String(entry.partyName) : "—"}
+                          </span>
+                        </td>
 
-                          {/* Credit */}
-                          <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                            {entry.credit > 0 ? money(entry.credit) : "—"}
-                          </td>
+                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700 border-b border-gray-100">
+                          {entry.debit > 0 ? money(entry.debit) : "—"}
+                        </td>
 
-                          {/* View */}
-                          <td
-                            className="px-3 py-2.5 text-center"
+                        <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700 border-b border-gray-100">
+                          {entry.credit > 0 ? money(entry.credit) : "—"}
+                        </td>
+
+                        <td className="px-3 py-2.5 text-right border-b border-gray-100">
+                          <button
+                            type="button"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedEntry(entry);
                             }}
                           >
-                            <button
-                              type="button"
-                              className="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-[#1557b0] hover:bg-[#1557b0]/10 rounded transition-colors mx-auto"
-                            >
-                              <Eye className="h-3.5 w-3.5" />
-                            </button>
-                          </td>
-                        </tr>
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
+                        </td>
+                      </tr>
 
-                        {/* Detailed lines sub-rows */}
-                        {viewMode === "detailed" &&
-                          (entry.lines ?? []).length > 0 &&
-                          (entry.lines as DayBookLine[]).map(
-                            (line: DayBookLine, lineIdx: number) => (
-                              <tr
-                                key={`${String(entry.id)}-line-${lineIdx}`}
-                                className="bg-gray-50/60"
+                      {viewMode === "detailed" &&
+                        (entry.lines ?? []).length > 0 &&
+                        (entry.lines as DayBookLine[]).map(
+                          (line: DayBookLine, lineIdx: number) => (
+                            <tr
+                              key={`${String(entry.id)}-line-${lineIdx}`}
+                              className="bg-gray-50/60"
+                            >
+                              <td className="px-3 py-1.5 pl-8 text-[10px] text-gray-400 font-mono border-b border-gray-100">
+                                ↳
+                              </td>
+                              <td className="px-3 py-1.5 border-b border-gray-100" />
+                              <td
+                                colSpan={2}
+                                className="px-3 py-1.5 text-[11px] text-gray-500 border-b border-gray-100"
                               >
-                                <td className="px-3 py-1.5 pl-8 text-[10px] text-gray-400 font-mono">
-                                  ↳
-                                </td>
-                                <td className="px-3 py-1.5" />
-                                <td colSpan={2} className="px-3 py-1.5 text-[11px] text-gray-500">
-                                  {/* Cast accountName to string — fixes 'unknown' ReactNode error */}
-                                  {line.accountName ? String(line.accountName) : "—"}
-                                  {line.narration ? ` — ${String(line.narration)}` : ""}
-                                </td>
-                                <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500">
-                                  {line.debit > 0 ? money(line.debit) : "—"}
-                                </td>
-                                <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500">
-                                  {line.credit > 0 ? money(line.credit) : "—"}
-                                </td>
-                                <td />
-                              </tr>
-                            ),
-                          )}
-                      </React.Fragment>
-                    );
-                  })}
-                </>
-              )}
-            </tbody>
+                                {line.accountName ? String(line.accountName) : "—"}
+                                {line.narration ? ` — ${String(line.narration)}` : ""}
+                              </td>
+                              <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
+                                {line.debit > 0 ? money(line.debit) : "—"}
+                              </td>
+                              <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
+                                {line.credit > 0 ? money(line.credit) : "—"}
+                              </td>
+                              <td className="border-b border-gray-100" />
+                            </tr>
+                          ),
+                        )}
+                    </React.Fragment>
+                  );
+                })}
+              </tbody>
 
             {/* Footer totals */}
             {filteredEntries.length > 0 && (
@@ -656,11 +612,14 @@ const DayBook: React.FC = () => {
             )}
           </table>
         </div>
+        <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+          {filteredEntries.length} day book entr{filteredEntries.length === 1 ? "y" : "ies"}
+        </div>
       </div>
+      )}
 
-      {/* Type breakdown */}
       {Object.keys(summary.byType).length > 1 && (
-        <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+        <div className="mt-4 bg-white border border-gray-200 rounded-md p-4">
           <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
             Vouchers by Type
           </h4>
