@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
 import {
   Plus,
@@ -6,6 +6,7 @@ import {
   Trash2,
   X,
   Save,
+  Search,
   FileText,
   MapPin,
   Receipt,
@@ -15,6 +16,15 @@ import {
 import toast from "react-hot-toast";
 import { generateId } from "../lib/db";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { ReportEmptyState } from "../components/ReportEmptyState";
+
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 
 const NEPAL_PROVINCES = [
   "Koshi",
@@ -108,11 +118,20 @@ const LedgerMaster: React.FC = () => {
 
   const [panValidationMsg, setPanValidationMsg] = useState("");
 
-  const filteredAccounts = (accounts || []).filter(
-    (acc) => acc.isGroup === false && acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredAccounts = useMemo(
+    () =>
+      (accounts || []).filter(
+        (acc) =>
+          acc.isGroup === false &&
+          acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [accounts, searchTerm],
   );
 
-  const parentGroups = (accounts || []).filter((acc) => acc.isGroup === true);
+  const parentGroups = useMemo(
+    () => (accounts || []).filter((acc) => acc.isGroup === true),
+    [accounts],
+  );
 
   const resetForms = () => {
     setBasicForm({
@@ -200,7 +219,8 @@ const LedgerMaster: React.FC = () => {
     setActiveTab("basic");
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (window.confirm("Delete this ledger? This will also delete associated transactions.")) {
       try {
         await deleteAccount(id);
@@ -281,128 +301,134 @@ const LedgerMaster: React.FC = () => {
   const labelClass = "text-[11px] font-medium text-gray-600 mb-1 block";
 
   return (
-    <div className="flex h-[calc(100vh-80px)] overflow-hidden">
-      {/* Left Panel - List */}
-      <div
-        className={`flex-1 flex flex-col ${showForm ? "hidden lg:flex lg:w-1/3 xl:w-1/4 border-r border-gray-200" : "w-full"}`}
-      >
-        <div className="p-4 flex-1 flex flex-col overflow-hidden">
+    <div className="flex h-full min-h-0 bg-[#f5f6fa] overflow-hidden">
+      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
+        <div className="p-4 pb-0">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-[15px] font-semibold text-gray-800">Ledger Master</h1>
               <p className="text-[11px] text-gray-500 mt-0.5">Manage accounts and ledgers</p>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-                onClick={() => {
-                  resetForms();
-                  setShowForm(true);
-                }}
-              >
-                <Plus size={14} />
-                Add New
-              </button>
-            </div>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                resetForms();
+                setShowForm(true);
+              }}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add ledger
+            </button>
           </div>
 
-          <div className="mb-4">
+          <div className="relative mb-3 max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               type="text"
               placeholder="Search ledgers..."
-              className={inputClass}
+              className={`${inputClass} pl-8`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
 
-          <div className="flex-1 overflow-auto border border-gray-200 rounded-md">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
-                    #
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Ledger Name
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Group
-                  </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
-                    Status
-                  </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredAccounts.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                      No ledgers found. Click "Add New" to create one.
-                    </td>
+        <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
+          {filteredAccounts.length === 0 ? (
+            <div className="bg-white border border-gray-200 rounded-md">
+              <ReportEmptyState
+                message={searchTerm ? "No ledgers match your search" : "No ledgers found"}
+                hint={
+                  searchTerm
+                    ? "Try a different search term."
+                    : 'Click "Add ledger" to create your first ledger.'
+                }
+              />
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className={`${th} w-12`}>#</th>
+                    <th className={th}>Ledger name</th>
+                    <th className={th}>Group</th>
+                    <th className={`${th} text-center`}>Status</th>
+                    <th className={`${th} text-right`}>Actions</th>
                   </tr>
-                ) : (
-                  filteredAccounts.map((account, index) => {
+                </thead>
+                <tbody>
+                  {filteredAccounts.map((account, index) => {
                     const parentGroup = parentGroups.find((g) => g.id === account.parentId);
                     return (
-                      <tr key={account.id} className="hover:bg-gray-50">
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{index + 1}</td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
-                          {account.name}
-                        </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                          {parentGroup?.name || "-"}
-                        </td>
-                        <td className="px-3 py-2.5 text-[12px] text-center">
+                      <tr
+                        key={account.id}
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                        onClick={() => handleEdit(account)}
+                      >
+                        <td className={td}>{index + 1}</td>
+                        <td className={`${td} font-medium text-gray-800`}>{account.name}</td>
+                        <td className={td}>{parentGroup?.name || "—"}</td>
+                        <td className={`${td} text-center`}>
                           <span
-                            className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full ${account.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+                            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                              account.isActive
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
                           >
                             {account.isActive ? "Active" : "Inactive"}
                           </span>
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                          <div className="flex items-center justify-center gap-1.5">
+                        <td className={`${td} text-right`}>
+                          <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
-                              onClick={() => handleEdit(account)}
-                              className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                              type="button"
+                              className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(account);
+                              }}
                               title="Edit"
                             >
-                              <Edit2 size={14} />
+                              <Edit2 className="h-3.5 w-3.5" />
                             </button>
                             <button
-                              onClick={() => handleDelete(account.id)}
-                              className="p-1 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
+                              type="button"
+                              className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                              onClick={(e) => handleDelete(account.id, e)}
                               title="Delete"
                             >
-                              <Trash2 size={14} />
+                              <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </td>
                       </tr>
                     );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                  })}
+                </tbody>
+              </table>
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {filteredAccounts.length} ledger{filteredAccounts.length === 1 ? "" : "s"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Right Panel - Form */}
       {showForm && (
-        <div className="w-full lg:w-[650px] xl:w-[750px] bg-white flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-20 border-l border-gray-200">
-          <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+        <div className="w-full lg:w-[650px] xl:w-[750px] shrink-0 bg-white flex flex-col border-l border-gray-200 min-h-0">
+          <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-[13px] font-semibold text-gray-800">
-              {selected ? "Alter Ledger" : "Create New Ledger"}
+              {selected ? "Edit ledger" : "New ledger"}
             </h3>
             <button
+              type="button"
               onClick={resetForms}
-              className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+              className="text-gray-500 hover:text-gray-700"
             >
-              <X size={16} />
+              <X className="h-4 w-4" />
             </button>
           </div>
 
@@ -1183,19 +1209,12 @@ const LedgerMaster: React.FC = () => {
             )}
           </div>
 
-          {/* Form Footer */}
-          <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-            <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-              onClick={resetForms}
-            >
+          <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
+            <button type="button" className={btnOutline} onClick={resetForms}>
               Cancel
             </button>
-            <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-              onClick={handleSubmit}
-            >
-              <Save size={14} />
+            <button type="button" className={btnPrimary} onClick={handleSubmit}>
+              <Save className="h-3.5 w-3.5" />
               {selected ? "Update" : "Save"}
             </button>
           </div>
