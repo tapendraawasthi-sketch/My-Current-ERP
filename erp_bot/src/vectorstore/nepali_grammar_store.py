@@ -5,7 +5,8 @@ No ChromaDB, Ollama embeddings, or API keys required.
 
 Sources:
   - data/ekhata/source/nepali-grammar-reference.txt (structured 33 sections)
-  - data/ekhata/source/nepali-grammar-reference-verbatim.txt (full variation lines)
+  - data/ekhata/source/nepali-grammar-reference-verbatim.txt (Part 1 verbatim)
+  - data/ekhata/source/nepali-grammar-reference-verbatim-part2.txt (Part 2 verbatim, sections 34–80)
   - data/ekhata/nepali-grammar-search-index.json (prebuilt at ingest / commit time)
 """
 
@@ -22,6 +23,7 @@ _BOT_ROOT = Path(__file__).resolve().parent.parent.parent
 _REPO_ROOT = _BOT_ROOT.parent
 _GRAMMAR_TXT = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference.txt"
 _GRAMMAR_VERBATIM = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference-verbatim.txt"
+_GRAMMAR_VERBATIM_PART2 = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference-verbatim-part2.txt"
 _GRAMMAR_INDEX = _REPO_ROOT / "data" / "ekhata" / "nepali-grammar-index.json"
 _SEARCH_INDEX = _REPO_ROOT / "data" / "ekhata" / "nepali-grammar-search-index.json"
 
@@ -40,8 +42,8 @@ _build_lock = threading.Lock()
 _cached_sections: list[dict] | None = None
 _cached_search_index: dict | None = None
 
-# Financial NLU sections get a boost for transaction queries
-_FINANCIAL_SECTIONS = frozenset({18, 21, 24, 26, 27, 31})
+# Financial / NLU sections get a boost for transaction queries
+_FINANCIAL_SECTIONS = frozenset({18, 21, 24, 26, 27, 31, 70, 71, 72, 75, 78, 79})
 
 
 def _tokenize(text: str) -> list[str]:
@@ -110,6 +112,13 @@ def _load_sections() -> list[dict]:
                 "nepali-grammar-reference-verbatim.txt",
             )
         )
+    if _GRAMMAR_VERBATIM_PART2.exists():
+        sections.extend(
+            _parse_sections_from_text(
+                _GRAMMAR_VERBATIM_PART2.read_text(encoding="utf-8"),
+                "nepali-grammar-reference-verbatim-part2.txt",
+            )
+        )
 
     _cached_sections = sections
     return sections
@@ -170,7 +179,7 @@ def _build_chunks() -> list[dict]:
             continue
         seen_section_source.add(key)
 
-        if source.endswith("-verbatim.txt") and len(section.get("text", "")) > 2000:
+        if "verbatim" in source and len(section.get("text", "")) > 2000:
             chunks.extend(_chunk_long_section(section))
         else:
             chunks.append({**section, "chunk_id": f"sec-{sid:02d}-{source[:4]}"})
@@ -298,7 +307,7 @@ def _keyword_score(query: str, chunk: dict) -> float:
             score += 2.5
 
     # Prefer verbatim chunks for spelling-variant queries
-    if chunk.get("source", "").endswith("-verbatim.txt") and re.search(r"\b(xa|xaina|chha|halkhabar)\b", query_lower):
+    if "verbatim" in chunk.get("source", "") and re.search(r"\b(xa|xaina|chha|halkhabar)\b", query_lower):
         score += 1.5
 
     return score
@@ -419,6 +428,7 @@ def ingest_nepali_grammar() -> dict:
         "sources": [
             str(_GRAMMAR_TXT.name),
             str(_GRAMMAR_VERBATIM.name) if _GRAMMAR_VERBATIM.exists() else None,
+            str(_GRAMMAR_VERBATIM_PART2.name) if _GRAMMAR_VERBATIM_PART2.exists() else None,
         ],
     }
 
@@ -429,4 +439,8 @@ def get_nepali_grammar_count() -> int:
 
 
 def grammar_reference_exists() -> bool:
-    return _GRAMMAR_TXT.exists() or _GRAMMAR_VERBATIM.exists()
+    return (
+        _GRAMMAR_TXT.exists()
+        or _GRAMMAR_VERBATIM.exists()
+        or _GRAMMAR_VERBATIM_PART2.exists()
+    )

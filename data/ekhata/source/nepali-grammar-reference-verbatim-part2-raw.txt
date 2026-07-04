@@ -1,0 +1,2568 @@
+===========================================================================
+   सम्पूर्ण नेपाली व्याकरण ज्ञान — भाग २
+   COMPLETE NEPALI GRAMMAR KNOWLEDGE — PART 2
+   AI प्रशिक्षणका लागि | FOR AI TRAINING
+   (Standard Nepali + Romanized + Halkhabar + Code-Switch Variations)
+===========================================================================
+   VERBATIM EDITION Part 2 — Sections 34–80 with all Halkhabar variation lines.
+===========================================================================
+
+CONTINUATION FROM PART 1 (Sections 1–33):
+Part 2 extends advanced verb morphology, sentence patterns, dialect coverage,
+daily-life and business language, and the complete 500-sentence training corpus
+for e-Khata NLU / Ollama.
+
+
+===========================================================================
+खण्ड ३४: क्रियापदको विस्तृत पक्ष (ASPECT OF VERBS — DETAILED)
+SECTION 34: VERB ASPECT — PERFECTIVE, IMPERFECTIVE, HABITUAL
+===========================================================================
+
+OVERVIEW:
+Aspect (पक्ष) describes HOW an action unfolds — not WHEN (tense). Nepali has three
+primary aspects AI must distinguish: Perfective (completed), Imperfective (ongoing),
+and Habitual (repeated/customary). Chat messages often collapse aspect markers;
+AI must recover intended aspect from suffix + auxiliary combinations.
+
+34.1 PERFECTIVE (पूर्ण पक्ष) — completed/result state:
+Suffix -eko/-ieko/-yeko + auxiliary (cha/xa/chhu/huncha/vayo)
+Indicates action completed with result still relevant.
+
+ma khaisakeko chhu  (I have already eaten / I am in state of having eaten)
+→ ma khai sake chhu
+→ ma khaisake chhu
+→ ma khaisakeko xu
+→ ma khaisakeko cha
+→ Ma khaisakeko chhu
+
+ma kaam sakesakeko chhu  (I have finished work)
+→ ma kaam sake chhu
+→ ma kaam sakesake chhu
+→ ma kaam sakesakeko xu
+
+Ram le 500 tiryo  (completed payment — perfective past)
+→ Ram le 500 tireko
+→ Ram 500 tiryo
+→ Ramle 500 tiryo
+
+saman becheko  (goods sold — result state)
+→ maal becheko
+→ saman bechieko xa
+→ saman bechyo
+
+34.2 IMPERFECTIVE (अपूर्ण पक्ष) — ongoing/continuous:
+Suffix -dai/-daimai/-iraheko + auxiliary (cha/xa/chhu)
+Indicates action in progress at reference time.
+
+ma kaam gardaichhu  (I am working now)
+→ ma kaam gardai chhu
+→ ma kaam gardai xu
+→ ma kaam gardaichu
+→ ma kaam gardai cha
+→ Ma kaam gardaichhu
+
+ma khadai chhu  (I am eating)
+→ ma khadai xu
+→ ma khadaichhu
+→ ma khaadai chhu
+
+Ram le paisa tiraichha  (Ram is paying — ongoing)
+→ Ram paisa tiraichha
+→ Ram le paisa tiraichha
+→ ram le paisa tiraichha
+
+pasal khola raheko cha  (shop is opening)
+→ pasal kholdai cha
+→ pasal khola raheko xa
+
+34.3 HABITUAL (अभ्यस्त पक्ष) — repeated/customary:
+Simple present stem + -chhu/-chha/-chhan or past habitual -thiyo/-the
+Indicates regular/repeated action or former habit.
+
+ma harek din 6 baje uthchhu  (I wake at 6 every day)
+→ ma harek din 6 baje uthchu
+→ ma daily 6 baje uthchhu
+→ ma harek din 6 baje uthxu
+
+Ram harek mahina 500 tirchha  (Ram pays 500 every month)
+→ Ram harek mahina 500 tircha
+→ ram harek mahina 500 tirchha
+
+pahila dherai kharcha garthe  (I used to spend a lot — past habitual)
+→ pahila dherai kharcha garthe
+→ pahile dherai kharcha garthe
+→ pahila dherai kharcha garthiye
+
+34.4 ASPECT + TENSE COMBINATIONS (common in chat):
+Perfective + Present:  -eko chhu/xu     → ma padheko chhu (I have read)
+Imperfective + Present: -dai chhu/xu    → ma padhdai chhu (I am reading)
+Perfective + Past:     -eko thiyo       → ma padheko thiye (I had read)
+Imperfective + Past:   -dai thiyo       → ma padhdai thiye (I was reading)
+
+EXAMPLES (Standard → Halkhabar):
+ma khaisakeko chhu
+→ ma khai sake chhu
+→ ma khaisake chhu
+→ ma khaisakeko xu
+ma kaam gardaichhu
+→ ma kaam gardai chhu
+→ ma kaam gardai xu
+→ ma kaam gardaichu
+ma padheko chhu
+→ ma padheko xu
+→ ma padheko cha
+ma padhdai thiye
+→ ma padhdai thiye
+→ ma padhdai the
+AI RULE: Do not confuse perfective -eko (completed) with imperfective -dai (ongoing).
+-eko on financial verbs (tiryo/tireko, kinyo/kineko) = completed transaction.
+-dai on financial verbs = payment/purchase in progress (rare in khata chat).
+
+===========================================================================
+खण्ड ३५: क्रियाको वाच्य (सक्रिय, निष्क्रिय, प्रेरक)
+SECTION 35: ACTIVE, PASSIVE, AND CAUSATIVE VOICE
+===========================================================================
+
+OVERVIEW:
+Voice (वाच्य) indicates whether subject performs (active), receives (passive),
+or causes (causative) the action. Halkhabar drops voice markers freely.
+
+35.1 ACTIVE VOICE (सक्रिय वाच्य) — subject performs action:
+[Agent] + le + [verb] — standard SOV active
+Ram le 500 tiryo
+→ Ram 500 tiryo
+→ Ramle 500 tiryo
+→ ram le 500 tiryo
+
+maile saman kinyo
+→ ma le saman kinyo
+→ ma saman kinyo
+→ maile maal kinyo
+
+35.2 PASSIVE VOICE (निष्क्रिय वाच्य) — action done to subject:
+[Object] + [passive marker] + [verb]
+Formal: saman becheyo / saman becheko vayo
+Halkhabar: saman becheko (agent omitted)
+
+saman becheyo
+→ maal becheyo
+→ saman bechiyo
+→ saman becheko vayo
+
+500 tiryo (passive-like, agent dropped)
+→ 500 tireko
+→ 500 tirna paryo
+→ paisa tireko
+
+35.3 CAUSATIVE VOICE (प्रेरक वाच्य) — subject causes another to act:
+[Causer] + le + [causee] + lai + [causative verb -aunu/-aaunu]
+Ram le Shyam lai becaayo  (Ram made Shyam sell)
+→ Ram le Shyam lai saman becaayo
+→ Ramle Shyam lai becaayo
+→ ram le Shyam lai becaayo
+
+Ram lai tirna lagaayo  (made Ram pay)
+→ Ram lai payment tirna lagaayo
+→ ram lai tirna lagaayo
+→ Ram lai tirna lagaayo ni
+
+staff lai hisab garcaaye
+→ karmachari lai hisab garcaaye
+→ staff lai hisab garcaaye hai
+
+35.4 VOICE IN BUSINESS CHAT:
+Active (most common):  Ram le 500 kinyo / Ram 500 tiryo
+Passive (rare):        500 tirna baki cha (remains to be paid)
+Causative (rare):      Ram lai tirna laga / Ram lai bhannu tirnu parcha
+
+EXAMPLES:
+Ram le 500 tiryo
+→ Ram 500 tiryo
+→ Ramle 500 tiryo
+saman becheko
+→ maal becheko
+→ saman bechieko xa
+Ram le Shyam lai becaayo
+→ Ram lai tirna lagaayo
+→ staff lai hisab garcaaye
+AI RULE: Default to active voice parsing. Passive/causative wrappers do not change transaction intent.
+
+===========================================================================
+खण्ड ३६: सर्तवाचक र काल्पनिक वाक्य
+SECTION 36: CONDITIONAL AND HYPOTHETICAL SENTENCES
+===========================================================================
+
+CONDITIONAL MARKERS:
+yadi/bhane = if (condition + result)
+bhaye/bhaye pani = if/when/even if
+na bhane = if not
+yadi...bhane... = if...then...
+
+EXAMPLES:
+yadi paani paryo bhane, gharmai baschhu
+→ yadi paani paryo bhane gharmai baschu
+→ yadi paani paryo bhane gharma baschhu
+→ yadi paani paryo bhane ghar mai baschhu
+→ paani paryo bhane gharmai baschhu
+yadi Ram le tiryo bhane thik xa
+→ Ram le tiryo bhane thik
+→ tiryo bhane thik xa
+→ yadi tiryo bhane thik xa ni
+na bhane udhaar ma rakhne
+→ tiryo na bhane udhaar
+→ payment na gare udhaar ma
+AI: Strip yadi/bhane wrapper; extract core transaction if present in either clause.
+
+===========================================================================
+खण्ड ३७: जटिल र यौगिक वाक्य
+SECTION 37: COMPLEX AND COMPOUND SENTENCES
+===========================================================================
+
+COORDINATING: ra/ani/tara/kinaki
+SUBORDINATING: bhane/kinaki/jaba...taba/le (result)
+
+EXAMPLES:
+Ram le 500 tiryo ra Shyam le 300 tiryo
+→ Ram 500 tiryo ani Shyam 300 tiryo
+→ 500 tiryo ra 300 kharcha
+dherai bikri bhayo kinaki aaja chuttai thiyo
+→ kharcha dherai bhayo kinaki bijuli bill thulo thiyo
+AI: Split compound sentences on ra/ani/and for multiple transactions.
+
+===========================================================================
+खण्ड ३८: सम्बन्धवाचक उपवाक्य
+SECTION 38: RELATIVE CLAUSES AND CORRELATIVES
+===========================================================================
+
+RELATIVE: jo/juni/le = who/which/that
+CORRELATIVES: jati...utti, jaba...taba, jaha...tyaha
+
+EXAMPLES:
+jole 500 tiryo
+→ 500 tiryo jole
+→ jole tiryo tyo Ram ho
+Ram le kineko saman
+→ Ram le becheko maal
+→ kineko saman
+jati kinyo utti tirnu parcha
+→ jaba tiryo taba thik
+AI: Relative clauses provide party/amount context; extract embedded nouns and verbs.
+
+===========================================================================
+खण्ड ३९: कथित भाषण र उद्धरण
+SECTION 39: REPORTED SPEECH AND INDIRECT QUOTATION
+===========================================================================
+
+MARKERS: bhancha/bhaneko/bhane/re/vanera
+
+EXAMPLES:
+Ram le tiryo bhancha
+→ Ram le tiryo bhaneko xa
+→ Ram le tiryo re
+500 tiryo vanera aayo
+→ payment garyo vanera
+→ tiryo vanera phone aayo
+Ram bhaneko 500 tirnu parcha
+→ Ram le bhane 500 tiryo
+AI: Reported speech carries transaction facts; do not classify as chat-only.
+
+===========================================================================
+खण्ड ४०: जोड/बल/विषय केन्द्रित संरचना
+SECTION 40: EMPHATIC, FOCUS, AND TOPICALIZATION
+===========================================================================
+
+EMPHASIS: nai/matram/pani/dherai/ekdam
+TOPICALIZATION: fronted object/subject
+
+EXAMPLES:
+500 nai tiryo
+→ 500 matram tiryo
+→ 500 nai tiryo ta
+Ram le pani tiryo
+→ Ram pani tiryo
+→ Ram le pani 500 tiryo
+500 tiryo Ram le
+→ Ram ko 500 tiryo
+→ 500 nai Ram le tiryo
+AI: Strip emphasis particles; fronted amounts still parse normally.
+
+===========================================================================
+खण्ड ४१: द्विरुक्ति र तीव्रता
+SECTION 41: REDUPLICATION AND INTENSIFICATION
+===========================================================================
+
+REDUPLICATION: word repeated for emphasis/intensity
+
+EXAMPLES:
+ramro ramro saman becheko
+→ thulo thulo kharcha bhayo
+sano sano kharcha garyo
+→ dherai dherai bikri vayo
+chito chito tirnu parcha
+→ bistarai bistarai tiryo
+AI: Reduplication is intensifier; parse core word once.
+
+===========================================================================
+खण्ड ४२: सहायक क्रिया र मिश्रित काल
+SECTION 42: MODAL AUXILIARIES AND COMPOUND TENSE
+===========================================================================
+
+MODALS: saknu/parnu/milnu/hunu/lagnu
+
+EXAMPLES:
+tirnu parcha
+→ tirnu parne ho
+→ tirnu parcha ni
+tirna sakchhu
+→ tirna sakyo
+→ tirna sakdina
+kharcha garnu cha
+→ payment garnu cha
+→ hisab milcha
+AI: Modals modify obligation/ability; keep financial verb + amount as core.
+
+===========================================================================
+खण्ड ४३: यौगिक क्रिया र क्रिया श्रृंखला
+SECTION 43: COMPOUND VERBS AND SERIAL VERB CONSTRUCTIONS
+===========================================================================
+
+COMPOUND: main verb + aaunu/janu/dinu/linu/halaunu
+
+EXAMPLES:
+Ram tirna aayo
+→ Ram payment garna aayo
+→ 500 garaidiyo
+saman kina liyo
+→ maal kina liyo
+→ stock kina liyo
+500 bujhaaidiyo
+→ 500 tiraidiyo
+→ 500 thapaidiyo
+AI: Compound verbs are single semantic units.
+
+===========================================================================
+खण्ड ४४: क्रियाविशेषण, कृदन्त र infinitive
+SECTION 44: PARTICIPLES, GERUNDS, AND INFINITIVES
+===========================================================================
+
+PARTICIPLES: -eko/-dai/-na/-era
+
+EXAMPLES:
+becheko saman
+→ kineko maal
+→ tireko paisa
+na tireko udhaar
+→ na bujheko paisa
+→ na kineko saman
+tirna baki cha
+→ kinnu baki cha
+→ becheko pachhi tiryo
+AI: -eko participles signal completed actions; -na infinitive signals pending action.
+
+===========================================================================
+खण्ड ४५: निषेधका सबै ढाँचा
+SECTION 45: COMPREHENSIVE NEGATION PATTERNS
+===========================================================================
+
+NEGATION: chaina/xaina, -dina/-dena, -eko chaina, kahile pani chaina
+
+EXAMPLES:
+500 tiryo xaina
+→ Ram le tiryo chaina
+→ payment gareko chaina
+udhaar chaina
+→ baaki chaina
+→ kati pani chaina
+tirna sakdina
+→ tirna mildaina
+→ kahile pani tiryo chaina
+AI: Negation flips certainty; "tiryo xaina" = payment NOT received.
+
+===========================================================================
+खण्ड ४६: प्रश्न निर्माण (पूर्ण)
+SECTION 46: COMPREHENSIVE QUESTION FORMATION
+===========================================================================
+
+QUESTION WORDS: ke/ko/kati/kaha/kahile/kina/kasari + tag questions
+
+EXAMPLES:
+Ram ko kati baaki xa?
+→ kati tiryo Ram le?
+→ kati udhaar xa?
+ke ho yo kharcha?
+→ kasari tirne?
+→ kahile tiryo?
+tiryo ho?
+→ thik xa ta?
+→ payment bhayo ho?
+AI: Questions with amount + party = balance_query or info_request.
+
+===========================================================================
+खण्ड ४७: आज्ञासूचक, अनुरोध र निषेध
+SECTION 47: IMPERATIVE, REQUEST, AND PROHIBITIVE
+===========================================================================
+
+IMPERATIVE: -gara/-garau/-garnus/-deu/-dinu; PROHIBITIVE: -na/deu
+
+EXAMPLES:
+entry gara
+→ 500 ko entry gara
+→ Ram ko entry gara
+hisab garnus
+→ ledger dekhaunus
+→ balance check garnus
+500 na diu
+→ udhaar na diu
+→ Ram lai bhannu tirnu parcha
+AI: Imperatives are commands unless amount + transaction verb = action with entry.
+
+===========================================================================
+खण्ड ४८: विस्मय, विस्मयादिबोधक र भावना
+SECTION 48: EXCLAMATION, INTERJECTION, AND EMOTION
+===========================================================================
+
+EXCLAMATIONS: kasto!/hey!/waah!/afsoj!
+
+EXAMPLES:
+kasto dherai bikri vayo!
+→ hey Ram le tiryo!
+→ waah 5000 ko bikri!
+chinta lagyo udhaar dherai bhayo
+→ khushi lagyo sabai le tiryo
+AI: Extract embedded transactions from exclamations if amount + verb present.
+
+===========================================================================
+खण्ड ४९: आदरणीय र औपचारिक रजिस्टर (पूर्ण)
+SECTION 49: HONORIFIC AND FORMAL REGISTER (COMPLETE)
+===========================================================================
+
+HONORIFIC: -nuhuncha/-nuhuncha/-bhayo/-janus
+
+EXAMPLES:
+tapainle kati tirnubhayo?
+→ tapainko udhaar kati xa?
+kripaya entry garnus
+→ krupaya hisab pathaunus
+→ dhanyabaad tirnubhayo
+AI: Normalize honorific verb forms before intent classification.
+
+===========================================================================
+खण्ड ५०: कालिक क्रम र अवधि
+SECTION 50: TEMPORAL SEQUENCING AND DURATION
+===========================================================================
+
+TEMPORAL: aaja/hijo/voli/ahile/pachhi/agadi/jaba...taba/banda/dekhi/samme
+
+EXAMPLES:
+aaja 500 ko bikri vayo
+→ hijo 300 kharcha bhayo
+→ voli tirnu parcha
+ahile tiryo
+→ aile payment garyo
+→ pachhi tircha
+bihana 6 baje uthe
+→ 6 baje dekhi pasal kholyo
+→ samma 10 baje kaam garyo
+AI: Temporal markers set transaction date; default to today if absent.
+
+===========================================================================
+खण्ड ५१: कारण, उद्देश्य र परिणाम उपवाक्य
+SECTION 51: CAUSAL, PURPOSE, AND RESULT CLAUSES
+===========================================================================
+
+CAUSAL: kinaki/le/bhayera; PURPOSE: ko lagi/banauna/taaki; RESULT: le/bhayera
+
+EXAMPLES:
+kharcha ko lagi 500 tiryo
+→ payment ko lagi 500
+→ bijuli ko lagi 300
+tirna banauna phone garyo
+→ hisab milauna garyo
+→ udhaar bujhna banauna
+dherai bikri bhayo le khushi
+→ kharcha dherai bhayo kinaki bill thulo thiyo
+AI: Purpose/causal clauses explain why; core transaction is amount + verb.
+
+===========================================================================
+खण्ड ५२: तुलना, सर्वाधिक र समानता
+SECTION 52: COMPARATIVE, SUPERLATIVE, AND EQUATIVE
+===========================================================================
+
+COMPARATIVE: bhanda/dherai/thorai; SUPERLATIVE: sabai bhanda; EQUATIVE: jasto/jastai
+
+EXAMPLES:
+aaja bhanda hijo dherai bikri
+→ hijo bhanda aaja thorai bikri
+Ram bhanda Shyam le dherai kinyo
+→ sabai bhanda thulo kharcha
+Ram jasto Shyam le pani tiryo
+→ yesto bhaye ramro hunthyo
+AI: Comparatives are usually report queries unless amount + verb present.
+
+===========================================================================
+खण्ड ५३: परिमाणवाचक, माप र वर्गीकरण
+SECTION 53: QUANTIFIERS, MEASURES, AND CLASSIFIERS
+===========================================================================
+
+QUANTIFIERS: dherai/thorai/sabai/kehi/kunai/pratyek
+MEASURES: wata/joda/kilo/litre/bora
+
+EXAMPLES:
+dherai kharcha bhayo
+→ 5 wata saman becheko
+→ 2 kilo dal kinyo
+sabai tiryo
+→ kehi baaki xa
+→ pratyek customer le 500 tiryo
+AI: Extract numeric amount separately from quantifiers and measure words.
+
+===========================================================================
+खण्ड ५४: सर्वनाम, आत्मवाचक र pro-form (विस्तार)
+SECTION 54: PRONOUNS, REFLEXIVES, AND PRO-FORMS (EXTENDED)
+===========================================================================
+
+REFLEXIVE: aaphai/aaphno/aaphaile; PRO-FORMS: yo/tyo/tyo pani/yehi/tehi
+
+EXAMPLES:
+aaphno kharcha garyo
+→ aaphaile saman kinyo
+→ aaphai le tiryo
+tyo pani udhaar ma
+→ yehi saman becheko
+→ tehi Ram le kinyo
+AI: Resolve yo/tyo/yehi from conversation context when possible.
+
+===========================================================================
+खण्ड ५५: वार्तालाप पार्टिकल र वाक्यान्त्य चिन्ह
+SECTION 55: DISCOURSE PARTICLES AND SENTENCE-FINAL MARKERS
+===========================================================================
+
+PARTICLES: ni/ta/hai/nai/re/hola/bhane/yaar/bhai/dai
+
+EXAMPLES:
+500 tiryo ni
+→ 500 tiryo ta
+→ 500 tiryo ta hai
+thik xa hai
+→ tiryo hola
+→ 500 tiryo yaar
+AI: Strip all particles before intent classification (see also Part 1 Section 32).
+
+===========================================================================
+खण्ड ५६: काठमाडौं उपत्यकाको हलखबर (विस्तृत)
+SECTION 56: KATHMANDU VALLEY HALKHABAR (COMPREHENSIVE)
+===========================================================================
+
+KATHMANDU: xa/xaina (not cha), le dropped, ta/ni/hai heavy, English mix
+
+EXAMPLES:
+thik xa ni
+→ thik xaina ta
+→ ramro xa hai
+500 tiryo ta
+→ 500 tiryo ni
+→ 500 tiryo ta hai
+entry garyo ta
+→ payment garyo ni
+→ busy xu ta
+AI: Kathmandu Halkhabar is default chat register; accept xa/xaina as cha/chaina.
+
+===========================================================================
+खण्ड ५७: पूर्व नेपाल क्षेत्रीय ढाँचा
+SECTION 57: EASTERN NEPAL REGIONAL PATTERNS
+===========================================================================
+
+EASTERN: "la" for "le", "gyo" for "vayo"
+
+EXAMPLES:
+Ram la 500 diyo
+→ Ram la tiryo
+→ Ram la saman diyo
+thik gyo
+→ ramro gyo
+→ huncha gyo
+AI: Regional postposition variants are phonetic; fuzzy-match to standard forms.
+
+===========================================================================
+खण्ड ५८: पश्चिम नेपाल क्षेत्रीय ढाँचा
+SECTION 58: WESTERN NEPAL REGIONAL PATTERNS
+===========================================================================
+
+WESTERN: "ko" emphasis, "cha" more common than "xa"
+
+EXAMPLES:
+Ram ko 500 tiryo
+→ Ram ko udhaar tiryo
+→ Ram ko paisa aayo
+thik cha ni
+→ ramro cha ta
+→ huncha cha
+AI: Western dialect uses cha more; treat same as xa for NLU.
+
+===========================================================================
+खण्ड ५९: तराई र मधेश भाषिक ढाँचा
+SECTION 59: TERAI AND MADHESH SPEECH PATTERNS
+===========================================================================
+
+TERAI: Hindi mixing, dukaan, udhar, diya/liya/kiya, kitna
+
+EXAMPLES:
+Ram ne 500 diya
+→ 500 ka saman kharida
+→ udhar me diya
+kitna baaki hai
+→ kitna paisa diya
+→ 500 ka payment kiya
+dukaan me bikri hui
+→ paisa aaya 500
+→ dukaan me kaam hua
+AI: Normalize diya→diyo, liya→liyo, kiya→garyo, kitna→kati before parsing.
+
+===========================================================================
+खण्ड ६०: हिन्दी, भोजपुरी र मैथिली प्रभाव
+SECTION 60: HINDI, BHOJPURI, AND MAITHILI INFLUENCE
+===========================================================================
+
+HINDI PATTERNS: ne (agent), ka/ki/ke (genitive), me (locative), hua/hui
+
+EXAMPLES:
+Ram ne 500 diya
+→ 500 ka saman kharida
+→ udhar me diya
+bikri hui aaj
+→ payment hua 500 ka
+→ kharcha hua bijli ka
+Ram se 500 liya
+→ Ram ko kitna baaki hai
+AI: Hindi mix common in Terai business; normalize before intent classification.
+
+===========================================================================
+खण्ड ६१: WhatsApp, SMS र सामाजिक सञ्जाल भाषा
+SECTION 61: WHATSAPP, SMS, AND SOCIAL MEDIA LANGUAGE
+===========================================================================
+
+SOCIAL MEDIA: ok/done/bro/tm/pls/asap/idk/btw, shortened spellings
+
+EXAMPLES:
+ok done 500 tiryo
+→ done payment garyo
+→ ok 500 tiryo
+bro Ram le tiryo
+→ dude 500 kinyo
+→ mitra 500 tiryo ta
+idk balance kati xa
+→ asap tirnu parcha
+→ btw 500 tiryo ni
+AI: Strip internet slang; extract core Nepali/English transaction content.
+
+===========================================================================
+खण्ड ६२: भ्वाइस सन्देश र टाइपिङ त्रुटि ढाँचा
+SECTION 62: VOICE MESSAGE AND TYPING ERROR PATTERNS
+===========================================================================
+
+VOICE/TYPING: missing spaces, phonetic spelling, homophones
+
+EXAMPLES:
+ramle500tiryo
+→ ram le paach say tiryo
+→ ram ko paisa ayo
+500 tireyoo
+→ 500 kineyo
+→ 500 becheyo
+udhar ma diya
+→ udhaar ma diye
+→ udharo ma diye
+AI: Apply fuzzy matching (80%+ similarity) for voice-transcribed messages.
+
+===========================================================================
+खण्ड ६३: इमोजी, प्रतीक र संक्षिप्त रूप
+SECTION 63: EMOJI, SYMBOL, AND SHORT-FORM USAGE
+===========================================================================
+
+EMOJI: 💰/✅/❌/📦/🧾; ABBREV: Rs/k/ok/pls/2day/tmrw
+
+EXAMPLES:
+✅ 500 tiryo
+→ 💰 payment garyo
+→ 👍 thik xa entry garyo
+❌ tiryo xaina
+→ 📦 maal aayo 5000 ko
+→ Rs 500 tiryo
+5k ko bikri
+→ 2day ko bikri
+→ tmrw tirnu parcha
+AI: Strip emoji; expand k→1000, Rs→rupees, 2day→aaja before parsing.
+
+===========================================================================
+खण्ड ६४: दैनिक दिनचर्या र समय अभिव्यक्ति
+SECTION 64: DAILY ROUTINE AND TIME-OF-DAY EXPRESSIONS
+===========================================================================
+
+DAILY ROUTINE: uthnu/basnu/khannu/sutnu/kaam garnu by time of day
+
+EXAMPLES:
+bihaana uthe 6 baje
+→ bihaana 6 baje uthchhu
+→ 6 baje uthe
+dopahar khana khaye
+→ belsi rest gare
+→ sanjh pasal banda gare
+rati 10 baje sutyo
+→ saba bihana 5 baje uthchhu
+AI: Daily routine sentences may not be transactions; classify by verb + amount.
+
+===========================================================================
+खण्ड ६५: बजार, किनमेल र मोलमोलदाम
+SECTION 65: MARKET, SHOPPING, AND PRICE NEGOTIATION
+===========================================================================
+
+SHOPPING: kati ho?, sasto/mahango, thik cha, ali kam gara
+
+EXAMPLES:
+yo saman kati ko ho?
+→ ali sasto garnu na
+→ 500 ma dinu
+mahango bhayo ali kam gara
+→ thik cha 500 ma linchhu
+2 kilo dal kati ho?
+→ 1 kilo chaal 80 rupiya
+AI: Price queries are info_request unless purchase/sale verb + amount present.
+
+===========================================================================
+खण्ड ६६: खाना, पकाउने र реस्टुरेन्ट भाषा
+SECTION 66: FOOD, COOKING, AND RESTAURANT LANGUAGE
+===========================================================================
+
+FOOD: khana/khaana/bhat/dal/momo/chiya, pakaaunu/banaaunu
+
+EXAMPLES:
+khana khayo?
+→ momo khan man lagyo
+→ chiya piunus
+bhat pakayo
+→ dal paakdai cha
+→ khana banaaidiyo
+restaurant ma khaye 500 ko
+→ momo 200 ko khaye
+AI: Food + amount may be personal expense if in business context.
+
+===========================================================================
+खण्ड ६७: यात्रा, यातायात र दिशा भाषा
+SECTION 67: TRAVEL, TRANSPORT, AND DIRECTION LANGUAGE
+===========================================================================
+
+TRAVEL: jaanu/aunu/basnu/gaadi, kaha/jaba/kati baje
+
+EXAMPLES:
+ktm jane
+→ gaadi ma basyo
+→ airport jana parcha
+kati baje jane?
+→ kaha bata aayo?
+→ ghar pugyo
+ticket 1500 ko kinyo
+→ petrol 500 ko kharcha
+AI: Transport expenses map to khata_expense when amount + kharcha/tiryo present.
+
+===========================================================================
+खण्ड ६८: स्वास्थ्य, शरीर र चिकित्सा भाषा
+SECTION 68: HEALTH, BODY, AND MEDICAL LANGUAGE
+===========================================================================
+
+HEALTH: bimaar/sanchai/dukhnu/osadhi/aspatal/daktar
+
+EXAMPLES:
+sanchai cha?
+→ tauko dukhcha
+→ osadhi kine 300 ko
+daktar kai jana paryo
+→ aspatal gaye
+→ bimaar bhaye kaam gara sakdina
+doctor ko fee 500 tiryo
+→ medicine 300 ko kinyo
+AI: Medical expenses map to khata_expense.
+
+===========================================================================
+खण्ड ६९: मौसम, ऋतु र प्रकृति भाषा
+SECTION 69: WEATHER, SEASON, AND NATURE LANGUAGE
+===========================================================================
+
+WEATHER: paani/pani/paryo/gham/jaado/haawa, basnu/jaanu conditionals
+
+EXAMPLES:
+paani paryo
+→ pani paryo bhane baschhu
+→ gham laagyo
+jaado bhayo
+→ haawa chaliyo
+→ baadal cha
+yadi paani paryo bhane, gharmai baschhu
+→ paani paryo bhane gharmai baschu
+→ paani paryo bhane basdina
+AI: Weather conditionals often non-transaction; extract if financial verb present.
+
+===========================================================================
+खण्ड ७०: व्यापार, खाता र वित्तीय भाषा (विस्तार)
+SECTION 70: BUSINESS, KHATA, AND FINANCIAL LANGUAGE (EXTENDED)
+===========================================================================
+
+BUSINESS: udhaar/nagad/bikri/kharid/tirnu/dinu/kharcha/naafa/ghaata/hisab
+
+EXAMPLES:
+Ram lai 500 udhaar diye
+→ Ram le 500 tiryo
+→ 500 ko saman kinyo
+aaja ko bikri 5000 vayo
+→ naafa 2000 bhayo
+→ ghaata 500 bhayo
+Ram ko hisab hera
+→ balance kati xa?
+→ udhaar kati baaki xa?
+AI: Core e-Khata transaction language; prioritize amount + financial verb.
+
+===========================================================================
+खण्ड ७१: बैंक, चेक र डिजिटल भुक्तानी
+SECTION 71: BANKING, CHEQUE, AND DIGITAL PAYMENT LANGUAGE
+===========================================================================
+
+BANK: cheque/bank transfer/IPS/eSewa/Khalti/clear/bounce
+
+EXAMPLES:
+cheque 5000 ko aayo
+→ bank bata 5000 aayo
+→ IPS bata 5000 transfer
+eSewa bata 500 aayo
+→ Khalti ma 500 pathaayo
+→ cheque clear bhayo
+cheque bounce bhayo 5000 ko
+→ bank charge 500 katyo
+AI: Bank receipt = payment_in; bank payment = payment_out; bounce = reversal.
+
+===========================================================================
+खण्ड ७२: VAT, TDS र कर अनुपालन भाषा
+SECTION 72: TAX, VAT, TDS, AND COMPLIANCE LANGUAGE
+===========================================================================
+
+TAX: VAT 13%, TDS, PAN, IRD, ex-VAT/inc-VAT, withholding
+
+EXAMPLES:
+VAT samet 113000 ko bikri
+→ TDS 15% katyo 1000 bata
+→ IRD lai VAT tiryo 8000
+ex-VAT 100000 inc-VAT 113000
+→ withholding tax 1500 katyo
+AI: Tax amounts may be separate line items; extract base transaction first.
+
+===========================================================================
+खण्ड ७३: तलब, पेरोल र रोजगार भाषा
+SECTION 73: SALARY, PAYROLL, AND EMPLOYMENT LANGUAGE
+===========================================================================
+
+PAYROLL: talab/salary/bonus/SSF/PF/advance/OT/gratuity
+
+EXAMPLES:
+talab 25000 diyo
+→ bonus 5000 diyo
+→ SSF 5000 katyo
+advance salary 10000 diyo
+→ OT 2000 diyo
+→ gratuity provision 25000
+AI: Salary/bonus/advance = khata_salary; SSF/PF = deductions.
+
+===========================================================================
+खण्ड ७४: बहु-लेनदेन र विभाजित भुक्तानी
+SECTION 74: MULTI-TRANSACTION AND SPLIT PAYMENT LANGUAGE
+===========================================================================
+
+MULTI: ra/ani/and split; split payment cash + credit
+
+EXAMPLES:
+Ram le 500 tiryo ra Shyam le 300 tiryo
+→ 5000 cash 5000 udhaar ma becheko
+3000 cash 2000 udhaar
+→ Ram lai 500 diye ani 200 tiryo
+AI: Split on ra/ani/and; split payment = two entries.
+
+===========================================================================
+खण्ड ७५: सुधार, रद्द र अस्पष्टता भाषा
+SECTION 75: CORRECTION, UNDO, AND DISAMBIGUATION LANGUAGE
+===========================================================================
+
+CORRECTION: galat/sudhar/reverse/cancel/undo/delete/duplicate
+
+EXAMPLES:
+galat entry garyo sudhar garnu
+→ 500 ko entry cancel gara
+reverse gara yo entry
+→ duplicate entry vayo
+→ amount 500 ho 5000 hoina
+AI: Correction = correction intent, not new transaction.
+
+===========================================================================
+खण्ड ७६: सन्दर्भ समाधान र वार्तालाप स्मृति
+SECTION 76: CONTEXT RESOLUTION AND CONVERSATION MEMORY
+===========================================================================
+
+CONTEXT: yo/tyo/tyo pani, last 3 messages, party/amount from prior turn
+
+EXAMPLES:
+tyo pani tiryo
+→ yo entry sudhar
+→ tyo Ram ko ho
+500 tiryo (party from context)
+→ tiryo (amount from prior message)
+AI: Use last 3 messages for party/amount disambiguation (Part 1 Section 24).
+
+===========================================================================
+खण्ड ७७: NLU का लागि उन्नत ढाँचा पहिचान
+SECTION 77: ADVANCED PATTERN RECOGNITION FOR NLU
+===========================================================================
+
+ADVANCED NLU PATTERNS:
+1. AMOUNT-FIRST: "500 tiryo Ram le" = "Ram le 500 tiryo"
+2. MINIMAL: "500 tiryo" = payment (party from context)
+3. ENGLISH VERB: "500 payment garyo" = hybrid transaction
+4. HINDI MIX: "500 diya Ram ne" → normalize
+5. MULTI-AMOUNT: "500 tiryo 300 kharcha" = split
+6. PARTIAL: "500 ma 300 tiryo" = partial payment
+7. NEGATIVE: "500 tiryo xaina" = NOT paid
+8. QUESTION: "500 tiryo?" = query not statement
+
+EXAMPLES:
+500 tiryo Ram le
+→ 500 tiryo
+→ 500 payment garyo
+500 tiryo 300 kharcha
+→ 500 ma 300 tiryo
+→ 500 tiryo xaina
+AI: Apply after normalization (Part 1 Section 31) and before intent classification.
+
+===========================================================================
+खण्ड ७८: नेपालीका लागि अन्तिम AI व्याख्या नियमहरू
+SECTION 78: FINAL AI INTERPRETATION RULES FOR NEPALI
+===========================================================================
+
+FINAL AI INTERPRETATION RULES FOR e-Khata Ollama / LLM:
+
+RULE 1: NORMALIZATION FIRST
+Always transliterate Devanagari → Roman, fold spelling aliases (Part 1 Section 31), strip emoji/particles before parsing.
+
+RULE 2: ASPECT DISAMBIGUATION
+Distinguish perfective -eko (completed: khaisakeko, tireko) from imperfective -dai (ongoing: gardaichhu, khadai) and habitual -chhu (regular: uthchhu).
+
+RULE 3: VOICE DEFAULT
+Default to active voice. Passive (saman becheko) and causative (Ram lai tirna lagaayo) do not change transaction intent.
+
+RULE 4: AMOUNT EXTRACTION
+Extract all numeric amounts; expand k/K/hajar/saya/lakh; treat '500 paisa' as Rs 500 in business context.
+
+RULE 5: PARTY RESOLUTION
+Extract party from le/lai/ko/bata patterns; use last 3 messages for ambiguous cases.
+
+RULE 6: VERB PRIORITY
+Financial verbs (kinnu, bechnu, tirnu, dinu, kharcha) override greeting/help classification.
+
+RULE 7: DIRECTION RULES
+tiryo/liyo/aayo/bata = payment IN; diyo/lai/pathayo = payment OUT or credit sale.
+
+RULE 8: PARTICLE STRIPPING
+Strip ni, ta, hai, nai, re, yaar, bhai, dai, hola, bhane before intent classification.
+
+RULE 9: POSTPOSITION KEEP
+Keep le, lai, ko, ma, bata when present; they disambiguate party and direction.
+
+RULE 10: FUZZY MATCHING
+Accept 80%+ phonetic similarity for financial verbs and voice-transcription typos.
+
+RULE 11: CODE-SWITCH
+English verbs (payment, entry, sale) combine with Nepali grammar; parse as hybrid.
+
+RULE 12: HINDI NORMALIZE
+diya→diyo, liya→liyo, kiya→garyo, kitna→kati, udhar→udhaar before parsing.
+
+RULE 13: CONDITIONAL STRIP
+Strip yadi/bhane/na bhane wrappers; extract transaction from either clause.
+
+RULE 14: NEGATION FLIP
+xaina/chaina/gardina = negate; 'tiryo xaina' = payment NOT received.
+
+RULE 15: QUESTION DETECT
+Ending ? or starting kati/ke/ko/kaha = query not entry.
+
+RULE 16: MULTI-SPLIT
+Split on 'ra', 'ani', 'and', comma for multiple transactions.
+
+RULE 17: CONTEXT WINDOW
+Include last 3 conversation turns for party/amount disambiguation.
+
+RULE 18: HONORIFIC NORMALIZE
+tirnubhayo→tiryo, garnuhuncha→garcha; honorific does not change intent.
+
+RULE 19: TEMPORAL DEFAULT
+Default transaction date to today if no hijo/voli/aaja marker.
+
+RULE 20: ABBREVIATION EXPAND
+k/K→×1000, Rs/रु→rupees, 2day→aaja, tmrw→voli before parsing.
+
+RULE 21: TAX SEPARATION
+VAT/TDS amounts may be separate; extract base transaction amount first.
+
+RULE 22: CORRECTION DETECT
+galat/sudhar/reverse/cancel/undo/delete = correction intent.
+
+RULE 23: CONFIRMATION DETECT
+thik xa/ok/done/confirm without new amount = acknowledgment only.
+
+RULE 24: REMINDER DETECT
+samjha/bhanideu/tirnu parcha = reminder, not payment received.
+
+RULE 25: REPORT DETECT
+report/ledger/balance sheet/dekhaunus = info_request not entry.
+
+RULE 26: OUTPUT LANGUAGE
+Reply in user's language style (Devanagari/Roman/English mix they used).
+
+RULE 27: FINANCIAL SECTION BOOST
+For transaction messages, boost retrieval of Sections 18, 21, 24, 26, 27, 31, 70, 79.
+
+APPLICATION ORDER:
+1. Transliterate + normalize spelling aliases
+2. Resolve aspect (perfective/imperfective/habitual) and voice (active/passive/causative)
+3. Strip particles, emoji, conditional wrappers
+4. Extract amount + party + financial verb
+5. Classify intent; apply context from last 3 messages
+6. Reply in user's language register
+
+EXAMPLES:
+ma khaisakeko chhu
+→ ma khai sake chhu
+→ ma khaisake chhu
+ma kaam gardaichhu
+→ ma kaam gardai xu
+→ ma kaam gardai chhu
+yadi paani paryo bhane, gharmai baschhu
+→ yadi paani paryo bhane gharmai baschu
+→ paani paryo bhane gharmai baschhu
+500 tiryo ni ta hai
+→ 500 tiryo
+→ 500 tiryo xaina
+
+===========================================================================
+खण्ड ७९: ५०० वटा पूर्ण प्रशिक्षण वाक्यहरू
+SECTION 79: 500 COMPLETE TRAINING SENTENCES
+===========================================================================
+
+500 COMPLETE TRAINING SENTENCES — Standard / Roman / Halkhabar / Subject-dropped variants.
+Each sentence on its own line; all Halkhabar variations on → lines below.
+
+1. bihaana uthein 6 baje
+→ bihaana uthyoin 6 baje
+→ bihaana uthyo 6 baje
+→ bihan uthein 6 baje
+
+2. uthyo 6 baje
+→ uthyo 6 baje (subject dropped)
+→ 6 baje uthyo
+
+3. ma bihaana 6 baje uthchhu
+→ ma bihan 6 baje uthchhu
+→ bihaana 6 baje uthchhu (subject dropped)
+
+4. dopahar khana khaye
+
+5. sanjh 10 baje sutyo
+
+6. ma kaam gardaichhu
+→ kaam gardaichhu (subject dropped)
+→ ma kaam gardai chhu
+→ ma kaam gardai xu
+
+7. ma kaam gardai chhu
+→ ma kaam gardai xu
+→ ma kaam gardai chu
+→ kaam gardai chhu (subject dropped)
+→ ma kaam gardai xu
+→ ma kaam gardai chu
+
+8. ma khaisakeko chhu
+→ ma khaisakeko xu
+→ ma khaisakeko chu
+→ khaisakeko chhu (subject dropped)
+→ ma khaisakeko xu
+→ ma khaisakeko chu
+→ ma khai sake chhu
+→ ma khaisake chhu
+
+9. ma khai sake chhu
+→ ma khai sake xu
+→ ma khai sake chu
+→ khai sake chhu (subject dropped)
+→ ma khai sake xu
+→ ma khai sake chu
+
+10. yadi paani paryo bhane, gharmai baschhu
+→ yadi paani paryo bhane, gharma baschhu
+→ yadi paani paryo bhane, gharmai baschu
+→ yadi paani paryo bhane, gharmai baschhu
+
+11. paani paryo bhane gharmai baschu
+→ paani paryo bhane gharma baschu
+→ paani paryo bhane gharmai baschu
+
+12. Ram le 500 tiryo
+→ Ramle 500 tiryo
+→ ram le 500 tiryo
+→ Ram le 500 tireko
+→ Ram 500 tiryo
+→ Ram 500 tiryo
+→ Ramle 500 tiryo
+
+13. Ram 500 tiryo
+→ ram 500 tiryo
+→ Ram 500 tireko
+
+14. Ram lai 500 udhaar diye
+→ ram lai 500 udhaar diye
+→ Ram lai 500 udhaar diyo
+→ Ram lai 500 udhar diye
+
+15. 500 ko saman kinyo
+→ 500 ko saman kineko
+
+16. aaja 200 ko nagad bikri vayo
+→ aaja 200 ko nakad bikri vayo
+→ aaja 200 ko nagad bikri bhayo
+
+17. bijuli kharcha 500
+→ bijuli kharcho 500
+
+18. talab 25000 diyo
+
+19. Ram ko kati baaki xa?
+→ ram ko kati baaki xa?
+→ Ram ko kati baaki cha?
+→ Ram ko kati baaki xha?
+
+20. thik xa ni
+→ thik cha ni
+→ thik xha ni
+
+21. 500 tiryo ta hai
+→ 500 tireko ta hai
+
+22. payment garyo 500
+
+23. Ram ne 500 diya
+→ ram ne 500 diya
+
+24. kitna baaki hai
+
+25. ok done 500 tiryo
+→ ok done 500 tireko
+
+26. cheque 5000 ko aayo
+
+27. VAT samet 113000 ko bikri
+
+28. galat entry garyo sudhar garnu
+
+29. Ram lai samjha 500 tirna
+→ ram lai samjha 500 tirna
+
+30. aaj ko sales report dekhaunus
+
+31. ma padhdai thiye
+→ padhdai thiye (subject dropped)
+
+32. ma padheko chhu
+→ ma padheko xu
+→ ma padheko chu
+→ padheko chhu (subject dropped)
+→ ma padheko xu
+→ ma padheko chu
+
+33. saman becheko
+→ saman bechyo
+
+34. Ram le Shyam lai becaayo
+→ Ramle Shyam lai becaayo
+→ ram le Shyam lai becaayo
+→ Ram Shyam lai becaayo
+→ Ram Shyam lai becaayo
+→ Ramle Shyam lai becaayo
+
+35. jole 500 tiryo
+→ jole 500 tireko
+
+36. 500 tiryo xaina
+→ 500 tiryo chaina
+→ 500 tiryo xhaina
+→ 500 tireko xaina
+
+37. 500 ma 300 tiryo
+→ 500 ma 300 tireko
+
+38. Ram ra Shyam le 500-500 tiryo
+→ ram ra Shyam le 500-500 tiryo
+→ Ram ra Shyam le 500-500 tireko
+→ Ram ra Shyam 500-500 tiryo
+
+39. gharma baschhu
+→ gharma baschu
+
+40. ktm jane
+
+41. khana khayo?
+
+42. sanchai cha?
+→ sanchai xa?
+
+43. kati ho yo?
+
+44. ali sasto garnu na
+
+45. momo 200 ko khaye
+
+46. petrol 500 ko kharcha
+→ petrol 500 ko kharcho
+
+47. bank bata 10000 aayo
+
+48. SSF 5000 katyo
+
+49. duplicate entry vayo
+→ duplicate entry bhayo
+
+50. ✅ 500 tiryo
+→ ✅ 500 tireko
+
+51. ramle500tiryo
+→ ramle500tireko
+
+52. राम ले ५०० तिर्यो
+
+53. आज ५००० को बिक्री भयो
+
+54. Ram lai 500 udharo becheko
+→ ram lai 500 udharo becheko
+→ Ram lai 500 udharo bechyo
+
+55. Shyam le 2000 tiryo
+→ Shyam le 2000 tireko
+→ Shyam 2000 tiryo
+
+56. Gita lai 1500 payment gareko
+→ Gita lai 1500 payment garyo
+
+57. electricity kharcha 3500
+→ electricity kharcho 3500
+
+58. Hari bata 10000 udhaar ma saman kineko
+→ Hari bata 10000 udhar ma saman kineko
+
+59. Ram ko 3000 bad debt write off
+→ ram ko 3000 bad debt write off
+
+60. provision for bad debt 5000
+
+61. bad debt recovery 1500 from Shyam
+
+62. salary accrual 500000
+
+63. salary payment 500000
+
+64. ssf employee 50000 gross salary
+
+65. ssf employer 50000 basic
+
+66. gratuity provision 25000
+
+67. gratuity payment 100000
+
+68. vat sale 113000 to ABC Traders
+
+69. vat purchase 56500
+
+70. vat payment 8000 to IRD
+
+71. tds deducted 100000 service payment
+
+72. tds paid 15000
+
+73. outstanding expense rent 20000
+
+74. prepaid expense insurance 12000
+
+75. depreciation 50000 machinery
+
+76. bank charge 500
+→ bank xarge 500
+
+77. interest received 3000
+
+78. capital introduced 500000
+
+79. drawings 50000
+
+80. loan received 1000000
+
+81. loan repayment 50000
+
+82. stock purchase 75000
+
+83. cogs 40000
+
+84. contra cash to bank 100000
+
+85. discount allowed 500 to Ram
+→ discount allowed 500 to ram
+
+86. discount received 1000 from supplier
+
+87. राम लाई ५०० उधार दिए
+
+88. Ram lai 200 udhaar becheko
+→ ram lai 200 udhaar becheko
+→ Ram lai 200 udhaar bechyo
+→ Ram lai 200 udhar becheko
+
+89. Gita lai Rs 1500 udhaar becheko
+→ Gita lai Rs 1500 udhaar bechyo
+→ Gita lai Rs 1500 udhar becheko
+
+90. aaja Binita lai 8500 udhaar becheko
+→ aaja Binita lai 8500 udhaar bechyo
+→ aaja Binita lai 8500 udhar becheko
+
+91. Anand lai 85000 udhaar becheko
+→ Anand lai 85000 udhaar bechyo
+→ Anand lai 85000 udhar becheko
+
+92. ABC Traders lai Rs 500 udhaar becheko
+→ ABC Traders lai Rs 500 udhaar bechyo
+→ ABC Traders lai Rs 500 udhar becheko
+
+93. aaja Ram lai 2000 udhaar becheko
+→ aaja ram lai 2000 udhaar becheko
+→ aaja Ram lai 2000 udhaar bechyo
+→ aaja Ram lai 2000 udhar becheko
+
+94. Gita lai 10000 udhaar becheko
+→ Gita lai 10000 udhaar bechyo
+→ Gita lai 10000 udhar becheko
+
+95. Binita lai Rs 100000 udhaar becheko
+→ Binita lai Rs 100000 udhaar bechyo
+→ Binita lai Rs 100000 udhar becheko
+
+96. aaja Anand lai 750 udhaar becheko
+→ aaja Anand lai 750 udhaar bechyo
+→ aaja Anand lai 750 udhar becheko
+
+97. ABC Traders lai 3500 udhaar becheko
+→ ABC Traders lai 3500 udhaar bechyo
+→ ABC Traders lai 3500 udhar becheko
+
+98. Ram lai Rs 25000 udhaar becheko
+→ ram lai Rs 25000 udhaar becheko
+→ Ram lai Rs 25000 udhaar bechyo
+→ Ram lai Rs 25000 udhar becheko
+
+99. aaja Gita lai 500000 udhaar becheko
+→ aaja Gita lai 500000 udhaar bechyo
+→ aaja Gita lai 500000 udhar becheko
+
+100. Gita lai 85000 ko inventory udhaar ma diye
+→ Gita lai 85000 ko inventory udhaar ma diyo
+→ Gita lai 85000 ko inventory udhar ma diye
+
+101. Binita lai Rs 500 ko saman udhaar ma diye
+→ Binita lai Rs 500 ko saman udhaar ma diyo
+→ Binita lai Rs 500 ko saman udhar ma diye
+
+102. aaja Anand lai 2000 ko stationery udhaar ma diye
+→ aaja Anand lai 2000 ko stationery udhaar ma diyo
+→ aaja Anand lai 2000 ko stationery udhar ma diye
+
+103. ABC Traders lai 10000 ko goods udhaar ma diye
+→ ABC Traders lai 10000 ko goods udhaar ma diyo
+→ ABC Traders lai 10000 ko goods udhar ma diye
+
+104. Ram lai Rs 100000 ko services udhaar ma diye
+→ ram lai Rs 100000 ko services udhaar ma diye
+→ Ram lai Rs 100000 ko services udhaar ma diyo
+→ Ram lai Rs 100000 ko services udhar ma diye
+
+105. aaja Gita lai 750 ko chiya udhaar ma diye
+→ aaja Gita lai 750 ko chiya udhaar ma diyo
+→ aaja Gita lai 750 ko chiya udhar ma diye
+
+106. Binita lai 3500 ko mal udhaar ma diye
+→ Binita lai 3500 ko mal udhaar ma diyo
+→ Binita lai 3500 ko mal udhar ma diye
+
+107. Anand lai Rs 25000 ko inventory udhaar ma diye
+→ Anand lai Rs 25000 ko inventory udhaar ma diyo
+→ Anand lai Rs 25000 ko inventory udhar ma diye
+
+108. aaja ABC Traders lai 500000 ko saman udhaar ma diye
+→ aaja ABC Traders lai 500000 ko saman udhaar ma diyo
+→ aaja ABC Traders lai 500000 ko saman udhar ma diye
+
+109. Ram lai 1000 ko stationery udhaar ma diye
+→ ram lai 1000 ko stationery udhaar ma diye
+→ Ram lai 1000 ko stationery udhaar ma diyo
+→ Ram lai 1000 ko stationery udhar ma diye
+
+110. Gita lai Rs 5000 ko goods udhaar ma diye
+→ Gita lai Rs 5000 ko goods udhaar ma diyo
+→ Gita lai Rs 5000 ko goods udhar ma diye
+
+111. aaja Binita lai 50000 ko services udhaar ma diye
+→ aaja Binita lai 50000 ko services udhaar ma diyo
+→ aaja Binita lai 50000 ko services udhar ma diye
+
+112. sold 10000 on credit to Binita
+
+113. sold Rs 100000 on credit to Anand
+
+114. aaja sold 750 on credit to ABC Traders
+
+115. sold 3500 on credit to Ram
+→ sold 3500 on credit to ram
+
+116. sold Rs 25000 on credit to Gita
+
+117. aaja sold 500000 on credit to Binita
+
+118. sold 1000 on credit to Anand
+
+119. sold Rs 5000 on credit to ABC Traders
+
+120. aaja sold 50000 on credit to Ram
+→ aaja sold 50000 on credit to ram
+
+121. sold 200 on credit to Gita
+
+122. sold Rs 1500 on credit to Binita
+
+123. aaja sold 8500 on credit to Anand
+
+124. sold goods worth 3500 to Anand on account
+
+125. sold goods worth Rs 25000 to ABC Traders on account
+
+126. aaja sold goods worth 500000 to Ram on account
+→ aaja sold goods worth 500000 to ram on account
+
+127. sold goods worth 1000 to Gita on account
+
+128. sold goods worth Rs 5000 to Binita on account
+
+129. aaja sold goods worth 50000 to Anand on account
+
+130. sold goods worth 200 to ABC Traders on account
+
+131. sold goods worth Rs 1500 to Ram on account
+→ sold goods worth Rs 1500 to ram on account
+
+132. aaja sold goods worth 8500 to Gita on account
+
+133. sold goods worth 85000 to Binita on account
+
+134. sold goods worth Rs 500 to Anand on account
+
+135. aaja sold goods worth 2000 to ABC Traders on account
+
+136. ABC Traders lai 1000 udharo ma becheko
+→ ABC Traders lai 1000 udharo ma bechyo
+
+137. Ram lai Rs 5000 udharo ma becheko
+→ ram lai Rs 5000 udharo ma becheko
+→ Ram lai Rs 5000 udharo ma bechyo
+
+138. aaja Gita lai 50000 udharo ma becheko
+→ aaja Gita lai 50000 udharo ma bechyo
+
+139. Binita lai 200 udharo ma becheko
+→ Binita lai 200 udharo ma bechyo
+
+140. Anand lai Rs 1500 udharo ma becheko
+→ Anand lai Rs 1500 udharo ma bechyo
+
+141. aaja ABC Traders lai 8500 udharo ma becheko
+→ aaja ABC Traders lai 8500 udharo ma bechyo
+
+142. Ram lai 85000 udharo ma becheko
+→ ram lai 85000 udharo ma becheko
+→ Ram lai 85000 udharo ma bechyo
+
+143. Gita lai Rs 500 udharo ma becheko
+→ Gita lai Rs 500 udharo ma bechyo
+
+144. aaja Binita lai 2000 udharo ma becheko
+→ aaja Binita lai 2000 udharo ma bechyo
+
+145. Anand lai 10000 udharo ma becheko
+→ Anand lai 10000 udharo ma bechyo
+
+146. ABC Traders lai Rs 100000 udharo ma becheko
+→ ABC Traders lai Rs 100000 udharo ma bechyo
+
+147. aaja Ram lai 750 udharo ma becheko
+→ aaja ram lai 750 udharo ma becheko
+→ aaja Ram lai 750 udharo ma bechyo
+
+148. credit sale 200 Ram
+→ credit sale 200 ram
+
+149. credit sale Rs 1500 Gita
+
+150. aaja credit sale 8500 Binita
+
+151. credit sale 85000 Anand
+
+152. credit sale Rs 500 ABC Traders
+
+153. aaja credit sale 2000 Ram
+→ aaja credit sale 2000 ram
+
+154. credit sale 10000 Gita
+
+155. credit sale Rs 100000 Binita
+
+156. aaja credit sale 750 Anand
+
+157. credit sale 3500 ABC Traders
+
+158. credit sale Rs 25000 Ram
+→ credit sale Rs 25000 ram
+
+159. aaja credit sale 500000 Gita
+
+160. invoiced Gita for 85000 on credit
+
+161. invoiced Binita for Rs 500 on credit
+
+162. aaja invoiced Anand for 2000 on credit
+
+163. invoiced ABC Traders for 10000 on credit
+
+164. invoiced Ram for Rs 100000 on credit
+→ invoiced ram for Rs 100000 on credit
+
+165. aaja invoiced Gita for 750 on credit
+
+166. invoiced Binita for 3500 on credit
+
+167. invoiced Anand for Rs 25000 on credit
+
+168. aaja invoiced ABC Traders for 500000 on credit
+
+169. invoiced Ram for 1000 on credit
+→ invoiced ram for 1000 on credit
+
+170. invoiced Gita for Rs 5000 on credit
+
+171. aaja invoiced Binita for 50000 on credit
+
+172. extended 10000 worth of goods to Binita on tab
+
+173. extended Rs 100000 worth of goods to Anand on tab
+
+174. aaja extended 750 worth of goods to ABC Traders on tab
+
+175. extended 3500 worth of goods to Ram on tab
+→ extended 3500 worth of goods to ram on tab
+
+176. extended Rs 25000 worth of goods to Gita on tab
+
+177. aaja extended 500000 worth of goods to Binita on tab
+
+178. extended 1000 worth of goods to Anand on tab
+
+179. extended Rs 5000 worth of goods to ABC Traders on tab
+
+180. aaja extended 50000 worth of goods to Ram on tab
+→ aaja extended 50000 worth of goods to ram on tab
+
+181. extended 200 worth of goods to Gita on tab
+
+182. extended Rs 1500 worth of goods to Binita on tab
+
+183. aaja extended 8500 worth of goods to Anand on tab
+
+184. aaja 3500 ko nagad bikri
+→ aaja 3500 ko nakad bikri
+
+185. aaja Rs 25000 ko nagad bikri
+→ aaja Rs 25000 ko nakad bikri
+
+186. aaja aaja 500000 ko nagad bikri
+→ aaja aaja 500000 ko nakad bikri
+
+187. aaja 1000 ko nagad bikri
+→ aaja 1000 ko nakad bikri
+
+188. aaja Rs 5000 ko nagad bikri
+→ aaja Rs 5000 ko nakad bikri
+
+189. aaja aaja 50000 ko nagad bikri
+→ aaja aaja 50000 ko nakad bikri
+
+190. aaja 200 ko nagad bikri
+→ aaja 200 ko nakad bikri
+
+191. aaja Rs 1500 ko nagad bikri
+→ aaja Rs 1500 ko nakad bikri
+
+192. aaja aaja 8500 ko nagad bikri
+→ aaja aaja 8500 ko nakad bikri
+
+193. aaja 85000 ko nagad bikri
+→ aaja 85000 ko nakad bikri
+
+194. aaja Rs 500 ko nagad bikri
+→ aaja Rs 500 ko nakad bikri
+
+195. aaja aaja 2000 ko nagad bikri
+→ aaja aaja 2000 ko nakad bikri
+
+196. cash sale 1000
+
+197. cash sale Rs 5000
+
+198. aaja cash sale 50000
+
+199. cash sale 200
+
+200. cash sale Rs 1500
+
+201. aaja cash sale 8500
+
+202. cash sale 85000
+
+203. cash sale Rs 500
+
+204. aaja cash sale 2000
+
+205. cash sale 10000
+
+206. cash sale Rs 100000
+
+207. aaja cash sale 750
+
+208. sold 200 for cash
+
+209. sold Rs 1500 for cash
+
+210. aaja sold 8500 for cash
+
+211. sold 85000 for cash
+
+212. sold Rs 500 for cash
+
+213. aaja sold 2000 for cash
+
+214. sold 10000 for cash
+
+215. sold Rs 100000 for cash
+
+216. aaja sold 750 for cash
+
+217. sold 3500 for cash
+
+218. sold Rs 25000 for cash
+
+219. aaja sold 500000 for cash
+
+220. nagad ma 85000 becheko
+→ nagad ma 85000 bechyo
+→ nakad ma 85000 becheko
+
+221. nagad ma Rs 500 becheko
+→ nagad ma Rs 500 bechyo
+→ nakad ma Rs 500 becheko
+
+222. aaja nagad ma 2000 becheko
+→ aaja nagad ma 2000 bechyo
+→ aaja nakad ma 2000 becheko
+
+223. nagad ma 10000 becheko
+→ nagad ma 10000 bechyo
+→ nakad ma 10000 becheko
+
+224. nagad ma Rs 100000 becheko
+→ nagad ma Rs 100000 bechyo
+→ nakad ma Rs 100000 becheko
+
+225. aaja nagad ma 750 becheko
+→ aaja nagad ma 750 bechyo
+→ aaja nakad ma 750 becheko
+
+226. nagad ma 3500 becheko
+→ nagad ma 3500 bechyo
+→ nakad ma 3500 becheko
+
+227. nagad ma Rs 25000 becheko
+→ nagad ma Rs 25000 bechyo
+→ nakad ma Rs 25000 becheko
+
+228. aaja nagad ma 500000 becheko
+→ aaja nagad ma 500000 bechyo
+→ aaja nakad ma 500000 becheko
+
+229. nagad ma 1000 becheko
+→ nagad ma 1000 bechyo
+→ nakad ma 1000 becheko
+
+230. nagad ma Rs 5000 becheko
+→ nagad ma Rs 5000 bechyo
+→ nakad ma Rs 5000 becheko
+
+231. aaja nagad ma 50000 becheko
+→ aaja nagad ma 50000 bechyo
+→ aaja nakad ma 50000 becheko
+
+232. 10000 ko bikri vayo cash ma
+→ 10000 ko bikri bhayo cash ma
+
+233. Rs 100000 ko bikri vayo cash ma
+→ Rs 100000 ko bikri bhayo cash ma
+
+234. aaja 750 ko bikri vayo cash ma
+→ aaja 750 ko bikri bhayo cash ma
+
+235. 3500 ko bikri vayo cash ma
+→ 3500 ko bikri bhayo cash ma
+
+236. Rs 25000 ko bikri vayo cash ma
+→ Rs 25000 ko bikri bhayo cash ma
+
+237. aaja 500000 ko bikri vayo cash ma
+→ aaja 500000 ko bikri bhayo cash ma
+
+238. 1000 ko bikri vayo cash ma
+→ 1000 ko bikri bhayo cash ma
+
+239. Rs 5000 ko bikri vayo cash ma
+→ Rs 5000 ko bikri bhayo cash ma
+
+240. aaja 50000 ko bikri vayo cash ma
+→ aaja 50000 ko bikri bhayo cash ma
+
+241. 200 ko bikri vayo cash ma
+→ 200 ko bikri bhayo cash ma
+
+242. Rs 1500 ko bikri vayo cash ma
+→ Rs 1500 ko bikri bhayo cash ma
+
+243. aaja 8500 ko bikri vayo cash ma
+→ aaja 8500 ko bikri bhayo cash ma
+
+244. received 3500 cash from sale
+
+245. received Rs 25000 cash from sale
+
+246. aaja received 500000 cash from sale
+
+247. received 1000 cash from sale
+
+248. received Rs 5000 cash from sale
+
+249. aaja received 50000 cash from sale
+
+250. received 200 cash from sale
+
+251. received Rs 1500 cash from sale
+
+252. aaja received 8500 cash from sale
+
+253. received 85000 cash from sale
+
+254. received Rs 500 cash from sale
+
+255. aaja received 2000 cash from sale
+
+256. ABC Traders le 1000 tiryo
+→ ABC Traders le 1000 tireko
+→ ABC Traders 1000 tiryo
+
+257. Ram le Rs 5000 tiryo
+→ Ramle Rs 5000 tiryo
+→ ram le Rs 5000 tiryo
+→ Ram le Rs 5000 tireko
+→ Ram Rs 5000 tiryo
+→ Ram Rs 5000 tiryo
+→ Ramle Rs 5000 tiryo
+
+258. aaja Gita le 50000 tiryo
+→ aaja Gita le 50000 tireko
+→ aaja Gita 50000 tiryo
+
+259. Binita le 200 tiryo
+→ Binita le 200 tireko
+→ Binita 200 tiryo
+
+260. Anand le Rs 1500 tiryo
+→ Anand le Rs 1500 tireko
+→ Anand Rs 1500 tiryo
+
+261. aaja ABC Traders le 8500 tiryo
+→ aaja ABC Traders le 8500 tireko
+→ aaja ABC Traders 8500 tiryo
+
+262. Ram le 85000 tiryo
+→ Ramle 85000 tiryo
+→ ram le 85000 tiryo
+→ Ram le 85000 tireko
+→ Ram 85000 tiryo
+→ Ram 85000 tiryo
+→ Ramle 85000 tiryo
+
+263. Gita le Rs 500 tiryo
+→ Gita le Rs 500 tireko
+→ Gita Rs 500 tiryo
+
+264. aaja Binita le 2000 tiryo
+→ aaja Binita le 2000 tireko
+→ aaja Binita 2000 tiryo
+
+265. Anand le 10000 tiryo
+→ Anand le 10000 tireko
+→ Anand 10000 tiryo
+
+266. ABC Traders le Rs 100000 tiryo
+→ ABC Traders le Rs 100000 tireko
+→ ABC Traders Rs 100000 tiryo
+
+267. aaja Ram le 750 tiryo
+→ aaja Ramle 750 tiryo
+→ aaja ram le 750 tiryo
+→ aaja Ram le 750 tireko
+→ aaja Ram 750 tiryo
+→ aaja Ram 750 tiryo
+→ aaja Ramle 750 tiryo
+
+268. Ram le 200 diyo
+→ Ramle 200 diyo
+→ ram le 200 diyo
+→ Ram 200 diyo
+→ Ram 200 diyo
+→ Ramle 200 diyo
+
+269. Gita le Rs 1500 diyo
+→ Gita Rs 1500 diyo
+
+270. aaja Binita le 8500 diyo
+→ aaja Binita 8500 diyo
+
+271. Anand le 85000 diyo
+→ Anand 85000 diyo
+
+272. ABC Traders le Rs 500 diyo
+→ ABC Traders Rs 500 diyo
+
+273. aaja Ram le 2000 diyo
+→ aaja Ramle 2000 diyo
+→ aaja ram le 2000 diyo
+→ aaja Ram 2000 diyo
+→ aaja Ram 2000 diyo
+→ aaja Ramle 2000 diyo
+
+274. Gita le 10000 diyo
+→ Gita 10000 diyo
+
+275. Binita le Rs 100000 diyo
+→ Binita Rs 100000 diyo
+
+276. aaja Anand le 750 diyo
+→ aaja Anand 750 diyo
+
+277. ABC Traders le 3500 diyo
+→ ABC Traders 3500 diyo
+
+278. Ram le Rs 25000 diyo
+→ Ramle Rs 25000 diyo
+→ ram le Rs 25000 diyo
+→ Ram Rs 25000 diyo
+→ Ram Rs 25000 diyo
+→ Ramle Rs 25000 diyo
+
+279. aaja Gita le 500000 diyo
+→ aaja Gita 500000 diyo
+
+280. payment received 85000 from Gita
+
+281. payment received Rs 500 from Binita
+
+282. aaja payment received 2000 from Anand
+
+283. payment received 10000 from ABC Traders
+
+284. payment received Rs 100000 from Ram
+→ payment received Rs 100000 from ram
+
+285. aaja payment received 750 from Gita
+
+286. payment received 3500 from Binita
+
+287. payment received Rs 25000 from Anand
+
+288. aaja payment received 500000 from ABC Traders
+
+289. payment received 1000 from Ram
+→ payment received 1000 from ram
+
+290. payment received Rs 5000 from Gita
+
+291. aaja payment received 50000 from Binita
+
+292. collected 10000 from Binita
+
+293. collected Rs 100000 from Anand
+
+294. aaja collected 750 from ABC Traders
+
+295. collected 3500 from Ram
+→ collected 3500 from ram
+
+296. collected Rs 25000 from Gita
+
+297. aaja collected 500000 from Binita
+
+298. collected 1000 from Anand
+
+299. collected Rs 5000 from ABC Traders
+
+300. aaja collected 50000 from Ram
+→ aaja collected 50000 from ram
+
+301. collected 200 from Gita
+
+302. collected Rs 1500 from Binita
+
+303. aaja collected 8500 from Anand
+
+304. Anand bata 3500 aayo
+
+305. ABC Traders bata Rs 25000 aayo
+
+306. aaja Ram bata 500000 aayo
+→ aaja ram bata 500000 aayo
+
+307. Gita bata 1000 aayo
+
+308. Binita bata Rs 5000 aayo
+
+309. aaja Anand bata 50000 aayo
+
+310. ABC Traders bata 200 aayo
+
+311. Ram bata Rs 1500 aayo
+→ ram bata Rs 1500 aayo
+
+312. aaja Gita bata 8500 aayo
+
+313. Binita bata 85000 aayo
+
+314. Anand bata Rs 500 aayo
+
+315. aaja ABC Traders bata 2000 aayo
+
+316. ABC Traders le 1000 jama gareko
+→ ABC Traders 1000 jama gareko
+→ ABC Traders le 1000 jama garyo
+
+317. Ram le Rs 5000 jama gareko
+→ Ramle Rs 5000 jama gareko
+→ ram le Rs 5000 jama gareko
+→ Ram Rs 5000 jama gareko
+→ Ram le Rs 5000 jama garyo
+→ Ram Rs 5000 jama gareko
+→ Ramle Rs 5000 jama gareko
+
+318. aaja Gita le 50000 jama gareko
+→ aaja Gita 50000 jama gareko
+→ aaja Gita le 50000 jama garyo
+
+319. Binita le 200 jama gareko
+→ Binita 200 jama gareko
+→ Binita le 200 jama garyo
+
+320. Anand le Rs 1500 jama gareko
+→ Anand Rs 1500 jama gareko
+→ Anand le Rs 1500 jama garyo
+
+321. aaja ABC Traders le 8500 jama gareko
+→ aaja ABC Traders 8500 jama gareko
+→ aaja ABC Traders le 8500 jama garyo
+
+322. Ram le 85000 jama gareko
+→ Ramle 85000 jama gareko
+→ ram le 85000 jama gareko
+→ Ram 85000 jama gareko
+→ Ram le 85000 jama garyo
+→ Ram 85000 jama gareko
+→ Ramle 85000 jama gareko
+
+323. Gita le Rs 500 jama gareko
+→ Gita Rs 500 jama gareko
+→ Gita le Rs 500 jama garyo
+
+324. aaja Binita le 2000 jama gareko
+→ aaja Binita 2000 jama gareko
+→ aaja Binita le 2000 jama garyo
+
+325. Anand le 10000 jama gareko
+→ Anand 10000 jama gareko
+→ Anand le 10000 jama garyo
+
+326. ABC Traders le Rs 100000 jama gareko
+→ ABC Traders Rs 100000 jama gareko
+→ ABC Traders le Rs 100000 jama garyo
+
+327. aaja Ram le 750 jama gareko
+→ aaja Ramle 750 jama gareko
+→ aaja ram le 750 jama gareko
+→ aaja Ram 750 jama gareko
+→ aaja Ram le 750 jama garyo
+→ aaja Ram 750 jama gareko
+→ aaja Ramle 750 jama gareko
+
+328. 200 ko saman kineko
+
+329. Rs 1500 ko saman kineko
+
+330. aaja 8500 ko saman kineko
+
+331. 85000 ko saman kineko
+
+332. Rs 500 ko saman kineko
+
+333. aaja 2000 ko saman kineko
+
+334. 10000 ko saman kineko
+
+335. Rs 100000 ko saman kineko
+
+336. aaja 750 ko saman kineko
+
+337. 3500 ko saman kineko
+
+338. Rs 25000 ko saman kineko
+
+339. aaja 500000 ko saman kineko
+
+340. ram le 85000 ko saman kinyo
+→ ram le 85000 ko saman kineko
+→ ram 85000 ko saman kinyo
+
+341. ram le Rs 500 ko saman kinyo
+→ ram le Rs 500 ko saman kineko
+→ ram Rs 500 ko saman kinyo
+
+342. aaja ram le 2000 ko saman kinyo
+→ aaja ram le 2000 ko saman kineko
+→ aaja ram 2000 ko saman kinyo
+
+343. ram le 10000 ko saman kinyo
+→ ram le 10000 ko saman kineko
+→ ram 10000 ko saman kinyo
+
+344. ram le Rs 100000 ko saman kinyo
+→ ram le Rs 100000 ko saman kineko
+→ ram Rs 100000 ko saman kinyo
+
+345. aaja ram le 750 ko saman kinyo
+→ aaja ram le 750 ko saman kineko
+→ aaja ram 750 ko saman kinyo
+
+346. ram le 3500 ko saman kinyo
+→ ram le 3500 ko saman kineko
+→ ram 3500 ko saman kinyo
+
+347. ram le Rs 25000 ko saman kinyo
+→ ram le Rs 25000 ko saman kineko
+→ ram Rs 25000 ko saman kinyo
+
+348. aaja ram le 500000 ko saman kinyo
+→ aaja ram le 500000 ko saman kineko
+→ aaja ram 500000 ko saman kinyo
+
+349. ram le 1000 ko saman kinyo
+→ ram le 1000 ko saman kineko
+→ ram 1000 ko saman kinyo
+
+350. ram le Rs 5000 ko saman kinyo
+→ ram le Rs 5000 ko saman kineko
+→ ram Rs 5000 ko saman kinyo
+
+351. aaja ram le 50000 ko saman kinyo
+→ aaja ram le 50000 ko saman kineko
+→ aaja ram 50000 ko saman kinyo
+
+352. cash purchase 10000
+
+353. cash purchase Rs 100000
+
+354. aaja cash purchase 750
+
+355. cash purchase 3500
+
+356. cash purchase Rs 25000
+
+357. aaja cash purchase 500000
+
+358. cash purchase 1000
+
+359. cash purchase Rs 5000
+
+360. aaja cash purchase 50000
+
+361. cash purchase 200
+
+362. cash purchase Rs 1500
+
+363. aaja cash purchase 8500
+
+364. bought goods for 3500
+
+365. bought goods for Rs 25000
+
+366. aaja bought goods for 500000
+
+367. bought goods for 1000
+
+368. bought goods for Rs 5000
+
+369. aaja bought goods for 50000
+
+370. bought goods for 200
+
+371. bought goods for Rs 1500
+
+372. aaja bought goods for 8500
+
+373. bought goods for 85000
+
+374. bought goods for Rs 500
+
+375. aaja bought goods for 2000
+
+376. kharid 1000 cash ma
+
+377. kharid Rs 5000 cash ma
+
+378. aaja kharid 50000 cash ma
+
+379. kharid 200 cash ma
+
+380. kharid Rs 1500 cash ma
+
+381. aaja kharid 8500 cash ma
+
+382. kharid 85000 cash ma
+
+383. kharid Rs 500 cash ma
+
+384. aaja kharid 2000 cash ma
+
+385. kharid 10000 cash ma
+
+386. kharid Rs 100000 cash ma
+
+387. aaja kharid 750 cash ma
+
+388. Ram lai 200 payment gareko
+→ ram lai 200 payment gareko
+→ Ram lai 200 payment garyo
+
+389. Gita lai Rs 1500 payment gareko
+→ Gita lai Rs 1500 payment garyo
+
+390. aaja Binita lai 8500 payment gareko
+→ aaja Binita lai 8500 payment garyo
+
+391. Anand lai 85000 payment gareko
+→ Anand lai 85000 payment garyo
+
+392. ABC Traders lai Rs 500 payment gareko
+→ ABC Traders lai Rs 500 payment garyo
+
+393. aaja Ram lai 2000 payment gareko
+→ aaja ram lai 2000 payment gareko
+→ aaja Ram lai 2000 payment garyo
+
+394. Gita lai 10000 payment gareko
+→ Gita lai 10000 payment garyo
+
+395. Binita lai Rs 100000 payment gareko
+→ Binita lai Rs 100000 payment garyo
+
+396. aaja Anand lai 750 payment gareko
+→ aaja Anand lai 750 payment garyo
+
+397. ABC Traders lai 3500 payment gareko
+→ ABC Traders lai 3500 payment garyo
+
+398. Ram lai Rs 25000 payment gareko
+→ ram lai Rs 25000 payment gareko
+→ Ram lai Rs 25000 payment garyo
+
+399. aaja Gita lai 500000 payment gareko
+→ aaja Gita lai 500000 payment garyo
+
+400. paid 85000 to Gita
+
+401. paid Rs 500 to Binita
+
+402. aaja paid 2000 to Anand
+
+403. paid 10000 to ABC Traders
+
+404. paid Rs 100000 to Ram
+→ paid Rs 100000 to ram
+
+405. aaja paid 750 to Gita
+
+406. paid 3500 to Binita
+
+407. paid Rs 25000 to Anand
+
+408. aaja paid 500000 to ABC Traders
+
+409. paid 1000 to Ram
+→ paid 1000 to ram
+
+410. paid Rs 5000 to Gita
+
+411. aaja paid 50000 to Binita
+
+412. payment made 10000 supplier Binita
+
+413. payment made Rs 100000 supplier Anand
+
+414. aaja payment made 750 supplier ABC Traders
+
+415. payment made 3500 supplier Ram
+→ payment made 3500 supplier ram
+
+416. payment made Rs 25000 supplier Gita
+
+417. aaja payment made 500000 supplier Binita
+
+418. payment made 1000 supplier Anand
+
+419. payment made Rs 5000 supplier ABC Traders
+
+420. aaja payment made 50000 supplier Ram
+→ aaja payment made 50000 supplier ram
+
+421. payment made 200 supplier Gita
+
+422. payment made Rs 1500 supplier Binita
+
+423. aaja payment made 8500 supplier Anand
+
+424. Anand lai 3500 tirna diye
+→ Anand lai 3500 tirna diyo
+
+425. ABC Traders lai Rs 25000 tirna diye
+→ ABC Traders lai Rs 25000 tirna diyo
+
+426. aaja Ram lai 500000 tirna diye
+→ aaja ram lai 500000 tirna diye
+→ aaja Ram lai 500000 tirna diyo
+
+427. Gita lai 1000 tirna diye
+→ Gita lai 1000 tirna diyo
+
+428. Binita lai Rs 5000 tirna diye
+→ Binita lai Rs 5000 tirna diyo
+
+429. aaja Anand lai 50000 tirna diye
+→ aaja Anand lai 50000 tirna diyo
+
+430. ABC Traders lai 200 tirna diye
+→ ABC Traders lai 200 tirna diyo
+
+431. Ram lai Rs 1500 tirna diye
+→ ram lai Rs 1500 tirna diye
+→ Ram lai Rs 1500 tirna diyo
+
+432. aaja Gita lai 8500 tirna diye
+→ aaja Gita lai 8500 tirna diyo
+
+433. Binita lai 85000 tirna diye
+→ Binita lai 85000 tirna diyo
+
+434. Anand lai Rs 500 tirna diye
+→ Anand lai Rs 500 tirna diyo
+
+435. aaja ABC Traders lai 2000 tirna diye
+→ aaja ABC Traders lai 2000 tirna diyo
+
+436. electricity kharcha 1000
+→ electricity kharcho 1000
+
+437. electricity kharcha Rs 5000
+→ electricity kharcho Rs 5000
+
+438. aaja electricity kharcha 50000
+→ aaja electricity kharcho 50000
+
+439. electricity kharcha 200
+→ electricity kharcho 200
+
+440. electricity kharcha Rs 1500
+→ electricity kharcho Rs 1500
+
+441. aaja electricity kharcha 8500
+→ aaja electricity kharcho 8500
+
+442. electricity kharcha 85000
+→ electricity kharcho 85000
+
+443. electricity kharcha Rs 500
+→ electricity kharcho Rs 500
+
+444. aaja electricity kharcha 2000
+→ aaja electricity kharcho 2000
+
+445. electricity kharcha 10000
+→ electricity kharcho 10000
+
+446. electricity kharcha Rs 100000
+→ electricity kharcho Rs 100000
+
+447. aaja electricity kharcha 750
+→ aaja electricity kharcho 750
+
+448. expense 200
+
+449. expense Rs 1500
+
+450. aaja expense 8500
+
+451. expense 85000
+
+452. expense Rs 500
+
+453. aaja expense 2000
+
+454. expense 10000
+
+455. expense Rs 100000
+
+456. aaja expense 750
+
+457. expense 3500
+
+458. expense Rs 25000
+
+459. aaja expense 500000
+
+460. kharcha 85000
+→ kharcho 85000
+
+461. kharcha Rs 500
+→ kharcho Rs 500
+
+462. aaja kharcha 2000
+→ aaja kharcho 2000
+
+463. kharcha 10000
+→ kharcho 10000
+
+464. kharcha Rs 100000
+→ kharcho Rs 100000
+
+465. aaja kharcha 750
+→ aaja kharcho 750
+
+466. kharcha 3500
+→ kharcho 3500
+
+467. kharcha Rs 25000
+→ kharcho Rs 25000
+
+468. aaja kharcha 500000
+→ aaja kharcho 500000
+
+469. kharcha 1000
+→ kharcho 1000
+
+470. kharcha Rs 5000
+→ kharcho Rs 5000
+
+471. aaja kharcha 50000
+→ aaja kharcho 50000
+
+472. rent expense 10000
+
+473. rent expense Rs 100000
+
+474. aaja rent expense 750
+
+475. rent expense 3500
+
+476. rent expense Rs 25000
+
+477. aaja rent expense 500000
+
+478. rent expense 1000
+
+479. rent expense Rs 5000
+
+480. aaja rent expense 50000
+
+481. rent expense 200
+
+482. rent expense Rs 1500
+
+483. aaja rent expense 8500
+
+484. paid 3500 for office supplies
+
+485. paid Rs 25000 for office supplies
+
+486. aaja paid 500000 for office supplies
+
+487. paid 1000 for office supplies
+
+488. paid Rs 5000 for office supplies
+
+489. aaja paid 50000 for office supplies
+
+490. paid 200 for office supplies
+
+491. paid Rs 1500 for office supplies
+
+492. aaja paid 8500 for office supplies
+
+493. paid 85000 for office supplies
+
+494. paid Rs 500 for office supplies
+
+495. aaja paid 2000 for office supplies
+
+496. ABC Traders bata 1000 udhaar ma saman kineko
+→ ABC Traders bata 1000 udhar ma saman kineko
+
+497. Ram bata Rs 5000 udhaar ma saman kineko
+→ ram bata Rs 5000 udhaar ma saman kineko
+→ Ram bata Rs 5000 udhar ma saman kineko
+
+498. aaja Gita bata 50000 udhaar ma saman kineko
+→ aaja Gita bata 50000 udhar ma saman kineko
+
+499. Binita bata 200 udhaar ma saman kineko
+→ Binita bata 200 udhar ma saman kineko
+
+500. Anand bata Rs 1500 udhaar ma saman kineko
+→ Anand bata Rs 1500 udhar ma saman kineko
+
+
+===========================================================================
+खण्ड ८०: वार्तालाप नमूना र दस्तावेज समाप्त
+SECTION 80: CONVERSATION SAMPLES AND DOCUMENT COMPLETION
+===========================================================================
+
+REAL-WORLD CONVERSATION SAMPLES (User ↔ e-Khata AI):
+
+--- CONVERSATION 1: Daily routine + work ---
+
+User: bihaana uthein 6 baje
+→ bihaana uthyoin 6 baje
+→ bihaana uthyo 6 baje
+→ bihan uthein 6 baje
+
+AI: Noted: woke at 6 AM.
+
+User: ma kaam gardaichhu
+
+AI: Understood: currently working.
+
+User: sanjh 10 baje sutyo
+
+AI: Noted: slept at 10 PM.
+
+--- CONVERSATION 2: Conditional + business ---
+
+User: yadi paani paryo bhane, gharmai baschhu
+→ yadi paani paryo bhane, gharma baschhu
+→ yadi paani paryo bhane, gharmai baschu
+
+AI: Understood conditional: will stay home if it rains.
+
+User: Ram le 500 tiryo
+→ Ramle 500 tiryo
+→ ram le 500 tiryo
+→ Ram le 500 tireko
+→ Ram 500 tiryo
+
+AI: Entry: Payment received Rs 500 from Ram.
+→ Entry: Payment received Rs 500 from ram.
+
+User: thik xa ni
+→ thik cha ni
+→ thik xha ni
+
+AI: Confirmed.
+
+--- CONVERSATION 3: Aspect distinction ---
+
+User: ma khaisakeko chhu
+→ ma khaisakeko xu
+→ ma khaisakeko chu
+
+AI: Understood: already eaten (perfective).
+
+User: ma kaam gardaichhu
+
+AI: Understood: currently working (imperfective).
+
+User: 500 tiryo ta hai
+→ 500 tireko ta hai
+
+AI: Entry: Payment Rs 500 received.
+
+--- CONVERSATION 4: Credit sale + payment ---
+
+User: Ram lai 500 udhaar diye
+→ ram lai 500 udhaar diye
+→ Ram lai 500 udhaar diyo
+→ Ram lai 500 udhar diye
+
+AI: Entry: Credit sale Rs 500 to Ram.
+→ Entry: Credit sale Rs 500 to ram.
+
+User: Ram le 500 tiryo
+→ Ramle 500 tiryo
+→ ram le 500 tiryo
+→ Ram le 500 tireko
+→ Ram 500 tiryo
+
+AI: Entry: Payment Rs 500 from Ram. Balance settled.
+→ Entry: Payment Rs 500 from ram. Balance settled.
+
+--- CONVERSATION 5: Hindi mix + query ---
+
+User: Ram ne 500 diya
+→ ram ne 500 diya
+
+AI: Entry: Payment Rs 500 from Ram.
+→ Entry: Payment Rs 500 from ram.
+
+User: kitna baaki hai Ram ka?
+→ kitna baaki hai ram ka?
+
+AI: Ram ko balance: Rs 0.
+→ ram ko balance: Rs 0.
+
+
+===========================================================================
+       e-Khata AI Training Reference — Nepali Grammar Complete
+       भाग १ + भाग २ = ८० खण्ड | कुल वाक्य: १२०० +
+===========================================================================
