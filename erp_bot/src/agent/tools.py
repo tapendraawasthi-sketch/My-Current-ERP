@@ -22,7 +22,6 @@ import textwrap as _textwrap
 
 import requests as _requests
 from bs4 import BeautifulSoup as _BS
-from duckduckgo_search import DDGS as _DDGS
 
 
 @tool
@@ -153,17 +152,19 @@ def web_search(query: str) -> str:
     when the question is about ERP accounting concepts, Nepal tax
     rules, IRD regulations, or anything not answered by the
     codebase. Input: a concise search query in plain English."""
+    from ..api.web_search_service import search_web_structured
+
     try:
-        with _DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=5))
+        payload = search_web_structured(query, max_results=5)
+        results = payload.get("results") or []
         if not results:
-            return "No web results found for this query."
+            return payload.get("error") or "No web results found for this query."
         parts = []
         for i, r in enumerate(results, 1):
             parts.append(
                 f"Result {i}: {r.get('title', '')}\n"
-                f"URL: {r.get('href', '')}\n"
-                f"Snippet: {r.get('body', '')[:400]}"
+                f"URL: {r.get('url', '')}\n"
+                f"Snippet: {r.get('snippet', '')[:400]}"
             )
         return "\n\n".join(parts)
     except Exception as e:

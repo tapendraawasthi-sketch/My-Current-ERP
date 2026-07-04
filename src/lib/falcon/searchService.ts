@@ -1,6 +1,8 @@
 // src/lib/falcon/searchService.ts
 // Falcon AI — Multi-source Web Search Service
-// Browser-safe, no external imports, CORS-proxied fetch only.
+// No paid API keys required — uses same-origin /erp-bot/web-search + Wikipedia.
+
+import { ERP_BOT_URL } from "../erpBotClient";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // INTERFACES
@@ -41,6 +43,73 @@ export interface SearchOptions {
 const ALLORIGINS_RAW = "https://api.allorigins.win/raw?url=";
 const DDG_BASE = "https://api.duckduckgo.com/";
 const WIKI_SEARCH = "https://en.wikipedia.org/w/api.php";
+
+interface RemoteSearchPayload {
+  query: string;
+  results: SearchResult[];
+  directAnswer?: string;
+  searchedAt?: string;
+  sourcesUsed?: string[];
+  totalResultsFound?: number;
+  error?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// searchViaErpBotEndpoint — primary no-API strategy (server-side DDG scrape)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Calls /erp-bot/web-search on the same host (serve.mjs built-in or Python proxy).
+ * Works without CORS issues and without any paid search API key.
+ */
+export async function searchViaErpBotEndpoint(
+  query: string,
+  options: { maxResults?: number; signal?: AbortSignal } = {},
+): Promise<SearchResult[]> {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+
+  const maxResults = options.maxResults ?? 5;
+  const params = new URLSearchParams({
+    q: trimmed,
+    max_results: String(maxResults),
+  });
+
+  const urls: string[] = [];
+
+  if (typeof window !== "undefined") {
+    urls.push(`${window.location.origin}/erp-bot/web-search?${params.toString()}`);
+  }
+
+  const configuredUrl = `${ERP_BOT_URL}/web-search?${params.toString()}`;
+  if (!urls.includes(configuredUrl)) {
+    urls.push(configuredUrl);
+  }
+
+  for (const url of urls) {
+    try {
+      const resp = await fetch(url, { signal: options.signal });
+      if (!resp.ok) continue;
+      const data = (await resp.json()) as RemoteSearchPayload;
+      const results = Array.isArray(data.results) ? data.results : [];
+      return results
+        .filter((r) => r.title || r.snippet)
+        .map((r, index) => ({
+          title: r.title || r.url || trimmed,
+          snippet: truncate(r.snippet || "", 400),
+          url: r.url || "",
+          source: (r.source || "duckduckgo") as SearchResult["source"],
+          relevanceScore: r.relevanceScore ?? Math.max(50, 90 - index * 5),
+          publishDate: r.publishDate,
+        }))
+        .filter((r) => r.url.startsWith("http"));
+    } catch {
+      // try next URL
+    }
+  }
+
+  return [];
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // UTILITY — Proxy a URL through allorigins to bypass CORS
@@ -288,9 +357,8 @@ export async function fetchPageSummary(url: string): Promise<string> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * The main search function. Runs DuckDuckGo and Wikipedia in parallel,
- * optionally includes Brave Search if VITE_BRAVE_SEARCH_KEY is configured.
- * Deduplicates and sorts results by relevance score.
+ * The main search function. Uses same-origin /erp-bot/web-search first (no API key),
+ * then Wikipedia and DuckDuckGo instant answers as fallbacks.
  * Individual strategy failures are silently absorbed — the function never throws.
  */
 export async function searchWeb(
@@ -299,10 +367,8 @@ export async function searchWeb(
 ): Promise<SearchResponse> {
   const {
     maxResults = 5,
-    timeoutMs = 8000,
+    timeoutMs = 10000,
     preferSource,
-    language = "en",
-    safeSearch = true,
   } = options;
 
   const controller = new AbortController();
@@ -311,17 +377,15 @@ export async function searchWeb(
 
   const sourcesUsed: string[] = [];
   let directAnswer: string | undefined;
-  let relatedSearches: string[] | undefined;
   const allResults: SearchResult[] = [];
 
   try {
-    // ── Build parallel tasks ─────────────────────────────────────────────
     const tasks: Promise<SearchResult[]>[] = [];
 
-    // Strategy 1 — DuckDuckGo (unless Wikipedia preferred exclusively)
+    // Strategy 1 — same-origin server-side DuckDuckGo (no API key)
     if (preferSource !== "wikipedia") {
       tasks.push(
-        searchDuckDuckGo(query, signal)
+        searchViaErpBotEndpoint(query, { maxResults, signal })
           .then((r) => {
             if (r.length) sourcesUsed.push("duckduckgo");
             return r;
@@ -330,7 +394,7 @@ export async function searchWeb(
       );
     }
 
-    // Strategy 2 — Wikipedia
+    // Strategy 2 — Wikipedia (direct, CORS-safe)
     if (preferSource !== "duckduckgo") {
       tasks.push(
         searchWikipedia(query, signal)
@@ -342,39 +406,18 @@ export async function searchWeb(
       );
     }
 
-    // Strategy 3 — Brave Search (only if API key env var is configured)
-    const braveKey =
-      typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_BRAVE_SEARCH_KEY;
-    if (braveKey) {
+    // Strategy 3 — DuckDuckGo instant answer (legacy fallback when server search unavailable)
+    if (preferSource !== "wikipedia") {
       tasks.push(
-        fetch(
-          `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=5`,
-          {
-            headers: { "X-Subscription-Token": braveKey, Accept: "application/json" },
-            signal,
-          },
-        )
-          .then(async (resp) => {
-            if (!resp.ok) return [] as SearchResult[];
-            const data = await resp.json();
-            const braveResults: SearchResult[] = (data?.web?.results || [])
-              .slice(0, 5)
-              .map((r: any) => ({
-                title: r.title || "",
-                snippet: truncate(stripHtml(r.description || r.title || ""), 350),
-                url: r.url || "",
-                source: "brave" as const,
-                relevanceScore: 78,
-                publishDate: r.age || undefined,
-              }));
-            if (braveResults.length) sourcesUsed.push("brave");
-            return braveResults;
+        searchDuckDuckGo(query, signal)
+          .then((r) => {
+            if (r.length && !sourcesUsed.includes("duckduckgo")) sourcesUsed.push("duckduckgo");
+            return r;
           })
-          .catch(() => [] as SearchResult[]),
+          .catch(() => []),
       );
     }
 
-    // ── Run in parallel ──────────────────────────────────────────────────
     const settled = await Promise.allSettled(tasks);
     for (const outcome of settled) {
       if (outcome.status === "fulfilled") {
@@ -382,11 +425,9 @@ export async function searchWeb(
       }
     }
 
-    // ── Extract directAnswer from the DDG abstract if present ────────────
-    const topDdg = allResults.find((r) => r.source === "duckduckgo" && r.relevanceScore >= 88);
-    if (topDdg) directAnswer = topDdg.snippet;
+    const topResult = allResults.sort((a, b) => b.relevanceScore - a.relevanceScore)[0];
+    if (topResult) directAnswer = topResult.snippet;
 
-    // ── Deduplicate and sort ─────────────────────────────────────────────
     const deduped = deduplicateResults(allResults).sort(
       (a, b) => b.relevanceScore - a.relevanceScore,
     );
@@ -397,10 +438,10 @@ export async function searchWeb(
       query,
       results: deduped.slice(0, maxResults),
       directAnswer,
-      relatedSearches,
       searchedAt: new Date(),
-      sourcesUsed,
+      sourcesUsed: [...new Set(sourcesUsed)],
       totalResultsFound: deduped.length,
+      error: deduped.length ? undefined : "No web results found for this query.",
     };
   } catch (err: any) {
     clearTimeout(timeoutId);
@@ -426,7 +467,7 @@ export async function searchWeb(
  */
 export function formatSearchResultsForLLM(response: SearchResponse): string {
   if (!response.results.length && !response.directAnswer) {
-    return `SEARCH RESULTS FOR: "${response.query}"nNo results found.${response.error ? ` (${response.error})` : ""}`;
+    return `SEARCH RESULTS FOR: "${response.query}"\nNo results found.${response.error ? ` (${response.error})` : ""}`;
   }
 
   const lines: string[] = [];
