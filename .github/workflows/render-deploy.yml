@@ -1,0 +1,52 @@
+name: Render Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and trigger Render deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install and build
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          npm ci
+          npm run build
+          test -f dist/index.html
+
+      - name: Trigger Render deploy hook
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "::warning title=Render deploy hook missing::"
+            echo "Add RENDER_DEPLOY_HOOK to GitHub repo secrets."
+            echo "Render Dashboard → sutra-erp → Settings → Deploy Hook → copy URL."
+            echo "If Render auto-deploy from GitHub is enabled, deploy may still proceed."
+            exit 0
+          fi
+          echo "Triggering Render deploy..."
+          curl -fsSL -X POST "$RENDER_DEPLOY_HOOK"
+          echo "Render deploy hook fired successfully."
+
+      - name: Verify live site (optional)
+        if: success()
+        run: |
+          sleep 30
+          HEALTH=$(curl -fsSL "https://my-current-erp.onrender.com/health" || echo "{}")
+          echo "Live health response: $HEALTH"
+          echo "$HEALTH" | grep -q '"status":"ok"' || echo "::warning::Health check did not return ok yet — Render may still be building."

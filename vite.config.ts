@@ -4,9 +4,24 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
+import { execSync } from "child_process";
+
+const buildSha =
+  process.env.RENDER_GIT_COMMIT ||
+  process.env.GITHUB_SHA ||
+  (() => {
+    try {
+      return execSync("git rev-parse --short HEAD").toString().trim();
+    } catch {
+      return "dev";
+    }
+  })();
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
+  define: {
+    __APP_BUILD_SHA__: JSON.stringify(buildSha),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -3,6 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles.css";
 
+declare const __APP_BUILD_SHA__: string;
+// Referenced so Vite emits a new content hash per commit (browser cache bust on Render)
+if (import.meta.env.PROD) {
+  (window as unknown as { __SUTRA_BUILD__?: string }).__SUTRA_BUILD__ = __APP_BUILD_SHA__;
+}
+
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {

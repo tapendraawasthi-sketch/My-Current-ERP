@@ -71,7 +71,14 @@ async function serveRequest(req, res) {
   const rawPath = (req.url || "/").split("?")[0];
   if (rawPath === "/health" || rawPath === "/ping" || rawPath === "/_health") {
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", timestamp: new Date().toISOString() }));
+    res.end(
+      JSON.stringify({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        commit: process.env.RENDER_GIT_COMMIT || process.env.GITHUB_SHA || "unknown",
+        service: "sutra-erp",
+      }),
+    );
     return;
   }
 

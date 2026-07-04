@@ -1,3 +1,38 @@
-# Deployment Guide
+# Deployment Guide — Sutra ERP on Render
 
-Detailed deployment instructions for Render and Vercel.
+Production URL: **https://my-current-erp.onrender.com**
+
+## How deploys work
+
+1. Push to **`main`** on GitHub.
+2. **Render** rebuilds if the service is connected to this repo with **Auto-Deploy** enabled.
+3. GitHub Actions workflow **`Render Deploy`** also builds and can trigger a **Deploy Hook** (recommended).
+
+## One-time Render setup (required if auto-deploy is not working)
+
+1. Open [Render Dashboard](https://dashboard.render.com) → service **sutra-erp**.
+2. **Settings → Build & Deploy**
+   - **Branch:** `main`
+   - **Auto-Deploy:** Yes
+   - **Build command:** `npm ci && npm run build`
+   - **Start command:** `npm start`
+3. **Settings → Deploy Hook** → copy the hook URL.
+4. GitHub repo → **Settings → Secrets → Actions** → add:
+   - Name: `RENDER_DEPLOY_HOOK`
+   - Value: *(paste deploy hook URL)*
+
+## Verify a deploy landed
+
+```bash
+curl https://my-current-erp.onrender.com/health
+```
+
+Response includes `"commit":"<git-sha>"` matching the latest `main` commit.
+
+After deploy, hard-refresh the browser: **Ctrl+Shift+R** (Windows/Linux) or **Cmd+Shift+R** (Mac) to bypass cached JS bundles.
+
+## Manual deploy
+
+Render Dashboard → **sutra-erp** → **Manual Deploy** → **Deploy latest commit**.
+
+Or run the **Render Deploy** workflow manually: GitHub → Actions → Render Deploy → Run workflow.
