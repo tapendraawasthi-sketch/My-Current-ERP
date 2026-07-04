@@ -634,9 +634,9 @@ export default function CashFlowStatement() {
 
   // ─── Main render ──────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Cash Flow Statement</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">

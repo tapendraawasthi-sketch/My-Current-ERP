@@ -207,8 +207,8 @@ const PartyLedgerStatement: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
-      <div className="flex items-center justify-between mb-4">
+    <div className="erp-report flex flex-col gap-4 animate-fadeIn select-none text-xs p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Party Ledger</h1>
           <p className="mt-0.5 text-[11px] text-gray-500">

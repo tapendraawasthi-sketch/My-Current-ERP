@@ -158,7 +158,7 @@ export default function PLVertical({ pl, options, onDrillDown, mode = "pl" }: Pr
         </div>
       </div>
 
-      <table className="w-full">
+      <table className="erp-bs-table w-full">
         <thead>
           <tr>
             <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200">

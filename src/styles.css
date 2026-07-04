@@ -1637,15 +1637,44 @@ td.amt::before { content: none; }
 .btn-destructive:hover { background: #fee2e2; }
 
 /* src/styles.css — Universal report table header styling */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #9ca3af;
+  background: #ffffff !important;
+  font-size: 12px;
+}
+
 .report-table thead th,
 .data-table thead th {
+  background: #e8edf5 !important;
+  border: 1px solid #9ca3af !important;
+  padding: 7px 10px !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.06em !important;
-  color: #6b7280 !important;
+  letter-spacing: 0.05em !important;
+  color: #374151 !important;
   white-space: nowrap;
   user-select: none;
+}
+
+.report-table tbody td,
+.data-table tbody td {
+  border: 1px solid #d1d5db !important;
+  padding: 5px 10px !important;
+  color: #1f2937 !important;
+  background: #ffffff !important;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+.report-table tbody tr.erp-bs-subtotal-row td,
+.report-table tbody tr.report-total-row td,
+.data-table tbody tr.report-total-row td {
+  background: #f3f4f6 !important;
+  font-weight: 700 !important;
+  border-top: 2px solid #9ca3af !important;
 }
 .report-table thead,
 .data-table thead {
@@ -2035,6 +2064,47 @@ td.amt::before { content: none; }
   overflow-y: auto;
   padding: 18px;
   background: #ffffff !important;
+}
+
+.erp-report .tformat-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #9ca3af !important;
+}
+
+.erp-report .tformat-table thead th {
+  background: #e8edf5 !important;
+  border: 1px solid #9ca3af !important;
+  color: #374151 !important;
+}
+
+.erp-report .tformat-cell {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.erp-report .tformat-group {
+  background: #f5f6fa !important;
+  font-weight: 700;
+}
+
+.erp-report .tformat-total {
+  background: #f3f4f6 !important;
+  font-weight: 700;
+}
+
+.erp-report .erp-page-toolbar button,
+.erp-report .erp-report-toolbar button:not(.erp-btn-primary) {
+  border: 1px solid #d1d5db !important;
+  background-color: #ffffff !important;
+  color: #374151 !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.erp-report .erp-page-toolbar button:hover,
+.erp-report .erp-report-toolbar button:not(.erp-btn-primary):hover {
+  background-color: #f5f6fa !important;
+  border-color: #9ca3af !important;
 }
 
 .erp-report-modal-footer {

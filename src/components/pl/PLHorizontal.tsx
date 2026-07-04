@@ -312,7 +312,7 @@ export default function PLHorizontal({
       <div className="grid grid-cols-2 gap-4">
         {/* ── DEBIT (LEFT) ── */}
         <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full border-collapse">
+          <table className="erp-bs-table w-full border-collapse">
             <thead>
               <tr>
                 <th className={`${thCls} text-left`}>{leftHeader}</th>
@@ -462,7 +462,7 @@ export default function PLHorizontal({
 
         {/* ── CREDIT (RIGHT) ── */}
         <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full border-collapse">
+          <table className="erp-bs-table w-full border-collapse">
             <thead>
               <tr>
                 <th className={`${thCls} text-left`}>{rightHeader}</th>

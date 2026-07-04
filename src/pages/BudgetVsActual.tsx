@@ -250,20 +250,19 @@ export default function BudgetVsActual() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen space-y-4">
+      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Budget vs Actual</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-[15px] font-semibold text-gray-800">Budget vs Actual</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
             Compare planned budgets against actual transactions with variance analysis
           </p>
         </div>
         <button
           onClick={exportExcel}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
         >
-          <Download className="w-4 h-4" /> Export Excel
+          <Download className="w-3.5 h-3.5" /> Export Excel
         </button>
       </div>
 

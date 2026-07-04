@@ -74,7 +74,7 @@ const NepalStatementTable: React.FC<Props> = ({ rows, currentYearLabel, previous
   };
 
   return (
-    <table className="w-full border-collapse bg-white">
+    <table className="erp-bs-table report-table w-full border-collapse bg-white">
       <thead>
         <tr className="bg-[#f5f6fa] border-b border-gray-200">
           <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">

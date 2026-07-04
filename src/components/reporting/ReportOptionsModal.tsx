@@ -1,5 +1,5 @@
 import React from "react";
-import { X } from "lucide-react";
+import ErpReportModal from "./ErpReportModal";
 
 interface ReportOptionsModalProps {
   open: boolean;
@@ -16,26 +16,33 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   onApply,
   children,
 }) => {
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm no-print">
-      <div className="w-full max-w-md bg-[#EBF5E2] rounded-md border border-black overflow-hidden">
-        <div className="busy-orange-modal-header flex items-center justify-between px-3 py-1">
-          <span className="font-bold text-[12px]">{title}</span>
-          <button onClick={onClose}>
-            <X className="w-4 h-4" />
+    <ErpReportModal
+      open={open}
+      title={title}
+      onClose={onClose}
+      maxWidth="28rem"
+      footer={
+        <>
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-8 px-4 text-[12px] font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
           </button>
-        </div>
-
-        <div className="p-3 space-y-2 text-[12px]">{children}</div>
-
-        <div className="px-3 py-2 border-t border-black bg-[#D4EABD] flex justify-end gap-2">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={onApply}>OK (F2)</button>
-        </div>
-      </div>
-    </div>
+          <button
+            type="button"
+            onClick={onApply}
+            className="h-8 px-4 text-[12px] font-medium rounded-md bg-[#1557b0] text-white hover:bg-[#0f4a96]"
+          >
+            OK (F2)
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-3 text-[12px] text-gray-800">{children}</div>
+    </ErpReportModal>
   );
 };
 
