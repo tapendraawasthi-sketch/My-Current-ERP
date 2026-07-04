@@ -38,15 +38,9 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
   const t = text.toLowerCase();
 
   if (META_ONLINE.test(t)) {
-    if (opts.llmOnline) {
-      return (
-        `Hajur online hunuhunchha! e-Khata + Ollama LLM ${opts.llmModel ? `(${opts.llmModel})` : ""} connected chha.\n\nAccounting sodhnus — ma CA brain bata jawaf dinchhu; general facts ko lagi Wikipedia khojchhu.`
-      );
-    }
     return (
-      `Hajur online hunuhunchha!\n\n` +
-      `e-Khata **CA Brain** active chha — accounting entries, IFRS framework, bilingual Q&A. ` +
-      `Ollama offline chha; external facts ko lagi Wikipedia khojna sakinchha.`
+      `Hajur online hunuhunchha! e-Khata **CA Brain** active chha — accounting entries, IFRS framework, bilingual Q&A.\n\n` +
+      `General facts ko lagi Wikipedia khojchhu; accounting terms Wikipedia ma jadaina.`
     );
   }
 
@@ -56,7 +50,7 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
       `📒 **Accounting entries** — Nepali/English natural language\n` +
       `📘 **IFRS/NAS framework** — conceptual Q&A\n` +
       `🌐 **Web search** — external facts matra (accounting Wikipedia ma jadaina)\n` +
-      `${opts.llmOnline ? `🟢 Ollama: ${opts.llmModel ?? "online"}` : "🟡 Built-in CA brain + Wikipedia for general facts"}`
+      `🟢 Built-in CA brain (self-contained, no external API)`
     );
   }
 

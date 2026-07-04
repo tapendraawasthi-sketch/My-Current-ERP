@@ -14,7 +14,4 @@ services:
         value: 10000
       - key: NODE_VERSION
         value: "20"
-      # Set when erp_bot + Ollama runs on a separate host (enables e-Khata LLM + Falcon RAG)
-      - key: ERP_BOT_BACKEND_URL
-        sync: false
     healthCheckPath: /health

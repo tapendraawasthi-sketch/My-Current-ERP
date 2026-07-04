@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { MarkdownRenderer } from "../../lib/falcon/markdownRenderer";
 import { useFalconStore } from "../../store/falconStore";
-import { ERP_BOT_URL } from "../../lib/erpBotClient";
+import { SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
 import { FalconThinkingPanel } from "./FalconThinkingPanel";
 import type { FalconChatMessage } from "../../store/falconStore";
 import { GENERATED_PAGE_INDEX } from "../../lib/falcon/generatedPageIndex";
@@ -277,22 +277,15 @@ const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
     <div className="border-t border-gray-200 bg-gray-50 px-3 py-3 space-y-3 text-[12px]">
       <div>
         <label className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
-          Local ERP Bot (no API keys)
+          Falcon AI (built-in)
         </label>
         <div className="flex items-center gap-2">
-          <span
-            className={`inline-block h-2 w-2 rounded-full ${botOnline ? "bg-green-500" : "bg-red-500"}`}
-          />
+          <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
           <span className="text-[11px] text-gray-700">
-            {botOnline
-              ? `Online — ${indexedFiles} files indexed`
-              : `Code-aware guide — ${GENERATED_PAGE_INDEX.length} screens + knowledge base`}
+            {SELF_CONTAINED_STATUS.detail} — {GENERATED_PAGE_INDEX.length} screens indexed
           </span>
         </div>
-        <p className="mt-1 text-[10px] text-gray-500 font-mono break-all">{ERP_BOT_URL}</p>
-        <p className="mt-1 text-[10px] text-gray-400">
-          Run: <code className="bg-gray-200 px-1 rounded">python erp_bot/scripts/start.py</code>
-        </p>
+        <p className="mt-1 text-[10px] text-gray-500">{SELF_CONTAINED_STATUS.label}</p>
       </div>
       <button
         onClick={handleRefresh}

@@ -1,8 +1,8 @@
 /**
- * e-Khata training feedback — stores confirmed/cancelled entries for LoRA fine-tuning.
- * Persists to localStorage; syncs to erp_bot POST /khata/feedback when online.
+ * e-Khata training feedback — localStorage only in production (no server sync).
  */
 
+import { isSelfContainedAi } from "../selfContainedAi";
 import { EKHATA_BOT_URL } from "./ekhataLlmClient";
 import type { KhataConfirmationCard } from "./types";
 
@@ -39,6 +39,8 @@ function saveRecords(records: TrainingFeedbackRecord[]): void {
 }
 
 function syncFeedbackToServer(record: TrainingFeedbackRecord): void {
+  if (isSelfContainedAi() || !EKHATA_BOT_URL) return;
+
   fetch(`${EKHATA_BOT_URL}/khata/feedback`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -128,8 +130,10 @@ export function clearTrainingFeedback(): void {
   localStorage.removeItem(STORAGE_KEY);
 }
 
-/** Push all local feedback records to erp_bot (fire-and-forget). */
+/** Push all local feedback records to server — dev-only when external erp_bot configured. */
 export function syncAllTrainingFeedbackToServer(): void {
+  if (isSelfContainedAi() || !EKHATA_BOT_URL) return;
+
   const records = loadRecords();
   if (records.length === 0) return;
 

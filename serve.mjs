@@ -30,7 +30,7 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
-const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").replace(/\/$/, "");
+const ERP_BOT_BACKEND = ""; // Self-contained — no external bot service on Render
 
 async function readRequestBody(req) {
   const chunks = [];
@@ -40,29 +40,6 @@ async function readRequestBody(req) {
 
 async function handleErpBotRequest(req, res, method, rawPath) {
   const subpath = rawPath.replace(/^\/erp-bot/, "") || "/";
-
-  if (ERP_BOT_BACKEND) {
-    try {
-      const targetUrl = `${ERP_BOT_BACKEND}${subpath}`;
-      const headers = { ...req.headers, host: undefined };
-      const init = { method, headers };
-      if (method !== "GET" && method !== "HEAD") {
-        init.body = await readRequestBody(req);
-      }
-      const upstream = await fetch(targetUrl, init);
-      const body = Buffer.from(await upstream.arrayBuffer());
-      res.writeHead(upstream.status, {
-        "Content-Type": upstream.headers.get("content-type") || "application/json",
-        "Content-Length": body.length,
-      });
-      res.end(body);
-    } catch (err) {
-      console.error("[serve.mjs] ERP bot proxy error:", err);
-      res.writeHead(502, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "ERP bot backend unreachable" }));
-    }
-    return;
-  }
 
   if (method === "GET" && subpath === "/status") {
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -74,7 +51,7 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         khata_llm: false,
         khata_brain: "builtin",
         indexed_files: 0,
-        message: "e-Khata built-in Nepali brain (self-contained, no external apps)",
+        message: "Self-contained CA brain — no external API required",
       }),
     );
     return;
@@ -83,9 +60,9 @@ async function handleErpBotRequest(req, res, method, rawPath) {
   res.writeHead(503, { "Content-Type": "application/json" });
   res.end(
     JSON.stringify({
-      error: "ERP bot not deployed",
+      error: "External ERP bot disabled",
       mode: "builtin",
-      hint: "Falcon AI answers from built-in guides when the bot is offline",
+      hint: "Falcon and e-Khata use built-in brains in this deployment",
     }),
   );
 }

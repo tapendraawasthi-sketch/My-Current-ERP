@@ -1,13 +1,12 @@
 /** Resolve ERP bot API base URL for dev vs production. */
 
+import { isSelfContainedAi, SELF_CONTAINED_STATUS } from "./selfContainedAi";
+
 export function resolveErpBotUrl(): string {
+  if (isSelfContainedAi()) return "";
+
   const configured = (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.trim();
   if (configured) return configured.replace(/\/$/, "");
-
-  // Production: same-origin proxy via serve.mjs (/erp-bot → backend)
-  if (import.meta.env.PROD && typeof window !== "undefined") {
-    return `${window.location.origin}/erp-bot`;
-  }
 
   return "http://localhost:8765";
 }
@@ -34,6 +33,14 @@ export interface ErpBotStatus {
 }
 
 export async function checkErpBotStatus(): Promise<ErpBotStatus> {
+  if (isSelfContainedAi()) {
+    return {
+      online: false,
+      indexedFiles: 0,
+      mode: "builtin",
+    };
+  }
+
   try {
     const resp = await fetch(`${ERP_BOT_URL}/status`, { signal: AbortSignal.timeout(8000) });
     if (!resp.ok) return { online: false, indexedFiles: 0, error: `HTTP ${resp.status}` };
@@ -55,6 +62,10 @@ export async function askErpBot(
   signal?: AbortSignal,
   contextBlock?: string,
 ): Promise<{ answer: string; sources: string[] }> {
+  if (isSelfContainedAi()) {
+    throw new Error(SELF_CONTAINED_STATUS.detail);
+  }
+
   const payload = contextBlock
     ? `${contextBlock}\n\n--- USER QUESTION ---\n${message}`
     : message;

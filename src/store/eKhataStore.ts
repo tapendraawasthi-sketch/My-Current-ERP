@@ -17,6 +17,7 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
+
 function buildWelcome(): string {
   return (
     "Namaste! Ma **e-Khata CA Brain** — tapaiko accounting intelligence sahayogi.\n\n" +
@@ -24,7 +25,7 @@ function buildWelcome(): string {
     "• **Accounting entries** — Nepali, English, Roman Nepali ('ram le 500 ko saman kinyo')\n" +
     "• **IFRS/NAS concepts** — sampatti, dayitwo, recognition, VAT/SSF/TDS\n" +
     "• **Three languages** — Devanagari, Roman, English\n\n" +
-    "📒 CA Entries · 📘 Framework Q&A · 🧠 Ollama when online"
+    "📒 CA Entries · 📘 Framework Q&A · 🌐 Web (external facts only)"
   );
 }
 
@@ -77,21 +78,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    try {
-      const { checkEKhataLlmStatus } = await import("../lib/ekhata/processMessage");
-      const status = await checkEKhataLlmStatus();
-      const online = status.khataLlm && status.online;
-      set({
-        llmOnline: online,
-        llmModel: status.model,
-      });
-      if (online) {
-        const { syncAllTrainingFeedbackToServer } = await import("../lib/ekhata/trainingFeedback");
-        syncAllTrainingFeedbackToServer();
-      }
-    } catch {
-      set({ llmOnline: false, llmModel: undefined });
-    }
+    set({ llmOnline: false, llmModel: undefined });
   },
 
   sendMessage: async (text: string) => {
@@ -115,10 +102,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
-        preferLlm: true,
+        preferLlm: false,
         history,
-        llmOnline: get().llmOnline,
-        llmModel: get().llmModel,
+        llmOnline: false,
+        llmModel: undefined,
         conversationContext,
       });
 
@@ -136,7 +123,6 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           ],
           pendingCard: result.card ?? null,
           isLoading: false,
-          llmOnline: result.engine === "ollama" || result.engine === "hybrid" || s.llmOnline,
         }));
         return;
       }
@@ -153,7 +139,6 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         ],
         pendingCard: null,
         isLoading: false,
-        llmOnline: result.engine === "ollama" || result.engine === "hybrid" || s.llmOnline,
       }));
     } catch (error) {
       set((s) => ({

@@ -20,6 +20,7 @@ import {
   type EKhataConversationContext,
 } from "./conversationState";
 import { shouldTryWorkParse } from "./smartWorkBrain";
+import { isSelfContainedAi } from "../selfContainedAi";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { isLedgerBalanceQuery, replyBalance } from "./conversationEngine";
@@ -248,7 +249,7 @@ async function tryLlmEnhancement(
   options: ProcessMessageOptions,
   localResult: EKhataProcessResult | null,
 ): Promise<EKhataProcessResult | null> {
-  if (options.preferLlm === false) return null;
+  if (options.preferLlm === false || isSelfContainedAi()) return null;
 
   try {
     const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } =

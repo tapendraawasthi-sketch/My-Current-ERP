@@ -1,5 +1,6 @@
-/** e-Khata LLM client — Ollama via erp_bot (no API keys). */
+/** e-Khata — optional external LLM client (disabled in self-contained production). */
 
+import { isSelfContainedAi } from "../selfContainedAi";
 import { resolveErpBotUrl } from "../erpBotClient";
 import type { KhataConfirmationCard } from "./types";
 
@@ -19,7 +20,7 @@ export function getEKhataSessionId(): string {
 export function resetEKhataSession(): void {
   const id = localStorage.getItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);
-  if (id) {
+  if (id && EKHATA_BOT_URL) {
     fetch(`${EKHATA_BOT_URL}/khata/clear_session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,6 +37,10 @@ export interface EKhataLlmStatus {
 }
 
 export async function checkEKhataLlmStatus(): Promise<EKhataLlmStatus> {
+  if (isSelfContainedAi() || !EKHATA_BOT_URL) {
+    return { online: false, khataLlm: false };
+  }
+
   try {
     const resp = await fetch(`${EKHATA_BOT_URL}/status`, { signal: AbortSignal.timeout(8000) });
     if (!resp.ok) return { online: false, khataLlm: false, error: `HTTP ${resp.status}` };
@@ -66,6 +71,10 @@ export async function askEKhataLlm(
   signal?: AbortSignal,
   language?: "nepali" | "english" | "mixed",
 ): Promise<EKhataLlmResponse> {
+  if (isSelfContainedAi() || !EKHATA_BOT_URL) {
+    throw new Error("Built-in CA brain only — no external LLM service");
+  }
+
   const resp = await fetch(`${EKHATA_BOT_URL}/khata/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

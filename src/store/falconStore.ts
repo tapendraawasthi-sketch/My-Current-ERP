@@ -9,6 +9,7 @@ import {
   generateFollowUpSuggestions,
 } from "../lib/falcon/chainOfThought";
 import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/chainOfThought";
+import { isSelfContainedAi } from "../lib/selfContainedAi";
 import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId } from "../lib/erpBotClient";
 import {
   askSmartAssistant,
@@ -205,7 +206,7 @@ export const useFalconStore = create<FalconState>()(
         const status = await checkErpBotStatus();
         set({ botOnline: status.online, indexedFiles: status.indexedFiles });
 
-        if (!status.online) {
+        if (isSelfContainedAi() || !status.online) {
           const smartMsg = await buildSmartReply(cleanText, state.context, state.messages);
           set((s) => ({
             messages: [...s.messages, smartMsg],
