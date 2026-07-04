@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../store/useStore";
 import { useFalconStore } from "../../store/falconStore";
 import { FalconPanel } from "./FalconPanel";
-// Assuming FalconLauncher exists, we import it. If it doesn't, we can render a minimal one or just import it.
 import FalconLauncher from "./FalconLauncher";
 import { AlertCircle } from "lucide-react";
+import { findPageByRoute } from "../../lib/falcon/pageIndexSearch";
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode }) {
@@ -53,11 +53,13 @@ export const FalconProvider: React.FC = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [togglePanel]);
 
-  // Context auto-injection on route change
+  // Context auto-injection on route change (title from indexed page headers)
   useEffect(() => {
     if (currentPage) {
+      const page = findPageByRoute(currentPage);
       setContext({
         route: currentPage,
+        screenTitle: page?.title || currentPage.replace(/-/g, " "),
         companyName: companySettings?.name || companySettings?.companyName || "Sutra ERP User",
       });
     }

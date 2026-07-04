@@ -10,10 +10,10 @@ import {
 import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/chainOfThought";
 import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId } from "../lib/erpBotClient";
 import {
-  buildBuiltinErpAnswer,
-  buildModuleSuggestions,
-  resolveBuiltinModuleKey,
-} from "../lib/builtinErpAssistant";
+  askSmartAssistant,
+  buildErpBotContextBlock,
+  type SmartAssistantContext,
+} from "../lib/falcon/smartAssistant";
 
 let _activeController: AbortController | null = null;
 
@@ -32,7 +32,38 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your built-in ERP guide for Sutra. Ask about any voucher, report, or screen.`;
+const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your ERP guide for Sutra. I read your app's screens and code structure to answer questions about vouchers, reports, and navigation.`;
+
+function toAssistantContext(ctx: FalconContext): SmartAssistantContext {
+  return {
+    route: ctx.route,
+    screenTitle: ctx.screenTitle,
+    companyName: ctx.companyName,
+  };
+}
+
+function buildSmartReply(
+  text: string,
+  context: FalconContext,
+  history: FalconChatMessage[],
+): FalconChatMessage {
+  const convo = history
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .slice(-6)
+    .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
+  const result = askSmartAssistant(text, toAssistantContext(context), convo);
+
+  return {
+    id: genId(),
+    role: "assistant",
+    content: result.answer,
+    timestamp: new Date(),
+    domain: "erp",
+    sources: result.sources,
+    suggestions: result.suggestions,
+  };
+}
 
 export interface FalconChatMessage {
   id: string;
@@ -75,19 +106,6 @@ export interface FalconState {
   clearHistory: () => void;
   toggleShowThinking: () => void;
   cancelStream: () => void;
-}
-
-function buildBuiltinReply(text: string, route?: string): FalconChatMessage {
-  const moduleKey = resolveBuiltinModuleKey(text, route);
-  return {
-    id: genId(),
-    role: "assistant",
-    content: buildBuiltinErpAnswer(text, route),
-    timestamp: new Date(),
-    domain: "erp",
-    sources: ["built-in guide"],
-    suggestions: buildModuleSuggestions(moduleKey),
-  };
 }
 
 export const useFalconStore = create<FalconState>()(
@@ -172,9 +190,9 @@ export const useFalconStore = create<FalconState>()(
         set({ botOnline: status.online, indexedFiles: status.indexedFiles });
 
         if (!status.online) {
-          const builtinMsg = buildBuiltinReply(cleanText, state.context.route);
+          const smartMsg = buildSmartReply(cleanText, state.context, state.messages);
           set((s) => ({
-            messages: [...s.messages, builtinMsg],
+            messages: [...s.messages, smartMsg],
             isTyping: false,
             isStreaming: false,
             currentThinkingSteps: [],
@@ -192,10 +210,8 @@ export const useFalconStore = create<FalconState>()(
         set({ currentThinkingSteps: plan.steps });
         await new Promise((r) => setTimeout(r, 400));
 
-        const routeCtx = state.context.route
-          ? `User is on page: ${state.context.screenTitle || state.context.route}.\n\n`
-          : "";
-        const payload = `${routeCtx}${cleanText}`;
+        const contextBlock = buildErpBotContextBlock(toAssistantContext(state.context));
+        const payload = cleanText;
 
         const abortController = createController();
         const assistantId = genId();
@@ -217,7 +233,12 @@ export const useFalconStore = create<FalconState>()(
         }));
 
         try {
-          const result = await askErpBot(payload, getErpBotSessionId(), abortController.signal);
+          const result = await askErpBot(
+            payload,
+            getErpBotSessionId(),
+            abortController.signal,
+            contextBlock,
+          );
           const followUps = generateFollowUpSuggestions(
             cleanText,
             classification.domain,
@@ -247,8 +268,8 @@ export const useFalconStore = create<FalconState>()(
           if (isAbort) {
             errorContent = "_(Response cancelled)_";
           } else if (err?.message?.includes("Failed to fetch")) {
-            const builtin = buildBuiltinReply(cleanText, state.context.route);
-            errorContent = builtin.content;
+            const smart = buildSmartReply(cleanText, state.context, state.messages);
+            errorContent = smart.content;
           } else {
             errorContent = `**Error:** ${err?.message || "Could not reach ERP bot."}`;
           }

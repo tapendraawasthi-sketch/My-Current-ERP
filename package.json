@@ -12,7 +12,7 @@
     "setup": "mkdir -p public/uploads/logos",
     "dev": "vite dev",
     "start": "node serve.mjs",
-    "build": "vite build",
+    "build": "node scripts/build-falcon-page-index.mjs && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

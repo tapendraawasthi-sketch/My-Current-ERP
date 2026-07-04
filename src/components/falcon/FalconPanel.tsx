@@ -24,6 +24,7 @@ import { useFalconStore } from "../../store/falconStore";
 import { ERP_BOT_URL } from "../../lib/erpBotClient";
 import { FalconThinkingPanel } from "./FalconThinkingPanel";
 import type { FalconChatMessage } from "../../store/falconStore";
+import { GENERATED_PAGE_INDEX } from "../../lib/falcon/generatedPageIndex";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // QUICK PROMPTS
@@ -266,7 +267,7 @@ const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
           <span className="text-[11px] text-gray-700">
             {botOnline
               ? `Online — ${indexedFiles} files indexed`
-              : "Built-in guide — works on Render without erp_bot"}
+              : `Code-aware guide — ${GENERATED_PAGE_INDEX.length} screens + knowledge base`}
           </span>
         </div>
         <p className="mt-1 text-[10px] text-gray-500 font-mono break-all">{ERP_BOT_URL}</p>
@@ -379,7 +380,7 @@ export const FalconPanel: React.FC = () => {
           <Bot className="h-4 w-4 flex-shrink-0" />
           <span className="font-bold text-[13px] tracking-tight">FALCON AI</span>
           <span className="text-[10px] text-blue-200 ml-1">
-            {botOnline ? `${indexedFiles} files` : "built-in guide"}
+            {botOnline ? `${indexedFiles} files` : `${GENERATED_PAGE_INDEX.length} screens indexed`}
           </span>
           {isStreaming && (
             <span className="text-[10px] text-blue-200 animate-pulse ml-1">● streaming</span>
@@ -552,7 +553,7 @@ export const FalconPanel: React.FC = () => {
 
         {/* Hint bar */}
         <p className="mt-1 text-[10px] text-gray-400 leading-tight">
-          Built-in guide · no API keys · Ctrl+/ to toggle
+          Built-in code index · Ctrl+/ to toggle
         </p>
       </div>
     </div>
