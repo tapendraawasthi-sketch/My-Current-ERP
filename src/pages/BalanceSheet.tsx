@@ -1267,7 +1267,7 @@ export default function BalanceSheet() {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total assets
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
                     {fmt2(bsData.totalAssets)}
                   </p>
                 </div>
@@ -1275,7 +1275,7 @@ export default function BalanceSheet() {
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Liabilities & equity
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
                     {fmt2(bsData.totalLiabilitiesEquity)}
                   </p>
                 </div>

@@ -2352,16 +2352,8 @@ const ChartOfAccounts: React.FC = () => {
                 {item.name}
               </span>
               {item.alias && <span className="text-[10px] text-gray-400 ml-1">({item.alias})</span>}
-              {isSystem && (
-                <span className="ml-1 px-1 bg-amber-50 border border-amber-200 text-amber-700 text-[9px] font-bold rounded">
-                  SYS
-                </span>
-              )}
-              {isGroup && item.isPrimary && (
-                <span className="ml-1 px-1 bg-gray-100 border border-gray-300 text-gray-600 text-[9px] font-bold rounded">
-                  PRIMARY
-                </span>
-              )}
+              {isSystem && <span className="badge badge-info ml-1">SYS</span>}
+              {isGroup && item.isPrimary && <span className="badge ml-1">PRIMARY</span>}
             </div>
           </td>
 
@@ -2403,7 +2395,7 @@ const ChartOfAccounts: React.FC = () => {
           </td>
 
           {/* Balance */}
-          <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-700">
+          <td className={`px-3 py-1.5 ${isGroup ? "number-cell-bold" : "number-cell"}`}>
             {balance !== 0 ? fmt(balance) : "—"}
           </td>
 
@@ -2451,23 +2443,28 @@ const ChartOfAccounts: React.FC = () => {
     );
   }
 
+  function categoryHeadingClass(cat: string): string {
+    const map: Record<string, string> = {
+      Assets: "report-section-heading report-section-heading-assets",
+      Liabilities: "report-section-heading report-section-heading-liab",
+      "Income/Revenue": "report-section-heading report-section-heading-income",
+      Expenses: "report-section-heading report-section-heading-expense",
+      "Capital/Equity": "report-section-heading report-section-heading-capital",
+    };
+    return map[cat] || "report-section-heading";
+  }
+
   function renderCategorySection(cat: string, nodes: any[]) {
-    const catColor = CATEGORY_COLORS[cat] || "#6b7280";
     const catBalance = nodes.reduce((s, n) => s + getGroupBalance(n.id), 0);
     return (
       <React.Fragment key={cat}>
-        <tr className="border-b-2" style={{ borderColor: catColor + "40" }}>
-          <td colSpan={7} className="px-3 py-1.5" style={{ backgroundColor: catColor + "12" }}>
+        <tr>
+          <td colSpan={7} className={categoryHeadingClass(cat)}>
             <div className="flex items-center justify-between">
-              <span
-                className="text-[11px] font-bold uppercase tracking-wider"
-                style={{ color: catColor }}
-              >
-                {cat}
-              </span>
-              <span className="text-[11px] font-mono font-semibold" style={{ color: catColor }}>
-                {catBalance !== 0 ? fmt(catBalance) : ""}
-              </span>
+              <span>{cat}</span>
+              {catBalance !== 0 && (
+                <span className="number-cell-bold">{fmt(catBalance)}</span>
+              )}
             </div>
           </td>
         </tr>
@@ -2566,38 +2563,38 @@ const ChartOfAccounts: React.FC = () => {
           {clipboardItem && (
             <button
               onClick={pasteCopied}
-              className="h-7 px-2 bg-amber-50 border border-amber-300 text-amber-700 text-[11px] rounded flex items-center gap-1 hover:bg-amber-100"
+              className="h-8 px-3 bg-amber-50 border border-amber-300 text-amber-700 text-[12px] font-medium rounded-md flex items-center gap-1 hover:bg-amber-100"
             >
               <Copy className="h-3 w-3" /> Paste ({clipboardItem.data.name.slice(0, 15)})
             </button>
           )}
           <button
             onClick={() => setActivePanel("features")}
-            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md flex items-center gap-1 hover:bg-gray-50"
           >
             <Settings className="h-3.5 w-3.5" /> Features
           </button>
           <button
             onClick={() => setActivePanel("masterConfig")}
-            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md flex items-center gap-1 hover:bg-gray-50"
           >
             <Settings className="h-3.5 w-3.5" /> Master Config
           </button>
           <button
             onClick={exportToExcel}
-            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md flex items-center gap-1 hover:bg-gray-50"
           >
             <Download className="h-3.5 w-3.5" /> Export
           </button>
           <button
             onClick={() => openAddGroup()}
-            className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1 hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md flex items-center gap-1 hover:bg-gray-50"
           >
             <Plus className="h-3.5 w-3.5" /> Add Group (F3)
           </button>
           <button
             onClick={() => openAddLedger()}
-            className="h-7 px-2 bg-[#1557b0] text-white text-[11px] font-medium rounded flex items-center gap-1 hover:bg-[#0f4a96]"
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1"
           >
             <Plus className="h-3.5 w-3.5" /> Add Ledger
           </button>
@@ -2612,13 +2609,13 @@ const ChartOfAccounts: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name, alias, GSTIN..."
-            className="h-7 pl-8 pr-3 text-[11px] border border-gray-300 rounded w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           />
         </div>
         <select
           value={filterGroup}
           onChange={(e) => setFilterGroup(e.target.value)}
-          className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
         >
           <option value="ALL">All Groups</option>
           {allGroups.map((g) => (
@@ -2630,7 +2627,7 @@ const ChartOfAccounts: React.FC = () => {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
         >
           <option value="ALL">All Types</option>
           <option value="group">Groups Only</option>

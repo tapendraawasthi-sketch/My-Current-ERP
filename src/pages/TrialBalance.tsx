@@ -924,14 +924,14 @@ export default function TrialBalance() {
                   <td className="px-3 py-2.5 text-center border-r border-gray-200 font-mono text-gray-600">
                     {t.voucherNo}
                   </td>
-                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  <td className="px-3 py-2.5 text-right border-r border-gray-200 number-cell">
                     {t.debit > 0 ? money(t.debit) : "—"}
                   </td>
-                  <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                  <td className="px-3 py-2.5 text-right border-r border-gray-200 number-cell">
                     {t.credit > 0 ? money(t.credit) : "—"}
                   </td>
                   <td
-                    className={`px-3 py-2.5 text-right font-mono font-medium ${t.balance >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}
+                    className={`px-3 py-2.5 number-cell-bold ${t.balance >= 0 ? "text-[#1557b0]" : "text-[#dc2626]"}`}
                   >
                     {money(Math.abs(t.balance))} {t.balance >= 0 ? "Dr" : "Cr"}
                   </td>
@@ -1028,10 +1028,10 @@ export default function TrialBalance() {
                     <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">
                       {acc?.name || line.accountName || line.accountId}
                     </td>
-                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                    <td className="px-3 py-2.5 text-right border-r border-gray-200 number-cell">
                       {Number(line.debit || 0) > 0 ? money(Number(line.debit)) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                    <td className="px-3 py-2.5 text-right border-r border-gray-200 number-cell">
                       {Number(line.credit || 0) > 0 ? money(Number(line.credit)) : "—"}
                     </td>
                     <td className="px-3 py-2.5 text-gray-600">{line.narration || "—"}</td>
