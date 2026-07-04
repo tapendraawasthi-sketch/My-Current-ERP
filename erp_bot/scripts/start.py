@@ -26,6 +26,20 @@ try:
         print(f"[WARN] MODEL_NAME '{MODEL_NAME}' not found in Ollama — pull it with: ollama pull {MODEL_NAME}")
     if EMBED_MODEL not in models:
         print(f"[WARN] EMBED_MODEL '{EMBED_MODEL}' not found in Ollama — pull it with: ollama pull {EMBED_MODEL}")
+    # Verify chat inference works (newer Ollama builds can segfault on some CPUs)
+    try:
+        chat_test = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={"model": MODEL_NAME, "prompt": "ok", "stream": False},
+            timeout=60,
+        )
+        chat_test.raise_for_status()
+        print("[START] Ollama chat inference: OK")
+    except Exception as e:
+        print(f"[FATAL] Ollama chat model '{MODEL_NAME}' cannot generate: {e}")
+        print("[HINT] If you see 'segmentation fault', install Ollama 0.5.7:")
+        print("  bash erp_bot/scripts/setup_ollama.sh")
+        sys.exit(1)
 except Exception:
     print(f"[FATAL] Cannot reach Ollama at {OLLAMA_BASE_URL} — is `ollama serve` running?")
     sys.exit(1)
