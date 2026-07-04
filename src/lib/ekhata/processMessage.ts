@@ -1,14 +1,13 @@
 /**
- * Main e-Khata message processor — routes between transaction parsing
- * and the self-contained Nepali conversational brain.
- * No external APIs or downloads required.
+ * e-Khata message router — decides: transaction parse OR conversational brain.
+ * Key fix: conversational messages NEVER get "Ke transaction ho?" error.
  */
 
-import { parseKhataMessage } from "./parseKhata";
-import { buildParseReply, type LedgerBalanceSnapshot } from "./conversationEngine";
-import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
 import { normalizeNepaliText } from "./normalizeNepali";
+import { parseKhataMessage } from "./parseKhata";
+import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
+import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
 export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid";
 
@@ -40,6 +39,28 @@ export interface ProcessMessageOptions {
   preferLlm?: boolean;
 }
 
+const INTENT_LABELS: Record<string, string> = {
+  khata_credit_sale: "Udharo (Credit Sale)",
+  khata_cash_sale: "Nagad Bikri (Cash Sale)",
+  khata_payment_in: "Payment Aayo",
+  khata_purchase: "Kharid",
+  khata_payment_out: "Payment Gareko",
+  khata_expense: "Kharcha",
+};
+
+function buildEntryReply(card: NonNullable<KhataParseResult["card"]>): string {
+  const label = INTENT_LABELS[card.intent] || card.intent;
+  const party = card.party || "(party chaina)";
+  return (
+    `Maile yo entry bujhe:\n` +
+    `• Prakar: ${label}\n` +
+    `• Party: ${party}\n` +
+    `• Rakam: NPR ${card.amount.toLocaleString()}\n` +
+    (card.item ? `• Saman: ${card.item}\n` : "") +
+    `\nSahi chha bhane **Confirm** thichnus.`
+  );
+}
+
 export function processEKhataMessage(
   rawText: string,
   options: ProcessMessageOptions = {},
@@ -57,32 +78,33 @@ export function processEKhataMessage(
   }
 
   if (shouldTryTransactionParse(trimmed)) {
-    const parseResult = parseKhataMessage(trimmed, normalizedText);
+    const parsed = parseKhataMessage(trimmed, normalizedText);
 
-    if (parseResult.clarifying_question) {
+    if (parsed.clarifying_question) {
       return {
         kind: "clarify",
-        reply: buildParseReply(parseResult),
+        reply: parsed.clarifying_question,
         normalizedText,
         engine: "rules",
       };
     }
 
-    if (parseResult.card) {
+    if (parsed.card) {
       return {
         kind: "entry",
-        reply: buildParseReply(parseResult, parseResult.card),
+        reply: buildEntryReply(parsed.card),
         normalizedText,
-        parseResult,
-        card: parseResult.card,
+        parseResult: parsed,
+        card: parsed.card,
         engine: "rules",
       };
     }
   }
 
+  const reply = generateNepaliReply(trimmed, options.balance);
   return {
     kind: "chat",
-    reply: generateNepaliReply(trimmed, options.balance),
+    reply,
     normalizedText,
     engine: "brain",
   };
