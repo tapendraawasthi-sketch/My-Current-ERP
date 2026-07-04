@@ -64,6 +64,7 @@ class KhataChatRequest(BaseModel):
     message: str = Field(..., max_length=4000, min_length=1)
     session_id: str = Field(..., min_length=1)
     balance: dict | None = None
+    language: str | None = None
 
 
 class KhataChatResponse(BaseModel):
@@ -125,6 +126,7 @@ def khata_chat_endpoint(req: KhataChatRequest) -> KhataChatResponse:
             req.message,
             req.session_id,
             req.balance,
+            req.language,
         )
         return KhataChatResponse(
             kind=result.get("kind", "chat"),

@@ -64,6 +64,7 @@ export async function askEKhataLlm(
   sessionId: string,
   balance?: { udhaarOut: number; udhaarIn: number },
   signal?: AbortSignal,
+  language?: "nepali" | "english" | "mixed",
 ): Promise<EKhataLlmResponse> {
   const resp = await fetch(`${EKHATA_BOT_URL}/khata/chat`, {
     method: "POST",
@@ -71,6 +72,7 @@ export async function askEKhataLlm(
     body: JSON.stringify({
       message,
       session_id: sessionId,
+      language,
       balance: balance
         ? { udhaar_out: balance.udhaarOut, udhaar_in: balance.udhaarIn }
         : undefined,

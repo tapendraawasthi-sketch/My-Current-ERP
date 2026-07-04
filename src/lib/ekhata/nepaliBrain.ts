@@ -495,8 +495,13 @@ function tryMath(text: string): string | null {
 
 // ─── Main Response Generator ─────────────────────────────────────────────────
 
-export function generateNepaliReply(text: string, balance?: LedgerBalanceSnapshot): string {
+export function generateNepaliReply(
+  text: string,
+  balance?: LedgerBalanceSnapshot,
+  preferredLang?: "nepali" | "english" | "mixed",
+): string {
   const analysis = analyzeNepaliMessage(text);
+  const lang = preferredLang ?? analysis.detectedLanguage;
 
   // Khata balance queries only — not "balance sheet" definitions
   if (
@@ -509,8 +514,16 @@ export function generateNepaliReply(text: string, balance?: LedgerBalanceSnapsho
 
   if (analysis.isAbuse) return pick(R.abuse);
 
-  if (analysis.isIdentityQuestion) return pick(R.identity);
-  if (analysis.isCapabilityQuestion) return pick(R.capability);
+  if (analysis.isIdentityQuestion) {
+    return lang === "english"
+      ? "I'm **e-Khata** — your CA-level accounting language assistant.\n\nI understand accounting in Nepali and English:\n• Post journal entries from natural language\n• Explain debit/credit, classifications, VAT, SSF, gratuity\n• Answer 'what entry for X?' questions\n• Works offline with built-in brain; Ollama LLM when available"
+      : pick(R.identity);
+  }
+  if (analysis.isCapabilityQuestion) {
+    return lang === "english"
+      ? "I speak **accounting language** in Nepali and English:\n\n📒 Journal entries: receivables, payables, bad debts, salary, SSF, VAT, TDS\n📚 Accounting Q&A: debit/credit, asset/liability classification\n💬 Reply in your language — Nepali, English, or mixed\n\nTry: 'what entry for bad debt?' or 'Ram lai 500 udhaar becheko'"
+      : pick(R.capability);
+  }
   if (analysis.isKnowledgeQuestion) return pick(R.knowledge_question);
 
   if (analysis.isHelpRequest && analysis.topScores.length <= 1) return pick(R.help);

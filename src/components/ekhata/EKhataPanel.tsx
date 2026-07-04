@@ -5,8 +5,9 @@ import { useFalconStore } from "../../store/falconStore";
 import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
 import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 
-function statusLabel(): string {
-  return "CA-Level Accounting Entry Maker";
+function statusLabel(llmOnline: boolean, llmModel?: string): string {
+  if (llmOnline) return `Accounting LLM${llmModel ? ` · ${llmModel}` : ""} + CA Brain`;
+  return "Accounting Language Brain · Nepali/English";
 }
 
 const EKhataPanel: React.FC = () => {
@@ -62,7 +63,7 @@ const EKhataPanel: React.FC = () => {
         <BookOpen className="h-4 w-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
-          <p className="text-[10px] text-emerald-100 truncate">{statusLabel()}</p>
+          <p className="text-[10px] text-emerald-100 truncate">{statusLabel(llmOnline, llmModel)}</p>
         </div>
         <button
           type="button"
@@ -262,7 +263,7 @@ const EKhataPanel: React.FC = () => {
           </button>
         </div>
         <p className="mt-1 text-[10px] text-gray-400">
-          Ctrl+Shift+K · CA-Level Double Entry · Saves to ledger
+          Ctrl+Shift+K · Accounting language · Nepali/English · Saves to ledger
         </p>
       </div>
     </div>

@@ -1,16 +1,19 @@
 /**
- * e-Khata message router — CA-level accounting entry maker + conversational brain.
+ * e-Khata message router — Accounting Language Brain + CA entry maker + Ollama LLM.
  */
 
 import { normalizeNepaliText } from "./normalizeNepali";
 import { parseKhataMessage } from "./parseKhata";
-import { formatJournalPreview } from "./caEntryEngine";
+import {
+  buildLocalizedEntryReply,
+  detectUserLanguage,
+  understandAccountingLanguage,
+} from "./accountingLanguageBrain";
 import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
-import { KHATA_INTENT_LABELS } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
-export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid" | "ca";
+export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid" | "ca" | "accounting-brain";
 
 export type EKhataProcessResult =
   | {
@@ -36,32 +39,22 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
+  /** Try Ollama LLM when erp_bot is online (auto-enabled by store) */
   preferLlm?: boolean;
 }
 
-function buildEntryReply(card: NonNullable<KhataParseResult["card"]>): string {
-  const label = KHATA_INTENT_LABELS[card.intent] || card.intent;
-  const party = card.party || "(party chaina)";
-  const lines = card.journalLines ?? [];
-
-  let reply =
-    `📒 CA-Level Entry:\n` +
-    `• Prakar: ${label}\n` +
-    `• Party: ${party}\n` +
-    `• Rakam: NPR ${card.amount.toLocaleString()}\n` +
-    (card.item ? `• Saman/Vivaran: ${card.item}\n` : "") +
-    (card.primaryClass ? `• Class: ${card.primaryClass}\n` : "");
-
-  if (lines.length > 0) {
-    reply += `\n📋 Journal Entry:\n${formatJournalPreview(lines)}\n`;
+function localizeClarify(question: string, lang: ReturnType<typeof detectUserLanguage>): string {
+  if (lang !== "english") return question;
+  const map: Record<string, string> = {
+    "Aaple diye ki unle diye?": "Did YOU give or did THEY pay? (e.g. 'Ram lai 500 diye' = credit sale; 'Shyam le 500 tiryo' = payment received)",
+    "Ke transaction ho? Thora clear lekhnus.":
+      "What transaction is this? Please be clearer — e.g. 'Ram lai 500 udhaar', 'salary 50000', 'bad debt write off 2000'",
+    "Rakam kati ho? Number lekhnus.": "What is the amount? Please include a number.",
+  };
+  for (const [ne, en] of Object.entries(map)) {
+    if (question.includes(ne.slice(0, 20))) return en;
   }
-
-  if (card.caExplanation) {
-    reply += `\n💡 CA Note: ${card.caExplanation}\n`;
-  }
-
-  reply += `\nSahi chha bhane **Confirm** thichnus.`;
-  return reply;
+  return question;
 }
 
 export function processEKhataMessage(
@@ -70,23 +63,28 @@ export function processEKhataMessage(
 ): EKhataProcessResult {
   const trimmed = (rawText || "").trim();
   const normalizedText = normalizeNepaliText(trimmed);
+  const lang = detectUserLanguage(trimmed);
 
   if (!trimmed) {
     return {
       kind: "chat",
-      reply: "Ke lekhnu hunthyo? Udaharan: 'Ram lai 500 udhaar', 'salary 50000', 'bad debt write off 2000'",
+      reply:
+        lang === "english"
+          ? "What would you like to enter? E.g. 'Ram lai 500 udhaar', 'salary 50000', 'what entry for bad debt?'"
+          : "Ke lekhnu hunthyo? Udaharan: 'Ram lai 500 udhaar', 'salary 50000', 'bad debt ko entry k hunchha?'",
       normalizedText: "",
-      engine: "brain",
+      engine: "accounting-brain",
     };
   }
 
+  // 1. Transaction with amount → CA entry engine
   if (shouldTryTransactionParse(trimmed)) {
     const parsed = parseKhataMessage(trimmed, normalizedText);
 
     if (parsed.clarifying_question) {
       return {
         kind: "clarify",
-        reply: parsed.clarifying_question,
+        reply: localizeClarify(parsed.clarifying_question, lang),
         normalizedText,
         engine: "ca",
       };
@@ -95,7 +93,7 @@ export function processEKhataMessage(
     if (parsed.card) {
       return {
         kind: "entry",
-        reply: buildEntryReply(parsed.card),
+        reply: buildLocalizedEntryReply(parsed.card, lang),
         normalizedText,
         parseResult: parsed,
         card: parsed.card,
@@ -104,7 +102,19 @@ export function processEKhataMessage(
     }
   }
 
-  const reply = generateNepaliReply(trimmed, options.balance);
+  // 2. Accounting language questions → semantic brain (bilingual)
+  const accountingAnswer = understandAccountingLanguage(trimmed);
+  if (accountingAnswer.kind === "answer" && accountingAnswer.confidence >= 0.6) {
+    return {
+      kind: "chat",
+      reply: accountingAnswer.reply,
+      normalizedText,
+      engine: "accounting-brain",
+    };
+  }
+
+  // 3. General conversation → nepali brain (fallback)
+  const reply = generateNepaliReply(trimmed, options.balance, lang);
   return {
     kind: "chat",
     reply,
@@ -117,20 +127,21 @@ export async function processEKhataMessageAsync(
   rawText: string,
   options: ProcessMessageOptions = {},
 ): Promise<EKhataProcessResult> {
-  const preferLlm = options.preferLlm === true;
+  const preferLlm = options.preferLlm !== false;
 
   if (preferLlm) {
     try {
       const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
       const status = await checkEKhataLlmStatus();
       if (status.khataLlm && status.online) {
-        const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
+        const lang = detectUserLanguage(rawText);
+        const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance, undefined, lang);
         const normalizedText = normalizeNepaliText(rawText);
 
         if (llm.kind === "entry" && llm.card) {
           return {
             kind: "entry",
-            reply: llm.reply,
+            reply: llm.reply || buildLocalizedEntryReply(llm.card, lang),
             normalizedText,
             card: llm.card,
             engine: llm.engine as "ollama" | "hybrid",
@@ -144,15 +155,17 @@ export async function processEKhataMessageAsync(
             engine: llm.engine as "ollama" | "hybrid",
           };
         }
-        return {
-          kind: "chat",
-          reply: llm.reply,
-          normalizedText,
-          engine: "ollama",
-        };
+        if (llm.reply) {
+          return {
+            kind: "chat",
+            reply: llm.reply,
+            normalizedText,
+            engine: "ollama",
+          };
+        }
       }
     } catch {
-      // Built-in CA engine
+      // Fall through to built-in accounting brain
     }
   }
 

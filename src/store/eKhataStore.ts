@@ -11,15 +11,12 @@ function genId(): string {
 
 function buildWelcome(): string {
   return (
-    "Namaste! Ma e-Khata — tapaaiko CA-level digital accounting sahayogi.\n\n" +
-    "Udhaar, receivable, bad debt, salary, SSF, gratuity, VAT, TDS, depreciation, stock — sabai scenario ma sahi journal entry banauchhu.\n\n" +
-    "Nepali, English, Roman Nepali — sabai ma lekhnu hos. Udaharan:\n" +
-    "• 'Ram lai 500 udhaar becheko'\n" +
-    "• 'salary accrual 500000'\n" +
-    "• 'bad debt write off 3000'\n" +
-    "• 'ssf employee 50000 gross salary'\n" +
-    "• 'gratuity provision 25000'\n\n" +
-    "🟢 Self-contained — sabai yahi ERP bhitra chalcha."
+    "Namaste! Ma e-Khata — tapaiko **accounting language** sahayogi.\n\n" +
+    "Ma Nepali ra English duitai accounting bhasha bujhchhu. Sodhnus wa entry lekhnu hos:\n" +
+    "• 'What entry for bad debt write off?' / 'Bad debt ko entry k hunchha?'\n" +
+    "• 'Is debtors an asset or liability?' / 'Debtors asset ho?'\n" +
+    "• 'Ram lai 500 udhaar becheko' / 'salary accrual 500000'\n\n" +
+    "🟢 Built-in Accounting Brain · Ollama LLM when online"
   );
 }
 
@@ -70,11 +67,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    // Built-in brain is always available — no external status check needed
-    set({
-      llmOnline: false,
-      llmModel: undefined,
-    });
+    try {
+      const { checkEKhataLlmStatus } = await import("../lib/ekhata/processMessage");
+      const status = await checkEKhataLlmStatus();
+      set({
+        llmOnline: status.online && status.khataLlm,
+        llmModel: status.model,
+      });
+    } catch {
+      set({ llmOnline: false, llmModel: undefined });
+    }
   },
 
   sendMessage: async (text: string) => {
@@ -93,7 +95,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     try {
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
-        preferLlm: false,
+        preferLlm: true,
       });
 
       if (result.kind === "entry" && result.card) {

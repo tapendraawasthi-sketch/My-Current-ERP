@@ -7,6 +7,14 @@ export { analyzeNepaliMessage, generateNepaliReply, shouldTryTransactionParse, T
 export { parseKhataMessage } from "./parseKhata";
 export { processEKhataMessage, processEKhataMessageAsync, checkEKhataLlmStatus } from "./processMessage";
 export { generateCAEntry, formatJournalPreview, classifyScenario } from "./caEntryEngine";
+export {
+  understandAccountingLanguage,
+  buildLocalizedEntryReply,
+  detectUserLanguage,
+  isAccountingLanguageQuery,
+  ACCOUNTING_LEXICON,
+} from "./accountingLanguageBrain";
+export type { UserLanguage, AccountingLanguageResult, AccountingQuestionType } from "./accountingLanguageBrain";
 export { CA_CHART_OF_ACCOUNTS, CLASSIFICATION_GUIDE, classifyAccount, getAccountsByClass } from "./caAccountClassification";
 export { CA_ENTRY_TEMPLATES, buildJournalLines, validateJournalBalance, findTemplateByKeywords } from "./caEntryTemplates";
 export type { KhataConfirmationCard, KhataIntent, KhataParseResult, JournalLineDraft, AccountClass } from "./types";
