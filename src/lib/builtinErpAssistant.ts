@@ -79,6 +79,7 @@ function matchExplicitQuery(query: string): string | undefined {
   return undefined;
 }
 
+/** Short queries where a module keyword is the main subject (e.g. "journal", "journal how?"). */
 function matchTopicQuery(query: string): string | undefined {
   const q = query.toLowerCase().replace(/[?.,!]/g, "").trim();
   const words = q.split(/\s+/).filter(Boolean);
@@ -114,6 +115,7 @@ function matchRouteToModule(route: string): string | undefined {
   );
 }
 
+/** Explicit query terms beat page route; route beats incidental keyword mentions in longer questions. */
 function resolveModuleKey(query: string, route?: string): string | undefined {
   const explicit = matchExplicitQuery(query);
   if (explicit) return explicit;
